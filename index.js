@@ -1,20 +1,14 @@
 console.log("hello world");
-
-
-
 while (true) { }
-const readline = require('readline');
-
-const rl = readline.createInterface({
+var readline = require('readline');
+var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     terminal: false
 });
-
-rl.on('line', (line: string) => {
+rl.on('line', function (line) {
     console.log(line);
 });
-
-rl.once('close', () => {
+rl.once('close', function () {
     // end of input
 });

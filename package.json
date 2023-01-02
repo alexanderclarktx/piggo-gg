@@ -2,15 +2,30 @@
   "name": "socialapp",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rm -rf dist/ && tsc && copyfiles -u 1 -E src/*.html dist/ && copyfiles -u 1 -E src/*.css dist/ && copyfiles -u 1 src/*.js dist/",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build && electron-forge start -l -i -p dist",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "game-tft": "npm run build && node ./dist/games/tft/main.js",
+    "game-catan": "npm run build && node ./dist/games/catan/main.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
     "ts-node": "^10.9.1",
-    "tsc": "^2.0.4"
+    "typescript": "^4.9.4"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.4",
+    "@electron-forge/maker-deb": "^6.0.4",
+    "@electron-forge/maker-rpm": "^6.0.4",
+    "@electron-forge/maker-squirrel": "^6.0.4",
+    "@electron-forge/maker-zip": "^6.0.4",
+    "copyfiles": "^2.4.1",
+    "electron": "22.0.0"
   }
 }
