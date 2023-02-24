@@ -1,7 +1,10 @@
 {
-  "name": "@piggo-legends/autochess",
+  "name": "@piggo-legends/attack-time",
   "version": "1.0.0",
   "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/main.ts"
+  },
   "dependencies": {
     "@piggo-legends/ecstacy": "1.0.0"
   },

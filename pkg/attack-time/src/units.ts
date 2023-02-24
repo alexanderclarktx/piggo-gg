@@ -1,8 +1,8 @@
-import { Equipment } from "./components/equipment";
-import { Health } from "./components/health";
-import { Name } from "./components/name";
-import { Tier } from "./components/tier";
-import { Traits } from "./components/traits";
+import { Equipment } from "./src/components/equipment";
+import { Health } from "./src/components/health";
+import { Name } from "./src/components/name";
+import { Tier } from "./src/components/tier";
+import { Traits } from "./src/components/traits";
 import { Unit } from "./entities/unit";
 
 export const units = {

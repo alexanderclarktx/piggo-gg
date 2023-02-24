@@ -12,9 +12,9 @@ __Piggo Legends__ is a platform for casual multiplayer games
 
 ```bash
 yarn set version stable
+yarn plugin import workspace-tools
+
 yarn install
-
-
 ```
 
 #### TODOs
