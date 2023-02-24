@@ -1,5 +1,5 @@
 import { Component } from "@piggo-legends/ecstacy";
-import { Item } from "../../items";
+import { Item } from "../items";
 
 // the Equipment component stores a unit's items
 export class Equipment extends Component {
