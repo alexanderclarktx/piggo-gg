@@ -449,9 +449,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@piggo-legends/autochess@workspace:pkg/autochess":
+"@piggo-legends/attack-time@workspace:pkg/attack-time":
   version: 0.0.0-use.local
-  resolution: "@piggo-legends/autochess@workspace:pkg/autochess"
+  resolution: "@piggo-legends/attack-time@workspace:pkg/attack-time"
   dependencies:
     "@piggo-legends/ecstacy": 1.0.0
     ts-node: ^8.3.0

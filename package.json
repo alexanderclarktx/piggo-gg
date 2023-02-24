@@ -14,8 +14,7 @@
     "start": "yarn build && electron-forge start -l -i -p dist",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "game-tft": "yarn build && node ./dist/games/tft/main.js",
-    "game-catan": "yarn build && node ./dist/games/catan/main.js",
+    "attack-time": "yarn workspace @piggo-legends/attack-time start",
     "webpage": "yarn build && http-server ./dist/app/webpage -p 8080"
   },
   "author": "",
