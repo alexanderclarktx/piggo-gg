@@ -1,4 +1,4 @@
-import { Component } from "@ts-game-project/ecstacy";
+import { Component } from "@piggo-legends/ecstacy";
 
 export type Trait = "Assassin" | "Blademaster" | "Brawler" | "Demolitionist" | "Elementalist" | "Gunslinger" | "Knight" | "Mage" | "Mercenary" | "Ninja" | "Ranger" | "Shapeshifter" | "Sorcerer" | "Star Guardian" | "Valkyrie" | "Void" | "Yordle";
 

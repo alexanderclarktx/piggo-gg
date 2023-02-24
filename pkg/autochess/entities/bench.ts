@@ -1,4 +1,4 @@
-import { Entity } from "@ts-game-project/ecstacy";
+import { Entity } from "@piggo-legends/ecstacy";
 import { Unit } from "./unit";
 
 export class Bench extends Entity {

@@ -1,5 +1,5 @@
 {
-  "name": "@ts-game-project/webpage",
+  "name": "@piggo-legends/webpage",
   "version": "1.0.0",
   "scripts": {
     "start": "webpack-dev-server --mode development --open",

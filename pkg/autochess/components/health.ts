@@ -1,4 +1,4 @@
-import { Component } from "@ts-game-project/ecstacy";
+import { Component } from "@piggo-legends/ecstacy";
 
 // the health component includes health, maxHealth, and damage
 export class Health extends Component {

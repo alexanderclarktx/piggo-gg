@@ -449,6 +449,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@piggo-legends/autochess@workspace:pkg/autochess":
+  version: 0.0.0-use.local
+  resolution: "@piggo-legends/autochess@workspace:pkg/autochess"
+  dependencies:
+    "@piggo-legends/ecstacy": 1.0.0
+    ts-node: ^8.3.0
+    typescript: ^4.9.4
+  languageName: unknown
+  linkType: soft
+
+"@piggo-legends/ecstacy@1.0.0, @piggo-legends/ecstacy@workspace:pkg/ecstacy":
+  version: 0.0.0-use.local
+  resolution: "@piggo-legends/ecstacy@workspace:pkg/ecstacy"
+  languageName: unknown
+  linkType: soft
+
+"@piggo-legends/webpage@workspace:app/webpage":
+  version: 0.0.0-use.local
+  resolution: "@piggo-legends/webpage@workspace:app/webpage"
+  dependencies:
+    cpy-cli: ^4.1.0
+  languageName: unknown
+  linkType: soft
+
 "@sindresorhus/is@npm:^4.0.0":
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
@@ -471,30 +495,6 @@ __metadata:
   checksum: ad87447820dd3f24825d2d947ebc03072b20a42bfc96cbafec16bff8bbda6c1a81fcb0be56d5b21968560c5359a0af4038a68ba150c3e1694fe4c109a063bed8
   languageName: node
   linkType: hard
-
-"@ts-game-project/autochess@workspace:pkg/autochess":
-  version: 0.0.0-use.local
-  resolution: "@ts-game-project/autochess@workspace:pkg/autochess"
-  dependencies:
-    "@ts-game-project/ecstacy": 1.0.0
-    ts-node: ^8.3.0
-    typescript: ^4.9.4
-  languageName: unknown
-  linkType: soft
-
-"@ts-game-project/ecstacy@1.0.0, @ts-game-project/ecstacy@workspace:pkg/ecstacy":
-  version: 0.0.0-use.local
-  resolution: "@ts-game-project/ecstacy@workspace:pkg/ecstacy"
-  languageName: unknown
-  linkType: soft
-
-"@ts-game-project/webpage@workspace:app/webpage":
-  version: 0.0.0-use.local
-  resolution: "@ts-game-project/webpage@workspace:app/webpage"
-  dependencies:
-    cpy-cli: ^4.1.0
-  languageName: unknown
-  linkType: soft
 
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.9
@@ -3575,6 +3575,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"piggo-legends@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "piggo-legends@workspace:."
+  dependencies:
+    "@electron-forge/cli": ^6.0.4
+    "@electron-forge/maker-deb": ^6.0.4
+    "@electron-forge/maker-rpm": ^6.0.4
+    "@electron-forge/maker-squirrel": ^6.0.4
+    "@electron-forge/maker-zip": ^6.0.4
+    "@types/node": ^16.11.6
+    copyfiles: ^2.4.1
+    electron: 22.0.0
+    electron-squirrel-startup: ^1.0.0
+    http-server: ^14.1.1
+    ts-node: ^10.9.1
+    tsc: ^2.0.4
+    typescript: ^4.9.4
+    yarn: ^3.4.1
+  languageName: unknown
+  linkType: soft
+
 "pkg-dir@npm:^4.2.0":
   version: 4.2.0
   resolution: "pkg-dir@npm:4.2.0"
@@ -4415,27 +4436,6 @@ __metadata:
   checksum: e25c235305b82c43f1d64a67a71226c406b00281755e4c2c4f3b1d0b09c687a535dd3c4483327f949f28bb89dc400a0bc5e5b749054f4b99f49ebfe48ba36496
   languageName: node
   linkType: hard
-
-"ts-game-project@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "ts-game-project@workspace:."
-  dependencies:
-    "@electron-forge/cli": ^6.0.4
-    "@electron-forge/maker-deb": ^6.0.4
-    "@electron-forge/maker-rpm": ^6.0.4
-    "@electron-forge/maker-squirrel": ^6.0.4
-    "@electron-forge/maker-zip": ^6.0.4
-    "@types/node": ^16.11.6
-    copyfiles: ^2.4.1
-    electron: 22.0.0
-    electron-squirrel-startup: ^1.0.0
-    http-server: ^14.1.1
-    ts-node: ^10.9.1
-    tsc: ^2.0.4
-    typescript: ^4.9.4
-    yarn: ^3.4.1
-  languageName: unknown
-  linkType: soft
 
 "ts-node@npm:^10.9.1":
   version: 10.9.1
