@@ -1,4 +1,4 @@
-import { Component } from "@ts-game-project/ecstacy";
+import { Component } from "@piggo-legends/ecstacy";
 
 // the Experience component tracks the player's experience and level
 export class Experience extends Component {

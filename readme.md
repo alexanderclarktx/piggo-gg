@@ -1,4 +1,4 @@
-__ts-game-project__ (name TBD) is an application for casual multiplayer games
+__Piggo Legends__ is a platform for casual multiplayer games
 
 #### objectives
 ```

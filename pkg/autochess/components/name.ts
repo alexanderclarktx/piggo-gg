@@ -1,4 +1,4 @@
-import { Component } from "@ts-game-project/ecstacy";
+import { Component } from "@piggo-legends/ecstacy";
 
 export class Name extends Component {
   name: string;

@@ -1,9 +1,9 @@
 {
-  "name": "@ts-game-project/autochess",
+  "name": "@piggo-legends/autochess",
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
-    "@ts-game-project/ecstacy": "1.0.0"
+    "@piggo-legends/ecstacy": "1.0.0"
   },
   "devDependencies": {
     "ts-node": "^8.3.0",
