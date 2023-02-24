@@ -1,5 +1,5 @@
-// ECS is the manager class for entities and systems
-export class ECS {
+// Ecstacy is the manager class for entities and systems
+export class Ecstacy {
   entities: Entity[] = [];
   systems: System[] = [];
 

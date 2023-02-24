@@ -1,5 +1,5 @@
 import { Health } from '../components/health';
-import { Entity } from "../../shared/ecs";
+import { Entity } from "@ts-game-project/ecstacy";
 import { Equipment } from '../components/equipment';
 import { Tier } from '../components/tier';
 import { Traits } from '../components/traits';

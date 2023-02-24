@@ -1,4 +1,4 @@
-import { Component } from "../../shared/ecs";
+import { Component } from "@ts-game-project/ecstacy";
 
 // the health component includes health, maxHealth, and damage
 export class Health extends Component {

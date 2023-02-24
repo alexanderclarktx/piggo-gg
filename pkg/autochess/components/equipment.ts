@@ -1,4 +1,4 @@
-import { Component } from "../../shared/ecs";
+import { Component } from "@ts-game-project/ecstacy";
 import { Item } from "../items";
 
 // the Equipment component stores a unit's items

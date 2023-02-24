@@ -1,4 +1,4 @@
-import { Entity } from "../../shared/ecs";
+import { Entity } from "@ts-game-project/ecstacy";
 import { Tile } from "./tile";
 
 function listComprehension<T>(list: T[], callback: (item: T) => boolean): T[] {

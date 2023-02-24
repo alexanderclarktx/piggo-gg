@@ -1,0 +1,12 @@
+{
+  "name": "@ts-game-project/webpage",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "webpack-dev-server --mode development --open",
+    "build": "tsc",
+    "postbuild": "cpy './html/' './dist/html/'"
+  },
+  "devDependencies": {
+    "cpy-cli": "^4.1.0"
+  }
+}

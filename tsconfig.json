@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "es2015",
+    // "module": "es2015",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -9,29 +9,19 @@
     "declaration": true,
     "outDir": "./dist",
     "lib": ["es2015", "dom"],
-    "moduleResolution": "node",
+    // "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "module": "NodeNext",
+    "target": "ESNext",
+
+    "declaration": true,
+    "lib": ["ESNext"],
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"]
-  // "files": [
-  //   "./src/app.ts",
-  //   "./src/background.ts"
-  // ],
-  // "angularCompilerOptions": {
-  //   "skipTemplateCodegen": true
-  // }
+  "include": ["pkg/**/*", "app/**/*"]
 }
-//   "compilerOptions": {
-//     "target": "esnext",
-//     "noImplicitAny": true,
-//     "sourceMap": true,
-//     "outDir": "dist",
-//     "baseUrl": ".",
-//     "paths": {
-//       "*": ["node_modules/*"]
-//     }
-//   },
-// }

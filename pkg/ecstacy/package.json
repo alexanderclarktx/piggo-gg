@@ -1,0 +1,9 @@
+{
+  "name": "@ts-game-project/ecstacy",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "src/main.ts",
+  "scripts": {
+    "start": "ts-node src/main.ts"
+  }
+}

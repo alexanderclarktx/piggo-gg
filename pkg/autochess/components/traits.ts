@@ -1,4 +1,4 @@
-import { Component } from "../../shared/ecs";
+import { Component } from "@ts-game-project/ecstacy";
 
 export type Trait = "Assassin" | "Blademaster" | "Brawler" | "Demolitionist" | "Elementalist" | "Gunslinger" | "Knight" | "Mage" | "Mercenary" | "Ninja" | "Ranger" | "Shapeshifter" | "Sorcerer" | "Star Guardian" | "Valkyrie" | "Void" | "Yordle";
 

@@ -1,4 +1,4 @@
-import { Component } from "../../shared/ecs";
+import { Component } from "@ts-game-project/ecstacy";
 
 // the Experience component tracks the player's experience and level
 export class Experience extends Component {

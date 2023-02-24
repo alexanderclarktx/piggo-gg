@@ -1,4 +1,4 @@
-import { Entity, System } from "../../shared/ecs";
+import { Entity, System } from "@ts-game-project/ecstacy";
 
 export class DamageSystem extends System {
   name: string;
