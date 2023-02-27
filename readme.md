@@ -1,32 +1,37 @@
 __Piggo Legends__ is a platform for casual multiplayer games
 
-#### objectives
+# Objectives
 ```
-- games are easy to implement using the ECS framework defined here
-- multiplayer is performant and easily integrated into games
-- clients can play the games from at least desktop(electron)+web, and possibly also mobile
-- social tools like chat, possibly forums, voice, etc.
+Games are easy to implement using piggo-legends' ECS framework. Multiplayer is performant and easily integrated into games. Piggo Legends supports polyglot clients (desktop, web, mobile) across a variety of game types. Social tools like chat, possibly forums, voice, etc are available in a first class way.
 ```
 
-#### getting started
+# Development
+
+#### setup
 
 ```bash
+# configure yarn
 yarn set version stable
 yarn plugin import workspace-tools
 
+# install dependencies
 yarn install
+
+# serve the game locally
+yarn start
 ```
 
-#### TODOs
+#### publishing to GitHub Pages
+```
+yarn pages
+```
+
+# Roadmap
 
 ```
-- upgrade yarn
-- update tsconfig
-- use yarn workspaces
+- make frontend runnable in electron
 
-- make frontend runnable in electron + webpage
+- render game with pixi.js
 
-- choose a js/ts 2D graphics library
-
-- multiplayer implementation
+- multiplayer implementation (webrtc?)
 ```

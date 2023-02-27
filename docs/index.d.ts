@@ -1,0 +1,1 @@
+import '@pixi/unsafe-eval';
