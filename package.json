@@ -9,21 +9,18 @@
     "pkg/**"
   ],
   "scripts": {
-    "build": "rm -rf dist/ && tsc && copyfiles -u 1 -E app/**/*.html dist/app/ && copyfiles -u 1 -E app/**/*.css dist/app/",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "yarn build && electron-forge start -l -i -p dist",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
+    "build": "yarn workspace @piggo-legends/webpage run build",
+    "test": "",
+    "start": "yarn workspace @piggo-legends/webpage start",
+    "serve": "yarn workspace @piggo-legends/webpage run webpack serve",
     "attack-time": "yarn workspace @piggo-legends/attack-time start",
-    "webpage": "yarn build && http-server ./dist/app/webpage -p 8080"
+    "webpage": "yarn build && http-server ./dist/app/webpage -p 8080",
+    "pages": "yarn build && rm -r ./docs && mkdir docs && cp -r ./app/webpage/dist/* ./docs/"
   },
   "author": "",
   "license": "ISC",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
-    "http-server": "^14.1.1",
-    "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   },
   "devDependencies": {
@@ -33,10 +30,18 @@
     "@electron-forge/maker-squirrel": "^6.0.4",
     "@electron-forge/maker-zip": "^6.0.4",
     "@types/node": "^16.11.6",
+    "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",
     "electron": "22.0.0",
+    "html-loader": "^4.2.0",
+    "http-server": "^14.1.1",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
     "typescript": "^4.9.4",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1",
+    "webpack": "^5.75.0",
     "yarn": "^3.4.1"
   }
 }

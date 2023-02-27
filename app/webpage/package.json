@@ -2,11 +2,11 @@
   "name": "@piggo-legends/webpage",
   "version": "1.0.0",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open",
-    "build": "tsc",
-    "postbuild": "cpy './html/' './dist/html/'"
+    "build": "rm -r ./dist && yarn webpack",
+    "start": "yarn webpack serve"
   },
-  "devDependencies": {
-    "cpy-cli": "^4.1.0"
+  "dependencies": {
+    "@pixi/unsafe-eval": "^7.1.2",
+    "pixi.js": "7.1.2"
   }
 }
