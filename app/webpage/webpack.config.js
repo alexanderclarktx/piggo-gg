@@ -30,6 +30,10 @@ module.exports = {
         {
           from: "./src/*.css",
           to: () => "[name].css"
+        },
+        {
+          from: "./src/favicon.ico",
+          to: () => "favicon.ico"
         }
       ],
     })
