@@ -1,23 +1,18 @@
 {
   "name": "piggo-legends",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
   "private": true,
   "workspaces": [
     "app/**",
     "pkg/**"
   ],
   "scripts": {
-    "build": "yarn workspace @piggo-legends/webpage run build",
-    "test": "",
-    "start": "yarn workspace @piggo-legends/webpage start",
-    "serve": "yarn workspace @piggo-legends/webpage run webpack serve",
+    "build": "yarn workspaces foreach run build",
+    "test": "yarn workspaces foreach run test",
     "attack-time": "yarn workspace @piggo-legends/attack-time start",
-    "webpage": "yarn build && http-server ./dist/app/webpage -p 8080",
+    "webpage": "yarn build && yarn workspace @piggo-legends/webpage run serve",
     "pages": "yarn build && rm -r ./docs && mkdir docs && cp -r ./app/webpage/dist/* ./docs/"
   },
-  "author": "",
   "license": "ISC",
   "packageManager": "yarn@3.4.1",
   "dependencies": {

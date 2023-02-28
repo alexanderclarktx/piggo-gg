@@ -1,12 +1,14 @@
 {
   "name": "@piggo-legends/attack-time",
-  "version": "1.0.0",
-  "license": "MIT",
+  "packageManager": "yarn@3.4.1",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn tsc",
     "start": "yarn build && node dist/main.js"
   },
   "dependencies": {
     "@piggo-legends/ecstacy": "1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
   }
 }
