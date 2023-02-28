@@ -683,10 +683,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@piggo-legends/gamertc@1.0.0, @piggo-legends/gamertc@workspace:pkg/gamertc":
+  version: 0.0.0-use.local
+  resolution: "@piggo-legends/gamertc@workspace:pkg/gamertc"
+  dependencies:
+    "@types/lodash": ^4.14.191
+    lodash: ^4.17.21
+    ts-node: ^10.9.1
+    typescript: ^4.9.5
+    werift: ^0.18.1
+  languageName: unknown
+  linkType: soft
+
 "@piggo-legends/webpage@workspace:app/webpage":
   version: 0.0.0-use.local
   resolution: "@piggo-legends/webpage@workspace:app/webpage"
   dependencies:
+    "@piggo-legends/gamertc": 1.0.0
     "@pixi/unsafe-eval": ^7.1.2
     pixi.js: 7.1.2
     webpack: ^5.75.0
@@ -5735,13 +5748,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readline@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "readline@npm:1.3.0"
-  checksum: dfaf8e6ac20408ea00d650e95f7bb47f77c4c62dd12ed7fb51731ee84532a2f3675fcdc4cab4923dc1eef227520a2e082a093215190907758bea9f585b19438e
-  languageName: node
-  linkType: hard
-
 "rechoir@npm:^0.8.0":
   version: 0.8.0
   resolution: "rechoir@npm:0.8.0"
@@ -7154,18 +7160,6 @@ __metadata:
   checksum: 2bcc5f3c195f375944e8af2f00bf2feea39cb9fda5f763b0d1b00077f1c51783db25c94d3fae96a07dead9fa085e6ae7474417e5ab31719c9776ea5969ceb83a
   languageName: node
   linkType: hard
-
-"webrtc@workspace:pkg/webrtc":
-  version: 0.0.0-use.local
-  resolution: "webrtc@workspace:pkg/webrtc"
-  dependencies:
-    "@types/lodash": ^4.14.191
-    lodash: ^4.17.21
-    readline: ^1.3.0
-    typescript: ^4.9.5
-    werift: ^0.18.1
-  languageName: unknown
-  linkType: soft
 
 "websocket-driver@npm:>=0.5.1, websocket-driver@npm:^0.7.4":
   version: 0.7.4

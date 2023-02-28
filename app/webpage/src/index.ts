@@ -1,5 +1,6 @@
 import { Application, Graphics } from 'pixi.js'
 import '@pixi/unsafe-eval';
+import { WebRTC } from '@piggo-legends/gamertc';
 
 const app = new Application({
     view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
@@ -18,3 +19,5 @@ graphy.drawCircle(200, 200, 25);
 graphy.endFill();
 
 app.stage.addChild(graphy);
+
+// import the webrtc library
