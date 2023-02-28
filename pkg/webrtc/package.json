@@ -2,15 +2,17 @@
   "name": "webrtc",
   "packageManager": "yarn@3.4.1",
   "scripts": {
+    "build": "yarn tsc",
     "create": "yarn ts-node main.ts --create",
     "connect": "yarn ts-node main.ts"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.191",
+    "lodash": "^4.17.21",
     "readline": "^1.3.0",
     "werift": "^0.18.1"
   },
   "devDependencies": {
-    "ts-node": "^10.2.1",
-    "typescript": "4.5.4"
+    "typescript": "^4.9.5"
   }
 }

@@ -1,9 +1,13 @@
 {
   "name": "@piggo-legends/ecstacy",
   "version": "1.0.0",
-  "license": "MIT",
+  "packageManager": "yarn@3.4.1",
   "main": "src/main.ts",
   "scripts": {
-    "start": "ts-node src/main.ts"
+    "build": "yarn tsc",
+    "start": "yarn ts-node src/main.ts"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
   }
 }

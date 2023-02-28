@@ -1,27 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    // "module": "es2015",
+    // "target": "es5",
+    // "lib": ["ESNext"],
+    // "module": "NodeNext",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "stripInternal": true,
-    "declaration": true,
     "outDir": "./dist",
     "lib": ["es2015", "dom"],
-    // "moduleResolution": "node",
     "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*"]
-    },
-    "module": "NodeNext",
     "target": "ESNext",
-
     "declaration": true,
-    "lib": ["ESNext"],
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "*": ["node_modules/*"]
+    }
   },
   "include": ["pkg/**/*", "app/**/*"]
 }
