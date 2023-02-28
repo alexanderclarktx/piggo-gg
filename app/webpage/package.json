@@ -6,6 +6,7 @@
     "serve": "yarn webpack serve"
   },
   "dependencies": {
+    "@piggo-legends/gamertc": "1.0.0",
     "@pixi/unsafe-eval": "^7.1.2",
     "pixi.js": "7.1.2"
   },
