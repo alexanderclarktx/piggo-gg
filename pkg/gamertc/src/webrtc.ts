@@ -11,36 +11,83 @@ export class WebRTC {
     }
   }
   pendingDataChannels = {};
-  dataChannels = {};
+  chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
   offer: string;
 
-  constructor() {
+  constructor(
+      onIceGatheringStateChangeCallback: (offer: string) => void,
+      onMediaCallback: (stream: MediaStream) => void,
+      onConnectedCallback: () => void,
+  ) {
     this.pc = new RTCPeerConnection(this.config);
-    this.pc.onsignalingstatechange = () => {
-      console.log("signaling state change", this.pc.signalingState);
+    this.pc.onsignalingstatechange = () => console.log("signaling state change", this.pc.signalingState);
+    // this.pc.onconnectionstatechange = () => console.log("connection state change", this.pc.connectionState); // not supported in Firefox
+    this.pc.onnegotiationneeded = async () => {
+      console.log("negotiation needed", this.pc.signalingState);
+      if (this.pc.iceConnectionState !== "connected") {
+        return;
+      }
+      try {
+        console.log("creating new offer");
+        await this.pc.setLocalDescription(await this.pc.createOffer());
+      } catch (err) {
+        console.error(err);
+      }
     }
-    this.pc.onconnectionstatechange = () => console.log("connection state change", this.pc.connectionState);
+    this.pc.ontrack = (evt) => {
+      console.log("ontrack");
+      console.log(evt.streams);
+      onMediaCallback(evt.streams[0]);
+    };
+
+    // configure the ice callbacks
+    this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
+    this.pc.oniceconnectionstatechange = () => {
+      console.log("ice connection state change", this.pc.iceConnectionState);
+      if (this.pc.iceConnectionState === "connected") {
+        onConnectedCallback();
+      }
+    }
+    this.pc.onicegatheringstatechange = async (evt) => {
+      console.log("ice gathering state change", this.pc.iceGatheringState);
+      if (this.pc.iceGatheringState === "complete") {
+        this.offer = JSON.stringify(this.pc.localDescription);
+        if (this.chat?.readyState === "open") {
+          this.sendMessage({type: "offer", sdp: this.pc.localDescription});
+        }
+        if (this.pc.signalingState === "have-local-offer") {
+          onIceGatheringStateChangeCallback(this.offer);
+        }
+      }
+    }
+  }
+
+  _handleMessage = async (message: MessageEvent<any>) => {
+    console.log("received", message);
+    const data = JSON.parse(message.data);
+    if (data["type"] === "offer") {
+      this.pc.setRemoteDescription(data["sdp"]);
+      const answer = await this.pc.createAnswer();
+      await this.pc.setLocalDescription(answer);
+      this.sendMessage({type: "answer", sdp: answer});
+    } else if (data["type"] === "answer") {
+      this.pc.setRemoteDescription(data["sdp"]);
+    }
   }
 
   // make an offer to a peer
-  createOffer = async (callback: Function) => {
+  createOffer = async () => {
     if (!this.offer) {
       // configure the data channel
       const channel = this.pc.createDataChannel("chat");
-      channel.onopen = () => console.log("\nConnected!");
-      channel.onmessage = (event) => console.log(event);
-      channel.onerror = () => console.log("error");
-      this.pc.oniceconnectionstatechange = () => console.log("ice connection state change", this.pc.iceConnectionState);
-      this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
-      this.pc.onicegatheringstatechange = async (evt) => {
-        console.log("ice gathering state change", this.pc.iceGatheringState);
-        if (this.pc.iceGatheringState === "complete") {
-          this.offer = JSON.stringify(this.pc.localDescription);
-          callback(this.offer);
-        }
-      }
+      this.chat = channel;
 
+      channel.onopen = () => console.log("\nConnected!");
+      channel.onmessage = (event) => this._handleMessage(event);
+      channel.onerror = () => console.log("error");
+
+      // kick off ice gathering
       const offer = await this.pc.createOffer();
       await this.pc.setLocalDescription(offer);
     }
@@ -57,35 +104,36 @@ export class WebRTC {
 
   // accept offer from a peer
   acceptOffer = async (offer: string): Promise<string> => {
+    // handle the remote data connection
+    this.pc.ondatachannel = (event) => {
+      const channel = event.channel;
+      // this.dataChannels["chat"] = channel;
+      this.chat = channel;
+      channel.onopen = () => console.log("\nConnected!");
+      channel.onmessage = (event) => this._handleMessage(event);
+      channel.onerror = () => console.log("error");
+    }
+
     // parse the offer and set remote
     await this.pc.setRemoteDescription(JSON.parse(offer));
 
-    // configure the data channels
-    var labels = Object.keys(this.dataChannelSettings);
-    this.pc.ondatachannel = (evt) => {
-      var channel = evt.channel;
-      var label = channel.label;
-      this.pendingDataChannels[label] = channel;
-
-      channel.onopen = () => {
-        this.dataChannels[label] = channel;
-        delete this.pendingDataChannels[label];
-        if (Object.keys(this.dataChannels).length === labels.length) {
-          console.log("\nConnected!");
-        }
-      };
-      channel.onmessage = (event) => {
-        console.log(event);
-      };
-      channel.onerror = () => console.log("error");
-    };
-
     // create an answer and set local
-    console.log("creating answer");
     const answer = await this.pc.createAnswer();
-    console.log("created answer");
     this.pc.setLocalDescription(answer);
-    console.log("set local promise");
     return JSON.stringify(answer);
+  }
+
+  sendMessage = (message: Object): void => {
+    this.chat && this.chat.send(JSON.stringify(message));
+  }
+
+  // send video to a peer
+  sendMedia = async (stream: MediaStream): Promise<void> => {
+    if (this.pc.signalingState !== "stable") {
+      throw new Error("not connected");
+    }
+    stream.getTracks().forEach((track) => {
+      this.pc.addTrack(track, stream);
+    });
   }
 }

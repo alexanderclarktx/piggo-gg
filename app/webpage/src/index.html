@@ -2,28 +2,14 @@
 <html>
   <head>
     <link rel="stylesheet" href="index.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script type="module" src="piggo-legends-min.js" defer></script>
     <meta charset="UTF-8">
     <title>Piggo Legends</title>
   </head>
   <body>
-    <div>
-      <h1>Piggo Legends</h1>
-      <p>"If You're Not Embarrassed By The First Version Of Your Product, You've Launched Too Late" - Reid Hoffman</p>
-    </div>
-      <!-- accept offer -->
-      <button id="button-accept-offer">accept offer</button>
-      <input id="input-accept-offer" type="text" min="0" max="100" value="">
-      <p style="font-size:small;width:80%;word-break:break-all;white-space:normal;" id="p-answer"></p>
-
-      <!-- send offer -->
-      <button id="button-send-offer">send offer</button>
-      <p style="font-size:small;width:80%;word-break:break-all;white-space:normal;" id="p-offer"></p>
-
-      <!-- answer -->
-      <button id="button-answer" hidden>accept answer</button>
-      <input id="input-answer" type="text" min="0" max="100" value="" hidden>
-    <div>
-    <canvas id="pixi-canvas"></canvas>
+    <div id="root"></div>
+    <canvas id="canvas"/>
   </body>
 </html>
