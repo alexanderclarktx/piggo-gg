@@ -2,7 +2,13 @@ __Piggo Legends__ is a platform for casual multiplayer games
 
 # Objectives
 
-Games are easy to implement using piggo-legends' ECS framework. Multiplayer is performant and easily integrated into games. Piggo Legends supports polyglot clients (desktop, web, mobile) across a variety of game types. Social tools like chat, possibly forums, voice, etc are available in a first class way.
+Games are easy to implement using piggo-legends' game framework.
+
+Multiplayer is performant, peer-to-peer, and easily integrated into games. 
+
+Piggo Legends supports polyglot clients (desktop, web, mobile) across a variety of game types.
+
+Social features like chat and voice have first class support.
 
 # Development
 
@@ -25,12 +31,21 @@ yarn start
 yarn pages
 ```
 
-# Roadmap
+# Features
 
-```
-- make frontend runnable in electron
+#### game framework
+- [x] ECS abstract classes
+- [ ] GameRTC abstract classes
+- [ ] integrate netcode with GameRTC classes
 
-- render game with pixi.js
+#### netcode
+- [x] WebRTC handshake works in browser
+- [ ] WebRTC audio channel
+- [ ] WebRTC game state transfer
+- [ ] WebRTC >2 players in one game
 
-- multiplayer implementation (webrtc?)
-```
+#### presentation layer
+- [x] Pixi.js renders to html canvas
+- [ ] render the game with Pixi.js
+- [ ] Electron desktop client
+- [ ] React Native mobile client

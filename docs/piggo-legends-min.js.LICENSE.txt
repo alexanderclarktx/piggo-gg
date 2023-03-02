@@ -380,6 +380,12 @@
 
 /*! ./checkMaxIfStatementsInShader.mjs */
 
+/*! ./cjs/react-dom.development.js */
+
+/*! ./cjs/react.development.js */
+
+/*! ./cjs/scheduler.development.js */
+
 /*! ./color/hex.mjs */
 
 /*! ./color/premultiply.mjs */
@@ -387,6 +393,12 @@
 /*! ./colorMatrix.mjs */
 
 /*! ./compileShader.mjs */
+
+/*! ./components/Game */
+
+/*! ./components/Header */
+
+/*! ./components/WebRTCHandshake */
 
 /*! ./compressedTextureExtensions.mjs */
 
@@ -974,11 +986,27 @@
 
 /*! querystring */
 
+/*! react */
+
+/*! react-dom */
+
+/*! react-dom/client */
+
+/*! scheduler */
+
 /*! url */
 
-/*!**********************!*\
-  !*** ./src/index.ts ***!
-  \**********************/
+/*!***********************!*\
+  !*** ./src/index.tsx ***!
+  \***********************/
+
+/*!*********************************!*\
+  !*** ./src/components/Game.tsx ***!
+  \*********************************/
+
+/*!***********************************!*\
+  !*** ./src/components/Header.tsx ***!
+  \***********************************/
 
 /*!*************************************!*\
   !*** ../../node_modules/url/url.js ***!
@@ -995,6 +1023,26 @@
 /*!***************************************!*\
   !*** ../../pkg/gamertc/src/webrtc.ts ***!
   \***************************************/
+
+/*!*****************************************!*\
+  !*** ../../node_modules/react/index.js ***!
+  \*****************************************/
+
+/*!********************************************!*\
+  !*** ./src/components/WebRTCHandshake.tsx ***!
+  \********************************************/
+
+/*!*********************************************!*\
+  !*** ../../node_modules/react-dom/index.js ***!
+  \*********************************************/
+
+/*!*********************************************!*\
+  !*** ../../node_modules/scheduler/index.js ***!
+  \*********************************************/
+
+/*!**********************************************!*\
+  !*** ../../node_modules/react-dom/client.js ***!
+  \**********************************************/
 
 /*!***********************************************!*\
   !*** ../../node_modules/earcut/src/earcut.js ***!
@@ -1270,6 +1318,10 @@
 
 /*!*********************************************************!*\
   !*** ../../node_modules/@pixi/text/lib/TextMetrics.mjs ***!
+  \*********************************************************/
+
+/*!*********************************************************!*\
+  !*** ../../node_modules/react/cjs/react.development.js ***!
   \*********************************************************/
 
 /*!**********************************************************!*\
@@ -1726,6 +1778,14 @@
 
 /*!*****************************************************************!*\
   !*** ../../node_modules/@pixi/utils/lib/data/getBufferType.mjs ***!
+  \*****************************************************************/
+
+/*!*****************************************************************!*\
+  !*** ../../node_modules/react-dom/cjs/react-dom.development.js ***!
+  \*****************************************************************/
+
+/*!*****************************************************************!*\
+  !*** ../../node_modules/scheduler/cjs/scheduler.development.js ***!
   \*****************************************************************/
 
 /*!******************************************************************!*\
@@ -2455,3 +2515,37 @@
 /*!************************************************************************************************!*\
   !*** ../../node_modules/@pixi/compressed-textures/lib/resources/CompressedTextureResource.mjs ***!
   \************************************************************************************************/
+
+/**
+ * @license React
+ * react-dom.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @license React
+ * scheduler.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * Checks if an event is supported in the current execution environment.
+ *
+ * NOTE: This will not work correctly for non-generic events such as `change`,
+ * `reset`, `load`, `error`, and `select`.
+ *
+ * Borrows from Modernizr.
+ *
+ * @param {string} eventNameSuffix Event name, e.g. "click".
+ * @return {boolean} True if the event is supported.
+ * @internal
+ * @license Modernizr 3.0.0pre (Custom Build) | MIT
+ */

@@ -17,7 +17,8 @@
     "allowSyntheticDefaultImports": true,
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "strictNullChecks": true
   },
   "include": ["pkg/**/*", "app/**/*"]
 }
