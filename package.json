@@ -10,7 +10,7 @@
     "build": "yarn workspaces foreach run build",
     "test": "yarn workspaces foreach run test",
     "attack-time": "yarn workspace @piggo-legends/attack-time start",
-    "webpage": "yarn build && yarn workspace @piggo-legends/webpage run serve",
+    "webpage": "yarn workspace @piggo-legends/webpage run serve",
     "pages": "yarn build && rm -r ./docs && mkdir docs && cp -r ./app/webpage/dist/* ./docs/"
   },
   "license": "ISC",

@@ -3,7 +3,7 @@
   "packageManager": "yarn@3.4.1",
   "scripts": {
     "build": "yarn webpack",
-    "serve": "yarn webpack serve --port 8000"
+    "serve": "yarn webpack && yarn webpack serve --port 8000"
   },
   "dependencies": {
     "@piggo-legends/gamertc": "1.0.0",
