@@ -16,7 +16,7 @@ export class WebRTC {
   offer: string;
 
   constructor(
-      onIceGatheringStateChangeCallback: (offer: string) => void,
+      onLocalUpdated: (offer: string) => void,
       onMediaCallback: (stream: MediaStream) => void,
       onConnectedCallback: () => void,
   ) {
@@ -52,12 +52,11 @@ export class WebRTC {
     this.pc.onicegatheringstatechange = async (evt) => {
       console.log("ice gathering state change", this.pc.iceGatheringState);
       if (this.pc.iceGatheringState === "complete") {
-        this.offer = JSON.stringify(this.pc.localDescription);
+        const encodedLocal = JSON.stringify(this.pc.localDescription);
+        onLocalUpdated(encodedLocal);
+        this.offer = encodedLocal;
         if (this.chat?.readyState === "open") {
           this.sendMessage({type: "offer", sdp: this.pc.localDescription});
-        }
-        if (this.pc.signalingState === "have-local-offer") {
-          onIceGatheringStateChangeCallback(this.offer);
         }
       }
     }
@@ -103,7 +102,7 @@ export class WebRTC {
   }
 
   // accept offer from a peer
-  acceptOffer = async (offer: string): Promise<string> => {
+  acceptOffer = async (offer: string): Promise<void> => {
     // handle the remote data connection
     this.pc.ondatachannel = (event) => {
       const channel = event.channel;
@@ -120,7 +119,6 @@ export class WebRTC {
     // create an answer and set local
     const answer = await this.pc.createAnswer();
     this.pc.setLocalDescription(answer);
-    return JSON.stringify(answer);
   }
 
   sendMessage = (message: Object): void => {
