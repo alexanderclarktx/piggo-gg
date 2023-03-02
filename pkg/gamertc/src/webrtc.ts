@@ -1,7 +1,7 @@
-import { PeerConfig, RTCPeerConnection } from "werift"
+// import { PeerConfig, RTCPeerConnection } from "werift"
 
 export class WebRTC {
-  config: Partial<PeerConfig> = {
+  config = {
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
   }
   dataChannelSettings = {
@@ -24,40 +24,39 @@ export class WebRTC {
   }
 
   // make an offer to a peer
-  async createOffer(): Promise<string> {
+  createOffer = async (callback: Function) => {
     if (!this.offer) {
       // configure the data channel
       const channel = this.pc.createDataChannel("chat");
-      channel.stateChanged.subscribe((state) => {
-        console.log("state changed", state);
-      });
-      channel.onopen = () => {
-        console.log("\nConnected!");
-      };
-      channel.onmessage = (event) => {
-        console.log(event);
-      };
+      channel.onopen = () => console.log("\nConnected!");
+      channel.onmessage = (event) => console.log(event);
       channel.onerror = () => console.log("error");
+      this.pc.oniceconnectionstatechange = () => console.log("ice connection state change", this.pc.iceConnectionState);
+      this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
+      this.pc.onicegatheringstatechange = async (evt) => {
+        console.log("ice gathering state change", this.pc.iceGatheringState);
+        if (this.pc.iceGatheringState === "complete") {
+          this.offer = JSON.stringify(this.pc.localDescription);
+          callback(this.offer);
+        }
+      }
 
-      // create an offer and set local
       const offer = await this.pc.createOffer();
-      this.pc.setLocalDescription(offer);
-      this.offer = JSON.stringify(offer);
+      await this.pc.setLocalDescription(offer);
     }
-    return this.offer;
   }
 
   // accept an answer from a peer (after making an offer)
-  async acceptAnswer(answer: string) {
+  acceptAnswer = async (answer: string): Promise<void> => {
     if (!this.offer) {
       throw new Error("Cannot receive answer without making an offer first");
     }
     // set remote
-    await this.pc.setRemoteDescription(JSON.parse(answer));
+    this.pc.setRemoteDescription(JSON.parse(answer));
   }
 
   // accept offer from a peer
-  async acceptOffer(offer: string): Promise<string> {
+  acceptOffer = async (offer: string): Promise<string> => {
     // parse the offer and set remote
     await this.pc.setRemoteDescription(JSON.parse(offer));
 
