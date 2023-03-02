@@ -3,21 +3,16 @@
 export class WebRTC {
   config = {
     iceServers: [
-      { urls: "stun:stun.l.google.com:19302" },
-      {
-        urls: "turn:turn.anyfirewall.com:443?transport=tcp",
-        credential: "webrtc",
-        username: "webrtc"
-      }
+      { urls: "stun:stun.l.google.com:19302" }
     ]
   }
   dataChannelSettings = {
     reliable: {
-      ordered: true,
+      ordered: false,
       maxRetransmits: 0
     }
   }
-  pendingDataChannels = {};
+
   chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
   offer: string;
