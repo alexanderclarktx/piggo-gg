@@ -40,7 +40,8 @@ yarn pages
 
 #### netcode
 - [x] WebRTC handshake works in browser
-- [x] WebRTC media channel
+- [x] WebRTC transfer media
+- [ ] WebRTC connection over internet
 - [ ] WebRTC game state transfer
 - [ ] WebRTC >2 players in one game
 

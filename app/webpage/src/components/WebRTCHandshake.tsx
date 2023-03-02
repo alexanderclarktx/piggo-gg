@@ -90,8 +90,21 @@ export const WebRTCHandshake = () => {
         <button hidden={rtcState !== "connected"} onClick={sendMedia}>Send Media</button>
       </div>
       <div>
-        <video id="video-my-camera" ref={videoMyCameraRef} hidden={rtcState !== "connected"} autoPlay={true} playsInline={true} />
-        <video id="video-their-camera" ref={videoTheirCameraRef} hidden={rtcState !== "connected"} autoPlay={true} playsInline={true} />
+        <video
+          id="video-my-camera"
+          ref={videoMyCameraRef}
+          hidden={rtcState !== "connected"}
+          autoPlay={true}
+          playsInline={true}
+          muted={true}
+        />
+        <video
+          id="video-their-camera"
+          ref={videoTheirCameraRef}
+          hidden={rtcState !== "connected"}
+          autoPlay={true}
+          playsInline={true}
+        />
       </div>
     </div>
   );
