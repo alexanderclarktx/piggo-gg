@@ -16,10 +16,10 @@ export const WebRTCHandshake = () => {
   const [rtcState, setRtcState] = useState<"none" | "offering" | "answering" | "connected">("none");
 
   const [client] = useState(new WebRTC(
-    (offer: string) => {
-      console.log("offer", offer);
+    (local: string) => {
+      console.log("updated local", local);
       setSdp({
-        local: btoa(offer),
+        local: btoa(local),
         remote: sdp.remote
       });
     },
@@ -49,24 +49,14 @@ export const WebRTCHandshake = () => {
 
   const acceptOffer = () => {
     console.log("accept offer");
-    // console.log("ref", inputRef.current.value);
-    const v = atob(inputOfferRef.current ? inputOfferRef.current.value : "");
-    console.log("v", v);
-    const answer = client.acceptOffer(v);
-    answer.then((a) => {
-      setSdp({
-        local: sdp.local,
-        remote: btoa(a)
-      });
-    });
+    const offerDecoded = atob(inputOfferRef.current ? inputOfferRef.current.value : "");
+    client.acceptOffer(offerDecoded);
     setRtcState("answering");
   }
 
   const acceptAnswer = () => {
-    console.log("accept answer", inputAnswerRef.current?.value);
-    const v = atob(inputAnswerRef.current ? inputAnswerRef.current.value : "");
-    console.log("v", v);
-    client.acceptAnswer(v);
+    const decodedAnswer = atob(inputAnswerRef.current ? inputAnswerRef.current.value : "");
+    client.acceptAnswer(decodedAnswer);
   }
 
   const sendMedia = async () => {
@@ -85,12 +75,11 @@ export const WebRTCHandshake = () => {
       <div>
         <div>
           <button hidden={rtcState !== "none"} onClick={createOffer}>Create Offer</button>
-          <p hidden={rtcState !== "offering"} style={{ wordWrap: "break-word", color: "white", fontSize: "small" }}>{sdp.local}</p>
+          <p hidden={rtcState !== "offering" && rtcState !== "answering"} style={{ wordWrap: "break-word", color: "white", fontSize: "small" }}>{sdp.local}</p>
         </div>
         <div hidden={rtcState === "offering" || rtcState === "connected"}>
           <button hidden={rtcState === "answering"} onClick={acceptOffer}>Accept Offer</button>
           <input hidden={rtcState === "answering"} type="text" ref={inputOfferRef} />
-          <p style={{ wordWrap: "break-word", color: "white", fontSize: "small" }}>{sdp.remote}</p>
         </div>
         <div hidden={rtcState !== "offering"}>
           <button onClick={acceptAnswer}>Accept Answer</button>
