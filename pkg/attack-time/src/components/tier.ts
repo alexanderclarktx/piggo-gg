@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/ecstacy";
+import { Component } from "@piggo-legends/gamertc";
 
 export class Tier extends Component {
   level: number;

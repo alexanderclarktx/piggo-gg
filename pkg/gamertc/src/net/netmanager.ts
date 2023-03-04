@@ -1,6 +1,6 @@
 // import { PeerConfig, RTCPeerConnection } from "werift"
 
-export class WebRTC {
+export class NetManager {
   config = {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" }

@@ -5,10 +5,10 @@
     "build": "yarn tsc",
     "start": "yarn build && node dist/main.js"
   },
-  "dependencies": {
-    "@piggo-legends/ecstacy": "1.0.0"
-  },
   "devDependencies": {
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@piggo-legends/gamertc": "1.0.0"
   }
 }

@@ -1,4 +1,4 @@
-import { Entity } from "@piggo-legends/ecstacy";
+import { Entity } from "@piggo-legends/gamertc";
 import { Tile } from "./tile";
 
 function listComprehension<T>(list: T[], callback: (item: T) => boolean): T[] {

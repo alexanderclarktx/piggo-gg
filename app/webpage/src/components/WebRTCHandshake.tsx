@@ -1,62 +1,51 @@
-import { WebRTC } from "@piggo-legends/gamertc";
-import React, { useEffect, useRef, useState } from "react";
+import { GameRTC } from "@piggo-legends/gamertc";
+import React, { useEffect, useRef } from "react";
 
-export const WebRTCHandshake = () => {
+export type WebRTCHandshakeProps = {
+  gameRTC?: GameRTC,
+  sdp: { local: string, remote: string },
+  setSdp: (sdp: { local: string, remote: string }) => void,
+  rtcState: "none" | "offering" | "answering" | "connected",
+  setRtcState: (state: "none" | "offering" | "answering" | "connected") => void,
+  theirMediaStream?: MediaStream
+}
 
+export const WebRTCHandshake = ({gameRTC, sdp, setSdp, rtcState, setRtcState, theirMediaStream}: WebRTCHandshakeProps) => {
   const inputOfferRef = useRef<HTMLInputElement>(null);
   const inputAnswerRef = useRef<HTMLInputElement>(null);
   const videoMyCameraRef = useRef<HTMLVideoElement>(null);
   const videoTheirCameraRef = useRef<HTMLVideoElement>(null);
 
-  const [sdp, setSdp] = useState({
-    local: "",
-    remote: ""
-  });
-
-  const [rtcState, setRtcState] = useState<"none" | "offering" | "answering" | "connected">("none");
-
-  const [client] = useState(new WebRTC(
-    (local: string) => {
-      console.log("updated local", local);
-      setSdp({
-        local: btoa(local),
-        remote: sdp.remote
-      });
-    },
-    (stream: MediaStream) => {
-      console.log("got media");
+  useEffect(() => {
+    if (theirMediaStream) {
       videoTheirCameraRef.current && (
         videoTheirCameraRef.current.hidden = false,
-        videoTheirCameraRef.current.srcObject = stream
+        videoTheirCameraRef.current.srcObject = theirMediaStream
       );
-    },
-    () => {
-      console.log("connected!");
-      setRtcState("connected");
     }
-  ));
+  }, [theirMediaStream]);
 
   useEffect(() => {
-    window["client"] = client;
+    window["gamertc"] = gameRTC;
     console.log("update sdp");
   }, [sdp.local, sdp.remote]);
 
   const createOffer = () => {
     console.log("send offer");
     setRtcState("offering");
-    client.createOffer();
+    gameRTC?.net.createOffer();
   }
 
   const acceptOffer = () => {
     console.log("accept offer");
     const offerDecoded = atob(inputOfferRef.current ? inputOfferRef.current.value : "");
-    client.acceptOffer(offerDecoded);
+    gameRTC?.net.acceptOffer(offerDecoded);
     setRtcState("answering");
   }
 
   const acceptAnswer = () => {
     const decodedAnswer = atob(inputAnswerRef.current ? inputAnswerRef.current.value : "");
-    client.acceptAnswer(decodedAnswer);
+    gameRTC?.net.acceptAnswer(decodedAnswer);
   }
 
   const sendMedia = async () => {
@@ -64,7 +53,7 @@ export const WebRTCHandshake = () => {
     console.log("send media");
     const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 360 }, audio: true });
     console.log(stream);
-    client.sendMedia(stream);
+    gameRTC?.net.sendMedia(stream);
 
     // render my video stream
     videoMyCameraRef.current && (videoMyCameraRef.current.srcObject = stream);

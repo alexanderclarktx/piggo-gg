@@ -1,4 +1,4 @@
-import { Entity } from "@piggo-legends/ecstacy";
+import { Entity } from "@piggo-legends/gamertc";
 import { Unit } from "./unit";
 
 export class Tile extends Entity {
