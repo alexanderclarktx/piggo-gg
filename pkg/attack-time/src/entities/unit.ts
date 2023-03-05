@@ -1,5 +1,5 @@
 import { Health } from '../components/health';
-import { Entity } from "@piggo-legends/ecstacy";
+import { Entity } from "@piggo-legends/gamertc";
 import { Equipment } from '../components/equipment';
 import { Tier } from '../components/tier';
 import { Traits } from '../components/traits';

@@ -1,5 +1,4 @@
-import { WebRTCHandshake } from './components/WebRTCHandshake'
-import { Game } from './components/Game';
+import { GameCanvas } from './components/GameCanvas';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Header } from './components/Header';
@@ -8,8 +7,7 @@ export default function App() {
     return (
         <div className="App">
             <Header/>
-            <WebRTCHandshake />
-            <Game/>
+            <GameCanvas/>
         </div>
     );
 }

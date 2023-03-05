@@ -1,28 +1,27 @@
-// import { PeerConfig, RTCPeerConnection } from "werift"
-
-export class WebRTC {
+export class NetManager {
   config = {
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" }
+    ]
   }
-  dataChannelSettings = {
-    reliable: {
-      ordered: true,
-      maxRetransmits: 0
-    }
-  }
-  pendingDataChannels = {};
+  dataChannelSettings = { reliable: { ordered: false, maxRetransmits: 0 } }
   chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
   offer: string;
 
   constructor(
-      onLocalUpdated: (offer: string) => void,
-      onMediaCallback: (stream: MediaStream) => void,
-      onConnectedCallback: () => void,
+    onLocalUpdated: (offer: string) => void,
+    onMediaCallback: (stream: MediaStream) => void,
+    onConnectedCallback: () => void,
   ) {
     this.pc = new RTCPeerConnection(this.config);
     this.pc.onsignalingstatechange = () => console.log("signaling state change", this.pc.signalingState);
-    // this.pc.onconnectionstatechange = () => console.log("connection state change", this.pc.connectionState); // not supported in Firefox
+    this.pc.onconnectionstatechange = (evt) => {
+      if (this.pc.connectionState === "connected") {
+        console.log("connected NOT firefox");
+        onConnectedCallback();
+      }
+    }
     this.pc.onnegotiationneeded = async () => {
       console.log("negotiation needed", this.pc.signalingState);
       if (this.pc.iceConnectionState !== "connected") {
@@ -31,6 +30,7 @@ export class WebRTC {
       try {
         console.log("creating new offer");
         await this.pc.setLocalDescription(await this.pc.createOffer());
+        this.sendMessage({ type: "offer", sdp: this.pc.localDescription });
       } catch (err) {
         console.error(err);
       }
@@ -41,11 +41,11 @@ export class WebRTC {
       onMediaCallback(evt.streams[0]);
     };
 
-    // configure the ice callbacks
     this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
-    this.pc.oniceconnectionstatechange = () => {
-      console.log("ice connection state change", this.pc.iceConnectionState);
-      if (this.pc.iceConnectionState === "connected") {
+    this.pc.oniceconnectionstatechange = (evt: Event) => {
+      console.log("ice connection state change", this.pc.iceConnectionState, evt);
+      if (this.pc.iceConnectionState === "connected" && !this.pc.connectionState) {
+        console.log("connected firefox");
         onConnectedCallback();
       }
     }
@@ -55,9 +55,6 @@ export class WebRTC {
         const encodedLocal = JSON.stringify(this.pc.localDescription);
         onLocalUpdated(encodedLocal);
         this.offer = encodedLocal;
-        if (this.chat?.readyState === "open") {
-          this.sendMessage({type: "offer", sdp: this.pc.localDescription});
-        }
       }
     }
   }
@@ -69,7 +66,7 @@ export class WebRTC {
       this.pc.setRemoteDescription(data["sdp"]);
       const answer = await this.pc.createAnswer();
       await this.pc.setLocalDescription(answer);
-      this.sendMessage({type: "answer", sdp: answer});
+      this.sendMessage({ type: "answer", sdp: answer });
     } else if (data["type"] === "answer") {
       this.pc.setRemoteDescription(data["sdp"]);
     }
@@ -117,15 +114,18 @@ export class WebRTC {
     await this.pc.setRemoteDescription(JSON.parse(offer));
 
     // create an answer and set local
-    const answer = await this.pc.createAnswer();
+    const answer = await this.pc.createAnswer({
+      iceRestart: false
+    });
     this.pc.setLocalDescription(answer);
   }
 
+  // send message to peer
   sendMessage = (message: Object): void => {
     this.chat && this.chat.send(JSON.stringify(message));
   }
 
-  // send video to a peer
+  // send audio/video to peer
   sendMedia = async (stream: MediaStream): Promise<void> => {
     if (this.pc.signalingState !== "stable") {
       throw new Error("not connected");

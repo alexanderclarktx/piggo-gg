@@ -1,4 +1,4 @@
-import { Entity, System } from "@piggo-legends/ecstacy";
+import { Entity, System } from "@piggo-legends/gamertc";
 
 export class DamageSystem extends System {
   name: string;

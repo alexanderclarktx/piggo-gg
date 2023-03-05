@@ -1,4 +1,4 @@
-this is a package for webRTC p2p connections
+__gamertc__ is an [ECS](https://en.wikipedia.org/wiki/Entity_component_system) framework with WebRTC multiplayer support
 
 ### resources
 

@@ -670,15 +670,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@piggo-legends/attack-time@workspace:pkg/attack-time"
   dependencies:
-    "@piggo-legends/ecstacy": 1.0.0
-    typescript: ^4.9.5
-  languageName: unknown
-  linkType: soft
-
-"@piggo-legends/ecstacy@1.0.0, @piggo-legends/ecstacy@workspace:pkg/ecstacy":
-  version: 0.0.0-use.local
-  resolution: "@piggo-legends/ecstacy@workspace:pkg/ecstacy"
-  dependencies:
+    "@piggo-legends/gamertc": 1.0.0
     typescript: ^4.9.5
   languageName: unknown
   linkType: soft
@@ -687,8 +679,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@piggo-legends/gamertc@workspace:pkg/gamertc"
   dependencies:
+    "@pixi/unsafe-eval": ^7.1.2
     "@types/lodash": ^4.14.191
     lodash: ^4.17.21
+    pixi.js: 7.1.2
     ts-node: ^10.9.1
     typescript: ^4.9.5
     werift: ^0.18.1
@@ -700,10 +694,8 @@ __metadata:
   resolution: "@piggo-legends/webpage@workspace:app/webpage"
   dependencies:
     "@piggo-legends/gamertc": 1.0.0
-    "@pixi/unsafe-eval": ^7.1.2
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
-    pixi.js: 7.1.2
     react: ^18.2.0
     react-dom: ^18.2.0
     webpack: ^5.75.0
@@ -967,9 +959,9 @@ __metadata:
   linkType: hard
 
 "@pixi/unsafe-eval@npm:^7.1.2":
-  version: 7.1.2
-  resolution: "@pixi/unsafe-eval@npm:7.1.2"
-  checksum: a654345c3943eb4e9fd890cd427590f784beb37c50c478ca0e5ef896f92192325c7c45b634f8bcb1197675c2c0909890fba115444ce928e3d085394bd0f4785d
+  version: 7.1.4
+  resolution: "@pixi/unsafe-eval@npm:7.1.4"
+  checksum: 154a8436ecf69d308bcb57c1fdd9c35ceb715912c2d566b3fa2dd9ce412425e604d52c1d4249f373c21a33856b6f312993c2fbd51412784477346b77a391d139
   languageName: node
   linkType: hard
 

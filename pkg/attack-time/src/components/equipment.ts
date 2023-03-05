@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/ecstacy";
+import { Component } from "@piggo-legends/gamertc";
 import { Item } from "../items";
 
 // the Equipment component stores a unit's items

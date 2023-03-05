@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/ecstacy";
+import { Component } from "@piggo-legends/gamertc";
 
 // the gold component tracks the player's gold
 export class Gold extends Component {

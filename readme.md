@@ -35,12 +35,13 @@ yarn pages
 
 #### game framework
 - [x] ECS abstract classes
-- [ ] GameRTC abstract classes
+- [x] GameRTC abstract classes
 - [ ] integrate netcode with GameRTC classes
 
 #### netcode
 - [x] WebRTC handshake works in browser
-- [ ] WebRTC audio channel
+- [x] WebRTC transfer media
+- [x] WebRTC connection over internet (fails for some network configurations like LTE)
 - [ ] WebRTC game state transfer
 - [ ] WebRTC >2 players in one game
 
