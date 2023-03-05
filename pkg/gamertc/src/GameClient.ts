@@ -2,7 +2,7 @@ import { NetManager } from './net/NetManager';
 import { Game } from './game/Game';
 import { Renderer } from './graphics/Renderer';
 
-export class GameRTC {
+export class GameClient {
   net: NetManager;
   game?: Game;
   renderer: Renderer;

@@ -1,10 +1,10 @@
-import { GameRTC } from "@piggo-legends/gamertc";
+import { GameClient } from "@piggo-legends/gamertc";
 import React, { useEffect, useRef } from "react";
 
 export type NetState = "none" | "offering" | "answering" | "connected";
 
 export type WebRTCHandshakeProps = {
-  gameRTC?: GameRTC,
+  gameClient?: GameClient,
   sdp: { local: string, remote: string },
   setSdp: (sdp: { local: string, remote: string }) => void,
   netState: NetState,
@@ -12,7 +12,7 @@ export type WebRTCHandshakeProps = {
   theirMediaStream?: MediaStream
 }
 
-export const WebRTCHandshake = ({gameRTC, sdp, setSdp, netState, setNetState, theirMediaStream}: WebRTCHandshakeProps) => {
+export const WebRTCHandshake = ({gameClient, sdp, setSdp, netState, setNetState, theirMediaStream}: WebRTCHandshakeProps) => {
   const inputOfferRef = useRef<HTMLInputElement>(null);
   const inputAnswerRef = useRef<HTMLInputElement>(null);
   const videoMyCameraRef = useRef<HTMLVideoElement>(null);
@@ -28,29 +28,29 @@ export const WebRTCHandshake = ({gameRTC, sdp, setSdp, netState, setNetState, th
   }, [theirMediaStream]);
 
   useEffect(() => {
-    window["gamertc"] = gameRTC;
+    window["gamertc"] = gameClient;
   }, [sdp.local, sdp.remote]);
 
   const createOffer = () => {
     setNetState("offering");
-    gameRTC?.net.createOffer();
+    gameClient?.net.createOffer();
   }
 
   const acceptOffer = () => {
     const offerDecoded = atob(inputOfferRef.current ? inputOfferRef.current.value : "");
-    gameRTC?.net.acceptOffer(offerDecoded);
+    gameClient?.net.acceptOffer(offerDecoded);
     setNetState("answering");
   }
 
   const acceptAnswer = () => {
     const decodedAnswer = atob(inputAnswerRef.current ? inputAnswerRef.current.value : "");
-    gameRTC?.net.acceptAnswer(decodedAnswer);
+    gameClient?.net.acceptAnswer(decodedAnswer);
   }
 
   const sendMedia = async () => {
     // send my video stream
     const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 360 }, audio: true });
-    gameRTC?.net.sendMedia(stream);
+    gameClient?.net.sendMedia(stream);
 
     // render my video stream
     videoMyCameraRef.current && (videoMyCameraRef.current.srcObject = stream);

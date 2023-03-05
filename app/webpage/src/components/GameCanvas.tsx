@@ -1,11 +1,11 @@
 import '@pixi/unsafe-eval';
 import React, { useEffect, useState } from 'react';
-import { GameRTC, NetManager } from '@piggo-legends/gamertc';
+import { GameClient, NetManager } from '@piggo-legends/gamertc';
 import { Renderer } from '@piggo-legends/gamertc/src/graphics/renderer';
 import { WebRTCHandshake, NetState } from './WebRTCHandshake';
 
 export const GameCanvas = () => {
-  const [gameRTC, setGameRTC] = useState<GameRTC | undefined>();
+  const [gameClient, setGameClient] = useState<GameClient | undefined>();
 
   const [theirMediaStream, setTheirMediaStream] = useState<MediaStream | undefined>();
   const [sdp, setSdp] = useState({ local: "", remote: "" });
@@ -27,8 +27,8 @@ export const GameCanvas = () => {
   }
 
   useEffect(() => {
-    setGameRTC(
-      new GameRTC(
+    setGameClient(
+      new GameClient(
         new NetManager(onLocalUpdated, onMedia, onConnected),
         undefined,
         new Renderer(document.getElementById("canvas") as HTMLCanvasElement)
@@ -39,7 +39,7 @@ export const GameCanvas = () => {
   return (
       <div id="game">
         <WebRTCHandshake
-          gameRTC={gameRTC}
+          gameClient={gameClient}
           sdp={sdp}
           setSdp={setSdp}
           netState={netState}
