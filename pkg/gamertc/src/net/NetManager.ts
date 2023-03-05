@@ -1,26 +1,18 @@
-// import { PeerConfig, RTCPeerConnection } from "werift"
-
 export class NetManager {
   config = {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" }
     ]
   }
-  dataChannelSettings = {
-    reliable: {
-      ordered: false,
-      maxRetransmits: 0
-    }
-  }
-
+  dataChannelSettings = { reliable: { ordered: false, maxRetransmits: 0 } }
   chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
   offer: string;
 
   constructor(
-      onLocalUpdated: (offer: string) => void,
-      onMediaCallback: (stream: MediaStream) => void,
-      onConnectedCallback: () => void,
+    onLocalUpdated: (offer: string) => void,
+    onMediaCallback: (stream: MediaStream) => void,
+    onConnectedCallback: () => void,
   ) {
     this.pc = new RTCPeerConnection(this.config);
     this.pc.onsignalingstatechange = () => console.log("signaling state change", this.pc.signalingState);
@@ -38,7 +30,7 @@ export class NetManager {
       try {
         console.log("creating new offer");
         await this.pc.setLocalDescription(await this.pc.createOffer());
-        this.sendMessage({type: "offer", sdp: this.pc.localDescription});
+        this.sendMessage({ type: "offer", sdp: this.pc.localDescription });
       } catch (err) {
         console.error(err);
       }
@@ -49,13 +41,6 @@ export class NetManager {
       onMediaCallback(evt.streams[0]);
     };
 
-    // configure the ice callbacks
-    // this.pc.onicecandidate = (evt) => {
-    //   console.log("ice candidate", evt);
-    //   if (evt.candidate) {
-    //     this.pc.addIceCandidate(evt.candidate);
-    //   }
-    // }
     this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
     this.pc.oniceconnectionstatechange = (evt: Event) => {
       console.log("ice connection state change", this.pc.iceConnectionState, evt);
@@ -81,7 +66,7 @@ export class NetManager {
       this.pc.setRemoteDescription(data["sdp"]);
       const answer = await this.pc.createAnswer();
       await this.pc.setLocalDescription(answer);
-      this.sendMessage({type: "answer", sdp: answer});
+      this.sendMessage({ type: "answer", sdp: answer });
     } else if (data["type"] === "answer") {
       this.pc.setRemoteDescription(data["sdp"]);
     }
@@ -135,11 +120,12 @@ export class NetManager {
     this.pc.setLocalDescription(answer);
   }
 
+  // send message to peer
   sendMessage = (message: Object): void => {
     this.chat && this.chat.send(JSON.stringify(message));
   }
 
-  // send video to a peer
+  // send audio/video to peer
   sendMedia = async (stream: MediaStream): Promise<void> => {
     if (this.pc.signalingState !== "stable") {
       throw new Error("not connected");

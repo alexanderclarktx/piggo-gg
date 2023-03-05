@@ -1,6 +1,6 @@
-import { NetManager } from './net/netmanager';
-import { Game } from './game/game';
-import { Renderer } from './graphics/renderer';
+import { NetManager } from './net/NetManager';
+import { Game } from './game/Game';
+import { Renderer } from './graphics/Renderer';
 
 export class GameRTC {
   net: NetManager;

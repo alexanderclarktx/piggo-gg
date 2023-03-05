@@ -18,9 +18,3 @@ export abstract class Game {
   }
   abstract render: () => void;
 }
-
-class MyGame extends Game {
-  render = () => {
-    console.log("render");
-  }
-}
