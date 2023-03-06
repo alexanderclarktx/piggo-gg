@@ -1,5 +1,10 @@
 html {
-  background-color: rgb(148, 69, 160);
+  background-color: rgb(24, 26, 27);
+  border-bottom-color: rgb(115, 107, 94);
+  border-left-color: rgb(115, 107, 94);
+  border-right-color: rgb(115, 107, 94);
+  border-top-color: rgb(115, 107, 94);
+  color: rgb(232, 230, 227)
 }
 
 h1 {
