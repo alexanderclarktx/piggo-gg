@@ -8,11 +8,13 @@
   "dependencies": {
     "@piggo-legends/gamertc": "1.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/react-modal": "^3.13.1",
     "webpack": "^5.75.0"
   }
 }

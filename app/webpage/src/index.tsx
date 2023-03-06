@@ -1,4 +1,4 @@
-import { GameCanvas } from './components/GameCanvas';
+import { Root } from './components/Root';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Header } from './components/Header';
@@ -6,8 +6,7 @@ import { Header } from './components/Header';
 export default function App() {
     return (
         <div className="App">
-            <Header/>
-            <GameCanvas/>
+            <Root/>
         </div>
     );
 }
