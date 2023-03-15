@@ -666,9 +666,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@piggo-legends/attack-time@workspace:pkg/attack-time":
+"@piggo-legends/attack-time@workspace:pkg/games/attack-time":
   version: 0.0.0-use.local
-  resolution: "@piggo-legends/attack-time@workspace:pkg/attack-time"
+  resolution: "@piggo-legends/attack-time@workspace:pkg/games/attack-time"
   dependencies:
     "@piggo-legends/gamertc": 1.0.0
     typescript: ^4.9.5
@@ -689,11 +689,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@piggo-legends/pong@1.0.0, @piggo-legends/pong@workspace:pkg/games/pong":
+  version: 0.0.0-use.local
+  resolution: "@piggo-legends/pong@workspace:pkg/games/pong"
+  dependencies:
+    "@piggo-legends/gamertc": 1.0.0
+    typescript: ^4.9.5
+  languageName: unknown
+  linkType: soft
+
 "@piggo-legends/webpage@workspace:app/webpage":
   version: 0.0.0-use.local
   resolution: "@piggo-legends/webpage@workspace:app/webpage"
   dependencies:
     "@piggo-legends/gamertc": 1.0.0
+    "@piggo-legends/pong": 1.0.0
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
     "@types/react-modal": ^3.13.1

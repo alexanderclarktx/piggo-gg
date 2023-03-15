@@ -1,6 +1,7 @@
 {
   "name": "@piggo-legends/attack-time",
   "packageManager": "yarn@3.4.1",
+  "version": "1.0.0",
   "scripts": {
     "build": "yarn tsc",
     "start": "yarn build && node dist/main.js"

@@ -29,7 +29,7 @@ export const Root = () => {
 
   return (
     <div>
-      <Header />
+      <Header/>
       <NetConnector
         netManager={gameClient?.net}
         sdp={sdp}

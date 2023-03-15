@@ -1,4 +1,4 @@
-import { Component } from './component';
+import { Component } from './Component';
 
 // an Entity is a collection of components
 export abstract class Entity {
