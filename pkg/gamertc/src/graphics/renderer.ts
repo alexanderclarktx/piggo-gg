@@ -6,9 +6,6 @@ export class Renderer {
 
   addContainer = (container: Container) => {
     this.app.stage.addChild(container);
-    this.app.ticker.add(() => {
-      // console.log("abc");
-    });
   }
 
   constructor(canvas: HTMLCanvasElement) {
@@ -20,10 +17,5 @@ export class Renderer {
       width: 800,
       height: 600,
     });
-
-    // this.app.ticker
-
-    // this.app.ticker.maxFPS = 60;
-    // this.app.ticker.minFPS = 60;
   }
 }
