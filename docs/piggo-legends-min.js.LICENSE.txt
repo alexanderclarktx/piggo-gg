@@ -308,7 +308,11 @@ object-assign
 
 /*! ./ParticleRenderer.mjs */
 
+/*! ./PhoneCall */
+
 /*! ./Point.mjs */
+
+/*! ./Pong */
 
 /*! ./Prepare.mjs */
 
@@ -335,6 +339,8 @@ object-assign
 /*! ./SimplePlane.mjs */
 
 /*! ./SimpleRope.mjs */
+
+/*! ./SpeechTranscriber */
 
 /*! ./Sprite.mjs */
 
@@ -516,11 +522,11 @@ object-assign
 
 /*! ./drawGlyph.mjs */
 
-/*! ./ecs/component */
+/*! ./ecs/Component */
 
-/*! ./ecs/entity */
+/*! ./ecs/Entity */
 
-/*! ./ecs/system */
+/*! ./ecs/System */
 
 /*! ./encode */
 
@@ -599,6 +605,8 @@ object-assign
 /*! ./getTestContext.mjs */
 
 /*! ./getUniformData.mjs */
+
+/*! ./graphics/Renderer */
 
 /*! ./groupD8.mjs */
 
@@ -974,7 +982,7 @@ object-assign
 
 /*! @piggo-legends/gamertc */
 
-/*! @piggo-legends/gamertc/src/graphics/Renderer */
+/*! @piggo-legends/pong */
 
 /*! @pixi/accessibility */
 
@@ -1108,9 +1116,21 @@ object-assign
   !*** ../../node_modules/url/util.js ***!
   \**************************************/
 
+/*!**************************************!*\
+  !*** ./src/components/PhoneCall.tsx ***!
+  \**************************************/
+
 /*!***************************************!*\
   !*** ./src/components/GameCanvas.tsx ***!
   \***************************************/
+
+/*!****************************************!*\
+  !*** ../../pkg/games/pong/src/Pong.ts ***!
+  \****************************************/
+
+/*!****************************************!*\
+  !*** ../../pkg/games/pong/src/main.ts ***!
+  \****************************************/
 
 /*!*****************************************!*\
   !*** ../../node_modules/exenv/index.js ***!
@@ -1133,11 +1153,11 @@ object-assign
   \*******************************************/
 
 /*!*******************************************!*\
-  !*** ../../pkg/gamertc/src/ecs/entity.ts ***!
+  !*** ../../pkg/gamertc/src/ecs/Entity.ts ***!
   \*******************************************/
 
 /*!*******************************************!*\
-  !*** ../../pkg/gamertc/src/ecs/system.ts ***!
+  !*** ../../pkg/gamertc/src/ecs/System.ts ***!
   \*******************************************/
 
 /*!********************************************!*\
@@ -1165,7 +1185,11 @@ object-assign
   \**********************************************/
 
 /*!**********************************************!*\
-  !*** ../../pkg/gamertc/src/ecs/component.ts ***!
+  !*** ../../pkg/gamertc/src/ecs/Component.ts ***!
+  \**********************************************/
+
+/*!**********************************************!*\
+  !*** ./src/components/SpeechTranscriber.tsx ***!
   \**********************************************/
 
 /*!***********************************************!*\

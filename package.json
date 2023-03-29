@@ -7,6 +7,7 @@
     "pkg/**"
   ],
   "scripts": {
+    "start": "yarn webpage",
     "build": "yarn workspaces foreach run build",
     "test": "yarn workspaces foreach run test",
     "attack-time": "yarn workspace @piggo-legends/attack-time start",

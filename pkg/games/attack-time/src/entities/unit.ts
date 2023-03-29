@@ -13,7 +13,7 @@ export class Unit extends Entity {
   tier: Tier;
 
   constructor (name: Name, health: Health, equipment: Equipment, traits: Traits, tier: Tier) {
-    super();
+    super({name: "unit", components: []});
     this.health = health;
     this.equipment = equipment;
     this.traits = traits;

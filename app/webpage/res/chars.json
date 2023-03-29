@@ -1,0 +1,15 @@
+{
+  "frames": {
+    "walk1": { "frame": { "x": 0, "y": 18, "w": 15, "h": 20 } },
+    "walk2": { "frame": { "x": 20, "y": 18, "w": 15, "h": 20 } },
+    "walk3": { "frame": { "x": 40, "y": 18, "w": 15, "h": 20 } },
+    "walk4": { "frame": { "x": 60, "y": 18, "w": 15, "h": 20 } }
+  },
+
+  "meta": {
+    "image": "chars.png",
+    "format": "RGBA8888",
+    "size": { "w": 128, "h": 264 },
+    "scale": "1"
+  }
+}

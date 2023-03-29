@@ -2,11 +2,12 @@
   "name": "@piggo-legends/webpage",
   "packageManager": "yarn@3.4.1",
   "scripts": {
-    "build": "yarn webpack",
+    "build": "rm -r ./dist && yarn webpack",
     "serve": "yarn webpack && yarn webpack serve --port 8000"
   },
   "dependencies": {
     "@piggo-legends/gamertc": "1.0.0",
+    "@piggo-legends/pong": "1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1"

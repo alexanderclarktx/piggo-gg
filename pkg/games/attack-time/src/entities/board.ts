@@ -9,7 +9,7 @@ export class Board extends Entity {
   tiles: Tile[][];
 
   constructor() {
-    super();
+    super({name: "board", components: []});
     // let tiles = [];
     // for (let i = 0; i < widthHeight; i++) {
     //   tiles.push([]);

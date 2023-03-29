@@ -1,8 +1,7 @@
 import { NetManager } from "@piggo-legends/gamertc";
 import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
-
-export type NetState = "none" | "offering" | "answering" | "connected";
+import { NetState } from "../types/NetState";
 
 export type WebRTCHandshakeProps = {
   netManager?: NetManager
@@ -11,23 +10,13 @@ export type WebRTCHandshakeProps = {
   setModalOpen: (open: boolean) => void
   netState: NetState
   setNetState: (state: NetState) => void
-  theirMediaStream?: MediaStream
 }
 
-export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netState, setNetState, theirMediaStream }: WebRTCHandshakeProps) => {
+// the NetConnector component is responsible for creating and accepting offers and answers
+// and renders the remote+local video streams
+export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netState, setNetState }: WebRTCHandshakeProps) => {
   const inputOfferRef = useRef<HTMLInputElement>(null);
   const inputAnswerRef = useRef<HTMLInputElement>(null);
-  const videoMyCameraRef = useRef<HTMLVideoElement>(null);
-  const videoTheirCameraRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (theirMediaStream) {
-      videoTheirCameraRef.current && (
-        videoTheirCameraRef.current.hidden = false,
-        videoTheirCameraRef.current.srcObject = theirMediaStream
-      );
-    }
-  }, [theirMediaStream]);
 
   useEffect(() => {
     if (netState === "connected") {
@@ -49,15 +38,6 @@ export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netStat
   const acceptAnswer = () => {
     const decodedAnswer = atob(inputAnswerRef.current ? inputAnswerRef.current.value : "");
     netManager?.acceptAnswer(decodedAnswer);
-  }
-
-  const sendMedia = async () => {
-    // send my video stream
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 360 }, audio: true });
-    netManager?.sendMedia(stream);
-
-    // render my video stream
-    videoMyCameraRef.current && (videoMyCameraRef.current.srcObject = stream);
   }
 
   return (
@@ -97,28 +77,6 @@ export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netStat
       </div>
       <div>
         <button hidden={netState === "connected"} onClick={()=>setModalOpen(true)}>Connect to Peer</button>
-      </div>
-      <div>
-        <video
-          id="video-my-camera"
-          ref={videoMyCameraRef}
-          hidden={netState !== "connected"}
-          autoPlay={true}
-          playsInline={true}
-          muted={true}
-        />
-        <video
-          id="video-their-camera"
-          ref={videoTheirCameraRef}
-          hidden={netState !== "connected"}
-          autoPlay={true}
-          playsInline={true}
-        />
-        <button
-          hidden={netState !== "connected"}
-          onClick={sendMedia}
-          style={{fontSize: "xx-large", verticalAlign: "top"}}
-        >📷</button>
       </div>
     </div>
   );

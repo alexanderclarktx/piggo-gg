@@ -1,8 +1,12 @@
-import { Application, Graphics } from 'pixi.js';
+import { Application, Container, Text, Graphics } from 'pixi.js';
 
 // renderer uses PIXI.js to render the game
 export class Renderer {
   app: Application;
+
+  addContainer = (container: Container) => {
+    this.app.stage.addChild(container);
+  }
 
   constructor(canvas: HTMLCanvasElement) {
     this.app = new Application({
@@ -11,15 +15,7 @@ export class Renderer {
       autoDensity: true,
       backgroundColor: 0x6495ed,
       width: 800,
-      height: 600
+      height: 600,
     });
-
-    const graphics = new Graphics();
-    graphics.beginFill(0xFF00FF);
-    graphics.lineStyle(10, 0x00FF00);
-    graphics.drawCircle(200, 200, 25);
-    graphics.endFill();
-
-    this.app.stage.addChild(graphics);
   }
 }

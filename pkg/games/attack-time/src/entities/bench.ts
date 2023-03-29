@@ -4,7 +4,7 @@ import { Unit } from "./unit";
 export class Bench extends Entity {
   units: Unit[];
   constructor() {
-    super();
+    super({name: "bench", components: []});
     this.units = [];
   }
 }

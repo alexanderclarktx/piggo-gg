@@ -1,11 +1,15 @@
 import '@pixi/unsafe-eval';
 import React, { useEffect, useState } from 'react';
 import { GameClient, NetManager } from '@piggo-legends/gamertc';
-import { NetConnector, NetState } from './NetConnector';
+import { NetConnector } from './NetConnector';
+import { NetState } from '../types/NetState';
 import { Header } from './Header';
 import { GameCanvas } from './GameCanvas';
+import { PhoneCall } from './PhoneCall';
+import { SpeechTranscriber } from './SpeechTranscriber';
 
-// webpage root component. all non-local state should be initialized here
+// webpage root component
+// all not-component-local state should be initialized here
 export const Root = () => {
   const [netManager, setNetManager] = useState<NetManager | undefined>();
   const [gameClient, setGameClient] = useState<GameClient | undefined>();
@@ -29,7 +33,8 @@ export const Root = () => {
 
   return (
     <div>
-      <Header />
+      <Header/>
+      <SpeechTranscriber/>
       <NetConnector
         netManager={gameClient?.net}
         sdp={sdp}
@@ -37,6 +42,10 @@ export const Root = () => {
         setModalOpen={setModalOpen}
         netState={netState}
         setNetState={setNetState}
+      />
+      <PhoneCall
+        netManager={netManager}
+        netState={netState}
         theirMediaStream={theirMediaStream}
       />
       <GameCanvas
