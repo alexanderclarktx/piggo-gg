@@ -6,6 +6,7 @@ import { NetState } from '../types/NetState';
 import { Header } from './Header';
 import { GameCanvas } from './GameCanvas';
 import { PhoneCall } from './PhoneCall';
+import { SpeechTranscriber } from './SpeechTranscriber';
 
 // webpage root component
 // all not-component-local state should be initialized here
@@ -33,6 +34,7 @@ export const Root = () => {
   return (
     <div>
       <Header/>
+      <SpeechTranscriber/>
       <NetConnector
         netManager={gameClient?.net}
         sdp={sdp}

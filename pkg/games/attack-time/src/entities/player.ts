@@ -9,7 +9,7 @@ export class Player extends Entity {
   health: Health;
 
   constructor(gold: Gold = new Gold(0), experience: Experience = new Experience(0, 1), health: Health = new Health(100, 100)) {
-    super();
+    super({name: "player", components: []});
     this.gold = gold;
     this.experience = experience;
     this.health = health;

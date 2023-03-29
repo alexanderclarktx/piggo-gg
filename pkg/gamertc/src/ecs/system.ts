@@ -1,7 +1,12 @@
 import { Entity } from "./Entity";
 
 // a System is a stateless function that is applied to all entities that have a certain set of components
-export abstract class System {
-  abstract name: string;
-  abstract onTick: (entities: Entity[]) => void;
+export class System {
+  name: string;
+  onTick: (entities: Entity[]) => void;
+
+  constructor({ name, onTick }: { name: string; onTick: (entities: Entity[]) => void; }) {
+    this.name = name;
+    this.onTick = onTick;
+  }
 }

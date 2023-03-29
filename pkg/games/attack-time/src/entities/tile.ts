@@ -7,7 +7,7 @@ export class Tile extends Entity {
   y: number;
 
   constructor(unit: Unit, x: number, y: number) {
-    super();
+    super({name: "tile", components: []});
     this.unit = unit;
     this.x = x;
     this.y = y;

@@ -22,7 +22,10 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        { from: path.join(__dirname, "src", "*.html"), to: path.join(__dirname, "dist", "[name].html") },
+        {
+          from: path.join(__dirname, "src", "*.html"),
+          to: path.join(__dirname, "dist", "[name].html")
+        },
         {
           from: "./src/*.html",
           to: () => "[name].html"
@@ -34,6 +37,14 @@ module.exports = {
         {
           from: "./src/favicon.ico",
           to: () => "favicon.ico"
+        },
+        {
+          from: "./res/*.png",
+          to: () => "[name].png"
+        },
+        {
+          from: "./res/*.json",
+          to: () => "[name].json"
         }
       ],
     })
