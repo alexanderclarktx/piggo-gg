@@ -1,8 +1,9 @@
 import { Entity, Game, Renderer, System } from "@piggo-legends/gamertc";
 import { Container, Text, Texture, Sprite, Assets, Spritesheet, Graphics } from "pixi.js";
 
-const stoneTexture = Texture.from('stone.png');
-const dirtTexture = Texture.from('dirt.png');
+const floorTextureFetch = Texture.fromURL('floor_small.png');
+const stoneTextureFetch = Texture.fromURL('stone.png');
+const dirtTextureFetch = Texture.fromURL('dirt.png');
 
 export class Pong extends Game {
 
@@ -28,11 +29,20 @@ export class Pong extends Game {
         })
       ]
     });
+    this.init();
+  }
 
-    // load the character spritesheet
-    Assets.load("chars.json").then((assets: Spritesheet) => {
-      this.addTiles(assets.textures["walk4"]);
-    });
+  init = async () => {
+    // add the tiles
+    const floorTexture = await stoneTextureFetch;
+    const floorContainer = await this.addFloor(floorTexture, 50, 50);
+    this.debugContainer(floorContainer);
+
+    // add the character
+    const characterAssets = await Assets.load("chars.json");
+    const characterContainer = this.addCharacter(characterAssets.textures["walk4"]);
+    this.debugContainer(characterContainer);
+    this.addControls(characterContainer);
 
     // add fps text
     this.addFpsText();
@@ -59,47 +69,96 @@ export class Pong extends Game {
     this.renderer.addContainer(fpsContainer);
   }
 
-  addTiles = (texture: Texture) => {
-    // Define the map data
-    const mapData = [
-      [1, 1, 1, 1],
-      [1, 1, 1, 1],
-      [1, 1, 0, 1],
-      [1, 1, 1, 1],
-    ];
+  addCharacter = (texture: Texture): Container => {
+    const characterContainer = new Container();
+    characterContainer.position.set(300, 0);
+    this.renderer.addContainer(characterContainer);
 
+    const character = new Sprite(texture);
+    character.scale.set(2);
+    character.roundPixels = true;
+    characterContainer.addChild(character);
+
+    return characterContainer;
+  }
+
+  addFloor = async (texture: Texture, width: number, height: number): Promise<Container> => {
     // Create a container for the tiles
     const tilesContainer = new Container();
     tilesContainer.position.set(300, 0);
     this.renderer.addContainer(tilesContainer);
 
-    // Create a graphics object to draw the bounding box
+    // Loop through the map data and create tiles
+    for (let row = 0; row < width; row++) {
+        for (let col = 0; col < height; col++) {
+          // tile position
+          const a = texture.width / texture.height;
+          const x = (col - row) * texture.width / 2;
+          const y = (col + row) * texture.height / (2 + (2 - a));
+
+          // tile sprite
+          const tile = new Sprite(texture);
+          tile.position.set(x, y);
+          tile.anchor.set(0.5);
+
+          // add the tile to the container
+          tilesContainer.addChild(tile);
+        }
+    }
+    return tilesContainer;
+  }
+
+  debugContainer = (container: Container) => {
     const graphics = new Graphics();
     this.renderer.app.ticker.add(() => {
-      const center = tilesContainer.position;
       graphics.clear();
       graphics.lineStyle(1, 0xFF0000);
-      graphics.drawCircle(center.x, center.y, 1);
-      const bounds = tilesContainer.getBounds();
+
+      // draw a circle at the center of the container and a rectangle around it
+      const bounds = container.getBounds();
+      graphics.drawCircle(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2, 3);
       graphics.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
     });
     this.renderer.addContainer(new Container().addChild(graphics));
+  }
 
-    // Loop through the map data and create tiles
-    for (let row = 0; row < mapData.length; row++) {
-        for (let col = 0; col < mapData[row].length; col++) {
-            // Calculate the tile position
-            const x = (col - row) * texture.width / 2;
-            const y = (col + row) * texture.height / 8; // todo this is dependent on aspect ratio
+  addControls = (container: Container) => {
+    const inputs = {
+      w: false,
+      a: false,
+      s: false,
+      d: false,
+    };
 
-            // Create the tile sprite
-            const tile = new Sprite(texture);
-            tile.position.set(x, y);
-            tile.anchor.set(0.5);
+    document.addEventListener('keydown', (event) => {
+      const keyName = event.key.toLowerCase();
+      if (keyName in inputs) {
+        inputs[keyName] = true;
+      }
+    });
 
-            // Add the tile to the container
-            tilesContainer.addChild(tile);
-        }
-    }
+    document.addEventListener('keyup', (event) => {
+      const keyName = event.key.toLowerCase();
+      if (keyName in inputs) {
+        inputs[keyName] = false;
+      }
+    });
+
+    const speed = 2;
+
+    this.renderer.app.ticker.add(() => {
+      if (inputs.w) {
+        container.y -= speed;
+      }
+      if (inputs.a) {
+        container.x -= speed;
+      }
+      if (inputs.s) {
+        container.y += speed;
+      }
+      if (inputs.d) {
+        container.x += speed;
+      }
+    });
   }
 }
