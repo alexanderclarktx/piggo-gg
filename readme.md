@@ -1,6 +1,6 @@
 __Piggo Legends__ is a platform for casual multiplayer games
 
-<img src="screenshots/sc1.png" style="width:300px">
+<img src="screenshots/sc1.png" style="width:500px">
 
 # Objectives
 
