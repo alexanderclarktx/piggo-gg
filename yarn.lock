@@ -703,7 +703,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@piggo-legends/webpage@workspace:app/webpage"
   dependencies:
-    "@piggo-legends/gamertc": 1.0.0
     "@piggo-legends/pong": 1.0.0
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
