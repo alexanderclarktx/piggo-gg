@@ -37,11 +37,6 @@ yarn pages
 
 # Features
 
-#### game framework
-- [x] ECS abstract classes
-- [x] GameRTC abstract classes
-- [ ] integrate netcode with GameRTC classes
-
 #### netcode
 - [x] WebRTC handshake works in browser
 - [x] WebRTC transfer media
@@ -49,8 +44,12 @@ yarn pages
 - [ ] WebRTC game state transfer
 - [ ] WebRTC >2 players in one game
 
-#### presentation layer
-- [x] Pixi.js renders to html canvas
-- [ ] render the game with Pixi.js
+#### Pixi.js
+- [x] render to html canvas
+- [x] render game objects
+- [x] camera
+- [ ] animated sprites
+
+#### platforms
 - [ ] Electron desktop client
 - [ ] React Native mobile client

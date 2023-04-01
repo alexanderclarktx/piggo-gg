@@ -57,5 +57,14 @@ export class Renderer {
     // global texture settings
     settings.ROUND_PIXELS = true;
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.NEAREST;
+
+    // handle screen resize
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        this.app.renderer.resize(screen.width, screen.height);
+      } else {
+        this.app.renderer.resize(800, 600);
+      }
+    });
   }
 }

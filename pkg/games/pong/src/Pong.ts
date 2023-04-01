@@ -1,4 +1,4 @@
-import { Entity, Game, Renderer, System } from "@piggo-legends/gamertc";
+import { Entity, Game, Renderer, System, Button } from "@piggo-legends/gamertc";
 import { Container, Text, Texture, Sprite, AnimatedSprite, Assets, Graphics } from "pixi.js";
 
 const floorTextureFetch = Texture.fromURL('floor_small.png');
@@ -30,6 +30,7 @@ export class Pong extends Game {
       ]
     });
     this.init();
+    window["renderer"] = this.renderer;
   }
 
   init = async () => {
@@ -52,56 +53,28 @@ export class Pong extends Game {
     // add fps text
     this.addFpsText();
 
-    // add button
-    this.addButton();
-  }
+    // add fullscreen button
+    this.renderer.addHUD(new Button({
+      dims: {x: 690, y: 5, w: 37, lx: 10, ly: 5},
+      text: (new Text("⚁", { fill: '#FFFFFF', fontSize: 16 })),
+      onPress: () => {
+        //@ts-ignore
+        this.renderer.app.view.requestFullscreen();
+      },
+      onDepress: () => {}
+    }));
 
-  addButton = () => {
-    // create the container
-    const buttonContainer = new Container();
-    buttonContainer.position.set(735, 5);
-
-    // size and radius
-    const width = 60;
-    const height = 30;
-    const radius = 10;
-
-    // button graphics
-    const buttonGraphics = new Graphics();
-    buttonContainer.addChild(buttonGraphics);
-    buttonGraphics.beginFill(0x000066);
-    buttonGraphics.drawRoundedRect(0, 0, width, height, radius);
-    buttonGraphics.endFill();
-
-    // Create the button shadow
-    const shadow = new Graphics();
-    shadow.beginFill(0xFFFF33, 0.3);
-    shadow.drawRoundedRect(0, -1, width, height, radius);
-    shadow.endFill();
-    buttonGraphics.addChild(shadow);
-
-    // button text
-    const buttonText = new Text('debug', {
-      fill: '#FFFFFF',
-      fontSize: 14
-    });
-    buttonText.position.set(10, 7);
-    buttonContainer.addChild(buttonText);
-
-    // button callback
-    buttonContainer.interactive = true;
-    buttonContainer.on('click', () => {
-      console.log("click");
-      this.renderer.debug = !this.renderer.debug;
-      if (this.renderer.debug) {
-        shadow.tint = 0x000000;
-      } else {
-        shadow.tint = 0xFFFFFF;
+    // add debug button
+    this.renderer.addHUD(new Button({
+      dims: {x: 735, y: 5, w: 60, lx: 10, ly: 7},
+      text: (new Text("debug", { fill: '#FFFFFF', fontSize: 14 })),
+      onPress: () => {
+        this.renderer.debug = true;
+      },
+      onDepress: () => {
+        this.renderer.debug = false;
       }
-    });
-
-    // add container to the HUD
-    this.renderer.addHUD(buttonContainer);
+    }));
   }
 
   addFpsText = () => {
@@ -208,10 +181,21 @@ export class Pong extends Game {
     });
 
     this.renderer.app.ticker.add(() => {
-      container.y -= speed * (inputs.w ? 1 : 0);
-      container.x -= speed * (inputs.a ? 1 : 0);
-      container.y += speed * (inputs.s ? 1 : 0);
-      container.x += speed * (inputs.d ? 1 : 0);
+      var xMovement = (inputs.d ? 1 : 0) - (inputs.a ? 1 : 0);
+      var yMovement = (inputs.s ? 1 : 0) - (inputs.w ? 1 : 0);
+
+      // Calculate the length of the movement vector
+      const length = Math.sqrt(xMovement * xMovement + yMovement * yMovement);
+
+      // Normalize the movement vector if it has a length greater than 1
+      if (length > 1) {
+        xMovement /= length;
+        yMovement /= length;
+      }
+
+      // Update the container position based on the normalized movement vector
+      container.x += speed * xMovement;
+      container.y += speed * yMovement;
     });
   }
 }
