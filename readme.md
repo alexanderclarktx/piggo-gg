@@ -1,7 +1,7 @@
 __Piggo Legends__ is a platform for casual multiplayer games
 
 <kbd>
-<img src="screenshots/2.png" style="width:500px">
+<img src="screenshots/3.gif" style="width:500px">
 </kbd>
 
 # Objectives
@@ -48,7 +48,7 @@ yarn pages
 - [x] render to html canvas
 - [x] render game objects
 - [x] camera
-- [ ] animated sprites
+- [x] animated sprites
 
 #### platforms
 - [ ] Electron desktop client
