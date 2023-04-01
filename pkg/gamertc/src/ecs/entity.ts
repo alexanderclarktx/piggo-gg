@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component } from "./Component";
 
 // an Entity is a collection of components
 export class Entity {

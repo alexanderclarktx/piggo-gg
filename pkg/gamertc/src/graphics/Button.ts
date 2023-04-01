@@ -1,10 +1,6 @@
-import { Container, Graphics, Text } from "pixi.js";
-
-export class PiggoContainer extends Container {
-  constructor() {
-    super();
-  }
-}
+import { Graphics, Text } from "pixi.js";
+import { Renderable } from "./Renderable";
+import { Renderer } from "./Renderer";
 
 export type ButtonProps = {
   dims: {x: number, y: number, w: number, lx: number, ly: number},
@@ -13,13 +9,13 @@ export type ButtonProps = {
   onDepress: () => void
 }
 
-export class Button extends PiggoContainer {
+export class Button extends Renderable {
   clicked = false;
   outline = new Graphics();
   shadow = new Graphics();
 
-  constructor({dims, text, onPress, onDepress}: ButtonProps) {
-    super();
+  constructor(renderer: Renderer, {dims, text, onPress, onDepress}: ButtonProps) {
+    super(renderer);
 
     this.position.set(dims.x, dims.y);
     this.interactive = true;

@@ -1,5 +1,5 @@
-const { app, BrowserWindow } = require('electron')
-// const { Catan } = require('./games/catan/main')
+const { app, BrowserWindow } = require("electron")
+// const { Catan } = require("./games/catan/main")
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -7,7 +7,7 @@ const createWindow = () => {
         height: 900
     })
 
-    win.loadFile('index.html')
+    win.loadFile("index.html")
 }
 
 app.whenReady().then(() => {

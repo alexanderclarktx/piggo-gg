@@ -5,4 +5,6 @@ export * from "./ecs/Entity";
 export * from "./ecs/Component";
 export * from "./ecs/System";
 export * from "./graphics/Renderer";
-export * from "./graphics/PiggoContainer";
+export * from "./graphics/Renderable";
+export * from "./graphics/Button";
+export * from "./graphics/Character";

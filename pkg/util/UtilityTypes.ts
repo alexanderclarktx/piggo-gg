@@ -17,6 +17,6 @@ export type NumericRange<
   END extends number,
   ARR extends unknown[] = [],
   ACC extends number = never
-> = ARR['length'] extends END
+> = ARR["length"] extends END
   ? START | END | ACC
-  : NumericRange<START, END, [...ARR, 1], ARR[START] extends undefined ? ACC : ACC | ARR['length']>
+  : NumericRange<START, END, [...ARR, 1], ARR[START] extends undefined ? ACC : ACC | ARR["length"]>

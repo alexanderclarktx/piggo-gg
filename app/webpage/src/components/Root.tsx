@@ -1,12 +1,12 @@
-import '@pixi/unsafe-eval';
-import React, { useEffect, useState } from 'react';
-import { GameClient, NetManager } from '@piggo-legends/gamertc';
-import { NetConnector } from './NetConnector';
-import { NetState } from '../types/NetState';
-import { Header } from './Header';
-import { GameCanvas } from './GameCanvas';
-import { PhoneCall } from './PhoneCall';
-import { SpeechTranscriber } from './SpeechTranscriber';
+import "@pixi/unsafe-eval";
+import React, { useEffect, useState } from "react";
+import { GameClient, NetManager } from "@piggo-legends/gamertc";
+import { NetConnector } from "./NetConnector";
+import { NetState } from "../types/NetState";
+import { Header } from "./Header";
+import { GameCanvas } from "./GameCanvas";
+import { PhoneCall } from "./PhoneCall";
+import { SpeechTranscriber } from "./SpeechTranscriber";
 
 // webpage root component
 // all not-component-local state should be initialized here

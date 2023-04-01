@@ -1,4 +1,4 @@
-import { Health } from '../components/health';
+import { Health } from "../components/health";
 import { Entity } from "@piggo-legends/gamertc";
 import { Experience } from "../components/experience";
 import { Gold } from "../components/gold";

@@ -1,6 +1,6 @@
-import { NetManager } from './net/NetManager';
-import { Game } from './game/Game';
-import { Renderer } from './graphics/Renderer';
+import { NetManager } from "./net/NetManager";
+import { Game } from "./game/Game";
+import { Renderer } from "./graphics/Renderer";
 
 export class GameClient {
   net: NetManager;
