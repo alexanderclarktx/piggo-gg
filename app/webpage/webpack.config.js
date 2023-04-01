@@ -1,15 +1,15 @@
-const path = require('path');
+const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  entry: ['./src/index.tsx'],
-  mode: 'development',
-  stats: 'minimal',
+  entry: ["./src/index.tsx"],
+  mode: "development",
+  stats: "minimal",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/,
       }
     ],
@@ -17,7 +17,7 @@ module.exports = {
   optimization: {
     minimize: true,
   },
-  devtool: 'cheap-module-source-map',
+  devtool: "cheap-module-source-map",
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
@@ -49,10 +49,10 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: 'piggo-legends-min.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "piggo-legends-min.js",
+    path: path.resolve(__dirname, "dist"),
   }
 };

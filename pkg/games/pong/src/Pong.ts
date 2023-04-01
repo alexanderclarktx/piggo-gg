@@ -1,33 +1,13 @@
-import { Entity, Game, Renderer, System, Button } from "@piggo-legends/gamertc";
-import { Container, Text, Texture, Sprite, AnimatedSprite, Assets, Graphics } from "pixi.js";
-
-const floorTextureFetch = Texture.fromURL('floor_small.png');
-const stoneTextureFetch = Texture.fromURL('stone.png');
-const dirtTextureFetch = Texture.fromURL('dirt.png');
+import { Entity, Game, Renderer, System, Button, Renderable, Character } from "@piggo-legends/gamertc";
+import { Container, Text, Texture, Sprite, AnimatedSprite, Assets } from "pixi.js";
 
 export class Pong extends Game {
 
   constructor(renderer: Renderer) {
     super({
       renderer: renderer,
-      entities: [
-        new Entity({
-          name: "paddle1",
-          components: []
-        }),
-        new Entity({
-          name: "paddle2",
-          components: []
-        }),
-      ],
-      systems: [
-        new System({
-          name: "systemForUpdatingPaddlePositionBasedOnInput",
-          onTick: (entities: Entity[]) => {
-            console.log("systemForUpdatingPaddlePositionBasedOnInput", entities);
-          }
-        })
-      ]
+      systems: [],
+      entities: []
     });
     this.init();
     window["renderer"] = this.renderer;
@@ -35,28 +15,49 @@ export class Pong extends Game {
 
   init = async () => {
     // add the tiles
-    const floorTexture = await stoneTextureFetch;
-    const floorContainer = await this.addFloor(floorTexture, 10, 10);
-    this.debugContainer(floorContainer);
+    const floorTexture = await Texture.fromURL("stone.png");;
+    await this.addFloor(floorTexture, 10, 10);
 
     // add the character
     const characterAssets = await Assets.load("chars.json");
-    const characterContainer = this.addCharacter([
-      characterAssets.textures["down1"],
-      characterAssets.textures["down2"],
-      characterAssets.textures["down3"]
-    ]);
-    this.debugContainer(characterContainer);
-    this.addControls(characterContainer, 4);
-    this.renderer.trackCamera(characterContainer);
+    this.renderer.addWorld(new Character(this.renderer, {
+      animations: {
+        d: new AnimatedSprite([
+          characterAssets.textures["d1"], characterAssets.textures["d2"], characterAssets.textures["d3"]
+        ]),
+        u: new AnimatedSprite([
+          characterAssets.textures["u1"], characterAssets.textures["u2"], characterAssets.textures["u3"]
+        ]),
+        l: new AnimatedSprite([
+          characterAssets.textures["l1"], characterAssets.textures["l2"], characterAssets.textures["l3"]
+        ]),
+        r: new AnimatedSprite([
+          characterAssets.textures["r1"], characterAssets.textures["r2"], characterAssets.textures["r3"]
+        ]),
+        dl: new AnimatedSprite([
+          characterAssets.textures["dl1"], characterAssets.textures["dl2"], characterAssets.textures["dl3"]
+        ]),
+        dr: new AnimatedSprite([
+          characterAssets.textures["dr1"], characterAssets.textures["dr2"], characterAssets.textures["dr3"]
+        ]),
+        ul: new AnimatedSprite([
+          characterAssets.textures["ul1"], characterAssets.textures["ul2"], characterAssets.textures["ul3"]
+        ]),
+        ur: new AnimatedSprite([
+          characterAssets.textures["ur1"], characterAssets.textures["ur2"], characterAssets.textures["ur3"]
+        ])
+      },
+      enableControls: true,
+      track: true
+    }));
 
     // add fps text
     this.addFpsText();
 
     // add fullscreen button
-    this.renderer.addHUD(new Button({
+    this.renderer.addHUD(new Button(this.renderer, {
       dims: {x: 690, y: 5, w: 37, lx: 10, ly: 5},
-      text: (new Text("⚁", { fill: '#FFFFFF', fontSize: 16 })),
+      text: (new Text("⚁", { fill: "#FFFFFF", fontSize: 16 })),
       onPress: () => {
         //@ts-ignore
         this.renderer.app.view.requestFullscreen();
@@ -65,26 +66,27 @@ export class Pong extends Game {
     }));
 
     // add debug button
-    this.renderer.addHUD(new Button({
+    this.renderer.addHUD(new Button(this.renderer, {
       dims: {x: 735, y: 5, w: 60, lx: 10, ly: 7},
-      text: (new Text("debug", { fill: '#FFFFFF', fontSize: 14 })),
+      text: (new Text("debug", { fill: "#FFFFFF", fontSize: 14 })),
       onPress: () => {
         this.renderer.debug = true;
+        this.renderer.events.emit("debug");
       },
       onDepress: () => {
         this.renderer.debug = false;
+        this.renderer.events.emit("debug");
       }
     }));
   }
 
   addFpsText = () => {
     // create the container
-    const fpsContainer = new Container();
+    const fpsContainer = new Renderable(this.renderer, { debuggable: false });
     fpsContainer.position.set(5, 5);
 
     // dynamic text
-    const fpsText = new Text();
-    fpsText.style = { fill: 0xFFFF11, fontSize: 16 };
+    const fpsText = new Text("", { fill: 0x55FF00, fontSize: 16, dropShadow: true, dropShadowColor: 0x000000, dropShadowBlur: 0, dropShadowDistance: 2 });
     this.renderer.app.ticker.add(() => {
       fpsText.text = Math.round(this.renderer.app.ticker.FPS);
     });
@@ -96,25 +98,9 @@ export class Pong extends Game {
     this.renderer.addHUD(fpsContainer);
   }
 
-  addCharacter = (textures: Texture[]): Container => {
-    // Create a container for the character
-    const characterContainer = new Container();
-    characterContainer.position.set(300, 0);
-    this.renderer.addWorld(characterContainer);
-
-    // const character = new Sprite(texture);
-    const animatedSprite = new AnimatedSprite(textures);
-    animatedSprite.animationSpeed = 0.1;
-    animatedSprite.play();
-    animatedSprite.scale.set(2);
-    characterContainer.addChild(animatedSprite);
-
-    return characterContainer;
-  }
-
   addFloor = async (texture: Texture, width: number, height: number): Promise<Container> => {
     // Create a container for the tiles
-    const tilesContainer = new Container();
+    const tilesContainer = new Renderable(this.renderer);
     tilesContainer.position.set(300, 0);
     this.renderer.addWorld(tilesContainer);
 
@@ -136,66 +122,5 @@ export class Pong extends Game {
       }
     }
     return tilesContainer;
-  }
-
-  debugContainer = (container: Container) => {
-    // get the bounds of the container
-    const bounds = container.getLocalBounds();
-
-    // set up graphics
-    const graphics = new Graphics();
-    graphics.clear();
-    graphics.lineStyle(1, 0xFF0000);
-
-    // draw the bounds
-    graphics.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-    // draw the center circle
-    graphics.beginFill(0xFFFF00);
-    graphics.drawCircle(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2, 2);
-
-    // add the graphics to the container
-    container.addChild(graphics);
-
-    // // if debug is disabled, hide the graphics
-    this.renderer.app.ticker.add(() => {
-      graphics.visible = this.renderer.debug;
-    });
-  }
-
-  addControls = (container: Container, speed: number) => {
-    const inputs = { w: false, a: false, s: false, d: false };
-
-    document.addEventListener('keydown', (event) => {
-      const keyName = event.key.toLowerCase();
-      if (keyName in inputs) {
-        inputs[keyName] = true;
-      }
-    });
-
-    document.addEventListener('keyup', (event) => {
-      const keyName = event.key.toLowerCase();
-      if (keyName in inputs) {
-        inputs[keyName] = false;
-      }
-    });
-
-    this.renderer.app.ticker.add(() => {
-      var xMovement = (inputs.d ? 1 : 0) - (inputs.a ? 1 : 0);
-      var yMovement = (inputs.s ? 1 : 0) - (inputs.w ? 1 : 0);
-
-      // Calculate the length of the movement vector
-      const length = Math.sqrt(xMovement * xMovement + yMovement * yMovement);
-
-      // Normalize the movement vector if it has a length greater than 1
-      if (length > 1) {
-        xMovement /= length;
-        yMovement /= length;
-      }
-
-      // Update the container position based on the normalized movement vector
-      container.x += speed * xMovement;
-      container.y += speed * yMovement;
-    });
   }
 }

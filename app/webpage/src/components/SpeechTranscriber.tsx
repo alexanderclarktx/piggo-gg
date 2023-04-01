@@ -14,7 +14,7 @@ export let SpeechTranscriber = () => {
     var recognition = new SpeechRecognition();
 
     // settings
-    recognition.lang = 'en-US';
+    recognition.lang = "en-US";
     recognition.continuous = true;
     recognition.interimResults = false;
     recognition.maxAlternatives = 0;

@@ -1,43 +1,18 @@
-import { Application, Container, settings, SCALE_MODES, BaseTexture } from 'pixi.js';
+import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
+import { Renderable } from "./Renderable";
 
 // Renderer renders the game to a canvas
 export class Renderer {
+
+  canvas: HTMLCanvasElement;
   app: Application;
-  camera: Container;
-  ogStage: Container;
+  camera: Renderable;
   debug: boolean = false;
-
-  // addContainer adds a container to the pixi.js stage
-  addWorld = (container: Container) => {
-    this.camera.addChild(container);
-    container.position.x += this.camera.x;
-    container.position.y += this.camera.y;
-  }
-
-  addHUD = (container: Container) => {
-    container["cameraPosition"] = { x: container.x, y: container.y };
-    this.app.stage.addChild(container);
-  }
-
-  // method for tracking the camera
-  trackCamera = (container: Container) => {
-    this.app.ticker.add(() => {
-      // center the camera on the container
-      const bounds = container.getBounds();
-      this.camera.x = this.app.screen.width / 2 - container.x - bounds.width / 2;
-      this.camera.y = this.app.screen.height / 2 - container.y - bounds.height / 2;
-
-      // update positions of children that are fixed to the camera
-      this.app.stage.children.forEach(child => {
-        if (child["cameraPosition"]) {
-          child.position.x = child["cameraPosition"].x - this.camera.x;
-          child.position.y = child["cameraPosition"].y - this.camera.y;
-        }
-      });
-    });
-  }
+  events: utils.EventEmitter = new utils.EventEmitter();
 
   constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
+
     // create the pixi.js application
     this.app = new Application({
       view: canvas,
@@ -48,10 +23,9 @@ export class Renderer {
       height: 600,
     });
 
-    // create the camera container
-    this.camera = new Container();
+    // set up the camera
+    this.camera = new Renderable(this, {debuggable: false});
     this.camera.addChild(this.app.stage);
-    this.ogStage = this.app.stage;
     this.app.stage = this.camera;
 
     // global texture settings
@@ -59,12 +33,56 @@ export class Renderer {
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.NEAREST;
 
     // handle screen resize
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) {
-        this.app.renderer.resize(screen.width, screen.height);
-      } else {
-        this.app.renderer.resize(800, 600);
-      }
+    window.addEventListener("resize", () => {
+      this.handleResize();
+    });
+
+    // handle fullscreen change
+    document.addEventListener("fullscreenchange", () => {
+      this.handleResize();
+    });
+  }
+
+  // handle screen resize
+  handleResize = () => {
+    if (document.fullscreenElement) {
+      this.app.renderer.resize(screen.width, screen.height);
+    } else {
+      const computedCanvasStyle = window.getComputedStyle(this.canvas);
+      const width = Math.min(parseInt(computedCanvasStyle.width), 800);
+      const height = Math.min(parseInt(computedCanvasStyle.height), 600);
+      this.app.renderer.resize(width, height);
+    }
+  }
+
+  // adds a Renderable to the pixi.js stage
+  addWorld = (renderable: Renderable) => {
+    this.camera.addChild(renderable);
+    renderable.position.x += this.camera.x;
+    renderable.position.y += this.camera.y;
+  }
+
+  // adds a Renderable to a fixed position on the screen
+  addHUD = (renderable: Renderable) => {
+    renderable["cameraPosition"] = { x: renderable.x, y: renderable.y };
+    this.app.stage.addChild(renderable);
+  }
+
+  // method for tracking the camera
+  trackCamera = (renderable: Renderable) => {
+    this.app.ticker.add(() => {
+      // center the camera on the renderable
+      const bounds = renderable.getBounds();
+      this.camera.x = this.app.screen.width / 2 - renderable.x - bounds.width / 2;
+      this.camera.y = this.app.screen.height / 2 - renderable.y - bounds.height / 2;
+
+      // update positions of children that are fixed to the camera
+      this.app.stage.children.forEach(child => {
+        if (child["cameraPosition"]) {
+          child.position.x = child["cameraPosition"].x - this.camera.x;
+          child.position.y = child["cameraPosition"].y - this.camera.y;
+        }
+      });
     });
   }
 }
