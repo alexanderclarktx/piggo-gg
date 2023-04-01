@@ -25,6 +25,11 @@ canvas {
   border-width: 2px;
   border-color: rgb(77, 7, 105);
   border-style: ridge;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: fill;
 }
 
 video {
