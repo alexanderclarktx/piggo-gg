@@ -8,3 +8,5 @@ export * from "./graphics/Renderer";
 export * from "./graphics/Renderable";
 export * from "./graphics/Button";
 export * from "./graphics/Character";
+export * from "./graphics/Floor";
+export * from "./graphics/TextBox";

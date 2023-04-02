@@ -6,7 +6,7 @@ export class Renderer {
 
   canvas: HTMLCanvasElement;
   app: Application;
-  camera: Renderable;
+  camera: Renderable = new Renderable(this, {debuggable: false});
   debug: boolean = false;
   events: utils.EventEmitter = new utils.EventEmitter();
 
@@ -24,7 +24,6 @@ export class Renderer {
     });
 
     // set up the camera
-    this.camera = new Renderable(this, {debuggable: false});
     this.camera.addChild(this.app.stage);
     this.app.stage = this.camera;
 
@@ -72,9 +71,8 @@ export class Renderer {
   trackCamera = (renderable: Renderable) => {
     this.app.ticker.add(() => {
       // center the camera on the renderable
-      const bounds = renderable.getBounds();
-      this.camera.x = this.app.screen.width / 2 - renderable.x - bounds.width / 2;
-      this.camera.y = this.app.screen.height / 2 - renderable.y - bounds.height / 2;
+      this.camera.x = Math.round(this.app.screen.width / 2 - renderable.x);
+      this.camera.y = Math.round(this.app.screen.height / 2 - renderable.y);
 
       // update positions of children that are fixed to the camera
       this.app.stage.children.forEach(child => {
