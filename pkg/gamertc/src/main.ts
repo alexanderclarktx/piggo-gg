@@ -10,3 +10,4 @@ export * from "./graphics/Button";
 export * from "./graphics/Character";
 export * from "./graphics/Floor";
 export * from "./graphics/TextBox";
+export * from "./util/Util";

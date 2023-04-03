@@ -15,8 +15,15 @@ export class Pong extends Game {
 
   init = async () => {
     // floor
-    const floorTexture = await Texture.fromURL("stone.png");
-    this.renderer.addWorld(new Floor(this.renderer, { width: 10, height: 10, texture: floorTexture }));
+    const sandbox = await Assets.load("sandbox.json");
+    const floorTexture = await Texture.fromURL("dirt.png");
+    this.renderer.addWorld(new Floor(this.renderer, {
+      width: 25,
+      height: 25,
+      texture: sandbox.textures["green"],
+      scale: 2,
+      tint: 0x1199ff
+    }));
 
     const char = await Assets.load("chars.json");
     this.renderer.addWorld(new Character(this.renderer, {
@@ -30,9 +37,10 @@ export class Pong extends Game {
         ul: new AnimatedSprite([char.textures["ul1"], char.textures["ul2"], char.textures["ul3"]]),
         ur: new AnimatedSprite([char.textures["ur1"], char.textures["ur2"], char.textures["ur3"]])
       },
-      enableControls: false,
-      track: false,
-      pos: { x: 300, y: 400 }
+      enableControls: true,
+      track: true,
+      pos: { x: 300, y: 400 },
+      scale: 2,
     }));
 
     // spaceship
@@ -48,8 +56,10 @@ export class Pong extends Game {
         ul: new AnimatedSprite([spaceship.textures["spaceship"]]),
         ur: new AnimatedSprite([spaceship.textures["spaceship"]])
       },
-      enableControls: true,
-      track: true
+      enableControls: false,
+      track: false,
+      pos: { x: 100, y: 400 },
+      scale: 1.5,
     }));
 
     // fps text box

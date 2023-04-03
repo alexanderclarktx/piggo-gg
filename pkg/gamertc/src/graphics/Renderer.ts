@@ -40,6 +40,11 @@ export class Renderer {
     document.addEventListener("fullscreenchange", () => {
       this.handleResize();
     });
+
+    // prevent right-click
+    canvas.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+    });
   }
 
   // handle screen resize
