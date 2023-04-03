@@ -1,42 +1,43 @@
 import { Graphics, Text } from "pixi.js";
-import { Renderable } from "./Renderable";
-import { Renderer } from "./Renderer";
+import { Renderable, RenderableProps } from "./Renderable";
 
-export type ButtonProps = {
-  dims: {x: number, y: number, w: number, lx: number, ly: number},
+export type ButtonProps = RenderableProps & {
+  dims: {w: number, textX: number, textY: number},
   text: Text,
   onPress: () => void,
   onDepress: () => void
 }
 
-export class Button extends Renderable {
+export class Button extends Renderable<ButtonProps> {
   clicked = false;
   outline = new Graphics();
   shadow = new Graphics();
 
-  constructor(renderer: Renderer, {dims, text, onPress, onDepress}: ButtonProps) {
-    super(renderer);
+  constructor(options: ButtonProps) {
+    super(options);
+    this.init();
+  }
 
-    this.position.set(dims.x, dims.y);
+  init = () => {
     this.interactive = true;
 
-    this.initialStyle(dims, text);
+    this.initialStyle();
 
     this.on("pointerdown", () => {
       if (this.clicked) {
-        onDepress();
+        this.props.onDepress();
         this.styleOnDepress();
       } else {
-        onPress();
+        this.props.onPress();
         this.styleOnPress();
       }
       this.clicked = !this.clicked;
     });
   }
 
-  initialStyle = (dims: ButtonProps["dims"], text: ButtonProps["text"]) => {
+  initialStyle = () => {
     // size and radius
-    const width = dims.w;
+    const width = this.props.dims.w;
     const height = 30;
     const radius = 10;
 
@@ -56,8 +57,8 @@ export class Button extends Renderable {
     this.addChild(this.outline);
 
     // button text
-    text.position.set(dims.lx, dims.ly);
-    this.addChild(text);
+    this.props.text.position.set(this.props.dims.textX, this.props.dims.textY);
+    this.addChild(this.props.text);
   }
 
   styleOnPress = () => {

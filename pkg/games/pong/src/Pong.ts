@@ -1,23 +1,21 @@
-import { Entity, Game, Renderer, System, Button, Character, Floor, TextBox } from "@piggo-legends/gamertc";
-import { Text, Texture, AnimatedSprite, Assets } from "pixi.js";
+import { Game, Button, Character, Floor, TextBox, GameProps } from "@piggo-legends/gamertc";
+import { Text, AnimatedSprite, Assets } from "pixi.js";
 
-export class Pong extends Game {
+export type PongProps = GameProps & {}
 
-  constructor(renderer: Renderer) {
-    super({
-      renderer: renderer,
-      systems: [],
-      entities: []
-    });
+export class Pong extends Game<PongProps> {
+
+  constructor(props: PongProps) {
+    super(props);
     this.init();
-    window["renderer"] = this.renderer;
+    (window as any).renderer = this.props.renderer;
   }
 
   init = async () => {
     // floor
     const sandbox = await Assets.load("sandbox.json");
-    const floorTexture = await Texture.fromURL("dirt.png");
-    this.renderer.addWorld(new Floor(this.renderer, {
+    this.props.renderer.addWorld(new Floor({
+      renderer: this.props.renderer,
       width: 25,
       height: 25,
       texture: sandbox.textures["green"],
@@ -25,8 +23,10 @@ export class Pong extends Game {
       tint: 0x1199ff
     }));
 
+    // character
     const char = await Assets.load("chars.json");
-    this.renderer.addWorld(new Character(this.renderer, {
+    this.props.renderer.addWorld(new Character({
+      renderer: this.props.renderer,
       animations: {
         d: new AnimatedSprite([char.textures["d1"], char.textures["d2"], char.textures["d3"]]),
         u: new AnimatedSprite([char.textures["u1"], char.textures["u2"], char.textures["u3"]]),
@@ -45,7 +45,8 @@ export class Pong extends Game {
 
     // spaceship
     const spaceship = await Assets.load("spaceship.json");
-    this.renderer.addWorld(new Character(this.renderer, {
+    this.props.renderer.addWorld(new Character({
+      renderer: this.props.renderer,
       animations: {
         d: new AnimatedSprite([spaceship.textures["spaceship"]]),
         u: new AnimatedSprite([spaceship.textures["spaceship"]]),
@@ -63,34 +64,47 @@ export class Pong extends Game {
     }));
 
     // fps text box
-    this.renderer.addHUD(new TextBox(this.renderer, {
+    this.props.renderer.addHUD(new TextBox({
+      renderer: this.props.renderer,
       dynamic: (text: Text) => {
-        text.text = Math.round(this.renderer.app.ticker.FPS);
+        text.text = Math.round(this.props.renderer.app.ticker.FPS);
       }
     }));
 
     // fullscreen button
-    this.renderer.addHUD(new Button(this.renderer, {
-      dims: { x: 690, y: 5, w: 37, lx: 10, ly: 5 },
+    this.props.renderer.addHUD(new Button({
+      renderer: this.props.renderer,
+      dims: { w: 37, textX: 10, textY: 5 },
+      pos: { x: 690, y: 5 },
       text: (new Text("⚁", { fill: "#FFFFFF", fontSize: 16 })),
       onPress: () => {
         //@ts-ignore
-        this.renderer.app.view.requestFullscreen();
+        this.props.renderer.app.view.requestFullscreen();
       },
       onDepress: () => { }
     }));
 
     // debug button
-    this.renderer.addHUD(new Button(this.renderer, {
-      dims: { x: 735, y: 5, w: 60, lx: 10, ly: 7 },
+    this.props.renderer.addHUD(new Button({
+      renderer: this.props.renderer,
+      pos: { x: 735, y: 5 },
+      dims: { w: 60, textX: 10, textY: 7 },
       text: (new Text("debug", { fill: "#FFFFFF", fontSize: 14 })),
       onPress: () => {
-        this.renderer.debug = true;
-        this.renderer.events.emit("debug");
+        this.props.renderer.debug = true;
+        this.props.renderer.events.emit("debug");
+        this.props.renderer.addHUD(new TextBox(
+          {
+            renderer: this.props.renderer,
+            text: "hi",
+            pos: { x: 50, y: 100 },
+            timeout: 1000
+          }
+        ));
       },
       onDepress: () => {
-        this.renderer.debug = false;
-        this.renderer.events.emit("debug");
+        this.props.renderer.debug = false;
+        this.props.renderer.events.emit("debug");
       }
     }));
   }

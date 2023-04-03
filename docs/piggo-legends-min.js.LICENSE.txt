@@ -82,6 +82,8 @@ object-assign
 
 /*! ../logging/deprecation.mjs */
 
+/*! ../main */
+
 /*! ../parsers/index.mjs */
 
 /*! ../parsers/parseDDS.mjs */
@@ -252,8 +254,6 @@ object-assign
 
 /*! ./GameCanvas */
 
-/*! ./GameClient */
-
 /*! ./Graphics.mjs */
 
 /*! ./GraphicsData.mjs */
@@ -341,8 +341,6 @@ object-assign
 /*! ./SimplePlane.mjs */
 
 /*! ./SimpleRope.mjs */
-
-/*! ./SpeechTranscriber */
 
 /*! ./Sprite.mjs */
 
@@ -1167,10 +1165,6 @@ object-assign
   \******************************************/
 
 /*!*******************************************!*\
-  !*** ../../pkg/gamertc/src/GameClient.ts ***!
-  \*******************************************/
-
-/*!*******************************************!*\
   !*** ../../pkg/gamertc/src/ecs/Entity.ts ***!
   \*******************************************/
 
@@ -1204,10 +1198,6 @@ object-assign
 
 /*!**********************************************!*\
   !*** ../../pkg/gamertc/src/ecs/Component.ts ***!
-  \**********************************************/
-
-/*!**********************************************!*\
-  !*** ./src/components/SpeechTranscriber.tsx ***!
   \**********************************************/
 
 /*!***********************************************!*\
