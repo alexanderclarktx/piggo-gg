@@ -8,7 +8,8 @@ export type CharacterProps = {
     dl: AnimatedSprite, dr: AnimatedSprite, ul: AnimatedSprite, ur: AnimatedSprite
   },
   enableControls?: boolean,
-  track?: boolean
+  track?: boolean,
+  scale?: number
 }
 
 export class Character extends Renderable {
@@ -19,10 +20,11 @@ export class Character extends Renderable {
     super(renderer, options);
 
     this.animations = options.animations;
+    this.interactive = true;
 
     for (const key in this.animations) {
       this.animations[key].animationSpeed = 0.1;
-      this.animations[key].scale.set(2);
+      this.animations[key].scale.set(options.scale || 1);
       this.animations[key].anchor.set(0.5);
       this.animations[key].alpha = 0.5;
     }
@@ -33,7 +35,8 @@ export class Character extends Renderable {
     this.currentAnimation.play();
 
     if (options.enableControls) {
-      this.addCarControls();
+      // this.addCarControls();
+      this.addControls();
     }
 
     if (options.track) {
@@ -148,13 +151,13 @@ export class Character extends Renderable {
 
       // Normalize the movement vector if it has a length greater than 1
       if (length > 1) {
-        xMovement /= length;
-        yMovement /= length;
+        xMovement *= 2 / length;
+        yMovement *= 1.02 / length;
       }
 
       // Update the container position based on the normalized movement vector
-      this.x += 4 * xMovement;
-      this.y += 4 * yMovement;
+      this.x += xMovement;
+      this.y += yMovement;
 
       // if character is moving, play the correct animation
       if (!(xMovement === 0 && yMovement === 0)) {
