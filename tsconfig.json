@@ -18,7 +18,9 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noImplicitOverride": true,
+    "noImplicitThis": true
   },
   "include": ["pkg/**/*", "app/**/*"]
 }

@@ -1,23 +1,24 @@
-import { Game, GameClient, NetManager } from "@piggo-legends/gamertc";
+import { Game, NetManager } from "@piggo-legends/gamertc";
 import { Pong } from "@piggo-legends/pong";
 import { Renderer } from "@piggo-legends/gamertc";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
   netManager?: NetManager
-  setGameClient: (gameClient: GameClient) => void
+  setGame: (game: Game<any>) => void
 }
-export const GameCanvas = ({ netManager, setGameClient }: GameCanvasProps) => {
+export const GameCanvas = ({ netManager, setGame }: GameCanvasProps) => {
 
   useEffect(() => {
     if (netManager) {
       const renderer = new Renderer(document.getElementById("canvas") as HTMLCanvasElement);
-      setGameClient(
-        new GameClient(
-          netManager,
-          new Pong(renderer),
-          renderer
-        )
+      setGame(
+        new Pong({
+          net: netManager,
+          renderer: renderer,
+          entities: [],
+          systems: [],
+        })
       );
     }
   }, [netManager]);

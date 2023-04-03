@@ -1,18 +1,17 @@
 import "@pixi/unsafe-eval";
 import React, { useEffect, useState } from "react";
-import { GameClient, NetManager } from "@piggo-legends/gamertc";
+import { Game, NetManager } from "@piggo-legends/gamertc";
 import { NetConnector } from "./NetConnector";
 import { NetState } from "../types/NetState";
 import { Header } from "./Header";
 import { GameCanvas } from "./GameCanvas";
 import { PhoneCall } from "./PhoneCall";
-import { SpeechTranscriber } from "./SpeechTranscriber";
 
 // webpage root component
-// all not-component-local state should be initialized here
 export const Root = () => {
+  // initialize all not-component-local state
   const [netManager, setNetManager] = useState<NetManager | undefined>();
-  const [gameClient, setGameClient] = useState<GameClient | undefined>();
+  const [game, setGame] = useState<Game<any> | undefined>();
   const [sdp, setSdp] = useState({ local: "", remote: "" });
   const [theirMediaStream, setTheirMediaStream] = useState<MediaStream | undefined>();
   const [netState, setNetState] = useState<NetState>("none");
@@ -20,23 +19,27 @@ export const Root = () => {
 
   // expose the game client to the console
   useEffect(() => {
-    window["client"] = gameClient;
-  }, [sdp.local, sdp.remote]);
+    (window as any).game = game;
+  }, [game]);
 
   // initialize the net manager
-  const onLocalUpdated = (local: string) => setSdp({ local: btoa(local), remote: sdp.remote });
-  const onMedia = (stream: MediaStream) => setTheirMediaStream(stream);
-  const onConnected = () => setNetState("connected");
   useEffect(() => {
-    setNetManager(new NetManager(onLocalUpdated, onMedia, onConnected));
+    setNetManager(new NetManager(
+      (local: string) => setSdp({ local: btoa(local), remote: sdp.remote }),
+      (stream: MediaStream) => setTheirMediaStream(stream),
+      () => setNetState("connected")
+    ));
   }, []);
 
   return (
     <div>
       <Header/>
-      <SpeechTranscriber/>
+      <GameCanvas
+        netManager={netManager}
+        setGame={setGame}
+      />
       <NetConnector
-        netManager={gameClient?.net}
+        netManager={game?.props.net}
         sdp={sdp}
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
@@ -47,10 +50,6 @@ export const Root = () => {
         netManager={netManager}
         netState={netState}
         theirMediaStream={theirMediaStream}
-      />
-      <GameCanvas
-        netManager={netManager}
-        setGameClient={setGameClient}
       />
     </div>
   );

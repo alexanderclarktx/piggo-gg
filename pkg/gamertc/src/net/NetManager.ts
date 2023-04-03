@@ -8,6 +8,7 @@ export class NetManager {
   chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
   offer: string;
+  events: EventTarget = new EventTarget();
 
   constructor(
     onLocalUpdated: (offer: string) => void,
@@ -69,6 +70,8 @@ export class NetManager {
       this.sendMessage({ type: "answer", sdp: answer });
     } else if (data["type"] === "answer") {
       this.pc.setRemoteDescription(data["sdp"]);
+    } else {
+      this.events.dispatchEvent(new CustomEvent<string>("message", { detail: data }));
     }
   }
 

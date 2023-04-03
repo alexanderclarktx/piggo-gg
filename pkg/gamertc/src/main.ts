@@ -1,5 +1,4 @@
 export * from "./net/NetManager";
-export * from "./GameClient";
 export * from "./game/Game";
 export * from "./ecs/Entity";
 export * from "./ecs/Component";

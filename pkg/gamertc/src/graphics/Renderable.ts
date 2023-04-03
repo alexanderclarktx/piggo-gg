@@ -2,42 +2,62 @@ import { Container, Graphics, Sprite } from "pixi.js";
 import { Renderer } from "./Renderer";
 
 export type RenderableProps = {
-  debuggable?: boolean;
-  pos?: { x: number; y: number };
+  renderer: Renderer,
+  debuggable?: boolean,
+  pos?: { x: number; y: number },
+  timeout?: number
 }
 
-export class Renderable extends Container {
+export class Renderable<T extends RenderableProps> extends Container {
   id: string;
   debugGraphics = new Graphics();
-  renderer: Renderer;
+  props: T;
 
-  constructor(renderer: Renderer, options?: RenderableProps) {
+  constructor(options: T) {
     super();
-    this.renderer = renderer;
-    this.position.set(options?.pos?.x || 0, options?.pos?.y || 0);
+    this.props = options;
+    this._init();
+  }
+
+  _init = () => {
+    this.position.set(this.props.pos?.x || 0, this.props.pos?.y || 0);
 
     // debug outline
-    if (!(options?.debuggable === false)) {
+    if (!(this.props.debuggable === false)) {
       this.addChild(this.debugGraphics);
-      this.debugGraphics.visible = this.renderer.debug;
+      this.debugGraphics.visible = this.props.renderer.debug;
 
-      this.on("childAdded", () => {
-        this.updateDebugGraphics();
-      });
+      this.on("childAdded", this.updateDebugGraphics);
+      this.props.renderer.events.on("debug", this.updateDebugGraphics);
+    }
 
-      this.renderer.events.on("debug", () => {
-        console.log("debug");
-        this.debugGraphics.visible = this.renderer.debug;
-        this.updateDebugGraphics();
-      });
+    // set a timeout
+    if (this.props.timeout) {
+      setTimeout(() => {
+        this._destroy();
+      }, this.props.timeout);
     }
   }
 
+  _destroy = () => {
+    // remove from the renderer
+    this.props.renderer.camera.removeChild(this);
+
+    // remove from the world
+    super.destroy();
+
+    // remove all event listeners
+    this.removeAllListeners();
+    this.props.renderer.events.removeListener("debug", this.updateDebugGraphics);
+  }
+
   updateDebugGraphics = () => {
+    this.debugGraphics.visible = this.props.renderer.debug;
+
     // update alpha for all sprites in this container
     for (const child of this.children) {
       if (child instanceof Sprite) {
-        child.alpha = this.renderer.debug ? 0.5 : 1;
+        child.alpha = this.props.renderer.debug ? 0.5 : 1;
       }
     }
 

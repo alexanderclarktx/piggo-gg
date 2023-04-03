@@ -6,7 +6,7 @@ export class Renderer {
 
   canvas: HTMLCanvasElement;
   app: Application;
-  camera: Renderable = new Renderable(this, {debuggable: false});
+  camera: Renderable<any> = new Renderable({renderer: this, debuggable: false});
   debug: boolean = false;
   events: utils.EventEmitter = new utils.EventEmitter();
 
@@ -60,27 +60,27 @@ export class Renderer {
   }
 
   // adds a Renderable to the pixi.js stage
-  addWorld = (renderable: Renderable) => {
+  addWorld = (renderable: Renderable<any>) => {
     this.camera.addChild(renderable);
     renderable.position.x += this.camera.x;
     renderable.position.y += this.camera.y;
   }
 
   // adds a Renderable to a fixed position on the screen
-  addHUD = (renderable: Renderable) => {
+  addHUD = (renderable: Renderable<any>) => {
     renderable["cameraPosition"] = { x: renderable.x, y: renderable.y };
-    this.app.stage.addChild(renderable);
+    this.camera.addChild(renderable);
   }
 
   // method for tracking the camera
-  trackCamera = (renderable: Renderable) => {
+  trackCamera = (renderable: Renderable<any>) => {
     this.app.ticker.add(() => {
       // center the camera on the renderable
       this.camera.x = Math.round(this.app.screen.width / 2 - renderable.x);
       this.camera.y = Math.round(this.app.screen.height / 2 - renderable.y);
 
       // update positions of children that are fixed to the camera
-      this.app.stage.children.forEach(child => {
+      this.camera.children.forEach(child => {
         if (child["cameraPosition"]) {
           child.position.x = child["cameraPosition"].x - this.camera.x;
           child.position.y = child["cameraPosition"].y - this.camera.y;

@@ -49,10 +49,10 @@ export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netStat
           onRequestClose={()=>setModalOpen(false)}
           style={{
             overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
+              backgroundColor: "rgba(230, 230, 230, 0.3)",
             },
             content: {
-              backgroundColor: "rgba(70, 70, 70, 0.9)",
+              backgroundColor: "rgba(230, 240, 250, 1)",
               color: "white"
             }
           }}

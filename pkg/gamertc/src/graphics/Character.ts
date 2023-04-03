@@ -1,8 +1,7 @@
 import { AnimatedSprite, Point } from "pixi.js";
 import { Renderable, RenderableProps } from "./Renderable";
-import { Renderer } from "./Renderer";
 
-export type CharacterProps = {
+export type CharacterProps = RenderableProps & {
   animations: {
     d: AnimatedSprite, u: AnimatedSprite, l: AnimatedSprite, r: AnimatedSprite,
     dl: AnimatedSprite, dr: AnimatedSprite, ul: AnimatedSprite, ur: AnimatedSprite
@@ -12,35 +11,36 @@ export type CharacterProps = {
   scale?: number
 }
 
-export class Character extends Renderable {
-  animations: CharacterProps["animations"];
+export class Character extends Renderable<CharacterProps> {
   currentAnimation: AnimatedSprite;
 
-  constructor(renderer: Renderer, options: CharacterProps & RenderableProps) {
-    super(renderer, options);
+  constructor(options: CharacterProps & RenderableProps) {
+    super(options);
+    this.init();
+  }
 
-    this.animations = options.animations;
+  init = () => {
     this.interactive = true;
 
-    for (const key in this.animations) {
-      this.animations[key].animationSpeed = 0.1;
-      this.animations[key].scale.set(options.scale || 1);
-      this.animations[key].anchor.set(0.5);
-      this.animations[key].alpha = 0.5;
+    for (const key in this.props.animations) {
+      this.props.animations[key].animationSpeed = 0.1;
+      this.props.animations[key].scale.set(this.props.scale || 1);
+      this.props.animations[key].anchor.set(0.5);
+      this.props.animations[key].alpha = 0.5;
     }
 
     // for now, play the down animation
-    this.currentAnimation = this.animations.d;
+    this.currentAnimation = this.props.animations.d;
     this.addChild(this.currentAnimation);
     this.currentAnimation.play();
 
-    if (options.enableControls) {
+    if (this.props.enableControls) {
       // this.addCarControls();
       this.addControls();
     }
 
-    if (options.track) {
-      this.renderer.trackCamera(this);
+    if (this.props.track) {
+      this.props.renderer.trackCamera(this);
     }
   }
 
@@ -69,7 +69,7 @@ export class Character extends Renderable {
       }
     });
 
-    this.renderer.app.ticker.add(() => {
+    this.props.renderer.app.ticker.add(() => {
       // Apply friction
       velocity.x -= velocity.x * FRICTION;
       velocity.y -= velocity.y * FRICTION;
@@ -111,11 +111,11 @@ export class Character extends Renderable {
           (velocity.y > 0 ? "d" : "") + (velocity.y < 0 ? "u" : "") +
           (velocity.x > 0 ? "r" : "") + (velocity.x < 0 ? "l" : "");
 
-        if (this.currentAnimation !== this.animations[animationToUse]) {
+        if (this.currentAnimation !== this.props.animations[animationToUse]) {
           if (this.currentAnimation) {
             this.removeChild(this.currentAnimation);
           }
-          this.currentAnimation = this.animations[animationToUse];
+          this.currentAnimation = this.props.animations[animationToUse];
           this.addChild(this.currentAnimation);
           this.currentAnimation.play();
         } else {
@@ -142,7 +142,7 @@ export class Character extends Renderable {
       }
     });
 
-    this.renderer.app.ticker.add(() => {
+    this.props.renderer.app.ticker.add(() => {
       var xMovement = (inputs.d ? 1 : 0) - (inputs.a ? 1 : 0);
       var yMovement = (inputs.s ? 1 : 0) - (inputs.w ? 1 : 0);
 
@@ -165,11 +165,11 @@ export class Character extends Renderable {
           (yMovement > 0 ? "d" : "") + (yMovement < 0 ? "u" : "") +
           (xMovement > 0 ? "r" : "") + (xMovement < 0 ? "l" : "");
 
-        if (this.currentAnimation !== this.animations[animationToUse]) {
+        if (this.currentAnimation !== this.props.animations[animationToUse]) {
           if (this.currentAnimation) {
             this.removeChild(this.currentAnimation);
           }
-          this.currentAnimation = this.animations[animationToUse];
+          this.currentAnimation = this.props.animations[animationToUse];
           this.addChild(this.currentAnimation);
           this.currentAnimation.play();
         } else {
