@@ -44,6 +44,7 @@ export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netStat
     <div>
       <div>
         <ReactModal
+          ariaHideApp={false}
           isOpen={modalOpen}
           shouldCloseOnOverlayClick={true}
           onRequestClose={()=>setModalOpen(false)}

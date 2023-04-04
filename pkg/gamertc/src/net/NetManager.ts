@@ -61,7 +61,7 @@ export class NetManager {
   }
 
   _handleMessage = async (message: MessageEvent<any>) => {
-    console.log("received", message);
+    // console.log("received", message);
     const data = JSON.parse(message.data);
     if (data["type"] === "offer") {
       this.pc.setRemoteDescription(data["sdp"]);
@@ -125,7 +125,9 @@ export class NetManager {
 
   // send message to peer
   sendMessage = (message: Object): void => {
-    this.chat && this.chat.send(JSON.stringify(message));
+    if (this.chat && this.chat.readyState === "open") {
+      this.chat.send(JSON.stringify(message));
+    }
   }
 
   // send audio/video to peer

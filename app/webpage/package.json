@@ -2,7 +2,7 @@
   "name": "@piggo-legends/webpage",
   "packageManager": "yarn@3.4.1",
   "scripts": {
-    "build": "rm -r ./dist && yarn webpack",
+    "build": "rm -rf ./dist && yarn webpack",
     "serve": "yarn webpack && yarn webpack serve --port 8000"
   },
   "dependencies": {

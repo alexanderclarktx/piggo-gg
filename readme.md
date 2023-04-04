@@ -14,6 +14,33 @@ Piggo Legends supports polyglot clients (desktop, web, mobile) across a variety 
 
 Social features like chat and voice have first class support.
 
+# Features
+
+#### Pixi.js
+- [x] render to html canvas
+- [x] render game objects
+- [x] camera
+- [x] animated sprites
+
+#### netcode
+- [x] WebRTC handshake works in browser
+- [x] WebRTC transfer media
+- [x] WebRTC connection over internet (fails for some network configurations like LTE)
+- [x] WebRTC game state transfer
+- [ ] WebRTC >2 players in one game
+
+#### gameplay
+- [x] character WASD movement
+- [x] vehicle movement
+- [ ] character can enter a vehicle
+- [ ] weapons and damage
+- [ ] character stats
+- [ ] equippable items
+
+#### platforms
+- [ ] Electron desktop client
+- [ ] React Native mobile client
+
 # Development
 
 ### setup
@@ -34,22 +61,3 @@ yarn start
 ```
 yarn pages
 ```
-
-# Features
-
-#### netcode
-- [x] WebRTC handshake works in browser
-- [x] WebRTC transfer media
-- [x] WebRTC connection over internet (fails for some network configurations like LTE)
-- [ ] WebRTC game state transfer
-- [ ] WebRTC >2 players in one game
-
-#### Pixi.js
-- [x] render to html canvas
-- [x] render game objects
-- [x] camera
-- [x] animated sprites
-
-#### platforms
-- [ ] Electron desktop client
-- [ ] React Native mobile client

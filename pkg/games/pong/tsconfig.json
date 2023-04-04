@@ -3,9 +3,9 @@
   "include": [
     "./src/*",
     "./src/**/*"
-  ],
+, "../../gamertc/src/ecs/entities/Skelly.ts"  ],
   "compilerOptions": {
-    "rootDir": "src",
+    // "rootDir": "src",
     "outDir": "dist"
   }
 }

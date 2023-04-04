@@ -2,25 +2,49 @@ import { Text } from "pixi.js";
 import { Renderable, RenderableProps } from "./Renderable";
 
 export type TextBoxProps = RenderableProps & {
-  text?: string;
-  dynamic?: (text: Text) => void;
+  initialText?: string,
+  fontSize?: number,
+  color?: number,
+  dynamic?: (text: Text) => void
 }
 
 export class TextBox extends Renderable<TextBoxProps> {
-  constructor(options: TextBoxProps & RenderableProps) {
-    super(options);
+  text: Text;
+
+  constructor(props: TextBoxProps & RenderableProps) {
+    super({
+      ...props,
+      debuggable: props.debuggable || false
+    });
     this.init();
   }
 
   init = () => {
     // initial text
-    const text = new Text(this.props.text, { fill: 0x55FF00, fontSize: 16, dropShadow: true, dropShadowColor: 0x000000, dropShadowBlur: 0, dropShadowDistance: 2 });
+    this.text = new Text(this.props.initialText, {
+      fill: this.props.color || 0x55FF00,
+      fontSize: this.props.fontSize || 16,
+      dropShadow: false
+    });
 
     // dynamic text
     if (this.props.dynamic) {
-      this.props.renderer.app.ticker.add(() => this.props.dynamic!(text));
+      this.props.renderer.app.ticker.add(this.updateText);
     }
 
-    this.addChild(text);
+    this.addChild(this.text);
+  }
+
+  updateText = () => {
+    if (this.props.dynamic) {
+      this.props.dynamic(this.text);
+    }
+  }
+
+  override destroy = () => {
+    if (this.props.dynamic) {
+      this.props.renderer.app.ticker.remove(this.updateText);
+    }
+    super.destroy();
   }
 }
