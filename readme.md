@@ -26,7 +26,7 @@ Social features like chat and voice have first class support.
 - [x] WebRTC handshake works in browser
 - [x] WebRTC transfer media
 - [x] WebRTC connection over internet (fails for some network configurations like LTE)
-- [ ] WebRTC game state transfer
+- [x] WebRTC game state transfer
 - [ ] WebRTC >2 players in one game
 
 #### gameplay

@@ -1,6 +1,5 @@
-import { AnimatedSprite, SCALE_MODES } from 'pixi.js';
-import { Assets } from 'pixi.js';
 import { Character, Entity, EntityProps } from "@piggo-legends/gamertc";
+import { AnimatedSprite, Assets, SCALE_MODES } from 'pixi.js';
 
 const assets = Assets.load("chars.json");
 

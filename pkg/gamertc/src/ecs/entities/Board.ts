@@ -1,11 +1,11 @@
-import { Entity } from "@piggo-legends/gamertc";
+import { Entity, EntityProps } from "@piggo-legends/gamertc";
 import { Tile } from "./Tile";
 
 function listComprehension<T>(list: T[], callback: (item: T) => boolean): T[] {
   return list.filter(callback).map((item) => item)
 }
 
-export type BoardProps = {
+export type BoardProps = EntityProps & {
   tiles: Tile[][];
 }
 

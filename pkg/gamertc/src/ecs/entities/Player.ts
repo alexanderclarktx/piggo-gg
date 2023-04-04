@@ -1,8 +1,8 @@
-import { Entity, Health } from "@piggo-legends/gamertc";
+import { Entity, EntityProps, Health } from "@piggo-legends/gamertc";
 import { Experience } from "../components/Experience";
 import { Gold } from "../components/Gold";
 
-export type PlayerProps = {
+export type PlayerProps = EntityProps & {
   gold: Gold,
   experience: Experience,
   health: Health
