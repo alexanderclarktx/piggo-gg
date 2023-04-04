@@ -10,3 +10,6 @@ export * from "./graphics/Character";
 export * from "./graphics/Floor";
 export * from "./graphics/TextBox";
 export * from "./util/Util";
+export * from "./ecs/components/Health";
+export * from "./ecs/entities/Spaceship";
+export * from "./ecs/entities/Skelly";

@@ -1,15 +1,19 @@
 import { Entity } from "@piggo-legends/gamertc";
-import { Tile } from "./tile";
+import { Tile } from "./Tile";
 
 function listComprehension<T>(list: T[], callback: (item: T) => boolean): T[] {
   return list.filter(callback).map((item) => item)
 }
 
-export class Board extends Entity {
+export type BoardProps = {
+  tiles: Tile[][];
+}
+
+export class Board extends Entity<BoardProps> {
   tiles: Tile[][];
 
-  constructor() {
-    super({name: "board", components: []});
+  constructor(props: BoardProps) {
+    super(props);
     // let tiles = [];
     // for (let i = 0; i < widthHeight; i++) {
     //   tiles.push([]);

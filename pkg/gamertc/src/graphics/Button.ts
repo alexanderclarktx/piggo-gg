@@ -13,8 +13,11 @@ export class Button extends Renderable<ButtonProps> {
   outline = new Graphics();
   shadow = new Graphics();
 
-  constructor(options: ButtonProps) {
-    super(options);
+  constructor(props: ButtonProps) {
+    super({
+      ...props,
+      debuggable: props.debuggable || false
+    });
     this.init();
   }
 
@@ -23,16 +26,18 @@ export class Button extends Renderable<ButtonProps> {
 
     this.initialStyle();
 
-    this.on("pointerdown", () => {
-      if (this.clicked) {
-        this.props.onDepress();
-        this.styleOnDepress();
-      } else {
-        this.props.onPress();
-        this.styleOnPress();
-      }
-      this.clicked = !this.clicked;
-    });
+    this.on("pointerdown", this.handleClick);
+  }
+
+  handleClick = () => {
+    if (this.clicked) {
+      this.props.onDepress();
+      this.styleOnDepress();
+    } else {
+      this.props.onPress();
+      this.styleOnPress();
+    }
+    this.clicked = !this.clicked;
   }
 
   initialStyle = () => {
@@ -57,15 +62,17 @@ export class Button extends Renderable<ButtonProps> {
     this.addChild(this.outline);
 
     // button text
-    this.props.text.position.set(this.props.dims.textX, this.props.dims.textY);
+    this.props.text.position.set(Math.round(this.props.dims.textX), Math.round(this.props.dims.textY));
     this.addChild(this.props.text);
   }
 
   styleOnPress = () => {
-    this.shadow.tint = 0x000000;
+    this.shadow.tint = 0xff0000;
+    this.outline.tint = 0xff0000;
   }
 
   styleOnDepress = () => {
-    this.shadow.tint = 0xFFFFFF;
+    this.shadow.tint = 0x00FFFF;
+    this.outline.tint = 0x00FFFF;
   }
 }

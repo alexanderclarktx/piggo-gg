@@ -1,5 +1,6 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
-import { Renderable } from "./Renderable";
+import { Application, settings, SCALE_MODES, BaseTexture, utils, Text, DisplayObject } from "pixi.js";
+import { Renderable, RenderableProps } from "./Renderable";
+import { TextBox } from "./TextBox";
 
 // Renderer renders the game to a canvas
 export class Renderer {
@@ -9,6 +10,7 @@ export class Renderer {
   camera: Renderable<any> = new Renderable({renderer: this, debuggable: false});
   debug: boolean = false;
   events: utils.EventEmitter = new utils.EventEmitter();
+  debugRenderables: Renderable<RenderableProps>[] = [];
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -21,6 +23,7 @@ export class Renderer {
       backgroundColor: 0x6495ed,
       width: 800,
       height: 600,
+      antialias: true
     });
 
     // set up the camera
@@ -29,7 +32,7 @@ export class Renderer {
 
     // global texture settings
     settings.ROUND_PIXELS = true;
-    BaseTexture.defaultOptions.scaleMode = SCALE_MODES.NEAREST;
+    BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
 
     // handle screen resize
     window.addEventListener("resize", () => {
@@ -45,12 +48,41 @@ export class Renderer {
     canvas.addEventListener("contextmenu", (event) => {
       event.preventDefault();
     });
+
+    this.events.on("debug", this.handleDebug);
+  }
+
+  handleDebug = () => {
+    if (this.debug) {
+      this.camera.children.forEach((child: DisplayObject) => {
+        if (child instanceof Renderable && child.debugGraphics) {
+          // text position at top right of the bounding box
+          const textBox = new TextBox({
+            renderer: this,
+            dynamic: (text: Text) => {
+              const bounds = child.getBounds(false);
+              textBox.position.set(child.x - 15, bounds.y - this.camera.y - 15);
+              text.text = `${child.x},${child.y}`;
+            },
+            fontSize: 12,
+            color: 0xffff00,
+            debuggable: false
+          });
+          this.debugRenderables.push(textBox);
+          this.addWorld(textBox);
+        }
+      });
+    } else {
+      for (const renderable of this.debugRenderables) {
+        renderable.destroy();
+      }
+    }
   }
 
   // handle screen resize
   handleResize = () => {
     if (document.fullscreenElement) {
-      this.app.renderer.resize(screen.width, screen.height);
+      this.app.renderer.resize(window.innerWidth, window.innerHeight);
     } else {
       const computedCanvasStyle = window.getComputedStyle(this.canvas);
       const width = Math.min(parseInt(computedCanvasStyle.width), 800);
@@ -62,8 +94,6 @@ export class Renderer {
   // adds a Renderable to the pixi.js stage
   addWorld = (renderable: Renderable<any>) => {
     this.camera.addChild(renderable);
-    renderable.position.x += this.camera.x;
-    renderable.position.y += this.camera.y;
   }
 
   // adds a Renderable to a fixed position on the screen
@@ -76,8 +106,8 @@ export class Renderer {
   trackCamera = (renderable: Renderable<any>) => {
     this.app.ticker.add(() => {
       // center the camera on the renderable
-      this.camera.x = Math.round(this.app.screen.width / 2 - renderable.x);
-      this.camera.y = Math.round(this.app.screen.height / 2 - renderable.y);
+      this.camera.x = +(this.app.screen.width / 2 - renderable.x).toFixed(2);
+      this.camera.y = +(this.app.screen.height / 2 - renderable.y).toFixed(2);
 
       // update positions of children that are fixed to the camera
       this.camera.children.forEach(child => {

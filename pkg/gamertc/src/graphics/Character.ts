@@ -13,9 +13,10 @@ export type CharacterProps = RenderableProps & {
 
 export class Character extends Renderable<CharacterProps> {
   currentAnimation: AnimatedSprite;
+  windowFocused: boolean = true;
 
-  constructor(options: CharacterProps & RenderableProps) {
-    super(options);
+  constructor(props: CharacterProps & RenderableProps) {
+    super(props);
     this.init();
   }
 
@@ -73,7 +74,7 @@ export class Character extends Renderable<CharacterProps> {
       // Apply friction
       velocity.x -= velocity.x * FRICTION;
       velocity.y -= velocity.y * FRICTION;
-  
+
       // Handle acceleration
       if (inputs.w && !inputs.s) {
         const acceleration = inputs.shift ? SLIDE_ACCELERATION : ACCELERATION;
@@ -129,17 +130,30 @@ export class Character extends Renderable<CharacterProps> {
     const inputs = { w: false, a: false, s: false, d: false };
 
     document.addEventListener("keydown", (event) => {
-      const keyName = event.key.toLowerCase();
-      if (keyName in inputs) {
-        inputs[keyName] = true;
+      if (document.hasFocus() && this.windowFocused) {
+        const keyName = event.key.toLowerCase();
+        if (keyName in inputs) {
+          inputs[keyName] = true;
+        }
       }
     });
 
     document.addEventListener("keyup", (event) => {
-      const keyName = event.key.toLowerCase();
-      if (keyName in inputs) {
-        inputs[keyName] = false;
+      if (document.hasFocus() && this.windowFocused) {
+        const keyName = event.key.toLowerCase();
+        if (keyName in inputs) {
+          inputs[keyName] = false;
+        }
       }
+    });
+
+    window.addEventListener('focus', () => {
+      this.windowFocused = true;
+    });
+
+    // Add an event listener for the blur event
+    window.addEventListener('blur', () => {
+      this.windowFocused = false;
     });
 
     this.props.renderer.app.ticker.add(() => {
@@ -156,8 +170,8 @@ export class Character extends Renderable<CharacterProps> {
       }
 
       // Update the container position based on the normalized movement vector
-      this.x += xMovement;
-      this.y += yMovement;
+      this.x += +xMovement.toFixed(2);
+      this.y += +yMovement.toFixed(2);
 
       // if character is moving, play the correct animation
       if (!(xMovement === 0 && yMovement === 0)) {
