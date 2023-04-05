@@ -6,6 +6,7 @@ import { NetState } from "../types/NetState";
 import { Header } from "./Header";
 import { GameCanvas } from "./GameCanvas";
 import { PhoneCall } from "./PhoneCall";
+import * as lz from "lz-string"
 
 // webpage root component
 export const Root = () => {
@@ -25,7 +26,8 @@ export const Root = () => {
   // initialize the net manager
   useEffect(() => {
     setNetManager(new NetManager(
-      (local: string) => setSdp({ local: btoa(local), remote: sdp.remote }),
+      (local: string) => setSdp({ local: lz.compressToBase64(local), remote: sdp.remote }),
+      // (local: string) => setSdp({ local: btoa(local), remote: sdp.remote }),
       (stream: MediaStream) => setTheirMediaStream(stream),
       () => setNetState("connected")
     ));

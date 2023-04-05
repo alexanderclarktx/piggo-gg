@@ -1,3 +1,5 @@
+import { Compression } from "./Compression";
+
 export class NetManager {
   config = {
     iceServers: [
@@ -7,7 +9,7 @@ export class NetManager {
   dataChannelSettings = { reliable: { ordered: false, maxRetransmits: 0 } }
   chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
-  offer: string;
+  offer: boolean;
   events: EventTarget = new EventTarget();
 
   constructor(
@@ -54,8 +56,10 @@ export class NetManager {
       console.log("ice gathering state change", this.pc.iceGatheringState);
       if (this.pc.iceGatheringState === "complete") {
         const encodedLocal = JSON.stringify(this.pc.localDescription);
-        onLocalUpdated(encodedLocal);
-        this.offer = encodedLocal;
+        // onLocalUpdated(encodedLocal);
+        const sdpList = JSON.stringify(Compression.parseSdp(this.pc.localDescription));
+        onLocalUpdated(sdpList);
+        this.offer = true;
       }
     }
   }
@@ -98,7 +102,11 @@ export class NetManager {
       throw new Error("Cannot receive answer without making an offer first");
     }
     // set remote
-    this.pc.setRemoteDescription(JSON.parse(answer));
+    const constructedSdp: RTCSessionDescriptionInit = {
+      type: "answer",
+      sdp: Compression.constructSdp(answer)
+    };
+    this.pc.setRemoteDescription(constructedSdp);
   }
 
   // accept offer from a peer
@@ -114,7 +122,12 @@ export class NetManager {
     }
 
     // parse the offer and set remote
-    await this.pc.setRemoteDescription(JSON.parse(offer));
+    const constructedSdp: RTCSessionDescriptionInit = {
+      type:"offer",
+      sdp: Compression.constructSdp(offer)
+    };
+    await this.pc.setRemoteDescription(constructedSdp);
+    // await this.pc.setRemoteDescription(JSON.parse(offer));
 
     // create an answer and set local
     const answer = await this.pc.createAnswer({
