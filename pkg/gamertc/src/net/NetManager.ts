@@ -123,7 +123,7 @@ export class NetManager {
 
     // parse the offer and set remote
     const constructedSdp: RTCSessionDescriptionInit = {
-      type:"offer",
+      type: "offer",
       sdp: Compression.constructSdp(offer)
     };
     await this.pc.setRemoteDescription(constructedSdp);

@@ -8,7 +8,7 @@ import { GameCanvas } from "./GameCanvas";
 import { PhoneCall } from "./PhoneCall";
 import * as lz from "lz-string"
 
-// webpage root component
+// web app root component
 export const Root = () => {
   // initialize all not-component-local state
   const [netManager, setNetManager] = useState<NetManager | undefined>();

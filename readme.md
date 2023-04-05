@@ -37,10 +37,6 @@ Social features like chat and voice have first class support.
 - [ ] character stats
 - [ ] equippable items
 
-#### platforms
-- [ ] Electron desktop client
-- [ ] React Native mobile client
-
 # Development
 
 ### setup
@@ -53,7 +49,7 @@ yarn plugin import workspace-tools
 # install dependencies
 yarn install
 
-# serve the game locally
+# serve the game locally (webpack serve)
 yarn start
 ```
 
