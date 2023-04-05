@@ -20,15 +20,9 @@
     "typescript": "^4.9.4"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.4",
-    "@electron-forge/maker-deb": "^6.0.4",
-    "@electron-forge/maker-rpm": "^6.0.4",
-    "@electron-forge/maker-squirrel": "^6.0.4",
-    "@electron-forge/maker-zip": "^6.0.4",
     "@types/node": "^16.11.6",
     "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",
-    "electron": "22.0.0",
     "html-loader": "^4.2.0",
     "http-server": "^14.1.1",
     "ts-loader": "^9.4.2",

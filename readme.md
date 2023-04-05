@@ -37,10 +37,6 @@ Social features like chat and voice have first class support.
 - [ ] character stats
 - [ ] equippable items
 
-#### platforms
-- [ ] Electron desktop client
-- [ ] React Native mobile client
-
 # Development
 
 ### setup
