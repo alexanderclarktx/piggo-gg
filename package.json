@@ -7,12 +7,12 @@
     "pkg/**"
   ],
   "scripts": {
-    "start": "yarn webpage",
+    "start": "yarn web",
     "build": "yarn workspaces foreach run build",
     "test": "yarn workspaces foreach run test",
     "attack-time": "yarn workspace @piggo-legends/attack-time start",
-    "webpage": "yarn workspace @piggo-legends/webpage run serve",
-    "pages": "yarn build && rm -r ./docs && mkdir docs && cp -r ./app/webpage/dist/* ./docs/"
+    "web": "yarn workspace @piggo-legends/web run serve",
+    "pages": "yarn build && rm -r ./docs && mkdir docs && cp -r ./app/web/dist/* ./docs/"
   },
   "license": "ISC",
   "packageManager": "yarn@3.4.1",

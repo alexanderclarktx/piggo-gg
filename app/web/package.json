@@ -1,5 +1,5 @@
 {
-  "name": "@piggo-legends/webpage",
+  "name": "@piggo-legends/web",
   "packageManager": "yarn@3.4.1",
   "scripts": {
     "build": "rm -rf ./dist && yarn webpack",
