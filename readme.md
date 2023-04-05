@@ -53,7 +53,7 @@ yarn plugin import workspace-tools
 # install dependencies
 yarn install
 
-# serve the game locally
+# serve the game locally (webpack serve)
 yarn start
 ```
 
