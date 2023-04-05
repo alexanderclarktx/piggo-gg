@@ -2,6 +2,7 @@ import { NetManager } from "@piggo-legends/gamertc";
 import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
 import { NetState } from "../types/NetState";
+import * as lz from "lz-string"
 
 export type WebRTCHandshakeProps = {
   netManager?: NetManager
@@ -30,14 +31,16 @@ export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netStat
   }
 
   const acceptOffer = () => {
-    const offerDecoded = atob(inputOfferRef.current ? inputOfferRef.current.value : "");
-    netManager?.acceptOffer(offerDecoded);
+    // const offerDecoded = btoa(inputOfferRef.current ? inputOfferRef.current.value : "");
+    const offerDecoded = lz.decompressFromBase64(inputOfferRef.current ? inputOfferRef.current.value : "");
+    netManager?.acceptOffer(offerDecoded.slice(1, offerDecoded.length - 1));
     setNetState("answering");
   }
 
   const acceptAnswer = () => {
-    const decodedAnswer = atob(inputAnswerRef.current ? inputAnswerRef.current.value : "");
-    netManager?.acceptAnswer(decodedAnswer);
+    // const answerDecoded = btoa(inputAnswerRef.current ? inputAnswerRef.current.value : "");
+    const answerDecoded = lz.decompressFromBase64(inputAnswerRef.current ? inputAnswerRef.current.value : "");
+    netManager?.acceptAnswer(answerDecoded.slice(1, answerDecoded.length - 1));
   }
 
   return (
