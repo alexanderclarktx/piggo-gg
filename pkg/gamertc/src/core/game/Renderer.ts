@@ -1,6 +1,6 @@
 import { Application, settings, SCALE_MODES, BaseTexture, utils, Text, DisplayObject } from "pixi.js";
-import { Renderable, RenderableProps } from "./Renderable";
-import { TextBox } from "./TextBox";
+import { Renderable, RenderableProps } from "../ecs/Renderable";
+import { TextBox } from "../../entities/renderables/TextBox";
 
 // Renderer renders the game to a canvas
 export class Renderer {

@@ -1,5 +1,5 @@
 import { AnimatedSprite, Point } from "pixi.js";
-import { Renderable, RenderableProps } from "./Renderable";
+import { Renderable, RenderableProps } from "../../core/ecs/Renderable";
 
 export type CharacterProps = RenderableProps & {
   animations: {

@@ -13,8 +13,7 @@ export type WebRTCHandshakeProps = {
   setNetState: (state: NetState) => void
 }
 
-// the NetConnector component is responsible for creating and accepting offers and answers
-// and renders the remote+local video streams
+// the NetConnector component creates and accepts WebRTC SDP offers/answers
 export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netState, setNetState }: WebRTCHandshakeProps) => {
   const inputOfferRef = useRef<HTMLInputElement>(null);
   const inputAnswerRef = useRef<HTMLInputElement>(null);

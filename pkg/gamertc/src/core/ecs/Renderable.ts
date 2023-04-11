@@ -1,6 +1,6 @@
 import { Container, Graphics, Rectangle, Sprite, Text } from "pixi.js";
-import { Renderer } from "./Renderer";
-import { TextBox } from "./TextBox";
+import { Renderer } from "../game/Renderer";
+import { TextBox } from "../../entities/renderables/TextBox";
 
 export type RenderableProps = {
   renderer: Renderer,

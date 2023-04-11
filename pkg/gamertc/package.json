@@ -10,10 +10,7 @@
   },
   "dependencies": {
     "@pixi/unsafe-eval": "^7.1.2",
-    "@types/lodash": "^4.14.191",
-    "lodash": "^4.17.21",
-    "pixi.js": "^7.2.3",
-    "werift": "^0.18.1"
+    "pixi.js": "^7.2.3"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",

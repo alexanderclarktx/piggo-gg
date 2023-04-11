@@ -1,7 +1,7 @@
-import { Renderer } from "../graphics/Renderer";
+import { Renderer } from "./Renderer";
 import { Entity, EntityProps } from "../ecs/Entity";
 import { System } from "../ecs/System";
-import { Character, NetManager, Skelly, TextBox } from "../main";
+import { Character, NetManager, Skelly, TextBox } from "../../main";
 
 export type GameProps = {
   net: NetManager,

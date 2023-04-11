@@ -1,6 +1,7 @@
-import { Renderable, Renderer } from "../main";
+import { Renderable } from "./Renderable";
 import { Component } from "./Component";
-import { Name } from "./components/Name";
+import { Name } from "../../components/Name";
+import { Renderer } from "../game/Renderer";
 
 export type EntityProps = {
   name?: Name,

@@ -1,5 +1,5 @@
 import { Sprite, Texture } from "pixi.js";
-import { Renderable, RenderableProps } from "./Renderable";
+import { Renderable, RenderableProps } from "../../core/ecs/Renderable";
 
 export type FloorProps = RenderableProps & {
   width: number,

@@ -1,6 +1,6 @@
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
-import { Entity, EntityProps } from "../Entity";
-import { Character } from "../../main";
+import { Entity, EntityProps } from "../core/ecs/Entity";
+import { Character } from "../main";
 
 const assetsLoad = Assets.load("spaceship.json");
 

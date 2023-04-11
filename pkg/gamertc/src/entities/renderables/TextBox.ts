@@ -1,5 +1,5 @@
 import { Text } from "pixi.js";
-import { Renderable, RenderableProps } from "./Renderable";
+import { Renderable, RenderableProps } from "../../core/ecs/Renderable";
 
 export type TextBoxProps = RenderableProps & {
   initialText?: string,
