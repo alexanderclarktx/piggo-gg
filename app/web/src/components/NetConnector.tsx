@@ -1,4 +1,4 @@
-import { NetManager } from "@piggo-legends/gamertc";
+import { NetManager } from "@piggo-legends/core";
 import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
 import { NetState } from "../types/NetState";

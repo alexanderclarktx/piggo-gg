@@ -1,11 +1,10 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "include": [
     "./src/*",
     "./src/**/*"
-  ],
+, "../contrib/src/graphics"  ],
   "compilerOptions": {
-    // "rootDir": "src",
     "outDir": "dist"
   }
 }

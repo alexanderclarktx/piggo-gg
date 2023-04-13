@@ -1,6 +1,6 @@
 import "@pixi/unsafe-eval";
 import React, { useEffect, useState } from "react";
-import { Game, NetManager } from "@piggo-legends/gamertc";
+import { Game, NetManager } from "@piggo-legends/core";
 import { NetConnector } from "./NetConnector";
 import { NetState } from "../types/NetState";
 import { Header } from "./Header";
