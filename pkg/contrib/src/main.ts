@@ -8,6 +8,7 @@ export * from "./entities/Unit";
 export * from "./entities/Spaceship";
 export * from "./entities/Skelly";
 export * from "./entities/Player";
+export * from "./entities/Tile";
 export * from "./graphics/Floor";
 export * from "./graphics/Character";
 export * from "./graphics/Button";

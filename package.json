@@ -8,10 +8,11 @@
   ],
   "scripts": {
     "start": "yarn web",
+    "web": "yarn workspace @piggo-legends/web run serve",
     "build": "yarn workspaces foreach run build",
     "test": "yarn workspaces foreach run test",
     "attack-time": "yarn workspace @piggo-legends/attack-time start",
-    "web": "yarn workspace @piggo-legends/web run serve",
+    "docs": "yarn pages",
     "pages": "yarn build && rm -r ./docs && mkdir docs && cp -r ./app/web/dist/* ./docs/"
   },
   "license": "ISC",

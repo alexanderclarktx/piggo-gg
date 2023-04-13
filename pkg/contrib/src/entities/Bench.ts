@@ -1,5 +1,5 @@
 import { Entity, EntityProps } from "@piggo-legends/core";
-import { Unit } from "./Unit";
+import { Unit } from "@piggo-legends/contrib";
 
 export type BenchProps = EntityProps & {
   units: Unit[];

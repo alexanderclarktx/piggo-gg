@@ -3,7 +3,7 @@
   "include": [
     "./src/*",
     "./src/**/*"
-, "../contrib/src/graphics"  ],
+  ],
   "compilerOptions": {
     "outDir": "dist"
   }

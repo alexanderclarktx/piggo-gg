@@ -48,7 +48,7 @@ export class Renderable<T extends RenderableProps> {
       }, this.props.timeout);
     }
 
-    // dynamic text
+    // callback
     if (this.props.dynamic) {
       this.props.renderer.app.ticker.add(this.onTick);
     }

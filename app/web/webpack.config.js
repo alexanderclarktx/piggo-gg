@@ -15,7 +15,7 @@ module.exports = {
     ],
   },
   optimization: {
-    minimize: false,
+    minimize: true,
   },
   devtool: "cheap-module-source-map",
   plugins: [

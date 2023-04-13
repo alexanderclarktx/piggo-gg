@@ -1,5 +1,5 @@
 import { Entity, EntityProps } from "@piggo-legends/core";
-import { Tile } from "./Tile";
+import { Tile } from "@piggo-legends/contrib";
 
 function listComprehension<T>(list: T[], callback: (item: T) => boolean): T[] {
   return list.filter(callback).map((item) => item)
