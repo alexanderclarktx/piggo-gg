@@ -1,4 +1,4 @@
-__gamertc__ is an [ECS](https://en.wikipedia.org/wiki/Entity_component_system) framework with WebRTC multiplayer support
+__core__ is an [ECS](https://en.wikipedia.org/wiki/Entity_component_system) framework with WebRTC multiplayer support
 
 ### resources
 

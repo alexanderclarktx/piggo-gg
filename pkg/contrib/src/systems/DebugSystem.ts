@@ -1,5 +1,4 @@
 import { Text } from 'pixi.js';
-import { Container } from 'pixi.js';
 import { Graphics } from 'pixi.js';
 import { Entity, EntityProps, Renderable, RenderableProps, Renderer, System, SystemProps } from "@piggo-legends/core";
 import { TextBox } from "@piggo-legends/contrib";

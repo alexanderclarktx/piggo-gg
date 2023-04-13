@@ -1,6 +1,5 @@
 import { Renderable, RenderableProps } from "@piggo-legends/core";
 
-
 export class Camera extends Renderable<RenderableProps> {
   renderables: Set<Renderable<RenderableProps>> = new Set();
 
