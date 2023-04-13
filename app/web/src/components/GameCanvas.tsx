@@ -1,6 +1,6 @@
-import { Game, NetManager } from "@piggo-legends/gamertc";
+import { Game, NetManager } from "@piggo-legends/core";
 import { Pong } from "@piggo-legends/pong";
-import { Renderer } from "@piggo-legends/gamertc";
+import { Renderer } from "@piggo-legends/core";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {

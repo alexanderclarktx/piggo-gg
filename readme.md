@@ -1,4 +1,4 @@
-__Piggo Legends__ is a platform for casual multiplayer games
+__Piggo Legends__ is a platform for casual multiplayer games. Play it online [here](https://alexanderclarktx.github.io/piggo-legends/)
 
 <kbd>
 <img src="screenshots/5.gif" style="width:500px">

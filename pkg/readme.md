@@ -2,6 +2,7 @@
 
 |package|description|
 |--|--|
-|`gamertc`|core gameplay, ecs, netcode, and graphics classes
+|`core`|core gameplay, ecs, netcode, and graphics classes
+|`contrib`|non-core classes that can be used in any game
 |`games`|individual games that use gamertc
 |`util`|utility classes and types
