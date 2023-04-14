@@ -8,7 +8,7 @@ export type TextBoxProps = RenderableProps & {
 }
 
 export class TextBox extends Renderable<TextBoxProps> {
-  constructor(props: TextBoxProps & RenderableProps) {
+  constructor(props: TextBoxProps) {
     super({
       ...props,
       debuggable: props.debuggable || false,

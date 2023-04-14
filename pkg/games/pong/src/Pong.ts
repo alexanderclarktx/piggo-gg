@@ -10,8 +10,8 @@ export class Pong extends Game<PongProps> {
     super({
       ...props,
       entities: [
-        new Skelly({renderer: props.renderer, networked: true, enableControls: true, track: true}),
-        new Spaceship({renderer: props.renderer})
+        new Skelly({id: "skelly", renderer: props.renderer, networked: true, enableControls: true, track: true}),
+        new Spaceship({id: "spaceship", renderer: props.renderer}) // TODO networked
       ],
       systems: [
         new DebugSystem({renderer: props.renderer})
@@ -36,7 +36,8 @@ export class Pong extends Game<PongProps> {
     // fps text box
     this.props.renderer.addWorld(new TextBox({
       renderer: this.props.renderer,
-      cameraPosition: {x: 0, y: 5},
+      cameraPos: {x: 5, y: 5},
+      color: 0xFFFF00,
       dynamic: (c: Text) => {
         c.text = Math.round(this.props.renderer.app.ticker.FPS);
       }
@@ -45,7 +46,7 @@ export class Pong extends Game<PongProps> {
     // fullscreen button
     this.props.renderer.addWorld(new Button({
       renderer: this.props.renderer,
-      cameraPosition: {x: 695, y: 5},
+      cameraPos: {x: -105, y: 5},
       dims: { w: 37, textX: 10, textY: 5 },
       pos: { x: 690, y: 5 },
       text: (new Text("⚁", { fill: "#FFFFFF", fontSize: 16 })),
@@ -61,7 +62,7 @@ export class Pong extends Game<PongProps> {
     // debug button
     this.props.renderer.addWorld(new Button({
       renderer: this.props.renderer,
-      cameraPosition: {x: 735, y: 5},
+      cameraPos: {x: -65, y: 5},
       pos: { x: 735, y: 5 },
       dims: { w: 60, textX: 10, textY: 7 },
       text: (new Text("debug", { fill: "#FFFFFF", fontSize: 14 })),
