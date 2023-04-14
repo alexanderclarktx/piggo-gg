@@ -64,8 +64,6 @@ object-assign
 
 /*! ../geometry/ViewableBuffer.mjs */
 
-/*! ../graphics/DebugBounds */
-
 /*! ../helpers/ariaAppHider */
 
 /*! ../helpers/bodyTrap */
@@ -643,6 +641,8 @@ object-assign
 /*! ./graphics/Button */
 
 /*! ./graphics/Character */
+
+/*! ./graphics/DebugBounds */
 
 /*! ./graphics/Floor */
 
