@@ -5,9 +5,10 @@ import { Renderable, RenderableProps, Camera } from "@piggo-legends/core";
 export class Renderer {
   canvas: HTMLCanvasElement;
   app: Application;
+  camera: Camera;
+
   debug: boolean = false;
-  events: utils.EventEmitter = new utils.EventEmitter();
-  camera: Camera = new Camera({ renderer: this });
+  events: utils.EventEmitter = new utils.EventEmitter();  
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -24,6 +25,7 @@ export class Renderer {
     });
 
     // set up the camera
+    this.camera = new Camera({ renderer: this });
     this.camera.c.addChild(this.app.stage);
     this.app.stage = this.camera.c;
 
@@ -57,6 +59,7 @@ export class Renderer {
       const height = Math.min(parseInt(computedCanvasStyle.height), 600);
       this.app.renderer.resize(width, height);
     }
+    this.camera.handleCameraPos();
   }
 
   // adds a Renderable to the pixi.js stage

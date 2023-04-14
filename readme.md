@@ -32,6 +32,7 @@ Social features like chat and voice have first class support.
 #### gameplay
 - [x] character WASD movement
 - [x] vehicle movement
+- [ ] real isometric grid
 - [ ] character can enter a vehicle
 - [ ] weapons and damage
 - [ ] character stats

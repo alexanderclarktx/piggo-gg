@@ -10,7 +10,7 @@ export type FloorProps = RenderableProps & {
 }
 
 export class Floor extends Renderable<FloorProps> {
-  constructor(props: FloorProps & RenderableProps) {
+  constructor(props: FloorProps) {
     super(props);
     this.init();
   }

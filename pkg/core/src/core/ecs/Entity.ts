@@ -1,14 +1,16 @@
 import { Renderable, Component, Renderer, RenderableProps } from "@piggo-legends/core";
 
 export type EntityProps = {
-  components?: Component[],
   renderer: Renderer,
+  id: string,
+  components?: Component[],
   networked?: boolean
 }
 
 // an Entity is a collection of components
 export class Entity<T extends EntityProps> {
   props: T;
+
   rendered = false;
   renderable: Renderable<RenderableProps> | undefined = undefined;
 

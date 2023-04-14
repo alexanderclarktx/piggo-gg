@@ -26,6 +26,7 @@ export abstract class Game<T extends GameProps> {
     this.props.net.events.addEventListener("message", (evt: CustomEvent<any>) => {
       if (!this.otherPlayer) {
         this.otherPlayer = new Skelly({
+          id: "skelly2",
           renderer: this.props.renderer
         });
         this.props.entities?.push(this.otherPlayer);

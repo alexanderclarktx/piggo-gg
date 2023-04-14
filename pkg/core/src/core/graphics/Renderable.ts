@@ -9,10 +9,9 @@ export type RenderableProps = {
   timeout?: number,
   zIndex?: number
   dynamic?: (c: Container) => void
-  cameraPosition?: { x: number; y: number }
+  cameraPos?: { x: number; y: number }
 }
 
-// todo don't extend container, just wrap it
 export class Renderable<T extends RenderableProps> {
   id: string;
   props: T;
@@ -60,7 +59,7 @@ export class Renderable<T extends RenderableProps> {
     }
   }
 
-  // this MUST be called to correctly destroy the object
+  // Renderable.cleanup MUST be called to correctly destroy the object
   cleanup = () => {
     // remove from the renderer
     this.props.renderer.app.stage.removeChild(this.c);

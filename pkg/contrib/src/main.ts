@@ -13,5 +13,6 @@ export * from "./graphics/Floor";
 export * from "./graphics/Character";
 export * from "./graphics/Button";
 export * from "./graphics/TextBox";
+export * from "./graphics/DebugBounds";
 export * from "./systems/DebugSystem";
 export * from "./systems/DamageSystem";

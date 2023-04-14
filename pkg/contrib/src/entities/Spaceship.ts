@@ -14,7 +14,7 @@ export class Spaceship extends Entity<SpaceshipProps> {
 
   init = async () => {
     const assets = await assetsLoad;
-    this.props.renderer.addWorld(new Character({
+    this.renderable = new Character({
       renderer: this.props.renderer,
       animations: {
         d: new AnimatedSprite([assets.textures["spaceship"]]),
@@ -31,6 +31,6 @@ export class Spaceship extends Entity<SpaceshipProps> {
       pos: { x: 100, y: 400 },
       scale: 2,
       zIndex: 1
-    }));
+    });
   }
 }
