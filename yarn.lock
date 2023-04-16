@@ -174,9 +174,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@piggo-legends/pong@1.0.0, @piggo-legends/pong@workspace:pkg/games/pong":
+"@piggo-legends/playground@1.0.0, @piggo-legends/playground@workspace:pkg/games/playground":
   version: 0.0.0-use.local
-  resolution: "@piggo-legends/pong@workspace:pkg/games/pong"
+  resolution: "@piggo-legends/playground@workspace:pkg/games/playground"
   dependencies:
     "@piggo-legends/contrib": 1.0.0
     ts-node: 10.9.1
@@ -188,7 +188,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@piggo-legends/web@workspace:app/web"
   dependencies:
-    "@piggo-legends/pong": 1.0.0
+    "@piggo-legends/playground": 1.0.0
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
     "@types/react-modal": ^3.13.1

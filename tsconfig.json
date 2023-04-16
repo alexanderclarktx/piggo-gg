@@ -20,7 +20,8 @@
     },
     "strictNullChecks": true,
     "noImplicitOverride": true,
-    "noImplicitThis": true
+    "noImplicitThis": true,
+    "noImplicitAny": true,
   },
   "include": ["pkg/**/*", "app/**/*"]
 }

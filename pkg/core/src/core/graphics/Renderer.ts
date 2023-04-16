@@ -65,6 +65,7 @@ export class Renderer {
   // adds a Renderable to the pixi.js stage
   addWorld = (renderable: Renderable<RenderableProps>) => {
     this.camera.add(renderable);
+    this.camera.handleCameraPos();
   }
 
   // method for tracking the camera

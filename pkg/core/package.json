@@ -2,7 +2,7 @@
   "name": "@piggo-legends/core",
   "version": "1.0.0",
   "packageManager": "yarn@3.4.1",
-  "main": "src/main.ts",
+  "main": "./main.ts",
   "scripts": {
     "build": "yarn tsc",
     "create": "yarn ts-node main.ts --create",

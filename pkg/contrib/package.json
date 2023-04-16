@@ -2,10 +2,10 @@
   "name": "@piggo-legends/contrib",
   "version": "1.0.0",
   "packageManager": "yarn@3.4.1",
-  "main": "src/main.ts",
+  "main": "./main.ts",
   "scripts": {
     "build": "yarn tsc",
-    "run": "yarn ts-node src/main.ts"
+    "run": "yarn ts-node ./main.ts"
   },
   "dependencies": {
     "@piggo-legends/core": "1.0.0"

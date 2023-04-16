@@ -1,5 +1,5 @@
 import { Game, NetManager } from "@piggo-legends/core";
-import { Pong } from "@piggo-legends/pong";
+import { Playground } from "@piggo-legends/playground";
 import { Renderer } from "@piggo-legends/core";
 import React, { useEffect } from "react";
 
@@ -13,7 +13,7 @@ export const GameCanvas = ({ netManager, setGame }: GameCanvasProps) => {
     if (netManager) {
       const renderer = new Renderer(document.getElementById("canvas") as HTMLCanvasElement);
       setGame(
-        new Pong({
+        new Playground({
           net: netManager,
           renderer: renderer,
           entities: [],

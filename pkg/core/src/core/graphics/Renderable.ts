@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Renderer } from "@piggo-legends/core";
+import { Component, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
   renderer: Renderer,
@@ -12,7 +12,7 @@ export type RenderableProps = {
   cameraPos?: { x: number; y: number }
 }
 
-export class Renderable<T extends RenderableProps> {
+export class Renderable<T extends RenderableProps> implements Component {
   id: string;
   props: T;
   c: Container = new Container();
@@ -24,7 +24,7 @@ export class Renderable<T extends RenderableProps> {
 
     this.props = {
       ...props,
-      debuggable: props.debuggable || true,
+      debuggable: props.debuggable || false,
     };
     this._init();
   }

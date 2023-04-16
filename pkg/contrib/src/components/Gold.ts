@@ -1,11 +1,10 @@
 import { Component } from "@piggo-legends/core";
 
 // the gold component tracks the player's gold
-export class Gold extends Component {
+export class Gold implements Component {
     gold: number;
 
     constructor(gold: number) {
-        super();
         this.gold = gold;
     }
 }

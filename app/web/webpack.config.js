@@ -1,5 +1,6 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   entry: ["./src/index.tsx"],
@@ -16,15 +17,21 @@ module.exports = {
   },
   optimization: {
     minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+      }),
+    ],
   },
   devtool: "cheap-module-source-map",
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        {
-          from: path.join(__dirname, "src", "*.html"),
-          to: path.join(__dirname, "dist", "[name].html")
-        },
         {
           from: "./src/*.html",
           to: () => "[name].html"

@@ -5,8 +5,7 @@ export class Compression {
     if (!d) {
       return "";
     }
-    const sdp = d.sdp; 
-    console.log(sdp);
+    const sdp = d.sdp;
   
     //@ts-ignore
     const sparta = sdp.match(" (.+) IN IP4")[1]; //@ts-ignore
@@ -21,9 +20,13 @@ export class Compression {
     var matches = [sparta, ip, ufrag, pwd, sha, setup, maxMessageSize, ip2];
   
     const candidates = sdp.match(/a=candidate.+\r\n/g);
-    for (const i in candidates) {
-      const c = candidates[i].match("a=candidate:(.+)\r\n")[1];
-      matches.push(c);
+    if (candidates) {
+      candidates.forEach((c) => {
+        const m = c.match("a=candidate:(.+)\r\n");
+        if (m) {
+          matches.push(m[1]);
+        }
+      });
     }
   
     return matches.join(";");
