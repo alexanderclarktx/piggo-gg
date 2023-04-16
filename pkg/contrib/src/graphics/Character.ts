@@ -27,8 +27,11 @@ export class Character extends Renderable<CharacterProps> {
     this.c.eventMode = "static";
 
     for (const key in this.props.animations) {
+      // @ts-ignore
       this.props.animations[key].animationSpeed = 0.1;
+      // @ts-ignore
       this.props.animations[key].scale.set(this.props.scale || 1);
+      // @ts-ignore
       this.props.animations[key].anchor.set(0.5);
     }
 
@@ -61,6 +64,7 @@ export class Character extends Renderable<CharacterProps> {
     document.addEventListener("keydown", (event) => {
       const keyName = event.key.toLowerCase();
       if (keyName in inputs) {
+        // @ts-ignore
         inputs[keyName] = true;
       }
     });
@@ -68,6 +72,7 @@ export class Character extends Renderable<CharacterProps> {
     document.addEventListener("keyup", (event) => {
       const keyName = event.key.toLowerCase();
       if (keyName in inputs) {
+        // @ts-ignore
         inputs[keyName] = false;
       }
     });
@@ -114,10 +119,12 @@ export class Character extends Renderable<CharacterProps> {
           (velocity.y > 0 ? "d" : "") + (velocity.y < 0 ? "u" : "") +
           (velocity.x > 0 ? "r" : "") + (velocity.x < 0 ? "l" : "");
 
+        // @ts-ignore
         if (this.currentAnimation !== this.props.animations[animationToUse]) {
           if (this.currentAnimation) {
             this.c.removeChild(this.currentAnimation);
           }
+          // @ts-ignore
           this.currentAnimation = this.props.animations[animationToUse];
           this.c.addChild(this.currentAnimation);
           this.currentAnimation.play();
@@ -135,6 +142,7 @@ export class Character extends Renderable<CharacterProps> {
       if (document.hasFocus() && this.windowFocused) {
         const keyName = event.key.toLowerCase();
         if (keyName in inputs) {
+          // @ts-ignore
           inputs[keyName] = true;
         }
       }
@@ -144,6 +152,7 @@ export class Character extends Renderable<CharacterProps> {
       if (document.hasFocus() && this.windowFocused) {
         const keyName = event.key.toLowerCase();
         if (keyName in inputs) {
+          // @ts-ignore
           inputs[keyName] = false;
         }
       }
@@ -181,10 +190,12 @@ export class Character extends Renderable<CharacterProps> {
           (yMovement > 0 ? "d" : "") + (yMovement < 0 ? "u" : "") +
           (xMovement > 0 ? "r" : "") + (xMovement < 0 ? "l" : "");
 
+        // @ts-ignore
         if (this.currentAnimation !== this.props.animations[animationToUse]) {
           if (this.currentAnimation) {
             this.c.removeChild(this.currentAnimation);
           }
+          // @ts-ignore
           this.currentAnimation = this.props.animations[animationToUse];
           this.c.addChild(this.currentAnimation);
           this.currentAnimation.play();

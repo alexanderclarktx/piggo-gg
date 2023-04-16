@@ -314,8 +314,6 @@ object-assign
 
 /*! ./Point.mjs */
 
-/*! ./Pong */
-
 /*! ./Prepare.mjs */
 
 /*! ./Program.mjs */
@@ -454,21 +452,9 @@ object-assign
 
 /*! ./compileShader.mjs */
 
-/*! ./components/Experience */
-
-/*! ./components/Gold */
-
-/*! ./components/Health */
-
 /*! ./components/Modal */
 
-/*! ./components/Name */
-
 /*! ./components/Root */
-
-/*! ./components/Tier */
-
-/*! ./components/Traits */
 
 /*! ./compressedTextureExtensions.mjs */
 
@@ -479,24 +465,6 @@ object-assign
 /*! ./convertToList.mjs */
 
 /*! ./copySearchParams.mjs */
-
-/*! ./core/ecs/Component */
-
-/*! ./core/ecs/Entity */
-
-/*! ./core/ecs/System */
-
-/*! ./core/game/Game */
-
-/*! ./core/graphics/Camera */
-
-/*! ./core/graphics/Renderable */
-
-/*! ./core/graphics/Renderer */
-
-/*! ./core/net/NetManager */
-
-/*! ./core/util/Util */
 
 /*! ./createStringVariations.mjs */
 
@@ -553,16 +521,6 @@ object-assign
 /*! ./drawGlyph.mjs */
 
 /*! ./encode */
-
-/*! ./entities/Player */
-
-/*! ./entities/Skelly */
-
-/*! ./entities/Spaceship */
-
-/*! ./entities/Tile */
-
-/*! ./entities/Unit */
 
 /*! ./extractCharCode.mjs */
 
@@ -637,16 +595,6 @@ object-assign
 /*! ./getTestContext.mjs */
 
 /*! ./getUniformData.mjs */
-
-/*! ./graphics/Button */
-
-/*! ./graphics/Character */
-
-/*! ./graphics/DebugBounds */
-
-/*! ./graphics/Floor */
-
-/*! ./graphics/TextBox */
 
 /*! ./groupD8.mjs */
 
@@ -868,6 +816,60 @@ object-assign
 
 /*! ./spritesheetAsset.mjs */
 
+/*! ./src/Playground */
+
+/*! ./src/components/Experience */
+
+/*! ./src/components/Gold */
+
+/*! ./src/components/Health */
+
+/*! ./src/components/Name */
+
+/*! ./src/components/Tier */
+
+/*! ./src/components/Traits */
+
+/*! ./src/core/ecs/Component */
+
+/*! ./src/core/ecs/Entity */
+
+/*! ./src/core/ecs/System */
+
+/*! ./src/core/game/Game */
+
+/*! ./src/core/graphics/Camera */
+
+/*! ./src/core/graphics/Renderable */
+
+/*! ./src/core/graphics/Renderer */
+
+/*! ./src/core/net/NetManager */
+
+/*! ./src/core/util/Util */
+
+/*! ./src/entities/Player */
+
+/*! ./src/entities/Tile */
+
+/*! ./src/entities/Unit */
+
+/*! ./src/graphics/Button */
+
+/*! ./src/graphics/Character */
+
+/*! ./src/graphics/DebugBounds */
+
+/*! ./src/graphics/Floor */
+
+/*! ./src/graphics/TextBox */
+
+/*! ./src/systems/DamageSystem */
+
+/*! ./src/systems/DebugSystem */
+
+/*! ./src/systems/RenderSystem */
+
 /*! ./startup/StartupSystem.mjs */
 
 /*! ./state/State.mjs */
@@ -885,10 +887,6 @@ object-assign
 /*! ./system/SystemManager.mjs */
 
 /*! ./systems.mjs */
-
-/*! ./systems/DamageSystem */
-
-/*! ./systems/DebugSystem */
 
 /*! ./tabbable */
 
@@ -1026,7 +1024,7 @@ object-assign
 
 /*! @piggo-legends/core */
 
-/*! @piggo-legends/pong */
+/*! @piggo-legends/playground */
 
 /*! @pixi/accessibility */
 
@@ -1152,13 +1150,17 @@ object-assign
   !*** ./src/index.tsx ***!
   \***********************/
 
+/*!******************************!*\
+  !*** ../../pkg/core/main.ts ***!
+  \******************************/
+
+/*!*********************************!*\
+  !*** ../../pkg/contrib/main.ts ***!
+  \*********************************/
+
 /*!*********************************!*\
   !*** ./src/components/Root.tsx ***!
   \*********************************/
-
-/*!**********************************!*\
-  !*** ../../pkg/core/src/main.ts ***!
-  \**********************************/
 
 /*!***********************************!*\
   !*** ./src/components/Header.tsx ***!
@@ -1166,10 +1168,6 @@ object-assign
 
 /*!*************************************!*\
   !*** ../../node_modules/url/url.js ***!
-  \*************************************/
-
-/*!*************************************!*\
-  !*** ../../pkg/contrib/src/main.ts ***!
   \*************************************/
 
 /*!**************************************!*\
@@ -1184,14 +1182,6 @@ object-assign
   !*** ./src/components/GameCanvas.tsx ***!
   \***************************************/
 
-/*!****************************************!*\
-  !*** ../../pkg/games/pong/src/Pong.ts ***!
-  \****************************************/
-
-/*!****************************************!*\
-  !*** ../../pkg/games/pong/src/main.ts ***!
-  \****************************************/
-
 /*!*****************************************!*\
   !*** ../../node_modules/exenv/index.js ***!
   \*****************************************/
@@ -1203,6 +1193,10 @@ object-assign
 /*!*****************************************!*\
   !*** ./src/components/NetConnector.tsx ***!
   \*****************************************/
+
+/*!******************************************!*\
+  !*** ../../pkg/games/playground/main.ts ***!
+  \******************************************/
 
 /*!*******************************************!*\
   !*** ../../node_modules/colord/index.mjs ***!
@@ -1298,10 +1292,6 @@ object-assign
 
 /*!************************************************!*\
   !*** ../../pkg/contrib/src/entities/Player.ts ***!
-  \************************************************/
-
-/*!************************************************!*\
-  !*** ../../pkg/contrib/src/entities/Skelly.ts ***!
   \************************************************/
 
 /*!************************************************!*\
@@ -1409,10 +1399,6 @@ object-assign
   \***************************************************/
 
 /*!***************************************************!*\
-  !*** ../../pkg/contrib/src/entities/Spaceship.ts ***!
-  \***************************************************/
-
-/*!***************************************************!*\
   !*** ../../pkg/contrib/src/graphics/Character.ts ***!
   \***************************************************/
 
@@ -1446,6 +1432,10 @@ object-assign
 
 /*!****************************************************!*\
   !*** ../../pkg/core/src/core/graphics/Renderer.ts ***!
+  \****************************************************/
+
+/*!****************************************************!*\
+  !*** ../../pkg/games/playground/src/Playground.ts ***!
   \****************************************************/
 
 /*!*****************************************************!*\
@@ -1490,6 +1480,10 @@ object-assign
 
 /*!*****************************************************!*\
   !*** ../../pkg/contrib/src/systems/DamageSystem.ts ***!
+  \*****************************************************/
+
+/*!*****************************************************!*\
+  !*** ../../pkg/contrib/src/systems/RenderSystem.ts ***!
   \*****************************************************/
 
 /*!******************************************************!*\
