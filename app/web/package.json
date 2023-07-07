@@ -1,9 +1,8 @@
 {
   "name": "@piggo-legends/web",
-  "packageManager": "yarn@3.4.1",
   "scripts": {
-    "build": "rm -rf ./dist && yarn webpack",
-    "serve": "yarn webpack && yarn webpack serve --port 8000"
+    "build": "rm -rf ./dist && npx webpack",
+    "serve": "npx webpack && npx webpack serve --port 8000"
   },
   "dependencies": {
     "@piggo-legends/playground": "1.0.0",

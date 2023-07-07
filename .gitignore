@@ -2,5 +2,3 @@ node_modules
 dist
 .DS_STORE
 out/
-.yarn
-.yarnrc.yml
