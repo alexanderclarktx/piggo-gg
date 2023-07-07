@@ -3,20 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "app/**",
-    "pkg/**"
+    "app/web",
+    "pkg/contrib",
+    "pkg/core",
+    "pkg/games/playground"
   ],
   "scripts": {
-    "start": "yarn web",
-    "web": "yarn workspace @piggo-legends/web run serve",
-    "build": "yarn workspaces foreach run build",
-    "test": "yarn workspaces foreach run test",
-    "attack-time": "yarn workspace @piggo-legends/attack-time start",
-    "docs": "yarn pages",
-    "pages": "yarn build && rm -r ./docs && mkdir docs && cp -r ./app/web/dist/* ./docs/"
+    "start": "npm run web",
+    "web": "npm run serve --workspace app/web",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "attack-time": "npm run workspace @piggo-legends/attack-time start",
+    "docs": "npm run pages",
+    "pages": "npm run build --workspace app/web && rm -r ./docs && mkdir docs && cp -r ./app/web/dist/* ./docs/"
   },
   "license": "ISC",
-  "packageManager": "yarn@3.4.1",
   "dependencies": {
     "typescript": "^4.9.4"
   },
@@ -31,7 +32,6 @@
     "tsc": "^2.0.4",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1",
-    "yarn": "^3.4.1"
+    "webpack-dev-server": "^4.11.1"
   }
 }

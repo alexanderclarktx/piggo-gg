@@ -1,17 +1,15 @@
 {
   "name": "@piggo-legends/playground",
-  "packageManager": "yarn@3.4.1",
   "version": "1.0.0",
   "main": "./main.ts",
   "scripts": {
-    "build": "yarn tsc",
-    "start": "yarn ts-node src/main.ts"
-  },
-  "dependencies": {
-    "@piggo-legends/contrib": "1.0.0"
+    "build": "npx tsc",
+    "start": "npx ts-node src/main.ts"
   },
   "devDependencies": {
-    "ts-node": "10.9.1",
+    "ts-node": "10.9.1"
+  },
+  "dependencies": {
     "typescript": "^4.9.5"
   }
 }

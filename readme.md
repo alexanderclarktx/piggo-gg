@@ -4,6 +4,23 @@ __Piggo Legends__ is a platform for casual multiplayer games. Play it online [he
 <img src="screenshots/5.gif" style="width:500px">
 </kbd>
 
+# Development
+
+### setup
+
+```bash
+# install dependencies
+npm install
+
+# serve the game locally (webpack serve)
+npm run start
+```
+
+### publishing to GitHub Pages
+```bash
+npm run pages
+```
+
 # Objectives
 
 Games are easy to implement using piggo-legends' game framework.
@@ -37,24 +54,3 @@ Social features like chat and voice have first class support.
 - [ ] weapons and damage
 - [ ] character stats
 - [ ] equippable items
-
-# Development
-
-### setup
-
-```bash
-# configure yarn
-yarn set version stable
-yarn plugin import workspace-tools
-
-# install dependencies
-yarn install
-
-# serve the game locally (webpack serve)
-yarn start
-```
-
-### publishing to GitHub Pages
-```
-yarn pages
-```
