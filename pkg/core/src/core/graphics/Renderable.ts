@@ -12,10 +12,11 @@ export type RenderableProps = {
   cameraPos?: { x: number; y: number }
 }
 
-export class Renderable<T extends RenderableProps> implements Component {
+export class Renderable<T extends RenderableProps> implements Component<"renderable"> {
   id: string;
   props: T;
   c: Container = new Container();
+  type: "renderable";
 
   constructor(props: T) {
     if (props.container) {

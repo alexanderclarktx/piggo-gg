@@ -1,7 +1,8 @@
-import { Entity, System, SystemProps } from "@piggo-legends/core";
+import { Entity, EntityProps, System, SystemProps } from "@piggo-legends/core";
 
 export class DamageSystem extends System<SystemProps> {
-  onTick = (entities: Entity<any>[]) => {
+  componentTypeQuery = ["health", "damage"];
+  onTick = (entities: Entity<EntityProps>[]) => {
     // console.log("DamageSystem.onTick", entities);
   }
 }

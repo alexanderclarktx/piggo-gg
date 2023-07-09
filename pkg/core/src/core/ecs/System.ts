@@ -1,4 +1,4 @@
-import { Entity } from "@piggo-legends/core";
+import { Entity, EntityProps } from "@piggo-legends/core";
 
 export type SystemProps = {}
 
@@ -10,5 +10,16 @@ export abstract class System<T extends SystemProps> {
     this.props = props;
   }
 
-  abstract onTick: (_: Entity<any>[]) => void
+  abstract componentTypeQuery: string[];
+
+  abstract onTick: (entities: Entity<EntityProps>[]) => void;
+
+  getFilteredEntities = (entities: Entity<EntityProps>[]) => {
+    return entities.filter((e) => {
+      for (const componentType of this.componentTypeQuery) {
+        if (!Object.keys(e.props.components).includes(componentType)) return false;
+      }
+      return true;
+    });
+  }
 }

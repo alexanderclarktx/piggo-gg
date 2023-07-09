@@ -1,23 +1,23 @@
-import { Entity, EntityProps, Renderer, System, SystemProps } from '@piggo-legends/core';
+import { Entity, EntityProps, Renderable, RenderableProps, Renderer, System, SystemProps } from '@piggo-legends/core';
 
 export type RenderSystemProps = SystemProps & {
   renderer: Renderer
 }
 
 export class RenderSystem extends System<RenderSystemProps> {
+  componentTypeQuery = ["renderable"];
 
   renderedEntities: Set<Entity<EntityProps>> = new Set();
 
-  override onTick = (entities: Entity<any>[]) => {
-
-    // add entities to renderer that haven't been added yet
-    for (const entity of entities ?? []) {
+  onTick = (entities: Entity<EntityProps>[]) => {
+    for (const entity of entities) {
       if (!this.renderedEntities.has(entity)) {
-        if (entity.props.components.renderable) {
-          this.props.renderer.addWorld(entity.props.components.renderable);
-          this.renderedEntities.add(entity);
-          console.log("rendering entity", entity);
-        }
+        const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
+
+        this.props.renderer.addWorld(renderable);
+        this.renderedEntities.add(entity);
+
+        console.log("rendering entity", entity);
       }
     }
   }

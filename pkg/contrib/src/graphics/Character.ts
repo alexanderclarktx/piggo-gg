@@ -11,6 +11,7 @@ export type CharacterProps = RenderableProps & {
   scale?: number
 }
 
+// TODO refactor ECS
 export class Character extends Renderable<CharacterProps> {
   currentAnimation: AnimatedSprite;
   windowFocused: boolean = true;

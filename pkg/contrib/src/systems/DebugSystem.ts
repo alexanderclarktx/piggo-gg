@@ -7,6 +7,7 @@ export type DebugSystemProps = SystemProps & {
 }
 
 export class DebugSystem extends System<DebugSystemProps> {
+  componentTypeQuery = ["renderable"];
 
   debuggedEntities: Map<Entity<EntityProps>, Renderable<RenderableProps>[]> = new Map();
 
@@ -16,14 +17,14 @@ export class DebugSystem extends System<DebugSystemProps> {
 
   onTick = (entities: Entity<EntityProps>[]) => {
     if (this.props.renderer.debug) {
-      entities.forEach((entity) => {
+      for (const entity of entities) {
         if (entity.props.components.renderable) {
-          const renderable = entity.props.components.renderable;
+          const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
           if (renderable && renderable.props.debuggable && !this.debuggedEntities.has(entity)) {
             this.addEntity(entity);
           }
         }
-      });
+      }
     } else {
       this.debuggedEntities.forEach((renderables, entity) => {
         renderables.forEach((renderable) => renderable.cleanup());
@@ -34,7 +35,7 @@ export class DebugSystem extends System<DebugSystemProps> {
 
   addEntity = (entity: Entity<EntityProps>) => {
     if (entity.props.components.renderable) {
-      const renderable = entity.props.components.renderable;
+      const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
 
       // text box
       const textBox = new TextBox({

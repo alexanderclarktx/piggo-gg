@@ -19,6 +19,7 @@
       "*": ["node_modules/*"]
     },
     "strictNullChecks": true,
+    "exactOptionalPropertyTypes": true,
     "noImplicitOverride": true,
     "noImplicitThis": true,
     "noImplicitAny": true,

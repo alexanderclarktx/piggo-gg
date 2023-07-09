@@ -9,8 +9,7 @@
     "pkg/games/playground"
   ],
   "scripts": {
-    "start": "npm run web",
-    "web": "npm run serve --workspace app/web",
+    "dev": "npm run serve --workspace app/web",
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces",
     "attack-time": "npm run workspace @piggo-legends/attack-time start",
