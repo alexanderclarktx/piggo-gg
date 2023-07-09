@@ -1,24 +1,10 @@
-import { Component, Renderable, RenderableProps, Renderer } from "@piggo-legends/core";
-
-type CC = {
-  renderable?: Renderable<RenderableProps>
-}
+import { Component } from "@piggo-legends/core";
 
 export type EntityProps = {
-  renderer: Renderer,
   id: string,
-  components: CC,
+  components: Record<string, Component<string>>,
   networked?: boolean
 }
-
-
-// const ComponentTypes: CC = {
-//   [Renderable.type]: undefined
-// };
-
-// type ComponentMap = {
-//   [K in keyof typeof componentTypes]: InstanceType<typeof componentTypes[K]>
-// }
 
 // an Entity is a collection of components
 export class Entity<T extends EntityProps> {

@@ -3,9 +3,9 @@ import React, { useEffect, useRef } from "react";
 import { NetState } from "../types/NetState";
 
 export type PhoneCallProps = {
-  netManager?: NetManager;
+  netManager: NetManager | undefined;
   netState: NetState;
-  theirMediaStream?: MediaStream;
+  theirMediaStream: MediaStream | undefined;
 }
 
 export const PhoneCall = ({ netManager, netState, theirMediaStream }: PhoneCallProps) => {

@@ -49,7 +49,7 @@ export abstract class Game<T extends GameProps> {
 
     // systems onTick
     this.props.systems?.forEach((system) => {
-      system.onTick(this.props.entities ?? []);
+      system.onTick(system.getFilteredEntities(this.props.entities ?? []));
     });
 
     const serializedEntitites: {x: number, y: number}[] = [];

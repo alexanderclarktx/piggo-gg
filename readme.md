@@ -13,7 +13,7 @@ __Piggo Legends__ is a platform for casual multiplayer games. Play it online [he
 npm install
 
 # serve the game locally (webpack serve)
-npm run start
+npm run dev
 ```
 
 ### publishing to GitHub Pages

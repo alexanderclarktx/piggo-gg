@@ -4,7 +4,7 @@ import { Renderer } from "@piggo-legends/core";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
-  netManager?: NetManager
+  netManager: NetManager | undefined
   setGame: (game: Game<any>) => void
 }
 export const GameCanvas = ({ netManager, setGame }: GameCanvasProps) => {
