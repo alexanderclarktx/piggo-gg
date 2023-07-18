@@ -1,8 +1,8 @@
-import { Entity, EntityProps } from "@piggo-legends/core";
+import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
 
 export type SystemProps = {}
 
-// a System is a stateless function that is applied to all entities that have a certain set of components
+// a System is a function that is applied to all entities that have a certain set of components
 export abstract class System<T extends SystemProps> {
   props: T;
 
@@ -12,7 +12,7 @@ export abstract class System<T extends SystemProps> {
 
   abstract componentTypeQuery: string[];
 
-  abstract onTick: (entities: Entity<EntityProps>[]) => void;
+  abstract onTick: (entities: Entity<EntityProps>[], game: Game<GameProps>) => void;
 
   getFilteredEntities = (entities: Entity<EntityProps>[]) => {
     return entities.filter((e) => {

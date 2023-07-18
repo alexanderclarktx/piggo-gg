@@ -1,1 +1,1 @@
-autochess game inspired by DoTA Autochess and TFT
+__DEPRECATED__ see [games/playground](../playground) instead

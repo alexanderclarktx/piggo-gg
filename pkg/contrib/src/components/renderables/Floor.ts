@@ -1,5 +1,5 @@
 import { Sprite, Texture } from "pixi.js";
-import { Renderable, RenderableProps } from "@piggo-legends/core";
+import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type FloorProps = RenderableProps & {
   width: number,

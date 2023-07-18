@@ -1,14 +1,23 @@
-import { Renderable, RenderableProps } from "@piggo-legends/core";
+import { Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Renderer } from "@piggo-legends/core";
+import { Container } from "pixi.js";
 
-export class Camera extends Renderable<RenderableProps> {
+export type CameraProps = {
+  renderer: Renderer,
+}
+
+export class Camera {
   renderables: Set<Renderable<RenderableProps>> = new Set();
+  props: CameraProps;
+  c: Container = new Container();
 
-  constructor(props: RenderableProps) {
-    super({
-      ...props,
-      pos: { x: 0, y: 0 },
-      debuggable: false
-    });
+  constructor(props: CameraProps) {
+    this.props = props;
+
+    this.c.sortableChildren = true;
+    this.c.zIndex = 0;
+    this.c.sortableChildren = true;
+    this.c.alpha = 1;
   }
 
   add = (r: Renderable<RenderableProps>) => {
@@ -17,8 +26,8 @@ export class Camera extends Renderable<RenderableProps> {
   }
 
   moveTo = (x: number, y: number) => {
-    this.c.x = +(this.props.renderer.app.screen.width / 2 - x).toFixed(2);
-    this.c.y = +(this.props.renderer.app.screen.height / 2 - y).toFixed(2);
+    this.c.x = +(this.props.renderer.app.screen.width / 2 - x).toFixed(0);
+    this.c.y = +(this.props.renderer.app.screen.height / 2 - y).toFixed(0);
 
     this.handleCameraPos();
   }

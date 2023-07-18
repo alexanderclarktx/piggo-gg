@@ -49,15 +49,15 @@ export abstract class Game<T extends GameProps> {
 
     // systems onTick
     this.props.systems?.forEach((system) => {
-      system.onTick(system.getFilteredEntities(this.props.entities ?? []));
+      system.onTick(system.getFilteredEntities(this.props.entities ?? []), this);
     });
 
+    // TODO netcode system
     const serializedEntitites: {x: number, y: number}[] = [];
     for (const entity of this.props.entities ?? []) {
       const serialized = entity.serialize();
       if (serialized) serializedEntitites.push(serialized);
     }
-
     const message = {
       type: "game",
       data: {
@@ -65,7 +65,6 @@ export abstract class Game<T extends GameProps> {
         entities: serializedEntitites
       }
     }
-
     this.props.net.sendMessage(message);
   }
 }
