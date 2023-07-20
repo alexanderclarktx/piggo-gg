@@ -1,6 +1,6 @@
 import { Text } from 'pixi.js';
-import { Entity, EntityProps, Renderable, RenderableProps, Renderer, System, SystemProps } from "@piggo-legends/core";
-import { TextBox, DebugBounds } from "@piggo-legends/contrib";
+import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
+import { TextBox, DebugBounds, Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type DebugSystemProps = SystemProps & {
   renderer: Renderer
@@ -15,7 +15,7 @@ export class DebugSystem extends System<DebugSystemProps> {
     super(props);
   }
 
-  onTick = (entities: Entity<EntityProps>[]) => {
+  onTick = (entities: Entity<EntityProps>[], _: Game<GameProps>) => {
     if (this.props.renderer.debug) {
       for (const entity of entities) {
         if (entity.props.components.renderable) {

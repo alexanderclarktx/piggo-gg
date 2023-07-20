@@ -1,5 +1,6 @@
 import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
-import { Renderable, RenderableProps, Camera } from "@piggo-legends/core";
+import { Camera } from "@piggo-legends/core";
+import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 // Renderer renders the game to a canvas
 export class Renderer {

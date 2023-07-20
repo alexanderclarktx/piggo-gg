@@ -5,18 +5,17 @@ export type RenderableProps = {
   renderer: Renderer,
   container?: Container;
   debuggable?: boolean,
-  pos?: { x: number; y: number },
-  timeout?: number,
   zIndex?: number
   dynamic?: (c: Container) => void
   cameraPos?: { x: number; y: number }
 }
 
 export class Renderable<T extends RenderableProps> implements Component<"renderable"> {
+  type: "renderable";
+
   id: string;
   props: T;
   c: Container = new Container();
-  type: "renderable";
 
   constructor(props: T) {
     if (props.container) {
@@ -31,7 +30,6 @@ export class Renderable<T extends RenderableProps> implements Component<"rendera
   }
 
   _init = () => {
-    this.c.position.set(this.props.pos?.x || 0, this.props.pos?.y || 0);
     this.c.zIndex = this.props.zIndex || 0;
     this.c.sortableChildren = true;
     this.c.alpha = 1;
@@ -40,13 +38,6 @@ export class Renderable<T extends RenderableProps> implements Component<"rendera
     this.c.children.forEach((child) => {
       child.alpha = 1;
     });
-
-    // set a timeout
-    if (this.props.timeout) {
-      setTimeout(() => {
-        this.cleanup();
-      }, this.props.timeout);
-    }
 
     // callback
     if (this.props.dynamic) {

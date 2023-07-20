@@ -1,8 +1,9 @@
 import { Component } from "@piggo-legends/core";
 
 export class Tier implements Component<"tier"> {
-  level: number;
   type: "tier";
+
+  level: number;
 
   constructor(level: number) {
     this.level = level;

@@ -1,5 +1,5 @@
 import { Text } from "pixi.js";
-import { Renderable, RenderableProps } from "@piggo-legends/core";
+import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type TextBoxProps = RenderableProps & {
   text?: string,
