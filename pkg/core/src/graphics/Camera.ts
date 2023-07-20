@@ -16,7 +16,6 @@ export class Camera {
 
     this.c.sortableChildren = true;
     this.c.zIndex = 0;
-    this.c.sortableChildren = true;
     this.c.alpha = 1;
   }
 
@@ -26,8 +25,9 @@ export class Camera {
   }
 
   moveTo = (x: number, y: number) => {
-    this.c.x = +(this.props.renderer.app.screen.width / 2 - x).toFixed(0);
-    this.c.y = +(this.props.renderer.app.screen.height / 2 - y).toFixed(0);
+    // TODO jittery
+    this.c.x = Math.trunc(this.props.renderer.app.screen.width / 2 - x);
+    this.c.y = Math.trunc(this.props.renderer.app.screen.height / 2 - y);
 
     this.handleCameraPos();
   }

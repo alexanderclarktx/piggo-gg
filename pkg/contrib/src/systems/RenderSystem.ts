@@ -6,36 +6,42 @@ export type RenderSystemProps = SystemProps & {
 }
 
 export class RenderSystem extends System<RenderSystemProps> {
-  componentTypeQuery = ["renderable"];
+  componentTypeQuery = ["renderable", "position"];
 
   renderedEntities: Set<Entity<EntityProps>> = new Set();
 
+  cachedEntityPositions: Record<string, Position> = {};
+
   onTick = (entities: Entity<EntityProps>[], _: Game<GameProps>) => {
     for (const entity of entities) {
+
       // add new entities to the renderer
       if (!this.renderedEntities.has(entity)) {
-        const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
-        const position = entity.props.components.position as Position | undefined;
-
-        if (position) {
-          renderable.c.position.set(position.x, position.y);
-        } else {
-          renderable.c.position.set(0, 0);
-        }
-
-        this.props.renderer.addWorld(renderable);
-        this.renderedEntities.add(entity);
+        this.handleNewEnitity(entity);
       }
 
       // update renderable if position changed
-      if (entity.props.components.position) {
-        const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
-        const position = entity.props.components.position as Position | undefined;
-
-        if (position) {
-          renderable.c.position.set(position.x, position.y);
-        }
+      const position = entity.components.position as Position;
+      if (position && this.cachedEntityPositions[entity.id].serialize() !== position.serialize()) {
+        const renderable = entity.components.renderable as Renderable<RenderableProps>;
+        renderable.c.position.set(position.x, position.y);
+        renderable.c.rotation = position.rotation.rads;
       }
     }
+  }
+
+  handleNewEnitity = (entity: Entity<EntityProps>) => {
+    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+    const position = entity.components.position as Position | undefined;
+
+    if (position) {
+      renderable.c.position.set(position.x, position.y);
+      this.cachedEntityPositions[entity.id] = position;
+    } else {
+      renderable.c.position.set(0, 0);
+    }
+
+    this.props.renderer.addWorld(renderable);
+    this.renderedEntities.add(entity);
   }
 }

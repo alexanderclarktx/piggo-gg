@@ -7,7 +7,8 @@ export type CharacterProps = RenderableProps & {
     dl: AnimatedSprite, dr: AnimatedSprite, ul: AnimatedSprite, ur: AnimatedSprite
   },
   track?: boolean,
-  scale?: number
+  scale?: number,
+  tintColor?: number,
 }
 
 export class Character extends Renderable<CharacterProps> {
@@ -30,15 +31,11 @@ export class Character extends Renderable<CharacterProps> {
       animation.animationSpeed = 0.1;
       animation.scale.set(this.props.scale || 1);
       animation.anchor.set(0.5);
+      if (this.props.tintColor) animation.tint = this.props.tintColor;
     });
 
     // play the down animation by default
     this.setAnimation("d");
-
-    // follow the character with the camera
-    if (this.props.track) {
-      this.props.renderer.trackCamera(this);
-    }
   }
 
   setAnimation = (animationKey: keyof CharacterProps['animations']) => {

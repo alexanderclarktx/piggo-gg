@@ -40526,6 +40526,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   Interactive: () => (/* reexport safe */ _src_components_Interactive__WEBPACK_IMPORTED_MODULE_10__.Interactive),
 /* harmony export */   InteractiveSystem: () => (/* reexport safe */ _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_27__.InteractiveSystem),
 /* harmony export */   Name: () => (/* reexport safe */ _src_components_Name__WEBPACK_IMPORTED_MODULE_2__.Name),
+/* harmony export */   NetcodeSystem: () => (/* reexport safe */ _src_systems_NetcodeSystem__WEBPACK_IMPORTED_MODULE_28__.NetcodeSystem),
 /* harmony export */   Player: () => (/* reexport safe */ _src_entities_Player__WEBPACK_IMPORTED_MODULE_14__.Player),
 /* harmony export */   Position: () => (/* reexport safe */ _src_components_Position__WEBPACK_IMPORTED_MODULE_9__.Position),
 /* harmony export */   RenderSystem: () => (/* reexport safe */ _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_25__.RenderSystem),
@@ -40566,6 +40567,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./src/systems/RenderSystem */ "../../pkg/contrib/src/systems/RenderSystem.ts");
 /* harmony import */ var _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./src/systems/InputSystem */ "../../pkg/contrib/src/systems/InputSystem.ts");
 /* harmony import */ var _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./src/systems/InteractiveSystem */ "../../pkg/contrib/src/systems/InteractiveSystem.ts");
+/* harmony import */ var _src_systems_NetcodeSystem__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./src/systems/NetcodeSystem */ "../../pkg/contrib/src/systems/NetcodeSystem.ts");
+
 
 
 
@@ -40901,31 +40904,31 @@ const SLIDE_ACCELERATION = 0.3;
 const speed = 1;
 const CarMovement = {
     "up": (entity, _) => {
-        const position = entity.props.components.position;
-        const renderable = entity.props.components.renderable;
+        const position = entity.components.position;
+        const renderable = entity.components.renderable;
         position.x += Math.sin(renderable.c.rotation) * speed;
         position.y -= Math.cos(renderable.c.rotation) * speed;
     },
     "down": (entity, _) => {
-        const position = entity.props.components.position;
-        const renderable = entity.props.components.renderable;
+        const position = entity.components.position;
+        const renderable = entity.components.renderable;
         position.x -= Math.sin(renderable.c.rotation) * speed;
         position.y += Math.cos(renderable.c.rotation) * speed;
     },
     "left": (entity, _) => {
-        const renderable = entity.props.components.renderable;
+        const renderable = entity.components.renderable;
         renderable.c.rotation -= TURN_SPEED;
     },
     "right": (entity, _) => {
-        const renderable = entity.props.components.renderable;
+        const renderable = entity.components.renderable;
         renderable.c.rotation += TURN_SPEED;
     },
     "skidleft": (entity, _) => {
-        const renderable = entity.props.components.renderable;
+        const renderable = entity.components.renderable;
         renderable.c.rotation -= TURN_SPEED * SLIDE_FACTOR;
     },
     "skidright": (entity, _) => {
-        const renderable = entity.props.components.renderable;
+        const renderable = entity.components.renderable;
         renderable.c.rotation += TURN_SPEED * SLIDE_FACTOR;
     }
 };
@@ -40947,63 +40950,63 @@ __webpack_require__.r(__webpack_exports__);
 const speed = 1;
 const CharacterMovement = {
     "upleft": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.x -= speed * 1.414213562373095;
         position.y -= speed * 0.7212489168102785;
         position.x = +(position.x.toFixed(2));
         position.y = +(position.y.toFixed(2));
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("ul");
     },
     "upright": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.x += speed * 1.414213562373095;
         position.y -= speed * 0.7212489168102785;
         position.x = +(position.x.toFixed(2));
         position.y = +(position.y.toFixed(2));
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("ur");
     },
     "downleft": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.x -= speed * 1.414213562373095;
         position.y += speed * 0.7212489168102785;
         position.x = +(position.x.toFixed(2));
         position.y = +(position.y.toFixed(2));
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("dl");
     },
     "downright": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.x += speed * 1.414213562373095;
         position.y += speed * 0.7212489168102785;
         position.x = +(position.x.toFixed(2));
         position.y = +(position.y.toFixed(2));
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("dr");
     },
     "up": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.y -= speed;
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("u");
     },
     "down": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.y += speed;
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("d");
     },
     "left": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.x -= speed;
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("l");
     },
     "right": (entity, _) => {
-        const position = entity.props.components.position;
+        const position = entity.components.position;
         position.x += speed;
-        const character = entity.props.components.renderable;
+        const character = entity.components.renderable;
         character.setAnimation("r");
     }
 };
@@ -41418,8 +41421,8 @@ class DebugSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syste
         this.onTick = (entities, _) => {
             if (this.props.renderer.debug) {
                 for (const entity of entities) {
-                    if (entity.props.components.renderable) {
-                        const renderable = entity.props.components.renderable;
+                    if (entity.components.renderable) {
+                        const renderable = entity.components.renderable;
                         if (renderable && renderable.props.debuggable && !this.debuggedEntities.has(entity)) {
                             this.addEntity(entity);
                         }
@@ -41434,8 +41437,8 @@ class DebugSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syste
             }
         };
         this.addEntity = (entity) => {
-            if (entity.props.components.renderable) {
-                const renderable = entity.props.components.renderable;
+            if (entity.components.renderable) {
+                const renderable = entity.components.renderable;
                 // text box
                 const textBox = new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.TextBox({
                     renderer: this.props.renderer,
@@ -41502,8 +41505,8 @@ class InputSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syste
                 let buffer = new Set([]);
                 this.bufferedDown.forEach((key) => buffer.add(key));
                 // check for actions
-                const controller = entity.props.components.controller;
-                const actions = entity.props.components.actions;
+                const controller = entity.components.controller;
+                const actions = entity.components.actions;
                 if (controller.active) {
                     for (const input in controller.map) {
                         if (input.includes(",")) {
@@ -41566,7 +41569,7 @@ class InteractiveSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__
         };
         this.onTick = (entities, game) => {
             for (const entity of entities) {
-                const interactive = entity.props.components.interactive;
+                const interactive = entity.components.interactive;
                 if (interactive.active) {
                     for (const click of this.bufferClick) {
                         if (click.x >= interactive.bounds.x && click.x <= interactive.bounds.x + interactive.bounds.w &&
@@ -41578,6 +41581,81 @@ class InteractiveSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__
                 }
             }
             this.bufferClick = [];
+        };
+        this.init();
+    }
+}
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/systems/NetcodeSystem.ts":
+/*!******************************************************!*\
+  !*** ../../pkg/contrib/src/systems/NetcodeSystem.ts ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NetcodeSystem: () => (/* binding */ NetcodeSystem)
+/* harmony export */ });
+/* harmony import */ var _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piggo-legends/core */ "../../pkg/core/main.ts");
+
+class NetcodeSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.System {
+    constructor(props) {
+        super(props);
+        this.componentTypeQuery = ["position"];
+        this.init = () => {
+            this.props.net.events.addEventListener("message", (event) => {
+                if (event.detail.type === "game")
+                    this.tickDataBuffer = event.detail;
+            });
+        };
+        this.onTick = (entities, game) => {
+            const serializedEntitites = {};
+            // serialize each entity
+            for (const entity of Object.values(entities)) {
+                const position = entity.components.position;
+                const serialized = {
+                    position: {
+                        x: position.x, y: position.y
+                    }
+                };
+                serializedEntitites[entity.id] = serialized;
+            }
+            // construct tick message
+            const message = {
+                type: "game",
+                tick: game.tick,
+                entities: serializedEntitites
+            };
+            if (game.tick === 100)
+                console.log("sending", message);
+            // send message if connected
+            if (this.props.net.pc.connectionState === "connected")
+                this.props.net.sendMessage(message);
+            // handle incoming message
+            if (this.tickDataBuffer)
+                this.handleMessage(this.tickDataBuffer, game);
+        };
+        this.handleMessage = (td, game) => {
+            if (td.tick % 400 === 0)
+                console.log(td);
+            // Object.entries(td.entities).forEach(([id, entity]) => {
+            //   if (game.props.entities[id]) {
+            //     const position = game.props.entities[id].components.position as Position;
+            //     position.x = entity.position.x;
+            //     position.y = entity.position.y;
+            //   }
+            // });
+            const spaceship = game.props.entities["spaceship"];
+            const spaceshipController = spaceship.components.controller;
+            if (!spaceshipController.active) {
+                const position = spaceship.components.position;
+                position.x = td.entities["spaceship"].position.x;
+                position.y = td.entities["spaceship"].position.y;
+            }
         };
         this.init();
     }
@@ -41602,14 +41680,14 @@ __webpack_require__.r(__webpack_exports__);
 class RenderSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.System {
     constructor() {
         super(...arguments);
-        this.componentTypeQuery = ["renderable"];
+        this.componentTypeQuery = ["renderable", "position"];
         this.renderedEntities = new Set();
         this.onTick = (entities, _) => {
             for (const entity of entities) {
                 // add new entities to the renderer
                 if (!this.renderedEntities.has(entity)) {
-                    const renderable = entity.props.components.renderable;
-                    const position = entity.props.components.position;
+                    const renderable = entity.components.renderable;
+                    const position = entity.components.position;
                     if (position) {
                         renderable.c.position.set(position.x, position.y);
                     }
@@ -41620,9 +41698,9 @@ class RenderSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syst
                     this.renderedEntities.add(entity);
                 }
                 // update renderable if position changed
-                if (entity.props.components.position) {
-                    const renderable = entity.props.components.renderable;
-                    const position = entity.props.components.position;
+                if (entity.components.position) {
+                    const renderable = entity.components.renderable;
+                    const position = entity.components.position;
                     if (position) {
                         renderable.c.position.set(position.x, position.y);
                     }
@@ -41699,13 +41777,10 @@ __webpack_require__.r(__webpack_exports__);
 // an Entity is a collection of components
 class Entity {
     constructor(props) {
-        this.serialize = () => {
-            // if (this.renderable && this.props.networked) {
-            //   return {x: +this.renderable.c.position.x.toFixed(2), y: +this.renderable.c.position.y.toFixed(2)}
-            // }
-            return undefined;
-        };
-        this.props = props;
+        var _a;
+        this.id = props.id;
+        this.components = props.components;
+        this.networked = (_a = props.networked) !== null && _a !== void 0 ? _a : false;
     }
 }
 
@@ -41729,7 +41804,7 @@ class System {
         this.getFilteredEntities = (entities) => {
             return entities.filter((e) => {
                 for (const componentType of this.componentTypeQuery) {
-                    if (!Object.keys(e.props.components).includes(componentType))
+                    if (!Object.keys(e.components).includes(componentType))
                         return false;
                 }
                 return true;
@@ -41757,28 +41832,11 @@ class Game {
     constructor(props) {
         this.tick = 0;
         this.addEntity = (entity) => {
-            this.props.entities[entity.props.id] = entity;
+            this.props.entities[entity.id] = entity;
         };
         this._init = () => {
             // ontick
             this.props.renderer.app.ticker.add(this.onTick);
-            // callback for netcode
-            this.props.net.events.addEventListener("message", (evt) => {
-                // if (!this.otherPlayer) {
-                //   this.otherPlayer = new Skelly({
-                //     id: "skelly2",
-                //     renderer: this.props.renderer
-                //   });
-                //   this.props.entities?.push(this.otherPlayer);
-                // }
-                // TODO network system
-                // const data = evt.detail;
-                // if (data.type === "game" && this.otherPlayer.renderable) {
-                //   const pos = data.data.entities[0];
-                //   this.otherPlayer.renderable.c.position.x = parseFloat(pos.x);
-                //   this.otherPlayer.renderable.c.position.y = parseFloat(pos.y);
-                // }
-            });
         };
         this.onTick = () => {
             var _a;
@@ -41787,21 +41845,6 @@ class Game {
             (_a = this.props.systems) === null || _a === void 0 ? void 0 : _a.forEach((system) => {
                 system.onTick(system.getFilteredEntities(Object.values(this.props.entities)), this);
             });
-            // TODO netcode system
-            const serializedEntitites = [];
-            for (const entity of Object.values(this.props.entities)) {
-                const serialized = entity.serialize();
-                if (serialized)
-                    serializedEntitites.push(serialized);
-            }
-            const message = {
-                type: "game",
-                data: {
-                    tick: this.tick,
-                    entities: serializedEntitites
-                }
-            };
-            this.props.net.sendMessage(message);
         };
         this.props = props;
         this._init();
@@ -42261,7 +42304,8 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                 new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.RenderSystem({ renderer: props.renderer }),
                 new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.DebugSystem({ renderer: props.renderer }),
                 new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InputSystem({ renderer: props.renderer }),
-                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InteractiveSystem({ renderer: props.renderer })
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InteractiveSystem({ renderer: props.renderer }),
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.NetcodeSystem({ renderer: props.renderer, net: props.net })
             ] }));
         this.init = () => __awaiter(this, void 0, void 0, function* () {
             // fpsText
@@ -42342,12 +42386,12 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
             }));
             // ball
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "ball", renderer: this.props.renderer, networked: false,
+                id: "ball", renderer: this.props.renderer, networked: true,
                 components: {
+                    position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(400, 500),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Renderable({
                         renderer: this.props.renderer,
                         debuggable: true,
-                        pos: { x: 50, y: 50 },
                         zIndex: 1,
                         container: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
                     })
@@ -42359,7 +42403,7 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                 chars.textures[key].baseTexture.scaleMode = pixi_js__WEBPACK_IMPORTED_MODULE_2__.SCALE_MODES.NEAREST;
             }
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "skelly1", renderer: this.props.renderer, networked: false,
+                id: "skelly1", renderer: this.props.renderer, networked: true,
                 components: {
                     position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(300, 300),
                     controller: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controller({
@@ -42392,21 +42436,21 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
             // spaceship
             const spaceship = yield pixi_js__WEBPACK_IMPORTED_MODULE_2__.Assets.load("spaceship.json");
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "spaceship", renderer: this.props.renderer, networked: false,
+                id: "spaceship", renderer: this.props.renderer, networked: true,
                 components: {
                     position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(100, 300),
                     interactive: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Interactive({
                         active: true,
                         bounds: { x: 50, y: 240, w: 100, h: 120 },
                         onPress: (e, g) => {
-                            // const r = e.props.components.renderable as Character;
+                            // const r = e.components.renderable as Character;
                             // r.currentAnimation.tint = 0x0000cc;
-                            const spaceshipController = e.props.components.controller;
+                            const spaceshipController = e.components.controller;
                             spaceshipController.active = true;
                             const skelly = g.props.entities["skelly1"];
-                            const skellyController = skelly.props.components.controller;
+                            const skellyController = skelly.components.controller;
                             skellyController.active = false;
-                            g.props.renderer.trackCamera(e.props.components.renderable);
+                            g.props.renderer.trackCamera(e.components.renderable);
                         }
                     }),
                     controller: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controller({

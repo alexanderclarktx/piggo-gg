@@ -18,8 +18,8 @@ export class DebugSystem extends System<DebugSystemProps> {
   onTick = (entities: Entity<EntityProps>[], _: Game<GameProps>) => {
     if (this.props.renderer.debug) {
       for (const entity of entities) {
-        if (entity.props.components.renderable) {
-          const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
+        if (entity.components.renderable) {
+          const renderable = entity.components.renderable as Renderable<RenderableProps>;
           if (renderable && renderable.props.debuggable && !this.debuggedEntities.has(entity)) {
             this.addEntity(entity);
           }
@@ -34,15 +34,15 @@ export class DebugSystem extends System<DebugSystemProps> {
   }
 
   addEntity = (entity: Entity<EntityProps>) => {
-    if (entity.props.components.renderable) {
-      const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
+    if (entity.components.renderable) {
+      const renderable = entity.components.renderable as Renderable<RenderableProps>;
 
       // text box
       const textBox = new TextBox({
         renderer: this.props.renderer,
         dynamic: (c: Text) => {
-          const bounds = renderable.c.getBounds(false);
-          textBox.c.position.set(renderable.c.x - 15, bounds.y - this.props.renderer.app.stage.y - 15);
+          const bounds = renderable.c.getLocalBounds();
+          c.position.set(renderable.c.x - 15, renderable.c.y - bounds.height / 2 - 15);
           c.text = `${renderable.c.x.toFixed(2)} ${renderable.c.y.toFixed(2)}`;
         },
         fontSize: 12, color: 0xffff00, debuggable: false
