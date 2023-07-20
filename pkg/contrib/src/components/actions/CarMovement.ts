@@ -1,85 +1,44 @@
+import { ActionMap, Position, Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
 
-// addCarControls = () => {
-//   let velocity = new Point(0, 0);
-//   const MAX_VELOCITY = 100;
-//   const ACCELERATION = 0.2;
-//   const FRICTION = 0.05;
-//   const TURN_SPEED = 0.015;
-//   const SLIDE_FACTOR = 2;
-//   const SLIDE_ACCELERATION = 0.3;
+const MAX_VELOCITY = 100;
+const ACCELERATION = 0.2;
+const FRICTION = 0.05;
+const TURN_SPEED = 0.015;
+const SLIDE_FACTOR = 2;
+const SLIDE_ACCELERATION = 0.3;
 
-//   const inputs = { w: false, a: false, s: false, d: false, shift: false };
+const speed = 1;
 
-//   document.addEventListener("keydown", (event) => {
-//     const keyName = event.key.toLowerCase();
-//     if (keyName in inputs) {
-//       // @ts-ignore
-//       inputs[keyName] = true;
-//     }
-//   });
+export const CarMovement: ActionMap = {
+  "up": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
+    const position = entity.props.components.position as Position;
+    const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
 
-//   document.addEventListener("keyup", (event) => {
-//     const keyName = event.key.toLowerCase();
-//     if (keyName in inputs) {
-//       // @ts-ignore
-//       inputs[keyName] = false;
-//     }
-//   });
+    position.x += Math.sin(renderable.c.rotation) * speed;
+    position.y -= Math.cos(renderable.c.rotation) * speed;
+  },
+  "down": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
+    const position = entity.props.components.position as Position;
+    const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
 
-//   this.props.renderer.app.ticker.add(() => {
-//     // Apply friction
-//     velocity.x -= velocity.x * FRICTION;
-//     velocity.y -= velocity.y * FRICTION;
-
-//     // Handle acceleration
-//     if (inputs.w && !inputs.s) {
-//       const acceleration = inputs.shift ? SLIDE_ACCELERATION : ACCELERATION;
-//       velocity.x += Math.sin(this.c.rotation) * acceleration;
-//       velocity.y -= Math.cos(this.c.rotation) * acceleration;
-//     } else if (inputs.s && !inputs.w) {
-//       const acceleration = inputs.shift ? SLIDE_ACCELERATION : ACCELERATION;
-//       velocity.x -= Math.sin(this.c.rotation) * acceleration;
-//       velocity.y += Math.cos(this.c.rotation) * acceleration;
-//     }
-
-//     // Handle turning
-//     const slide_multiplier = inputs.shift ? SLIDE_FACTOR : 1;
-//     if (inputs.a && !inputs.d) {
-//       this.c.rotation -= TURN_SPEED * slide_multiplier;
-//     } else if (inputs.d && !inputs.a) {
-//       this.c.rotation += TURN_SPEED * slide_multiplier;
-//     }
-
-//     // Handle maximum velocity
-//     const currentVelocity = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-//     if (currentVelocity > MAX_VELOCITY) {
-//       const maxVelocityRatio = MAX_VELOCITY / currentVelocity;
-//       velocity.x *= maxVelocityRatio;
-//       velocity.y *= maxVelocityRatio;
-//     }
-
-//     // Update the container position based on the velocity
-//     this.c.x += velocity.x;
-//     this.c.y += velocity.y;
-
-//     // Play the correct animation
-//     if (currentVelocity > 0) {
-//       const animationToUse =
-//         (velocity.y > 0 ? "d" : "") + (velocity.y < 0 ? "u" : "") +
-//         (velocity.x > 0 ? "r" : "") + (velocity.x < 0 ? "l" : "");
-
-//       // @ts-ignore
-//       if (this.currentAnimation !== this.props.animations[animationToUse]) {
-//         if (this.currentAnimation) {
-//           this.c.removeChild(this.currentAnimation);
-//         }
-//         // @ts-ignore
-//         this.currentAnimation = this.props.animations[animationToUse];
-//         this.c.addChild(this.currentAnimation);
-//         this.currentAnimation.play();
-//       } else {
-//         this.currentAnimation.play();
-//       }
-//     }
-//   });
-// }
+    position.x -= Math.sin(renderable.c.rotation) * speed;
+    position.y += Math.cos(renderable.c.rotation) * speed;
+  },
+  "left": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
+    const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
+    renderable.c.rotation -= TURN_SPEED;
+  },
+  "right": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
+    const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
+    renderable.c.rotation += TURN_SPEED;
+  },
+  "skidleft": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
+    const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
+    renderable.c.rotation -= TURN_SPEED * SLIDE_FACTOR;
+  },
+  "skidright": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
+    const renderable = entity.props.components.renderable as Renderable<RenderableProps>;
+    renderable.c.rotation += TURN_SPEED * SLIDE_FACTOR;
+  }
+}

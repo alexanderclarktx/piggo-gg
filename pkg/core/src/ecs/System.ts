@@ -1,6 +1,8 @@
-import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
+import { Entity, EntityProps, Game, GameProps, Renderer } from "@piggo-legends/core";
 
-export type SystemProps = {}
+export type SystemProps = {
+  renderer: Renderer
+}
 
 // a System is a function that is applied to all entities that have a certain set of components
 export abstract class System<T extends SystemProps> {

@@ -9,6 +9,7 @@ export type FloorProps = RenderableProps & {
   tint?: number
 }
 
+// TODO each tile should be an entity
 export class Floor extends Renderable<FloorProps> {
   constructor(props: FloorProps) {
     super(props);

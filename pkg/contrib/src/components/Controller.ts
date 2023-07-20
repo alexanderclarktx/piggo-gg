@@ -2,15 +2,20 @@ import { Component } from "@piggo-legends/core";
 
 export type ControllerMap = Record<string, string>;
 
+export type ControllerProps = {
+  map: ControllerMap;
+  active?: boolean;
+}
+
 // the Controller component maps inputs to Actions
 export class Controller implements Component<"controller"> {
   type: "controller";
 
-  active: boolean = false;
   map: ControllerMap;
+  active: boolean;
 
-  constructor(controllerMap: ControllerMap, active: boolean = false) {
-    this.map = controllerMap;
-    this.active = active;
+  constructor(props: ControllerProps) {
+    this.map = props.map;
+    this.active = props.active ?? false;
   }
 }

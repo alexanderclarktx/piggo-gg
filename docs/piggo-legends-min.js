@@ -40288,7 +40288,7 @@ const GameCanvas = ({ netManager, setGame }) => {
             setGame(new _piggo_legends_playground__WEBPACK_IMPORTED_MODULE_0__.Playground({
                 net: netManager,
                 renderer: renderer,
-                entities: [],
+                entities: {},
                 systems: [],
             }));
         }
@@ -40510,30 +40510,33 @@ const Root = () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Actions: () => (/* reexport safe */ _src_components_Actions__WEBPACK_IMPORTED_MODULE_7__.Actions),
-/* harmony export */   Button: () => (/* reexport safe */ _src_components_renderables_Button__WEBPACK_IMPORTED_MODULE_16__.Button),
-/* harmony export */   Character: () => (/* reexport safe */ _src_components_renderables_Character__WEBPACK_IMPORTED_MODULE_15__.Character),
-/* harmony export */   CharacterMovement: () => (/* reexport safe */ _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_10__.CharacterMovement),
+/* harmony export */   Button: () => (/* reexport safe */ _src_components_renderables_Button__WEBPACK_IMPORTED_MODULE_18__.Button),
+/* harmony export */   CarMovement: () => (/* reexport safe */ _src_components_actions_CarMovement__WEBPACK_IMPORTED_MODULE_12__.CarMovement),
+/* harmony export */   Character: () => (/* reexport safe */ _src_components_renderables_Character__WEBPACK_IMPORTED_MODULE_17__.Character),
+/* harmony export */   CharacterMovement: () => (/* reexport safe */ _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_11__.CharacterMovement),
 /* harmony export */   Controller: () => (/* reexport safe */ _src_components_Controller__WEBPACK_IMPORTED_MODULE_6__.Controller),
-/* harmony export */   DamageSystem: () => (/* reexport safe */ _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_22__.DamageSystem),
-/* harmony export */   DebugBounds: () => (/* reexport safe */ _src_components_renderables_DebugBounds__WEBPACK_IMPORTED_MODULE_20__.DebugBounds),
-/* harmony export */   DebugSystem: () => (/* reexport safe */ _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_21__.DebugSystem),
+/* harmony export */   DamageSystem: () => (/* reexport safe */ _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_24__.DamageSystem),
+/* harmony export */   DebugBounds: () => (/* reexport safe */ _src_components_renderables_DebugBounds__WEBPACK_IMPORTED_MODULE_22__.DebugBounds),
+/* harmony export */   DebugSystem: () => (/* reexport safe */ _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_23__.DebugSystem),
 /* harmony export */   Experience: () => (/* reexport safe */ _src_components_Experience__WEBPACK_IMPORTED_MODULE_5__.Experience),
-/* harmony export */   Floor: () => (/* reexport safe */ _src_components_renderables_Floor__WEBPACK_IMPORTED_MODULE_14__.Floor),
+/* harmony export */   Floor: () => (/* reexport safe */ _src_components_renderables_Floor__WEBPACK_IMPORTED_MODULE_16__.Floor),
 /* harmony export */   Gold: () => (/* reexport safe */ _src_components_Gold__WEBPACK_IMPORTED_MODULE_4__.Gold),
 /* harmony export */   Health: () => (/* reexport safe */ _src_components_Health__WEBPACK_IMPORTED_MODULE_3__.Health),
-/* harmony export */   InputSystem: () => (/* reexport safe */ _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_24__.InputSystem),
+/* harmony export */   InputSystem: () => (/* reexport safe */ _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_26__.InputSystem),
+/* harmony export */   Interactive: () => (/* reexport safe */ _src_components_Interactive__WEBPACK_IMPORTED_MODULE_10__.Interactive),
+/* harmony export */   InteractiveSystem: () => (/* reexport safe */ _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_27__.InteractiveSystem),
 /* harmony export */   Name: () => (/* reexport safe */ _src_components_Name__WEBPACK_IMPORTED_MODULE_2__.Name),
-/* harmony export */   Player: () => (/* reexport safe */ _src_entities_Player__WEBPACK_IMPORTED_MODULE_12__.Player),
+/* harmony export */   Player: () => (/* reexport safe */ _src_entities_Player__WEBPACK_IMPORTED_MODULE_14__.Player),
 /* harmony export */   Position: () => (/* reexport safe */ _src_components_Position__WEBPACK_IMPORTED_MODULE_9__.Position),
-/* harmony export */   RenderSystem: () => (/* reexport safe */ _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_23__.RenderSystem),
+/* harmony export */   RenderSystem: () => (/* reexport safe */ _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_25__.RenderSystem),
 /* harmony export */   Renderable: () => (/* reexport safe */ _src_components_Renderable__WEBPACK_IMPORTED_MODULE_8__.Renderable),
-/* harmony export */   SwitchButton: () => (/* reexport safe */ _src_components_renderables_SwitchButton__WEBPACK_IMPORTED_MODULE_17__.SwitchButton),
-/* harmony export */   TapButton: () => (/* reexport safe */ _src_components_renderables_TapButton__WEBPACK_IMPORTED_MODULE_18__.TapButton),
-/* harmony export */   TextBox: () => (/* reexport safe */ _src_components_renderables_TextBox__WEBPACK_IMPORTED_MODULE_19__.TextBox),
+/* harmony export */   SwitchButton: () => (/* reexport safe */ _src_components_renderables_SwitchButton__WEBPACK_IMPORTED_MODULE_19__.SwitchButton),
+/* harmony export */   TapButton: () => (/* reexport safe */ _src_components_renderables_TapButton__WEBPACK_IMPORTED_MODULE_20__.TapButton),
+/* harmony export */   TextBox: () => (/* reexport safe */ _src_components_renderables_TextBox__WEBPACK_IMPORTED_MODULE_21__.TextBox),
 /* harmony export */   Tier: () => (/* reexport safe */ _src_components_Tier__WEBPACK_IMPORTED_MODULE_1__.Tier),
-/* harmony export */   Tile: () => (/* reexport safe */ _src_entities_Tile__WEBPACK_IMPORTED_MODULE_13__.Tile),
+/* harmony export */   Tile: () => (/* reexport safe */ _src_entities_Tile__WEBPACK_IMPORTED_MODULE_15__.Tile),
 /* harmony export */   Traits: () => (/* reexport safe */ _src_components_Traits__WEBPACK_IMPORTED_MODULE_0__.Traits),
-/* harmony export */   Unit: () => (/* reexport safe */ _src_entities_Unit__WEBPACK_IMPORTED_MODULE_11__.Unit)
+/* harmony export */   Unit: () => (/* reexport safe */ _src_entities_Unit__WEBPACK_IMPORTED_MODULE_13__.Unit)
 /* harmony export */ });
 /* harmony import */ var _src_components_Traits__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/components/Traits */ "../../pkg/contrib/src/components/Traits.ts");
 /* harmony import */ var _src_components_Tier__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/components/Tier */ "../../pkg/contrib/src/components/Tier.ts");
@@ -40545,21 +40548,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_components_Actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./src/components/Actions */ "../../pkg/contrib/src/components/Actions.ts");
 /* harmony import */ var _src_components_Renderable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./src/components/Renderable */ "../../pkg/contrib/src/components/Renderable.ts");
 /* harmony import */ var _src_components_Position__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./src/components/Position */ "../../pkg/contrib/src/components/Position.ts");
-/* harmony import */ var _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./src/components/actions/CharacterMovement */ "../../pkg/contrib/src/components/actions/CharacterMovement.ts");
-/* harmony import */ var _src_entities_Unit__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./src/entities/Unit */ "../../pkg/contrib/src/entities/Unit.ts");
-/* harmony import */ var _src_entities_Player__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./src/entities/Player */ "../../pkg/contrib/src/entities/Player.ts");
-/* harmony import */ var _src_entities_Tile__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./src/entities/Tile */ "../../pkg/contrib/src/entities/Tile.ts");
-/* harmony import */ var _src_components_renderables_Floor__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./src/components/renderables/Floor */ "../../pkg/contrib/src/components/renderables/Floor.ts");
-/* harmony import */ var _src_components_renderables_Character__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./src/components/renderables/Character */ "../../pkg/contrib/src/components/renderables/Character.ts");
-/* harmony import */ var _src_components_renderables_Button__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./src/components/renderables/Button */ "../../pkg/contrib/src/components/renderables/Button.ts");
-/* harmony import */ var _src_components_renderables_SwitchButton__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./src/components/renderables/SwitchButton */ "../../pkg/contrib/src/components/renderables/SwitchButton.ts");
-/* harmony import */ var _src_components_renderables_TapButton__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./src/components/renderables/TapButton */ "../../pkg/contrib/src/components/renderables/TapButton.ts");
-/* harmony import */ var _src_components_renderables_TextBox__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./src/components/renderables/TextBox */ "../../pkg/contrib/src/components/renderables/TextBox.ts");
-/* harmony import */ var _src_components_renderables_DebugBounds__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./src/components/renderables/DebugBounds */ "../../pkg/contrib/src/components/renderables/DebugBounds.ts");
-/* harmony import */ var _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./src/systems/DebugSystem */ "../../pkg/contrib/src/systems/DebugSystem.ts");
-/* harmony import */ var _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./src/systems/DamageSystem */ "../../pkg/contrib/src/systems/DamageSystem.ts");
-/* harmony import */ var _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./src/systems/RenderSystem */ "../../pkg/contrib/src/systems/RenderSystem.ts");
-/* harmony import */ var _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./src/systems/InputSystem */ "../../pkg/contrib/src/systems/InputSystem.ts");
+/* harmony import */ var _src_components_Interactive__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./src/components/Interactive */ "../../pkg/contrib/src/components/Interactive.ts");
+/* harmony import */ var _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./src/components/actions/CharacterMovement */ "../../pkg/contrib/src/components/actions/CharacterMovement.ts");
+/* harmony import */ var _src_components_actions_CarMovement__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./src/components/actions/CarMovement */ "../../pkg/contrib/src/components/actions/CarMovement.ts");
+/* harmony import */ var _src_entities_Unit__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./src/entities/Unit */ "../../pkg/contrib/src/entities/Unit.ts");
+/* harmony import */ var _src_entities_Player__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./src/entities/Player */ "../../pkg/contrib/src/entities/Player.ts");
+/* harmony import */ var _src_entities_Tile__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./src/entities/Tile */ "../../pkg/contrib/src/entities/Tile.ts");
+/* harmony import */ var _src_components_renderables_Floor__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./src/components/renderables/Floor */ "../../pkg/contrib/src/components/renderables/Floor.ts");
+/* harmony import */ var _src_components_renderables_Character__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./src/components/renderables/Character */ "../../pkg/contrib/src/components/renderables/Character.ts");
+/* harmony import */ var _src_components_renderables_Button__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./src/components/renderables/Button */ "../../pkg/contrib/src/components/renderables/Button.ts");
+/* harmony import */ var _src_components_renderables_SwitchButton__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./src/components/renderables/SwitchButton */ "../../pkg/contrib/src/components/renderables/SwitchButton.ts");
+/* harmony import */ var _src_components_renderables_TapButton__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./src/components/renderables/TapButton */ "../../pkg/contrib/src/components/renderables/TapButton.ts");
+/* harmony import */ var _src_components_renderables_TextBox__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./src/components/renderables/TextBox */ "../../pkg/contrib/src/components/renderables/TextBox.ts");
+/* harmony import */ var _src_components_renderables_DebugBounds__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./src/components/renderables/DebugBounds */ "../../pkg/contrib/src/components/renderables/DebugBounds.ts");
+/* harmony import */ var _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./src/systems/DebugSystem */ "../../pkg/contrib/src/systems/DebugSystem.ts");
+/* harmony import */ var _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./src/systems/DamageSystem */ "../../pkg/contrib/src/systems/DamageSystem.ts");
+/* harmony import */ var _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./src/systems/RenderSystem */ "../../pkg/contrib/src/systems/RenderSystem.ts");
+/* harmony import */ var _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./src/systems/InputSystem */ "../../pkg/contrib/src/systems/InputSystem.ts");
+/* harmony import */ var _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./src/systems/InteractiveSystem */ "../../pkg/contrib/src/systems/InteractiveSystem.ts");
+
+
+
 
 
 
@@ -40623,10 +40632,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 // the Controller component maps inputs to Actions
 class Controller {
-    constructor(controllerMap, active = false) {
-        this.active = false;
-        this.map = controllerMap;
-        this.active = active;
+    constructor(props) {
+        var _a;
+        this.map = props.map;
+        this.active = (_a = props.active) !== null && _a !== void 0 ? _a : false;
     }
 }
 
@@ -40692,6 +40701,28 @@ class Health {
     constructor(health, maxHealth) {
         this.health = health;
         this.maxHealth = maxHealth;
+    }
+}
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/components/Interactive.ts":
+/*!*******************************************************!*\
+  !*** ../../pkg/contrib/src/components/Interactive.ts ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Interactive: () => (/* binding */ Interactive)
+/* harmony export */ });
+class Interactive {
+    constructor(props) {
+        this.active = props.active;
+        this.bounds = props.bounds;
+        this.onPress = props.onPress;
     }
 }
 
@@ -40765,6 +40796,18 @@ class Renderable {
             this.c.children.forEach((child) => {
                 child.alpha = 1;
             });
+            if (this.props.interactive) {
+                this.c.eventMode = "static";
+                if (this.props.interactive.pointerover) {
+                    this.c.on("pointerover", this.props.interactive.pointerover);
+                }
+                if (this.props.interactive.pointerout) {
+                    this.c.on("pointerout", this.props.interactive.pointerout);
+                }
+                if (this.props.interactive.pointerdown) {
+                    this.c.on("pointerdown", this.props.interactive.pointerdown);
+                }
+            }
             // callback
             if (this.props.dynamic) {
                 this.props.renderer.app.ticker.add(this.onTick);
@@ -40834,6 +40877,58 @@ class Traits {
         this.traits = traits;
     }
 }
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/components/actions/CarMovement.ts":
+/*!***************************************************************!*\
+  !*** ../../pkg/contrib/src/components/actions/CarMovement.ts ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CarMovement: () => (/* binding */ CarMovement)
+/* harmony export */ });
+const MAX_VELOCITY = 100;
+const ACCELERATION = 0.2;
+const FRICTION = 0.05;
+const TURN_SPEED = 0.015;
+const SLIDE_FACTOR = 2;
+const SLIDE_ACCELERATION = 0.3;
+const speed = 1;
+const CarMovement = {
+    "up": (entity, _) => {
+        const position = entity.props.components.position;
+        const renderable = entity.props.components.renderable;
+        position.x += Math.sin(renderable.c.rotation) * speed;
+        position.y -= Math.cos(renderable.c.rotation) * speed;
+    },
+    "down": (entity, _) => {
+        const position = entity.props.components.position;
+        const renderable = entity.props.components.renderable;
+        position.x -= Math.sin(renderable.c.rotation) * speed;
+        position.y += Math.cos(renderable.c.rotation) * speed;
+    },
+    "left": (entity, _) => {
+        const renderable = entity.props.components.renderable;
+        renderable.c.rotation -= TURN_SPEED;
+    },
+    "right": (entity, _) => {
+        const renderable = entity.props.components.renderable;
+        renderable.c.rotation += TURN_SPEED;
+    },
+    "skidleft": (entity, _) => {
+        const renderable = entity.props.components.renderable;
+        renderable.c.rotation -= TURN_SPEED * SLIDE_FACTOR;
+    },
+    "skidright": (entity, _) => {
+        const renderable = entity.props.components.renderable;
+        renderable.c.rotation += TURN_SPEED * SLIDE_FACTOR;
+    }
+};
 
 
 /***/ }),
@@ -41072,6 +41167,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @piggo-legends/contrib */ "../../pkg/contrib/main.ts");
 
 
+// TODO each tile should be an entity
 class Floor extends _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Renderable {
     constructor(props) {
         super(props);
@@ -41414,7 +41510,8 @@ class InputSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syste
                             const inputKeys = input.split(",");
                             if (inputKeys.every((key) => buffer.has(key))) {
                                 const callback = actions.map[controller.map[input]];
-                                callback(entity, game);
+                                if (callback)
+                                    callback(entity, game);
                                 // remove all keys from the buffer
                                 inputKeys.forEach((key) => buffer.delete(key));
                             }
@@ -41422,7 +41519,8 @@ class InputSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syste
                         else {
                             if (buffer.has(input)) {
                                 const callback = actions.map[controller.map[input]];
-                                callback(entity, game);
+                                if (callback)
+                                    callback(entity, game);
                                 // remove the key from the buffer
                                 buffer.delete(input);
                             }
@@ -41430,6 +41528,56 @@ class InputSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syste
                     }
                 }
             }
+        };
+        this.init();
+    }
+}
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/systems/InteractiveSystem.ts":
+/*!**********************************************************!*\
+  !*** ../../pkg/contrib/src/systems/InteractiveSystem.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InteractiveSystem: () => (/* binding */ InteractiveSystem)
+/* harmony export */ });
+/* harmony import */ var _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piggo-legends/core */ "../../pkg/core/main.ts");
+
+class InteractiveSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.System {
+    constructor(props) {
+        super(props);
+        this.componentTypeQuery = ["interactive"];
+        this.bufferClick = [];
+        this.init = () => {
+            const canvas = document.getElementById("canvas");
+            const camera = this.props.renderer.camera;
+            canvas.addEventListener("pointerdown", (event) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = Math.round(event.clientX - rect.left - 2);
+                const y = Math.round(event.clientY - rect.top - 2);
+                this.bufferClick.push(camera.toWorldCoords({ x, y }));
+            });
+        };
+        this.onTick = (entities, game) => {
+            for (const entity of entities) {
+                const interactive = entity.props.components.interactive;
+                if (interactive.active) {
+                    for (const click of this.bufferClick) {
+                        if (click.x >= interactive.bounds.x && click.x <= interactive.bounds.x + interactive.bounds.w &&
+                            click.y >= interactive.bounds.y && click.y <= interactive.bounds.y + interactive.bounds.h) {
+                            if (interactive.onPress)
+                                interactive.onPress(entity, game);
+                        }
+                    }
+                }
+            }
+            this.bufferClick = [];
         };
         this.init();
     }
@@ -41609,8 +41757,7 @@ class Game {
     constructor(props) {
         this.tick = 0;
         this.addEntity = (entity) => {
-            var _a;
-            (_a = this.props.entities) === null || _a === void 0 ? void 0 : _a.push(entity);
+            this.props.entities[entity.props.id] = entity;
         };
         this._init = () => {
             // ontick
@@ -41634,16 +41781,15 @@ class Game {
             });
         };
         this.onTick = () => {
-            var _a, _b;
+            var _a;
             this.tick += 1;
             // systems onTick
             (_a = this.props.systems) === null || _a === void 0 ? void 0 : _a.forEach((system) => {
-                var _a;
-                system.onTick(system.getFilteredEntities((_a = this.props.entities) !== null && _a !== void 0 ? _a : []), this);
+                system.onTick(system.getFilteredEntities(Object.values(this.props.entities)), this);
             });
             // TODO netcode system
             const serializedEntitites = [];
-            for (const entity of (_b = this.props.entities) !== null && _b !== void 0 ? _b : []) {
+            for (const entity of Object.values(this.props.entities)) {
                 const serialized = entity.serialize();
                 if (serialized)
                     serializedEntitites.push(serialized);
@@ -41690,6 +41836,12 @@ class Camera {
             this.c.x = +(this.props.renderer.app.screen.width / 2 - x).toFixed(0);
             this.c.y = +(this.props.renderer.app.screen.height / 2 - y).toFixed(0);
             this.handleCameraPos();
+        };
+        this.toWorldCoords = ({ x, y }) => {
+            return {
+                x: x - this.c.x,
+                y: y - this.c.y
+            };
         };
         this.handleCameraPos = () => {
             for (const r of this.renderables) {
@@ -42108,7 +42260,8 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
         super(Object.assign(Object.assign({}, props), { systems: [
                 new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.RenderSystem({ renderer: props.renderer }),
                 new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.DebugSystem({ renderer: props.renderer }),
-                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InputSystem({ renderer: props.renderer })
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InputSystem({ renderer: props.renderer }),
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InteractiveSystem({ renderer: props.renderer })
             ] }));
         this.init = () => __awaiter(this, void 0, void 0, function* () {
             // fpsText
@@ -42210,15 +42363,13 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                 components: {
                     position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(300, 300),
                     controller: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controller({
-                        "w,a": "upleft",
-                        "w,d": "upright",
-                        "s,a": "downleft",
-                        "s,d": "downright",
-                        "w": "up",
-                        "s": "down",
-                        "a": "left",
-                        "d": "right"
-                    }, true),
+                        map: {
+                            "a,d": "", "w,s": "",
+                            "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
+                            "w": "up", "s": "down", "a": "left", "d": "right"
+                        },
+                        active: true
+                    }),
                     actions: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Actions(_piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.CharacterMovement),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Character({
                         renderer: this.props.renderer,
@@ -42244,6 +42395,29 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                 id: "spaceship", renderer: this.props.renderer, networked: false,
                 components: {
                     position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(100, 300),
+                    interactive: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Interactive({
+                        active: true,
+                        bounds: { x: 50, y: 240, w: 100, h: 120 },
+                        onPress: (e, g) => {
+                            // const r = e.props.components.renderable as Character;
+                            // r.currentAnimation.tint = 0x0000cc;
+                            const spaceshipController = e.props.components.controller;
+                            spaceshipController.active = true;
+                            const skelly = g.props.entities["skelly1"];
+                            const skellyController = skelly.props.components.controller;
+                            skellyController.active = false;
+                            g.props.renderer.trackCamera(e.props.components.renderable);
+                        }
+                    }),
+                    controller: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controller({
+                        map: {
+                            "a,d": "", "w,s": "",
+                            "shift,a": "skidleft", "shift,d": "skidright",
+                            "w": "up", "s": "down", "a": "left", "d": "right"
+                        },
+                        active: false
+                    }),
+                    actions: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Actions(_piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.CarMovement),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Character({
                         renderer: this.props.renderer,
                         animations: {

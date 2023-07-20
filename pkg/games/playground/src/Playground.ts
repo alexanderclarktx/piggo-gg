@@ -1,5 +1,5 @@
-import { Entity, Game, GameProps } from "@piggo-legends/core";
-import { Floor, TextBox, DebugSystem, RenderSystem, Character, Controller, InputSystem, Actions, Renderable, Position, CharacterMovement, SwitchButton, TapButton } from "@piggo-legends/contrib";
+import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
+import { Floor, TextBox, DebugSystem, RenderSystem, Character, Controller, InputSystem, Actions, Renderable, Position, CharacterMovement, CarMovement, SwitchButton, TapButton, Interactive, InteractiveSystem, RenderableProps, CharacterProps } from "@piggo-legends/contrib";
 import { Text, Assets, SCALE_MODES, AnimatedSprite } from "pixi.js";
 
 export type PlaygroundProps = GameProps & {}
@@ -12,7 +12,8 @@ export class Playground extends Game<PlaygroundProps> {
       systems: [
         new RenderSystem({ renderer: props.renderer }),
         new DebugSystem({ renderer: props.renderer }),
-        new InputSystem({ renderer: props.renderer })
+        new InputSystem({ renderer: props.renderer }),
+        new InteractiveSystem({ renderer: props.renderer })
       ]
     });
     this.init();
@@ -122,15 +123,13 @@ export class Playground extends Game<PlaygroundProps> {
       components: {
         position: new Position(300, 300),
         controller: new Controller({
-          "w,a": "upleft",
-          "w,d": "upright",
-          "s,a": "downleft",
-          "s,d": "downright",
-          "w": "up",
-          "s": "down",
-          "a": "left",
-          "d": "right"
-        }, true),
+          map: {
+            "a,d": "", "w,s": "",
+            "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
+            "w": "up", "s": "down", "a": "left", "d": "right"
+          },
+          active: true
+        }),
         actions: new Actions(CharacterMovement),
         renderable: new Character({
           renderer: this.props.renderer,
@@ -157,6 +156,32 @@ export class Playground extends Game<PlaygroundProps> {
       id: "spaceship", renderer: this.props.renderer, networked: false,
       components: {
         position: new Position(100, 300),
+        interactive: new Interactive({
+          active: true,
+          bounds: { x: 50, y: 240, w: 100, h: 120 },
+          onPress: (e: Entity<EntityProps>, g: Game<GameProps>) => {
+            // const r = e.props.components.renderable as Character;
+            // r.currentAnimation.tint = 0x0000cc;
+
+            const spaceshipController = e.props.components.controller as Controller;
+            spaceshipController.active = true;
+
+            const skelly = g.props.entities["skelly1"] as Entity<EntityProps>;
+            const skellyController = skelly.props.components.controller as Controller;
+            skellyController.active = false;
+
+            g.props.renderer.trackCamera(e.props.components.renderable as Renderable<RenderableProps>);
+          }
+        }),
+        controller: new Controller({
+          map: {
+            "a,d": "", "w,s": "",
+            "shift,a": "skidleft", "shift,d": "skidright",
+            "w": "up", "s": "down", "a": "left", "d": "right"
+          },
+          active: false
+        }),
+        actions: new Actions(CarMovement),
         renderable: new Character({
           renderer: this.props.renderer,
           animations: {

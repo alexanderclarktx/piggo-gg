@@ -3,7 +3,7 @@ import { Renderer, Entity, System, NetManager, SystemProps } from "@piggo-legend
 export type GameProps = {
   net: NetManager,
   renderer: Renderer,
-  entities?: Entity<any>[],
+  entities: Record<string, Entity<any>>,
   systems?: System<SystemProps>[]
 }
 
@@ -18,7 +18,7 @@ export abstract class Game<T extends GameProps> {
   }
 
   addEntity = (entity: Entity<any>) => {
-    this.props.entities?.push(entity);
+    this.props.entities[entity.props.id] = entity;
   }
 
   _init = () => {
@@ -49,12 +49,12 @@ export abstract class Game<T extends GameProps> {
 
     // systems onTick
     this.props.systems?.forEach((system) => {
-      system.onTick(system.getFilteredEntities(this.props.entities ?? []), this);
+      system.onTick(system.getFilteredEntities(Object.values(this.props.entities)), this);
     });
 
     // TODO netcode system
     const serializedEntitites: {x: number, y: number}[] = [];
-    for (const entity of this.props.entities ?? []) {
+    for (const entity of Object.values(this.props.entities)) {
       const serialized = entity.serialize();
       if (serialized) serializedEntitites.push(serialized);
     }
