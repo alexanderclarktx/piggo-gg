@@ -3,17 +3,15 @@ import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type ButtonProps = RenderableProps & {
   dims: {w: number, textX: number, textY: number},
-  text: Text,
-  onPress: () => void,
-  onDepress: () => void // TODO just use one callback
+  text: Text
 }
 
-export class Button extends Renderable<ButtonProps> {
+export abstract class Button<T extends ButtonProps> extends Renderable<T> {
   clicked = false;
   outline = new Graphics();
   shadow = new Graphics();
 
-  constructor(props: ButtonProps) {
+  constructor(props: T) {
     super({
       ...props,
       debuggable: props.debuggable || false
@@ -26,19 +24,14 @@ export class Button extends Renderable<ButtonProps> {
 
     this.initialStyle();
 
-    this.c.on("pointerdown", this.handleClick);
+    this.c.on("pointerdown", this._onClick);
   }
 
-  handleClick = () => {
-    if (this.clicked) {
-      this.props.onDepress();
-      this.styleOnDepress();
-    } else {
-      this.props.onPress();
-      this.styleOnPress();
-    }
-    this.clicked = !this.clicked;
+  _onClick = () => {
+    this.onClick();
   }
+
+  abstract onClick: () => void;
 
   initialStyle = () => {
     // size and radius
@@ -64,15 +57,5 @@ export class Button extends Renderable<ButtonProps> {
     // button text
     this.props.text.position.set(Math.round(this.props.dims.textX), Math.round(this.props.dims.textY));
     this.c.addChild(this.props.text);
-  }
-
-  styleOnPress = () => {
-    this.shadow.tint = 0xff0000;
-    this.outline.tint = 0xff0000;
-  }
-
-  styleOnDepress = () => {
-    this.shadow.tint = 0x00FFFF;
-    this.outline.tint = 0x00FFFF;
   }
 }

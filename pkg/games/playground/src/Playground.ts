@@ -1,5 +1,5 @@
 import { Entity, Game, GameProps } from "@piggo-legends/core";
-import { Button, Floor, TextBox, DebugSystem, RenderSystem, Character, Controller, InputSystem, Actions, Renderable, Position, CharacterMovement } from "@piggo-legends/contrib";
+import { Floor, TextBox, DebugSystem, RenderSystem, Character, Controller, InputSystem, Actions, Renderable, Position, CharacterMovement, SwitchButton, TapButton } from "@piggo-legends/contrib";
 import { Text, Assets, SCALE_MODES, AnimatedSprite } from "pixi.js";
 
 export type PlaygroundProps = GameProps & {}
@@ -39,19 +39,20 @@ export class Playground extends Game<PlaygroundProps> {
     this.addEntity(new Entity({
       id: "fullscreenButton", renderer: this.props.renderer, networked: false,
       components: {
-        renderable: new Button({
+        renderable: new TapButton({
           renderer: this.props.renderer,
           dims: { w: 37, textX: 10, textY: 5 },
           cameraPos: { x: 70, y: 5 },
           zIndex: 1,
           text: (new Text("⚁", { fill: "#FFFFFF", fontSize: 16 })),
-          onPress: () => {
-            //@ts-ignore
-            props.renderer.app.view.requestFullscreen();
-          },
-          onDepress: () => {
-            //@ts-ignore
-            document.exitFullscreen();
+          onPress: (b: TapButton) => {
+            console.log(document.fullscreenElement);
+            if (!document.fullscreenElement) {
+              //@ts-ignore
+              b.props.renderer.app.view.requestFullscreen();
+            } else {
+              document.exitFullscreen();
+            }
           }
         })
       }
@@ -61,7 +62,7 @@ export class Playground extends Game<PlaygroundProps> {
     this.addEntity(new Entity({
       id: "debugButton", renderer: this.props.renderer, networked: false,
       components: {
-        renderable: new Button({
+        renderable: new SwitchButton({
           renderer: this.props.renderer,
           dims: { w: 59, textX: 10, textY: 7 },
           cameraPos: { x: 5, y: 5 },
