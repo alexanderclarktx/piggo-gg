@@ -32,6 +32,13 @@ export class Camera {
     this.handleCameraPos();
   }
 
+  toWorldCoords = ({x, y}: {x: number, y: number}) => {
+    return {
+      x: x - this.c.x,
+      y: y - this.c.y
+    }
+  }
+
   handleCameraPos = () => {
     for (const r of this.renderables) {
       if (r.props.cameraPos) {

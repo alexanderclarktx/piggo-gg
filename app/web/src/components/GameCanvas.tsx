@@ -16,7 +16,7 @@ export const GameCanvas = ({ netManager, setGame }: GameCanvasProps) => {
         new Playground({
           net: netManager,
           renderer: renderer,
-          entities: [],
+          entities: {},
           systems: [],
         })
       );

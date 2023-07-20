@@ -1,16 +1,16 @@
-import { Entity, EntityProps, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
 import { Actions, Controller } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 
 // checks inputs against the controllable objects in the scene
 export class InputSystem extends System<SystemProps> {
   componentTypeQuery = ["controller", "actions"];
+
   bufferedDown: Set<string> = new Set([]);
   bufferedUp: Set<string> = new Set([]);
 
   constructor(props: SystemProps) {
     super(props);
-
     this.init();
   }
 
@@ -46,7 +46,7 @@ export class InputSystem extends System<SystemProps> {
             const inputKeys = input.split(",");
             if (inputKeys.every((key) => buffer.has(key))) {
               const callback = actions.map[controller.map[input]];
-              callback(entity, game);
+              if (callback) callback(entity, game);
 
               // remove all keys from the buffer
               inputKeys.forEach((key) => buffer.delete(key));
@@ -54,7 +54,7 @@ export class InputSystem extends System<SystemProps> {
           } else {
             if (buffer.has(input)) {
               const callback = actions.map[controller.map[input]];
-              callback(entity, game);
+              if (callback) callback(entity, game);
 
               // remove the key from the buffer
               buffer.delete(input);
