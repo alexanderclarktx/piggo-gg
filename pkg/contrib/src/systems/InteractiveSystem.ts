@@ -1,17 +1,21 @@
 import { Entity, EntityProps, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
-import { Interactive } from "@piggo-legends/contrib";
+import { Actions, Interactive, Position } from "@piggo-legends/contrib";
 
 export type Click = {
   x: number;
   y: number;
 }
 
-export class InteractiveSystem extends System<SystemProps> {
-  componentTypeQuery = ["interactive"];
+export type InteractiveSystemProps = SystemProps & {
+  player: string;
+}
+
+export class InteractiveSystem extends System<InteractiveSystemProps> {
+  componentTypeQuery = ["interactive", "actions", "position"];
 
   bufferClick: Click[] = [];
 
-  constructor(props: SystemProps) {
+  constructor(props: InteractiveSystemProps) {
     super(props);
     this.init();
   }
@@ -30,14 +34,27 @@ export class InteractiveSystem extends System<SystemProps> {
 
   onTick = (entities: Entity<EntityProps>[], game: Game<GameProps>) => {
     for (const entity of entities) {
-      const interactive = entity.props.components.interactive as Interactive;
+      const interactive = entity.components.interactive as Interactive;
+      const position = entity.components.position as Position;
+
       if (interactive.active) {
+        const bounds = {
+          x: position.x - interactive.width / 2,
+          y: position.y - interactive.height / 2,
+          w: interactive.width, h: interactive.height
+        };
         for (const click of this.bufferClick) {
+          // console.log(click, bounds);
           if (
-            click.x >= interactive.bounds.x && click.x <= interactive.bounds.x + interactive.bounds.w &&
-            click.y >= interactive.bounds.y && click.y <= interactive.bounds.y + interactive.bounds.h
+            click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
+            click.y >= bounds.y && click.y <= bounds.y + bounds.h
           ) {
-            if (interactive.onPress) interactive.onPress(entity, game);
+            if (interactive.onPress) {
+              console.log("ONPRESS", interactive.onPress);
+              const actions = entity.components.actions as Actions;
+              const callback = actions.map[interactive.onPress];
+              if (callback) callback(entity, game, this.props.player);
+            }
           }
         }
       }

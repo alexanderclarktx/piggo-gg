@@ -1,6 +1,6 @@
 import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
 import { Camera } from "@piggo-legends/core";
-import { Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Position, Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 // Renderer renders the game to a canvas
 export class Renderer {
@@ -70,9 +70,9 @@ export class Renderer {
   }
 
   // method for tracking the camera
-  trackCamera = (renderable: Renderable<RenderableProps>) => {
+  trackCamera = (position: Position) => {
     this.app.ticker.add(() => {
-      this.camera.moveTo(renderable.c.x, renderable.c.y);
+      this.camera.moveTo(position.x, position.y);
     });
   }
 }

@@ -19,7 +19,7 @@ export abstract class System<T extends SystemProps> {
   getFilteredEntities = (entities: Entity<EntityProps>[]) => {
     return entities.filter((e) => {
       for (const componentType of this.componentTypeQuery) {
-        if (!Object.keys(e.props.components).includes(componentType)) return false;
+        if (!Object.keys(e.components).includes(componentType)) return false;
       }
       return true;
     });

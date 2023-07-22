@@ -8,16 +8,13 @@ export type EntityProps = {
 
 // an Entity is a collection of components
 export class Entity<T extends EntityProps> {
-  props: T;
+  id: string;
+  components: Record<string, Component<string>>;
+  networked: boolean;
 
   constructor(props: T) {
-    this.props = props;
+    this.id = props.id;
+    this.components = props.components;
+    this.networked = props.networked ?? false;
   }
-
-  serialize = () => {
-    // if (this.renderable && this.props.networked) {
-    //   return {x: +this.renderable.c.position.x.toFixed(2), y: +this.renderable.c.position.y.toFixed(2)}
-    // }
-    return undefined;
-  };
 }

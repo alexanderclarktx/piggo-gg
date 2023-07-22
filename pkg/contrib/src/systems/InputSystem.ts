@@ -1,67 +1,86 @@
 import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
-import { Actions, Controller } from "@piggo-legends/contrib";
+import { Actions, Controlled, Controller, Controlling } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 
-// checks inputs against the controllable objects in the scene
-export class InputSystem extends System<SystemProps> {
-  componentTypeQuery = ["controller", "actions"];
+export type InputSystemProps = SystemProps & {
+  player: string,
+}
 
+// checks inputs against the controllable objects in the scene
+export class InputSystem extends System<InputSystemProps> {
+  componentTypeQuery = ["controlled"];
+
+  player: string;
   bufferedDown: Set<string> = new Set([]);
   bufferedUp: Set<string> = new Set([]);
 
-  constructor(props: SystemProps) {
+  constructor(props: InputSystemProps) {
     super(props);
+    this.player = props.player;
     this.init();
   }
 
   init = () => {
-    document.addEventListener("keydown", (event) => {
-      if (document.hasFocus()) { //  && this.windowFocused
-        const keyName = event.key.toLowerCase();
-        this.bufferedDown.add(keyName);
-      }
-    });
-
-    document.addEventListener("keyup", (event) => {
-      if (document.hasFocus()) { // && this.windowFocused
-        const keyName = event.key.toLowerCase();
-        this.bufferedUp.add(keyName);
-        this.bufferedDown.delete(keyName);
-      }
-    });
+    this.addKeyDownListener();
+    this.addKeyUpListener();
   }
 
   onTick = (entities: Entity<EntityProps>[], game: Game<GameProps>) => {
     for (const entity of entities) {
-      // copy the input buffer
-      let buffer: Set<string> = new Set([]);
-      this.bufferedDown.forEach((key) => buffer.add(key));
+      const controlled = entity.components.controlled as Controlled;
+      if (controlled.entityId === this.player) {
+        this.handleInputForControlledEntity(entity, game);
+      }
+    }
+  }
 
-      // check for actions
-      const controller = entity.props.components.controller as Controller;
-      const actions = entity.props.components.actions as Actions;
-      if (controller.active) {
-        for (const input in controller.map) {
-          if (input.includes(",")) {
-            const inputKeys = input.split(",");
-            if (inputKeys.every((key) => buffer.has(key))) {
-              const callback = actions.map[controller.map[input]];
-              if (callback) callback(entity, game);
+  handleInputForControlledEntity = (controlledEntity: Entity<EntityProps>, game: Game<GameProps>) => {
+    // copy the input buffer
+    let buffer: Set<string> = new Set([]);
+    this.bufferedDown.forEach((key) => buffer.add(key));
 
-              // remove all keys from the buffer
-              inputKeys.forEach((key) => buffer.delete(key));
-            }
-          } else {
-            if (buffer.has(input)) {
-              const callback = actions.map[controller.map[input]];
-              if (callback) callback(entity, game);
+    // check for actions
+    const controller = controlledEntity.components.controller as Controller;
+    const actions = controlledEntity.components.actions as Actions;
 
-              // remove the key from the buffer
-              buffer.delete(input);
-            }
-          }
+    for (const input in controller.map) {
+      if (input.includes(",")) {
+        const inputKeys = input.split(",");
+        if (inputKeys.every((key) => buffer.has(key))) {
+          const callback = actions.map[controller.map[input]];
+          if (callback) callback(controlledEntity, game);
+
+          // remove all keys from the buffer
+          inputKeys.forEach((key) => buffer.delete(key));
+        }
+      } else {
+        if (buffer.has(input)) {
+          const callback = actions.map[controller.map[input]];
+          if (callback) callback(controlledEntity, game);
+
+          // remove the key from the buffer
+          buffer.delete(input);
         }
       }
     }
+  }
+
+  addKeyDownListener = () => {
+    document.addEventListener("keydown", (event) => {
+      if (document.hasFocus()) { //  && this.windowFocused
+        const keyName = event.key.toLowerCase();
+        if (!this.bufferedDown.has(keyName)) this.bufferedDown.add(keyName);
+      }
+    });
+  }
+
+  addKeyUpListener = () => {
+    document.addEventListener("keyup", (event) => {
+      if (document.hasFocus()) { // && this.windowFocused
+        const keyName = event.key.toLowerCase();
+        if (!this.bufferedUp.has(keyName)) this.bufferedUp.add(keyName);
+        this.bufferedDown.delete(keyName);
+      }
+    });
   }
 }
