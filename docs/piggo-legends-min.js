@@ -40511,33 +40511,39 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Actions: () => (/* reexport safe */ _src_components_Actions__WEBPACK_IMPORTED_MODULE_7__.Actions),
 /* harmony export */   Button: () => (/* reexport safe */ _src_components_renderables_Button__WEBPACK_IMPORTED_MODULE_18__.Button),
-/* harmony export */   CarMovement: () => (/* reexport safe */ _src_components_actions_CarMovement__WEBPACK_IMPORTED_MODULE_12__.CarMovement),
+/* harmony export */   CarMovement: () => (/* reexport safe */ _src_components_actions_CarMovement__WEBPACK_IMPORTED_MODULE_14__.CarMovement),
 /* harmony export */   Character: () => (/* reexport safe */ _src_components_renderables_Character__WEBPACK_IMPORTED_MODULE_17__.Character),
-/* harmony export */   CharacterMovement: () => (/* reexport safe */ _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_11__.CharacterMovement),
+/* harmony export */   CharacterMovement: () => (/* reexport safe */ _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_13__.CharacterMovement),
+/* harmony export */   Controlled: () => (/* reexport safe */ _src_components_relationships_Controlling__WEBPACK_IMPORTED_MODULE_23__.Controlled),
 /* harmony export */   Controller: () => (/* reexport safe */ _src_components_Controller__WEBPACK_IMPORTED_MODULE_6__.Controller),
-/* harmony export */   DamageSystem: () => (/* reexport safe */ _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_24__.DamageSystem),
+/* harmony export */   Controlling: () => (/* reexport safe */ _src_components_relationships_Controlling__WEBPACK_IMPORTED_MODULE_23__.Controlling),
+/* harmony export */   DamageSystem: () => (/* reexport safe */ _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_27__.DamageSystem),
 /* harmony export */   DebugBounds: () => (/* reexport safe */ _src_components_renderables_DebugBounds__WEBPACK_IMPORTED_MODULE_22__.DebugBounds),
-/* harmony export */   DebugSystem: () => (/* reexport safe */ _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_23__.DebugSystem),
+/* harmony export */   DebugSystem: () => (/* reexport safe */ _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_26__.DebugSystem),
 /* harmony export */   Experience: () => (/* reexport safe */ _src_components_Experience__WEBPACK_IMPORTED_MODULE_5__.Experience),
 /* harmony export */   Floor: () => (/* reexport safe */ _src_components_renderables_Floor__WEBPACK_IMPORTED_MODULE_16__.Floor),
 /* harmony export */   Gold: () => (/* reexport safe */ _src_components_Gold__WEBPACK_IMPORTED_MODULE_4__.Gold),
 /* harmony export */   Health: () => (/* reexport safe */ _src_components_Health__WEBPACK_IMPORTED_MODULE_3__.Health),
-/* harmony export */   InputSystem: () => (/* reexport safe */ _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_26__.InputSystem),
+/* harmony export */   InputSystem: () => (/* reexport safe */ _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_29__.InputSystem),
 /* harmony export */   Interactive: () => (/* reexport safe */ _src_components_Interactive__WEBPACK_IMPORTED_MODULE_10__.Interactive),
-/* harmony export */   InteractiveSystem: () => (/* reexport safe */ _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_27__.InteractiveSystem),
+/* harmony export */   InteractiveSystem: () => (/* reexport safe */ _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_30__.InteractiveSystem),
 /* harmony export */   Name: () => (/* reexport safe */ _src_components_Name__WEBPACK_IMPORTED_MODULE_2__.Name),
-/* harmony export */   NetcodeSystem: () => (/* reexport safe */ _src_systems_NetcodeSystem__WEBPACK_IMPORTED_MODULE_28__.NetcodeSystem),
-/* harmony export */   Player: () => (/* reexport safe */ _src_entities_Player__WEBPACK_IMPORTED_MODULE_14__.Player),
+/* harmony export */   NetcodeSystem: () => (/* reexport safe */ _src_systems_NetcodeSystem__WEBPACK_IMPORTED_MODULE_31__.NetcodeSystem),
+/* harmony export */   Networked: () => (/* reexport safe */ _src_components_Networked__WEBPACK_IMPORTED_MODULE_12__.Networked),
+/* harmony export */   Player: () => (/* reexport safe */ _src_components_Player__WEBPACK_IMPORTED_MODULE_11__.Player),
+/* harmony export */   PlayerSpawnSystem: () => (/* reexport safe */ _src_systems_PlayerSpawnSystem__WEBPACK_IMPORTED_MODULE_32__.PlayerSpawnSystem),
 /* harmony export */   Position: () => (/* reexport safe */ _src_components_Position__WEBPACK_IMPORTED_MODULE_9__.Position),
-/* harmony export */   RenderSystem: () => (/* reexport safe */ _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_25__.RenderSystem),
+/* harmony export */   RenderSystem: () => (/* reexport safe */ _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_28__.RenderSystem),
 /* harmony export */   Renderable: () => (/* reexport safe */ _src_components_Renderable__WEBPACK_IMPORTED_MODULE_8__.Renderable),
+/* harmony export */   Rotation: () => (/* reexport safe */ _src_components_Position__WEBPACK_IMPORTED_MODULE_9__.Rotation),
 /* harmony export */   SwitchButton: () => (/* reexport safe */ _src_components_renderables_SwitchButton__WEBPACK_IMPORTED_MODULE_19__.SwitchButton),
 /* harmony export */   TapButton: () => (/* reexport safe */ _src_components_renderables_TapButton__WEBPACK_IMPORTED_MODULE_20__.TapButton),
 /* harmony export */   TextBox: () => (/* reexport safe */ _src_components_renderables_TextBox__WEBPACK_IMPORTED_MODULE_21__.TextBox),
 /* harmony export */   Tier: () => (/* reexport safe */ _src_components_Tier__WEBPACK_IMPORTED_MODULE_1__.Tier),
-/* harmony export */   Tile: () => (/* reexport safe */ _src_entities_Tile__WEBPACK_IMPORTED_MODULE_15__.Tile),
+/* harmony export */   Tile: () => (/* reexport safe */ _src_entities_Tile__WEBPACK_IMPORTED_MODULE_25__.Tile),
 /* harmony export */   Traits: () => (/* reexport safe */ _src_components_Traits__WEBPACK_IMPORTED_MODULE_0__.Traits),
-/* harmony export */   Unit: () => (/* reexport safe */ _src_entities_Unit__WEBPACK_IMPORTED_MODULE_13__.Unit)
+/* harmony export */   Unit: () => (/* reexport safe */ _src_entities_Unit__WEBPACK_IMPORTED_MODULE_24__.Unit),
+/* harmony export */   playerControlsEntity: () => (/* reexport safe */ _src_components_actions_util__WEBPACK_IMPORTED_MODULE_15__.playerControlsEntity)
 /* harmony export */ });
 /* harmony import */ var _src_components_Traits__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/components/Traits */ "../../pkg/contrib/src/components/Traits.ts");
 /* harmony import */ var _src_components_Tier__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/components/Tier */ "../../pkg/contrib/src/components/Tier.ts");
@@ -40550,11 +40556,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_components_Renderable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./src/components/Renderable */ "../../pkg/contrib/src/components/Renderable.ts");
 /* harmony import */ var _src_components_Position__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./src/components/Position */ "../../pkg/contrib/src/components/Position.ts");
 /* harmony import */ var _src_components_Interactive__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./src/components/Interactive */ "../../pkg/contrib/src/components/Interactive.ts");
-/* harmony import */ var _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./src/components/actions/CharacterMovement */ "../../pkg/contrib/src/components/actions/CharacterMovement.ts");
-/* harmony import */ var _src_components_actions_CarMovement__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./src/components/actions/CarMovement */ "../../pkg/contrib/src/components/actions/CarMovement.ts");
-/* harmony import */ var _src_entities_Unit__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./src/entities/Unit */ "../../pkg/contrib/src/entities/Unit.ts");
-/* harmony import */ var _src_entities_Player__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./src/entities/Player */ "../../pkg/contrib/src/entities/Player.ts");
-/* harmony import */ var _src_entities_Tile__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./src/entities/Tile */ "../../pkg/contrib/src/entities/Tile.ts");
+/* harmony import */ var _src_components_Player__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./src/components/Player */ "../../pkg/contrib/src/components/Player.ts");
+/* harmony import */ var _src_components_Networked__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./src/components/Networked */ "../../pkg/contrib/src/components/Networked.ts");
+/* harmony import */ var _src_components_actions_CharacterMovement__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./src/components/actions/CharacterMovement */ "../../pkg/contrib/src/components/actions/CharacterMovement.ts");
+/* harmony import */ var _src_components_actions_CarMovement__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./src/components/actions/CarMovement */ "../../pkg/contrib/src/components/actions/CarMovement.ts");
+/* harmony import */ var _src_components_actions_util__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./src/components/actions/util */ "../../pkg/contrib/src/components/actions/util.ts");
 /* harmony import */ var _src_components_renderables_Floor__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./src/components/renderables/Floor */ "../../pkg/contrib/src/components/renderables/Floor.ts");
 /* harmony import */ var _src_components_renderables_Character__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./src/components/renderables/Character */ "../../pkg/contrib/src/components/renderables/Character.ts");
 /* harmony import */ var _src_components_renderables_Button__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./src/components/renderables/Button */ "../../pkg/contrib/src/components/renderables/Button.ts");
@@ -40562,12 +40568,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_components_renderables_TapButton__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./src/components/renderables/TapButton */ "../../pkg/contrib/src/components/renderables/TapButton.ts");
 /* harmony import */ var _src_components_renderables_TextBox__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./src/components/renderables/TextBox */ "../../pkg/contrib/src/components/renderables/TextBox.ts");
 /* harmony import */ var _src_components_renderables_DebugBounds__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./src/components/renderables/DebugBounds */ "../../pkg/contrib/src/components/renderables/DebugBounds.ts");
-/* harmony import */ var _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./src/systems/DebugSystem */ "../../pkg/contrib/src/systems/DebugSystem.ts");
-/* harmony import */ var _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./src/systems/DamageSystem */ "../../pkg/contrib/src/systems/DamageSystem.ts");
-/* harmony import */ var _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./src/systems/RenderSystem */ "../../pkg/contrib/src/systems/RenderSystem.ts");
-/* harmony import */ var _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./src/systems/InputSystem */ "../../pkg/contrib/src/systems/InputSystem.ts");
-/* harmony import */ var _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./src/systems/InteractiveSystem */ "../../pkg/contrib/src/systems/InteractiveSystem.ts");
-/* harmony import */ var _src_systems_NetcodeSystem__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./src/systems/NetcodeSystem */ "../../pkg/contrib/src/systems/NetcodeSystem.ts");
+/* harmony import */ var _src_components_relationships_Controlling__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./src/components/relationships/Controlling */ "../../pkg/contrib/src/components/relationships/Controlling.ts");
+/* harmony import */ var _src_entities_Unit__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./src/entities/Unit */ "../../pkg/contrib/src/entities/Unit.ts");
+/* harmony import */ var _src_entities_Tile__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./src/entities/Tile */ "../../pkg/contrib/src/entities/Tile.ts");
+/* harmony import */ var _src_systems_DebugSystem__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./src/systems/DebugSystem */ "../../pkg/contrib/src/systems/DebugSystem.ts");
+/* harmony import */ var _src_systems_DamageSystem__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./src/systems/DamageSystem */ "../../pkg/contrib/src/systems/DamageSystem.ts");
+/* harmony import */ var _src_systems_RenderSystem__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./src/systems/RenderSystem */ "../../pkg/contrib/src/systems/RenderSystem.ts");
+/* harmony import */ var _src_systems_InputSystem__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./src/systems/InputSystem */ "../../pkg/contrib/src/systems/InputSystem.ts");
+/* harmony import */ var _src_systems_InteractiveSystem__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./src/systems/InteractiveSystem */ "../../pkg/contrib/src/systems/InteractiveSystem.ts");
+/* harmony import */ var _src_systems_NetcodeSystem__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./src/systems/NetcodeSystem */ "../../pkg/contrib/src/systems/NetcodeSystem.ts");
+/* harmony import */ var _src_systems_PlayerSpawnSystem__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./src/systems/PlayerSpawnSystem */ "../../pkg/contrib/src/systems/PlayerSpawnSystem.ts");
+
+
+
+
 
 
 
@@ -40636,9 +40650,7 @@ __webpack_require__.r(__webpack_exports__);
 // the Controller component maps inputs to Actions
 class Controller {
     constructor(props) {
-        var _a;
         this.map = props.map;
-        this.active = (_a = props.active) !== null && _a !== void 0 ? _a : false;
     }
 }
 
@@ -40723,8 +40735,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 class Interactive {
     constructor(props) {
+        this.width = props.width;
+        this.height = props.height;
         this.active = props.active;
-        this.bounds = props.bounds;
         this.onPress = props.onPress;
     }
 }
@@ -40752,6 +40765,46 @@ class Name {
 
 /***/ }),
 
+/***/ "../../pkg/contrib/src/components/Networked.ts":
+/*!*****************************************************!*\
+  !*** ../../pkg/contrib/src/components/Networked.ts ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Networked: () => (/* binding */ Networked)
+/* harmony export */ });
+class Networked {
+    constructor(props) {
+        this.isNetworked = props.isNetworked;
+    }
+}
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/components/Player.ts":
+/*!**************************************************!*\
+  !*** ../../pkg/contrib/src/components/Player.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Player: () => (/* binding */ Player)
+/* harmony export */ });
+class Player {
+    constructor(props) {
+        this.name = props.name;
+    }
+}
+
+
+/***/ }),
+
 /***/ "../../pkg/contrib/src/components/Position.ts":
 /*!****************************************************!*\
   !*** ../../pkg/contrib/src/components/Position.ts ***!
@@ -40761,14 +40814,39 @@ class Name {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Position: () => (/* binding */ Position)
+/* harmony export */   Position: () => (/* binding */ Position),
+/* harmony export */   Rotation: () => (/* binding */ Rotation)
 /* harmony export */ });
 // the position component tracks the player's position
 class Position {
     constructor(x, y, offset = "world") {
+        this.rotation = new Rotation();
+        this.serialize = () => {
+            return {
+                x: this.x,
+                y: this.y,
+                rotation: this.rotation.rads
+            };
+        };
+        this.deserialize = ({ x, y, rotation }) => {
+            this.x = x;
+            this.y = y;
+            this.rotation.rads = rotation;
+        };
         this.x = x;
         this.y = y;
         this.offset = offset;
+    }
+}
+class Rotation {
+    constructor() {
+        this.rads = 0;
+        this.minus = (amount) => {
+            this.rads -= +amount.toFixed(2);
+        };
+        this.plus = (amount) => {
+            this.rads += +amount.toFixed(2);
+        };
     }
 }
 
@@ -40895,41 +40973,49 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CarMovement: () => (/* binding */ CarMovement)
 /* harmony export */ });
-const MAX_VELOCITY = 100;
-const ACCELERATION = 0.2;
-const FRICTION = 0.05;
-const TURN_SPEED = 0.015;
-const SLIDE_FACTOR = 2;
-const SLIDE_ACCELERATION = 0.3;
-const speed = 1;
+// const MAX_VELOCITY = 100;
+// const ACCELERATION = 0.2;
+// const FRICTION = 0.05;
+// const SLIDE_ACCELERATION = 0.3;
+const SPEED = 2;
+const TURN_SPEED = 0.03;
+const SLIDE_FACTOR = 1.5;
 const CarMovement = {
     "up": (entity, _) => {
         const position = entity.components.position;
         const renderable = entity.components.renderable;
-        position.x += Math.sin(renderable.c.rotation) * speed;
-        position.y -= Math.cos(renderable.c.rotation) * speed;
+        position.x += Math.sin(renderable.c.rotation) * SPEED;
+        position.y -= Math.cos(renderable.c.rotation) * SPEED;
     },
     "down": (entity, _) => {
         const position = entity.components.position;
         const renderable = entity.components.renderable;
-        position.x -= Math.sin(renderable.c.rotation) * speed;
-        position.y += Math.cos(renderable.c.rotation) * speed;
+        position.x -= Math.sin(renderable.c.rotation) * SPEED;
+        position.y += Math.cos(renderable.c.rotation) * SPEED;
     },
     "left": (entity, _) => {
+        const position = entity.components.position;
         const renderable = entity.components.renderable;
-        renderable.c.rotation -= TURN_SPEED;
+        position.rotation.minus(TURN_SPEED);
+        renderable.c.rotation = position.rotation.rads;
     },
     "right": (entity, _) => {
+        const position = entity.components.position;
         const renderable = entity.components.renderable;
-        renderable.c.rotation += TURN_SPEED;
+        position.rotation.plus(TURN_SPEED);
+        renderable.c.rotation = position.rotation.rads;
     },
     "skidleft": (entity, _) => {
+        const position = entity.components.position;
         const renderable = entity.components.renderable;
-        renderable.c.rotation -= TURN_SPEED * SLIDE_FACTOR;
+        position.rotation.minus(TURN_SPEED * SLIDE_FACTOR);
+        renderable.c.rotation = position.rotation.rads;
     },
     "skidright": (entity, _) => {
+        const position = entity.components.position;
         const renderable = entity.components.renderable;
-        renderable.c.rotation += TURN_SPEED * SLIDE_FACTOR;
+        position.rotation.plus(TURN_SPEED * SLIDE_FACTOR);
+        renderable.c.rotation = position.rotation.rads;
     }
 };
 
@@ -41010,6 +41096,67 @@ const CharacterMovement = {
         character.setAnimation("r");
     }
 };
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/components/actions/util.ts":
+/*!********************************************************!*\
+  !*** ../../pkg/contrib/src/components/actions/util.ts ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   playerControlsEntity: () => (/* binding */ playerControlsEntity)
+/* harmony export */ });
+/* harmony import */ var _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piggo-legends/contrib */ "../../pkg/contrib/main.ts");
+
+const playerControlsEntity = (entity, game, player) => {
+    // check that the entity isn't already being controlled
+    if (entity.components.controlled)
+        return;
+    // get the player entity
+    const playerEntity = game.props.entities[player];
+    // release control if already controlling another entity
+    if (playerEntity.components.controlling) {
+        const previouslyControlling = playerEntity.components.controlling;
+        const controlledEntity = game.props.entities[previouslyControlling.entityId];
+        delete controlledEntity.components.controlled;
+    }
+    // give the player control of the entity
+    playerEntity.components.controlling = new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_0__.Controlling({ entityId: entity.id });
+    entity.components.controlled = new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_0__.Controlled({ entityId: playerEntity.id });
+    // track the entity with the camera
+    game.props.renderer.trackCamera(entity.components.position);
+};
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/components/relationships/Controlling.ts":
+/*!*********************************************************************!*\
+  !*** ../../pkg/contrib/src/components/relationships/Controlling.ts ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Controlled: () => (/* binding */ Controlled),
+/* harmony export */   Controlling: () => (/* binding */ Controlling)
+/* harmony export */ });
+class Controlling {
+    constructor(props) {
+        this.entityId = props.entityId;
+    }
+}
+class Controlled {
+    constructor(props) {
+        this.entityId = props.entityId;
+    }
+}
 
 
 /***/ }),
@@ -41095,13 +41242,11 @@ class Character extends _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_0__.Rend
                 animation.animationSpeed = 0.1;
                 animation.scale.set(this.props.scale || 1);
                 animation.anchor.set(0.5);
+                if (this.props.tintColor)
+                    animation.tint = this.props.tintColor;
             });
             // play the down animation by default
             this.setAnimation("d");
-            // follow the character with the camera
-            if (this.props.track) {
-                this.props.renderer.trackCamera(this);
-            }
         };
         this.setAnimation = (animationKey) => {
             this.c.removeChild(this.currentAnimation);
@@ -41305,28 +41450,6 @@ class TextBox extends _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Render
 
 /***/ }),
 
-/***/ "../../pkg/contrib/src/entities/Player.ts":
-/*!************************************************!*\
-  !*** ../../pkg/contrib/src/entities/Player.ts ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Player: () => (/* binding */ Player)
-/* harmony export */ });
-/* harmony import */ var _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piggo-legends/core */ "../../pkg/core/main.ts");
-
-class Player extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity {
-    constructor(props) {
-        super(props);
-    }
-}
-
-
-/***/ }),
-
 /***/ "../../pkg/contrib/src/entities/Tile.ts":
 /*!**********************************************!*\
   !*** ../../pkg/contrib/src/entities/Tile.ts ***!
@@ -41443,8 +41566,8 @@ class DebugSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syste
                 const textBox = new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.TextBox({
                     renderer: this.props.renderer,
                     dynamic: (c) => {
-                        const bounds = renderable.c.getBounds(false);
-                        textBox.c.position.set(renderable.c.x - 15, bounds.y - this.props.renderer.app.stage.y - 15);
+                        const bounds = renderable.c.getLocalBounds();
+                        c.position.set(renderable.c.x - 15, renderable.c.y - bounds.height / 2 - 15);
                         c.text = `${renderable.c.x.toFixed(2)} ${renderable.c.y.toFixed(2)}`;
                     },
                     fontSize: 12, color: 0xffff00, debuggable: false
@@ -41481,57 +41604,70 @@ __webpack_require__.r(__webpack_exports__);
 class InputSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.System {
     constructor(props) {
         super(props);
-        this.componentTypeQuery = ["controller", "actions"];
+        this.componentTypeQuery = ["controlled"];
         this.bufferedDown = new Set([]);
         this.bufferedUp = new Set([]);
         this.init = () => {
-            document.addEventListener("keydown", (event) => {
-                if (document.hasFocus()) { //  && this.windowFocused
-                    const keyName = event.key.toLowerCase();
-                    this.bufferedDown.add(keyName);
-                }
-            });
-            document.addEventListener("keyup", (event) => {
-                if (document.hasFocus()) { // && this.windowFocused
-                    const keyName = event.key.toLowerCase();
-                    this.bufferedUp.add(keyName);
-                    this.bufferedDown.delete(keyName);
-                }
-            });
+            this.addKeyDownListener();
+            this.addKeyUpListener();
         };
         this.onTick = (entities, game) => {
             for (const entity of entities) {
-                // copy the input buffer
-                let buffer = new Set([]);
-                this.bufferedDown.forEach((key) => buffer.add(key));
-                // check for actions
-                const controller = entity.components.controller;
-                const actions = entity.components.actions;
-                if (controller.active) {
-                    for (const input in controller.map) {
-                        if (input.includes(",")) {
-                            const inputKeys = input.split(",");
-                            if (inputKeys.every((key) => buffer.has(key))) {
-                                const callback = actions.map[controller.map[input]];
-                                if (callback)
-                                    callback(entity, game);
-                                // remove all keys from the buffer
-                                inputKeys.forEach((key) => buffer.delete(key));
-                            }
-                        }
-                        else {
-                            if (buffer.has(input)) {
-                                const callback = actions.map[controller.map[input]];
-                                if (callback)
-                                    callback(entity, game);
-                                // remove the key from the buffer
-                                buffer.delete(input);
-                            }
-                        }
+                const controlled = entity.components.controlled;
+                if (controlled.entityId === this.player) {
+                    this.handleInputForControlledEntity(entity, game);
+                }
+            }
+        };
+        this.handleInputForControlledEntity = (controlledEntity, game) => {
+            // copy the input buffer
+            let buffer = new Set([]);
+            this.bufferedDown.forEach((key) => buffer.add(key));
+            // check for actions
+            const controller = controlledEntity.components.controller;
+            const actions = controlledEntity.components.actions;
+            for (const input in controller.map) {
+                if (input.includes(",")) {
+                    const inputKeys = input.split(",");
+                    if (inputKeys.every((key) => buffer.has(key))) {
+                        const callback = actions.map[controller.map[input]];
+                        if (callback)
+                            callback(controlledEntity, game);
+                        // remove all keys from the buffer
+                        inputKeys.forEach((key) => buffer.delete(key));
+                    }
+                }
+                else {
+                    if (buffer.has(input)) {
+                        const callback = actions.map[controller.map[input]];
+                        if (callback)
+                            callback(controlledEntity, game);
+                        // remove the key from the buffer
+                        buffer.delete(input);
                     }
                 }
             }
         };
+        this.addKeyDownListener = () => {
+            document.addEventListener("keydown", (event) => {
+                if (document.hasFocus()) { //  && this.windowFocused
+                    const keyName = event.key.toLowerCase();
+                    if (!this.bufferedDown.has(keyName))
+                        this.bufferedDown.add(keyName);
+                }
+            });
+        };
+        this.addKeyUpListener = () => {
+            document.addEventListener("keyup", (event) => {
+                if (document.hasFocus()) { // && this.windowFocused
+                    const keyName = event.key.toLowerCase();
+                    if (!this.bufferedUp.has(keyName))
+                        this.bufferedUp.add(keyName);
+                    this.bufferedDown.delete(keyName);
+                }
+            });
+        };
+        this.player = props.player;
         this.init();
     }
 }
@@ -41555,7 +41691,7 @@ __webpack_require__.r(__webpack_exports__);
 class InteractiveSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.System {
     constructor(props) {
         super(props);
-        this.componentTypeQuery = ["interactive"];
+        this.componentTypeQuery = ["interactive", "actions", "position"];
         this.bufferClick = [];
         this.init = () => {
             const canvas = document.getElementById("canvas");
@@ -41570,12 +41706,24 @@ class InteractiveSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__
         this.onTick = (entities, game) => {
             for (const entity of entities) {
                 const interactive = entity.components.interactive;
+                const position = entity.components.position;
                 if (interactive.active) {
+                    const bounds = {
+                        x: position.x - interactive.width / 2,
+                        y: position.y - interactive.height / 2,
+                        w: interactive.width, h: interactive.height
+                    };
                     for (const click of this.bufferClick) {
-                        if (click.x >= interactive.bounds.x && click.x <= interactive.bounds.x + interactive.bounds.w &&
-                            click.y >= interactive.bounds.y && click.y <= interactive.bounds.y + interactive.bounds.h) {
-                            if (interactive.onPress)
-                                interactive.onPress(entity, game);
+                        // console.log(click, bounds);
+                        if (click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
+                            click.y >= bounds.y && click.y <= bounds.y + bounds.h) {
+                            if (interactive.onPress) {
+                                console.log("ONPRESS", interactive.onPress);
+                                const actions = entity.components.actions;
+                                const callback = actions.map[interactive.onPress];
+                                if (callback)
+                                    callback(entity, game, this.props.player);
+                            }
                         }
                     }
                 }
@@ -41601,11 +41749,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NetcodeSystem: () => (/* binding */ NetcodeSystem)
 /* harmony export */ });
 /* harmony import */ var _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piggo-legends/core */ "../../pkg/core/main.ts");
+/* harmony import */ var _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @piggo-legends/contrib */ "../../pkg/contrib/main.ts");
+
 
 class NetcodeSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.System {
     constructor(props) {
         super(props);
-        this.componentTypeQuery = ["position"];
+        this.componentTypeQuery = ["networked"];
+        this.connected = false;
         this.init = () => {
             this.props.net.events.addEventListener("message", (event) => {
                 if (event.detail.type === "game")
@@ -41613,50 +41764,171 @@ class NetcodeSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Sys
             });
         };
         this.onTick = (entities, game) => {
+            // handle incoming message
+            if (this.tickDataBuffer) {
+                if (!this.connected) {
+                    this.handleInitialConnection(this.tickDataBuffer, game);
+                }
+                this.handleMessage(this.tickDataBuffer, game);
+            }
+            this.sendMessage(entities, game);
+        };
+        this.handleMessage = (td, game) => {
+            if (td.tick % 1000 === 0)
+                console.log("received", td);
+            Object.entries(td.entities).forEach(([id, entity]) => {
+                if (game.props.entities[id]) {
+                    const controlled = game.props.entities[id].components.controlled;
+                    if (controlled && controlled.entityId === this.props.player)
+                        return;
+                    const position = game.props.entities[id].components.position;
+                    if (position && entity.position) {
+                        position.deserialize(entity.position);
+                    }
+                }
+            });
+        };
+        this.handleInitialConnection = (td, game) => {
+            // set connected to true
+            this.connected = true;
+            game.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
+                id: td.player,
+                networked: true,
+                components: {
+                    player: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Player({ name: td.player }),
+                },
+            }));
+        };
+        this.sendMessage = (entities, game) => {
             const serializedEntitites = {};
             // serialize each entity
             for (const entity of Object.values(entities)) {
+                let serialized = {};
                 const position = entity.components.position;
-                const serialized = {
-                    position: {
-                        x: position.x, y: position.y
-                    }
-                };
+                if (position) {
+                    serialized.position = position.serialize();
+                }
                 serializedEntitites[entity.id] = serialized;
             }
             // construct tick message
             const message = {
                 type: "game",
                 tick: game.tick,
+                player: this.props.player,
                 entities: serializedEntitites
             };
-            if (game.tick === 100)
-                console.log("sending", message);
             // send message if connected
-            if (this.props.net.pc.connectionState === "connected")
+            if (this.props.net.pc.connectionState === "connected") {
                 this.props.net.sendMessage(message);
-            // handle incoming message
-            if (this.tickDataBuffer)
-                this.handleMessage(this.tickDataBuffer, game);
-        };
-        this.handleMessage = (td, game) => {
-            if (td.tick % 400 === 0)
-                console.log(td);
-            // Object.entries(td.entities).forEach(([id, entity]) => {
-            //   if (game.props.entities[id]) {
-            //     const position = game.props.entities[id].components.position as Position;
-            //     position.x = entity.position.x;
-            //     position.y = entity.position.y;
-            //   }
-            // });
-            const spaceship = game.props.entities["spaceship"];
-            const spaceshipController = spaceship.components.controller;
-            if (!spaceshipController.active) {
-                const position = spaceship.components.position;
-                position.x = td.entities["spaceship"].position.x;
-                position.y = td.entities["spaceship"].position.y;
+                if (game.tick % 1000 === 0)
+                    console.log("sent", message);
             }
         };
+        this.init();
+    }
+}
+
+
+/***/ }),
+
+/***/ "../../pkg/contrib/src/systems/PlayerSpawnSystem.ts":
+/*!**********************************************************!*\
+  !*** ../../pkg/contrib/src/systems/PlayerSpawnSystem.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PlayerSpawnSystem: () => (/* binding */ PlayerSpawnSystem)
+/* harmony export */ });
+/* harmony import */ var _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piggo-legends/core */ "../../pkg/core/main.ts");
+/* harmony import */ var _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @piggo-legends/contrib */ "../../pkg/contrib/main.ts");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "../../node_modules/pixi.js/lib/index.mjs");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+class PlayerSpawnSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.System {
+    constructor(props) {
+        super(props);
+        this.componentTypeQuery = ["player"];
+        this.init = () => __awaiter(this, void 0, void 0, function* () {
+            this.assets = yield pixi_js__WEBPACK_IMPORTED_MODULE_2__.Assets.load("chars.json");
+        });
+        this.onTick = (players, game) => {
+            for (const player of players) {
+                const controlling = player.components.controlling;
+                if (!controlling && this.assets) {
+                    // make the character
+                    let characterForPlayer;
+                    if (this.player === player.id) {
+                        characterForPlayer = this.makeCharacter(player, 0xffffff);
+                    }
+                    else {
+                        characterForPlayer = this.makeCharacter(player, 0xffff00);
+                    }
+                    // give the player control of the character
+                    player.components.controlling = new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controlling({ entityId: characterForPlayer.id });
+                    characterForPlayer.components.controlled = new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controlling({ entityId: player.id });
+                    game.addEntity(characterForPlayer);
+                    console.log("adding", characterForPlayer);
+                    if (this.player === player.id) {
+                        this.props.renderer.trackCamera(characterForPlayer.components.position);
+                    }
+                }
+            }
+        };
+        this.makeCharacter = (entity, tint) => {
+            const character = new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
+                id: `${entity.id}-character`,
+                components: {
+                    position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(300, 300),
+                    networked: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Networked({ isNetworked: true }),
+                    interactive: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Interactive({
+                        width: 32,
+                        height: 32,
+                        active: true,
+                        onPress: "click"
+                    }),
+                    controller: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controller({
+                        map: {
+                            "a,d": "", "w,s": "",
+                            "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
+                            "w": "up", "s": "down", "a": "left", "d": "right"
+                        }
+                    }),
+                    actions: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Actions(Object.assign(Object.assign({}, _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.CharacterMovement), { "click": _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.playerControlsEntity })),
+                    renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Character({
+                        renderer: this.props.renderer,
+                        animations: {
+                            d: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["d1"], this.assets.textures["d2"], this.assets.textures["d3"]]),
+                            u: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["u1"], this.assets.textures["u2"], this.assets.textures["u3"]]),
+                            l: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["l1"], this.assets.textures["l2"], this.assets.textures["l3"]]),
+                            r: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["r1"], this.assets.textures["r2"], this.assets.textures["r3"]]),
+                            dl: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["dl1"], this.assets.textures["dl2"], this.assets.textures["dl3"]]),
+                            dr: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["dr1"], this.assets.textures["dr2"], this.assets.textures["dr3"]]),
+                            ul: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["ul1"], this.assets.textures["ul2"], this.assets.textures["ul3"]]),
+                            ur: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([this.assets.textures["ur1"], this.assets.textures["ur2"], this.assets.textures["ur3"]])
+                        },
+                        track: true,
+                        scale: 2,
+                        zIndex: 2,
+                        tintColor: tint !== null && tint !== void 0 ? tint : 0xffffff
+                    })
+                }
+            });
+            return character;
+        };
+        this.player = props.player;
         this.init();
     }
 }
@@ -41682,30 +41954,34 @@ class RenderSystem extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Syst
         super(...arguments);
         this.componentTypeQuery = ["renderable", "position"];
         this.renderedEntities = new Set();
+        this.cachedEntityPositions = {};
         this.onTick = (entities, _) => {
             for (const entity of entities) {
                 // add new entities to the renderer
                 if (!this.renderedEntities.has(entity)) {
-                    const renderable = entity.components.renderable;
-                    const position = entity.components.position;
-                    if (position) {
-                        renderable.c.position.set(position.x, position.y);
-                    }
-                    else {
-                        renderable.c.position.set(0, 0);
-                    }
-                    this.props.renderer.addWorld(renderable);
-                    this.renderedEntities.add(entity);
+                    this.handleNewEnitity(entity);
                 }
                 // update renderable if position changed
-                if (entity.components.position) {
+                const position = entity.components.position;
+                if (position && this.cachedEntityPositions[entity.id].serialize() !== position.serialize()) {
                     const renderable = entity.components.renderable;
-                    const position = entity.components.position;
-                    if (position) {
-                        renderable.c.position.set(position.x, position.y);
-                    }
+                    renderable.c.position.set(position.x, position.y);
+                    renderable.c.rotation = position.rotation.rads;
                 }
             }
+        };
+        this.handleNewEnitity = (entity) => {
+            const renderable = entity.components.renderable;
+            const position = entity.components.position;
+            if (position) {
+                renderable.c.position.set(position.x, position.y);
+                this.cachedEntityPositions[entity.id] = position;
+            }
+            else {
+                renderable.c.position.set(0, 0);
+            }
+            this.props.renderer.addWorld(renderable);
+            this.renderedEntities.add(entity);
         };
     }
 }
@@ -41876,8 +42152,9 @@ class Camera {
             this.c.addChild(r.c);
         };
         this.moveTo = (x, y) => {
-            this.c.x = +(this.props.renderer.app.screen.width / 2 - x).toFixed(0);
-            this.c.y = +(this.props.renderer.app.screen.height / 2 - y).toFixed(0);
+            // TODO jittery
+            this.c.x = Math.trunc(this.props.renderer.app.screen.width / 2 - x);
+            this.c.y = Math.trunc(this.props.renderer.app.screen.height / 2 - y);
             this.handleCameraPos();
         };
         this.toWorldCoords = ({ x, y }) => {
@@ -41909,7 +42186,6 @@ class Camera {
         this.props = props;
         this.c.sortableChildren = true;
         this.c.zIndex = 0;
-        this.c.sortableChildren = true;
         this.c.alpha = 1;
     }
 }
@@ -41956,9 +42232,9 @@ class Renderer {
             this.camera.handleCameraPos();
         };
         // method for tracking the camera
-        this.trackCamera = (renderable) => {
+        this.trackCamera = (position) => {
             this.app.ticker.add(() => {
-                this.camera.moveTo(renderable.c.x, renderable.c.y);
+                this.camera.moveTo(position.x, position.y);
             });
         };
         this.canvas = canvas;
@@ -42298,20 +42574,32 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+const randomName = `player${(Math.random() * 100).toFixed(0)}`;
 class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
     constructor(props) {
         super(Object.assign(Object.assign({}, props), { systems: [
                 new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.RenderSystem({ renderer: props.renderer }),
                 new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.DebugSystem({ renderer: props.renderer }),
-                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InputSystem({ renderer: props.renderer }),
-                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InteractiveSystem({ renderer: props.renderer }),
-                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.NetcodeSystem({ renderer: props.renderer, net: props.net })
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InputSystem({ renderer: props.renderer, player: randomName }),
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.InteractiveSystem({ renderer: props.renderer, player: randomName }),
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.NetcodeSystem({ renderer: props.renderer, net: props.net, player: randomName }),
+                new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.PlayerSpawnSystem({ renderer: props.renderer, player: randomName })
             ] }));
-        this.init = () => __awaiter(this, void 0, void 0, function* () {
+        this.addPlayer = () => {
+            this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
+                id: randomName,
+                components: {
+                    networked: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Networked({ isNetworked: true }),
+                    player: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Player({ name: randomName }),
+                }
+            }));
+        };
+        this.addUI = () => {
             // fpsText
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "fpsText", renderer: this.props.renderer, networked: false,
+                id: "fpsText", renderer: this.props.renderer,
                 components: {
+                    position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(0, 0),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.TextBox({
                         renderer: this.props.renderer,
                         cameraPos: { x: -35, y: 5 },
@@ -42325,12 +42613,13 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
             }));
             // fullscreen button
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "fullscreenButton", renderer: this.props.renderer, networked: false,
+                id: "fullscreenButton", renderer: this.props.renderer,
                 components: {
+                    position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(0, 0),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.TapButton({
                         renderer: this.props.renderer,
-                        dims: { w: 37, textX: 10, textY: 5 },
-                        cameraPos: { x: 70, y: 5 },
+                        dims: { w: 32, textX: 8, textY: 5 },
+                        cameraPos: { x: 40, y: 5 },
                         zIndex: 1,
                         text: (new pixi_js__WEBPACK_IMPORTED_MODULE_2__.Text("⚁", { fill: "#FFFFFF", fontSize: 16 })),
                         onPress: (b) => {
@@ -42348,14 +42637,15 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
             }));
             // debug button
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "debugButton", renderer: this.props.renderer, networked: false,
+                id: "debugButton", renderer: this.props.renderer,
                 components: {
+                    position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(0, 0),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.SwitchButton({
                         renderer: this.props.renderer,
-                        dims: { w: 59, textX: 10, textY: 7 },
+                        dims: { w: 32, textX: 7, textY: 5 },
                         cameraPos: { x: 5, y: 5 },
                         zIndex: 1,
-                        text: (new pixi_js__WEBPACK_IMPORTED_MODULE_2__.Text("debug", { fill: "#FFFFFF", fontSize: 14 })),
+                        text: (new pixi_js__WEBPACK_IMPORTED_MODULE_2__.Text("🐞", { fill: "#FFFFFF", fontSize: 18 })),
                         onPress: () => {
                             this.props.renderer.debug = true;
                             this.props.renderer.events.emit("debug");
@@ -42367,10 +42657,12 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                     })
                 }
             }));
+        };
+        this.addGameObjects = () => __awaiter(this, void 0, void 0, function* () {
             // floor
             const sandbox = yield pixi_js__WEBPACK_IMPORTED_MODULE_2__.Assets.load("sandbox.json");
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "floor", renderer: this.props.renderer, networked: false,
+                id: "floor", renderer: this.props.renderer,
                 components: {
                     position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(0, 0),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Floor({
@@ -42386,9 +42678,11 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
             }));
             // ball
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "ball", renderer: this.props.renderer, networked: true,
+                id: "ball",
+                renderer: this.props.renderer,
                 components: {
                     position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(400, 500),
+                    networked: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Networked({ isNetworked: true }),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Renderable({
                         renderer: this.props.renderer,
                         debuggable: true,
@@ -42397,61 +42691,19 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                     })
                 }
             }));
-            // skelly
-            const chars = yield pixi_js__WEBPACK_IMPORTED_MODULE_2__.Assets.load("chars.json");
-            for (const key in chars.textures) {
-                chars.textures[key].baseTexture.scaleMode = pixi_js__WEBPACK_IMPORTED_MODULE_2__.SCALE_MODES.NEAREST;
-            }
-            this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "skelly1", renderer: this.props.renderer, networked: true,
-                components: {
-                    position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(300, 300),
-                    controller: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controller({
-                        map: {
-                            "a,d": "", "w,s": "",
-                            "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
-                            "w": "up", "s": "down", "a": "left", "d": "right"
-                        },
-                        active: true
-                    }),
-                    actions: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Actions(_piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.CharacterMovement),
-                    renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Character({
-                        renderer: this.props.renderer,
-                        animations: {
-                            d: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["d1"], chars.textures["d2"], chars.textures["d3"]]),
-                            u: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["u1"], chars.textures["u2"], chars.textures["u3"]]),
-                            l: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["l1"], chars.textures["l2"], chars.textures["l3"]]),
-                            r: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["r1"], chars.textures["r2"], chars.textures["r3"]]),
-                            dl: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["dl1"], chars.textures["dl2"], chars.textures["dl3"]]),
-                            dr: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["dr1"], chars.textures["dr2"], chars.textures["dr3"]]),
-                            ul: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["ul1"], chars.textures["ul2"], chars.textures["ul3"]]),
-                            ur: new pixi_js__WEBPACK_IMPORTED_MODULE_2__.AnimatedSprite([chars.textures["ur1"], chars.textures["ur2"], chars.textures["ur3"]])
-                        },
-                        track: true,
-                        scale: 2,
-                        zIndex: 2
-                    })
-                }
-            }));
             // spaceship
             const spaceship = yield pixi_js__WEBPACK_IMPORTED_MODULE_2__.Assets.load("spaceship.json");
             this.addEntity(new _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Entity({
-                id: "spaceship", renderer: this.props.renderer, networked: true,
+                id: "spaceship",
+                renderer: this.props.renderer,
                 components: {
                     position: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Position(100, 300),
+                    networked: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Networked({ isNetworked: true }),
                     interactive: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Interactive({
+                        width: 100,
+                        height: 120,
                         active: true,
-                        bounds: { x: 50, y: 240, w: 100, h: 120 },
-                        onPress: (e, g) => {
-                            // const r = e.components.renderable as Character;
-                            // r.currentAnimation.tint = 0x0000cc;
-                            const spaceshipController = e.components.controller;
-                            spaceshipController.active = true;
-                            const skelly = g.props.entities["skelly1"];
-                            const skellyController = skelly.components.controller;
-                            skellyController.active = false;
-                            g.props.renderer.trackCamera(e.components.renderable);
-                        }
+                        onPress: "click"
                     }),
                     controller: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Controller({
                         map: {
@@ -42459,9 +42711,8 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                             "shift,a": "skidleft", "shift,d": "skidright",
                             "w": "up", "s": "down", "a": "left", "d": "right"
                         },
-                        active: false
                     }),
-                    actions: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Actions(_piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.CarMovement),
+                    actions: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Actions(Object.assign(Object.assign({}, _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.CarMovement), { "click": _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.playerControlsEntity })),
                     renderable: new _piggo_legends_contrib__WEBPACK_IMPORTED_MODULE_1__.Character({
                         renderer: this.props.renderer,
                         animations: {
@@ -42476,12 +42727,14 @@ class Playground extends _piggo_legends_core__WEBPACK_IMPORTED_MODULE_0__.Game {
                         },
                         track: false,
                         scale: 2,
-                        zIndex: 1
+                        zIndex: 3
                     })
                 }
             }));
         });
-        this.init();
+        this.addPlayer();
+        this.addUI();
+        this.addGameObjects();
     }
 }
 
