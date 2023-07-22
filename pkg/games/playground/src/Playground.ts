@@ -1,4 +1,4 @@
-import { Entity, Game, GameProps } from "@piggo-legends/core";
+import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
 import { Floor, TextBox, DebugSystem, RenderSystem, Character, Controller, InputSystem, Actions, Renderable, Position, CharacterMovement, CarMovement, SwitchButton, TapButton, Interactive, InteractiveSystem, RenderableProps, CharacterProps, NetcodeSystem, PlayerSpawnSystem, Player, Controlling, playerControlsEntity, Networked } from "@piggo-legends/contrib";
 import { Text, Assets, AnimatedSprite } from "pixi.js";
 
@@ -127,6 +127,18 @@ export class Playground extends Game<PlaygroundProps> {
       components: {
         position: new Position(400, 500),
         networked: new Networked({isNetworked: true}),
+        interactive: new Interactive({
+          width: 32,
+          height: 32,
+          active: true,
+          onPress: "click"
+        }),
+        actions: new Actions({
+          "click": (entity: Entity<EntityProps>, game: Game<GameProps>, player: string) => {
+            const t = (entity.components.renderable as TextBox).c as Text;
+            t.text = "🙃";
+          }
+        }),
         renderable: new Renderable({
           renderer: this.props.renderer,
           debuggable: true,
