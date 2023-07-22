@@ -79,6 +79,10 @@ export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netStat
         </ReactModal>
       </div>
       <div>
+        <button style={{ verticalAlign: "top", fontSize: 10 }} onClick={() => {
+          const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+          canvas.requestFullscreen();
+        }}>⚁</button>
         <button hidden={netState === "connected"} onClick={()=>setModalOpen(true)}>Connect to Peer</button>
       </div>
     </div>
