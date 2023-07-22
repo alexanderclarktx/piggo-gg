@@ -24,7 +24,7 @@ export abstract class Button<T extends ButtonProps> extends Renderable<T> {
 
     this.initialStyle();
 
-    this.c.on("pointerdown", this._onClick);
+    this.c.on("click", this._onClick);
   }
 
   _onClick = () => {
