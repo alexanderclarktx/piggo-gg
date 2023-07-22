@@ -12,5 +12,4 @@ export class Player implements Component<"player"> {
   constructor(props: PlayerProps) {
     this.name = props.name
   }
-
 }
