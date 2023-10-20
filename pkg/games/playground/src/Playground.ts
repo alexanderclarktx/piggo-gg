@@ -1,5 +1,10 @@
+import {
+  TextBox, DebugSystem, RenderSystem, Character, Controller,
+  InputSystem, Actions, Renderable, Position, CarMovement, SwitchButton,
+  TapButton, Interactive, InteractiveSystem, NetcodeSystem, PlayerSpawnSystem,
+  Player, playerControlsEntity, Networked, Floor
+} from "@piggo-legends/contrib";
 import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
-import { Floor, TextBox, DebugSystem, RenderSystem, Character, Controller, InputSystem, Actions, Renderable, Position, CharacterMovement, CarMovement, SwitchButton, TapButton, Interactive, InteractiveSystem, RenderableProps, CharacterProps, NetcodeSystem, PlayerSpawnSystem, Player, Controlling, playerControlsEntity, Networked } from "@piggo-legends/contrib";
 import { Text, Assets, AnimatedSprite } from "pixi.js";
 
 const randomName = `player${(Math.random() * 100).toFixed(0)}`;
