@@ -24,6 +24,6 @@ export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
   }, [RtcPeer]);
 
   return (
-    <canvas id="canvas"/>
+    <canvas style={{marginBottom: 0}} id="canvas"/>
   );
 }

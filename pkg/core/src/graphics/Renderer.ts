@@ -22,7 +22,7 @@ export class Renderer {
       backgroundColor: 0x6495ed,
       width: 800,
       height: 600,
-      antialias: true
+      antialias: true,
     });
 
     // set up the camera

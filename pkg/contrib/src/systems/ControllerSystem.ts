@@ -2,19 +2,19 @@ import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } f
 import { Actions, Controlled, Controller, Controlling } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 
-export type InputSystemProps = SystemProps & {
+export type ControllerSystemProps = SystemProps & {
   player: string,
 }
 
 // checks inputs against the controllable objects in the scene
-export class InputSystem extends System<InputSystemProps> {
+export class ControllerSystem extends System<ControllerSystemProps> {
   componentTypeQuery = ["controlled"];
 
   player: string;
   bufferedDown: Set<string> = new Set([]);
   bufferedUp: Set<string> = new Set([]);
 
-  constructor(props: InputSystemProps) {
+  constructor(props: ControllerSystemProps) {
     super(props);
     this.player = props.player;
     this.init();

@@ -15,7 +15,6 @@ export class RtcPeer {
 
   constructor(
     onLocalUpdated: (offer: string) => void,
-    // onMediaCallback: (stream: MediaStream) => void,
     onConnectedCallback: () => void,
   ) {
     this.pc = new RTCPeerConnection(this.config);
@@ -42,7 +41,6 @@ export class RtcPeer {
     this.pc.ontrack = (evt) => {
       console.log("ontrack");
       console.log(evt.streams);
-      // onMediaCallback(evt.streams[0]);
     };
 
     this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
