@@ -1,15 +1,14 @@
 import { Component, Entity,  Game, GameProps } from "@piggo-legends/core";
 
-export type Action = (entity: Entity , game: Game<GameProps>, player?: string) => void;
+export type Action = (entity: Entity, game: Game<GameProps>, player?: string) => void;
+export type ActionMap<T extends string = string> = Record<T, Action>;
 
-export type ActionMap = Record<string, Action>;
-
-export class Actions implements Component<"actions"> {
+export class Actions<T extends string = string> implements Component<"actions"> {
   type: "actions";
 
-  map: ActionMap;
+  map: ActionMap<T>;
 
-  constructor(actionMap: ActionMap) {
+  constructor(actionMap: ActionMap<T>) {
     this.map = actionMap;
   }
 }

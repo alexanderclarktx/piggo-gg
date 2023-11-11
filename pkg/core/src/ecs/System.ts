@@ -8,14 +8,14 @@ export type SystemProps = {
 export abstract class System<T extends SystemProps> {
   props: T;
 
+  abstract componentTypeQuery: string[];
+  abstract onTick: (entities: Entity[], game: Game<GameProps>) => void;
+
   constructor(props: T) {
     this.props = props;
   }
 
-  abstract componentTypeQuery: string[];
-
-  abstract onTick: (entities: Entity[], game: Game<GameProps>) => void;
-
+  // filters entities for those containing all required components
   getFilteredEntities = (entities: Entity[]) => {
     return entities.filter((e) => {
       for (const componentType of this.componentTypeQuery) {

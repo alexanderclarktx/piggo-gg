@@ -6,7 +6,7 @@ export type EntityProps = {
   networked?: boolean
 }
 
-// an Entity is a collection of components
+// an Entity is a unique game object with a collection of components
 export class Entity {
   id: string;
   components: Record<string, Component<string>>;

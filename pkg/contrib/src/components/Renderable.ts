@@ -2,17 +2,12 @@ import { Container } from "pixi.js";
 import { Component, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
-  renderer: Renderer
+  cameraPos?: { x: number; y: number }
   container?: Container
   debuggable?: boolean
-  zIndex?: number
   dynamic?: (c: Container) => void
-  clickable?: {
-    pointerover?: () => void
-    pointerout?: () => void
-    pointerdown?: () => void
-  }
-  cameraPos?: { x: number; y: number }
+  renderer: Renderer
+  zIndex?: number
 }
 
 export class Renderable<T extends RenderableProps> implements Component<"renderable"> {
@@ -43,19 +38,6 @@ export class Renderable<T extends RenderableProps> implements Component<"rendera
     this.c.children.forEach((child) => {
       child.alpha = 1;
     });
-
-    if (this.props.clickable) {
-      this.c.eventMode = "static";
-      if (this.props.clickable.pointerover) {
-        this.c.on("pointerover", this.props.clickable.pointerover);
-      }
-      if (this.props.clickable.pointerout) {
-        this.c.on("pointerout", this.props.clickable.pointerout);
-      }
-      if (this.props.clickable.pointerdown) {
-        this.c.on("pointerdown", this.props.clickable.pointerdown);
-      }
-    }
 
     // callback
     if (this.props.dynamic) {

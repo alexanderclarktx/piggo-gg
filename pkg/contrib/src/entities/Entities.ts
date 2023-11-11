@@ -1,5 +1,5 @@
 import { Component, Entity,  Game, GameProps, Renderer } from "@piggo-legends/core";
-import { Floor, Position, TextBox, TapButton, SwitchButton, Networked, Clickable, Renderable, Actions, Character, CarMovement, playerControlsEntity, Controller, CharacterMovement } from "@piggo-legends/contrib";
+import { Floor, Position, TextBox, TapButton, SwitchButton, Networked, Clickable, Renderable, Actions, Character, CarMovement, playerControlsEntity, Controller, CharacterMovement, CarMovementCommands, CharacterMovementCommands } from "@piggo-legends/contrib";
 import { Assets, Text, AnimatedSprite } from "pixi.js";
 
 export const Skelly = async (
@@ -20,12 +20,10 @@ export const Skelly = async (
         active: true,
         onPress: "click"
       }),
-      controller: new Controller({
-        map: {
-          "a,d": "", "w,s": "",
-          "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
-          "w": "up", "s": "down", "a": "left", "d": "right"
-        }
+      controller: new Controller<CharacterMovementCommands>({
+        "a,d": "", "w,s": "",
+        "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
+        "w": "up", "s": "down", "a": "left", "d": "right"
       }),
       actions: new Actions({
         ...CharacterMovement,
@@ -72,12 +70,10 @@ export const Spaceship = async (
         active: true,
         onPress: "click"
       }),
-      controller: new Controller({
-        map: {
-          "a,d": "", "w,s": "",
-          "shift,a": "skidleft", "shift,d": "skidright",
-          "w": "up", "s": "down", "a": "left", "d": "right"
-        },
+      controller: new Controller<CarMovementCommands>({
+        "a,d": "", "w,s": "",
+        "shift,a": "skidleft", "shift,d": "skidright",
+        "w": "up", "s": "down", "a": "left", "d": "right"
       }),
       actions: new Actions({
         ...CarMovement,
@@ -121,7 +117,7 @@ export const Ball = (
         onPress: "click"
       }),
       actions: new Actions({
-        "click": (entity: Entity, game: Game<GameProps>, player: string) => {
+        "click": (entity: Entity) => {
           const t = (entity.components.renderable as TextBox).c as Text;
           t.text = "🙃";
         }
