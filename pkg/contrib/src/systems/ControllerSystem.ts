@@ -1,4 +1,4 @@
-import { Entity,  Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
 import { Actions, Controlled, Controller } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 

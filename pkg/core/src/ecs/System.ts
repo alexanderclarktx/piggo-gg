@@ -1,4 +1,4 @@
-import { Entity,  Game, GameProps, Renderer } from "@piggo-legends/core";
+import { Entity, Game, GameProps, Renderer } from "@piggo-legends/core";
 
 export type SystemProps = {
   renderer: Renderer

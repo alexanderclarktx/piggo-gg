@@ -9,7 +9,7 @@ export * from "./src/components/Actions";
 export * from "./src/components/Renderable";
 export * from "./src/components/Position";
 export * from "./src/components/Actions";
-export * from "./src/components/Clickable";
+export * from "./src/components/Interactive";
 export * from "./src/components/Player";
 export * from "./src/components/Networked";
 export * from "./src/components/actions/CharacterMovement";

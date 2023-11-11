@@ -1,4 +1,4 @@
-import { Component, Entity,  Game, GameProps } from "@piggo-legends/core";
+import { Component, Entity, Game, GameProps } from "@piggo-legends/core";
 
 export type Action = (entity: Entity, game: Game<GameProps>, player?: string) => void;
 export type ActionMap<T extends string = string> = Record<T, Action>;

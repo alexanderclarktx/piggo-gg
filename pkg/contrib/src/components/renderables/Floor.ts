@@ -25,7 +25,7 @@ export class Floor extends Renderable<FloorProps> {
         const a = this.props.texture.width / this.props.texture.height;
         const x = (col - row) * (this.props.scale || 1) * this.props.texture.width / 2;
         const y = (col + row) * (this.props.scale || 1) * this.props.texture.height / (2 + (2 - a));
-  
+
         // sprite
         const tile = new Sprite(this.props.texture);
         tile.position.set(x, y);

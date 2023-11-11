@@ -1,4 +1,4 @@
-import { Entity,  Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
 import { Controlling, Position, Skelly } from "@piggo-legends/contrib";
 
 export type PlayerSpawnSystemProps = SystemProps & {

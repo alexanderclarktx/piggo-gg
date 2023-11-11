@@ -1,5 +1,5 @@
 import { Text } from 'pixi.js';
-import { Entity,  Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
 import { TextBox, DebugBounds, Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type DebugSystemProps = SystemProps & {

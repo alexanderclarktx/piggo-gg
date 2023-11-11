@@ -1,5 +1,5 @@
 import { Action, Controlled, Controlling, Position } from "@piggo-legends/contrib";
-import { Entity,  Game, GameProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps } from "@piggo-legends/core";
 
 export const playerControlsEntity: Action = (entity: Entity, game: Game<GameProps>, player: string) => {
   // check that the entity isn't already being controlled

@@ -1,4 +1,4 @@
-import { Entity,  Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
 import { Actions, Clickable, Position } from "@piggo-legends/contrib";
 
 export type Click = {

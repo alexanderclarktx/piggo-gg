@@ -1,4 +1,4 @@
-import { Entity,  Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
 
 export class DamageSystem extends System<SystemProps> {
   componentTypeQuery = ["health", "damage"];

@@ -1,4 +1,4 @@
-import { Component, Entity,  Game, GameProps, Renderer } from "@piggo-legends/core";
+import { Component, Entity, Renderer } from "@piggo-legends/core";
 import { Floor, Position, TextBox, TapButton, SwitchButton, Networked, Clickable, Renderable, Actions, Character, CarMovement, playerControlsEntity, Controller, CharacterMovement, CarMovementCommands, CharacterMovementCommands } from "@piggo-legends/contrib";
 import { Assets, Text, AnimatedSprite } from "pixi.js";
 
@@ -63,7 +63,7 @@ export const Spaceship = async (
     components: {
       ...components,
       position: new Position(100, 300),
-      networked: new Networked({isNetworked: true}),
+      networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
         width: 100,
         height: 120,
@@ -109,7 +109,7 @@ export const Ball = (
     components: {
       ...components,
       position: new Position(400, 500),
-      networked: new Networked({isNetworked: true}),
+      networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
         width: 32,
         height: 32,
