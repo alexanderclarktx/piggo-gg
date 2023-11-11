@@ -1,4 +1,4 @@
-import { Entity, Game, GameProps, Renderer, System, SystemProps } from '@piggo-legends/core';
+import { Entity, Renderer, System, SystemProps } from '@piggo-legends/core';
 import { Position, Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type RenderSystemProps = SystemProps & {
@@ -12,7 +12,7 @@ export class RenderSystem extends System<RenderSystemProps> {
 
   cachedEntityPositions: Record<string, Position> = {};
 
-  onTick = (entities: Entity[], _: Game<GameProps>) => {
+  onTick = (entities: Entity[]) => {
     for (const entity of entities) {
 
       // add new entities to the renderer

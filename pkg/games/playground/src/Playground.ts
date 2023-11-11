@@ -38,7 +38,7 @@ export class Playground extends Game<PlaygroundProps> {
   }
 
   addUI = async () => {
-    this.addEntity(FpsText(this.props.renderer));
+    this.addEntity(FpsText(this.props.renderer, {color: 0xffff00}));
     this.addEntity(FullscreenButton(this.props.renderer));
     this.addEntity(DebugButton(this.props.renderer));
   }
