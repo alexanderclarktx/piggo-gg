@@ -1,5 +1,5 @@
-import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
-import { Actions, Controlled, Controller, Controlling } from "@piggo-legends/contrib";
+import { Entity,  Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Actions, Controlled, Controller } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 
 export type ControllerSystemProps = SystemProps & {
@@ -25,7 +25,7 @@ export class ControllerSystem extends System<ControllerSystemProps> {
     this.addKeyUpListener();
   }
 
-  onTick = (entities: Entity<EntityProps>[], game: Game<GameProps>) => {
+  onTick = (entities: Entity[], game: Game<GameProps>) => {
     for (const entity of entities) {
       const controlled = entity.components.controlled as Controlled;
       if (controlled.entityId === this.player) {
@@ -34,7 +34,7 @@ export class ControllerSystem extends System<ControllerSystemProps> {
     }
   }
 
-  handleInputForControlledEntity = (controlledEntity: Entity<EntityProps>, game: Game<GameProps>) => {
+  handleInputForControlledEntity = (controlledEntity: Entity, game: Game<GameProps>) => {
     // copy the input buffer
     let buffer: Set<string> = new Set([]);
     this.bufferedDown.forEach((key) => buffer.add(key));
@@ -43,6 +43,7 @@ export class ControllerSystem extends System<ControllerSystemProps> {
     const controller = controlledEntity.components.controller as Controller;
     const actions = controlledEntity.components.actions as Actions;
 
+    // handle standalone and composite (a,b) input controls
     for (const input in controller.map) {
       if (input.includes(",")) {
         const inputKeys = input.split(",");

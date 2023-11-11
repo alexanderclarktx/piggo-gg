@@ -3,21 +3,21 @@ import { Renderer, Entity, System, SystemProps, RtcPool } from "@piggo-legends/c
 export type GameProps = {
   net: RtcPool,
   renderer: Renderer,
-  entities: Record<string, Entity<any>>,
+  entities: Record<string, Entity>,
   systems?: System<SystemProps>[]
 }
 
 export abstract class Game<T extends GameProps> {
   props: T;
   tick: number = 0;
-  otherPlayer: Entity<any>;
+  otherPlayer: Entity;
 
   constructor(props: T) {
     this.props = props;
     this._init();
   }
 
-  addEntity = (entity: Entity<any>) => {
+  addEntity = (entity: Entity) => {
     this.props.entities[entity.id] = entity;
   }
 

@@ -1,4 +1,4 @@
-import { Component, Entity, EntityProps, Game, GameProps, Renderer } from "@piggo-legends/core";
+import { Component, Entity,  Game, GameProps, Renderer } from "@piggo-legends/core";
 import { Floor, Position, TextBox, TapButton, SwitchButton, Networked, Clickable, Renderable, Actions, Character, CarMovement, playerControlsEntity, Controller, CharacterMovement } from "@piggo-legends/contrib";
 import { Assets, Text, AnimatedSprite } from "pixi.js";
 
@@ -6,7 +6,7 @@ export const Skelly = async (
   renderer: Renderer,
   id: string,
   tint?: number
-): Promise<Entity<EntityProps>> => {
+): Promise<Entity> => {
   const skellyAssets = await Assets.load("chars.json");
 
   const character = new Entity({
@@ -57,12 +57,11 @@ export const Spaceship = async (
   renderer: Renderer,
   id: string = "spaceship",
   components?: Record<string, Component<string>>
-): Promise<Entity<EntityProps>> => {
+): Promise<Entity> => {
   const spaceship = await Assets.load("spaceship.json");
 
   return new Entity({
     id: id,
-    renderer: renderer,
     components: {
       ...components,
       position: new Position(100, 300),
@@ -108,10 +107,9 @@ export const Ball = (
   renderer: Renderer,
   id: string = "ball",
   components?: Record<string, Component<string>>
-): Entity<EntityProps> => {
+): Entity => {
   return new Entity({
     id: id,
-    renderer: renderer,
     components: {
       ...components,
       position: new Position(400, 500),
@@ -123,7 +121,7 @@ export const Ball = (
         onPress: "click"
       }),
       actions: new Actions({
-        "click": (entity: Entity<EntityProps>, game: Game<GameProps>, player: string) => {
+        "click": (entity: Entity, game: Game<GameProps>, player: string) => {
           const t = (entity.components.renderable as TextBox).c as Text;
           t.text = "🙃";
         }
@@ -142,10 +140,9 @@ export const DebugButton = (
   renderer: Renderer,
   id: string = "debugButton",
   components?: Record<string, Component<string>>
-): Entity<EntityProps> => {
+): Entity => {
   return new Entity({
     id: id,
-    renderer: renderer,
     components: {
       position: new Position(0, 0),
       renderable: new SwitchButton({
@@ -171,10 +168,9 @@ export const FullscreenButton = (
   renderer: Renderer,
   id: string = "fullscreenButton",
   components?: Record<string, Component<string>>
-): Entity<EntityProps> => {
+): Entity => {
   return new Entity({
     id: id,
-    renderer: renderer,
     components: {
       ...components,
       position: new Position(0, 0),
@@ -202,10 +198,9 @@ export const FpsText = (
   renderer: Renderer,
   id: string = "fpsText",
   components?: Record<string, Component<string>>
-): Entity<EntityProps> => {
+): Entity => {
   return new Entity({
     id: id,
-    renderer: renderer,
     components: {
       ...components,
       position: new Position(0, 0),
@@ -226,12 +221,11 @@ export const TileFloor = async (
   renderer: Renderer,
   id: string = "tileFloor",
   components?: Record<string, Component<string>>
-): Promise<Entity<EntityProps>> => {
+): Promise<Entity> => {
   const sandbox = await Assets.load("sandbox.json");
 
   return new Entity({
     id: id,
-    renderer: renderer,
     components: {
       ...components,
       position: new Position(0, 0),

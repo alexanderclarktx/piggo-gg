@@ -1,4 +1,4 @@
-import { Entity, EntityProps, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity,  Game, GameProps, System, SystemProps } from "@piggo-legends/core";
 import { Controlling, Position, Skelly } from "@piggo-legends/contrib";
 
 export type PlayerSpawnSystemProps = SystemProps & {
@@ -8,14 +8,14 @@ export type PlayerSpawnSystemProps = SystemProps & {
 export class PlayerSpawnSystem extends System<PlayerSpawnSystemProps> {
   override componentTypeQuery = ["player"];
   player: string;
-  playersWithCharacters: Record<string, Entity<EntityProps>> = {};
+  playersWithCharacters: Record<string, Entity> = {};
 
   constructor(props: PlayerSpawnSystemProps) {
     super(props);
     this.player = props.player;
   }
 
-  onTick = (players: Entity<EntityProps>[], game: Game<GameProps>) => {
+  onTick = (players: Entity[], game: Game<GameProps>) => {
     for (const player of players) {
       if (!this.playersWithCharacters[player.id]) {
         this.spawnCharacterForPlayer(player, game, this.player === player.id ? 0xffffff : 0xffff00);
@@ -24,7 +24,7 @@ export class PlayerSpawnSystem extends System<PlayerSpawnSystemProps> {
     }
   }
 
-  spawnCharacterForPlayer = async (player: Entity<EntityProps>, game: Game<GameProps>, color: number) => {
+  spawnCharacterForPlayer = async (player: Entity, game: Game<GameProps>, color: number) => {
     const characterForPlayer = await Skelly(this.props.renderer, `${player.id}-character`, color);
 
     // give the player control of the character

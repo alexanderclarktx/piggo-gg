@@ -1,5 +1,5 @@
 import { Text } from 'pixi.js';
-import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
+import { Entity,  Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
 import { TextBox, DebugBounds, Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type DebugSystemProps = SystemProps & {
@@ -9,13 +9,13 @@ export type DebugSystemProps = SystemProps & {
 export class DebugSystem extends System<DebugSystemProps> {
   componentTypeQuery = ["renderable"];
 
-  debuggedEntities: Map<Entity<EntityProps>, Renderable<RenderableProps>[]> = new Map();
+  debuggedEntities: Map<Entity, Renderable<RenderableProps>[]> = new Map();
 
   constructor(props: DebugSystemProps) {
     super(props);
   }
 
-  onTick = (entities: Entity<EntityProps>[], _: Game<GameProps>) => {
+  onTick = (entities: Entity[], _: Game<GameProps>) => {
     if (this.props.renderer.debug) {
       for (const entity of entities) {
         if (entity.components.renderable) {
@@ -33,7 +33,7 @@ export class DebugSystem extends System<DebugSystemProps> {
     }
   }
 
-  addEntity = (entity: Entity<EntityProps>) => {
+  addEntity = (entity: Entity) => {
     if (entity.components.renderable) {
       const renderable = entity.components.renderable as Renderable<RenderableProps>;
 

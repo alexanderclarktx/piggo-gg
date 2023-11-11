@@ -1,4 +1,4 @@
-import { Entity, EntityProps, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity,  Game, GameProps, System, SystemProps } from "@piggo-legends/core";
 import { Actions, Clickable, Position } from "@piggo-legends/contrib";
 
 export type Click = {
@@ -32,7 +32,7 @@ export class ClickableSystem extends System<ClickableSystemProps> {
     });
   }
 
-  onTick = (entities: Entity<EntityProps>[], game: Game<GameProps>) => {
+  onTick = (entities: Entity[], game: Game<GameProps>) => {
     for (const entity of entities) {
       const clickable = entity.components.clickable as Clickable;
       const position = entity.components.position as Position;

@@ -1,4 +1,4 @@
-import { Entity, EntityProps, Game, GameProps, Renderer } from "@piggo-legends/core";
+import { Entity,  Game, GameProps, Renderer } from "@piggo-legends/core";
 
 export type SystemProps = {
   renderer: Renderer
@@ -14,9 +14,9 @@ export abstract class System<T extends SystemProps> {
 
   abstract componentTypeQuery: string[];
 
-  abstract onTick: (entities: Entity<EntityProps>[], game: Game<GameProps>) => void;
+  abstract onTick: (entities: Entity[], game: Game<GameProps>) => void;
 
-  getFilteredEntities = (entities: Entity<EntityProps>[]) => {
+  getFilteredEntities = (entities: Entity[]) => {
     return entities.filter((e) => {
       for (const componentType of this.componentTypeQuery) {
         if (!Object.keys(e.components).includes(componentType)) return false;

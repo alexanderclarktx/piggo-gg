@@ -1,17 +1,17 @@
 import { Action, Controlled, Controlling, Position } from "@piggo-legends/contrib";
-import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
+import { Entity,  Game, GameProps } from "@piggo-legends/core";
 
-export const playerControlsEntity: Action = (entity: Entity<EntityProps>, game: Game<GameProps>, player: string) => {
+export const playerControlsEntity: Action = (entity: Entity, game: Game<GameProps>, player: string) => {
   // check that the entity isn't already being controlled
   if (entity.components.controlled) return;
 
   // get the player entity
-  const playerEntity = game.props.entities[player] as Entity<EntityProps>;
+  const playerEntity = game.props.entities[player] as Entity;
 
   // release control if already controlling another entity
   if (playerEntity.components.controlling) {
     const previouslyControlling = playerEntity.components.controlling as Controlling;
-    const controlledEntity = game.props.entities[previouslyControlling.entityId] as Entity<EntityProps>;
+    const controlledEntity = game.props.entities[previouslyControlling.entityId] as Entity;
     delete controlledEntity.components.controlled;
   }
 
