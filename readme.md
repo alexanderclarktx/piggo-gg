@@ -1,8 +1,30 @@
-__Piggo Legends__ is a platform for casual multiplayer games. Play it online [here](https://alexanderclarktx.github.io/piggo-legends/)
+__Piggo Legends__ is a game engine for p2p web games. Play it online [here](https://alexanderclarktx.github.io/piggo-legends/)
 
 <kbd>
 <img src="screenshots/5.gif" style="width:500px">
 </kbd>
+
+# Objectives
+
+Games are easy to implement with Piggo Legends ECS
+
+Multiplayer is first-class, performant, and p2p
+
+# Upcoming Features
+
+#### netcode
+- [x] p2p webrtc handshake in browser
+- [x] naive game state transfer
+- [ ] comprehensive game state transfer [#43](https://github.com/alexanderclarktx/piggo-legends/issues/43)
+- [ ] support >2 players in one game [#45](https://github.com/alexanderclarktx/piggo-legends/issues/45)
+
+#### gameplay
+- [x] character WASD movement
+- [x] vehicle movement
+- [x] character can enter a vehicle
+- [x] physics-based movement
+- [ ] handles complex user interactions [#42](https://github.com/alexanderclarktx/piggo-legends/issues/42)
+- [ ] real isometric grid [#44](https://github.com/alexanderclarktx/piggo-legends/issues/44)
 
 # Development
 
@@ -20,37 +42,3 @@ npm run dev
 ```bash
 npm run pages
 ```
-
-# Objectives
-
-Games are easy to implement using piggo-legends' game framework.
-
-Multiplayer is performant, peer-to-peer, and easily integrated into games. 
-
-Piggo Legends supports polyglot clients (desktop, web, mobile) across a variety of game types.
-
-Social features like chat and voice have first class support.
-
-# Features
-
-#### Pixi.js
-- [x] render to html canvas
-- [x] render game objects
-- [x] camera
-- [x] animated sprites
-
-#### netcode
-- [x] WebRTC handshake works in browser
-- [x] WebRTC transfer media
-- [x] WebRTC connection over internet (fails for some network configurations like LTE)
-- [x] WebRTC game state transfer
-- [ ] WebRTC >2 players in one game
-
-#### gameplay
-- [x] character WASD movement
-- [x] vehicle movement
-- [ ] real isometric grid
-- [ ] character can enter a vehicle
-- [ ] weapons and damage
-- [ ] character stats
-- [ ] equippable items
