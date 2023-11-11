@@ -1,54 +1,44 @@
-import { ActionMap, Position, Renderable, RenderableProps } from "@piggo-legends/contrib";
-import { Entity, EntityProps, Game, GameProps } from "@piggo-legends/core";
+import { ActionMap, Position, Renderable, Velocity } from "@piggo-legends/contrib";
+import { Entity } from "@piggo-legends/core";
 
-// const MAX_VELOCITY = 100;
-// const ACCELERATION = 0.2;
-// const FRICTION = 0.05;
-// const SLIDE_ACCELERATION = 0.3;
-
-const SPEED = 2;
 const TURN_SPEED = 0.03;
 const SLIDE_FACTOR = 1.5;
 
-export const CarMovement: ActionMap = {
-  "up": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
-    const position = entity.components.position as Position;
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+const ACCELERATION = 0.02;
+const DECELERATION = 0.04;
+const MAX_VELOCITY = 5;
 
-    position.x += Math.sin(renderable.c.rotation) * SPEED;
-    position.y -= Math.cos(renderable.c.rotation) * SPEED;
-  },
-  "down": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
-    const position = entity.components.position as Position;
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+export type CarMovementCommands = "up" | "down" | "left" | "right" | "skidleft" | "skidright";
 
-    position.x -= Math.sin(renderable.c.rotation) * SPEED;
-    position.y += Math.cos(renderable.c.rotation) * SPEED;
+export const CarMovement: ActionMap<CarMovementCommands> = {
+  "up": (entity: Entity) => {
+    const velocity = entity.components.velocity as Velocity;
+    velocity.v = Math.min(velocity.v + ACCELERATION, MAX_VELOCITY);
   },
-  "left": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
-    const position = entity.components.position as Position;
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+  "down": (entity: Entity) => {
+    const velocity = entity.components.velocity as Velocity;
+    velocity.v = Math.max(velocity.v - DECELERATION, 0);
+  },
+  "left": (entity: Entity) => {
+    const {position, renderable} = entity.components as {position: Position, renderable: Renderable}
 
     position.rotation.minus(TURN_SPEED);
     renderable.c.rotation = position.rotation.rads;
   },
-  "right": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
-    const position = entity.components.position as Position;
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+  "right": (entity: Entity) => {
+    const {position, renderable} = entity.components as {position: Position, renderable: Renderable}
 
     position.rotation.plus(TURN_SPEED);
     renderable.c.rotation = position.rotation.rads;
   },
-  "skidleft": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
-    const position = entity.components.position as Position;
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+  "skidleft": (entity: Entity) => {
+    const {position, renderable} = entity.components as {position: Position, renderable: Renderable}
 
     position.rotation.minus(TURN_SPEED * SLIDE_FACTOR);
     renderable.c.rotation = position.rotation.rads;
   },
-  "skidright": (entity: Entity<EntityProps>, _: Game<GameProps>) => {
-    const position = entity.components.position as Position;
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+  "skidright": (entity: Entity) => {
+    const {position, renderable} = entity.components as {position: Position, renderable: Renderable}
 
     position.rotation.plus(TURN_SPEED * SLIDE_FACTOR);
     renderable.c.rotation = position.rotation.rads;

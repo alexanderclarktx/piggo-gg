@@ -1,6 +1,6 @@
 import { Text } from 'pixi.js';
-import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } from "@piggo-legends/core";
-import { TextBox, DebugBounds, Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Entity, Renderer, System, SystemProps } from "@piggo-legends/core";
+import { TextBox, DebugBounds, Renderable } from "@piggo-legends/contrib";
 
 export type DebugSystemProps = SystemProps & {
   renderer: Renderer
@@ -9,17 +9,17 @@ export type DebugSystemProps = SystemProps & {
 export class DebugSystem extends System<DebugSystemProps> {
   componentTypeQuery = ["renderable"];
 
-  debuggedEntities: Map<Entity<EntityProps>, Renderable<RenderableProps>[]> = new Map();
+  debuggedEntities: Map<Entity, Renderable[]> = new Map();
 
   constructor(props: DebugSystemProps) {
     super(props);
   }
 
-  onTick = (entities: Entity<EntityProps>[], _: Game<GameProps>) => {
+  onTick = (entities: Entity[]) => {
     if (this.props.renderer.debug) {
       for (const entity of entities) {
         if (entity.components.renderable) {
-          const renderable = entity.components.renderable as Renderable<RenderableProps>;
+          const renderable = entity.components.renderable as Renderable;
           if (renderable && renderable.props.debuggable && !this.debuggedEntities.has(entity)) {
             this.addEntity(entity);
           }
@@ -33,9 +33,9 @@ export class DebugSystem extends System<DebugSystemProps> {
     }
   }
 
-  addEntity = (entity: Entity<EntityProps>) => {
+  addEntity = (entity: Entity) => {
     if (entity.components.renderable) {
-      const renderable = entity.components.renderable as Renderable<RenderableProps>;
+      const renderable = entity.components.renderable as Renderable;
 
       // text box
       const textBox = new TextBox({

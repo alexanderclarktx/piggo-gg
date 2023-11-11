@@ -1,18 +1,15 @@
 import { Component } from "@piggo-legends/core";
 
-export type ControllerMap = Record<string, string>;
-
-export type ControllerProps = {
-  map: ControllerMap;
-}
+// "" is always allowed; it clears the input buffer
+export type ControllerMap<T extends string = string> = Record<string, T | "">
 
 // the Controller component maps inputs to Actions
-export class Controller implements Component<"controller"> {
+export class Controller<T extends string = string> implements Component<"controller"> {
   type: "controller";
 
-  map: ControllerMap;
+  map: ControllerMap<T>;
 
-  constructor(props: ControllerProps) {
-    this.map = props.map;
+  constructor(map: ControllerMap<T>) {
+    this.map = map;
   }
 }

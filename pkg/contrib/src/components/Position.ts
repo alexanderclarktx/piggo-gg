@@ -1,15 +1,13 @@
 import { Component } from "@piggo-legends/core";
 
 export type SerializedPosition = { x: number, y: number, rotation: number }
-
 export type PositionOffset = "world" | "camera";
 
-// the position component tracks the player's position
+// the entity's position in the world
 export class Position implements Component<"position"> {
   type: "position";
 
   rotation: Rotation = new Rotation();
-
   x: number;
   y: number;
   offset: PositionOffset;

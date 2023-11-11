@@ -2,22 +2,22 @@ import { Component } from "@piggo-legends/core";
 
 export type Bounds = { x: number, y: number, w: number, h: number };
 
-export type InteractiveProps = {
+export type ClickableProps = {
   width: number;
   height: number;
   active: boolean;
   onPress: string; // action ID
 }
 
-export class Interactive implements Component<"interactive"> {
-  type: "interactive";
+export class Clickable implements Component<"clickable"> {
+  type: "clickable";
 
   width: number;
   height: number;
   active: boolean;
   onPress: string; // action ID
 
-  constructor(props: InteractiveProps) {
+  constructor(props: ClickableProps) {
     this.width = props.width;
     this.height = props.height;
     this.active = props.active;

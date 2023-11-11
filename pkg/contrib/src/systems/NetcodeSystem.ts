@@ -1,4 +1,4 @@
-import { Entity, EntityProps, Game, GameProps, RtcPeer, RtcPool, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, RtcPeer, RtcPool, System, SystemProps } from "@piggo-legends/core";
 import { Controlled, Player, Position, SerializedPosition } from "@piggo-legends/contrib";
 
 export type TickData = {
@@ -28,7 +28,7 @@ export class NetcodeSystem extends System<NetcodeSystemProps> {
     super(props);
   }
 
-  onTick = (entities: Entity<EntityProps>[], game: Game<GameProps>) => {
+  onTick = (entities: Entity[], game: Game<GameProps>) => {
     // handle new peers
     for (const name in this.props.net.connections) {
       if (!this.peers[name]) {
@@ -69,9 +69,14 @@ export class NetcodeSystem extends System<NetcodeSystemProps> {
       // update each entity
       Object.entries(peer.buffer.entities).forEach(([id, entity]) => {
         if (game.props.entities[id]) {
+          // entity should deserialize
+
+
+          // TODO not generic enough
           const controlled = game.props.entities[id].components.controlled as Controlled;
           if (controlled && controlled.entityId === this.props.player) return;
   
+          // TODO not generic enough
           const position = game.props.entities[id].components.position as Position;
           if (position && entity.position) {
             position.deserialize(entity.position)
@@ -95,7 +100,7 @@ export class NetcodeSystem extends System<NetcodeSystemProps> {
     }));
   }
 
-  sendMessage = (entities: Entity<EntityProps>[], game: Game<GameProps>) => {
+  sendMessage = (entities: Entity[], game: Game<GameProps>) => {
     const serializedEntitites: Record<string, SerializedEntity> = {};
 
     // serialize each entity

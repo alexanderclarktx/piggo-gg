@@ -2,7 +2,7 @@ import { Graphics, Text } from "pixi.js";
 import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type ButtonProps = RenderableProps & {
-  dims: {w: number, textX: number, textY: number},
+  dims: { w: number, textX: number, textY: number },
   text: Text
 }
 

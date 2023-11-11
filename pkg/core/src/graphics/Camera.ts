@@ -1,4 +1,4 @@
-import { Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Renderable } from "@piggo-legends/contrib";
 import { Renderer } from "@piggo-legends/core";
 import { Container } from "pixi.js";
 
@@ -7,7 +7,7 @@ export type CameraProps = {
 }
 
 export class Camera {
-  renderables: Set<Renderable<RenderableProps>> = new Set();
+  renderables: Set<Renderable> = new Set();
   props: CameraProps;
   c: Container = new Container();
 
@@ -19,7 +19,7 @@ export class Camera {
     this.c.alpha = 1;
   }
 
-  add = (r: Renderable<RenderableProps>) => {
+  add = (r: Renderable) => {
     this.renderables.add(r);
     this.c.addChild(r.c);
   }

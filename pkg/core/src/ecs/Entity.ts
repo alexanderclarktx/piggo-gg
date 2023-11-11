@@ -6,13 +6,13 @@ export type EntityProps = {
   networked?: boolean
 }
 
-// an Entity is a collection of components
-export class Entity<T extends EntityProps> {
+// an Entity is a unique game object with a collection of components
+export class Entity {
   id: string;
   components: Record<string, Component<string>>;
   networked: boolean;
 
-  constructor(props: T) {
+  constructor(props: EntityProps) {
     this.id = props.id;
     this.components = props.components;
     this.networked = props.networked ?? false;

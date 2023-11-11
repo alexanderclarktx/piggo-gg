@@ -1,0 +1,18 @@
+import { Entity, System } from '@piggo-legends/core';
+import { Position, Velocity } from "@piggo-legends/contrib";
+
+export class PhysicsSystem extends System {
+  componentTypeQuery = ["velocity", "position"];
+
+  onTick = (entities: Entity[]) => {
+    for (const entity of entities) {      
+
+      // apply entity's velocity to its position
+      const {velocity, position} = entity.components as {velocity: Velocity, position: Position}
+      if (velocity.v > 0) {
+        position.x += Math.sin(position.rotation.rads) * velocity.v;
+        position.y -= Math.cos(position.rotation.rads) * velocity.v;
+      }
+    }
+  }
+}

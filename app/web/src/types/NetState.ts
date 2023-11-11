@@ -1,1 +1,7 @@
-export type NetState = "none" | "offering" | "answering" | "connected";
+export type NetState = "disconnected" | "offering" | "answering" | "connected";
+export const NetStateColor: Record<NetState, string> = {
+  "disconnected": "red",
+  "offering": "yellow",
+  "answering": "orange",
+  "connected": "green"
+}

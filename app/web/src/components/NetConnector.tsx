@@ -1,7 +1,7 @@
 import { RtcPool } from "@piggo-legends/core";
 import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
-import { NetState } from "../types/NetState";
+import { NetState, NetStateColor } from "../types/NetState";
 import * as lz from "lz-string"
 
 export type WebRTCHandshakeProps = {
@@ -62,7 +62,7 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
         >
           <div>
             <div>
-              <button hidden={netState !== "none"} onClick={createOffer}>Create Offer</button>
+              <button hidden={netState !== "disconnected"} onClick={createOffer}>Create Offer</button>
               <p hidden={netState !== "offering" && netState !== "answering"} style={{ wordWrap: "break-word", fontSize: "small" }}>
                 {sdp.local}
               </p>
@@ -78,12 +78,11 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
           </div>
         </ReactModal>
       </div>
-      <div>
-        <button style={{ verticalAlign: "top", fontSize: 10 }} onClick={() => {
-          const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-          canvas.requestFullscreen();
-        }}>⚁</button>
-        <button hidden={netState === "connected"} onClick={()=>setModalOpen(true)}>Connect to Peer</button>
+      <div style={{width:810, verticalAlign: "middle"}}>
+        <div style={{float: "left", paddingTop: 5, marginLeft: 5}}>status: <text
+          style={{color:NetStateColor[netState]}}>{netState}
+        </text></div>
+        <button style={{float: "right"}} onClick={()=>setModalOpen(true)}>Connect to Peer</button>
       </div>
     </div>
   );

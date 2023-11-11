@@ -1,5 +1,5 @@
-import { Entity, EntityProps, Game, GameProps, Renderer, System, SystemProps } from '@piggo-legends/core';
-import { Position, Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Entity, Renderer, System, SystemProps } from '@piggo-legends/core';
+import { Position, Renderable } from "@piggo-legends/contrib";
 
 export type RenderSystemProps = SystemProps & {
   renderer: Renderer
@@ -8,11 +8,11 @@ export type RenderSystemProps = SystemProps & {
 export class RenderSystem extends System<RenderSystemProps> {
   componentTypeQuery = ["renderable", "position"];
 
-  renderedEntities: Set<Entity<EntityProps>> = new Set();
+  renderedEntities: Set<Entity> = new Set();
 
   cachedEntityPositions: Record<string, Position> = {};
 
-  onTick = (entities: Entity<EntityProps>[], _: Game<GameProps>) => {
+  onTick = (entities: Entity[]) => {
     for (const entity of entities) {
 
       // add new entities to the renderer
@@ -23,15 +23,15 @@ export class RenderSystem extends System<RenderSystemProps> {
       // update renderable if position changed
       const position = entity.components.position as Position;
       if (position && this.cachedEntityPositions[entity.id].serialize() !== position.serialize()) {
-        const renderable = entity.components.renderable as Renderable<RenderableProps>;
+        const renderable = entity.components.renderable as Renderable;
         renderable.c.position.set(position.x, position.y);
         renderable.c.rotation = position.rotation.rads;
       }
     }
   }
 
-  handleNewEnitity = (entity: Entity<EntityProps>) => {
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+  handleNewEnitity = (entity: Entity) => {
+    const renderable = entity.components.renderable as Renderable;
     const position = entity.components.position as Position | undefined;
 
     if (position) {
