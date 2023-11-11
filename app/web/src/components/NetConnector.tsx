@@ -1,11 +1,11 @@
-import { NetManager } from "@piggo-legends/core";
+import { RtcPool } from "@piggo-legends/core";
 import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
 import { NetState } from "../types/NetState";
 import * as lz from "lz-string"
 
 export type WebRTCHandshakeProps = {
-  netManager?: NetManager
+  net: RtcPool
   sdp: { local: string, remote: string }
   modalOpen: boolean
   setModalOpen: (open: boolean) => void
@@ -14,7 +14,7 @@ export type WebRTCHandshakeProps = {
 }
 
 // the NetConnector component creates and accepts WebRTC SDP offers/answers
-export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netState, setNetState }: WebRTCHandshakeProps) => {
+export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setNetState }: WebRTCHandshakeProps) => {
   const inputOfferRef = useRef<HTMLInputElement>(null);
   const inputAnswerRef = useRef<HTMLInputElement>(null);
 
@@ -26,20 +26,20 @@ export const NetConnector = ({ netManager, sdp, modalOpen, setModalOpen, netStat
 
   const createOffer = () => {
     setNetState("offering");
-    netManager?.createOffer();
+    net.createOffer();
   }
 
   const acceptOffer = () => {
     // const offerDecoded = btoa(inputOfferRef.current ? inputOfferRef.current.value : "");
     const offerDecoded = lz.decompressFromBase64(inputOfferRef.current ? inputOfferRef.current.value : "");
-    netManager?.acceptOffer(offerDecoded.slice(1, offerDecoded.length - 1));
+    net.acceptOffer(offerDecoded.slice(1, offerDecoded.length - 1));
     setNetState("answering");
   }
 
   const acceptAnswer = () => {
     // const answerDecoded = btoa(inputAnswerRef.current ? inputAnswerRef.current.value : "");
     const answerDecoded = lz.decompressFromBase64(inputAnswerRef.current ? inputAnswerRef.current.value : "");
-    netManager?.acceptAnswer(answerDecoded.slice(1, answerDecoded.length - 1));
+    net.acceptAnswer(answerDecoded.slice(1, answerDecoded.length - 1));
   }
 
   return (

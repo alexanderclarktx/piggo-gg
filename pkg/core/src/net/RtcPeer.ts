@@ -1,11 +1,12 @@
 import { Compression } from "./Compression";
 
-export class NetManager {
+export class RtcPeer {
   config = {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" }
     ]
   }
+
   dataChannelSettings = { reliable: { ordered: false, maxRetransmits: 0 } }
   chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
@@ -14,7 +15,7 @@ export class NetManager {
 
   constructor(
     onLocalUpdated: (offer: string) => void,
-    onMediaCallback: (stream: MediaStream) => void,
+    // onMediaCallback: (stream: MediaStream) => void,
     onConnectedCallback: () => void,
   ) {
     this.pc = new RTCPeerConnection(this.config);
@@ -41,7 +42,7 @@ export class NetManager {
     this.pc.ontrack = (evt) => {
       console.log("ontrack");
       console.log(evt.streams);
-      onMediaCallback(evt.streams[0]);
+      // onMediaCallback(evt.streams[0]);
     };
 
     this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
