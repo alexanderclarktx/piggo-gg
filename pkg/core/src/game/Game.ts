@@ -1,10 +1,10 @@
-import { Renderer, Entity, System, SystemProps, RtcPool } from "@piggo-legends/core";
+import { Renderer, Entity, System, RtcPool } from "@piggo-legends/core";
 
 export type GameProps = {
   net: RtcPool,
   renderer: Renderer,
   entities: Record<string, Entity>,
-  systems?: System<SystemProps>[]
+  systems?: System[]
 }
 
 export abstract class Game<T extends GameProps> {

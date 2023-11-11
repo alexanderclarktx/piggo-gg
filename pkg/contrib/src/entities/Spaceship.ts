@@ -1,5 +1,5 @@
 import { Component, Entity, Renderer } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands } from "@piggo-legends/contrib";
+import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Velocity } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
 
 export const Spaceship = async (
@@ -14,6 +14,7 @@ export const Spaceship = async (
     components: {
       ...components,
       position: new Position(100, 300),
+      velocity: new Velocity(),
       networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
         width: 100,

@@ -1,5 +1,5 @@
 import { Entity, Renderer, System, SystemProps } from '@piggo-legends/core';
-import { Position, Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Position, Renderable } from "@piggo-legends/contrib";
 
 export type RenderSystemProps = SystemProps & {
   renderer: Renderer
@@ -23,7 +23,7 @@ export class RenderSystem extends System<RenderSystemProps> {
       // update renderable if position changed
       const position = entity.components.position as Position;
       if (position && this.cachedEntityPositions[entity.id].serialize() !== position.serialize()) {
-        const renderable = entity.components.renderable as Renderable<RenderableProps>;
+        const renderable = entity.components.renderable as Renderable;
         renderable.c.position.set(position.x, position.y);
         renderable.c.rotation = position.rotation.rads;
       }
@@ -31,7 +31,7 @@ export class RenderSystem extends System<RenderSystemProps> {
   }
 
   handleNewEnitity = (entity: Entity) => {
-    const renderable = entity.components.renderable as Renderable<RenderableProps>;
+    const renderable = entity.components.renderable as Renderable;
     const position = entity.components.position as Position | undefined;
 
     if (position) {

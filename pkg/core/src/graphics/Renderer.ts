@@ -1,6 +1,6 @@
 import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
 import { Camera } from "@piggo-legends/core";
-import { Position, Renderable, RenderableProps } from "@piggo-legends/contrib";
+import { Position, Renderable } from "@piggo-legends/contrib";
 
 // Renderer renders the game to a canvas
 export class Renderer {
@@ -64,7 +64,7 @@ export class Renderer {
   }
 
   // adds a Renderable to the pixi.js stage
-  addWorld = (renderable: Renderable<RenderableProps>) => {
+  addWorld = (renderable: Renderable) => {
     this.camera.add(renderable);
     this.camera.handleCameraPos();
   }

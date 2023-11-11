@@ -5,7 +5,7 @@ export type SystemProps = {
 }
 
 // a System is a function that is applied to all entities that have a certain set of components
-export abstract class System<T extends SystemProps> {
+export abstract class System<T extends SystemProps = SystemProps> {
   props: T;
 
   abstract componentTypeQuery: string[];

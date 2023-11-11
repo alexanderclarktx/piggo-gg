@@ -10,7 +10,7 @@ export type RenderableProps = {
   zIndex?: number
 }
 
-export class Renderable<T extends RenderableProps> implements Component<"renderable"> {
+export class Renderable<T extends RenderableProps = RenderableProps> implements Component<"renderable"> {
   type: "renderable";
 
   id: string;
