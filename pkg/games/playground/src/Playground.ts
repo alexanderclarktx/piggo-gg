@@ -1,5 +1,5 @@
 import {
-  DebugSystem, ControllerSystem, InteractiveSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
+  DebugSystem, ControllerSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
   Ball, DebugButton, FpsText, FullscreenButton, Spaceship, TileFloor
 } from "@piggo-legends/contrib";
 import { Entity, Game, GameProps } from "@piggo-legends/core";
@@ -17,7 +17,7 @@ export class Playground extends Game<PlaygroundProps> {
         new RenderSystem({ renderer: props.renderer }),
         new DebugSystem({ renderer: props.renderer }),
         new ControllerSystem({ renderer: props.renderer, player: randomName }),
-        new InteractiveSystem({ renderer: props.renderer, player: randomName }),
+        new ClickableSystem({ renderer: props.renderer, player: randomName }),
         new NetcodeSystem({ renderer: props.renderer, net: props.net, player: randomName }),
         new PlayerSpawnSystem({ renderer: props.renderer, player: randomName })
       ]

@@ -7,7 +7,7 @@ export type RenderableProps = {
   debuggable?: boolean
   zIndex?: number
   dynamic?: (c: Container) => void
-  interactive?: {
+  clickable?: {
     pointerover?: () => void
     pointerout?: () => void
     pointerdown?: () => void
@@ -44,16 +44,16 @@ export class Renderable<T extends RenderableProps> implements Component<"rendera
       child.alpha = 1;
     });
 
-    if (this.props.interactive) {
+    if (this.props.clickable) {
       this.c.eventMode = "static";
-      if (this.props.interactive.pointerover) {
-        this.c.on("pointerover", this.props.interactive.pointerover);
+      if (this.props.clickable.pointerover) {
+        this.c.on("pointerover", this.props.clickable.pointerover);
       }
-      if (this.props.interactive.pointerout) {
-        this.c.on("pointerout", this.props.interactive.pointerout);
+      if (this.props.clickable.pointerout) {
+        this.c.on("pointerout", this.props.clickable.pointerout);
       }
-      if (this.props.interactive.pointerdown) {
-        this.c.on("pointerdown", this.props.interactive.pointerdown);
+      if (this.props.clickable.pointerdown) {
+        this.c.on("pointerdown", this.props.clickable.pointerdown);
       }
     }
 

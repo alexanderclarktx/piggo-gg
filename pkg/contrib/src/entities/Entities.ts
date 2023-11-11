@@ -1,5 +1,5 @@
 import { Component, Entity, EntityProps, Game, GameProps, Renderer } from "@piggo-legends/core";
-import { Floor, Position, TextBox, TapButton, SwitchButton, Networked, Interactive, Renderable, Actions, Character, CarMovement, playerControlsEntity, Controller, CharacterMovement } from "@piggo-legends/contrib";
+import { Floor, Position, TextBox, TapButton, SwitchButton, Networked, Clickable, Renderable, Actions, Character, CarMovement, playerControlsEntity, Controller, CharacterMovement } from "@piggo-legends/contrib";
 import { Assets, Text, AnimatedSprite } from "pixi.js";
 
 export const Skelly = async (
@@ -14,7 +14,7 @@ export const Skelly = async (
     components: {
       position: new Position(300, 300),
       networked: new Networked({ isNetworked: true }),
-      interactive: new Interactive({
+      clickable: new Clickable({
         width: 32,
         height: 32,
         active: true,
@@ -67,7 +67,7 @@ export const Spaceship = async (
       ...components,
       position: new Position(100, 300),
       networked: new Networked({isNetworked: true}),
-      interactive: new Interactive({
+      clickable: new Clickable({
         width: 100,
         height: 120,
         active: true,
@@ -116,7 +116,7 @@ export const Ball = (
       ...components,
       position: new Position(400, 500),
       networked: new Networked({isNetworked: true}),
-      interactive: new Interactive({
+      clickable: new Clickable({
         width: 32,
         height: 32,
         active: true,
