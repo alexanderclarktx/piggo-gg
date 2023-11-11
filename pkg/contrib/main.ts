@@ -7,7 +7,7 @@ export * from "./src/components/Controller";
 export * from "./src/components/Experience";
 export * from "./src/components/Gold";
 export * from "./src/components/Health";
-export * from "./src/components/Interactive";
+export * from "./src/components/Clickable";
 export * from "./src/components/Name";
 export * from "./src/components/Networked";
 export * from "./src/components/Player";
