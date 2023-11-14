@@ -6,7 +6,6 @@ export const TileFloor = async (renderer: Renderer, id: string = "tileFloor"): P
   const sandbox = await Assets.load("sandbox.json");
   return {
     id: id,
-    networked: false,
     components: {
       position: new Position(0, 0),
       renderable: new Floor({

@@ -1,4 +1,4 @@
-import { Entity, Game, GameProps, RtcPeer, RtcPool, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, Renderer, RtcPeer, RtcPool, System } from "@piggo-legends/core";
 import { Controlled, Player, Position, SerializedPosition } from "@piggo-legends/contrib";
 
 export type TickData = {
@@ -12,54 +12,43 @@ export type SerializedEntity = {
   position?: SerializedPosition
 }
 
-export type NetcodeSystemProps = SystemProps & {
-  net: RtcPool,
-  player: string
-}
-
 type PeerState = { connected: boolean, connection: RtcPeer, buffer: TickData | null }
 
-export class NetcodeSystem extends System<NetcodeSystemProps> {
-  componentTypeQuery = ["networked"];
+export const NetcodeSystem = (renderer: Renderer, net: RtcPool, thisPlayerId: string): System =>{
+  let peers: Record<string, PeerState> = {};
 
-  peers: Record<string, PeerState> = {};
-
-  constructor(props: NetcodeSystemProps) {
-    super(props);
-  }
-
-  onTick = (entities: Entity[], game: Game<GameProps>) => {
+  const onTick = (entities: Entity[], game: Game<GameProps>) => {
     // handle new peers
-    for (const name in this.props.net.connections) {
-      if (!this.peers[name]) {
+    for (const name in net.connections) {
+      if (!peers[name]) {
         // add peer to peerStates
-        this.peers[name] = { connected: false, connection: this.props.net.connections[name], buffer: null };
+        peers[name] = { connected: false, connection: net.connections[name], buffer: null };
 
         // handle incoming messages from the peer
-        this.peers[name].connection.events.addEventListener("message", (event: CustomEvent<any>) => {
+        peers[name].connection.events.addEventListener("message", (event: CustomEvent<any>) => {
           if (event.detail.type === "game") {
-            this.peers[name].buffer = event.detail as TickData;
+            peers[name].buffer = event.detail as TickData;
           } else if (event.detail.type === "init") {
-            this.handleInitialConnection(event.detail as TickData, game);
+            handleInitialConnection(event.detail as TickData, game);
           }
         });
       }
     }
 
     // handle incoming tick data
-    for (const peer of Object.values(this.peers)) {
-      this.handleMessage(peer, game);
+    for (const peer of Object.values(peers)) {
+      handleMessage(peer, game);
     }
 
     // send tick data
-    this.sendMessage(entities, game);
+    sendMessage(entities, game);
   }
 
-  handleMessage = (peer: PeerState, game: Game<GameProps>) => {
+  const handleMessage = (peer: PeerState, game: Game<GameProps>) => {
     if (peer.buffer) {
       // handle initial connection if peer is new
       if (!peer.connected) {
-        this.handleInitialConnection(peer.buffer, game);
+        handleInitialConnection(peer.buffer, game);
         peer.connected = true;
       }
       
@@ -74,7 +63,7 @@ export class NetcodeSystem extends System<NetcodeSystemProps> {
 
           // TODO not generic enough
           const controlled = game.props.entities[id].components.controlled as Controlled;
-          if (controlled && controlled.entityId === this.props.player) return;
+          if (controlled && controlled.entityId === thisPlayerId) return;
   
           // TODO not generic enough
           const position = game.props.entities[id].components.position as Position;
@@ -89,18 +78,17 @@ export class NetcodeSystem extends System<NetcodeSystemProps> {
     peer.buffer = null;
   }
 
-  handleInitialConnection = (td: TickData, game: Game<GameProps>) => {
+  const handleInitialConnection = (td: TickData, game: Game<GameProps>) => {
     console.log("adding entity");
     game.addEntity({
       id: td.player,
-      networked: true,
       components: {
         player: new Player({ name: td.player }),
       },
     });
   }
 
-  sendMessage = (entities: Entity[], game: Game<GameProps>) => {
+  const sendMessage = (entities: Entity[], game: Game<GameProps>) => {
     const serializedEntitites: Record<string, SerializedEntity> = {};
 
     // serialize each entity
@@ -119,16 +107,22 @@ export class NetcodeSystem extends System<NetcodeSystemProps> {
     const message: TickData = {
       type: "game",
       tick: game.tick,
-      player: this.props.player,
+      player: thisPlayerId,
       entities: serializedEntitites
     }
 
     // send message to each connected peer
-    for (const peer of Object.values(this.peers)) {
+    for (const peer of Object.values(peers)) {
       if (peer.connection.pc.connectionState === "connected") {
         peer.connection.sendMessage(message);
         // if (game.tick % 1000 === 0) console.log("sent", message);
       }
     }
   }
+
+  return ({
+    renderer,
+    componentTypeQuery: ["networked"],
+    onTick
+  })
 }

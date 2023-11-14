@@ -1,43 +1,25 @@
-import { Entity, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Actions, Controlled, Controller } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 
-export type ControllerSystemProps = SystemProps & {
-  player: string,
-}
-
 // checks inputs against the controllable objects in the scene
-export class ControllerSystem extends System<ControllerSystemProps> {
-  componentTypeQuery = ["controlled"];
+export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): System => {
+  let bufferedDown: Set<string> = new Set([]);
+  let bufferedUp: Set<string> = new Set([]);
 
-  player: string;
-  bufferedDown: Set<string> = new Set([]);
-  bufferedUp: Set<string> = new Set([]);
-
-  constructor(props: ControllerSystemProps) {
-    super(props);
-    this.player = props.player;
-    this.init();
-  }
-
-  init = () => {
-    this.addKeyDownListener();
-    this.addKeyUpListener();
-  }
-
-  onTick = (entities: Entity[], game: Game<GameProps>) => {
+  const onTick = (entities: Entity[], game: Game<GameProps>) => {
     for (const entity of entities) {
       const controlled = entity.components.controlled as Controlled;
-      if (controlled.entityId === this.player) {
-        this.handleInputForControlledEntity(entity, game);
+      if (controlled.entityId === thisPlayerId) {
+        handleInputForControlledEntity(entity, game);
       }
     }
   }
 
-  handleInputForControlledEntity = (controlledEntity: Entity, game: Game<GameProps>) => {
+  const handleInputForControlledEntity = (controlledEntity: Entity, game: Game<GameProps>) => {
     // copy the input buffer
     let buffer: Set<string> = new Set([]);
-    this.bufferedDown.forEach((key) => buffer.add(key));
+    bufferedDown.forEach((key) => buffer.add(key));
 
     // check for actions
     const controller = controlledEntity.components.controller as Controller;
@@ -66,22 +48,31 @@ export class ControllerSystem extends System<ControllerSystemProps> {
     }
   }
 
-  addKeyDownListener = () => {
+  const addKeyDownListener = () => {
     document.addEventListener("keydown", (event) => {
-      if (document.hasFocus()) { //  && this.windowFocused
+      if (document.hasFocus()) { //  && windowFocused
         const keyName = event.key.toLowerCase();
-        if (!this.bufferedDown.has(keyName)) this.bufferedDown.add(keyName);
+        if (!bufferedDown.has(keyName)) bufferedDown.add(keyName);
       }
     });
   }
 
-  addKeyUpListener = () => {
+  const addKeyUpListener = () => {
     document.addEventListener("keyup", (event) => {
-      if (document.hasFocus()) { // && this.windowFocused
+      if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
-        if (!this.bufferedUp.has(keyName)) this.bufferedUp.add(keyName);
-        this.bufferedDown.delete(keyName);
+        if (!bufferedUp.has(keyName)) bufferedUp.add(keyName);
+        bufferedDown.delete(keyName);
       }
     });
   }
+
+  addKeyDownListener();
+  addKeyUpListener();
+
+  return ({
+    renderer,
+    componentTypeQuery: ["controlled"],
+    onTick
+  })
 }

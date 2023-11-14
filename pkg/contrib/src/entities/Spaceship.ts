@@ -6,7 +6,6 @@ export const Spaceship = async (renderer: Renderer, id: string = "spaceship"): P
   const spaceship = await Assets.load("spaceship.json");
   return {
     id: id,
-    networked: true,
     components: {
       position: new Position(100, 300),
       velocity: new Velocity(),

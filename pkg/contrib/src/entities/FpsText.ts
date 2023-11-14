@@ -10,7 +10,6 @@ export type FpsTextProps = {
 
 export const FpsText = (renderer: Renderer, props: FpsTextProps = {}, id: string = "fpsText"): Entity => ({
   id: id,
-  networked: false,
   components: {
     position: new Position(0, 0),
     renderable: new TextBox({

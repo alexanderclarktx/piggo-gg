@@ -6,7 +6,6 @@ export const Skelly = async (renderer: Renderer, id: string, tint?: number): Pro
   const skellyAssets = await Assets.load("chars.json");
   return {
     id: id,
-    networked: true,
     components: {
       position: new Position(300, 300),
       networked: new Networked({ isNetworked: true }),

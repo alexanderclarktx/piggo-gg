@@ -4,7 +4,6 @@ import { Text } from "pixi.js";
 
 export const Ball = (renderer: Renderer, id: string = "ball"): Entity => ({
   id: id,
-  networked: true,
   components: {
     position: new Position(400, 500),
     networked: new Networked({ isNetworked: true }),

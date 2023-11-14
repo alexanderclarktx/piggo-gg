@@ -2,7 +2,7 @@ import {
   DebugSystem, ControllerSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
   Ball, DebugButton, FpsText, FullscreenButton, Spaceship, TileFloor, PhysicsSystem
 } from "@piggo-legends/contrib";
-import { Entity, Game, GameProps } from "@piggo-legends/core";
+import { Game, GameProps } from "@piggo-legends/core";
 
 const randomName = `player${(Math.random() * 100).toFixed(0)}`;
 
@@ -14,13 +14,13 @@ export class Playground extends Game<PlaygroundProps> {
     super({
       ...props,
       systems: [
-        new RenderSystem({ renderer: props.renderer }),
-        new DebugSystem({ renderer: props.renderer }),
-        new ControllerSystem({ renderer: props.renderer, player: randomName }),
-        new ClickableSystem({ renderer: props.renderer, player: randomName }),
-        new NetcodeSystem({ renderer: props.renderer, net: props.net, player: randomName }),
-        new PlayerSpawnSystem({ renderer: props.renderer, player: randomName }),
-        new PhysicsSystem({ renderer: props.renderer})
+        RenderSystem(props.renderer),
+        DebugSystem(props.renderer),
+        ControllerSystem(props.renderer, randomName),
+        ClickableSystem(props.renderer, randomName),
+        NetcodeSystem(props.renderer, props.net, randomName),
+        PlayerSpawnSystem(props.renderer, randomName),
+        PhysicsSystem(props.renderer)
       ]
     });
     this.addPlayer();
@@ -31,7 +31,6 @@ export class Playground extends Game<PlaygroundProps> {
   addPlayer = () => {
     this.addEntity({
       id: randomName,
-      networked: true,
       components: {
         networked: new Networked({isNetworked: true}),
         player: new Player({name: randomName}),

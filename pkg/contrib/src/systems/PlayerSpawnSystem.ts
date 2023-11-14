@@ -1,31 +1,21 @@
-import { Entity, Game, GameProps, System, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Controlling, Position, Skelly } from "@piggo-legends/contrib";
 
-export type PlayerSpawnSystemProps = SystemProps & {
-  player: string
-};
+export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): System => {
+  let componentTypeQuery = ["player"];
+  let playersWithCharacters: Record<string, Entity> = {};
 
-export class PlayerSpawnSystem extends System<PlayerSpawnSystemProps> {
-  override componentTypeQuery = ["player"];
-  player: string;
-  playersWithCharacters: Record<string, Entity> = {};
-
-  constructor(props: PlayerSpawnSystemProps) {
-    super(props);
-    this.player = props.player;
-  }
-
-  onTick = (players: Entity[], game: Game<GameProps>) => {
+  const onTick = (players: Entity[], game: Game<GameProps>) => {
     for (const player of players) {
-      if (!this.playersWithCharacters[player.id]) {
-        this.spawnCharacterForPlayer(player, game, this.player === player.id ? 0xffffff : 0xffff00);
-        this.playersWithCharacters[player.id] = player
+      if (!playersWithCharacters[player.id]) {
+        spawnCharacterForPlayer(player, game, thisPlayerId === player.id ? 0xffffff : 0xffff00);
+        playersWithCharacters[player.id] = player
       }
     }
   }
 
-  spawnCharacterForPlayer = async (player: Entity, game: Game<GameProps>, color: number) => {
-    const characterForPlayer = await Skelly(this.props.renderer, `${player.id}-character`, color);
+  const spawnCharacterForPlayer = async (player: Entity, game: Game<GameProps>, color: number) => {
+    const characterForPlayer = await Skelly(renderer, `${player.id}-character`, color);
 
     // give the player control of the character
     player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
@@ -33,8 +23,14 @@ export class PlayerSpawnSystem extends System<PlayerSpawnSystemProps> {
     game.addEntity(characterForPlayer);
     console.log("adding", characterForPlayer);
 
-    if (this.player === player.id) {
-      this.props.renderer.trackCamera((characterForPlayer.components.position as Position));
+    if (thisPlayerId === player.id) {
+      renderer.trackCamera((characterForPlayer.components.position as Position));
     }
   }
+
+  return ({
+    renderer,
+    componentTypeQuery,
+    onTick
+  })
 }
