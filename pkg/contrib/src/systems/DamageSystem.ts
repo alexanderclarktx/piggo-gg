@@ -1,9 +1,13 @@
-import { Entity, Game, GameProps, System } from "@piggo-legends/core";
+import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 
-export class DamageSystem extends System {
-  componentTypeQuery = ["health", "damage"];
-
-  onTick = (__: Entity[], _: Game<GameProps>) => {
+export const DamageSystem = (renderer: Renderer): System => {
+  const onTick = (__: Entity[], _: Game<GameProps>) => {
     // console.log("DamageSystem.onTick", entities);
+  }
+
+  return {
+    renderer,
+    componentTypeQuery: ["health", "damage"],
+    onTick
   }
 }

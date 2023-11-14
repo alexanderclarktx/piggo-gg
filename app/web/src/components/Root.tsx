@@ -27,19 +27,23 @@ export const Root = () => {
 
   return (
     <div>
-      <Header/>
-      <GameCanvas
-        net={pool}
-        setGame={setGame}
-      />
-      <NetConnector
-        net={pool}
-        sdp={sdp}
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        netState={netState}
-        setNetState={setNetState}
-      />
+      <div>
+        <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
+          <Header/>
+          <GameCanvas
+            net={pool}
+            setGame={setGame}
+          />
+          <NetConnector
+            net={pool}
+            sdp={sdp}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+            netState={netState}
+            setNetState={setNetState}
+          />
+        </div>
+      </div>
     </div>
   );
 }

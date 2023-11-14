@@ -1,18 +1,12 @@
-import { Component, Entity, Renderer } from "@piggo-legends/core";
+import { Entity, Renderer } from "@piggo-legends/core";
 import { Floor, Position } from "@piggo-legends/contrib";
 import { Assets } from "pixi.js";
 
-export const TileFloor = async (
-  renderer: Renderer,
-  id: string = "tileFloor",
-  components?: Record<string, Component<string>>
-): Promise<Entity> => {
+export const TileFloor = async (renderer: Renderer, id: string = "tileFloor"): Promise<Entity> => {
   const sandbox = await Assets.load("sandbox.json");
-
-  return new Entity({
+  return {
     id: id,
     components: {
-      ...components,
       position: new Position(0, 0),
       renderable: new Floor({
         renderer: renderer,
@@ -24,5 +18,5 @@ export const TileFloor = async (
         zIndex: 0
       })
     }
-  })
+  }
 }

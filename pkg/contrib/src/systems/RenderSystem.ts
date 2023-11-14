@@ -1,28 +1,21 @@
-import { Entity, Renderer, System, SystemProps } from '@piggo-legends/core';
+import { Entity, Renderer, System } from '@piggo-legends/core';
 import { Position, Renderable } from "@piggo-legends/contrib";
 
-export type RenderSystemProps = SystemProps & {
-  renderer: Renderer
-}
+export const RenderSystem = (renderer: Renderer): System => {
+  let renderedEntities: Set<Entity> = new Set();
+  let cachedEntityPositions: Record<string, Position> = {};
 
-export class RenderSystem extends System<RenderSystemProps> {
-  componentTypeQuery = ["renderable", "position"];
-
-  renderedEntities: Set<Entity> = new Set();
-
-  cachedEntityPositions: Record<string, Position> = {};
-
-  onTick = (entities: Entity[]) => {
+  const onTick = (entities: Entity[]) => {
     for (const entity of entities) {
 
       // add new entities to the renderer
-      if (!this.renderedEntities.has(entity)) {
-        this.handleNewEnitity(entity);
+      if (!renderedEntities.has(entity)) {
+        handleNewEnitity(entity);
       }
 
       // update renderable if position changed
       const position = entity.components.position as Position;
-      if (position && this.cachedEntityPositions[entity.id].serialize() !== position.serialize()) {
+      if (position && cachedEntityPositions[entity.id].serialize() !== position.serialize()) {
         const renderable = entity.components.renderable as Renderable;
         renderable.c.position.set(position.x, position.y);
         renderable.c.rotation = position.rotation.rads;
@@ -30,18 +23,24 @@ export class RenderSystem extends System<RenderSystemProps> {
     }
   }
 
-  handleNewEnitity = (entity: Entity) => {
+  const handleNewEnitity = (entity: Entity) => {
     const renderable = entity.components.renderable as Renderable;
     const position = entity.components.position as Position | undefined;
 
     if (position) {
       renderable.c.position.set(position.x, position.y);
-      this.cachedEntityPositions[entity.id] = position;
+      cachedEntityPositions[entity.id] = position;
     } else {
       renderable.c.position.set(0, 0);
     }
 
-    this.props.renderer.addWorld(renderable);
-    this.renderedEntities.add(entity);
+    renderer.addWorld(renderable);
+    renderedEntities.add(entity);
+  }
+
+  return {
+    renderer,
+    componentTypeQuery: ["renderable"],
+    onTick
   }
 }

@@ -26,12 +26,21 @@ export abstract class Game<T extends GameProps> {
     this.props.renderer.app.ticker.add(this.onTick);
   }
 
+  filterEntitiesForSystem = (system: System, entities: Entity[]): Entity[] => {
+    return entities.filter((e) => {
+      for (const componentType of system.componentTypeQuery) {
+        if (!Object.keys(e.components).includes(componentType)) return false;
+      }
+      return true;
+    });
+  }
+
   onTick = () => {
     this.tick += 1;
 
     // systems onTick
     this.props.systems?.forEach((system) => {
-      system.onTick(system.getFilteredEntities(Object.values(this.props.entities)), this);
+      system.onTick(this.filterEntitiesForSystem(system, Object.values(this.props.entities)), this);
     });
   }
 }

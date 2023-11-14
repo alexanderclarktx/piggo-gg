@@ -2,14 +2,9 @@ import { Entity, Renderer } from "@piggo-legends/core";
 import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, CharacterMovement, CharacterMovementCommands } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
 
-export const Skelly = async (
-  renderer: Renderer,
-  id: string,
-  tint?: number
-): Promise<Entity> => {
+export const Skelly = async (renderer: Renderer, id: string, tint?: number): Promise<Entity> => {
   const skellyAssets = await Assets.load("chars.json");
-
-  const character = new Entity({
+  return {
     id: id,
     components: {
       position: new Position(300, 300),
@@ -47,6 +42,5 @@ export const Skelly = async (
         tintColor: tint ?? 0xffffff
       })
     }
-  });
-  return character;
+  }
 }

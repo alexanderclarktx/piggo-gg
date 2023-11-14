@@ -6,7 +6,7 @@ export type ActionMap<T extends string = string> = Record<T, Action>;
 export class Actions<T extends string = string> implements Component<"actions"> {
   type: "actions";
 
-  map: ActionMap<T>;
+  map: ActionMap<T>; // TODO rename
 
   constructor(actionMap: ActionMap<T>) {
     this.map = actionMap;

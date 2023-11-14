@@ -2,11 +2,11 @@ import { Container } from "pixi.js";
 import { Component, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
+  renderer: Renderer
   cameraPos?: { x: number; y: number }
   container?: Container
   debuggable?: boolean
   dynamic?: (c: Container) => void
-  renderer: Renderer
   zIndex?: number
 }
 
@@ -35,14 +35,10 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
     this.c.alpha = 1;
 
     // for each child set alpha 1
-    this.c.children.forEach((child) => {
-      child.alpha = 1;
-    });
+    this.c.children.forEach((child) => { child.alpha = 1 });
 
-    // callback
-    if (this.props.dynamic) {
-      this.props.renderer.app.ticker.add(this.onTick);
-    }
+    // "dynamic" property sets an ontick callback
+    if (this.props.dynamic) { this.props.renderer.app.ticker.add(this.onTick) }
   }
 
   onTick = () => {
@@ -51,18 +47,11 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
     }
   }
 
-  // Renderable.cleanup MUST be called to correctly destroy the object
+  // cleanup MUST be called to correctly destroy the object
   cleanup = () => {
-    // remove from the renderer
-    this.props.renderer.app.stage.removeChild(this.c);
-
-    // remove onTick callback
-    this.props.renderer.app.ticker.remove(this.onTick);
-
-    // remove all event listeners
-    this.c.removeAllListeners();
-
-    // remove from the world
-    this.c.destroy();
+    this.props.renderer.app.stage.removeChild(this.c); // remove from the renderer
+    this.props.renderer.app.ticker.remove(this.onTick); // remove onTick callback
+    this.c.removeAllListeners(); // remove all event listeners
+    this.c.destroy(); // remove from the world
   }
 }

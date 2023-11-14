@@ -1,8 +1,8 @@
 __Piggo Legends__ is a game engine for p2p web games. Play it online [here](https://alexanderclarktx.github.io/piggo-legends/)
 
-<kbd>
-<img src="screenshots/5.gif" style="width:500px">
-</kbd>
+<p align="center">
+  <img src="screenshots/5.gif" style="width:500px">
+</p>
 
 # Objectives
 

@@ -1,10 +1,8 @@
-import { Entity, System } from '@piggo-legends/core';
+import { Entity, Renderer, System } from '@piggo-legends/core';
 import { Position, Velocity } from "@piggo-legends/contrib";
 
-export class PhysicsSystem extends System {
-  componentTypeQuery = ["velocity", "position"];
-
-  onTick = (entities: Entity[]) => {
+export const PhysicsSystem = (renderer: Renderer): System => {
+  const onTick = (entities: Entity[]) => {
     for (const entity of entities) {      
 
       // apply entity's velocity to its position
@@ -14,5 +12,11 @@ export class PhysicsSystem extends System {
         position.y -= Math.cos(position.rotation.rads) * velocity.v;
       }
     }
+  }
+
+  return {
+    renderer,
+    componentTypeQuery: ["position", "velocity"],
+    onTick
   }
 }
