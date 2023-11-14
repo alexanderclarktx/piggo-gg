@@ -16,16 +16,14 @@ export class DebugSystem extends System<DebugSystemProps> {
   }
 
   onTick = (entities: Entity[]) => {
-    if (this.props.renderer.debug) {
-      for (const entity of entities) {
-        if (entity.components.renderable) {
-          const renderable = entity.components.renderable as Renderable;
-          if (renderable && renderable.props.debuggable && !this.debuggedEntities.has(entity)) {
-            this.addEntity(entity);
-          }
+    if (this.props.renderer.debug) { // debug mode is on
+      entities.forEach((entity) => {
+        const renderable = entity.components.renderable as Renderable;
+        if (renderable && renderable.props.debuggable && !this.debuggedEntities.has(entity)) {
+          this.addEntity(entity);
         }
-      }
-    } else {
+      });
+    } else { // debug mode is off
       this.debuggedEntities.forEach((renderables, entity) => {
         renderables.forEach((renderable) => renderable.cleanup());
         this.debuggedEntities.delete(entity);

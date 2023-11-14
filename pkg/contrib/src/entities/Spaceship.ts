@@ -1,18 +1,13 @@
-import { Component, Entity, Renderer } from "@piggo-legends/core";
+import { Entity, Renderer } from "@piggo-legends/core";
 import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Velocity } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
 
-export const Spaceship = async (
-  renderer: Renderer,
-  id: string = "spaceship",
-  components?: Record<string, Component<string>>
-): Promise<Entity> => {
+export const Spaceship = async (renderer: Renderer, id: string = "spaceship"): Promise<Entity> => {
   const spaceship = await Assets.load("spaceship.json");
-
-  return new Entity({
+  return {
     id: id,
+    networked: true,
     components: {
-      ...components,
       position: new Position(100, 300),
       velocity: new Velocity(),
       networked: new Networked({ isNetworked: true }),
@@ -48,5 +43,5 @@ export const Spaceship = async (
         zIndex: 3
       })
     }
-  })
+  }
 }

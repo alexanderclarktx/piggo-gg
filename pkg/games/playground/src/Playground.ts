@@ -29,13 +29,14 @@ export class Playground extends Game<PlaygroundProps> {
   }
 
   addPlayer = () => {
-    this.addEntity(new Entity({
+    this.addEntity({
       id: randomName,
+      networked: true,
       components: {
         networked: new Networked({isNetworked: true}),
         player: new Player({name: randomName}),
       }
-    }));
+    });
   }
 
   addUI = async () => {

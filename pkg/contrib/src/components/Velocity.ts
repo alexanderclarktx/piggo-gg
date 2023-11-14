@@ -1,6 +1,5 @@
 import { Component } from "@piggo-legends/core";
 
-// the entity's position in the world
 export class Velocity implements Component<"velocity"> {
   type: "velocity";
 

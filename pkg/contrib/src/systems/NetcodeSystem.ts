@@ -91,13 +91,13 @@ export class NetcodeSystem extends System<NetcodeSystemProps> {
 
   handleInitialConnection = (td: TickData, game: Game<GameProps>) => {
     console.log("adding entity");
-    game.addEntity(new Entity({
+    game.addEntity({
       id: td.player,
       networked: true,
       components: {
         player: new Player({ name: td.player }),
       },
-    }));
+    });
   }
 
   sendMessage = (entities: Entity[], game: Game<GameProps>) => {
