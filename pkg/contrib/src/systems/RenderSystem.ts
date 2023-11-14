@@ -38,9 +38,9 @@ export const RenderSystem = (renderer: Renderer): System => {
     renderedEntities.add(entity);
   }
 
-  return ({
+  return {
     renderer,
     componentTypeQuery: ["renderable"],
     onTick
-  })
+  }
 }

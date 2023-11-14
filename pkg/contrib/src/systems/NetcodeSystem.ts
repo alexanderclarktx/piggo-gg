@@ -120,9 +120,9 @@ export const NetcodeSystem = (renderer: Renderer, net: RtcPool, thisPlayerId: st
     }
   }
 
-  return ({
+  return {
     renderer,
     componentTypeQuery: ["networked"],
     onTick
-  })
+  }
 }

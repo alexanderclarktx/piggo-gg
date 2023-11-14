@@ -28,9 +28,9 @@ export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): Sys
     }
   }
 
-  return ({
+  return {
     renderer,
     componentTypeQuery,
     onTick
-  })
+  }
 }

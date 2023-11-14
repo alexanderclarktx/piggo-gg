@@ -70,9 +70,9 @@ export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): Syst
   addKeyDownListener();
   addKeyUpListener();
 
-  return ({
+  return {
     renderer,
     componentTypeQuery: ["controlled"],
     onTick
-  })
+  }
 }

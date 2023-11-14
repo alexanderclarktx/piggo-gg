@@ -48,9 +48,9 @@ export const DebugSystem = (renderer: Renderer): System => {
     }
   }
 
-  return ({
+  return {
     renderer,
     componentTypeQuery: ["renderable"],
     onTick
-  })
+  }
 }

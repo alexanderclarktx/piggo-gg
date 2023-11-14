@@ -14,9 +14,9 @@ export const PhysicsSystem = (renderer: Renderer): System => {
     }
   }
 
-  return ({
+  return {
     renderer,
     componentTypeQuery: ["position", "velocity"],
     onTick
-  })
+  }
 }

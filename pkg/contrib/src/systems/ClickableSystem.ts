@@ -51,9 +51,9 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string): Syste
 
   init();
 
-  return ({
+  return {
     renderer,
     componentTypeQuery: ["clickable", "actions", "position"],
     onTick
-  })
+  }
 }

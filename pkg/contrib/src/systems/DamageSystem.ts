@@ -5,9 +5,9 @@ export const DamageSystem = (renderer: Renderer): System => {
     // console.log("DamageSystem.onTick", entities);
   }
 
-  return ({
+  return {
     renderer,
     componentTypeQuery: ["health", "damage"],
     onTick
-  })
+  }
 }
