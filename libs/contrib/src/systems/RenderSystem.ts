@@ -1,6 +1,7 @@
 import { Entity, Renderer, System } from '@piggo-legends/core';
 import { Position, Renderable } from "@piggo-legends/contrib";
 
+// RenderSystem handles rendering entities
 export const RenderSystem = (renderer: Renderer): System => {
   let renderedEntities: Set<Entity> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};

@@ -2,7 +2,7 @@ import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Actions, Controlled, Controller } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 
-// checks inputs against the controllable objects in the scene
+// ControllerSystem applies player inputs to controlled entities
 export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): System => {
   let bufferedDown: Set<string> = new Set([]);
   let bufferedUp: Set<string> = new Set([]);
@@ -61,7 +61,7 @@ export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): Syst
     document.addEventListener("keyup", (event) => {
       if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
-        if (!bufferedUp.has(keyName)) bufferedUp.add(keyName);
+        bufferedUp.add(keyName);
         bufferedDown.delete(keyName);
       }
     });

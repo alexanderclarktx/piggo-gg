@@ -14,6 +14,7 @@ export type SerializedEntity = {
 
 type PeerState = { connected: boolean, connection: RtcPeer, buffer: TickData | null }
 
+// NetcodeSystem handles networked entities
 export const NetcodeSystem = (renderer: Renderer, net: RtcPool, thisPlayerId: string): System =>{
   let peers: Record<string, PeerState> = {};
 

@@ -1,8 +1,6 @@
 import { Component } from "@piggo-legends/core";
 
-export type PlayerProps = {
-  name: string
-}
+export type PlayerProps = { name: string };
 
 export class Player implements Component<"player"> {
   type: "player";

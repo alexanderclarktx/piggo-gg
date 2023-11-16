@@ -6,7 +6,6 @@ export class Compression {
       return "";
     }
     const sdp = d.sdp;
-  
 
     const sparta = sdp.match(" (.+) IN IP4")![1];
     const ip = sdp.match(" .+ IN IP4 (.+)")![1];

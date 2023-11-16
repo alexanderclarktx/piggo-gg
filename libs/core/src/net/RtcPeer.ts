@@ -1,30 +1,25 @@
 import { Compression } from "./Compression";
 
 export class RtcPeer {
-  config = {
-    iceServers: [
-      { urls: "stun:stun.l.google.com:19302" }
-    ]
-  }
-
+  rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }
   dataChannelSettings = { reliable: { ordered: false, maxRetransmits: 0 } }
-  chat?: RTCDataChannel = undefined;
   pc: RTCPeerConnection;
   offer: boolean;
   events: EventTarget = new EventTarget();
+  chat?: RTCDataChannel = undefined;
 
-  constructor(
-    onLocalUpdated: (offer: string) => void,
-    onConnectedCallback: () => void,
-  ) {
-    this.pc = new RTCPeerConnection(this.config);
+  constructor(onLocalUpdated: (offer: string) => void, onConnectedCallback: () => void) {
+    this.pc = new RTCPeerConnection(this.rtcConfig);
+
     this.pc.onsignalingstatechange = () => console.log("signaling state change", this.pc.signalingState);
-    this.pc.onconnectionstatechange = (evt) => {
+
+    this.pc.onconnectionstatechange = (_) => {
       if (this.pc.connectionState === "connected") {
         console.log("connected NOT firefox");
         onConnectedCallback();
       }
     }
+
     this.pc.onnegotiationneeded = async () => {
       console.log("negotiation needed", this.pc.signalingState);
       if (this.pc.iceConnectionState !== "connected") {
@@ -38,12 +33,14 @@ export class RtcPeer {
         console.error(err);
       }
     }
+
     this.pc.ontrack = (evt) => {
       console.log("ontrack");
       console.log(evt.streams);
     };
 
     this.pc.onicecandidateerror = (evt) => console.log("ice candidate error", evt);
+
     this.pc.oniceconnectionstatechange = (evt: Event) => {
       console.log("ice connection state change", this.pc.iceConnectionState, evt);
       if (this.pc.iceConnectionState === "connected" && !this.pc.connectionState) {
@@ -51,7 +48,8 @@ export class RtcPeer {
         onConnectedCallback();
       }
     }
-    this.pc.onicegatheringstatechange = async (evt) => {
+
+    this.pc.onicegatheringstatechange = async (_) => {
       console.log("ice gathering state change", this.pc.iceGatheringState);
       if (this.pc.iceGatheringState === "complete") {
         const encodedLocal = JSON.stringify(this.pc.localDescription);

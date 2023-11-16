@@ -1,6 +1,7 @@
 import { Entity, Renderer, System } from '@piggo-legends/core';
 import { Position, Velocity } from "@piggo-legends/contrib";
 
+// PhysicsSystem handles the movement of entities
 export const PhysicsSystem = (renderer: Renderer): System => {
   const onTick = (entities: Entity[]) => {
     for (const entity of entities) {      

@@ -1,11 +1,9 @@
 import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Actions, Clickable, Position } from "@piggo-legends/contrib";
 
-export type Click = {
-  x: number;
-  y: number;
-}
+export type Click = { x: number, y: number };
 
+// ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = (renderer: Renderer, thisPlayerId: string): System => {
   let bufferClick: Click[] = [];
 

@@ -7,7 +7,7 @@ export type GameProps = {
   systems?: System[]
 }
 
-export abstract class Game<T extends GameProps> {
+export abstract class Game<T extends GameProps = GameProps> {
   props: T;
   tick: number = 0;
 
