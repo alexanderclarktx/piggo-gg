@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "app/web",
-    "pkg/contrib",
-    "pkg/core",
-    "pkg/games/playground"
+    "web",
+    "libs/contrib",
+    "libs/core",
+    "libs/games/playground"
   ],
   "scripts": {
-    "dev": "npm run serve --workspace app/web",
+    "dev": "npm run serve --workspace web",
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces",
     "attack-time": "npm run workspace @piggo-legends/attack-time start",
     "docs": "npm run pages",
-    "pages": "npm run build --workspace app/web && rm -r ./docs && mkdir docs && cp -r ./app/web/dist/* ./docs/"
+    "pages": "npm run build --workspace web && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/"
   },
   "license": "ISC",
   "dependencies": {

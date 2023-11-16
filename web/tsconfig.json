@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "sourceRoot": "src",
+    "outDir": "dist",
+    "lib": ["es6", "dom"],
+    "target": "es6",
+    "module": "es6",
+    "declaration": false
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
