@@ -38,14 +38,14 @@ export class Playground extends Game {
   }
 
   addUI = async () => {
-    this.addEntity(FpsText(this.props.renderer, { color: 0xffff00 }));
-    this.addEntity(FullscreenButton(this.props.renderer));
-    this.addEntity(DebugButton(this.props.renderer));
+    this.addEntity(FpsText(this.renderer, { color: 0xffff00 }));
+    this.addEntity(FullscreenButton(this.renderer));
+    this.addEntity(DebugButton(this.renderer));
   }
 
   addGameObjects = async () => {
-    this.addEntity(Ball(this.props.renderer));
-    this.addEntity(await TileFloor(this.props.renderer));
-    this.addEntity(await Spaceship(this.props.renderer));
+    this.addEntity(Ball(this.renderer));
+    this.addEntity(await TileFloor(this.renderer));
+    this.addEntity(await Spaceship(this.renderer));
   }
 }

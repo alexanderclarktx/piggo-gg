@@ -2,6 +2,7 @@ import { Renderable } from "@piggo-legends/contrib";
 import { Renderer } from "@piggo-legends/core";
 import { Container } from "pixi.js";
 
+// Camera handles the viewport of the game
 export class Camera {
   renderables: Set<Renderable> = new Set();
   renderer: Renderer;

@@ -9,12 +9,11 @@
     "libs/games/playground"
   ],
   "scripts": {
-    "dev": "npm run serve --workspace web",
     "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "attack-time": "npm run workspace @piggo-legends/attack-time start",
+    "dev": "npm run serve --workspace web",
     "docs": "npm run pages",
-    "pages": "npm run build --workspace web && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/"
+    "pages": "npm run build --workspace web && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/",
+    "test": "npm run test --workspaces"
   },
   "license": "ISC",
   "dependencies": {

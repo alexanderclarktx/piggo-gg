@@ -9,7 +9,5 @@
     "module": "es6",
     "declaration": false
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": [ "src/**/*" ]
 }
