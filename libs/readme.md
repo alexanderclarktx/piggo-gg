@@ -1,7 +1,7 @@
-`pkg` is for packages that can be used within apps or other packages
+`libs` is for Piggo Legends libraries that can be used within apps
 
 |package|description|
 |--|--|
-|`core`|core gameplay, ecs, netcode, and graphics classes
 |`contrib`|non-core classes that can be used in any game
+|`core`|core gameplay, ecs, netcode, and graphics classes
 |`games`|individual games

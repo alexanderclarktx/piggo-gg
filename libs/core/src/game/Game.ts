@@ -10,7 +10,6 @@ export type GameProps = {
 export abstract class Game<T extends GameProps> {
   props: T;
   tick: number = 0;
-  otherPlayer: Entity;
 
   constructor(props: T) {
     this.props = props;
@@ -22,7 +21,6 @@ export abstract class Game<T extends GameProps> {
   }
 
   _init = () => {
-    // ontick
     this.props.renderer.app.ticker.add(this.onTick);
   }
 
@@ -38,7 +36,7 @@ export abstract class Game<T extends GameProps> {
   onTick = () => {
     this.tick += 1;
 
-    // systems onTick
+    // call each system onTick
     this.props.systems?.forEach((system) => {
       system.onTick(this.filterEntitiesForSystem(system, Object.values(this.props.entities)), this);
     });

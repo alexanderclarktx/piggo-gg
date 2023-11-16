@@ -7,15 +7,15 @@ export class Compression {
     }
     const sdp = d.sdp;
   
-    //@ts-ignore
-    const sparta = sdp.match(" (.+) IN IP4")[1]; //@ts-ignore
-    const ip = sdp.match(" .+ IN IP4 (.+)")[1]; //@ts-ignore
-    const ufrag = sdp.match("a=ice-ufrag:(.+)")[1]; //@ts-ignore
-    const pwd = sdp.match("a=ice-pwd:(.+)")[1]; //@ts-ignore
-    const sha = sdp.match("a=fingerprint:sha-256 (.+)")[1]; //@ts-ignore
-    const setup = sdp.match("a=setup:(.+)")[1]; //@ts-ignore
-    const maxMessageSize = sdp.match("a=max-message-size:(\\d+)")[1]; //@ts-ignore
-    const ip2 = sdp.match("c=IN IP4 ([\\d\\.]+)")[1]; //@ts-ignore
+
+    const sparta = sdp.match(" (.+) IN IP4")![1];
+    const ip = sdp.match(" .+ IN IP4 (.+)")![1];
+    const ufrag = sdp.match("a=ice-ufrag:(.+)")![1];
+    const pwd = sdp.match("a=ice-pwd:(.+)")![1];
+    const sha = sdp.match("a=fingerprint:sha-256 (.+)")![1];
+    const setup = sdp.match("a=setup:(.+)")![1];
+    const maxMessageSize = sdp.match("a=max-message-size:(\\d+)")![1];
+    const ip2 = sdp.match("c=IN IP4 ([\\d\\.]+)")![1];
   
     var matches = [sparta, ip, ufrag, pwd, sha, setup, maxMessageSize, ip2];
   

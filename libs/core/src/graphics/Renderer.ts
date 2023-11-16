@@ -26,7 +26,7 @@ export class Renderer {
     });
 
     // set up the camera
-    this.camera = new Camera({ renderer: this });
+    this.camera = new Camera(this);
     this.camera.c.addChild(this.app.stage);
     this.app.stage = this.camera.c;
 

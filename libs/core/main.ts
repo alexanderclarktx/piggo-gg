@@ -1,4 +1,3 @@
-export * from "./src/util/Util";
 export * from "./src/graphics/Renderer";
 export * from "./src/graphics/Camera";
 export * from "./src/ecs/System";

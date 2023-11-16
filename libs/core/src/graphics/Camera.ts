@@ -2,17 +2,13 @@ import { Renderable } from "@piggo-legends/contrib";
 import { Renderer } from "@piggo-legends/core";
 import { Container } from "pixi.js";
 
-export type CameraProps = {
-  renderer: Renderer,
-}
-
 export class Camera {
   renderables: Set<Renderable> = new Set();
-  props: CameraProps;
+  renderer: Renderer;
   c: Container = new Container();
 
-  constructor(props: CameraProps) {
-    this.props = props;
+  constructor(renderer: Renderer) {
+    this.renderer = renderer;
 
     this.c.sortableChildren = true;
     this.c.zIndex = 0;
@@ -26,8 +22,8 @@ export class Camera {
 
   moveTo = (x: number, y: number) => {
     // TODO jittery
-    this.c.x = Math.trunc(this.props.renderer.app.screen.width / 2 - x);
-    this.c.y = Math.trunc(this.props.renderer.app.screen.height / 2 - y);
+    this.c.x = Math.trunc(this.renderer.app.screen.width / 2 - x);
+    this.c.y = Math.trunc(this.renderer.app.screen.height / 2 - y);
 
     this.handleCameraPos();
   }
@@ -45,14 +41,14 @@ export class Camera {
 
         // if cameraPos.x is negative, offset from right of the screen
         if (r.props.cameraPos.x < 0) {
-          r.c.x = this.props.renderer.app.screen.width + r.props.cameraPos.x - this.c.x;
+          r.c.x = this.renderer.app.screen.width + r.props.cameraPos.x - this.c.x;
         } else {
           r.c.x = r.props.cameraPos.x - this.c.x;
         }
 
         // if cameraPos.y is negative, offset from bottom of the screen
         if (r.props.cameraPos.y < 0) {
-          r.c.y = this.props.renderer.app.screen.height + r.props.cameraPos.y - this.c.y;
+          r.c.y = this.renderer.app.screen.height + r.props.cameraPos.y - this.c.y;
         } else {
           r.c.y = r.props.cameraPos.y - this.c.y;
         }
