@@ -14,6 +14,7 @@ export type SerializedEntity = {
 
 type PeerState = { connected: boolean, connection: RtcPeer, buffer: TickData | null }
 
+// NetcodeSystem handles networked entities
 export const NetcodeSystem = (renderer: Renderer, net: RtcPool, thisPlayerId: string): System =>{
   let peers: Record<string, PeerState> = {};
 
@@ -57,16 +58,16 @@ export const NetcodeSystem = (renderer: Renderer, net: RtcPool, thisPlayerId: st
 
       // update each entity
       Object.entries(peer.buffer.entities).forEach(([id, entity]) => {
-        if (game.props.entities[id]) {
+        if (game.entities[id]) {
           // entity should deserialize
 
 
           // TODO not generic enough
-          const controlled = game.props.entities[id].components.controlled as Controlled;
+          const controlled = game.entities[id].components.controlled as Controlled;
           if (controlled && controlled.entityId === thisPlayerId) return;
   
           // TODO not generic enough
-          const position = game.props.entities[id].components.position as Position;
+          const position = game.entities[id].components.position as Position;
           if (position && entity.position) {
             position.deserialize(entity.position)
           }

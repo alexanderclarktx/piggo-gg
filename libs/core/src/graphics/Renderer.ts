@@ -35,19 +35,13 @@ export class Renderer {
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
 
     // handle screen resize
-    window.addEventListener("resize", () => {
-      this.handleResize();
-    });
+    window.addEventListener("resize", this.handleResize);
 
     // handle fullscreen change
-    document.addEventListener("fullscreenchange", () => {
-      this.handleResize();
-    });
+    document.addEventListener("fullscreenchange", this.handleResize);
 
     // prevent right-click
-    canvas.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-    });
+    canvas.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
   // handle screen resize
@@ -71,8 +65,6 @@ export class Renderer {
 
   // method for tracking the camera
   trackCamera = (position: Position) => {
-    this.app.ticker.add(() => {
-      this.camera.moveTo(position.x, position.y);
-    });
+    this.app.ticker.add(() => this.camera.moveTo(position.x, position.y));
   }
 }

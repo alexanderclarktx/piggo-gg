@@ -2,6 +2,7 @@ import { Text } from 'pixi.js';
 import { Entity, Renderer, System } from "@piggo-legends/core";
 import { TextBox, DebugBounds, Renderable } from "@piggo-legends/contrib";
 
+// DebugSystem adds visual debug information to renderered entities
 export const DebugSystem = (renderer: Renderer): System => {
   let debuggedEntities: Map<Entity, Renderable[]> = new Map();
 

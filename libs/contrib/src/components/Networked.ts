@@ -1,8 +1,6 @@
 import { Component } from "@piggo-legends/core";
 
-export type NetworkedProps = {
-  isNetworked: boolean
-}
+export type NetworkedProps = { isNetworked: boolean };
 
 export class Networked implements Component<"networked"> {
   type: "networked";

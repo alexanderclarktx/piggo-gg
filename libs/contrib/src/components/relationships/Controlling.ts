@@ -1,12 +1,9 @@
-import { Component, Entity } from "@piggo-legends/core";
+import { Component } from "@piggo-legends/core";
 
-export type ControllingProps = {
-  entityId: string
-}
+export type ControllingProps = { entityId: string };
 
 export class Controlling implements Component<"controlling"> {
   type: "controlling";
-
   entityId: string;
 
   constructor(props: ControllingProps) {
@@ -16,7 +13,6 @@ export class Controlling implements Component<"controlling"> {
 
 export class Controlled implements Component<"controlled">{
   type: "controlled";
-
   entityId: string;
 
   constructor(props: ControllingProps) {

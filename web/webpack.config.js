@@ -21,9 +21,7 @@ module.exports = {
       new TerserPlugin({
         extractComments: false,
         terserOptions: {
-          format: {
-            comments: false,
-          },
+          format: { comments: false },
         },
       }),
     ],
@@ -32,26 +30,11 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        {
-          from: "./src/*.html",
-          to: () => "[name].html"
-        },
-        {
-          from: "./src/*.css",
-          to: () => "[name].css"
-        },
-        {
-          from: "./src/favicon.ico",
-          to: () => "favicon.ico"
-        },
-        {
-          from: "./res/*.png",
-          to: () => "[name].png"
-        },
-        {
-          from: "./res/*.json",
-          to: () => "[name].json"
-        }
+        { from: "./src/*.html", to: () => "[name].html" },
+        { from: "./src/*.css", to: () => "[name].css" },
+        { from: "./src/favicon.ico", to: () => "favicon.ico" },
+        { from: "./res/*.png", to: () => "[name].png" },
+        { from: "./res/*.json", to: () => "[name].json" }
       ],
     })
   ],

@@ -6,23 +6,22 @@ import { Game, GameProps } from "@piggo-legends/core";
 
 const randomName = `player${(Math.random() * 100).toFixed(0)}`;
 
-export type PlaygroundProps = GameProps & {}
+export class Playground extends Game {
 
-export class Playground extends Game<PlaygroundProps> {
-
-  constructor(props: PlaygroundProps) {
+  constructor(props: GameProps) {
     super({
       ...props,
       systems: [
-        RenderSystem(props.renderer),
-        DebugSystem(props.renderer),
-        ControllerSystem(props.renderer, randomName),
         ClickableSystem(props.renderer, randomName),
+        ControllerSystem(props.renderer, randomName),
+        DebugSystem(props.renderer),
         NetcodeSystem(props.renderer, props.net, randomName),
+        PhysicsSystem(props.renderer),
         PlayerSpawnSystem(props.renderer, randomName),
-        PhysicsSystem(props.renderer)
+        RenderSystem(props.renderer),
       ]
     });
+
     this.addPlayer();
     this.addUI();
     this.addGameObjects();
@@ -32,21 +31,21 @@ export class Playground extends Game<PlaygroundProps> {
     this.addEntity({
       id: randomName,
       components: {
-        networked: new Networked({isNetworked: true}),
-        player: new Player({name: randomName}),
+        networked: new Networked({ isNetworked: true }),
+        player: new Player({ name: randomName }),
       }
     });
   }
 
   addUI = async () => {
-    this.addEntity(FpsText(this.props.renderer, {color: 0xffff00}));
-    this.addEntity(FullscreenButton(this.props.renderer));
-    this.addEntity(DebugButton(this.props.renderer));
+    this.addEntity(FpsText(this.renderer, { color: 0xffff00 }));
+    this.addEntity(FullscreenButton(this.renderer));
+    this.addEntity(DebugButton(this.renderer));
   }
 
   addGameObjects = async () => {
-    this.addEntity(await TileFloor(this.props.renderer));
-    this.addEntity(Ball(this.props.renderer));
-    this.addEntity(await Spaceship(this.props.renderer));
+    this.addEntity(Ball(this.renderer));
+    this.addEntity(await TileFloor(this.renderer));
+    this.addEntity(await Spaceship(this.renderer));
   }
 }

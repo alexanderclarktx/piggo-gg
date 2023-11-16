@@ -1,6 +1,7 @@
 import { Entity, Renderer, System } from '@piggo-legends/core';
 import { Position, Renderable } from "@piggo-legends/contrib";
 
+// RenderSystem handles rendering entities
 export const RenderSystem = (renderer: Renderer): System => {
   let renderedEntities: Set<Entity> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
@@ -10,7 +11,7 @@ export const RenderSystem = (renderer: Renderer): System => {
 
       // add new entities to the renderer
       if (!renderedEntities.has(entity)) {
-        handleNewEnitity(entity);
+        renderNewEntity(entity);
       }
 
       // update renderable if position changed
@@ -23,9 +24,8 @@ export const RenderSystem = (renderer: Renderer): System => {
     }
   }
 
-  const handleNewEnitity = (entity: Entity) => {
-    const renderable = entity.components.renderable as Renderable;
-    const position = entity.components.position as Position | undefined;
+  const renderNewEntity = (entity: Entity) => {
+    const { renderable, position } = entity.components as {renderable: Renderable, position: Position | undefined };
 
     if (position) {
       renderable.c.position.set(position.x, position.y);

@@ -1,6 +1,7 @@
 import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Controlling, Position, Skelly } from "@piggo-legends/contrib";
 
+// PlayerSpawnSystem handles spawning characters for players
 export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): System => {
   let componentTypeQuery = ["player"];
   let playersWithCharacters: Record<string, Entity> = {};

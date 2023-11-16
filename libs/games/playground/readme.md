@@ -1,1 +1,1 @@
-`playground` is a game for testing new Piggo features
+`playground` is for testing new features

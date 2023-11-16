@@ -1,12 +1,11 @@
+// compresses and decompresses SDP strings
 export class Compression {
 
   // parses the variable parts of the SDP into a semicolon separated string
-  static parseSdp = (d: RTCSessionDescription|null) => {
-    if (!d) {
-      return "";
-    }
+  static parseSdp = (d: RTCSessionDescription | null) => {
+    if (!d) return "";
+
     const sdp = d.sdp;
-  
 
     const sparta = sdp.match(" (.+) IN IP4")![1];
     const ip = sdp.match(" .+ IN IP4 (.+)")![1];
@@ -16,9 +15,9 @@ export class Compression {
     const setup = sdp.match("a=setup:(.+)")![1];
     const maxMessageSize = sdp.match("a=max-message-size:(\\d+)")![1];
     const ip2 = sdp.match("c=IN IP4 ([\\d\\.]+)")![1];
-  
+
     var matches = [sparta, ip, ufrag, pwd, sha, setup, maxMessageSize, ip2];
-  
+
     const candidates = sdp.match(/a=candidate.+\r\n/g);
     if (candidates) {
       candidates.forEach((c) => {
@@ -28,10 +27,10 @@ export class Compression {
         }
       });
     }
-  
+
     return matches.join(";");
   }
-  
+
   // constructs an SDP from a semicolon separated string
   static constructSdp = (sdpList: string) => {
     const vars = sdpList.split(";");
@@ -54,11 +53,13 @@ export class Compression {
       "a=sctp-port:5000",
       `a=max-message-size:${vars[6]}`
     ]
+
     for (var i = 8; i < vars.length; i++) {
       sdpStrings.push(`a=candidate:${vars[i]}`);
     }
     sdpStrings.push("a=end-of-candidates");
     sdpStrings.push("");
+
     return sdpStrings.join("\r\n");
   }
 }
