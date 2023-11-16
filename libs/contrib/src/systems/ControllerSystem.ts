@@ -26,11 +26,11 @@ export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): Syst
     const actions = controlledEntity.components.actions as Actions;
 
     // handle standalone and composite (a,b) input controls
-    for (const input in controller.map) {
+    for (const input in controller.controllerMap) {
       if (input.includes(",")) {
         const inputKeys = input.split(",");
         if (inputKeys.every((key) => buffer.has(key))) {
-          const callback = actions.map[controller.map[input]];
+          const callback = actions.actionMap[controller.controllerMap[input]];
           if (callback) callback(controlledEntity, game);
 
           // remove all keys from the buffer
@@ -38,7 +38,7 @@ export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): Syst
         }
       } else {
         if (buffer.has(input)) {
-          const callback = actions.map[controller.map[input]];
+          const callback = actions.actionMap[controller.controllerMap[input]];
           if (callback) callback(controlledEntity, game);
 
           // remove the key from the buffer

@@ -21,9 +21,7 @@ export abstract class Button<T extends ButtonProps> extends Renderable<T> {
 
   init = () => {
     this.c.eventMode = "static";
-
     this.initialStyle();
-
     this.c.on("click", this._onClick);
   }
 

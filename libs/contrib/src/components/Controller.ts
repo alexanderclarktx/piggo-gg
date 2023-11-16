@@ -7,9 +7,9 @@ export type ControllerMap<T extends string = string> = Record<string, T | "">
 export class Controller<T extends string = string> implements Component<"controller"> {
   type: "controller";
 
-  map: ControllerMap<T>;
+  controllerMap: ControllerMap<T>;
 
-  constructor(map: ControllerMap<T>) {
-    this.map = map;
+  constructor(controllerMap: ControllerMap<T>) {
+    this.controllerMap = controllerMap;
   }
 }

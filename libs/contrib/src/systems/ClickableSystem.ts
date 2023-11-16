@@ -27,7 +27,7 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string): Syste
           ) {
             if (clickable.onPress) {
               // console.log("ONPRESS", clickable.onPress);
-              const callback = (entity.components.actions as Actions).map[clickable.onPress];
+              const callback = (entity.components.actions as Actions).actionMap[clickable.onPress];
               if (callback) callback(entity, game, thisPlayerId);
             }
           }
