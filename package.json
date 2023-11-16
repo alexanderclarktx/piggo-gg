@@ -4,9 +4,9 @@
   "private": true,
   "workspaces": [
     "apps/web",
-    "pkg/contrib",
-    "pkg/core",
-    "pkg/games/playground"
+    "libs/contrib",
+    "libs/core",
+    "libs/games/playground"
   ],
   "scripts": {
     "dev": "npm run serve --workspace apps/web",
