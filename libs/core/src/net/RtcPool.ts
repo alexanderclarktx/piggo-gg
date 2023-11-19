@@ -27,23 +27,17 @@ export class RtcPool {
   }
 
   createOffer = async () => {
-    if (!this.newConnection) {
-      this.newConnection = this.newEmptyConnection();
-    }
+    if (!this.newConnection) this.newConnection = this.newEmptyConnection();
     await this.newConnection.createOffer();
   }
 
   acceptOffer = async (offer: string) => {
-    if (!this.newConnection) {
-      this.newConnection = this.newEmptyConnection();
-    }
+    if (!this.newConnection) this.newConnection = this.newEmptyConnection();
     await this.newConnection.acceptOffer(offer);
   }
 
   acceptAnswer = async (answer: string) => {
-    if (!this.newConnection) {
-      this.newConnection = this.newEmptyConnection();
-    }
+    if (!this.newConnection) this.newConnection = this.newEmptyConnection();
     await this.newConnection.acceptAnswer(answer);
   }
 }
