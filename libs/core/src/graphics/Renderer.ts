@@ -9,7 +9,7 @@ export class Renderer {
   camera: Camera;
 
   debug: boolean = false;
-  events: utils.EventEmitter = new utils.EventEmitter();  
+  events: utils.EventEmitter = new utils.EventEmitter();
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
