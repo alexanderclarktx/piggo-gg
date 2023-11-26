@@ -27,11 +27,6 @@ export class Camera {
     this.handleCameraPos();
   }
 
-  toWorldCoordsFromIso = ({ x, y }: { x: number, y: number }) => ({
-    x: (2 * y + x) / 2 - this.c.x,
-    y: (2 * y - x) / 2 - this.c.y
-  })
-
   toWorldCoords = ({ x, y }: { x: number, y: number }) => ({
     x: x - this.c.x,
     y: y - this.c.y

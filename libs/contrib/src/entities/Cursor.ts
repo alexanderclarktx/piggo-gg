@@ -1,0 +1,39 @@
+import { Entity, Renderer } from "@piggo-legends/core";
+import { Position, Renderable } from "@piggo-legends/contrib";
+import { Text, FederatedPointerEvent, Graphics, Circle } from "pixi.js";
+
+export const Cursor = (renderer: Renderer, id: string = "cursor"): Entity => {
+
+  let x = 0;
+  let y = 0;
+
+  const circle = new Graphics();
+  circle.beginFill(0x00FFFF);
+  circle.drawCircle(0, 0, 4);
+  circle.endFill();
+
+  renderer.app.stage.onmousemove = (e: FederatedPointerEvent) => {
+    x = e.screenX;
+    y = e.screenY;
+  };
+
+  const cursor = {
+    id: id,
+    components: {
+      position: new Position(0, 0),
+      renderable: new Renderable({
+        renderer: renderer,
+        debuggable: false, // TODO when in spaceship, the bounds is wrong
+        zIndex: 10,
+        dynamic: (_: Text) => {
+          const renderable = cursor.components.renderable as Renderable;
+          renderable.props.cameraPos = { x: x, y: y };
+        }
+      })
+    }
+  }
+
+  cursor.components.renderable.c.addChild(circle);
+
+  return cursor;
+}

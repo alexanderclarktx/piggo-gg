@@ -25,6 +25,7 @@ export * from "./src/components/Tier";
 export * from "./src/components/Traits";
 export * from "./src/components/Velocity";
 export * from "./src/entities/Ball";
+export * from "./src/entities/Cursor";
 export * from "./src/entities/DebugButton";
 export * from "./src/entities/FpsText";
 export * from "./src/entities/FullscreenButton";

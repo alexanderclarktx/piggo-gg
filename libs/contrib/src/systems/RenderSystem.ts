@@ -1,10 +1,8 @@
 import { Entity, Renderer, System } from '@piggo-legends/core';
 import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 
-export type RenderSystemMode = "isometric" | "cartesian";
-
 // RenderSystem handles rendering entities in isometric or cartesian space
-export const RenderSystem = (renderer: Renderer, mode: RenderSystemMode = "cartesian"): System => {
+export const RenderSystem = (renderer: Renderer, mode: "cartesian" | "isometric" = "cartesian"): System => {
   let renderedEntities: Set<Entity> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
   let centeredEntity: Entity | undefined;

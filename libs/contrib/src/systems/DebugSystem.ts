@@ -31,10 +31,10 @@ export const DebugSystem = (renderer: Renderer): System => {
         renderer: renderer,
         dynamic: (c: Text) => {
           const bounds = renderable.c.getLocalBounds();
-          c.position.set(renderable.c.x - 15, renderable.c.y - bounds.height / 2 - 15);
+          c.position.set(renderable.c.x - 15, renderable.c.y - bounds.height / 2 - 30);
           c.text = `
-            world: ${position.x} ${position.y} ${position.rotation.rads}\n
-            screen: ${renderable.c.x} ${renderable.c.y}\n
+            w: ${position.x.toFixed(2)} ${position.y.toFixed(2)}
+            s: ${renderable.c.x.toFixed(2)} ${renderable.c.y.toFixed(2)}
           `;
         },
         fontSize: 12, color: 0xffff00, debuggable: false

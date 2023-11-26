@@ -34,6 +34,9 @@ export class Renderer {
     settings.ROUND_PIXELS = false; // https://pixijs.download/release/docs/PIXI.settings.html#ROUND_PIXELS
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
 
+    // hide the cursor
+    this.app.renderer.plugins.interaction.cursorStyles.default = "none";
+
     // handle screen resize
     window.addEventListener("resize", this.handleResize);
 

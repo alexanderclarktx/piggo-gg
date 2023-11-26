@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Component, Renderer } from "@piggo-legends/core";
+import { Component, Entity, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
   renderer: Renderer
