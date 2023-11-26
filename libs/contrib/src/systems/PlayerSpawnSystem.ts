@@ -1,5 +1,5 @@
 import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
-import { Controlling, Position, Skelly } from "@piggo-legends/contrib";
+import { Controlling, Skelly } from "@piggo-legends/contrib";
 
 // PlayerSpawnSystem handles spawning characters for players
 export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): System => {
@@ -22,11 +22,6 @@ export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): Sys
     player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
     characterForPlayer.components.controlled = new Controlling({ entityId: player.id });
     game.addEntity(characterForPlayer);
-    console.log("adding", characterForPlayer);
-
-    if (thisPlayerId === player.id) {
-      renderer.trackCamera((characterForPlayer.components.position as Position));
-    }
   }
 
   return {

@@ -19,15 +19,12 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.renderer = renderer;
     this.entities = entities || {};
     this.systems = systems || [];
-    this._init();
+
+    this.renderer.app.ticker.add(this.onTick);
   }
 
   addEntity = (entity: Entity) => {
     this.entities[entity.id] = entity;
-  }
-
-  _init = () => {
-    this.renderer.app.ticker.add(this.onTick);
   }
 
   filterEntitiesForSystem = (system: System, entities: Entity[]): Entity[] => {

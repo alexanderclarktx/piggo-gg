@@ -11,6 +11,8 @@ export type CharacterProps = RenderableProps & {
   tintColor?: number,
 }
 
+export type AnimationKeys = keyof CharacterProps['animations'];
+
 export class Character extends Renderable<CharacterProps> {
   currentAnimation: AnimatedSprite;
   windowFocused: boolean = true;
@@ -38,7 +40,7 @@ export class Character extends Renderable<CharacterProps> {
     this.setAnimation("d");
   }
 
-  setAnimation = (animationKey: keyof CharacterProps['animations']) => {
+  setAnimation = (animationKey: AnimationKeys) => {
     this.c.removeChild(this.currentAnimation);
     this.currentAnimation = this.props.animations[animationKey];
     this.c.addChild(this.currentAnimation);

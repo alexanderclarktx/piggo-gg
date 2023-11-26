@@ -1,6 +1,6 @@
 import {
   DebugSystem, ControllerSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
-  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, TileFloor, PhysicsSystem
+  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, TileFloor, PhysicsSystem, Cursor
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
@@ -12,13 +12,13 @@ export class Playground extends Game {
     super({
       ...props,
       systems: [
-        ClickableSystem(props.renderer, randomName),
+        ClickableSystem(props.renderer, randomName, "isometric"),
         ControllerSystem(props.renderer, randomName),
         DebugSystem(props.renderer),
         NetcodeSystem(props.renderer, props.net, randomName),
-        PhysicsSystem(props.renderer),
+        PhysicsSystem(props.renderer, "isometric"),
         PlayerSpawnSystem(props.renderer, randomName),
-        RenderSystem(props.renderer),
+        RenderSystem(props.renderer, "isometric"),
       ]
     });
 
@@ -41,6 +41,7 @@ export class Playground extends Game {
     this.addEntity(FpsText(this.renderer, { color: 0xffff00 }));
     this.addEntity(FullscreenButton(this.renderer));
     this.addEntity(DebugButton(this.renderer));
+    this.addEntity(Cursor(this.renderer));
   }
 
   addGameObjects = async () => {

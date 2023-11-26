@@ -9,7 +9,7 @@ export class Renderer {
   camera: Camera;
 
   debug: boolean = false;
-  events: utils.EventEmitter = new utils.EventEmitter();  
+  events: utils.EventEmitter = new utils.EventEmitter();
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -31,8 +31,11 @@ export class Renderer {
     this.app.stage = this.camera.c;
 
     // global texture settings
-    settings.ROUND_PIXELS = true;
+    settings.ROUND_PIXELS = false; // https://pixijs.download/release/docs/PIXI.settings.html#ROUND_PIXELS
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
+
+    // hide the cursor
+    this.app.renderer.plugins.interaction.cursorStyles.default = "none";
 
     // handle screen resize
     window.addEventListener("resize", this.handleResize);
@@ -64,7 +67,7 @@ export class Renderer {
   }
 
   // method for tracking the camera
-  trackCamera = (position: Position) => {
-    this.app.ticker.add(() => this.camera.moveTo(position.x, position.y));
+  trackCamera = (pos: () => { x: number, y: number }) => {
+    this.app.ticker.add(() => this.camera.moveTo(pos()));
   }
 }
