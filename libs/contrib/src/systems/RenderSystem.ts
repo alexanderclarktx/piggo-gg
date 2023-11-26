@@ -1,31 +1,47 @@
 import { Entity, Renderer, System } from '@piggo-legends/core';
-import { Position, Renderable } from "@piggo-legends/contrib";
+import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 
-// RenderSystem handles rendering entities
-export const RenderSystem = (renderer: Renderer): System => {
+export type RenderSystemMode = "isometric" | "cartesian";
+
+// RenderSystem handles rendering entities in isometric or cartesian space
+export const RenderSystem = (renderer: Renderer, mode: RenderSystemMode = "cartesian"): System => {
   let renderedEntities: Set<Entity> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
+  let centeredEntity: Entity | undefined;
 
   const onTick = (entities: Entity[]) => {
     for (const entity of entities) {
+      const { position, renderable, controlled } = entity.components as { renderable: Renderable, controlled?: Controlled, position?: Position };
 
       // add new entities to the renderer
       if (!renderedEntities.has(entity)) {
         renderNewEntity(entity);
       }
 
+      // track entity if controlled by player
+      if (controlled && position) {
+        if (centeredEntity !== entity) {
+          renderer.trackCamera(() => position.toScreenXY());
+          centeredEntity = entity;
+        }
+      }
+
       // update renderable if position changed
-      const position = entity.components.position as Position;
       if (position && cachedEntityPositions[entity.id].serialize() !== position.serialize()) {
-        const renderable = entity.components.renderable as Renderable;
-        renderable.c.position.set(position.x, position.y);
-        renderable.c.rotation = position.rotation.rads;
+        if (mode === "isometric") {
+          const screenXY = position.toScreenXY();
+          renderable.c.position.set(screenXY.x, screenXY.y);
+          renderable.c.rotation = position.rotation.rads;
+        } else {
+          renderable.c.position.set(position.x, position.y);
+          renderable.c.rotation = position.rotation.rads;
+        }
       }
     }
   }
 
   const renderNewEntity = (entity: Entity) => {
-    const { renderable, position } = entity.components as {renderable: Renderable, position: Position | undefined };
+    const { renderable, position } = entity.components as { renderable: Renderable, position: Position | undefined };
 
     if (position) {
       renderable.c.position.set(position.x, position.y);

@@ -18,7 +18,7 @@ export class Playground extends Game {
         NetcodeSystem(props.renderer, props.net, randomName),
         PhysicsSystem(props.renderer),
         PlayerSpawnSystem(props.renderer, randomName),
-        RenderSystem(props.renderer),
+        RenderSystem(props.renderer, "isometric"),
       ]
     });
 

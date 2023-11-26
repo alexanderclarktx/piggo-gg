@@ -9,8 +9,11 @@ export const PhysicsSystem = (renderer: Renderer): System => {
       // apply entity's velocity to its position
       const {velocity, position} = entity.components as {velocity: Velocity, position: Position}
       if (velocity.v > 0) {
-        position.x += Math.sin(position.rotation.rads) * velocity.v;
-        position.y -= Math.cos(position.rotation.rads) * velocity.v;
+        const screenXY = position.toScreenXY();
+        const x = screenXY.x + Math.sin(position.rotation.rads) * velocity.v;
+        const y = screenXY.y - Math.cos(position.rotation.rads) * velocity.v;
+
+        position.fromScreenXY(x, y);
       }
     }
   }

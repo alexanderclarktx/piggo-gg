@@ -43,7 +43,7 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string): Syste
       const rect = canvas.getBoundingClientRect()
       const x = Math.round(event.clientX - rect.left - 2);
       const y = Math.round(event.clientY - rect.top - 2);
-      bufferClick.push(camera.toWorldCoords({ x, y }));
+      bufferClick.push(camera.toWorldCoords({ x, y })); // TODO broken in isometric mode
     });
   }
 

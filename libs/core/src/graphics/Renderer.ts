@@ -31,7 +31,7 @@ export class Renderer {
     this.app.stage = this.camera.c;
 
     // global texture settings
-    settings.ROUND_PIXELS = true;
+    settings.ROUND_PIXELS = false; // https://pixijs.download/release/docs/PIXI.settings.html#ROUND_PIXELS
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
 
     // handle screen resize
@@ -64,7 +64,7 @@ export class Renderer {
   }
 
   // method for tracking the camera
-  trackCamera = (position: Position) => {
-    this.app.ticker.add(() => this.camera.moveTo(position.x, position.y));
+  trackCamera = (pos: () => { x: number, y: number }) => {
+    this.app.ticker.add(() => this.camera.moveTo(pos()));
   }
 }

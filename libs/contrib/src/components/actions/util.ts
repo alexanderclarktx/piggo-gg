@@ -1,4 +1,4 @@
-import { Action, Controlled, Controlling, Position } from "@piggo-legends/contrib";
+import { Action, Controlled, Controlling } from "@piggo-legends/contrib";
 import { Entity, Game, GameProps } from "@piggo-legends/core";
 
 export const playerControlsEntity: Action = (entity: Entity, game: Game<GameProps>, player: string) => {
@@ -18,7 +18,4 @@ export const playerControlsEntity: Action = (entity: Entity, game: Game<GameProp
   // give the player control of the entity
   playerEntity.components.controlling = new Controlling({ entityId: entity.id });
   entity.components.controlled = new Controlled({ entityId: playerEntity.id });
-
-  // track the entity with the camera
-  game.renderer.trackCamera(entity.components.position as Position);
 }

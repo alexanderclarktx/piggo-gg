@@ -18,13 +18,23 @@ export class Position implements Component<"position"> {
     this.offset = offset;
   }
 
-  serialize = (): SerializedPosition => {
-    return {
-      x: this.x,
-      y: this.y,
-      rotation: this.rotation.rads
-    }
+  // get screen coordinates from world position
+  toScreenXY = (): { x: number, y: number } => ({
+    x: this.x - this.y,
+    y: (this.x + this.y) / 2
+  })
+
+  // set world position from screen coordinates
+  fromScreenXY = (isoX: number, isoY: number) => {
+    this.x = (2 * isoY + isoX) / 2;
+    this.y = (2 * isoY - isoX) / 2;
   }
+
+  serialize = (): SerializedPosition => ({
+    x: this.x,
+    y: this.y,
+    rotation: this.rotation.rads
+  })
 
   deserialize = ({x, y, rotation}: SerializedPosition) => {
     this.x = x;
