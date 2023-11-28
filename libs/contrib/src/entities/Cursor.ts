@@ -1,6 +1,6 @@
 import { Entity, Renderer } from "@piggo-legends/core";
 import { Position, Renderable } from "@piggo-legends/contrib";
-import { Text, FederatedPointerEvent, Graphics, Circle } from "pixi.js";
+import { Text, Graphics } from "pixi.js";
 
 export const Cursor = (renderer: Renderer, id: string = "cursor"): Entity => {
 
@@ -12,10 +12,11 @@ export const Cursor = (renderer: Renderer, id: string = "cursor"): Entity => {
   circle.drawCircle(0, 0, 4);
   circle.endFill();
 
-  renderer.app.stage.onmousemove = (e: FederatedPointerEvent) => {
-    x = e.screenX;
-    y = e.screenY;
-  };
+  renderer.canvas.addEventListener("mousemove", (event) => {
+    const rect = renderer.canvas.getBoundingClientRect()
+    x = Math.round(event.clientX - rect.left - 2);
+    y = Math.round(event.clientY - rect.top - 2);
+  });
 
   const cursor = {
     id: id,
@@ -23,7 +24,7 @@ export const Cursor = (renderer: Renderer, id: string = "cursor"): Entity => {
       position: new Position(0, 0),
       renderable: new Renderable({
         renderer: renderer,
-        debuggable: false, // TODO when in spaceship, the bounds is wrong
+        debuggable: true, // TODO when in spaceship, the bounds is wrong
         zIndex: 10,
         dynamic: (_: Text) => {
           const renderable = cursor.components.renderable as Renderable;
