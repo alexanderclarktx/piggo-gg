@@ -6,6 +6,7 @@ export const Chat = (renderer: Renderer): Entity => {
 
   const textBoxes = new Renderable({
     renderer,
+    debuggable: false,
     container: new Container(),
     cameraPos: { x: -200, y: -100 },
     zIndex: 100,

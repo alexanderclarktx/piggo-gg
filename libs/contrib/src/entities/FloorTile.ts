@@ -12,7 +12,7 @@ export const FloorTile = async (renderer: Renderer, position: { x: number, y: nu
       position: new Position(position.x * texture.width, position.y * (texture.height - 4) * 2),
       renderable: new Tile({
         renderer,
-        debuggable: true,
+        debuggable: false,
         tint: 0x8888ff,
         texture,
         zIndex: 0
