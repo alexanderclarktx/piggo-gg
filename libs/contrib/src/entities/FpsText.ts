@@ -14,6 +14,7 @@ export const FpsText = (renderer: Renderer, props: FpsTextProps = {}, id: string
     position: new Position(0, 0),
     renderable: new TextBox({
       renderer: renderer,
+      debuggable: false,
       cameraPos: { x: props.x ?? -35, y: props.y ?? 5 },
       color: props.color ?? 0xFFFF00,
       zIndex: 1,

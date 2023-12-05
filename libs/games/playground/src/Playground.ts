@@ -1,6 +1,6 @@
 import {
-  DebugSystem, ControllerSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
-  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, TileFloor, PhysicsSystem, Cursor
+  DebugSystem, InputSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
+  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, FloorTile, PhysicsSystem, Cursor, Chat
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
@@ -13,7 +13,7 @@ export class Playground extends Game {
       ...props,
       systems: [
         ClickableSystem(props.renderer, randomName, "isometric"),
-        ControllerSystem(props.renderer, randomName),
+        InputSystem(props.renderer, randomName),
         DebugSystem(props.renderer),
         NetcodeSystem(props.renderer, props.net, randomName),
         PhysicsSystem(props.renderer, "isometric"),
@@ -25,6 +25,7 @@ export class Playground extends Game {
     this.addPlayer();
     this.addUI();
     this.addGameObjects();
+    this.addFloor(25, 25);
   }
 
   addPlayer = () => {
@@ -42,11 +43,19 @@ export class Playground extends Game {
     this.addEntity(FullscreenButton(this.renderer));
     this.addEntity(DebugButton(this.renderer));
     this.addEntity(Cursor(this.renderer));
+    this.addEntity(Chat(this.renderer));
   }
 
   addGameObjects = async () => {
     this.addEntity(Ball(this.renderer));
-    this.addEntity(await TileFloor(this.renderer));
     this.addEntity(await Spaceship(this.renderer));
+  }
+
+  addFloor = async (rows: number, cols: number) => {
+    for (let x = 0; x < rows; x++) {
+      for (let y = 0; y < cols; y++) {
+        this.addEntity(await FloorTile(this.renderer, { x, y }));
+      }
+    }
   }
 }

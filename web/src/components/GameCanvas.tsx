@@ -11,7 +11,11 @@ export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
 
   useEffect(() => {
     if (RtcPeer) {
-      const renderer = new Renderer(document.getElementById("canvas") as HTMLCanvasElement);
+      const renderer = new Renderer({
+        canvas: document.getElementById("canvas") as HTMLCanvasElement,
+        width: window.outerWidth * 0.9,
+        height: window.outerHeight * 0.75
+      });
       setGame(new Playground({ net, renderer }));
     }
   }, [RtcPeer]);

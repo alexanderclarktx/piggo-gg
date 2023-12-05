@@ -3,10 +3,12 @@ import { Component, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
   renderer: Renderer
+  position?: { x: number; y: number }
   cameraPos?: { x: number; y: number }
   container?: Container
+  children?: Renderable[]
   debuggable?: boolean
-  dynamic?: (c: Container) => void
+  dynamic?: (c: Container, r: Renderable) => void
   zIndex?: number
 }
 
@@ -22,9 +24,20 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
       this.c = props.container;
     }
 
+    if (props.children) {
+      // console.log(props.children.map((child) => child.c.position));
+      props.children.forEach((child) => {
+        this.c.addChild(child.c);
+      });
+    }
+
+    if (props.position) {
+      this.c.position.set(props.position.x, props.position.y);
+    }
+
     this.props = {
       ...props,
-      debuggable: props.debuggable || false,
+      debuggable: props.debuggable ?? true,
     };
     this._init();
   }
@@ -43,7 +56,7 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
 
   onTick = () => {
     if (this.props.dynamic) {
-      this.props.dynamic(this.c);
+      this.props.dynamic(this.c, this);
     }
   }
 
