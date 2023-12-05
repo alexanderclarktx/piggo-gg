@@ -79,7 +79,7 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
         </ReactModal>
       </div>
       <div style={{ width:"100%", verticalAlign: "middle" }}>
-        <div style={{ float: "left", paddingTop: 5, marginLeft: 5, color: "black" }}>
+        <div style={{ float: "left", paddingTop: 5, marginLeft: 5 }}>
           status: <text style={{ color:NetStateColor[netState] }}>{netState}</text>
         </div>
         <button style={{ float: "right" }} onClick={()=>setModalOpen(true)}>Connect to Peer</button>

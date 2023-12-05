@@ -8,7 +8,7 @@ export const DebugButton = (renderer: Renderer, id: string = "debugButton"): Ent
     position: new Position(0, 0),
     renderable: new SwitchButton({
       renderer: renderer,
-      dims: { w: 32, textX: 6, textY: 5 },
+      dims: { w: 32, textX: 8, textY: 5 },
       cameraPos: { x: 5, y: 5 },
       zIndex: 1,
       text: (new Text("🐞", { fill: "#FFFFFF", fontSize: 16 })),
