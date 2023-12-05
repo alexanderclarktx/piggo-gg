@@ -4,18 +4,27 @@ import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 export type TextBoxProps = RenderableProps & {
   text?: string,
   fontSize?: number,
-  color?: number
+  color?: number,
+  dropShadow?: boolean,
 }
 
 export class TextBox extends Renderable<TextBoxProps> {
   constructor(props: TextBoxProps) {
+    const {
+      text = "",
+      debuggable = false,
+      color = 0x55FF00,
+      fontSize = 16,
+      dropShadow = false,
+    } = props;
+
     super({
       ...props,
-      debuggable: props.debuggable || false,
-      container: new Text(props.text, {
-        fill: props.color || 0x55FF00,
-        fontSize: props.fontSize || 16,
-        dropShadow: false
+      debuggable: debuggable,
+      container: new Text(text, {
+        fill: color,
+        fontSize: fontSize,
+        dropShadow,
       })
     });
   }

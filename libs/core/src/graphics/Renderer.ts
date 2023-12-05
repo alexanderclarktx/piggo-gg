@@ -1,27 +1,33 @@
 import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
 import { Camera } from "@piggo-legends/core";
-import { Position, Renderable } from "@piggo-legends/contrib";
+import { Renderable } from "@piggo-legends/contrib";
+
+export type RendererProps = {
+  canvas: HTMLCanvasElement;
+  width?: number;
+  height?: number;
+}
 
 // Renderer renders the game to a canvas
 export class Renderer {
-  canvas: HTMLCanvasElement;
+  props: RendererProps;
+
   app: Application;
   camera: Camera;
-
   debug: boolean = false;
   events: utils.EventEmitter = new utils.EventEmitter();
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
+  constructor(props: RendererProps) {
+    this.props = props;
 
     // create the pixi.js application
     this.app = new Application({
-      view: canvas,
+      view: props.canvas,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
       backgroundColor: 0x6495ed,
-      width: 800,
-      height: 600,
+      width: props.width ?? 800,
+      height: props.height ?? 600,
       antialias: true,
     });
 
@@ -44,7 +50,7 @@ export class Renderer {
     document.addEventListener("fullscreenchange", this.handleResize);
 
     // prevent right-click
-    canvas.addEventListener("contextmenu", (event) => event.preventDefault());
+    props.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
   // handle screen resize
@@ -52,9 +58,9 @@ export class Renderer {
     if (document.fullscreenElement) {
       this.app.renderer.resize(window.innerWidth, window.innerHeight);
     } else {
-      const computedCanvasStyle = window.getComputedStyle(this.canvas);
-      const width = Math.min(parseInt(computedCanvasStyle.width), 800);
-      const height = Math.min(parseInt(computedCanvasStyle.height), 600);
+      const computedCanvasStyle = window.getComputedStyle(this.props.canvas);
+      const width = Math.min(parseInt(computedCanvasStyle.width), this.props.width ?? 800);
+      const height = Math.min(parseInt(computedCanvasStyle.height), this.props.height ?? 600);
       this.app.renderer.resize(width, height);
     }
     this.camera.handleCameraPos();

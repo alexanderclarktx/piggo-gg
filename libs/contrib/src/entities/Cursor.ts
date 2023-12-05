@@ -12,8 +12,8 @@ export const Cursor = (renderer: Renderer, id: string = "cursor"): Entity => {
   circle.drawCircle(0, 0, 4);
   circle.endFill();
 
-  renderer.canvas.addEventListener("mousemove", (event) => {
-    const rect = renderer.canvas.getBoundingClientRect()
+  renderer.props.canvas.addEventListener("mousemove", (event) => {
+    const rect = renderer.props.canvas.getBoundingClientRect()
     x = Math.round(event.clientX - rect.left - 2);
     y = Math.round(event.clientY - rect.top - 2);
   });
@@ -24,7 +24,7 @@ export const Cursor = (renderer: Renderer, id: string = "cursor"): Entity => {
       position: new Position(0, 0),
       renderable: new Renderable({
         renderer: renderer,
-        debuggable: true, // TODO when in spaceship, the bounds is wrong
+        debuggable: false, // TODO when in spaceship, the bounds is wrong
         zIndex: 10,
         dynamic: (_: Text) => {
           const renderable = cursor.components.renderable as Renderable;

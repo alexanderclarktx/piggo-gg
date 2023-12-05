@@ -25,6 +25,7 @@ export abstract class Game<T extends GameProps = GameProps> {
 
   addEntity = (entity: Entity) => {
     this.entities[entity.id] = entity;
+    return entity.id;
   }
 
   filterEntitiesForSystem = (system: System, entities: Entity[]): Entity[] => {

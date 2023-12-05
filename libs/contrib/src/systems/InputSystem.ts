@@ -2,17 +2,33 @@ import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Actions, Controlled, Controller } from "@piggo-legends/contrib";
 import { Set } from "typescript";
 
-// ControllerSystem applies player inputs to controlled entities
-export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): System => {
+export var chatBuffer: string[] = [];
+export var chatHistory: string[] = [];
+export var chatIsOpen = false;
+
+export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
+export const charactersPreventDefault = new Set("/'");
+
+// InputSystem handles all keyboard inputs
+export const InputSystem = (renderer: Renderer, thisPlayerId: string): System => {
   let bufferedDown: Set<string> = new Set([]);
   let bufferedUp: Set<string> = new Set([]);
 
+  let chatBackspacing = false;
+
   const onTick = (entities: Entity[], game: Game<GameProps>) => {
+
+    // handle inputs for controlled entities
     for (const entity of entities) {
       const controlled = entity.components.controlled as Controlled;
       if (controlled.entityId === thisPlayerId) {
         handleInputForControlledEntity(entity, game);
       }
+    }
+
+    // handle buffered backspace
+    if (chatIsOpen && chatBackspacing) {
+      if (game.tick % 8 === 0) chatBuffer.pop();
     }
   }
 
@@ -50,9 +66,37 @@ export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): Syst
 
   const addKeyDownListener = () => {
     document.addEventListener("keydown", (event) => {
-      if (document.hasFocus()) { //  && windowFocused
+      if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
-        if (!bufferedDown.has(keyName)) bufferedDown.add(keyName);
+        if (charactersPreventDefault.has(keyName)) event.preventDefault();
+
+        if (!bufferedDown.has(keyName)) {
+
+          // toggle chat
+          if (keyName === "enter" && !chatIsOpen) {
+            console.log("chat open");
+            chatIsOpen = true;
+          } else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
+            console.log("chat closed");
+            chatIsOpen = false;
+            if (chatBuffer.length > 0) {
+              chatHistory.push(chatBuffer.join(""));
+            }
+            chatBuffer = [];
+          }
+
+          // handle backspace
+          if (chatIsOpen && keyName === "backspace") {
+            chatBackspacing = true;
+          }
+
+          // push to chatBuffer or bufferedDown
+          if (chatIsOpen && validChatCharacters.has(keyName)) {
+            chatBuffer.push(keyName);
+          } else {
+            bufferedDown.add(keyName);
+          }
+        }
       }
     });
   }
@@ -61,6 +105,11 @@ export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): Syst
     document.addEventListener("keyup", (event) => {
       if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
+
+        // handle released backspace
+        if (chatIsOpen && keyName === "backspace") chatBackspacing = false;
+
+        // remove from bufferedDown and add to bufferedUp
         bufferedUp.add(keyName);
         bufferedDown.delete(keyName);
       }
@@ -73,6 +122,6 @@ export const ControllerSystem = (renderer: Renderer, thisPlayerId: string): Syst
   return {
     renderer,
     componentTypeQuery: ["controlled"],
-    onTick
+    onTick,
   }
 }

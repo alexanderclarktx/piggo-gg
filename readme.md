@@ -1,4 +1,4 @@
-__Piggo Legends__ is a game engine for p2p web games. Play it online [here](https://alexanderclarktx.github.io/piggo-legends/)
+__Piggo Legends__ is a game engine for p2p web games. Play it online at [github.io](https://alexanderclarktx.github.io/piggo-legends/)
 
 <p align="center">
   <img src="screenshots/5.gif" style="width:500px">
@@ -6,9 +6,9 @@ __Piggo Legends__ is a game engine for p2p web games. Play it online [here](http
 
 # Objectives
 
-Games are easy to implement with Piggo Legends ECS
+🎮 Games are easy to implement with Piggo Legends ECS
 
-Multiplayer is first-class, performant, and p2p
+👾 Multiplayer is first-class, performant, and p2p
 
 # Upcoming Features
 
@@ -23,8 +23,8 @@ Multiplayer is first-class, performant, and p2p
 - [x] vehicle movement
 - [x] character can enter a vehicle
 - [x] physics-based movement
+- [x] real isometric projection [#44](https://github.com/alexanderclarktx/piggo-legends/issues/44)
 - [ ] handles complex user interactions [#42](https://github.com/alexanderclarktx/piggo-legends/issues/42)
-- [ ] real isometric grid [#44](https://github.com/alexanderclarktx/piggo-legends/issues/44)
 
 # Development
 
