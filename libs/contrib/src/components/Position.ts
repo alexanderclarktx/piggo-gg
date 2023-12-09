@@ -3,6 +3,12 @@ import { Component } from "@piggo-legends/core";
 export type SerializedPosition = { x: number, y: number, rotation: number }
 export type PositionOffset = "world" | "camera";
 
+export type PositionProps = {
+  x?: number,
+  y?: number,
+  offset?: PositionOffset
+}
+
 // the entity's position in the world
 export class Position implements Component<"position"> {
   type: "position";
@@ -12,10 +18,10 @@ export class Position implements Component<"position"> {
   y: number;
   offset: PositionOffset;
 
-  constructor(x: number, y: number, offset: PositionOffset = "world") {
-    this.x = x;
-    this.y = y;
-    this.offset = offset;
+  constructor({ x, y, offset }: PositionProps) {
+    this.x = x ?? 0;
+    this.y = y ?? 0;
+    this.offset = offset ?? "world";
   }
 
   // get screen coordinates from world position

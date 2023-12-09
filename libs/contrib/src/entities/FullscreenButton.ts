@@ -5,7 +5,7 @@ import { Text } from "pixi.js";
 export const FullscreenButton = (renderer: Renderer, id: string = "fullscreenButton"): Entity => ({
   id: id,
   components: {
-    position: new Position(0, 0),
+    position: new Position({}),
     renderable: new TapButton({
       renderer: renderer,
       dims: { w: 32, textX: 8, textY: 5 },

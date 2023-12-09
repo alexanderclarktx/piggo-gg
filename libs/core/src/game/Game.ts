@@ -14,11 +14,9 @@ export abstract class Game<T extends GameProps = GameProps> {
   systems: System[] = [];
   tick: number = 0;
 
-  constructor({net, renderer, entities, systems}: T) {
+  constructor({ net, renderer }: T) {
     this.net = net;
     this.renderer = renderer;
-    this.entities = entities || {};
-    this.systems = systems || [];
 
     this.renderer.app.ticker.add(this.onTick);
   }
@@ -26,6 +24,10 @@ export abstract class Game<T extends GameProps = GameProps> {
   addEntity = (entity: Entity) => {
     this.entities[entity.id] = entity;
     return entity.id;
+  }
+
+  addSystems = (systems: System[]) => {
+    systems.forEach((system) => { this.systems.push(system) });
   }
 
   filterEntitiesForSystem = (system: System, entities: Entity[]): Entity[] => {

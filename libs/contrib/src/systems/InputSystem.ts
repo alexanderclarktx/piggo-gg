@@ -1,6 +1,5 @@
 import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
-import { Actions, Controlled, Controller } from "@piggo-legends/contrib";
-import { Set } from "typescript";
+import { Actions, Ball, Controlled, Controller, Spaceship } from "@piggo-legends/contrib";
 
 export var chatBuffer: string[] = [];
 export var chatHistory: string[] = [];
@@ -10,114 +9,116 @@ export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvw
 export const charactersPreventDefault = new Set("/'");
 
 // InputSystem handles all keyboard inputs
-export const InputSystem = (renderer: Renderer, thisPlayerId: string): System => {
+export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
   let bufferedDown: Set<string> = new Set([]);
   let bufferedUp: Set<string> = new Set([]);
+  let backspaceOn = false;
 
-  let chatBackspacing = false;
+  let commandRegexes: { regex: RegExp, callback: (match: RegExpMatchArray) => Promise<void> }[] = [
+    {
+      regex: new RegExp(`/spawn (\\w+)`),
+      callback: async (match: RegExpMatchArray) => {
+
+        if (match[1] === "spaceship") {
+          addEntity(await Spaceship({ renderer }));
+        } else if (match[1] === "ball") {
+          addEntity(Ball({ renderer }));
+        }
+      }
+    }
+  ];
+
+  document.addEventListener("keyup", (event: KeyboardEvent) => {
+    if (document.hasFocus()) {
+      const keyName = event.key.toLowerCase();
+
+      // handle released backspace
+      if (chatIsOpen && keyName === "backspace") backspaceOn = false;
+
+      // remove from bufferedDown and add to bufferedUp
+      bufferedUp.add(keyName);
+      bufferedDown.delete(keyName);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (document.hasFocus()) {
+      const keyName = event.key.toLowerCase();
+      if (charactersPreventDefault.has(keyName)) event.preventDefault();
+
+      if (!bufferedDown.has(keyName)) {
+
+        // toggle chat
+        if (keyName === "enter" && !chatIsOpen) chatIsOpen = true;
+        else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
+          chatIsOpen = false;
+
+          if (chatBuffer.length > 0) {
+            const message = chatBuffer.join("");
+            chatHistory.push(message);
+            processMessage(message);
+          }
+
+          chatBuffer = [];
+        }
+
+        // handle backspace
+        if (chatIsOpen && keyName === "backspace") backspaceOn = true;
+
+        // push to chatBuffer or bufferedDown
+        (chatIsOpen && validChatCharacters.has(keyName)) ? chatBuffer.push(keyName) : bufferedDown.add(keyName);
+      }
+    }
+  });
 
   const onTick = (entities: Entity[], game: Game<GameProps>) => {
 
     // handle inputs for controlled entities
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const controlled = entity.components.controlled as Controlled;
-      if (controlled.entityId === thisPlayerId) {
-        handleInputForControlledEntity(entity, game);
-      }
-    }
+      if (controlled.entityId === thisPlayerId) handleInputForControlledEntity(entity, game);
+    });
 
     // handle buffered backspace
-    if (chatIsOpen && chatBackspacing) {
-      if (game.tick % 8 === 0) chatBuffer.pop();
-    }
+    if (chatIsOpen && backspaceOn && game.tick % 8 === 0) chatBuffer.pop();
   }
 
   const handleInputForControlledEntity = (controlledEntity: Entity, game: Game<GameProps>) => {
     // copy the input buffer
-    let buffer: Set<string> = new Set([]);
-    bufferedDown.forEach((key) => buffer.add(key));
+    let buffer: Set<string> = new Set(bufferedDown);
 
     // check for actions
-    const controller = controlledEntity.components.controller as Controller;
-    const actions = controlledEntity.components.actions as Actions;
+    const { controller, actions } = controlledEntity.components as { controller: Controller, actions: Actions };
 
     // handle standalone and composite (a,b) input controls
     for (const input in controller.controllerMap) {
       if (input.includes(",")) {
         const inputKeys = input.split(",");
         if (inputKeys.every((key) => buffer.has(key))) {
+          // run the callback
           const callback = actions.actionMap[controller.controllerMap[input]];
           if (callback) callback(controlledEntity, game);
 
           // remove all keys from the buffer
           inputKeys.forEach((key) => buffer.delete(key));
         }
-      } else {
-        if (buffer.has(input)) {
-          const callback = actions.actionMap[controller.controllerMap[input]];
-          if (callback) callback(controlledEntity, game);
+      } else if (buffer.has(input)) {
+        // run the callback
+        const callback = actions.actionMap[controller.controllerMap[input]];
+        if (callback) callback(controlledEntity, game);
 
-          // remove the key from the buffer
-          buffer.delete(input);
-        }
+        // remove the key from the buffer
+        buffer.delete(input);
       }
     }
   }
 
-  const addKeyDownListener = () => {
-    document.addEventListener("keydown", (event) => {
-      if (document.hasFocus()) {
-        const keyName = event.key.toLowerCase();
-        if (charactersPreventDefault.has(keyName)) event.preventDefault();
-
-        if (!bufferedDown.has(keyName)) {
-
-          // toggle chat
-          if (keyName === "enter" && !chatIsOpen) {
-            console.log("chat open");
-            chatIsOpen = true;
-          } else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
-            console.log("chat closed");
-            chatIsOpen = false;
-            if (chatBuffer.length > 0) {
-              chatHistory.push(chatBuffer.join(""));
-            }
-            chatBuffer = [];
-          }
-
-          // handle backspace
-          if (chatIsOpen && keyName === "backspace") {
-            chatBackspacing = true;
-          }
-
-          // push to chatBuffer or bufferedDown
-          if (chatIsOpen && validChatCharacters.has(keyName)) {
-            chatBuffer.push(keyName);
-          } else {
-            bufferedDown.add(keyName);
-          }
-        }
-      }
+  const processMessage = (message: string) => {
+    commandRegexes.forEach(({ regex, callback }) => {
+      const match = message.match(regex);
+      if (match) callback(match);
     });
   }
-
-  const addKeyUpListener = () => {
-    document.addEventListener("keyup", (event) => {
-      if (document.hasFocus()) {
-        const keyName = event.key.toLowerCase();
-
-        // handle released backspace
-        if (chatIsOpen && keyName === "backspace") chatBackspacing = false;
-
-        // remove from bufferedDown and add to bufferedUp
-        bufferedUp.add(keyName);
-        bufferedDown.delete(keyName);
-      }
-    });
-  }
-
-  addKeyDownListener();
-  addKeyUpListener();
 
   return {
     renderer,

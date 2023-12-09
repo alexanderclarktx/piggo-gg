@@ -21,7 +21,7 @@ export const Cursor = (renderer: Renderer, id: string = "cursor"): Entity => {
   const cursor = {
     id: id,
     components: {
-      position: new Position(0, 0),
+      position: new Position({}),
       renderable: new Renderable({
         renderer: renderer,
         debuggable: false, // TODO when in spaceship, the bounds is wrong

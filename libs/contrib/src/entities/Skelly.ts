@@ -7,7 +7,7 @@ export const Skelly = async (renderer: Renderer, id: string, tint?: number): Pro
   return {
     id: id,
     components: {
-      position: new Position(300, 300),
+      position: new Position({ x: 300, y: 300 }),
       networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
         width: 32,

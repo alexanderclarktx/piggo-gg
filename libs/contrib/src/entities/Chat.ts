@@ -8,7 +8,7 @@ export const Chat = (renderer: Renderer): Entity => {
     renderer,
     debuggable: false,
     container: new Container(),
-    cameraPos: { x: -200, y: -100 },
+    cameraPos: { x: -400, y: -100 },
     zIndex: 100,
   });
 
@@ -43,7 +43,7 @@ export const Chat = (renderer: Renderer): Entity => {
   return {
     id: "chat",
     components: {
-      position: new Position(0, 0),
+      position: new Position({}),
       renderable: textBoxes
     }
   }

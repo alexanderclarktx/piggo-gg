@@ -9,7 +9,10 @@ export const FloorTile = async (renderer: Renderer, position: { x: number, y: nu
   return {
     id: `${id}-x${position.x}y${position.y}`,
     components: {
-      position: new Position(position.x * texture.width, position.y * (texture.height - 4) * 2),
+      position: new Position({
+        x: position.x * texture.width,
+        y: position.y * (texture.height - 4) * 2
+      }),
       renderable: new Tile({
         renderer,
         debuggable: false,
@@ -42,7 +45,7 @@ export const Floor = async (renderer: Renderer, rows: number, cols: number, id: 
   return {
     id: id,
     components: {
-      position: new Position(0, 0),
+      position: new Position({}),
       renderable: new Renderable({
         renderer,
         debuggable: true,
