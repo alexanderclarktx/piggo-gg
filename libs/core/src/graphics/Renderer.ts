@@ -28,8 +28,7 @@ export class Renderer {
       backgroundColor: 0x6495ed,
       width: props.width ?? 800,
       height: props.height ?? 600,
-      antialias: false,
-      hello: true,
+      antialias: true
     });
 
     // set up the camera

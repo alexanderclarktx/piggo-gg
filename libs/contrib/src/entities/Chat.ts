@@ -8,7 +8,7 @@ export const Chat = (renderer: Renderer): Entity => {
     renderer,
     debuggable: false,
     container: new Container(),
-    cameraPos: { x: -400, y: -100 },
+    cameraPos: { x: -400, y: -200 },
     zIndex: 100,
   });
 
