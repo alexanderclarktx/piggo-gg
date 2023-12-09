@@ -11,7 +11,7 @@ export type BallProps = {
 export const Ball = ({ renderer, position, id }: BallProps): Entity => ({
   id: id ?? `ball${Math.random() * 100}`,
   components: {
-    position: new Position(position ?? { x: Math.random() * 800, y: Math.random() * 800 }),
+    position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
     networked: new Networked({ isNetworked: true }),
     clickable: new Clickable({
       width: 32,

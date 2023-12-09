@@ -32,13 +32,13 @@ __Piggo Legends__ is a game engine for p2p web games. Play it online at [github.
 
 ```bash
 # install dependencies
-npm install
+bun install
 
 # serve the game locally (webpack serve)
-npm run dev
+bun dev
 ```
 
 ### publishing to GitHub Pages
 ```bash
-npm run pages
+bun pages
 ```

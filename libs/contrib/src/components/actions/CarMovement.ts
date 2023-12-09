@@ -1,12 +1,12 @@
 import { ActionMap, Position, Renderable, Velocity } from "@piggo-legends/contrib";
 import { Entity } from "@piggo-legends/core";
 
-const TURN_SPEED = 0.03;
+const TURN_SPEED = 0.06;
 const SLIDE_FACTOR = 1.5;
 
-const ACCELERATION = 0.02;
-const DECELERATION = 0.04;
-const MAX_VELOCITY = 5;
+const ACCELERATION = 0.05;
+const DECELERATION = 0.1;
+const MAX_VELOCITY = 8;
 
 export type CarMovementCommands = "up" | "down" | "left" | "right" | "skidleft" | "skidright";
 

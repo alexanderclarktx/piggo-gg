@@ -18,7 +18,8 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.net = net;
     this.renderer = renderer;
 
-    this.renderer.app.ticker.add(this.onTick);
+    // call onTick
+    setInterval(this.onTick, 1000 / 60);
   }
 
   addEntity = (entity: Entity) => {

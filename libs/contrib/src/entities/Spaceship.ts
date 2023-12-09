@@ -13,7 +13,7 @@ export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Pro
   return {
     id: id ?? `spaceship${(Math.random() * 100).toFixed(0)}`,
     components: {
-      position: new Position(position ?? { x: Math.random() * 800, y: Math.random() * 800 }),
+      position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
       velocity: new Velocity(),
       networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
@@ -43,7 +43,6 @@ export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Pro
           ul: new AnimatedSprite([spaceship.textures["spaceship"]]),
           ur: new AnimatedSprite([spaceship.textures["spaceship"]])
         },
-        track: false,
         scale: 2,
         zIndex: 3
       })

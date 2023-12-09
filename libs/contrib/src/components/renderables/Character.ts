@@ -1,4 +1,4 @@
-import { AnimatedSprite } from "pixi.js";
+import { AnimatedSprite, SCALE_MODES } from "pixi.js";
 import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type CharacterProps = RenderableProps & {
@@ -6,9 +6,9 @@ export type CharacterProps = RenderableProps & {
     d: AnimatedSprite, u: AnimatedSprite, l: AnimatedSprite, r: AnimatedSprite,
     dl: AnimatedSprite, dr: AnimatedSprite, ul: AnimatedSprite, ur: AnimatedSprite
   },
-  track?: boolean,
   scale?: number,
   tintColor?: number,
+  scaleMode?: SCALE_MODES
 }
 
 export type AnimationKeys = keyof CharacterProps['animations'];
@@ -32,7 +32,8 @@ export class Character extends Renderable<CharacterProps> {
     Object.values(this.props.animations).forEach((animation: AnimatedSprite) => {
       animation.animationSpeed = 0.1;
       animation.scale.set(this.props.scale || 1);
-      animation.anchor.set(0.5);
+      animation.anchor.set(0.5, 0.5);
+      animation.texture.baseTexture.scaleMode = this.props.scaleMode ?? SCALE_MODES.LINEAR;
       if (this.props.tintColor) animation.tint = this.props.tintColor;
     });
 

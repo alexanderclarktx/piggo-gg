@@ -6,7 +6,7 @@ export var chatHistory: string[] = [];
 export var chatIsOpen = false;
 
 export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
-export const charactersPreventDefault = new Set("/'");
+export const charactersPreventDefault = new Set(["'", "/"]);
 
 // InputSystem handles all keyboard inputs
 export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
@@ -18,11 +18,13 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
     {
       regex: new RegExp(`/spawn (\\w+)`),
       callback: async (match: RegExpMatchArray) => {
-
-        if (match[1] === "spaceship") {
-          addEntity(await Spaceship({ renderer }));
-        } else if (match[1] === "ball") {
-          addEntity(Ball({ renderer }));
+        switch (match[1]) {
+          case "spaceship":
+            addEntity(await Spaceship({ renderer }));
+            break;
+          case "ball":
+            addEntity(Ball({ renderer }));
+            break;
         }
       }
     }
@@ -49,10 +51,11 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
       if (!bufferedDown.has(keyName)) {
 
         // toggle chat
-        if (keyName === "enter" && !chatIsOpen) chatIsOpen = true;
-        else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
-          chatIsOpen = false;
+        if (keyName === "enter" && !chatIsOpen) {
+          chatIsOpen = true;
+        } else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
 
+          // push the message to chatHistory
           if (chatBuffer.length > 0) {
             const message = chatBuffer.join("");
             chatHistory.push(message);
@@ -60,6 +63,7 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
           }
 
           chatBuffer = [];
+          chatIsOpen = false;
         }
 
         // handle backspace
@@ -80,7 +84,7 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
     });
 
     // handle buffered backspace
-    if (chatIsOpen && backspaceOn && game.tick % 8 === 0) chatBuffer.pop();
+    if (chatIsOpen && backspaceOn && game.tick % 4 === 0) chatBuffer.pop();
   }
 
   const handleInputForControlledEntity = (controlledEntity: Entity, game: Game<GameProps>) => {
@@ -103,7 +107,7 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
           inputKeys.forEach((key) => buffer.delete(key));
         }
       } else if (buffer.has(input)) {
-        // run the callback
+        // run callback
         const callback = actions.actionMap[controller.controllerMap[input]];
         if (callback) callback(controlledEntity, game);
 

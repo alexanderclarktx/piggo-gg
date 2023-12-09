@@ -1,4 +1,4 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils, Text } from "pixi.js";
+import { Application, settings, SCALE_MODES, BaseTexture, utils, Text, HTMLText, MSAA_QUALITY, ENV } from "pixi.js";
 import { Camera } from "@piggo-legends/core";
 import { Renderable } from "@piggo-legends/contrib";
 
@@ -28,7 +28,7 @@ export class Renderer {
       backgroundColor: 0x6495ed,
       width: props.width ?? 800,
       height: props.height ?? 600,
-      antialias: true,
+      antialias: true
     });
 
     // set up the camera
