@@ -18,10 +18,10 @@ export class Position implements Component<"position"> {
   y: number;
   offset: PositionOffset;
 
-  constructor({ x = 0, y = 0, offset = "world" }: PositionProps) {
-    this.x = x;
-    this.y = y;
-    this.offset = offset;
+  constructor({ x, y, offset }: PositionProps) {
+    this.x = x ?? 0;
+    this.y = y ?? 0;
+    this.offset = offset ?? "world";
   }
 
   // get screen coordinates from world position

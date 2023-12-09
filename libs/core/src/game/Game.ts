@@ -14,7 +14,7 @@ export abstract class Game<T extends GameProps = GameProps> {
   systems: System[] = [];
   tick: number = 0;
 
-  constructor({net, renderer}: T) {
+  constructor({ net, renderer }: T) {
     this.net = net;
     this.renderer = renderer;
 
