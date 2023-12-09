@@ -5,7 +5,7 @@ import { Text } from "pixi.js";
 export const DebugButton = (renderer: Renderer, id: string = "debugButton"): Entity => ({
   id: id,
   components: {
-    position: new Position(0, 0),
+    position: new Position({}),
     renderable: new SwitchButton({
       renderer: renderer,
       dims: { w: 32, textX: 8, textY: 5 },

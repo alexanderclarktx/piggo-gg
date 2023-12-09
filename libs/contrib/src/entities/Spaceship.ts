@@ -2,12 +2,18 @@ import { Entity, Renderer } from "@piggo-legends/core";
 import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Velocity } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
 
-export const Spaceship = async (renderer: Renderer, id: string = "spaceship"): Promise<Entity> => {
+export type SpaceshipProps = {
+  renderer: Renderer,
+  id?: string,
+  position?: {x: number, y: number}
+}
+
+export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Promise<Entity> => {
   const spaceship = await Assets.load("spaceship.json");
   return {
-    id: id,
+    id: id ?? `spaceship${(Math.random() * 100).toFixed(0)}`,
     components: {
-      position: new Position(100, 300),
+      position: new Position(position ?? { x: Math.random() * 800, y: Math.random() * 800 }),
       velocity: new Velocity(),
       networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({

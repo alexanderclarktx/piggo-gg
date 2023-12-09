@@ -9,18 +9,17 @@ const randomName = `player${(Math.random() * 100).toFixed(0)}`;
 export class Playground extends Game {
 
   constructor(props: GameProps) {
-    super({
-      ...props,
-      systems: [
-        ClickableSystem(props.renderer, randomName, "isometric"),
-        InputSystem(props.renderer, randomName),
-        DebugSystem(props.renderer),
-        NetcodeSystem(props.renderer, props.net, randomName),
-        PhysicsSystem(props.renderer, "isometric"),
-        PlayerSpawnSystem(props.renderer, randomName),
-        RenderSystem(props.renderer, "isometric"),
-      ]
-    });
+    super(props);
+
+    this.addSystems([
+      ClickableSystem(props.renderer, randomName, "isometric"),
+      InputSystem(props.renderer, this.addEntity, randomName),
+      DebugSystem(props.renderer),
+      NetcodeSystem(props.renderer, props.net, randomName),
+      PhysicsSystem(props.renderer, "isometric"),
+      PlayerSpawnSystem(props.renderer, randomName),
+      RenderSystem(props.renderer, "isometric"),
+    ]);
 
     this.addPlayer();
     this.addUI();
@@ -47,8 +46,8 @@ export class Playground extends Game {
   }
 
   addGameObjects = async () => {
-    this.addEntity(Ball(this.renderer));
-    this.addEntity(await Spaceship(this.renderer));
+    this.addEntity(Ball({ renderer: this.renderer }));
+    this.addEntity(await Spaceship({ renderer: this.renderer }));
   }
 
   addFloor = async (rows: number, cols: number) => {
