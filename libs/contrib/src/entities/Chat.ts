@@ -1,6 +1,6 @@
 import { Renderer, Entity } from "@piggo-legends/core";
 import { Position, Renderable, TextBox, chatBuffer, chatHistory, chatIsOpen } from "@piggo-legends/contrib";
-import { Text, Container } from "pixi.js";
+import { Container, HTMLText } from "pixi.js";
 
 export const Chat = (renderer: Renderer): Entity => {
 
@@ -17,8 +17,13 @@ export const Chat = (renderer: Renderer): Entity => {
     text: "hello",
     fontSize: 16,
     color: 0x55FFFF,
-    dynamic: (t: Text, r: TextBox) => {
-      t.text = chatHistory.slice(-4).join("\n");
+    dynamic: (t: HTMLText, r: TextBox) => {
+      const lines = chatHistory.slice(-4);
+
+      lines.forEach((line, i) => {
+        if (line.startsWith("/")) lines[i] = `<span style=color:#00ff00>${line}</span>`;
+      });
+      t.text = lines.join("<br>");
       r.c.position.set(0, -1 * t.height + 15);
     }
   });
@@ -29,9 +34,8 @@ export const Chat = (renderer: Renderer): Entity => {
     fontSize: 16,
     color: 0xFFFF33,
     cameraPos: { x: -50, y: -200 },
-    dynamic: (t: Text, r: Renderable) => {
-      chatIsOpen ? r.c.visible = true : r.c.visible = false;
-      t.text = `${chatBuffer.join("")}|`;
+    dynamic: (t: HTMLText) => {
+      chatIsOpen ? t.text = `${chatBuffer.join("")}|` : t.text = ""
     }
   });
 

@@ -18,7 +18,11 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.net = net;
     this.renderer = renderer;
 
-    this.renderer.app.ticker.add(this.onTick);
+    // TODO this ticker should not be tied to the renderer
+    // this.renderer.app.ticker.add(this.onTick);
+
+    // call this.onTick 60 times per second
+    setInterval(this.onTick, 1000 / 60);
   }
 
   addEntity = (entity: Entity) => {

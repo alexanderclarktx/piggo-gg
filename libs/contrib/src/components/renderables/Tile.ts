@@ -1,5 +1,5 @@
 import { Renderable, RenderableProps } from "@piggo-legends/contrib";
-import { Sprite, Texture, Resource } from "pixi.js";
+import { Sprite, Texture, Resource, SCALE_MODES } from "pixi.js";
 
 export type TileProps = RenderableProps & {
   texture: Texture<Resource>,
@@ -16,7 +16,7 @@ export class Tile extends Renderable<TileProps> {
   init = async () => {
     const tile = new Sprite(this.props.texture);
     tile.position.set(0, 0);
-    tile.anchor.set(0);
+    tile.anchor.set(0.5, 0.5);
     tile.scale.set(2);
     tile.eventMode = "static";
     tile.tint = this.props.tint ?? 0xffffff;

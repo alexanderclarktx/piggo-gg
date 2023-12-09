@@ -4,16 +4,15 @@
   "private": true,
   "workspaces": [
     "web",
+    "server",
     "libs/contrib",
     "libs/core",
     "libs/games/playground"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "dev": "npm run serve --workspace web",
-    "docs": "npm run pages",
-    "pages": "npm run build --workspace web && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/",
-    "test": "npm run test --workspaces"
+    "dev": "bun --cwd web serve",
+    "docs": "bun pages",
+    "pages": "bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/"
   },
   "license": "ISC",
   "dependencies": {

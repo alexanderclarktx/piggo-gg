@@ -1,6 +1,6 @@
 import { Entity, Renderer } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, CharacterMovement, CharacterMovementCommands } from "@piggo-legends/contrib";
-import { Assets, AnimatedSprite } from "pixi.js";
+import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, CharacterMovementScreenPixels, CharacterMovementCommands } from "@piggo-legends/contrib";
+import { Assets, AnimatedSprite, SCALE_MODES } from "pixi.js";
 
 export const Skelly = async (renderer: Renderer, id: string, tint?: number): Promise<Entity> => {
   const skellyAssets = await Assets.load("chars.json");
@@ -21,7 +21,7 @@ export const Skelly = async (renderer: Renderer, id: string, tint?: number): Pro
         "w": "up", "s": "down", "a": "left", "d": "right"
       }),
       actions: new Actions({
-        ...CharacterMovement,
+        ...CharacterMovementScreenPixels,
         "click": playerControlsEntity
       }),
       renderable: new Character({
@@ -36,10 +36,10 @@ export const Skelly = async (renderer: Renderer, id: string, tint?: number): Pro
           ul: new AnimatedSprite([skellyAssets.textures["ul1"], skellyAssets.textures["ul2"], skellyAssets.textures["ul3"]]),
           ur: new AnimatedSprite([skellyAssets.textures["ur1"], skellyAssets.textures["ur2"], skellyAssets.textures["ur3"]])
         },
-        track: true,
         scale: 2,
         zIndex: 2,
-        tintColor: tint ?? 0xffffff
+        tintColor: tint ?? 0xffffff,
+        scaleMode: SCALE_MODES.NEAREST
       })
     }
   }

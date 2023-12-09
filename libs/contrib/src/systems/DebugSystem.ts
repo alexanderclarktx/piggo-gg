@@ -33,7 +33,7 @@ export const DebugSystem = (renderer: Renderer): System => {
           const bounds = renderable.c.getLocalBounds();
           c.position.set(renderable.c.x - 15, renderable.c.y - bounds.height / 2 - 30);
           c.text = `
-            w: ${position.x.toFixed(2)} ${position.y.toFixed(2)}
+            w: ${position.x.toFixed(2)} ${position.y.toFixed(2)}<br>
             s: ${renderable.c.x.toFixed(2)} ${renderable.c.y.toFixed(2)}
           `;
         },
