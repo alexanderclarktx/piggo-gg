@@ -2,10 +2,38 @@ import { Entity, Renderer } from "@piggo-legends/core";
 import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, CharacterMovementScreenPixels, CharacterMovementCommands } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite, SCALE_MODES, Container, Graphics } from "pixi.js";
 
-export const Skelly = async (renderer: Renderer, id: string, tint?: number): Promise<Entity> => {
+export const Skelly = async (id: string, renderer?: Renderer, tint?: number): Promise<Entity> => {
   const skellyAssets = await Assets.load("chars.json");
 
-  const renderable = new Character({
+  const renderable = renderer ? makeRenderable(renderer, skellyAssets, tint) : undefined;
+
+  return {
+    id: id,
+    components: {
+      position: new Position({ x: 300, y: 300 }),
+      networked: new Networked({ isNetworked: true }),
+      clickable: new Clickable({
+        width: 32,
+        height: 32,
+        active: true,
+        onPress: "click"
+      }),
+      controller: new Controller<CharacterMovementCommands>({
+        "a,d": "", "w,s": "",
+        "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
+        "w": "up", "s": "down", "a": "left", "d": "right"
+      }),
+      actions: new Actions({
+        ...CharacterMovementScreenPixels,
+        "click": playerControlsEntity
+      }),
+      ...renderable ? { renderable } : {}
+    }
+  }
+}
+
+const makeRenderable = (renderer: Renderer, skellyAssets: any, tint?: number) => {
+  const character = new Character({
     renderer: renderer,
     animations: {
       d: new AnimatedSprite([skellyAssets.textures["d1"], skellyAssets.textures["d2"], skellyAssets.textures["d3"]]),
@@ -53,29 +81,7 @@ export const Skelly = async (renderer: Renderer, id: string, tint?: number): Pro
   swordContainer.position.set(18, -5);
   swordContainer.scale.set(0.3);
 
-  renderable.c.addChild(swordContainer);
+  character.c.addChild(swordContainer);
 
-  return {
-    id: id,
-    components: {
-      position: new Position({ x: 300, y: 300 }),
-      networked: new Networked({ isNetworked: true }),
-      clickable: new Clickable({
-        width: 32,
-        height: 32,
-        active: true,
-        onPress: "click"
-      }),
-      controller: new Controller<CharacterMovementCommands>({
-        "a,d": "", "w,s": "",
-        "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
-        "w": "up", "s": "down", "a": "left", "d": "right"
-      }),
-      actions: new Actions({
-        ...CharacterMovementScreenPixels,
-        "click": playerControlsEntity
-      }),
-      renderable: renderable
-    }
-  }
+  return character;
 }

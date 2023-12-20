@@ -1,14 +1,14 @@
 import { Renderer, Entity, System, RtcPool } from "@piggo-legends/core";
 
 export type GameProps = {
-  net: RtcPool,
+  net?: RtcPool,
   renderer: Renderer,
   entities?: Record<string, Entity>,
   systems?: System[]
 }
 
 export abstract class Game<T extends GameProps = GameProps> {
-  net: RtcPool;
+  net: RtcPool | undefined = undefined;
   renderer: Renderer;
   entities: Record<string, Entity> = {};
   systems: System[] = [];
@@ -25,6 +25,12 @@ export abstract class Game<T extends GameProps = GameProps> {
   addEntity = (entity: Entity) => {
     this.entities[entity.id] = entity;
     return entity.id;
+  }
+
+  removeEntity = (id: string) => {
+    if (this.entities[id]) {
+      delete this.entities[id];
+    }
   }
 
   addSystems = (systems: System[]) => {

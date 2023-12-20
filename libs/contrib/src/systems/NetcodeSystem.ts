@@ -1,4 +1,4 @@
-import { Entity, Game, GameProps, Renderer, RtcPeer, RtcPool, System } from "@piggo-legends/core";
+import { Entity, Game, GameProps, RtcPeer, RtcPool, System } from "@piggo-legends/core";
 import { Controlled, Player, Position, SerializedPosition } from "@piggo-legends/contrib";
 
 export type TickData = {
@@ -14,25 +14,33 @@ export type SerializedEntity = {
 
 type PeerState = { connected: boolean, connection: RtcPeer, buffer: TickData | null }
 
+export type NetcodeSystemProps = {
+  net: RtcPool | undefined
+  thisPlayerId: string
+}
+
 // NetcodeSystem handles networked entities
-export const NetcodeSystem = (renderer: Renderer, net: RtcPool, thisPlayerId: string): System =>{
+export const NetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System =>{
   let peers: Record<string, PeerState> = {};
 
   const onTick = (entities: Entity[], game: Game<GameProps>) => {
-    // handle new peers
-    for (const name in net.connections) {
-      if (!peers[name]) {
-        // add peer to peerStates
-        peers[name] = { connected: false, connection: net.connections[name], buffer: null };
 
-        // handle incoming messages from the peer
-        peers[name].connection.events.addEventListener("message", (event: CustomEvent<any>) => {
-          if (event.detail.type === "game") {
-            peers[name].buffer = event.detail as TickData;
-          } else if (event.detail.type === "init") {
-            handleInitialConnection(event.detail as TickData, game);
-          }
-        });
+    if (net) {
+      // handle new peers
+      for (const name in net.connections) {
+        if (!peers[name]) {
+          // add peer to peerStates
+          peers[name] = { connected: false, connection: net.connections[name], buffer: null };
+
+          // handle incoming messages from the peer
+          peers[name].connection.events.addEventListener("message", (event: CustomEvent<any>) => {
+            if (event.detail.type === "game") {
+              peers[name].buffer = event.detail as TickData;
+            } else if (event.detail.type === "init") {
+              handleInitialConnection(event.detail as TickData, game);
+            }
+          });
+        }
       }
     }
 
@@ -122,7 +130,6 @@ export const NetcodeSystem = (renderer: Renderer, net: RtcPool, thisPlayerId: st
   }
 
   return {
-    renderer,
     componentTypeQuery: ["networked"],
     onTick
   }

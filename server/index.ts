@@ -1,5 +1,6 @@
+import { Playground } from "@piggo-legends/playground";
 
-let id = 0;
+let id = 1;
 
 Bun.serve({
   port: 3000,
@@ -9,13 +10,20 @@ Bun.serve({
   },
   websocket: {
     open: (ws) => {
-      console.log("WebSocket opened");
-      ws.send("Hello from the server!");
-
-      ws.data = id;
+      // set data for this client
+      ws.data = {
+        id: id
+      }
+      
+      // increment id
       id += 1;
+
+      // send message to client
+      const message = `hello ${JSON.stringify(ws.data)}`;
+      console.log(message);
+      ws.send(message);
     },
-    close: (ws) => {
+    close: (_) => {
       console.log("WebSocket closed");
     },
     message: (ws, msg) => {

@@ -1,8 +1,12 @@
-import { Entity, Renderer, System } from '@piggo-legends/core';
+import { Entity, System } from '@piggo-legends/core';
 import { Position, Velocity } from "@piggo-legends/contrib";
 
+export type PhysicsSystemProps = {
+  mode?: "cartesian" | "isometric"
+}
+
 // PhysicsSystem handles the movement of entities
-export const PhysicsSystem = (renderer: Renderer, mode: "cartesian" | "isometric" = "cartesian"): System => {
+export const PhysicsSystem = ({ mode }: PhysicsSystemProps): System => {
   const onTick = (entities: Entity[]) => {
     for (const entity of entities) {      
 
@@ -24,7 +28,6 @@ export const PhysicsSystem = (renderer: Renderer, mode: "cartesian" | "isometric
   }
 
   return {
-    renderer,
     componentTypeQuery: ["position", "velocity"],
     onTick
   }

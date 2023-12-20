@@ -8,6 +8,11 @@ export var chatIsOpen = false;
 export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
 export const charactersPreventDefault = new Set(["'", "/"]);
 
+export type InputSystemProps = {
+  renderer?: Renderer,
+  thisPlayerId: string
+}
+
 // InputSystem handles all keyboard inputs
 export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
   let bufferedDown: Set<string> = new Set([]);
@@ -125,7 +130,6 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
   }
 
   return {
-    renderer,
     componentTypeQuery: ["controlled"],
     onTick,
   }

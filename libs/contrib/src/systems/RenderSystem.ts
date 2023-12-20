@@ -1,13 +1,26 @@
 import { Entity, Renderer, System } from '@piggo-legends/core';
 import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 
+export var centeredEntity: Entity | undefined = undefined;
+export let centeredXY: { x: number, y: number } = { x: 0, y: 0 };
+
+export type RenderSystemProps = {
+  renderer: Renderer,
+  mode?: "cartesian" | "isometric"
+}
+
 // RenderSystem handles rendering entities in isometric or cartesian space
-export const RenderSystem = (renderer: Renderer, mode: "cartesian" | "isometric" = "cartesian"): System => {
+export const RenderSystem = ({ renderer, mode }: RenderSystemProps): System => {
   let renderedEntities: Set<Entity> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
-  let centeredEntity: Entity | undefined;
 
   const onTick = (entities: Entity[]) => {
+    // update centeredXY
+    if (centeredEntity) {
+      const { position } = centeredEntity.components as { position: Position };
+      centeredXY = position.toScreenXY();
+    }
+
     for (const entity of entities) {
       const { position, renderable, controlled } = entity.components as { renderable: Renderable, controlled?: Controlled, position?: Position };
 
@@ -35,6 +48,16 @@ export const RenderSystem = (renderer: Renderer, mode: "cartesian" | "isometric"
           renderable.c.rotation = position.rotation.rads;
         }
       }
+
+      // run the dynamic callback
+      if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable);
+
+      // run dynamic on children
+      if (renderable.props.children) {
+        renderable.props.children.forEach((child) => {
+          if (child.props.dynamic) child.props.dynamic(child.c, child);
+        });
+      }
     }
   }
 
@@ -53,7 +76,6 @@ export const RenderSystem = (renderer: Renderer, mode: "cartesian" | "isometric"
   }
 
   return {
-    renderer,
     componentTypeQuery: ["renderable"],
     onTick
   }

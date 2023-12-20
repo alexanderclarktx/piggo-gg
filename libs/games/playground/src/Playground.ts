@@ -1,6 +1,6 @@
 import {
   DebugSystem, InputSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
-  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, FloorTile, PhysicsSystem, Cursor, Chat
+  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, Floor
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
@@ -11,20 +11,28 @@ export class Playground extends Game {
   constructor(props: GameProps) {
     super(props);
 
+    const renderer = props.renderer;
+
     this.addSystems([
-      ClickableSystem(props.renderer, randomName, "isometric"),
-      InputSystem(props.renderer, this.addEntity, randomName),
-      DebugSystem(props.renderer),
-      NetcodeSystem(props.renderer, props.net, randomName),
-      PhysicsSystem(props.renderer, "isometric"),
-      PlayerSpawnSystem(props.renderer, randomName),
-      RenderSystem(props.renderer, "isometric"),
+      NetcodeSystem({ net: props.net, thisPlayerId: randomName }),
+      PhysicsSystem({ mode: "isometric" }),
+      PlayerSpawnSystem({ renderer: props.renderer, thisPlayerId: randomName }),
     ]);
+
+    // add client-only systems
+    if (renderer) {
+      this.addSystems([
+        ClickableSystem(props.renderer, randomName, "isometric"),
+        RenderSystem({ renderer: props.renderer, mode: "isometric" }),
+        DebugSystem(props.renderer, this),
+        InputSystem(props.renderer, this.addEntity, randomName),
+      ]);
+    }
 
     this.addPlayer();
     this.addUI();
     this.addGameObjects();
-    this.addFloor(25, 25);
+    this.addFloor(100, 100);
   }
 
   addPlayer = () => {
@@ -51,10 +59,28 @@ export class Playground extends Game {
   }
 
   addFloor = async (rows: number, cols: number) => {
-    for (let x = 0; x < rows; x++) {
-      for (let y = 0; y < cols; y++) {
-        this.addEntity(await FloorTile(this.renderer, { x, y }));
-      }
-    }
+    this.addEntity(await Floor(this.renderer, rows, cols));
+
+    // tiling sprite 1
+    // const tilingSprite = new TilingSprite((await Assets.load("sandbox.json")).textures["white_small"], 32 * 500, 16 * 500);
+    // tilingSprite.scale.set(2);
+    // tilingSprite.tint = 0x8888ff;
+
+    // tiling sprite 2
+    // const tilingSprite2 = new TilingSprite((await Assets.load("sandbox.json")).textures["white_small"], 32 * 500, 16 * 500);
+    // tilingSprite2.position.set(16, 8);
+    // tilingSprite2.tint = 0x8888ff;
+    // tilingSprite.addChild(tilingSprite2);
+
+    // this.addEntity({
+    //   id: "abc",
+    //   components: {
+    //     position: new Position({ x: -10000, y: -5000 }),
+    //     renderable: new Renderable({
+    //       renderer: this.renderer,
+    //       container: tilingSprite
+    //     })
+    //   }
+    // })
   }
 }

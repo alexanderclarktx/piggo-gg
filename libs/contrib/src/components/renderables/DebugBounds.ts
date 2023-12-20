@@ -10,10 +10,7 @@ export class DebugBounds extends Renderable<DebugBoundsProps> {
     super({
       ...props,
       debuggable: false,
-      zIndex: 10,
-      dynamic: (c: Container) => {
-        c.position.set(props.renderable.c.x, props.renderable.c.y);
-      }
+      zIndex: 3
     });
     this.init(props.renderable);
   }

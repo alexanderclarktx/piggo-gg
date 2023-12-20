@@ -1,8 +1,13 @@
 import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Controlling, Skelly } from "@piggo-legends/contrib";
 
+export type PlayerSpawnSystemProps = {
+  renderer?: Renderer,
+  thisPlayerId: string
+}
+
 // PlayerSpawnSystem handles spawning characters for players
-export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): System => {
+export const PlayerSpawnSystem = ({ thisPlayerId, renderer }: PlayerSpawnSystemProps): System => {
   let componentTypeQuery = ["player"];
   let playersWithCharacters: Record<string, Entity> = {};
 
@@ -16,7 +21,7 @@ export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): Sys
   }
 
   const spawnCharacterForPlayer = async (player: Entity, game: Game<GameProps>, color: number) => {
-    const characterForPlayer = await Skelly(renderer, `${player.id}-character`, color);
+    const characterForPlayer = await Skelly(`${player.id}-character`, renderer, color);
 
     // give the player control of the character
     player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
@@ -25,7 +30,6 @@ export const PlayerSpawnSystem = (renderer: Renderer, thisPlayerId: string): Sys
   }
 
   return {
-    renderer,
     componentTypeQuery,
     onTick
   }

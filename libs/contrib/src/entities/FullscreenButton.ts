@@ -13,9 +13,8 @@ export const FullscreenButton = (renderer: Renderer, id: string = "fullscreenBut
       zIndex: 1,
       text: (new Text("⚁", { fill: "#FFFFFF", fontSize: 16 })),
       onPress: (b: TapButton) => {
-        console.log(document.fullscreenElement);
         if (!document.fullscreenElement) {
-          //@ts-ignore
+          // @ts-expect-error
           b.props.renderer.app.view.requestFullscreen();
         } else {
           document.exitFullscreen();

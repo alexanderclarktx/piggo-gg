@@ -1,9 +1,9 @@
 import { Renderable, RenderableProps } from "@piggo-legends/contrib";
-import { Sprite, Texture, Resource, SCALE_MODES } from "pixi.js";
+import { Sprite, Texture, Resource } from "pixi.js";
 
 export type TileProps = RenderableProps & {
   texture: Texture<Resource>,
-  tint?: number
+  tint?: number,
 }
 
 export class Tile extends Renderable<TileProps> {
@@ -13,15 +13,15 @@ export class Tile extends Renderable<TileProps> {
     this.init();
   }
 
-  init = async () => {
+  init = () => {
     const tile = new Sprite(this.props.texture);
     tile.position.set(0, 0);
     tile.anchor.set(0.5, 0.5);
     tile.scale.set(2);
-    tile.eventMode = "static";
+    tile.eventMode = "none";
     tile.tint = this.props.tint ?? 0xffffff;
 
-    // hover
+    // TODO this should be done by mouse handler
     tile.on("pointerover", () => {
       tile.tint = 0x00ff00;
     });
