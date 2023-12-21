@@ -1,0 +1,12 @@
+{
+  "frames": {
+    "grass": { "frame": { "x": 1, "y": 9, "w": 32, "h": 24 } }
+  },
+
+  "meta": {
+    "image": "c_tiles.png",
+    "format": "RGBA8888",
+    "size": { "w": 307, "h": 298 },
+    "scale": "1"
+  }
+}

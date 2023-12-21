@@ -16,6 +16,9 @@ let texture: Texture<Resource> | undefined = undefined;
 export const Floor = async (renderer: Renderer, rows: number, cols: number, id: string = "floor"): Promise<Entity> => {
 
   if (!texture) {
+    // const sandbox = await Assets.load("c_tiles.json");
+    // texture = sandbox.textures["grass"] as Texture<Resource>;
+
     const sandbox = await Assets.load("sandbox.json");
     texture = sandbox.textures["white"] as Texture<Resource>;
   }
@@ -44,7 +47,7 @@ export const Floor = async (renderer: Renderer, rows: number, cols: number, id: 
         debuggable: false,
         texture,
         zIndex: 0,
-        children: tiles
+        children: tiles,
       })
     }
   }

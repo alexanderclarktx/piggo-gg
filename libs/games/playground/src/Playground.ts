@@ -29,7 +29,7 @@ export class Playground extends Game {
       ]);
 
       this.addUI(renderer);
-      this.addFloor(renderer, 100, 100);
+      this.addFloor(renderer, 50, 50);
     }
 
     this.addPlayer();
