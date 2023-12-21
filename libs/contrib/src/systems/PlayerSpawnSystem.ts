@@ -2,7 +2,7 @@ import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
 import { Controlling, Skelly } from "@piggo-legends/contrib";
 
 export type PlayerSpawnSystemProps = {
-  renderer?: Renderer,
+  renderer?: Renderer | undefined,
   thisPlayerId: string
 }
 
@@ -12,12 +12,12 @@ export const PlayerSpawnSystem = ({ thisPlayerId, renderer }: PlayerSpawnSystemP
   let playersWithCharacters: Record<string, Entity> = {};
 
   const onTick = (players: Entity[], game: Game<GameProps>) => {
-    for (const player of players) {
+    players.forEach((player) => {
       if (!playersWithCharacters[player.id]) {
         spawnCharacterForPlayer(player, game, thisPlayerId === player.id ? 0xffffff : 0xffff00);
         playersWithCharacters[player.id] = player
       }
-    }
+    });
   }
 
   const spawnCharacterForPlayer = async (player: Entity, game: Game<GameProps>, color: number) => {

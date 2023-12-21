@@ -21,7 +21,7 @@ export const RenderSystem = ({ renderer, mode }: RenderSystemProps): System => {
       centeredXY = position.toScreenXY();
     }
 
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const { position, renderable, controlled } = entity.components as { renderable: Renderable, controlled?: Controlled, position?: Position };
 
       // add new entities to the renderer
@@ -58,7 +58,7 @@ export const RenderSystem = ({ renderer, mode }: RenderSystemProps): System => {
           if (child.props.dynamic) child.props.dynamic(child.c, child);
         });
       }
-    }
+    });
   }
 
   const renderNewEntity = (entity: Entity) => {

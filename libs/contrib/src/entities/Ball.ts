@@ -3,33 +3,38 @@ import { Position, TextBox, Networked, Clickable, Renderable, Actions } from "@p
 import { Text } from "pixi.js";
 
 export type BallProps = {
-  renderer: Renderer,
+  renderer: Renderer | undefined,
   id?: string,
   position?: { x: number, y: number }
 }
 
-export const Ball = ({ renderer, position, id }: BallProps): Entity => ({
-  id: id ?? `ball${Math.random() * 100}`,
-  components: {
-    position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
-    networked: new Networked({ isNetworked: true }),
-    clickable: new Clickable({
-      width: 32,
-      height: 32,
-      active: true,
-      onPress: "click"
-    }),
-    actions: new Actions({
-      "click": (entity: Entity) => {
-        const t = (entity.components.renderable as TextBox).c as Text;
-        t.text = "🙃";
-      }
-    }),
-    renderable: new Renderable({
-      renderer: renderer,
-      debuggable: true,
-      zIndex: 1,
-      container: new Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
-    })
+export const Ball = ({ renderer, position, id }: BallProps): Entity => {
+
+  const renderable = renderer ? new Renderable({
+    renderer: renderer,
+    debuggable: true,
+    zIndex: 1,
+    container: new Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
+  }) : null
+
+  return {
+    id: id ?? `ball${Math.random() * 100}`,
+    components: {
+      position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
+      networked: new Networked({ isNetworked: true }),
+      clickable: new Clickable({
+        width: 32,
+        height: 32,
+        active: true,
+        onPress: "click"
+      }),
+      actions: new Actions({
+        "click": (entity: Entity) => {
+          const t = (entity.components.renderable as TextBox).c as Text;
+          t.text = "🙃";
+        }
+      }),
+      ...renderable ? { renderable } : {}
+    }
   }
-});
+};

@@ -3,13 +3,30 @@ import { Position, Networked, Clickable, Actions, Character, CarMovement, player
 import { Assets, AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
-  renderer: Renderer,
+  renderer: Renderer | undefined,
   id?: string,
   position?: {x: number, y: number}
 }
 
 export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Promise<Entity> => {
-  const spaceship = await Assets.load("spaceship.json");
+  const spaceship = renderer ? await Assets.load("spaceship.json") : null;
+
+  const renderable = renderer ? new Character({
+    renderer: renderer,
+    animations: {
+      d: new AnimatedSprite([spaceship.textures["spaceship"]]),
+      u: new AnimatedSprite([spaceship.textures["spaceship"]]),
+      l: new AnimatedSprite([spaceship.textures["spaceship"]]),
+      r: new AnimatedSprite([spaceship.textures["spaceship"]]),
+      dl: new AnimatedSprite([spaceship.textures["spaceship"]]),
+      dr: new AnimatedSprite([spaceship.textures["spaceship"]]),
+      ul: new AnimatedSprite([spaceship.textures["spaceship"]]),
+      ur: new AnimatedSprite([spaceship.textures["spaceship"]])
+    },
+    scale: 2,
+    zIndex: 3
+  }) : null
+
   return {
     id: id ?? `spaceship${(Math.random() * 100).toFixed(0)}`,
     components: {
@@ -31,21 +48,7 @@ export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Pro
         ...CarMovement,
         "click": playerControlsEntity
       }),
-      renderable: new Character({
-        renderer: renderer,
-        animations: {
-          d: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          u: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          l: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          r: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          dl: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          dr: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          ul: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          ur: new AnimatedSprite([spaceship.textures["spaceship"]])
-        },
-        scale: 2,
-        zIndex: 3
-      })
+      ...renderable? { renderable } : {}
     }
   }
 }

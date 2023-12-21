@@ -1,8 +1,10 @@
 import { Playground } from "@piggo-legends/playground";
 
+const playground = new Playground({});
+
 let id = 1;
 
-Bun.serve({
+const server = Bun.serve({
   port: 3000,
   fetch(req, server) {
     if (server.upgrade(req)) return;
@@ -14,7 +16,7 @@ Bun.serve({
       ws.data = {
         id: id
       }
-      
+
       // increment id
       id += 1;
 
@@ -34,4 +36,5 @@ Bun.serve({
     }
   },
 });
-console.log("websocket server running on port 3000");
+
+console.log(`包 wss://localhost:${server.port}`);

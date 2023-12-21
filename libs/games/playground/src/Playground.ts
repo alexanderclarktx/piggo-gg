@@ -2,7 +2,7 @@ import {
   DebugSystem, InputSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
   Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, Floor
 } from "@piggo-legends/contrib";
-import { Game, GameProps } from "@piggo-legends/core";
+import { Game, GameProps, Renderer } from "@piggo-legends/core";
 
 const randomName = `player${(Math.random() * 100).toFixed(0)}`;
 
@@ -16,23 +16,24 @@ export class Playground extends Game {
     this.addSystems([
       NetcodeSystem({ net: props.net, thisPlayerId: randomName }),
       PhysicsSystem({ mode: "isometric" }),
-      PlayerSpawnSystem({ renderer: props.renderer, thisPlayerId: randomName }),
+      PlayerSpawnSystem({ renderer: renderer, thisPlayerId: randomName }),
     ]);
 
     // add client-only systems
     if (renderer) {
       this.addSystems([
-        ClickableSystem(props.renderer, randomName, "isometric"),
-        RenderSystem({ renderer: props.renderer, mode: "isometric" }),
-        DebugSystem(props.renderer, this),
-        InputSystem(props.renderer, this.addEntity, randomName),
+        ClickableSystem(renderer, randomName, "isometric"),
+        RenderSystem({ renderer, mode: "isometric" }),
+        DebugSystem(renderer, this),
+        InputSystem(renderer, this.addEntity, randomName),
       ]);
+
+      this.addUI(renderer);
+      this.addFloor(renderer, 100, 100);
     }
 
     this.addPlayer();
-    this.addUI();
     this.addGameObjects();
-    this.addFloor(100, 100);
   }
 
   addPlayer = () => {
@@ -45,12 +46,12 @@ export class Playground extends Game {
     });
   }
 
-  addUI = async () => {
-    this.addEntity(FpsText(this.renderer, { color: 0xffff00 }));
-    this.addEntity(FullscreenButton(this.renderer));
-    this.addEntity(DebugButton(this.renderer));
-    this.addEntity(Cursor(this.renderer));
-    this.addEntity(Chat(this.renderer));
+  addUI = async (renderer: Renderer) => {
+    this.addEntity(FpsText(renderer, { color: 0xffff00 }));
+    this.addEntity(FullscreenButton(renderer));
+    this.addEntity(DebugButton(renderer));
+    this.addEntity(Cursor(renderer));
+    this.addEntity(Chat(renderer));
   }
 
   addGameObjects = async () => {
@@ -58,8 +59,8 @@ export class Playground extends Game {
     this.addEntity(await Spaceship({ renderer: this.renderer }));
   }
 
-  addFloor = async (rows: number, cols: number) => {
-    this.addEntity(await Floor(this.renderer, rows, cols));
+  addFloor = async (renderer: Renderer, rows: number, cols: number) => {
+    this.addEntity(await Floor(renderer, rows, cols));
 
     // tiling sprite 1
     // const tilingSprite = new TilingSprite((await Assets.load("sandbox.json")).textures["white_small"], 32 * 500, 16 * 500);

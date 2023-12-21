@@ -8,9 +8,7 @@ export type PhysicsSystemProps = {
 // PhysicsSystem handles the movement of entities
 export const PhysicsSystem = ({ mode }: PhysicsSystemProps): System => {
   const onTick = (entities: Entity[]) => {
-    for (const entity of entities) {      
-
-      // apply entity's velocity to its position
+    entities.forEach((entity) => {
       const {velocity, position} = entity.components as {velocity: Velocity, position: Position}
       if (velocity.v > 0) {
         if (mode === "isometric") {
@@ -24,7 +22,7 @@ export const PhysicsSystem = ({ mode }: PhysicsSystemProps): System => {
           position.y -= Math.cos(position.rotation.rads) * velocity.v;
         }
       }
-    }
+    });
   }
 
   return {

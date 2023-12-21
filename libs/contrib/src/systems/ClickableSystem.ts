@@ -9,7 +9,7 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string, mode: 
   let bufferClick: Click[] = [];
 
   const onTick = (entities: Entity[], game: Game<GameProps>) => {
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const clickable = entity.components.clickable as Clickable;
       const position = entity.components.position as Position;
       const screenXY = position.toScreenXY();
@@ -25,7 +25,7 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string, mode: 
           w: clickable.width, h: clickable.height
         };
 
-        for (const click of bufferClick) {
+        bufferClick.forEach((click) => {
           if (
             click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
             click.y >= bounds.y && click.y <= bounds.y + bounds.h
@@ -35,9 +35,9 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string, mode: 
               if (callback) callback(entity, game, thisPlayerId);
             }
           }
-        }
+        });
       }
-    }
+    });
     bufferClick = [];
   }
 

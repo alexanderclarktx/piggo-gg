@@ -2,14 +2,14 @@ import { Renderer, Entity, System, RtcPool } from "@piggo-legends/core";
 
 export type GameProps = {
   net?: RtcPool,
-  renderer: Renderer,
+  renderer?: Renderer,
   entities?: Record<string, Entity>,
   systems?: System[]
 }
 
 export abstract class Game<T extends GameProps = GameProps> {
   net: RtcPool | undefined = undefined;
-  renderer: Renderer;
+  renderer: Renderer | undefined = undefined;
   entities: Record<string, Entity> = {};
   systems: System[] = [];
   tick: number = 0;
@@ -18,7 +18,6 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.net = net;
     this.renderer = renderer;
 
-    // call onTick
     setInterval(this.onTick, 1000 / 60);
   }
 
@@ -49,7 +48,6 @@ export abstract class Game<T extends GameProps = GameProps> {
   onTick = () => {
     this.tick += 1;
 
-    // call each system onTick
     this.systems?.forEach((system) => {
       system.onTick(this.filterEntitiesForSystem(system, Object.values(this.entities)), this);
     });

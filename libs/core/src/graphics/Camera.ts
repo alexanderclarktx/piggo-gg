@@ -33,7 +33,7 @@ export class Camera {
   })
 
   handleCameraPos = () => {
-    for (const r of this.renderables) {
+    this.renderables.forEach((r) => {
       if (r.props.cameraPos) {
 
         // if cameraPos.x is negative, offset from right of the screen
@@ -50,6 +50,6 @@ export class Camera {
           r.c.y = r.props.cameraPos.y - this.c.y;
         }
       }
-    }
+    });
   }
 }

@@ -3,7 +3,7 @@ import { Position, Networked, Clickable, Actions, Character, playerControlsEntit
 import { Assets, AnimatedSprite, SCALE_MODES, Container, Graphics } from "pixi.js";
 
 export const Skelly = async (id: string, renderer?: Renderer, tint?: number): Promise<Entity> => {
-  const skellyAssets = await Assets.load("chars.json");
+  const skellyAssets = renderer ? await Assets.load("chars.json") : null;
 
   const renderable = renderer ? makeRenderable(renderer, skellyAssets, tint) : undefined;
 

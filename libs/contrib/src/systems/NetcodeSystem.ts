@@ -101,7 +101,7 @@ export const NetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System
     const serializedEntitites: Record<string, SerializedEntity> = {};
 
     // serialize each entity
-    for (const entity of Object.values(entities)) {
+    entities.forEach((entity) => {
       let serialized: SerializedEntity = {};
 
       const position = entity.components.position as Position;
@@ -110,7 +110,7 @@ export const NetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System
       }
 
       serializedEntitites[entity.id] = serialized;
-    }
+    });
 
     // construct tick message
     const message: TickData = {
