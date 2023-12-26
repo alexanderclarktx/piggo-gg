@@ -20,7 +20,7 @@ export type NetcodeSystemProps = {
 }
 
 // NetcodeSystem handles networked entities
-export const NetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System =>{
+export const WebrtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System =>{
   let peers: Record<string, PeerState> = {};
 
   const onTick = (entities: Entity[], game: Game<GameProps>) => {

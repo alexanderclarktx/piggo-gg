@@ -28,7 +28,7 @@ export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Pro
   }) : null
 
   return {
-    id: id ?? `spaceship${(Math.random() * 100).toFixed(0)}`,
+    id: id ?? `spaceship${Math.trunc(Math.random() * 100)}`,
     components: {
       position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
       velocity: new Velocity(),

@@ -1,40 +1,51 @@
 import { Playground } from "@piggo-legends/playground";
+import { ServerWebSocket, Server } from "bun";
 
-const playground = new Playground({});
+type TickData = {
+  type: "game",
+  tick: number,
+  player: string,
+  entities: Record<string, unknown>
+}
 
-let id = 1;
+class PiggoServer {
 
-const server = Bun.serve({
-  port: 3000,
-  fetch(req, server) {
-    if (server.upgrade(req)) return;
-    return new Response("Upgrade failed :(", { status: 500 });
-  },
-  websocket: {
-    open: (ws) => {
-      // set data for this client
-      ws.data = {
-        id: id
-      }
+  bun: Server;
+  playground = new Playground({});
+  id = 1;
 
-      // increment id
-      id += 1;
+  constructor() {
+    this.bun = Bun.serve({
+      port: 3000,
+      fetch: (r: Request, server: Server) => server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 }),
+      websocket: {
+        close: (_) => console.log("WebSocket closed"),
+        open: this.handleOpen,
+        message: this.handleMessage
+      },
+    });
+  }
 
-      // send message to client
-      const message = `hello ${JSON.stringify(ws.data)}`;
-      console.log(message);
-      ws.send(message);
-    },
-    close: (_) => {
-      console.log("WebSocket closed");
-    },
-    message: (ws, msg) => {
-      if (typeof msg != "string") return;
+  handleOpen = (ws: ServerWebSocket<unknown>) => {
+    // set data for this client
+    ws.data = { id: this.id };
 
-      console.log(`received from ${ws.remoteAddress} ${ws.data}: ` + msg);
-      ws.send("Echo: " + msg);
-    }
-  },
-});
+    // increment id
+    this.id += 1;
 
-console.log(`包 wss://localhost:${server.port}`);
+    // send message to client
+    const message = `hello ${JSON.stringify(ws.data)}`;
+    console.log(message);
+    ws.send(message);
+  }
+
+  handleMessage = (ws: ServerWebSocket<unknown>, msg: string) => {
+    if (typeof msg != "string") return;
+    const parsedMessage = JSON.parse(msg) as TickData;
+
+    console.log(`received from ${ws.remoteAddress} ` + parsedMessage.tick, parsedMessage.player);
+  }
+}
+
+const server = new PiggoServer();
+console.log(`包 wss://localhost:${server.bun.port}`);
