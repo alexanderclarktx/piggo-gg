@@ -24,32 +24,10 @@ export class Camera {
   moveTo = ({ x, y }: { x: number, y: number }) => {
     this.c.x = this.renderer.app.screen.width / 2 - x;
     this.c.y = this.renderer.app.screen.height / 2 - y;
-    this.handleCameraPos();
   }
 
   toWorldCoords = ({ x, y }: { x: number, y: number }) => ({
     x: x - this.c.x,
     y: y - this.c.y
   })
-
-  handleCameraPos = () => {
-    this.renderables.forEach((r) => {
-      if (r.props.cameraPos) {
-
-        // if cameraPos.x is negative, offset from right of the screen
-        if (r.props.cameraPos.x < 0) {
-          r.c.x = this.renderer.app.screen.width + r.props.cameraPos.x - this.c.x;
-        } else {
-          r.c.x = r.props.cameraPos.x - this.c.x;
-        }
-
-        // if cameraPos.y is negative, offset from bottom of the screen
-        if (r.props.cameraPos.y < 0) {
-          r.c.y = this.renderer.app.screen.height + r.props.cameraPos.y - this.c.y;
-        } else {
-          r.c.y = r.props.cameraPos.y - this.c.y;
-        }
-      }
-    });
-  }
 }

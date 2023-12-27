@@ -3,6 +3,8 @@ import { Entity, Renderer } from "@piggo-legends/core";
 import { TilingSprite, Assets } from "pixi.js";
 
 export const TilingSpriteFloor = async (renderer: Renderer, rows: number, cols: number): Promise<Entity> => {
+
+  const tiles = async () => {
     // tiling sprite 1
     const tilingSprite = new TilingSprite((await Assets.load("sandbox.json")).textures["white_small"], 32 * rows, 16 * cols);
     tilingSprite.scale.set(2);
@@ -14,13 +16,15 @@ export const TilingSpriteFloor = async (renderer: Renderer, rows: number, cols: 
     tilingSprite2.tint = 0xff8899;
     tilingSprite.addChild(tilingSprite2);
 
+    return tilingSprite;
+  }
+
   return {
     id: "tiling-sprite-floor",
     components: {
       position: new Position({ x: -4000, y: -1000 }),
       renderable: new Renderable({
-        renderer: renderer,
-        container: tilingSprite
+        container: tiles
       })
     }
   }

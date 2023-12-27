@@ -34,7 +34,6 @@ export const Skelly = async (id: string, renderer?: Renderer, tint?: number): Pr
 
 const makeRenderable = (renderer: Renderer, skellyAssets: any, tint?: number) => {
   const character = new Character({
-    renderer: renderer,
     animations: {
       d: new AnimatedSprite([skellyAssets.textures["d1"], skellyAssets.textures["d2"], skellyAssets.textures["d3"]]),
       u: new AnimatedSprite([skellyAssets.textures["u1"], skellyAssets.textures["u2"], skellyAssets.textures["u3"]]),

@@ -17,10 +17,11 @@ export abstract class Button<T extends ButtonProps> extends Renderable<T> {
       debuggable: props.debuggable || false,
       interactiveChildren: true
     });
-    this.init();
+    this.__init();
   }
 
-  init = () => {
+  // TODO rename
+  __init = () => {
     this.c.eventMode = "static";
     this.initialStyle();
     this.c.on("click", this._onClick);

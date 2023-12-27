@@ -11,10 +11,9 @@ export type BallProps = {
 export const Ball = ({ renderer, position, id }: BallProps): Entity => {
 
   const renderable = renderer ? new Renderable({
-    renderer: renderer,
     debuggable: true,
     zIndex: 1,
-    container: new Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
+    init: () => new Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
   }) : null
 
   Math.trunc(Math.random() * 100);

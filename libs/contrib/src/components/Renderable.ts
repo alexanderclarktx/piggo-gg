@@ -2,13 +2,11 @@ import { Container } from "pixi.js";
 import { Component, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
-  renderer: Renderer
-  position?: { x: number; y: number }
-  cameraPos?: { x: number; y: number }
-  container?: Container
-  children?: Renderable[]
-  debuggable?: boolean
+  container?: (r: Renderer) => Promise<Container> 
+  children?: (r: Renderer) => Promise<Renderable[]>
   dynamic?: (c: Container, r: Renderable, g: Game) => void
+  position?: { x: number; y: number }
+  debuggable?: boolean
   zIndex?: number
   visible?: boolean
   id?: string
@@ -22,39 +20,48 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   id: string;
   props: T;
   c: Container = new Container();
+  renderer: Renderer | undefined;
+  children: Renderable[] | undefined;
 
   constructor(props: T) {
-    // set container
-    if (props.container) this.c = props.container;
+    this.props = {
+      ...props,
+      debuggable: props.debuggable ?? false,
+    }
+  }
+
+  _init = async (renderer: Renderer) => {
+    this.renderer = renderer;
+
+    // initialize container
+    if (this.props.container) this.c = await this.props.container(renderer);
+
+    const { children, position, id, interactiveChildren, visible, cacheAsBitmap } = this.props;
 
     // add children
-    if (props.children) {
-      this.c.addChild(...props.children.map((child) => child.c));
+    if (children) {
+      const childRenderables = await children(renderer);
+      this.children = childRenderables;
+      childRenderables.forEach((child) => this.c.addChild(child.c));
     }
 
     // set position
-    if (props.position) this.c.position.set(props.position.x, props.position.y);
+    if (position) this.c.position.set(position.x, position.y);
 
     // set id
-    this.id = props.id ?? "";
+    this.id = id ?? "";
 
     // TODO this should always be false (need to refactor buttons)
     // set interactive children false
-    this.c.interactiveChildren = props.interactiveChildren ?? true;
+    this.c.interactiveChildren = interactiveChildren ?? true;
 
     // set visible
-    this.c.visible = props.visible ?? true;
+    this.c.visible = visible ?? true;
 
     // set cacheAsBitmap
-    this.c.cacheAsBitmap = props.cacheAsBitmap ?? false;
+    this.c.cacheAsBitmap = cacheAsBitmap ?? false;
 
-    // add debugable to props
-    this.props = { ...props, debuggable: props.debuggable ?? false };
-
-    this._init();
-  }
-
-  _init = () => {
+    // set container properties
     this.c.zIndex = this.props.zIndex || 0;
     this.c.sortableChildren = true;
     this.c.alpha = 1;
@@ -63,7 +70,7 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
 
   // cleanup MUST be called to correctly destroy the object
   cleanup = () => {
-    this.props.renderer.app.stage.removeChild(this.c); // remove from the renderer
+    this.renderer?.app.stage.removeChild(this.c); // remove from the renderer
     this.c.removeAllListeners(); // remove all event listeners
     this.c.destroy(); // remove from the world
   }

@@ -1,11 +1,10 @@
-import { Renderer, Entity } from "@piggo-legends/core";
+import { Entity } from "@piggo-legends/core";
 import { Position, Renderable, TextBox, chatBuffer, chatHistory, chatIsOpen } from "@piggo-legends/contrib";
-import { Container, HTMLText } from "pixi.js";
+import { HTMLText } from "pixi.js";
 
-export const Chat = (renderer: Renderer): Entity => {
+export const Chat = (): Entity => {
 
-  const chatHistoryText = new TextBox({
-    renderer,
+  const chatHistoryText = () => new TextBox({
     text: "hello",
     fontSize: 16,
     color: 0x55FFFF,
@@ -23,15 +22,15 @@ export const Chat = (renderer: Renderer): Entity => {
 
       // offset
       r.c.position.set(0, -1 * t.height + 15);
+
+      console.log(r.c.position);
     }
   });
 
-  const chatBufferText = new TextBox({
-    renderer,
+  const chatBufferText = () => new TextBox({
     text: "world",
     fontSize: 16,
     color: 0xFFFF33,
-    cameraPos: { x: -50, y: -200 },
     dynamic: (t: HTMLText) => {
       chatIsOpen ? t.text = `${chatBuffer.join("")}|` : t.text = ""
     },
@@ -41,14 +40,11 @@ export const Chat = (renderer: Renderer): Entity => {
   return {
     id: "chat",
     components: {
-      position: new Position({}),
+      position: new Position({ x: -400, y: -200, screenFixed: true }),
       renderable: new Renderable({
-        renderer,
         debuggable: false,
-        container: new Container(),
-        cameraPos: { x: -400, y: -200 },
         zIndex: 4,
-        children: [chatHistoryText, chatBufferText]
+        children: async () => [chatHistoryText(), chatBufferText()]
       })
     }
   }

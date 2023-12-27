@@ -4,9 +4,10 @@ export type SerializedPosition = { x: number, y: number, rotation: number }
 export type PositionOffset = "world" | "camera";
 
 export type PositionProps = {
-  x?: number,
-  y?: number,
+  x?: number
+  y?: number
   offset?: PositionOffset
+  screenFixed?: boolean
 }
 
 // the entity's position in the world
@@ -17,11 +18,13 @@ export class Position implements Component<"position"> {
   x: number;
   y: number;
   offset: PositionOffset;
+  screenFixed: boolean;
 
-  constructor({ x, y, offset }: PositionProps) {
+  constructor({ x, y, offset, screenFixed }: PositionProps) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.offset = offset ?? "world";
+    this.screenFixed = screenFixed ?? false;
   }
 
   // get screen coordinates from world position

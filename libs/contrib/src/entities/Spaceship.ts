@@ -12,7 +12,6 @@ export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Pro
   const spaceship = renderer ? await Assets.load("spaceship.json") : null;
 
   const renderable = renderer ? new Character({
-    renderer: renderer,
     animations: {
       d: new AnimatedSprite([spaceship.textures["spaceship"]]),
       u: new AnimatedSprite([spaceship.textures["spaceship"]]),

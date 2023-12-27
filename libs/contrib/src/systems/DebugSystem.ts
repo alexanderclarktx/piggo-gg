@@ -31,7 +31,7 @@ export const DebugSystem = (renderer: Renderer, game: Game): System => {
 
       // text box
       const textBox = new TextBox({
-        renderer: renderer,
+        // renderer: renderer,
         position: new Position({ x: 0, y: -(bounds.height / 2) - 30 }),
         dynamic: (c: Text) => {
           c.text = `
@@ -43,15 +43,15 @@ export const DebugSystem = (renderer: Renderer, game: Game): System => {
       });
 
       // debug bounds
-      const debugBounds = new DebugBounds({ renderable: renderable, renderer: renderer });
+      const debugBounds = new DebugBounds({ renderable: renderable });
 
       game.addEntity({
         id: `${entity.id}-debug`,
         components: {
           position: position,
           renderable: new Renderable({
-            renderer: renderer,
-            children: [textBox, debugBounds]
+            // renderer: renderer,
+            // children: [textBox, debugBounds]
           })
         }
       });

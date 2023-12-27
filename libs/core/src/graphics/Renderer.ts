@@ -29,7 +29,7 @@ export class Renderer {
       width: props.width ?? 800,
       height: props.height ?? 600,
       antialias: false,
-      hello: true,
+      hello: true
     });
 
     // set up the camera
@@ -64,17 +64,10 @@ export class Renderer {
       const height = Math.min(parseInt(computedCanvasStyle.height), this.props.height ?? 600);
       this.app.renderer.resize(width, height);
     }
-    this.camera.handleCameraPos();
   }
 
   // adds a Renderable to the pixi.js stage
   addWorld = (renderable: Renderable) => {
     this.camera.add(renderable);
-    this.camera.handleCameraPos();
-  }
-
-  // method for tracking the camera
-  trackCamera = (pos: () => { x: number, y: number }) => {
-    this.app.ticker.add(() => this.camera.moveTo(pos()));
   }
 }

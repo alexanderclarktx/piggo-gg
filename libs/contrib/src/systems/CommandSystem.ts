@@ -16,7 +16,7 @@ export const CommandSystem = (game: Game): System => {
     // for each buffered command, if it's scheduled for the current tick, execute it
     localCommandBuffer.forEach((command) => {
       if (command.tick < game.tick) {
-        console.log(`CommandSystem: command ${command.actionId} for entity ${command.entityId} is too old`);
+        console.log(`集 ${command.entityId} command ${command.actionId} too old`);
 
         // TODO rollback
         localCommandBuffer = localCommandBuffer.filter((c) => c !== command);
@@ -24,13 +24,13 @@ export const CommandSystem = (game: Game): System => {
       if (command.tick === game.tick) {        
         const entity = game.entities[command.entityId];
         if (!entity) { // entity not found
-          console.log(`CommandSystem: entity ${command.entityId} not found`);
+          console.log(`集 ${command.entityId} not found`);
           return;
         }
 
         const actions = entity.components.actions as Actions;
         if (!actions) { // entity has no actions
-          console.log(`CommandSystem: entity ${command.entityId} has no actions`);
+          console.log(`集 ${command.entityId} has no actions`);
           return;
         }
 
@@ -38,7 +38,7 @@ export const CommandSystem = (game: Game): System => {
         const action = actions.actionMap[command.actionId];
 
         if (!action) { // action not found
-          console.log(`CommandSystem: action ${command.actionId} not found`);
+          console.log(`action ${command.actionId} not found`);
           return;
         }
         action(entity, game);

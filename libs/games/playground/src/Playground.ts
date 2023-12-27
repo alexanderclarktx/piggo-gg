@@ -1,6 +1,6 @@
 import {
   DebugSystem, InputSystem, ClickableSystem, WsNetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
-  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem, TilingSpriteFloor
+  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem,
 } from "@piggo-legends/contrib";
 import { Game, GameProps, Renderer } from "@piggo-legends/core";
 
@@ -48,11 +48,11 @@ export class Playground extends Game {
   }
 
   addUI = async (renderer: Renderer) => {
-    this.addEntity(FpsText({ renderer }));
-    this.addEntity(FullscreenButton(renderer));
-    this.addEntity(DebugButton(renderer));
-    this.addEntity(Cursor(renderer));
-    this.addEntity(Chat(renderer));
+    this.addEntity(FpsText({}));
+    this.addEntity(FullscreenButton());
+    this.addEntity(DebugButton());
+    this.addEntity(Cursor());
+    this.addEntity(Chat());
   }
 
   addGameObjects = async () => {
@@ -63,7 +63,7 @@ export class Playground extends Game {
   addFloor = async (renderer: Renderer) => {
 
     // single 30x30 board
-    this.addEntity(await TileFloor({ renderer, rows: 30, cols: 30, position: { x: 0, y: 0 } }));
+    this.addEntity(await TileFloor({ rows: 30, cols: 30, position: { x: 0, y: 0 } }));
 
     // tiled sprite floor
     // this.addEntity(await TilingSpriteFloor(renderer, 200, 200));
