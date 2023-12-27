@@ -1,4 +1,4 @@
-import { Entity, Renderer, System } from '@piggo-legends/core';
+import { Entity, Game, Renderer, System } from '@piggo-legends/core';
 import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 
 export var centeredEntity: Entity | undefined = undefined;
@@ -6,11 +6,12 @@ export let centeredXY: { x: number, y: number } = { x: 0, y: 0 };
 
 export type RenderSystemProps = {
   renderer: Renderer,
+  game: Game,
   mode?: "cartesian" | "isometric"
 }
 
 // RenderSystem handles rendering entities in isometric or cartesian space
-export const RenderSystem = ({ renderer, mode }: RenderSystemProps): System => {
+export const RenderSystem = ({ renderer, mode, game }: RenderSystemProps): System => {
   let renderedEntities: Set<Entity> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
 
@@ -50,12 +51,12 @@ export const RenderSystem = ({ renderer, mode }: RenderSystemProps): System => {
       }
 
       // run the dynamic callback
-      if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable);
+      if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable, game);
 
       // run dynamic on children
       if (renderable.props.children) {
         renderable.props.children.forEach((child) => {
-          if (child.props.dynamic) child.props.dynamic(child.c, child);
+          if (child.props.dynamic) child.props.dynamic(child.c, child, game);
         });
       }
     });

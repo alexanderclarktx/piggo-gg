@@ -6,18 +6,18 @@ export const TilingSpriteFloor = async (renderer: Renderer, rows: number, cols: 
     // tiling sprite 1
     const tilingSprite = new TilingSprite((await Assets.load("sandbox.json")).textures["white_small"], 32 * rows, 16 * cols);
     tilingSprite.scale.set(2);
-    tilingSprite.tint = 0x8888ff;
+    tilingSprite.tint = 0xff8899;
 
     // tiling sprite 2
     const tilingSprite2 = new TilingSprite((await Assets.load("sandbox.json")).textures["white_small"], 32 * rows, 16 * cols);
     tilingSprite2.position.set(16, 8);
-    tilingSprite2.tint = 0x8888ff;
+    tilingSprite2.tint = 0xff8899;
     tilingSprite.addChild(tilingSprite2);
 
   return {
-    id: "abc",
+    id: "tiling-sprite-floor",
     components: {
-      position: new Position({ x: -10000, y: -5000 }),
+      position: new Position({ x: -4000, y: -1000 }),
       renderable: new Renderable({
         renderer: renderer,
         container: tilingSprite

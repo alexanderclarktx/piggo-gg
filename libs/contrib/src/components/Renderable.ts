@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Component, Renderer } from "@piggo-legends/core";
+import { Component, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
   renderer: Renderer
@@ -8,9 +8,12 @@ export type RenderableProps = {
   container?: Container
   children?: Renderable[]
   debuggable?: boolean
-  dynamic?: (c: Container, r: Renderable) => void
-  zIndex?: number,
-  visible?: boolean,
+  dynamic?: (c: Container, r: Renderable, g: Game) => void
+  zIndex?: number
+  visible?: boolean
+  id?: string
+  cacheAsBitmap?: boolean
+  interactiveChildren?: boolean
 }
 
 export class Renderable<T extends RenderableProps = RenderableProps> implements Component<"renderable"> {
@@ -26,14 +29,24 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
 
     // add children
     if (props.children) {
-      props.children.forEach((child) => this.c.addChild(child.c));
+      this.c.addChild(...props.children.map((child) => child.c));
     }
 
     // set position
     if (props.position) this.c.position.set(props.position.x, props.position.y);
 
+    // set id
+    this.id = props.id ?? "";
+
+    // TODO this should always be false (need to refactor buttons)
+    // set interactive children false
+    this.c.interactiveChildren = props.interactiveChildren ?? true;
+
     // set visible
     this.c.visible = props.visible ?? true;
+
+    // set cacheAsBitmap
+    this.c.cacheAsBitmap = props.cacheAsBitmap ?? false;
 
     // add debugable to props
     this.props = { ...props, debuggable: props.debuggable ?? false };

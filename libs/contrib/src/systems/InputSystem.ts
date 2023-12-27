@@ -1,5 +1,5 @@
 import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
-import { Actions, Ball, Controlled, Controller, Spaceship } from "@piggo-legends/contrib";
+import { Actions, Ball, Controlled, Controller, Spaceship, localCommandBuffer } from "@piggo-legends/contrib";
 
 export var chatBuffer: string[] = [];
 export var chatHistory: string[] = [];
@@ -105,16 +105,26 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
         const inputKeys = input.split(",");
         if (inputKeys.every((key) => buffer.has(key))) {
           // run the callback
-          const callback = actions.actionMap[controller.controllerMap[input]];
-          if (callback) callback(controlledEntity, game);
+          if (actions.actionMap[controller.controllerMap[input]]) {
+            localCommandBuffer.push({
+              tick: game.tick + 1,
+              entityId: controlledEntity.id,
+              actionId: controller.controllerMap[input]
+            });
+          }
 
           // remove all keys from the buffer
           inputKeys.forEach((key) => buffer.delete(key));
         }
       } else if (buffer.has(input)) {
-        // run callback
-        const callback = actions.actionMap[controller.controllerMap[input]];
-        if (callback) callback(controlledEntity, game);
+
+        if (actions.actionMap[controller.controllerMap[input]]) {
+          localCommandBuffer.push({
+            tick: game.tick + 1,
+            entityId: controlledEntity.id,
+            actionId: controller.controllerMap[input]
+          });
+        }
 
         // remove the key from the buffer
         buffer.delete(input);

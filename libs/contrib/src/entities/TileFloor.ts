@@ -1,9 +1,13 @@
-import { Entity, Renderer } from "@piggo-legends/core";
+import { Entity, Game, Renderer } from "@piggo-legends/core";
 import { Position, Tile, Renderable, centeredXY } from "@piggo-legends/contrib";
 import { Assets, Texture, Resource, Container } from "pixi.js";
 
-// sets visible=false if Renderable is out of bounds
-const cull = (_: Container, r: Tile) => {
+let index = 0;
+
+// todo this is not efficient (run from single system)
+const cull = (c: Container, r: Tile, g: Game) => {
+  if (g.tick % 3 !== 0) return;
+
   if (Math.abs(centeredXY.x - r.c.x) > 700 || Math.abs(centeredXY.y - r.c.y) > 400) {
     r.c.visible = false;
   } else {
@@ -11,9 +15,17 @@ const cull = (_: Container, r: Tile) => {
   }
 }
 
-let texture: Texture<Resource> | undefined = undefined;
+export type TileFloorProps = {
+  renderer: Renderer,
+  rows: number,
+  cols: number,
+  position?: { x: number, y: number },
+  id?: string,
+}
 
-export const Floor = async (renderer: Renderer, rows: number, cols: number, id: string = "floor"): Promise<Entity> => {
+export const TileFloor = async ({ renderer, rows, cols, position = { x: 0, y: 0 }, id = `floor${index += 1}` }: TileFloorProps): Promise<Entity> => {
+
+  let texture: Texture<Resource> | undefined = undefined;
 
   if (!texture) {
     // const sandbox = await Assets.load("c_tiles.json");
@@ -21,19 +33,21 @@ export const Floor = async (renderer: Renderer, rows: number, cols: number, id: 
 
     const sandbox = await Assets.load("sandbox.json");
     texture = sandbox.textures["white"] as Texture<Resource>;
+    // texture.baseTexture.scaleMode = 0;
   }
 
   let tiles: Tile[] = [];
   for (let x = 0; x < rows; x++) {
     for (let y = 0; y < cols; y++) {
       tiles.push(new Tile({
-        dynamic: cull,
+        // dynamic: cull,
         position: { x: y * texture.width - (x * texture.width), y: (y + x) * (texture.height - 4) },
         renderer,
         texture,
         tint: 0x8888ff,
         zIndex: 0,
-        visible: false
+        // visible: false,s
+        id: `tile-${x}-${y}`,
       }));
     }
   }
@@ -41,13 +55,12 @@ export const Floor = async (renderer: Renderer, rows: number, cols: number, id: 
   return {
     id: id,
     components: {
-      position: new Position({}),
+      position: new Position(position),
       renderable: new Renderable({
         renderer,
-        debuggable: false,
-        texture,
+        debuggable: true,
         zIndex: 0,
-        children: tiles,
+        children: tiles
       })
     }
   }

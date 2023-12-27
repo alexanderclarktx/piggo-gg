@@ -14,7 +14,8 @@ export abstract class Button<T extends ButtonProps> extends Renderable<T> {
   constructor(props: T) {
     super({
       ...props,
-      debuggable: props.debuggable || false
+      debuggable: props.debuggable || false,
+      interactiveChildren: true
     });
     this.init();
   }

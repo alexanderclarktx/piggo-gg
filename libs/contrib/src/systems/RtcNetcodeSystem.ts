@@ -1,26 +1,30 @@
 import { Entity, Game, GameProps, RtcPeer, RtcPool, System } from "@piggo-legends/core";
 import { Controlled, Player, Position, SerializedPosition } from "@piggo-legends/contrib";
 
-export type TickData = {
+type TickData = {
   type: "game",
   tick: number,
   player: string,
   entities: Record<string, SerializedEntity>
 }
 
-export type SerializedEntity = {
+ type SerializedEntity = {
   position?: SerializedPosition
 }
 
-type PeerState = { connected: boolean, connection: RtcPeer, buffer: TickData | null }
+type PeerState = {
+  connected: boolean
+  connection: RtcPeer
+  buffer: TickData | null
+}
 
-export type NetcodeSystemProps = {
+type NetcodeSystemProps = {
   net: RtcPool | undefined
   thisPlayerId: string
 }
 
 // NetcodeSystem handles networked entities
-export const WebrtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System =>{
+export const RtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System =>{
   let peers: Record<string, PeerState> = {};
 
   const onTick = (entities: Entity[], game: Game<GameProps>) => {

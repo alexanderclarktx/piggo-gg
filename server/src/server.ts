@@ -1,18 +1,32 @@
+import { TickData, localCommandBuffer } from "@piggo-legends/contrib";
 import { Playground } from "@piggo-legends/playground";
 import { ServerWebSocket, Server } from "bun";
-
-type TickData = {
-  type: "game",
-  tick: number,
-  player: string,
-  entities: Record<string, unknown>
-}
 
 class PiggoServer {
 
   bun: Server;
-  playground = new Playground({});
   id = 1;
+  clients: Record<string, ServerWebSocket<unknown>> = {};
+
+  playground = new Playground({
+    systems: [
+      {
+        onTick: (_) => {
+          const tickData: TickData = {
+            commands: [],
+            player: "server",
+            tick: this.playground.tick,
+            type: "game"
+          };
+          // send tick data to all clients
+          Object.values(this.clients).forEach((client) => {
+            client.send(JSON.stringify(tickData));
+          });
+        },
+        componentTypeQuery: ["none"]
+      }
+    ]
+  });
 
   constructor() {
     this.bun = Bun.serve({
@@ -34,16 +48,20 @@ class PiggoServer {
     this.id += 1;
 
     // send message to client
-    const message = `hello ${JSON.stringify(ws.data)}`;
-    console.log(message);
-    ws.send(message);
+    // const message = `hello ${JSON.stringify(ws.data)}`;
+
+    // add to clients
+    this.clients[ws.remoteAddress] = ws;
+
+    // console.log(message);
+    // ws.send(message);
   }
 
   handleMessage = (ws: ServerWebSocket<unknown>, msg: string) => {
     if (typeof msg != "string") return;
     const parsedMessage = JSON.parse(msg) as TickData;
 
-    console.log(`received from ${ws.remoteAddress} ` + parsedMessage.tick, parsedMessage.player);
+    if (parsedMessage.commands.length) localCommandBuffer.push(...parsedMessage.commands);
   }
 }
 

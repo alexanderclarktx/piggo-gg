@@ -41,9 +41,9 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string, mode: 
     bufferClick = [];
   }
 
-  renderer.app.stage.onmousedown = (event: FederatedPointerEvent) => {
-    bufferClick.push(renderer.camera.toWorldCoords({ x: event.screenX, y: event.screenY }));
-  }
+  renderer.props.canvas.addEventListener("mousedown", (event: FederatedPointerEvent) => {
+    bufferClick.push(renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY }));
+  });
 
   return {
     componentTypeQuery: ["clickable", "actions", "position"],
