@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",
     "docs": "bun pages",
-    "pages": "bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/"
+    "pages": "NODE_ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/"
   },
   "license": "ISC",
   "dependencies": {
