@@ -49,15 +49,25 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
           ariaHideApp={false}
           isOpen={modalOpen}
           shouldCloseOnOverlayClick={true}
-          onRequestClose={()=>setModalOpen(false)}
+          onRequestClose={() => setModalOpen(false)}
           style={{
             overlay: {
-              backgroundColor: "rgba(230, 230, 230, 0.3)",
+              backgroundColor: "rgba(0, 0, 0, 0.4)",
+              alignContent: "center",
+              justifyContent: "center",
             },
             content: {
-              backgroundColor: "rgba(230, 240, 250, 1)",
+              alignContent: "center",
+              alignSelf: "center",
+              marginLeft: "10%",
+              marginRight: "10%",
+              marginTop: "10%",
+              marginBottom: "10%",
+              maxWidth: "80%",
+              maxHeight: "80%",
+              backgroundColor: "rgba(10, 10, 10, 0.5)",
               color: "white"
-            }
+            },
           }}
         >
           <div>
@@ -78,11 +88,11 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
           </div>
         </ReactModal>
       </div>
-      <div style={{ width:"100%", verticalAlign: "middle" }}>
+      <div style={{ width: "100%", verticalAlign: "middle" }}>
         <div style={{ float: "left", paddingTop: 5, marginLeft: 5 }}>
-          status: <span style={{ color:NetStateColor[netState] }}>{netState}</span>
+          status: <span style={{ color: NetStateColor[netState] }}>{netState}</span>
         </div>
-        <button style={{ float: "right" }} onClick={()=>setModalOpen(true)}>Connect to Peer</button>
+        <button style={{ float: "right" }} onClick={() => setModalOpen(true)}>Connect to Peer</button>
       </div>
     </div>
   );
