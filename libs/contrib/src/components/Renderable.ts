@@ -2,7 +2,8 @@ import { Container } from "pixi.js";
 import { Component, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
-  container?: (r: Renderer) => Promise<Container> 
+  container?: (r: Renderer) => Promise<Container>
+  renderable?: (r: Renderer) => Promise<Renderable>
   children?: (r: Renderer) => Promise<Renderable[]>
   dynamic?: (c: Container, r: Renderable, g: Game) => void
   position?: { x: number; y: number }
@@ -14,12 +15,14 @@ export type RenderableProps = {
   interactiveChildren?: boolean
 }
 
+// TODO refactor and simplify how entities define renderables
 export class Renderable<T extends RenderableProps = RenderableProps> implements Component<"renderable"> {
   type: "renderable";
 
   id: string;
   props: T;
   c: Container = new Container();
+  r: Renderable | undefined;
   renderer: Renderer | undefined;
   children: Renderable[] | undefined;
 
@@ -33,16 +36,27 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   _init = async (renderer: Renderer) => {
     this.renderer = renderer;
 
-    // initialize container
+    const { container, renderable, children, position, id, interactiveChildren, visible, cacheAsBitmap } = this.props;
+
+    // add child container
     if (this.props.container) this.c = await this.props.container(renderer);
 
-    const { children, position, id, interactiveChildren, visible, cacheAsBitmap } = this.props;
+    // add child renderable
+    if (renderable) {
+      const r = await renderable(renderer);
+      this.r = r;
+      this.c = r.c;
+      await r._init(renderer);
+    }
 
     // add children
     if (children) {
       const childRenderables = await children(renderer);
       this.children = childRenderables;
-      childRenderables.forEach((child) => this.c.addChild(child.c));
+      childRenderables.forEach(async (child) => {
+        await child._init(renderer);
+        this.c.addChild(child.c);
+      });
     }
 
     // set position

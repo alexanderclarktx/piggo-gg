@@ -7,7 +7,7 @@ export type PlayerSpawnSystemProps = {
 }
 
 // PlayerSpawnSystem handles spawning characters for players
-export const PlayerSpawnSystem = ({ thisPlayerId, renderer }: PlayerSpawnSystemProps): System => {
+export const PlayerSpawnSystem = ({ thisPlayerId }: PlayerSpawnSystemProps): System => {
   let componentTypeQuery = ["player"];
   let playersWithCharacters: Record<string, Entity> = {};
 
@@ -21,7 +21,7 @@ export const PlayerSpawnSystem = ({ thisPlayerId, renderer }: PlayerSpawnSystemP
   }
 
   const spawnCharacterForPlayer = async (player: Entity, game: Game<GameProps>, color: number) => {
-    const characterForPlayer = await Skelly(`${player.id}-character`, renderer, color);
+    const characterForPlayer = await Skelly(`${player.id}-character`, color);
 
     // give the player control of the character
     player.components.controlling = new Controlling({ entityId: characterForPlayer.id });

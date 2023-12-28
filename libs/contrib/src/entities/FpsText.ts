@@ -1,5 +1,5 @@
 import { Entity, Game } from "@piggo-legends/core";
-import { Position, TextBox } from "@piggo-legends/contrib";
+import { Position, Renderable, TextBox } from "@piggo-legends/contrib";
 import { HTMLText } from "pixi.js";
 
 export type FpsTextProps = {
@@ -8,21 +8,18 @@ export type FpsTextProps = {
   color?: number
 }
 
-export const FpsText = ({ x, y, color }: FpsTextProps): Entity => {
+export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity => {
   return {
     id: "fpsText",
     components: {
       position: new Position({
-        x: -35, y: 5, screenFixed: true
+        x: x ?? -35, y: y ?? 5, screenFixed: true
       }),
-      renderable: new TextBox({
-        debuggable: false,
+      renderable: new Renderable({
+        debuggable: true,
         color: color ?? 0xFFFF00,
         zIndex: 1,
-        container: async () => {
-          const text = new HTMLText("ABC", { fontSize: 16, fill: "#FFFFFF" });
-          return text;
-        },
+        container: async () => new HTMLText("ABC", { fontSize: 16, fill: "#FFFFFF" }),
         dynamic: (t: HTMLText, _, g: Game) => {
           if (g.tick % 10 !== 0) return;
           const fps = Math.round(g.renderer?.app.ticker.FPS ?? 0);

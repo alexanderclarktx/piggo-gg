@@ -9,40 +9,47 @@ export const ClickableSystem = (renderer: Renderer, thisPlayerId: string, mode: 
   let bufferClick: Click[] = [];
 
   const onTick = (entities: Entity[], game: Game<GameProps>) => {
-    entities.forEach((entity) => {
-      const clickable = entity.components.clickable as Clickable;
-      const position = entity.components.position as Position;
-      const screenXY = position.toScreenXY();
+    bufferClick.forEach((click) => {
+      const clickWorld = renderer.camera.toWorldCoords(click);
 
-      if (clickable.active) {
-        const bounds = (mode === "isometric") ? {
-          x: screenXY.x - clickable.width / 2,
-          y: screenXY.y - clickable.height / 2,
-          w: clickable.width, h: clickable.height
-        } : {
-          x: position.x - clickable.width / 2,
-          y: position.y - clickable.height / 2,
-          w: clickable.width, h: clickable.height
-        };
+      entities.forEach((entity) => {
+        const { clickable, position } = entity.components as { clickable: Clickable, position: Position };
 
-        bufferClick.forEach((click) => {
-          if (
-            click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
-            click.y >= bounds.y && click.y <= bounds.y + bounds.h
-          ) {
-            if (clickable.onPress) {
-              const callback = (entity.components.actions as Actions).actionMap[clickable.onPress];
-              if (callback) callback(entity, game, thisPlayerId);
-            }
+        if (!clickable.active) return;
+
+        // set bounds
+        let bounds = { x: position.x, y: position.y, w: clickable.width, h: clickable.height };
+        if (mode === "isometric" && !position.screenFixed) {
+          const screenXY = position.toScreenXY();
+          bounds = {
+            // TODO clickable should define offset
+            x: screenXY.x - clickable.width / 2,
+            y: screenXY.y - clickable.height / 2,
+            w: clickable.width, h: clickable.height
           }
-        });
-      }
+        }
+
+        // check bounds
+        let clicked = false;
+        position.screenFixed ? clicked = (
+          click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
+          click.y >= bounds.y && click.y <= bounds.y + bounds.h
+        ) : clicked = (
+          clickWorld.x >= bounds.x && clickWorld.x <= bounds.x + bounds.w &&
+          clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
+        )
+
+        if (clicked) {
+          const callback = (entity.components.actions as Actions).actionMap[clickable.onPress];
+          if (callback) callback(entity, game, thisPlayerId);
+        }
+      });
     });
     bufferClick = [];
   }
 
   renderer.props.canvas.addEventListener("mousedown", (event: FederatedPointerEvent) => {
-    bufferClick.push(renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY }));
+    bufferClick.push({ x: event.offsetX, y: event.offsetY });
   });
 
   return {

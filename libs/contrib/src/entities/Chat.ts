@@ -22,8 +22,6 @@ export const Chat = (): Entity => {
 
       // offset
       r.c.position.set(0, -1 * t.height + 15);
-
-      console.log(r.c.position);
     }
   });
 

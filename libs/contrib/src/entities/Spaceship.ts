@@ -1,30 +1,27 @@
-import { Entity, Renderer } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Velocity } from "@piggo-legends/contrib";
+import { Entity } from "@piggo-legends/core";
+import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Velocity, Renderable } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
-  renderer: Renderer | undefined,
   id?: string,
   position?: {x: number, y: number}
 }
 
-export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Promise<Entity> => {
-  const spaceship = renderer ? await Assets.load("spaceship.json") : null;
+export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<Entity> => {
 
-  const renderable = renderer ? new Character({
-    animations: {
-      d: new AnimatedSprite([spaceship.textures["spaceship"]]),
-      u: new AnimatedSprite([spaceship.textures["spaceship"]]),
-      l: new AnimatedSprite([spaceship.textures["spaceship"]]),
-      r: new AnimatedSprite([spaceship.textures["spaceship"]]),
-      dl: new AnimatedSprite([spaceship.textures["spaceship"]]),
-      dr: new AnimatedSprite([spaceship.textures["spaceship"]]),
-      ul: new AnimatedSprite([spaceship.textures["spaceship"]]),
-      ur: new AnimatedSprite([spaceship.textures["spaceship"]])
-    },
-    scale: 2,
-    zIndex: 3
-  }) : null
+  const render = async () => {
+    const texture = (await Assets.load("spaceship.json")).textures["spaceship"];
+    const sprite = new AnimatedSprite([texture])
+
+    return new Character({
+      animations: {
+        d: sprite, u: sprite, l: sprite, r: sprite,
+        dl: sprite, dr: sprite, ul: sprite, ur: sprite,
+      },
+      scale: 2,
+      zIndex: 3
+    })
+  };
 
   return {
     id: id ?? `spaceship${Math.trunc(Math.random() * 100)}`,
@@ -47,7 +44,11 @@ export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Pro
         ...CarMovement,
         "click": playerControlsEntity
       }),
-      ...renderable? { renderable } : {}
+      renderable: new Renderable({
+        debuggable: true,
+        zIndex: 1,
+        renderable: render
+      })
     }
   }
 }

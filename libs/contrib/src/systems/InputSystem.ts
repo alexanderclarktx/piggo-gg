@@ -14,7 +14,7 @@ export type InputSystemProps = {
 }
 
 // InputSystem handles all keyboard inputs
-export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
+export const InputSystem = (addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
   let bufferedDown: Set<string> = new Set([]);
   let bufferedUp: Set<string> = new Set([]);
   let backspaceOn = false;
@@ -25,10 +25,10 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
       callback: async (match: RegExpMatchArray) => {
         switch (match[1]) {
           case "spaceship":
-            addEntity(await Spaceship({ renderer }));
+            addEntity(await Spaceship());
             break;
           case "ball":
-            addEntity(Ball({ renderer }));
+            addEntity(Ball());
             break;
         }
       }

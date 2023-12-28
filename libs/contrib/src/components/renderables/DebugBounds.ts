@@ -2,7 +2,7 @@ import { Graphics, Container } from "pixi.js";
 import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type DebugBoundsProps = RenderableProps & {
-  renderable: Renderable
+  debugRenderable: Renderable
 }
 
 export class DebugBounds extends Renderable<DebugBoundsProps> {
@@ -12,7 +12,7 @@ export class DebugBounds extends Renderable<DebugBoundsProps> {
       debuggable: false,
       zIndex: 3
     });
-    this.init(props.renderable);
+    this.init(props.debugRenderable);
   }
 
   init = (r: Renderable) => {

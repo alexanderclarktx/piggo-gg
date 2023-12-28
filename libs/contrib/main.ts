@@ -18,8 +18,6 @@ export * from "./src/components/renderables/Button";
 export * from "./src/components/renderables/Character";
 export * from "./src/components/renderables/DebugBounds";
 export * from "./src/components/renderables/Tile";
-export * from "./src/components/renderables/SwitchButton";
-export * from "./src/components/renderables/TapButton";
 export * from "./src/components/renderables/TextBox";
 export * from "./src/components/Tier";
 export * from "./src/components/Traits";

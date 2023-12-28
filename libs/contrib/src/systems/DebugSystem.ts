@@ -43,15 +43,14 @@ export const DebugSystem = (renderer: Renderer, game: Game): System => {
       });
 
       // debug bounds
-      const debugBounds = new DebugBounds({ renderable: renderable });
+      const debugBounds = new DebugBounds({ debugRenderable: renderable });
 
       game.addEntity({
         id: `${entity.id}-debug`,
         components: {
           position: position,
           renderable: new Renderable({
-            // renderer: renderer,
-            // children: [textBox, debugBounds]
+            children: async () => [textBox, debugBounds]
           })
         }
       });

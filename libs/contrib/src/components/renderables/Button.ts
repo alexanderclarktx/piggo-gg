@@ -6,8 +6,7 @@ export type ButtonProps = RenderableProps & {
   text: Text
 }
 
-export abstract class Button<T extends ButtonProps> extends Renderable<T> {
-  clicked = false;
+export class Button<T extends ButtonProps = ButtonProps> extends Renderable<T> {
   outline = new Graphics();
   shadow = new Graphics();
 
@@ -17,21 +16,8 @@ export abstract class Button<T extends ButtonProps> extends Renderable<T> {
       debuggable: props.debuggable || false,
       interactiveChildren: true
     });
-    this.__init();
-  }
-
-  // TODO rename
-  __init = () => {
-    this.c.eventMode = "static";
     this.initialStyle();
-    this.c.on("click", this._onClick);
   }
-
-  _onClick = () => {
-    this.onClick();
-  }
-
-  abstract onClick: () => void;
 
   initialStyle = () => {
     // size and radius
