@@ -1,15 +1,14 @@
-import { Entity, Renderer } from "@piggo-legends/core";
+import { Entity } from "@piggo-legends/core";
 import { Position, TextBox, Networked, Clickable, Renderable, Actions } from "@piggo-legends/contrib";
 import { Text } from "pixi.js";
 
 export type BallProps = {
-  renderer: Renderer,
   id?: string,
   position?: { x: number, y: number }
 }
 
-export const Ball = ({ renderer, position, id }: BallProps): Entity => ({
-  id: id ?? `ball${Math.random() * 100}`,
+export const Ball = ({ position, id }: BallProps = {}): Entity => ({
+  id: id ?? `ball${Math.trunc(Math.random() * 100)}`,
   components: {
     position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
     networked: new Networked({ isNetworked: true }),
@@ -26,10 +25,9 @@ export const Ball = ({ renderer, position, id }: BallProps): Entity => ({
       }
     }),
     renderable: new Renderable({
-      renderer: renderer,
       debuggable: true,
       zIndex: 1,
-      container: new Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
+      container: async () => new Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
     })
   }
 });

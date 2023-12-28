@@ -1,6 +1,6 @@
 import {
-  DebugSystem, InputSystem, ClickableSystem, NetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
-  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, FloorTile, PhysicsSystem, Cursor, Chat
+  DebugSystem, InputSystem, ClickableSystem, WsNetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
+  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem,
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
@@ -11,20 +11,30 @@ export class Playground extends Game {
   constructor(props: GameProps) {
     super(props);
 
+    const renderer = props.renderer;
+
     this.addSystems([
-      ClickableSystem(props.renderer, randomName, "isometric"),
-      InputSystem(props.renderer, this.addEntity, randomName),
-      DebugSystem(props.renderer),
-      NetcodeSystem(props.renderer, props.net, randomName),
-      PhysicsSystem(props.renderer, "isometric"),
-      PlayerSpawnSystem(props.renderer, randomName),
-      RenderSystem(props.renderer, "isometric"),
+      CommandSystem(this),
+      PhysicsSystem({ mode: "isometric" }),
+      PlayerSpawnSystem({ thisPlayerId: randomName }),
     ]);
 
+    // add client-only systems
+    if (renderer) {
+      this.addSystems([
+        InputSystem(this.addEntity, randomName),
+        ClickableSystem(renderer, randomName, "isometric"),
+        RenderSystem({ renderer, mode: "isometric", game: this }),
+        DebugSystem(renderer, this),
+        WsNetcodeSystem({ thisPlayerId: randomName }),
+      ]);
+
+      this.addUI();
+      this.addFloor();
+    }
+
     this.addPlayer();
-    this.addUI();
     this.addGameObjects();
-    this.addFloor(25, 25);
   }
 
   addPlayer = () => {
@@ -38,23 +48,19 @@ export class Playground extends Game {
   }
 
   addUI = async () => {
-    this.addEntity(FpsText(this.renderer, { color: 0xffff00 }));
-    this.addEntity(FullscreenButton(this.renderer));
-    this.addEntity(DebugButton(this.renderer));
-    this.addEntity(Cursor(this.renderer));
-    this.addEntity(Chat(this.renderer));
+    this.addEntity(FpsText());
+    this.addEntity(FullscreenButton());
+    this.addEntity(DebugButton());
+    this.addEntity(Cursor());
+    this.addEntity(Chat());
   }
 
   addGameObjects = async () => {
-    this.addEntity(Ball({ renderer: this.renderer }));
-    this.addEntity(await Spaceship({ renderer: this.renderer }));
+    this.addEntity(Ball());
+    this.addEntity(await Spaceship());
   }
 
-  addFloor = async (rows: number, cols: number) => {
-    for (let x = 0; x < rows; x++) {
-      for (let y = 0; y < cols; y++) {
-        this.addEntity(await FloorTile(this.renderer, { x, y }));
-      }
-    }
+  addFloor = async () => {
+    this.addEntity(await TileFloor({ rows: 30, cols: 30, position: { x: 0, y: 0 } }));
   }
 }

@@ -1,4 +1,4 @@
-import { Text, HTMLText } from "pixi.js";
+import { HTMLText } from "pixi.js";
 import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 
 export type TextBoxProps = RenderableProps & {
@@ -21,11 +21,11 @@ export class TextBox extends Renderable<TextBoxProps> {
     super({
       ...props,
       debuggable: debuggable,
-      container: new HTMLText(text, {
+      container: async () => new HTMLText(text, {
         fill: color,
         fontSize: fontSize,
         dropShadow,
-      })
+      }),
     });
   }
 }

@@ -1,9 +1,8 @@
 {
   "name": "@piggo-legends/server",
-  "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun --hot index.ts"
+    "dev": "bun --watch src/Server.ts"
   },
   "dependencies": {
     "@piggo-legends/playground": "1.0.0"

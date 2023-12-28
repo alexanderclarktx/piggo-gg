@@ -80,7 +80,7 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
       </div>
       <div style={{ width:"100%", verticalAlign: "middle" }}>
         <div style={{ float: "left", paddingTop: 5, marginLeft: 5 }}>
-          status: <text style={{ color:NetStateColor[netState] }}>{netState}</text>
+          status: <span style={{ color:NetStateColor[netState] }}>{netState}</span>
         </div>
         <button style={{ float: "right" }} onClick={()=>setModalOpen(true)}>Connect to Peer</button>
       </div>

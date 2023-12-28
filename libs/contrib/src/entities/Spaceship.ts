@@ -1,17 +1,30 @@
-import { Entity, Renderer } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Velocity } from "@piggo-legends/contrib";
+import { Entity } from "@piggo-legends/core";
+import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Velocity, Renderable } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
-  renderer: Renderer,
   id?: string,
   position?: {x: number, y: number}
 }
 
-export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Promise<Entity> => {
-  const spaceship = await Assets.load("spaceship.json");
+export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<Entity> => {
+
+  const render = async () => {
+    const texture = (await Assets.load("spaceship.json")).textures["spaceship"];
+    const sprite = new AnimatedSprite([texture])
+
+    return new Character({
+      animations: {
+        d: sprite, u: sprite, l: sprite, r: sprite,
+        dl: sprite, dr: sprite, ul: sprite, ur: sprite,
+      },
+      scale: 2,
+      zIndex: 3
+    })
+  };
+
   return {
-    id: id ?? `spaceship${(Math.random() * 100).toFixed(0)}`,
+    id: id ?? `spaceship${Math.trunc(Math.random() * 100)}`,
     components: {
       position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
       velocity: new Velocity(),
@@ -31,20 +44,10 @@ export const Spaceship = async ({ renderer, id, position }: SpaceshipProps): Pro
         ...CarMovement,
         "click": playerControlsEntity
       }),
-      renderable: new Character({
-        renderer: renderer,
-        animations: {
-          d: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          u: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          l: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          r: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          dl: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          dr: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          ul: new AnimatedSprite([spaceship.textures["spaceship"]]),
-          ur: new AnimatedSprite([spaceship.textures["spaceship"]])
-        },
-        scale: 2,
-        zIndex: 3
+      renderable: new Renderable({
+        debuggable: true,
+        zIndex: 1,
+        renderable: render
       })
     }
   }

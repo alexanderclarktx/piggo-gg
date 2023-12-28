@@ -1,5 +1,5 @@
 import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
-import { Actions, Ball, Controlled, Controller, Spaceship } from "@piggo-legends/contrib";
+import { Actions, Ball, Controlled, Controller, Spaceship, localCommandBuffer } from "@piggo-legends/contrib";
 
 export var chatBuffer: string[] = [];
 export var chatHistory: string[] = [];
@@ -8,8 +8,13 @@ export var chatIsOpen = false;
 export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
 export const charactersPreventDefault = new Set(["'", "/"]);
 
+export type InputSystemProps = {
+  renderer?: Renderer,
+  thisPlayerId: string
+}
+
 // InputSystem handles all keyboard inputs
-export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
+export const InputSystem = (addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
   let bufferedDown: Set<string> = new Set([]);
   let bufferedUp: Set<string> = new Set([]);
   let backspaceOn = false;
@@ -20,10 +25,10 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
       callback: async (match: RegExpMatchArray) => {
         switch (match[1]) {
           case "spaceship":
-            addEntity(await Spaceship({ renderer }));
+            addEntity(await Spaceship());
             break;
           case "ball":
-            addEntity(Ball({ renderer }));
+            addEntity(Ball());
             break;
         }
       }
@@ -100,16 +105,26 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
         const inputKeys = input.split(",");
         if (inputKeys.every((key) => buffer.has(key))) {
           // run the callback
-          const callback = actions.actionMap[controller.controllerMap[input]];
-          if (callback) callback(controlledEntity, game);
+          if (actions.actionMap[controller.controllerMap[input]]) {
+            localCommandBuffer.push({
+              tick: game.tick + 1,
+              entityId: controlledEntity.id,
+              actionId: controller.controllerMap[input]
+            });
+          }
 
           // remove all keys from the buffer
           inputKeys.forEach((key) => buffer.delete(key));
         }
       } else if (buffer.has(input)) {
-        // run callback
-        const callback = actions.actionMap[controller.controllerMap[input]];
-        if (callback) callback(controlledEntity, game);
+
+        if (actions.actionMap[controller.controllerMap[input]]) {
+          localCommandBuffer.push({
+            tick: game.tick + 1,
+            entityId: controlledEntity.id,
+            actionId: controller.controllerMap[input]
+          });
+        }
 
         // remove the key from the buffer
         buffer.delete(input);
@@ -125,7 +140,6 @@ export const InputSystem = (renderer: Renderer, addEntity: (entity: Entity) => s
   }
 
   return {
-    renderer,
     componentTypeQuery: ["controlled"],
     onTick,
   }

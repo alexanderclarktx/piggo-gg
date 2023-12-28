@@ -1,4 +1,4 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils, Text, HTMLText, MSAA_QUALITY, ENV } from "pixi.js";
+import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
 import { Camera } from "@piggo-legends/core";
 import { Renderable } from "@piggo-legends/contrib";
 
@@ -23,12 +23,13 @@ export class Renderer {
     // create the pixi.js application
     this.app = new Application({
       view: props.canvas,
-      resolution: window.devicePixelRatio || 1,
+      resolution: 2,
       autoDensity: true,
       backgroundColor: 0x6495ed,
       width: props.width ?? 800,
       height: props.height ?? 600,
-      antialias: true
+      antialias: false,
+      hello: true
     });
 
     // set up the camera
@@ -63,17 +64,10 @@ export class Renderer {
       const height = Math.min(parseInt(computedCanvasStyle.height), this.props.height ?? 600);
       this.app.renderer.resize(width, height);
     }
-    this.camera.handleCameraPos();
   }
 
   // adds a Renderable to the pixi.js stage
   addWorld = (renderable: Renderable) => {
     this.camera.add(renderable);
-    this.camera.handleCameraPos();
-  }
-
-  // method for tracking the camera
-  trackCamera = (pos: () => { x: number, y: number }) => {
-    this.app.ticker.add(() => this.camera.moveTo(pos()));
   }
 }

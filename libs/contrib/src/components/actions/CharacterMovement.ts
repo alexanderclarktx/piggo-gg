@@ -1,4 +1,4 @@
-import { ActionMap, AnimationKeys, Character, Position } from "@piggo-legends/contrib"
+import { ActionMap, AnimationKeys, Character, Position, Renderable } from "@piggo-legends/contrib"
 import { Entity } from "@piggo-legends/core";
 
 const speed = 2;
@@ -70,5 +70,6 @@ export const CharacterMovementWorldPixels: ActionMap<CharacterMovementCommands> 
 const setPosAndAnimation = (entity: Entity, animation: AnimationKeys, changePos: (position: Position) => void) => {
   const position = entity.components.position as Position;
   changePos(position);
-  (entity.components.renderable as Character).setAnimation(animation);
+  const character = (entity.components.renderable as Renderable).r as Character;
+  character.setAnimation(animation);
 }

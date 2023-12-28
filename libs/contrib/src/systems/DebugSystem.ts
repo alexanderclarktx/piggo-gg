@@ -1,9 +1,9 @@
 import { Text } from 'pixi.js';
-import { Entity, Renderer, System } from "@piggo-legends/core";
+import { Entity, Game, Renderer, System } from "@piggo-legends/core";
 import { TextBox, DebugBounds, Renderable, Position } from "@piggo-legends/contrib";
 
 // DebugSystem adds visual debug information to renderered entities
-export const DebugSystem = (renderer: Renderer): System => {
+export const DebugSystem = (renderer: Renderer, game: Game): System => {
   let debuggedEntities: Map<Entity, Renderable[]> = new Map();
 
   const onTick = (entities: Entity[]) => {
@@ -16,6 +16,7 @@ export const DebugSystem = (renderer: Renderer): System => {
       });
     } else { // debug mode is off
       debuggedEntities.forEach((renderables, entity) => {
+        game.removeEntity(`${entity.id}-debug`);
         renderables.forEach((renderable) => renderable.cleanup());
         debuggedEntities.delete(entity);
       });
@@ -26,12 +27,13 @@ export const DebugSystem = (renderer: Renderer): System => {
     if (entity.components.renderable) {
       const {renderable, position} = entity.components as {renderable: Renderable, position: Position};
 
+      const bounds = renderable.c.getLocalBounds();
+
       // text box
       const textBox = new TextBox({
-        renderer: renderer,
+        // renderer: renderer,
+        position: new Position({ x: 0, y: -(bounds.height / 2) - 30 }),
         dynamic: (c: Text) => {
-          const bounds = renderable.c.getLocalBounds();
-          c.position.set(renderable.c.x - 15, renderable.c.y - bounds.height / 2 - 30);
           c.text = `
             w: ${position.x.toFixed(2)} ${position.y.toFixed(2)}<br>
             s: ${renderable.c.x.toFixed(2)} ${renderable.c.y.toFixed(2)}
@@ -41,11 +43,17 @@ export const DebugSystem = (renderer: Renderer): System => {
       });
 
       // debug bounds
-      const debugBounds = new DebugBounds({ renderable: renderable, renderer: renderer });
+      const debugBounds = new DebugBounds({ debugRenderable: renderable });
 
-      // add to the renderer
-      renderer.addWorld(textBox);
-      renderer.addWorld(debugBounds);
+      game.addEntity({
+        id: `${entity.id}-debug`,
+        components: {
+          position: position,
+          renderable: new Renderable({
+            children: async () => [textBox, debugBounds]
+          })
+        }
+      });
 
       // add to the map
       debuggedEntities.set(entity, [textBox, debugBounds]);
@@ -53,7 +61,6 @@ export const DebugSystem = (renderer: Renderer): System => {
   }
 
   return {
-    renderer,
     componentTypeQuery: ["renderable"],
     onTick
   }
