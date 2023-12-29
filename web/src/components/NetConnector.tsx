@@ -1,8 +1,8 @@
 import { RtcPool } from "@piggo-legends/core";
+import { decompressFromBase64 } from "lz-string";
 import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
 import { NetState, NetStateColor } from "../types/NetState";
-import * as lz from "lz-string"
 
 export type WebRTCHandshakeProps = {
   net: RtcPool
@@ -31,14 +31,14 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
 
   const acceptOffer = () => {
     // const offerDecoded = btoa(inputOfferRef.current ? inputOfferRef.current.value : "");
-    const offerDecoded = lz.decompressFromBase64(inputOfferRef.current ? inputOfferRef.current.value : "");
+    const offerDecoded = decompressFromBase64(inputOfferRef.current ? inputOfferRef.current.value : "");
     net.acceptOffer(offerDecoded.slice(1, offerDecoded.length - 1));
     setNetState("answering");
   }
 
   const acceptAnswer = () => {
     // const answerDecoded = btoa(inputAnswerRef.current ? inputAnswerRef.current.value : "");
-    const answerDecoded = lz.decompressFromBase64(inputAnswerRef.current ? inputAnswerRef.current.value : "");
+    const answerDecoded = decompressFromBase64(inputAnswerRef.current ? inputAnswerRef.current.value : "");
     net.acceptAnswer(answerDecoded.slice(1, answerDecoded.length - 1));
   }
 

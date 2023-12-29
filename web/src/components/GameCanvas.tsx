@@ -1,6 +1,5 @@
-import { Game, RtcPeer, RtcPool } from "@piggo-legends/core";
+import { Game, Renderer, RtcPeer, RtcPool } from "@piggo-legends/core";
 import { Playground } from "@piggo-legends/playground";
-import { Renderer } from "@piggo-legends/core";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
@@ -21,6 +20,6 @@ export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
   }, [RtcPeer]);
 
   return (
-    <canvas style={{marginBottom: 0}} id="canvas"/>
+    <canvas style={{ marginBottom: 0 }} id="canvas" />
   );
 }

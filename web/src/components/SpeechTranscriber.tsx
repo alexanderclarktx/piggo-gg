@@ -27,8 +27,8 @@ export let SpeechTranscriber = () => {
     // handle continuous transcription results
     var counter = 0;
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-        console.log(event.results[counter][0].transcript, event.results[0][0].confidence);
-        counter += 1;
+      console.log(event.results[counter][0].transcript, event.results[0][0].confidence);
+      counter += 1;
     }
   }
 
