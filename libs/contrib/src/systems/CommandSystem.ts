@@ -7,6 +7,7 @@ export type Command = {
   actionId: string
 }
 
+// TODO hack
 export var localCommandBuffer: Command[] = [];
 
 export const CommandSystem = (game: Game): System => {

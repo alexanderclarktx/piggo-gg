@@ -8,7 +8,7 @@ const randomName = `player${(Math.random() * 100).toFixed(0)}`;
 
 export class Playground extends Game {
 
-  constructor(props: GameProps) {
+  constructor(props: GameProps = {}) {
     super(props);
 
     const renderer = props.renderer;

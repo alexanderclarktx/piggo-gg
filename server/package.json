@@ -2,7 +2,7 @@
   "name": "@piggo-legends/server",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch src/Server.ts"
+    "dev": "bun --watch src/PiggoServer.ts"
   },
   "dependencies": {
     "@piggo-legends/playground": "1.0.0"
