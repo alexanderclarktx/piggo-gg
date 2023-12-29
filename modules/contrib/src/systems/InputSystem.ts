@@ -1,20 +1,21 @@
-import { Entity, Game, GameProps, Renderer, System } from "@piggo-legends/core";
+import { Entity, Game, SystemBuilder, SystemProps } from "@piggo-legends/core";
 import { Actions, Ball, Controlled, Controller, Spaceship, localCommandBuffer } from "@piggo-legends/contrib";
 
 export var chatBuffer: string[] = [];
+export var chatHistoryFrames: number[] = [];
 export var chatHistory: string[] = [];
 export var chatIsOpen = false;
 
 export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
-export const charactersPreventDefault = new Set(["'", "/"]);
+export const charactersPreventDefault = new Set(["'", "/", " "]);
 
-export type InputSystemProps = {
-  renderer?: Renderer,
+export type InputSystemProps = SystemProps & {
+  addEntity: (entity: Entity) => string
   thisPlayerId: string
 }
 
 // InputSystem handles all keyboard inputs
-export const InputSystem = (addEntity: (entity: Entity) => string, thisPlayerId: string): System => {
+export const InputSystem: SystemBuilder<InputSystemProps> = ({ addEntity, thisPlayerId, game }) => {
   let bufferedDown: Set<string> = new Set([]);
   let bufferedUp: Set<string> = new Set([]);
   let backspaceOn = false;
@@ -64,6 +65,7 @@ export const InputSystem = (addEntity: (entity: Entity) => string, thisPlayerId:
           if (chatBuffer.length > 0) {
             const message = chatBuffer.join("");
             chatHistory.push(message);
+            chatHistoryFrames.push(game.tick);
             processMessage(message);
           }
 
@@ -80,7 +82,7 @@ export const InputSystem = (addEntity: (entity: Entity) => string, thisPlayerId:
     }
   });
 
-  const onTick = (entities: Entity[], game: Game<GameProps>) => {
+  const onTick = (entities: Entity[]) => {
 
     // handle inputs for controlled entities
     entities.forEach((entity) => {
@@ -89,10 +91,10 @@ export const InputSystem = (addEntity: (entity: Entity) => string, thisPlayerId:
     });
 
     // handle buffered backspace
-    if (chatIsOpen && backspaceOn && game.tick % 4 === 0) chatBuffer.pop();
+    if (chatIsOpen && backspaceOn && game.tick % 2 === 0) chatBuffer.pop();
   }
 
-  const handleInputForControlledEntity = (controlledEntity: Entity, game: Game<GameProps>) => {
+  const handleInputForControlledEntity = (controlledEntity: Entity, game: Game) => {
     // copy the input buffer
     let buffer: Set<string> = new Set(bufferedDown);
 

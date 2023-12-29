@@ -1,4 +1,4 @@
-import { Entity, Game, GameProps, System } from "@piggo-legends/core";
+import { Entity, Game, SystemBuilder, SystemProps } from "@piggo-legends/core";
 import { Command, SerializedPosition, localCommandBuffer } from "@piggo-legends/contrib";
 
 export type TickData = {
@@ -12,12 +12,12 @@ export type SerializedEntity = {
   position?: SerializedPosition
 }
 
-export type WsNetcodeSystemProps = {
+export type WsNetcodeSystemProps = SystemProps & {
   thisPlayerId: string
 }
 
 // WssNetcodeSystem handles networked entities over WebSockets
-export const WsNetcodeSystem = ({ thisPlayerId }: WsNetcodeSystemProps): System => {
+export const WsNetcodeSystem: SystemBuilder<WsNetcodeSystemProps> = ({ game, thisPlayerId }) => {
   const wsClient = new WebSocket("ws://localhost:3000");
 
   wsClient.onmessage = (event) => {
@@ -28,11 +28,11 @@ export const WsNetcodeSystem = ({ thisPlayerId }: WsNetcodeSystemProps): System 
     }
   }
 
-  const onTick = (_: Entity[], game: Game<GameProps>) => {
+  const onTick = (_: Entity[]) => {
     sendMessage(game);
   }
 
-  const sendMessage = (game: Game<GameProps>) => {
+  const sendMessage = (game: Game) => {
     // construct tick message
     const message: TickData = {
       type: "game",

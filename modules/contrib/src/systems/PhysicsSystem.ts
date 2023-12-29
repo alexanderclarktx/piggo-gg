@@ -1,12 +1,12 @@
-import { Entity, System } from '@piggo-legends/core';
+import { Entity, SystemBuilder, SystemProps } from '@piggo-legends/core';
 import { Position, Velocity } from "@piggo-legends/contrib";
 
-export type PhysicsSystemProps = {
+export type PhysicsSystemProps = SystemProps & {
   mode?: "cartesian" | "isometric"
 }
 
 // PhysicsSystem handles the movement of entities
-export const PhysicsSystem = ({ mode }: PhysicsSystemProps): System => {
+export const PhysicsSystem: SystemBuilder<PhysicsSystemProps> = ({ mode }) => {
   const onTick = (entities: Entity[]) => {
     entities.forEach((entity) => {
       const {velocity, position} = entity.components as {velocity: Velocity, position: Position}

@@ -50,7 +50,7 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.tick += 1;
 
     this.systems?.forEach((system) => {
-      system.onTick(this.filterEntitiesForSystem(system, Object.values(this.entities)), this);
+      system.onTick(this.filterEntitiesForSystem(system, Object.values(this.entities)));
     });
   }
 }

@@ -1,9 +1,13 @@
 import { Text } from 'pixi.js';
-import { Entity, Game, Renderer, System } from "@piggo-legends/core";
+import { Entity, Renderer, SystemBuilder, SystemProps } from "@piggo-legends/core";
 import { TextBox, DebugBounds, Renderable, Position } from "@piggo-legends/contrib";
 
+export type DebugSystemProps = SystemProps & {
+  renderer: Renderer
+}
+
 // DebugSystem adds visual debug information to renderered entities
-export const DebugSystem = (renderer: Renderer, game: Game): System => {
+export const DebugSystem: SystemBuilder<DebugSystemProps> = ({ renderer, game }) => {
   let debuggedEntities: Map<Entity, Renderable[]> = new Map();
 
   const onTick = (entities: Entity[]) => {

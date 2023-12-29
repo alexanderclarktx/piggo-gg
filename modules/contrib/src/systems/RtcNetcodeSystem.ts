@@ -1,4 +1,4 @@
-import { Entity, Game, GameProps, RtcPeer, RtcPool, System } from "@piggo-legends/core";
+import { Entity, Game, RtcPeer, RtcPool, SystemBuilder, SystemProps } from "@piggo-legends/core";
 import { Controlled, Player, Position, SerializedPosition } from "@piggo-legends/contrib";
 
 type TickData = {
@@ -8,7 +8,7 @@ type TickData = {
   entities: Record<string, SerializedEntity>
 }
 
- type SerializedEntity = {
+type SerializedEntity = {
   position?: SerializedPosition
 }
 
@@ -18,16 +18,16 @@ type PeerState = {
   buffer: TickData | null
 }
 
-type NetcodeSystemProps = {
+type NetcodeSystemProps = SystemProps & {
   net: RtcPool | undefined
   thisPlayerId: string
 }
 
 // NetcodeSystem handles networked entities
-export const RtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): System =>{
+export const RtcNetcodeSystem: SystemBuilder<NetcodeSystemProps> = ({ game, net, thisPlayerId }) => {
   let peers: Record<string, PeerState> = {};
 
-  const onTick = (entities: Entity[], game: Game<GameProps>) => {
+  const onTick = (entities: Entity[]) => {
 
     if (net) {
       // handle new peers
@@ -57,14 +57,14 @@ export const RtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): Sys
     sendMessage(entities, game);
   }
 
-  const handleMessage = (peer: PeerState, game: Game<GameProps>) => {
+  const handleMessage = (peer: PeerState, game: Game) => {
     if (peer.buffer) {
       // handle initial connection if peer is new
       if (!peer.connected) {
         handleInitialConnection(peer.buffer, game);
         peer.connected = true;
       }
-      
+
       // debug log
       // if (peer.buffer.tick % 1000 === 0) console.log("received", peer.buffer);
 
@@ -77,7 +77,7 @@ export const RtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): Sys
           // TODO not generic enough
           const controlled = game.entities[id].components.controlled as Controlled;
           if (controlled && controlled.entityId === thisPlayerId) return;
-  
+
           // TODO not generic enough
           const position = game.entities[id].components.position as Position;
           if (position && entity.position) {
@@ -91,7 +91,7 @@ export const RtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): Sys
     peer.buffer = null;
   }
 
-  const handleInitialConnection = (td: TickData, game: Game<GameProps>) => {
+  const handleInitialConnection = (td: TickData, game: Game) => {
     console.log("adding entity");
     game.addEntity({
       id: td.player,
@@ -101,7 +101,7 @@ export const RtcNetcodeSystem = ({ net, thisPlayerId }: NetcodeSystemProps): Sys
     });
   }
 
-  const sendMessage = (entities: Entity[], game: Game<GameProps>) => {
+  const sendMessage = (entities: Entity[], game: Game) => {
     const serializedEntitites: Record<string, SerializedEntity> = {};
 
     // serialize each entity

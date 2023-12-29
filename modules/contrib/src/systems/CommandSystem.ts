@@ -1,4 +1,4 @@
-import { Entity, Game, System } from "@piggo-legends/core";
+import { Entity, SystemBuilder } from "@piggo-legends/core";
 import { Actions } from "@piggo-legends/contrib";
 
 export type Command = {
@@ -10,7 +10,7 @@ export type Command = {
 // TODO hack
 export var localCommandBuffer: Command[] = [];
 
-export const CommandSystem = (game: Game): System => {
+export const CommandSystem: SystemBuilder = ({ game }) => {
 
   const onTick = (_: Entity[]) => {
 

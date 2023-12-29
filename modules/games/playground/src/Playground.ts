@@ -14,20 +14,20 @@ export class Playground extends Game {
     const renderer = props.renderer;
 
     this.addSystems([
-      CommandSystem(this),
-      PhysicsSystem({ mode: "isometric" }),
-      PlayerSpawnSystem({ thisPlayerId: randomName }),
+      CommandSystem({ game: this }),
+      PhysicsSystem({ game: this, mode: "isometric" }),
+      PlayerSpawnSystem({ game: this, thisPlayerId: randomName }),
     ]);
 
     // add client-only systems
     if (renderer) {
       this.addSystems([
-        InputSystem(this.addEntity, randomName),
-        ClickableSystem(renderer, randomName, "isometric"),
-        RenderSystem({ renderer, mode: "isometric", game: this }),
-        DebugSystem(renderer, this),
-        WsNetcodeSystem({ thisPlayerId: randomName }),
-        RtcNetcodeSystem({ net: this.net, thisPlayerId: randomName }),
+        InputSystem({ game: this, addEntity: this.addEntity, thisPlayerId: randomName }),
+        ClickableSystem({ game: this, renderer, thisPlayerId: randomName, mode: "isometric" }),
+        RenderSystem({ game: this, renderer, mode: "isometric" }),
+        DebugSystem({ game: this, renderer }),
+        WsNetcodeSystem({ game: this, thisPlayerId: randomName }),
+        RtcNetcodeSystem({ game: this, net: this.net, thisPlayerId: randomName }),
       ]);
 
       this.addUI();
