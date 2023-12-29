@@ -1,6 +1,6 @@
 import {
   DebugSystem, InputSystem, ClickableSystem, WsNetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
-  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem,
+  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem, RtcNetcodeSystem,
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
@@ -8,7 +8,7 @@ const randomName = `player${(Math.random() * 100).toFixed(0)}`;
 
 export class Playground extends Game {
 
-  constructor(props: GameProps) {
+  constructor(props: GameProps = {}) {
     super(props);
 
     const renderer = props.renderer;
@@ -27,6 +27,7 @@ export class Playground extends Game {
         RenderSystem({ renderer, mode: "isometric", game: this }),
         DebugSystem(renderer, this),
         WsNetcodeSystem({ thisPlayerId: randomName }),
+        RtcNetcodeSystem({ net: this.net, thisPlayerId: randomName }),
       ]);
 
       this.addUI();

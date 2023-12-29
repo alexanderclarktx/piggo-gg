@@ -1,6 +1,7 @@
 import { TickData, localCommandBuffer } from "@piggo-legends/contrib";
 import { Playground } from "@piggo-legends/playground";
 import { ServerWebSocket, Server } from "bun";
+import { ServerNetcodeSystem } from "./ServerNetcodeSystem";
 
 class PiggoServer {
 
@@ -8,27 +9,11 @@ class PiggoServer {
   id = 1;
   clients: Record<string, ServerWebSocket<unknown>> = {};
 
-  playground = new Playground({
-    systems: [
-      {
-        onTick: (_) => {
-          const tickData: TickData = {
-            commands: [],
-            player: "server",
-            tick: this.playground.tick,
-            type: "game"
-          };
-          // send tick data to all clients
-          Object.values(this.clients).forEach((client) => {
-            client.send(JSON.stringify(tickData));
-          });
-        },
-        componentTypeQuery: ["none"]
-      }
-    ]
-  });
+  playground = new Playground();
 
   constructor() {
+    this.playground.addSystems([ServerNetcodeSystem({ game: this.playground, clients: this.clients })]);
+
     this.bun = Bun.serve({
       port: 3000,
       fetch: (r: Request, server: Server) => server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 }),
@@ -47,14 +32,8 @@ class PiggoServer {
     // increment id
     this.id += 1;
 
-    // send message to client
-    // const message = `hello ${JSON.stringify(ws.data)}`;
-
     // add to clients
     this.clients[ws.remoteAddress] = ws;
-
-    // console.log(message);
-    // ws.send(message);
   }
 
   handleMessage = (ws: ServerWebSocket<unknown>, msg: string) => {
