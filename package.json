@@ -5,9 +5,9 @@
   "workspaces": [
     "web",
     "server",
-    "libs/contrib",
-    "libs/core",
-    "libs/games/playground"
+    "modules/contrib",
+    "modules/core",
+    "modules/games/playground"
   ],
   "scripts": {
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",

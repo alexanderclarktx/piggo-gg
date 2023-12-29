@@ -1,6 +1,5 @@
 {
   "name": "@piggo-legends/server",
-  "type": "module",
   "scripts": {
     "dev": "bun --watch src/PiggoServer.ts"
   },

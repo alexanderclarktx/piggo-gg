@@ -34,6 +34,8 @@ class PiggoServer {
 
     // add to clients
     this.clients[ws.remoteAddress] = ws;
+
+    console.log(`player:${this.id} ${ws.remoteAddress} connected`);
   }
 
   handleMessage = (ws: ServerWebSocket<unknown>, msg: string) => {
