@@ -2,7 +2,6 @@ import { Entity, Game, SystemBuilder } from "@piggo-legends/core";
 import { Actions, Ball, Controlled, Controller, Spaceship, localCommandBuffer } from "@piggo-legends/contrib";
 
 export var chatBuffer: string[] = [];
-export var chatHistoryFrames: number[] = [];
 export var chatHistory: string[] = [];
 export var chatIsOpen = false;
 
@@ -60,7 +59,6 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
           if (chatBuffer.length > 0) {
             const message = chatBuffer.join("");
             chatHistory.push(message);
-            chatHistoryFrames.push(game.tick);
             processMessage(message);
           }
 
