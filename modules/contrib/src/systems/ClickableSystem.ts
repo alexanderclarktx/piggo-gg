@@ -1,11 +1,11 @@
-import { Entity, Renderer, SystemBuilder, SystemProps } from "@piggo-legends/core";
+import { Entity, SystemBuilder } from "@piggo-legends/core";
 import { Actions, Clickable, Position } from "@piggo-legends/contrib";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
 
 // ClickableSystem handles clicks for clickable entities
-export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode = "cartesian" }) => {
+export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode }) => {
   if (!renderer) throw new Error("ClickableSystem requires a renderer");
 
   let bufferClick: Click[] = [];

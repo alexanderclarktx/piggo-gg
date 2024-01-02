@@ -1,4 +1,4 @@
-import { Entity, Game, RtcPeer, RtcPool, SystemBuilder, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, RtcPeer, SystemBuilder } from "@piggo-legends/core";
 import { Controlled, Player, Position, SerializedPosition } from "@piggo-legends/contrib";
 
 type TickData = {

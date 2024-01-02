@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, SystemProps } from '@piggo-legends/core';
+import { Entity, SystemBuilder } from '@piggo-legends/core';
 import { Position, Velocity } from "@piggo-legends/contrib";
 
 // PhysicsSystem handles the movement of entities

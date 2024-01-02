@@ -10,7 +10,7 @@ export const Chat = (): Entity => {
     fontSize: 16,
     color: 0x55FFFF,
     dynamic: (t: HTMLText, r: TextBox) => {
-      // take last 2 lines
+      // take last 4 lines
       let lines = chatHistory.slice(-4);
 
       // make commands green
@@ -40,11 +40,10 @@ export const Chat = (): Entity => {
     components: {
       position: new Position({ x: -400, y: -200, screenFixed: true }),
       renderable: new Renderable({
-        debuggable: true,
+        debuggable: false,
         zIndex: 4,
         children: async () => [chatHistoryText(), chatBufferText()]
       })
     }
   }
-
 }

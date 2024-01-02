@@ -1,4 +1,4 @@
-import { Entity, Game, SystemBuilder, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, SystemBuilder } from "@piggo-legends/core";
 import { Actions, Ball, Controlled, Controller, Spaceship, localCommandBuffer } from "@piggo-legends/contrib";
 
 export var chatBuffer: string[] = [];
