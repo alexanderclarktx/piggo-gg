@@ -4,32 +4,22 @@ import {
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
-const randomName = `player${(Math.random() * 100).toFixed(0)}`;
-
 export class Playground extends Game {
 
   constructor(props: GameProps = {}) {
-    super(props);
+    super({
+      ...props,
+      mode: "isometric"
+    });
 
     const renderer = props.renderer;
 
-    this.addSystems([
-      CommandSystem(this),
-      PhysicsSystem({ mode: "isometric" }),
-      PlayerSpawnSystem({ thisPlayerId: randomName }),
-    ]);
+    // add shared systems
+    this.addSystemBuilders([ CommandSystem, PhysicsSystem, PlayerSpawnSystem ]);
 
-    // add client-only systems
+    // add client-only systems/entities
     if (renderer) {
-      this.addSystems([
-        InputSystem(this.addEntity, randomName),
-        ClickableSystem(renderer, randomName, "isometric"),
-        RenderSystem({ renderer, mode: "isometric", game: this }),
-        DebugSystem(renderer, this),
-        WsNetcodeSystem({ thisPlayerId: randomName }),
-        RtcNetcodeSystem({ net: this.net, thisPlayerId: randomName }),
-      ]);
-
+      this.addSystemBuilders([ InputSystem, ClickableSystem, RenderSystem, DebugSystem, WsNetcodeSystem, RtcNetcodeSystem ]);
       this.addUI();
       this.addFloor();
     }
@@ -40,10 +30,10 @@ export class Playground extends Game {
 
   addPlayer = () => {
     this.addEntity({
-      id: randomName,
+      id: this.thisPlayerId,
       components: {
         networked: new Networked({ isNetworked: true }),
-        player: new Player({ name: randomName }),
+        player: new Player({ name: this.thisPlayerId }),
       }
     });
   }

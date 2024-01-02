@@ -1,14 +1,10 @@
-import { Entity, Game, Renderer, System } from '@piggo-legends/core';
+import { Entity, SystemBuilder } from '@piggo-legends/core';
 import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 
-export type RenderSystemProps = {
-  renderer: Renderer
-  game: Game
-  mode?: "cartesian" | "isometric"
-}
-
 // RenderSystem handles rendering entities in isometric or cartesian space
-export const RenderSystem = ({ renderer, mode, game }: RenderSystemProps): System => {
+export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
+  if (!renderer) throw new Error("RendererSystem requires a renderer");
+
   let renderedEntities: Set<Entity> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
   let centeredEntity: Entity | undefined = undefined;

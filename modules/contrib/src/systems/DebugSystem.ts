@@ -1,9 +1,15 @@
 import { Text } from 'pixi.js';
-import { Entity, Game, Renderer, System } from "@piggo-legends/core";
+import { Entity, Renderer, SystemBuilder, SystemProps } from "@piggo-legends/core";
 import { TextBox, DebugBounds, Renderable, Position } from "@piggo-legends/contrib";
 
+export type DebugSystemProps = SystemProps & {
+  renderer: Renderer
+}
+
 // DebugSystem adds visual debug information to renderered entities
-export const DebugSystem = (renderer: Renderer, game: Game): System => {
+export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
+  if (!renderer) throw new Error("DebugSystem requires a renderer");
+
   let debuggedEntities: Map<Entity, Renderable[]> = new Map();
 
   const onTick = (entities: Entity[]) => {
@@ -31,7 +37,6 @@ export const DebugSystem = (renderer: Renderer, game: Game): System => {
 
       // text box
       const textBox = new TextBox({
-        // renderer: renderer,
         position: new Position({ x: 0, y: -(bounds.height / 2) - 30 }),
         dynamic: (c: Text) => {
           c.text = `

@@ -34,7 +34,6 @@ export * from "./src/entities/TileFloor";
 export * from "./src/entities/TilingSpriteFloor";
 export * from "./src/systems/ClickableSystem";
 export * from "./src/systems/CommandSystem";
-export * from "./src/systems/DamageSystem";
 export * from "./src/systems/DebugSystem";
 export * from "./src/systems/InputSystem";
 export * from "./src/systems/PhysicsSystem";

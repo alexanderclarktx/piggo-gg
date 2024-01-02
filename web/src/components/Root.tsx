@@ -1,11 +1,11 @@
-import "@pixi/unsafe-eval";
-import React, { useEffect, useState } from "react";
 import { Game, RtcPool } from "@piggo-legends/core";
-import { NetConnector } from "./NetConnector";
+import "@pixi/unsafe-eval";
+import { compressToBase64 } from "lz-string";
+import React, { useEffect, useState } from "react";
 import { NetState } from "../types/NetState";
-import { Header } from "./Header";
 import { GameCanvas } from "./GameCanvas";
-import * as lz from "lz-string"
+import { Header } from "./Header";
+import { NetConnector } from "./NetConnector";
 
 // web app root component
 export const Root = () => {
@@ -16,7 +16,7 @@ export const Root = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [pool] = useState<RtcPool>(new RtcPool(
-    (local: string) => setSdp({ local: lz.compressToBase64(local), remote: sdp.remote }),
+    (local: string) => setSdp({ local: compressToBase64(local), remote: sdp.remote }),
     () => setNetState("connected")
   ));
 

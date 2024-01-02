@@ -33,26 +33,26 @@ export const PhoneCall = ({ RtcPeer, netState, theirMediaStream }: PhoneCallProp
 
   return (
     <div>
-    <video
-      id="video-my-camera"
-      ref={videoMyCameraRef}
-      hidden={netState !== "connected"}
-      autoPlay={true}
-      playsInline={true}
-      muted={true}
-    />
-    <video
-      id="video-their-camera"
-      ref={videoTheirCameraRef}
-      hidden={netState !== "connected"}
-      autoPlay={true}
-      playsInline={true}
-    />
-    <button
-      hidden={netState !== "connected"}
-      onClick={sendMedia}
-      style={{fontSize: "xx-large", verticalAlign: "top"}}
-    >📷</button>
-  </div>
+      <video
+        id="video-my-camera"
+        ref={videoMyCameraRef}
+        hidden={netState !== "connected"}
+        autoPlay={true}
+        playsInline={true}
+        muted={true}
+      />
+      <video
+        id="video-their-camera"
+        ref={videoTheirCameraRef}
+        hidden={netState !== "connected"}
+        autoPlay={true}
+        playsInline={true}
+      />
+      <button
+        hidden={netState !== "connected"}
+        onClick={sendMedia}
+        style={{ fontSize: "xx-large", verticalAlign: "top" }}
+      >📷</button>
+    </div>
   );
 }

@@ -35,7 +35,7 @@ export const DebugButton = (): Entity => {
       renderable: new Button({
         dims: { w: 32, textX: 8, textY: 5 },
         zIndex: 1,
-        text: (new Text("🐞", { fill: "#FFFFFF", fontSize: 16 })),
+        text: (new Text("🔍", { fill: "#FFFFFF", fontSize: 16 })),
       })
     }
   }
