@@ -4,14 +4,10 @@ import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
 
-export type ClickableSystemProps = SystemProps & {
-  thisPlayerId: string
-  renderer: Renderer
-  mode?: "cartesian" | "isometric"
-}
-
 // ClickableSystem handles clicks for clickable entities
-export const ClickableSystem: SystemBuilder<ClickableSystemProps> = ({ game, renderer, thisPlayerId, mode = "cartesian" }) => {
+export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode = "cartesian" }) => {
+  if (!renderer) throw new Error("ClickableSystem requires a renderer");
+
   let bufferClick: Click[] = [];
 
   const onTick = (entities: Entity[]) => {

@@ -18,13 +18,8 @@ type PeerState = {
   buffer: TickData | null
 }
 
-type NetcodeSystemProps = SystemProps & {
-  net: RtcPool | undefined
-  thisPlayerId: string
-}
-
 // NetcodeSystem handles networked entities
-export const RtcNetcodeSystem: SystemBuilder<NetcodeSystemProps> = ({ game, net, thisPlayerId }) => {
+export const RtcNetcodeSystem: SystemBuilder = ({ game, net, thisPlayerId }) => {
   let peers: Record<string, PeerState> = {};
 
   const onTick = (entities: Entity[]) => {

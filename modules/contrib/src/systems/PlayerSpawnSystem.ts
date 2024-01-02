@@ -1,13 +1,8 @@
-import { Entity, Game, Renderer, SystemBuilder, SystemProps } from "@piggo-legends/core";
+import { Entity, Game, SystemBuilder } from "@piggo-legends/core";
 import { Controlling, Skelly } from "@piggo-legends/contrib";
 
-export type PlayerSpawnSystemProps = SystemProps & {
-  renderer?: Renderer | undefined,
-  thisPlayerId: string
-}
-
 // PlayerSpawnSystem handles spawning characters for players
-export const PlayerSpawnSystem: SystemBuilder<PlayerSpawnSystemProps> = ({ game, thisPlayerId }) => {
+export const PlayerSpawnSystem: SystemBuilder = ({ game, thisPlayerId }) => {
   let componentTypeQuery = ["player"];
   let playersWithCharacters: Record<string, Entity> = {};
 

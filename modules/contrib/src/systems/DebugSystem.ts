@@ -7,7 +7,9 @@ export type DebugSystemProps = SystemProps & {
 }
 
 // DebugSystem adds visual debug information to renderered entities
-export const DebugSystem: SystemBuilder<DebugSystemProps> = ({ renderer, game }) => {
+export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
+  if (!renderer) throw new Error("DebugSystem requires a renderer");
+
   let debuggedEntities: Map<Entity, Renderable[]> = new Map();
 
   const onTick = (entities: Entity[]) => {
@@ -35,7 +37,6 @@ export const DebugSystem: SystemBuilder<DebugSystemProps> = ({ renderer, game })
 
       // text box
       const textBox = new TextBox({
-        // renderer: renderer,
         position: new Position({ x: 0, y: -(bounds.height / 2) - 30 }),
         dynamic: (c: Text) => {
           c.text = `

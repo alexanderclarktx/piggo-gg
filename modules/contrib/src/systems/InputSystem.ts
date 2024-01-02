@@ -9,13 +9,8 @@ export var chatIsOpen = false;
 export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
 export const charactersPreventDefault = new Set(["'", "/", " "]);
 
-export type InputSystemProps = SystemProps & {
-  addEntity: (entity: Entity) => string
-  thisPlayerId: string
-}
-
 // InputSystem handles all keyboard inputs
-export const InputSystem: SystemBuilder<InputSystemProps> = ({ addEntity, thisPlayerId, game }) => {
+export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
   let bufferedDown: Set<string> = new Set([]);
   let bufferedUp: Set<string> = new Set([]);
   let backspaceOn = false;
@@ -26,10 +21,10 @@ export const InputSystem: SystemBuilder<InputSystemProps> = ({ addEntity, thisPl
       callback: async (match: RegExpMatchArray) => {
         switch (match[1]) {
           case "spaceship":
-            addEntity(await Spaceship());
+            game.addEntity(await Spaceship());
             break;
           case "ball":
-            addEntity(Ball());
+            game.addEntity(Ball());
             break;
         }
       }

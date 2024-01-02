@@ -1,10 +1,11 @@
-import { Renderer, Entity, System, RtcPool } from "@piggo-legends/core";
+import { Renderer, Entity, System, RtcPool, SystemBuilder } from "@piggo-legends/core";
 
 export type GameProps = {
   net?: RtcPool,
   renderer?: Renderer,
   entities?: Record<string, Entity>,
   systems?: System[]
+  mode?: "cartesian" | "isometric"
 }
 
 export abstract class Game<T extends GameProps = GameProps> {
@@ -13,11 +14,15 @@ export abstract class Game<T extends GameProps = GameProps> {
   entities: Record<string, Entity> = {};
   systems: System[] = [];
   tick: number = 0;
+  mode: "cartesian" | "isometric" = "cartesian";
 
-  constructor({ net, renderer, systems = [] }: T) {
+  thisPlayerId = `player${(Math.random() * 100).toFixed(0)}`;
+
+  constructor({ net, renderer, systems = [], mode = "cartesian" }: T) {
     this.net = net;
     this.renderer = renderer;
     this.systems = systems;
+    this.mode = mode;
 
     setInterval(this.onTick, 1000 / 60);
   }
@@ -34,7 +39,13 @@ export abstract class Game<T extends GameProps = GameProps> {
   }
 
   addSystems = (systems: System[]) => {
-    systems.forEach((system) => { this.systems.push(system) });
+    this.systems.push(...systems);
+  }
+
+  addSystemBuilders = (systemBuilders: SystemBuilder[]) => {
+    systemBuilders.forEach((systemBuilder) => {
+      this.systems.push(systemBuilder({ game: this, renderer: this.renderer, net: this.net, thisPlayerId: this.thisPlayerId, mode: this.mode }));
+    });
   }
 
   filterEntitiesForSystem = (system: System, entities: Entity[]): Entity[] => {

@@ -12,12 +12,8 @@ export type SerializedEntity = {
   position?: SerializedPosition
 }
 
-export type WsNetcodeSystemProps = SystemProps & {
-  thisPlayerId: string
-}
-
 // WssNetcodeSystem handles networked entities over WebSockets
-export const WsNetcodeSystem: SystemBuilder<WsNetcodeSystemProps> = ({ game, thisPlayerId }) => {
+export const WsNetcodeSystem: SystemBuilder = ({ game, thisPlayerId }) => {
   const wsClient = new WebSocket("ws://localhost:3000");
 
   wsClient.onmessage = (event) => {
