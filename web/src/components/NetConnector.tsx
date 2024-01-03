@@ -43,7 +43,7 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
   }
 
   return (
-    <div>
+    <div style={{"paddingTop": 0}}>
       <div>
         <ReactModal
           ariaHideApp={false}
@@ -89,10 +89,10 @@ export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setN
         </ReactModal>
       </div>
       <div style={{ width: "100%", verticalAlign: "middle" }}>
-        <div style={{ float: "left", paddingTop: 5, marginLeft: 5 }}>
+        <div style={{ float: "left", marginLeft: 2, marginTop: 1 }}>
           status: <span style={{ color: NetStateColor[netState] }}>{netState}</span>
         </div>
-        <button style={{ float: "right" }} onClick={() => setModalOpen(true)}>Connect to Peer</button>
+        <button style={{ float: "right", marginTop: 0, marginRight: 2, fontSize: 12 }} onClick={() => setModalOpen(true)}>Connect to Peer</button>
       </div>
     </div>
   );

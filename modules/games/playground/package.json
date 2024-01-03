@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "main": "./main.ts",
   "scripts": {
-    "build": "npx tsc",
-    "start": "npx ts-node src/main.ts"
   },
   "devDependencies": {
     "ts-node": "10.9.1"

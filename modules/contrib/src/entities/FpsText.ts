@@ -1,5 +1,5 @@
 import { Entity, Game } from "@piggo-legends/core";
-import { Position, Renderable, TextBox } from "@piggo-legends/contrib";
+import { Position, Renderable } from "@piggo-legends/contrib";
 import { HTMLText } from "pixi.js";
 
 export type FpsTextProps = {

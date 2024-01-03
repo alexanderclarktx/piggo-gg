@@ -23,7 +23,7 @@ export class Renderer {
     // create the pixi.js application
     this.app = new Application({
       view: props.canvas,
-      resolution: 2,
+      resolution: 1,
       autoDensity: true,
       backgroundColor: 0x6495ed,
       width: props.width ?? 800,

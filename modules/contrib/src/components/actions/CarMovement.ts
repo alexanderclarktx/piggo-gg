@@ -6,7 +6,7 @@ const SLIDE_FACTOR = 1.5;
 
 const ACCELERATION = 0.05;
 const DECELERATION = 0.1;
-const MAX_VELOCITY = 8;
+const MAX_VELOCITY = 7;
 
 export type CarMovementCommands = "up" | "down" | "left" | "right" | "skidleft" | "skidright";
 
