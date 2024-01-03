@@ -42,14 +42,6 @@ export const Root = () => {
             net={pool}
             setGame={setGame}
           />
-          {/* <NetConnector
-            net={pool}
-            sdp={sdp}
-            modalOpen={modalOpen}
-            setModalOpen={setModalOpen}
-            netState={netState}
-            setNetState={setNetState}
-          /> */}
         </div>
       </div>
     </div>
