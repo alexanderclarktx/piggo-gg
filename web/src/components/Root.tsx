@@ -30,10 +30,6 @@ export const Root = () => {
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           <Header/>
-          <GameCanvas
-            net={pool}
-            setGame={setGame}
-          />
           <NetConnector
             net={pool}
             sdp={sdp}
@@ -41,6 +37,10 @@ export const Root = () => {
             setModalOpen={setModalOpen}
             netState={netState}
             setNetState={setNetState}
+          />
+          <GameCanvas
+            net={pool}
+            setGame={setGame}
           />
         </div>
       </div>

@@ -12,14 +12,14 @@ export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
     if (RtcPeer) {
       const renderer = new Renderer({
         canvas: document.getElementById("canvas") as HTMLCanvasElement,
-        width: window.outerWidth * 0.9,
-        height: window.outerHeight * 0.75
+        width: window.innerWidth * 0.98,
+        height: window.innerHeight * 0.89
       });
       setGame(new Playground({ net, renderer }));
     }
   }, [RtcPeer]);
 
   return (
-    <canvas style={{ marginBottom: 0 }} id="canvas" />
+    <canvas style={{ margin: 0 }} id="canvas" />
   );
 }

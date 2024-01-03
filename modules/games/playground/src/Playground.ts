@@ -12,14 +12,12 @@ export class Playground extends Game {
       mode: "isometric"
     });
 
-    const renderer = props.renderer;
-
     // add shared systems
     this.addSystemBuilders([ CommandSystem, PhysicsSystem, PlayerSpawnSystem ]);
 
     // add client-only systems/entities
-    if (renderer) {
-      this.addSystemBuilders([ InputSystem, ClickableSystem, RenderSystem, DebugSystem, WsNetcodeSystem, RtcNetcodeSystem ]);
+    if (props.renderer) {
+      this.addSystemBuilders([ InputSystem, ClickableSystem, RenderSystem, DebugSystem, RtcNetcodeSystem ]);
       this.addUI();
       this.addFloor();
     }
@@ -52,6 +50,6 @@ export class Playground extends Game {
   }
 
   addFloor = async () => {
-    this.addEntity(await TileFloor({ rows: 30, cols: 30, position: { x: 0, y: 0 } }));
+    this.addEntity(await TileFloor({ rows: 25, cols: 25, position: { x: 0, y: 0 } }));
   }
 }

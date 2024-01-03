@@ -24,6 +24,7 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.systems = systems;
     this.mode = mode;
 
+    // TODO need to add "catch up" logic for slow clients
     setInterval(this.onTick, 1000 / 60);
   }
 
