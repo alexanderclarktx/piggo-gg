@@ -2,8 +2,6 @@
   "name": "@piggo-legends/contrib",
   "version": "1.0.0",
   "main": "./main.ts",
-  "scripts": {
-  },
   "dependencies": {
     "typescript": "^4.9.5"
   },

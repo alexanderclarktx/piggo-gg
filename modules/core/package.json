@@ -2,8 +2,6 @@
   "name": "@piggo-legends/core",
   "version": "1.0.0",
   "main": "./main.ts",
-  "scripts": {
-  },
   "dependencies": {
     "@pixi/unsafe-eval": "^7.1.2",
     "pixi.js": "7.2.4",
