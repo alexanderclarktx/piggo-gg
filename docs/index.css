@@ -25,6 +25,7 @@ canvas {
   margin: 5px;
   border-width: 2px;
   border-color: rgb(77, 7, 105);
+  border-color: lightgray;
   border-style: ridge;
   top: 0;
   left: 0;
