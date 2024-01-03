@@ -1,6 +1,6 @@
 import { Component } from "@piggo-legends/core";
 
-// "" is always allowed; it clears the input buffer
+// "" is always allowed to clear the input buffer
 export type ControllerMap<T extends string = string> = Record<string, T | "">
 
 // the Controller component maps inputs to Actions
