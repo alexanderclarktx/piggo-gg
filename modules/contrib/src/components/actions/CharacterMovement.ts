@@ -29,17 +29,24 @@ export const CharacterMovementScreenPixels: ActionMap<CharacterMovementCommands>
 }
 
 export const CharacterMovementWorldPixels: ActionMap<CharacterMovementCommands> = {
-  "upleft": (entity: Entity) => setPosAndAnimation(entity, "ul", moveXY(-speed, 0)),
-  "upright": (entity: Entity) => setPosAndAnimation(entity, "ur", moveXY(0, -speed)),
-  "downleft": (entity: Entity) => setPosAndAnimation(entity, "dl", moveXY(0, speed)),
-  "downright": (entity: Entity) => setPosAndAnimation(entity, "dr", moveXY(speed, 0)),
-  "up": (entity: Entity) => setPosAndAnimation(entity, "u", moveXY(-speed, -speed)),
-  "down": (entity: Entity) => setPosAndAnimation(entity, "d", moveXY(speed, speed)),
-  "left": (entity: Entity) => setPosAndAnimation(entity, "l", moveXY(-1, 1)),
-  "right": (entity: Entity) => setPosAndAnimation(entity, "r", moveXY(1, -1))
+  "upleft": (entity: Entity) => setPosAndAnimation(entity, "u", moveXY(-speed, -speed)),
+  "upright": (entity: Entity) => setPosAndAnimation(entity, "r", moveXY(speed, -speed)),
+  "downleft": (entity: Entity) => setPosAndAnimation(entity, "l", moveXY(-speed, speed)),
+  "downright": (entity: Entity) => setPosAndAnimation(entity, "d", moveXY(speed, speed)),
+  "up": (entity: Entity) => setPosAndAnimation(entity, "u", moveXY(0, speed)),
+  "down": (entity: Entity) => setPosAndAnimation(entity, "d", moveXY(0, -speed)),
+  "left": (entity: Entity) => setPosAndAnimation(entity, "l", moveXY(-speed, 0)),
+  "right": (entity: Entity) => setPosAndAnimation(entity, "r", moveXY(speed, 0))
 }
 
 const moveXY = (dx: number, dy: number) => (position: Position) => {
+
+  if (dx && dy) {
+    // normalize the vector
+    const length = Math.sqrt(dx * dx + dy * dy);
+    dx /= length;
+    dy /= length;
+  }
   position.x += dx;
   position.y += dy;
 }
