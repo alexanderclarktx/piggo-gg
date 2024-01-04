@@ -1,7 +1,7 @@
 import React from "react";
 
 // check if browser supports speech recognition
-var SpeechRecognition: any = null;
+let SpeechRecognition: any = null;
 if ("SpeechRecognition" in window) {
   SpeechRecognition = window.SpeechRecognition;
 } else if ("webkitSpeechRecognition" in window) {
@@ -15,7 +15,7 @@ type SpeechRecognitionEvent = {
 export let SpeechTranscriber = () => {
 
   if (SpeechRecognition) {
-    var recognition = new SpeechRecognition();
+    let recognition = new SpeechRecognition();
 
     // settings
     recognition.lang = "en-US";
@@ -25,7 +25,7 @@ export let SpeechTranscriber = () => {
     recognition.start();
 
     // handle continuous transcription results
-    var counter = 0;
+    let counter = 0;
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       console.log(event.results[counter][0].transcript, event.results[0][0].confidence);
       counter += 1;

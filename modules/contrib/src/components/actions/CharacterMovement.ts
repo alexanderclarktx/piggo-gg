@@ -39,7 +39,6 @@ export const CharacterMovementWorldPixels: ActionMap<CharacterMovementCommands> 
   "right": (entity: Entity) => setPosAndAnimation(entity, "dr", moveXY(speed, 0))
 }
 
-// speed^2 = dx^2 + dy^2
 // normalize diagonal movement
 const moveXY = (dx: number, dy: number) => (position: Position) => {
   if (dx === 0 || dy === 0) {
