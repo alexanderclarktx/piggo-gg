@@ -22,6 +22,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
         // TODO rollback
         localCommandBuffer = localCommandBuffer.filter((c) => c !== command);
       }
+
       if (command.tick === game.tick) {        
         const entity = game.entities[command.entityId];
         if (!entity) { // entity not found

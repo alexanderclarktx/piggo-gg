@@ -1,4 +1,4 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils } from "pixi.js";
+import { Application, settings, SCALE_MODES, BaseTexture, utils, HTMLText } from "pixi.js";
 import { Camera } from "@piggo-legends/core";
 import { Renderable } from "@piggo-legends/contrib";
 
@@ -40,6 +40,10 @@ export class Renderer {
     // global texture settings
     settings.ROUND_PIXELS = false; // https://pixijs.download/release/docs/PIXI.settings.html#ROUND_PIXELS
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
+
+    // increase text resolution for readability
+    HTMLText.defaultResolution = 2;
+    HTMLText.defaultAutoResolution = false;
 
     // hide the cursor
     this.app.renderer.plugins.interaction.cursorStyles.default = "none";

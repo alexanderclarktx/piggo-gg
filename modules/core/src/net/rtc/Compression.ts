@@ -16,7 +16,7 @@ export class Compression {
     const maxMessageSize = sdp.match("a=max-message-size:(\\d+)")![1];
     const ip2 = sdp.match("c=IN IP4 ([\\d\\.]+)")![1];
 
-    var matches = [sparta, ip, ufrag, pwd, sha, setup, maxMessageSize, ip2];
+    let matches = [sparta, ip, ufrag, pwd, sha, setup, maxMessageSize, ip2];
 
     const candidates = sdp.match(/a=candidate.+\r\n/g);
     if (candidates) {
@@ -34,7 +34,7 @@ export class Compression {
   // constructs an SDP from a semicolon separated string
   static constructSdp = (sdpList: string) => {
     const vars = sdpList.split(";");
-    var sdpStrings = [
+    let sdpStrings = [
       "v=0",
       `o=mozilla...THIS_IS_SDPARTA-99.0 ${vars[0]} IN IP4 ${vars[1]}`,
       "s=-",
@@ -54,7 +54,7 @@ export class Compression {
       `a=max-message-size:${vars[6]}`
     ]
 
-    for (var i = 8; i < vars.length; i++) {
+    for (let i = 8; i < vars.length; i++) {
       sdpStrings.push(`a=candidate:${vars[i]}`);
     }
     sdpStrings.push("a=end-of-candidates");
