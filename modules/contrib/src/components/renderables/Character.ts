@@ -15,7 +15,6 @@ export type AnimationKeys = keyof CharacterProps['animations'];
 
 export class Character extends Renderable<CharacterProps> {
   currentAnimation: AnimatedSprite;
-  windowFocused: boolean = true;
 
   constructor(props: CharacterProps) {
     super({

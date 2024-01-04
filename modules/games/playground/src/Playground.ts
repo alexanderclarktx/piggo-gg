@@ -48,7 +48,11 @@ export class Playground extends Game {
     this.addEntity(Ball());
     this.addEntity(await Spaceship());
 
-    this.addEntity(await Zombie("zombie1"));
+    this.addEntity(await Zombie());
+    this.addEntity(await Zombie());
+    this.addEntity(await Zombie());
+    this.addEntity(await Zombie());
+    this.addEntity(await Zombie());
   }
 
   addFloor = async () => {

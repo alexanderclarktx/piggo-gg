@@ -1,5 +1,5 @@
 import { Entity, Game, SystemBuilder } from "@piggo-legends/core";
-import { Actions, Ball, Controlled, Controller, Spaceship, localCommandBuffer } from "@piggo-legends/contrib";
+import { Actions, Ball, Controlled, Controller, Spaceship, Zombie, localCommandBuffer } from "@piggo-legends/contrib";
 
 export var chatBuffer: string[] = [];
 export var chatHistory: string[] = [];
@@ -24,6 +24,9 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
             break;
           case "ball":
             game.addEntity(Ball());
+            break;
+          case "zombie":
+            game.addEntity(await Zombie());
             break;
         }
       }

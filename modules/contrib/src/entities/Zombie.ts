@@ -1,8 +1,10 @@
-import { Actions, Character, CharacterMovementCommands, CharacterMovementScreenPixels, CharacterMovementWorldPixels, Clickable, Controlling, NPC, Networked, Position, Renderable } from "@piggo-legends/contrib";
+import { Actions, Character, Clickable, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/contrib";
 import { Entity, Game } from "@piggo-legends/core";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
-export const Zombie = async (id: string): Promise<Entity> => {
+let zombieId = 0;
+
+export const Zombie = async (): Promise<Entity> => {
 
   const render = async () => {
     const textures = (await Assets.load("chars.json")).textures;
@@ -28,7 +30,7 @@ export const Zombie = async (id: string): Promise<Entity> => {
   }
 
   return {
-    id: id,
+    id: `zombie-${zombieId++}`,
     components: {
       position: new Position({ x: Math.random() * 800, y: Math.random() * 600 }),
       networked: new Networked({ isNetworked: true }),
@@ -38,43 +40,17 @@ export const Zombie = async (id: string): Promise<Entity> => {
         active: true,
         onPress: "click"
       }),
-      npc: new NPC<CharacterMovementCommands>({
-        onTick: (entity: Entity, game: Game) => {
-
-          // find the closest player
-          const player = game.entities[game.thisPlayerId] as Entity & { components: { controlling: Controlling } };
-
-          const zp = entity.components.position as Position;
-
-          // move toward closest player
-          if (player && player.components.controlling) {
-
-            const playerControlledEntity = game.entities[player.components.controlling.entityId];
-            const pp = playerControlledEntity.components.position as Position;
-
-            // if (Math.abs(pp.y - zp.y) < 2) {
-            //   if (pp.x > zp.x) return "right";
-            //   if (pp.x < zp.x) return "left";
-            // }
-
-            // if (Math.abs(pp.x - zp.x) < 2) {
-            //   if (pp.y > zp.y) return "down";
-            //   if (pp.y < zp.y) return "up";
-            // }
-
-            if (pp.x > zp.x && pp.y < zp.y) return "upright";
-            if (pp.x < zp.x && pp.y < zp.y) return "upleft";
-            if (pp.x > zp.x && pp.y > zp.y) return "downright";
-            if (pp.x < zp.x && pp.y > zp.y) return "downleft";
-            if (pp.x === zp.x && pp.y < zp.y) return "up";
-            if (pp.x === zp.x && pp.y > zp.y) return "down";
-            if (pp.x < zp.x && pp.y === zp.y) return "left";
-            if (pp.x > zp.x && pp.y === zp.y) return "right";
-          }
-          return null;
+      npc: new NPC<ZombieMovementCommands>({
+        onTick: (_) => {
+          return "chase";
         }
       }),
-      actions: new Actions(CharacterMovementWorldPixels),
+      actions: new Actions({
+        ...ZombieMovement,
+        "click": (entity: Entity, game: Game) => {
+          game.removeEntity(entity.id);
+        }
+      }),
       renderable: new Renderable({
         debuggable: true,
         zIndex: 1,

@@ -33,22 +33,23 @@ export const CharacterMovementWorldPixels: ActionMap<CharacterMovementCommands> 
   "upright": (entity: Entity) => setPosAndAnimation(entity, "r", moveXY(speed, -speed)),
   "downleft": (entity: Entity) => setPosAndAnimation(entity, "l", moveXY(-speed, speed)),
   "downright": (entity: Entity) => setPosAndAnimation(entity, "d", moveXY(speed, speed)),
-  "up": (entity: Entity) => setPosAndAnimation(entity, "u", moveXY(0, speed)),
-  "down": (entity: Entity) => setPosAndAnimation(entity, "d", moveXY(0, -speed)),
-  "left": (entity: Entity) => setPosAndAnimation(entity, "l", moveXY(-speed, 0)),
-  "right": (entity: Entity) => setPosAndAnimation(entity, "r", moveXY(speed, 0))
+  "up": (entity: Entity) => setPosAndAnimation(entity, "dl", moveXY(0, speed)),
+  "down": (entity: Entity) => setPosAndAnimation(entity, "ur", moveXY(0, -speed)),
+  "left": (entity: Entity) => setPosAndAnimation(entity, "ul", moveXY(-speed, 0)),
+  "right": (entity: Entity) => setPosAndAnimation(entity, "dr", moveXY(speed, 0))
 }
 
+// speed^2 = dx^2 + dy^2
+// normalize diagonal movement
 const moveXY = (dx: number, dy: number) => (position: Position) => {
-
-  if (dx && dy) {
-    // normalize the vector
-    const length = Math.sqrt(dx * dx + dy * dy);
-    dx /= length;
-    dy /= length;
+  if (dx === 0 || dy === 0) {
+    position.x += dx;
+    position.y += dy;
+  } else {
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    position.x += dx / speed;
+    position.y += dy / speed;
   }
-  position.x += dx;
-  position.y += dy;
 }
 
 const setPosAndAnimation = (entity: Entity, animation: AnimationKeys, move: (position: Position) => void) => {

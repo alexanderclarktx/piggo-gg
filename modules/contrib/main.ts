@@ -2,6 +2,7 @@ export * from "./src/components/Actions";
 export * from "./src/components/Actions";
 export * from "./src/components/actions/CarMovement";
 export * from "./src/components/actions/CharacterMovement";
+export * from "./src/components/actions/ZombieMovement";
 export * from "./src/components/actions/util";
 export * from "./src/components/Controller";
 export * from "./src/components/Experience";
