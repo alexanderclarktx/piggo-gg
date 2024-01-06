@@ -1,8 +1,8 @@
-import { Renderable, Position } from "@piggo-legends/contrib";
-import { Entity, Renderer } from "@piggo-legends/core";
-import { TilingSprite, Assets } from "pixi.js";
+import { Position, Renderable } from "@piggo-legends/contrib";
+import { Entity } from "@piggo-legends/core";
+import { Assets, TilingSprite } from "pixi.js";
 
-export const TilingSpriteFloor = async (renderer: Renderer, rows: number, cols: number): Promise<Entity> => {
+export const TilingSpriteFloor = async (rows: number, cols: number): Promise<Entity> => {
 
   const tiles = async () => {
     // tiling sprite 1
