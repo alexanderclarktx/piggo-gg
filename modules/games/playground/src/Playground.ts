@@ -1,6 +1,6 @@
 import {
-  DebugSystem, InputSystem, ClickableSystem, WsNetcodeSystem, Networked, Player, PlayerSpawnSystem, RenderSystem,
-  Ball, DebugButton, FpsText, FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem, RtcNetcodeSystem, NPCSystem, Zombie,
+  DebugSystem, InputSystem, ClickableSystem, Networked, Player, PlayerSpawnSystem, RenderSystem, Ball, DebugButton, FpsText,
+  FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem, RtcNetcodeSystem, NPCSystem, Zombie, GuiSystem
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
@@ -17,7 +17,7 @@ export class Playground extends Game {
 
     // add client-only systems/entities
     if (props.renderer) {
-      this.addSystemBuilders([ InputSystem, ClickableSystem, RenderSystem, DebugSystem, RtcNetcodeSystem ]);
+      this.addSystemBuilders([ InputSystem, ClickableSystem, RenderSystem, DebugSystem, RtcNetcodeSystem, GuiSystem ]);
       this.addUI();
       this.addFloor();
     }

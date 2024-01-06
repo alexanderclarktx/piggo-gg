@@ -1,4 +1,4 @@
-__Piggo Legends__ is a game engine for p2p web games. Play it online at [github.io](https://alexanderclarktx.github.io/piggo-legends/)
+__Piggo Legends__ is a game engine for 2D multiplayer web games. Play online at [github.io](https://alexanderclarktx.github.io/piggo-legends/)
 
 <p align="center">
   <img src="piggo-legends.gif" style="width:500px">
@@ -10,19 +10,17 @@ __Piggo Legends__ is a game engine for p2p web games. Play it online at [github.
 
 👾 Multiplayer is simple and performant
 
-# Upcoming Features
+# Features
 
-#### netcode
-- [x] p2p webrtc handshake in browser
-- [x] simple game state transfer
-- [ ] comprehensive game state transfer [#43](https://github.com/alexanderclarktx/piggo-legends/issues/43)
-- [ ] support >2 players in one game [#45](https://github.com/alexanderclarktx/piggo-legends/issues/45)
+✅ custom ECS
 
-#### gameplay
-- [x] WASD character movement
-- [x] physics-based vehicle movement
-- [x] real isometric projection [#44](https://github.com/alexanderclarktx/piggo-legends/issues/44)
-- [ ] handle complex user interactions [#42](https://github.com/alexanderclarktx/piggo-legends/issues/42)
+✅ p2p webrtc & authoritative websocket server netcode
+
+✅ WASD & physics-based movement controls
+
+✅ isometric projection from world coordinates
+
+✅ entity clickable callbacks & npc ai behavior
 
 # Development
 
@@ -39,12 +37,12 @@ __Piggo Legends__ is a game engine for p2p web games. Play it online at [github.
 # install dependencies
 bun install
 
-# launches server and web
+# launch server and web
 bun dev
 ```
 
 ### publishing to GitHub Pages
 ```bash
-# generates minified js bundle
+# generate minified js bundle
 bun pages
 ```

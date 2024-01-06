@@ -3,7 +3,6 @@ import { Component, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
   container?: (r: Renderer) => Promise<Container>
-  renderable?: (r: Renderer) => Promise<Renderable>
   children?: (r: Renderer) => Promise<Renderable[]>
   dynamic?: (c: Container, r: Renderable, g: Game) => void
   position?: { x: number; y: number }
@@ -36,27 +35,26 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   _init = async (renderer: Renderer) => {
     this.renderer = renderer;
 
-    const { container, renderable, children, position, id, interactiveChildren, visible, cacheAsBitmap } = this.props;
+    const { children, position, id, interactiveChildren, visible, cacheAsBitmap } = this.props;
 
     // add child container
     if (this.props.container) this.c = await this.props.container(renderer);
-
-    // add child renderable
-    if (renderable) {
-      const r = await renderable(renderer);
-      this.r = r;
-      this.c = r.c;
-      await r._init(renderer);
-    }
 
     // add children
     if (children) {
       const childRenderables = await children(renderer);
       this.children = childRenderables;
-      childRenderables.forEach(async (child) => {
-        await child._init(renderer);
-        this.c.addChild(child.c);
-      });
+
+      if (childRenderables.length === 1) {
+        this.r = childRenderables[0];
+        this.c = childRenderables[0].c;
+        await childRenderables[0]._init(renderer);
+      } else {
+        childRenderables.forEach(async (child) => {
+          await child._init(renderer);
+          this.c.addChild(child.c);
+        });
+      }
     }
 
     // set position

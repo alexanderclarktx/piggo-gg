@@ -47,7 +47,7 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
       renderable: new Renderable({
         debuggable: true,
         zIndex: 2,
-        renderable: render
+        children: async () => [ await render() ]
       })
     }
   }
