@@ -82,7 +82,7 @@ export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
       renderable: new Renderable({
         debuggable: true,
         zIndex: 1,
-        renderable: render
+        children: async () => [ await render() ]
       })
     }
   }

@@ -1,4 +1,4 @@
-import { Actions, Character, Clickable, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/contrib";
+import { Actions, Character, Clickable, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/contrib";
 import { Entity, Game } from "@piggo-legends/core";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
@@ -40,21 +40,24 @@ export const Zombie = async (): Promise<Entity> => {
         active: true,
         onPress: "click"
       }),
+      health: new Health(100, 100),
       npc: new NPC<ZombieMovementCommands>({
-        onTick: (_) => {
-          return "chase";
-        }
+        onTick: (_) => "chase"
       }),
       actions: new Actions({
         ...ZombieMovement,
         "click": (entity: Entity, game: Game) => {
-          game.removeEntity(entity.id);
+          const health = entity.components.health as Health;
+          health.health -= 50;
+          if (health.health <= 0) {
+            game.removeEntity(entity.id);
+          }
         }
       }),
       renderable: new Renderable({
         debuggable: true,
         zIndex: 1,
-        renderable: render
+        children: async () => [ await render() ]
       })
     }
   }
