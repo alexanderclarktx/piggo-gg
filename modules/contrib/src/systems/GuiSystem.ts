@@ -9,7 +9,7 @@ export const GuiSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode })
   let renderedEntities: Set<Entity> = new Set();
 
   const onTick = (entities: Entity[]) => {
-    // if any renderered entities are no longer in the game, remove them
+    // handle old entities
     renderedEntities.forEach((entity) => {
       if (!game.entities[entity.id]) {
         game.removeEntity(`${entity.id}-health`);
@@ -17,7 +17,7 @@ export const GuiSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode })
       }
     });
 
-    // add healthbars for entities that need them
+    // handle new entities
     entities.forEach((entity) => {
       const { health, position } = entity.components as { health: Health, position: Position };
       if (health && position) {
@@ -31,12 +31,6 @@ export const GuiSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode })
   const healthbarForEntity = (entity: Entity) => {
     if (entity.components.renderable) {
       const { health, position } = entity.components as { health: Health, position: Position };
-
-      // graphic for red health bar
-      const redBar = new Graphics();
-      redBar.beginFill(0xff0000);
-      redBar.drawRect(-15, -25, 30, 5);
-      redBar.endFill();
 
       game.addEntity({
         id: `${entity.id}-health`,
