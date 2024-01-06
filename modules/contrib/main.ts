@@ -39,6 +39,7 @@ export * from "./src/entities/Zombie";
 export * from "./src/systems/ClickableSystem";
 export * from "./src/systems/CommandSystem";
 export * from "./src/systems/DebugSystem";
+export * from "./src/systems/EnemySpawnSystem";
 export * from "./src/systems/GuiSystem";
 export * from "./src/systems/NPCSystem";
 export * from "./src/systems/InputSystem";

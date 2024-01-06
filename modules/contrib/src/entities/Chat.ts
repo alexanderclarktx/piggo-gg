@@ -6,7 +6,6 @@ export const Chat = (): Entity => {
 
   const chatHistoryText = () => new TextBox({
     padding: 3,
-    text: "hello",
     fontSize: 16,
     color: 0x55FFFF,
     dynamic: (t: HTMLText, r: TextBox) => {
@@ -25,14 +24,13 @@ export const Chat = (): Entity => {
   });
 
   const chatBufferText = () => new TextBox({
-    text: "world",
+    position: { x: 0, y: 25 },
     fontSize: 16,
     color: 0xFFFF33,
     dynamic: (t: HTMLText) => {
       const textToRender = chatBuffer.map((char) => (char === " ") ? "&nbsp;" : char).join("");
-      chatIsOpen ? t.text = `${textToRender}|` : t.text = ""
-    },
-    position: { x: 0, y: 25 }
+      chatIsOpen ? t.text = `${textToRender}|` : t.text = "";
+    }
   });
 
   return {

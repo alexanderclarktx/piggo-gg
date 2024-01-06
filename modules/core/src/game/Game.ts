@@ -53,9 +53,9 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
   }
 
-  filterEntitiesForSystem = (system: System, entities: Entity[]): Entity[] => {
+  filterEntitiesForSystem = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
-      for (const componentType of system.componentTypeQuery) {
+      for (const componentType of query) {
         if (!Object.keys(e.components).includes(componentType)) return false;
       }
       return true;
@@ -66,7 +66,7 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.tick += 1;
 
     this.systems?.forEach((system) => {
-      system.onTick(this.filterEntitiesForSystem(system, Object.values(this.entities)));
+      system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
     });
   }
 }

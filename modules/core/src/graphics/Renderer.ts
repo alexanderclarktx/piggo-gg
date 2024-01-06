@@ -46,7 +46,7 @@ export class Renderer {
     HTMLText.defaultAutoResolution = false;
 
     // hide the cursor
-    this.app.renderer.plugins.interaction.cursorStyles.default = "none";
+    this.app.renderer.events.cursorStyles.default = "none";
 
     // handle screen resize
     window.addEventListener("resize", this.handleResize);

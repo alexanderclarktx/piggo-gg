@@ -1,4 +1,4 @@
-`libs` is for Piggo Legends libraries that can be used within apps
+`modules` is for Piggo Legends libraries that can be used within apps
 
 |package|description|
 |--|--|

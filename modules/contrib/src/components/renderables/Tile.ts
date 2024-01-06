@@ -20,12 +20,12 @@ export class Tile extends Renderable<TileProps> {
         tile.tint = this.props.tint ?? 0xffffff;
 
         // TODO this should be done by mouse handler
-        tile.on("pointerover", () => {
-          tile.tint = 0x00ff00;
-        });
-        tile.on("pointerout", () => {
-          tile.tint = this.props.tint || 0x000000;
-        });
+        // tile.on("pointerover", () => {
+        //   tile.tint = 0x00ff00;
+        // });
+        // tile.on("pointerout", () => {
+        //   tile.tint = this.props.tint || 0x000000;
+        // });
 
         return tile;
       }

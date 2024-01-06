@@ -24,8 +24,5 @@ export const ServerNetcodeSystem = ({ game, clients }: ServerNetcodeSystemProps)
     });
   }
 
-  return {
-    componentTypeQuery: ["none"],
-    onTick
-  }
+  return { onTick }
 }

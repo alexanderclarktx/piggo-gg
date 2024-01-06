@@ -1,6 +1,5 @@
 import { Health, HealthBar, Position, Renderable } from "@piggo-legends/contrib";
 import { Entity, SystemBuilder } from "@piggo-legends/core";
-import { Graphics } from "pixi.js";
 
 // GuiSystem displays gui elements
 export const GuiSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode }) => {
