@@ -25,6 +25,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
 
       // add new entities to the renderer
       if (!renderedEntities.has(entity)) {
+        renderedEntities.add(entity);
         await renderNewEntity(entity);
       }
 
@@ -60,8 +61,6 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   const renderNewEntity = async (entity: Entity) => {
     const { renderable, position } = entity.components as { renderable: Renderable, position: Position | undefined };
 
-    await renderable._init(renderer);
-
     if (position) {
       renderable.c.position.set(position.x, position.y);
       cachedEntityPositions[entity.id] = position;
@@ -69,8 +68,9 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
       renderable.c.position.set(0, 0);
     }
 
+    await renderable._init(renderer);
+
     renderer.addWorld(renderable);
-    renderedEntities.add(entity);
   }
 
   // updates the position of screenFixed entities
