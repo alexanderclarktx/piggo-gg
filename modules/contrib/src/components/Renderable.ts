@@ -11,7 +11,6 @@ export type RenderableProps = {
   visible?: boolean
   id?: string
   cacheAsBitmap?: boolean
-  interactiveChildren?: boolean
 }
 
 // TODO refactor and simplify how entities define renderables
@@ -26,19 +25,16 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   children: Renderable[] | undefined;
 
   constructor(props: T) {
-    this.props = {
-      ...props,
-      debuggable: props.debuggable ?? false,
-    }
+    this.props = { ...props, debuggable: props.debuggable ?? false }
   }
 
   _init = async (renderer: Renderer) => {
     this.renderer = renderer;
 
-    const { children, position, id, interactiveChildren, visible, cacheAsBitmap } = this.props;
+    const { children, position, id, visible, cacheAsBitmap, container, zIndex } = this.props;
 
     // add child container
-    if (this.props.container) this.c = await this.props.container(renderer);
+    if (container) this.c = await container(renderer);
 
     // add children
     if (children) {
@@ -63,7 +59,6 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
     // set id
     this.id = id ?? "";
 
-    // TODO this should always be false (need to refactor buttons)
     // set interactive children false
     this.c.interactiveChildren = false;
 
@@ -74,16 +69,21 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
     this.c.cacheAsBitmap = cacheAsBitmap ?? false;
 
     // set container properties
-    this.c.zIndex = this.props.zIndex || 0;
+    this.c.zIndex = zIndex || 0;
     this.c.sortableChildren = true;
     this.c.alpha = 1;
     this.c.children.forEach((child) => { child.alpha = 1 });
   }
 
-  // cleanup MUST be called to correctly destroy the object
+  // MUST be called to correctly destroy the object
   cleanup = () => {
-    this.renderer?.app.stage.removeChild(this.c); // remove from the renderer
-    this.c.removeAllListeners(); // remove all event listeners
-    this.c.destroy(); // remove from the world
+    // remove from the renderer
+    this.renderer?.app.stage.removeChild(this.c);
+
+    // remove all event listeners
+    this.c.removeAllListeners();
+
+    // remove from the world
+    this.c.destroy();
   }
 }
