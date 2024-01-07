@@ -1,7 +1,7 @@
 import { Renderable, RenderableProps } from "@piggo-legends/contrib";
 import { Sprite, Texture, Resource } from "pixi.js";
 
-export type TileProps = RenderableProps & {
+type TileProps = RenderableProps & {
   texture: Texture<Resource>,
   tint?: number
 }

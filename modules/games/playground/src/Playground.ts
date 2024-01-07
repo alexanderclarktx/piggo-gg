@@ -50,6 +50,6 @@ export class Playground extends Game {
   }
 
   addFloor = async () => {
-    this.addEntity(await TileFloor({ rows: 25, cols: 25, position: { x: 0, y: 0 } }));
+    this.addEntity(await TileFloor({ rows: 100, cols: 100, position: { x: 0, y: 0 } }));
   }
 }
