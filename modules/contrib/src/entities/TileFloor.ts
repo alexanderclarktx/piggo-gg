@@ -5,9 +5,9 @@ import { Assets, Texture, Resource, Matrix, Sprite, RenderTexture, Renderer as P
 let index = 0;
 
 export type TileFloorProps = {
-  rows: number,
-  cols: number,
-  position?: { x: number, y: number },
+  rows: number
+  cols: number
+  position?: { x: number, y: number }
   id?: string
 }
 
@@ -17,6 +17,7 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     const sandbox = await Assets.load("sandbox.json");
     const texture = sandbox.textures["white"] as Texture<Resource>;
 
+    // create the initial tile sprite
     const tile = new Sprite(texture);
     tile.position.set(0, 0);
     tile.anchor.set(0.5, 0.5);
@@ -24,17 +25,17 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     tile.eventMode = "static";
     tile.tint = 0x8888ff;
 
-    const { width, height } = tile;
-
+    // create a render texture
     const renderTexture = RenderTexture.create({
-      width,
-      height,
+      width: tile.width,
+      height: tile.height,
       resolution: window.devicePixelRatio
     });
 
+    // render the tile to the render texture
     r.app.renderer.render(tile, {
       renderTexture,
-      transform: new Matrix(1, 0, 0, 1, width / 2, height / 2)
+      transform: new Matrix(1, 0, 0, 1, tile.width / 2, tile.height / 2)
     });
 
     (r.app.renderer as PIXIRENDERER).framebuffer.blit();
@@ -45,7 +46,7 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
         tiles.push(new Renderable({
           position: new Position({ x: y * texture.width - (x * texture.width), y: (y + x) * (texture.height - 4) }),
           container: async () => new Sprite(renderTexture),
-          visible: x < 25 ? (y < 25 ? true : false) : false // TODO culling
+          visible: x < 25 ? (y < 25 ? true : false) : false
         }))
       }
     }
