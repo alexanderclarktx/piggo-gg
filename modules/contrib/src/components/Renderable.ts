@@ -4,7 +4,6 @@ import { Component, Game, Renderer } from "@piggo-legends/core";
 export type RenderableProps = {
   container?: (r: Renderer) => Promise<Container>
   children?: (r: Renderer) => Promise<Renderable[]>
-  children2?: (r: Renderer) => Promise<Container[]>
   dynamic?: (c: Container, r: Renderable, g: Game) => void
   position?: { x: number; y: number }
   debuggable?: boolean
@@ -13,7 +12,6 @@ export type RenderableProps = {
   id?: string
   cacheAsBitmap?: boolean
   interactiveChildren?: boolean
-  container2?: Container
 }
 
 // TODO refactor and simplify how entities define renderables
@@ -42,13 +40,6 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
     // add child container
     if (this.props.container) this.c = await this.props.container(renderer);
 
-    if (this.props.container2) this.c = this.props.container2;
-
-    if (this.props.children2) {
-      const children2 = await this.props.children2(renderer);
-      this.c.addChild(...children2);
-    }
-
     // add children
     if (children) {
       const childRenderables = await children(renderer);
@@ -62,7 +53,6 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
         childRenderables.forEach(async (child) => {
           await child._init(renderer);
           this.c.addChild(child.c);
-          // child.c.cullable = true;
         });
       }
     }
@@ -75,9 +65,7 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
 
     // TODO this should always be false (need to refactor buttons)
     // set interactive children false
-    this.c.interactiveChildren = interactiveChildren ?? true;
-
-    // this.c.cullable = true;
+    this.c.interactiveChildren = false;
 
     // set visible
     this.c.visible = visible ?? true;

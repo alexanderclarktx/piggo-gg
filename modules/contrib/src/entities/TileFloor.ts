@@ -22,7 +22,7 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     tile.anchor.set(0.5, 0.5);
     tile.scale.set(2);
     tile.eventMode = "static";
-    tile.tint = 0xffffff;
+    tile.tint = 0x8888ff;
 
     const { width, height } = tile;
 
@@ -45,7 +45,7 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
         tiles.push(new Renderable({
           position: new Position({ x: y * texture.width - (x * texture.width), y: (y + x) * (texture.height - 4) }),
           container: async () => new Sprite(renderTexture),
-          visible: x < 25 ? (y < 25 ? true : false) : false
+          visible: x < 25 ? (y < 25 ? true : false) : false // TODO culling
         }))
       }
     }
