@@ -15,6 +15,7 @@ export class Position implements Component<"position"> {
   type: "position";
 
   rotation: Rotation = new Rotation();
+  velocity: number = 0;
   x: number;
   y: number;
   offset: PositionOffset;

@@ -23,12 +23,15 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
     let moveX = dx / Math.sqrt(dx * dx + dy * dy) * speed;
     let moveY = dy / Math.sqrt(dx * dx + dy * dy) * speed;
 
-    // move
-    position.x += moveX;
-    position.y += moveY;
+    // movew
+    // position.x += moveX;
+    // position.y += moveY;
+
+    position.velocity = speed;
 
     // get angle of movements
     const angle = Math.atan2(moveY, moveX) + t * 8;
+    position.rotation.rads = angle - 3.14;
 
     // set animation based on angle
     const character = (entity.components.renderable as Renderable).r as Character;

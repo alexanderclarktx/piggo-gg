@@ -1,4 +1,4 @@
-import { ActionMap, Position, Renderable, Velocity } from "@piggo-legends/contrib";
+import { ActionMap, Position, Renderable } from "@piggo-legends/contrib";
 import { Entity } from "@piggo-legends/core";
 
 const TURN_SPEED = 0.06;
@@ -12,12 +12,12 @@ export type CarMovementCommands = "up" | "down" | "left" | "right" | "skidleft" 
 
 export const CarMovement: ActionMap<CarMovementCommands> = {
   "up": (entity: Entity) => {
-    const velocity = entity.components.velocity as Velocity;
-    velocity.v = Math.min(velocity.v + ACCELERATION, MAX_VELOCITY);
+    const position = entity.components.position as Position;
+    position.velocity = Math.min(position.velocity + ACCELERATION, MAX_VELOCITY);
   },
   "down": (entity: Entity) => {
-    const velocity = entity.components.velocity as Velocity;
-    velocity.v = Math.max(velocity.v - DECELERATION, 0);
+    const position = entity.components.position as Position;
+    position.velocity = Math.max(position.velocity - DECELERATION, 0);
   },
   "left": (entity: Entity) => {
     const {position, renderable} = entity.components as {position: Position, renderable: Renderable}

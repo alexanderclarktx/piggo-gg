@@ -36,13 +36,15 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
 
       // update renderable if position changed
       if (position && cachedEntityPositions[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
+        if (renderable.props.rotates) {
+          renderable.c.rotation = position.rotation.rads;
+        }
+
         if (mode === "isometric") {
           const screenXY = position.toScreenXY();
           renderable.c.position.set(screenXY.x, screenXY.y);
-          renderable.c.rotation = position.rotation.rads;
         } else {
           renderable.c.position.set(position.x, position.y);
-          renderable.c.rotation = position.rotation.rads;
         }
       }
 

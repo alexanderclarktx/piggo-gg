@@ -1,4 +1,4 @@
-import { Actions, Character, Clickable, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/contrib";
+import { Actions, Character, Clickable, Collider, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/contrib";
 import { Entity, Game } from "@piggo-legends/core";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
@@ -53,6 +53,10 @@ export const Zombie = async (): Promise<Entity> => {
             game.removeEntity(entity.id);
           }
         }
+      }),
+      collider: new Collider({
+        x: 32,
+        y: 32,
       }),
       renderable: new Renderable({
         debuggable: true,
