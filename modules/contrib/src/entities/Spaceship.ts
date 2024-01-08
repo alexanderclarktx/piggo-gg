@@ -44,6 +44,7 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
         "click": playerControlsEntity
       }),
       renderable: new Renderable({
+        rotates: true,
         debuggable: true,
         zIndex: 2,
         children: async () => [ await render() ]

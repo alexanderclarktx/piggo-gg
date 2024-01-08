@@ -1,7 +1,7 @@
 import { ActionMap, Character, Controlling, Position, Renderable } from "@piggo-legends/contrib";
 import { Entity, Game } from "@piggo-legends/core";
 
-const speed = 1.2;
+const speed = 0.5;
 const t = (Math.PI * 2) / 16; // 16th of tau
 
 export type ZombieMovementCommands = "chase"
@@ -11,27 +11,24 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
     const { position } = entity.components as { position: Position };
 
     // get the player entity's position
-    const player = game.entities[game.thisPlayerId] as Entity & { components: { controlling: Controlling } };
-    const playerControlledEntity = game.entities[player.components.controlling.entityId];
-    const pp = playerControlledEntity.components.position as Position;
+    const playerEntity = game.entities[game.thisPlayerId] as Entity & { components: { controlling: Controlling } };
+    const playerCharacter = game.entities[playerEntity.components.controlling.entityId];
+    const playerCharacterPosition = playerCharacter.components.position as Position;
 
     // delta toward player
-    let dx = pp.x - position.x;
-    let dy = pp.y - position.y;
+    let dx = playerCharacterPosition.x - position.x;
+    let dy = playerCharacterPosition.y - position.y;
 
     // normalize speed toward player
     let moveX = dx / Math.sqrt(dx * dx + dy * dy) * speed;
     let moveY = dy / Math.sqrt(dx * dx + dy * dy) * speed;
 
-    // movew
-    // position.x += moveX;
-    // position.y += moveY;
-
-    position.velocity = speed;
-
     // get angle of movements
     const angle = Math.atan2(moveY, moveX) + t * 8;
-    position.rotation.rads = angle - 3.14;
+
+    // set velocity and rotation
+    position.velocity = speed;
+    position.rotation.rads = angle;
 
     // set animation based on angle
     const character = (entity.components.renderable as Renderable).r as Character;

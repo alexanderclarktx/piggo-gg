@@ -8,8 +8,8 @@ export type ColliderProps = {
   // active: boolean;
 }
 
-export class Collider implements Component<"colider"> {
-  type: "colider";
+export class Collider implements Component<"collider"> {
+  type: "collider";
 
   x: number;
   y: number;

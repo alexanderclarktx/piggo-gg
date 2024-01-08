@@ -8,6 +8,7 @@ export type PositionProps = {
   y?: number
   offset?: PositionOffset
   screenFixed?: boolean
+  renderMode?: "isometric" | "cartesian"
 }
 
 // the entity's position in the world
@@ -21,11 +22,15 @@ export class Position implements Component<"position"> {
   offset: PositionOffset;
   screenFixed: boolean;
 
-  constructor({ x, y, offset, screenFixed }: PositionProps) {
+  // TODO refactor and consolidate this somewhere
+  renderMode: "isometric" | "cartesian";
+
+  constructor({ x, y, offset, screenFixed, renderMode }: PositionProps) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.offset = offset ?? "world";
     this.screenFixed = screenFixed ?? false;
+    this.renderMode = renderMode ?? "cartesian";
   }
 
   // get screen coordinates from world position
@@ -38,6 +43,10 @@ export class Position implements Component<"position"> {
   fromScreenXY = (isoX: number, isoY: number) => {
     this.x = (2 * isoY + isoX) / 2;
     this.y = (2 * isoY - isoX) / 2;
+  }
+
+  setVelocity = (velocity: number) => {
+    this.velocity = velocity;
   }
 
   serialize = (): SerializedPosition => ({

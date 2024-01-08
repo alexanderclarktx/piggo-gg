@@ -21,7 +21,7 @@ export const EnemySpawnSystem: SystemBuilder = ({ game }) => {
   }
 
   const spawnWave = async (wave: number) => {
-    const zombies = 2 + wave;
+    const zombies = 1 + wave;
 
     for (let i = 0; i < zombies; i++) {
       const z = await Zombie();

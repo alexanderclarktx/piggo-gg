@@ -25,7 +25,7 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   renderer: Renderer | undefined;
   children: Renderable[] | undefined;
 
-  constructor(props: T) {
+  constructor(props: T = {} as T) {
     this.props = { ...props, debuggable: props.debuggable ?? false, rotates: props.rotates ?? false }
   }
 

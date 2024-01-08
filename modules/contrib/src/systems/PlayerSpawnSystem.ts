@@ -1,5 +1,5 @@
 import { Entity, Game, SystemBuilder } from "@piggo-legends/core";
-import { Controlling, Skelly } from "@piggo-legends/contrib";
+import { Controlled, Controlling, Skelly } from "@piggo-legends/contrib";
 
 // PlayerSpawnSystem handles spawning characters for players
 export const PlayerSpawnSystem: SystemBuilder = ({ game, thisPlayerId }) => {
@@ -20,7 +20,7 @@ export const PlayerSpawnSystem: SystemBuilder = ({ game, thisPlayerId }) => {
 
     // give the player control of the character
     player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
-    characterForPlayer.components.controlled = new Controlling({ entityId: player.id });
+    characterForPlayer.components.controlled = new Controlled({ entityId: player.id });
     game.addEntity(characterForPlayer);
   }
 
