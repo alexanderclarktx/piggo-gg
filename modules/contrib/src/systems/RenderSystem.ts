@@ -5,23 +5,23 @@ import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   if (!renderer) throw new Error("RendererSystem requires a renderer");
 
-  let renderedEntities: Set<Entity> = new Set();
+  let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
-  let centeredEntity: Entity | undefined = undefined;
+  let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
 
   renderer.app.ticker.add(() => {
     if (centeredEntity) {
-      const { position } = centeredEntity.components as { position: Position };
-      renderer.camera.moveTo(position.toScreenXY());
+      const p = centeredEntity.components.position;
+      if (p) renderer.camera.moveTo(p.toScreenXY());
     }
 
     // update screenFixed entities
     renderedEntities.forEach((entity) => updateScreenFixed(entity));
   });
 
-  const onTick = (entities: Entity[]) => {
+  const onTick = (entities: Entity<Renderable | Position>[]) => {
     entities.forEach(async (entity) => {
-      const { position, renderable, controlled } = entity.components as { renderable: Renderable, controlled?: Controlled, position?: Position };
+      const { position, renderable, controlled } = entity.components;
 
       // add new entities to the renderer
       if (!renderedEntities.has(entity)) {
@@ -36,13 +36,15 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
 
       // update renderable if position changed
       if (position && cachedEntityPositions[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
+        if (renderable.props.rotates) {
+          renderable.c.rotation = position.rotation.rads;
+        }
+
         if (mode === "isometric") {
           const screenXY = position.toScreenXY();
           renderable.c.position.set(screenXY.x, screenXY.y);
-          renderable.c.rotation = position.rotation.rads;
         } else {
           renderable.c.position.set(position.x, position.y);
-          renderable.c.rotation = position.rotation.rads;
         }
       }
 
@@ -58,8 +60,8 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
     });
   }
 
-  const renderNewEntity = async (entity: Entity) => {
-    const { renderable, position } = entity.components as { renderable: Renderable, position: Position | undefined };
+  const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
+    const { renderable, position } = entity.components;
 
     if (position) {
       renderable.c.position.set(position.x, position.y);
@@ -74,8 +76,8 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   }
 
   // updates the position of screenFixed entities
-  const updateScreenFixed = (entity: Entity) => {
-    const { position, renderable } = entity.components as { position: Position, renderable: Renderable };
+  const updateScreenFixed = (entity: Entity<Renderable | Position>) => {
+    const { position, renderable } = entity.components;
     if (position.screenFixed) {
 
       if (position.x < 0) {
@@ -93,7 +95,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   }
 
   return {
-    componentTypeQuery: ["renderable"],
+    componentTypeQuery: ["renderable", "position"],
     onTick
   }
 }

@@ -1,28 +1,28 @@
 import { Entity, SystemBuilder } from '@piggo-legends/core';
-import { Position, Velocity } from "@piggo-legends/contrib";
+import { Position } from "@piggo-legends/contrib";
 
 // PhysicsSystem handles the movement of entities
-export const PhysicsSystem: SystemBuilder = ({ mode }) => {
-  const onTick = (entities: Entity[]) => {
+export const PhysicsSystem: SystemBuilder = () => {
+  const onTick = (entities: Entity<Position>[]) => {
     entities.forEach((entity) => {
-      const {velocity, position} = entity.components as {velocity: Velocity, position: Position}
-      if (velocity.v > 0) {
-        if (mode === "isometric") {
+      const { position } = entity.components;
+      if (position.velocity > 0) {
+        if (position.renderMode === "cartesian") {
           const screenXY = position.toScreenXY();
-          const x = screenXY.x + Math.sin(position.rotation.rads) * velocity.v;
-          const y = screenXY.y - Math.cos(position.rotation.rads) * velocity.v;
+          const x = screenXY.x + Math.sin(position.rotation.rads) * position.velocity;
+          const y = screenXY.y - Math.cos(position.rotation.rads) * position.velocity;
 
           position.fromScreenXY(x, y);
         } else {
-          position.x += Math.sin(position.rotation.rads) * velocity.v;
-          position.y -= Math.cos(position.rotation.rads) * velocity.v;
+          position.x += Math.sin(position.rotation.rads - Math.PI / 2) * position.velocity;
+          position.y -= Math.cos(position.rotation.rads - Math.PI / 2) * position.velocity;
         }
       }
     });
   }
 
   return {
-    componentTypeQuery: ["position", "velocity"],
+    componentTypeQuery: ["position"],
     onTick
   }
 }

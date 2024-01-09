@@ -37,11 +37,7 @@ export class Playground extends Game {
   }
 
   addUI = async () => {
-    this.addEntity(FpsText());
-    this.addEntity(FullscreenButton());
-    this.addEntity(DebugButton());
-    this.addEntity(Cursor());
-    this.addEntity(Chat());
+    this.addEntities([FpsText(), FullscreenButton(), DebugButton(), Cursor(), Chat()]);
   }
 
   addGameObjects = async () => {

@@ -7,7 +7,7 @@ export const EnemySpawnSystem: SystemBuilder = ({ game }) => {
   let wave = 0;
   let enemiesInWave: Record<string, Entity> = {};
 
-  const onTick = (entities: Entity[]) => {
+  const onTick = () => {
     // handle old entities
     Object.keys(enemiesInWave).forEach((id) => {
       if (!game.entities[id]) {
@@ -21,7 +21,7 @@ export const EnemySpawnSystem: SystemBuilder = ({ game }) => {
   }
 
   const spawnWave = async (wave: number) => {
-    const zombies = 2 + wave;
+    const zombies = 1 + wave;
 
     for (let i = 0; i < zombies; i++) {
       const z = await Zombie();

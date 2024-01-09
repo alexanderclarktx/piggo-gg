@@ -78,11 +78,11 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     }
   });
 
-  const onTick = (entities: Entity[]) => {
+  const onTick = (entities: Entity<Controlled | Controller | Actions>[]) => {
 
     // handle inputs for controlled entities
     entities.forEach((entity) => {
-      const controlled = entity.components.controlled as Controlled;
+      const controlled = entity.components.controlled;
       if (controlled.entityId === thisPlayerId) handleInputForControlledEntity(entity, game);
     });
 
@@ -90,12 +90,12 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     if (chatIsOpen && backspaceOn && game.tick % 3 === 0) chatBuffer.pop();
   }
 
-  const handleInputForControlledEntity = (controlledEntity: Entity, game: Game) => {
+  const handleInputForControlledEntity = (controlledEntity: Entity<Controlled | Controller | Actions>, game: Game) => {
     // copy the input buffer
     let buffer: Set<string> = new Set(bufferedDown);
 
     // check for actions
-    const { controller, actions } = controlledEntity.components as { controller: Controller, actions: Actions };
+    const { controller, actions } = controlledEntity.components;
 
     // handle standalone and composite (a,b) input controls
     for (const input in controller.controllerMap) {
@@ -138,7 +138,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
   }
 
   return {
-    componentTypeQuery: ["controlled"],
+    componentTypeQuery: ["controlled", "controller", "actions"],
     onTick,
   }
 }

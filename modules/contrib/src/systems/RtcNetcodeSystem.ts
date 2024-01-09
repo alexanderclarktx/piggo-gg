@@ -1,5 +1,5 @@
 import { Entity, Game, RtcPeer, SystemBuilder } from "@piggo-legends/core";
-import { Controlled, Player, Position, SerializedPosition } from "@piggo-legends/contrib";
+import { Player, SerializedPosition } from "@piggo-legends/contrib";
 
 type TickData = {
   type: "game",
@@ -70,11 +70,11 @@ export const RtcNetcodeSystem: SystemBuilder = ({ game, net, thisPlayerId }) => 
 
 
           // TODO not generic enough
-          const controlled = game.entities[id].components.controlled as Controlled;
+          const controlled = game.entities[id].components.controlled;
           if (controlled && controlled.entityId === thisPlayerId) return;
 
           // TODO not generic enough
-          const position = game.entities[id].components.position as Position;
+          const position = game.entities[id].components.position;
           if (position && entity.position) {
             position.deserialize(entity.position)
           }
@@ -103,10 +103,8 @@ export const RtcNetcodeSystem: SystemBuilder = ({ game, net, thisPlayerId }) => 
     entities.forEach((entity) => {
       let serialized: SerializedEntity = {};
 
-      const position = entity.components.position as Position;
-      if (position) {
-        serialized.position = position.serialize();
-      }
+      const position = entity.components.position;
+      if (position) serialized.position = position.serialize();
 
       serializedEntitites[entity.id] = serialized;
     });

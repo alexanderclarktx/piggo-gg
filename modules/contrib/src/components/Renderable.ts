@@ -11,6 +11,7 @@ export type RenderableProps = {
   visible?: boolean
   id?: string
   cacheAsBitmap?: boolean
+  rotates?: boolean
 }
 
 // TODO refactor and simplify how entities define renderables
@@ -24,8 +25,8 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   renderer: Renderer | undefined;
   children: Renderable[] | undefined;
 
-  constructor(props: T) {
-    this.props = { ...props, debuggable: props.debuggable ?? false }
+  constructor(props: T = {} as T) {
+    this.props = { ...props, debuggable: props.debuggable ?? false, rotates: props.rotates ?? false }
   }
 
   _init = async (renderer: Renderer) => {
