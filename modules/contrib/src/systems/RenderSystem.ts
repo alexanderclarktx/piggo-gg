@@ -72,7 +72,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
 
     await renderable._init(renderer);
 
-    renderer.addWorld(renderable!);
+    renderer.addWorld(renderable);
   }
 
   // updates the position of screenFixed entities
