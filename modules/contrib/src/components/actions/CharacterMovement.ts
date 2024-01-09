@@ -1,4 +1,4 @@
-import { ActionMap, AnimationKeys, Character, Position, Renderable } from "@piggo-legends/contrib"
+import { ActionMap, AnimationKeys, Character, Position } from "@piggo-legends/contrib"
 import { Entity } from "@piggo-legends/core";
 
 const speed = 2;

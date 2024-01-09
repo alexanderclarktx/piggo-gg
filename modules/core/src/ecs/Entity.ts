@@ -7,7 +7,7 @@ Health | Name | Networked | NPC | Player |
 Position | Renderable
 
 // 集 jí (set) - an Entity is a uniquely identified set of Components
-// note: if no generic is provided, all components are present and optional, otherwise the components are required
+// all components are optional except the provided ones
 export interface Entity<T extends ComponentTypes = ComponentTypes> {
   id: string;
   components: ComponentTypes extends T ? {

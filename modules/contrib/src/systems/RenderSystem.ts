@@ -36,23 +36,23 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
 
       // update renderable if position changed
       if (position && cachedEntityPositions[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
-        if (renderable?.props.rotates) {
+        if (renderable.props.rotates) {
           renderable.c.rotation = position.rotation.rads;
         }
 
         if (mode === "isometric") {
           const screenXY = position.toScreenXY();
-          renderable?.c.position.set(screenXY.x, screenXY.y);
+          renderable.c.position.set(screenXY.x, screenXY.y);
         } else {
-          renderable?.c.position.set(position.x, position.y);
+          renderable.c.position.set(position.x, position.y);
         }
       }
 
       // run the dynamic callback
-      if (renderable?.props.dynamic) renderable.props.dynamic(renderable.c, renderable, game);
+      if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable, game);
 
       // run dynamic on children
-      if (renderable?.children) {
+      if (renderable.children) {
         renderable.children.forEach((child) => {
           if (child.props.dynamic) child.props.dynamic(child.c, child, game);
         });
