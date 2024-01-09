@@ -104,7 +104,7 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
     }
   }
 
-  const debugText = (p: Position, r: Renderable) => `w: ${p.x.toFixed(2)} ${p.y.toFixed(2)}<br>s: ${r.c.x.toFixed(2)} ${r.c.y.toFixed(2)}`;
+  const debugText = (p: Position, r: Renderable) => `w: ${p.x.toFixed(0)} ${p.y.toFixed(0)}<br>s: ${r.c.x.toFixed(0)} ${r.c.y.toFixed(0)}`;
 
   return {
     componentTypeQuery: ["renderable"],

@@ -1,7 +1,7 @@
 {
   "name": "@piggo-legends/playground",
   "version": "1.0.0",
-  "main": "./main.ts",
+  "main": "./src/playground.ts",
   "dependencies": {
   }
 }

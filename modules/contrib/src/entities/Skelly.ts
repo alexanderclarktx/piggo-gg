@@ -1,5 +1,5 @@
 import { Entity } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, CharacterMovementScreenPixels, CharacterMovementCommands, Renderable } from "@piggo-legends/contrib";
+import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, CharacterMovementScreenPixels, CharacterMovementCommands, Renderable, Health, Collider } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite, SCALE_MODES, Container, Graphics } from "pixi.js";
 
 export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
@@ -64,12 +64,14 @@ export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
     components: {
       position: new Position({ x: 300, y: 300 }),
       networked: new Networked({ isNetworked: true }),
+      health: new Health(100, 100),
       clickable: new Clickable({
         width: 32,
         height: 32,
         active: true,
         onPress: "click"
       }),
+      collider: new Collider({ x: 15, y: 15 }),
       controller: new Controller<CharacterMovementCommands>({
         "a,d": "", "w,s": "",
         "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
