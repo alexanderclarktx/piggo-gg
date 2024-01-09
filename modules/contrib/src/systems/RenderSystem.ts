@@ -5,9 +5,9 @@ import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   if (!renderer) throw new Error("RendererSystem requires a renderer");
 
-  let renderedEntities: Set<Entity> = new Set();
+  let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
   let cachedEntityPositions: Record<string, Position> = {};
-  let centeredEntity: Entity | undefined = undefined;
+  let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
 
   renderer.app.ticker.add(() => {
     if (centeredEntity) {
@@ -19,7 +19,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
     renderedEntities.forEach((entity) => updateScreenFixed(entity));
   });
 
-  const onTick = (entities: Entity[]) => {
+  const onTick = (entities: Entity<Renderable | Position>[]) => {
     entities.forEach(async (entity) => {
       const { position, renderable, controlled } = entity.components;
 
@@ -60,8 +60,8 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
     });
   }
 
-  const renderNewEntity = async (entity: Entity) => {
-    const { renderable, position } = entity.components as { renderable: Renderable, position: Position | undefined };
+  const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
+    const { renderable, position } = entity.components;
 
     if (position) {
       renderable.c.position.set(position.x, position.y);
@@ -72,12 +72,12 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
 
     await renderable._init(renderer);
 
-    renderer.addWorld(renderable);
+    renderer.addWorld(renderable!);
   }
 
   // updates the position of screenFixed entities
-  const updateScreenFixed = (entity: Entity) => {
-    const { position, renderable } = entity.components as { position: Position, renderable: Renderable };
+  const updateScreenFixed = (entity: Entity<Renderable | Position>) => {
+    const { position, renderable } = entity.components;
     if (position.screenFixed) {
 
       if (position.x < 0) {
@@ -95,7 +95,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   }
 
   return {
-    componentTypeQuery: ["renderable"],
+    componentTypeQuery: ["renderable", "position"],
     onTick
   }
 }

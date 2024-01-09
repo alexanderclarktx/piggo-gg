@@ -13,7 +13,7 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
     if (renderer.debug) {
       // handle new entities
       entities.forEach((entity) => {
-        const renderable = entity.components.renderable as Renderable;
+        const renderable = entity.components.renderable;
         if (renderable && renderable.props.debuggable && !debuggedEntities.has(entity)) {
           addEntity(entity);
         }
@@ -25,8 +25,8 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
         if (entity) {
           const debugEntity = game.entities[debugId];
           if (debugEntity) {
-            const debugPosition = debugEntity.components.position as Position;
-            const position = entity.components.position as Position;
+            const debugPosition = debugEntity.components.position!;
+            const position = entity.components.position!;
             debugPosition.x = position.x;
             debugPosition.y = position.y;
           }
@@ -65,34 +65,34 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
       const debugBounds = new DebugBounds({ debugRenderable: renderable });
 
       // debug velocity angle vector
-      const debugVector = new Renderable({
-        position: { x: 0, y: 0 },
-        dynamic: async (c: Graphics, r: Renderable) => {
-          const p = position.toScreenXY();
-          c.clear();
-          c.lineStyle(1, 0x00ff00, 1);
+      // const debugVector = new Renderable({
+      //   position: { x: 0, y: 0 },
+      //   dynamic: async (c: Graphics, r: Renderable) => {
+      //     const p = position.toScreenXY();
+      //     c.clear();
+      //     c.lineStyle(1, 0x00ff00, 1);
 
-          const point = {
-            x: Math.sin(position.rotation.rads - Math.PI / 2) * 50,
-            y: Math.cos(position.rotation.rads - Math.PI / 2) * 50
-          };
+      //     const point = {
+      //       x: Math.sin(position.rotation.rads - Math.PI / 2) * 50,
+      //       y: Math.cos(position.rotation.rads - Math.PI / 2) * 50
+      //     };
 
-          const z = renderer.camera.toWorldCoords(point);
+      //     const z = renderer.camera.toWorldCoords(point);
 
-          c.moveTo(0, 0);
-          c.lineTo(position.x, position.y);
-          c.endFill();
-        },
-        container: async () => new Graphics(),
-        visible: true
-      });
+      //     c.moveTo(0, 0);
+      //     c.lineTo(position.x, position.y);
+      //     c.endFill();
+      //   },
+      //   container: async () => new Graphics(),
+      //   visible: true
+      // });
 
       const debugEntityId = game.addEntity({
         id: `${entity.id}-debug`,
         components: {
           position: new Position({ x: position.x, y: position.y }),
           renderable: new Renderable({
-            children: async () => [textBox, debugBounds, debugVector]
+            children: async () => [textBox, debugBounds]
           })
         }
       });

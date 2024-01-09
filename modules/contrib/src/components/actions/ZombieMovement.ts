@@ -8,12 +8,12 @@ export type ZombieMovementCommands = "chase"
 
 export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
   "chase": (entity: Entity, game: Game) => {
-    const { position } = entity.components as { position: Position };
+    const position = entity.components.position!;
 
     // get the player entity's position
-    const playerEntity = game.entities[game.thisPlayerId] as Entity & { components: { controlling: Controlling } };
-    const playerCharacter = game.entities[playerEntity.components.controlling.entityId];
-    const playerCharacterPosition = playerCharacter.components.position as Position;
+    const playerEntity = game.entities[game.thisPlayerId];
+    const playerCharacter = game.entities[playerEntity.components.controlling!.entityId];
+    const playerCharacterPosition = playerCharacter.components.position!;
 
     // delta toward player
     let dx = playerCharacterPosition.x - position.x;

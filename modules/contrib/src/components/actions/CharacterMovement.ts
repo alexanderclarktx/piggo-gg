@@ -52,9 +52,9 @@ const moveXY = (dx: number, dy: number) => (position: Position) => {
 }
 
 const setPosAndAnimation = (entity: Entity, animation: AnimationKeys, move: (position: Position) => void) => {
-  const { position, renderable } = entity.components as { position: Position, renderable: Renderable };
-  move(position);
+  const { position, renderable } = entity.components;
+  if (position) move(position);
 
-  const character = renderable.r as Character;
+  const character = renderable?.r as Character;
   if (character) character.setAnimation(animation);
 }

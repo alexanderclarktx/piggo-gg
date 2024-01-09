@@ -10,12 +10,12 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
 
   let bufferClick: Click[] = [];
 
-  const onTick = (entities: Entity[]) => {
+  const onTick = (entities: Entity<Clickable | Actions | Position>[]) => {
     bufferClick.forEach((click) => {
       const clickWorld = renderer.camera.toWorldCoords(click);
 
       entities.forEach((entity) => {
-        const { clickable, position } = entity.components as { clickable: Clickable, position: Position };
+        const { clickable, position } = entity.components;
 
         if (!clickable.active) return;
 
@@ -42,7 +42,7 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
         )
 
         if (clicked) {
-          const callback = (entity.components.actions as Actions).actionMap[clickable.onPress];
+          const callback = entity.components.actions.actionMap[clickable.onPress];
           if (callback) callback(entity, game, thisPlayerId);
         }
       });

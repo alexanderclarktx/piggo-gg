@@ -14,5 +14,7 @@ export interface Entity<T extends ComponentTypes = ComponentTypes> {
     [P in ComponentTypes['type']]?: Extract<ComponentTypes, { type: P }>
   } : {
     [P in T['type']]: Extract<T, { type: P }>
+  } & {
+    [P in Exclude<ComponentTypes['type'], T['type']>]?: Extract<ComponentTypes, { type: P }>
   }
 }

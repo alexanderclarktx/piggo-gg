@@ -3,9 +3,9 @@ import { Position } from "@piggo-legends/contrib";
 
 // PhysicsSystem handles the movement of entities
 export const PhysicsSystem: SystemBuilder = () => {
-  const onTick = (entities: Entity[]) => {
+  const onTick = (entities: Entity<Position>[]) => {
     entities.forEach((entity) => {
-      const { position } = entity.components as { position: Position }
+      const { position } = entity.components;
       if (position.velocity > 0) {
         if (position.renderMode === "cartesian") {
           const screenXY = position.toScreenXY();

@@ -30,7 +30,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
           return;
         }
 
-        const actions = entity.components.actions as Actions;
+        const actions = entity.components.actions;
         if (!actions) { // entity has no actions
           console.log(`集 ${command.entityId} has no actions`);
           return;

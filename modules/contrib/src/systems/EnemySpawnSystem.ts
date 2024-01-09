@@ -7,7 +7,7 @@ export const EnemySpawnSystem: SystemBuilder = ({ game }) => {
   let wave = 0;
   let enemiesInWave: Record<string, Entity> = {};
 
-  const onTick = (entities: Entity[]) => {
+  const onTick = () => {
     // handle old entities
     Object.keys(enemiesInWave).forEach((id) => {
       if (!game.entities[id]) {
