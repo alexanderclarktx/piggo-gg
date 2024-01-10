@@ -1,6 +1,6 @@
 import {
   DebugSystem, InputSystem, ClickableSystem, Networked, Player, PlayerSpawnSystem, RenderSystem, Ball, DebugButton, FpsText,
-  FullscreenButton, Spaceship, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem, RtcNetcodeSystem, NPCSystem, GuiSystem, EnemySpawnSystem
+  FullscreenButton, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem, RtcNetcodeSystem, NPCSystem, GuiSystem, EnemySpawnSystem
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
 
@@ -42,7 +42,6 @@ export class Playground extends Game {
 
   addGameObjects = async () => {
     this.addEntity(Ball());
-    this.addEntity(await Spaceship());
   }
 
   addFloor = async () => {

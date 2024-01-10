@@ -54,10 +54,7 @@ export const Zombie = async (): Promise<Entity> => {
           }
         }
       }),
-      collider: new Collider({
-        x: 32,
-        y: 32,
-      }),
+      collider: new Collider({ radius: 9 }),
       renderable: new Renderable({
         debuggable: true,
         zIndex: 1,

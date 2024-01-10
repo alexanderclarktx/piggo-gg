@@ -19,6 +19,7 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
+    "@types/matter-js": "^0.19.6",
     "@types/node": "^16.11.6",
     "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",

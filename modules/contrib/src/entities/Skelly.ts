@@ -1,5 +1,5 @@
 import { Entity } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, CharacterMovementScreenPixels, CharacterMovementCommands, Renderable } from "@piggo-legends/contrib";
+import { Position, Networked, Clickable, Actions, Character, playerControlsEntity, Controller, WASDMovementCommands, Renderable, Health, Collider, WASDMovementPhysics } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite, SCALE_MODES, Container, Graphics } from "pixi.js";
 
 export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
@@ -18,6 +18,7 @@ export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
         ul: new AnimatedSprite([textures["ul1"], textures["ul2"], textures["ul3"]]),
         ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
       },
+      anchor: { x: 0.5, y: 0.7 },
       scale: 2,
       zIndex: 2,
       tintColor: tint ?? 0xffffff,
@@ -64,19 +65,21 @@ export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
     components: {
       position: new Position({ x: 300, y: 300 }),
       networked: new Networked({ isNetworked: true }),
+      health: new Health(100, 100),
       clickable: new Clickable({
         width: 32,
         height: 32,
         active: true,
         onPress: "click"
       }),
-      controller: new Controller<CharacterMovementCommands>({
-        "a,d": "", "w,s": "",
+      collider: new Collider({ radius: 9, mass: 0.1 }),
+      controller: new Controller<WASDMovementCommands>({
+        "": "", "a,d": "", "w,s": "",
         "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
         "w": "up", "s": "down", "a": "left", "d": "right"
       }),
       actions: new Actions({
-        ...CharacterMovementScreenPixels,
+        ...WASDMovementPhysics,
         "click": playerControlsEntity
       }),
       renderable: new Renderable({

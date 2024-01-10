@@ -1,5 +1,5 @@
 import { Entity } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, CarMovement, playerControlsEntity, Controller, CarMovementCommands, Renderable } from "@piggo-legends/contrib";
+import { Position, Networked, Clickable, Actions, Character, VehicleMovement, playerControlsEntity, Controller, VehicleMovementCommands, Renderable, Collider } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
@@ -34,13 +34,14 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
         active: true,
         onPress: "click"
       }),
-      controller: new Controller<CarMovementCommands>({
+      collider: new Collider({ radius: 60 }),
+      controller: new Controller<VehicleMovementCommands>({
         "a,d": "", "w,s": "",
         "shift,a": "skidleft", "shift,d": "skidright",
         "w": "up", "s": "down", "a": "left", "d": "right"
       }),
       actions: new Actions({
-        ...CarMovement,
+        ...VehicleMovement,
         "click": playerControlsEntity
       }),
       renderable: new Renderable({

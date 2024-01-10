@@ -97,6 +97,8 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     // check for actions
     const { controller, actions } = controlledEntity.components;
 
+    let didAction = false;
+
     // handle standalone and composite (a,b) input controls
     for (const input in controller.controllerMap) {
       if (input.includes(",")) {
@@ -109,6 +111,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
               entityId: controlledEntity.id,
               actionId: controller.controllerMap[input]
             });
+            didAction = true;
           }
 
           // remove all keys from the buffer
@@ -122,11 +125,19 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
             entityId: controlledEntity.id,
             actionId: controller.controllerMap[input]
           });
+          didAction = true;
         }
 
         // remove the key from the buffer
         buffer.delete(input);
       }
+    }
+    if (!didAction) {
+      localCommandBuffer.push({
+        tick: game.tick + 1,
+        entityId: controlledEntity.id,
+        actionId: ""
+      });
     }
   }
 

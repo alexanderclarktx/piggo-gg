@@ -16,7 +16,7 @@ export class Position implements Component<"position"> {
   type: "position";
 
   rotation: Rotation = new Rotation();
-  velocity: number = 0;
+  velocity: { x: number, y: number } = { x: 0, y: 0 };
   x: number;
   y: number;
   offset: PositionOffset;
@@ -45,7 +45,7 @@ export class Position implements Component<"position"> {
     this.y = (2 * isoY - isoX) / 2;
   }
 
-  setVelocity = (velocity: number) => {
+  setVelocity = (velocity: { x: number, y: number }) => {
     this.velocity = velocity;
   }
 

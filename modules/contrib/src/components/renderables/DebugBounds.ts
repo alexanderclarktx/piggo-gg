@@ -7,27 +7,22 @@ export type DebugBoundsProps = RenderableProps & {
 
 export class DebugBounds extends Renderable<DebugBoundsProps> {
   constructor(props: DebugBoundsProps) {
-    super({
-      ...props,
-      debuggable: false,
-      zIndex: 3
-    });
+    super({ ...props, debuggable: false });
     this.init(props.debugRenderable);
   }
 
   init = (r: Renderable) => {
     const drawing = new Graphics();
-
     const bounds = r.c.getLocalBounds();
+
+    // circle at center
+    drawing.beginFill(0xff00ff);
+    drawing.drawCircle(0, 0, 2);
+    drawing.endFill();
 
     // rectangle around bounds
     drawing.lineStyle(1, 0xff0000);
     drawing.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-    // circle at center
-    drawing.beginFill(0xff0000);
-    drawing.drawCircle(0, 0, 2);
-    drawing.endFill();
 
     this.c.addChild(drawing);
   }
