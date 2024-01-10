@@ -29,9 +29,9 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
       debuggable: true,
       zIndex: 1,
       container: async () => {
-        const t = new Text("🏀", { fill: "#FFFFFF", fontSize: 16 });
-        t.anchor.set(0.5);
-        return t;
+        const text = new Text("🏀", { fill: "#FFFFFF", fontSize: 16 })
+        text.anchor.set(0.5);
+        return text;
       }
     })
   }
