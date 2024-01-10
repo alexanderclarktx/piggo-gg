@@ -12,24 +12,26 @@ __Piggo Legends__ is a game engine for 2D multiplayer web games. Play online at 
 
 # Features
 
-✅ custom ECS
+✅ ECS architecture
+
+✅ physics engine & unit collision
 
 ✅ p2p webrtc & authoritative websocket server netcode
 
-✅ WASD & physics-based movement controls
+✅ WASD movement controls
 
 ✅ isometric projection from world coordinates
 
-✅ entity clickable callbacks & npc ai behavior
+✅ entity onclick callbacks & npc ai behavior
 
 # Development
 
 |package|description|
 |--|--|
-|`docs`| minified js bundle and resources served statically by GitHub Pages
-|`modules`| piggo-legends libraries
-|`server`| WebSocket game server
-|`web`| React webpage
+|`docs`| resources & js bundle served statically by GitHub Pages
+|`modules`| source libraries
+|`server`| game server
+|`web`| webpage
 
 ### setup
 
