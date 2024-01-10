@@ -21,13 +21,9 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
         const { collider: c, position: p } = entity.components;
 
         const newBody = Bodies.circle(p.x, p.y, c.radius, {
-          // friction: 0,
-          // frictionStatic: 0,
           frictionAir: 0,
-          restitution: 0.9,
           density: c.mass,
         });
-        console.log(newBody);
 
         Composite.add(engine.world, [newBody]);
         bodies[entity.id] = newBody;

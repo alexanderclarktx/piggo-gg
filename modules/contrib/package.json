@@ -1,8 +1,5 @@
 {
   "name": "@piggo-legends/contrib",
   "version": "1.0.0",
-  "main": "./main.ts",
-  "devDependencies": {
-    "@types/matter-js": "^0.19.6"
-  }
+  "main": "./main.ts"
 }
