@@ -58,7 +58,7 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     components: {
       position: new Position(position),
       renderable: new Renderable({
-        debuggable: true,
+        debuggable: false,
         zIndex: 0,
         children: makeTiles
       })

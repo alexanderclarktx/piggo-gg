@@ -1,63 +1,53 @@
 import { Entity, SystemBuilder } from '@piggo-legends/core';
 import { Collider, Position } from "@piggo-legends/contrib";
+import { Engine, Bodies, Composite, Body } from "matter-js";
 
 // PhysicsSystem handles the movement of entities
 export const PhysicsSystem: SystemBuilder = ({ game }) => {
 
-  let colliders: Record<string, Entity<Position | Collider>> = {};
-
-  type box = { x: number, y: number, width: number, height: number };
-
-  const intersect = (a: box, b: box) => (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
-  )
+  let engine: Engine = Engine.create({ gravity: { x: 0, y: 0 } });
+  let bodies: Record<string, Body> = {};
 
   const onTick = (entities: Entity<Position | Collider>[]) => {
-    // remove old colliders
-    Object.keys(colliders).forEach((id) => (!game.entities[id]) ? delete colliders[id] : 0);
 
+    // handle old physics bodies
+    Object.keys(bodies).forEach((id) => (!game.entities[id]) ? delete bodies[id] : 0);
+
+    // prepare physics bodies for each entity
     entities.forEach((entity) => {
 
-      // add new colliders
-      if (!colliders[entity.id]) colliders[entity.id] = entity;
+      // handle new physics bodies
+      if (!bodies[entity.id]) {
+        const { collider: c, position: p } = entity.components;
 
-      const { position, collider } = entity.components;
-      if (position.velocity > 0) {
-        if (position.renderMode === "cartesian") {
-          const screenXY = position.toScreenXY();
-          const x = screenXY.x + Math.sin(position.rotation.rads) * position.velocity;
-          const y = screenXY.y - Math.cos(position.rotation.rads) * position.velocity;
+        const newBody = Bodies.circle(p.x, p.y, c.radius, {
+          // friction: 0,
+          // frictionStatic: 0,
+          frictionAir: 0,
+          restitution: 0.9,
+          density: c.mass,
+        });
+        console.log(newBody);
 
-          position.fromScreenXY(x, y);
-        } else {
-
-          // calculate the new position
-          let newX = Math.sin(position.rotation.rads - Math.PI / 2) * position.velocity;
-          let newY = Math.cos(position.rotation.rads - Math.PI / 2) * position.velocity;
-
-          // see if the new position collides with anything
-          Object.values(colliders).filter((otherCollider) => otherCollider.id !== entity.id).forEach((otherCollider) => {
-
-            const { position: p, collider: c } = otherCollider.components;
-
-            // check if the two boxes overlap
-            const box1 = { x: p.x, y: p.y, width: c.x, height: c.y };
-            const box2 = { x: position.x + newX, y: position.y + newY, width: collider.x, height: collider.y };
-
-            if (intersect(box1, box2)) {
-              // console.log("collision!");
-              newX = 0;
-              newY = 0;
-            }
-          });
-
-          position.x += newX;
-          position.y -= newY;
-        }
+        Composite.add(engine.world, [newBody]);
+        bodies[entity.id] = newBody;
       }
+
+      // update body velocity
+      const body = bodies[entity.id];
+      const { velocity } = entity.components.position;
+      Body.setVelocity(body, velocity);
+    });
+
+    // run physics
+    Engine.update(engine, 1000 / 30);
+
+    // update the entity positions
+    Object.keys(bodies).forEach((id) => {
+      const body = bodies[id];
+      const entity = game.entities[id];
+      entity.components.position!.x = body.position.x;
+      entity.components.position!.y = body.position.y;
     });
   }
 

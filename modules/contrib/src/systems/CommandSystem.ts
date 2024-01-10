@@ -7,7 +7,7 @@ export type Command = {
   actionId: string
 }
 
-// TODO hack
+// TODO localCommandBuffer is a hack
 export var localCommandBuffer: Command[] = [];
 
 export const CommandSystem: SystemBuilder = ({ game }) => {
@@ -44,7 +44,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
           return;
         }
         action(entity, game);
-        // console.log(`${command.entityId} command ${command.actionId}`);
+        // console.log(`集 ${command.entityId} command ${command.actionId}`);
 
         // remove the command from the buffer
         localCommandBuffer = localCommandBuffer.filter((c) => c !== command);

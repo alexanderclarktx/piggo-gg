@@ -64,34 +64,12 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
       // debug bounds
       const debugBounds = new DebugBounds({ debugRenderable: renderable });
 
-      // debug velocity angle vector
-      // const debugVector = new Renderable({
-      //   position: { x: 0, y: 0 },
-      //   dynamic: async (c: Graphics, r: Renderable) => {
-      //     const p = position.toScreenXY();
-      //     c.clear();
-      //     c.lineStyle(1, 0x00ff00, 1);
-
-      //     const point = {
-      //       x: Math.sin(position.rotation.rads - Math.PI / 2) * 50,
-      //       y: Math.cos(position.rotation.rads - Math.PI / 2) * 50
-      //     };
-
-      //     const z = renderer.camera.toWorldCoords(point);
-
-      //     c.moveTo(0, 0);
-      //     c.lineTo(position.x, position.y);
-      //     c.endFill();
-      //   },
-      //   container: async () => new Graphics(),
-      //   visible: true
-      // });
-
       const debugEntityId = game.addEntity({
         id: `${entity.id}-debug`,
         components: {
           position: new Position({ x: position.x, y: position.y }),
           renderable: new Renderable({
+            zIndex: 2,
             children: async () => [textBox, debugBounds]
           })
         }

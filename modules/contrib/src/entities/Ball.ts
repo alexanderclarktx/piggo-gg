@@ -1,5 +1,5 @@
 import { Entity } from "@piggo-legends/core";
-import { Position, TextBox, Networked, Clickable, Renderable, Actions } from "@piggo-legends/contrib";
+import { Position, TextBox, Networked, Clickable, Renderable, Actions, Collider } from "@piggo-legends/contrib";
 import { Text } from "pixi.js";
 
 export type BallProps = {
@@ -24,10 +24,15 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
         t.text = "🙃";
       }
     }),
+    collider: new Collider({ radius: 7 }),
     renderable: new Renderable({
       debuggable: true,
       zIndex: 1,
-      container: async () => new Text("🏀", { fill: "#FFFFFF", fontSize: 16 }),
+      container: async () => {
+        const t = new Text("🏀", { fill: "#FFFFFF", fontSize: 16 });
+        t.anchor.set(0.5);
+        return t;
+      }
     })
   }
 });

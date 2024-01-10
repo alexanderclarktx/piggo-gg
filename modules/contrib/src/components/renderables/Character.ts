@@ -31,7 +31,7 @@ export class Character extends Renderable<CharacterProps> {
     Object.values(this.props.animations).forEach((animation: AnimatedSprite) => {
       animation.animationSpeed = 0.1;
       animation.scale.set(this.props.scale || 1);
-      animation.anchor.set(0.5, 0.5);
+      animation.anchor.set(0.5, 0.7);
       animation.texture.baseTexture.scaleMode = this.props.scaleMode ?? SCALE_MODES.LINEAR;
       if (this.props.tintColor) animation.tint = this.props.tintColor;
     });
