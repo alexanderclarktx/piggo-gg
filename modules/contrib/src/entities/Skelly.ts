@@ -18,6 +18,7 @@ export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
         ul: new AnimatedSprite([textures["ul1"], textures["ul2"], textures["ul3"]]),
         ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
       },
+      anchor: { x: 0.5, y: 0.7 },
       scale: 2,
       zIndex: 2,
       tintColor: tint ?? 0xffffff,

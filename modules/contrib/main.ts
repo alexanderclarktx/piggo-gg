@@ -1,6 +1,6 @@
 export * from "./src/components/Actions";
 export * from "./src/components/Actions";
-export * from "./src/components/actions/RotationMovement";
+export * from "./src/components/actions/VehicleMovement";
 export * from "./src/components/actions/WASDMovement";
 export * from "./src/components/actions/ZombieMovement";
 export * from "./src/components/actions/util";

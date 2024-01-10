@@ -8,7 +8,8 @@ export type CharacterProps = RenderableProps & {
   },
   scale?: number,
   tintColor?: number,
-  scaleMode?: SCALE_MODES
+  scaleMode?: SCALE_MODES,
+  anchor?: { x: number, y: number }
 }
 
 export type AnimationKeys = keyof CharacterProps['animations'];
@@ -31,7 +32,7 @@ export class Character extends Renderable<CharacterProps> {
     Object.values(this.props.animations).forEach((animation: AnimatedSprite) => {
       animation.animationSpeed = 0.1;
       animation.scale.set(this.props.scale || 1);
-      animation.anchor.set(0.5, 0.7);
+      animation.anchor.set(this.props.anchor?.x ?? 0.5, this.props.anchor?.y ?? 0.5);
       animation.texture.baseTexture.scaleMode = this.props.scaleMode ?? SCALE_MODES.LINEAR;
       if (this.props.tintColor) animation.tint = this.props.tintColor;
     });

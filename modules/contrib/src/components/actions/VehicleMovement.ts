@@ -1,14 +1,14 @@
 import { ActionMap, Position } from "@piggo-legends/contrib";
 import { Entity } from "@piggo-legends/core";
 
-const TURN_SPEED = 0.06;
+const TURN_SPEED = 0.1;
 const SLIDE_FACTOR = 1.5;
 
 const SPEED = 2;
 
-export type RotationMovementCommands = "up" | "down" | "left" | "right" | "skidleft" | "skidright";
+export type VehicleMovementCommands = "up" | "down" | "left" | "right" | "skidleft" | "skidright";
 
-export const RotationMovement: ActionMap<RotationMovementCommands> = {
+export const VehicleMovement: ActionMap<VehicleMovementCommands> = {
   "up": (entity: Entity<Position>) => {
     const x = Math.cos(entity.components.position.rotation.rads - Math.PI / 1.35) * SPEED;
     const y = Math.sin(entity.components.position.rotation.rads - Math.PI / 1.35) * SPEED;
