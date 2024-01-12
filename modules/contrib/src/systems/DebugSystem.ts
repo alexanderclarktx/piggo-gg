@@ -9,7 +9,7 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
   let debuggedEntities: Map<Entity, Renderable[]> = new Map();
   let debugEntities: Record<string, string> = {};
 
-  const onTick = (entities: Entity[]) => {
+  const onTick = (entities: Entity<Renderable | Position>[]) => {
     if (renderer.debug) {
       // handle new entities
       entities.forEach((entity) => {
@@ -46,9 +46,9 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
     }
   }
 
-  const addEntity = (entity: Entity) => {
+  const addEntity = (entity: Entity<Renderable | Position>) => {
     if (entity.components.renderable) {
-      const {renderable, position} = entity.components as {renderable: Renderable, position: Position};
+      const {renderable, position} = entity.components;
 
       const bounds = renderable.c.getLocalBounds();
 
@@ -85,7 +85,7 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
   const debugText = (p: Position, r: Renderable) => `w: ${p.x.toFixed(0)} ${p.y.toFixed(0)}<br>s: ${r.c.x.toFixed(0)} ${r.c.y.toFixed(0)}`;
 
   return {
-    componentTypeQuery: ["renderable"],
+    componentTypeQuery: ["renderable", "position"],
     onTick
   }
 }

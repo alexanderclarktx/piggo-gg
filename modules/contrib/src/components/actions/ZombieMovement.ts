@@ -7,8 +7,8 @@ const t = (Math.PI * 2) / 16; // 16th of tau
 export type ZombieMovementCommands = "chase"
 
 export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
-  "chase": (entity: Entity, game: Game) => {
-    const position = entity.components.position!;
+  "chase": (entity: Entity<Position | Renderable>, game: Game) => {
+    const position = entity.components.position;
 
     // get the player entity's position
     const playerEntity = game.entities[game.thisPlayerId];
@@ -28,7 +28,7 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
     const angle = Math.atan2(moveY, moveX) + t * 8;
 
     // set animation based on angle
-    const character = (entity.components.renderable as Renderable).r as Character;
+    const character = entity.components.renderable.r as Character;
     if (character) {
       if (angle >= 0 && angle < 1 * t) character.setAnimation("ul");
       else if (angle >= 15 * t && angle < 16 * t) character.setAnimation("ul");

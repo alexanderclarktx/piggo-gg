@@ -23,7 +23,8 @@ export const Zombie = async (): Promise<Entity> => {
       scale: 2,
       zIndex: 2,
       tintColor: 0x00ff00,
-      scaleMode: SCALE_MODES.NEAREST
+      scaleMode: SCALE_MODES.NEAREST,
+      anchor: { x: 0.5, y: 0.7 }
     });
 
     return character;
@@ -57,7 +58,7 @@ export const Zombie = async (): Promise<Entity> => {
       collider: new Collider({ radius: 9 }),
       renderable: new Renderable({
         debuggable: true,
-        zIndex: 1,
+        zIndex: 2,
         children: async () => [ await render() ]
       })
     }

@@ -1,5 +1,5 @@
+import { Position, Renderable } from "@piggo-legends/contrib";
 import { Entity, SystemBuilder } from '@piggo-legends/core';
-import { Controlled, Position, Renderable } from "@piggo-legends/contrib";
 
 // RenderSystem handles rendering entities in isometric or cartesian space
 export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
@@ -46,6 +46,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
         } else {
           renderable.c.position.set(position.x, position.y);
         }
+        cachedEntityPositions[entity.id] = position;
       }
 
       // run the dynamic callback
@@ -56,6 +57,20 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
         renderable.children.forEach((child) => {
           if (child.props.dynamic) child.props.dynamic(child.c, child, game);
         });
+      }
+    });
+
+    // sort cachedEntityPositions by Y position
+    const sortedEntityPositions = Object.keys(cachedEntityPositions).sort((a, b) => { return cachedEntityPositions[a].y - cachedEntityPositions[b].y });
+
+    // set zIndex based on Y position
+    Object.keys(cachedEntityPositions).forEach((entityId) => {
+      const entity = game.entities[entityId];
+      if (entity) {
+        const renderable = entity.components.renderable;
+        if (renderable) {
+          renderable.c.zIndex = (renderable.props.zIndex ?? 2) + 0.0001 * sortedEntityPositions.indexOf(entityId);
+        }
       }
     });
   }

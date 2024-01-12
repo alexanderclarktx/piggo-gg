@@ -27,7 +27,7 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
     collider: new Collider({ radius: 7 }),
     renderable: new Renderable({
       debuggable: true,
-      zIndex: 1,
+      zIndex: 2,
       container: async () => {
         const text = new Text("🏀", { fill: "#FFFFFF", fontSize: 16 })
         text.anchor.set(0.5);
