@@ -15,7 +15,6 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
       entities.forEach((entity) => {
         const renderable = entity.components.renderable;
         if (renderable && renderable.props.debuggable && !debuggedEntities.has(entity)) {
-          console.log("adding debug entity");
           addEntity(entity);
         }
       });
