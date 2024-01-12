@@ -1,6 +1,6 @@
 __Piggo Legends__ is a game engine for 2D multiplayer web games. Play online at [github.io](https://alexanderclarktx.github.io/piggo-legends/) 
 
-<p align="center">
+<p align="left">
   <img src="piggo-legends.gif" style="width:400px">
 </p>
 
