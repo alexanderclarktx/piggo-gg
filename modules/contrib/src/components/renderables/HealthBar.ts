@@ -23,12 +23,12 @@ export class HealthBar extends Renderable<HealthBarProps> {
   draw = (g: Graphics) => {
     // gold outline
     g.lineStyle(1, 0xffd700, 1);
-    g.drawRect(-15, -25, 30, 5);
+    g.drawRect(-15, -35, 30, 5);
 
     // red length proportional to percent health
     const length = 30 * (this.props.health.health / this.props.health.maxHealth);
-    g.beginFill(0xff0000);
-    g.drawRect(-15, -25, length, 5);
+    g.beginFill(0xff0000, 0.9);
+    g.drawRect(-15, -35, length, 5);
     g.endFill();
   }
 

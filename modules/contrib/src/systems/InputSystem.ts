@@ -87,7 +87,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     });
 
     // handle buffered backspace
-    if (chatIsOpen && backspaceOn && game.tick % 3 === 0) chatBuffer.pop();
+    if (chatIsOpen && backspaceOn && game.tick % 2 === 0) chatBuffer.pop();
   }
 
   const handleInputForControlledEntity = (controlledEntity: Entity<Controlled | Controller | Actions>, game: Game) => {
