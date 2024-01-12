@@ -3,7 +3,7 @@
 <p align="center">
   <img src="piggo-legends.gif" style="width:400px">
 </p> -->
-<br clear="left"/>
+<br clear="right"/>
 
 # Objectives
 
