@@ -6,12 +6,11 @@ import { Graphics } from "pixi.js";
 // add 4 walls to the world
 const wThickness = 1;
 const wWidth = 900;
-const wOptions = { isStatic: true };
 const walls = [
-  Bodies.rectangle(400, -20, wWidth, wThickness, wOptions), // top-right
-  Bodies.rectangle(12, 400, wThickness, wWidth, wOptions), // top-left
-  Bodies.rectangle(400, 780, wWidth, wThickness, wOptions), // bottom-left
-  Bodies.rectangle(815, 400, wThickness, wWidth, wOptions) // bottom-right
+  Bodies.rectangle(400, -20, wWidth, wThickness, { isStatic: true }), // top-right
+  Bodies.rectangle(12, 400, wThickness, wWidth, { isStatic: true }), // top-left
+  Bodies.rectangle(400, 780, wWidth, wThickness, { isStatic: true }), // bottom-left
+  Bodies.rectangle(815, 400, wThickness, wWidth, { isStatic: true }) // bottom-right
 ];
 
 // PhysicsSystem handles the movement of entities
@@ -25,7 +24,7 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
 
   const onTick = (entities: Entity<Position | Collider>[]) => {
 
-    // handle if debug is on
+    // handle debug mode
     if (!game.debug) {
       if (debugEntities.length) {
         Object.values(debugEntities).forEach((entity) => game.removeEntity(entity.id));
@@ -39,11 +38,8 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
             position: new Position(),
             renderable: new Renderable({
               dynamic: (c: Graphics) => {
-                c.clear();
-                c.beginFill(0xffffff, 0.1);
-                c.lineStyle(1, 0xffffff);
+                c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
                 c.drawPolygon(...body.vertices.map((v) => worldToScreen({ x: v.x, y: v.y })));
-                c.endFill();
               },
               debuggable: false,
               zIndex: 5,

@@ -1,4 +1,4 @@
-import { Container, SCALE_MODES } from "pixi.js";
+import { Container } from "pixi.js";
 import { Component, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
@@ -12,7 +12,6 @@ export type RenderableProps = {
   id?: string
   cacheAsBitmap?: boolean
   rotates?: boolean
-  // scaleMode?: "nearest" | "linear"
 }
 
 // TODO refactor and simplify how entities define renderables
@@ -54,8 +53,6 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
         });
       }
     }
-
-    // if (scaleMode) { this.c.scaleMode = (scaleMode === "nearest" ? SCALE_MODES.NEAREST : SCALE_MODES.LINEAR) }
 
     // set position
     if (position) this.c.position.set(position.x, position.y);
