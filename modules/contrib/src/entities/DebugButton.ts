@@ -23,12 +23,12 @@ export const DebugButton = (): Entity => {
             const r = debugButton.components.renderable as Button;
             r.shadow.tint = 0xff0000;
             r.outline.tint = 0xff0000;
-            if (game.renderer) game.renderer.debug = true;
+            if (game.renderer) game.debug = true;
           } else {
             const r = debugButton.components.renderable as Button;
             r.shadow.tint = 0x00FFFF;
             r.outline.tint = 0x00FFFF;
-            if (game.renderer) game.renderer.debug = false;
+            if (game.renderer) game.debug = false;
           }
         }
       }),

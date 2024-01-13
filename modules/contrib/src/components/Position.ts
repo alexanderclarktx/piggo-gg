@@ -11,6 +11,11 @@ export type PositionProps = {
   renderMode?: "isometric" | "cartesian"
 }
 
+export const worldToScreen = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
+  x: x - y,
+  y: (x + y) / 2
+});
+
 // the entity's position in the world
 export class Position implements Component<"position"> {
   type: "position";
@@ -25,7 +30,7 @@ export class Position implements Component<"position"> {
   // TODO refactor and consolidate this somewhere
   renderMode: "isometric" | "cartesian";
 
-  constructor({ x, y, offset, screenFixed, renderMode }: PositionProps) {
+  constructor({ x, y, offset, screenFixed, renderMode }: PositionProps = {}) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.offset = offset ?? "world";
@@ -34,10 +39,7 @@ export class Position implements Component<"position"> {
   }
 
   // get screen coordinates from world position
-  toScreenXY = (): { x: number, y: number } => ({
-    x: this.x - this.y,
-    y: (this.x + this.y) / 2
-  })
+  toScreenXY = (): { x: number, y: number } => worldToScreen({ x: this.x, y: this.y });
 
   // set world position from screen coordinates
   fromScreenXY = (isoX: number, isoY: number) => {
@@ -55,7 +57,7 @@ export class Position implements Component<"position"> {
     rotation: this.rotation.rads
   })
 
-  deserialize = ({x, y, rotation}: SerializedPosition) => {
+  deserialize = ({ x, y, rotation }: SerializedPosition) => {
     this.x = x;
     this.y = y;
     this.rotation.rads = rotation;

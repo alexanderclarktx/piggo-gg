@@ -15,6 +15,7 @@ export abstract class Game<T extends GameProps = GameProps> {
   systems: System[] = [];
   tick: number = 0;
   mode: "cartesian" | "isometric" = "cartesian";
+  debug: boolean = false;
 
   thisPlayerId = `player${(Math.random() * 100).toFixed(0)}`;
 

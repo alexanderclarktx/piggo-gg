@@ -5,4 +5,5 @@ export * from "./src/ecs/Entity";
 export * from "./src/ecs/Component";
 export * from "./src/net/rtc/RtcPeer";
 export * from "./src/net/rtc/RtcPool";
+export * from "./src/net/rtc/Compression";
 export * from "./src/game/Game";

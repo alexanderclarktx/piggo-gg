@@ -14,7 +14,6 @@ export class Renderer {
 
   app: Application;
   camera: Camera;
-  debug: boolean = false;
   events: utils.EventEmitter = new utils.EventEmitter();
 
   constructor(props: RendererProps) {
