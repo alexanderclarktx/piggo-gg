@@ -17,7 +17,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
     // for each buffered command, if it's scheduled for the current tick, execute it
     localCommandBuffer.forEach((command) => {
       if (command.tick < game.tick) {
-        console.log(`集 ${command.entityId} command ${command.actionId} too old`);
+        // console.log(`集 ${command.entityId} command ${command.actionId} too old`);
 
         // TODO rollback
         localCommandBuffer = localCommandBuffer.filter((c) => c !== command);
