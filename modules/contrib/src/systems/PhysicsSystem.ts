@@ -1,12 +1,24 @@
 import { Entity, SystemBuilder } from '@piggo-legends/core';
 import { Collider, Position } from "@piggo-legends/contrib";
-import { Engine, Bodies, Composite, Body } from "matter-js";
+import { Engine, Bodies, Composite, Body, Events } from "matter-js";
+
+// add 4 walls to the world
+const wThickness = 1;
+const wWidth = 1000;
+const wOptions = { isStatic: true };
+const walls = [
+  Bodies.rectangle(400, -20, wWidth, wThickness, wOptions),
+  Bodies.rectangle(10, 400, wThickness, wWidth, wOptions),
+  Bodies.rectangle(400, 780, wWidth, wThickness, wOptions),
+  Bodies.rectangle(815, 400, wThickness, wWidth, wOptions)
+];
 
 // PhysicsSystem handles the movement of entities
 export const PhysicsSystem: SystemBuilder = ({ game }) => {
 
   let engine: Engine = Engine.create({ gravity: { x: 0, y: 0 } });
   let bodies: Record<string, Body> = {};
+  Composite.add(engine.world, walls);
 
   const onTick = (entities: Entity<Position | Collider>[]) => {
 
@@ -20,10 +32,7 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
       if (!bodies[entity.id]) {
         const { collider: c, position: p } = entity.components;
 
-        const newBody = Bodies.circle(p.x, p.y, c.radius, {
-          frictionAir: 0,
-          density: c.mass,
-        });
+        const newBody = Bodies.circle(p.x, p.y, c.radius, { frictionAir: 0 });
 
         Composite.add(engine.world, [newBody]);
         bodies[entity.id] = newBody;

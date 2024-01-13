@@ -23,7 +23,7 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     tile.anchor.set(0.5, 0.5);
     tile.scale.set(2);
     tile.eventMode = "static";
-    tile.tint = 0x8888ff;
+    tile.tint = 0x7777aa;
 
     // create a render texture
     const renderTexture = RenderTexture.create({
