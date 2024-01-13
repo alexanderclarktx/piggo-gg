@@ -1,16 +1,15 @@
 import { DebugBounds, Position, Renderable, TextBox } from "@piggo-legends/contrib";
 import { Entity, SystemBuilder } from "@piggo-legends/core";
-import { Text, Graphics } from 'pixi.js';
+import { Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
-export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
-  if (!renderer) throw new Error("DebugSystem requires a renderer");
+export const DebugSystem: SystemBuilder = ({ game }) => {
 
   let debuggedEntities: Map<Entity, Renderable[]> = new Map();
   let debugEntities: Record<string, string> = {};
 
   const onTick = (entities: Entity<Renderable | Position>[]) => {
-    if (renderer.debug) {
+    if (game.debug) {
       // handle new entities
       entities.forEach((entity) => {
         const renderable = entity.components.renderable;
@@ -31,12 +30,13 @@ export const DebugSystem: SystemBuilder = ({ renderer, game }) => {
             debugPosition.y = position.y;
           }
         } else {
+          // handle old entities
           game.removeEntity(debugId);
           delete debugEntities[id];
         }
       });
     } else {
-      // handle old entities
+      // remove all debug entities
       debuggedEntities.forEach((renderables, entity) => {
         game.removeEntity(`${entity.id}-debug`);
         renderables.forEach((renderable) => renderable.cleanup());

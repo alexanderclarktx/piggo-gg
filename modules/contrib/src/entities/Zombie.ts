@@ -33,7 +33,7 @@ export const Zombie = async (): Promise<Entity> => {
   return {
     id: `zombie-${zombieId++}`,
     components: {
-      position: new Position({ renderMode: "isometric", x: Math.random() * 800, y: Math.random() * 600 }),
+      position: new Position({ renderMode: "isometric", x: 100 + Math.random() * 600, y: 100 + Math.random() * 600 }),
       networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
         width: 32,

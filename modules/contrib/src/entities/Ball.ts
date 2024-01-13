@@ -1,6 +1,6 @@
+import { Clickable, Collider, Networked, Position, Renderable } from "@piggo-legends/contrib";
 import { Entity } from "@piggo-legends/core";
-import { Position, TextBox, Networked, Clickable, Renderable, Actions, Collider } from "@piggo-legends/contrib";
-import { Text } from "pixi.js";
+import { HTMLText } from "pixi.js";
 
 export type BallProps = {
   id?: string,
@@ -10,7 +10,7 @@ export type BallProps = {
 export const Ball = ({ position, id }: BallProps = {}): Entity => ({
   id: id ?? `ball${Math.trunc(Math.random() * 100)}`,
   components: {
-    position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
+    position: new Position(position ?? { x: 100 + Math.random() * 600, y: 100 + Math.random() * 600 }),
     networked: new Networked({ isNetworked: true }),
     clickable: new Clickable({
       width: 32,
@@ -18,18 +18,12 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
       active: true,
       onPress: "click"
     }),
-    actions: new Actions({
-      "click": (entity: Entity) => {
-        const t = (entity.components.renderable as TextBox).c as Text;
-        t.text = "🙃";
-      }
-    }),
-    collider: new Collider({ radius: 7 }),
+    collider: new Collider({ radius: 6 }),
     renderable: new Renderable({
       debuggable: true,
       zIndex: 2,
       container: async () => {
-        const text = new Text("🏀", { fill: "#FFFFFF", fontSize: 16 })
+        const text = new HTMLText("⚽️", { fill: "#FFFFFF", fontSize: 18 })
         text.anchor.set(0.5);
         return text;
       }

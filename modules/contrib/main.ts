@@ -27,6 +27,7 @@ export * from "./src/entities/DebugButton";
 export * from "./src/entities/FpsText";
 export * from "./src/entities/FullscreenButton";
 export * from "./src/entities/Skelly";
+export * from "./src/entities/SpaceBackground";
 export * from "./src/entities/Spaceship";
 export * from "./src/entities/TileFloor";
 export * from "./src/entities/TilingSpriteFloor";

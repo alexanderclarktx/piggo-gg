@@ -1,5 +1,4 @@
 import { Entity, SystemBuilder } from "@piggo-legends/core";
-import { Actions } from "@piggo-legends/contrib";
 
 export type Command = {
   tick: number
