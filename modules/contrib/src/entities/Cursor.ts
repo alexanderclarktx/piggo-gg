@@ -24,7 +24,6 @@ export const Cursor = (): Entity => {
 
           return circle;
         },
-        debuggable: false, // TODO when in spaceship, the bounds is wrong
         zIndex: 10
       })
     }

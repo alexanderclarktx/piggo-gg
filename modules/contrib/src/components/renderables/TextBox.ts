@@ -11,11 +11,10 @@ export type TextBoxProps = RenderableProps & {
 
 export class TextBox extends Renderable<TextBoxProps> {
   constructor(props: TextBoxProps) {
-    const { text = "", debuggable = false, color = 0x55FF00, fontSize = 16, dropShadow = false, padding = 0 } = props;
+    const { text = "", color = 0x55FF00, fontSize = 16, dropShadow = false, padding = 0 } = props;
 
     super({
       ...props,
-      debuggable: debuggable,
       container: async () => new HTMLText(text, {
         fill: color,
         fontSize,

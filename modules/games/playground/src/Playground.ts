@@ -1,9 +1,8 @@
 import {
   DebugSystem, InputSystem, ClickableSystem, Networked, Player, PlayerSpawnSystem, RenderSystem, Ball, DebugButton, FpsText,
-  FullscreenButton, PhysicsSystem, Cursor, Chat, TileFloor, CommandSystem, RtcNetcodeSystem, NPCSystem, GuiSystem, EnemySpawnSystem, WsNetcodeSystem, Renderable, Position, SpaceBackground
+  FullscreenButton, PhysicsSystem, Cursor, Chat, Wall, TileFloor, CommandSystem, RtcNetcodeSystem, NPCSystem, GuiSystem, EnemySpawnSystem, SpaceBackground
 } from "@piggo-legends/contrib";
 import { Game, GameProps } from "@piggo-legends/core";
-import { Sprite, TilingSprite } from "pixi.js";
 
 export class Playground extends Game {
 
@@ -21,6 +20,7 @@ export class Playground extends Game {
       this.addSystemBuilders([ InputSystem, ClickableSystem, DebugSystem, RenderSystem, RtcNetcodeSystem, GuiSystem ]);
       this.addUI();
       this.addFloor();
+      this.addWalls();
       this.addBackgroundImage();
     }
 
@@ -48,6 +48,15 @@ export class Playground extends Game {
 
   addFloor = async () => {
     this.addEntity(await TileFloor({ rows: 25, cols: 25, position: { x: 0, y: 0 } }));
+  }
+
+  addWalls = async () => {
+    this.addEntities([
+      Wall({ x: 420, y: -20, length: 850, width: 1 }),
+      Wall({ x: 12, y: 380, length: 1, width: 850 }),
+      Wall({ x: 420, y: 780, length: 850, width: 1 }),
+      Wall({ x: 815, y: 380, length: 1, width: 850 })
+    ]);
   }
 
   addBackgroundImage = () => {

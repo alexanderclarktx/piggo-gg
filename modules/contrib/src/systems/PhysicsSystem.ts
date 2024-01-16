@@ -1,56 +1,14 @@
-import { Collider, Position, Renderable, worldToScreen } from "@piggo-legends/contrib";
+import { Collider, Position } from "@piggo-legends/contrib";
 import { Entity, SystemBuilder } from '@piggo-legends/core';
-import { Bodies, Body, Composite, Engine } from "matter-js";
-import { Graphics } from "pixi.js";
-
-// add 4 walls to the world
-const wThickness = 1;
-const wWidth = 900;
-const walls = [
-  Bodies.rectangle(400, -20, wWidth, wThickness, { isStatic: true }), // top-right
-  Bodies.rectangle(12, 400, wThickness, wWidth, { isStatic: true }), // top-left
-  Bodies.rectangle(400, 780, wWidth, wThickness, { isStatic: true }), // bottom-left
-  Bodies.rectangle(815, 400, wThickness, wWidth, { isStatic: true }) // bottom-right
-];
+import { Body, Composite, Engine } from "matter-js";
 
 // PhysicsSystem handles the movement of entities
 export const PhysicsSystem: SystemBuilder = ({ game }) => {
 
   let engine: Engine = Engine.create({ gravity: { x: 0, y: 0 } });
   let bodies: Record<string, Body> = {};
-  Composite.add(engine.world, walls);
-
-  let debugEntities: Entity[] = [];
 
   const onTick = (entities: Entity<Position | Collider>[]) => {
-
-    // handle debug mode
-    if (!game.debug) {
-      if (debugEntities.length) {
-        Object.values(debugEntities).forEach((entity) => game.removeEntity(entity.id));
-        debugEntities = [];
-      }
-    } else if (!debugEntities.length) {
-      engine.world.bodies.forEach((body) => {
-        const debugEntity = {
-          id: `${body.id}-debug`,
-          components: {
-            position: new Position(),
-            renderable: new Renderable({
-              dynamic: (c: Graphics) => {
-                c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
-                c.drawPolygon(...body.vertices.map((v) => worldToScreen({ x: v.x, y: v.y })));
-              },
-              debuggable: false,
-              zIndex: 5,
-              container: async () => new Graphics()
-            })
-          }
-        }
-        game.addEntity(debugEntity);
-        debugEntities.push(debugEntity);
-      });
-    }
 
     // handle old physics bodies
     Object.keys(bodies).forEach((id) => {
@@ -62,15 +20,14 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
 
     // prepare physics bodies for each entity
     entities.forEach((entity) => {
+      const { position } = entity.components;
 
       // handle new physics bodies
       if (!bodies[entity.id]) {
-        const { collider: c, position: p } = entity.components;
-
-        const newBody = Bodies.circle(p.x, p.y, c.radius, { frictionAir: 0 });
-
-        Composite.add(engine.world, [newBody]);
-        bodies[entity.id] = newBody;
+        const body = entity.components.collider.body;
+        Body.setPosition(body, { x: position.x, y: position.y });
+        Composite.add(engine.world, [body]);
+        bodies[entity.id] = body;
       }
 
       // update body velocity

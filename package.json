@@ -16,7 +16,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
     "@types/matter-js": "^0.19.6",

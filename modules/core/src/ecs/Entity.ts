@@ -1,10 +1,10 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/contrib";
+import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/contrib";
 
 type ComponentTypes =
 Actions | Clickable | Collider |
 Controller | Controlled | Controlling |
-Health | Name | Networked | NPC | Player |
-Position | Renderable
+Debug | Health | Name | Networked | NPC |
+Player | Position | Renderable
 
 // 集 jí (set) - an Entity is a uniquely identified set of Components
 // all components are optional except the provided ones

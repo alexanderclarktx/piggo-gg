@@ -13,7 +13,6 @@ export class Button<T extends ButtonProps = ButtonProps> extends Renderable<T> {
   constructor(props: T) {
     super({
       ...props,
-      debuggable: props.debuggable || false,
       interactiveChildren: true
     });
     this.initialStyle();

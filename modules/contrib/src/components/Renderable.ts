@@ -6,7 +6,6 @@ export type RenderableProps = {
   children?: (r: Renderer) => Promise<Renderable[]>
   dynamic?: (c: Container, r: Renderable, g: Game) => void
   position?: { x: number; y: number }
-  debuggable?: boolean
   zIndex?: number
   visible?: boolean
   id?: string
@@ -26,7 +25,7 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   children: Renderable[] | undefined;
 
   constructor(props: T = {} as T) {
-    this.props = { ...props, debuggable: props.debuggable ?? false, rotates: props.rotates ?? false }
+    this.props = { ...props, rotates: props.rotates ?? false }
   }
 
   _init = async (renderer: Renderer) => {
@@ -85,6 +84,6 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
     this.c.removeAllListeners();
 
     // remove from the world
-    this.c.destroy();
+    // this.c.destroy(); // TODO disabled because it breaks from collider debug
   }
 }

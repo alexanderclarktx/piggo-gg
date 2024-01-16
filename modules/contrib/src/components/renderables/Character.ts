@@ -18,10 +18,7 @@ export class Character extends Renderable<CharacterProps> {
   currentAnimation: AnimatedSprite;
 
   constructor(props: CharacterProps) {
-    super({
-      ...props,
-      debuggable: props.debuggable || true,
-    });
+    super(props);
     this.init();
   }
 
