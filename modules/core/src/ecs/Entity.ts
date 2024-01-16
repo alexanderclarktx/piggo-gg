@@ -1,5 +1,6 @@
 import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/contrib";
 
+// TODO how to make this extendable
 type ComponentTypes =
 Actions | Clickable | Collider |
 Controller | Controlled | Controlling |

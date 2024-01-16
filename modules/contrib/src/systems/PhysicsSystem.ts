@@ -24,16 +24,21 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
 
       // handle new physics bodies
       if (!bodies[entity.id]) {
+        // get body from collider
         const body = entity.components.collider.body;
+
+        // set initial position
         Body.setPosition(body, { x: position.x, y: position.y });
-        Composite.add(engine.world, [body]);
+
+        // store body
         bodies[entity.id] = body;
+
+        // add body to physics engine
+        Composite.add(engine.world, [body]);
       }
 
       // update body velocity
-      const body = bodies[entity.id];
-      const { velocity } = entity.components.position;
-      Body.setVelocity(body, velocity);
+      Body.setVelocity(bodies[entity.id], position.velocity);
     });
 
     // run physics

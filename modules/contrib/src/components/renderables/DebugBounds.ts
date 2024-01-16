@@ -19,9 +19,6 @@ export class DebugBounds extends Renderable<DebugBoundsProps> {
       return;
     }
 
-    console.log(bounds);
-    console.log(r.c.getBounds());
-
     // circle at center
     drawing.beginFill(0xff00ff);
     drawing.drawCircle(0, 0, 2);

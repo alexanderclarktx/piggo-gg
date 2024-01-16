@@ -84,6 +84,6 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
     this.c.removeAllListeners();
 
     // remove from the world
-    // this.c.destroy(); // TODO disabled because it breaks from collider debug
+    this.c.destroy(); // TODO disabled because it breaks from collider debug
   }
 }
