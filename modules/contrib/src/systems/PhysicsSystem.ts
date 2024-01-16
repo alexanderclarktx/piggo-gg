@@ -50,6 +50,7 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
       const entity = game.entities[id];
       entity.components.position!.x = body.position.x;
       entity.components.position!.y = body.position.y;
+      entity.components.position!.velocity = body.velocity;
     });
   }
 

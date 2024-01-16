@@ -1,11 +1,12 @@
 import { Component } from "@piggo-legends/core";
-import { Bodies, Body } from "matter-js";
+import { Bodies, Body, IChamferableBodyDefinition } from "matter-js";
 
 export type ColliderProps = {
   radius?: number
   length?: number
   width?: number
   isStatic?: boolean
+  frictionAir?: number
 }
 
 export class Collider implements Component<"collider"> {
@@ -13,8 +14,12 @@ export class Collider implements Component<"collider"> {
 
   body: Body;
 
-  constructor({ radius, length, width, isStatic }: ColliderProps) {
-    const options = { isStatic: isStatic ?? false, airFriction: 0 };
+  constructor({ radius, length, width, isStatic, frictionAir }: ColliderProps) {
+    const options: IChamferableBodyDefinition = {
+      isStatic: isStatic ?? false,
+      frictionAir: frictionAir ?? 0
+    }
+
     if (radius) {
       this.body = Bodies.circle(0, 0, radius ?? 0, options);
     } else {
