@@ -50,12 +50,12 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
       }
 
       // run the dynamic callback
-      if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable, game);
+      if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable, entity, game);
 
       // run dynamic on children
       if (renderable.children) {
         renderable.children.forEach((child) => {
-          if (child.props.dynamic) child.props.dynamic(child.c, child, game);
+          if (child.props.dynamic) child.props.dynamic(child.c, child, entity, game);
         });
       }
     });

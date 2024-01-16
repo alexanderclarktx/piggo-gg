@@ -1,6 +1,5 @@
 import { Clickable, Collider, Debug, Networked, Position, Renderable } from "@piggo-legends/contrib";
 import { Entity } from "@piggo-legends/core";
-import { Bodies } from "matter-js";
 import { HTMLText } from "pixi.js";
 
 export type BallProps = {
@@ -19,13 +18,17 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
       active: true,
       onPress: "click"
     }),
-    collider: new Collider({ radius: 6 }),
+    collider: new Collider({ radius: 7, frictionAir: 0.01 }),
     debug: new Debug(),
     renderable: new Renderable({
       zIndex: 2,
+      dynamic: (t: HTMLText, _, e: Entity<Position>) => {
+        const v = e.components.position.velocity;
+        t.rotation += 0.1 * Math.sqrt(v.x * v.x + v.y * v.y);
+      },
       container: async () => {
         const text = new HTMLText("⚽️", { fill: "#FFFFFF", fontSize: 18 })
-        text.anchor.set(0.5);
+        text.anchor.set(0.44, 0.44);
         return text;
       }
     })

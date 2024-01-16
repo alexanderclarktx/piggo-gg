@@ -1,10 +1,10 @@
 import { Container } from "pixi.js";
-import { Component, Game, Renderer } from "@piggo-legends/core";
+import { Component, Entity, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
   container?: (r: Renderer) => Promise<Container>
   children?: (r: Renderer) => Promise<Renderable[]>
-  dynamic?: (c: Container, r: Renderable, g: Game) => void
+  dynamic?: (c: Container, r: Renderable, e: Entity, g: Game) => void
   position?: { x: number; y: number }
   zIndex?: number
   visible?: boolean

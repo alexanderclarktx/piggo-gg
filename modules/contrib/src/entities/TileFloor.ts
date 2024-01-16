@@ -1,5 +1,5 @@
 import { Entity, Renderer } from "@piggo-legends/core";
-import { Debug, Position, Renderable } from "@piggo-legends/contrib";
+import { Position, Renderable } from "@piggo-legends/contrib";
 import { Assets, Texture, Resource, Matrix, Sprite, RenderTexture } from "pixi.js";
 
 let index = 0;
@@ -55,7 +55,6 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     id: id,
     components: {
       position: new Position(position),
-      debug: new Debug(),
       renderable: new Renderable({
         zIndex: 0,
         children: makeTiles

@@ -19,7 +19,7 @@ export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity => {
         color: color ?? 0xFFFF00,
         zIndex: 1,
         container: async () => new HTMLText("", { fontSize: 16, fill: "#FFFFFF" }),
-        dynamic: (t: HTMLText, _, g: Game) => {
+        dynamic: (t: HTMLText, _, __, g: Game) => {
           if (g.tick % 10 !== 0) return;
           const fps = Math.round(g.renderer?.app.ticker.FPS ?? 0);
           const color = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
