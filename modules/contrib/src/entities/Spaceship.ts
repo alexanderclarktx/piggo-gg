@@ -1,6 +1,7 @@
 import { Entity } from "@piggo-legends/core";
-import { Position, Networked, Clickable, Actions, Character, VehicleMovement, playerControlsEntity, Controller, VehicleMovementCommands, Renderable, Collider } from "@piggo-legends/contrib";
+import { Position, Networked, Clickable, Actions, Character, VehicleMovement, playerControlsEntity, Controller, VehicleMovementCommands, Renderable, Collider, Debug } from "@piggo-legends/contrib";
 import { Assets, AnimatedSprite } from "pixi.js";
+import { Bodies } from "matter-js";
 
 export type SpaceshipProps = {
   id?: string,
@@ -40,13 +41,13 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
         "shift,a": "skidleft", "shift,d": "skidright",
         "w": "up", "s": "down", "a": "left", "d": "right"
       }),
+      debug: new Debug(),
       actions: new Actions({
         ...VehicleMovement,
         "click": playerControlsEntity
       }),
       renderable: new Renderable({
         rotates: true,
-        debuggable: true,
         zIndex: 2,
         children: async () => [ await render() ]
       })

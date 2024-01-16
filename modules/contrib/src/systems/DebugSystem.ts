@@ -1,91 +1,113 @@
-import { DebugBounds, Position, Renderable, TextBox } from "@piggo-legends/contrib";
+import { DebugBounds, Position, Renderable, TextBox, Debug, Collider, worldToScreen } from "@piggo-legends/contrib";
 import { Entity, SystemBuilder } from "@piggo-legends/core";
-import { Text } from 'pixi.js';
+import { HTMLText, Graphics } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
 export const DebugSystem: SystemBuilder = ({ game }) => {
 
-  let debuggedEntities: Map<Entity, Renderable[]> = new Map();
-  let debugEntities: Record<string, string> = {};
+  let debugRenderables: Renderable[] = [];
+  let debugEntitiesPerEntity: Record<string, Entity<Renderable | Position>[]> = {};
 
-  const onTick = (entities: Entity<Renderable | Position>[]) => {
+  const onTick = (entities: Entity<Position>[]) => {
     if (game.debug) {
       // handle new entities
       entities.forEach((entity) => {
-        const renderable = entity.components.renderable;
-        if (renderable && renderable.props.debuggable && !debuggedEntities.has(entity)) {
-          addEntity(entity);
+        const { renderable, collider } = entity.components;
+
+        if (!debugEntitiesPerEntity[entity.id] || !debugEntitiesPerEntity[entity.id].length) {
+          debugEntitiesPerEntity[entity.id] = [];
+          if (renderable) addEntityForRenderable(entity as Entity<Renderable | Position>);
+          if (collider) addEntityForCollider(entity as Entity<Collider | Position>);
         }
       });
 
-      // update debug entity positions
-      Object.entries(debugEntities).forEach(([id, debugId]) => {
-        const entity = game.entities[id];
+      Object.entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
+        const entity = game.entities[id] as Entity<Position>;
         if (entity) {
-          const debugEntity = game.entities[debugId];
-          if (debugEntity) {
-            const debugPosition = debugEntity.components.position!;
-            const position = entity.components.position!;
-            debugPosition.x = position.x;
-            debugPosition.y = position.y;
-          }
+          // update debug entity positions
+          debugEntities.forEach((debugEntity) => {
+            debugEntity.components.position = entity.components.position;
+          });
         } else {
           // handle old entities
-          game.removeEntity(debugId);
-          delete debugEntities[id];
+          debugEntities.forEach((debugEntity) => {
+            game.removeEntity(debugEntity.id);
+            delete debugEntitiesPerEntity[id];
+          });
         }
       });
     } else {
       // remove all debug entities
-      debuggedEntities.forEach((renderables, entity) => {
-        game.removeEntity(`${entity.id}-debug`);
-        renderables.forEach((renderable) => renderable.cleanup());
-        debuggedEntities.delete(entity);
-        delete debugEntities[entity.id];
+      Object.values(debugEntitiesPerEntity).forEach((debugEntities) => {
+        debugEntities.forEach((debugEntity) => game.removeEntity(debugEntity.id));
       });
+      debugEntitiesPerEntity = {};
+
+      // cleanup all debug renderables
+      debugRenderables.forEach((renderable) => renderable.cleanup());
+      debugRenderables = [];
     }
   }
 
-  const addEntity = (entity: Entity<Renderable | Position>) => {
-    if (entity.components.renderable) {
-      const {renderable, position} = entity.components;
+  const addEntityForRenderable = (entity: Entity<Renderable | Position>) => {
+    const {renderable, position} = entity.components;
 
-      const bounds = renderable.c.getLocalBounds();
+    // text box
+    const textBox = new TextBox({
+      position: { x: -30, y: 20 },
+      dynamic: (c: HTMLText) => {
+        if (renderable && position) c.text = debugText(position, renderable);
+      },
+      fontSize: 12, color: 0xffff00
+    });
 
-      // text box
-      const textBox = new TextBox({
-        position: new Position({ x: 0, y: -(bounds.height / 2) - 30 }),
-        dynamic: (c: Text) => {
-          if (renderable && position) c.text = debugText(position, renderable);
-        },
-        fontSize: 12, color: 0xffff00, debuggable: false
-      });
+    // debug bounds
+    const debugBounds = new DebugBounds({ debugRenderable: renderable });
 
-      // debug bounds
-      const debugBounds = new DebugBounds({ debugRenderable: renderable });
+    const debugEntity = {
+      id: `${entity.id}-renderable-debug`,
+      components: {
+        position: new Position(),
+        renderable: new Renderable({
+          zIndex: 2,
+          children: async () => [textBox, debugBounds]
+        })
+      }
+    };
 
-      const debugEntityId = game.addEntity({
-        id: `${entity.id}-debug`,
-        components: {
-          position: new Position({ x: position.x, y: position.y }),
-          renderable: new Renderable({
-            zIndex: 2,
-            children: async () => [textBox, debugBounds]
-          })
-        }
-      });
+    debugEntitiesPerEntity[entity.id].push(debugEntity);
+    game.addEntity(debugEntity);
+    debugRenderables.push(textBox, debugBounds);
+  }
 
-      debugEntities[entity.id] = debugEntityId;
+  const addEntityForCollider = (entity: Entity<Collider | Position>) => {
+    const { collider, position } = entity.components;
 
-      // add to the map
-      debuggedEntities.set(entity, [textBox, debugBounds]);
+    const r = new Renderable({
+      dynamic: (c: Graphics) => {
+        c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
+        c.drawPolygon(...collider.body.vertices.map((v) => worldToScreen({ x: v.x - position.x, y: v.y - position.y })));
+      },
+      zIndex: 5,
+      container: async () => new Graphics()
+    })
+
+    const debugEntity = {
+      id: `${entity.id}-collider-debug`,
+      components: {
+        position: new Position(),
+        renderable: r
+      }
     }
+    debugEntitiesPerEntity[entity.id].push(debugEntity);
+    game.addEntity(debugEntity);
+    debugRenderables.push(r);
   }
 
   const debugText = (p: Position, r: Renderable) => `w: ${p.x.toFixed(0)} ${p.y.toFixed(0)}<br>s: ${r.c.x.toFixed(0)} ${r.c.y.toFixed(0)}`;
 
   return {
-    componentTypeQuery: ["renderable", "position"],
+    componentTypeQuery: ["debug", "position"],
     onTick
   }
 }

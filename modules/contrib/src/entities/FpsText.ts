@@ -16,7 +16,6 @@ export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity => {
         x: x ?? -35, y: y ?? 5, screenFixed: true
       }),
       renderable: new Renderable({
-        debuggable: false,
         color: color ?? 0xFFFF00,
         zIndex: 1,
         container: async () => new HTMLText("", { fontSize: 16, fill: "#FFFFFF" }),

@@ -1,6 +1,6 @@
 import { Entity, Renderer } from "@piggo-legends/core";
-import { Position, Renderable } from "@piggo-legends/contrib";
-import { Assets, Texture, Resource, Matrix, Sprite, RenderTexture, Renderer as PIXIRENDERER } from "pixi.js";
+import { Debug, Position, Renderable } from "@piggo-legends/contrib";
+import { Assets, Texture, Resource, Matrix, Sprite, RenderTexture } from "pixi.js";
 
 let index = 0;
 
@@ -11,7 +11,7 @@ export type TileFloorProps = {
   id?: string
 }
 
-export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${index += 1}` }: TileFloorProps): Promise<Entity> => {
+export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: TileFloorProps): Promise<Entity> => {
 
   const makeTiles = async (r: Renderer) => {
     const sandbox = await Assets.load("sandbox.json");
@@ -38,8 +38,6 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
       transform: new Matrix(1, 0, 0, 1, tile.width / 2, tile.height / 2)
     });
 
-    (r.app.renderer as PIXIRENDERER).framebuffer.blit();
-
     let tiles: Renderable[] = [];
     for (let x = 0; x < rows; x++) {
       for (let y = 0; y < cols; y++) {
@@ -57,8 +55,8 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     id: id,
     components: {
       position: new Position(position),
+      debug: new Debug(),
       renderable: new Renderable({
-        debuggable: false,
         zIndex: 0,
         children: makeTiles
       })
