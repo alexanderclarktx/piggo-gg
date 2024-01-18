@@ -1,6 +1,6 @@
 import { Collider, DebugBounds, Position, Renderable, TextBox, worldToScreen } from "@piggo-legends/contrib";
 import { Entity, SystemBuilder } from "@piggo-legends/core";
-import { Graphics, HTMLText } from 'pixi.js';
+import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
 export const DebugSystem: SystemBuilder = ({ game }) => {
@@ -54,7 +54,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
 
     // text box
     const textBox = new TextBox({
-      dynamic: (c: HTMLText) => {
+      dynamic: (c: Text) => {
         if (renderable && position) {
           const bounds = renderable.c.getLocalBounds();
           c.position.set(bounds.x, bounds.top - 25);
@@ -107,7 +107,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
     debugRenderables.push(r);
   }
 
-  const debugText = (p: Position, r: Renderable) => `${p.x.toFixed(0)}|${p.y.toFixed(0)}`;
+  const debugText = (p: Position, r: Renderable) => `${p.x.toFixed(0)} | ${p.y.toFixed(0)}`;
 
   return {
     componentTypeQuery: ["debug", "position"],

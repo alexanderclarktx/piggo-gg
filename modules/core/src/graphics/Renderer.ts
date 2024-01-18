@@ -1,4 +1,4 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils, HTMLText } from "pixi.js";
+import { Application, settings, SCALE_MODES, BaseTexture, utils, Text } from "pixi.js";
 import { Camera } from "@piggo-legends/core";
 import { Renderable } from "@piggo-legends/contrib";
 
@@ -41,8 +41,8 @@ export class Renderer {
     BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
 
     // increase text resolution for readability
-    HTMLText.defaultResolution = 2;
-    HTMLText.defaultAutoResolution = false;
+    Text.defaultResolution = 2;
+    Text.defaultAutoResolution = false;
 
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";

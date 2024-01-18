@@ -1,6 +1,6 @@
 import { Entity, Game } from "@piggo-legends/core";
 import { Position, Renderable } from "@piggo-legends/contrib";
-import { HTMLText } from "pixi.js";
+import { Text } from "pixi.js";
 
 export type FpsTextProps = {
   x?: number,
@@ -18,13 +18,13 @@ export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity => {
       renderable: new Renderable({
         color: color ?? 0xFFFF00,
         zIndex: 1,
-        container: async () => new HTMLText("", { fontSize: 16, fill: "#FFFFFF" }),
-        dynamic: (t: HTMLText, _, __, g: Game) => {
+        container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
+        dynamic: (t: Text, _, __, g: Game) => {
           if (g.tick % 10 !== 0) return;
           const fps = Math.round(g.renderer?.app.ticker.FPS ?? 0);
-          const color = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
-          t.text = `<span style=color:${color}>${fps}</span>`;
-        },
+          t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
+          t.text = `${fps}`;
+        }
       })
     }
   }

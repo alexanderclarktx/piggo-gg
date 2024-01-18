@@ -7,17 +7,14 @@ import { Game, GameProps } from "@piggo-legends/core";
 export class Playground extends Game {
 
   constructor(props: GameProps = {}) {
-    super({
-      ...props,
-      mode: "isometric"
-    });
+    super({ ...props, renderMode: "isometric" });
 
     // add shared systems
-    this.addSystemBuilders([ CommandSystem, PhysicsSystem, PlayerSpawnSystem, NPCSystem, EnemySpawnSystem ]);
+    this.addSystemBuilders([CommandSystem, PhysicsSystem, PlayerSpawnSystem, NPCSystem, EnemySpawnSystem]);
 
     // add client-only systems/entities
     if (props.renderer) {
-      this.addSystemBuilders([ InputSystem, ClickableSystem, DebugSystem, RenderSystem, RtcNetcodeSystem, GuiSystem ]);
+      this.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem, RenderSystem, RtcNetcodeSystem, GuiSystem]);
       this.addUI();
       this.addFloor();
       this.addWalls();
