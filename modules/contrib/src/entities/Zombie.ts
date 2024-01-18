@@ -1,6 +1,5 @@
 import { Actions, Character, Clickable, Collider, Debug, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/contrib";
 import { Entity, Game } from "@piggo-legends/core";
-import { Bodies } from "matter-js";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
 let zombieId = 0;

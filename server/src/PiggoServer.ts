@@ -9,7 +9,7 @@ class PiggoServer {
   id = 1;
   clients: Record<string, ServerWebSocket<unknown>> = {};
 
-  playground = new Playground();
+  playground = new Playground({ runtimeMode: "server" });
 
   constructor() {
     this.playground.addSystems([ServerNetcodeSystem({ game: this.playground, clients: this.clients })]);

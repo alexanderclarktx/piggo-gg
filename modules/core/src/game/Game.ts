@@ -5,7 +5,8 @@ export type GameProps = {
   renderer?: Renderer,
   entities?: Record<string, Entity>,
   systems?: System[]
-  mode?: "cartesian" | "isometric"
+  renderMode?: "cartesian" | "isometric"
+  runtimeMode?: "client" | "server"
 }
 
 export abstract class Game<T extends GameProps = GameProps> {
@@ -14,19 +15,26 @@ export abstract class Game<T extends GameProps = GameProps> {
   entities: Record<string, Entity> = {};
   systems: System[] = [];
   tick: number = 0;
-  mode: "cartesian" | "isometric" = "cartesian";
+  renderMode: "cartesian" | "isometric";
+  runtimeMode: "client" | "server";
   debug: boolean = false;
+
+  lastTick: DOMHighResTimeStamp = 0;
 
   thisPlayerId = `player${(Math.random() * 100).toFixed(0)}`;
 
-  constructor({ net, renderer, systems = [], mode = "cartesian" }: T) {
+  constructor({ net, renderer, systems, renderMode, runtimeMode }: T) {
     this.net = net;
     this.renderer = renderer;
-    this.systems = systems;
-    this.mode = mode;
+    this.systems = systems ?? [],
+    this.renderMode = renderMode ?? "cartesian";
+    this.runtimeMode = runtimeMode ?? "client";
 
-    // TODO need to add "catch up" logic for slow clients
-    setInterval(this.onTick, 1000 / 30);
+    if (this.runtimeMode === "client") {
+      requestAnimationFrame(this.onTick);
+    } else {
+      setInterval(this.onTick, 1000 / 30);
+    }
   }
 
   addEntity = (entity: Entity) => {
@@ -54,7 +62,7 @@ export abstract class Game<T extends GameProps = GameProps> {
 
   addSystemBuilders = (systemBuilders: SystemBuilder[]) => {
     systemBuilders.forEach((systemBuilder) => {
-      this.systems.push(systemBuilder({ game: this, renderer: this.renderer, net: this.net, thisPlayerId: this.thisPlayerId, mode: this.mode }));
+      this.systems.push(systemBuilder({ game: this, renderer: this.renderer, net: this.net, thisPlayerId: this.thisPlayerId, mode: this.renderMode }));
     });
   }
 
@@ -67,11 +75,27 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
   }
 
-  onTick = () => {
+  onTick = (time: DOMHighResTimeStamp) => {
+
+    // skip if 1000 / 30 ms has not passed
+    if (this.runtimeMode === "client" && (time - this.lastTick) < (1000 / 30)) {
+      if (requestAnimationFrame) requestAnimationFrame(this.onTick);
+      console.log("skip");
+      return;
+    }
+
+    // update the last tick time
+    this.lastTick = this.lastTick + (1000 / 30);
+
+    // increment tick
     this.tick += 1;
 
+    // run system updates
     this.systems?.forEach((system) => {
       system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
     });
+
+    // callback
+    if (this.runtimeMode === "client") requestAnimationFrame(this.onTick);
   }
 }

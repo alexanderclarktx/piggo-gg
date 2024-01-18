@@ -1,7 +1,7 @@
 import { ActionMap, AnimationKeys, Character, Position } from "@piggo-legends/contrib"
 import { Entity } from "@piggo-legends/core";
 
-const speed = 2;
+const speed = 2.5;
 const speedDiagonal = speed / Math.sqrt(2);
 const speedHorizontal = speed / 2;
 

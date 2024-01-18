@@ -1,7 +1,5 @@
-import { Collider, Debug, Position, Renderable } from "@piggo-legends/contrib";
+import { Collider, Debug, Position } from "@piggo-legends/contrib";
 import { Entity } from "@piggo-legends/core";
-import { Bodies } from "matter-js";
-import { HTMLText } from "pixi.js"
 
 export type WallProps = {
   x: number,
