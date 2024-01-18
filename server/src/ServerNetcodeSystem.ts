@@ -1,4 +1,4 @@
-import { TickData } from "@piggo-legends/contrib";
+import { TickData } from "@piggo-legends/core";
 import { Game, System } from "@piggo-legends/core";
 import { ServerWebSocket } from "bun";
 

@@ -1,6 +1,5 @@
 import { Application, settings, SCALE_MODES, BaseTexture, utils, Text } from "pixi.js";
-import { Camera } from "@piggo-legends/core";
-import { Renderable } from "@piggo-legends/contrib";
+import { Camera, Renderable } from "@piggo-legends/core";
 
 export type RendererProps = {
   canvas: HTMLCanvasElement;

@@ -1,4 +1,4 @@
-import { TickData, localCommandBuffer } from "@piggo-legends/contrib";
+import { TickData, localCommandBuffer } from "@piggo-legends/core";
 import { Playground } from "@piggo-legends/playground";
 import { ServerWebSocket, Server } from "bun";
 import { ServerNetcodeSystem } from "./ServerNetcodeSystem";
