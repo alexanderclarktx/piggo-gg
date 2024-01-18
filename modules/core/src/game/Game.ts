@@ -80,7 +80,6 @@ export abstract class Game<T extends GameProps = GameProps> {
     // skip if 1000 / 30 ms has not passed
     if (this.runtimeMode === "client" && (time - this.lastTick) < (1000 / 30)) {
       if (requestAnimationFrame) requestAnimationFrame(this.onTick);
-      console.log("skip");
       return;
     }
 
