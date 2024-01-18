@@ -5,7 +5,6 @@
   "workspaces": [
     "web",
     "server",
-    "modules/contrib",
     "modules/core",
     "modules/games/playground"
   ],

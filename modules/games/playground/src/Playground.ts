@@ -1,8 +1,8 @@
 import {
-  DebugSystem, InputSystem, ClickableSystem, Networked, Player, PlayerSpawnSystem, RenderSystem, Ball, DebugButton, FpsText,
-  FullscreenButton, PhysicsSystem, Cursor, Chat, Wall, TileFloor, CommandSystem, RtcNetcodeSystem, NPCSystem, GuiSystem, EnemySpawnSystem, SpaceBackground
-} from "@piggo-legends/contrib";
-import { Game, GameProps } from "@piggo-legends/core";
+  Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem, FpsText,
+  FullscreenButton, Game, GameProps, GuiSystem, InputSystem, NPCSystem, Networked,
+  PhysicsSystem, Player, PlayerSpawnSystem, RenderSystem, RtcNetcodeSystem, SpaceBackground, TileFloor, Wall
+} from "@piggo-legends/core";
 
 export class Playground extends Game {
 

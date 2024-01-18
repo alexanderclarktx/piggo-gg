@@ -3,7 +3,7 @@
   "include": [
     "./src/*",
     "./src/**/*"
-  ],
+, "src/Game.ts"  ],
   "compilerOptions": {
     "outDir": "dist"
   }

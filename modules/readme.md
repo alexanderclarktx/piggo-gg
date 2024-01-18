@@ -2,6 +2,5 @@
 
 |package|description|
 |--|--|
-|`contrib`|non-core classes that can be used in any game
-|`core`|core gameplay, ecs, netcode, and graphics classes
+|`core`| ecs, netcode, graphics, etc.
 |`games`|individual games
