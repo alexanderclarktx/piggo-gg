@@ -15,7 +15,7 @@ export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
         width: window.innerWidth * 0.98,
         height: window.innerHeight * 0.89
       });
-      setGame(new Playground({ net, renderer }));
+      setGame(new Playground({ net, renderer, runtimeMode: "client" }));
     }
   }, [RtcPeer]);
 

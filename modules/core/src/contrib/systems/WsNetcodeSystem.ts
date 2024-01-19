@@ -19,7 +19,13 @@ export const WsNetcodeSystem: SystemBuilder = ({ game, thisPlayerId }) => {
     const message = JSON.parse(event.data) as TickData;
     if (message.type === "game") {
       // console.log(`WsNetcodeSystem: received tick ${message.tick}`);
-      console.log(`${message.tick - game.tick}`);
+      console.log(`${game.tick - message.tick}`);
+
+      if (message.tick > game.tick) {
+        // rollback
+        game.tick = message.tick + 5;
+      }
+
       // localCommandBuffer = localCommandBuffer.filter((c) => c.tick !== message.tick);
     }
   }

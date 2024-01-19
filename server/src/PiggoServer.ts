@@ -1,4 +1,4 @@
-import { TickData, localCommandBuffer } from "@piggo-legends/core";
+import { Networked, Player, TickData, localCommandBuffer } from "@piggo-legends/core";
 import { Playground } from "@piggo-legends/playground";
 import { ServerWebSocket, Server } from "bun";
 import { ServerNetcodeSystem } from "./ServerNetcodeSystem";
@@ -42,7 +42,21 @@ class PiggoServer {
     if (typeof msg != "string") return;
     const parsedMessage = JSON.parse(msg) as TickData;
 
-    if (parsedMessage.commands.length) localCommandBuffer.push(...parsedMessage.commands);
+    // add player entity if it doesn't exist
+    if (!this.playground.entities[parsedMessage.player]) {
+      this.playground.addEntity({
+        id: parsedMessage.player,
+        components: {
+          networked: new Networked({ isNetworked: true }),
+          player: new Player({ name: parsedMessage.player }),
+        }
+      });
+    }
+
+    if (parsedMessage.commands.length) {
+      localCommandBuffer.push(...parsedMessage.commands);
+      console.log(`pushed ${JSON.stringify(parsedMessage.commands.map((c) => c.actionId))}`);
+    }
   }
 }
 

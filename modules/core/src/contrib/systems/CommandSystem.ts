@@ -17,6 +17,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
     localCommandBuffer.forEach((command) => {
       if (command.tick < game.tick) {
         console.log(`集 ${command.entityId} command ${command.actionId} too old`);
+        console.log(`${command.tick} < ${game.tick}`);
 
         // TODO rollback
         localCommandBuffer = localCommandBuffer.filter((c) => c !== command);
@@ -42,6 +43,8 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
           console.log(`action ${command.actionId} not found`);
           return;
         }
+
+        // console.log(`集 ${command.entityId} command ${command.actionId} executed`);
         action(entity, game);
         // console.log(`集 ${command.entityId} command ${command.actionId}`);
 
