@@ -1,7 +1,7 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem, FpsText,
   FullscreenButton, Game, GameProps, GuiSystem, InputSystem, NPCSystem, Networked,
-  PhysicsSystem, Player, PlayerSpawnSystem, RenderSystem, RtcNetcodeSystem, SpaceBackground, TileFloor, Wall
+  PhysicsSystem, Player, PlayerSpawnSystem, RenderSystem, RtcNetcodeSystem, SpaceBackground, TileFloor, Wall, WsNetcodeSystem
 } from "@piggo-legends/core";
 
 export class Playground extends Game {
@@ -13,15 +13,21 @@ export class Playground extends Game {
     this.addSystemBuilders([CommandSystem, PhysicsSystem, PlayerSpawnSystem, NPCSystem, EnemySpawnSystem]);
 
     // add client-only systems/entities
-    if (props.renderer) {
-      this.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem, RenderSystem, RtcNetcodeSystem, GuiSystem]);
+    if (this.runtimeMode === "client") {
+      this.addSystemBuilders([
+        InputSystem, ClickableSystem, DebugSystem, RenderSystem, RtcNetcodeSystem, GuiSystem, WsNetcodeSystem
+      ]);
+
+      // not networked
       this.addUI();
       this.addFloor();
-      this.addWalls();
       this.addBackgroundImage();
+
+      // networked
+      this.addPlayer();
     }
 
-    this.addPlayer();
+    this.addWalls();
     this.addGameObjects();
   }
 
@@ -36,7 +42,7 @@ export class Playground extends Game {
   }
 
   addUI = async () => {
-    this.addEntities([FpsText(), FullscreenButton(), DebugButton(), Cursor(), Chat()]);
+    this.addEntityBuilders([FpsText, FullscreenButton, DebugButton, Cursor, Chat]);
   }
 
   addGameObjects = async () => {

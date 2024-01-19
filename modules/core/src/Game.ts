@@ -32,11 +32,11 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.renderMode = renderMode ?? "cartesian";
     this.runtimeMode = runtimeMode ?? "client";
 
-    if (this.runtimeMode === "client") {
-      requestAnimationFrame(this.onTick);
-    } else {
+    // if (this.runtimeMode === "client") {
+    //   requestAnimationFrame(this.onTick);
+    // } else {
       setInterval(this.onTick, hz30);
-    }
+    // }
   }
 
   addEntity = (entity: Entity) => {
@@ -47,6 +47,12 @@ export abstract class Game<T extends GameProps = GameProps> {
   addEntities = (entities: Entity[]) => {
     entities.forEach((entity) => {
       this.addEntity(entity);
+    });
+  }
+
+  addEntityBuilders = (entityBuilders: (() => Entity)[]) => {
+    entityBuilders.forEach((entityBuilder) => {
+      this.addEntity(entityBuilder());
     });
   }
 
@@ -80,10 +86,10 @@ export abstract class Game<T extends GameProps = GameProps> {
   onTick = (time: DOMHighResTimeStamp) => {
 
     // skip if 1000 / 30 ms has not passed
-    if (this.runtimeMode === "client" && (time - this.lastTick) < hz30) {
-      if (requestAnimationFrame) requestAnimationFrame(this.onTick);
-      return;
-    }
+    // if (this.runtimeMode === "client" && (time - this.lastTick) < hz30) {
+    //   if (requestAnimationFrame) requestAnimationFrame(this.onTick);
+    //   return;
+    // }
 
     // update the last tick time
     this.lastTick = this.lastTick + hz30;
@@ -97,6 +103,6 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
 
     // callback
-    if (this.runtimeMode === "client") requestAnimationFrame(this.onTick);
+    // if (this.runtimeMode === "client") requestAnimationFrame(this.onTick);
   }
 }

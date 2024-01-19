@@ -1,12 +1,16 @@
 import { Component } from "@piggo-legends/core";
 
-export type SerializedPosition = { x: number, y: number, rotation: number }
-export type PositionOffset = "world" | "camera";
+export type SerializedPosition = {
+  x: number
+  y: number
+  rotation: number
+  velocity: { x: number, y: number }
+}
 
 export type PositionProps = {
   x?: number
   y?: number
-  offset?: PositionOffset
+  offset?: "world" | "camera"
   screenFixed?: boolean
   renderMode?: "isometric" | "cartesian"
 }
@@ -24,7 +28,7 @@ export class Position implements Component<"position"> {
   velocity: { x: number, y: number } = { x: 0, y: 0 };
   x: number;
   y: number;
-  offset: PositionOffset;
+  offset: "world" | "camera";
   screenFixed: boolean;
 
   // TODO refactor and consolidate this somewhere
@@ -54,13 +58,15 @@ export class Position implements Component<"position"> {
   serialize = (): SerializedPosition => ({
     x: this.x,
     y: this.y,
-    rotation: this.rotation.rads
+    rotation: this.rotation.rads,
+    velocity: this.velocity
   })
 
-  deserialize = ({ x, y, rotation }: SerializedPosition) => {
+  deserialize = ({ x, y, rotation, velocity }: SerializedPosition) => {
     this.x = x;
     this.y = y;
     this.rotation.rads = rotation;
+    this.velocity = velocity;
   }
 }
 

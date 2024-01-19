@@ -11,6 +11,9 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
 
     // get the player entity's position
     const playerEntity = game.entities[game.thisPlayerId];
+
+    if (!playerEntity) return; // TODO this is a hack for server
+
     const playerCharacter = game.entities[playerEntity.components.controlling!.entityId];
     const playerCharacterPosition = playerCharacter.components.position!;
 
