@@ -15,6 +15,7 @@ class PiggoServer {
     this.playground.addSystems([ServerNetcodeSystem({ game: this.playground, clients: this.clients })]);
 
     this.bun = Bun.serve({
+      hostname: "0.0.0.0",
       port: 3000,
       fetch: (r: Request, server: Server) => server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 }),
       websocket: {
@@ -74,4 +75,4 @@ class PiggoServer {
 }
 
 const server = new PiggoServer();
-console.log(`包 wss://localhost:${server.bun.port}`);
+console.log(`包 ${server.bun.url}`);
