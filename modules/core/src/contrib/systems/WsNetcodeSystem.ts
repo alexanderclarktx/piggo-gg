@@ -13,7 +13,7 @@ export type SerializedEntity = {
 
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsNetcodeSystem: SystemBuilder = ({ game, thisPlayerId }) => {
-  const wsClient = new WebSocket("ws://localhost:3000");
+  const wsClient = new WebSocket("wss://0.0.0.0:3000");
 
   wsClient.onmessage = (event) => {
     const message = JSON.parse(event.data) as TickData;
