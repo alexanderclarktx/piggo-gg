@@ -1,6 +1,6 @@
 import { Networked, Player, TickData, localCommandBuffer } from "@piggo-legends/core";
 import { Playground } from "@piggo-legends/playground";
-import { ServerWebSocket, Server } from "bun";
+import { ServerWebSocket, Server, env } from "bun";
 import { ServerNetcodeSystem } from "./ServerNetcodeSystem";
 
 class PiggoServer {
@@ -16,7 +16,7 @@ class PiggoServer {
 
     this.bun = Bun.serve({
       hostname: "0.0.0.0",
-      port: 3000,
+      port: env.PORT ?? 3000,
       fetch: (r: Request, server: Server) => server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 }),
       websocket: {
         close: (_) => console.log("WebSocket closed"),
