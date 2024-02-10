@@ -9,11 +9,11 @@ export const NPCSystem: SystemBuilder = ({ game }) => {
       const command = npc.props.onTick(entity, game);
       if (command && actions.actionMap[command]) {
         // console.log(`NPC ${entity.id} command ${command}`);
-        localCommandBuffer.push({
+        localCommandBuffer[game.tick + 1][entity.id] = {
           tick: game.tick + 1,
           entityId: entity.id,
           actionId: command
-        });
+        };
       }
     });
   }

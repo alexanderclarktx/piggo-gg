@@ -1,6 +1,6 @@
 import { Renderer, Entity, System, RtcPool, SystemBuilder } from "@piggo-legends/core";
 
-const hz30 = 1000 / 30.0;
+const hz30 = 1000 / 30;
 
 export type GameProps = {
   net?: RtcPool,
@@ -22,7 +22,6 @@ export abstract class Game<T extends GameProps = GameProps> {
   debug: boolean = false;
 
   lastTick: DOMHighResTimeStamp = 0;
-
   thisPlayerId = `player${(Math.random() * 100).toFixed(0)}`;
 
   constructor({ net, renderer, systems, renderMode, runtimeMode }: T) {
@@ -72,6 +71,27 @@ export abstract class Game<T extends GameProps = GameProps> {
     systemBuilders.forEach((systemBuilder) => {
       this.systems.push(systemBuilder({ game: this, renderer: this.renderer, net: this.net, thisPlayerId: this.thisPlayerId, mode: this.renderMode }));
     });
+  }
+
+  rollback = (tick: number, ticksForward: number) => {
+    this.tick = tick;
+
+
+
+
+
+    for (let i = 0; i < ticksForward; i++) {
+
+     // increment tick
+     this.tick += 1;
+ 
+     // run system updates
+     this.systems?.forEach((system) => {
+      if (!system.skipOnRollback) {
+        system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
+      }
+     });
+    }
   }
 
   filterEntitiesForSystem = (query: string[], entities: Entity[]): Entity[] => {

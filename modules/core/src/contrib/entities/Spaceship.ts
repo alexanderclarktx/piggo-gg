@@ -35,7 +35,7 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
       }),
       collider: new Collider({ radius: 60 }),
       controller: new Controller<VehicleMovementCommands>({
-        "a,d": "", "w,s": "",
+        "a,d": null, "w,s": null,
         "shift,a": "skidleft", "shift,d": "skidright",
         "w": "up", "s": "down", "a": "left", "d": "right"
       }),

@@ -1,4 +1,4 @@
-import { TickData } from "@piggo-legends/core";
+import { TickData, localCommandBuffer } from "@piggo-legends/core";
 import { Game, System } from "@piggo-legends/core";
 import { ServerWebSocket } from "bun";
 
@@ -12,7 +12,7 @@ export const ServerNetcodeSystem = ({ game, clients }: ServerNetcodeSystemProps)
   const onTick = () => {
     // build tick data
     const tickData: TickData = {
-      commands: [],
+      commands: {[game.tick]: localCommandBuffer[game.tick]},
       player: "server",
       tick: game.tick,
       type: "game"

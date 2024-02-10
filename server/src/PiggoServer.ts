@@ -53,9 +53,22 @@ class PiggoServer {
       });
     }
 
-    if (parsedMessage.commands.length) {
-      localCommandBuffer.push(...parsedMessage.commands);
-      console.log(`pushed ${JSON.stringify(parsedMessage.commands.map((c) => c.actionId))}`);
+    if (parsedMessage.commands) {
+      Object.keys(parsedMessage.commands).forEach((frameNumber) => {
+        const frame = Number(frameNumber);
+
+        if (!localCommandBuffer[frame]) localCommandBuffer[frame] = {};
+
+        Object.keys(parsedMessage.commands[frame]).forEach((entityId) => {
+          const command = parsedMessage.commands[frame][entityId];
+          localCommandBuffer[frame][entityId] = command;
+          // console.log(`pushed ${JSON.stringify(command.actionId)} to ${frame}`);
+        });
+        // console.log(localCommandBuffer[frame].size);
+      });
+
+      // localCommandBuffer.push(...parsedMessage.commands);
+      // console.log(`pushed ${JSON.stringify(parsedMessage.commands.map((c) => c.actionId))}`);
     }
   }
 }

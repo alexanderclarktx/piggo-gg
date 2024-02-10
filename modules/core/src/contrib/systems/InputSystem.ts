@@ -104,13 +104,16 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
         const inputKeys = input.split(",");
         if (inputKeys.every((key) => buffer.has(key))) {
           // run the callback
-          if (actions.actionMap[controller.controllerMap[input]]) {
-            localCommandBuffer.push({
-              tick: game.tick + 1,
-              entityId: controlledEntity.id,
-              actionId: controller.controllerMap[input]
-            });
-            didAction = true;
+          const controllerInput = controller.controllerMap[input];
+          if (controllerInput != null) {
+            if (actions.actionMap[controllerInput]) {
+              localCommandBuffer[game.tick + 1][controlledEntity.id] = {
+                tick: game.tick + 1,
+                entityId: controlledEntity.id,
+                actionId: controllerInput
+              };
+              didAction = true;
+            }
           }
 
           // remove all keys from the buffer
@@ -118,13 +121,16 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
         }
       } else if (buffer.has(input)) {
 
-        if (actions.actionMap[controller.controllerMap[input]]) {
-          localCommandBuffer.push({
-            tick: game.tick + 1,
-            entityId: controlledEntity.id,
-            actionId: controller.controllerMap[input]
-          });
-          didAction = true;
+        const controllerInput = controller.controllerMap[input];
+        if (controllerInput != null) {
+          if (actions.actionMap[controllerInput]) {
+            localCommandBuffer[game.tick + 1][controlledEntity.id] = {
+              tick: game.tick + 1,
+              entityId: controlledEntity.id,
+              actionId: controllerInput
+            };
+            didAction = true;
+          }
         }
 
         // remove the key from the buffer
@@ -132,11 +138,11 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
       }
     }
     if (!didAction) {
-      localCommandBuffer.push({
+      localCommandBuffer[game.tick + 1][controlledEntity.id] = {
         tick: game.tick + 1,
         entityId: controlledEntity.id,
         actionId: ""
-      });
+      };
     }
   }
 

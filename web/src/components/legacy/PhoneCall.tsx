@@ -1,6 +1,6 @@
 import { RtcPeer } from "@piggo-legends/core";
 import React, { useEffect, useRef } from "react";
-import { NetState } from "../types/NetState";
+import { NetState } from "../../types/NetState";
 
 export type PhoneCallProps = {
   RtcPeer: RtcPeer | undefined;

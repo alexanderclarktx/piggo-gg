@@ -4,7 +4,7 @@ export type TickData = {
   type: "game"
   tick: number
   player: string
-  commands: Command[]
+  commands: Record<number, Record<string, Command>>
 }
 
 export type SerializedEntity = {
@@ -19,14 +19,34 @@ export const WsNetcodeSystem: SystemBuilder = ({ game, thisPlayerId }) => {
     const message = JSON.parse(event.data) as TickData;
     if (message.type === "game") {
       // console.log(`WsNetcodeSystem: received tick ${message.tick}`);
-      console.log(`${game.tick - message.tick}`);
+      // console.log(`${game.tick - message.tick}`);
 
+      // fast-forward if we're behind
       if (message.tick > game.tick) {
-        // rollback
         game.tick = message.tick + 5;
       }
 
-      // localCommandBuffer = localCommandBuffer.filter((c) => c.tick !== message.tick);
+      // rollback if message commands are different from local commands
+      const localCommands = localCommandBuffer[message.tick];
+      const messageCommands = message.commands[message.tick];
+      let rollback = false;
+      for (const [entityId, command] of Object.entries(messageCommands)) {
+        if (localCommands[entityId] !== command) {
+          console.log(`rollback ${entityId} ${command.actionId}`);
+          // game.tick = message.tick - 1;
+          rollback = true;
+          break;
+        }
+      }
+
+      // rewind to message tick and then fast-forward
+      if (rollback) {
+        console.log(`rollback from ${message.tick}`);
+        game.tick = message.tick - 1;
+        
+      }
+
+      console.log(Object.entries(message.commands[message.tick]));
     }
   }
 

@@ -73,7 +73,7 @@ export const Skelly = async (id: string, tint?: number): Promise<Entity> => {
       }),
       collider: new Collider({ radius: 8 }),
       controller: new Controller<WASDMovementCommands>({
-        "": "", "a,d": "", "w,s": "",
+        "": null, "a,d": null, "w,s": null,
         "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
         "w": "up", "s": "down", "a": "left", "d": "right"
       }),

@@ -55,6 +55,7 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
 
   return {
     componentTypeQuery: ["clickable", "actions", "position"],
-    onTick
+    onTick,
+    skipOnRollback: true
   }
 }
