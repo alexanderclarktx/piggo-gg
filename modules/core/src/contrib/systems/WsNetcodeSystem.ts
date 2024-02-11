@@ -1,4 +1,7 @@
-import { Entity, Game, SystemBuilder, Command, SerializedPosition, localCommandBuffer } from "@piggo-legends/core";
+import { Entity, Game, SystemBuilder, Command, localCommandBuffer } from "@piggo-legends/core";
+
+const SERVER_LOCAL = "wss://0.0.0.0:3000";
+const SERVER_REMOTE = "wss://piggo-legends.up.railway.app";
 
 export type TickData = {
   type: "game"
@@ -7,13 +10,10 @@ export type TickData = {
   commands: Record<number, Record<string, Command>>
 }
 
-export type SerializedEntity = {
-  position?: SerializedPosition
-}
-
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsNetcodeSystem: SystemBuilder = ({ game, thisPlayerId }) => {
-  const wsClient = new WebSocket("wss://0.0.0.0:3000");
+  const wsClient = new WebSocket(SERVER_LOCAL);
+  // const wsClient = new WebSocket(SERVER_REMOTE);
 
   wsClient.onmessage = (event) => {
     const message = JSON.parse(event.data) as TickData;
@@ -31,7 +31,7 @@ export const WsNetcodeSystem: SystemBuilder = ({ game, thisPlayerId }) => {
       const messageCommands = message.commands[message.tick];
       let rollback = false;
       for (const [entityId, command] of Object.entries(messageCommands)) {
-        if (localCommands[entityId] !== command) {
+        if (!localCommands || localCommands[entityId] !== command) {
           console.log(`rollback ${entityId} ${command.actionId}`);
           // game.tick = message.tick - 1;
           rollback = true;
@@ -42,8 +42,9 @@ export const WsNetcodeSystem: SystemBuilder = ({ game, thisPlayerId }) => {
       // rewind to message tick and then fast-forward
       if (rollback) {
         console.log(`rollback from ${message.tick}`);
-        game.tick = message.tick - 1;
-        
+        // game.tick = message.tick - 1;
+        localCommandBuffer[message.tick] = message.commands[message.tick];
+        game.rollback(message.tick, 5);
       }
 
       console.log(Object.entries(message.commands[message.tick]));

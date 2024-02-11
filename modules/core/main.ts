@@ -53,6 +53,6 @@ export * from "./src/contrib/systems/InputSystem";
 export * from "./src/contrib/systems/PhysicsSystem";
 export * from "./src/contrib/systems/PlayerSpawnSystem";
 export * from "./src/contrib/systems/RenderSystem";
-export * from "./src/contrib/systems/RtcNetcodeSystem";
+// export * from "./src/contrib/systems/RtcNetcodeSystem";
 export * from "./src/contrib/systems/WsNetcodeSystem";
 

@@ -9,8 +9,8 @@ export type ClickableProps = {
   onPress: string; // action ID
 }
 
-export class Clickable implements Component<"clickable"> {
-  type: "clickable";
+export class Clickable extends Component<"clickable"> {
+  // type: "clickable";
 
   width: number;
   height: number;
@@ -18,6 +18,7 @@ export class Clickable implements Component<"clickable"> {
   onPress: string; // action ID
 
   constructor(props: ClickableProps) {
+    super();
     this.width = props.width;
     this.height = props.height;
     this.active = props.active;

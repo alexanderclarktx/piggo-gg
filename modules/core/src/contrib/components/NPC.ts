@@ -4,12 +4,13 @@ export type NPCProps<T> = {
   onTick: (entity: Entity, game: Game) => T | null;
 };
 
-export class NPC<T extends string = string> implements Component<"npc"> {
-  type: "npc";
+export class NPC<T extends string = string> extends Component<"npc"> {
+  // type: "npc";
 
   props: NPCProps<T>;
 
   constructor(props: NPCProps<T>) {
+    super();
     this.props = props;
   }
 }

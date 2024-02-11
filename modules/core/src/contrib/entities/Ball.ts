@@ -23,8 +23,8 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
     renderable: new Renderable({
       zIndex: 2,
       dynamic: (t: Text, _, e: Entity<Position>) => {
-        const v = e.components.position.velocity;
-        t.rotation += 0.1 * Math.sqrt(v.x * v.x + v.y * v.y);
+        const v = e.components.position.data;
+        t.rotation += 0.1 * Math.sqrt(v.velocityX * v.velocityY + v.velocityY * v.velocityY);
       },
       container: async () => {
         const text = new Text("⚽️", { fill: "#FFFFFF", fontSize: 18 })

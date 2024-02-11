@@ -27,7 +27,7 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
         const body = entity.components.collider.body;
 
         // set initial position
-        Body.setPosition(body, { x: position.x, y: position.y });
+        Body.setPosition(body, { x: position.data.x, y: position.data.y });
 
         // store body
         bodies[entity.id] = body;
@@ -37,7 +37,7 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
       }
 
       // update body velocity
-      Body.setVelocity(bodies[entity.id], position.velocity);
+      Body.setVelocity(bodies[entity.id], { x: position.data.velocityX, y: position.data.velocityY });
     });
 
     // run physics
@@ -46,10 +46,11 @@ export const PhysicsSystem: SystemBuilder = ({ game }) => {
     // update the entity positions
     Object.keys(bodies).forEach((id) => {
       const body = bodies[id];
-      const entity = game.entities[id];
-      entity.components.position!.x = body.position.x;
-      entity.components.position!.y = body.position.y;
-      entity.components.position!.velocity = body.velocity;
+      const entity = game.entities[id] as Entity<Position>;
+      entity.components.position.data.x = body.position.x;
+      entity.components.position.data.y = body.position.y;
+      entity.components.position.data.velocityX = body.velocity.x;
+      entity.components.position.data.velocityY = body.velocity.y;
     });
   }
 

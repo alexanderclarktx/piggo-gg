@@ -21,6 +21,8 @@ export abstract class Game<T extends GameProps = GameProps> {
   runtimeMode: "client" | "server";
   debug: boolean = false;
 
+  entitiesAtTick: Record<number, Record<string, Entity>> = {};
+
   lastTick: DOMHighResTimeStamp = 0;
   thisPlayerId = `player${(Math.random() * 100).toFixed(0)}`;
 
@@ -74,12 +76,13 @@ export abstract class Game<T extends GameProps = GameProps> {
   }
 
   rollback = (tick: number, ticksForward: number) => {
+    // set tick
     this.tick = tick;
 
+    // rollback entities
 
 
-
-
+    // run system updates
     for (let i = 0; i < ticksForward; i++) {
 
      // increment tick
@@ -120,6 +123,15 @@ export abstract class Game<T extends GameProps = GameProps> {
     // run system updates
     this.systems?.forEach((system) => {
       system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
+    });
+
+    // add entities to history
+    Object.keys(this.entities).forEach((entityId) => {
+      // set empty object for tick if it doesn't exist
+      if (!this.entitiesAtTick[this.tick]) this.entitiesAtTick[this.tick] = {};
+
+      // add entity to history
+      this.entitiesAtTick[this.tick][entityId] = this.entities[entityId]; 
     });
 
     // callback

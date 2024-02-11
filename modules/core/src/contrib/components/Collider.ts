@@ -9,12 +9,13 @@ export type ColliderProps = {
   frictionAir?: number
 }
 
-export class Collider implements Component<"collider"> {
-  type: "collider";
+export class Collider extends Component<"collider"> {
+  // type: "collider";
 
   body: Body;
 
   constructor({ radius, length, width, isStatic, frictionAir }: ColliderProps) {
+    super();
     const options: IChamferableBodyDefinition = {
       isStatic: isStatic ?? false,
       frictionAir: frictionAir ?? 0

@@ -13,8 +13,8 @@ export const Cursor = (): Entity => {
           r.props.canvas.addEventListener("mousemove", (event) => {
             const rect = r.props.canvas.getBoundingClientRect();
 
-            cursor.components.position.x = Math.round(event.clientX - rect.left - 2);
-            cursor.components.position.y = Math.round(event.clientY - rect.top - 2);
+            cursor.components.position.data.x = Math.round(event.clientX - rect.left - 2);
+            cursor.components.position.data.y = Math.round(event.clientY - rect.top - 2);
           });
 
           const circle = new Graphics();

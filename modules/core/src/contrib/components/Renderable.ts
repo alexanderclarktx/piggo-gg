@@ -14,8 +14,8 @@ export type RenderableProps = {
 }
 
 // TODO refactor and simplify how entities define renderables
-export class Renderable<T extends RenderableProps = RenderableProps> implements Component<"renderable"> {
-  type: "renderable";
+export class Renderable<T extends RenderableProps = RenderableProps> extends Component<"renderable"> {
+  // type: "renderable";
 
   id: string;
   props: T;
@@ -25,6 +25,7 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   children: Renderable[] | undefined;
 
   constructor(props: T = {} as T) {
+    super();
     this.props = { ...props, rotates: props.rotates ?? false }
   }
 

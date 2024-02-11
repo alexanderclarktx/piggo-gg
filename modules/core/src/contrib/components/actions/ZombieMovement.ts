@@ -15,11 +15,11 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
       entities.sort((a: Entity<Position>, b: Entity<Position>) => {
         const aPosition = a.components.position;
         const bPosition = b.components.position;
-        const dx = aPosition.x - position.x;
-        const dy = aPosition.y - position.y;
+        const dx = aPosition.data.x - position.data.x;
+        const dy = aPosition.data.y - position.data.y;
         const da = dx * dx + dy * dy;
-        const dx2 = bPosition.x - position.x;
-        const dy2 = bPosition.y - position.y;
+        const dx2 = bPosition.data.x - position.data.x;
+        const dy2 = bPosition.data.y - position.data.y;
         const db = dx2 * dx2 + dy2 * dy2;
         return da - db;
       });
@@ -30,8 +30,8 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
     const playerCharacterPosition = closestEntity.components.position!;
 
     // delta toward player
-    let dx = playerCharacterPosition.x - position.x;
-    let dy = playerCharacterPosition.y - position.y;
+    let dx = playerCharacterPosition.data.x - position.data.x;
+    let dy = playerCharacterPosition.data.y - position.data.y;
 
     // normalize speed toward player
     let moveX = dx / Math.sqrt(dx * dx + dy * dy) * speed;

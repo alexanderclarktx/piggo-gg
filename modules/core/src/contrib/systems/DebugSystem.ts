@@ -88,7 +88,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
     const r = new Renderable({
       dynamic: (c: Graphics) => {
         c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
-        c.drawPolygon(...collider.body.vertices.map((v) => worldToScreen({ x: v.x - position.x, y: v.y - position.y })));
+        c.drawPolygon(...collider.body.vertices.map((v) => worldToScreen({ x: v.x - position.data.x, y: v.y - position.data.y })));
       },
       zIndex: 5,
       container: async () => new Graphics()
@@ -106,7 +106,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
     debugRenderables.push(r);
   }
 
-  const debugText = (p: Position, r: Renderable) => `${p.x.toFixed(0)} | ${p.y.toFixed(0)}`;
+  const debugText = (p: Position, r: Renderable) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
 
   return {
     componentTypeQuery: ["debug", "position"],

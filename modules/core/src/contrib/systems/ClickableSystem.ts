@@ -19,7 +19,7 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
         if (!clickable.active) return;
 
         // set bounds
-        let bounds = { x: position.x, y: position.y, w: clickable.width, h: clickable.height };
+        let bounds = { x: position.data.x, y: position.data.y, w: clickable.width, h: clickable.height };
         if (mode === "isometric" && !position.screenFixed) {
           const screenXY = position.toScreenXY();
           bounds = {
