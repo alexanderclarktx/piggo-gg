@@ -30,8 +30,7 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
       clickable: new Clickable({
         width: 100,
         height: 120,
-        active: true,
-        onPress: "click"
+        active: true
       }),
       collider: new Collider({ radius: 60 }),
       controller: new Controller<VehicleMovementCommands>({

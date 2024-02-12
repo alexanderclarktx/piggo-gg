@@ -81,7 +81,6 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
       renderable.c.position.set(position.data.x, position.data.y);
       cachedEntityPositions[entity.id] = position;
     } else {
-      console.log("set 00");
       renderable.c.position.set(0, 0);
     }
 

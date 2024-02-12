@@ -1,9 +1,7 @@
 import { Actions, Character, Clickable, Collider, Debug, Entity, Game, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/core";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
-let zombieId = 0;
-
-export const Zombie = async (): Promise<Entity> => {
+export const Zombie = (id: string): Entity => {
 
   const render = async () => {
     const textures = (await Assets.load("chars.json")).textures;
@@ -30,15 +28,14 @@ export const Zombie = async (): Promise<Entity> => {
   }
 
   return {
-    id: `zombie-${zombieId++}`,
+    id,
     components: {
       position: new Position({ renderMode: "isometric", x: 100 + Math.random() * 600, y: 100 + Math.random() * 600 }),
       networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
         width: 32,
         height: 32,
-        active: true,
-        onPress: "click"
+        active: true
       }),
       health: new Health(100, 100),
       npc: new NPC<ZombieMovementCommands>({
@@ -48,8 +45,8 @@ export const Zombie = async (): Promise<Entity> => {
         ...ZombieMovement,
         "click": (entity: Entity, game: Game) => {
           const health = entity.components.health as Health;
-          health.health -= 50;
-          if (health.health <= 0) {
+          health.data.health -= 50;
+          if (health.data.health <= 0) {
             game.removeEntity(entity.id);
           }
         }

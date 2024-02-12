@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, Actions, Clickable, Position } from "@piggo-legends/core";
+import { Entity, SystemBuilder, Actions, Clickable, Position, localCommandBuffer, addToLocalCommandBuffer } from "@piggo-legends/core";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
@@ -40,10 +40,7 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
           clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
         )
 
-        if (clicked) {
-          const callback = entity.components.actions.actionMap[clickable.onPress];
-          if (callback) callback(entity, game, thisPlayerId);
-        }
+        if (clicked) addToLocalCommandBuffer(game.tick + 1, entity.id, "click");
       });
     });
     bufferClick = [];

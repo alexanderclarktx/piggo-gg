@@ -1,4 +1,4 @@
-import { Renderer, Entity, System, RtcPool, SystemBuilder } from "@piggo-legends/core";
+import { Renderer, Entity, System, RtcPool, SystemBuilder, SerializedEntity, deserializeEntity, Zombie, Ball, Player, Networked, Skelly, Controlling } from "@piggo-legends/core";
 
 const hz30 = 1000 / 30;
 
@@ -33,11 +33,7 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.renderMode = renderMode ?? "cartesian";
     this.runtimeMode = runtimeMode ?? "client";
 
-    if (this.runtimeMode === "client") {
-      requestAnimationFrame(this.onTick);
-    } else {
-      setInterval(this.onTick, hz30);
-    }
+    setInterval(this.onTick, hz30);
   }
 
   addEntity = (entity: Entity) => {
@@ -75,25 +71,77 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
   }
 
-  rollback = (tick: number, ticksForward: number) => {
+  rollback = (rollbackEntities: Record<string, SerializedEntity>, tick: number, ticksForward: number) => {
+
+    console.log("rollback", this.tick, tick);
+
     // set tick
     this.tick = tick;
 
     // rollback entities
+    Object.keys(this.entities).forEach((entityId) => {
+      if (this.entities[entityId].components.networked) {
 
+        if (!rollbackEntities[entityId]) {
+          // delete if not present in rollback frame
+          console.log("DELETE ENTITY", entityId, rollbackEntities);
+          this.removeEntity(entityId);
+        }
+      }
+    });
+
+    // add new entities if not present locally
+    Object.keys(rollbackEntities).forEach((entityId) => {
+      if (!this.entities[entityId]) {
+        if (entityId.startsWith("zombie")) {
+          console.log("ADD ZOMBIE FROM SERVER", entityId);
+          this.addEntity(Zombie(entityId));
+        } else if (entityId.startsWith("ball")) {
+          console.log("ADD BALL FROM SERVER", entityId);
+          const ball = Ball({ id: entityId });
+          console.log("BALL", ball);
+          this.addEntity(ball);
+        } else if (entityId.startsWith("player")) {
+          console.log("ADD PLAYER FROM SERVER", entityId);
+          const player: Entity = {
+            id: entityId,
+            components: {
+              networked: new Networked({ isNetworked: true }),
+              player: new Player({ name: entityId }),
+              controlling: new Controlling({ entityId: "" })
+            }
+          };
+          this.addEntity(player);
+        } else if (entityId.startsWith("skelly")) {
+          console.log("ADD SKELLY FROM SERVER", entityId, rollbackEntities[entityId]);
+          Skelly(entityId).then((skelly) => {
+            this.addEntity(skelly);
+          });
+        } else {
+          console.log("ADD ENTITY FROM SERVER UNKNOWN", entityId);
+        }
+      }
+    });
+
+    // deserialize everything
+    Object.keys(rollbackEntities).forEach((entityId) => {
+      if (this.entities[entityId] && rollbackEntities[entityId]) {
+        deserializeEntity(this.entities[entityId], rollbackEntities[entityId]);
+      }
+    });
 
     // run system updates
     for (let i = 0; i < ticksForward; i++) {
 
-     // increment tick
-     this.tick += 1;
- 
-     // run system updates
-     this.systems?.forEach((system) => {
-      if (!system.skipOnRollback) {
-        system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
-      }
-     });
+      // increment tick
+      this.tick += 1;
+
+      // run system updates
+      this.systems?.forEach((system) => {
+        if (!system.skipOnRollback) {
+          system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
+        }
+      });
     }
   }
 
@@ -106,14 +154,7 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
   }
 
-  onTick = (time: DOMHighResTimeStamp) => {
-
-    // skip if 1000 / 30 ms has not passed
-    if (this.runtimeMode === "client" && (time - this.lastTick) <= hz30) {
-      if (requestAnimationFrame) requestAnimationFrame(this.onTick);
-      return;
-    }
-
+  onTick = () => {
     // update the last tick time
     this.lastTick = this.lastTick + hz30;
 
@@ -124,17 +165,5 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.systems?.forEach((system) => {
       system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
     });
-
-    // add entities to history
-    Object.keys(this.entities).forEach((entityId) => {
-      // set empty object for tick if it doesn't exist
-      if (!this.entitiesAtTick[this.tick]) this.entitiesAtTick[this.tick] = {};
-
-      // add entity to history
-      this.entitiesAtTick[this.tick][entityId] = this.entities[entityId]; 
-    });
-
-    // callback
-    if (this.runtimeMode === "client") requestAnimationFrame(this.onTick);
   }
 }

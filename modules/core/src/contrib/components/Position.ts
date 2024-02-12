@@ -15,7 +15,7 @@ export const worldToScreen = ({ x, y }: { x: number, y: number }): { x: number, 
 
 // the entity's position in the world
 export class Position extends Component<"position"> {
-  // type: "position";
+  type: "position" = "position";
 
   override data = {
     x: 0,

@@ -1,8 +1,7 @@
 import { Component } from "@piggo-legends/core";
 
 export class Name extends Component<"name"> {
-  // type: "name";
-
+  type: "name" = "name";
   name: string;
 
   constructor(name: string) {

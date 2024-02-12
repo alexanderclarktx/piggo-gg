@@ -15,7 +15,7 @@ export type RenderableProps = {
 
 // TODO refactor and simplify how entities define renderables
 export class Renderable<T extends RenderableProps = RenderableProps> extends Component<"renderable"> {
-  // type: "renderable";
+  type: "renderable" = "renderable";
 
   id: string;
   props: T;

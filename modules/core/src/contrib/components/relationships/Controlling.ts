@@ -3,21 +3,25 @@ import { Component } from "@piggo-legends/core";
 export type ControllingProps = { entityId: string };
 
 export class Controlling extends Component<"controlling"> {
-  // type: "controlling";
-  entityId: string;
+  type: "controlling" = "controlling";
+  override data = {
+    entityId: ""
+  }
 
   constructor(props: ControllingProps) {
     super();
-    this.entityId = props.entityId;
+    this.data.entityId = props.entityId;
   }
 }
 
 export class Controlled extends Component<"controlled">{
-  // type: "controlled";
-  entityId: string;
+  type: "controlled" = "controlled";
+  override data = {
+    entityId: ""
+  }
 
   constructor(props: ControllingProps) {
     super();
-    this.entityId = props.entityId;
+    this.data.entityId = props.entityId;
   }
 }

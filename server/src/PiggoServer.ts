@@ -1,50 +1,72 @@
-import { Networked, Player, TickData, localCommandBuffer } from "@piggo-legends/core";
+import { EnemySpawnSystem, Networked, Player, PlayerSpawnSystem, TickData, localCommandBuffer } from "@piggo-legends/core";
 import { Playground } from "@piggo-legends/playground";
 import { ServerWebSocket, Server, env } from "bun";
 import { ServerNetcodeSystem } from "./ServerNetcodeSystem";
 
+type PerClientData = {
+  id: number
+  playerName: string
+}
+
 class PiggoServer {
 
   bun: Server;
-  id = 1;
+  clientCount = 1;
   clients: Record<string, ServerWebSocket<unknown>> = {};
 
   playground = new Playground({ runtimeMode: "server" });
 
   constructor() {
-    this.playground.addSystems([ServerNetcodeSystem({ game: this.playground, clients: this.clients })]);
+    this.playground.addSystems([
+      EnemySpawnSystem(this.playground),
+      PlayerSpawnSystem(this.playground),
+      ServerNetcodeSystem({ game: this.playground, clients: this.clients })
+    ]);
 
     this.bun = Bun.serve({
       hostname: "0.0.0.0",
       port: env.PORT ?? 3000,
       fetch: (r: Request, server: Server) => server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 }),
       websocket: {
-        close: (_) => console.log("WebSocket closed"),
+        close: this.handleClose,
         open: this.handleOpen,
-        message: this.handleMessage
+        message: this.handleMessage,
       },
     });
   }
 
-  handleOpen = (ws: ServerWebSocket<unknown>) => {
+  handleClose = (ws: ServerWebSocket<PerClientData>) => {
+
+    // remove player entity
+    this.playground.removeEntity(ws.data.playerName);
+
+    // remove from clients
+    delete this.clients[ws.remoteAddress];
+
+    console.log(`${ws.data.playerName} disconnected`);
+  }
+
+  handleOpen = (ws: ServerWebSocket<PerClientData>) => {
     // set data for this client
-    ws.data = { id: this.id };
+    ws.data = { id: this.clientCount, playerName: "UNKNOWN" };
 
     // increment id
-    this.id += 1;
+    this.clientCount += 1;
 
     // add to clients
     this.clients[ws.remoteAddress] = ws;
-
-    console.log(`player:${this.id} ${ws.remoteAddress} connected`);
   }
 
-  handleMessage = (ws: ServerWebSocket<unknown>, msg: string) => {
+  handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {
     if (typeof msg != "string") return;
     const parsedMessage = JSON.parse(msg) as TickData;
 
     // add player entity if it doesn't exist
     if (!this.playground.entities[parsedMessage.player]) {
+      ws.data.playerName = parsedMessage.player;
+
+      console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`);
+
       this.playground.addEntity({
         id: parsedMessage.player,
         components: {

@@ -15,14 +15,14 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
     clickable: new Clickable({
       width: 32,
       height: 32,
-      active: true,
-      onPress: "click"
+      active: true
     }),
     collider: new Collider({ radius: 7, frictionAir: 0.01 }),
     debug: new Debug(),
     renderable: new Renderable({
       zIndex: 2,
       dynamic: (t: Text, _, e: Entity<Position>) => {
+        console.log(e);
         const v = e.components.position.data;
         t.rotation += 0.1 * Math.sqrt(v.velocityX * v.velocityY + v.velocityY * v.velocityY);
       },

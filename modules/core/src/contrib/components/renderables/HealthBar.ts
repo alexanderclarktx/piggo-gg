@@ -26,7 +26,7 @@ export class HealthBar extends Renderable<HealthBarProps> {
     g.drawRect(-15, -35, 30, 5);
 
     // red length proportional to percent health
-    const length = 30 * (this.props.health.health / this.props.health.maxHealth);
+    const length = 30 * (this.props.health.data.health / this.props.health.data.maxHealth);
     g.beginFill(0xff0000, 0.9);
     g.drawRect(-15, -35, length, 5);
     g.endFill();

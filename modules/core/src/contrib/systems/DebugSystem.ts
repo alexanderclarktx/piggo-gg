@@ -57,7 +57,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
         if (renderable && position) {
           const bounds = renderable.c.getLocalBounds();
           c.position.set(bounds.x, bounds.top - 25);
-          c.text = debugText(position, renderable);
+          // c.text = debugText(position, renderable);
         }
       },
       fontSize: 12, color: 0xffff00

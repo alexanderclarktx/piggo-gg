@@ -1,8 +1,8 @@
 
 // 个 gè (single)
 // a Component is an atomic unit of data that is attached to an entity
-export class Component<T extends string> {
-  type: T;
+export abstract class Component<T extends string> {
+  abstract type: T;
 
   networked: boolean = false;
 

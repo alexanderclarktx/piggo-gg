@@ -9,12 +9,11 @@ export const FullscreenButton = (id: string = "fullscreenButton"): Entity => ({
       x: 40, y: 5, screenFixed: true
     }),
     clickable: new Clickable({
-      onPress: "click",
       active: true,
       width: 32,
       height: 30,
     }),
-    actions: new Actions<"click">({
+    actions: new Actions({
       "click": (_, game: Game) => {
         if (!document.fullscreenElement) {
           // @ts-expect-error

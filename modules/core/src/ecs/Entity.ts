@@ -22,29 +22,24 @@ export interface Entity<T extends ComponentTypes = ComponentTypes> {
   }
 }
 
-// < entityId, 
-export type SerializedEntityZ = Record<string, Record<string, string | number>>
+export type SerializedEntity = Record<string, Record<string, string | number>>
 
-export const serializeEntity = (entity: Entity): SerializedEntityZ => {
-  const serializedEntity: SerializedEntityZ = {};
+export const serializeEntity = (entity: Entity): SerializedEntity => {
+  const serializedEntity: SerializedEntity = {};
   Object.values(entity.components).forEach((component) => {
-    if (component.serialize) {
-      serializedEntity[component.type] = component.serialize();
+    const serializedComponent = component.serialize();
+    if (Object.keys(serializedComponent).length) {
+      serializedEntity[component.type] = serializedComponent;
     }
   });
-  // if (entity.components.position) {
-  //   serializedEntity.position = serializePosition(entity.components.position);
-  // }
   return serializedEntity;
 }
 
-export const deserializeEntity = (entity: Entity, serializedEntity: SerializedEntityZ) => {
+export const deserializeEntity = (entity: Entity, serializedEntity: SerializedEntity) : void => {
   Object.values(entity.components).forEach((component) => {
-    if (component.deserialize) {
+    if (component.type in serializedEntity) {
+      // console.log("DESERIALIZE", component.type, serializedEntity[component.type]);
       component.deserialize(serializedEntity[component.type]);
     }
   });
-  // if (entity.components.position) {
-  //   deserializePosition(entity.components.position, serializedEntity.position);
-  // }
 }

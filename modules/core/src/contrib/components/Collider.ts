@@ -10,8 +10,7 @@ export type ColliderProps = {
 }
 
 export class Collider extends Component<"collider"> {
-  // type: "collider";
-
+  type: "collider" = "collider";
   body: Body;
 
   constructor({ radius, length, width, isStatic, frictionAir }: ColliderProps) {

@@ -4,7 +4,7 @@ export type Trait = "Assassin" | "Blademaster" | "Brawler" | "Demolitionist" | "
 
 // the Traits component stores a unit's traits
 export class Traits extends Component<"traits"> {
-  // type: "traits";
+  type: "traits" = "traits";
 
   traits: readonly [Trait?, Trait?, Trait?];
 

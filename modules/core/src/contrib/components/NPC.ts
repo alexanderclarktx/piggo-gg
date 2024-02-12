@@ -5,8 +5,7 @@ export type NPCProps<T> = {
 };
 
 export class NPC<T extends string = string> extends Component<"npc"> {
-  // type: "npc";
-
+  type: "npc" = "npc";
   props: NPCProps<T>;
 
   constructor(props: NPCProps<T>) {

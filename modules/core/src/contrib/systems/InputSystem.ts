@@ -1,4 +1,4 @@
-import { Actions, Ball, Controlled, Controller, Entity, Game, Spaceship, SystemBuilder, Zombie, localCommandBuffer } from "@piggo-legends/core";
+import { Actions, Ball, Controlled, Controller, Entity, Game, Spaceship, SystemBuilder, Zombie, addToLocalCommandBuffer, localCommandBuffer } from "@piggo-legends/core";
 
 export var chatBuffer: string[] = [];
 export var chatHistory: string[] = [];
@@ -25,7 +25,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
             game.addEntity(Ball());
             break;
           case "zombie":
-            game.addEntity(await Zombie());
+            game.addEntity(Zombie('zombie-SPAWNED'));
             break;
         }
       }
@@ -82,7 +82,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     // handle inputs for controlled entities
     entities.forEach((entity) => {
       const controlled = entity.components.controlled;
-      if (controlled.entityId === thisPlayerId) handleInputForControlledEntity(entity, game);
+      if (controlled.data.entityId === thisPlayerId) handleInputForControlledEntity(entity, game);
     });
 
     // handle buffered backspace
@@ -107,11 +107,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
           const controllerInput = controller.controllerMap[input];
           if (controllerInput != null) {
             if (actions.actionMap[controllerInput]) {
-              localCommandBuffer[game.tick + 1][controlledEntity.id] = {
-                tick: game.tick + 1,
-                entityId: controlledEntity.id,
-                actionId: controllerInput
-              };
+              addToLocalCommandBuffer(game.tick + 1, controlledEntity.id, controllerInput);
               didAction = true;
             }
           }
@@ -124,11 +120,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
         const controllerInput = controller.controllerMap[input];
         if (controllerInput != null) {
           if (actions.actionMap[controllerInput]) {
-            localCommandBuffer[game.tick + 1][controlledEntity.id] = {
-              tick: game.tick + 1,
-              entityId: controlledEntity.id,
-              actionId: controllerInput
-            };
+            addToLocalCommandBuffer(game.tick + 1, controlledEntity.id, controllerInput);
             didAction = true;
           }
         }
@@ -138,11 +130,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
       }
     }
     if (!didAction) {
-      localCommandBuffer[game.tick + 1][controlledEntity.id] = {
-        tick: game.tick + 1,
-        entityId: controlledEntity.id,
-        actionId: ""
-      };
+      addToLocalCommandBuffer(game.tick + 1, controlledEntity.id, "");
     }
   }
 
@@ -156,5 +144,6 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
   return {
     componentTypeQuery: ["controlled", "controller", "actions"],
     onTick,
+    skipOnRollback: true
   }
 }

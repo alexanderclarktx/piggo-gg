@@ -9,13 +9,19 @@ export class Playground extends Game {
   constructor(props: GameProps = {}) {
     super({ ...props, renderMode: "isometric" });
 
+
     // add shared systems
-    this.addSystemBuilders([CommandSystem, PhysicsSystem, PlayerSpawnSystem, NPCSystem, EnemySpawnSystem]);
+    this.addSystemBuilders([CommandSystem, PhysicsSystem, NPCSystem]);
 
     // add client-only systems/entities
     if (this.runtimeMode === "client") {
       this.addSystemBuilders([
-        InputSystem, ClickableSystem, DebugSystem, RenderSystem, GuiSystem, //WsNetcodeSystem
+        InputSystem, ClickableSystem, DebugSystem, RenderSystem, GuiSystem
+      ]);
+
+      this.addSystems([
+        PlayerSpawnSystem(this),
+        EnemySpawnSystem(this),
       ]);
 
       // not networked
@@ -32,6 +38,7 @@ export class Playground extends Game {
   }
 
   addPlayer = () => {
+    console.log(`ADDING LOCALLY ${this.thisPlayerId}`);
     this.addEntity({
       id: this.thisPlayerId,
       components: {

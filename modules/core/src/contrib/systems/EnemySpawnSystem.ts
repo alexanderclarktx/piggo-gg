@@ -1,7 +1,7 @@
-import { Entity, SystemBuilder, Zombie } from "@piggo-legends/core";
+import { Entity, SystemBuilder, Zombie, Game } from "@piggo-legends/core";
 
 // EnemySpawnSystem spawns waves of enemies
-export const EnemySpawnSystem: SystemBuilder = ({ game }) => {
+export const EnemySpawnSystem = (game: Game) => {
 
   let wave = 0;
   let enemiesInWave: Record<string, Entity> = {};
@@ -23,7 +23,7 @@ export const EnemySpawnSystem: SystemBuilder = ({ game }) => {
     const zombies = 1 + wave;
 
     for (let i = 0; i < zombies; i++) {
-      const z = await Zombie();
+      const z = Zombie(`zombie-${i}`);
       enemiesInWave[z.id] = z;
       game.addEntity(z);
     }

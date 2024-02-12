@@ -7,10 +7,6 @@
 //   entities: Record<string, SerializedEntity>
 // }
 
-// type SerializedEntity = {
-//   // position?: SerializedPosition
-// }
-
 // type PeerState = {
 //   connected: boolean
 //   connection: RtcPeer
