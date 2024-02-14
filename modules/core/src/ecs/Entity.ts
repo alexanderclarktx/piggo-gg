@@ -1,8 +1,8 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/core";
+import { Actions, Clickable, ColliderRJS, ColliderMJS, Controlled, Controller, Controlling, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/core";
 
 // TODO how to make this extendable
-type ComponentTypes =
-  Actions | Clickable | Collider |
+export type ComponentTypes =
+  Actions | Clickable | ColliderRJS | ColliderMJS |
   Controller | Controlled | Controlling |
   Debug | Health | Name | Networked | NPC |
   Player | Position | Renderable
@@ -38,7 +38,6 @@ export const serializeEntity = (entity: Entity): SerializedEntity => {
 export const deserializeEntity = (entity: Entity, serializedEntity: SerializedEntity) : void => {
   Object.values(entity.components).forEach((component) => {
     if (component.type in serializedEntity) {
-      // console.log("DESERIALIZE", component.type, serializedEntity[component.type]);
       component.deserialize(serializedEntity[component.type]);
     }
   });

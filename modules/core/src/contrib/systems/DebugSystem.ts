@@ -1,4 +1,4 @@
-import { Collider, DebugBounds, Entity, Position, Renderable, SystemBuilder, TextBox, worldToScreen } from "@piggo-legends/core";
+import { ColliderRJS, DebugBounds, Entity, Position, Renderable, SystemBuilder, TextBox, worldToScreen } from "@piggo-legends/core";
 import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
@@ -11,12 +11,12 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
     if (game.debug) {
       // handle new entities
       entities.forEach((entity) => {
-        const { renderable, collider } = entity.components;
+        const { renderable, colliderRJS } = entity.components;
 
         if (!debugEntitiesPerEntity[entity.id] || !debugEntitiesPerEntity[entity.id].length) {
           debugEntitiesPerEntity[entity.id] = [];
           if (renderable) addEntityForRenderable(entity as Entity<Renderable | Position>);
-          if (collider) addEntityForCollider(entity as Entity<Collider | Position>);
+          if (colliderRJS) addEntityForCollider(entity as Entity<ColliderRJS | Position>);
         }
       });
 
@@ -43,7 +43,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
       debugEntitiesPerEntity = {};
 
       // cleanup all debug renderables
-      debugRenderables.forEach((renderable) => renderable.cleanup());
+      // debugRenderables.forEach((renderable) => renderable.cleanup());
       debugRenderables = [];
     }
   }
@@ -82,13 +82,15 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
     debugRenderables.push(textBox, debugBounds);
   }
 
-  const addEntityForCollider = (entity: Entity<Collider | Position>) => {
-    const { collider, position } = entity.components;
+  const addEntityForCollider = (entity: Entity<ColliderRJS | Position>) => {
+    const { colliderRJS, position } = entity.components
 
     const r = new Renderable({
       dynamic: (c: Graphics) => {
-        c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
-        c.drawPolygon(...collider.body.vertices.map((v) => worldToScreen({ x: v.x - position.data.x, y: v.y - position.data.y })));
+        if (c.clear) {
+          c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
+          // c.drawPolygon(...collider.body.vertices.map((v) => worldToScreen({ x: v.x - position.data.x, y: v.y - position.data.y })));
+        }
       },
       zIndex: 5,
       container: async () => new Graphics()
@@ -110,6 +112,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
 
   return {
     componentTypeQuery: ["debug", "position"],
-    onTick
+    onTick,
+    skipOnRollback: true
   }
 }

@@ -5,6 +5,8 @@ export type Command = string;
 // TODO localCommandBuffer is a hack
 export var localCommandBuffer: Record<number, Record<string, Command[]>> = {};
 export const addToLocalCommandBuffer = (tick: number, entityId: string, command: Command) => {
+  tick += 1;
+
   if (!localCommandBuffer[tick]) {
     localCommandBuffer[tick] = {};
   }
@@ -73,7 +75,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
             }
 
             // execute the action
-            // console.log(`集 ${command.entityId} command ${command.actionId} executed`);
+            // console.log(`集 ${entityId} command ${command} executed`);
             action(entity, game);
           });
         });

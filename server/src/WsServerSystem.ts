@@ -7,7 +7,7 @@ export type ServerNetcodeSystemProps = {
   clients: Record<string, ServerWebSocket<unknown>>
 }
 
-export const ServerNetcodeSystem = ({ game, clients }: ServerNetcodeSystemProps): System => {
+export const WsServerSystem = ({ game, clients }: ServerNetcodeSystemProps): System => {
 
   const onTick = () => {
 
@@ -17,7 +17,7 @@ export const ServerNetcodeSystem = ({ game, clients }: ServerNetcodeSystemProps)
         serializedEntities[entityId] = serializeEntity(game.entities[entityId]);
       }
     }
-    if (game.tick % 500 === 0) console.log(serializedEntities);
+    // if (game.tick % 500 === 0) console.log(serializedEntities);
 
     // build tick data
     const tickData: TickData = {

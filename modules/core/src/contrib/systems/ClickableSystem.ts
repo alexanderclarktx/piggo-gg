@@ -1,10 +1,10 @@
-import { Entity, SystemBuilder, Actions, Clickable, Position, localCommandBuffer, addToLocalCommandBuffer } from "@piggo-legends/core";
+import { Actions, Clickable, Entity, Position, SystemBuilder, addToLocalCommandBuffer } from "@piggo-legends/core";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
 
 // ClickableSystem handles clicks for clickable entities
-export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode }) => {
+export const ClickableSystem: SystemBuilder = ({ game, renderer, mode }) => {
   if (!renderer) throw new Error("ClickableSystem requires a renderer");
 
   let bufferClick: Click[] = [];
@@ -40,7 +40,7 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
           clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
         )
 
-        if (clicked) addToLocalCommandBuffer(game.tick + 1, entity.id, "click");
+        if (clicked) addToLocalCommandBuffer(game.tick, entity.id, "click");
       });
     });
     bufferClick = [];

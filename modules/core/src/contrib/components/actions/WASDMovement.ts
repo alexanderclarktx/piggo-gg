@@ -23,5 +23,9 @@ const setAV = (entity: Entity<Position>, animation: AnimationKeys | undefined, v
   position.setVelocity(velocity);
 
   const character = renderable?.r as Character;
-  if (character && animation) character.setAnimation(animation);
+  if (renderable && character && animation) {
+    // renderable.data.animation = animation;
+    // console.log("setting animation");
+    character.setAnimation(animation);
+  }
 }

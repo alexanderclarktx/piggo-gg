@@ -1,7 +1,7 @@
 import { EnemySpawnSystem, Networked, Player, PlayerSpawnSystem, TickData, localCommandBuffer } from "@piggo-legends/core";
 import { Playground } from "@piggo-legends/playground";
 import { ServerWebSocket, Server, env } from "bun";
-import { ServerNetcodeSystem } from "./ServerNetcodeSystem";
+import { WsServerSystem } from "./WsServerSystem";
 
 type PerClientData = {
   id: number
@@ -20,7 +20,7 @@ class PiggoServer {
     this.playground.addSystems([
       EnemySpawnSystem(this.playground),
       PlayerSpawnSystem(this.playground),
-      ServerNetcodeSystem({ game: this.playground, clients: this.clients })
+      WsServerSystem({ game: this.playground, clients: this.clients })
     ]);
 
     this.bun = Bun.serve({
@@ -54,7 +54,7 @@ class PiggoServer {
     this.clientCount += 1;
 
     // add to clients
-    this.clients[ws.remoteAddress] = ws;
+    this.clients[ws.remoteAddress + ws.data.id] = ws;
   }
 
   handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {

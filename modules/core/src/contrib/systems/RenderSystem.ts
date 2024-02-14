@@ -19,6 +19,15 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   });
 
   const onTick = (entities: Entity<Renderable | Position>[]) => {
+
+    // cleanup old entities
+    renderedEntities.forEach((entity) => {
+      if (!Object.keys(game.entities).includes(entity.id)) {
+        renderedEntities.delete(entity);
+        entity.components.renderable.cleanup();
+      }
+    });
+
     entities.forEach(async (entity) => {
       const { position, renderable, controlled } = entity.components;
 
@@ -29,7 +38,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
       }
 
       // track entity if controlled by player
-      if (controlled && position && centeredEntity !== entity) {
+      if (controlled && position && centeredEntity !== entity && controlled.data.entityId === game.thisPlayerId) {
         centeredEntity = entity;
       }
 
@@ -110,6 +119,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
 
   return {
     componentTypeQuery: ["renderable", "position"],
-    onTick
+    onTick,
+    skipOnRollback: true,
   }
 }

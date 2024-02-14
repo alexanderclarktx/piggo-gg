@@ -30,14 +30,14 @@ export const Root = () => {
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           <Header />
-          <NetConnector
+          {/* <NetConnector
             net={pool}
             sdp={sdp}
             modalOpen={modalOpen}
             setModalOpen={setModalOpen}
             netState={netState}
             setNetState={setNetState}
-          />
+          /> */}
           <GameCanvas
             net={pool}
             setGame={setGame}

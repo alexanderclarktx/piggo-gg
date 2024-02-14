@@ -1,7 +1,7 @@
 import { Entity, SystemBuilder, Health, HealthBar, Position, Renderable } from "@piggo-legends/core";
 
 // GuiSystem displays gui elements
-export const GuiSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode }) => {
+export const GuiSystem: SystemBuilder = ({ game, renderer }) => {
   if (!renderer) throw new Error("ClickableSystem requires a renderer");
 
   let renderedEntities: Set<Entity> = new Set();
@@ -47,6 +47,7 @@ export const GuiSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode })
 
   return {
     componentTypeQuery: ["health", "position", "renderable"],
-    onTick
+    onTick,
+    skipOnRollback: true,
   }
 }

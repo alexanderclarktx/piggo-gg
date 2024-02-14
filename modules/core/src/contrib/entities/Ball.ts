@@ -1,4 +1,4 @@
-import { Clickable, Collider, Debug, Networked, Position, Renderable } from "@piggo-legends/core";
+import { Clickable, ColliderRJS, Debug, Networked, Position, Renderable } from "@piggo-legends/core";
 import { Entity } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
@@ -17,12 +17,11 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
       height: 32,
       active: true
     }),
-    collider: new Collider({ radius: 7, frictionAir: 0.01 }),
+    colliderRJS: new ColliderRJS({ radius: 7, frictionAir: 0.01 }),
     debug: new Debug(),
     renderable: new Renderable({
       zIndex: 2,
       dynamic: (t: Text, _, e: Entity<Position>) => {
-        console.log(e);
         const v = e.components.position.data;
         t.rotation += 0.1 * Math.sqrt(v.velocityX * v.velocityY + v.velocityY * v.velocityY);
       },

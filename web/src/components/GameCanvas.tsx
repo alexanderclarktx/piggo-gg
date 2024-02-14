@@ -13,7 +13,7 @@ export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
       const renderer = new Renderer({
         canvas: document.getElementById("canvas") as HTMLCanvasElement,
         width: window.innerWidth * 0.98,
-        height: window.innerHeight * 0.89
+        height: window.innerHeight * 0.90
       });
       setGame(new Playground({ net, renderer, runtimeMode: "client" }));
     }

@@ -1,4 +1,4 @@
-import { Actions, Character, Clickable, Collider, Debug, Entity, Game, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/core";
+import { Actions, Character, Clickable, ColliderRJS, Debug, Entity, Game, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/core";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
 export const Zombie = (id: string): Entity => {
@@ -51,7 +51,7 @@ export const Zombie = (id: string): Entity => {
           }
         }
       }),
-      collider: new Collider({ radius: 8 }),
+      colliderRJS: new ColliderRJS({ radius: 8 }),
       debug: new Debug(),
       renderable: new Renderable({
         zIndex: 2,

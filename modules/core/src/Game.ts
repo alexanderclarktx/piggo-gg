@@ -1,6 +1,4 @@
-import { Renderer, Entity, System, RtcPool, SystemBuilder, SerializedEntity, deserializeEntity, Zombie, Ball, Player, Networked, Skelly, Controlling } from "@piggo-legends/core";
-
-const hz30 = 1000 / 30;
+import { Ball, Controlling, Entity, Networked, Player, Renderer, RtcPool, SerializedEntity, Skelly, System, SystemBuilder, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type GameProps = {
   net?: RtcPool,
@@ -20,20 +18,25 @@ export abstract class Game<T extends GameProps = GameProps> {
   renderMode: "cartesian" | "isometric";
   runtimeMode: "client" | "server";
   debug: boolean = false;
-
-  entitiesAtTick: Record<number, Record<string, Entity>> = {};
+  tickrate = 1000 / 32;
 
   lastTick: DOMHighResTimeStamp = 0;
+  entitiesAtTick: Record<number, Record<string, SerializedEntity>> = {};
+
   thisPlayerId = `player${(Math.random() * 100).toFixed(0)}`;
 
   constructor({ net, renderer, systems, renderMode, runtimeMode }: T) {
     this.net = net;
     this.renderer = renderer;
-    this.systems = systems ?? [],
+    this.systems = systems ?? [];
     this.renderMode = renderMode ?? "cartesian";
     this.runtimeMode = runtimeMode ?? "client";
 
-    setInterval(this.onTick, hz30);
+    // if (this.runtimeMode === "client") {
+    setTimeout(this.onTick, 8);
+    // } else {
+      // setInterval(this.onTick, this.tickrate);
+    // }
   }
 
   addEntity = (entity: Entity) => {
@@ -42,15 +45,11 @@ export abstract class Game<T extends GameProps = GameProps> {
   }
 
   addEntities = (entities: Entity[]) => {
-    entities.forEach((entity) => {
-      this.addEntity(entity);
-    });
+    entities.forEach((entity) => this.addEntity(entity));
   }
 
   addEntityBuilders = (entityBuilders: (() => Entity)[]) => {
-    entityBuilders.forEach((entityBuilder) => {
-      this.addEntity(entityBuilder());
-    });
+    entityBuilders.forEach((entityBuilder) => this.addEntity(entityBuilder()));
   }
 
   removeEntity = (id: string) => {
@@ -73,12 +72,19 @@ export abstract class Game<T extends GameProps = GameProps> {
 
   rollback = (rollbackEntities: Record<string, SerializedEntity>, tick: number, ticksForward: number) => {
 
-    console.log("rollback", this.tick, tick);
+    console.log(`rollback client:${this.tick} server:${tick}`);
+    // console.log(JSON.stringify(Object.keys(rollbackEntities)));
+    if (this.entitiesAtTick[tick]) {
+      // console.log(Object.keys(rollbackEntities).length, Object.keys(this.entitiesAtTick[tick]).length);
+    }
 
     // set tick
     this.tick = tick;
 
-    // rollback entities
+    // set lastTick
+    this.lastTick = performance.now();
+
+    // remove old local entities
     Object.keys(this.entities).forEach((entityId) => {
       if (this.entities[entityId].components.networked) {
 
@@ -98,9 +104,7 @@ export abstract class Game<T extends GameProps = GameProps> {
           this.addEntity(Zombie(entityId));
         } else if (entityId.startsWith("ball")) {
           console.log("ADD BALL FROM SERVER", entityId);
-          const ball = Ball({ id: entityId });
-          console.log("BALL", ball);
-          this.addEntity(ball);
+          this.addEntity(Ball({ id: entityId }));
         } else if (entityId.startsWith("player")) {
           console.log("ADD PLAYER FROM SERVER", entityId);
           const player: Entity = {
@@ -114,9 +118,7 @@ export abstract class Game<T extends GameProps = GameProps> {
           this.addEntity(player);
         } else if (entityId.startsWith("skelly")) {
           console.log("ADD SKELLY FROM SERVER", entityId, rollbackEntities[entityId]);
-          Skelly(entityId).then((skelly) => {
-            this.addEntity(skelly);
-          });
+          this.addEntity(Skelly(entityId));
         } else {
           console.log("ADD ENTITY FROM SERVER UNKNOWN", entityId);
         }
@@ -132,16 +134,7 @@ export abstract class Game<T extends GameProps = GameProps> {
 
     // run system updates
     for (let i = 0; i < ticksForward; i++) {
-
-      // increment tick
-      this.tick += 1;
-
-      // run system updates
-      this.systems?.forEach((system) => {
-        if (!system.skipOnRollback) {
-          system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
-        }
-      });
+      this.onTick(true);
     }
   }
 
@@ -154,16 +147,44 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
   }
 
-  onTick = () => {
-    // update the last tick time
-    this.lastTick = this.lastTick + hz30;
+  onTick = (isRollback: boolean = false) => {
+    if (!isRollback) {
+      if ((this.lastTick + this.tickrate) > performance.now()) {
+        setTimeout(this.onTick, 8);
+        return;
+      }
+    }
+
+    if (!isRollback) {
+      this.lastTick += this.tickrate;
+    }
 
     // increment tick
     this.tick += 1;
 
     // run system updates
     this.systems?.forEach((system) => {
-      system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
+      if (isRollback && !system.skipOnRollback) {
+        system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
+      }
+
+      if (!isRollback) {
+        system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
+      }
     });
+
+    const serializedEntities: Record<string, SerializedEntity> = {}
+    for (const entityId in this.entities) {
+      if (this.entities[entityId].components.networked) {
+        serializedEntities[entityId] = serializeEntity(this.entities[entityId]);
+      }
+    }
+    this.entitiesAtTick[this.tick] = serializedEntities;
+
+    // if (this.runtimeMode === "client") {
+    if (!isRollback) {
+      setTimeout(this.onTick, 8);
+    }
+    // }
   }
 }

@@ -1,7 +1,7 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem, FpsText,
   FullscreenButton, Game, GameProps, GuiSystem, InputSystem, NPCSystem, Networked,
-  PhysicsSystem, Player, PlayerSpawnSystem, RenderSystem, SpaceBackground, TileFloor, Wall, WsNetcodeSystem
+  PhysicsSystemRJS, Player, PlayerSpawnSystem, RenderSystem, SpaceBackground, TileFloor, Wall, WsClientSystem
 } from "@piggo-legends/core";
 
 export class Playground extends Game {
@@ -9,19 +9,15 @@ export class Playground extends Game {
   constructor(props: GameProps = {}) {
     super({ ...props, renderMode: "isometric" });
 
-
-    // add shared systems
-    this.addSystemBuilders([CommandSystem, PhysicsSystem, NPCSystem]);
-
     // add client-only systems/entities
     if (this.runtimeMode === "client") {
       this.addSystemBuilders([
-        InputSystem, ClickableSystem, DebugSystem, RenderSystem, GuiSystem
+        InputSystem, ClickableSystem, DebugSystem, GuiSystem
       ]);
 
       this.addSystems([
         PlayerSpawnSystem(this),
-        EnemySpawnSystem(this),
+        // EnemySpawnSystem(this),
       ]);
 
       // not networked
@@ -31,6 +27,17 @@ export class Playground extends Game {
 
       // networked
       this.addPlayer();
+    }
+
+    // add shared systems
+    this.addSystemBuilders([NPCSystem, CommandSystem, PhysicsSystemRJS]);
+
+    if (this.runtimeMode === "client") {
+      this.addSystemBuilders([RenderSystem]);
+    }
+
+    if (this.runtimeMode === "client") {
+      this.addSystemBuilders([WsClientSystem]);
     }
 
     this.addWalls();

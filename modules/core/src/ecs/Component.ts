@@ -1,5 +1,5 @@
 
-// 个 gè (single)
+// 个 gè (one of)
 // a Component is an atomic unit of data that is attached to an entity
 export abstract class Component<T extends string> {
   abstract type: T;
@@ -17,6 +17,10 @@ export abstract class Component<T extends string> {
   }
 
   deserialize: (data: Record<string, string | number>) => void = (data) => {
-    this.data = data;
+    // console.log(`${JSON.stringify(this.data)}`);
+    for (const [key, value] of Object.entries(data)) {
+      this.data[key] = value;
+    }
+    // console.log(`${JSON.stringify(this.data)}`);
   }
 }

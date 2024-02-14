@@ -21,9 +21,11 @@ export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity => {
         container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
         dynamic: (t: Text, _, __, g: Game) => {
           if (g.tick % 10 !== 0) return;
-          const fps = Math.round(g.renderer?.app.ticker.FPS ?? 0);
-          t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
-          t.text = `${fps}`;
+          if (t) {
+            const fps = Math.round(g.renderer?.app.ticker.FPS ?? 0);
+            // t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
+            t.text = `${fps}`;
+          }
         }
       })
     }

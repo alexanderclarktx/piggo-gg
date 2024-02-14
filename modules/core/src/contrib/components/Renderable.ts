@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 import { Component, Entity, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
@@ -83,6 +83,8 @@ export class Renderable<T extends RenderableProps = RenderableProps> extends Com
 
     // remove all event listeners
     this.c.removeAllListeners();
+
+    this.c.visible = false;
 
     // remove from the world
     // this.c.destroy(); // TODO disabled because it breaks from collider debug

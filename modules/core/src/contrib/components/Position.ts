@@ -3,6 +3,7 @@ import { Component } from "@piggo-legends/core";
 export type PositionProps = {
   x?: number
   y?: number
+  velocityResets?: number
   offset?: "world" | "camera"
   screenFixed?: boolean
   renderMode?: "isometric" | "cartesian"
@@ -22,7 +23,8 @@ export class Position extends Component<"position"> {
     y: 0,
     rotation: 0,
     velocityX: 0,
-    velocityY: 0
+    velocityY: 0,
+    velocityResets: 0
   }
 
   offset: "world" | "camera";
@@ -31,13 +33,14 @@ export class Position extends Component<"position"> {
   // TODO refactor and consolidate this somewhere
   renderMode: "isometric" | "cartesian";
 
-  constructor({ x, y, offset, screenFixed, renderMode }: PositionProps = {}) {
+  constructor({ x, y, offset, screenFixed, renderMode, velocityResets }: PositionProps = {}) {
     super();
     this.data.x = x ?? 0;
     this.data.y = y ?? 0;
     this.offset = offset ?? "world";
     this.screenFixed = screenFixed ?? false;
     this.renderMode = renderMode ?? "cartesian";
+    this.data.velocityResets = velocityResets ?? 0;
   }
 
   // get screen coordinates from world position

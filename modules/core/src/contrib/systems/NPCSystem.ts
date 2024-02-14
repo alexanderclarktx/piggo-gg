@@ -8,7 +8,7 @@ export const NPCSystem: SystemBuilder = ({ game }) => {
       const { npc, actions } = entity.components;
       const command = npc.props.onTick(entity, game);
       if (command && actions.actionMap[command]) {
-        addToLocalCommandBuffer(game.tick + 1, entity.id, command);
+        addToLocalCommandBuffer(game.tick, entity.id, command);
       }
     });
   }

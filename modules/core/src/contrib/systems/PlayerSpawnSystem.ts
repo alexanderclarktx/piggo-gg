@@ -1,11 +1,10 @@
-import { Entity, Game, SystemBuilder, Controlled, Controlling, Skelly, System } from "@piggo-legends/core";
+import { Entity, Game, SystemBuilder, Controlled, Controlling, Skelly, System, Player } from "@piggo-legends/core";
 
 // PlayerSpawnSystem handles spawning characters for players
 export const PlayerSpawnSystem = (game: Game): System => {
-  let componentTypeQuery = ["player"];
   let playersWithCharacters: Record<string, Entity> = {};
 
-  const onTick = (players: Entity[]) => {
+  const onTick = (players: Entity<Player>[]) => {
     // despawn characters for players that have left
     for (const playerId in playersWithCharacters) {
       if (!players.find((player) => player.id === playerId)) {
@@ -27,7 +26,7 @@ export const PlayerSpawnSystem = (game: Game): System => {
   }
 
   const spawnCharacterForPlayer = async (player: Entity, game: Game, color: number) => {
-    const characterForPlayer = await Skelly(`skelly-${player.id}`, color);
+    const characterForPlayer = Skelly(`skelly-${player.id}`, color);
 
     // give the player control of the character
     player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
@@ -36,7 +35,7 @@ export const PlayerSpawnSystem = (game: Game): System => {
   }
 
   return {
-    componentTypeQuery,
+    componentTypeQuery: ["player"],
     onTick
   }
 }

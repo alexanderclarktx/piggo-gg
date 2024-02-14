@@ -1,7 +1,7 @@
 import { Component } from "@piggo-legends/core";
-import { Bodies, Body, IChamferableBodyDefinition } from "matter-js";
+import { Body, Bodies, IChamferableBodyDefinition } from "matter-js";
 
-export type ColliderProps = {
+export type ColliderMJSProps = {
   radius?: number
   length?: number
   width?: number
@@ -9,15 +9,16 @@ export type ColliderProps = {
   frictionAir?: number
 }
 
-export class Collider extends Component<"collider"> {
-  type: "collider" = "collider";
+export class ColliderMJS extends Component<"colliderMJS"> {
+  type: "colliderMJS" = "colliderMJS";
   body: Body;
 
-  constructor({ radius, length, width, isStatic, frictionAir }: ColliderProps) {
+  constructor({ radius, length, width, isStatic, frictionAir }: ColliderMJSProps) {
     super();
     const options: IChamferableBodyDefinition = {
       isStatic: isStatic ?? false,
-      frictionAir: frictionAir ?? 0
+      frictionAir: frictionAir ?? 0,
+      restitution: 0.9,
     }
 
     if (radius) {
