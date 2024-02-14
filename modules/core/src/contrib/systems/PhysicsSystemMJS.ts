@@ -63,7 +63,7 @@ export const PhysicsSystemMJS: SystemBuilder = ({ game }) => {
   }
 
   return {
-    componentTypeQuery: ["position", "collider"],
+    query: ["position", "collider"],
     onTick
   }
 }

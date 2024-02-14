@@ -46,7 +46,7 @@ export const GuiSystem: SystemBuilder = ({ game, renderer }) => {
   }
 
   return {
-    componentTypeQuery: ["health", "position", "renderable"],
+    query: ["health", "position", "renderable"],
     onTick,
     skipOnRollback: true,
   }

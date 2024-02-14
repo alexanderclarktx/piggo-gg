@@ -32,11 +32,7 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.renderMode = renderMode ?? "cartesian";
     this.runtimeMode = runtimeMode ?? "client";
 
-    // if (this.runtimeMode === "client") {
     setTimeout(this.onTick, 8);
-    // } else {
-      // setInterval(this.onTick, this.tickrate);
-    // }
   }
 
   addEntity = (entity: Entity) => {
@@ -70,6 +66,52 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
   }
 
+  filterEntities = (query: string[], entities: Entity[]): Entity[] => {
+    return entities.filter((e) => {
+      for (const componentType of query) {
+        if (!Object.keys(e.components).includes(componentType)) return false;
+      }
+      return true;
+    });
+  }
+
+  onTick = (isRollback: boolean = false) => {
+    // check whether it's time to calculate the next tick
+    if (!isRollback) {
+      if ((this.lastTick + this.tickrate) > performance.now()) {
+        setTimeout(this.onTick, 8);
+        return;
+      }
+    }
+
+    // TODO is this broken during rollback
+    // increment lastTick
+    if (!isRollback) this.lastTick += this.tickrate;
+
+    // increment tick
+    this.tick += 1;
+
+    // run system updates
+    this.systems.forEach((system) => {
+      if (!isRollback || (isRollback && !system.skipOnRollback)) {
+        system.query ? system.onTick(this.filterEntities(system.query, Object.values(this.entities))) : system.onTick([]);
+      }
+    });
+
+    // store serialized entities
+    const serializedEntities: Record<string, SerializedEntity> = {}
+    for (const entityId in this.entities) {
+      if (this.entities[entityId].components.networked) {
+        serializedEntities[entityId] = serializeEntity(this.entities[entityId]);
+      }
+    }
+    this.entitiesAtTick[this.tick] = serializedEntities;
+
+    // call onTick again
+    if (!isRollback) setTimeout(this.onTick, 8);
+  }
+
+  // roll back the game state
   rollback = (rollbackEntities: Record<string, SerializedEntity>, tick: number, ticksForward: number) => {
 
     console.log(`rollback client:${this.tick} server:${tick}`);
@@ -136,55 +178,5 @@ export abstract class Game<T extends GameProps = GameProps> {
     for (let i = 0; i < ticksForward; i++) {
       this.onTick(true);
     }
-  }
-
-  filterEntitiesForSystem = (query: string[], entities: Entity[]): Entity[] => {
-    return entities.filter((e) => {
-      for (const componentType of query) {
-        if (!Object.keys(e.components).includes(componentType)) return false;
-      }
-      return true;
-    });
-  }
-
-  onTick = (isRollback: boolean = false) => {
-    if (!isRollback) {
-      if ((this.lastTick + this.tickrate) > performance.now()) {
-        setTimeout(this.onTick, 8);
-        return;
-      }
-    }
-
-    if (!isRollback) {
-      this.lastTick += this.tickrate;
-    }
-
-    // increment tick
-    this.tick += 1;
-
-    // run system updates
-    this.systems?.forEach((system) => {
-      if (isRollback && !system.skipOnRollback) {
-        system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
-      }
-
-      if (!isRollback) {
-        system.componentTypeQuery ? system.onTick(this.filterEntitiesForSystem(system.componentTypeQuery, Object.values(this.entities))) : system.onTick([]);
-      }
-    });
-
-    const serializedEntities: Record<string, SerializedEntity> = {}
-    for (const entityId in this.entities) {
-      if (this.entities[entityId].components.networked) {
-        serializedEntities[entityId] = serializeEntity(this.entities[entityId]);
-      }
-    }
-    this.entitiesAtTick[this.tick] = serializedEntities;
-
-    // if (this.runtimeMode === "client") {
-    if (!isRollback) {
-      setTimeout(this.onTick, 8);
-    }
-    // }
   }
 }

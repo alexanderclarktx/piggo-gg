@@ -82,7 +82,7 @@ export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
   }
 
   return {
-    componentTypeQuery: ["position", "colliderRJS"],
+    query: ["position", "colliderRJS"],
     onTick
   }
 }

@@ -14,7 +14,7 @@ export const NPCSystem: SystemBuilder = ({ game }) => {
   }
 
   return {
-    componentTypeQuery: ["npc", "actions"],
+    query: ["npc", "actions"],
     onTick
   }
 }

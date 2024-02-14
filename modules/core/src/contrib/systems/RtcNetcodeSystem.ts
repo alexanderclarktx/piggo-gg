@@ -122,7 +122,7 @@
 //   }
 
 //   return {
-//     componentTypeQuery: ["networked"],
+//     query: ["networked"],
 //     onTick
 //   }
 // }

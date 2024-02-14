@@ -142,7 +142,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
   }
 
   return {
-    componentTypeQuery: ["controlled", "controller", "actions"],
+    query: ["controlled", "controller", "actions"],
     onTick,
     skipOnRollback: true
   }

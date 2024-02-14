@@ -118,7 +118,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   }
 
   return {
-    componentTypeQuery: ["renderable", "position"],
+    query: ["renderable", "position"],
     onTick,
     skipOnRollback: true,
   }

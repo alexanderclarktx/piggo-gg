@@ -111,7 +111,7 @@ export const DebugSystem: SystemBuilder = ({ game }) => {
   const debugText = (p: Position, r: Renderable) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
 
   return {
-    componentTypeQuery: ["debug", "position"],
+    query: ["debug", "position"],
     onTick,
     skipOnRollback: true
   }

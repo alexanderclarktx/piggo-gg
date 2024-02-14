@@ -1,7 +1,7 @@
 import { Entity, Game, SystemBuilder, Command, localCommandBuffer, SerializedEntity } from "@piggo-legends/core";
 
 const SERVER_LOCAL = "ws://localhost:3000";
-const SERVER_REMOTE = "wss://piggo-legends.up.railway.app";
+const SERVER_REMOTE = "wss://piggo.gg";
 
 export type TickData = {
   type: "game"
@@ -14,7 +14,6 @@ export type TickData = {
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ game, thisPlayerId }) => {
   const wsClient = new WebSocket(SERVER_LOCAL);
-  console.log(wsClient);
   // const wsClient = new WebSocket(SERVER_REMOTE);
 
   let latestServerMessage: TickData | null = null;
@@ -122,7 +121,7 @@ export const WsClientSystem: SystemBuilder = ({ game, thisPlayerId }) => {
   }
 
   return {
-    componentTypeQuery: ["networked"],
+    query: ["networked"],
     onTick,
     skipOnRollback: true
   }

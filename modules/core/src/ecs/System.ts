@@ -3,7 +3,7 @@ import { Entity, Game, Renderer, RtcPool } from "@piggo-legends/core";
 // 制 zhì (system)
 // a System is a function that runs on every tick
 export interface System {
-  componentTypeQuery?: string[];
+  query?: string[];
   onTick: (entities: Entity[]) => void;
   skipOnRollback?: boolean
 }

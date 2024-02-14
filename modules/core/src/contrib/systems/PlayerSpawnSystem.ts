@@ -35,7 +35,7 @@ export const PlayerSpawnSystem = (game: Game): System => {
   }
 
   return {
-    componentTypeQuery: ["player"],
+    query: ["player"],
     onTick
   }
 }

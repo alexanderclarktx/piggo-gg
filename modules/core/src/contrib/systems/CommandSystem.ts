@@ -84,7 +84,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
   }
 
   return {
-    componentTypeQuery: [],
+    query: [],
     onTick
   }
 }
