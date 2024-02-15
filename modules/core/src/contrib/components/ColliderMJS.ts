@@ -17,8 +17,7 @@ export class ColliderMJS extends Component<"colliderMJS"> {
     super();
     const options: IChamferableBodyDefinition = {
       isStatic: isStatic ?? false,
-      frictionAir: frictionAir ?? 0,
-      restitution: 0.9,
+      frictionAir: frictionAir ?? 0
     }
 
     if (radius) {

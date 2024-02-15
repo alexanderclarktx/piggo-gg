@@ -55,6 +55,5 @@ export * from "./src/contrib/systems/PhysicsSystemRJS";
 export * from "./src/contrib/systems/PhysicsSystemMJS";
 export * from "./src/contrib/systems/PlayerSpawnSystem";
 export * from "./src/contrib/systems/RenderSystem";
-// export * from "./src/contrib/systems/RtcNetcodeSystem";
 export * from "./src/contrib/systems/WsClientSystem";
 

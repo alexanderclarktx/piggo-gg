@@ -22,8 +22,6 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
 
   const onTick = () => {
 
-    // console.log(`tick ${game.tick} buffer ${Object.keyslocalCommandBuffer}`)
-
     // add empty frames for the next 10 ticks
     for (let i = 0; i < 10; i++) {
       // console.log(localCommandBuffer[game.tick + i]);
@@ -54,7 +52,7 @@ export const CommandSystem: SystemBuilder = ({ game }) => {
 
             // entity not found
             if (!entity) {
-              console.log(`集 ${entityId} not found`);
+              // console.log(`集 ${entityId} not found`);
               return;
             }
 

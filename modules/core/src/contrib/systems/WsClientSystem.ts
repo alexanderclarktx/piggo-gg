@@ -1,7 +1,7 @@
 import { Entity, Game, SystemBuilder, Command, localCommandBuffer, SerializedEntity } from "@piggo-legends/core";
 
 const SERVER_LOCAL = "ws://localhost:3000";
-const SERVER_REMOTE = "wss://piggo.gg";
+const SERVER_REMOTE = "wss://api.piggo.gg";
 
 export type TickData = {
   type: "game"
@@ -96,7 +96,7 @@ export const WsClientSystem: SystemBuilder = ({ game, thisPlayerId }) => {
     // rewind to message tick and then fast-forward
     if (rollback) {
       localCommandBuffer[message.tick] = message.commands[message.tick];
-      game.rollback(message.serializedEntities, message.tick, 2);
+      game.rollback(message, 2);
     } else {
       // console.log("NO ROLLBACK", message.tick);
     }

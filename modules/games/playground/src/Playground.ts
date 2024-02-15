@@ -17,7 +17,7 @@ export class Playground extends Game {
 
       this.addSystems([
         PlayerSpawnSystem(this),
-        // EnemySpawnSystem(this),
+        EnemySpawnSystem(this),
       ]);
 
       // not networked
@@ -34,10 +34,8 @@ export class Playground extends Game {
 
     if (this.runtimeMode === "client") {
       this.addSystemBuilders([RenderSystem]);
-    }
-
-    if (this.runtimeMode === "client") {
-      this.addSystemBuilders([WsClientSystem]);
+      // TODO enable when netcode is stable
+      // this.addSystemBuilders([WsClientSystem]);
     }
 
     this.addWalls();

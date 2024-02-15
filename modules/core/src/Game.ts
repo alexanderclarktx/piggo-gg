@@ -1,4 +1,4 @@
-import { Ball, Controlling, Entity, Networked, Player, Renderer, RtcPool, SerializedEntity, Skelly, System, SystemBuilder, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { Ball, Controlling, Entity, Networked, Player, Renderer, RtcPool, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity, world } from "@piggo-legends/core";
 
 export type GameProps = {
   net?: RtcPool,
@@ -112,7 +112,7 @@ export abstract class Game<T extends GameProps = GameProps> {
   }
 
   // roll back the game state
-  rollback = (rollbackEntities: Record<string, SerializedEntity>, tick: number, ticksForward: number) => {
+  rollback = ({ tick, serializedEntities }: TickData, ticksForward: number) => {
 
     console.log(`rollback client:${this.tick} server:${tick}`);
     // console.log(JSON.stringify(Object.keys(rollbackEntities)));
@@ -130,16 +130,16 @@ export abstract class Game<T extends GameProps = GameProps> {
     Object.keys(this.entities).forEach((entityId) => {
       if (this.entities[entityId].components.networked) {
 
-        if (!rollbackEntities[entityId]) {
+        if (!serializedEntities[entityId]) {
           // delete if not present in rollback frame
-          console.log("DELETE ENTITY", entityId, rollbackEntities);
+          console.log("DELETE ENTITY", entityId, serializedEntities);
           this.removeEntity(entityId);
         }
       }
     });
 
     // add new entities if not present locally
-    Object.keys(rollbackEntities).forEach((entityId) => {
+    Object.keys(serializedEntities).forEach((entityId) => {
       if (!this.entities[entityId]) {
         if (entityId.startsWith("zombie")) {
           console.log("ADD ZOMBIE FROM SERVER", entityId);
@@ -159,7 +159,7 @@ export abstract class Game<T extends GameProps = GameProps> {
           };
           this.addEntity(player);
         } else if (entityId.startsWith("skelly")) {
-          console.log("ADD SKELLY FROM SERVER", entityId, rollbackEntities[entityId]);
+          console.log("ADD SKELLY FROM SERVER", entityId, serializedEntities[entityId]);
           this.addEntity(Skelly(entityId));
         } else {
           console.log("ADD ENTITY FROM SERVER UNKNOWN", entityId);
@@ -168,9 +168,9 @@ export abstract class Game<T extends GameProps = GameProps> {
     });
 
     // deserialize everything
-    Object.keys(rollbackEntities).forEach((entityId) => {
-      if (this.entities[entityId] && rollbackEntities[entityId]) {
-        deserializeEntity(this.entities[entityId], rollbackEntities[entityId]);
+    Object.keys(serializedEntities).forEach((entityId) => {
+      if (this.entities[entityId] && serializedEntities[entityId]) {
+        deserializeEntity(this.entities[entityId], serializedEntities[entityId]);
       }
     });
 

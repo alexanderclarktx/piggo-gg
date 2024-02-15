@@ -17,13 +17,13 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
       height: 32,
       active: true
     }),
-    colliderRJS: new ColliderRJS({ radius: 7, frictionAir: 0.01 }),
+    colliderRJS: new ColliderRJS({ radius: 7, frictionAir: 0.01, mass: 1 }),
     debug: new Debug(),
     renderable: new Renderable({
       zIndex: 2,
       dynamic: (t: Text, _, e: Entity<Position>) => {
         const v = e.components.position.data;
-        t.rotation += 0.1 * Math.sqrt(v.velocityX * v.velocityY + v.velocityY * v.velocityY);
+        t.rotation += 0.08 * Math.sqrt((v.velocityX * v.velocityX) + (v.velocityY * v.velocityY));
       },
       container: async () => {
         const text = new Text("⚽️", { fill: "#FFFFFF", fontSize: 18 })

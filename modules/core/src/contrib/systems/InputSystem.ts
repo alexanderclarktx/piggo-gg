@@ -13,6 +13,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
   let bufferedUp: Set<string> = new Set([]);
   let backspaceOn = false;
 
+  // TODO this should be handled separately to make it work in netcode
   let commandRegexes: { regex: RegExp, callback: (match: RegExpMatchArray) => Promise<void> }[] = [
     {
       regex: new RegExp(`/spawn (\\w+)`),
@@ -96,19 +97,18 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     // check for actions
     const { controller, actions } = controlledEntity.components;
 
-    let didAction = false;
-
     // handle standalone and composite (a,b) input controls
     for (const input in controller.controllerMap) {
       if (input.includes(",")) {
         const inputKeys = input.split(",");
+
+        // check for multiple keys pressed at once
         if (inputKeys.every((key) => buffer.has(key))) {
           // run the callback
           const controllerInput = controller.controllerMap[input];
           if (controllerInput != null) {
             if (actions.actionMap[controllerInput]) {
               addToLocalCommandBuffer(game.tick, controlledEntity.id, controllerInput);
-              didAction = true;
             }
           }
 
@@ -117,20 +117,17 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
         }
       } else if (buffer.has(input)) {
 
+        // check for single key pressed
         const controllerInput = controller.controllerMap[input];
         if (controllerInput != null) {
           if (actions.actionMap[controllerInput]) {
             addToLocalCommandBuffer(game.tick, controlledEntity.id, controllerInput);
-            didAction = true;
           }
         }
 
         // remove the key from the buffer
         buffer.delete(input);
       }
-    }
-    if (!didAction) {
-      // addToLocalCommandBuffer(game.tick, controlledEntity.id, "");
     }
   }
 
