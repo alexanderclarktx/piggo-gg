@@ -1,18 +1,25 @@
-import { Entity, SystemBuilder, ColliderRJS, Position } from '@piggo-legends/core';
-import RAPIER from "@dimforge/rapier2d-compat";
+import { Entity, SystemBuilder, ColliderRJS, Position, Renderable, worldToScreen } from '@piggo-legends/core';
+import RAPIER, { RigidBody } from "@dimforge/rapier2d-compat";
 
 export let world: RAPIER.World;
 RAPIER.init().then(() => world = new RAPIER.World({ x: 0, y: 0 }));
 
-// PhysicsSystemRJS handles the movement of entities (using RapierJS)
-export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
+const timeStep32hz = 1.5;
 
-  let bodies: Record<string, RAPIER.RigidBody> = {};
+// PhysicsSystemRJS handles the movement of entities (using RapierJS)
+export const PhysicsSystemRJS: SystemBuilder = ({ game, mode }) => {
+
+  let bodies: Record<string, RigidBody> = {};
+  let lastUpdated = 0;
+  let lastRendered = 0;
 
   const onTick = (entities: Entity<Position | ColliderRJS>[]) => {
 
     // wait until rapier is ready
     if (!world) return;
+
+    lastUpdated = performance.now();
+    lastRendered = lastUpdated;
 
     // reset the world state
     Object.keys(bodies).forEach((id) => {
@@ -54,7 +61,7 @@ export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
     });
 
     // run physics
-    world.timestep = 1.5;
+    world.timestep = timeStep32hz;
     world.step();
 
     // update the entity positions
@@ -77,8 +84,39 @@ export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
     });
   }
 
+  const onRender = (entities: Entity<Position | ColliderRJS>[]) => {
+
+    if (!world) return;
+
+    const delta = performance.now() - lastRendered;
+    console.log(delta)
+
+    lastRendered = performance.now();
+
+    world.timestep = (1.5 / 31.25) * (delta / 1000);
+    world.step();
+
+    Object.keys(bodies).forEach((id) => {
+      // update its renderable position (not position component)
+      const entity = game.entities[id] as Entity<Renderable>;
+      const renderable = entity.components.renderable;
+      if (!renderable) return;
+      const body = bodies[id];
+
+      const { x, y } = body.translation();
+
+      if (mode === "isometric") {
+        const screenXY = worldToScreen({ x, y });
+        renderable.c.position.set(screenXY.x, screenXY.y);
+      } else {
+        renderable.c.position.set(x, y);
+      }
+    });
+  }
+
   return {
     query: ["position", "colliderRJS"],
-    onTick
+    onTick,
+    // onRender // TODO interpolation is jittery
   }
 }

@@ -17,7 +17,7 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
       height: 32,
       active: true
     }),
-    colliderRJS: new ColliderRJS({ radius: 7, frictionAir: 0.01, mass: 1 }),
+    colliderRJS: new ColliderRJS({ radius: 7, frictionAir: 0.01, mass: 20, restitution: 0.8 }),
     debug: new Debug(),
     renderable: new Renderable({
       zIndex: 2,
