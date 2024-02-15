@@ -4,17 +4,6 @@ import RAPIER from "@dimforge/rapier2d-compat";
 export let world: RAPIER.World;
 RAPIER.init().then(() => world = new RAPIER.World({ x: 0, y: 0 }));
 
-const shash = (str: string) => {
-  let hash = 0;
-  if (str.length === 0) return hash;
-  for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash;
-  }
-  return hash;
-}
-
 // PhysicsSystemRJS handles the movement of entities (using RapierJS)
 export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
 
@@ -25,17 +14,10 @@ export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
     // wait until rapier is ready
     if (!world) return;
 
-    // debug log the world snapshot hash
-    if (game.tick % 300 === 0) {
-      // console.log(game.tick, shash(btoa(world.takeSnapshot().toString())));
-    }
-
-    // handle old physics bodies
+    // reset the world state
     Object.keys(bodies).forEach((id) => {
-      if (!game.entities[id]) {
-        world.removeRigidBody(bodies[id]);
-        delete bodies[id];
-      }
+      world.removeRigidBody(bodies[id]);
+      delete bodies[id];
     });
 
     // prepare physics bodies for each entity
@@ -60,14 +42,14 @@ export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
 
       // update body position
       bodies[entity.id].setTranslation({
-        x: Number(position.data.x.toFixed(2)),
-        y: Number(position.data.y.toFixed(2))
+        x: Math.round(position.data.x * 100) / 100,
+        y: Math.round(position.data.y * 100) / 100
       }, true);
 
       // update body velocity
       bodies[entity.id].setLinvel({
-        x: Number(position.data.velocityX.toFixed(2)),
-        y: Number(position.data.velocityY.toFixed(2))
+        x: Math.round(position.data.velocityX * 100) / 100,
+        y: Math.round(position.data.velocityY * 100) / 100
       }, true);
     });
 
@@ -80,10 +62,10 @@ export const PhysicsSystemRJS: SystemBuilder = ({ game }) => {
       const body = bodies[id];
       const entity = game.entities[id] as Entity<Position>;
 
-      entity.components.position.data.x = Number(body.translation().x.toFixed(2));
-      entity.components.position.data.y = Number(body.translation().y.toFixed(2));
-      entity.components.position.data.velocityX = Number(body.linvel().x.toFixed(2));
-      entity.components.position.data.velocityY = Number(body.linvel().y.toFixed(2));
+      entity.components.position.data.x = Math.round(body.translation().x * 100) / 100;
+      entity.components.position.data.y = Math.round(body.translation().y * 100) / 100;
+      entity.components.position.data.velocityX = Math.round(body.linvel().x * 100) / 100;
+      entity.components.position.data.velocityY = Math.round(body.linvel().y * 100) / 100;
     });
 
     // reset velocities where needed
