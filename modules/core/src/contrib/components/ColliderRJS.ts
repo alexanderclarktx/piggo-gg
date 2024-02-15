@@ -8,6 +8,7 @@ export type ColliderRJSProps = {
   isStatic?: boolean
   frictionAir?: number
   mass?: number // default mass seems to be 100
+  restitution?: number
 }
 
 export class ColliderRJS extends Component<"colliderRJS"> {
@@ -17,7 +18,7 @@ export class ColliderRJS extends Component<"colliderRJS"> {
   collider: Collider;
   body: RigidBody;
 
-  constructor({ radius, length, width, isStatic, frictionAir, mass }: ColliderRJSProps) {
+  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution }: ColliderRJSProps) {
     super();
 
     if (isStatic) {
@@ -33,6 +34,8 @@ export class ColliderRJS extends Component<"colliderRJS"> {
     }
 
     if (mass) this.colliderDesc.setMass(mass);
+
+    if (restitution) this.colliderDesc.setRestitution(restitution);
 
     this.bodyDesc.setLinearDamping(frictionAir ?? 0);
   }

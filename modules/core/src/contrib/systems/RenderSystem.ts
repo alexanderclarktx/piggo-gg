@@ -68,10 +68,14 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
       }
     });
 
-    // sort cachedEntityPositions by Y position
-    const sortedEntityPositions = Object.keys(cachedEntityPositions).sort((a, b) => { return cachedEntityPositions[a].data.y - cachedEntityPositions[b].data.y });
+    // sort cachedEntityPositions by position (closeness to camera)
+    const sortedEntityPositions = Object.keys(cachedEntityPositions).sort((a, b) => {
+      const xDiff = cachedEntityPositions[a].data.x - cachedEntityPositions[b].data.x;
+      const yDiff = cachedEntityPositions[a].data.y - cachedEntityPositions[b].data.y;
+      return xDiff + yDiff;
+    });
 
-    // set zIndex based on Y position
+    // set zIndex
     Object.keys(cachedEntityPositions).forEach((entityId) => {
       const entity = game.entities[entityId];
       if (entity) {

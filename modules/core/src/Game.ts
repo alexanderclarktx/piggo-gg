@@ -32,6 +32,8 @@ export abstract class Game<T extends GameProps = GameProps> {
     this.renderMode = renderMode ?? "cartesian";
     this.runtimeMode = runtimeMode ?? "client";
 
+    if (renderer) renderer.app.ticker.add(this.onRender);
+
     setTimeout(this.onTick, 8);
   }
 
@@ -72,6 +74,14 @@ export abstract class Game<T extends GameProps = GameProps> {
         if (!Object.keys(e.components).includes(componentType)) return false;
       }
       return true;
+    });
+  }
+
+  onRender = () => {
+    this.systems.forEach((system) => {
+      if (system.onRender) {
+        system.onRender(this.filterEntities(system.query ?? [], Object.values(this.entities)));
+      }
     });
   }
 
