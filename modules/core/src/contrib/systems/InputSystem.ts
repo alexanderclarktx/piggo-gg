@@ -1,4 +1,4 @@
-import { Actions, Ball, Controlled, Controller, Entity, Game, Spaceship, SystemBuilder, Zombie, localCommandBuffer } from "@piggo-legends/core";
+import { Actions, Ball, Controlled, Controller, Entity, Game, Spaceship, SystemBuilder, Zombie, addToLocalCommandBuffer } from "@piggo-legends/core";
 
 export var chatBuffer: string[] = [];
 export var chatHistory: string[] = [];
@@ -13,6 +13,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
   let bufferedUp: Set<string> = new Set([]);
   let backspaceOn = false;
 
+  // TODO this should be handled separately to make it work in netcode
   let commandRegexes: { regex: RegExp, callback: (match: RegExpMatchArray) => Promise<void> }[] = [
     {
       regex: new RegExp(`/spawn (\\w+)`),
@@ -25,7 +26,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
             game.addEntity(Ball());
             break;
           case "zombie":
-            game.addEntity(await Zombie());
+            game.addEntity(Zombie('zombie-SPAWNED'));
             break;
         }
       }
@@ -82,7 +83,7 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     // handle inputs for controlled entities
     entities.forEach((entity) => {
       const controlled = entity.components.controlled;
-      if (controlled.entityId === thisPlayerId) handleInputForControlledEntity(entity, game);
+      if (controlled.data.entityId === thisPlayerId) handleInputForControlledEntity(entity, game);
     });
 
     // handle buffered backspace
@@ -96,21 +97,19 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
     // check for actions
     const { controller, actions } = controlledEntity.components;
 
-    let didAction = false;
-
     // handle standalone and composite (a,b) input controls
     for (const input in controller.controllerMap) {
       if (input.includes(",")) {
         const inputKeys = input.split(",");
+
+        // check for multiple keys pressed at once
         if (inputKeys.every((key) => buffer.has(key))) {
           // run the callback
-          if (actions.actionMap[controller.controllerMap[input]]) {
-            localCommandBuffer.push({
-              tick: game.tick + 1,
-              entityId: controlledEntity.id,
-              actionId: controller.controllerMap[input]
-            });
-            didAction = true;
+          const controllerInput = controller.controllerMap[input];
+          if (controllerInput != null) {
+            if (actions.actionMap[controllerInput]) {
+              addToLocalCommandBuffer(game.tick, controlledEntity.id, controllerInput);
+            }
           }
 
           // remove all keys from the buffer
@@ -118,25 +117,17 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
         }
       } else if (buffer.has(input)) {
 
-        if (actions.actionMap[controller.controllerMap[input]]) {
-          localCommandBuffer.push({
-            tick: game.tick + 1,
-            entityId: controlledEntity.id,
-            actionId: controller.controllerMap[input]
-          });
-          didAction = true;
+        // check for single key pressed
+        const controllerInput = controller.controllerMap[input];
+        if (controllerInput != null) {
+          if (actions.actionMap[controllerInput]) {
+            addToLocalCommandBuffer(game.tick, controlledEntity.id, controllerInput);
+          }
         }
 
         // remove the key from the buffer
         buffer.delete(input);
       }
-    }
-    if (!didAction) {
-      localCommandBuffer.push({
-        tick: game.tick + 1,
-        entityId: controlledEntity.id,
-        actionId: ""
-      });
     }
   }
 
@@ -148,7 +139,8 @@ export const InputSystem: SystemBuilder = ({ thisPlayerId, game }) => {
   }
 
   return {
-    componentTypeQuery: ["controlled", "controller", "actions"],
+    query: ["controlled", "controller", "actions"],
     onTick,
+    skipOnRollback: true
   }
 }

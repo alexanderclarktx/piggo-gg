@@ -1,5 +1,8 @@
 import { Component } from "@piggo-legends/core";
 
-export class Debug implements Component<"debug"> {
-  type: "debug";
+export class Debug extends Component<"debug"> {
+  type: "debug" = "debug";
+  constructor() {
+    super();
+  }
 }

@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, Actions, NPC, localCommandBuffer } from "@piggo-legends/core";
+import { Entity, SystemBuilder, Actions, NPC, localCommandBuffer, addToLocalCommandBuffer } from "@piggo-legends/core";
 
 // NPCSystem invokes ai logic for NPCs
 export const NPCSystem: SystemBuilder = ({ game }) => {
@@ -8,18 +8,13 @@ export const NPCSystem: SystemBuilder = ({ game }) => {
       const { npc, actions } = entity.components;
       const command = npc.props.onTick(entity, game);
       if (command && actions.actionMap[command]) {
-        // console.log(`NPC ${entity.id} command ${command}`);
-        localCommandBuffer.push({
-          tick: game.tick + 1,
-          entityId: entity.id,
-          actionId: command
-        });
+        addToLocalCommandBuffer(game.tick, entity.id, command);
       }
     });
   }
 
   return {
-    componentTypeQuery: ["npc", "actions"],
+    query: ["npc", "actions"],
     onTick
   }
 }

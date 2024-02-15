@@ -41,7 +41,7 @@ export const TileFloor = async ({ rows, cols, position = { x: 0, y: 0 }, id = `f
     for (let x = 0; x < rows; x++) {
       for (let y = 0; y < cols; y++) {
         tiles.push(new Renderable({
-          position: new Position({ x: y * texture.width - (x * texture.width), y: (y + x) * (texture.height - 4) }),
+          position: { x: y * texture.width - (x * texture.width), y: (y + x) * (texture.height - 4) },
           container: async () => new Sprite(renderTexture),
           visible: x < 25 ? (y < 25 ? true : false) : false
         }))

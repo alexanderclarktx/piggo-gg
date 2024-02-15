@@ -7,7 +7,7 @@ export const Header = () => {
         textAlign: "center",
         fontFamily: "Brush Script MT",
         margin: 10,
-        marginBottom: 0
+        marginBottom: 5
       }}>Piggo Legends</h1>
     </div>
   );

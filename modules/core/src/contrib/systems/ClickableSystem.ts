@@ -1,10 +1,10 @@
-import { Entity, SystemBuilder, Actions, Clickable, Position } from "@piggo-legends/core";
+import { Actions, Clickable, Entity, Position, SystemBuilder, addToLocalCommandBuffer } from "@piggo-legends/core";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
 
 // ClickableSystem handles clicks for clickable entities
-export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, mode }) => {
+export const ClickableSystem: SystemBuilder = ({ game, renderer, mode }) => {
   if (!renderer) throw new Error("ClickableSystem requires a renderer");
 
   let bufferClick: Click[] = [];
@@ -19,7 +19,7 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
         if (!clickable.active) return;
 
         // set bounds
-        let bounds = { x: position.x, y: position.y, w: clickable.width, h: clickable.height };
+        let bounds = { x: position.data.x, y: position.data.y, w: clickable.width, h: clickable.height };
         if (mode === "isometric" && !position.screenFixed) {
           const screenXY = position.toScreenXY();
           bounds = {
@@ -40,10 +40,7 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
           clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
         )
 
-        if (clicked) {
-          const callback = entity.components.actions.actionMap[clickable.onPress];
-          if (callback) callback(entity, game, thisPlayerId);
-        }
+        if (clicked) addToLocalCommandBuffer(game.tick, entity.id, "click");
       });
     });
     bufferClick = [];
@@ -54,7 +51,8 @@ export const ClickableSystem: SystemBuilder = ({ game, renderer, thisPlayerId, m
   });
 
   return {
-    componentTypeQuery: ["clickable", "actions", "position"],
-    onTick
+    query: ["clickable", "actions", "position"],
+    onTick,
+    skipOnRollback: true
   }
 }

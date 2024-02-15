@@ -22,7 +22,7 @@ button {
 }
 
 canvas {
-  margin: 5px;
+  margin: 0px;
   border-width: 2px;
   border-color: darkgray;
   border-style: ridge;

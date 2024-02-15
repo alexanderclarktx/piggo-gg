@@ -11,13 +11,12 @@ export const DebugButton = (): Entity => {
     components: {
       position: new Position({ x: 5, y: 5, screenFixed: true }),
       clickable: new Clickable({
-        onPress: "onPress",
         width: 32,
         height: 32,
         active: true
       }),
-      actions: new Actions<"onPress">({
-        onPress: (_, game: Game) => {
+      actions: new Actions({
+        click: (_, game: Game) => {
           pressed = !pressed;
           if (pressed) {
             const r = debugButton.components.renderable as Button;

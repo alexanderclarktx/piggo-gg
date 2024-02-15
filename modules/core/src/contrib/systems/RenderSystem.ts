@@ -19,6 +19,15 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
   });
 
   const onTick = (entities: Entity<Renderable | Position>[]) => {
+
+    // cleanup old entities
+    renderedEntities.forEach((entity) => {
+      if (!Object.keys(game.entities).includes(entity.id)) {
+        renderedEntities.delete(entity);
+        entity.components.renderable.cleanup();
+      }
+    });
+
     entities.forEach(async (entity) => {
       const { position, renderable, controlled } = entity.components;
 
@@ -29,21 +38,21 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
       }
 
       // track entity if controlled by player
-      if (controlled && position && centeredEntity !== entity) {
+      if (controlled && position && centeredEntity !== entity && controlled.data.entityId === game.thisPlayerId) {
         centeredEntity = entity;
       }
 
       // update renderable if position changed
       if (position && cachedEntityPositions[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
         if (renderable.props.rotates) {
-          renderable.c.rotation = position.rotation.rads;
+          renderable.c.rotation = position.data.rotation;
         }
 
         if (mode === "isometric") {
           const screenXY = position.toScreenXY();
           renderable.c.position.set(screenXY.x, screenXY.y);
         } else {
-          renderable.c.position.set(position.x, position.y);
+          renderable.c.position.set(position.data.x, position.data.y);
         }
         cachedEntityPositions[entity.id] = position;
       }
@@ -60,7 +69,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
     });
 
     // sort cachedEntityPositions by Y position
-    const sortedEntityPositions = Object.keys(cachedEntityPositions).sort((a, b) => { return cachedEntityPositions[a].y - cachedEntityPositions[b].y });
+    const sortedEntityPositions = Object.keys(cachedEntityPositions).sort((a, b) => { return cachedEntityPositions[a].data.y - cachedEntityPositions[b].data.y });
 
     // set zIndex based on Y position
     Object.keys(cachedEntityPositions).forEach((entityId) => {
@@ -78,7 +87,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
     const { renderable, position } = entity.components;
 
     if (position) {
-      renderable.c.position.set(position.x, position.y);
+      renderable.c.position.set(position.data.x, position.data.y);
       cachedEntityPositions[entity.id] = position;
     } else {
       renderable.c.position.set(0, 0);
@@ -94,22 +103,23 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, game }) => {
     const { position, renderable } = entity.components;
     if (position.screenFixed) {
 
-      if (position.x < 0) {
-        renderable.c.x = renderer.app.screen.width + position.x - renderer.camera.c.x;
+      if (position.data.x < 0) {
+        renderable.c.x = renderer.app.screen.width + position.data.x - renderer.camera.c.x;
       } else {
-        renderable.c.x = position.x - renderer.camera.c.x;
+        renderable.c.x = position.data.x - renderer.camera.c.x;
       }
 
-      if (position.y < 0) {
-        renderable.c.y = renderer.app.screen.height + position.y - renderer.camera.c.y;
+      if (position.data.y < 0) {
+        renderable.c.y = renderer.app.screen.height + position.data.y - renderer.camera.c.y;
       } else {
-        renderable.c.y = position.y - renderer.camera.c.y;
+        renderable.c.y = position.data.y - renderer.camera.c.y;
       }
     }
   }
 
   return {
-    componentTypeQuery: ["renderable", "position"],
-    onTick
+    query: ["renderable", "position"],
+    onTick,
+    skipOnRollback: true,
   }
 }

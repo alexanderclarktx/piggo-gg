@@ -1,14 +1,17 @@
 import { Component } from "@piggo-legends/core";
 
 // the health component includes health, maxHealth, and damage
-export class Health implements Component<"health"> {
-  type: "health";
+export class Health extends Component<"health"> {
+  type: "health" = "health";
 
-  health: number;
-  maxHealth: number;
+  override data = {
+    health: 0,
+    maxHealth: 0
+  }
 
   constructor(health: number, maxHealth: number) {
-    this.health = health;
-    this.maxHealth = maxHealth;
+    super();
+    this.data.health = health;
+    this.data.maxHealth = maxHealth;
   }
 }

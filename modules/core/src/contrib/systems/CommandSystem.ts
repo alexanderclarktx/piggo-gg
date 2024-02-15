@@ -1,58 +1,88 @@
-import { Entity, SystemBuilder } from "@piggo-legends/core";
+import { SystemBuilder } from "@piggo-legends/core";
 
-export type Command = {
-  tick: number
-  entityId: string
-  actionId: string
-}
+export type Command = string;
 
 // TODO localCommandBuffer is a hack
-export var localCommandBuffer: Command[] = [];
+export var localCommandBuffer: Record<number, Record<string, Command[]>> = {};
+export const addToLocalCommandBuffer = (tick: number, entityId: string, command: Command) => {
+  tick += 1;
+
+  if (!localCommandBuffer[tick]) {
+    localCommandBuffer[tick] = {};
+  }
+  if (!localCommandBuffer[tick][entityId]) {
+    localCommandBuffer[tick][entityId] = [];
+  }
+  if (!localCommandBuffer[tick][entityId].includes(command)) {
+    localCommandBuffer[tick][entityId].push(command);
+  }
+}
 
 export const CommandSystem: SystemBuilder = ({ game }) => {
 
-  const onTick = (_: Entity[]) => {
+  const onTick = () => {
+
+    // add empty frames for the next 10 ticks
+    for (let i = 0; i < 10; i++) {
+      // console.log(localCommandBuffer[game.tick + i]);
+      if (!localCommandBuffer[game.tick + i]) {
+        localCommandBuffer[game.tick + i] = {};
+      } else {
+        // console.log(`saw ${JSON.stringify(localCommandBuffer[game.tick + i])}`)
+      }
+    }
 
     // for each buffered command, if it's scheduled for the current tick, execute it
-    localCommandBuffer.forEach((command) => {
-      if (command.tick < game.tick) {
-        console.log(`集 ${command.entityId} command ${command.actionId} too old`);
+    Object.keys(localCommandBuffer).forEach((tickNumber) => {
+      const currentTick = Number(tickNumber);
 
-        // TODO rollback
-        localCommandBuffer = localCommandBuffer.filter((c) => c !== command);
+      if ((game.tick - currentTick) > 30) {
+        delete localCommandBuffer[currentTick];
+        return;
       }
 
-      if (command.tick === game.tick) {        
-        const entity = game.entities[command.entityId];
-        if (!entity) { // entity not found
-          console.log(`集 ${command.entityId} not found`);
-          return;
-        }
+      if (currentTick === game.tick) {
+        const commandsForEntities = localCommandBuffer[currentTick];
 
-        const actions = entity.components.actions;
-        if (!actions) { // entity has no actions
-          console.log(`集 ${command.entityId} has no actions`);
-          return;
-        }
+        Object.keys(commandsForEntities).forEach((entityId) => {
+          const commands = commandsForEntities[entityId];
+          if (commands) commands.forEach((command) => {
 
-        // execute the action
-        const action = actions.actionMap[command.actionId];
+            const entity = game.entities[entityId];
 
-        if (!action) { // action not found
-          console.log(`action ${command.actionId} not found`);
-          return;
-        }
-        action(entity, game);
-        // console.log(`集 ${command.entityId} command ${command.actionId}`);
+            // entity not found
+            if (!entity) {
+              // console.log(`集 ${entityId} not found`);
+              return;
+            }
 
-        // remove the command from the buffer
-        localCommandBuffer = localCommandBuffer.filter((c) => c !== command);
+            // entity has no actions
+            const actions = entity.components.actions;
+            if (!actions) {
+              console.log(`集 ${entityId} has no actions`);
+              return;
+            }
+
+            // find the action
+            const action = actions.actionMap[command];
+
+            // action not found
+            if (!action) {
+              console.log(`action ${command} not found`);
+              return;
+            }
+
+            // execute the action
+            // console.log(`集 ${entityId} command ${command} executed`);
+            action(entity, game);
+          });
+        });
       }
     });
   }
 
   return {
-    componentTypeQuery: [],
+    query: [],
     onTick
   }
 }

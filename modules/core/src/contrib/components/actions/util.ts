@@ -10,7 +10,7 @@ export const playerControlsEntity: Action = (entity: Entity, game: Game, player:
   // release control if already controlling another entity
   if (playerEntity.components.controlling) {
     const previouslyControlling = playerEntity.components.controlling as Controlling;
-    const controlledEntity = game.entities[previouslyControlling.entityId] as Entity;
+    const controlledEntity = game.entities[previouslyControlling.data.entityId] as Entity;
     delete controlledEntity.components.controlled;
   }
 

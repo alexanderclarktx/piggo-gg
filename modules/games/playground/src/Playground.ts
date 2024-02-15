@@ -1,7 +1,7 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem, FpsText,
   FullscreenButton, Game, GameProps, GuiSystem, InputSystem, NPCSystem, Networked,
-  PhysicsSystem, Player, PlayerSpawnSystem, RenderSystem, RtcNetcodeSystem, SpaceBackground, TileFloor, Wall
+  PhysicsSystemRJS, Player, PlayerSpawnSystem, RenderSystem, SpaceBackground, TileFloor, Wall, WsClientSystem
 } from "@piggo-legends/core";
 
 export class Playground extends Game {
@@ -9,23 +9,41 @@ export class Playground extends Game {
   constructor(props: GameProps = {}) {
     super({ ...props, renderMode: "isometric" });
 
-    // add shared systems
-    this.addSystemBuilders([CommandSystem, PhysicsSystem, PlayerSpawnSystem, NPCSystem, EnemySpawnSystem]);
-
     // add client-only systems/entities
-    if (props.renderer) {
-      this.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem, RenderSystem, RtcNetcodeSystem, GuiSystem]);
+    if (this.runtimeMode === "client") {
+      this.addSystemBuilders([
+        InputSystem, ClickableSystem, DebugSystem, GuiSystem
+      ]);
+
+      this.addSystems([
+        PlayerSpawnSystem(this),
+        EnemySpawnSystem(this),
+      ]);
+
+      // not networked
       this.addUI();
       this.addFloor();
-      this.addWalls();
       this.addBackgroundImage();
+
+      // networked
+      this.addPlayer();
     }
 
-    this.addPlayer();
+    // add shared systems
+    this.addSystemBuilders([NPCSystem, CommandSystem, PhysicsSystemRJS]);
+
+    if (this.runtimeMode === "client") {
+      this.addSystemBuilders([RenderSystem]);
+      // TODO enable when netcode is stable
+      // this.addSystemBuilders([WsClientSystem]);
+    }
+
+    this.addWalls();
     this.addGameObjects();
   }
 
   addPlayer = () => {
+    console.log(`ADDING LOCALLY ${this.thisPlayerId}`);
     this.addEntity({
       id: this.thisPlayerId,
       components: {
@@ -36,7 +54,7 @@ export class Playground extends Game {
   }
 
   addUI = async () => {
-    this.addEntities([FpsText(), FullscreenButton(), DebugButton(), Cursor(), Chat()]);
+    this.addEntityBuilders([FpsText, FullscreenButton, DebugButton, Cursor, Chat]);
   }
 
   addGameObjects = async () => {

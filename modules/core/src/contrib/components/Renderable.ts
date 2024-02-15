@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 import { Component, Entity, Game, Renderer } from "@piggo-legends/core";
 
 export type RenderableProps = {
@@ -14,8 +14,8 @@ export type RenderableProps = {
 }
 
 // TODO refactor and simplify how entities define renderables
-export class Renderable<T extends RenderableProps = RenderableProps> implements Component<"renderable"> {
-  type: "renderable";
+export class Renderable<T extends RenderableProps = RenderableProps> extends Component<"renderable"> {
+  type: "renderable" = "renderable";
 
   id: string;
   props: T;
@@ -25,6 +25,7 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
   children: Renderable[] | undefined;
 
   constructor(props: T = {} as T) {
+    super();
     this.props = { ...props, rotates: props.rotates ?? false }
   }
 
@@ -82,6 +83,8 @@ export class Renderable<T extends RenderableProps = RenderableProps> implements 
 
     // remove all event listeners
     this.c.removeAllListeners();
+
+    this.c.visible = false;
 
     // remove from the world
     // this.c.destroy(); // TODO disabled because it breaks from collider debug
