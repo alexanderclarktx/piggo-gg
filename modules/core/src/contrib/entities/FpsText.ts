@@ -23,7 +23,7 @@ export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity => {
           if (g.tick % 10 !== 0) return;
           if (t) {
             const fps = Math.round(g.renderer?.app.ticker.FPS ?? 0);
-            // t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
+            t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
             t.text = `${fps}`;
           }
         }

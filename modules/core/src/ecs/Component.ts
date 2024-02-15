@@ -8,7 +8,7 @@ export abstract class Component<T extends string> {
 
   data: Record<string, string | number> = {};
 
-  // copies the networked data
+  // serializes data from component
   serialize: () => Record<string, string | number> = () => {
     let data: Record<string, string | number> = {};
     Object.keys(this.data).forEach((key) => data[key] = this.data[key]);
@@ -16,11 +16,10 @@ export abstract class Component<T extends string> {
     return data;
   }
 
+  // copies networked data to the component
   deserialize: (data: Record<string, string | number>) => void = (data) => {
-    // console.log(`${JSON.stringify(this.data)}`);
     for (const [key, value] of Object.entries(data)) {
       this.data[key] = value;
     }
-    // console.log(`${JSON.stringify(this.data)}`);
   }
 }
