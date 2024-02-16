@@ -2,7 +2,7 @@
   "name": "piggo-legends",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [ "web", "server", "core", "games" ],
+  "workspaces": [ "core", "games", "web", "server" ],
   "scripts": {
     "server": "bun --cwd server start",
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",

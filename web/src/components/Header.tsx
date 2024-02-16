@@ -12,18 +12,15 @@ export const Header = () => {
     }}>
       <h1 style={{ textAlign: "center", fontFamily: "Brush Script MT", margin: "0 10px" }}>Piggo Legends</h1>
       <div style={{
-        position: 'absolute', // Icon is positioned absolutely
-        right: 0, // Pushed to the right
-        top: '50%', // Centered vertically
-        transform: 'translateY(-50%)', // Adjusts the precise centering
+        position: 'absolute',
+        right: 0,
+        top: '50%',
+        transform: 'translateY(-50%)',
       }}>
         <a target="_blank" href="https://github.com/alexanderclarktx/piggo-legends">
           <FaGithub size={15} style={{ color: "white", marginTop: 6 }}></FaGithub>
         </a>
       </div>
-      {/* <div><a target="_blank" href="https://github.com/alexanderclarktx/piggo-legends">
-        <FaGithub size={15} style={{ color: "white", marginTop: 6 }}></FaGithub>
-      </a></div> */}
     </div>
   );
 }

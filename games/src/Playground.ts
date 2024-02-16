@@ -15,7 +15,6 @@ export const Playground = (props: PlaygroundProps): World => {
       InputSystem, ClickableSystem, DebugSystem, GuiSystem
     ]);
 
-    console.log("ssytemss");
     world.addSystems([
       PlayerSpawnSystem(world),
       EnemySpawnSystem(world),
