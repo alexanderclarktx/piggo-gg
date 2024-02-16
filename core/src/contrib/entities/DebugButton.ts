@@ -9,7 +9,7 @@ export const DebugButton = (): Entity => {
   const debugButton = {
     id: "debugButton",
     components: {
-      position: new Position({ x: 5, y: 5, screenFixed: true }),
+      position: new Position({ x: 40, y: 5, screenFixed: true }),
       clickable: new Clickable({
         width: 32,
         height: 32,

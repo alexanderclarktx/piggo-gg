@@ -1,4 +1,4 @@
-import { ColliderRJS, DebugBounds, Entity, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-legends/core";
+import { ColliderRJS, DebugBounds, Entity, FpsText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-legends/core";
 import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
@@ -20,10 +20,13 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
         }
       });
 
-      // TODO draws extra lines
       // draw all colliders
-      // if (!world.entities["collider-debug"]) drawAllColliders();
+      if (!world.entities["collider-debug"]) drawAllColliders();
 
+      // draw the fps text
+      if (!world.entities["fpsText"]) drawFpsText();
+
+      // update all debug entities
       Object.entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
         const entity = world.entities[id] as Entity<Position>;
         if (entity) {
@@ -46,8 +49,7 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
       });
       debugEntitiesPerEntity = {};
 
-      // cleanup all debug renderables
-      // debugRenderables.forEach((renderable) => renderable.cleanup());
+      // clear debug renderables
       debugRenderables = [];
     }
   }
@@ -86,6 +88,13 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
     debugRenderables.push(textBox, debugBounds);
   }
 
+  const drawFpsText = () => {
+    // add to world
+    const fpsText = FpsText();
+    world.addEntity(fpsText);
+    debugEntitiesPerEntity["fpsText"] = [fpsText];
+  }
+
   const drawAllColliders = () => {
 
     const r = new Renderable({
@@ -95,7 +104,7 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
           c.beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
           const { vertices } = physics.debugRender();
 
-          for (let i = 0; i < vertices.length; i += 2) {
+          for (let i = 0; i < vertices.length; i += 4) {
             // use worldToScreen to convert the vertices to screen space
             const one = worldToScreen({ x: vertices[i], y: vertices[i + 1] });
             const two = worldToScreen({ x: vertices[i + 2], y: vertices[i + 3] });
@@ -126,10 +135,7 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
 
     const r = new Renderable({
       dynamic: (c: Graphics) => {
-        if (c.clear) {
-          c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
-          // c.drawPolygon(...collider.body.vertices.map((v) => worldToScreen({ x: v.x - position.data.x, y: v.y - position.data.y })));
-        }
+        if (c.clear) c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
       },
       zIndex: 5,
       container: async () => new Graphics()
