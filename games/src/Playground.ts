@@ -17,8 +17,8 @@ export const Playground = (props: PlaygroundProps): World => {
 
     console.log("ssytemss");
     world.addSystems([
-      // PlayerSpawnSystem(world),
-      // EnemySpawnSystem(world),
+      PlayerSpawnSystem(world),
+      EnemySpawnSystem(world),
     ]);
 
     // ui
@@ -49,7 +49,7 @@ export const Playground = (props: PlaygroundProps): World => {
   if (world.runtimeMode === "client") {
     world.addSystemBuilders([RenderSystem]);
     // TODO enable when netcode is stable
-    world.addSystemBuilders([WsClientSystem]);
+    // world.addSystemBuilders([WsClientSystem]);
   }
 
   // ball
