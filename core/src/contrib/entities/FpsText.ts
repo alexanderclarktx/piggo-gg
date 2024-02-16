@@ -8,7 +8,7 @@ export type FpsTextProps = {
   color?: number
 }
 
-export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity => {
+export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity<Position | Renderable> => {
   return {
     id: "fpsText",
     components: {

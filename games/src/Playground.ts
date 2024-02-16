@@ -1,5 +1,5 @@
 import {
-  Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem, FpsText,
+  Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, GuiSystem, InputSystem, NPCSystem, Networked,
   PhysicsSystemRJS, PiggoWorld, Player, PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall, World, WorldProps, WsClientSystem
@@ -21,7 +21,7 @@ export const Playground = (props: PlaygroundProps): World => {
     ]);
 
     // ui
-    world.addEntityBuilders([FpsText, FullscreenButton, DebugButton, Cursor, Chat]);
+    world.addEntityBuilders([FullscreenButton, DebugButton, Cursor, Chat]);
 
     // floor
     world.addEntity(TileFloor({ rows: 25, cols: 25, position: { x: 0, y: 0 } }));

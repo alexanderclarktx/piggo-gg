@@ -1,4 +1,4 @@
-import { ColliderRJS, DebugBounds, Entity, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-legends/core";
+import { ColliderRJS, DebugBounds, Entity, FpsText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-legends/core";
 import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
@@ -22,6 +22,9 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
 
       // draw all colliders
       if (!world.entities["collider-debug"]) drawAllColliders();
+
+      // draw the fps text
+      if (!world.entities["fpsText"]) drawFpsText();
 
       // update all debug entities
       Object.entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
@@ -83,6 +86,13 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
     debugEntitiesPerEntity[entity.id].push(debugEntity);
     world.addEntity(debugEntity);
     debugRenderables.push(textBox, debugBounds);
+  }
+
+  const drawFpsText = () => {
+    // add to world
+    const fpsText = FpsText();
+    world.addEntity(fpsText);
+    debugEntitiesPerEntity["fpsText"] = [fpsText];
   }
 
   const drawAllColliders = () => {

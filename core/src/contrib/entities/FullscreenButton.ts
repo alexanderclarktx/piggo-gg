@@ -6,7 +6,7 @@ export const FullscreenButton = (id: string = "fullscreenButton"): Entity => ({
   id: id,
   components: {
     position: new Position({
-      x: 40, y: 5, screenFixed: true
+      x: 5, y: 5, screenFixed: true
     }),
     clickable: new Clickable({
       active: true,
