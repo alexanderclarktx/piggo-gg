@@ -89,7 +89,6 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
   }
 
   const drawFpsText = () => {
-    // add to world
     const fpsText = FpsText();
     world.addEntity(fpsText);
     debugEntitiesPerEntity["fpsText"] = [fpsText];
