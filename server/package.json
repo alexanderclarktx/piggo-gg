@@ -5,7 +5,7 @@
     "dev": "bun --watch src/PiggoServer.ts"
   },
   "dependencies": {
-    "@piggo-legends/playground": "1.0.0"
+    "@piggo-legends/games": "1.0.0"
   },
   "devDependencies": {
     "bun-types": "latest"

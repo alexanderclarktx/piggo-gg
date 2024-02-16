@@ -5,10 +5,12 @@
     "dev": "bun x webpack serve --port 8000"
   },
   "dependencies": {
-    "@piggo-legends/playground": "1.0.0",
+    "@piggo-legends/games": "1.0.0",
+    "fontawesome-free": "^1.0.4",
     "lz-string": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.0.1",
     "react-modal": "^3.16.1"
   },
   "devDependencies": {
