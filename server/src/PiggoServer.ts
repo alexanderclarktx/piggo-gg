@@ -1,5 +1,5 @@
 import { EnemySpawnSystem, Networked, Player, PlayerSpawnSystem, TickData, localCommandBuffer } from "@piggo-legends/core";
-import { Playground } from "@piggo-legends/playground";
+import { Playground } from "@piggo-legends/games";
 import { ServerWebSocket, Server, env } from "bun";
 import { WsServerSystem } from "./WsServerSystem";
 
@@ -14,13 +14,13 @@ class PiggoServer {
   clientCount = 1;
   clients: Record<string, ServerWebSocket<unknown>> = {};
 
-  playground = new Playground({ runtimeMode: "server" });
+  playground = Playground({ runtimeMode: "server" });
 
   constructor() {
     this.playground.addSystems([
       EnemySpawnSystem(this.playground),
       PlayerSpawnSystem(this.playground),
-      WsServerSystem({ game: this.playground, clients: this.clients })
+      WsServerSystem({ world: this.playground, clients: this.clients })
     ]);
 
     this.bun = Bun.serve({

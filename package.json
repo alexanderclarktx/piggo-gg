@@ -2,14 +2,9 @@
   "name": "piggo-legends",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "web",
-    "server",
-    "modules/core",
-    "modules/games/playground"
-  ],
+  "workspaces": [ "core", "games", "web", "server" ],
   "scripts": {
-    "start": "bun --cwd server start",
+    "server": "bun --cwd server start",
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",
     "docs": "bun pages",
     "pages": "NODE_ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME"

@@ -1,4 +1,4 @@
-__Piggo Legends__ is a game engine for 2D multiplayer web games. Play online at [github.io](https://alexanderclarktx.github.io/piggo-legends/) 
+__Piggo Legends__ is a multiplayer web game & engine! Play online at [piggo.gg](https://piggo.gg) 
 
 <p align="center">
   <img src="piggo-legends.gif" style="width:400px">
@@ -6,32 +6,35 @@ __Piggo Legends__ is a game engine for 2D multiplayer web games. Play online at 
 
 # Objectives
 
-🎮 Games are easy to implement with Piggo Legends ECS
+🎮 making new games is easy
 
-👾 Multiplayer is simple and performant
+👾 multiplayer is robust & performant
 
 # Features
 
-✅ ECS architecture
+✅ server-authoritative netcode with client-side prediction & rollback
 
-✅ physics engine & unit collision
+✅ 2D graphics, sprites, and animations ([pixiJS](https://github.com/pixijs/pixijs))
 
-✅ p2p webrtc & authoritative websocket server netcode
+✅ deterministic physics engine ([rapierJS](https://github.com/dimforge/rapier.js))
+
+✅ ecs architecture
 
 ✅ WASD movement controls
 
-✅ isometric projection from world coordinates
+✅ interactive entities & npc ai behavior
 
-✅ entity onclick callbacks & npc ai behavior
+✅ isometric projection from world coordinates
 
 # Development
 
 |package|description|
 |--|--|
-|`docs`| resources & js bundle served statically by GitHub Pages
-|`modules`| source libraries
+|`core`| core piggo source files
+|`games`| piggo games
+|`web`| webapp serving piggo
 |`server`| game server
-|`web`| webpage
+|`docs`| resources & js bundle served statically by GitHub Pages
 
 ### setup
 
@@ -41,10 +44,4 @@ bun install
 
 # launch server and web
 bun dev
-```
-
-### publishing to GitHub Pages
-```bash
-# generate minified js bundle
-bun pages
 ```

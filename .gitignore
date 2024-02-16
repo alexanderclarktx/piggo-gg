@@ -3,3 +3,4 @@ dist
 .DS_STORE
 out/
 bun.lockb
+todo.md

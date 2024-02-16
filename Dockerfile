@@ -1,11 +1,16 @@
-FROM oven/bun
+from oven/bun
 
-ADD package.json package.json
-ADD web web
-ADD server server
-ADD modules modules
+# add package.json
+add package.json package.json
 
-RUN bun install
-EXPOSE 3000
+# add top-level modules
+add core core
+add games games
+add web web
+add server server
 
-CMD [ "bun", "start" ]
+# install dependencies
+run bun install
+
+# run the server
+cmd [ "bun", "server" ]

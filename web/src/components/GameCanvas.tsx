@@ -1,12 +1,11 @@
-import { Game, Renderer, RtcPeer, RtcPool } from "@piggo-legends/core";
-import { Playground } from "@piggo-legends/playground";
+import { Renderer, RtcPeer, World } from "@piggo-legends/core";
+import { Playground } from "@piggo-legends/games";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
-  net: RtcPool
-  setGame: (game: Game<any>) => void
+  setWorld: (game: World) => void
 }
-export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
+export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
 
   useEffect(() => {
     if (RtcPeer) {
@@ -15,7 +14,7 @@ export const GameCanvas = ({ net, setGame }: GameCanvasProps) => {
         width: window.innerWidth * 0.98,
         height: window.innerHeight * 0.90
       });
-      setGame(new Playground({ net, renderer, runtimeMode: "client" }));
+      setWorld(Playground({ renderer, runtimeMode: "client" }));
     }
   }, [RtcPeer]);
 
