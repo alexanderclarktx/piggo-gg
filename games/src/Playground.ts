@@ -56,10 +56,10 @@ export const Playground = (props: PlaygroundProps): World => {
 
   // walls
   world.addEntities([
-    Wall({ x: 420, y: -20, length: 850, width: 1 }),
-    Wall({ x: 12, y: 380, length: 1, width: 850 }),
-    Wall({ x: 420, y: 780, length: 850, width: 1 }),
-    Wall({ x: 815, y: 380, length: 1, width: 850 })
+    Wall({ x: 420, y: -20, length: 420, width: 0 }),
+    Wall({ x: 12, y: 380, length: 0, width: 420 }),
+    Wall({ x: 420, y: 780, length: 420, width: 0 }),
+    Wall({ x: 815, y: 380, length: 0, width: 420 })
   ]);
 
   return world;

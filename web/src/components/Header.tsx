@@ -18,7 +18,7 @@ export const Header = () => {
         transform: 'translateY(-50%)',
       }}>
         <a target="_blank" href="https://github.com/alexanderclarktx/piggo-legends">
-          <FaGithub size={15} style={{ color: "white", marginTop: 6 }}></FaGithub>
+          <FaGithub size={20} style={{ color: "white", marginTop: 8 }}></FaGithub>
         </a>
       </div>
     </div>
