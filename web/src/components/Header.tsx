@@ -8,6 +8,7 @@ export const Header = () => {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      userSelect: "none",
       margin: 10
     }}>
       <h1 style={{ textAlign: "center", fontFamily: "Brush Script MT", margin: "0 10px" }}>Piggo Legends</h1>
