@@ -4,7 +4,7 @@ import RAPIER, { RigidBody } from "@dimforge/rapier2d-compat";
 export let physics: RAPIER.World;
 RAPIER.init().then(() => physics = new RAPIER.World({ x: 0, y: 0 }));
 
-const timeStep32hz = 1.5;
+const timeFactor = 1.5;
 
 // PhysicsSystemRJS handles the movement of entities (using RapierJS)
 export const PhysicsSystemRJS: SystemBuilder = ({ world, mode }) => {
@@ -61,7 +61,7 @@ export const PhysicsSystemRJS: SystemBuilder = ({ world, mode }) => {
     });
 
     // run physics
-    physics.timestep = timeStep32hz;
+    physics.timestep = timeFactor;
     physics.step();
 
     // update the entity positions
