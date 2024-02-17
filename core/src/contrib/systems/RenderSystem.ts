@@ -122,6 +122,7 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, world }) => {
   }
 
   return {
+    id: "RenderSystem",
     query: ["renderable", "position"],
     onTick,
     skipOnRollback: true,

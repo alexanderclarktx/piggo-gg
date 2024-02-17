@@ -82,6 +82,7 @@ export const CommandSystem: SystemBuilder = ({ world }) => {
   }
 
   return {
+    id: "CommandSystem",
     query: [],
     onTick
   }

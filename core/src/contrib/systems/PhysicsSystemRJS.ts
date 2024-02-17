@@ -115,6 +115,7 @@ export const PhysicsSystemRJS: SystemBuilder = ({ world, mode }) => {
   }
 
   return {
+    id: "PhysicsSystem",
     query: ["position", "colliderRJS"],
     onTick,
     // onRender // TODO interpolation is jittery

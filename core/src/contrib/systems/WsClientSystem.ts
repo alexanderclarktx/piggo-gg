@@ -58,7 +58,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     // compare entity counts
     if (!rollback && world.entitiesAtTick[message.tick]) {
       if (Object.keys(world.entitiesAtTick[message.tick]).length !== Object.keys(message.serializedEntities).length) {
-        console.log(`rollback entity count ${Object.keys(world.entities).length} ${Object.keys(message.serializedEntities).length}`);
+        console.log(`rollback entity count ${Object.keys(world.entitiesAtTick[message.tick]).length} ${Object.keys(message.serializedEntities).length}`);
         rollback = true;
       }
     }
@@ -117,6 +117,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   }
 
   return {
+    id: "WsClientSystem",
     query: ["networked"],
     onTick,
     skipOnRollback: true

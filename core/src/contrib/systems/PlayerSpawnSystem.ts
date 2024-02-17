@@ -37,6 +37,7 @@ export const PlayerSpawnSystem = (world: World): System => {
   }
 
   return {
+    id: "PlayerSpawnSystem",
     query: ["player"],
     onTick
   }

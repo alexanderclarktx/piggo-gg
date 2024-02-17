@@ -17,6 +17,7 @@ export * from "./src/contrib/components/Controller";
 export * from "./src/contrib/components/Health";
 export * from "./src/contrib/components/Clickable";
 export * from "./src/contrib/components/ColliderRJS";
+export * from "./src/contrib/components/Data";
 export * from "./src/contrib/components/Debug";
 export * from "./src/contrib/components/Name";
 export * from "./src/contrib/components/Networked";

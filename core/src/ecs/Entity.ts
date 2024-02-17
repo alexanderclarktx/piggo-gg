@@ -1,11 +1,11 @@
-import { Actions, Clickable, ColliderRJS, Controlled, Controller, Controlling, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/core";
+import { Actions, Clickable, ColliderRJS, Controlled, Controller, Controlling, Data, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/core";
 
 // TODO how to make this extendable
 export type ComponentTypes =
   Actions | Clickable | ColliderRJS |
   Controller | Controlled | Controlling |
-  Debug | Health | Name | Networked | NPC |
-  Player | Position | Renderable
+  Data | Debug | Health | Name | Networked |
+  NPC | Player | Position | Renderable
 
 // 集 jí (set)
 // an Entity is a uniquely identified set of Components

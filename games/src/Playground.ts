@@ -15,11 +15,6 @@ export const Playground = (props: PlaygroundProps): World => {
       InputSystem, ClickableSystem, DebugSystem, GuiSystem
     ]);
 
-    world.addSystems([
-      PlayerSpawnSystem(world),
-      EnemySpawnSystem(world),
-    ]);
-
     // ui
     world.addEntityBuilders([FullscreenButton, DebugButton, Cursor, Chat]);
 
@@ -43,6 +38,7 @@ export const Playground = (props: PlaygroundProps): World => {
   }
 
   // add shared systems
+  world.addSystems([PlayerSpawnSystem(world), EnemySpawnSystem(world)]);
   world.addSystemBuilders([NPCSystem, CommandSystem, PhysicsSystemRJS]);
 
   if (world.runtimeMode === "client") {

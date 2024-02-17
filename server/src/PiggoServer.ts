@@ -18,8 +18,8 @@ class PiggoServer {
 
   constructor() {
     this.playground.addSystems([
-      EnemySpawnSystem(this.playground),
-      PlayerSpawnSystem(this.playground),
+      // EnemySpawnSystem(this.playground),
+      // PlayerSpawnSystem(this.playground),
       WsServerSystem({ world: this.playground, clients: this.clients })
     ]);
 

@@ -155,6 +155,7 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
   const debugText = (p: Position, r: Renderable) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
 
   return {
+    id: "DebugSystem",
     query: ["debug", "position"],
     onTick,
     skipOnRollback: true

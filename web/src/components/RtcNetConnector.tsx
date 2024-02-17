@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
 import { NetState, NetStateColor } from "../types/NetState";
 
-export type WebRTCHandshakeProps = {
+export type rtcNetConnectorProps = {
   net: RtcPool
   sdp: { local: string, remote: string }
   modalOpen: boolean
@@ -14,7 +14,7 @@ export type WebRTCHandshakeProps = {
 }
 
 // the NetConnector component creates and accepts WebRTC SDP offers/answers
-export const NetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setNetState }: WebRTCHandshakeProps) => {
+export const RtcNetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setNetState }: rtcNetConnectorProps) => {
   const inputOfferRef = useRef<HTMLInputElement>(null);
   const inputAnswerRef = useRef<HTMLInputElement>(null);
 
