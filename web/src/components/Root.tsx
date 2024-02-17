@@ -28,10 +28,6 @@ export const Root = () => {
             setNetState={setNetState}
             world={world}
           />
-          {/* <WsNetConnector
-            netState={netState}
-            setNetState={setNetState}
-          /> */}
           <GameCanvas setWorld={setWorld} />
         </div>
       </div>

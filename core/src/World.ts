@@ -18,15 +18,16 @@ export type World = {
   entities: Record<string, Entity>
   systems: Record<string, System>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
-  addEntity: (entity: Entity) => string;
-  addEntities: (entities: Entity[]) => void;
-  addEntityBuilders: (entityBuilders: (() => Entity)[]) => void;
-  removeEntity: (id: string) => void;
-  addSystems: (systems: System[]) => void;
-  addSystemBuilders: (systemBuilders: SystemBuilder[]) => void;
-  onRender?: () => void;
-  onTick: (isRollback?: boolean) => void;
-  rollback: (td: TickData) => void;
+  isConnected: boolean
+  addEntity: (entity: Entity) => string
+  addEntities: (entities: Entity[]) => void
+  addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
+  removeEntity: (id: string) => void
+  addSystems: (systems: System[]) => void
+  addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
+  onRender?: () => void
+  onTick: (isRollback?: boolean) => void
+  rollback: (td: TickData) => void
 }
 
 export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
@@ -55,6 +56,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     entities: {},
     systems: {},
     entitiesAtTick: {},
+    isConnected: false,
     addEntity: (entity: Entity) => {
       world.entities[entity.id] = entity;
       return entity.id;

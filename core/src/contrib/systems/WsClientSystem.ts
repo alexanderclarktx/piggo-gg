@@ -15,11 +15,21 @@ export type TickData = {
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   const wsClient = new WebSocket(SERVER_LOCAL);
 
+  setInterval(() => {
+    if (lastMessageTick && ((world.tick - lastMessageTick) < 50)) {
+      world.isConnected = true;
+    } else {
+      world.isConnected = false;
+    }
+  }, 1000);
+
+  let lastMessageTick: number = 0;
   let latestServerMessage: TickData | null = null;
 
   wsClient.onmessage = (event) => {
     const message = JSON.parse(event.data) as TickData;
     latestServerMessage = message;
+    lastMessageTick = message.tick;
   }
 
   const handleLatestMessage = () => {
