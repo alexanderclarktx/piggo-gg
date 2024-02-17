@@ -1,4 +1,4 @@
-import { Clickable, ColliderRJS, Debug, Networked, Position, Renderable } from "@piggo-legends/core";
+import { Clickable, Collider, Debug, Networked, Position, Renderable } from "@piggo-legends/core";
 import { Entity } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
@@ -17,7 +17,7 @@ export const Ball = ({ position, id }: BallProps = {}): Entity => ({
       height: 32,
       active: true
     }),
-    colliderRJS: new ColliderRJS({ radius: 7, frictionAir: 0.01, mass: 20, restitution: 0.8 }),
+    collider: new Collider({ radius: 7, frictionAir: 0.01, mass: 20, restitution: 0.8 }),
     debug: new Debug(),
     renderable: new Renderable({
       zIndex: 2,

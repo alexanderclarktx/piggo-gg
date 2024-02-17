@@ -1,7 +1,7 @@
 import { Component } from "@piggo-legends/core";
-import { Collider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat";
+import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat";
 
-export type ColliderRJSProps = {
+export type ColliderProps = {
   radius?: number
   length?: number
   width?: number
@@ -11,14 +11,14 @@ export type ColliderRJSProps = {
   restitution?: number
 }
 
-export class ColliderRJS extends Component<"colliderRJS"> {
-  type: "colliderRJS" = "colliderRJS";
+export class Collider extends Component<"collider"> {
+  type: "collider" = "collider";
   bodyDesc: RigidBodyDesc;
   colliderDesc: ColliderDesc;
-  collider: Collider;
+  rapierCollider: RapierCollider;
   body: RigidBody;
 
-  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution }: ColliderRJSProps) {
+  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution }: ColliderProps) {
     super();
 
     if (isStatic) {

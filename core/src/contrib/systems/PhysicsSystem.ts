@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, ColliderRJS, Position, Renderable, worldToScreen } from '@piggo-legends/core';
+import { Entity, SystemBuilder, Collider, Position, Renderable, worldToScreen } from '@piggo-legends/core';
 import RAPIER, { RigidBody } from "@dimforge/rapier2d-compat";
 
 export let physics: RAPIER.World;
@@ -6,14 +6,14 @@ RAPIER.init().then(() => physics = new RAPIER.World({ x: 0, y: 0 }));
 
 const timeFactor = 1.5;
 
-// PhysicsSystemRJS handles the movement of entities (using RapierJS)
-export const PhysicsSystemRJS: SystemBuilder = ({ world, mode }) => {
+// PhysicsSystem handles the movement of entities (using RapierJS)
+export const PhysicsSystem: SystemBuilder = ({ world, mode }) => {
 
   let bodies: Record<string, RigidBody> = {};
   let lastUpdated = 0;
   let lastRendered = 0;
 
-  const onTick = (entities: Entity<Position | ColliderRJS>[]) => {
+  const onTick = (entities: Entity<Position | Collider>[]) => {
 
     // wait until rapier is ready
     if (!physics) return;
@@ -33,15 +33,15 @@ export const PhysicsSystemRJS: SystemBuilder = ({ world, mode }) => {
 
       // handle new physics bodies
       if (!bodies[entity.id]) {
-        const { colliderRJS } = entity.components;
+        const { collider } = entity.components;
 
         // add body + collider
-        const body = physics.createRigidBody(colliderRJS.bodyDesc);
-        const collider = physics.createCollider(colliderRJS.colliderDesc, body);
+        const body = physics.createRigidBody(collider.bodyDesc);
+        const rapierCollider = physics.createCollider(collider.colliderDesc, body);
 
         // set the component's collider
-        colliderRJS.collider = collider;
-        colliderRJS.body = body;
+        collider.rapierCollider = rapierCollider;
+        collider.body = body;
 
         // store body
         bodies[entity.id] = body;
@@ -84,7 +84,7 @@ export const PhysicsSystemRJS: SystemBuilder = ({ world, mode }) => {
     });
   }
 
-  const onRender = (entities: Entity<Position | ColliderRJS>[]) => {
+  const onRender = (entities: Entity<Position | Collider>[]) => {
 
     if (!world) return;
 
@@ -116,7 +116,7 @@ export const PhysicsSystemRJS: SystemBuilder = ({ world, mode }) => {
 
   return {
     id: "PhysicsSystem",
-    query: ["position", "colliderRJS"],
+    query: ["position", "collider"],
     onTick,
     // onRender // TODO interpolation is jittery
   }

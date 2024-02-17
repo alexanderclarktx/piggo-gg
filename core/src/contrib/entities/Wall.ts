@@ -1,4 +1,4 @@
-import { ColliderRJS, Debug, Entity, Position } from "@piggo-legends/core";
+import { Collider, Debug, Entity, Position } from "@piggo-legends/core";
 
 export type WallProps = {
   x: number,
@@ -14,7 +14,7 @@ export const Wall = ({ x, y, length, width }: WallProps): Entity => {
     components: {
       position: new Position({ x, y }),
       debug: new Debug(),
-      colliderRJS: new ColliderRJS({ length, width, isStatic: true })
+      collider: new Collider({ length, width, isStatic: true })
     }
   }
 

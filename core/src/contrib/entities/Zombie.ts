@@ -1,4 +1,4 @@
-import { Actions, Character, Clickable, ColliderRJS, Debug, Entity, World, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands, PositionProps } from "@piggo-legends/core";
+import { Actions, Character, Clickable, Collider, Debug, Entity, World, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands, PositionProps } from "@piggo-legends/core";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
 export type ZombieProps = {
@@ -61,7 +61,7 @@ export const Zombie = ({ id, positionProps = {renderMode: "isometric", x: 100, y
           }
         }
       }),
-      colliderRJS: new ColliderRJS({ radius: 8 }),
+      collider: new Collider({ radius: 8 }),
       debug: new Debug(),
       renderable: new Renderable({
         zIndex: 2,

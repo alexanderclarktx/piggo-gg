@@ -1,8 +1,8 @@
-import { Actions, Clickable, ColliderRJS, Controlled, Controller, Controlling, Data, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/core";
+import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Data, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-legends/core";
 
 // TODO how to make this extendable
 export type ComponentTypes =
-  Actions | Clickable | ColliderRJS |
+  Actions | Clickable | Collider |
   Controller | Controlled | Controlling |
   Data | Debug | Health | Name | Networked |
   NPC | Player | Position | Renderable

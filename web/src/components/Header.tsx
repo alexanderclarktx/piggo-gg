@@ -19,7 +19,7 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => {
         <WsNetConnector netState={netState} setNetState={setNetState} world={world}/>
       </div>
       <h1 style={{ textAlign: "center", fontFamily: "Brush Script MT", margin: "0 10px" }}>
-        Piggo Legend
+        Piggo Legends
       </h1>
       <div style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}>
         <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "10%" }}>
