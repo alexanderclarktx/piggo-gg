@@ -31,7 +31,9 @@ export type World = {
 
 export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
 
-  const tickrate = 1000 / 32;
+  const tickrate = 1000 / 40;
+
+  const scheduleOnTick = () => setTimeout(world.onTick, 7);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
@@ -84,18 +86,27 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       });
     },
     onTick: (isRollback: boolean = false) => {
+      const now = performance.now();
 
       // check whether it's time to calculate the next tick
       if (!isRollback) {
-        if ((world.lastTick + tickrate) > performance.now()) {
-          setTimeout(world.onTick, 8);
+        if ((world.lastTick + tickrate) > now) {
+          scheduleOnTick();
           return;
         }
       }
   
-      // TODO is this broken during rollback
-      // increment world.lastTick
-      if (!isRollback) world.lastTick += tickrate;
+      // TODO is this broken during rollback?
+      // update lastTick
+      if (!isRollback) {
+        if ((now - tickrate - tickrate) > world.lastTick) {
+          // catch up (browser was delayed)
+          world.lastTick = now;
+        } else {
+          // move forward at fixed timestep
+          world.lastTick += tickrate;
+        }
+      }
   
       // increment tick
       world.tick += 1;
@@ -116,8 +127,8 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       }
       world.entitiesAtTick[world.tick] = serializedEntities;
   
-      // call onTick again
-      if (!isRollback) setTimeout(world.onTick, 8);
+      // schedule onTick
+      if (!isRollback) scheduleOnTick();
     },
     rollback: (td: TickData) => {
 
@@ -191,7 +202,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
   }
 
   // setup callbacks
-  setTimeout(world.onTick, 8);
+  scheduleOnTick();
   if (renderer && world.onRender) renderer.app.ticker.add(world.onRender);
 
   return world;

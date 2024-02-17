@@ -31,7 +31,7 @@ export const Playground = (props: PlaygroundProps): World => {
 
     // networked
     if (world.clientPlayerId) {
-      console.log(`ADDING LOCALLY ${world.clientPlayerId}`);
+      console.log(`spawn player locally: ${world.clientPlayerId}`);
       world.addEntity({
         id: world.clientPlayerId,
         components: {

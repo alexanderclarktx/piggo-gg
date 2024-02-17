@@ -71,7 +71,7 @@ export const Skelly = (id: string, tint?: number): Entity => {
         active: true
       }),
       controlled: new Controlled({ entityId: "" }),
-      colliderRJS: new ColliderRJS({ radius: 8, mass: 500 }),
+      colliderRJS: new ColliderRJS({ radius: 8, mass: 600 }),
       controller: new Controller<WASDMovementCommands>({
         "a,d": null, "w,s": null,
         "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
