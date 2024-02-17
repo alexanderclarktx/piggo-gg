@@ -14,6 +14,7 @@ export const NPCSystem: SystemBuilder = ({ world }) => {
   }
 
   return {
+    id: "NPCSystem",
     query: ["npc", "actions"],
     onTick
   }

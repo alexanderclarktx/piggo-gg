@@ -15,11 +15,21 @@ export type TickData = {
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   const wsClient = new WebSocket(SERVER_LOCAL);
 
+  setInterval(() => {
+    if (lastMessageTick && ((world.tick - lastMessageTick) < 50)) {
+      world.isConnected = true;
+    } else {
+      world.isConnected = false;
+    }
+  }, 1000);
+
+  let lastMessageTick: number = 0;
   let latestServerMessage: TickData | null = null;
 
   wsClient.onmessage = (event) => {
     const message = JSON.parse(event.data) as TickData;
     latestServerMessage = message;
+    lastMessageTick = message.tick;
   }
 
   const handleLatestMessage = () => {
@@ -58,7 +68,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     // compare entity counts
     if (!rollback && world.entitiesAtTick[message.tick]) {
       if (Object.keys(world.entitiesAtTick[message.tick]).length !== Object.keys(message.serializedEntities).length) {
-        console.log(`rollback entity count ${Object.keys(world.entities).length} ${Object.keys(message.serializedEntities).length}`);
+        console.log(`rollback entity count ${Object.keys(world.entitiesAtTick[message.tick]).length} ${Object.keys(message.serializedEntities).length}`);
         rollback = true;
       }
     }
@@ -117,6 +127,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   }
 
   return {
+    id: "WsClientSystem",
     query: ["networked"],
     onTick,
     skipOnRollback: true

@@ -1,4 +1,4 @@
-import { ColliderRJS, DebugBounds, Entity, FpsText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-legends/core";
+import { Collider, DebugBounds, Entity, FpsText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-legends/core";
 import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
@@ -11,12 +11,11 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
     if (world.debug) {
       // handle new entities
       entities.forEach((entity) => {
-        const { renderable, colliderRJS } = entity.components;
+        const { renderable } = entity.components;
 
         if (!debugEntitiesPerEntity[entity.id] || !debugEntitiesPerEntity[entity.id].length) {
           debugEntitiesPerEntity[entity.id] = [];
           if (renderable) addEntityForRenderable(entity as Entity<Renderable | Position>);
-          // if (colliderRJS) addEntityForCollider(entity as Entity<ColliderRJS | Position>);
         }
       });
 
@@ -129,32 +128,10 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
     debugEntitiesPerEntity["collider-debug"] = [debugEntity];
   }
 
-  const addEntityForCollider = (entity: Entity<ColliderRJS | Position>) => {
-    const { colliderRJS, position } = entity.components
-
-    const r = new Renderable({
-      dynamic: (c: Graphics) => {
-        if (c.clear) c.clear().beginFill(0xffffff, 0.1).lineStyle(1, 0xffffff);
-      },
-      zIndex: 5,
-      container: async () => new Graphics()
-    })
-
-    const debugEntity = {
-      id: `${entity.id}-collider-debug`,
-      components: {
-        position: new Position(),
-        renderable: r
-      }
-    }
-    debugEntitiesPerEntity[entity.id].push(debugEntity);
-    world.addEntity(debugEntity);
-    debugRenderables.push(r);
-  }
-
   const debugText = (p: Position, r: Renderable) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
 
   return {
+    id: "DebugSystem",
     query: ["debug", "position"],
     onTick,
     skipOnRollback: true

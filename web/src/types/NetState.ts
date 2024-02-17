@@ -4,5 +4,5 @@ export const NetStateColor: Record<NetState, string> = {
   "disconnected": "red",
   "offering": "yellow",
   "answering": "orange",
-  "connected": "green"
+  "connected": "lightgreen"
 }

@@ -46,6 +46,7 @@ export const GuiSystem: SystemBuilder = ({ world, renderer }) => {
   }
 
   return {
+    id: "GuiSystem",
     query: ["health", "position", "renderable"],
     onTick,
     skipOnRollback: true,

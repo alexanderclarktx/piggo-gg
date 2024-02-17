@@ -1,4 +1,4 @@
-import { Ball, Controlling, Entity, Networked, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { Ball, Controlling, Data, Entity, Networked, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -16,17 +16,18 @@ export type World = {
   clientPlayerId: string | undefined
   renderer: Renderer | undefined
   entities: Record<string, Entity>
-  systems: System[]
+  systems: Record<string, System>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
-  addEntity: (entity: Entity) => string;
-  addEntities: (entities: Entity[]) => void;
-  addEntityBuilders: (entityBuilders: (() => Entity)[]) => void;
-  removeEntity: (id: string) => void;
-  addSystems: (systems: System[]) => void;
-  addSystemBuilders: (systemBuilders: SystemBuilder[]) => void;
-  onRender?: () => void;
-  onTick: (isRollback?: boolean) => void;
-  rollback: (td: TickData) => void;
+  isConnected: boolean
+  addEntity: (entity: Entity) => string
+  addEntities: (entities: Entity[]) => void
+  addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
+  removeEntity: (id: string) => void
+  addSystems: (systems: System[]) => void
+  addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
+  onRender?: () => void
+  onTick: (isRollback?: boolean) => void
+  rollback: (td: TickData) => void
 }
 
 export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
@@ -53,8 +54,9 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     lastTick: 0,
     renderer,
     entities: {},
-    systems: [],
+    systems: {},
     entitiesAtTick: {},
+    isConnected: false,
     addEntity: (entity: Entity) => {
       world.entities[entity.id] = entity;
       return entity.id;
@@ -72,14 +74,33 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         entity.components.renderable?.cleanup();
       }
     },
-    addSystems: (systems: System[]) => { world.systems.push(...systems) },
+    addSystems: (systems: System[]) => {
+
+      systems.forEach((system) => {
+        if (world.systems[system.id]) {
+          console.error(`not inserting duplicate system id ${system.id}`);
+          return;
+        }
+        world.systems[system.id] = system;
+        if (system.data) {
+          // add new system entity
+          const e: Entity = {
+            id: `SystemEntity-${system.id}`,
+            components: {
+              networked: new Networked({ isNetworked: true }),
+              data: new Data({ data: system.data })
+            }
+          }
+          world.addEntity(e);
+        }
+      })
+    },
     addSystemBuilders: (systemBuilders: SystemBuilder[]) => {
-      systemBuilders.forEach((systemBuilder) => {
-        world.systems.push(systemBuilder({ world, renderer: renderer, clientPlayerId: world.clientPlayerId, mode: renderMode }));
-      });
+      const systems = systemBuilders.map((systemBuilder) => systemBuilder({ world, renderer: renderer, clientPlayerId: world.clientPlayerId, mode: renderMode }));
+      world.addSystems(systems);
     },
     onRender: () => {
-      world.systems.forEach((system) => {
+      Object.values(world.systems).forEach((system) => {
         if (system.onRender) {
           system.onRender(filterEntities(system.query ?? [], Object.values(world.entities)));
         }
@@ -95,8 +116,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
           return;
         }
       }
-  
-      // TODO is this broken during rollback?
+
       // update lastTick
       if (!isRollback) {
         if ((now - tickrate - tickrate) > world.lastTick) {
@@ -107,17 +127,17 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
           world.lastTick += tickrate;
         }
       }
-  
+
       // increment tick
       world.tick += 1;
-  
+
       // run system updates
-      world.systems.forEach((system) => {
+      Object.values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
           system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities))) : system.onTick([]);
         }
       });
-  
+
       // store serialized entities
       const serializedEntities: Record<string, SerializedEntity> = {}
       for (const entityId in world.entities) {
@@ -126,7 +146,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       }
       world.entitiesAtTick[world.tick] = serializedEntities;
-  
+
       // schedule onTick
       if (!isRollback) scheduleOnTick();
     },
@@ -137,19 +157,19 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       if (world.entitiesAtTick[world.tick]) {
         // console.log(Object.keys(rollbackEntities).length, Object.keys(entitiesAtTick[tick]).length);
       }
-  
+
       const ticksForward = 5;
-  
+
       // set tick
       world.tick = td.tick;
-  
+
       // set world.lastTick
       world.lastTick = performance.now();
-  
+
       // remove old local entities
       Object.keys(world.entities).forEach((entityId) => {
         if (world.entities[entityId].components.networked) {
-  
+
           if (!td.serializedEntities[entityId]) {
             // delete if not present in rollback frame
             console.log("DELETE ENTITY", entityId, td.serializedEntities);
@@ -157,13 +177,13 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
           }
         }
       });
-  
+
       // add new entities if not present locally
       Object.keys(td.serializedEntities).forEach((entityId) => {
         if (!world.entities[entityId]) {
           if (entityId.startsWith("zombie")) {
             console.log("ADD ZOMBIE FROM SERVER", entityId);
-            world.addEntity(Zombie(entityId));
+            world.addEntity(Zombie({ id: entityId }));
           } else if (entityId.startsWith("ball")) {
             console.log("ADD BALL FROM SERVER", entityId);
             world.addEntity(Ball({ id: entityId }));
@@ -186,14 +206,14 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
           }
         }
       });
-  
+
       // deserialize everything
       Object.keys(td.serializedEntities).forEach((entityId) => {
         if (world.entities[entityId] && td.serializedEntities[entityId]) {
           deserializeEntity(world.entities[entityId], td.serializedEntities[entityId]);
         }
       });
-  
+
       // run system updates
       for (let i = 0; i < ticksForward; i++) {
         world.onTick(true);

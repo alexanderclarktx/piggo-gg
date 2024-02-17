@@ -26,7 +26,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
             world.addEntity(Ball());
             break;
           case "zombie":
-            world.addEntity(Zombie('zombie-SPAWNED'));
+            world.addEntity(Zombie({ id: 'zombie-SPAWNED' }));
             break;
         }
       }
@@ -139,6 +139,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
   }
 
   return {
+    id: "InputSystem",
     query: ["controlled", "controller", "actions"],
     onTick,
     skipOnRollback: true

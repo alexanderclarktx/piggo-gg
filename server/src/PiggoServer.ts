@@ -17,11 +17,7 @@ class PiggoServer {
   playground = Playground({ runtimeMode: "server" });
 
   constructor() {
-    this.playground.addSystems([
-      EnemySpawnSystem(this.playground),
-      PlayerSpawnSystem(this.playground),
-      WsServerSystem({ world: this.playground, clients: this.clients })
-    ]);
+    this.playground.addSystems([WsServerSystem({ world: this.playground, clients: this.clients })]);
 
     this.bun = Bun.serve({
       hostname: "0.0.0.0",

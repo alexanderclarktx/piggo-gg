@@ -1,7 +1,12 @@
-import { Actions, Character, Clickable, ColliderRJS, Debug, Entity, World, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/core";
+import { Actions, Character, Clickable, Collider, Debug, Entity, World, Health, NPC, Networked, Position, Renderable, ZombieMovement, ZombieMovementCommands, PositionProps } from "@piggo-legends/core";
 import { AnimatedSprite, Assets, SCALE_MODES } from "pixi.js";
 
-export const Zombie = (id: string): Entity => {
+export type ZombieProps = {
+  id: string,
+  positionProps?: PositionProps
+}
+
+export const Zombie = ({ id, positionProps = {renderMode: "isometric", x: 100, y: 100}}: ZombieProps): Entity => {
 
   const render = async () => {
     const textures = (await Assets.load("chars.json")).textures;
@@ -30,7 +35,7 @@ export const Zombie = (id: string): Entity => {
   return {
     id,
     components: {
-      position: new Position({ renderMode: "isometric", x: 100 + Math.random() * 600, y: 100 + Math.random() * 600 }),
+      position: new Position(positionProps),
       networked: new Networked({ isNetworked: true }),
       clickable: new Clickable({
         width: 32,
@@ -56,7 +61,7 @@ export const Zombie = (id: string): Entity => {
           }
         }
       }),
-      colliderRJS: new ColliderRJS({ radius: 8 }),
+      collider: new Collider({ radius: 8 }),
       debug: new Debug(),
       renderable: new Renderable({
         zIndex: 2,

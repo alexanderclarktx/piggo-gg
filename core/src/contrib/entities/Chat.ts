@@ -2,6 +2,7 @@ import { Entity } from "@piggo-legends/core";
 import { Position, Renderable, TextBox, chatBuffer, chatHistory, chatIsOpen } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
+// TODO refactor
 export const Chat = (): Entity => {
 
   const chatHistoryText = () => new TextBox({
@@ -24,6 +25,8 @@ export const Chat = (): Entity => {
     position: { x: 0, y: 25 },
     fontSize: 16,
     color: 0xFFFF33,
+    // boxOutline: true,
+    // visible: false,
     dynamic: (t: Text) => {
       const textToRender = chatBuffer.join("");
       chatIsOpen ? t.text = `${textToRender}|` : t.text = "";

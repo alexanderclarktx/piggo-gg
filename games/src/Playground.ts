@@ -1,7 +1,7 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, GuiSystem, InputSystem, NPCSystem, Networked,
-  PhysicsSystemRJS, PiggoWorld, Player, PlayerSpawnSystem, RenderSystem,
+  PhysicsSystem, PiggoWorld, Player, PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall, World, WorldProps, WsClientSystem
 } from "@piggo-legends/core";
 
@@ -13,11 +13,6 @@ export const Playground = (props: PlaygroundProps): World => {
   if (world.runtimeMode === "client") {
     world.addSystemBuilders([
       InputSystem, ClickableSystem, DebugSystem, GuiSystem
-    ]);
-
-    world.addSystems([
-      PlayerSpawnSystem(world),
-      EnemySpawnSystem(world),
     ]);
 
     // ui
@@ -43,7 +38,8 @@ export const Playground = (props: PlaygroundProps): World => {
   }
 
   // add shared systems
-  world.addSystemBuilders([NPCSystem, CommandSystem, PhysicsSystemRJS]);
+  world.addSystems([PlayerSpawnSystem(world), EnemySpawnSystem(world)]);
+  world.addSystemBuilders([NPCSystem, CommandSystem, PhysicsSystem]);
 
   if (world.runtimeMode === "client") {
     world.addSystemBuilders([RenderSystem]);
