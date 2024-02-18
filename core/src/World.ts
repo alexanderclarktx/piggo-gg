@@ -1,4 +1,4 @@
-import { Ball, Controlling, Data, Entity, Networked, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { Ball, Controlling, Data, Entity, Networked, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, localCommandBuffer, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -34,7 +34,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
   const tickrate = 1000 / 40;
 
-  const scheduleOnTick = () => setTimeout(world.onTick, 7);
+  const scheduleOnTick = () => setTimeout(world.onTick, 3);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
@@ -110,11 +110,9 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
-      if (!isRollback) {
-        if ((world.lastTick + tickrate) > now) {
-          scheduleOnTick();
-          return;
-        }
+      if (!isRollback && ((world.lastTick + tickrate) > now)) {
+        scheduleOnTick();
+        return;
       }
 
       // update lastTick
@@ -131,14 +129,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       // increment tick
       world.tick += 1;
 
-      // run system updates
-      Object.values(world.systems).forEach((system) => {
-        if (!isRollback || (isRollback && !system.skipOnRollback)) {
-          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities))) : system.onTick([]);
-        }
-      });
-
-      // store serialized entities
+      // store serialized entities before systems run
       const serializedEntities: Record<string, SerializedEntity> = {}
       for (const entityId in world.entities) {
         if (world.entities[entityId].components.networked) {
@@ -147,24 +138,26 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       }
       world.entitiesAtTick[world.tick] = serializedEntities;
 
+      // run system updates
+      Object.values(world.systems).forEach((system) => {
+        if (!isRollback || (isRollback && !system.skipOnRollback)) {
+          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities))) : system.onTick([]);
+        }
+      });
+
       // schedule onTick
       if (!isRollback) scheduleOnTick();
     },
     rollback: (td: TickData) => {
 
-      console.log(`rollback client:${world.tick} server:${td.tick}`);
-      // console.log(JSON.stringify(Object.keys(rollbackEntities)));
-      if (world.entitiesAtTick[world.tick]) {
-        // console.log(Object.keys(rollbackEntities).length, Object.keys(entitiesAtTick[tick]).length);
-      }
+      const startClientTick = world.tick;
+      const startServerTick = td.tick;
 
-      const ticksForward = 5;
+      // determine how many ticks to increment
+      const ticksForward = ((world.tick - td.tick) > 2) ? world.tick - td.tick : 5;
 
       // set tick
-      world.tick = td.tick;
-
-      // set world.lastTick
-      world.lastTick = performance.now();
+      world.tick = td.tick - 1;
 
       // remove old local entities
       Object.keys(world.entities).forEach((entityId) => {
@@ -214,10 +207,17 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       });
 
+      // set command buffer for message tick
+      localCommandBuffer[td.tick] = td.commands[td.tick]
+
       // run system updates
-      for (let i = 0; i < ticksForward; i++) {
+      for (let i = 0; i < ticksForward + 1; i++) {
         world.onTick(true);
       }
+
+      const endClientTick = world.tick;
+
+      console.log(`startClientTick:${startClientTick} startServerTick:${startServerTick} endClientTick:${endClientTick}`);
     }
   }
 

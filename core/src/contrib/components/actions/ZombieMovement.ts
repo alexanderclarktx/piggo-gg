@@ -1,4 +1,4 @@
-import { ActionMap, Character, Entity, World, Position, Renderable } from "@piggo-legends/core";
+import { ActionMap, Entity, World, Position, Renderable } from "@piggo-legends/core";
 
 const speed = 0.7;
 const t = (Math.PI * 2) / 16; // 16th of tau
@@ -7,7 +7,7 @@ export type ZombieMovementCommands = "chase"
 
 export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
   "chase": (entity: Entity<Position | Renderable>, world: World) => {
-    const position = entity.components.position;
+    const { position, renderable } = entity.components;
 
     // get the closest player entity position
     const entities = Object.values(world.entities).filter((e) => e.components.controlled && e.components.position)
@@ -42,17 +42,14 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
     const angle = Math.atan2(moveY, moveX) + t * 8;
 
     // set animation based on angle
-    const character = entity.components.renderable.r as Character;
-    if (character) {
-      if (angle >= 0 && angle < 1 * t) character.setAnimation("ul");
-      else if (angle >= 15 * t && angle < 16 * t) character.setAnimation("ul");
-      else if (angle >= 1 * t && angle < 3 * t) character.setAnimation("u");
-      else if (angle >= 3 * t && angle < 5 * t) character.setAnimation("ur");
-      else if (angle >= 5 * t && angle < 7 * t) character.setAnimation("r");
-      else if (angle >= 7 * t && angle < 9 * t) character.setAnimation("dr");
-      else if (angle >= 9 * t && angle < 11 * t) character.setAnimation("d");
-      else if (angle >= 11 * t && angle < 13 * t) character.setAnimation("dl");
-      else if (angle >= 13 * t && angle < 15 * t) character.setAnimation("l");
-    }
+    if (angle >= 0 && angle < 1 * t) renderable.setAnimation("ul");
+    else if (angle >= 15 * t && angle < 16 * t) renderable.setAnimation("ul");
+    else if (angle >= 1 * t && angle < 3 * t) renderable.setAnimation("u");
+    else if (angle >= 3 * t && angle < 5 * t) renderable.setAnimation("ur");
+    else if (angle >= 5 * t && angle < 7 * t) renderable.setAnimation("r");
+    else if (angle >= 7 * t && angle < 9 * t) renderable.setAnimation("dr");
+    else if (angle >= 9 * t && angle < 11 * t) renderable.setAnimation("d");
+    else if (angle >= 11 * t && angle < 13 * t) renderable.setAnimation("dl");
+    else if (angle >= 13 * t && angle < 15 * t) renderable.setAnimation("l");
   }
 }

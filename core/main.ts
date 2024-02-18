@@ -27,7 +27,6 @@ export * from "./src/contrib/components/Position";
 export * from "./src/contrib/components/relationships/Controlling";
 export * from "./src/contrib/components/Renderable";
 export * from "./src/contrib/components/renderables/Button";
-export * from "./src/contrib/components/renderables/Character";
 export * from "./src/contrib/components/renderables/DebugBounds";
 export * from "./src/contrib/components/renderables/HealthBar";
 export * from "./src/contrib/components/renderables/TextBox";

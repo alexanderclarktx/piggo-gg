@@ -23,11 +23,14 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     }
   }, 1000);
 
+  let scheduleRollback: boolean = false;
   let lastMessageTick: number = 0;
   let latestServerMessage: TickData | null = null;
 
   wsClient.onmessage = (event) => {
     const message = JSON.parse(event.data) as TickData;
+    if (latestServerMessage && (message.tick < latestServerMessage.tick)) return;
+    if (message.tick < lastMessageTick) return;
     latestServerMessage = message;
     lastMessageTick = message.tick;
   }
@@ -75,37 +78,31 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
     // compare entity states
     if (!rollback) {
-      for (const [entityId, serializedEntities] of Object.entries(message.serializedEntities)) {
-        const localEntity = world.entities[entityId];
-        if (localEntity) {
-          const entitiesAtTick = world.entitiesAtTick[message.tick];
-          if (entitiesAtTick) {
-            const localSerializedEntity = entitiesAtTick[entityId];
-            if (localSerializedEntity) {
-              if (JSON.stringify(localSerializedEntity) !== JSON.stringify(serializedEntities)) {
-                console.log(`rollback entity state ${entityId} ${JSON.stringify(localSerializedEntity)} ${JSON.stringify(serializedEntities)}`);
-                rollback = true;
-                break;
-              }
-            } else {
-              console.log("no buffered message", message.tick, world.entitiesAtTick[message.tick].serializedEntities);
+      for (const [entityId, msgEntity] of Object.entries(message.serializedEntities)) {
+        const entitiesAtTick = world.entitiesAtTick[message.tick];
+        if (entitiesAtTick) {
+          const localEntity = entitiesAtTick[entityId];
+          if (localEntity) {
+            if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
+              console.log(`rollback entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
               rollback = true;
-              break
+              break;
             }
           } else {
-            console.log("no buffered tick data", message.tick, Object.keys(world.entitiesAtTick), world.entitiesAtTick[message.tick]);
+            console.log("no buffered message", message.tick, world.entitiesAtTick[message.tick].serializedEntities);
             rollback = true;
             break
           }
+        } else {
+          console.log("no buffered tick data", message.tick, Object.keys(world.entitiesAtTick), world.entitiesAtTick[message.tick]);
+          rollback = true;
+          break
         }
       }
     }
 
-    // rewind to message tick and then fast-forward
-    if (rollback) {
-      localCommandBuffer[message.tick] = message.commands[message.tick];
-      world.rollback(message);
-    }
+    // do a rollback
+    if (rollback) world.rollback(message);
   }
 
   const onTick = (_: Entity[]) => {

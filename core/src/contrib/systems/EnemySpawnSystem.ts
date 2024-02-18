@@ -1,4 +1,4 @@
-import { Entity, PositionProps, System, World, Zombie } from "@piggo-legends/core";
+import { Entity, PositionProps, SystemBuilder, Zombie } from "@piggo-legends/core";
 
 const spawnLocations = [
   { x: 100, y: 100 }, { x: 100, y: 600 },
@@ -10,7 +10,7 @@ const spawnLocations = [
 ]
 
 // EnemySpawnSystem spawns waves of enemies
-export const EnemySpawnSystem = (world: World): System => {
+export const EnemySpawnSystem: SystemBuilder = ({ world }) => {
 
   const enemiesInWave: Record<string, Entity> = {};
 

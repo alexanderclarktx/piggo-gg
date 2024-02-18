@@ -5,7 +5,7 @@ export type DebugBoundsProps = RenderableProps & {
   debugRenderable: Renderable
 }
 
-export class DebugBounds extends Renderable<DebugBoundsProps> {
+export class DebugBounds extends Renderable {
   constructor(props: DebugBoundsProps) {
     super(props);
     this.init(props.debugRenderable);

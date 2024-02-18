@@ -6,7 +6,10 @@ export type HealthBarProps = RenderableProps & {
 }
 
 // TODO container prop broken, have to use this.init
-export class HealthBar extends Renderable<HealthBarProps> {
+export class HealthBar extends Renderable {
+
+  health: Health;
+
   constructor(props: HealthBarProps) {
     super({
       ...props,
@@ -17,6 +20,7 @@ export class HealthBar extends Renderable<HealthBarProps> {
         this.draw(g);
       }
     });
+    this.health = props.health;
     this.init();
   }
 
@@ -26,7 +30,7 @@ export class HealthBar extends Renderable<HealthBarProps> {
     g.drawRect(-15, -35, 30, 5);
 
     // red length proportional to percent health
-    const length = 30 * (this.props.health.data.health / this.props.health.data.maxHealth);
+    const length = 30 * (this.health.data.health / this.health.data.maxHealth);
     g.beginFill(0xff0000, 0.9);
     g.drawRect(-15, -35, length, 5);
     g.endFill();

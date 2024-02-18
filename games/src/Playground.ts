@@ -8,12 +8,11 @@ import {
 export type PlaygroundProps = Omit<WorldProps, "renderMode">;
 
 export const Playground = (props: PlaygroundProps): World => {
-  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: "player1" });
+  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.random() * 100}` });
 
   if (world.runtimeMode === "client") {
-    world.addSystemBuilders([
-      InputSystem, ClickableSystem, DebugSystem, GuiSystem
-    ]);
+    // client systems
+    world.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem, GuiSystem]);
 
     // ui
     world.addEntityBuilders([FullscreenButton, DebugButton, Cursor, Chat]);
@@ -38,13 +37,11 @@ export const Playground = (props: PlaygroundProps): World => {
   }
 
   // add shared systems
-  world.addSystems([PlayerSpawnSystem(world), EnemySpawnSystem(world)]);
-  world.addSystemBuilders([NPCSystem, CommandSystem, PhysicsSystem]);
+  world.addSystemBuilders([PlayerSpawnSystem, EnemySpawnSystem, NPCSystem, CommandSystem, PhysicsSystem]);
 
+  // rendering
   if (world.runtimeMode === "client") {
     world.addSystemBuilders([RenderSystem]);
-    // TODO enable when netcode is stable
-    // world.addSystemBuilders([WsClientSystem]);
   }
 
   // ball

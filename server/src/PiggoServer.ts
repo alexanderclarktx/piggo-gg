@@ -1,6 +1,6 @@
-import { EnemySpawnSystem, Networked, Player, PlayerSpawnSystem, TickData, localCommandBuffer } from "@piggo-legends/core";
+import { Networked, Player, TickData, localCommandBuffer } from "@piggo-legends/core";
 import { Playground } from "@piggo-legends/games";
-import { ServerWebSocket, Server, env } from "bun";
+import { Server, ServerWebSocket, env } from "bun";
 import { WsServerSystem } from "./WsServerSystem";
 
 type PerClientData = {
@@ -81,13 +81,9 @@ class PiggoServer {
         Object.keys(parsedMessage.commands[frame]).forEach((entityId) => {
           const command = parsedMessage.commands[frame][entityId];
           localCommandBuffer[frame][entityId] = command;
-          // console.log(`pushed ${JSON.stringify(command.actionId)} to ${frame}`);
         });
-        // console.log(localCommandBuffer[frame].size);
       });
 
-      // localCommandBuffer.push(...parsedMessage.commands);
-      // console.log(`pushed ${JSON.stringify(parsedMessage.commands.map((c) => c.actionId))}`);
     }
   }
 }

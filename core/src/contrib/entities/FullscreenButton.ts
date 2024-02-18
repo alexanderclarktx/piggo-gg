@@ -1,5 +1,4 @@
-import { Entity, World } from "@piggo-legends/core";
-import { Actions, Button, Clickable, Position } from "@piggo-legends/core";
+import { Button, Clickable, Entity, Position, World } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
 export const FullscreenButton = (id: string = "fullscreenButton"): Entity => ({
@@ -12,9 +11,7 @@ export const FullscreenButton = (id: string = "fullscreenButton"): Entity => ({
       active: true,
       width: 32,
       height: 30,
-    }),
-    actions: new Actions({
-      "click": (_, world: World) => {
+      click: (_, world: World) => {
         if (!document.fullscreenElement) {
           // @ts-expect-error
           world.renderer?.app.view.requestFullscreen();

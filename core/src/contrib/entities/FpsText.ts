@@ -3,12 +3,11 @@ import { Position, Renderable } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
 export type FpsTextProps = {
-  x?: number,
-  y?: number,
-  color?: number
+  x?: number
+  y?: number
 }
 
-export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity<Position | Renderable> => {
+export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderable> => {
   return {
     id: "fpsText",
     components: {
@@ -16,7 +15,6 @@ export const FpsText = ({ x, y, color }: FpsTextProps = {}): Entity<Position | R
         x: x ?? -35, y: y ?? 5, screenFixed: true
       }),
       renderable: new Renderable({
-        color: color ?? 0xFFFF00,
         zIndex: 1,
         container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
         dynamic: (t: Text, _, __, w: World) => {

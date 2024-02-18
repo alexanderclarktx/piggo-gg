@@ -18,7 +18,7 @@ export const addToLocalCommandBuffer = (tick: number, entityId: string, command:
   }
 }
 
-export const CommandSystem: SystemBuilder = ({ world }) => {
+export const CommandSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   const onTick = () => {
 
@@ -74,7 +74,7 @@ export const CommandSystem: SystemBuilder = ({ world }) => {
 
             // execute the action
             // console.log(`集 ${entityId} command ${command} executed`);
-            action(entity, world);
+            action(entity, world, clientPlayerId);
           });
         });
       }

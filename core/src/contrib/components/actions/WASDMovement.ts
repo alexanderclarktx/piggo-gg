@@ -1,4 +1,4 @@
-import { ActionMap, AnimationKeys, Character, Entity, Position } from "@piggo-legends/core";
+import { ActionMap, Entity, Position } from "@piggo-legends/core";
 
 const speed = 2;
 const speedDiagonal = speed / Math.sqrt(2);
@@ -18,14 +18,14 @@ export const WASDMovementPhysics: ActionMap<WASDMovementCommands> = {
 }
 
 // TODO this is not properly networked ? (no, the command is just not running) (fixed with client-side prediction)
-const setAV = (entity: Entity<Position>, animation: AnimationKeys | undefined, velocity: { x: number, y: number }) => {
+const setAV = (entity: Entity<Position>, animation: string | undefined, velocity: { x: number, y: number }) => {
   const { position, renderable } = entity.components;
   position.setVelocity(velocity);
 
-  const character = renderable?.r as Character;
-  if (renderable && character && animation) {
+  // const character = renderable
+  if (renderable && animation) {
     // renderable.data.animation = animation;
     // console.log("setting animation");
-    character.setAnimation(animation);
+    renderable.setAnimation(animation);
   }
 }
