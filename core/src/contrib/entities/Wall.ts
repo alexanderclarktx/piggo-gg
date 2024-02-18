@@ -1,10 +1,10 @@
 import { Collider, Debug, Entity, Position } from "@piggo-legends/core";
 
 export type WallProps = {
-  x: number,
-  y: number,
-  length: number,
-  width: number,
+  x: number
+  y: number
+  length: number
+  width: number
 }
 
 export const Wall = ({ x, y, length, width }: WallProps): Entity => {

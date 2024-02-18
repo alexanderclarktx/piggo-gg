@@ -36,6 +36,7 @@ export * from "./src/contrib/entities/Cursor";
 export * from "./src/contrib/entities/DebugButton";
 export * from "./src/contrib/entities/FpsText";
 export * from "./src/contrib/entities/FullscreenButton";
+export * from "./src/contrib/entities/Goal";
 export * from "./src/contrib/entities/Skelly";
 export * from "./src/contrib/entities/SpaceBackground";
 export * from "./src/contrib/entities/Spaceship";

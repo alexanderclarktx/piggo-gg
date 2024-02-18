@@ -1,13 +1,13 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
-  FullscreenButton, GuiSystem, InputSystem, NPCSystem, Networked,
+  FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem, Networked,
   PhysicsSystem, PiggoWorld, Player, PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall,
   WorldBuilder
 } from "@piggo-legends/core";
 
 export const Playground: WorldBuilder = (props) => {
-  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.round((Math.random() * 100))}` });
+  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
 
   if (world.runtimeMode === "client") {
     // client systems
@@ -45,6 +45,10 @@ export const Playground: WorldBuilder = (props) => {
 
   // ball
   world.addEntity(Ball());
+
+  // goals
+  world.addEntity(Goal({ id: "goal1", color: 0xff0000, position: { x: 100, y: 300 }, width: 100, length: 2}));
+  world.addEntity(Goal({ id: "goald2", color: 0x0000ff, position: { x: 700, y: 300 }, width: 100, length: 2}));
 
   // walls
   world.addEntities([
