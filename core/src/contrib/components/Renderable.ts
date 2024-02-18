@@ -75,17 +75,10 @@ export class Renderable extends Component<"renderable"> {
       const childRenderables = await children(renderer);
       this.children = childRenderables;
 
-      // so hacky I can't believe it
-      if (childRenderables.length === 1) {
-        this.r = childRenderables[0];
-        this.c = childRenderables[0].c;
-        await childRenderables[0]._init(renderer);
-      } else {
-        childRenderables.forEach(async (child) => {
-          await child._init(renderer);
-          this.c.addChild(child.c);
-        });
-      }
+      childRenderables.forEach(async (child) => {
+        await child._init(renderer);
+        this.c.addChild(child.c);
+      });
     }
 
     // set position
