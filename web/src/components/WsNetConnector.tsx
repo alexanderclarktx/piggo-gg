@@ -17,7 +17,7 @@ export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorP
     } else {
       setNetState("disconnected");
     }
-  }, 1000)
+  }, 200)
 
   const onClick = () => {
     console.log("click");

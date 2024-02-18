@@ -1,4 +1,4 @@
-import { Entity, World, SystemBuilder, Command, localCommandBuffer, SerializedEntity } from "@piggo-legends/core";
+import { Entity, World, SystemBuilder, Command, SerializedEntity } from "@piggo-legends/core";
 
 const SERVER_LOCAL = "ws://localhost:3000";
 const SERVER_REMOTE = "wss://api.piggo.gg";
@@ -21,7 +21,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     } else {
       world.isConnected = false;
     }
-  }, 1000);
+  }, 200);
 
   let scheduleRollback: boolean = false;
   let lastMessageTick: number = 0;
@@ -41,7 +41,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     let rollback = false;
 
     // compare commands
-    const localCommands = localCommandBuffer[message.tick];
+    const localCommands = world.localCommandBuffer[message.tick];
     const messageCommands = message.commands[message.tick];
     for (const [entityId, messageCommandsForEntity] of Object.entries(messageCommands)) {
       // console.log(`rollback ${entityId} ${command.actionId} ${JSON.stringify(localCommands)}`);
@@ -116,7 +116,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
       type: "game",
       tick: world.tick,
       player: clientPlayerId ?? "unknown",
-      commands: localCommandBuffer,
+      commands: world.localCommandBuffer,
       serializedEntities: {}
     }
 

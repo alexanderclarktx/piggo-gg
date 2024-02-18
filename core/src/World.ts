@@ -1,4 +1,4 @@
-import { Ball, Controlling, Data, Entity, Networked, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, localCommandBuffer, serializeEntity } from "@piggo-legends/core";
+import { Ball, Command, Controlling, Data, Entity, Networked, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -6,6 +6,8 @@ export type WorldProps = {
   renderer?: Renderer | undefined
   clientPlayerId?: string | undefined
 }
+
+export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
 
 export type World = {
   renderMode: "cartesian" | "isometric"
@@ -19,9 +21,11 @@ export type World = {
   systems: Record<string, System>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   isConnected: boolean
+  localCommandBuffer: Record<number, Record<string, Command[]>>
   addEntity: (entity: Entity) => string
   addEntities: (entities: Entity[]) => void
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
+  addToLocalCommandBuffer: (tick: number, entityId: string, command: Command) => void
   removeEntity: (id: string) => void
   addSystems: (systems: System[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
@@ -57,6 +61,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     systems: {},
     entitiesAtTick: {},
     isConnected: false,
+    localCommandBuffer: {},
     addEntity: (entity: Entity) => {
       world.entities[entity.id] = entity;
       return entity.id;
@@ -66,6 +71,19 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     },
     addEntityBuilders: (entityBuilders: (() => Entity)[]) => {
       entityBuilders.forEach((entityBuilder) => world.addEntity(entityBuilder()));
+    },
+    addToLocalCommandBuffer: (tick: number, entityId: string, command: Command) => {
+      tick += 1;
+
+      if (!world.localCommandBuffer[tick]) {
+        world.localCommandBuffer[tick] = {};
+      }
+      if (!world.localCommandBuffer[tick][entityId]) {
+        world.localCommandBuffer[tick][entityId] = [];
+      }
+      if (!world.localCommandBuffer[tick][entityId].includes(command)) {
+        world.localCommandBuffer[tick][entityId].push(command);
+      }
     },
     removeEntity: (id: string) => {
       const entity = world.entities[id];
@@ -208,7 +226,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       });
 
       // set command buffer for message tick
-      localCommandBuffer[td.tick] = td.commands[td.tick]
+      world.localCommandBuffer[td.tick] = td.commands[td.tick]
 
       // run system updates
       for (let i = 0; i < ticksForward + 1; i++) {

@@ -1,4 +1,4 @@
-import { System, TickData, World, localCommandBuffer } from "@piggo-legends/core";
+import { System, TickData, World } from "@piggo-legends/core";
 import { ServerWebSocket } from "bun";
 
 export type ServerNetcodeSystemProps = {
@@ -18,7 +18,7 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
       player: "server",
       tick: world.tick,
       serializedEntities: world.entitiesAtTick[world.tick],
-      commands: {[world.tick]: localCommandBuffer[world.tick]}
+      commands: {[world.tick]: world.localCommandBuffer[world.tick]}
     };
 
     // send tick data to all clients
