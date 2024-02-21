@@ -1,5 +1,5 @@
 import { Collider, Data, Entity, Networked, Position, Renderable, World } from "@piggo-legends/core";
-import { Container, Graphics } from "pixi.js";
+import { Container, Graphics, HTMLText } from "pixi.js";
 
 export type GoalProps = {
   position: { x: number, y: number }
@@ -9,7 +9,7 @@ export type GoalProps = {
   color: number
 }
 
-export const Goal = ({ color, position, id, width, length }: GoalProps): Entity => {
+export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
 
   const data = {
     goals: 0,
@@ -21,6 +21,7 @@ export const Goal = ({ color, position, id, width, length }: GoalProps): Entity 
       data.goals += 1;
       data.lastScored = world.tick;
       console.log("GOAL", data.goals);
+      e2.components.position.setPosition({ x: 350, y: 350 })
     }
   }
 
@@ -28,14 +29,24 @@ export const Goal = ({ color, position, id, width, length }: GoalProps): Entity 
     const g = new Graphics();
     g.beginFill(color, 0.9);
     g.drawPolygon([
-      width, -width / 2 - 2,
-      width, -width / 2 + 2,
-      -width, width / 2 + 2,
-      -width, width / 2 - 2
+      -2, -width / 2,
+      2, -width / 2,
+      2, width / 2,
+      -2, width / 2
     ])
     g.endFill();
-    const c = new Container()
+
+    // goal count
+    const t = new HTMLText();
+    t.setTransform(-7, width / 2);
+    t.style = { "fill": color }
+    t.text = "0";
+
+    // goal area
+    const c = new Container();
     c.addChild(g);
+    c.addChild(t);
+
     return c;
   }
 
@@ -46,11 +57,16 @@ export const Goal = ({ color, position, id, width, length }: GoalProps): Entity 
       data: new Data({ data: data }),
       position: new Position(position),
       collider: new Collider({
-        length,
-        width,
+        length: 2,
+        width: width / 4 * 3,
+        rotation: Math.PI * 3 / 4,
         sensor: sensor
       }),
       renderable: new Renderable({
+        dynamic: (c) => {
+          const t = c.children[1] as HTMLText;
+          t.text = `${data.goals}`
+        },
         zIndex: 3,
         container: render
       })

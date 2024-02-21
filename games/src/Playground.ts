@@ -44,11 +44,11 @@ export const Playground: WorldBuilder = (props) => {
   }
 
   // ball
-  world.addEntity(Ball());
+  world.addEntity(Ball({ position: { x: 350, y: 350 } }));
 
   // goals
-  world.addEntity(Goal({ id: "goal1", color: 0xff0000, position: { x: 100, y: 300 }, width: 100, length: 2}));
-  world.addEntity(Goal({ id: "goald2", color: 0x0000ff, position: { x: 700, y: 300 }, width: 100, length: 2}));
+  world.addEntity(Goal({ id: "goal1", color: 0xff0000, position: { x: 200, y: 500 }, width: 100, length: 2 }));
+  world.addEntity(Goal({ id: "goald2", color: 0x0000ff, position: { x: 500, y: 200 }, width: 100, length: 2 }));
 
   // walls
   world.addEntities([

@@ -6,10 +6,10 @@ export type BallProps = {
   position?: { x: number, y: number }
 }
 
-export const Ball = ({ position, id }: BallProps = {}): Entity => ({
+export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } }): Entity => ({
   id: id ?? `ball${Math.trunc(Math.random() * 100)}`,
   components: {
-    position: new Position(position ?? { x: 100 + Math.random() * 600, y: 100 + Math.random() * 600 }),
+    position: new Position(position),
     networked: new Networked({ isNetworked: true }),
     collider: new Collider({
       radius: 7,
