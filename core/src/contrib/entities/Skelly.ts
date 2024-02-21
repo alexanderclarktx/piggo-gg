@@ -1,5 +1,5 @@
 import { Actions, Clickable, Collider, Controlled, Controller, Debug, Entity, Health, Networked, Position, Renderable, WASDMovementCommands, WASDMovementPhysics, playerControlsEntity } from "@piggo-legends/core";
-import { AnimatedSprite, SCALE_MODES } from "pixi.js";
+import { AnimatedSprite, HTMLText, SCALE_MODES } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number): Entity => {
 
@@ -27,7 +27,7 @@ export const Skelly = (id: string, tint?: number): Entity => {
       renderable: new Renderable({
         anchor: { x: 0.5, y: 0.7 },
         scale: 2,
-        zIndex: 2,
+        zIndex: 3,
         scaleMode: SCALE_MODES.NEAREST,
         setup: async (r: Renderable) => {
           console.log("setup");
@@ -46,6 +46,13 @@ export const Skelly = (id: string, tint?: number): Entity => {
 
           r.setAnimationColor(0xffffff);
           r.bufferedAnimation = "d";
+
+          const nametag = new HTMLText();
+          nametag.text = id.split("-")[1]
+          nametag.style = {fill: 0xffff00, fontSize: 13}
+          nametag.setTransform(-20, -45);
+
+          r.c.addChild(nametag);
         }
       })
     }

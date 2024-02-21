@@ -19,7 +19,7 @@ export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } 
     }),
     debug: new Debug(),
     renderable: new Renderable({
-      zIndex: 2,
+      zIndex: 3,
       dynamic: (t: Text, _, e: Entity<Position>) => {
         const v = e.components.position.data;
         t.rotation += 0.08 * Math.sqrt((v.velocityX * v.velocityX) + (v.velocityY * v.velocityY));

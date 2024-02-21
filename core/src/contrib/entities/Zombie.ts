@@ -32,7 +32,7 @@ export const Zombie = ({ id, positionProps = {renderMode: "isometric", x: 100, y
       debug: new Debug(),
       renderable: new Renderable({
         scale: 2,
-        zIndex: 2,
+        zIndex: 3,
         color: 0x00ff00,
         scaleMode: SCALE_MODES.NEAREST,
         anchor: { x: 0.5, y: 0.7 },

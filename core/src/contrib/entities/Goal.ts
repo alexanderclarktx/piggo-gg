@@ -67,7 +67,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
           const t = c.children[1] as HTMLText;
           t.text = `${data.goals}`
         },
-        zIndex: 3,
+        zIndex: 2,
         container: render
       })
     }
