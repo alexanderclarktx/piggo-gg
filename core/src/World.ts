@@ -172,7 +172,8 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const startServerTick = td.tick;
 
       // determine how many ticks to increment
-      const ticksForward = ((world.tick - td.tick) > 2) ? world.tick - td.tick : 5;
+      const ticksForward = ((world.tick - td.tick) > 2) ? world.tick - td.tick : 10;
+      console.log(td.timestamp, performance.now() - td.timestamp)
 
       // set tick
       world.tick = td.tick - 1;
