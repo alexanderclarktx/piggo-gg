@@ -30,7 +30,6 @@ export const Skelly = (id: string, tint?: number): Entity => {
         zIndex: 3,
         scaleMode: SCALE_MODES.NEAREST,
         setup: async (r: Renderable) => {
-          console.log("setup");
           const textures = await r.loadTextures("chars.json");
 
           r.animations = {
