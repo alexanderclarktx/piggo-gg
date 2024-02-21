@@ -1,4 +1,4 @@
-import { Actions, Ball, Controlled, Controller, Entity, World, Spaceship, SystemBuilder, Zombie, addToLocalCommandBuffer } from "@piggo-legends/core";
+import { Actions, Ball, Controlled, Controller, Entity, World, Spaceship, SystemBuilder, Zombie } from "@piggo-legends/core";
 
 export var chatBuffer: string[] = [];
 export var chatHistory: string[] = [];
@@ -108,7 +108,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
           const controllerInput = controller.controllerMap[input];
           if (controllerInput != null) {
             if (actions.actionMap[controllerInput]) {
-              addToLocalCommandBuffer(world.tick, controlledEntity.id, controllerInput);
+              world.addToLocalCommandBuffer(world.tick, controlledEntity.id, controllerInput);
             }
           }
 
@@ -121,7 +121,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
         const controllerInput = controller.controllerMap[input];
         if (controllerInput != null) {
           if (actions.actionMap[controllerInput]) {
-            addToLocalCommandBuffer(world.tick, controlledEntity.id, controllerInput);
+            world.addToLocalCommandBuffer(world.tick, controlledEntity.id, controllerInput);
           }
         }
 

@@ -1,4 +1,4 @@
-import { TickData, localCommandBuffer, serializeEntity, SerializedEntity, System, World  } from "@piggo-legends/core";
+import { System, TickData, World } from "@piggo-legends/core";
 import { ServerWebSocket } from "bun";
 
 export type ServerNetcodeSystemProps = {
@@ -10,21 +10,16 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
 
   const onTick = () => {
 
-    const serializedEntities: Record<string, SerializedEntity> = {}
-    for (const entityId in world.entities) {
-      if (world.entities[entityId].components.networked) {
-        serializedEntities[entityId] = serializeEntity(world.entities[entityId]);
-      }
-    }
     // if (world.tick % 500 === 0) console.log(serializedEntities);
 
     // build tick data
     const tickData: TickData = {
-      commands: {[world.tick]: localCommandBuffer[world.tick]},
+      type: "game",
       player: "server",
       tick: world.tick,
-      type: "game",
-      serializedEntities,
+      timestamp: Math.round(performance.now()),
+      serializedEntities: world.entitiesAtTick[world.tick],
+      commands: {[world.tick]: world.localCommandBuffer[world.tick]}
     };
 
     // send tick data to all clients
@@ -33,5 +28,8 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
     });
   }
 
-  return { onTick }
+  return {
+    id: "WsServerSystem",
+    onTick
+  }
 }

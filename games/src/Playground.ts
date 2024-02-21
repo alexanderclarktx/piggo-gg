@@ -1,19 +1,17 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
-  FullscreenButton, GuiSystem, InputSystem, NPCSystem, Networked,
+  FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem, Networked,
   PhysicsSystem, PiggoWorld, Player, PlayerSpawnSystem, RenderSystem,
-  SpaceBackground, TileFloor, Wall, World, WorldProps, WsClientSystem
+  SpaceBackground, TileFloor, Wall,
+  WorldBuilder
 } from "@piggo-legends/core";
 
-export type PlaygroundProps = Omit<WorldProps, "renderMode">;
-
-export const Playground = (props: PlaygroundProps): World => {
-  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: "player1" });
+export const Playground: WorldBuilder = (props) => {
+  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
 
   if (world.runtimeMode === "client") {
-    world.addSystemBuilders([
-      InputSystem, ClickableSystem, DebugSystem, GuiSystem
-    ]);
+    // client systems
+    world.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem, GuiSystem]);
 
     // ui
     world.addEntityBuilders([FullscreenButton, DebugButton, Cursor, Chat]);
@@ -26,7 +24,6 @@ export const Playground = (props: PlaygroundProps): World => {
 
     // networked
     if (world.clientPlayerId) {
-      console.log(`spawn player locally: ${world.clientPlayerId}`);
       world.addEntity({
         id: world.clientPlayerId,
         components: {
@@ -38,17 +35,19 @@ export const Playground = (props: PlaygroundProps): World => {
   }
 
   // add shared systems
-  world.addSystems([PlayerSpawnSystem(world), EnemySpawnSystem(world)]);
-  world.addSystemBuilders([NPCSystem, CommandSystem, PhysicsSystem]);
+  world.addSystemBuilders([PlayerSpawnSystem, EnemySpawnSystem, NPCSystem, CommandSystem, PhysicsSystem]);
 
+  // rendering
   if (world.runtimeMode === "client") {
     world.addSystemBuilders([RenderSystem]);
-    // TODO enable when netcode is stable
-    // world.addSystemBuilders([WsClientSystem]);
   }
 
   // ball
-  world.addEntity(Ball());
+  world.addEntity(Ball({ position: { x: 350, y: 350 } }));
+
+  // goals
+  world.addEntity(Goal({ id: "goal1", color: 0xff0000, position: { x: 200, y: 500 }, width: 100, length: 2 }));
+  world.addEntity(Goal({ id: "goald2", color: 0x0000ff, position: { x: 500, y: 200 }, width: 100, length: 2 }));
 
   // walls
   world.addEntities([

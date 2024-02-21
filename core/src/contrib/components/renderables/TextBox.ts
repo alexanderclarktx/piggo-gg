@@ -10,7 +10,7 @@ export type TextBoxProps = RenderableProps & {
   boxOutline?: boolean
 }
 
-export class TextBox extends Renderable<TextBoxProps> {
+export class TextBox extends Renderable {
 
   constructor(props: TextBoxProps) {
     const { text = "", color = 0x55FF00, fontSize = 16, dropShadow = false, padding = 0, boxOutline = false } = props;

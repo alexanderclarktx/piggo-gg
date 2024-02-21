@@ -2,47 +2,31 @@ import { SystemBuilder } from "@piggo-legends/core";
 
 export type Command = string;
 
-// TODO localCommandBuffer is a hack
-export var localCommandBuffer: Record<number, Record<string, Command[]>> = {};
-export const addToLocalCommandBuffer = (tick: number, entityId: string, command: Command) => {
-  tick += 1;
-
-  if (!localCommandBuffer[tick]) {
-    localCommandBuffer[tick] = {};
-  }
-  if (!localCommandBuffer[tick][entityId]) {
-    localCommandBuffer[tick][entityId] = [];
-  }
-  if (!localCommandBuffer[tick][entityId].includes(command)) {
-    localCommandBuffer[tick][entityId].push(command);
-  }
-}
-
-export const CommandSystem: SystemBuilder = ({ world }) => {
+export const CommandSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   const onTick = () => {
 
     // add empty frames for the next 10 ticks
     for (let i = 0; i < 10; i++) {
-      // console.log(localCommandBuffer[world.tick + i]);
-      if (!localCommandBuffer[world.tick + i]) {
-        localCommandBuffer[world.tick + i] = {};
+      // console.log(world.localCommandBuffer[world.tick + i]);
+      if (!world.localCommandBuffer[world.tick + i]) {
+        world.localCommandBuffer[world.tick + i] = {};
       } else {
-        // console.log(`saw ${JSON.stringify(localCommandBuffer[world.tick + i])}`)
+        // console.log(`saw ${JSON.stringify(world.localCommandBuffer[world.tick + i])}`)
       }
     }
 
     // for each buffered command, if it's scheduled for the current tick, execute it
-    Object.keys(localCommandBuffer).forEach((tickNumber) => {
+    Object.keys(world.localCommandBuffer).forEach((tickNumber) => {
       const currentTick = Number(tickNumber);
 
       if ((world.tick - currentTick) > 30) {
-        delete localCommandBuffer[currentTick];
+        delete world.localCommandBuffer[currentTick];
         return;
       }
 
       if (currentTick === world.tick) {
-        const commandsForEntities = localCommandBuffer[currentTick];
+        const commandsForEntities = world.localCommandBuffer[currentTick];
 
         Object.keys(commandsForEntities).forEach((entityId) => {
           const commands = commandsForEntities[entityId];
@@ -74,7 +58,7 @@ export const CommandSystem: SystemBuilder = ({ world }) => {
 
             // execute the action
             // console.log(`集 ${entityId} command ${command} executed`);
-            action(entity, world);
+            action(entity, world, clientPlayerId);
           });
         });
       }

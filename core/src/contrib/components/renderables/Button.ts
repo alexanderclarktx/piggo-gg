@@ -6,21 +6,26 @@ export type ButtonProps = RenderableProps & {
   text: Text
 }
 
-export class Button<T extends ButtonProps = ButtonProps> extends Renderable<T> {
+export class Button<T extends ButtonProps = ButtonProps> extends Renderable {
   outline = new Graphics();
   shadow = new Graphics();
+
+  dims: { w: number, textX: number, textY: number };
+  text: Text;
 
   constructor(props: T) {
     super({
       ...props,
       interactiveChildren: true
     });
+    this.text = props.text;
+    this.dims = props.dims;
     this.initialStyle();
   }
 
   initialStyle = () => {
     // size and radius
-    const width = this.props.dims.w;
+    const width = this.dims.w;
     const height = 30;
     const radius = 10;
 
@@ -40,7 +45,7 @@ export class Button<T extends ButtonProps = ButtonProps> extends Renderable<T> {
     this.c.addChild(this.outline);
 
     // button text
-    this.props.text.position.set(Math.round(this.props.dims.textX), Math.round(this.props.dims.textY));
-    this.c.addChild(this.props.text);
+    this.text.position.set(Math.round(this.dims.textX), Math.round(this.dims.textY));
+    this.c.addChild(this.text);
   }
 }

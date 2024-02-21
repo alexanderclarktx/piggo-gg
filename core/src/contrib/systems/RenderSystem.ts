@@ -57,6 +57,27 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, world }) => {
         cachedEntityPositions[entity.id] = position;
       }
 
+      // handle animations
+      if (
+        renderable.bufferedAnimation !== renderable.activeAnimation &&
+        renderable.animations[renderable.bufferedAnimation]
+      ) {
+        // remove current animation
+        if (renderable.animation) renderable.c.removeChild(renderable.animation);
+
+        // set new animation
+        renderable.animation = renderable.animations[renderable.bufferedAnimation];
+
+        // add animation to container
+        renderable.c.addChild(renderable.animation);
+
+        // play the animation
+        renderable.animation.play();
+
+        // set activeAnimation
+        renderable.activeAnimation = renderable.bufferedAnimation;
+      }
+
       // run the dynamic callback
       if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable, entity, world);
 
@@ -124,7 +145,6 @@ export const RenderSystem: SystemBuilder = ({ renderer, mode, world }) => {
   return {
     id: "RenderSystem",
     query: ["renderable", "position"],
-    onTick,
-    skipOnRollback: true,
+    onTick
   }
 }

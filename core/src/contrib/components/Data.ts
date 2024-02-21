@@ -6,7 +6,6 @@ export type DataProps = {
 
 export class Data extends Component<"data"> {
   type: "data" = "data";
-  override networked = true;
 
   constructor(props: DataProps) {
     super();

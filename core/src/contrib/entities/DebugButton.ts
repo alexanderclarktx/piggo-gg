@@ -1,5 +1,5 @@
 import { Entity, World } from "@piggo-legends/core";
-import { Actions, Button, Clickable, Position } from "@piggo-legends/core";
+import { Button, Clickable, Position } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
 export const DebugButton = (): Entity => {
@@ -13,9 +13,7 @@ export const DebugButton = (): Entity => {
       clickable: new Clickable({
         width: 32,
         height: 32,
-        active: true
-      }),
-      actions: new Actions({
+        active: true,
         click: (_, world: World) => {
           pressed = !pressed;
           if (pressed) {

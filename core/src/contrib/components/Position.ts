@@ -54,9 +54,14 @@ export class Position extends Component<"position"> {
     this.data.y = (2 * isoY - isoX) / 2;
   }
 
-  setVelocity = (velocity: { x: number, y: number }) => {
-    this.data.velocityX = velocity.x;
-    this.data.velocityY = velocity.y;
+  setPosition = ({ x, y }: { x: number, y: number }) => {
+    this.data.x = x;
+    this.data.y = y;
+  }
+
+  setVelocity = ({ x, y }: { x: number, y: number }) => {
+    this.data.velocityX = x;
+    this.data.velocityY = y;
   }
 
   rotateUp = (amount: number) => {

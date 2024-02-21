@@ -36,7 +36,7 @@ export const GuiSystem: SystemBuilder = ({ world, renderer }) => {
           position: position,
           renderable: new Renderable({
             zIndex: 10,
-            children: async () => [ new HealthBar({ health }) ],
+            setup: HealthBar(health)
           })
         }
       });

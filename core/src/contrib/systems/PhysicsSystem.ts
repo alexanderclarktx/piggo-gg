@@ -1,30 +1,27 @@
-import { Entity, SystemBuilder, Collider, Position, Renderable, worldToScreen } from '@piggo-legends/core';
-import RAPIER, { RigidBody } from "@dimforge/rapier2d-compat";
+import RAPIER, { World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat";
+import { Collider, Entity, Position, SystemBuilder } from '@piggo-legends/core';
 
-export let physics: RAPIER.World;
-RAPIER.init().then(() => physics = new RAPIER.World({ x: 0, y: 0 }));
+export let physics: RapierWorld;
+RAPIER.init().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
 
 const timeFactor = 1.5;
 
-// PhysicsSystem handles the movement of entities (using RapierJS)
-export const PhysicsSystem: SystemBuilder = ({ world, mode }) => {
+// PhysicsSystem handles the physics of entity colliders (using RapierJS)
+export const PhysicsSystem: SystemBuilder = ({ world }) => {
 
   let bodies: Record<string, RigidBody> = {};
-  let lastUpdated = 0;
-  let lastRendered = 0;
+  let colliders: Record<string, Collider> = {};
 
   const onTick = (entities: Entity<Position | Collider>[]) => {
 
     // wait until rapier is ready
     if (!physics) return;
 
-    lastUpdated = performance.now();
-    lastRendered = lastUpdated;
-
     // reset the world state
     Object.keys(bodies).forEach((id) => {
       physics.removeRigidBody(bodies[id]);
       delete bodies[id];
+      if (colliders[id]) delete colliders[id];
     });
 
     // prepare physics bodies for each entity
@@ -45,6 +42,9 @@ export const PhysicsSystem: SystemBuilder = ({ world, mode }) => {
 
         // store body
         bodies[entity.id] = body;
+
+        // store collider
+        colliders[entity.id] = collider;
       }
 
       // update body position
@@ -63,6 +63,19 @@ export const PhysicsSystem: SystemBuilder = ({ world, mode }) => {
     // run physics
     physics.timestep = timeFactor;
     physics.step();
+
+    // sensor callbacks
+    Object.values(colliders).forEach((collider: Collider) => {
+      if (collider.sensor) {
+        physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
+          const entry = Object.entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
+          if (entry) {
+            const id = entry[0];
+            if (world.entities[id]) collider.sensor(world.entities[id], world)
+          }
+        });
+      }
+    });
 
     // update the entity positions
     Object.keys(bodies).forEach((id) => {
@@ -84,40 +97,9 @@ export const PhysicsSystem: SystemBuilder = ({ world, mode }) => {
     });
   }
 
-  const onRender = (entities: Entity<Position | Collider>[]) => {
-
-    if (!world) return;
-
-    const delta = performance.now() - lastRendered;
-    console.log(delta)
-
-    lastRendered = performance.now();
-
-    physics.timestep = (1.5 / 31.25) * (delta / 1000);
-    physics.step();
-
-    Object.keys(bodies).forEach((id) => {
-      // update its renderable position (not position component)
-      const entity = world.entities[id] as Entity<Renderable>;
-      const renderable = entity.components.renderable;
-      if (!renderable) return;
-      const body = bodies[id];
-
-      const { x, y } = body.translation();
-
-      if (mode === "isometric") {
-        const screenXY = worldToScreen({ x, y });
-        renderable.c.position.set(screenXY.x, screenXY.y);
-      } else {
-        renderable.c.position.set(x, y);
-      }
-    });
-  }
-
   return {
     id: "PhysicsSystem",
     query: ["position", "collider"],
-    onTick,
-    // onRender // TODO interpolation is jittery
+    onTick
   }
 }

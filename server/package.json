@@ -1,5 +1,6 @@
 {
   "name": "@piggo-legends/server",
+  "main": "./main.ts",
   "scripts": {
     "start": "bun src/PiggoServer.ts",
     "dev": "bun --watch src/PiggoServer.ts"

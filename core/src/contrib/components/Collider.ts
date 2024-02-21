@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/core";
+import { Component, Entity, World } from "@piggo-legends/core";
 import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat";
 
 export type ColliderProps = {
@@ -9,6 +9,8 @@ export type ColliderProps = {
   frictionAir?: number
   mass?: number // default mass seems to be 100
   restitution?: number
+  rotation?: number
+  sensor?: (e2: Entity, world: World) => void
 }
 
 export class Collider extends Component<"collider"> {
@@ -17,8 +19,9 @@ export class Collider extends Component<"collider"> {
   colliderDesc: ColliderDesc;
   rapierCollider: RapierCollider;
   body: RigidBody;
+  sensor: (e2: Entity, world: World) => void
 
-  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution }: ColliderProps) {
+  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation }: ColliderProps) {
     super();
 
     if (isStatic) {
@@ -33,7 +36,14 @@ export class Collider extends Component<"collider"> {
       this.colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1);
     }
 
+    if (rotation) this.colliderDesc.setRotation(rotation);
+
     if (mass) this.colliderDesc.setMass(mass);
+
+    if (sensor) {
+      this.colliderDesc.setSensor(true);
+      this.sensor = sensor;
+    }
 
     if (restitution) this.colliderDesc.setRestitution(restitution);
 

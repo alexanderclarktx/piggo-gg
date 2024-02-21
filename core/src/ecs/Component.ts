@@ -4,8 +4,6 @@
 export abstract class Component<T extends string> {
   abstract type: T;
 
-  networked: boolean = false;
-
   data: Record<string, string | number> = {};
 
   // serializes data from component

@@ -1,7 +1,7 @@
-import { Controlled, Controlling, Entity, Player, Skelly, System, World } from "@piggo-legends/core";
+import { Controlled, Controlling, Entity, Player, Skelly, SystemBuilder, World } from "@piggo-legends/core";
 
 // PlayerSpawnSystem handles spawning characters for players
-export const PlayerSpawnSystem = (world: World): System => {
+export const PlayerSpawnSystem: SystemBuilder = ({ world }) => {
   let playersWithCharacters: Record<string, Entity> = {};
 
   const onTick = (players: Entity<Player>[]) => {

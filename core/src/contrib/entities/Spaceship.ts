@@ -1,5 +1,5 @@
-import { Actions, Character, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementCommands, playerControlsEntity } from "@piggo-legends/core";
-import { AnimatedSprite, Assets } from "pixi.js";
+import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementCommands, playerControlsEntity } from "@piggo-legends/core";
+import { AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
   id?: string,
@@ -7,20 +7,6 @@ export type SpaceshipProps = {
 }
 
 export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<Entity> => {
-
-  const render = async () => {
-    const texture = (await Assets.load("spaceship.json")).textures["spaceship"];
-    const sprite = new AnimatedSprite([texture])
-
-    return new Character({
-      animations: {
-        d: sprite, u: sprite, l: sprite, r: sprite,
-        dl: sprite, dr: sprite, ul: sprite, ur: sprite,
-      },
-      scale: 2,
-      zIndex: 3
-    })
-  };
 
   return {
     id: id ?? `spaceship${Math.trunc(Math.random() * 100)}`,
@@ -30,7 +16,8 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
       clickable: new Clickable({
         width: 100,
         height: 120,
-        active: true
+        active: true,
+        click: playerControlsEntity
       }),
       collider: new Collider({ radius: 60 }),
       controller: new Controller<VehicleMovementCommands>({
@@ -39,14 +26,20 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
         "w": "up", "s": "down", "a": "left", "d": "right"
       }),
       debug: new Debug(),
-      actions: new Actions({
-        ...VehicleMovement,
-        "click": playerControlsEntity
-      }),
+      actions: new Actions(VehicleMovement),
       renderable: new Renderable({
         rotates: true,
-        zIndex: 2,
-        children: async () => [ await render() ]
+        scale: 2,
+        zIndex: 3,
+        setup: async (r: Renderable) => {
+          const texture = (await r.loadTextures("spaceship.json"))["spaceship"];
+          const sprite = new AnimatedSprite([texture])
+
+          r.animations = {
+            d: sprite, u: sprite, l: sprite, r: sprite,
+            dl: sprite, dr: sprite, ul: sprite, ur: sprite,
+          }
+        }
       })
     }
   }
