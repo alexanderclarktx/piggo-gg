@@ -56,7 +56,7 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
   const handleClose = (ws: ServerWebSocket<PerClientData>) => {
 
     // remove player entity
-    world.removeEntity(ws.data.playerName);
+    world.removeEntity(ws.data.playerName!);
 
     // remove from clients
     delete clients[ws.remoteAddress];
