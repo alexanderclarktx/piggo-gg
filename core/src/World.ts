@@ -172,8 +172,9 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const startServerTick = td.tick;
 
       // determine how many ticks to increment
-      const ticksForward = ((world.tick - td.tick) > 2) ? world.tick - td.tick : 10;
-      // console.log(td.timestamp, performance.now() - td.timestamp)
+      const now = Date.now();
+      const framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 1);
+      console.log(`diff:${now - td.timestamp}, target framesAhead:${framesAhead}`);
 
       // set tick
       world.tick = td.tick - 1;
@@ -230,7 +231,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       world.localCommandBuffer[td.tick] = td.commands[td.tick]
 
       // run system updates
-      for (let i = 0; i < ticksForward + 1; i++) {
+      for (let i = 0; i < framesAhead + 1; i++) {
         world.onTick(true);
       }
 

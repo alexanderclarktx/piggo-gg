@@ -20,7 +20,6 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     if (e2.id.startsWith("ball") && ((world.tick - data.lastScored) > 100)) {
       data.goals += 1;
       data.lastScored = world.tick;
-      console.log("GOAL", data.goals);
       e2.components.position.setPosition({ x: 350, y: 350 })
     }
   }

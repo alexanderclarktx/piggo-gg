@@ -49,7 +49,6 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
           world.localCommandBuffer[frame][entityId] = command;
         });
       });
-
     }
   }
 
