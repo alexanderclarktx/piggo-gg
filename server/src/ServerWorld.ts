@@ -44,16 +44,16 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
       Object.keys(parsedMessage.commands).forEach((msgTickString) => {
         const msgTick = Number(msgTickString);
 
+        // ignore messages from the past
         if (msgTick < world.tick) return;
 
+        // create local command buffer for this tick if it doesn't exist
         if (!world.localCommandBuffer[msgTick]) world.localCommandBuffer[msgTick] = {};
 
         // add commands for the player or entities controlled by the player
         Object.keys(parsedMessage.commands[msgTick]).forEach((entityId) => {
           if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
             world.localCommandBuffer[msgTick][entityId] = parsedMessage.commands[msgTick][entityId];
-          } else {
-            // console.log(`REJECTING COMMAND ${entityId} ${JSON.stringify(Object.keys(world.entities[entityId].components))}`);
           }
         });
       });

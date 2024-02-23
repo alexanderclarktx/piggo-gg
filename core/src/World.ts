@@ -166,7 +166,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       // schedule onTick
       if (!isRollback) scheduleOnTick();
 
-      // clear old data in buffers
+      // clear old data in command buffer
       Object.keys(world.localCommandBuffer).forEach((tick) => {
         if ((world.tick - Number(tick)) > 30) {
           delete world.localCommandBuffer[Number(tick)];

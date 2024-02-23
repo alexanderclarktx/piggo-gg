@@ -7,7 +7,7 @@ import {
 } from "@piggo-legends/core";
 
 export const Playground: WorldBuilder = (props) => {
-  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 4))}` });
+  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
 
   if (world.runtimeMode === "client") {
     // client systems
