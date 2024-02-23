@@ -181,7 +181,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       // determine how many ticks to increment
       const now = Date.now();
       let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 2);
-      if (Math.abs(framesAhead - world.tick) <= 1) framesAhead = world.tick - td.tick;
+      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
 
       console.log(`ms:${now - td.timestamp} now:${now} ts:${td.timestamp} target frame:${td.tick+framesAhead} msgFrame:${td.tick} clientFrame:${world.tick}`);
 

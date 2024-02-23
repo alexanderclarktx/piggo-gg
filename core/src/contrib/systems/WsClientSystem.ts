@@ -1,7 +1,8 @@
 import { Entity, World, SystemBuilder, Command, SerializedEntity } from "@piggo-legends/core";
 
-const SERVER = "ws://localhost:3000";
+// const SERVER = "ws://localhost:3000";
 // const SERVER = "wss://api.piggo.gg";
+const SERVER = "wss://piggo-api-f5rs5.ondigitalocean.app/";
 
 export type TickData = {
   type: "game"
@@ -48,8 +49,9 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
       const localCommands = world.localCommandBuffer[message.tick];
       // console.log(`rollback ${entityId} ${command.actionId} ${JSON.stringify(localCommands)}`);
       if (!localCommands) {
+        world.localCommandBuffer[message.tick] = {};
         console.log("WEIRD");
-        rollback = true;
+        // rollback = true;
         break;
       } else if (!localCommands[entityId]) {
         console.log(`rollback missed command ${entityId} ${JSON.stringify(messageCommandsForEntity)} ${JSON.stringify(localCommands)}`);

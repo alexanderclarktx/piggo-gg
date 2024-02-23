@@ -16,7 +16,7 @@ export class PiggoServer {
 
   worlds: Record<string, ServerWorld> = {
     "one": ServerWorld({ worldBuilder: Playground, clients: {} }),
-    "two": ServerWorld({ worldBuilder: Playground, clients: {} })
+    // "two": ServerWorld({ worldBuilder: Playground, clients: {} })
   }
 
   constructor() {
