@@ -8,7 +8,7 @@ __Piggo Legends__ is a multiplayer web game & engine! Play online at [piggo.gg](
 
 🎮 making new games is easy
 
-👾 multiplayer is robust & performant
+👾 multiplayer is smooth & performant
 
 # Features
 

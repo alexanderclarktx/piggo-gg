@@ -1,17 +1,19 @@
-import { Networked, Player, TickData, World, WorldBuilder } from "@piggo-legends/core";
-import { PerClientData, WsServerSystem } from "@piggo-legends/server";
+import { Networked, Player, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
+import { PerClientData } from "@piggo-legends/server";
 import { ServerWebSocket } from "bun";
+
+export type WS = ServerWebSocket<PerClientData>
 
 export type ServerWorld = {
   world: World
-  clients: Record<string, ServerWebSocket<unknown>>
-  handleMessage: (ws: ServerWebSocket<PerClientData>, msg: string) => void
-  handleClose: (ws: ServerWebSocket<PerClientData>) => void
+  clients: Record<string, WS>
+  handleMessage: (ws: WS, msg: string) => void
+  handleClose: (ws: WS) => void
 }
 
 export type ServerWorldProps = {
   worldBuilder: WorldBuilder
-  clients: Record<string, ServerWebSocket<unknown>>
+  clients: Record<string, WS>
 }
 
 export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): ServerWorld => {
@@ -20,7 +22,7 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
 
   world.addSystems([WsServerSystem({ world, clients })]);
 
-  const handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {
+  const handleMessage = (ws: WS, msg: string) => {
     const parsedMessage = JSON.parse(msg) as TickData;
 
     // add player entity if it doesn't exist
@@ -39,20 +41,26 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
     }
 
     if (parsedMessage.commands) {
-      Object.keys(parsedMessage.commands).forEach((frameNumber) => {
-        const frame = Number(frameNumber);
+      Object.keys(parsedMessage.commands).forEach((msgTickString) => {
+        const msgTick = Number(msgTickString);
 
-        if (!world.localCommandBuffer[frame]) world.localCommandBuffer[frame] = {};
+        if (msgTick < world.tick) return;
 
-        Object.keys(parsedMessage.commands[frame]).forEach((entityId) => {
-          const command = parsedMessage.commands[frame][entityId];
-          world.localCommandBuffer[frame][entityId] = command;
+        if (!world.localCommandBuffer[msgTick]) world.localCommandBuffer[msgTick] = {};
+
+        // add commands for the player or entities controlled by the player
+        Object.keys(parsedMessage.commands[msgTick]).forEach((entityId) => {
+          if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
+            world.localCommandBuffer[msgTick][entityId] = parsedMessage.commands[msgTick][entityId];
+          } else {
+            // console.log(`REJECTING COMMAND ${entityId} ${JSON.stringify(Object.keys(world.entities[entityId].components))}`);
+          }
         });
       });
     }
   }
 
-  const handleClose = (ws: ServerWebSocket<PerClientData>) => {
+  const handleClose = (ws: WS) => {
 
     // remove player entity
     world.removeEntity(ws.data.playerName!);

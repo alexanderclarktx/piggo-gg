@@ -165,6 +165,13 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
       // schedule onTick
       if (!isRollback) scheduleOnTick();
+
+      // clear old data in buffers
+      Object.keys(world.localCommandBuffer).forEach((tick) => {
+        if ((world.tick - Number(tick)) > 30) {
+          delete world.localCommandBuffer[Number(tick)];
+        }
+      });
     },
     rollback: (td: TickData) => {
 
@@ -173,8 +180,8 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
       // determine how many ticks to increment
       const now = Date.now();
-      const framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 1);
-      console.log(`diff:${now - td.timestamp}, target framesAhead:${framesAhead}`);
+      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 2);
+      if (Math.abs(framesAhead - world.tick) <= 1) framesAhead = world.tick - td.tick;
 
       // set tick
       world.tick = td.tick - 1;
@@ -227,8 +234,10 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       });
 
-      // set command buffer for message tick
-      world.localCommandBuffer[td.tick] = td.commands[td.tick]
+      // update local command buffer
+      Object.keys(td.commands).forEach((tick) => {
+        world.localCommandBuffer[Number(tick)] = td.commands[Number(tick)]
+      });
 
       // run system updates
       for (let i = 0; i < framesAhead + 1; i++) {

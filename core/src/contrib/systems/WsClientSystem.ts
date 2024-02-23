@@ -24,7 +24,6 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     }
   }, 200);
 
-  let scheduleRollback: boolean = false;
   let lastMessageTick: number = 0;
   let latestServerMessage: TickData | null = null;
 
@@ -37,14 +36,16 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   }
 
   const handleLatestMessage = () => {
+    if (latestServerMessage === null) return;
     let message = latestServerMessage;
-    if (!message) return;
     let rollback = false;
 
-    // compare commands
-    const localCommands = world.localCommandBuffer[message.tick];
     const messageCommands = message.commands[message.tick];
+
+    // TODO consolidate with other block
+    // compare commands
     for (const [entityId, messageCommandsForEntity] of Object.entries(messageCommands)) {
+      const localCommands = world.localCommandBuffer[message.tick];
       // console.log(`rollback ${entityId} ${command.actionId} ${JSON.stringify(localCommands)}`);
       if (!localCommands) {
         console.log("WEIRD");
@@ -62,12 +63,50 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
         const commands = localCommands[entityId];
         if (commands) commands.forEach((command) => {
           if (!messageCommandsForEntity.includes(command)) {
-            console.log(`rollback ${entityId} ${command} ${JSON.stringify(localCommands)}`);
+            console.log(`rollback ${entityId} ${command} ${JSON.stringify(messageCommandsForEntity)}`);
             rollback = true;
           }
         });
       }
     }
+
+    // check future commands
+    Object.keys(message.commands).forEach((tick) => {
+      if (Number(tick) <= message!.tick) return;
+      const messageCommands = message!.commands[Number(tick)];
+      const localCommands = world.localCommandBuffer[Number(tick)]
+      for (const [entityId, messageCommandsForEntity] of Object.entries(messageCommands)) {
+        // console.log(`rollback ${entityId} ${command.actionId} ${JSON.stringify(localCommands)}`);
+        if (!localCommands) {
+          console.log("都 WEIRD");
+          rollback = true;
+          break;
+        } else if (!localCommands[entityId]) {
+          console.log(`都 rollback missed command ${entityId} ${JSON.stringify(messageCommandsForEntity)} ${JSON.stringify(localCommands)}`);
+          rollback = true;
+          break;
+        } else if (localCommands[entityId].length !== messageCommandsForEntity.length) {
+          console.log(`都 rollback count ${entityId} ${localCommands[entityId].length} ${messageCommandsForEntity.length}`);
+          rollback = true;
+          break;
+        } else {
+          const commands = localCommands[entityId];
+          if (commands) commands.forEach((localC) => {
+            if (!messageCommandsForEntity.includes(localC)) {
+              console.log(`都 rollback CLIENT COMMAND ${entityId}:${localC} not in ${JSON.stringify(messageCommandsForEntity)}`);
+              rollback = true;
+            }
+          });
+
+          messageCommandsForEntity.forEach((serverC) => {
+            if (!commands.includes(serverC)) {
+              console.log(`都 rollback SERVER COMMAND ${entityId}:${serverC} not in ${JSON.stringify(commands)}`);
+              rollback = true;
+            }
+          });
+        }
+      }
+    });
 
     // compare entity counts
     if (!rollback && world.entitiesAtTick[message.tick]) {
@@ -116,7 +155,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     const message: TickData = {
       type: "game",
       tick: world.tick,
-      timestamp: performance.now(),
+      timestamp: Date.now(),
       player: clientPlayerId ?? "unknown",
       commands: world.localCommandBuffer,
       serializedEntities: {}

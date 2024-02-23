@@ -8,22 +8,12 @@ export const CommandSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
     // add empty frames for the next 10 ticks
     for (let i = 0; i < 10; i++) {
-      // console.log(world.localCommandBuffer[world.tick + i]);
-      if (!world.localCommandBuffer[world.tick + i]) {
-        world.localCommandBuffer[world.tick + i] = {};
-      } else {
-        // console.log(`saw ${JSON.stringify(world.localCommandBuffer[world.tick + i])}`)
-      }
+      if (!world.localCommandBuffer[world.tick + i]) world.localCommandBuffer[world.tick + i] = {};
     }
 
     // for each buffered command, if it's scheduled for the current tick, execute it
     Object.keys(world.localCommandBuffer).forEach((tickNumber) => {
       const currentTick = Number(tickNumber);
-
-      if ((world.tick - currentTick) > 30) {
-        delete world.localCommandBuffer[currentTick];
-        return;
-      }
 
       if (currentTick === world.tick) {
         const commandsForEntities = world.localCommandBuffer[currentTick];
