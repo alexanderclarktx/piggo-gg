@@ -38,7 +38,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     // goal count
     const t = new HTMLText();
     t.setTransform(-7, width / 2);
-    t.style = { "fill": color }
+    t.style = { "fill": color };
     t.text = "0";
 
     // goal area

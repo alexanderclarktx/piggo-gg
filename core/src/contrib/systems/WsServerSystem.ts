@@ -25,7 +25,7 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
       type: "game",
       player: "server",
       tick: world.tick,
-      timestamp: Math.round(Date.now()),
+      timestamp: Date.now(),
       serializedEntities: world.entitiesAtTick[world.tick],
       commands
     };

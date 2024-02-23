@@ -166,7 +166,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       // schedule onTick
       if (!isRollback) scheduleOnTick();
 
-      // clear old data in command buffer
+      // clear old data in buffers
       Object.keys(world.localCommandBuffer).forEach((tick) => {
         if ((world.tick - Number(tick)) > 30) {
           delete world.localCommandBuffer[Number(tick)];
@@ -182,6 +182,8 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const now = Date.now();
       let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 2);
       if (Math.abs(framesAhead - world.tick) <= 1) framesAhead = world.tick - td.tick;
+
+      console.log(`ms:${now - td.timestamp} now:${now} ts:${td.timestamp} target frame:${td.tick+framesAhead} msgFrame:${td.tick} clientFrame:${world.tick}`);
 
       // set tick
       world.tick = td.tick - 1;
