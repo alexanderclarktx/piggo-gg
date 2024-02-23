@@ -27,7 +27,7 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
       tick: world.tick,
       timestamp: Date.now(),
       serializedEntities: world.entitiesAtTick[world.tick],
-      commands
+      commands: {[world.tick]: world.localCommandBuffer[world.tick]}
     };
 
     // send tick data to all clients
