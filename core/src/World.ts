@@ -167,11 +167,11 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       if (!isRollback) scheduleOnTick();
 
       // clear old data in buffers
-      Object.keys(world.localCommandBuffer).forEach((tick) => {
-        if ((world.tick - Number(tick)) > 30) {
-          delete world.localCommandBuffer[Number(tick)];
-        }
-      });
+      // Object.keys(world.localCommandBuffer).forEach((tick) => {
+      //   if ((world.tick - Number(tick)) > 30) {
+      //     delete world.localCommandBuffer[Number(tick)];
+      //   }
+      // });
     },
     rollback: (td: TickData) => {
 

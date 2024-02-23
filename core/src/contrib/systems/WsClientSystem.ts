@@ -49,9 +49,9 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
       const localCommands = world.localCommandBuffer[message.tick];
       // console.log(`rollback ${entityId} ${command.actionId} ${JSON.stringify(localCommands)}`);
       if (!localCommands) {
-        world.localCommandBuffer[message.tick] = {};
+        // world.localCommandBuffer[message.tick] = {};
         console.log("WEIRD");
-        // rollback = true;
+        rollback = true;
         break;
       } else if (!localCommands[entityId]) {
         console.log(`rollback missed command ${entityId} ${JSON.stringify(messageCommandsForEntity)} ${JSON.stringify(localCommands)}`);
