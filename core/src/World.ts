@@ -168,12 +168,12 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       // schedule onTick
       if (!isRollback) scheduleOnTick();
 
-      // clear old data in buffers
-      // Object.keys(world.localCommandBuffer).forEach((tick) => {
-      //   if ((world.tick - Number(tick)) > 30) {
-      //     delete world.localCommandBuffer[Number(tick)];
-      //   }
-      // });
+      // clear old buffered data
+      Object.keys(world.localCommandBuffer).forEach((tick) => {
+        if ((world.tick - Number(tick)) > 400) {
+          delete world.localCommandBuffer[Number(tick)];
+        }
+      });
     },
     rollback: (td: TickData) => {
 
@@ -181,11 +181,9 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const startServerTick = td.tick;
 
       // determine how many ticks to increment
-      // const now = Date.now();
-
-      let framesAhead = Math.ceil((world.ms / tickrate) + 5);
-      // if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
-
+      const now = Date.now();
+      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 5);
+      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
       console.log(`ms:${world.ms} now:${Date.now()} ts:${td.timestamp} target frame:${td.tick+framesAhead} msgFrame:${td.tick} clientFrame:${world.tick}`);
 
       // set tick
@@ -241,7 +239,17 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
       // update local command buffer
       Object.keys(td.commands).forEach((tick) => {
-        world.localCommandBuffer[Number(tick)] = td.commands[Number(tick)]
+        Object.keys(td.commands[Number(tick)]).forEach((entityId) => {
+          // skip future commands for controlled entities
+          if (td.tick > Number(tick) && world.entities[entityId].components.controlled?.data.entityId === world.clientPlayerId) return;
+
+          // prepare if data is empty
+          if (!world.localCommandBuffer[Number(tick)]) world.localCommandBuffer[Number(tick)] = {};
+          if (!world.localCommandBuffer[Number(tick)][entityId]) world.localCommandBuffer[Number(tick)][entityId] = [];
+
+          // add command
+          world.localCommandBuffer[Number(tick)][entityId] = td.commands[Number(tick)][entityId];
+        });
       });
 
       // run system updates

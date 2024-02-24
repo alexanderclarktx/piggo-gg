@@ -19,8 +19,9 @@ export type ServerWorldProps = {
 export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): ServerWorld => {
 
   const world = worldBuilder({ runtimeMode: "server" })
-
   world.addSystems([WsServerSystem({ world, clients })]);
+
+  const lastMessageForClient: Record<string, TickData> = {};
 
   const handleMessage = (ws: WS, msg: string) => {
     const parsedMessage = JSON.parse(msg) as TickData;
@@ -40,6 +41,12 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
       });
     }
 
+    // ignore messages from the past
+    if (lastMessageForClient[ws.remoteAddress] && (parsedMessage.tick < lastMessageForClient[ws.remoteAddress].tick)) return;
+
+    // store last message for client
+    lastMessageForClient[ws.remoteAddress] = parsedMessage;
+
     // debug log
     const now = Date.now();
     if (world.tick % 50 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
@@ -51,7 +58,7 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
         const msgTick = Number(msgTickString);
 
         // ignore messages from the past
-        if (msgTick < world.tick) return;
+        // if (msgTick < world.tick) return;
 
         // create local command buffer for this tick if it doesn't exist
         if (!world.localCommandBuffer[msgTick]) world.localCommandBuffer[msgTick] = {};

@@ -157,6 +157,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   }
 
   const sendMessage = (world: World) => {
+
     const message: TickData = {
       type: "game",
       tick: world.tick,
