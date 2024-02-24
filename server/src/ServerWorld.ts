@@ -42,7 +42,8 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
 
     // debug log
     const now = Date.now();
-    if (world.tick % 500 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
+    if (world.tick % 50 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
+    if (world.tick % 50 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
 
     // process message commands
     if (parsedMessage.commands) {

@@ -38,7 +38,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
   const tickrate = 1000 / 40;
 
-  const scheduleOnTick = () => setTimeout(world.onTick, 3);
+  const scheduleOnTick = () => setTimeout(world.onTick, 4);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
