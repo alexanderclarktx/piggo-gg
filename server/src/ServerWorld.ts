@@ -42,7 +42,10 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
     }
 
     // ignore messages from the past
-    if (lastMessageForClient[ws.remoteAddress] && (parsedMessage.tick < lastMessageForClient[ws.remoteAddress].tick)) return;
+    if (lastMessageForClient[ws.remoteAddress] && (parsedMessage.tick < lastMessageForClient[ws.remoteAddress].tick)) {
+      console.log(`got old:${parsedMessage.tick} vs:${lastMessageForClient[ws.remoteAddress].tick} world:${world.tick}`);
+      return;
+    };
 
     // store last message for client
     lastMessageForClient[ws.remoteAddress] = parsedMessage;

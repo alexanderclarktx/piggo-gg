@@ -31,7 +31,7 @@ export type World = {
   addSystems: (systems: System[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   onRender?: () => void
-  onTick: (isRollback?: boolean) => void
+  onTick: (_: { isRollback?: boolean }) => void
   rollback: (td: TickData) => void
 }
 
@@ -126,7 +126,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       });
     },
-    onTick: (isRollback: boolean = false) => {
+    onTick: ({ isRollback }: { isRollback?: boolean } = { isRollback: false }) => {
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
@@ -238,23 +238,24 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       });
 
       // update local command buffer
-      Object.keys(td.commands).forEach((tick) => {
-        Object.keys(td.commands[Number(tick)]).forEach((entityId) => {
+      Object.keys(td.commands).forEach((tickString) => {
+        const tick = Number(tickString);
+        Object.keys(td.commands[tick]).forEach((entityId) => {
           // skip future commands for controlled entities
-          if (td.tick > Number(tick) && world.entities[entityId].components.controlled?.data.entityId === world.clientPlayerId) return;
+          if (tick > td.tick && world.entities[entityId].components.controlled?.data.entityId === world.clientPlayerId) return;
 
           // prepare if data is empty
-          if (!world.localCommandBuffer[Number(tick)]) world.localCommandBuffer[Number(tick)] = {};
-          if (!world.localCommandBuffer[Number(tick)][entityId]) world.localCommandBuffer[Number(tick)][entityId] = [];
+          if (!world.localCommandBuffer[tick]) world.localCommandBuffer[tick] = {};
+          if (!world.localCommandBuffer[tick][entityId]) world.localCommandBuffer[tick][entityId] = [];
 
           // add command
-          world.localCommandBuffer[Number(tick)][entityId] = td.commands[Number(tick)][entityId];
+          world.localCommandBuffer[tick][entityId] = td.commands[tick][entityId];
         });
       });
 
       // run system updates
       for (let i = 0; i < framesAhead + 1; i++) {
-        world.onTick(true);
+        world.onTick({ isRollback: true });
       }
 
       const endClientTick = world.tick;
