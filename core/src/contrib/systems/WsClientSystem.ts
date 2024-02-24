@@ -1,7 +1,7 @@
 import { Entity, World, SystemBuilder, Command, SerializedEntity } from "@piggo-legends/core";
 
 // const SERVER = "ws://localhost:3000";
-const SERVER = "wss://api.piggo.gg";
+const SERVER = "ws://api.piggo.gg";
 // const SERVER = "ws://piggo-api-f5rs5.ondigitalocean.app/";
 
 export type TickData = {

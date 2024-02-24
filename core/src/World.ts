@@ -182,9 +182,11 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
       // determine how many ticks to increment
       const now = Date.now();
-      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 5);
+      console.log((now - td.timestamp) / tickrate);
+      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 8);
       if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
-      console.log(`ms:${world.ms} now:${Date.now()} ts:${td.timestamp} target frame:${td.tick+framesAhead} msgFrame:${td.tick} clientFrame:${world.tick}`);
+
+      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick+framesAhead}`);
 
       // set tick
       world.tick = td.tick - 1;
@@ -257,6 +259,8 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       for (let i = 0; i < framesAhead + 1; i++) {
         world.onTick({ isRollback: true });
       }
+
+      world.lastTick = performance.now();
 
       const endClientTick = world.tick;
 
