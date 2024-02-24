@@ -1,7 +1,7 @@
 import { Entity, World, SystemBuilder, Command, SerializedEntity } from "@piggo-legends/core";
 
 // const SERVER = "ws://localhost:3000";
-const SERVER = "ws://api.piggo.gg";
+const SERVER = "wss://api.piggo.gg";
 // const SERVER = "ws://piggo-api-f5rs5.ondigitalocean.app/";
 
 export type TickData = {
@@ -76,10 +76,15 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     }
 
     // check future commands
-    Object.keys(message.commands).forEach((tick) => {
-      if (Number(tick) <= message!.tick) return;
-      const messageCommands = message!.commands[Number(tick)];
-      const localCommands = world.localCommandBuffer[Number(tick)]
+    if (!rollback) Object.keys(message.commands).forEach((tickString) => {
+      const tick = Number(tickString);
+
+      // ignore messages from the past
+      if (tick <= message.tick) return;
+
+      const messageCommands = message.commands[tick];
+      const localCommands = world.localCommandBuffer[tick];
+
       for (const [entityId, messageCommandsForEntity] of Object.entries(messageCommands)) {
         // console.log(`rollback ${entityId} ${command.actionId} ${JSON.stringify(localCommands)}`);
         if (!localCommands) {
@@ -87,7 +92,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
           rollback = true;
           break;
         } else if (!localCommands[entityId]) {
-          console.log(`都 rollback missed command ${entityId} ${JSON.stringify(messageCommandsForEntity)} ${JSON.stringify(localCommands)}`);
+          console.log(`都 rollback missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageCommandsForEntity)} ${JSON.stringify(localCommands)}`);
           rollback = true;
           break;
         } else if (localCommands[entityId].length !== messageCommandsForEntity.length) {

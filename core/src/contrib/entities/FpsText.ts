@@ -15,7 +15,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
         x: x ?? -70, y: y ?? 5, screenFixed: true
       }),
       renderable: new Renderable({
-        zIndex: 1,
+        zIndex: 3,
         container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
         dynamic: (t: Text, _, __, w: World) => {
           if (w.tick % 10 !== 0) return;
@@ -38,7 +38,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
         x: x ?? -35, y: y ?? 5, screenFixed: true
       }),
       renderable: new Renderable({
-        zIndex: 1,
+        zIndex: 3,
         container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
         dynamic: (t: Text, _, __, w: World) => {
           if (w.tick % 10 !== 0) return;

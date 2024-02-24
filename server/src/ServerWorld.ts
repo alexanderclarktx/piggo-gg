@@ -57,19 +57,19 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
 
     // process message commands
     if (parsedMessage.commands) {
-      Object.keys(parsedMessage.commands).forEach((msgTickString) => {
-        const msgTick = Number(msgTickString);
+      Object.keys(parsedMessage.commands).forEach((cmdTickString) => {
+        const cmdTick = Number(cmdTickString);
 
-        // ignore messages from the past
-        // if (msgTick < world.tick) return;
+        // ignore commands from the past
+        if (cmdTick < world.tick) return;
 
         // create local command buffer for this tick if it doesn't exist
-        if (!world.localCommandBuffer[msgTick]) world.localCommandBuffer[msgTick] = {};
+        if (!world.localCommandBuffer[cmdTick]) world.localCommandBuffer[cmdTick] = {};
 
         // add commands for the player or entities controlled by the player
-        Object.keys(parsedMessage.commands[msgTick]).forEach((entityId) => {
+        Object.keys(parsedMessage.commands[cmdTick]).forEach((entityId) => {
           if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
-            world.localCommandBuffer[msgTick][entityId] = parsedMessage.commands[msgTick][entityId];
+            world.localCommandBuffer[cmdTick][entityId] = parsedMessage.commands[cmdTick][entityId];
           }
         });
       });

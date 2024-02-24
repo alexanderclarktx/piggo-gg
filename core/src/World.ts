@@ -170,21 +170,23 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
       // clear old buffered data
       Object.keys(world.localCommandBuffer).forEach((tick) => {
-        if ((world.tick - Number(tick)) > 400) {
+        if ((world.tick - Number(tick)) > 200) {
           delete world.localCommandBuffer[Number(tick)];
+        }
+      });
+      Object.keys(world.entitiesAtTick).forEach((tick) => {
+        if ((world.tick - Number(tick)) > 200) {
+          delete world.entitiesAtTick[Number(tick)];
         }
       });
     },
     rollback: (td: TickData) => {
 
-      const startClientTick = world.tick;
-      const startServerTick = td.tick;
-
       // determine how many ticks to increment
       const now = Date.now();
       console.log((now - td.timestamp) / tickrate);
       let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 8);
-      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
+      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 2) framesAhead = world.tick - td.tick;
 
       console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick+framesAhead}`);
 
@@ -256,15 +258,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       });
 
       // run system updates
-      for (let i = 0; i < framesAhead + 1; i++) {
-        world.onTick({ isRollback: true });
-      }
-
-      world.lastTick = performance.now();
-
-      const endClientTick = world.tick;
-
-      console.log(`startClientTick:${startClientTick} startServerTick:${startServerTick} endClientTick:${endClientTick}`);
+      for (let i = 0; i < framesAhead + 1; i++) world.onTick({ isRollback: true });
     }
   }
 

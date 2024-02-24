@@ -32,9 +32,7 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
     };
 
     // send tick data to all clients
-    Object.values(clients).forEach((client) => {
-      client.send(JSON.stringify(tickData));
-    });
+    Object.values(clients).forEach((client) => client.send(JSON.stringify(tickData)));
   }
 
   return {
