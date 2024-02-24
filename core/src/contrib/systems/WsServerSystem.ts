@@ -12,13 +12,13 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
     // if (world.tick % 500 === 0) console.log(serializedEntities);
 
     // send commands for this tick and any future ticks
-    // const frames = Object.keys(world.localCommandBuffer).map(Number).filter((tick) => tick >= world.tick);
-    // let commands: Record<number, Record<string, string[]>> = {};
-    // frames.forEach((tick) => {
-    //   if (Object.keys(world.localCommandBuffer[tick]).length) {
-    //     commands[tick] = world.localCommandBuffer[tick];
-    //   }
-    // });
+    const frames = Object.keys(world.localCommandBuffer).map(Number).filter((tick) => tick >= world.tick);
+    let commands: Record<number, Record<string, string[]>> = {};
+    frames.forEach((tick) => {
+      if (Object.keys(world.localCommandBuffer[tick]).length) {
+        commands[tick] = world.localCommandBuffer[tick];
+      }
+    });
 
     // build tick data
     const tickData: TickData = {
@@ -27,7 +27,8 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
       tick: world.tick,
       timestamp: Date.now(),
       serializedEntities: world.entitiesAtTick[world.tick],
-      commands: {[world.tick]: world.localCommandBuffer[world.tick]}
+      commands
+      // commands: {[world.tick]: world.localCommandBuffer[world.tick]}
     };
 
     // send tick data to all clients

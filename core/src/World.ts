@@ -14,6 +14,7 @@ export type World = {
   runtimeMode: "client" | "server"
   debug: boolean
   tick: number
+  ms: number
   lastTick: DOMHighResTimeStamp
   clientPlayerId: string | undefined
   renderer: Renderer | undefined
@@ -55,6 +56,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     clientPlayerId,
     debug: false,
     tick: 0,
+    ms: 0,
     lastTick: 0,
     renderer,
     entities: {},
@@ -179,11 +181,12 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const startServerTick = td.tick;
 
       // determine how many ticks to increment
-      const now = Date.now();
-      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 2);
-      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
+      // const now = Date.now();
 
-      console.log(`ms:${now - td.timestamp} now:${now} ts:${td.timestamp} target frame:${td.tick+framesAhead} msgFrame:${td.tick} clientFrame:${world.tick}`);
+      let framesAhead = Math.ceil((world.ms / tickrate) + 5);
+      // if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
+
+      console.log(`ms:${world.ms} now:${Date.now()} ts:${td.timestamp} target frame:${td.tick+framesAhead} msgFrame:${td.tick} clientFrame:${world.tick}`);
 
       // set tick
       world.tick = td.tick - 1;

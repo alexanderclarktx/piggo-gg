@@ -7,6 +7,29 @@ export type FpsTextProps = {
   y?: number
 }
 
+export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderable> => {
+  return {
+    id: "lagText",
+    components: {
+      position: new Position({
+        x: x ?? -70, y: y ?? 5, screenFixed: true
+      }),
+      renderable: new Renderable({
+        zIndex: 1,
+        container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
+        dynamic: (t: Text, _, __, w: World) => {
+          if (w.tick % 10 !== 0) return;
+          if (t) {
+            const lag = Math.round(w.ms);
+            t.style.fill = lag < 50 ? "#00ff00" : lag < 100 ? "yellow" : "red";
+            t.text = `${lag}`;
+          }
+        }
+      })
+    }
+  }
+}
+
 export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderable> => {
   return {
     id: "fpsText",

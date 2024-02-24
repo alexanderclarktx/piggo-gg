@@ -34,6 +34,9 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     if (message.tick < lastMessageTick) return;
     latestServerMessage = message;
     lastMessageTick = message.tick;
+
+    const ms = Date.now() - message.timestamp;
+    world.ms = ms;
   }
 
   const handleLatestMessage = () => {
