@@ -40,6 +40,11 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
       });
     }
 
+    // debug log
+    const now = Date.now();
+    if (world.tick % 500 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
+
+    // process message commands
     if (parsedMessage.commands) {
       Object.keys(parsedMessage.commands).forEach((msgTickString) => {
         const msgTick = Number(msgTickString);

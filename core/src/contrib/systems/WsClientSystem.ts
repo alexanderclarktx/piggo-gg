@@ -18,7 +18,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   const wsClient = new WebSocket(SERVER);
 
   setInterval(() => {
-    if (lastMessageTick && ((world.tick - lastMessageTick) < 50)) {
+    if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {
       world.isConnected = true;
     } else {
       world.isConnected = false;
