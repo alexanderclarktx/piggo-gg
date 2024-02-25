@@ -31,7 +31,7 @@ export type World = {
   addSystems: (systems: System[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   onRender?: () => void
-  onTick: (_: { isRollback?: boolean }) => void
+  onTick: (_: { isRollback: boolean }) => void
   rollback: (td: TickData) => void
 }
 
@@ -39,7 +39,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
   const tickrate = 1000 / 40;
 
-  const scheduleOnTick = () => setTimeout(world.onTick, 3);
+  const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
@@ -126,7 +126,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       });
     },
-    onTick: ({ isRollback }: { isRollback?: boolean } = { isRollback: false }) => {
+    onTick: ({ isRollback }) => {
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
@@ -161,7 +161,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       // run system updates
       Object.values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
-          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities))) : system.onTick([]);
+          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback) : system.onTick([], isRollback);
         }
       });
 
@@ -185,10 +185,10 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
       // determine how many ticks to increment
       console.log((now - td.timestamp) / tickrate);
-      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 8);
+      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 5);
       if (Math.abs(framesAhead - (world.tick - td.tick)) <= 3) framesAhead = world.tick - td.tick;
 
-      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick+framesAhead}`);
+      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + framesAhead}`);
 
       // set tick
       world.tick = td.tick - 1;

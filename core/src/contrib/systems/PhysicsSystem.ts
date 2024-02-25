@@ -13,7 +13,7 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
   let colliders: Record<string, Collider> = {};
 
   // reset the world state
-  const onRollback = () => {
+  const resetPhysics = () => {
     Object.keys(bodies).forEach((id) => {
       physics.removeRigidBody(bodies[id]);
       delete bodies[id];
@@ -21,13 +21,13 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
     });
   }
 
-  const onTick = (entities: Entity<Position | Collider>[]) => {
+  const onTick = (entities: Entity<Position | Collider>[], isRollback: false) => {
 
     // wait until rapier is ready
     if (!physics) return;
 
-    if (world.runtimeMode === "server") {
-      onRollback();
+    if (!isRollback) {
+      resetPhysics();
     }
 
     // remove old bodies
@@ -115,6 +115,6 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
     id: "PhysicsSystem",
     query: ["position", "collider"],
     onTick,
-    onRollback
+    onRollback: resetPhysics
   }
 }
