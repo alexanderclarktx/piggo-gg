@@ -163,12 +163,20 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   const sendMessage = (world: World) => {
 
+    const frames = Object.keys(world.localCommandBuffer).map(Number).filter((tick) => tick >= world.tick);
+    let commands: Record<number, Record<string, string[]>> = {};
+    frames.forEach((tick) => {
+      if (Object.keys(world.localCommandBuffer[tick]).length) {
+        commands[tick] = world.localCommandBuffer[tick];
+      }
+    });
+
     const message: TickData = {
       type: "game",
       tick: world.tick,
       timestamp: Date.now(),
       player: clientPlayerId ?? "unknown",
-      commands: world.localCommandBuffer,
+      commands,
       serializedEntities: {}
     }
 

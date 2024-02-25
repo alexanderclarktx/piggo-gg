@@ -25,7 +25,7 @@ export class PiggoServer {
       port: env.PORT ?? 3000,
       fetch: (r: Request, server: Server) => server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 }),
       websocket: {
-        perMessageDeflate: true,
+        // perMessageDeflate: true,
         close: this.handleClose,
         open: this.handleOpen,
         message: this.handleMessage,
