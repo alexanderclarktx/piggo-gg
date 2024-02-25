@@ -8,6 +8,7 @@ export type FpsTextProps = {
 }
 
 export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderable> => {
+
   return {
     id: "lagText",
     components: {
@@ -18,10 +19,10 @@ export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
         zIndex: 3,
         container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
         dynamic: (t: Text, _, __, w: World) => {
-          if (w.tick % 10 !== 0) return;
+          const lag = Math.round(w.ms);
+          if (w.tick % 5 !== 0) return;
           if (t) {
-            const lag = Math.round(w.ms);
-            t.style.fill = lag < 50 ? "#00ff00" : lag < 100 ? "yellow" : "red";
+            t.style.fill = lag < 50 ? "#00ff00" : lag < 200 ? "yellow" : "red";
             t.text = `${lag}`;
           }
         }
@@ -31,6 +32,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
 }
 
 export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderable> => {
+
   return {
     id: "fpsText",
     components: {
@@ -41,7 +43,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
         zIndex: 3,
         container: async () => new Text("", { fontSize: 16, fill: "#FFFFFF" }),
         dynamic: (t: Text, _, __, w: World) => {
-          if (w.tick % 10 !== 0) return;
+          if (w.tick % 5 !== 0) return;
           if (t) {
             const fps = Math.round(w.renderer?.app.ticker.FPS ?? 0);
             t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";

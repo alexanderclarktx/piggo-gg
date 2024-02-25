@@ -39,7 +39,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
   const tickrate = 1000 / 40;
 
-  const scheduleOnTick = () => setTimeout(world.onTick, 4);
+  const scheduleOnTick = () => setTimeout(world.onTick, 3);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
@@ -181,12 +181,12 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       });
     },
     rollback: (td: TickData) => {
+      const now = Date.now();
 
       // determine how many ticks to increment
-      const now = Date.now();
       console.log((now - td.timestamp) / tickrate);
       let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 8);
-      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 2) framesAhead = world.tick - td.tick;
+      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 3) framesAhead = world.tick - td.tick;
 
       console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick+framesAhead}`);
 
@@ -259,12 +259,14 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
       // run system updates
       for (let i = 0; i < framesAhead + 1; i++) world.onTick({ isRollback: true });
+
+      console.log(`rollback took ${Date.now() - now}ms`);
     }
   }
 
   // setup callbacks
   scheduleOnTick();
-  if (renderer && world.onRender) renderer.app.ticker.add(world.onRender);
+  // if (renderer && world.onRender) renderer.app.ticker.add(world.onRender);
 
   return world;
 }

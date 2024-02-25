@@ -25,7 +25,7 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
     });
 
     // prepare physics bodies for each entity
-    entities.forEach((entity) => {
+    entities.sort((a, b) => a.id > b.id ? 1 : -1).forEach((entity) => {
       const { position } = entity.components;
 
       // handle new physics bodies
