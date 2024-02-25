@@ -9,6 +9,7 @@ export interface System {
   onRender?: (entities: Entity[]) => void;
   query?: string[];
   skipOnRollback?: boolean
+  onRollback?: () => void
 }
 
 export type SystemProps = {

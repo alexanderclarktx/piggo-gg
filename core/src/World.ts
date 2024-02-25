@@ -257,6 +257,8 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         });
       });
 
+      Object.values(world.systems).forEach((system) => system.onRollback ? system.onRollback() : null);
+
       // run system updates
       for (let i = 0; i < framesAhead + 1; i++) world.onTick({ isRollback: true });
 
