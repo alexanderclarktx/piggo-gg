@@ -55,4 +55,5 @@ export * from "./src/contrib/systems/PhysicsSystem";
 export * from "./src/contrib/systems/PlayerSpawnSystem";
 export * from "./src/contrib/systems/RenderSystem";
 export * from "./src/contrib/systems/WsClientSystem";
+export * from "./src/contrib/systems/WsServerSystem";
 

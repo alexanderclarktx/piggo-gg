@@ -1,7 +1,7 @@
 import { Component, Entity, World } from "@piggo-legends/core";
 
 export type NPCProps<T> = {
-  onTick: (entity: Entity, world: World) => T | null;
+  onTick: (entity: Entity, world: World) => T | null | void;
 };
 
 export class NPC<T extends string = string> extends Component<"npc"> {

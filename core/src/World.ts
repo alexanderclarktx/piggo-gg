@@ -14,6 +14,7 @@ export type World = {
   runtimeMode: "client" | "server"
   debug: boolean
   tick: number
+  ms: number
   lastTick: DOMHighResTimeStamp
   clientPlayerId: string | undefined
   renderer: Renderer | undefined
@@ -30,7 +31,7 @@ export type World = {
   addSystems: (systems: System[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   onRender?: () => void
-  onTick: (isRollback?: boolean) => void
+  onTick: (_: { isRollback: boolean }) => void
   rollback: (td: TickData) => void
 }
 
@@ -38,7 +39,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
   const tickrate = 1000 / 40;
 
-  const scheduleOnTick = () => setTimeout(world.onTick, 3);
+  const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
@@ -55,6 +56,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     clientPlayerId,
     debug: false,
     tick: 0,
+    ms: 0,
     lastTick: 0,
     renderer,
     entities: {},
@@ -124,7 +126,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       });
     },
-    onTick: (isRollback: boolean = false) => {
+    onTick: ({ isRollback }) => {
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
@@ -159,21 +161,34 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       // run system updates
       Object.values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
-          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities))) : system.onTick([]);
+          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback) : system.onTick([], isRollback);
         }
       });
 
       // schedule onTick
       if (!isRollback) scheduleOnTick();
+
+      // clear old buffered data
+      Object.keys(world.localCommandBuffer).forEach((tick) => {
+        if ((world.tick - Number(tick)) > 200) {
+          delete world.localCommandBuffer[Number(tick)];
+        }
+      });
+      Object.keys(world.entitiesAtTick).forEach((tick) => {
+        if ((world.tick - Number(tick)) > 200) {
+          delete world.entitiesAtTick[Number(tick)];
+        }
+      });
     },
     rollback: (td: TickData) => {
-
-      const startClientTick = world.tick;
-      const startServerTick = td.tick;
+      const now = Date.now();
 
       // determine how many ticks to increment
-      const ticksForward = ((world.tick - td.tick) > 2) ? world.tick - td.tick : 10;
-      // console.log(td.timestamp, performance.now() - td.timestamp)
+      console.log((now - td.timestamp) / tickrate);
+      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 5);
+      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
+
+      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + framesAhead}`);
 
       // set tick
       world.tick = td.tick - 1;
@@ -226,23 +241,34 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       });
 
-      // set command buffer for message tick
-      world.localCommandBuffer[td.tick] = td.commands[td.tick]
+      // update local command buffer
+      Object.keys(td.commands).forEach((tickString) => {
+        const tick = Number(tickString);
+        Object.keys(td.commands[tick]).forEach((entityId) => {
+          // skip future commands for controlled entities
+          if (tick > td.tick && world.entities[entityId].components.controlled?.data.entityId === world.clientPlayerId) return;
+
+          // prepare if data is empty
+          if (!world.localCommandBuffer[tick]) world.localCommandBuffer[tick] = {};
+          if (!world.localCommandBuffer[tick][entityId]) world.localCommandBuffer[tick][entityId] = [];
+
+          // add command
+          world.localCommandBuffer[tick][entityId] = td.commands[tick][entityId];
+        });
+      });
+
+      Object.values(world.systems).forEach((system) => system.onRollback ? system.onRollback() : null);
 
       // run system updates
-      for (let i = 0; i < ticksForward + 1; i++) {
-        world.onTick(true);
-      }
+      for (let i = 0; i < framesAhead + 1; i++) world.onTick({ isRollback: true });
 
-      const endClientTick = world.tick;
-
-      console.log(`startClientTick:${startClientTick} startServerTick:${startServerTick} endClientTick:${endClientTick}`);
+      console.log(`rollback took ${Date.now() - now}ms`);
     }
   }
 
   // setup callbacks
   scheduleOnTick();
-  if (renderer && world.onRender) renderer.app.ticker.add(world.onRender);
+  // if (renderer && world.onRender) renderer.app.ticker.add(world.onRender);
 
   return world;
 }

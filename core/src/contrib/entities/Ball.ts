@@ -1,4 +1,4 @@
-import { Entity, Collider, Debug, Networked, Position, Renderable } from "@piggo-legends/core";
+import { Entity, Collider, Debug, Networked, Position, Renderable, NPC } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
 export type BallProps = {
@@ -15,15 +15,18 @@ export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } 
       radius: 7,
       frictionAir: 0.01,
       mass: 20,
-      restitution: 0.8
+      restitution: 0.85
     }),
     debug: new Debug(),
+    npc: new NPC({
+      onTick: (e: Entity<Position>) => {
+        const { velocityX, velocityY } = e.components.position.data;
+        e.components.position.data.rotation += 0.08 * Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
+      }
+    }),
     renderable: new Renderable({
       zIndex: 3,
-      dynamic: (t: Text, _, e: Entity<Position>) => {
-        const v = e.components.position.data;
-        t.rotation += 0.08 * Math.sqrt((v.velocityX * v.velocityX) + (v.velocityY * v.velocityY));
-      },
+      rotates: true,
       container: async () => {
         const text = new Text("⚽️", { fill: "#FFFFFF", fontSize: 18 })
         text.anchor.set(0.43, 0.44);

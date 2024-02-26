@@ -1,26 +1,29 @@
-import { Networked, Player, TickData, World, WorldBuilder } from "@piggo-legends/core";
-import { PerClientData, WsServerSystem } from "@piggo-legends/server";
+import { Networked, Player, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
+import { PerClientData } from "@piggo-legends/server";
 import { ServerWebSocket } from "bun";
+
+export type WS = ServerWebSocket<PerClientData>
 
 export type ServerWorld = {
   world: World
-  clients: Record<string, ServerWebSocket<unknown>>
-  handleMessage: (ws: ServerWebSocket<PerClientData>, msg: string) => void
-  handleClose: (ws: ServerWebSocket<PerClientData>) => void
+  clients: Record<string, WS>
+  handleMessage: (ws: WS, msg: string) => void
+  handleClose: (ws: WS) => void
 }
 
 export type ServerWorldProps = {
   worldBuilder: WorldBuilder
-  clients: Record<string, ServerWebSocket<unknown>>
+  clients: Record<string, WS>
 }
 
 export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): ServerWorld => {
 
   const world = worldBuilder({ runtimeMode: "server" })
-
   world.addSystems([WsServerSystem({ world, clients })]);
 
-  const handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {
+  const lastMessageForClient: Record<string, TickData> = {};
+
+  const handleMessage = (ws: WS, msg: string) => {
     const parsedMessage = JSON.parse(msg) as TickData;
 
     // add player entity if it doesn't exist
@@ -38,22 +41,43 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
       });
     }
 
+    // ignore messages from the past
+    if (lastMessageForClient[ws.remoteAddress] && (parsedMessage.tick < lastMessageForClient[ws.remoteAddress].tick)) {
+      console.log(`got old:${parsedMessage.tick} vs:${lastMessageForClient[ws.remoteAddress].tick} world:${world.tick}`);
+      return;
+    };
+
+    // store last message for client
+    lastMessageForClient[ws.remoteAddress] = parsedMessage;
+
+    // debug log
+    const now = Date.now();
+    if (world.tick % 50 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
+    if (world.tick % 50 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
+    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed tick${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`)
+
+    // process message commands
     if (parsedMessage.commands) {
-      Object.keys(parsedMessage.commands).forEach((frameNumber) => {
-        const frame = Number(frameNumber);
+      Object.keys(parsedMessage.commands).forEach((cmdTickString) => {
+        const cmdTick = Number(cmdTickString);
 
-        if (!world.localCommandBuffer[frame]) world.localCommandBuffer[frame] = {};
+        // ignore commands from the past
+        if (cmdTick < world.tick) return;
 
-        Object.keys(parsedMessage.commands[frame]).forEach((entityId) => {
-          const command = parsedMessage.commands[frame][entityId];
-          world.localCommandBuffer[frame][entityId] = command;
+        // create local command buffer for this tick if it doesn't exist
+        if (!world.localCommandBuffer[cmdTick]) world.localCommandBuffer[cmdTick] = {};
+
+        // add commands for the player or entities controlled by the player
+        Object.keys(parsedMessage.commands[cmdTick]).forEach((entityId) => {
+          if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
+            world.localCommandBuffer[cmdTick][entityId] = parsedMessage.commands[cmdTick][entityId];
+          }
         });
       });
-
     }
   }
 
-  const handleClose = (ws: ServerWebSocket<PerClientData>) => {
+  const handleClose = (ws: WS) => {
 
     // remove player entity
     world.removeEntity(ws.data.playerName!);
