@@ -19,7 +19,7 @@ export type TickData = {
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   const wsClient = new WebSocket(servers.production);
   // const wsClient = new WebSocket(servers.staging);
-  // const wsClient = new WebSocket(servers.staging);
+  // const wsClient = new WebSocket(servers.dev);
 
   setInterval(() => {
     if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {

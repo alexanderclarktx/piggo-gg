@@ -13,7 +13,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
     id: "lagText",
     components: {
       position: new Position({
-        x: x ?? -70, y: y ?? 5, screenFixed: true
+        x: x ?? -90, y: y ?? 5, screenFixed: true
       }),
       renderable: new Renderable({
         zIndex: 3,
@@ -23,7 +23,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
           if (w.tick % 5 !== 0) return;
           if (t) {
             t.style.fill = lag < 50 ? "#00ff00" : lag < 200 ? "yellow" : "red";
-            t.text = `${lag}`;
+            t.text = `${lag}ms`;
           }
         }
       })
@@ -37,7 +37,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
     id: "fpsText",
     components: {
       position: new Position({
-        x: x ?? -35, y: y ?? 5, screenFixed: true
+        x: x ?? -50, y: y ?? 5, screenFixed: true
       }),
       renderable: new Renderable({
         zIndex: 3,
@@ -47,7 +47,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
           if (t) {
             const fps = Math.round(w.renderer?.app.ticker.FPS ?? 0);
             t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red";
-            t.text = `${fps}`;
+            t.text = `${fps}fps`;
           }
         }
       })
