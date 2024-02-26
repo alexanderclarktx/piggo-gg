@@ -30,13 +30,17 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   wsClient.onmessage = (event) => {
     const message = JSON.parse(event.data) as TickData;
+
+    // ignore messages from the past
     if (latestServerMessage && (message.tick < latestServerMessage.tick)) return;
     if (message.tick < lastMessageTick) return;
+
+    // store latest message
     latestServerMessage = message;
     lastMessageTick = message.tick;
 
-    const ms = Date.now() - message.timestamp;
-    world.ms = ms;
+    // record latency
+    world.ms = Date.now() - message.timestamp;
   }
 
   const handleLatestMessage = () => {
