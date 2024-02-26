@@ -19,4 +19,4 @@ export type SystemProps = {
   mode: "cartesian" | "isometric"
 };
 
-export type SystemBuilder<T extends SystemProps = SystemProps> = (props: T) => System;
+export type SystemBuilder = (props: SystemProps) => System;

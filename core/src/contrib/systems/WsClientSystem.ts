@@ -1,8 +1,10 @@
 import { Entity, World, SystemBuilder, Command, SerializedEntity } from "@piggo-legends/core";
 
-// const SERVER = "ws://localhost:3000";
-const SERVER = "wss://api.piggo.gg";
-// const SERVER = "ws://piggo-api-f5rs5.ondigitalocean.app/";
+const servers = {
+  dev: "ws://localhost:3000",
+  staging: "wss://piggo-legends-staging.up.railway.app",
+  production: "wss://api.piggo.gg"
+} as const;
 
 export type TickData = {
   type: "game"
@@ -15,7 +17,9 @@ export type TickData = {
 
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
-  const wsClient = new WebSocket(SERVER);
+  const wsClient = new WebSocket(servers.production);
+  // const wsClient = new WebSocket(servers.staging);
+  // const wsClient = new WebSocket(servers.staging);
 
   setInterval(() => {
     if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {
