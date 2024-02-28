@@ -9,7 +9,6 @@ export type ColliderProps = {
   frictionAir?: number
   mass?: number // default mass seems to be 100
   restitution?: number
-  rotation?: number
   sensor?: (e2: Entity, world: World) => void
 }
 
@@ -21,7 +20,7 @@ export class Collider extends Component<"collider"> {
   body: RigidBody;
   sensor: (e2: Entity, world: World) => void
 
-  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation }: ColliderProps) {
+  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution, sensor }: ColliderProps) {
     super();
 
     if (isStatic) {
@@ -36,15 +35,12 @@ export class Collider extends Component<"collider"> {
       this.colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1);
     }
 
-    if (rotation) this.colliderDesc.setRotation(rotation);
-
-    if (mass) this.colliderDesc.setMass(mass);
-
     if (sensor) {
       this.colliderDesc.setSensor(true);
       this.sensor = sensor;
     }
 
+    if (mass) this.colliderDesc.setMass(mass);
     if (restitution) this.colliderDesc.setRestitution(restitution);
 
     this.bodyDesc.setLinearDamping(frictionAir ?? 0);

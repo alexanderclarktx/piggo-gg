@@ -36,11 +36,6 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
       client.send(JSON.stringify({
         ...tickData,
         latency: clientMessages[id]?.latency,
-        // lastReceivedMessage: {
-        //   tick: clientMessages[id]?.td.tick,
-        //   timestamp: clientMessages[id]?.td.timestamp,
-        //   localTimestamp: clientMessages[id]?.localTimestamp
-        // }
       }));
     })
   }
