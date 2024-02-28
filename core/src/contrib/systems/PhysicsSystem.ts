@@ -46,12 +46,11 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
       if (!bodies[entity.id]) {
         const { collider } = entity.components;
 
-        // add body + collider
+        // create rapier body/collider
         const body = physics.createRigidBody(collider.bodyDesc);
-        const rapierCollider = physics.createCollider(collider.colliderDesc, body);
+        collider.rapierCollider = physics.createCollider(collider.colliderDesc, body);
 
-        // set the component's collider
-        collider.rapierCollider = rapierCollider;
+        // set Collider.body
         collider.body = body;
 
         // store body
@@ -76,6 +75,7 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
 
     // run physics
     physics.timestep = timeFactor;
+    physics.switchToSmallStepsPgsSolver();
     physics.step();
 
     // sensor callbacks
