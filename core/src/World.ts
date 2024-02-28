@@ -1,4 +1,4 @@
-import { Ball, Command, Controlling, Data, Entity, Networked, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { Ball, Command, Controlling, Data, Entity, Networked, Playa, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -15,6 +15,7 @@ export type World = {
   debug: boolean
   tick: number
   ms: number
+  tickrate: number
   lastTick: DOMHighResTimeStamp
   clientPlayerId: string | undefined
   renderer: Renderer | undefined
@@ -37,8 +38,6 @@ export type World = {
 
 export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
 
-  const tickrate = 1000 / 40;
-
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
@@ -57,6 +56,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     debug: false,
     tick: 0,
     ms: 0,
+    tickrate: 25,
     lastTick: 0,
     renderer,
     entities: {},
@@ -130,19 +130,19 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
-      if (!isRollback && ((world.lastTick + tickrate) > now)) {
+      if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
         scheduleOnTick();
         return;
       }
 
       // update lastTick
       if (!isRollback) {
-        if ((now - tickrate - tickrate) > world.lastTick) {
+        if ((now - world.tickrate - world.tickrate) > world.lastTick) {
           // catch up (browser was delayed)
           world.lastTick = now;
         } else {
           // move forward at fixed timestep
-          world.lastTick += tickrate;
+          world.lastTick += world.tickrate;
         }
       }
 
@@ -184,8 +184,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const now = Date.now();
 
       // determine how many ticks to increment
-      console.log((now - td.timestamp) / tickrate);
-      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 5);
+      let framesAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 4);
       if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
 
       console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + framesAhead}`);
@@ -209,27 +208,15 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       Object.keys(td.serializedEntities).forEach((entityId) => {
         if (!world.entities[entityId]) {
           if (entityId.startsWith("zombie")) {
-            console.log("ADD ZOMBIE FROM SERVER", entityId);
             world.addEntity(Zombie({ id: entityId }));
           } else if (entityId.startsWith("ball")) {
-            console.log("ADD BALL FROM SERVER", entityId);
             world.addEntity(Ball({ id: entityId }));
           } else if (entityId.startsWith("player")) {
-            console.log("ADD PLAYER FROM SERVER", entityId);
-            const player: Entity = {
-              id: entityId,
-              components: {
-                networked: new Networked({ isNetworked: true }),
-                player: new Player({ name: entityId }),
-                controlling: new Controlling({ entityId: "" })
-              }
-            };
-            world.addEntity(player);
+            world.addEntity(Playa({ id: entityId }))
           } else if (entityId.startsWith("skelly")) {
-            console.log("ADD SKELLY FROM SERVER", entityId, td.serializedEntities[entityId]);
             world.addEntity(Skelly(entityId));
           } else {
-            console.log("ADD ENTITY FROM SERVER UNKNOWN", entityId);
+            console.error("UNKNOWN ENTITY ON SERVER", entityId);
           }
         }
       });
@@ -246,7 +233,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         const tick = Number(tickString);
         Object.keys(td.commands[tick]).forEach((entityId) => {
           // skip future commands for controlled entities
-          if (tick > td.tick && world.entities[entityId].components.controlled?.data.entityId === world.clientPlayerId) return;
+          if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
 
           // prepare if data is empty
           if (!world.localCommandBuffer[tick]) world.localCommandBuffer[tick] = {};

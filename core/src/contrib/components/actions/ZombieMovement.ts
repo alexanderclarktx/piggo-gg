@@ -1,6 +1,6 @@
 import { ActionMap, Entity, World, Position, Renderable } from "@piggo-legends/core";
 
-const speed = 0.2;
+const speed = 30;
 const t = (Math.PI * 2) / 16; // 16th of tau
 
 export type ZombieMovementCommands = "chase"

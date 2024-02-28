@@ -4,9 +4,9 @@ import { Collider, Entity, Position, SystemBuilder } from '@piggo-legends/core';
 export let physics: RapierWorld;
 RAPIER.init().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
 
-const timeFactor = 1.5;
+const timeFactor = 0.025;
 
-// PhysicsSystem handles the physics of entity colliders (using RapierJS)
+// PhysicsSystem calculates the physics of entities
 export const PhysicsSystem: SystemBuilder = ({ world }) => {
 
   let bodies: Record<string, RigidBody> = {};
@@ -15,10 +15,10 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
   // reset the world state
   const resetPhysics = () => {
     Object.keys(bodies).forEach((id) => {
-      physics.removeRigidBody(bodies[id]);
       delete bodies[id];
       if (colliders[id]) delete colliders[id];
     });
+    physics = new RapierWorld({ x: 0, y: 0 });
   }
 
   const onTick = (entities: Entity<Position | Collider>[], isRollback: false) => {
@@ -26,9 +26,8 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
     // wait until rapier is ready
     if (!physics) return;
 
-    if (!isRollback) {
-      resetPhysics();
-    }
+    // reset physics unless in rollback
+    if (!isRollback) resetPhysics();
 
     // remove old bodies
     Object.keys(bodies).forEach((id) => {
@@ -46,12 +45,11 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
       if (!bodies[entity.id]) {
         const { collider } = entity.components;
 
-        // add body + collider
+        // create rapier body/collider
         const body = physics.createRigidBody(collider.bodyDesc);
-        const rapierCollider = physics.createCollider(collider.colliderDesc, body);
+        collider.rapierCollider = physics.createCollider(collider.colliderDesc, body);
 
-        // set the component's collider
-        collider.rapierCollider = rapierCollider;
+        // set Collider.body
         collider.body = body;
 
         // store body
@@ -76,6 +74,9 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
 
     // run physics
     physics.timestep = timeFactor;
+
+    // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
+    physics.switchToSmallStepsPgsSolver();
     physics.step();
 
     // sensor callbacks

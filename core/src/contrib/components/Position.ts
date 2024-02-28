@@ -65,10 +65,10 @@ export class Position extends Component<"position"> {
   }
 
   rotateUp = (amount: number) => {
-    this.data.rotation += +amount.toFixed(2);
+    this.data.rotation = Math.round(this.data.rotation + amount);
   }
 
   rotateDown = (amount: number) => {
-    this.data.rotation -= +amount.toFixed(2);
+    this.data.rotation = Math.round(this.data.rotation - amount);
   }
 }

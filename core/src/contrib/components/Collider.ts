@@ -36,16 +36,14 @@ export class Collider extends Component<"collider"> {
       this.colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1);
     }
 
-    if (rotation) this.colliderDesc.setRotation(rotation);
-
-    if (mass) this.colliderDesc.setMass(mass);
-
     if (sensor) {
       this.colliderDesc.setSensor(true);
       this.sensor = sensor;
     }
 
+    if (mass) this.colliderDesc.setMass(mass);
     if (restitution) this.colliderDesc.setRestitution(restitution);
+    if (rotation) this.colliderDesc.setRotation(rotation);
 
     this.bodyDesc.setLinearDamping(frictionAir ?? 0);
   }
