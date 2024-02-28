@@ -18,6 +18,7 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
       delete bodies[id];
       if (colliders[id]) delete colliders[id];
     });
+    physics.free();
     physics = new RapierWorld({ x: 0, y: 0 });
   }
 
