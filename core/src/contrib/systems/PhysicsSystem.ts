@@ -16,10 +16,11 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
   // reset the world state
   const resetPhysics = () => {
     Object.keys(bodies).forEach((id) => {
-      physics.removeRigidBody(bodies[id]);
+      // physics.removeRigidBody(bodies[id]);
       delete bodies[id];
       if (colliders[id]) delete colliders[id];
     });
+    physics = new RapierWorld({ x: 0, y: 0 });
   }
 
   const onTick = (entities: Entity<Position | Collider>[], isRollback: false) => {
@@ -75,6 +76,8 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
 
     // run physics
     physics.timestep = timeFactor;
+
+    // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
     physics.switchToSmallStepsPgsSolver();
     physics.step();
 
