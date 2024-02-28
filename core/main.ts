@@ -37,6 +37,7 @@ export * from "./src/contrib/entities/DebugButton";
 export * from "./src/contrib/entities/FpsText";
 export * from "./src/contrib/entities/FullscreenButton";
 export * from "./src/contrib/entities/Goal";
+export * from "./src/contrib/entities/Playa";
 export * from "./src/contrib/entities/Skelly";
 export * from "./src/contrib/entities/SpaceBackground";
 export * from "./src/contrib/entities/Spaceship";
@@ -54,6 +55,7 @@ export * from "./src/contrib/systems/InputSystem";
 export * from "./src/contrib/systems/PhysicsSystem";
 export * from "./src/contrib/systems/PlayerSpawnSystem";
 export * from "./src/contrib/systems/RenderSystem";
-export * from "./src/contrib/systems/WsClientSystem";
-export * from "./src/contrib/systems/WsServerSystem";
+export * from "./src/contrib/systems/net/WsClientSystem";
+export * from "./src/contrib/systems/net/WsServerSystem";
+export * from "./src/contrib/systems/net/TickData";
 

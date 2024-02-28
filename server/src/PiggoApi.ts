@@ -1,5 +1,5 @@
 import { Playground } from "@piggo-legends/games";
-import { ServerWorld } from "@piggo-legends/server";
+import { WorldManager } from "@piggo-legends/server";
 import { Server, ServerWebSocket, env } from "bun";
 
 export type PerClientData = {
@@ -8,15 +8,15 @@ export type PerClientData = {
   worldId: string
 }
 
-export class PiggoServer {
+export class PiggoApi {
 
   bun: Server;
   clientCount = 1;
   clients: Record<string, ServerWebSocket<PerClientData>> = {};
 
-  worlds: Record<string, ServerWorld> = {
-    "one": ServerWorld({ worldBuilder: Playground, clients: {} }),
-    "two": ServerWorld({ worldBuilder: Playground, clients: {} })
+  worlds: Record<string, WorldManager> = {
+    "one": WorldManager({ worldBuilder: Playground, clients: {} }),
+    "two": WorldManager({ worldBuilder: Playground, clients: {} })
   }
 
   constructor() {
@@ -47,6 +47,7 @@ export class PiggoServer {
   handleClose = (ws: ServerWebSocket<PerClientData>) => {
     const world = this.worlds[ws.data.worldId];
     world.handleClose(ws);
+    delete this.clients[ws.data.id];
   }
 
   handleOpen = (ws: ServerWebSocket<PerClientData>) => {
@@ -57,7 +58,7 @@ export class PiggoServer {
     this.clientCount += 1;
 
     // add to clients
-    this.clients[ws.remoteAddress + ws.data.id] = ws;
+    // this.clients[ws.remoteAddress + ws.data.id] = ws;
   }
 
   handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {
@@ -68,5 +69,5 @@ export class PiggoServer {
   }
 }
 
-const server = new PiggoServer();
+const server = new PiggoApi();
 console.log(`包 ${server.bun.url}`);

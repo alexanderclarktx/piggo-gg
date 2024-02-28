@@ -1,4 +1,4 @@
-import { Entity, World, SystemBuilder, Command, SerializedEntity } from "@piggo-legends/core";
+import { Entity, World, SystemBuilder, Command, SerializedEntity, TickData } from "@piggo-legends/core";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -6,20 +6,11 @@ const servers = {
   production: "wss://api.piggo.gg"
 } as const;
 
-export type TickData = {
-  type: "game"
-  tick: number
-  timestamp: number
-  player: string
-  commands: Record<number, Record<string, Command[]>>
-  serializedEntities: Record<string, SerializedEntity>
-}
-
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
-  const wsClient = new WebSocket(servers.production);
+  // const wsClient = new WebSocket(servers.production);
   // const wsClient = new WebSocket(servers.staging);
-  // const wsClient = new WebSocket(servers.dev);
+  const wsClient = new WebSocket(servers.dev);
 
   setInterval(() => {
     if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {
@@ -45,6 +36,11 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
     // record latency
     world.ms = Date.now() - message.timestamp;
+    if (message.lastReceivedMessage && world.tick % 100 === 0) {
+      console.log(message.lastReceivedMessage);
+      const msDiff = message.lastReceivedMessage.localTimestamp - message.lastReceivedMessage.timestamp;
+      console.log(`latency: ${world.ms}ms, diff: ${msDiff}ms`);
+    }
   }
 
   const handleLatestMessage = () => {

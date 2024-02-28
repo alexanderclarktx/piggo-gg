@@ -1,7 +1,7 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem, Networked,
-  PhysicsSystem, PiggoWorld, Player, PlayerSpawnSystem, RenderSystem,
+  PhysicsSystem, PiggoWorld, Playa, Player, PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall,
   WorldBuilder
 } from "@piggo-legends/core";
@@ -24,13 +24,14 @@ export const Playground: WorldBuilder = (props) => {
 
     // networked
     if (world.clientPlayerId) {
-      world.addEntity({
-        id: world.clientPlayerId,
-        components: {
-          networked: new Networked({ isNetworked: true }),
-          player: new Player({ name: world.clientPlayerId }),
-        }
-      });
+      world.addEntity(Playa({ id: world.clientPlayerId }));
+      //   {
+      //   id: world.clientPlayerId,
+      //   components: {
+      //     networked: new Networked({ isNetworked: true }),
+      //     player: new Player({ name: world.clientPlayerId }),
+      //   }
+      // });
     }
   }
 

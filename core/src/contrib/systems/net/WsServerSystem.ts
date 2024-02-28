@@ -3,9 +3,10 @@ import { System, TickData, World } from "@piggo-legends/core";
 export type ServerNetcodeSystemProps = {
   world: World
   clients: Record<string, { send: (_: string) => number}>
+  clientMessages: Record<string, { td: TickData, localTimestamp: number }>
 }
 
-export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): System => {
+export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcodeSystemProps): System => {
 
   const onTick = () => {
 
@@ -28,11 +29,19 @@ export const WsServerSystem = ({ world, clients }: ServerNetcodeSystemProps): Sy
       timestamp: Date.now(),
       serializedEntities: world.entitiesAtTick[world.tick],
       commands
-      // commands: {[world.tick]: world.localCommandBuffer[world.tick]}
     };
 
     // send tick data to all clients
-    Object.values(clients).forEach((client) => client.send(JSON.stringify(tickData)));
+    Object.entries(clients).forEach(([id, client]) => {
+      client.send(JSON.stringify({
+        ...tickData,
+        lastReceivedMessage: {
+          tick: clientMessages[id]?.td.tick,
+          timestamp: clientMessages[id]?.td.timestamp,
+          localTimestamp: clientMessages[id]?.localTimestamp
+        }
+      }));
+    })
   }
 
   return {

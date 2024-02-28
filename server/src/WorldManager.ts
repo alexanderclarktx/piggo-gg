@@ -1,27 +1,28 @@
-import { Networked, Player, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
+import { Playa, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
 import { PerClientData } from "@piggo-legends/server";
 import { ServerWebSocket } from "bun";
 
 export type WS = ServerWebSocket<PerClientData>
 
-export type ServerWorld = {
+export type WorldManager = {
   world: World
   clients: Record<string, WS>
   handleMessage: (ws: WS, msg: string) => void
   handleClose: (ws: WS) => void
 }
 
-export type ServerWorldProps = {
+export type WorldManagerProps = {
   worldBuilder: WorldBuilder
   clients: Record<string, WS>
 }
 
-export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): ServerWorld => {
+export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): WorldManager => {
 
   const world = worldBuilder({ runtimeMode: "server" })
-  world.addSystems([WsServerSystem({ world, clients })]);
 
-  const lastMessageForClient: Record<string, TickData> = {};
+  const clientMessages: Record<string, { td: TickData, localTimestamp: number }> = {};
+
+  world.addSystems([WsServerSystem({ world, clients, clientMessages })]);
 
   const handleMessage = (ws: WS, msg: string) => {
     const parsedMessage = JSON.parse(msg) as TickData;
@@ -30,25 +31,24 @@ export const ServerWorld = ({ worldBuilder, clients }: ServerWorldProps ): Serve
     if (!world.entities[parsedMessage.player]) {
       ws.data.playerName = parsedMessage.player;
 
+      clients[parsedMessage.player] = ws;
+
       console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`);
 
-      world.addEntity({
-        id: parsedMessage.player,
-        components: {
-          networked: new Networked({ isNetworked: true }),
-          player: new Player({ name: parsedMessage.player }),
-        }
-      });
+      world.addEntity(Playa({ id: parsedMessage.player }));
     }
 
     // ignore messages from the past
-    if (lastMessageForClient[ws.remoteAddress] && (parsedMessage.tick < lastMessageForClient[ws.remoteAddress].tick)) {
-      console.log(`got old:${parsedMessage.tick} vs:${lastMessageForClient[ws.remoteAddress].tick} world:${world.tick}`);
+    if (clientMessages[ws.remoteAddress] && (parsedMessage.tick < clientMessages[ws.remoteAddress].td.tick)) {
+      console.log(`got old:${parsedMessage.tick} vs:${clientMessages[ws.remoteAddress].td.tick} world:${world.tick}`);
       return;
     };
 
     // store last message for client
-    lastMessageForClient[ws.remoteAddress] = parsedMessage;
+    clientMessages[parsedMessage.player] = {
+      td: parsedMessage,
+      localTimestamp: Date.now()
+    }
 
     // debug log
     const now = Date.now();
