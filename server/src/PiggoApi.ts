@@ -56,9 +56,6 @@ export class PiggoApi {
 
     // increment id
     this.clientCount += 1;
-
-    // add to clients
-    // this.clients[ws.remoteAddress + ws.data.id] = ws;
   }
 
   handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {

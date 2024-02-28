@@ -48,8 +48,7 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
     // store last message for client
     clientMessages[parsedMessage.player] = {
       td: parsedMessage,
-      latency: now - parsedMessage.timestamp,
-      // localTimestamp: Date.now()
+      latency: now - parsedMessage.timestamp
     }
 
     // debug log

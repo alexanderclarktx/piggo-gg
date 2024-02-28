@@ -1,7 +1,8 @@
 import {
   Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
-  FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem, Networked,
-  PhysicsSystem, PiggoWorld, Playa, Player, PlayerSpawnSystem, RenderSystem,
+  FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem,
+  PhysicsSystem, PiggoWorld, Playa,
+  PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall,
   WorldBuilder
 } from "@piggo-legends/core";
@@ -22,26 +23,15 @@ export const Playground: WorldBuilder = (props) => {
     // background
     world.addEntity(SpaceBackground());
 
-    // networked
-    if (world.clientPlayerId) {
-      world.addEntity(Playa({ id: world.clientPlayerId }));
-      //   {
-      //   id: world.clientPlayerId,
-      //   components: {
-      //     networked: new Networked({ isNetworked: true }),
-      //     player: new Player({ name: world.clientPlayerId }),
-      //   }
-      // });
-    }
+    // player
+    if (world.clientPlayerId) world.addEntity(Playa({ id: world.clientPlayerId }));
   }
 
   // add shared systems
   world.addSystemBuilders([PlayerSpawnSystem, EnemySpawnSystem, NPCSystem, CommandSystem, PhysicsSystem]);
 
-  // rendering
-  if (world.runtimeMode === "client") {
-    world.addSystemBuilders([RenderSystem]);
-  }
+  // render system
+  if (world.runtimeMode === "client") world.addSystemBuilders([RenderSystem]);
 
   // ball
   world.addEntity(Ball({ position: { x: 350, y: 350 } }));

@@ -10,8 +10,6 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
 
   const onTick = () => {
 
-    // if (world.tick % 500 === 0) console.log(serializedEntities);
-
     // send commands for this tick and any future ticks
     const frames = Object.keys(world.localCommandBuffer).map(Number).filter((tick) => tick >= world.tick);
     let commands: Record<number, Record<string, string[]>> = {};

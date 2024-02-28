@@ -150,7 +150,6 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
       }
     }
 
-    // do a rollback
     if (rollback) world.rollback(message);
   }
 
