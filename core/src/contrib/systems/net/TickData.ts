@@ -7,9 +7,10 @@ export type TickData = {
   player: string
   commands: Record<number, Record<string, Command[]>>
   serializedEntities: Record<string, SerializedEntity>
-  lastReceivedMessage?: {
-    tick: number
-    timestamp: number
-    localTimestamp: number
-  }
+  latency?: number
+  // lastReceivedMessage?: {
+  //   tick: number
+  //   timestamp: number
+  //   localTimestamp: number
+  // }
 }

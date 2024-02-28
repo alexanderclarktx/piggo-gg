@@ -9,8 +9,8 @@ const servers = {
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   // const wsClient = new WebSocket(servers.production);
-  // const wsClient = new WebSocket(servers.staging);
-  const wsClient = new WebSocket(servers.dev);
+  const wsClient = new WebSocket(servers.staging);
+  // const wsClient = new WebSocket(servers.dev);
 
   setInterval(() => {
     if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {
@@ -36,10 +36,8 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
     // record latency
     world.ms = Date.now() - message.timestamp;
-    if (message.lastReceivedMessage && world.tick % 100 === 0) {
-      console.log(message.lastReceivedMessage);
-      const msDiff = message.lastReceivedMessage.localTimestamp - message.lastReceivedMessage.timestamp;
-      console.log(`latency: ${world.ms}ms, diff: ${msDiff}ms`);
+    if (message.latency && world.tick % 50 === 0) {
+      console.log(`LAG world: ${world.ms} server: ${message.latency} avg: ${(world.ms + message.latency) / 2}`);
     }
   }
 

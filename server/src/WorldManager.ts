@@ -20,11 +20,12 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
 
   const world = worldBuilder({ runtimeMode: "server" })
 
-  const clientMessages: Record<string, { td: TickData, localTimestamp: number }> = {};
+  const clientMessages: Record<string, { td: TickData, latency: number }> = {};
 
   world.addSystems([WsServerSystem({ world, clients, clientMessages })]);
 
   const handleMessage = (ws: WS, msg: string) => {
+    const now = Date.now();
     const parsedMessage = JSON.parse(msg) as TickData;
 
     // add player entity if it doesn't exist
@@ -47,11 +48,11 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
     // store last message for client
     clientMessages[parsedMessage.player] = {
       td: parsedMessage,
-      localTimestamp: Date.now()
+      latency: now - parsedMessage.timestamp,
+      // localTimestamp: Date.now()
     }
 
     // debug log
-    const now = Date.now();
     if (world.tick % 50 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
     if (world.tick % 50 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
     if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed tick${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`)
