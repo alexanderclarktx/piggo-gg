@@ -15,6 +15,7 @@ export type World = {
   debug: boolean
   tick: number
   ms: number
+  tickrate: number
   lastTick: DOMHighResTimeStamp
   clientPlayerId: string | undefined
   renderer: Renderer | undefined
@@ -37,8 +38,6 @@ export type World = {
 
 export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
 
-  const tickrate = 1000 / 40;
-
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
@@ -57,6 +56,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     debug: false,
     tick: 0,
     ms: 0,
+    tickrate: 1000 / 40,
     lastTick: 0,
     renderer,
     entities: {},
@@ -130,19 +130,19 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
-      if (!isRollback && ((world.lastTick + tickrate) > now)) {
+      if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
         scheduleOnTick();
         return;
       }
 
       // update lastTick
       if (!isRollback) {
-        if ((now - tickrate - tickrate) > world.lastTick) {
+        if ((now - world.tickrate - world.tickrate) > world.lastTick) {
           // catch up (browser was delayed)
           world.lastTick = now;
         } else {
           // move forward at fixed timestep
-          world.lastTick += tickrate;
+          world.lastTick += world.tickrate;
         }
       }
 
@@ -184,8 +184,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       const now = Date.now();
 
       // determine how many ticks to increment
-      console.log((now - td.timestamp) / tickrate);
-      let framesAhead = Math.ceil(((now - td.timestamp) / tickrate) + 5);
+      let framesAhead = Math.ceil(((now - td.timestamp) / world.tickrate) + 5);
       if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
 
       console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + framesAhead}`);
