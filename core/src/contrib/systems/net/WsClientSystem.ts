@@ -12,6 +12,8 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   const wsClient = new WebSocket(servers.staging);
   // const wsClient = new WebSocket(servers.dev);
 
+  let lastLatency = 0;
+
   setInterval(() => {
     if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {
       world.isConnected = true;
@@ -35,10 +37,8 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     lastMessageTick = message.tick;
 
     // record latency
-    world.ms = Date.now() - message.timestamp;
-    if (message.latency && world.tick % 50 === 0) {
-      console.log(`LAG world: ${world.ms} server: ${message.latency} avg: ${(world.ms + message.latency) / 2}`);
-    }
+    lastLatency = Date.now() - message.timestamp;
+    if (message.latency) world.ms = (lastLatency + message.latency) / 2;
   }
 
   const handleLatestMessage = () => {

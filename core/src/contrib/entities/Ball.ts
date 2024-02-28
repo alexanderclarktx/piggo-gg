@@ -13,15 +13,15 @@ export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } 
     networked: new Networked({ isNetworked: true }),
     collider: new Collider({
       radius: 7,
-      frictionAir: 0.01,
-      mass: 20,
+      frictionAir: 0.3,
+      mass: 50,
       restitution: 0.85
     }),
     debug: new Debug(),
     npc: new NPC({
       onTick: (e: Entity<Position>) => {
         const { velocityX, velocityY } = e.components.position.data;
-        e.components.position.data.rotation += 0.08 * Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
+        e.components.position.data.rotation += 0.002 * Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
       }
     }),
     renderable: new Renderable({

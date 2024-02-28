@@ -4,7 +4,8 @@ import { Collider, Entity, Position, SystemBuilder } from '@piggo-legends/core';
 export let physics: RapierWorld;
 RAPIER.init().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
 
-const timeFactor = 1.5;
+// const timeFactor = 1.5;
+const timeFactor = 0.025;
 
 // PhysicsSystem handles the physics of entity colliders (using RapierJS)
 export const PhysicsSystem: SystemBuilder = ({ world }) => {
@@ -26,9 +27,8 @@ export const PhysicsSystem: SystemBuilder = ({ world }) => {
     // wait until rapier is ready
     if (!physics) return;
 
-    if (!isRollback) {
-      resetPhysics();
-    }
+    // reset physics unless in rollback
+    if (!isRollback) resetPhysics();
 
     // remove old bodies
     Object.keys(bodies).forEach((id) => {
