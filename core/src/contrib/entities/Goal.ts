@@ -58,6 +58,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       collider: new Collider({
         length: 2,
         width: width / 4 * 3,
+        rotation: Math.PI * 3 / 4,
         sensor: sensor
       }),
       renderable: new Renderable({
