@@ -18,7 +18,7 @@ export const Zombie = ({ id, positionProps = { renderMode: "isometric", x: 100, 
         height: 32,
         active: true,
         click: ValidAction((entity, world) => {
-          if (world.clientPlayerId) world.addToLocalActionBuffer(world.tick, world.clientPlayerId, `attack-${entity.id}`)
+          if (world.clientPlayerId) world.actionBuffer.addAction(world.tick, world.clientPlayerId, `attack-${entity.id}`)
         })
       }),
       health: new Health(100, 100),

@@ -6,15 +6,15 @@ export const ActionSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
     // add empty frames for the next 10 ticks
     for (let i = 0; i < 10; i++) {
-      if (!world.localActionBuffer[world.tick + i]) world.localActionBuffer[world.tick + i] = {};
+      if (!world.actionBuffer.buffer[world.tick + i]) world.actionBuffer.buffer[world.tick + i] = {};
     }
 
     // for each buffered action, if it's scheduled for the current tick, execute it
-    Object.keys(world.localActionBuffer).forEach((tickNumber) => {
+    Object.keys(world.actionBuffer.buffer).forEach((tickNumber) => {
       const currentTick = Number(tickNumber);
 
       if (currentTick === world.tick) {
-        const actionsForEntities = world.localActionBuffer[currentTick];
+        const actionsForEntities = world.actionBuffer.buffer[currentTick];
 
         Object.keys(actionsForEntities).forEach((entityId) => {
           const actions = actionsForEntities[entityId];

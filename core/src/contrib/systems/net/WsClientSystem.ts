@@ -9,8 +9,8 @@ const servers = {
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   // const wsClient = new WebSocket(servers.production);
-  // const wsClient = new WebSocket(servers.staging);
-  const wsClient = new WebSocket(servers.dev);
+  const wsClient = new WebSocket(servers.staging);
+  // const wsClient = new WebSocket(servers.dev);
 
   let lastLatency = 0;
 
@@ -51,7 +51,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     // TODO consolidate with other block
     // compare actions
     for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
-      const localActions = world.localActionBuffer[message.tick];
+      const localActions = world.actionBuffer.buffer[message.tick];
       if (!localActions) {
         console.log("rollback! client is behind");
         rollback = true;
@@ -83,7 +83,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
       if (tick <= message.tick) return;
 
       const messageActions = message.actions[tick];
-      const localActions = world.localActionBuffer[tick];
+      const localActions = world.actionBuffer.buffer[tick];
 
       for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
         if (!localActions) {
@@ -161,11 +161,13 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   const sendMessage = (world: World) => {
 
-    const frames = Object.keys(world.localActionBuffer).map(Number).filter((tick) => tick >= world.tick);
+    // prepare actions from recent frames for the client entity
+    const recentTicks = Object.keys(world.actionBuffer.buffer).map(Number).filter((tick) => tick >= (world.tick - 20));
     let actions: Record<number, Record<string, string[]>> = {};
-    frames.forEach((tick) => {
-      if (Object.keys(world.localActionBuffer[tick]).length) {
-        actions[tick] = world.localActionBuffer[tick];
+    console.log(recentTicks.length);
+    recentTicks.forEach((tick) => {
+      if (Object.keys(world.actionBuffer.buffer[tick]).length) {
+        actions[tick] = world.actionBuffer.buffer[tick];
       }
     });
 

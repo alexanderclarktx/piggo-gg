@@ -1,14 +1,14 @@
-import { RtcPeer } from "@piggo-legends/core";
+// import { RtcPeer } from "@piggo-legends/core";
 import React, { useEffect, useRef } from "react";
 import { NetState } from "../../types/NetState";
 
 export type PhoneCallProps = {
-  RtcPeer: RtcPeer | undefined;
+  // RtcPeer: RtcPeer | undefined;
   netState: NetState;
   theirMediaStream: MediaStream | undefined;
 }
 
-export const PhoneCall = ({ RtcPeer, netState, theirMediaStream }: PhoneCallProps) => {
+export const PhoneCall = ({ netState, theirMediaStream }: PhoneCallProps) => {
 
   const videoMyCameraRef = useRef<HTMLVideoElement>(null);
   const videoTheirCameraRef = useRef<HTMLVideoElement>(null);
@@ -25,7 +25,7 @@ export const PhoneCall = ({ RtcPeer, netState, theirMediaStream }: PhoneCallProp
   const sendMedia = async () => {
     // send my video stream
     const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 360 }, audio: true });
-    RtcPeer?.sendMedia(stream);
+    // RtcPeer?.sendMedia(stream);
 
     // render my video stream
     videoMyCameraRef.current && (videoMyCameraRef.current.srcObject = stream);

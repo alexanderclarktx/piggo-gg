@@ -1,11 +1,11 @@
-import { RtcPool } from "@piggo-legends/core";
+// import { RtcPool } from "@piggo-legends/core";
 import { decompressFromBase64 } from "lz-string";
 import React, { useEffect, useRef } from "react";
 import ReactModal from "react-modal";
-import { NetState, NetStateColor } from "../types/NetState";
+import { NetState, NetStateColor } from "../../types/NetState";
 
 export type rtcNetConnectorProps = {
-  net: RtcPool
+  // net: RtcPool
   sdp: { local: string, remote: string }
   modalOpen: boolean
   setModalOpen: (open: boolean) => void
@@ -14,7 +14,7 @@ export type rtcNetConnectorProps = {
 }
 
 // the NetConnector component creates and accepts WebRTC SDP offers/answers
-export const RtcNetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, setNetState }: rtcNetConnectorProps) => {
+export const RtcNetConnector = ({ sdp, modalOpen, setModalOpen, netState, setNetState }: rtcNetConnectorProps) => {
   const inputOfferRef = useRef<HTMLInputElement>(null);
   const inputAnswerRef = useRef<HTMLInputElement>(null);
 
@@ -26,20 +26,20 @@ export const RtcNetConnector = ({ net, sdp, modalOpen, setModalOpen, netState, s
 
   const createOffer = () => {
     setNetState("offering");
-    net.createOffer();
+    // net.createOffer();
   }
 
   const acceptOffer = () => {
     // const offerDecoded = btoa(inputOfferRef.current ? inputOfferRef.current.value : "");
     const offerDecoded = decompressFromBase64(inputOfferRef.current ? inputOfferRef.current.value : "");
-    net.acceptOffer(offerDecoded.slice(1, offerDecoded.length - 1));
+    // net.acceptOffer(offerDecoded.slice(1, offerDecoded.length - 1));
     setNetState("answering");
   }
 
   const acceptAnswer = () => {
     // const answerDecoded = btoa(inputAnswerRef.current ? inputAnswerRef.current.value : "");
     const answerDecoded = decompressFromBase64(inputAnswerRef.current ? inputAnswerRef.current.value : "");
-    net.acceptAnswer(answerDecoded.slice(1, answerDecoded.length - 1));
+    // net.acceptAnswer(answerDecoded.slice(1, answerDecoded.length - 1));
   }
 
   return (

@@ -83,7 +83,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
     // handle inputs for controlled entities
     entities.forEach((entity) => {
       const controlled = entity.components.controlled;
-      if (world.localActionBuffer[world.tick + 1][entity.id]) {
+      if (world.actionBuffer.buffer[world.tick + 1][entity.id]) {
         console.log("skip duplicate input");
         return;
       }
@@ -112,7 +112,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
           const controllerInput = controller.controllerMap[input];
           if (controllerInput != null) {
             if (actions.actionMap[controllerInput]) {
-              world.addToLocalActionBuffer(world.tick, controlledEntity.id, controllerInput);
+              world.actionBuffer.addAction(world.tick, controlledEntity.id, controllerInput);
             }
           }
 
@@ -125,7 +125,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
         const controllerInput = controller.controllerMap[input];
         if (controllerInput != null) {
           if (actions.actionMap[controllerInput]) {
-            world.addToLocalActionBuffer(world.tick, controlledEntity.id, controllerInput);
+            world.actionBuffer.addAction(world.tick, controlledEntity.id, controllerInput);
           }
         }
 

@@ -60,9 +60,8 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
     }
 
     // debug log
-    if (world.tick % 50 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
     if (world.tick % 50 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
-    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed tick${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`)
+    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed ${parsedMessage.player} tick${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`)
 
     // process message actions
     if (parsedMessage.actions) {
@@ -72,13 +71,10 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
         // ignore actions from the past
         if (cmdTick < world.tick) return;
 
-        // create local action buffer for this tick if it doesn't exist
-        if (!world.localActionBuffer[cmdTick]) world.localActionBuffer[cmdTick] = {};
-
         // add actions for the player or entities controlled by the player
         Object.keys(parsedMessage.actions[cmdTick]).forEach((entityId) => {
           if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
-            world.localActionBuffer[cmdTick][entityId] = parsedMessage.actions[cmdTick][entityId];
+            world.actionBuffer.setActions(cmdTick, entityId, parsedMessage.actions[cmdTick][entityId]);
           }
         });
       });

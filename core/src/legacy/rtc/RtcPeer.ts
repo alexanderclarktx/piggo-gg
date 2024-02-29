@@ -1,4 +1,4 @@
-import { Compression } from "@piggo-legends/core";
+import { Compression } from "./Compression";
 
 export class RtcPeer {
   rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }

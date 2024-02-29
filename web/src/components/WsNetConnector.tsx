@@ -8,15 +8,10 @@ export type WsNetConnectorProps = {
   netState: NetState
 }
 
-
 export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorProps) => {
 
   setInterval(() => {
-    if (world?.isConnected) {
-      setNetState("connected");
-    } else {
-      setNetState("disconnected");
-    }
+    world?.isConnected ? setNetState("connected") : setNetState("disconnected");
   }, 200)
 
   const onClick = () => {

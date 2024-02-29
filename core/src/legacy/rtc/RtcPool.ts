@@ -1,4 +1,4 @@
-import { RtcPeer } from "@piggo-legends/core";
+import { RtcPeer } from "./RtcPeer";
 
 export class RtcPool {
   connections: Record<string, RtcPeer> = {};
