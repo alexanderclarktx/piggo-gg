@@ -5,6 +5,11 @@ export interface Action {
   validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
+export const ValidAction = (apply: Action["apply"]): Action => ({
+  apply,
+  validate: () => true
+})
+
 export type ActionMap<T extends string = string> = Record<T, Action>;
 
 export class Actions extends Component<"actions"> {

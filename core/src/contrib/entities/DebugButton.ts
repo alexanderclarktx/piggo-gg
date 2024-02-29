@@ -1,4 +1,4 @@
-import { Entity, World } from "@piggo-legends/core";
+import { Entity, ValidAction, World } from "@piggo-legends/core";
 import { Button, Clickable, Position } from "@piggo-legends/core";
 import { Text } from "pixi.js";
 
@@ -14,23 +14,20 @@ export const DebugButton = (): Entity => {
         width: 32,
         height: 32,
         active: true,
-        click: {
-          validate: () => true,
-          apply: (_, world: World) => {
-            pressed = !pressed;
-            if (pressed) {
-              const r = debugButton.components.renderable as Button;
-              r.shadow.tint = 0xff0000;
-              r.outline.tint = 0xff0000;
-              if (world.renderer) world.debug = true;
-            } else {
-              const r = debugButton.components.renderable as Button;
-              r.shadow.tint = 0x00FFFF;
-              r.outline.tint = 0x00FFFF;
-              if (world.renderer) world.debug = false;
-            }
+        click: ValidAction((_, world: World) => {
+          pressed = !pressed;
+          if (pressed) {
+            const r = debugButton.components.renderable as Button;
+            r.shadow.tint = 0xff0000;
+            r.outline.tint = 0xff0000;
+            if (world.renderer) world.debug = true;
+          } else {
+            const r = debugButton.components.renderable as Button;
+            r.shadow.tint = 0x00FFFF;
+            r.outline.tint = 0x00FFFF;
+            if (world.renderer) world.debug = false;
           }
-        },
+        })
       }),
       renderable: new Button({
         dims: { w: 32, textX: 8, textY: 5 },
