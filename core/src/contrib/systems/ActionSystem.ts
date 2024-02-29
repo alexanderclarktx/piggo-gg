@@ -1,26 +1,24 @@
 import { SystemBuilder } from "@piggo-legends/core";
 
-export type Command = string;
-
-export const CommandSystem: SystemBuilder = ({ world, clientPlayerId }) => {
+export const ActionSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   const onTick = () => {
 
     // add empty frames for the next 10 ticks
     for (let i = 0; i < 10; i++) {
-      if (!world.localCommandBuffer[world.tick + i]) world.localCommandBuffer[world.tick + i] = {};
+      if (!world.localActionBuffer[world.tick + i]) world.localActionBuffer[world.tick + i] = {};
     }
 
-    // for each buffered command, if it's scheduled for the current tick, execute it
-    Object.keys(world.localCommandBuffer).forEach((tickNumber) => {
+    // for each buffered action, if it's scheduled for the current tick, execute it
+    Object.keys(world.localActionBuffer).forEach((tickNumber) => {
       const currentTick = Number(tickNumber);
 
       if (currentTick === world.tick) {
-        const commandsForEntities = world.localCommandBuffer[currentTick];
+        const actionsForEntities = world.localActionBuffer[currentTick];
 
-        Object.keys(commandsForEntities).forEach((entityId) => {
-          const commands = commandsForEntities[entityId];
-          if (commands) commands.forEach((command) => {
+        Object.keys(actionsForEntities).forEach((entityId) => {
+          const actions = actionsForEntities[entityId];
+          if (actions) actions.forEach((actionKey) => {
 
             const entity = world.entities[entityId];
 
@@ -38,17 +36,17 @@ export const CommandSystem: SystemBuilder = ({ world, clientPlayerId }) => {
             }
 
             // find the action
-            const action = actions.actionMap[command];
+            const action = actions.actionMap[actionKey];
 
             // action not found
             if (!action) {
-              console.log(`action ${command} not found`);
+              console.log(`action ${actionKey} not found`);
               return;
             }
 
             // execute the action
-            // console.log(`集 ${entityId} command ${command} executed`);
-            action(entity, world, clientPlayerId);
+            // console.log(`集 ${entityId} action ${actionKey} executed`);
+            action.apply(entity, world, clientPlayerId);
           });
         });
       }
@@ -56,7 +54,7 @@ export const CommandSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   }
 
   return {
-    id: "CommandSystem",
+    id: "ActionSystem",
     query: [],
     onTick
   }

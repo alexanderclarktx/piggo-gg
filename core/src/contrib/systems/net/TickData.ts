@@ -1,11 +1,11 @@
-import { Command, SerializedEntity } from "@piggo-legends/core";
+import { SerializedEntity } from "@piggo-legends/core";
 
 export type TickData = {
   type: "game"
   tick: number
   timestamp: number
   player: string
-  commands: Record<number, Record<string, Command[]>>
+  actions: Record<number, Record<string, string[]>>
   serializedEntities: Record<string, SerializedEntity>
   latency?: number
 }

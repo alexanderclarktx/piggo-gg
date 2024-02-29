@@ -10,12 +10,12 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
 
   const onTick = () => {
 
-    // send commands for this tick and any future ticks
-    const frames = Object.keys(world.localCommandBuffer).map(Number).filter((tick) => tick >= world.tick);
-    let commands: Record<number, Record<string, string[]>> = {};
+    // send actions for this tick and any future ticks
+    const frames = Object.keys(world.localActionBuffer).map(Number).filter((tick) => tick >= world.tick);
+    let actions: Record<number, Record<string, string[]>> = {};
     frames.forEach((tick) => {
-      if (Object.keys(world.localCommandBuffer[tick]).length) {
-        commands[tick] = world.localCommandBuffer[tick];
+      if (Object.keys(world.localActionBuffer[tick]).length) {
+        actions[tick] = world.localActionBuffer[tick];
       }
     });
 
@@ -26,7 +26,7 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
       tick: world.tick,
       timestamp: Date.now(),
       serializedEntities: world.entitiesAtTick[world.tick],
-      commands
+      actions
     };
 
     // send tick data to all clients

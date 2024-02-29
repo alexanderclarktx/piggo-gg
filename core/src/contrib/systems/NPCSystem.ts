@@ -7,10 +7,10 @@ export const NPCSystem: SystemBuilder = ({ world }) => {
     entities.forEach((entity) => {
       const { npc, actions } = entity.components;
 
-      const command = npc.props.onTick(entity, world);
+      const action = npc.props.onTick(entity, world);
 
-      if (command && actions?.actionMap[command]) {
-        world.addToLocalCommandBuffer(world.tick, entity.id, command);
+      if (action && actions?.actionMap[action]) {
+        world.addToLocalActionBuffer(world.tick, entity.id, action);
       }
     });
   }

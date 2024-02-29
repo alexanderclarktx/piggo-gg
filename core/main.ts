@@ -46,7 +46,7 @@ export * from "./src/contrib/entities/TilingSpriteFloor";
 export * from "./src/contrib/entities/Wall";
 export * from "./src/contrib/entities/Zombie";
 export * from "./src/contrib/systems/ClickableSystem";
-export * from "./src/contrib/systems/CommandSystem";
+export * from "./src/contrib/systems/ActionSystem";
 export * from "./src/contrib/systems/DebugSystem";
 export * from "./src/contrib/systems/EnemySpawnSystem";
 export * from "./src/contrib/systems/GuiSystem";

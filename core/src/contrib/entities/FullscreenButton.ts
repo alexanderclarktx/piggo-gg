@@ -11,12 +11,15 @@ export const FullscreenButton = (id: string = "fullscreenButton"): Entity => ({
       active: true,
       width: 32,
       height: 30,
-      click: (_, world: World) => {
-        if (!document.fullscreenElement) {
-          // @ts-expect-error
-          world.renderer?.app.view.requestFullscreen();
-        } else {
-          document.exitFullscreen();
+      click: {
+        validate: () => true,
+        apply: (_, world: World) => {
+          if (!document.fullscreenElement) {
+            // @ts-expect-error
+            world.renderer?.app.view.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
         }
       }
     }),

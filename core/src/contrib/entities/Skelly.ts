@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Debug, Entity, Health, Networked, Position, Renderable, WASDMovementCommands, WASDMovementPhysics, playerControlsEntity } from "@piggo-legends/core";
+import { Actions, Clickable, Collider, Controlled, Controller, Debug, Entity, Health, Networked, Position, Renderable, WASDMovementActions, WASDMovementPhysics, playerControlsEntity } from "@piggo-legends/core";
 import { AnimatedSprite, HTMLText, SCALE_MODES } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number): Entity => {
@@ -17,7 +17,7 @@ export const Skelly = (id: string, tint?: number): Entity => {
       }),
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ radius: 8, mass: 600 }),
-      controller: new Controller<WASDMovementCommands>({
+      controller: new Controller<WASDMovementActions>({
         "a,d": null, "w,s": null,
         "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
         "w": "up", "s": "down", "a": "left", "d": "right"

@@ -1,12 +1,12 @@
-import { Component, Entity, World } from "@piggo-legends/core";
+import { Action, Component } from "@piggo-legends/core";
 
 export type Bounds = { x: number, y: number, w: number, h: number };
 
 export type ClickableProps = {
-  width: number;
-  height: number;
-  active: boolean;
-  click: (entity: Entity, world: World) => void
+  width: number
+  height: number
+  active: boolean
+  click: Action
 }
 
 export class Clickable extends Component<"clickable"> {
@@ -14,7 +14,7 @@ export class Clickable extends Component<"clickable"> {
   width: number;
   height: number;
   active: boolean;
-  click: (entity: Entity, world: World) => void
+  click: Action;
 
   constructor(props: ClickableProps) {
     super();

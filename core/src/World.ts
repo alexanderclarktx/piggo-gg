@@ -1,4 +1,4 @@
-import { Ball, Command, Controlling, Data, Entity, Networked, Playa, Player, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { Ball, Data, Entity, Networked, Playa, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -23,11 +23,11 @@ export type World = {
   systems: Record<string, System>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   isConnected: boolean
-  localCommandBuffer: Record<number, Record<string, Command[]>>
+  localActionBuffer: Record<number, Record<string, string[]>>
   addEntity: (entity: Entity) => string
   addEntities: (entities: Entity[]) => void
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
-  addToLocalCommandBuffer: (tick: number, entityId: string, command: Command) => void
+  addToLocalActionBuffer: (tick: number, entityId: string, action: string) => void
   removeEntity: (id: string) => void
   addSystems: (systems: System[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
@@ -63,7 +63,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     systems: {},
     entitiesAtTick: {},
     isConnected: false,
-    localCommandBuffer: {},
+    localActionBuffer: {},
     addEntity: (entity: Entity) => {
       world.entities[entity.id] = entity;
       return entity.id;
@@ -74,17 +74,17 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
     addEntityBuilders: (entityBuilders: (() => Entity)[]) => {
       entityBuilders.forEach((entityBuilder) => world.addEntity(entityBuilder()));
     },
-    addToLocalCommandBuffer: (tick: number, entityId: string, command: Command) => {
+    addToLocalActionBuffer: (tick: number, entityId: string, action: string) => {
       tick += 1;
 
-      if (!world.localCommandBuffer[tick]) {
-        world.localCommandBuffer[tick] = {};
+      if (!world.localActionBuffer[tick]) {
+        world.localActionBuffer[tick] = {};
       }
-      if (!world.localCommandBuffer[tick][entityId]) {
-        world.localCommandBuffer[tick][entityId] = [];
+      if (!world.localActionBuffer[tick][entityId]) {
+        world.localActionBuffer[tick][entityId] = [];
       }
-      if (!world.localCommandBuffer[tick][entityId].includes(command)) {
-        world.localCommandBuffer[tick][entityId].push(command);
+      if (!world.localActionBuffer[tick][entityId].includes(action)) {
+        world.localActionBuffer[tick][entityId].push(action);
       }
     },
     removeEntity: (id: string) => {
@@ -169,9 +169,9 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       if (!isRollback) scheduleOnTick();
 
       // clear old buffered data
-      Object.keys(world.localCommandBuffer).forEach((tick) => {
+      Object.keys(world.localActionBuffer).forEach((tick) => {
         if ((world.tick - Number(tick)) > 200) {
-          delete world.localCommandBuffer[Number(tick)];
+          delete world.localActionBuffer[Number(tick)];
         }
       });
       Object.keys(world.entitiesAtTick).forEach((tick) => {
@@ -228,19 +228,19 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
       });
 
-      // update local command buffer
-      Object.keys(td.commands).forEach((tickString) => {
+      // update local action buffer
+      Object.keys(td.actions).forEach((tickString) => {
         const tick = Number(tickString);
-        Object.keys(td.commands[tick]).forEach((entityId) => {
-          // skip future commands for controlled entities
+        Object.keys(td.actions[tick]).forEach((entityId) => {
+          // skip future actions for controlled entities
           if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
 
           // prepare if data is empty
-          if (!world.localCommandBuffer[tick]) world.localCommandBuffer[tick] = {};
-          if (!world.localCommandBuffer[tick][entityId]) world.localCommandBuffer[tick][entityId] = [];
+          if (!world.localActionBuffer[tick]) world.localActionBuffer[tick] = {};
+          if (!world.localActionBuffer[tick][entityId]) world.localActionBuffer[tick][entityId] = [];
 
-          // add command
-          world.localCommandBuffer[tick][entityId] = td.commands[tick][entityId];
+          // add action
+          world.localActionBuffer[tick][entityId] = td.actions[tick][entityId];
         });
       });
 

@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, ZombieMovement, ZombieMovementCommands } from "@piggo-legends/core";
+import { Actions, Clickable, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, ZombieMovement, ZombieMovementActions } from "@piggo-legends/core";
 import { AnimatedSprite, SCALE_MODES } from "pixi.js";
 
 export type ZombieProps = {
@@ -17,14 +17,15 @@ export const Zombie = ({ id, positionProps = {renderMode: "isometric", x: 100, y
         width: 32,
         height: 32,
         active: true,
-        click: (entity, world) => {
-          if (world.clientPlayerId) {
-            world.addToLocalCommandBuffer(world.tick, world.clientPlayerId, `attack-${entity.id}`)
+        click: {
+          validate: () => true,
+          apply: (entity, world) => {
+            if (world.clientPlayerId) world.addToLocalActionBuffer(world.tick, world.clientPlayerId, `attack-${entity.id}`)
           }
         }
       }),
       health: new Health(100, 100),
-      npc: new NPC<ZombieMovementCommands>({
+      npc: new NPC<ZombieMovementActions>({
         onTick: (_) => "chase"
       }),
       actions: new Actions(ZombieMovement),
