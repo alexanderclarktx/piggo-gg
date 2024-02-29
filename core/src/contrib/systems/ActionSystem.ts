@@ -45,7 +45,7 @@ export const ActionSystem: SystemBuilder = ({ world, clientPlayerId }) => {
             }
 
             // execute the action
-            // console.log(`集 ${entityId} action ${actionKey} executed`);
+            // console.log(`集 ${entityId} action ${actionKey} executed ${world.tick}`);
             action.apply(entity, world, clientPlayerId);
           });
         });

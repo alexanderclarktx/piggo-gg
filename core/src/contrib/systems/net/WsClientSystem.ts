@@ -8,8 +8,8 @@ const servers = {
 
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
-  // const wsClient = new WebSocket(servers.production);
-  const wsClient = new WebSocket(servers.staging);
+  const wsClient = new WebSocket(servers.production);
+  // const wsClient = new WebSocket(servers.staging);
   // const wsClient = new WebSocket(servers.dev);
 
   let lastLatency = 0;
@@ -46,7 +46,8 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     let message = latestServerMessage;
     let rollback = false;
 
-    const messageActions = message.actions[message.tick];
+    let messageActions = message.actions[message.tick];
+    if (!messageActions) return;
 
     // TODO consolidate with other block
     // compare actions
@@ -164,7 +165,6 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     // prepare actions from recent frames for the client entity
     const recentTicks = Object.keys(world.actionBuffer.buffer).map(Number).filter((tick) => tick >= (world.tick - 20));
     let actions: Record<number, Record<string, string[]>> = {};
-    console.log(recentTicks.length);
     recentTicks.forEach((tick) => {
       if (Object.keys(world.actionBuffer.buffer[tick]).length) {
         actions[tick] = world.actionBuffer.buffer[tick];

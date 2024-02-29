@@ -155,11 +155,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       if (!isRollback) scheduleOnTick();
 
       // clear old buffered data
-      Object.keys(world.actionBuffer).forEach((tick) => {
-        if ((world.tick - Number(tick)) > 200) {
-          world.actionBuffer.clearTick(Number(tick));
-        }
-      });
+      world.actionBuffer.clearBeforeTick(world.tick - 200);
       Object.keys(world.entitiesAtTick).forEach((tick) => {
         if ((world.tick - Number(tick)) > 200) {
           delete world.entitiesAtTick[Number(tick)];

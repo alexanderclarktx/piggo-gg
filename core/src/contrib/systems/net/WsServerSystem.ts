@@ -11,7 +11,7 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
   const onTick = () => {
 
     // send actions for this tick and any future ticks
-    const frames = Object.keys(world.actionBuffer).map(Number).filter((tick) => tick >= world.tick);
+    const frames = Object.keys(world.actionBuffer.buffer).map(Number).filter((tick) => tick >= world.tick);
     let actions: Record<number, Record<string, string[]>> = {};
     frames.forEach((tick) => {
       if (Object.keys(world.actionBuffer.buffer[tick]).length) {

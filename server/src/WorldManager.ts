@@ -36,6 +36,8 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
     const now = Date.now();
     const parsedMessage = JSON.parse(msg) as TickData;
 
+    let messages = clientMessages[parsedMessage.player];
+
     // add player entity if it doesn't exist
     if (!world.entities[parsedMessage.player]) {
       ws.data.playerName = parsedMessage.player;
@@ -48,13 +50,13 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
     }
 
     // ignore messages from the past
-    if (clientMessages[ws.remoteAddress] && (parsedMessage.tick < clientMessages[ws.remoteAddress].td.tick)) {
-      console.log(`got old:${parsedMessage.tick} vs:${clientMessages[ws.remoteAddress].td.tick} world:${world.tick}`);
+    if (messages && (parsedMessage.tick < messages.td.tick)) {
+      console.log(`got old:${parsedMessage.tick} vs:${messages.td.tick} world:${world.tick}`);
       return;
     };
 
     // store last message for client
-    clientMessages[parsedMessage.player] = {
+    messages = {
       td: parsedMessage,
       latency: now - parsedMessage.timestamp
     }
