@@ -14,7 +14,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
   let backspaceOn = false;
 
   // TODO this should be handled separately to make it work in netcode
-  let commandRegexes: { regex: RegExp, callback: (match: RegExpMatchArray) => Promise<void> }[] = [
+  let actionRegexes: { regex: RegExp, callback: (match: RegExpMatchArray) => Promise<void> }[] = [
     {
       regex: new RegExp(`/spawn (\\w+)`),
       callback: async (match: RegExpMatchArray) => {
@@ -83,7 +83,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
     // handle inputs for controlled entities
     entities.forEach((entity) => {
       const controlled = entity.components.controlled;
-      if (world.localCommandBuffer[world.tick + 1][entity.id]) {
+      if (world.actionBuffer.at(world.tick, entity.id)) {
         console.log("skip duplicate input");
         return;
       }
@@ -112,7 +112,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
           const controllerInput = controller.controllerMap[input];
           if (controllerInput != null) {
             if (actions.actionMap[controllerInput]) {
-              world.addToLocalCommandBuffer(world.tick, controlledEntity.id, controllerInput);
+              world.actionBuffer.pushAction(world.tick, controlledEntity.id, controllerInput);
             }
           }
 
@@ -125,7 +125,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
         const controllerInput = controller.controllerMap[input];
         if (controllerInput != null) {
           if (actions.actionMap[controllerInput]) {
-            world.addToLocalCommandBuffer(world.tick, controlledEntity.id, controllerInput);
+            world.actionBuffer.pushAction(world.tick, controlledEntity.id, controllerInput);
           }
         }
 
@@ -136,7 +136,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
   }
 
   const processMessage = (message: string) => {
-    commandRegexes.forEach(({ regex, callback }) => {
+    actionRegexes.forEach(({ regex, callback }) => {
       const match = message.match(regex);
       if (match) callback(match);
     });

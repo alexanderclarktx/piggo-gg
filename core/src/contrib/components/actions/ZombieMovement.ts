@@ -1,12 +1,12 @@
-import { ActionMap, Entity, World, Position, Renderable } from "@piggo-legends/core";
+import { ActionMap, Entity, World, Position, Renderable, ValidAction } from "@piggo-legends/core";
 
 const speed = 30;
 const t = (Math.PI * 2) / 16; // 16th of tau
 
-export type ZombieMovementCommands = "chase"
+export type ZombieMovementActions = "chase"
 
-export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
-  "chase": (entity: Entity<Position | Renderable>, world: World) => {
+export const ZombieMovement: ActionMap<ZombieMovementActions> = {
+  "chase": ValidAction((entity: Entity<Position | Renderable>, world: World) => {
     const { position, renderable } = entity.components;
 
     // get the closest player entity position
@@ -51,5 +51,5 @@ export const ZombieMovement: ActionMap<ZombieMovementCommands> = {
     else if (angle >= 9 * t && angle < 11 * t) renderable.setAnimation("d");
     else if (angle >= 11 * t && angle < 13 * t) renderable.setAnimation("dl");
     else if (angle >= 13 * t && angle < 15 * t) renderable.setAnimation("l");
-  }
+  })
 }

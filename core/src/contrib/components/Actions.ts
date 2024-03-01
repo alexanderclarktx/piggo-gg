@@ -1,6 +1,15 @@
 import { Component, Entity, World } from "@piggo-legends/core";
 
-export type Action = (entity: Entity, world: World, player?: string) => void;
+export interface Action {
+  apply: (entity: Entity, world: World, player?: string) => void
+  validate: (entity: Entity, world: World, player?: string) => boolean
+}
+
+export const ValidAction = (apply: Action["apply"]): Action => ({
+  apply,
+  validate: () => true
+})
+
 export type ActionMap<T extends string = string> = Record<T, Action>;
 
 export class Actions extends Component<"actions"> {

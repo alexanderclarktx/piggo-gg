@@ -19,14 +19,24 @@ export type WorldManagerProps = {
 export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): WorldManager => {
 
   const world = worldBuilder({ runtimeMode: "server" })
-
   const clientMessages: Record<string, { td: TickData, latency: number }> = {};
 
-  world.addSystems([WsServerSystem({ world, clients, clientMessages })]);
+  const handleClose = (ws: WS) => {
+
+    // remove player entity
+    world.removeEntity(ws.data.playerName!);
+
+    // remove from clients
+    delete clients[ws.remoteAddress];
+
+    console.log(`${ws.data.playerName} disconnected`);
+  }
 
   const handleMessage = (ws: WS, msg: string) => {
     const now = Date.now();
     const parsedMessage = JSON.parse(msg) as TickData;
+
+    let messages = clientMessages[parsedMessage.player];
 
     // add player entity if it doesn't exist
     if (!world.entities[parsedMessage.player]) {
@@ -40,8 +50,8 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
     }
 
     // ignore messages from the past
-    if (clientMessages[ws.remoteAddress] && (parsedMessage.tick < clientMessages[ws.remoteAddress].td.tick)) {
-      console.log(`got old:${parsedMessage.tick} vs:${clientMessages[ws.remoteAddress].td.tick} world:${world.tick}`);
+    if (messages && (parsedMessage.tick < messages.td.tick)) {
+      console.log(`got old:${parsedMessage.tick} vs:${messages.td.tick} world:${world.tick}`);
       return;
     };
 
@@ -52,41 +62,28 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
     }
 
     // debug log
-    if (world.tick % 50 === 0) console.log(`now:${now} ts:${parsedMessage.timestamp} diff:${now - parsedMessage.timestamp}`);
     if (world.tick % 50 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
-    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed tick${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`)
+    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed ${parsedMessage.player} tick${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`)
 
-    // process message commands
-    if (parsedMessage.commands) {
-      Object.keys(parsedMessage.commands).forEach((cmdTickString) => {
+    // process message actions
+    if (parsedMessage.actions) {
+      Object.keys(parsedMessage.actions).forEach((cmdTickString) => {
         const cmdTick = Number(cmdTickString);
 
-        // ignore commands from the past
+        // ignore actions from the past
         if (cmdTick < world.tick) return;
 
-        // create local command buffer for this tick if it doesn't exist
-        if (!world.localCommandBuffer[cmdTick]) world.localCommandBuffer[cmdTick] = {};
-
-        // add commands for the player or entities controlled by the player
-        Object.keys(parsedMessage.commands[cmdTick]).forEach((entityId) => {
+        // add actions for the player or entities controlled by the player
+        Object.keys(parsedMessage.actions[cmdTick]).forEach((entityId) => {
           if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
-            world.localCommandBuffer[cmdTick][entityId] = parsedMessage.commands[cmdTick][entityId];
+            world.actionBuffer.setActions(cmdTick, entityId, parsedMessage.actions[cmdTick][entityId]);
           }
         });
       });
     }
   }
 
-  const handleClose = (ws: WS) => {
-
-    // remove player entity
-    world.removeEntity(ws.data.playerName!);
-
-    // remove from clients
-    delete clients[ws.remoteAddress];
-
-    console.log(`${ws.data.playerName} disconnected`);
-  }
+  world.addSystems([WsServerSystem({ world, clients, clientMessages })]);
 
   return {
     world,

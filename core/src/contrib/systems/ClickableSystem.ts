@@ -40,7 +40,7 @@ export const ClickableSystem: SystemBuilder = ({ world, renderer, mode }) => {
           clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
         )
 
-        if (clicked) clickable.click(entity, world);
+        if (clicked) clickable.click.apply(entity, world);
       });
     });
     bufferClick = [];

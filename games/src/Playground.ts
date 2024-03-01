@@ -1,5 +1,5 @@
 import {
-  Ball, Chat, ClickableSystem, CommandSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
+  Ball, Chat, ClickableSystem, ActionSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem,
   PhysicsSystem, PiggoWorld, Playa,
   PlayerSpawnSystem, RenderSystem,
@@ -28,7 +28,7 @@ export const Playground: WorldBuilder = (props) => {
   }
 
   // add shared systems
-  world.addSystemBuilders([PlayerSpawnSystem, EnemySpawnSystem, NPCSystem, CommandSystem, PhysicsSystem]);
+  world.addSystemBuilders([PlayerSpawnSystem, EnemySpawnSystem, NPCSystem, ActionSystem, PhysicsSystem]);
 
   // render system
   if (world.runtimeMode === "client") world.addSystemBuilders([RenderSystem]);

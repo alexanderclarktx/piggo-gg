@@ -1,11 +1,9 @@
-import { World, RtcPool } from "@piggo-legends/core";
+import { World } from "@piggo-legends/core";
 import "@pixi/unsafe-eval";
-import { compressToBase64 } from "lz-string";
 import React, { useEffect, useState } from "react";
 import { NetState } from "../types/NetState";
 import { GameCanvas } from "./GameCanvas";
 import { Header } from "./Header";
-import { WsNetConnector } from "./WsNetConnector";
 
 // Piggo Legends webapp root component
 export const Root = () => {

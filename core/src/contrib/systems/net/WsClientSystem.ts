@@ -15,11 +15,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   let lastLatency = 0;
 
   setInterval(() => {
-    if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {
-      world.isConnected = true;
-    } else {
-      world.isConnected = false;
-    }
+    (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
   }, 200);
 
   let lastMessageTick: number = 0;
@@ -46,70 +42,43 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     let message = latestServerMessage;
     let rollback = false;
 
-    const messageCommands = message.commands[message.tick];
+    let messageActions = message.actions[message.tick];
+    if (!messageActions) return;
 
-    // TODO consolidate with other block
-    // compare commands
-    for (const [entityId, messageCommandsForEntity] of Object.entries(messageCommands)) {
-      const localCommands = world.localCommandBuffer[message.tick];
-      if (!localCommands) {
-        console.log("rollback! client is behind");
-        rollback = true;
-        break;
-      } else if (!localCommands[entityId]) {
-        console.log(`rollback! missed command ${entityId} ${JSON.stringify(messageCommandsForEntity)} ${JSON.stringify(localCommands)}`);
-        rollback = true;
-        break;
-      } else if (localCommands[entityId].length !== messageCommandsForEntity.length) {
-        console.log(`rollback! count ${entityId} ${localCommands[entityId].length} ${messageCommandsForEntity.length}`);
-        rollback = true;
-        break;
-      } else {
-        const commands = localCommands[entityId];
-        if (commands) commands.forEach((command) => {
-          if (!messageCommandsForEntity.includes(command)) {
-            console.log(`rollback! ${entityId} ${command} ${JSON.stringify(messageCommandsForEntity)}`);
-            rollback = true;
-          }
-        });
-      }
-    }
-
-    // check future commands
-    if (!rollback) Object.keys(message.commands).forEach((tickString) => {
+    // compare action buffers
+    if (!rollback) Object.keys(message.actions).forEach((tickString) => {
       const tick = Number(tickString);
 
-      // ignore messages from the past
-      if (tick <= message.tick) return;
+      if (tick < message.tick) return;
 
-      const messageCommands = message.commands[tick];
-      const localCommands = world.localCommandBuffer[tick];
+      const messageActions = message.actions[tick];
+      const localActions = world.actionBuffer.atTick(tick);
 
-      for (const [entityId, messageCommandsForEntity] of Object.entries(messageCommands)) {
-        if (!localCommands) {
+      for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
+        if (!localActions) {
           console.log("都 rollback! client is behind");
           rollback = true;
           break;
-        } else if (!localCommands[entityId]) {
-          console.log(`都 rollback! missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageCommandsForEntity)} ${JSON.stringify(localCommands)}`);
+        } else if (!localActions[entityId]) {
+          console.log(`都 rollback! missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
           rollback = true;
           break;
-        } else if (localCommands[entityId].length !== messageCommandsForEntity.length) {
-          console.log(`都 rollback count ${entityId} ${localCommands[entityId].length} ${messageCommandsForEntity.length}`);
+        } else if (localActions[entityId].length !== messageActionsForEntity.length) {
+          console.log(`都 rollback count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
           rollback = true;
           break;
         } else {
-          const commands = localCommands[entityId];
-          if (commands) commands.forEach((localC) => {
-            if (!messageCommandsForEntity.includes(localC)) {
-              console.log(`都 rollback! CLIENT COMMAND ${entityId}:${localC} not in ${JSON.stringify(messageCommandsForEntity)}`);
+          const actions = localActions[entityId];
+          if (actions) actions.forEach((localC) => {
+            if (!messageActionsForEntity.includes(localC)) {
+              console.log(`都 rollback! CLIENT ACTION ${entityId}:${localC} not in ${JSON.stringify(messageActionsForEntity)}`);
               rollback = true;
             }
           });
 
-          messageCommandsForEntity.forEach((serverC) => {
-            if (!commands.includes(serverC)) {
-              console.log(`都 rollback! SERVER COMMAND ${entityId}:${serverC} not in ${JSON.stringify(commands)}`);
+          messageActionsForEntity.forEach((serverC) => {
+            if (!actions.includes(serverC)) {
+              console.log(`都 rollback! SERVER ACTION ${entityId}:${serverC} not in ${JSON.stringify(actions)}`);
               rollback = true;
             }
           });
@@ -161,11 +130,13 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   const sendMessage = (world: World) => {
 
-    const frames = Object.keys(world.localCommandBuffer).map(Number).filter((tick) => tick >= world.tick);
-    let commands: Record<number, Record<string, string[]>> = {};
-    frames.forEach((tick) => {
-      if (Object.keys(world.localCommandBuffer[tick]).length) {
-        commands[tick] = world.localCommandBuffer[tick];
+    // prepare actions from recent frames for the client entity
+    const recentTicks = world.actionBuffer.keys().filter((tick) => tick >= (world.tick - 20));
+    let actions: Record<number, Record<string, string[]>> = {};
+    recentTicks.forEach((tick) => {
+      const actionsAtTick = world.actionBuffer.atTick(tick);
+      if (actionsAtTick && Object.keys(actionsAtTick).length) {
+        actions[tick] = actionsAtTick;
       }
     });
 
@@ -174,7 +145,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
       tick: world.tick,
       timestamp: Date.now(),
       player: clientPlayerId ?? "unknown",
-      commands,
+      actions,
       serializedEntities: {}
     }
 
