@@ -15,11 +15,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   let lastLatency = 0;
 
   setInterval(() => {
-    if (lastMessageTick && ((world.tick - lastMessageTick) < 500)) {
-      world.isConnected = true;
-    } else {
-      world.isConnected = false;
-    }
+    (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
   }, 200);
 
   let lastMessageTick: number = 0;
@@ -49,38 +45,10 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     let messageActions = message.actions[message.tick];
     if (!messageActions) return;
 
-    // TODO consolidate with other block
-    // compare actions
-    // for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
-    //   const localActions = world.actionBuffer.atTick(message.tick);
-    //   if (!localActions) {
-    //     console.log("rollback! client is behind");
-    //     rollback = true;
-    //     break;
-    //   } else if (!localActions[entityId]) {
-    //     console.log(`rollback! missed action ${entityId} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
-    //     rollback = true;
-    //     break;
-    //   } else if (localActions[entityId].length !== messageActionsForEntity.length) {
-    //     console.log(`rollback! count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
-    //     rollback = true;
-    //     break;
-    //   } else {
-    //     const actions = localActions[entityId];
-    //     if (actions) actions.forEach((action) => {
-    //       if (!messageActionsForEntity.includes(action)) {
-    //         console.log(`rollback! ${entityId} ${action} ${JSON.stringify(messageActionsForEntity)}`);
-    //         rollback = true;
-    //       }
-    //     });
-    //   }
-    // }
-
-    // check future actions
+    // compare action buffers
     if (!rollback) Object.keys(message.actions).forEach((tickString) => {
       const tick = Number(tickString);
 
-      // ignore messages from the past
       if (tick < message.tick) return;
 
       const messageActions = message.actions[tick];
