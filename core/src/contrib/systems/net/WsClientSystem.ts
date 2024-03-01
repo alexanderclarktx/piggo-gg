@@ -8,9 +8,9 @@ const servers = {
 
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
-  const wsClient = new WebSocket(servers.production);
+  // const wsClient = new WebSocket(servers.production);
   // const wsClient = new WebSocket(servers.staging);
-  // const wsClient = new WebSocket(servers.dev);
+  const wsClient = new WebSocket(servers.dev);
 
   let lastLatency = 0;
 
@@ -51,40 +51,40 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
     // TODO consolidate with other block
     // compare actions
-    for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
-      const localActions = world.actionBuffer.buffer[message.tick];
-      if (!localActions) {
-        console.log("rollback! client is behind");
-        rollback = true;
-        break;
-      } else if (!localActions[entityId]) {
-        console.log(`rollback! missed action ${entityId} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
-        rollback = true;
-        break;
-      } else if (localActions[entityId].length !== messageActionsForEntity.length) {
-        console.log(`rollback! count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
-        rollback = true;
-        break;
-      } else {
-        const actions = localActions[entityId];
-        if (actions) actions.forEach((action) => {
-          if (!messageActionsForEntity.includes(action)) {
-            console.log(`rollback! ${entityId} ${action} ${JSON.stringify(messageActionsForEntity)}`);
-            rollback = true;
-          }
-        });
-      }
-    }
+    // for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
+    //   const localActions = world.actionBuffer.atTick(message.tick);
+    //   if (!localActions) {
+    //     console.log("rollback! client is behind");
+    //     rollback = true;
+    //     break;
+    //   } else if (!localActions[entityId]) {
+    //     console.log(`rollback! missed action ${entityId} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
+    //     rollback = true;
+    //     break;
+    //   } else if (localActions[entityId].length !== messageActionsForEntity.length) {
+    //     console.log(`rollback! count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
+    //     rollback = true;
+    //     break;
+    //   } else {
+    //     const actions = localActions[entityId];
+    //     if (actions) actions.forEach((action) => {
+    //       if (!messageActionsForEntity.includes(action)) {
+    //         console.log(`rollback! ${entityId} ${action} ${JSON.stringify(messageActionsForEntity)}`);
+    //         rollback = true;
+    //       }
+    //     });
+    //   }
+    // }
 
     // check future actions
     if (!rollback) Object.keys(message.actions).forEach((tickString) => {
       const tick = Number(tickString);
 
       // ignore messages from the past
-      if (tick <= message.tick) return;
+      if (tick < message.tick) return;
 
       const messageActions = message.actions[tick];
-      const localActions = world.actionBuffer.buffer[tick];
+      const localActions = world.actionBuffer.atTick(tick);
 
       for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
         if (!localActions) {
@@ -163,11 +163,12 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
   const sendMessage = (world: World) => {
 
     // prepare actions from recent frames for the client entity
-    const recentTicks = Object.keys(world.actionBuffer.buffer).map(Number).filter((tick) => tick >= (world.tick - 20));
+    const recentTicks = world.actionBuffer.keys().filter((tick) => tick >= (world.tick - 20));
     let actions: Record<number, Record<string, string[]>> = {};
     recentTicks.forEach((tick) => {
-      if (Object.keys(world.actionBuffer.buffer[tick]).length) {
-        actions[tick] = world.actionBuffer.buffer[tick];
+      const actionsAtTick = world.actionBuffer.atTick(tick);
+      if (actionsAtTick && Object.keys(actionsAtTick).length) {
+        actions[tick] = actionsAtTick;
       }
     });
 

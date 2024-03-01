@@ -4,53 +4,39 @@ export const ActionSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
   const onTick = () => {
 
-    // add empty frames for the next 10 ticks
-    for (let i = 0; i < 10; i++) {
-      if (!world.actionBuffer.buffer[world.tick + i]) world.actionBuffer.buffer[world.tick + i] = {};
-    }
+    const actionsAtTick = world.actionBuffer.atTick(world.tick);
 
-    // for each buffered action, if it's scheduled for the current tick, execute it
-    Object.keys(world.actionBuffer.buffer).forEach((tickNumber) => {
-      const currentTick = Number(tickNumber);
+    if (actionsAtTick) {
+      Object.keys(actionsAtTick).forEach((entityId) => {
+        const actions = actionsAtTick[entityId];
+        if (actions) actions.forEach((actionKey) => {
+          const entity = world.entities[entityId];
 
-      if (currentTick === world.tick) {
-        const actionsForEntities = world.actionBuffer.buffer[currentTick];
+          // entity not found
+          if (!entity) return;
 
-        Object.keys(actionsForEntities).forEach((entityId) => {
-          const actions = actionsForEntities[entityId];
-          if (actions) actions.forEach((actionKey) => {
+          // entity has no actions
+          const actions = entity.components.actions;
+          if (!actions) {
+            console.log(`集 ${entityId} has no actions`);
+            return;
+          }
 
-            const entity = world.entities[entityId];
+          // find the action
+          const action = actions.actionMap[actionKey];
 
-            // entity not found
-            if (!entity) {
-              // console.log(`集 ${entityId} not found`);
-              return;
-            }
+          // action not found
+          if (!action) {
+            console.log(`action ${actionKey} not found`);
+            return;
+          }
 
-            // entity has no actions
-            const actions = entity.components.actions;
-            if (!actions) {
-              console.log(`集 ${entityId} has no actions`);
-              return;
-            }
-
-            // find the action
-            const action = actions.actionMap[actionKey];
-
-            // action not found
-            if (!action) {
-              console.log(`action ${actionKey} not found`);
-              return;
-            }
-
-            // execute the action
-            // console.log(`集 ${entityId} action ${actionKey} executed ${world.tick}`);
-            action.apply(entity, world, clientPlayerId);
-          });
+          // execute the action
+          // console.log(`集 ${entityId} action ${actionKey} executed ${world.tick}`);
+          action.apply(entity, world, clientPlayerId);
         });
-      }
-    });
+      });
+    }
   }
 
   return {

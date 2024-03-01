@@ -1,4 +1,4 @@
-import { ActionBuffer, Ball, Data, Entity, Networked, Playa, Renderer, SerializedEntity, Skelly, System, SystemBuilder, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { ActionBuffer, Ball, Data, Entity, Networked, Playa, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -10,28 +10,28 @@ export type WorldProps = {
 export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
 
 export type World = {
-  renderMode: "cartesian" | "isometric"
-  runtimeMode: "client" | "server"
-  debug: boolean
-  tick: number
-  ms: number
-  tickrate: number
-  lastTick: DOMHighResTimeStamp
+  actionBuffer: ActionBuffer
   clientPlayerId: string | undefined
-  renderer: Renderer | undefined
+  debug: boolean
   entities: Record<string, Entity>
-  systems: Record<string, System>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   isConnected: boolean
-  actionBuffer: ActionBuffer
-  addEntity: (entity: Entity) => string
+  lastTick: DOMHighResTimeStamp
+  ms: number
+  renderer: Renderer | undefined
+  renderMode: "cartesian" | "isometric"
+  runtimeMode: "client" | "server"
+  systems: Record<string, System>
+  tick: number
+  tickrate: number
   addEntities: (entities: Entity[]) => void
+  addEntity: (entity: Entity) => string
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
-  removeEntity: (id: string) => void
-  addSystems: (systems: System[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
-  onRender?: () => void
+  addSystems: (systems: System[]) => void
+  onRender: () => void
   onTick: (_: { isRollback: boolean }) => void
+  removeEntity: (id: string) => void
   rollback: (td: TickData) => void
 }
 
@@ -49,20 +49,20 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
   }
 
   const world: World = {
-    renderMode,
-    runtimeMode,
+    actionBuffer: ActionBuffer(),
     clientPlayerId,
     debug: false,
-    tick: 0,
-    ms: 0,
-    tickrate: 25,
-    lastTick: 0,
-    renderer,
     entities: {},
-    systems: {},
     entitiesAtTick: {},
     isConnected: false,
-    actionBuffer: ActionBuffer(),
+    lastTick: 0,
+    ms: 0,
+    renderer,
+    renderMode,
+    runtimeMode,
+    systems: {},
+    tick: 0,
+    tickrate: 25,
     addEntity: (entity: Entity) => {
       world.entities[entity.id] = entity;
       return entity.id;
@@ -81,7 +81,6 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
       }
     },
     addSystems: (systems: System[]) => {
-
       systems.forEach((system) => {
         if (world.systems[system.id]) {
           console.error(`not inserting duplicate system id ${system.id}`);
@@ -89,15 +88,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
         }
         world.systems[system.id] = system;
         if (system.data) {
-          // add new system entity
-          const e: Entity = {
-            id: `SystemEntity-${system.id}`,
-            components: {
-              networked: new Networked({ isNetworked: true }),
-              data: new Data({ data: system.data })
-            }
-          }
-          world.addEntity(e);
+          world.addEntity(SystemEntity({ systemId: system.id, data: system.data }));
         }
       })
     },
@@ -218,13 +209,6 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
           if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
 
           world.actionBuffer.setActions(tick, entityId, td.actions[tick][entityId]);
-
-          // // prepare if data is empty
-          // if (!world.actionBuffer.buffer[tick]) world.actionBuffer[tick] = {};
-          // if (!world.actionBuffer[tick][entityId]) world.actionBuffer[tick][entityId] = [];
-
-          // // add action
-          // world.actionBuffer[tick][entityId] = td.actions[tick][entityId];
         });
       });
 
@@ -239,7 +223,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
   // setup callbacks
   scheduleOnTick();
-  // if (renderer && world.onRender) renderer.app.ticker.add(world.onRender);
+  if (renderer) renderer.app.ticker.add(world.onRender);
 
   return world;
 }

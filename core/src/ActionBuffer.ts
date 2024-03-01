@@ -1,43 +1,54 @@
 export type ActionBuffer = {
-  buffer: Record<number, Record<string, string[]>>
+  at: (tick: number, entityId: string) => string[] | undefined
+  atTick: (tick: number) => Record<string, string[]> | undefined
   clearTick: (tick: number) => void
   clearBeforeTick: (tick: number) => void
+  keys: () => number[]
   setActions: (tick: number, entityId: string, actions: string[]) => void
-  addAction: (tick: number, entityId: string, actions: string) => boolean
+  pushAction: (tick: number, entityId: string, actions: string) => boolean
 }
 
 export const ActionBuffer = (): ActionBuffer => {
+
+  const buffer: Record<number, Record<string, string[]>> = {};
+
   const actionBuffer: ActionBuffer = {
-    buffer: {},
+    at: (tick, entityId) => {
+      return buffer[tick] ? buffer[tick][entityId] : undefined
+    },
+    atTick: (tick) => {
+      return buffer[tick];
+    },
     clearTick: (tick) => {
-      delete actionBuffer.buffer[tick];
+      delete buffer[tick];
     },
     clearBeforeTick: (tick) => {
-      Object.keys(actionBuffer.buffer).forEach((t) => {
-        if (Number(t) < tick) delete actionBuffer.buffer[Number(t)];
+      Object.keys(buffer).forEach((t) => {
+        if (Number(t) < tick) delete buffer[Number(t)];
       });
+    },
+    keys: () => {
+      return Object.keys(buffer).map(Number);
     },
     setActions: (tick, entityId, actions) => {
       // empty buffer for tick if it doesn't exist
-      if (!actionBuffer.buffer[tick]) actionBuffer.buffer[tick] = {};
+      if (!buffer[tick]) buffer[tick] = {};
 
       // set actions for entity
-      actionBuffer.buffer[tick][entityId] = actions;
+      buffer[tick][entityId] = actions;
     },
-    addAction: (tick, entityId, action) => {
-      // tick += 1;
-
+    pushAction: (tick, entityId, action) => {
       // empty buffer for tick if it doesn't exist
-      if (!actionBuffer.buffer[tick]) actionBuffer.buffer[tick] = {};
+      if (!buffer[tick]) buffer[tick] = {};
 
       // empty buffer for entity if it doesn't exist
-      if (!actionBuffer.buffer[tick][entityId]) actionBuffer.buffer[tick][entityId] = [];
+      if (!buffer[tick][entityId]) buffer[tick][entityId] = [];
 
       // don't add action if it already exists
-      if (actionBuffer.buffer[tick][entityId].includes(action)) return false;
+      if (buffer[tick][entityId].includes(action)) return false;
 
       // push action
-      actionBuffer.buffer[tick][entityId].push(action);
+      buffer[tick][entityId].push(action);
       return true;
     }
   }
