@@ -1,4 +1,4 @@
-import { ActionBuffer, Ball, Data, Entity, Networked, Playa, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { ActionBuffer, Ball, Data, Entity, Networked, Noob, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -11,6 +11,7 @@ export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
 
 export type World = {
   actionBuffer: ActionBuffer
+  chatHistory: ActionBuffer
   clientPlayerId: string | undefined
   debug: boolean
   entities: Record<string, Entity>
@@ -50,6 +51,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
 
   const world: World = {
     actionBuffer: ActionBuffer(),
+    chatHistory: ActionBuffer(),
     clientPlayerId,
     debug: false,
     entities: {},
@@ -185,7 +187,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
           } else if (entityId.startsWith("ball")) {
             world.addEntity(Ball({ id: entityId }));
           } else if (entityId.startsWith("player")) {
-            world.addEntity(Playa({ id: entityId }))
+            world.addEntity(Noob({ id: entityId }))
           } else if (entityId.startsWith("skelly")) {
             world.addEntity(Skelly(entityId));
           } else {

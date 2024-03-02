@@ -28,7 +28,7 @@ export const ActionBuffer = (): ActionBuffer => {
       });
     },
     keys: () => {
-      return Object.keys(buffer).map(Number);
+      return Object.keys(buffer).map(Number).reverse();
     },
     setActions: (tick, entityId, actions) => {
       // empty buffer for tick if it doesn't exist

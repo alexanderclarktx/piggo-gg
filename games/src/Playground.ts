@@ -1,7 +1,7 @@
 import {
   Ball, Chat, ClickableSystem, ActionSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem,
-  PhysicsSystem, PiggoWorld, Playa,
+  PhysicsSystem, PiggoWorld, Noob,
   PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall,
   WorldBuilder
@@ -24,7 +24,7 @@ export const Playground: WorldBuilder = (props) => {
     world.addEntity(SpaceBackground());
 
     // player
-    if (world.clientPlayerId) world.addEntity(Playa({ id: world.clientPlayerId }));
+    if (world.clientPlayerId) world.addEntity(Noob({ id: world.clientPlayerId }));
   }
 
   // add shared systems

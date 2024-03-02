@@ -1,4 +1,4 @@
-import { Playa, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
+import { Noob, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
 import { PerClientData } from "@piggo-legends/server";
 import { ServerWebSocket } from "bun";
 
@@ -46,7 +46,7 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
 
       console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`);
 
-      world.addEntity(Playa({ id: parsedMessage.player }));
+      world.addEntity(Noob({ id: parsedMessage.player }));
     }
 
     // ignore messages from the past

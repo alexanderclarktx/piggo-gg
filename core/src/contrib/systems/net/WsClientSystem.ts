@@ -8,9 +8,9 @@ const servers = {
 
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
-  const wsClient = new WebSocket(servers.production);
+  // const wsClient = new WebSocket(servers.production);
   // const wsClient = new WebSocket(servers.staging);
-  // const wsClient = new WebSocket(servers.dev);
+  const wsClient = new WebSocket(servers.dev);
 
   let lastLatency = 0;
 

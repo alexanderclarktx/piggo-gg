@@ -7,7 +7,7 @@ export type RendererProps = {
   height?: number;
 }
 
-// Renderer renders the game to a canvas
+// Renderer draws the game to a canvas
 export class Renderer {
   props: RendererProps;
 
@@ -59,7 +59,6 @@ export class Renderer {
     props.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
-  // handle screen resize
   handleResize = () => {
     if (document.fullscreenElement) {
       this.app.renderer.resize(window.innerWidth, window.innerHeight);
@@ -71,7 +70,6 @@ export class Renderer {
     }
   }
 
-  // adds a Renderable to the pixi.js stage
   addWorld = (renderable: Renderable) => {
     this.camera.add(renderable);
   }
