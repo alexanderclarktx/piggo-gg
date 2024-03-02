@@ -4,7 +4,7 @@
   "main": "./main.ts",
   "dependencies": {
     "@dimforge/rapier2d-compat": "^0.12.0",
-    "@pixi/unsafe-eval": "^7.3.3",
-    "pixi.js": "^7.3.3"
+    "@pixi/unsafe-eval": "^7.4.0",
+    "pixi.js": "^7.4.0"
   }
 }

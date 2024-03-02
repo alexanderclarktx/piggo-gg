@@ -23,7 +23,7 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => {
       </h1>
       <div style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}>
         <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "10%" }}>
-          v<b>0.1.6</b>
+          v<b>0.1.7</b>
         </span>
         <a style={{margin: 0}} target="_blank" href="https://github.com/alexanderclarktx/piggo-legends">
           <FaGithub size={20} style={{ color: "white", marginTop: 7 }}></FaGithub>

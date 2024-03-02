@@ -1,4 +1,4 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils, Text } from "pixi.js";
+import { Application, settings, SCALE_MODES, BaseTexture, utils, Text, HTMLText } from "pixi.js";
 import { Camera, Renderable } from "@piggo-legends/core";
 
 export type RendererProps = {
@@ -27,7 +27,8 @@ export class Renderer {
       width: props.width ?? 800,
       height: props.height ?? 600,
       antialias: false,
-      hello: true
+      hello: true,
+      powerPreference: "high-performance"
     });
 
     // set up the camera
@@ -42,6 +43,8 @@ export class Renderer {
     // increase text resolution for readability
     Text.defaultResolution = 2;
     Text.defaultAutoResolution = false;
+    HTMLText.defaultResolution = 2;
+    HTMLText.defaultAutoResolution = false;
 
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";
