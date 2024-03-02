@@ -1,6 +1,6 @@
 import { Entity, World } from "@piggo-legends/core";
 import { Position, Renderable, TextBox, chatBuffer, chatIsOpen } from "@piggo-legends/core";
-import { HTMLText } from "pixi.js";
+import { Text } from "pixi.js";
 
 export const Chat = (): Entity => {
 
@@ -8,7 +8,7 @@ export const Chat = (): Entity => {
     padding: 3,
     fontSize: 16,
     color: 0x55FFFF,
-    dynamic: (t: HTMLText, r: TextBox, _, w: World) => {
+    dynamic: (t: Text, r: TextBox, _, w: World) => {
       const lastLines = w.chatHistory.keys().slice(0, 4)
 
       let lastMessages: string[] = [];
@@ -27,12 +27,12 @@ export const Chat = (): Entity => {
       // console.log(JSON.stringify(lines));
 
       // make command lines green
-      lines.forEach((line, i) => {
-        if (line.startsWith("/")) lines[i] = `<span style=color:#00ff00>${line}</span>`;
-      });
+      // lines.forEach((line, i) => {
+      //   if (line.startsWith("/")) lines[i] = `<span style=color:#00ff00>${line}</span>`;
+      // });
 
       // join with linebreak
-      t.text = lines.join("<br>");
+      t.text = lines.join("\n");
 
       // offset from bottom
       r.c.position.set(0, -1 * t.height + 20);
@@ -45,7 +45,7 @@ export const Chat = (): Entity => {
     color: 0xFFFF33,
     // boxOutline: true,
     // visible: false,
-    dynamic: (t: HTMLText) => {
+    dynamic: (t: Text) => {
       const textToRender = chatBuffer.join("");
       chatIsOpen ? t.text = `${textToRender}|` : t.text = "";
     }

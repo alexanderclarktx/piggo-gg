@@ -11,9 +11,7 @@ export const DebugButton = (): Entity => {
     components: {
       position: new Position({ x: 40, y: 5, screenFixed: true }),
       clickable: new Clickable({
-        width: 32,
-        height: 32,
-        active: true,
+        width: 32, height: 32, active: true,
         click: ValidAction((_, world: World) => {
           pressed = !pressed;
           if (pressed) {
@@ -32,7 +30,7 @@ export const DebugButton = (): Entity => {
       renderable: new Button({
         dims: { w: 32, textX: 8, textY: 5 },
         zIndex: 1,
-        text: (new Text("🔍", { fill: "#FFFFFF", fontSize: 16 })),
+        text: new Text("🔍", { fill: "#FFFFFF", fontSize: 16 }),
       })
     }
   }

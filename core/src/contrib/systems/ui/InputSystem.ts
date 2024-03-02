@@ -65,7 +65,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
           // push the message to chatHistory
           if (chatBuffer.length > 0) {
             const message = chatBuffer.join("");
-            world.chatHistory.pushAction(world.tick, world.clientPlayerId ?? "", message);
+            world.chatHistory.push(world.tick, world.clientPlayerId ?? "", message);
             processMessage(message);
           }
 
@@ -116,7 +116,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
           const controllerInput = controller.controllerMap[input];
           if (controllerInput != null) {
             if (actions.actionMap[controllerInput]) {
-              world.actionBuffer.pushAction(world.tick, controlledEntity.id, controllerInput);
+              world.actionBuffer.push(world.tick, controlledEntity.id, controllerInput);
             }
           }
 
@@ -129,7 +129,7 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
         const controllerInput = controller.controllerMap[input];
         if (controllerInput != null) {
           if (actions.actionMap[controllerInput]) {
-            world.actionBuffer.pushAction(world.tick, controlledEntity.id, controllerInput);
+            world.actionBuffer.push(world.tick, controlledEntity.id, controllerInput);
           }
         }
 

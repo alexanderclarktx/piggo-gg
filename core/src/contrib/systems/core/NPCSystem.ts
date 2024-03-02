@@ -10,7 +10,7 @@ export const NPCSystem: SystemBuilder = ({ world }) => {
       const action = npc.props.onTick(entity, world);
 
       if (action && actions?.actionMap[action]) {
-        world.actionBuffer.pushAction(world.tick, entity.id, action);
+        world.actionBuffer.push(world.tick, entity.id, action);
       }
     });
   }

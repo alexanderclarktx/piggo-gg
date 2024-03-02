@@ -1,4 +1,4 @@
-import { ActionBuffer, Ball, Data, Entity, Networked, Noob, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { TickEntityBuffer, Ball, Data, Entity, Networked, Noob, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -10,8 +10,8 @@ export type WorldProps = {
 export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
 
 export type World = {
-  actionBuffer: ActionBuffer
-  chatHistory: ActionBuffer
+  actionBuffer: TickEntityBuffer
+  chatHistory: TickEntityBuffer
   clientPlayerId: string | undefined
   debug: boolean
   entities: Record<string, Entity>
@@ -36,7 +36,7 @@ export type World = {
   rollback: (td: TickData) => void
 }
 
-export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
+export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
@@ -50,8 +50,8 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
   }
 
   const world: World = {
-    actionBuffer: ActionBuffer(),
-    chatHistory: ActionBuffer(),
+    actionBuffer: TickEntityBuffer(),
+    chatHistory: TickEntityBuffer(),
     clientPlayerId,
     debug: false,
     entities: {},
@@ -210,7 +210,7 @@ export const PiggoWorld = ({ renderMode, runtimeMode, renderer, clientPlayerId }
           // skip future actions for controlled entities
           if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
 
-          world.actionBuffer.setActions(tick, entityId, td.actions[tick][entityId]);
+          world.actionBuffer.set(tick, entityId, td.actions[tick][entityId]);
         });
       });
 

@@ -1,14 +1,18 @@
 import {
-  Ball, Chat, ClickableSystem, ActionSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
+  ActionSystem,
+  Ball, Chat, ClickableSystem,
+  ConnectButton,
+  Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem,
-  PhysicsSystem, PiggoWorld, Noob,
+  Noob,
+  PhysicsSystem, World,
   PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall,
   WorldBuilder
 } from "@piggo-legends/core";
 
 export const Playground: WorldBuilder = (props) => {
-  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
+  const world = World({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
 
   if (world.runtimeMode === "client") {
     // client systems
