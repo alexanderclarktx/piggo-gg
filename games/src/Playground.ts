@@ -1,14 +1,9 @@
 import {
-  ActionSystem,
-  Ball, Chat, ClickableSystem,
-  ConnectButton,
+  ActionSystem, Ball, Chat, ClickableSystem,
   Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem,
-  Noob,
-  PhysicsSystem, World,
-  PlayerSpawnSystem, RenderSystem,
-  SpaceBackground, TileFloor, Wall,
-  WorldBuilder
+  Noob, PhysicsSystem, World, PlayerSpawnSystem, RenderSystem,
+  SpaceBackground, TileFloor, Wall, WorldBuilder
 } from "@piggo-gg/core";
 
 export const Playground: WorldBuilder = (props) => {
