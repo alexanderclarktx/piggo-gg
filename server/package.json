@@ -1,12 +1,12 @@
 {
-  "name": "@piggo-legends/server",
+  "name": "@piggo-gg/server",
   "main": "./main.ts",
   "scripts": {
     "start": "bun src/PiggoApi.ts",
     "dev": "bun --watch src/PiggoApi.ts"
   },
   "dependencies": {
-    "@piggo-legends/games": "1.0.0"
+    "@piggo-gg/games": "1.0.0"
   },
   "devDependencies": {
     "bun-types": "latest"

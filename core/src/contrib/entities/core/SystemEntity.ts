@@ -1,4 +1,4 @@
-import { Data, Entity, Networked } from "@piggo-legends/core";
+import { Data, Entity, Networked } from "@piggo-gg/core";
 
 export type SystemEntityProps = {
   systemId: string

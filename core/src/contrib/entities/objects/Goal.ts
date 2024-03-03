@@ -1,4 +1,4 @@
-import { Collider, Data, Entity, Networked, Position, Renderable, World } from "@piggo-legends/core";
+import { Collider, Data, Entity, Networked, Position, Renderable, World } from "@piggo-gg/core";
 import { Container, Graphics, HTMLText } from "pixi.js";
 
 export type GoalProps = {

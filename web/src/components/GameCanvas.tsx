@@ -1,5 +1,5 @@
-import { Renderer, World } from "@piggo-legends/core";
-import { Playground } from "@piggo-legends/games";
+import { Renderer, World } from "@piggo-gg/core";
+import { Playground } from "@piggo-gg/games";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {

@@ -1,5 +1,5 @@
-import { Entity, World } from "@piggo-legends/core";
-import { Position, Renderable, TextBox, chatBuffer, chatIsOpen } from "@piggo-legends/core";
+import { Entity, World } from "@piggo-gg/core";
+import { Position, Renderable, TextBox, chatBuffer, chatIsOpen } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const Chat = (): Entity => {

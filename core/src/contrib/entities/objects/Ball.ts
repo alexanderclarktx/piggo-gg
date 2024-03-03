@@ -1,4 +1,4 @@
-import { Entity, Collider, Debug, Networked, Position, Renderable, NPC } from "@piggo-legends/core";
+import { Entity, Collider, Debug, Networked, Position, Renderable, NPC } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export type BallProps = {

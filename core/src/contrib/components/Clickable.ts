@@ -1,4 +1,4 @@
-import { Action, Component } from "@piggo-legends/core";
+import { Action, Component } from "@piggo-gg/core";
 
 export type Bounds = { x: number, y: number, w: number, h: number };
 

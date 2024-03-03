@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, ValidAction, ZombieMovement, ZombieMovementActions } from "@piggo-legends/core";
+import { Actions, Clickable, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, ValidAction, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
 import { AnimatedSprite, SCALE_MODES } from "pixi.js";
 
 export type ZombieProps = {

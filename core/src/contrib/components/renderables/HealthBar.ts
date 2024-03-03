@@ -1,4 +1,4 @@
-import { Health, Renderable, RenderableProps } from "@piggo-legends/core";
+import { Health, Renderable, RenderableProps } from "@piggo-gg/core";
 import { Graphics, Container } from "pixi.js";
 
 export type HealthBarProps = RenderableProps & {

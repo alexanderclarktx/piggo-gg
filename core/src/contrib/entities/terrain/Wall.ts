@@ -1,4 +1,4 @@
-import { Collider, Debug, Entity, Position } from "@piggo-legends/core";
+import { Collider, Debug, Entity, Position } from "@piggo-gg/core";
 
 export type WallProps = {
   x: number

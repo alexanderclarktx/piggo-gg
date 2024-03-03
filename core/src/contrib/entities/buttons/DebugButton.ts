@@ -1,5 +1,5 @@
-import { Entity, ValidAction, World } from "@piggo-legends/core";
-import { Button, Clickable, Position } from "@piggo-legends/core";
+import { Entity, ValidAction, World } from "@piggo-gg/core";
+import { Button, Clickable, Position } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const DebugButton = (): Entity => {

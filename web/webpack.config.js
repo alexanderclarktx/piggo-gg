@@ -41,7 +41,7 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "piggo-legends-min.js",
+    filename: "piggo-gg-min.js",
     path: path.resolve(__dirname, "dist"),
   }
 };

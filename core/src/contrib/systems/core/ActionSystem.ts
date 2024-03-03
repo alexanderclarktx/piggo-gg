@@ -1,4 +1,4 @@
-import { SystemBuilder } from "@piggo-legends/core";
+import { SystemBuilder } from "@piggo-gg/core";
 
 export const ActionSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 

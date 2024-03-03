@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/core";
+import { Component } from "@piggo-gg/core";
 
 // the health component includes health, maxHealth, and damage
 export class Health extends Component<"health"> {

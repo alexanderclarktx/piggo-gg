@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, Position, Renderable } from '@piggo-legends/core';
+import { Entity, SystemBuilder, Position, Renderable } from '@piggo-gg/core';
 
 // RenderSystem handles rendering entities in isometric or cartesian space
 export const RenderSystem: SystemBuilder = ({ renderer, mode, world }) => {

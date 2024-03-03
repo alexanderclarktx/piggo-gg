@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Debug, Entity, Health, Networked, Position, Renderable, WASDMovementActions, WASDMovementPhysics, playerControlsEntity } from "@piggo-legends/core";
+import { Actions, Clickable, Collider, Controlled, Controller, Debug, Entity, Health, Networked, Position, Renderable, WASDMovementActions, WASDMovementPhysics, playerControlsEntity } from "@piggo-gg/core";
 import { AnimatedSprite, HTMLText, SCALE_MODES } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number): Entity => {

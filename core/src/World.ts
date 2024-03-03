@@ -1,4 +1,4 @@
-import { StateBuffer, Ball, Data, Entity, Networked, Noob, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { StateBuffer, Ball, Data, Entity, Networked, Noob, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-gg/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"

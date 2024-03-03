@@ -1,4 +1,4 @@
-import { Button, Clickable, Entity, Position, ValidAction, World, WsClientSystem } from "@piggo-legends/core";
+import { Button, Clickable, Entity, Position, ValidAction, World, WsClientSystem } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const ConnectButton = (): Entity => ({

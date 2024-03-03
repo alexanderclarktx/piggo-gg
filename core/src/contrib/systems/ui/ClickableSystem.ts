@@ -1,4 +1,4 @@
-import { Actions, Clickable, Entity, Position, SystemBuilder } from "@piggo-legends/core";
+import { Actions, Clickable, Entity, Position, SystemBuilder } from "@piggo-gg/core";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };

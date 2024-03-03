@@ -1,4 +1,4 @@
-import { Entity, NPC, SystemBuilder } from "@piggo-legends/core";
+import { Entity, NPC, SystemBuilder } from "@piggo-gg/core";
 
 // NPCSystem invokes ai logic for NPCs
 export const NPCSystem: SystemBuilder = ({ world }) => {

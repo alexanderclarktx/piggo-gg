@@ -1,4 +1,4 @@
-import { Controlling, Entity, Networked, Player } from "@piggo-legends/core";
+import { Controlling, Entity, Networked, Player } from "@piggo-gg/core";
 
 export type NoobProps = {
   id: string

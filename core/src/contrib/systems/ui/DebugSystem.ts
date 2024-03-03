@@ -1,4 +1,4 @@
-import { Collider, DebugBounds, Entity, FpsText, LagText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-legends/core";
+import { Collider, DebugBounds, Entity, FpsText, LagText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-gg/core";
 import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities

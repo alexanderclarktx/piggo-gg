@@ -1,4 +1,4 @@
-import { Entity, World, Renderer } from "@piggo-legends/core";
+import { Entity, World, Renderer } from "@piggo-gg/core";
 
 // 制 zhì (system)
 // a System is a function that runs on every tick

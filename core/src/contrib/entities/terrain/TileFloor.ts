@@ -1,4 +1,4 @@
-import { Entity, Renderer, Position, Renderable } from "@piggo-legends/core";
+import { Entity, Renderer, Position, Renderable } from "@piggo-gg/core";
 import { Assets, Texture, Resource, Matrix, Sprite, RenderTexture } from "pixi.js";
 
 let index = 0;

@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, Health, HealthBar, Position, Renderable } from "@piggo-legends/core";
+import { Entity, SystemBuilder, Health, HealthBar, Position, Renderable } from "@piggo-gg/core";
 
 // GuiSystem displays gui elements
 export const GuiSystem: SystemBuilder = ({ world, renderer }) => {

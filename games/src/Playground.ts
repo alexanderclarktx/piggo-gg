@@ -9,7 +9,7 @@ import {
   PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall,
   WorldBuilder
-} from "@piggo-legends/core";
+} from "@piggo-gg/core";
 
 export const Playground: WorldBuilder = (props) => {
   const world = World({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });

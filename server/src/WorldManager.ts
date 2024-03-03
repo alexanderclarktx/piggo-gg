@@ -1,5 +1,5 @@
-import { Noob, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
-import { PerClientData } from "@piggo-legends/server";
+import { Noob, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-gg/core";
+import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
 
 export type WS = ServerWebSocket<PerClientData>

@@ -1,5 +1,5 @@
-import { Playground } from "@piggo-legends/games";
-import { WorldManager } from "@piggo-legends/server";
+import { Playground } from "@piggo-gg/games";
+import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
 export type PerClientData = {

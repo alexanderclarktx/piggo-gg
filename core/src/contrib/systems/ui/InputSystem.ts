@@ -1,4 +1,4 @@
-import { Actions, Ball, Controlled, Controller, Entity, World, Spaceship, SystemBuilder, Zombie } from "@piggo-legends/core";
+import { Actions, Ball, Controlled, Controller, Entity, World, Spaceship, SystemBuilder, Zombie } from "@piggo-gg/core";
 
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;

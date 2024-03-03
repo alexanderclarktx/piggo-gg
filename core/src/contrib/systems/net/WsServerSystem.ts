@@ -1,4 +1,4 @@
-import { System, TickData, World } from "@piggo-legends/core";
+import { System, TickData, World } from "@piggo-gg/core";
 
 export type ServerNetcodeSystemProps = {
   world: World

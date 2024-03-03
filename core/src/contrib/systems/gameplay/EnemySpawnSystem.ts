@@ -1,4 +1,4 @@
-import { Entity, PositionProps, SystemBuilder, Zombie } from "@piggo-legends/core";
+import { Entity, PositionProps, SystemBuilder, Zombie } from "@piggo-gg/core";
 
 const spawnLocations = [
   { x: 100, y: 100 }, { x: 100, y: 600 },
