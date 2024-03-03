@@ -1,4 +1,4 @@
-import { TickEntityBuffer, Ball, Data, Entity, Networked, Noob, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
+import { StateBuffer, Ball, Data, Entity, Networked, Noob, Renderer, SerializedEntity, Skelly, System, SystemBuilder, SystemEntity, TickData, Zombie, deserializeEntity, serializeEntity } from "@piggo-legends/core";
 
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
@@ -10,8 +10,8 @@ export type WorldProps = {
 export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
 
 export type World = {
-  actionBuffer: TickEntityBuffer
-  chatHistory: TickEntityBuffer
+  actionBuffer: StateBuffer
+  chatHistory: StateBuffer
   clientPlayerId: string | undefined
   debug: boolean
   entities: Record<string, Entity>
@@ -50,8 +50,8 @@ export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: Wor
   }
 
   const world: World = {
-    actionBuffer: TickEntityBuffer(),
-    chatHistory: TickEntityBuffer(),
+    actionBuffer: StateBuffer(),
+    chatHistory: StateBuffer(),
     clientPlayerId,
     debug: false,
     entities: {},

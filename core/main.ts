@@ -1,4 +1,4 @@
-export * from "./src/TickEntityBuffer";
+export * from "./src/StateBuffer";
 export * from "./src/World";
 export * from "./src/graphics/Renderer";
 export * from "./src/graphics/Camera";

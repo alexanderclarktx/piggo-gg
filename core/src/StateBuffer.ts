@@ -1,4 +1,4 @@
-export type TickEntityBuffer = {
+export type StateBuffer = {
   at: (tick: number, entityId: string) => string[] | undefined
   atTick: (tick: number) => Record<string, string[]> | undefined
   clearTick: (tick: number) => void
@@ -8,11 +8,11 @@ export type TickEntityBuffer = {
   push: (tick: number, entityId: string, actions: string) => boolean
 }
 
-export const TickEntityBuffer = (): TickEntityBuffer => {
+export const StateBuffer = (): StateBuffer => {
 
   const buffer: Record<number, Record<string, string[]>> = {};
 
-  const tickEntityBuffer: TickEntityBuffer = {
+  const StateBuffer: StateBuffer = {
     at: (tick, entityId) => {
       return buffer[tick] ? buffer[tick][entityId] : undefined
     },
@@ -52,5 +52,5 @@ export const TickEntityBuffer = (): TickEntityBuffer => {
       return true;
     }
   }
-  return tickEntityBuffer;
+  return StateBuffer;
 }
