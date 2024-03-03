@@ -56,11 +56,11 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
       for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
         if (!localActions) {
-          console.log("都 rollback! client is behind");
+          console.log(`都 rollback ${message.tick}! client is behind`);
           rollback = true;
           break;
         } else if (!localActions[entityId]) {
-          console.log(`都 rollback! missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
+          console.log(`都 rollback ${message.tick}! missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
           rollback = true;
           break;
         } else if (localActions[entityId].length !== messageActionsForEntity.length) {
@@ -71,14 +71,14 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
           const actions = localActions[entityId];
           if (actions) actions.forEach((localC) => {
             if (!messageActionsForEntity.includes(localC)) {
-              console.log(`都 rollback! CLIENT ACTION ${entityId}:${localC} not in ${JSON.stringify(messageActionsForEntity)}`);
+              console.log(`都 rollback ${message.tick}! CLIENT ACTION ${entityId}:${localC} not in ${JSON.stringify(messageActionsForEntity)}`);
               rollback = true;
             }
           });
 
           messageActionsForEntity.forEach((serverC) => {
             if (!actions.includes(serverC)) {
-              console.log(`都 rollback! SERVER ACTION ${entityId}:${serverC} not in ${JSON.stringify(actions)}`);
+              console.log(`都 rollback ${message.tick}! SERVER ACTION ${entityId}:${serverC} not in ${JSON.stringify(actions)}`);
               rollback = true;
             }
           });
@@ -89,7 +89,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     // compare entity counts
     if (!rollback && world.entitiesAtTick[message.tick]) {
       if (Object.keys(world.entitiesAtTick[message.tick]).length !== Object.keys(message.serializedEntities).length) {
-        console.log(`rollback! entity count ${Object.keys(world.entitiesAtTick[message.tick]).length} ${Object.keys(message.serializedEntities).length}`);
+        console.log(`rollback ${message.tick}! entity count local:${Object.keys(message.serializedEntities).length} remote:${Object.keys(world.entitiesAtTick[message.tick]).length}`);
         rollback = true;
       }
     }
@@ -102,17 +102,17 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
           const localEntity = entitiesAtTick[entityId];
           if (localEntity) {
             if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
-              console.log(`rollback! entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
+              console.log(`rollback ${message.tick}! entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
               rollback = true;
               break;
             }
           } else {
-            console.log("rollback! no buffered message", message.tick, world.entitiesAtTick[message.tick].serializedEntities);
+            console.log("rollback ${message.tick}! no buffered message", message.tick, world.entitiesAtTick[message.tick].serializedEntities);
             rollback = true;
             break
           }
         } else {
-          console.log("rollback! no buffered tick data", message.tick, Object.keys(world.entitiesAtTick), world.entitiesAtTick[message.tick]);
+          console.log("rollback ${message.tick}! no buffered tick data", message.tick, Object.keys(world.entitiesAtTick), world.entitiesAtTick[message.tick]);
           rollback = true;
           break
         }

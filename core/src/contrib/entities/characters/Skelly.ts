@@ -48,7 +48,7 @@ export const Skelly = (id: string, tint?: number): Entity => {
 
           const nametag = new Text();
           nametag.text = id.split("-")[1]
-          nametag.style = {fill: 0xffff00, fontSize: 13}
+          nametag.style = { fill: 0xffff00, fontSize: 13 }
           nametag.setTransform(-20, -45);
 
           r.c.addChild(nametag);

@@ -12,7 +12,7 @@ import {
 } from "@piggo-gg/core";
 
 export const Playground: WorldBuilder = (props) => {
-  const world = World({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
+  const world = World({ ...props, renderMode: "isometric", clientPlayerId: `noob${Math.trunc((Math.random() * 100))}` });
 
   if (world.runtimeMode === "client") {
     // client systems

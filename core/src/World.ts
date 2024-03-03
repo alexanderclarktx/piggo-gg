@@ -186,7 +186,7 @@ export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: Wor
             world.addEntity(Zombie({ id: entityId }));
           } else if (entityId.startsWith("ball")) {
             world.addEntity(Ball({ id: entityId }));
-          } else if (entityId.startsWith("player")) {
+          } else if (entityId.startsWith("noob")) {
             world.addEntity(Noob({ id: entityId }))
           } else if (entityId.startsWith("skelly")) {
             world.addEntity(Skelly(entityId));
