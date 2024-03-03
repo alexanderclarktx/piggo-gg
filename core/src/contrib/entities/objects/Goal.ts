@@ -1,5 +1,5 @@
 import { Collider, Data, Entity, Networked, Position, Renderable, World } from "@piggo-gg/core";
-import { Container, Graphics, HTMLText } from "pixi.js";
+import { Container, Graphics, Text } from "pixi.js";
 
 export type GoalProps = {
   position: { x: number, y: number }
@@ -36,9 +36,9 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     g.endFill();
 
     // goal count
-    const t = new HTMLText();
+    const t = new Text();
     t.setTransform(-7, width / 2);
-    t.style = { "fill": color };
+    t.style = { "fill": "white" };
     t.text = "0";
 
     // goal area
@@ -63,7 +63,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       }),
       renderable: new Renderable({
         dynamic: (c) => {
-          const t = c.children[1] as HTMLText;
+          const t = c.children[1] as Text;
           t.text = `${data.goals}`
         },
         zIndex: 2,

@@ -9,10 +9,10 @@ export const Chat = (): Entity => {
     fontSize: 16,
     color: 0x55FFFF,
     dynamic: (t: Text, r: TextBox, _, w: World) => {
-      const lastLines = w.chatHistory.keys().slice(0, 4)
 
+      // get the last 4 messages
       let lastMessages: string[] = [];
-      lastLines.forEach((tick) => {
+      w.chatHistory.keys().slice(0, 4).forEach((tick) => {
         const messagesForEntity = w.chatHistory.atTick(tick);
         if (messagesForEntity) Object.values(messagesForEntity).forEach((messages) => {
           messages.forEach((message) => {
@@ -21,18 +21,8 @@ export const Chat = (): Entity => {
         });
       });
 
-      let lines = lastMessages.reverse();
-
-      // let lines = w.chatHistory.keys().slice(-4).map((k) => w.chatHistory.atTick(k));
-      // console.log(JSON.stringify(lines));
-
-      // make command lines green
-      // lines.forEach((line, i) => {
-      //   if (line.startsWith("/")) lines[i] = `<span style=color:#00ff00>${line}</span>`;
-      // });
-
       // join with linebreak
-      t.text = lines.join("\n");
+      t.text = lastMessages.reverse().join("\n");
 
       // offset from bottom
       r.c.position.set(0, -1 * t.height + 20);

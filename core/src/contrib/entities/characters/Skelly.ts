@@ -1,5 +1,5 @@
 import { Actions, Clickable, Collider, Controlled, Controller, Debug, Entity, Health, Networked, Position, Renderable, WASDMovementActions, WASDMovementPhysics, playerControlsEntity } from "@piggo-gg/core";
-import { AnimatedSprite, HTMLText, SCALE_MODES } from "pixi.js";
+import { AnimatedSprite, Text, SCALE_MODES } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number): Entity => {
 
@@ -46,7 +46,7 @@ export const Skelly = (id: string, tint?: number): Entity => {
           r.setAnimationColor(0xffffff);
           r.bufferedAnimation = "d";
 
-          const nametag = new HTMLText();
+          const nametag = new Text();
           nametag.text = id.split("-")[1]
           nametag.style = {fill: 0xffff00, fontSize: 13}
           nametag.setTransform(-20, -45);

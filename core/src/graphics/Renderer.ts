@@ -1,4 +1,4 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils, Text, HTMLText } from "pixi.js";
+import { Application, settings, SCALE_MODES, BaseTexture, utils, Text } from "pixi.js";
 import { Camera, Renderable } from "@piggo-gg/core";
 
 export type RendererProps = {
@@ -43,8 +43,6 @@ export class Renderer {
     // increase text resolution for readability
     Text.defaultResolution = 2;
     Text.defaultAutoResolution = false;
-    HTMLText.defaultResolution = 2;
-    HTMLText.defaultAutoResolution = false;
 
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";
