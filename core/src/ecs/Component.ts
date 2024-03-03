@@ -1,3 +1,10 @@
+import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Data, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-gg/core";
+
+export type ComponentTypes =
+  Actions | Clickable | Collider |
+  Controller | Controlled | Controlling |
+  Data | Debug | Health | Name | Networked |
+  NPC | Player | Position | Renderable
 
 // 个 gè (one of)
 // a Component is an atomic unit of data that is attached to an entity
