@@ -1,5 +1,5 @@
 {
-  "name": "@piggo-legends/core",
+  "name": "@piggo-gg/core",
   "version": "1.0.0",
   "main": "./main.ts",
   "dependencies": {

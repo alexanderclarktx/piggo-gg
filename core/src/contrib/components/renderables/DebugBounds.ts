@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import { Renderable, RenderableProps } from "@piggo-legends/core";
+import { Renderable, RenderableProps } from "@piggo-gg/core";
 
 export type DebugBoundsProps = RenderableProps & {
   debugRenderable: Renderable

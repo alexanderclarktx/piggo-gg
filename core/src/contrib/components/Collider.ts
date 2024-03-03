@@ -1,4 +1,4 @@
-import { Component, Entity, World } from "@piggo-legends/core";
+import { Component, Entity, World } from "@piggo-gg/core";
 import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat";
 
 export type ColliderProps = {

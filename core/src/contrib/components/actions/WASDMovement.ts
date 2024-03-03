@@ -1,4 +1,4 @@
-import { ActionMap, Entity, Position, ValidAction } from "@piggo-legends/core";
+import { ActionMap, Entity, Position, ValidAction } from "@piggo-gg/core";
 
 const speed = 120;
 const speedDiagonal = speed / Math.sqrt(2);

@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/core";
+import { Component } from "@piggo-gg/core";
 
 // "" is always allowed to clear the input buffer
 export type ControllerMap<T extends string = string> = Record<string, T | null>

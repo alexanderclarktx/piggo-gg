@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/core";
+import { Component } from "@piggo-gg/core";
 
 export type ControllingProps = {
   entityId?: string

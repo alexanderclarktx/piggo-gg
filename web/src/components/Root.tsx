@@ -1,16 +1,15 @@
-import { World } from "@piggo-legends/core";
+import { World } from "@piggo-gg/core";
 import "@pixi/unsafe-eval";
 import React, { useEffect, useState } from "react";
 import { NetState } from "../types/NetState";
 import { GameCanvas } from "./GameCanvas";
 import { Header } from "./Header";
 
-// Piggo Legends webapp root component
+// Piggo webapp root component
 export const Root = () => {
-  // initialize all not-component-local state
+
   const [world, setWorld] = useState<World | undefined>();
   const [netState, setNetState] = useState<NetState>("disconnected");
-  const [modalOpen, setModalOpen] = useState(false);
 
   // expose the game client to the console
   useEffect(() => {

@@ -1,5 +1,5 @@
-import { Playa, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-legends/core";
-import { PerClientData } from "@piggo-legends/server";
+import { Noob, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-gg/core";
+import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
 
 export type WS = ServerWebSocket<PerClientData>
@@ -46,7 +46,7 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
 
       console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`);
 
-      world.addEntity(Playa({ id: parsedMessage.player }));
+      world.addEntity(Noob({ id: parsedMessage.player }));
     }
 
     // ignore messages from the past
@@ -76,7 +76,7 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
         // add actions for the player or entities controlled by the player
         Object.keys(parsedMessage.actions[cmdTick]).forEach((entityId) => {
           if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
-            world.actionBuffer.setActions(cmdTick, entityId, parsedMessage.actions[cmdTick][entityId]);
+            world.actionBuffer.set(cmdTick, entityId, parsedMessage.actions[cmdTick][entityId]);
           }
         });
       });

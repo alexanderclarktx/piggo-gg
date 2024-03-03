@@ -1,4 +1,4 @@
-import { Component, Entity, World } from "@piggo-legends/core";
+import { Component, Entity, World } from "@piggo-gg/core";
 
 export interface Action {
   apply: (entity: Entity, world: World, player?: string) => void

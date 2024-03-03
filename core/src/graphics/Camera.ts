@@ -1,4 +1,4 @@
-import { Renderer, Renderable } from "@piggo-legends/core";
+import { Renderer, Renderable } from "@piggo-gg/core";
 import { Container } from "pixi.js";
 
 // Camera handles the viewport of the game

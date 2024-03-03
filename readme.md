@@ -1,7 +1,7 @@
-__Piggo Legends__ is a multiplayer web game & engine! Play online at [piggo.gg](https://piggo.gg) 
+__piggo.gg__ is a creative multiplayer web game! Play online at [piggo.gg](https://piggo.gg) 
 
 <p align="center">
-  <img src="piggo-legends.gif" style="width:400px">
+  <img src="piggo-gg.gif" style="width:400px">
 </p>
 
 # Objectives

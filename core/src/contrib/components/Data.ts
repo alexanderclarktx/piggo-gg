@@ -1,4 +1,4 @@
-import { Component } from "@piggo-legends/core";
+import { Component } from "@piggo-gg/core";
 
 export type DataProps = {
   data: Record<string, string | number>

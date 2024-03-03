@@ -1,14 +1,18 @@
 import {
-  Ball, Chat, ClickableSystem, ActionSystem, Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
+  ActionSystem,
+  Ball, Chat, ClickableSystem,
+  ConnectButton,
+  Cursor, DebugButton, DebugSystem, EnemySpawnSystem,
   FullscreenButton, Goal, GuiSystem, InputSystem, NPCSystem,
-  PhysicsSystem, PiggoWorld, Playa,
+  Noob,
+  PhysicsSystem, World,
   PlayerSpawnSystem, RenderSystem,
   SpaceBackground, TileFloor, Wall,
   WorldBuilder
-} from "@piggo-legends/core";
+} from "@piggo-gg/core";
 
 export const Playground: WorldBuilder = (props) => {
-  const world = PiggoWorld({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
+  const world = World({ ...props, renderMode: "isometric", clientPlayerId: `player${Math.trunc((Math.random() * 100))}` });
 
   if (world.runtimeMode === "client") {
     // client systems
@@ -24,7 +28,7 @@ export const Playground: WorldBuilder = (props) => {
     world.addEntity(SpaceBackground());
 
     // player
-    if (world.clientPlayerId) world.addEntity(Playa({ id: world.clientPlayerId }));
+    if (world.clientPlayerId) world.addEntity(Noob({ id: world.clientPlayerId }));
   }
 
   // add shared systems

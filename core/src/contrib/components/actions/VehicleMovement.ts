@@ -1,4 +1,4 @@
-import { Entity, ActionMap, Position, ValidAction } from "@piggo-legends/core";
+import { Entity, ActionMap, Position, ValidAction } from "@piggo-gg/core";
 
 const TURN_SPEED = 0.1;
 const SLIDE_FACTOR = 1.5;

@@ -1,4 +1,4 @@
-import { Component, Entity, World } from "@piggo-legends/core";
+import { Component, Entity, World } from "@piggo-gg/core";
 
 export type NPCProps<T> = {
   onTick: (entity: Entity, world: World) => T | null | void;

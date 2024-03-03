@@ -1,5 +1,5 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils, Text, HTMLText } from "pixi.js";
-import { Camera, Renderable } from "@piggo-legends/core";
+import { Application, settings, SCALE_MODES, BaseTexture, utils, Text } from "pixi.js";
+import { Camera, Renderable } from "@piggo-gg/core";
 
 export type RendererProps = {
   canvas: HTMLCanvasElement;
@@ -7,7 +7,7 @@ export type RendererProps = {
   height?: number;
 }
 
-// Renderer renders the game to a canvas
+// Renderer draws the game to a canvas
 export class Renderer {
   props: RendererProps;
 
@@ -43,8 +43,6 @@ export class Renderer {
     // increase text resolution for readability
     Text.defaultResolution = 2;
     Text.defaultAutoResolution = false;
-    HTMLText.defaultResolution = 2;
-    HTMLText.defaultAutoResolution = false;
 
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";
@@ -59,7 +57,6 @@ export class Renderer {
     props.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
-  // handle screen resize
   handleResize = () => {
     if (document.fullscreenElement) {
       this.app.renderer.resize(window.innerWidth, window.innerHeight);
@@ -71,7 +68,6 @@ export class Renderer {
     }
   }
 
-  // adds a Renderable to the pixi.js stage
   addWorld = (renderable: Renderable) => {
     this.camera.add(renderable);
   }

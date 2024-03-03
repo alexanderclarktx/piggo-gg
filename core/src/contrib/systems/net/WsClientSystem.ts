@@ -1,16 +1,16 @@
-import { Entity, SystemBuilder, TickData, World } from "@piggo-legends/core";
+import { Entity, SystemBuilder, TickData, World } from "@piggo-gg/core";
 
 const servers = {
   dev: "ws://localhost:3000",
-  staging: "wss://piggo-legends-staging.up.railway.app",
+  staging: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const;
 
 // WssNetcodeSystem handles networked entities over WebSockets
 export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
-  const wsClient = new WebSocket(servers.production);
+  // const wsClient = new WebSocket(servers.production);
   // const wsClient = new WebSocket(servers.staging);
-  // const wsClient = new WebSocket(servers.dev);
+  const wsClient = new WebSocket(servers.dev);
 
   let lastLatency = 0;
 

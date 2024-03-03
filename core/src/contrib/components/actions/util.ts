@@ -1,7 +1,8 @@
-import { Action, Controlled, Controlling, Entity, ValidAction, World } from "@piggo-legends/core";
+import { Action, Controlled, Controlling, Entity, ValidAction, World } from "@piggo-gg/core";
 
-// TODO remove this garbage function. it should be an action
+// TODO refactor
 export const playerControlsEntity: Action = ValidAction((entity: Entity, world: World, player: string) => {
+
   // check that the entity isn't already being controlled
   if (entity.components.controlled) return;
 

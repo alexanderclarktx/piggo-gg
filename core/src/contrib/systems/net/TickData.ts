@@ -1,4 +1,4 @@
-import { SerializedEntity } from "@piggo-legends/core";
+import { SerializedEntity } from "@piggo-gg/core";
 
 export type TickData = {
   type: "game"

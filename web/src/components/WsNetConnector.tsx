@@ -1,6 +1,6 @@
 import React from "react";
 import { NetState, NetStateColor } from "../types/NetState";
-import { World, WsClientSystem } from "@piggo-legends/core";
+import { World, WsClientSystem } from "@piggo-gg/core";
 
 export type WsNetConnectorProps = {
   world: World | undefined

@@ -1,5 +1,5 @@
 import { AnimatedSprite, Assets, Container, SCALE_MODES } from "pixi.js";
-import { Component, Entity, World, Renderer } from "@piggo-legends/core";
+import { Component, Entity, World, Renderer } from "@piggo-gg/core";
 
 export type RenderableProps = {
   container?: (r: Renderer) => Promise<Container>

@@ -1,1 +1,1 @@
-`web` is a React webpage running Piggo legends
+`web` is a React web client for Piggo
