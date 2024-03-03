@@ -21,10 +21,10 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
     {
       regex: /\/spawn (\w+)/,
       handlers: {
-        // spaceship: (match) => {
-          // world.addEntity(Spaceship());
-          // return true;
-        // },
+        spaceship: () => {
+          world.addEntity(Spaceship({ id: 'spaceship-SPAWNED' }));
+          return true;
+        },
         ball: () => {
           world.addEntity(Ball());
           return true;
@@ -142,9 +142,8 @@ export const InputSystem: SystemBuilder = ({ clientPlayerId, world }) => {
   const processMessage = (message: string) => {
     actionRegexes.forEach(({ regex, handlers }) => {
       const match = message.match(regex);
-      if (match) {
-        console.log("match", match);
-        if (handlers[match[1]]) handlers[match[1]](match);
+      if (match && handlers[match[1]]) {
+        handlers[match[1]](match);
       }
     });
   }

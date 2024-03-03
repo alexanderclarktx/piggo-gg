@@ -6,7 +6,7 @@ export type SpaceshipProps = {
   position?: {x: number, y: number}
 }
 
-export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<Entity> => {
+export const Spaceship = ({ id, position }: SpaceshipProps = {}): Entity => {
 
   return {
     id: id ?? `spaceship${Math.trunc(Math.random() * 100)}`,
@@ -29,16 +29,12 @@ export const Spaceship = async ({ id, position }: SpaceshipProps = {}): Promise<
       actions: new Actions(VehicleMovement),
       renderable: new Renderable({
         rotates: true,
-        scale: 2,
         zIndex: 3,
         setup: async (r: Renderable) => {
           const texture = (await r.loadTextures("spaceship.json"))["spaceship"];
-          const sprite = new AnimatedSprite([texture])
-
-          r.animations = {
-            d: sprite, u: sprite, l: sprite, r: sprite,
-            dl: sprite, dr: sprite, ul: sprite, ur: sprite,
-          }
+          const sprite = new AnimatedSprite([texture]);
+          sprite.scale = { x: 2, y: 2 };
+          r.c = sprite;
         }
       })
     }
