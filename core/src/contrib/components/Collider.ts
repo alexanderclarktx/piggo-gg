@@ -1,7 +1,11 @@
 import { Component, Entity, World } from "@piggo-gg/core";
 import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat";
 
+export type ColliderShapes = "ball" | "cuboid" | "line";
+
 export type ColliderProps = {
+  shape: ColliderShapes
+  points?: number[]
   radius?: number
   length?: number
   width?: number
@@ -21,7 +25,7 @@ export class Collider extends Component<"collider"> {
   body: RigidBody;
   sensor: (e2: Entity, world: World) => void
 
-  constructor({ radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation }: ColliderProps) {
+  constructor({ shape, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation }: ColliderProps) {
     super();
 
     if (isStatic) {
@@ -30,10 +34,17 @@ export class Collider extends Component<"collider"> {
       this.bodyDesc = RigidBodyDesc.dynamic();
     }
 
-    if (radius) {
+    if (shape === "ball" && radius) {
       this.colliderDesc = ColliderDesc.ball(radius)
-    } else {
+    } else if (shape === "cuboid") {
       this.colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1);
+    } else if (shape === "line" && points) {
+      const s = ColliderDesc.polyline(Float32Array.from(points));
+      if (s) {
+        this.colliderDesc = s;
+      } else {
+        this.colliderDesc = ColliderDesc.capsule(length ?? 1, width ?? 1);
+      }
     }
 
     if (sensor) {

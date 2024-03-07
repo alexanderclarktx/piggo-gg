@@ -1,5 +1,5 @@
 import { Renderer, World } from "@piggo-gg/core";
-import { Playground } from "@piggo-gg/games";
+import { Playground, Soccer } from "@piggo-gg/games";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
@@ -13,7 +13,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
       width: window.innerWidth * 0.98,
       height: window.innerHeight * 0.90
     });
-    setWorld(Playground({ renderer, runtimeMode: "client" }));
+    setWorld(Soccer({ renderer, runtimeMode: "client" }));
   }, []);
 
   return (
