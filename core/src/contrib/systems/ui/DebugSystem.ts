@@ -1,4 +1,4 @@
-import { Collider, DebugBounds, Entity, FpsText, LagText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-gg/core";
+import { DebugBounds, Entity, FpsText, LagText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-gg/core";
 import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
@@ -54,7 +54,7 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
   }
 
   const addEntityForRenderable = (entity: Entity<Renderable | Position>) => {
-    const {renderable, position} = entity.components;
+    const { renderable, position } = entity.components;
 
     // text box
     const textBox = new TextBox({

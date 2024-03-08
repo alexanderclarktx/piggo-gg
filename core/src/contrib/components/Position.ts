@@ -14,6 +14,11 @@ export const worldToScreen = ({ x, y }: { x: number, y: number }): { x: number, 
   y: (x + y) / 2
 });
 
+export const screenToWorld = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
+  x: (2 * y + x) / 2,
+  y: (2 * y - x) / 2
+});
+
 // the entity's position in the world
 export class Position extends Component<"position"> {
   type: "position" = "position";
@@ -49,9 +54,8 @@ export class Position extends Component<"position"> {
   }
 
   // set world position from screen coordinates
-  fromScreenXY = (isoX: number, isoY: number) => {
-    this.data.x = (2 * isoY + isoX) / 2;
-    this.data.y = (2 * isoY - isoX) / 2;
+  fromScreenXY = (screenX: number, screenY: number) => {
+    return screenToWorld({ x: screenX, y: screenY });
   }
 
   setPosition = ({ x, y }: { x: number, y: number }) => {

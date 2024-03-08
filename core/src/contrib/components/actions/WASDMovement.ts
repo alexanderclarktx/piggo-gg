@@ -1,6 +1,6 @@
 import { ActionMap, Entity, Position, ValidAction } from "@piggo-gg/core";
 
-const speed = 120;
+const speed = 140;
 const speedDiagonal = speed / Math.sqrt(2);
 const speedHorizontal = speed / 2;
 

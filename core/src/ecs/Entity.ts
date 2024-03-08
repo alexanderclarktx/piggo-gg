@@ -1,11 +1,4 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Data, Debug, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-gg/core";
-
-// TODO how to make this extendable
-export type ComponentTypes =
-  Actions | Clickable | Collider |
-  Controller | Controlled | Controlling |
-  Data | Debug | Health | Name | Networked |
-  NPC | Player | Position | Renderable
+import { ComponentTypes, Controlling } from "@piggo-gg/core";
 
 // 集 jí (set)
 // an Entity is a uniquely identified set of Components

@@ -1,5 +1,4 @@
-import { Entity, Renderer } from "@piggo-gg/core";
-import { Position, Renderable } from "@piggo-gg/core";
+import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export const Cursor = (): Entity => {

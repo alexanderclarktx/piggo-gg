@@ -16,7 +16,7 @@ export const Skelly = (id: string, tint?: number): Entity => {
         click: playerControlsEntity
       }),
       controlled: new Controlled({ entityId: "" }),
-      collider: new Collider({ radius: 8, mass: 600 }),
+      collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       controller: new Controller<WASDMovementActions>({
         "a,d": null, "w,s": null,
         "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
@@ -48,7 +48,7 @@ export const Skelly = (id: string, tint?: number): Entity => {
 
           const nametag = new Text();
           nametag.text = id.split("-")[1]
-          nametag.style = {fill: 0xffff00, fontSize: 13}
+          nametag.style = { fill: 0xffff00, fontSize: 13 }
           nametag.setTransform(-20, -45);
 
           r.c.addChild(nametag);

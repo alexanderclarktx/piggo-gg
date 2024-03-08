@@ -56,6 +56,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       data: new Data({ data: data }),
       position: new Position(position),
       collider: new Collider({
+        shape: "cuboid",
         length: 2,
         width: width / 4 * 3,
         rotation: Math.PI * 3 / 4,

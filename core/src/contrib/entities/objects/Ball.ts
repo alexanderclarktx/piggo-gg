@@ -12,10 +12,11 @@ export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } 
     position: new Position(position),
     networked: new Networked({ isNetworked: true }),
     collider: new Collider({
+      shape: "ball",
       radius: 7,
-      frictionAir: 0.3,
-      mass: 50,
-      restitution: 0.85
+      frictionAir: 0.4,
+      mass: 20,
+      restitution: 0.9
     }),
     debug: new Debug(),
     npc: new NPC({
