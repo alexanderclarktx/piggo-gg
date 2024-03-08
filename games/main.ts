@@ -1,2 +1,2 @@
-export * from "./src/Playground";
-export * from "./src/Soccer";
+export * from "./soccer/Soccer";
+export * from "./soccer/entities";

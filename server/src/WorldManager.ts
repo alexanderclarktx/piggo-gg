@@ -1,4 +1,4 @@
-import { Noob, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-gg/core";
+import { DefaultWorld, GameBuilder, Noob, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-gg/core";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
 
@@ -12,13 +12,15 @@ export type WorldManager = {
 }
 
 export type WorldManagerProps = {
-  worldBuilder: WorldBuilder
+  gameBuilder: GameBuilder
   clients: Record<string, WS>
 }
 
-export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): WorldManager => {
+export const WorldManager = ({ gameBuilder, clients }: WorldManagerProps ): WorldManager => {
 
-  const world = worldBuilder({ runtimeMode: "server" })
+  const world = DefaultWorld({ runtimeMode: "server" });
+  world.setGame(gameBuilder);
+
   const clientMessages: Record<string, { td: TickData, latency: number }> = {};
 
   const handleClose = (ws: WS) => {
@@ -63,7 +65,7 @@ export const WorldManager = ({ worldBuilder, clients }: WorldManagerProps ): Wor
 
     // debug log
     if (world.tick % 50 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
-    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed ${parsedMessage.player} tick${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`)
+    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed ${parsedMessage.player} tick${parsedMessage.tick} server:${world.tick}`)
 
     // process message actions
     if (parsedMessage.actions) {

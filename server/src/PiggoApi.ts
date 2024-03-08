@@ -1,4 +1,4 @@
-import { Playground } from "@piggo-gg/games";
+import { Soccer } from "@piggo-gg/games";
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
@@ -15,8 +15,8 @@ export class PiggoApi {
   clients: Record<string, ServerWebSocket<PerClientData>> = {};
 
   worlds: Record<string, WorldManager> = {
-    "one": WorldManager({ worldBuilder: Playground, clients: {} }),
-    "two": WorldManager({ worldBuilder: Playground, clients: {} })
+    "one": WorldManager({ gameBuilder: Soccer, clients: {} }),
+    "two": WorldManager({ gameBuilder: Soccer, clients: {} })
   }
 
   constructor() {

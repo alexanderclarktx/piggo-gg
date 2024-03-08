@@ -3,10 +3,11 @@ import { AnimatedSprite, SCALE_MODES } from "pixi.js";
 
 export type ZombieProps = {
   id: string,
+  color?: number
   positionProps?: PositionProps
 }
 
-export const Zombie = ({ id, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps): Entity => ({
+export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps): Entity => ({
   id,
   components: {
     position: new Position(positionProps),
@@ -31,7 +32,7 @@ export const Zombie = ({ id, positionProps = { renderMode: "isometric", x: 100, 
     renderable: new Renderable({
       scale: 2,
       zIndex: 3,
-      color: 0x00ff00,
+      color: color ?? 0x00ff00,
       scaleMode: SCALE_MODES.NEAREST,
       anchor: { x: 0.5, y: 0.7 },
       setup: async (r: Renderable) => {

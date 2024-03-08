@@ -42,8 +42,10 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
     let message = latestServerMessage;
     let rollback = false;
 
-    let messageActions = message.actions[message.tick];
-    if (!messageActions) return;
+    if (message.tick > world.tick) {
+      rollback = true;
+      console.log(`rollback ${message.tick}! server is behind`);
+    }
 
     // compare action buffers
     if (!rollback) Object.keys(message.actions).forEach((tickString) => {
@@ -51,7 +53,7 @@ export const WsClientSystem: SystemBuilder = ({ world, clientPlayerId }) => {
 
       if (tick < message.tick) return;
 
-      const messageActions = message.actions[tick];
+      const messageActions = message.actions[tick] ?? {};
       const localActions = world.actionBuffer.atTick(tick);
 
       for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {

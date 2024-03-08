@@ -1,4 +1,4 @@
-import { Collider, DebugBounds, Entity, FpsText, LagText, Position, Renderable, SystemBuilder, TextBox, physics, screenToWorld, worldToScreen } from "@piggo-gg/core";
+import { DebugBounds, Entity, FpsText, LagText, Position, Renderable, SystemBuilder, TextBox, physics, worldToScreen } from "@piggo-gg/core";
 import { Graphics, Text } from 'pixi.js';
 
 // DebugSystem adds visual debug information to renderered entities
@@ -132,14 +132,7 @@ export const DebugSystem: SystemBuilder = ({ world }) => {
     debugEntitiesPerEntity["collider-debug"] = [debugEntity];
   }
 
-  const debugText = (p: Position, r: Renderable) => {
-    if (p.screenFixed) {
-      const worldCoords = screenToWorld(p.data);
-      return `${worldCoords.x.toFixed(0)} | ${worldCoords.y.toFixed(0)}`;
-    } else {
-      return `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
-    }
-  }
+  const debugText = (p: Position, r: Renderable) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
 
   return {
     id: "DebugSystem",

@@ -3,5 +3,5 @@
   "include": [
     "./src/*",
     "./src/**/*"
-  ]
+, "../core/src/world/DefaultWorld.ts", "soccer"  ]
 }

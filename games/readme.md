@@ -2,4 +2,4 @@
 
 |game|description|
 |--|--|
-|`playground`|a simple playground for testing new features
+|`soccer`|kick a ball around in a soccer field!
