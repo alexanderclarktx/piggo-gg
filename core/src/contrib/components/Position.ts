@@ -55,8 +55,7 @@ export class Position extends Component<"position"> {
 
   // set world position from screen coordinates
   fromScreenXY = (screenX: number, screenY: number) => {
-    this.data.x = (2 * screenY + screenX) / 2;
-    this.data.y = (2 * screenY - screenX) / 2;
+    return screenToWorld({ x: screenX, y: screenY });
   }
 
   setPosition = ({ x, y }: { x: number, y: number }) => {

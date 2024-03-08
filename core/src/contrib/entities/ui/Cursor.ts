@@ -1,5 +1,4 @@
-import { Debug, Entity, Renderer } from "@piggo-gg/core";
-import { Position, Renderable } from "@piggo-gg/core";
+import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export const Cursor = (): Entity => {
@@ -8,7 +7,6 @@ export const Cursor = (): Entity => {
     id: "cursor",
     components: {
       position: new Position({ x: 2000, y: 2000, screenFixed: true }),
-      debug: new Debug(),
       renderable: new Renderable({
         container: async (r: Renderer) => {
           r.props.canvas.addEventListener("mousemove", (event) => {

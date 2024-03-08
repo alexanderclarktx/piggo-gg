@@ -28,7 +28,6 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
     serializedEntities: world.entitiesAtTick[world.tick],
     actions
   };
-  // if (world.tick % 100 === 0) console.log("server tick", world.tick, tickData, actions, world.actionBuffer.keys());
 
   // send tick data to all clients
   Object.entries(clients).forEach(([id, client]) => {
