@@ -19,27 +19,27 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
         actions[tick] = actionsAtTick;
     });
 
-  // build tick data
-  const tickData: TickData = {
-    type: "game",
-    player: "server",
-    tick: world.tick,
-    timestamp: Date.now(),
-    serializedEntities: world.entitiesAtTick[world.tick],
-    actions
-  };
+    // build tick data
+    const tickData: TickData = {
+      type: "game",
+      player: "server",
+      tick: world.tick,
+      timestamp: Date.now(),
+      serializedEntities: world.entitiesAtTick[world.tick],
+      actions
+    };
 
-  // send tick data to all clients
-  Object.entries(clients).forEach(([id, client]) => {
-    client.send(JSON.stringify({
-      ...tickData,
-      latency: clientMessages[id]?.latency,
-    }));
-  })
-}
+    // send tick data to all clients
+    Object.entries(clients).forEach(([id, client]) => {
+      client.send(JSON.stringify({
+        ...tickData,
+        latency: clientMessages[id]?.latency,
+      }));
+    })
+  }
 
-return {
-  id: "WsServerSystem",
-  onTick
-}
+  return {
+    id: "WsServerSystem",
+    onTick
+  }
 }

@@ -1,4 +1,4 @@
-export * from "./src/world/DefaultWorld";
+export * from "./src/world/IsometricWorld";
 export * from "./src/world/Game";
 export * from "./src/world/StateBuffer";
 export * from "./src/world/World";

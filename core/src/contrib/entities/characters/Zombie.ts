@@ -27,7 +27,7 @@ export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x
       onTick: (_) => "chase"
     }),
     actions: new Actions(ZombieMovement),
-    collider: new Collider({ shape: "ball", radius: 8 }),
+    collider: new Collider({ shape: "ball", radius: 8, mass: 300 }),
     debug: new Debug(),
     renderable: new Renderable({
       scale: 2,

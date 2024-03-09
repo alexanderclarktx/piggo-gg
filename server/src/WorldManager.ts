@@ -1,4 +1,5 @@
-import { DefaultWorld, GameBuilder, Noob, TickData, World, WorldBuilder, WsServerSystem } from "@piggo-gg/core";
+import { GameBuilder, IsometricWorld, Noob, TickData, World, WsServerSystem } from "@piggo-gg/core";
+import { PiggoLegends, Soccer } from "@piggo-gg/games";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
 
@@ -12,14 +13,12 @@ export type WorldManager = {
 }
 
 export type WorldManagerProps = {
-  gameBuilder: GameBuilder
-  clients: Record<string, WS>
+  clients?: Record<string, WS>
 }
 
-export const WorldManager = ({ gameBuilder, clients }: WorldManagerProps ): WorldManager => {
+export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
 
-  const world = DefaultWorld({ runtimeMode: "server" });
-  world.setGame(gameBuilder);
+  const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, PiggoLegends] });
 
   const clientMessages: Record<string, { td: TickData, latency: number }> = {};
 

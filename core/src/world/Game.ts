@@ -1,9 +1,13 @@
-import { Entity, System } from "@piggo-gg/core";
+import { Entity, System, SystemBuilder, World } from "@piggo-gg/core";
 
 // a game is a collection of entities and systems
-export type Game = {
+export type Game<T extends string = string> = {
+  id: T
   entities: Entity[]
-  systems: System[]
+  systems: SystemBuilder[]
 }
 
-export type GameBuilder = () => Game;
+export type GameBuilder<T extends string = string> = {
+  id: T
+  init: (world: World) => Game<T>
+}
