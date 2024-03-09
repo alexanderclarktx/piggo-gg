@@ -48,6 +48,18 @@ export const FieldGrass = (wallPoints: WallPoints): Entity => ({
         lines.lineTo(360, 492);
         lines.lineTo(502, 492);
 
+        // goalie line left
+        // lines.moveTo(-401, 260);
+        // lines.lineTo(-360, 260);
+        // lines.lineTo(-360, 440);
+        // lines.lineTo(-401, 440);
+
+        // // goalie line right
+        // lines.moveTo(502, 260);
+        // lines.lineTo(460, 260);
+        // lines.lineTo(460, 440);
+        // lines.lineTo(502, 440);
+
         // free kick semicircle left
         lines.moveTo(-260, 400);
         lines.quadraticCurveTo(-210, 350, -260, 300);
