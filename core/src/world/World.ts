@@ -8,6 +8,7 @@ import {
 export type WorldProps = {
   renderMode: "cartesian" | "isometric"
   runtimeMode: "client" | "server"
+  games?: GameBuilder[]
   renderer?: Renderer | undefined
   clientPlayerId?: string | undefined
 }
@@ -18,9 +19,11 @@ export type World = {
   actionBuffer: StateBuffer
   chatHistory: StateBuffer
   clientPlayerId: string | undefined
+  currentGame: Game
   debug: boolean
   entities: Record<string, Entity>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
+  games: Record<string, GameBuilder>
   isConnected: boolean
   lastTick: DOMHighResTimeStamp
   ms: number
@@ -43,9 +46,7 @@ export type World = {
   setGame: (game: GameBuilder) => void
 }
 
-export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: WorldProps): World => {
-
-  let currentGame: Game = { entities: [], systems: [] };
+export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
@@ -62,9 +63,11 @@ export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: Wor
     actionBuffer: StateBuffer(),
     chatHistory: StateBuffer(),
     clientPlayerId,
+    currentGame: { id: "", entities: [], systems: [] },
     debug: false,
     entities: {},
     entitiesAtTick: {},
+    games: {},
     isConnected: false,
     lastTick: 0,
     ms: 0,
@@ -93,7 +96,10 @@ export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: Wor
     },
     removeSystem: (id: string) => {
       const system = world.systems[id];
-      if (system) delete world.systems[id];
+      if (system) {
+        world.systems[id].onRemove?.();
+        delete world.systems[id];
+      }
     },
     addSystems: (systems: System[]) => {
       systems.forEach((system) => {
@@ -108,8 +114,12 @@ export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: Wor
       })
     },
     addSystemBuilders: (systemBuilders: SystemBuilder[]) => {
-      const systems = systemBuilders.map((systemBuilder) => systemBuilder({ world, renderer: renderer, clientPlayerId: world.clientPlayerId, mode: renderMode }));
-      world.addSystems(systems);
+      systemBuilders.forEach((systemBuilder) => {
+        if (!world.systems[systemBuilder.id]) {
+          const system = systemBuilder.init({ world, renderer: renderer, clientPlayerId: world.clientPlayerId, mode: renderMode });
+          world.addSystems([system]);
+        }
+      })
     },
     onRender: () => {
       Object.values(world.systems).forEach((system) => {
@@ -236,21 +246,25 @@ export const World = ({ renderMode, runtimeMode, renderer, clientPlayerId }: Wor
     },
     setGame: (gameBuilder: GameBuilder) => {
       // clean up old game
-      currentGame.entities.forEach((entity) => world.removeEntity(entity.id));
-      currentGame.systems.forEach((system) => world.removeSystem(system.id));
+      world.currentGame.entities.forEach((entity) => world.removeEntity(entity.id));
+      world.currentGame.systems.forEach((system) => world.removeSystem(system.id));
 
       // set new game
-      currentGame = gameBuilder();
+      world.currentGame = gameBuilder.init(world);
 
       // initialize new game
-      world.addEntities(currentGame.entities);
-      world.addSystems(currentGame.systems);
+      world.addEntities(world.currentGame.entities);
+      world.addSystemBuilders(world.currentGame.systems);
     }
   }
 
   // setup callbacks
   scheduleOnTick();
   if (renderer) renderer.app.ticker.add(world.onRender);
+  if (games) {
+    games.forEach((game) => world.games[game.id] = game);
+    if (games[0]) world.setGame(games[0]);
+  }
 
   return world;
 }

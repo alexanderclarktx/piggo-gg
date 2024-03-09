@@ -7,116 +7,119 @@ RAPIER.init().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
 const timeFactor = 0.025;
 
 // PhysicsSystem calculates the physics of entities
-export const PhysicsSystem: SystemBuilder = ({ world }) => {
+export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
+  id: "PhysicsSystem",
+  init: ({ world }) => {
 
-  let bodies: Record<string, RigidBody> = {};
-  let colliders: Record<string, Collider> = {};
+    let bodies: Record<string, RigidBody> = {};
+    let colliders: Record<string, Collider> = {};
 
-  // reset the world state
-  const resetPhysics = () => {
-    Object.keys(bodies).forEach((id) => {
-      delete bodies[id];
-      if (colliders[id]) delete colliders[id];
-    });
-    physics.free();
-    physics = new RapierWorld({ x: 0, y: 0 });
-  }
-
-  const onTick = (entities: Entity<Position | Collider>[], isRollback: false) => {
-
-    // wait until rapier is ready
-    if (!physics) return;
-
-    // reset physics unless in rollback
-    if (!isRollback) resetPhysics();
-
-    // remove old bodies
-    Object.keys(bodies).forEach((id) => {
-      if (!world.entities[id]) {
-        physics.removeRigidBody(bodies[id]);
+    // reset the world state
+    const resetPhysics = () => {
+      Object.keys(bodies).forEach((id) => {
         delete bodies[id];
-      }
-    });
+        if (colliders[id]) delete colliders[id];
+      });
+      physics.free();
+      physics = new RapierWorld({ x: 0, y: 0 });
+    }
 
-    // prepare physics bodies for each entity
-    entities.sort((a, b) => a.id > b.id ? 1 : -1).forEach((entity) => {
-      const { position } = entity.components;
+    const onTick = (entities: Entity<Position | Collider>[], isRollback: false) => {
 
-      // handle new physics bodies
-      if (!bodies[entity.id]) {
-        const { collider } = entity.components;
+      // wait until rapier is ready
+      if (!physics) return;
 
-        // create rapier body/collider
-        const body = physics.createRigidBody(collider.bodyDesc);
-        collider.rapierCollider = physics.createCollider(collider.colliderDesc, body);
+      // reset physics unless in rollback
+      if (!isRollback) resetPhysics();
 
-        // set Collider.body
-        collider.body = body;
+      // remove old bodies
+      Object.keys(bodies).forEach((id) => {
+        if (!world.entities[id]) {
+          physics.removeRigidBody(bodies[id]);
+          delete bodies[id];
+        }
+      });
 
-        // store body
-        bodies[entity.id] = body;
+      // prepare physics bodies for each entity
+      entities.sort((a, b) => a.id > b.id ? 1 : -1).forEach((entity) => {
+        const { position } = entity.components;
 
-        // store collider
-        colliders[entity.id] = collider;
-      }
+        // handle new physics bodies
+        if (!bodies[entity.id]) {
+          const { collider } = entity.components;
 
-      // update body position
-      bodies[entity.id].setTranslation({
-        x: Math.round(position.data.x * 100) / 100,
-        y: Math.round(position.data.y * 100) / 100
-      }, true);
+          // create rapier body/collider
+          const body = physics.createRigidBody(collider.bodyDesc);
+          collider.rapierCollider = physics.createCollider(collider.colliderDesc, body);
 
-      // update body velocity
-      bodies[entity.id].setLinvel({
-        x: Math.round(position.data.velocityX * 100) / 100,
-        y: Math.round(position.data.velocityY * 100) / 100
-      }, true);
-    });
+          // set Collider.body
+          collider.body = body;
 
-    // run physics
-    physics.timestep = timeFactor;
+          // store body
+          bodies[entity.id] = body;
 
-    // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
-    physics.switchToSmallStepsPgsSolver();
-    physics.step();
+          // store collider
+          colliders[entity.id] = collider;
+        }
 
-    // sensor callbacks
-    Object.values(colliders).forEach((collider: Collider) => {
-      if (collider.sensor) {
-        physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
-          const entry = Object.entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
-          if (entry) {
-            const id = entry[0];
-            if (world.entities[id]) collider.sensor(world.entities[id], world)
-          }
-        });
-      }
-    });
+        // update body position
+        bodies[entity.id].setTranslation({
+          x: Math.round(position.data.x * 100) / 100,
+          y: Math.round(position.data.y * 100) / 100
+        }, true);
 
-    // update the entity positions
-    Object.keys(bodies).forEach((id) => {
-      const body = bodies[id];
-      const entity = world.entities[id] as Entity<Position>;
+        // update body velocity
+        bodies[entity.id].setLinvel({
+          x: Math.round(position.data.velocityX * 100) / 100,
+          y: Math.round(position.data.velocityY * 100) / 100
+        }, true);
+      });
 
-      entity.components.position.data.x = Math.round(body.translation().x * 100) / 100;
-      entity.components.position.data.y = Math.round(body.translation().y * 100) / 100;
-      entity.components.position.data.velocityX = Math.round(body.linvel().x * 100) / 100;
-      entity.components.position.data.velocityY = Math.round(body.linvel().y * 100) / 100;
-    });
+      // run physics
+      physics.timestep = timeFactor;
 
-    // reset velocities where needed
-    entities.forEach((entity) => {
-      if (entity.components.position.data.velocityResets) {
-        entity.components.position.data.velocityX = 0;
-        entity.components.position.data.velocityY = 0;
-      }
-    });
+      // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
+      physics.switchToSmallStepsPgsSolver();
+      physics.step();
+
+      // sensor callbacks
+      Object.values(colliders).forEach((collider: Collider) => {
+        if (collider.sensor) {
+          physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
+            const entry = Object.entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
+            if (entry) {
+              const id = entry[0];
+              if (world.entities[id]) collider.sensor(world.entities[id], world)
+            }
+          });
+        }
+      });
+
+      // update the entity positions
+      Object.keys(bodies).forEach((id) => {
+        const body = bodies[id];
+        const entity = world.entities[id] as Entity<Position>;
+
+        entity.components.position.data.x = Math.round(body.translation().x * 100) / 100;
+        entity.components.position.data.y = Math.round(body.translation().y * 100) / 100;
+        entity.components.position.data.velocityX = Math.round(body.linvel().x * 100) / 100;
+        entity.components.position.data.velocityY = Math.round(body.linvel().y * 100) / 100;
+      });
+
+      // reset velocities where needed
+      entities.forEach((entity) => {
+        if (entity.components.position.data.velocityResets) {
+          entity.components.position.data.velocityX = 0;
+          entity.components.position.data.velocityY = 0;
+        }
+      });
+    }
+
+    return {
+      id: "PhysicsSystem",
+      query: ["position", "collider"],
+      onTick,
+      onRollback: resetPhysics
+    }
   }
-
-  return {
-    id: "PhysicsSystem",
-    query: ["position", "collider"],
-    onTick,
-    onRollback: resetPhysics
-  }
-}
+});

@@ -37,8 +37,8 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
 
     // goal count
     const t = new Text();
-    t.setTransform(-7, width / 2);
-    t.style = { "fill": "white" };
+    t.setTransform(color % 2 === 0 ? -50 : 40, -10);
+    t.style = { "fill": "yellow" };
     t.text = "0";
 
     // goal area
@@ -65,7 +65,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       renderable: new Renderable({
         dynamic: (c) => {
           const t = c.children[1] as Text;
-          t.text = `${data.goals}`
+          if (t) t.text = `${data.goals}`
         },
         zIndex: 2,
         container: render

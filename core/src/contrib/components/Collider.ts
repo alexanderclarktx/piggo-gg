@@ -56,6 +56,8 @@ export class Collider extends Component<"collider"> {
     if (restitution) this.colliderDesc.setRestitution(restitution);
     if (rotation) this.colliderDesc.setRotation(rotation);
 
+    this.bodyDesc.setCcdEnabled(true);
+
     this.bodyDesc.setLinearDamping(frictionAir ?? 0);
   }
 }

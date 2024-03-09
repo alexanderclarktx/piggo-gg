@@ -2,14 +2,15 @@ import { Entity, World, Renderer } from "@piggo-gg/core";
 
 // 制 zhì (system)
 // a System is a function that runs on every tick
-export interface System {
-  id: string,
-  onTick: (entities: Entity[], isRollback: boolean) => void;
+export interface System<T extends string = string> {
+  id: T,
   data?: Record<string, string | number>
-  onRender?: (entities: Entity[]) => void;
   query?: string[];
   skipOnRollback?: boolean
+  onRender?: (entities: Entity[]) => void;
+  onRemove?: () => void;
   onRollback?: () => void
+  onTick: (entities: Entity[], isRollback: boolean) => void;
 }
 
 export type SystemProps = {
@@ -19,4 +20,7 @@ export type SystemProps = {
   mode: "cartesian" | "isometric"
 };
 
-export type SystemBuilder = (props: SystemProps) => System;
+export type SystemBuilder<T extends string = string> = {
+  id: T,
+  init: (props: SystemProps) => System<T>
+}
