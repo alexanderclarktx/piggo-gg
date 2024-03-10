@@ -20,12 +20,16 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     if (e2.id.startsWith("ball") && ((world.tick - data.lastScored) > 100)) {
       data.goals += 1;
       data.lastScored = world.tick;
-      e2.components.position.setPosition({ x: 350, y: 350 })
+      e2.components.position.setPosition({ x: 370, y: 320 }).setVelocity({ x: 0, y: 0 });
     }
   }
 
   const render = async (): Promise<Container> => {
+    const c = new Container();
+
     const g = new Graphics();
+
+    // draw goal
     g.beginFill(color, 0.9);
     g.drawPolygon([
       -2, -width / 2,
@@ -33,7 +37,6 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       2, width / 2,
       -2, width / 2
     ])
-    g.endFill();
 
     // goal count
     const t = new Text();
@@ -42,14 +45,13 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     t.text = "0";
 
     // goal area
-    const c = new Container();
     c.addChild(g);
     c.addChild(t);
 
     return c;
   }
 
-  return {
+  return Entity({
     id: id ?? `goal1`,
     components: {
       networked: new Networked({ isNetworked: true }),
@@ -57,7 +59,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       position: new Position(position),
       collider: new Collider({
         shape: "cuboid",
-        length: 2,
+        length: 1,
         width: width / 4 * 3,
         rotation: Math.PI * 3 / 4,
         sensor: sensor
@@ -71,5 +73,5 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
         container: render
       })
     }
-  }
+  })
 }

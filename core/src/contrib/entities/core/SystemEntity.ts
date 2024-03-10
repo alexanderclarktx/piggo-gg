@@ -6,12 +6,10 @@ export type SystemEntityProps = {
 }
 
 // a system entity is a special entity that stores networked system data
-export const SystemEntity = ({ systemId, data }: SystemEntityProps): Entity => {
-  return {
-    id: `SystemEntity-${systemId}`,
-    components: {
-      networked: new Networked({ isNetworked: true }),
-      data: new Data({ data }),
-    }
+export const SystemEntity = ({ systemId, data }: SystemEntityProps) => Entity({
+  id: `SystemEntity-${systemId}`,
+  components: {
+    networked: new Networked({ isNetworked: true }),
+    data: new Data({ data }),
   }
-}
+});

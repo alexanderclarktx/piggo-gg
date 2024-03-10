@@ -1,8 +1,7 @@
 import {
   Ball, Entity, Game, GameBuilder, Noob, Renderer,
   SerializedEntity, Skelly, StateBuffer, System,
-  SystemBuilder, SystemEntity, TickData, Zombie,
-  deserializeEntity, serializeEntity
+  SystemBuilder, SystemEntity, TickData, Zombie
 } from "@piggo-gg/core";
 
 export type WorldProps = {
@@ -155,7 +154,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       const serializedEntities: Record<string, SerializedEntity> = {}
       for (const entityId in world.entities) {
         if (world.entities[entityId].components.networked) {
-          serializedEntities[entityId] = serializeEntity(world.entities[entityId]);
+          serializedEntities[entityId] = world.entities[entityId].serialize();
         }
       }
       world.entitiesAtTick[world.tick] = serializedEntities;
@@ -222,7 +221,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       // deserialize everything
       Object.keys(td.serializedEntities).forEach((entityId) => {
         if (world.entities[entityId] && td.serializedEntities[entityId]) {
-          deserializeEntity(world.entities[entityId], td.serializedEntities[entityId]);
+          world.entities[entityId].deserialize(td.serializedEntities[entityId]);
         }
       });
 

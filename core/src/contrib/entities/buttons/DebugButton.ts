@@ -6,7 +6,7 @@ export const DebugButton = (): Entity => {
 
   let pressed = false;
 
-  const debugButton = {
+  const debugButton = Entity({
     id: "debugButton",
     components: {
       position: new Position({ x: 40, y: 5, screenFixed: true }),
@@ -33,6 +33,6 @@ export const DebugButton = (): Entity => {
         text: new Text("🔍", { fill: "#FFFFFF", fontSize: 16 }),
       })
     }
-  }
+  });
   return debugButton;
 }

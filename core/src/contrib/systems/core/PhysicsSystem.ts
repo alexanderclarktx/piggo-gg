@@ -82,6 +82,17 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       physics.switchToSmallStepsPgsSolver();
       physics.step();
 
+      // update the entity positions
+      Object.keys(bodies).forEach((id) => {
+        const body = bodies[id];
+        const entity = world.entities[id] as Entity<Position>;
+
+        entity.components.position.data.x = Math.round(body.translation().x * 100) / 100;
+        entity.components.position.data.y = Math.round(body.translation().y * 100) / 100;
+        entity.components.position.data.velocityX = Math.round(body.linvel().x * 100) / 100;
+        entity.components.position.data.velocityY = Math.round(body.linvel().y * 100) / 100;
+      });
+
       // sensor callbacks
       Object.values(colliders).forEach((collider: Collider) => {
         if (collider.sensor) {
@@ -93,17 +104,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
             }
           });
         }
-      });
-
-      // update the entity positions
-      Object.keys(bodies).forEach((id) => {
-        const body = bodies[id];
-        const entity = world.entities[id] as Entity<Position>;
-
-        entity.components.position.data.x = Math.round(body.translation().x * 100) / 100;
-        entity.components.position.data.y = Math.round(body.translation().y * 100) / 100;
-        entity.components.position.data.velocityX = Math.round(body.linvel().x * 100) / 100;
-        entity.components.position.data.velocityY = Math.round(body.linvel().y * 100) / 100;
       });
 
       // reset velocities where needed

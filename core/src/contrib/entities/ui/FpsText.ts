@@ -7,7 +7,7 @@ export type FpsTextProps = {
   y?: number
 }
 
-export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderable> => ({
+export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Renderable>({
   id: "fpsText",
   components: {
     position: new Position({
@@ -28,7 +28,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderab
   }
 })
 
-export const LagText = ({ x, y }: FpsTextProps = {}): Entity<Position | Renderable> => ({
+export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Renderable>({
   id: "lagText",
   components: {
     position: new Position({

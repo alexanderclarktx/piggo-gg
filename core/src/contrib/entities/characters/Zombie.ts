@@ -7,7 +7,7 @@ export type ZombieProps = {
   positionProps?: PositionProps
 }
 
-export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps): Entity => ({
+export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps) => Entity({
   id,
   components: {
     position: new Position(positionProps),

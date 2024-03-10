@@ -66,13 +66,13 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
             c.text = debugText(position, renderable);
           }
         },
-        fontSize: 12, color: 0xffff00
+        fontSize: 12, color: 0x00ff00
       });
 
       // debug bounds
       const debugBounds = new DebugBounds({ debugRenderable: renderable });
 
-      const debugEntity = {
+      const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
           position: new Position(),
@@ -81,7 +81,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
             children: async () => [textBox, debugBounds]
           })
         }
-      };
+      });
 
       debugEntitiesPerEntity[entity.id].push(debugEntity);
       world.addEntity(debugEntity);
@@ -104,7 +104,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
         dynamic: (c: Graphics) => {
           if (c.clear) {
             c.clear()
-            c.beginFill(0xffffff, 0.1).lineStyle(1, 0x00ccff);
+            c.beginFill(0xffffff, 0.1).lineStyle(1, 0xffff00);
             const { vertices } = physics.debugRender();
 
             for (let i = 0; i < vertices.length; i += 4) {
@@ -120,13 +120,13 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
         container: async () => new Graphics()
       });
 
-      const debugEntity = {
+      const debugEntity = Entity<Position | Renderable>({
         id: `collider-debug`,
         components: {
           position: new Position(),
           renderable: r
         }
-      }
+      })
 
       world.addEntity(debugEntity);
       debugRenderables.push(r);

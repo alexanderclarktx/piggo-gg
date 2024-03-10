@@ -9,7 +9,7 @@ export const FieldWall = (wallPoints: WallPoints): Entity => {
   return LineWall({ points: wallPointsWorld.flat() });
 }
 
-export const FieldGrass = (wallPoints: WallPoints): Entity => ({
+export const FieldGrass = (wallPoints: WallPoints) => Entity({
   id: "field",
   components: {
     position: new Position({ x: 0, y: 0 }),

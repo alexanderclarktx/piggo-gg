@@ -32,7 +32,7 @@ export const GuiSystem: SystemBuilder<"GuiSystem"> = ({
       if (entity.components.renderable) {
         const { health, position } = entity.components;
 
-        world.addEntity({
+        world.addEntity(Entity({
           id: `${entity.id}-health`,
           components: {
             position: position,
@@ -41,7 +41,7 @@ export const GuiSystem: SystemBuilder<"GuiSystem"> = ({
               setup: HealthBar(health)
             })
           }
-        });
+        }));
 
         renderedEntities.add(entity);
       }

@@ -12,7 +12,7 @@ export type LineWallProps = {
   points: number[]
 }
 
-export const LineWall = ({ points }: LineWallProps): Entity => ({
+export const LineWall = ({ points }: LineWallProps) => Entity({
   id: `linewall-${points.join("-")}`,
   components: {
     position: new Position({ x: 0, y: 0 }),
@@ -25,7 +25,7 @@ export const LineWall = ({ points }: LineWallProps): Entity => ({
   }
 });
 
-export const Wall = ({ x, y, length, width, rotation }: WallProps): Entity => ({
+export const Wall = ({ x, y, length, width, rotation }: WallProps) => Entity({
   id: `wall-${x}${y}`,
   components: {
     position: new Position({ x, y }),
