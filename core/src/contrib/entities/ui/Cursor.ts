@@ -3,7 +3,7 @@ import { Graphics } from "pixi.js";
 
 export const Cursor = (): Entity => {
 
-  const cursor = {
+  const cursor = Entity<Renderable | Position>({
     id: "cursor",
     components: {
       position: new Position({ x: 2000, y: 2000, screenFixed: true }),
@@ -26,7 +26,7 @@ export const Cursor = (): Entity => {
         zIndex: 10
       })
     }
-  }
+  });
 
   return cursor;
 }

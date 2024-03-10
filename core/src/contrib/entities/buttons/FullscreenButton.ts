@@ -1,7 +1,7 @@
 import { Button, Clickable, Entity, Position, ValidAction, World } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
-export const FullscreenButton = (id: string = "fullscreenButton"): Entity => ({
+export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
   id: id,
   components: {
     position: new Position({

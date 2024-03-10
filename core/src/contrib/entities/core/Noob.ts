@@ -4,7 +4,7 @@ export type NoobProps = {
   id: string
 }
 
-export const Noob = ({ id }: NoobProps): Entity => ({
+export const Noob = ({ id }: NoobProps) => Entity({
   id: id,
   components: {
     networked: new Networked({ isNetworked: true }),

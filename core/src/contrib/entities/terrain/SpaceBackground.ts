@@ -1,7 +1,7 @@
 import { Entity, Position, Renderable } from "@piggo-gg/core";
 import { Sprite, TilingSprite } from "pixi.js"
 
-export const SpaceBackground = (): Entity => ({
+export const SpaceBackground = () => Entity({
   id: "background",
   components: {
     position: new Position({ x: -8000, y: -2000 }),

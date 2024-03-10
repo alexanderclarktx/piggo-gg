@@ -16,7 +16,7 @@ export type RenderableProps = {
   cacheAsBitmap?: boolean
   rotates?: boolean
   animations?: Record<string, AnimatedSprite>
-  setup?: (r: Renderable) => Promise<void>
+  setup?: (renderable: Renderable, renderer: Renderer | undefined) => Promise<void>
 }
 
 // TODO refactor and simplify how entities define renderables
@@ -102,7 +102,7 @@ export class Renderable extends Component<"renderable"> {
     this.c.alpha = 1;
     this.c.children.forEach((child) => { child.alpha = 1 });
 
-    if (setup) await setup(this);
+    if (setup) await setup(this, renderer);
 
     if (this.animations) this.setAnimationColor(color ?? 0xffffff)
   }

@@ -15,7 +15,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
       height: window.innerHeight * 0.90
     });
 
-    const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Soccer, PiggoLegends] });
+    const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Soccer, PiggoLegends ] });
     setWorld(world);
   }, []);
 

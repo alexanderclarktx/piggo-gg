@@ -18,7 +18,7 @@ export const TilingSpriteFloor = async (rows: number, cols: number): Promise<Ent
     return tilingSprite;
   }
 
-  return {
+  return Entity({
     id: "tiling-sprite-floor",
     components: {
       position: new Position({ x: -4000, y: -1000 }),
@@ -26,5 +26,5 @@ export const TilingSpriteFloor = async (rows: number, cols: number): Promise<Ent
         container: tiles
       })
     }
-  }
+  });
 }

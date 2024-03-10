@@ -41,7 +41,7 @@ export const Chat = (): Entity => {
     }
   });
 
-  return {
+  return Entity({
     id: "chat",
     components: {
       position: new Position({ x: -400, y: -200, screenFixed: true }),
@@ -50,5 +50,5 @@ export const Chat = (): Entity => {
         children: async () => [chatHistoryText(), chatBufferText()]
       })
     }
-  }
+  });
 }

@@ -72,7 +72,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
       // debug bounds
       const debugBounds = new DebugBounds({ debugRenderable: renderable });
 
-      const debugEntity = {
+      const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
           position: new Position(),
@@ -81,7 +81,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
             children: async () => [textBox, debugBounds]
           })
         }
-      };
+      });
 
       debugEntitiesPerEntity[entity.id].push(debugEntity);
       world.addEntity(debugEntity);
@@ -120,13 +120,13 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
         container: async () => new Graphics()
       });
 
-      const debugEntity = {
+      const debugEntity = Entity<Position | Renderable>({
         id: `collider-debug`,
         components: {
           position: new Position(),
           renderable: r
         }
-      }
+      })
 
       world.addEntity(debugEntity);
       debugRenderables.push(r);

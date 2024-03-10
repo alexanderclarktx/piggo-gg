@@ -1,7 +1,7 @@
 import { Button, Clickable, Entity, Position, ValidAction, World, WsClientSystem } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
-export const ConnectButton = (): Entity => ({
+export const ConnectButton = () => Entity({
   id: "connectButton",
   components: {
     position: new Position({ x: 75, y: 5, screenFixed: true }),

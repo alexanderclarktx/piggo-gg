@@ -50,7 +50,7 @@ export const TileFloor = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${
     return tiles;
   }
 
-  return {
+  return Entity({
     id: id,
     components: {
       position: new Position(position),
@@ -59,5 +59,5 @@ export const TileFloor = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${
         children: makeTiles
       })
     }
-  }
+  });
 }

@@ -1,9 +1,11 @@
-import { ComponentTypes, Controlling } from "@piggo-gg/core";
+import { Component, ComponentTypes, Controlling } from "@piggo-gg/core";
 
 // 集 jí (set)
 // an Entity is a uniquely identified set of Components
-export interface Entity<T extends ComponentTypes = ComponentTypes> {
+export type Entity<T extends ComponentTypes = ComponentTypes> = {
   id: string
+  serialize: () => SerializedEntity
+  deserialize: (serializedEntity: SerializedEntity) => void
   components: ComponentTypes extends T ?
   {
     // all components optional
@@ -17,18 +19,29 @@ export interface Entity<T extends ComponentTypes = ComponentTypes> {
 
 export type SerializedEntity = Record<string, Record<string, string | number>>
 
-export const serializeEntity = (entity: Entity): SerializedEntity => {
-  const serializedEntity: SerializedEntity = {};
-  Object.values(entity.components).forEach((component) => {
-    const serializedComponent = component.serialize();
-    if (Object.keys(serializedComponent).length) {
-      serializedEntity[component.type] = serializedComponent;
-    }
-  });
-  return serializedEntity;
+type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize">
+
+export const Entity = <T extends ComponentTypes>(e: ProtoEntity<T>): Entity<T> => {
+  return {
+    ...e,
+    serialize: () => {
+      const serializedEntity: SerializedEntity = {};
+      Object.values(e.components).forEach((component: Component) => {
+        const serializedComponent = component.serialize();
+        if (Object.keys(serializedComponent).length) {
+          serializedEntity[component.type] = serializedComponent;
+        }
+      });
+      return serializedEntity;
+    },
+    deserialize: (serializedEntity: SerializedEntity) => deserializeEntity(e, serializedEntity)
+    // deserialize: (serializedEntity: SerializedEntity) => {
+    //   Object.keys(serializedEntity).forEach((type) => {
+    // }
+  }
 }
 
-export const deserializeEntity = (entity: Entity, serializedEntity: SerializedEntity) : void => {
+export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity) : void => {
 
   // add new components if necessary
   Object.keys(serializedEntity).forEach((type) => {
