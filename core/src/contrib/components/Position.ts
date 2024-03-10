@@ -61,18 +61,22 @@ export class Position extends Component<"position"> {
   setPosition = ({ x, y }: { x: number, y: number }) => {
     this.data.x = x;
     this.data.y = y;
+    return this;
   }
 
   setVelocity = ({ x, y }: { x: number, y: number }) => {
     this.data.velocityX = x;
     this.data.velocityY = y;
+    return this;
   }
 
   rotateUp = (amount: number) => {
     this.data.rotation = Math.round(this.data.rotation + amount);
+    return this;
   }
 
   rotateDown = (amount: number) => {
     this.data.rotation = Math.round(this.data.rotation - amount);
+    return this;
   }
 }

@@ -45,8 +45,8 @@ export const Skelly = (id: string, tint?: number) => Entity({
         r.bufferedAnimation = "d";
 
         const nametag = new Text();
-        nametag.text = id.split("-")[1]
-        nametag.style = { fill: 0xffff00, fontSize: 13 }
+        nametag.text = id.split("-")[1];
+        nametag.style = { fill: 0xffff00, fontSize: 14 }
         nametag.setTransform(-20, -45);
 
         r.c.addChild(nametag);

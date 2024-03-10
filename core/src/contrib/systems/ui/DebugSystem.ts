@@ -66,7 +66,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
             c.text = debugText(position, renderable);
           }
         },
-        fontSize: 12, color: 0xffff00
+        fontSize: 12, color: 0x00ff00
       });
 
       // debug bounds
@@ -104,7 +104,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
         dynamic: (c: Graphics) => {
           if (c.clear) {
             c.clear()
-            c.beginFill(0xffffff, 0.1).lineStyle(1, 0x00ccff);
+            c.beginFill(0xffffff, 0.1).lineStyle(1, 0xffff00);
             const { vertices } = physics.debugRender();
 
             for (let i = 0; i < vertices.length; i += 4) {
