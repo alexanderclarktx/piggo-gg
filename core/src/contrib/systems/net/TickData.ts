@@ -6,6 +6,7 @@ export type TickData = {
   timestamp: number
   player: string
   actions: Record<number, Record<string, string[]>>
+  chats: Record<number, Record<string, string[]>>
   serializedEntities: Record<string, SerializedEntity>
   latency?: number
 }

@@ -10,19 +10,24 @@ export const Chat = (): Entity => {
     color: 0x55FFFF,
     dynamic: (t: Text, r: TextBox, _, w: World) => {
 
-      // get the last 4 messages
-      let lastMessages: string[] = [];
-      w.chatHistory.keys().slice(0, 4).forEach((tick) => {
-        const messagesForEntity = w.chatHistory.atTick(tick);
-        if (messagesForEntity) Object.values(messagesForEntity).forEach((messages) => {
-          messages.forEach((message) => {
-            if (messages.length < 4) lastMessages.push(message)
+      // hide chat if no recent messages
+      if ((w.tick - w.chatHistory.keys()[0]) > 125) {
+        t.text = "";
+      } else {
+        let lastMessages: string[] = [];
+
+        // get last 4 messages
+        w.chatHistory.keys().slice(0, 4).forEach((tick) => {
+          const messagesForEntity = w.chatHistory.atTick(tick);
+          if (messagesForEntity) Object.entries(messagesForEntity).forEach(([player, messages]) => {
+            messages.forEach((message) => {
+              if (messages.length < 4) lastMessages.push(`${player}: ${message}`);
+            });
           });
         });
-      });
 
-      // join with linebreak
-      t.text = lastMessages.reverse().join("\n");
+        t.text = lastMessages.reverse().join("\n");
+      }
 
       // offset from bottom
       r.c.position.set(0, -1 * t.height + 20);

@@ -171,9 +171,9 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
 
       // clear old buffered data
       world.actionBuffer.clearBeforeTick(world.tick - 200);
-      Object.keys(world.entitiesAtTick).forEach((tick) => {
-        if ((world.tick - Number(tick)) > 200) {
-          delete world.entitiesAtTick[Number(tick)];
+      Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
+        if ((world.tick - tick) > 200) {
+          delete world.entitiesAtTick[tick];
         }
       });
     },
@@ -226,8 +226,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       });
 
       // update local action buffer
-      Object.keys(td.actions).forEach((tickString) => {
-        const tick = Number(tickString);
+      Object.keys(td.actions).map(Number).forEach((tick) => {
         Object.keys(td.actions[tick]).forEach((entityId) => {
           // skip future actions for controlled entities
           if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;

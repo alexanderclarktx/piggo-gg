@@ -1,4 +1,4 @@
-import { GameBuilder, IsometricWorld, Noob, TickData, World, WsServerSystem } from "@piggo-gg/core";
+import { IsometricWorld, Noob, TickData, World, WsServerSystem } from "@piggo-gg/core";
 import { PiggoLegends, Soccer } from "@piggo-gg/games";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
@@ -68,16 +68,31 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
 
     // process message actions
     if (parsedMessage.actions) {
-      Object.keys(parsedMessage.actions).forEach((cmdTickString) => {
-        const cmdTick = Number(cmdTickString);
+      Object.keys(parsedMessage.actions).map(Number).forEach((tick) => {
 
         // ignore actions from the past
-        if (cmdTick < world.tick) return;
+        if (tick < world.tick) return;
 
         // add actions for the player or entities controlled by the player
-        Object.keys(parsedMessage.actions[cmdTick]).forEach((entityId) => {
+        Object.keys(parsedMessage.actions[tick]).forEach((entityId) => {
           if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
-            world.actionBuffer.set(cmdTick, entityId, parsedMessage.actions[cmdTick][entityId]);
+            world.actionBuffer.set(tick, entityId, parsedMessage.actions[tick][entityId]);
+          }
+        });
+      });
+    }
+
+    // process message chats
+    if (parsedMessage.chats) {
+      Object.keys(parsedMessage.chats).map(Number).forEach((tick) => {
+
+        // ignore chats from the past
+        if (tick < world.tick) return;
+
+        // add chats for the player
+        Object.keys(parsedMessage.chats[tick]).forEach((entityId) => {
+          if (entityId === parsedMessage.player) {
+            world.chatHistory.set(tick, entityId, parsedMessage.chats[tick][entityId]);
           }
         });
       });
