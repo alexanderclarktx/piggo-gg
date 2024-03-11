@@ -38,8 +38,6 @@ export const WsServerSystem = ({ world, clients, clientMessages }: ServerNetcode
       chats
     };
 
-    // console.log(Object.keys(chats).length);
-
     // send tick data to all clients
     Object.entries(clients).forEach(([id, client]) => {
       client.send(JSON.stringify({
