@@ -82,6 +82,24 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
         });
       });
     }
+
+    // process message chats
+    if (parsedMessage.chats) {
+      Object.keys(parsedMessage.chats).forEach((chatTickString) => {
+        const chatTick = Number(chatTickString);
+        console.log(`chat at tick world:${world.tick} msg:${chatTickString} ${JSON.stringify(parsedMessage.chats[chatTick])}`)
+
+        // ignore chats from the past
+        if (chatTick < world.tick) return;
+
+        // add chats for the player
+        Object.keys(parsedMessage.chats[chatTick]).forEach((entityId) => {
+          if (entityId === parsedMessage.player) {
+            world.chatHistory.set(chatTick, entityId, parsedMessage.chats[chatTick][entityId]);
+          }
+        });
+      });
+    }
   }
 
   world.addSystems([WsServerSystem({ world, clients, clientMessages })]);

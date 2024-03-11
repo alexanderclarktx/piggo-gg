@@ -39,15 +39,60 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
       if (message.latency) world.ms = (lastLatency + message.latency) / 2;
     }
 
+    const onTick = (_: Entity[]) => {
+      handleLatestMessage();
+      latestServerMessage = null;
+      sendMessage(world);
+    }
+
+    const sendMessage = (world: World) => {
+
+      // prepare actions from recent frames for the client entity
+      const recentTicks = world.actionBuffer.keys().filter((tick) => tick >= (world.tick - 20));
+      let actions: Record<number, Record<string, string[]>> = {};
+      let chats: Record<number, Record<string, string[]>> = {};
+
+      recentTicks.forEach((tick) => {
+        const actionsAtTick = world.actionBuffer.atTick(tick);
+        if (actionsAtTick && Object.keys(actionsAtTick).length) {
+          actions[tick] = actionsAtTick;
+        }
+
+        const chatsAtTick = world.chatHistory.atTick(tick);
+        if (chatsAtTick && Object.keys(chatsAtTick).length) {
+          chats[tick] = chatsAtTick;
+        }
+      });
+
+      const message: TickData = {
+        type: "game",
+        tick: world.tick,
+        timestamp: Date.now(),
+        player: clientPlayerId ?? "unknown",
+        actions,
+        chats,
+        serializedEntities: {}
+      }
+
+      const numChats = Object.keys(chats).length;
+      // numChats ? console.log(JSON.stringify(chats)) : null;
+
+      if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
+    }
+
     const handleLatestMessage = () => {
       if (latestServerMessage === null) return;
       let message = latestServerMessage;
       let rollback = false;
 
-      if (message.tick > world.tick) {
-        rollback = true;
-        console.log(`rollback! ${message.tick}! server is behind`);
+      const mustRollback = (log: string) => {
+        if (!rollback) {
+          rollback = true;
+          console.log(`rollback from ${message.tick}! ${log}`);
+        }
       }
+
+      if (message.tick > world.tick) mustRollback("server is ahead");
 
       // compare action buffers
       if (!rollback) Object.keys(message.actions).forEach((tickString) => {
@@ -60,30 +105,22 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
 
         for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
           if (!localActions) {
-            console.log(`rollback! ${message.tick}! client is behind`);
-            rollback = true;
-            break;
+            mustRollback("missing client actions for tick");
           } else if (!localActions[entityId]) {
-            console.log(`rollback! ${message.tick}! missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
-            rollback = true;
-            break;
+            mustRollback(`missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
           } else if (localActions[entityId].length !== messageActionsForEntity.length) {
-            console.log(`rollback! count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
-            rollback = true;
-            break;
+            mustRollback(`count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
           } else {
             const actions = localActions[entityId];
             if (actions) actions.forEach((localC) => {
               if (!messageActionsForEntity.includes(localC)) {
-                console.log(`rollback! ${message.tick}! CLIENT ACTION ${entityId}:${localC} not in ${JSON.stringify(messageActionsForEntity)}`);
-                rollback = true;
+                mustRollback(`CLIENT ACTION ${entityId}:${localC} not in ${JSON.stringify(messageActionsForEntity)}`);
               }
             });
 
             messageActionsForEntity.forEach((serverC) => {
               if (!actions.includes(serverC)) {
-                console.log(`rollback! ${message.tick}! SERVER ACTION ${entityId}:${serverC} not in ${JSON.stringify(actions)}`);
-                rollback = true;
+                mustRollback(`SERVER ACTION ${entityId}:${serverC} not in ${JSON.stringify(actions)}`);
               }
             });
           }
@@ -93,8 +130,7 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
       // compare entity counts
       if (!rollback && world.entitiesAtTick[message.tick]) {
         if (Object.keys(world.entitiesAtTick[message.tick]).length !== Object.keys(message.serializedEntities).length) {
-          console.log(`rollback! ${message.tick}! entity count local:${Object.keys(message.serializedEntities).length} remote:${Object.keys(world.entitiesAtTick[message.tick]).length}`);
-          rollback = true;
+          mustRollback(`entity count local:${Object.keys(message.serializedEntities).length} remote:${Object.keys(world.entitiesAtTick[message.tick]).length}`);
         }
       }
 
@@ -106,54 +142,29 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
             const localEntity = entitiesAtTick[entityId];
             if (localEntity) {
               if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
-                console.log(`rollback! ${message.tick}! entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
-                rollback = true;
-                break;
+                mustRollback(`entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
               }
             } else {
-              console.log("rollback ${message.tick}! no buffered message", message.tick, world.entitiesAtTick[message.tick].serializedEntities);
-              rollback = true;
-              break
+              mustRollback(`no buffered message ${world.entitiesAtTick[message.tick].serializedEntities}`);
             }
           } else {
-            console.log("rollback ${message.tick}! no buffered tick data", message.tick, Object.keys(world.entitiesAtTick), world.entitiesAtTick[message.tick]);
-            rollback = true;
-            break
+            mustRollback(`no buffered tick data ${Object.keys(world.entitiesAtTick)} ${world.entitiesAtTick[message.tick]}`);
           }
         }
       }
-
-      if (rollback) world.rollback(message);
-    }
-
-    const onTick = (_: Entity[]) => {
-      handleLatestMessage();
-      latestServerMessage = null;
-      sendMessage(world);
-    }
-
-    const sendMessage = (world: World) => {
-
-      // prepare actions from recent frames for the client entity
-      const recentTicks = world.actionBuffer.keys().filter((tick) => tick >= (world.tick - 20));
-      let actions: Record<number, Record<string, string[]>> = {};
-      recentTicks.forEach((tick) => {
-        const actionsAtTick = world.actionBuffer.atTick(tick);
-        if (actionsAtTick && Object.keys(actionsAtTick).length) {
-          actions[tick] = actionsAtTick;
-        }
-      });
-
-      const message: TickData = {
-        type: "game",
-        tick: world.tick,
-        timestamp: Date.now(),
-        player: clientPlayerId ?? "unknown",
-        actions,
-        serializedEntities: {}
+      const numChats = Object.keys(message.chats).length;
+      numChats ? console.log(JSON.stringify(message.chats)) : null;
+      if (numChats) {
+        Object.keys(message.chats).forEach((frameString) => {
+          const frame = Number(frameString);
+          // if (frame < world.tick) return;
+          Object.keys(message.chats[frame]).forEach((entityId) => {
+            world.chatHistory.set(frame, entityId, message.chats[frame][entityId]);
+          });
+        });
       }
 
-      if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
+      if (rollback) world.rollback(message);
     }
 
     return {
