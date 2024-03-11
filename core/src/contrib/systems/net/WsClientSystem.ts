@@ -95,8 +95,7 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
       if (message.tick > world.tick) mustRollback("server is ahead");
 
       // compare action buffers
-      if (!rollback) Object.keys(message.actions).forEach((tickString) => {
-        const tick = Number(tickString);
+      if (!rollback) Object.keys(message.actions).map(Number).forEach((tick) => {
 
         if (tick < message.tick) return;
 
@@ -155,11 +154,10 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
       const numChats = Object.keys(message.chats).length;
       numChats ? console.log(JSON.stringify(message.chats)) : null;
       if (numChats) {
-        Object.keys(message.chats).forEach((frameString) => {
-          const frame = Number(frameString);
-          // if (frame < world.tick) return;
-          Object.keys(message.chats[frame]).forEach((entityId) => {
-            world.chatHistory.set(frame, entityId, message.chats[frame][entityId]);
+        Object.keys(message.chats).map(Number).forEach((tick) => {
+          // if (tick < world.tick) return;
+          Object.keys(message.chats[tick]).forEach((entityId) => {
+            world.chatHistory.set(tick, entityId, message.chats[tick][entityId]);
           });
         });
       }

@@ -23,8 +23,8 @@ export const StateBuffer = (): StateBuffer => {
       delete buffer[tick];
     },
     clearBeforeTick: (tick) => {
-      Object.keys(buffer).forEach((t) => {
-        if (Number(t) < tick) delete buffer[Number(t)];
+      Object.keys(buffer).map(Number).forEach((t) => {
+        if (t < tick) delete buffer[t];
       });
     },
     keys: () => {
