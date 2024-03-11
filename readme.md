@@ -26,6 +26,10 @@ __piggo.gg__ is a multiplayer creative web game! Play online at [piggo.gg](https
 
 ✅ isometric projection from world coordinates
 
+✅ switch between games
+
+✅ networked chat
+
 # Development
 
 |package|description|
