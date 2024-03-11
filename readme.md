@@ -1,4 +1,4 @@
-__piggo.gg__ is a creative multiplayer web game! Play online at [piggo.gg](https://piggo.gg) 
+__piggo.gg__ is a multiplayer creative web game! Play online at [piggo.gg](https://piggo.gg) 
 
 <p align="center">
   <img src="piggo-gg.gif" style="width:720px">
