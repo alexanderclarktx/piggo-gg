@@ -1,5 +1,5 @@
-import { Entity, Collider, Debug, Networked, Position, Renderable, NPC } from "@piggo-gg/core";
-import { Text } from "pixi.js";
+import { Collider, Debug, Entity, NPC, Networked, Position, Renderable } from "@piggo-gg/core";
+import { SCALE_MODES, Sprite } from "pixi.js";
 
 export type BallProps = {
   id?: string
@@ -28,10 +28,15 @@ export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } 
     renderable: new Renderable({
       zIndex: 3,
       rotates: true,
-      container: async () => {
-        const text = new Text("⚽️", { fill: "#FFFFFF", fontSize: 18 })
-        text.anchor.set(0.43, 0.44);
-        return text;
+      setup: async (r: Renderable) => {
+
+        const texture = (await r.loadTextures("ball.json"))["ball"];
+        const sprite = new Sprite(texture);
+
+        sprite.texture.baseTexture.scaleMode = SCALE_MODES.LINEAR;
+        sprite.anchor.set(0.5, 0.5);
+
+        r.c = sprite;
       }
     })
   }

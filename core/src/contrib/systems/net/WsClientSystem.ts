@@ -10,9 +10,9 @@ const servers = {
 export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
   id: "WsClientSystem",
   init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
+    // const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    // const wsClient = new WebSocket(servers.dev);
+    const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
 
@@ -92,6 +92,10 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
         }
       }
 
+      if (message.tick % 100 === 0) {
+        console.log(`server actions tick:${message.tick} ${JSON.stringify(message.actions)}`);
+      }
+
       if (message.tick > world.tick) mustRollback("server is ahead");
 
       // compare action buffers
@@ -106,7 +110,7 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
           if (!localActions) {
             mustRollback("missing client actions for tick");
           } else if (!localActions[entityId]) {
-            mustRollback(`missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
+            mustRollback(`missed e:${entityId} server:${JSON.stringify(messageActionsForEntity)} local:${JSON.stringify(localActions)}`);
           } else if (localActions[entityId].length !== messageActionsForEntity.length) {
             mustRollback(`count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
           } else {
