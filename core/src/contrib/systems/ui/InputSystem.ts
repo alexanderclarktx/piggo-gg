@@ -103,12 +103,6 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
         const { controlled } = entity.components;
 
         if (controlled.data.entityId !== world.clientPlayerId) return;
-
-        if (world.actionBuffer.at(world.tick, entity.id)) {
-          console.log("skip duplicate input");
-          return;
-        }
-
         if (controlled.data.entityId === clientPlayerId) handleInputForControlledEntity(entity, world);
       });
 
@@ -134,7 +128,7 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
             const controllerInput = controller.controllerMap[input];
             if (controllerInput != null) {
               if (actions.actionMap[controllerInput]) {
-                world.actionBuffer.push(world.tick, controlledEntity.id, controllerInput);
+                world.actionBuffer.push(world.tick + 1, controlledEntity.id, controllerInput);
               }
             }
 
@@ -147,7 +141,7 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
           const controllerInput = controller.controllerMap[input];
           if (controllerInput != null) {
             if (actions.actionMap[controllerInput]) {
-              world.actionBuffer.push(world.tick, controlledEntity.id, controllerInput);
+              world.actionBuffer.push(world.tick + 1, controlledEntity.id, controllerInput);
             }
           }
 
