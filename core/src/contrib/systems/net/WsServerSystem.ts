@@ -38,12 +38,6 @@ export const WsServerSystem = ({ world, clients, latestClientMessages }: ServerN
       }
     });
 
-    if (world.tick % 200 === 0) {
-      // console.log(JSON.stringify(latestActionForEntity));
-      // console.log(JSON.stringify(latestClientMessages));
-      // console.log(frames);
-    }
-
     // build tick data
     const tickData: TickData = {
       type: "game",
@@ -60,17 +54,13 @@ export const WsServerSystem = ({ world, clients, latestClientMessages }: ServerN
 
       const actionsAppend: Record<number, Record<string, string[]>> = {};
 
-      // prediction of other players' actions
+      // predict other players' actions
       Object.entries(latestActionForEntity).forEach(([entityId, tickActions]) => {
 
         const [ tick, latestActions ] = tickActions;
-        let shouldAppendEmpty = false;
+        const shouldAppendEmpty = latestClientMessages[entityId.split("-")[1]]?.td.tick > tick;
 
-        if (latestClientMessages[entityId.split("-")[1]]?.td.tick > tick) {
-          console.log("APPEND EMPTY");
-          shouldAppendEmpty = true;
-        }
-
+        // skip for the client's own entity (TODO hacky)
         if (entityId !== `skelly-${id}`) { // latestActions.length && 
           const futureTicks = Object.keys(actions).map(Number).filter((t) => t > tick);
           futureTicks.forEach((futureTick) => {
