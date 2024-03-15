@@ -20,7 +20,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
 
   const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, PiggoLegends] });
 
-  const clientMessages: Record<string, { td: TickData, latency: number }> = {};
+  const latestClientMessages: Record<string, { td: TickData, latency: number }> = {};
 
   const handleClose = (ws: WS) => {
 
@@ -37,7 +37,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     const now = Date.now();
     const parsedMessage = JSON.parse(msg) as TickData;
 
-    let messages = clientMessages[parsedMessage.player];
+    let messages = latestClientMessages[parsedMessage.player];
 
     // add player entity if it doesn't exist
     if (!world.entities[parsedMessage.player]) {
@@ -57,7 +57,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     };
 
     // store last message for client
-    clientMessages[parsedMessage.player] = {
+    latestClientMessages[parsedMessage.player] = {
       td: parsedMessage,
       latency: now - parsedMessage.timestamp
     }
@@ -99,7 +99,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     }
   }
 
-  world.addSystems([WsServerSystem({ world, clients, clientMessages })]);
+  world.addSystems([WsServerSystem({ world, clients, latestClientMessages })]);
 
   return {
     world,

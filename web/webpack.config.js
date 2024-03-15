@@ -16,7 +16,7 @@ module.exports = {
     ],
   },
   optimization: {
-    minimize: process.env.NODE_ENV === "production",
+    minimize: process.env.ENV === "production",
     minimizer: [
       new TerserPlugin({
         extractComments: false,

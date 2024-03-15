@@ -74,9 +74,6 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
         serializedEntities: {}
       }
 
-      const numChats = Object.keys(chats).length;
-      // numChats ? console.log(JSON.stringify(chats)) : null;
-
       if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
     }
 
@@ -94,6 +91,16 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
 
       if (message.tick > world.tick) mustRollback("server is ahead");
 
+      // handle future actions
+      if (!rollback) {
+        Object.keys(message.actions).map(Number).filter((t) => t > world.tick).forEach((futureTick) => {
+          Object.keys(message.actions[futureTick]).forEach((entityId) => {
+            if ((entityId === clientPlayerId) || (entityId === `skelly-${clientPlayerId}`)) return;
+            world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
+          });
+        });
+      }
+
       // compare action buffers
       if (!rollback) Object.keys(message.actions).map(Number).forEach((tick) => {
 
@@ -104,11 +111,12 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
 
         for (const [entityId, messageActionsForEntity] of Object.entries(messageActions)) {
           if (!localActions) {
-            mustRollback("missing client actions for tick");
+            console.warn("missing client actions for tick");
+            return;
           } else if (!localActions[entityId]) {
-            mustRollback(`missed e:${entityId} tick:${message.tick} ${JSON.stringify(messageActionsForEntity)} ${JSON.stringify(localActions)}`);
+            mustRollback(`missed e:${entityId} server:${JSON.stringify(messageActionsForEntity)} local:${JSON.stringify(localActions)}`);
           } else if (localActions[entityId].length !== messageActionsForEntity.length) {
-            mustRollback(`count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
+            mustRollback(`action count ${entityId} ${localActions[entityId].length} ${messageActionsForEntity.length}`);
           } else {
             const actions = localActions[entityId];
             if (actions) actions.forEach((localC) => {
@@ -151,11 +159,11 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
           }
         }
       }
+
+      // handle new chat messages
       const numChats = Object.keys(message.chats).length;
-      numChats ? console.log(JSON.stringify(message.chats)) : null;
       if (numChats) {
         Object.keys(message.chats).map(Number).forEach((tick) => {
-          // if (tick < world.tick) return;
           Object.keys(message.chats[tick]).forEach((entityId) => {
             world.chatHistory.set(tick, entityId, message.chats[tick][entityId]);
           });

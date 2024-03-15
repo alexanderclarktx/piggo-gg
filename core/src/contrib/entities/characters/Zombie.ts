@@ -10,7 +10,7 @@ export type ZombieProps = {
 export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps) => Entity({
   id,
   components: {
-    position: new Position(positionProps),
+    position: new Position({ ...positionProps, velocityResets: 1 }),
     networked: new Networked({ isNetworked: true }),
     clickable: new Clickable({
       width: 32,

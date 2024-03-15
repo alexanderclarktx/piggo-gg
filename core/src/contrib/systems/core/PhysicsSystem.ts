@@ -70,8 +70,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
 
         // update body velocity
         bodies[entity.id].setLinvel({
-          x: Math.round(position.data.velocityX * 100) / 100,
-          y: Math.round(position.data.velocityY * 100) / 100
+          x: Math.floor(position.data.velocityX * 100) / 100,
+          y: Math.floor(position.data.velocityY * 100) / 100
         }, true);
       });
 
@@ -89,8 +89,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
 
         entity.components.position.data.x = Math.round(body.translation().x * 100) / 100;
         entity.components.position.data.y = Math.round(body.translation().y * 100) / 100;
-        entity.components.position.data.velocityX = Math.round(body.linvel().x * 100) / 100;
-        entity.components.position.data.velocityY = Math.round(body.linvel().y * 100) / 100;
+        entity.components.position.data.velocityX = Math.floor(body.linvel().x * 100) / 100;
+        entity.components.position.data.velocityY = Math.floor(body.linvel().y * 100) / 100;
       });
 
       // sensor callbacks

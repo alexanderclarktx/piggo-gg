@@ -4,10 +4,10 @@
   "private": true,
   "workspaces": [ "core", "games", "web", "server" ],
   "scripts": {
-    "server": "bun --cwd server start",
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",
+    "server": "bun --cwd server start",
     "docs": "bun pages",
-    "pages": "NODE_ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME"
+    "pages": "ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME"
   },
   "license": "ISC",
   "dependencies": {

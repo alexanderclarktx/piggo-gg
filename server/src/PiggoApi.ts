@@ -1,4 +1,3 @@
-import { Soccer } from "@piggo-gg/games";
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
