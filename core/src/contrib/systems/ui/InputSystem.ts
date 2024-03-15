@@ -100,11 +100,15 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
 
       // handle inputs for controlled entities
       entities.forEach((entity) => {
-        const controlled = entity.components.controlled;
+        const { controlled } = entity.components;
+
+        if (controlled.data.entityId !== world.clientPlayerId) return;
+
         if (world.actionBuffer.at(world.tick, entity.id)) {
           console.log("skip duplicate input");
           return;
         }
+
         if (controlled.data.entityId === clientPlayerId) handleInputForControlledEntity(entity, world);
       });
 

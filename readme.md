@@ -1,4 +1,4 @@
-__[piggo.gg](https://piggo.gg)__ is a multiplayer social web game!
+__Piggo__ is a multiplayer social web game! Play online at [piggo.gg](https://piggo.gg) 
 
 <p align="center">
   <img src="piggo-gg.gif" style="width:720px">
