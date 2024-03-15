@@ -91,13 +91,11 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
 
       if (message.tick > world.tick) mustRollback("server is ahead");
 
-      // copy future tick actions to local buffer
+      // handle future actions
       if (!rollback) {
-        const futureTicks = Object.keys(message.actions).map(Number).filter((t) => t > world.tick);
-        futureTicks.forEach((futureTick) => {
+        Object.keys(message.actions).map(Number).filter((t) => t > world.tick).forEach((futureTick) => {
           Object.keys(message.actions[futureTick]).forEach((entityId) => {
-            if (entityId === clientPlayerId) return;
-            if (entityId === `skelly-${clientPlayerId}`) return;
+            if ((entityId === clientPlayerId) || (entityId === `skelly-${clientPlayerId}`)) return;
             world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
           });
         });
@@ -115,7 +113,6 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
           if (!localActions) {
             console.warn("missing client actions for tick");
             return;
-            // mustRollback("missing client actions for tick");
           } else if (!localActions[entityId]) {
             mustRollback(`missed e:${entityId} server:${JSON.stringify(messageActionsForEntity)} local:${JSON.stringify(localActions)}`);
           } else if (localActions[entityId].length !== messageActionsForEntity.length) {
@@ -162,11 +159,11 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
           }
         }
       }
+
+      // handle new chat messages
       const numChats = Object.keys(message.chats).length;
-      numChats ? console.log(JSON.stringify(message.chats)) : null;
       if (numChats) {
         Object.keys(message.chats).map(Number).forEach((tick) => {
-          // if (tick < world.tick) return;
           Object.keys(message.chats[tick]).forEach((entityId) => {
             world.chatHistory.set(tick, entityId, message.chats[tick][entityId]);
           });
