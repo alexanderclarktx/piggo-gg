@@ -1,4 +1,4 @@
-import { Application, settings, SCALE_MODES, BaseTexture, utils, Text } from "pixi.js";
+import { Application } from "pixi.js";
 import { Camera, Renderable } from "@piggo-gg/core";
 
 export type RendererProps = {
@@ -13,36 +13,34 @@ export class Renderer {
 
   app: Application;
   camera: Camera;
-  events: utils.EventEmitter = new utils.EventEmitter();
 
   constructor(props: RendererProps) {
     this.props = props;
 
+    this.app = new Application();
+
+    // this.init()
+  }
+
+  async init() {
+
     // create the pixi.js application
-    this.app = new Application({
-      view: props.canvas,
-      resolution: 1, // TODO configurable
+    await this.app.init({
+      view: this.props.canvas,
+      resolution: 2, // TODO configurable
       autoDensity: true,
       backgroundColor: 0x6495ed,
-      width: props.width ?? 800,
-      height: props.height ?? 600,
+      width: this.props.width ?? 800,
+      height: this.props.height ?? 600,
       antialias: false,
       hello: true,
-      powerPreference: "high-performance"
+      roundPixels: false
     });
 
     // set up the camera
     this.camera = new Camera(this);
     this.camera.c.addChild(this.app.stage);
     this.app.stage = this.camera.c;
-
-    // global texture settings
-    settings.ROUND_PIXELS = false; // https://pixijs.download/release/docs/PIXI.settings.html#ROUND_PIXELS
-    BaseTexture.defaultOptions.scaleMode = SCALE_MODES.LINEAR;
-
-    // increase text resolution for readability
-    Text.defaultResolution = 2;
-    Text.defaultAutoResolution = false;
 
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";
@@ -54,11 +52,11 @@ export class Renderer {
     document.addEventListener("fullscreenchange", this.handleResize);
 
     // prevent right-click
-    props.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
+    this.props.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
   handleResize = () => {
-    if (document.fullscreenElement) {
+    if (document.fullscreenElement && this.app.renderer) {
       this.app.renderer.resize(window.innerWidth, window.innerHeight);
     } else {
       const computedCanvasStyle = window.getComputedStyle(this.props.canvas);

@@ -1,5 +1,5 @@
 import { Entity, Position, Renderable } from "@piggo-gg/core";
-import { Sprite, TilingSprite } from "pixi.js"
+import { Assets, Sprite, TilingSprite } from "pixi.js"
 
 export const SpaceBackground = () => Entity({
   id: "background",
@@ -8,9 +8,9 @@ export const SpaceBackground = () => Entity({
     renderable: new Renderable({
       zIndex: -2,
       setup: async (container) => {
-        const image = Sprite.from("space.png");
-        const tiles = new TilingSprite(image.texture, 12000, 12000);
-        container.c.addChild(tiles)
+        const image = Sprite.from(await Assets.load("space.png"));
+        const tiles = new TilingSprite( { texture: image.texture, width: 12000, height: 12000 });
+        container.c = tiles;
       }
     })
   }

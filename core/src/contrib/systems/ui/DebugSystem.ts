@@ -58,7 +58,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
       const { renderable, position } = entity.components;
 
       // text box
-      const textBox = new TextBox({
+      const textBox = TextBox({
         dynamic: (c: Text) => {
           if (renderable && position) {
             const bounds = renderable.c.getLocalBounds();
@@ -104,7 +104,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
         dynamic: (c: Graphics) => {
           if (c.clear) {
             c.clear()
-            c.beginFill(0xffffff, 0.1).lineStyle(1, 0xffff00);
+            c.setStrokeStyle({ width: 1, color: 0xffff00 })
             const { vertices } = physics.debugRender();
 
             for (let i = 0; i < vertices.length; i += 4) {
@@ -114,6 +114,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
               c.moveTo(one.x, one.y);
               c.lineTo(two.x, two.y);
             }
+            c.stroke();
           }
         },
         zIndex: 5,

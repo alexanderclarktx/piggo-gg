@@ -1,4 +1,4 @@
-import { AnimatedSprite, Assets, Container, SCALE_MODES } from "pixi.js";
+import { AnimatedSprite, Assets, Container } from "pixi.js";
 import { Component, Entity, World, Renderer } from "@piggo-gg/core";
 
 export type RenderableProps = {
@@ -11,7 +11,7 @@ export type RenderableProps = {
   scale?: number,
   anchor?: { x: number, y: number }
   color?: number
-  scaleMode?: SCALE_MODES
+  scaleMode?: "nearest" | "linear"
   id?: string
   cacheAsBitmap?: boolean
   rotates?: boolean
@@ -57,7 +57,7 @@ export class Renderable extends Component<"renderable"> {
       animation.animationSpeed = 0.1;
       animation.scale.set(this.props.scale || 1);
       animation.anchor.set(this.props.anchor?.x ?? 0.5, this.props.anchor?.y ?? 0.5);
-      animation.texture.baseTexture.scaleMode = this.props.scaleMode ?? SCALE_MODES.LINEAR;
+      animation.texture.source.scaleMode = this.props.scaleMode ?? "linear";
       animation.tint = color;
     });
   }
@@ -92,9 +92,6 @@ export class Renderable extends Component<"renderable"> {
 
     // set visible
     this.c.visible = visible ?? true;
-
-    // set cacheAsBitmap
-    this.c.cacheAsBitmap = cacheAsBitmap ?? false;
 
     // set container properties
     this.c.zIndex = zIndex || 0;

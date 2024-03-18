@@ -1,5 +1,5 @@
 import { Collider, Debug, Entity, NPC, Networked, Position, Renderable } from "@piggo-gg/core";
-import { SCALE_MODES, Sprite } from "pixi.js";
+import { Sprite } from "pixi.js";
 
 export type BallProps = {
   id?: string
@@ -33,7 +33,6 @@ export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } 
         const texture = (await r.loadTextures("ball.json"))["ball"];
         const sprite = new Sprite(texture);
 
-        sprite.texture.baseTexture.scaleMode = SCALE_MODES.LINEAR;
         sprite.anchor.set(0.5, 0.5);
 
         r.c = sprite;

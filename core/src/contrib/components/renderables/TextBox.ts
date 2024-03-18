@@ -10,29 +10,31 @@ export type TextBoxProps = RenderableProps & {
   boxOutline?: boolean
 }
 
-export class TextBox extends Renderable {
+export const TextBox = (props: TextBoxProps): Renderable => {
 
-  constructor(props: TextBoxProps) {
-    const { text = "", color = 0x55FF00, fontSize = 16, dropShadow = false, padding = 0, boxOutline = false } = props;
+  const { text = "", color = 0x55FF00, fontSize = 16, dropShadow = false, padding = 0, boxOutline = false } = props;
 
-    const textContainer = new Text(text, {
-      fill: color,
-      fontSize,
-      dropShadow,
-      padding
-    })
+  return new Renderable({
+    ...props,
+    setup: async (r: Renderable) => {
+      const textContainer = new Text({
+        text,
+        style: {
+          fill: color,
+          fontSize,
+          dropShadow,
+          padding
+        }
+      })
 
-    if (boxOutline) {
-      const bg = new Graphics()
-      bg.beginFill(0xffffff, 0.3);
-      bg.drawRect(0, 0, 200, 100);
-      bg.endFill();
-      textContainer.addChild(bg);
+      if (boxOutline) {
+        const bg = new Graphics()
+        bg.rect(0, 0, 200, 100);
+        bg.fill({ color: 0xffffff, alpha: 0.3 });
+        textContainer.addChild(bg);
+      }
+
+      r.c = textContainer;
     }
-
-    super({
-      ...props,
-      container: async () => textContainer
-    });
-  }
+  });
 }

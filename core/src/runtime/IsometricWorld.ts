@@ -1,17 +1,20 @@
 import {
   ActionSystem, Chat, ClickableSystem, Cursor,
   DebugButton, DebugSystem, FullscreenButton,
-  GuiSystem, InputSystem, NPCSystem,
-  Noob,
+  GuiSystem, InputSystem, NPCSystem, Noob,
   PhysicsSystem, RenderSystem, World, WorldBuilder
 } from "@piggo-gg/core";
+import { ChatSystem } from "../contrib/systems/ui/ChatSystem";
 
 export const IsometricWorld: WorldBuilder = (props) => {
-  const world = World({ ...props, renderMode: "isometric", clientPlayerId: `noob${Math.trunc((Math.random() * 100))}` });
+
+  const playerId = `noob${Math.trunc((Math.random() * 100))}`;
+
+  const world = World({ ...props, renderMode: "isometric", clientPlayerId: playerId });
 
   if (world.runtimeMode === "client") {
     // client systems
-    world.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem, GuiSystem]);
+    world.addSystemBuilders([InputSystem, ChatSystem, ClickableSystem, DebugSystem, GuiSystem]);
 
     // ui
     world.addEntityBuilders([FullscreenButton, DebugButton, Cursor, Chat]);

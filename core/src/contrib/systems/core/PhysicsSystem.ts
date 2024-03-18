@@ -30,7 +30,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       if (!physics) return;
 
       // reset physics unless in rollback
-      if (!isRollback) resetPhysics();
+      // if (!isRollback) resetPhysics();
 
       // remove old bodies
       Object.keys(bodies).forEach((id) => {
@@ -79,7 +79,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       physics.timestep = timeFactor;
 
       // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
-      physics.switchToSmallStepsPgsSolver();
+      // physics.switchToSmallStepsPgsSolver();
       physics.step();
 
       // update the entity positions

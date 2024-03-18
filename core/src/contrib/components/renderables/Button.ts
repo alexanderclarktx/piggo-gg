@@ -30,15 +30,13 @@ export class Button<T extends ButtonProps = ButtonProps> extends Renderable {
     const radius = 10;
 
     // button outline
-    this.outline.beginFill(0x000066);
-    this.outline.drawRoundedRect(0, 0, width, height, radius);
-    this.outline.endFill();
+    this.outline.roundRect(0, 0, width, height, radius);
+    this.outline.fill(0x000066);
 
     // button shadow
     const shadow = new Graphics();
-    shadow.beginFill(0xFFFF33, 0.3);
-    shadow.drawRoundedRect(0, -1, width, height, radius);
-    shadow.endFill();
+    shadow.roundRect(0, -1, width, height, radius);
+    shadow.fill({ color: 0xFFFF33, alpha: 0.3 });
 
     // add shadow to outline
     this.outline.addChild(shadow);

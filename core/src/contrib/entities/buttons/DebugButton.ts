@@ -16,13 +16,13 @@ export const DebugButton = (): Entity => {
           pressed = !pressed;
           if (pressed) {
             const r = debugButton.components.renderable as Button;
-            r.shadow.tint = 0xff0000;
-            r.outline.tint = 0xff0000;
+            r.shadow.tint = 0x00ffff;
+            r.outline.tint = 0x00ffff;
             if (world.renderer) world.debug = true;
           } else {
             const r = debugButton.components.renderable as Button;
-            r.shadow.tint = 0x00FFFF;
-            r.outline.tint = 0x00FFFF;
+            r.shadow.tint = 0xffffff;
+            r.outline.tint = 0xffFFFF;
             if (world.renderer) world.debug = false;
           }
         })
@@ -30,7 +30,7 @@ export const DebugButton = (): Entity => {
       renderable: new Button({
         dims: { w: 32, textX: 8, textY: 5 },
         zIndex: 4,
-        text: new Text("🔍", { fill: "#FFFFFF", fontSize: 16 }),
+        text: new Text({ text: "🔍", style: { fill: "#FFFFFF", fontSize: 16 } }),
       })
     }
   });

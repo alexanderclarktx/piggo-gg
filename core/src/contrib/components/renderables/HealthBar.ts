@@ -10,14 +10,14 @@ export const HealthBar = (health: Health): (r: Renderable) => Promise<void> => {
 
   const draw = (g: Graphics) => {
     // gold outline
-    g.lineStyle(1, 0xffd700, 1);
-    g.drawRect(-15, -35, 30, 5);
+    g.setStrokeStyle({ width: 1, color: 0xffd700, alpha: 1 });
+    g.rect(-15, -35, 30, 5);
+    g.stroke();
 
     // red length proportional to percent health
     const length = 30 * (health.data.health / health.data.maxHealth);
-    g.beginFill(0xff0000, 0.9);
-    g.drawRect(-15, -35, length, 5);
-    g.endFill();
+    g.rect(-15, -35, length, 5);
+    g.fill({ color: 0xff0000, alpha: 0.9 });
   }
 
   return async (r: Renderable) => {

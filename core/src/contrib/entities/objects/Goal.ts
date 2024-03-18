@@ -30,19 +30,19 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     const g = new Graphics();
 
     // draw goal
-    g.beginFill(color, 0.9);
-    g.drawPolygon([
+    g.poly([
       -2, -width / 2,
       2, -width / 2,
       2, width / 2,
       -2, width / 2
-    ])
+    ]).fill({ color, alpha: 0.9 });
 
     // goal count
-    const t = new Text();
-    t.setTransform(color % 2 === 0 ? -50 : 40, -10);
-    t.style = { "fill": "yellow" };
-    t.text = "0";
+    const t = new Text({
+      text: "0",
+      style: { "fill": "yellow" }
+    });
+    t.updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 });
 
     // goal area
     c.addChild(g);
