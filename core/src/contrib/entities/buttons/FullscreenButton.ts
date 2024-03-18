@@ -13,8 +13,7 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
       height: 30,
       click: ValidAction((_, world: World) => {
         if (!document.fullscreenElement) {
-          // @ts-expect-error
-          world.renderer?.app.view.requestFullscreen();
+          world.renderer?.app.canvas.requestFullscreen();
         } else {
           document.exitFullscreen();
         }
@@ -23,7 +22,7 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
     renderable: new Button({
       dims: { w: 32, textX: 8, textY: 5 },
       zIndex: 4,
-      text: (new Text("⚁", { fill: "#FFFFFF", fontSize: 16 }))
+      text: (new Text({ text: "⚁", style: { fill: "#FFFFFF", fontSize: 16 } }))
     })
   }
 });

@@ -1,5 +1,5 @@
 import { Entity, Renderer, Position, Renderable } from "@piggo-gg/core";
-import { Assets, Texture, Resource, Matrix, Sprite, RenderTexture } from "pixi.js";
+import { Assets, Texture, Sprite, RenderTexture } from "pixi.js";
 
 let index = 0;
 
@@ -14,7 +14,7 @@ export const TileFloor = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${
 
   const makeTiles = async (r: Renderer) => {
     const sandbox = await Assets.load("sandbox.json");
-    const texture = sandbox.textures["white"] as Texture<Resource>;
+    const texture = sandbox.textures["white"] as Texture;
 
     // create the initial tile sprite
     const tile = new Sprite(texture);
@@ -32,9 +32,9 @@ export const TileFloor = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${
     });
 
     // render the tile to the render texture
-    r.app.renderer.render(tile, {
-      renderTexture,
-      transform: new Matrix(1, 0, 0, 1, tile.width / 2, tile.height / 2)
+    r.app.renderer.render({
+      container: tile,
+      target: renderTexture
     });
 
     let tiles: Renderable[] = [];

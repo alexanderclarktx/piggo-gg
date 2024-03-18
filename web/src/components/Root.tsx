@@ -1,5 +1,4 @@
 import { World } from "@piggo-gg/core";
-import "@pixi/unsafe-eval";
 import React, { useEffect, useState } from "react";
 import { NetState } from "../types/NetState";
 import { GameCanvas } from "./GameCanvas";

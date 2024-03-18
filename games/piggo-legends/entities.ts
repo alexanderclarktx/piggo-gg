@@ -20,19 +20,15 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         const bottom = [2500, 2500];
         const left = [0, 2500];
 
-        // const wallPointsWorld = wallPoints.map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]);
-
         // grass
         const grass = new Graphics();
-        grass.lineStyle(2, 0xffffff, 1);
-        grass.beginFill(0x008833);
-        grass.drawPolygon(wallPointsWorld.flat());
+        grass.setStrokeStyle({ width: 2, color: 0xffffff, alpha: 1 });
+        grass.poly(wallPointsWorld.flat());
+        grass.fill(0x008833);
 
         // top right
         const lanes = new Graphics();
-        // lanes.lineStyle(2, 0xfca335, 1);
-        lanes.beginFill(0xf7c860);
-        lanes.drawPolygon([
+        lanes.poly([
           add(top, [200, 1]),
           add(top, [200, 200]),
           add(right, [-200, 200]),
@@ -40,7 +36,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ].map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]).flat());
 
         // top left
-        lanes.drawPolygon([
+        lanes.poly([
           add(top, [1, 200]),
           add(top, [200, 200]),
 
@@ -49,7 +45,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ].map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]).flat());
 
         // bot right
-        lanes.drawPolygon([
+        lanes.poly([
           add(bottom, [-200, -200]),
           add(bottom, [-1, -200]),
           add(right, [-1, 200]),
@@ -57,7 +53,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ].map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]).flat());
 
         // bot left
-        lanes.drawPolygon([
+        lanes.poly([
           add(left, [200, -200]),
           add(left, [200, -1]),
           add(bottom, [-200, -1]),
@@ -65,18 +61,19 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ].map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]).flat());
 
         // mid
-        lanes.drawPolygon([
+        lanes.poly([
           add(right, [-400, 200]),
           add(right, [-200, 400]),
           add(left, [400, -200]),
           add(left, [200, -400]),
         ].map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]).flat());
 
+        lanes.fill(0xf7c860);
+
         const spawns = new Graphics();
 
         // purple spawn
-        spawns.beginFill(0xaa00ff);
-        spawns.drawPolygon([
+        spawns.poly([
           right,
           add(right, [-600, 0]),
           add(right, [-600, 400]),
@@ -85,14 +82,15 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ].map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]).flat());
 
         // blue spawn
-        spawns.beginFill(0x00aaff);
-        spawns.drawPolygon([
+        spawns.poly([
           left,
           add(left, [0, -600]),
           add(left, [400, -600]),
           add(left, [600, -400]),
           add(left, [600, 0]),
         ].map(([x, y]) => worldToScreen({ x, y })).map(({ x, y }) => [x, y]).flat());
+
+        spawns.fill(0xaa00ff);
 
         r.c.addChild(grass);
         r.c.addChild(lanes);

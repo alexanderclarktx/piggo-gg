@@ -20,13 +20,13 @@ export class DebugBounds extends Renderable {
     }
 
     // circle at center
-    drawing.beginFill(0xff00ff);
-    drawing.drawCircle(0, 0, 2);
-    drawing.endFill();
+    drawing.circle(0, 0, 2);
+    drawing.fill(0xff00ff);
 
     // rectangle around bounds
-    drawing.lineStyle(1, 0xff0000);
-    drawing.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    drawing.setStrokeStyle({width: 1,  color: 0xff0000 });
+    drawing.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+    drawing.stroke();
 
     this.c.addChild(drawing);
   }

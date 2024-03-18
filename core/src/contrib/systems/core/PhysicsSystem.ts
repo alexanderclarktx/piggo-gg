@@ -79,7 +79,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       physics.timestep = timeFactor;
 
       // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
-      physics.switchToSmallStepsPgsSolver();
+      // physics.switchToSmallStepsPgsSolver();
       physics.step();
 
       // update the entity positions

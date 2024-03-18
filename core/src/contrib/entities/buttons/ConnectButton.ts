@@ -14,7 +14,7 @@ export const ConnectButton = () => Entity({
     renderable: new Button({
       dims: { w: 72, textX: 8, textY: 5 },
       zIndex: 1,
-      text: new Text("connect", { fill: "#FFFFFF", fontSize: 16 }),
+      text: new Text({ text: "connect", style: { fill: "#FFFFFF", fontSize: 16 } }),
     })
   }
 })

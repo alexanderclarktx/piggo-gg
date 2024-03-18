@@ -4,11 +4,11 @@ import { Text } from "pixi.js";
 
 export const Chat = (): Entity => {
 
-  const chatHistoryText = () => new TextBox({
+  const chatHistoryText = () => TextBox({
     padding: 3,
     fontSize: 16,
     color: 0x55FFFF,
-    dynamic: (t: Text, r: TextBox, _, w: World) => {
+    dynamic: (t: Text, r: Renderable, _, w: World) => {
 
       // hide chat if no recent messages
       if ((w.tick - w.chatHistory.keys()[0]) > 125) {
@@ -34,7 +34,7 @@ export const Chat = (): Entity => {
     }
   });
 
-  const chatBufferText = () => new TextBox({
+  const chatBufferText = () => TextBox({
     position: { x: 0, y: 25 },
     fontSize: 16,
     color: 0xFFFF33,

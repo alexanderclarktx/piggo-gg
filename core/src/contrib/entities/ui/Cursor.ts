@@ -17,9 +17,8 @@ export const Cursor = (): Entity => {
           });
 
           const circle = new Graphics();
-          circle.beginFill(0x00FFFF);
-          circle.drawCircle(0, 0, 4);
-          circle.endFill();
+          circle.circle(0, 0, 4);
+          circle.fill({ color: 0x00FFFF });
 
           return circle;
         },

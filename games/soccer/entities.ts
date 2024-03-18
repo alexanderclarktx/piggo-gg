@@ -18,23 +18,24 @@ export const FieldGrass = (wallPoints: WallPoints) => Entity({
 
         // grass
         const grass = new Graphics();
-        grass.lineStyle(2, 0xffffff, 1);
-        grass.beginFill(0x008833);
-        grass.drawPolygon(wallPoints.flat());
+        grass.setStrokeStyle({ width: 2, color: 0xffffff, alpha: 1 });
+        grass.poly(wallPoints.flat());
+        grass.fill(0x008833).stroke();
 
         // field lines
         const lines = new Graphics();
-        lines.lineStyle(2, 0xffffff, 1);
+        lines.setStrokeStyle({ width: 2, color: 0xffffff, alpha: 1 });
+        lines.setFillStyle({ alpha: 0, width: 0 })
 
         // center line
         lines.moveTo(50, 100);
         lines.lineTo(50, 600);
 
         // big circle
-        lines.drawCircle(50, 350, 75);
+        lines.circle(50, 350, 75);
 
         // little circle
-        lines.drawCircle(49.5, 350, 2);
+        lines.circle(49.5, 350, 2);
 
         // free kick line left
         lines.moveTo(-401, 208);
@@ -67,6 +68,8 @@ export const FieldGrass = (wallPoints: WallPoints) => Entity({
         // free kick semicircle right
         lines.moveTo(360, 300);
         lines.quadraticCurveTo(310, 350, 360, 400);
+
+        lines.stroke();
 
         r.c.addChild(grass);
         r.c.addChild(lines);
