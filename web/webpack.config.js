@@ -1,6 +1,7 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require('webpack');
 
 module.exports = {
   entry: ["./src/index.tsx"],
@@ -35,6 +36,9 @@ module.exports = {
         { from: "./res/*.png", to: () => "[name].png" },
         { from: "./res/*.json", to: () => "[name].json" }
       ],
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
     })
   ],
   resolve: {
