@@ -30,52 +30,45 @@ export const FieldGrass = (wallPoints: WallPoints) => Entity({
         // center line
         lines.moveTo(50, 100);
         lines.lineTo(50, 600);
-        lines.stroke();
 
         // big circle
         lines.circle(50, 350, 75);
-        lines.stroke();
 
         // little circle
         lines.circle(49.5, 350, 2);
-        lines.stroke();
 
         // free kick line left
         lines.moveTo(-401, 208);
         lines.lineTo(-260, 208);
         lines.lineTo(-260, 492);
         lines.lineTo(-401, 492);
-        lines.stroke();
 
         // free kick line right
         lines.moveTo(502, 208);
         lines.lineTo(360, 208);
         lines.lineTo(360, 492);
         lines.lineTo(502, 492);
-        lines.stroke();
 
         // goalie line left
         // lines.moveTo(-401, 260);
         // lines.lineTo(-360, 260);
         // lines.lineTo(-360, 440);
         // lines.lineTo(-401, 440);
-        // lines.stroke();
 
         // // goalie line right
         // lines.moveTo(502, 260);
         // lines.lineTo(460, 260);
         // lines.lineTo(460, 440);
         // lines.lineTo(502, 440);
-        // lines.stroke();
 
         // free kick semicircle left
         lines.moveTo(-260, 400);
         lines.quadraticCurveTo(-210, 350, -260, 300);
-        lines.stroke();
 
         // // free kick semicircle right
         lines.moveTo(360, 300);
         lines.quadraticCurveTo(310, 350, 360, 400);
+
         lines.stroke();
 
         r.c.addChild(grass);
