@@ -30,7 +30,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       if (!physics) return;
 
       // reset physics unless in rollback
-      // if (!isRollback) resetPhysics();
+      if (!isRollback) resetPhysics();
 
       // remove old bodies
       Object.keys(bodies).forEach((id) => {

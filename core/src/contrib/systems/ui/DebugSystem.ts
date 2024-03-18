@@ -103,12 +103,10 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
       const r = new Renderable({
         dynamic: (c: Graphics) => {
           if (c.clear) {
-            c.clear()
-            c.setStrokeStyle({ width: 1, color: 0xffff00 })
+            c.clear().setStrokeStyle({ width: 1, color: 0xffff00 });
             const { vertices } = physics.debugRender();
 
             for (let i = 0; i < vertices.length; i += 4) {
-              // use worldToScreen to convert the vertices to screen space
               const one = worldToScreen({ x: vertices[i], y: vertices[i + 1] });
               const two = worldToScreen({ x: vertices[i + 2], y: vertices[i + 3] });
               c.moveTo(one.x, one.y);

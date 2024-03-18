@@ -65,7 +65,7 @@ export const FieldGrass = (wallPoints: WallPoints) => Entity({
         lines.moveTo(-260, 400);
         lines.quadraticCurveTo(-210, 350, -260, 300);
 
-        // // free kick semicircle right
+        // free kick semicircle right
         lines.moveTo(360, 300);
         lines.quadraticCurveTo(310, 350, 360, 400);
 

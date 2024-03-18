@@ -18,8 +18,6 @@ export class Renderer {
     this.props = props;
 
     this.app = new Application();
-
-    // this.init()
   }
 
   async init() {

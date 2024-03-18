@@ -41,9 +41,6 @@ export const Skelly = (id: string, tint?: number) => Entity({
           ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
         }
 
-        console.log(r.props);
-
-        // r.setAnimationColor(0xffffff);
         r.bufferedAnimation = "d";
 
         const nametag = new Text({
