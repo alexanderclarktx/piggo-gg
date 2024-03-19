@@ -6,6 +6,7 @@ export type NoobProps = {
 
 export const Noob = ({ id }: NoobProps) => Entity({
   id: id,
+  persists: true,
   components: {
     networked: new Networked({ isNetworked: true }),
     player: new Player({ name: id }),

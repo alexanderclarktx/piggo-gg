@@ -25,7 +25,7 @@ export class Renderer {
     // create the pixi.js application
     await this.app.init({
       view: this.props.canvas,
-      resolution: 2, // TODO configurable
+      resolution: 1, // TODO configurable
       autoDensity: true,
       backgroundColor: 0x6495ed,
       width: this.props.width ?? 800,

@@ -8,6 +8,7 @@ export type FpsTextProps = {
 
 export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Renderable>({
   id: "fpsText",
+  persists: true,
   components: {
     position: new Position({
       x: x ?? -60, y: y ?? 5, screenFixed: true

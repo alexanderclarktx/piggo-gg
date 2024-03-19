@@ -36,10 +36,7 @@ export const HealthBarSystem: SystemBuilder<"HealthBarSystem"> = ({
           id: `${entity.id}-health`,
           components: {
             position: position,
-            renderable: new Renderable({
-              zIndex: 10,
-              setup: HealthBar(health)
-            })
+            renderable: HealthBar({ health })
           }
         }));
 

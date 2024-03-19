@@ -243,8 +243,13 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       console.log(`rollback took ${Date.now() - now}ms`);
     },
     setGame: (gameBuilder: GameBuilder) => {
-      // clean up old game
-      world.currentGame.entities.forEach((entity) => world.removeEntity(entity.id));
+
+      // remove old entities
+      Object.values(world.entities).forEach((entity) => {
+        if (!entity.persists) world.removeEntity(entity.id);
+      });
+
+      // remove old systems
       world.currentGame.systems.forEach((system) => world.removeSystem(system.id));
 
       // set new game

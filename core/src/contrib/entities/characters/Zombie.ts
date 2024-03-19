@@ -19,12 +19,10 @@ export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x
       click: ValidAction((entity, world) => {
         if (world.clientPlayerId) {
           // world.actionBuffer.push(world.tick, world.clientPlayerId, `attack-${entity.id}`);
-          console.log(world.entities);
           world.addEntity(Projectile({ radius: 5 }));
         }
       })
     }),
-    // health: new Health(100, 100),
     npc: new NPC<ZombieMovementActions>({
       onTick: (_) => "chase"
     }),

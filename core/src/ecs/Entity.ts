@@ -7,6 +7,7 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
   extend: (_: ComponentTypes[]) => Entity<T>
   serialize: () => SerializedEntity
   deserialize: (serializedEntity: SerializedEntity) => void
+  persists?: boolean
   components: ComponentTypes extends T ?
   {
     // all components optional

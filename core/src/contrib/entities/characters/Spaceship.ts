@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, playerControlsEntity } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, PlayerControlsEntity } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
@@ -15,7 +15,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       width: 100,
       height: 120,
       active: true,
-      click: playerControlsEntity
+      click: PlayerControlsEntity
     }),
     collider: new Collider({ shape: "cuboid", radius: 60 }),
     controller: new Controller<VehicleMovementActions>({

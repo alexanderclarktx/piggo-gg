@@ -70,7 +70,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
       });
 
       // debug bounds
-      const debugBounds = new DebugBounds({ debugRenderable: renderable });
+      const debugBounds = DebugBounds({ debugRenderable: renderable });
 
       const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,

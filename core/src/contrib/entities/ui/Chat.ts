@@ -47,6 +47,7 @@ export const Chat = (): Entity => {
 
   return Entity({
     id: "chat",
+    persists: true,
     components: {
       position: new Position({ x: -400, y: -200, screenFixed: true }),
       renderable: new Renderable({
