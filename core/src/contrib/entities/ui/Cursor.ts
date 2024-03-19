@@ -5,6 +5,7 @@ export const Cursor = (): Entity => {
 
   const cursor = Entity<Renderable | Position>({
     id: "cursor",
+    persists: true,
     components: {
       position: new Position({ x: 2000, y: 2000, screenFixed: true }),
       renderable: new Renderable({

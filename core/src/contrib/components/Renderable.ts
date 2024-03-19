@@ -25,8 +25,8 @@ export class Renderable extends Component<"renderable"> {
 
   animations: Record<string, AnimatedSprite>;
   animation: AnimatedSprite | undefined;
-  bufferedAnimation = ""
-  activeAnimation = ""
+  bufferedAnimation = "";
+  activeAnimation = "";
 
   id: string;
   props: RenderableProps;
@@ -65,7 +65,7 @@ export class Renderable extends Component<"renderable"> {
   _init = async (renderer: Renderer | undefined) => {
     this.renderer = renderer;
 
-    const { children, position, id, visible, cacheAsBitmap, container, zIndex, setup, color } = this.props;
+    const { children, position, id, visible, container, zIndex, setup, color } = this.props;
 
     // add child container
     if (container && renderer) this.c = await container(renderer);

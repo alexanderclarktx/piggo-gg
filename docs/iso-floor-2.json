@@ -1,0 +1,11 @@
+{
+  "frames": {
+    "dark": { "frame": { "x": 0, "y": 256, "w": 256, "h": 128 } }
+  },
+  "meta": {
+    "image": "iso-floor-2.png",
+    "format": "RGBA8888",
+    "size": { "w": 512, "h": 768 },
+    "scale": "1"
+  }
+}

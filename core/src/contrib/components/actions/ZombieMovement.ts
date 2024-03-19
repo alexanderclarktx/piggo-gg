@@ -1,7 +1,7 @@
 import { ActionMap, Entity, World, Position, Renderable, ValidAction } from "@piggo-gg/core";
 
 const speed = 30;
-const t = (Math.PI * 2) / 16; // 16th of tau
+const t = (Math.PI * 2) / 16; // 22.5 degrees
 
 export type ZombieMovementActions = "chase"
 

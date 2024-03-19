@@ -1,5 +1,4 @@
-import { Entity, World } from "@piggo-gg/core";
-import { Position, Renderable, TextBox, chatBuffer, chatIsOpen } from "@piggo-gg/core";
+import { Entity, Position, Renderable, TextBox, World, chatBuffer, chatIsOpen } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const Chat = (): Entity => {
@@ -48,6 +47,7 @@ export const Chat = (): Entity => {
 
   return Entity({
     id: "chat",
+    persists: true,
     components: {
       position: new Position({ x: -400, y: -200, screenFixed: true }),
       renderable: new Renderable({

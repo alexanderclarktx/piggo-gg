@@ -4,8 +4,10 @@ import { Component, ComponentTypes, Controlling } from "@piggo-gg/core";
 // an Entity is a uniquely identified set of Components
 export type Entity<T extends ComponentTypes = ComponentTypes> = {
   id: string
+  extend: (_: ComponentTypes[]) => Entity<T>
   serialize: () => SerializedEntity
   deserialize: (serializedEntity: SerializedEntity) => void
+  persists?: boolean
   components: ComponentTypes extends T ?
   {
     // all components optional
@@ -18,14 +20,22 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
 }
 
 export type SerializedEntity = Record<string, Record<string, string | number>>
-export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize">
+export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "extend">
 
-export const Entity = <T extends ComponentTypes>(entity: ProtoEntity<T>): Entity<T> => {
-  return {
-    ...entity,
+export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): Entity<T> => {
+
+  const entity = {
+    ...protoEntity,
+    extend: (components: ComponentTypes[]) => {
+      components.forEach((component) => {
+        // @ts-expect-error
+        entity.components[component.type] = component;
+      });
+      return entity;
+    },
     serialize: () => {
       const serializedEntity: SerializedEntity = {};
-      Object.values(entity.components).forEach((component: Component) => {
+      Object.values(protoEntity.components).forEach((component: Component) => {
         const serializedComponent = component.serialize();
         if (Object.keys(serializedComponent).length) {
           serializedEntity[component.type] = serializedComponent;
@@ -35,6 +45,8 @@ export const Entity = <T extends ComponentTypes>(entity: ProtoEntity<T>): Entity
     },
     deserialize: (serializedEntity: SerializedEntity) => deserializeEntity(entity, serializedEntity)
   }
+
+  return entity
 }
 
 export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity) : void => {

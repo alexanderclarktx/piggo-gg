@@ -1,18 +1,12 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Debug, Entity, Health, Networked, Position, Renderable, WASDMovementActions, WASDMovementPhysics, playerControlsEntity } from "@piggo-gg/core";
+import { Actions, Collider, Controlled, Controller, Debug, Entity, Networked, Position, Renderable, WASDMovementActions, WASDMovementPhysics } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number) => Entity({
   id: id,
   components: {
+    debug: new Debug(),
     position: new Position({ x: 300, y: 300, velocityResets: 1 }),
     networked: new Networked({ isNetworked: true }),
-    health: new Health(100, 100),
-    clickable: new Clickable({
-      width: 32,
-      height: 32,
-      active: true,
-      click: playerControlsEntity
-    }),
     controlled: new Controlled({ entityId: "" }),
     collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
     controller: new Controller<WASDMovementActions>({
@@ -20,7 +14,6 @@ export const Skelly = (id: string, tint?: number) => Entity({
       "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
       "w": "up", "s": "down", "a": "left", "d": "right"
     }),
-    debug: new Debug(),
     actions: new Actions(WASDMovementPhysics),
     renderable: new Renderable({
       anchor: { x: 0.5, y: 0.7 },

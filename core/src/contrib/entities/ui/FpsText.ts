@@ -1,5 +1,4 @@
-import { Entity, World } from "@piggo-gg/core";
-import { Position, Renderable } from "@piggo-gg/core";
+import { Entity, Position, Renderable, World } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export type FpsTextProps = {
@@ -9,13 +8,14 @@ export type FpsTextProps = {
 
 export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Renderable>({
   id: "fpsText",
+  persists: true,
   components: {
     position: new Position({
       x: x ?? -60, y: y ?? 5, screenFixed: true
     }),
     renderable: new Renderable({
       zIndex: 3,
-      container: async () => new Text("", { fontSize: 14, fill: "#FFFFFF" }),
+      container: async () => new Text({ text: "", style: { fontSize: 14, fill: "#FFFFFF" } }),
       dynamic: (t: Text, _, __, w: World) => {
         if (w.tick % 5 !== 0) return;
         if (t) {
@@ -36,7 +36,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
     }),
     renderable: new Renderable({
       zIndex: 3,
-      container: async () => new Text("", { fontSize: 14, fill: "#FFFFFF" }),
+      container: async () => new Text({ text: "", style: { fontSize: 14, fill: "#FFFFFF" } }),
       dynamic: (t: Text, _, __, w: World) => {
         const lag = Math.round(w.ms);
         if (w.tick % 5 !== 0) return;

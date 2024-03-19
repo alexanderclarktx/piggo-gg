@@ -3,6 +3,7 @@ import { Text } from "pixi.js";
 
 export const ConnectButton = () => Entity({
   id: "connectButton",
+  persists: true,
   components: {
     position: new Position({ x: 75, y: 5, screenFixed: true }),
     clickable: new Clickable({
@@ -11,7 +12,7 @@ export const ConnectButton = () => Entity({
         if (world) world.addSystemBuilders([WsClientSystem]);
       })
     }),
-    renderable: new Button({
+    renderable: Button({
       dims: { w: 72, textX: 8, textY: 5 },
       zIndex: 1,
       text: new Text({ text: "connect", style: { fill: "#FFFFFF", fontSize: 16 } }),
