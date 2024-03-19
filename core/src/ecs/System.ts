@@ -8,7 +8,6 @@ export interface System<T extends string = string> {
   query?: string[];
   skipOnRollback?: boolean
   onRender?: (entities: Entity[]) => void;
-  onCleanup?: () => void;
   onRollback?: () => void
   onTick: (entities: Entity[], isRollback: boolean) => void;
 }

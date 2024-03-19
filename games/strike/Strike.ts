@@ -14,12 +14,3 @@ export const Strike: GameBuilder<"strike"> = ({
     systems: [PlayerSpawnSystem, HealthBarSystem]
   })
 })
-
-/*
-world.addEntity(Projectile({ radius: 5 }));
-
-// Background({img: "stars.png"})
-// Background({img: "aurora.png"})
-// Background({json: { path: "iso-floor-1.json", img: "decor" }})
-// Background({json: { path: "iso-floor-2.json", img: "dark" }})
-*/

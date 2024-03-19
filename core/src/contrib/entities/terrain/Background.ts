@@ -16,7 +16,6 @@ export const Background = ({ img = "space.png", json }: BackgroundProps = {}) =>
 
         let texture: Texture;
 
-        // load texture from json or image
         if (json) {
           const assets = await Assets.load(json.path);
           texture = assets.textures[json.img];

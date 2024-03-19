@@ -6,13 +6,6 @@ export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = ({
   init: ({ world }) => {
     let playersWithCharacters: Record<string, Entity> = {};
 
-    const onCleanup = () => {
-      for (const playerId in playersWithCharacters) {
-        world.removeEntity(`skelly-${playerId}`);
-        delete playersWithCharacters[playerId];
-      }
-    }
-
     const onTick = (players: Entity<Player>[]) => {
 
       // despawn characters for players that have left
@@ -48,8 +41,7 @@ export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = ({
     return {
       id: "PlayerSpawnSystem",
       query: ["player"],
-      onTick,
-      onCleanup
+      onTick
     }
   }
 });

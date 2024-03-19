@@ -48,13 +48,7 @@ export const HealthBarSystem: SystemBuilder<"HealthBarSystem"> = ({
       id: "HealthBarSystem",
       query: ["health", "position", "renderable"],
       onTick,
-      skipOnRollback: true,
-      onCleanup: () => {
-        renderedEntities.forEach((entity) => {
-          world.removeEntity(`${entity.id}-health`);
-          renderedEntities.delete(entity);
-        })
-      }
+      skipOnRollback: true
     }
   }
 });
