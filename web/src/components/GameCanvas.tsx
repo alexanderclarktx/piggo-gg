@@ -16,7 +16,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
     });
 
     renderer.init().then(() => {
-      const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Strike, Soccer, Legends ] });
+      const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Soccer, Strike, Legends] });
       setWorld(world);
     })
   }, []);

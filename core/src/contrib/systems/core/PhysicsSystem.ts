@@ -74,7 +74,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       });
 
       // run physics
-      // physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
+      physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
       physics.timestep = 0.025;
       physics.step();
 
