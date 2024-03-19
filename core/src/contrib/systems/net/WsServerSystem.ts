@@ -17,20 +17,15 @@ export const WsServerSystem = ({ world, clients, latestClientMessages }: ServerN
     let chats: Record<number, Record<string, string[]>> = {};
 
     // populate the first 15 ticks empty
-    for (let i = 0; i < 15; i++) actions[world.tick + i] = {}
+    // for (let i = 0; i < 15; i++) actions[world.tick + i] = {}
 
     // const latestActionForEntity: Record<string, [number, string[]]> = {};
 
     frames.forEach((tick) => {
-      // const actionsAtTick = world.actionBuffer.atTick(tick);
-      // if (actionsAtTick && Object.keys(actionsAtTick).length) {
-      //   actions[tick] = actionsAtTick;
-      //   Object.keys(actionsAtTick).forEach((playerId) => {
-      //     if (playerId.startsWith("skelly") && tick > latestActionForEntity[playerId]?.[0]) {
-      //       latestActionForEntity[playerId] = [tick, actionsAtTick[playerId]];
-      //     }
-      //   });
-      // }
+      const actionsAtTick = world.actionBuffer.atTick(tick);
+      if (actionsAtTick && Object.keys(actionsAtTick).length) {
+        actions[tick] = actionsAtTick;
+      }
 
       const messagesAtTick = world.chatHistory.atTick(tick);
       if (messagesAtTick && Object.keys(messagesAtTick).length) {

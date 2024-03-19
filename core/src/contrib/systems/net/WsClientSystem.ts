@@ -30,6 +30,22 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
       if (latestServerMessage && (message.tick < latestServerMessage.tick)) return;
       if (message.tick < lastMessageTick) return;
 
+      // handle interpolated entities
+      Object.keys(message.actions).map(Number).forEach((tick) => {
+        for (const [entityId, actions] of Object.entries(message.actions[tick])) {
+          if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) {
+            const actionsCopy = [...actions];
+
+            if (!message.actions[tick + world.framesAhead + 1]) {
+              message.actions[tick + world.framesAhead + 1] = {};
+            }
+
+            message.actions[tick + world.framesAhead + 1][entityId] = actionsCopy;
+            delete message.actions[tick][entityId];
+          }
+        }
+      });
+
       // store latest message
       latestServerMessage = message;
       lastMessageTick = message.tick;
@@ -94,14 +110,11 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
       // handle future actions
       if (!rollback) {
         Object.keys(message.actions).map(Number).filter((t) => t > world.tick).forEach((futureTick) => {
+          if (Object.keys(message.actions[futureTick]).length) console.log("futureTick", futureTick, message.actions[futureTick]);
           Object.keys(message.actions[futureTick]).forEach((entityId) => {
             if ((entityId === clientPlayerId) || (entityId === `skelly-${clientPlayerId}`)) return;
-
-            if (entityId.startsWith("skelly")) {
-              world.actionBuffer.set(futureTick + world.framesAhead, entityId, message.actions[futureTick][entityId]);  
-            } else {
-              world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
-            }
+            world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
+            console.log(`set future action ${futureTick} ${entityId} ${message.actions[futureTick][entityId]}`)
           });
         });
       }
@@ -153,6 +166,7 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
           if (entitiesAtTick) {
             const localEntity = entitiesAtTick[entityId];
             if (localEntity) {
+              if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) return;
               if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
                 mustRollback(`entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
               }
