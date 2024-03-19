@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, DelayTickData, World } from "@piggo-gg/core";
+import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie } from "@piggo-gg/core";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -68,9 +68,25 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       if (latestServerMessage === null) return;
       let message = latestServerMessage;
 
+      // add new entities if not present locally
+      Object.keys(message.serializedEntities).forEach((entityId) => {
+        if (!world.entities[entityId]) {
+          if (entityId.startsWith("zombie")) {
+            world.addEntity(Zombie({ id: entityId }));
+          } else if (entityId.startsWith("ball")) {
+            world.addEntity(Ball({ id: entityId }));
+          } else if (entityId.startsWith("noob")) {
+            world.addEntity(Noob({ id: entityId }))
+          } else if (entityId.startsWith("skelly")) {
+            world.addEntity(Skelly(entityId));
+          } else {
+            console.error("UNKNOWN ENTITY ON SERVER", entityId);
+          }
+        }
+      });
+
       // console.log("hm", lastMessageTick, world.tick);
       if ((lastMessageTick - world.tick) > 1) {
-        console.log("deserialize everything", lastMessageTick, world.tick);
         world.tick = message.tick - 1;
         Object.keys(message.serializedEntities).forEach((entityId) => {
           if (world.entities[entityId]) {

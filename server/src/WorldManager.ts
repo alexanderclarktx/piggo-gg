@@ -37,8 +37,6 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     const now = Date.now();
     const parsedMessage = JSON.parse(msg) as DelayTickData;
 
-    let messages = latestClientMessages[parsedMessage.player];
-
     // add player entity if it doesn't exist
     if (!world.entities[parsedMessage.player]) {
       ws.data.playerName = parsedMessage.player;
@@ -50,46 +48,13 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
       world.addEntity(Noob({ id: parsedMessage.player }));
     }
 
-    // ignore messages from the past
-    if (messages && (parsedMessage.tick < messages.td.tick)) {
-      console.log(`got old:${parsedMessage.tick} vs:${messages.td.tick} world:${world.tick}`);
-      // return;
-    };
-
     // store last message for client
     latestClientMessages[parsedMessage.player] = {
       td: parsedMessage,
       latency: now - parsedMessage.timestamp
     }
 
-    // debug log
     if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
-    // if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed ${parsedMessage.player} tick${parsedMessage.tick} server:${world.tick}`)
-
-    // process message actions
-    if (parsedMessage.actions) {
-      Object.keys(parsedMessage.actions).forEach((entityId) => {
-        if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
-          world.actionBuffer.set(world.tick + 1, entityId, parsedMessage.actions[entityId]);
-        }
-      });
-    }
-
-    // process message chats
-    if (parsedMessage.chats) {
-      Object.keys(parsedMessage.chats).map(Number).forEach((tick) => {
-
-        // ignore chats from the past
-        if (tick < world.tick) return;
-
-        // add chats for the player
-        Object.keys(parsedMessage.chats[tick]).forEach((entityId) => {
-          if (entityId === parsedMessage.player) {
-            world.chatHistory.set(tick, entityId, parsedMessage.chats[entityId]);
-          }
-        });
-      });
-    }
   }
 
   world.addSystems([DelayServerSystem({ world, clients, latestClientMessages })]);
