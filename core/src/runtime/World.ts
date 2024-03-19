@@ -221,7 +221,8 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
 
       // deserialize everything
       Object.keys(td.serializedEntities).forEach((entityId) => {
-        if (world.entities[entityId] && td.serializedEntities[entityId]) {
+        if (world.entities[entityId]) {
+          console.log("deserialize", entityId, td.serializedEntities[entityId]);
           world.entities[entityId].deserialize(td.serializedEntities[entityId]);
         }
       });

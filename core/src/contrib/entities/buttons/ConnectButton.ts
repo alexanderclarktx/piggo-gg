@@ -1,4 +1,4 @@
-import { Button, Clickable, Entity, Position, ValidAction, World, WsClientSystem } from "@piggo-gg/core";
+import { Button, Clickable, Entity, Position, ValidAction, World, DelayClientSystem } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const ConnectButton = () => Entity({
@@ -9,7 +9,7 @@ export const ConnectButton = () => Entity({
     clickable: new Clickable({
       width: 80, height: 32, active: true,
       click: ValidAction((_, world: World) => {
-        if (world) world.addSystemBuilders([WsClientSystem]);
+        if (world) world.addSystemBuilders([DelayClientSystem]);
       })
     }),
     renderable: Button({

@@ -1,4 +1,4 @@
-import { IsometricWorld, Noob, TickData, World, WsServerSystem } from "@piggo-gg/core";
+import { IsometricWorld, Noob, DelayTickData, World, DelayServerSystem } from "@piggo-gg/core";
 import { Legends, Soccer, Strike } from "@piggo-gg/games";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
@@ -20,7 +20,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
 
   const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, Legends, Strike] });
 
-  const latestClientMessages: Record<string, { td: TickData, latency: number }> = {};
+  const latestClientMessages: Record<string, { td: DelayTickData, latency: number }> = {};
 
   const handleClose = (ws: WS) => {
 
@@ -35,7 +35,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
 
   const handleMessage = (ws: WS, msg: string) => {
     const now = Date.now();
-    const parsedMessage = JSON.parse(msg) as TickData;
+    const parsedMessage = JSON.parse(msg) as DelayTickData;
 
     let messages = latestClientMessages[parsedMessage.player];
 
@@ -53,7 +53,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     // ignore messages from the past
     if (messages && (parsedMessage.tick < messages.td.tick)) {
       console.log(`got old:${parsedMessage.tick} vs:${messages.td.tick} world:${world.tick}`);
-      return;
+      // return;
     };
 
     // store last message for client
@@ -63,22 +63,15 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     }
 
     // debug log
-    if (world.tick % 50 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
-    if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed ${parsedMessage.player} tick${parsedMessage.tick} server:${world.tick}`)
+    if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
+    // if ((world.tick - parsedMessage.tick) >= 0) console.log(`missed ${parsedMessage.player} tick${parsedMessage.tick} server:${world.tick}`)
 
     // process message actions
     if (parsedMessage.actions) {
-      Object.keys(parsedMessage.actions).map(Number).forEach((tick) => {
-
-        // ignore actions from the past
-        if (tick < world.tick) return;
-
-        // add actions for the player or entities controlled by the player
-        Object.keys(parsedMessage.actions[tick]).forEach((entityId) => {
-          if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
-            world.actionBuffer.set(tick, entityId, parsedMessage.actions[tick][entityId]);
-          }
-        });
+      Object.keys(parsedMessage.actions).forEach((entityId) => {
+        if (world.entities[entityId]?.components.controlled?.data.entityId === parsedMessage.player) {
+          world.actionBuffer.set(world.tick + 1, entityId, parsedMessage.actions[entityId]);
+        }
       });
     }
 
@@ -92,14 +85,14 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
         // add chats for the player
         Object.keys(parsedMessage.chats[tick]).forEach((entityId) => {
           if (entityId === parsedMessage.player) {
-            world.chatHistory.set(tick, entityId, parsedMessage.chats[tick][entityId]);
+            world.chatHistory.set(tick, entityId, parsedMessage.chats[entityId]);
           }
         });
       });
     }
   }
 
-  world.addSystems([WsServerSystem({ world, clients, latestClientMessages })]);
+  world.addSystems([DelayServerSystem({ world, clients, latestClientMessages })]);
 
   return {
     world,
