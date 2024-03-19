@@ -3,7 +3,7 @@ import { System, DelayTickData, World } from "@piggo-gg/core";
 export type DelayServerSystemProps = {
   world: World
   clients: Record<string, { send: (_: string) => number }>
-  latestClientMessages: Record<string, { td: DelayTickData, latency: number }>
+  latestClientMessages: Record<string, { td: DelayTickData, latency: number }[]>
 }
 
 export const DelayServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System => {
@@ -16,7 +16,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
       player: "server",
       tick: world.tick,
       timestamp: Date.now(),
-      serializedEntities: world.entitiesAtTick[world.tick - 1],
+      serializedEntities: world.entitiesAtTick[world.tick],
       actions: world.actionBuffer.atTick(world.tick) ?? {},
       chats: world.chatHistory.atTick(world.tick) ?? {}
     };
@@ -25,14 +25,16 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
     Object.entries(clients).forEach(([id, client]) => {
       client.send(JSON.stringify({
         ...tickData,
-        latency: latestClientMessages[id]?.latency,
+        latency: latestClientMessages[id]?.[0]?.latency,
       }));
     })
   }
 
   const handleMessage = () => {
     Object.keys(latestClientMessages).forEach((client) => {
-      const messages = latestClientMessages[client];
+      const messages = latestClientMessages[client].at(0);
+      // console.log("messages", messages);
+      if (!messages) return;
 
       // process message actions
       if (messages.td.actions) {
@@ -61,6 +63,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
   const onTick = () => {
     sendMessage();
     handleMessage();
+    Object.keys(latestClientMessages).forEach((client) => latestClientMessages[client].shift());
   }
 
   return {

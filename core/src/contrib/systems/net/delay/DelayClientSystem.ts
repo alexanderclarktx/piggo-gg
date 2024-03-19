@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie } from "@piggo-gg/core";
+import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie, SerializedEntity } from "@piggo-gg/core";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -57,8 +57,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         serializedEntities: {}
       }
 
-      // console.log("send", message);
-
       if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
 
       world.actionBuffer.clearTick(world.tick + 1);
@@ -67,6 +65,18 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     const handleLatestMessage = () => {
       if (latestServerMessage === null) return;
       let message = latestServerMessage;
+
+      // remove old local entities
+      Object.keys(world.entities).forEach((entityId) => {
+        if (world.entities[entityId].components.networked) {
+
+          if (!message.serializedEntities[entityId]) {
+            // delete if not present in rollback frame
+            console.log("DELETE ENTITY", entityId, message.serializedEntities);
+            world.removeEntity(entityId);
+          }
+        }
+      });
 
       // add new entities if not present locally
       Object.keys(message.serializedEntities).forEach((entityId) => {
@@ -85,8 +95,43 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         }
       });
 
-      // console.log("hm", lastMessageTick, world.tick);
-      if ((lastMessageTick - world.tick) > 1) {
+      let rollback = false;
+
+      const mustRollback = (reason: string) => {
+        console.log("MUST ROLLBACK", reason);
+        rollback = true;
+      }
+
+      const sre: Record<string, SerializedEntity> = {}
+      for (const entityId in world.entities) {
+        if (world.entities[entityId].components.networked) {
+          sre[entityId] = world.entities[entityId].serialize();
+        }
+      }
+
+      // compare entity counts
+      if (!rollback && world.entitiesAtTick[message.tick]) {
+        if (Object.keys(sre).length !== Object.keys(message.serializedEntities).length) {
+          mustRollback(`entity count local:${Object.keys(sre).length} remote:${Object.keys(message.serializedEntities).length}`);
+        }
+      }
+
+      // compare entity states
+      if (!rollback) {
+        Object.entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
+          const localEntity = sre[entityId];
+          if (localEntity) {
+            if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) return;
+            if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
+              mustRollback(`entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
+            }
+          } else {
+            mustRollback(`no buffered message ${sre.serializedEntities}`);
+          }
+        });
+      }
+
+      if (rollback) {
         world.tick = message.tick - 1;
         Object.keys(message.serializedEntities).forEach((entityId) => {
           if (world.entities[entityId]) {
@@ -98,7 +143,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       // set actions
       Object.entries(message.actions).forEach(([entityId, actions]) => {
-        console.log("set actions", entityId, actions);
+        // console.log("set actions", entityId, actions);
         world.actionBuffer.set(message.tick, entityId, actions);
       });
 

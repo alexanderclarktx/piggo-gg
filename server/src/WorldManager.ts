@@ -20,7 +20,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
 
   const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, Legends, Strike] });
 
-  const latestClientMessages: Record<string, { td: DelayTickData, latency: number }> = {};
+  const latestClientMessages: Record<string, { td: DelayTickData, latency: number }[]> = {};
 
   const handleClose = (ws: WS) => {
 
@@ -46,13 +46,16 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
       console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`);
 
       world.addEntity(Noob({ id: parsedMessage.player }));
+
+      latestClientMessages[parsedMessage.player] = [];
     }
 
     // store last message for client
-    latestClientMessages[parsedMessage.player] = {
+    latestClientMessages[parsedMessage.player].push({
       td: parsedMessage,
       latency: now - parsedMessage.timestamp
-    }
+    });
+    // console.log("push");
 
     if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
   }
