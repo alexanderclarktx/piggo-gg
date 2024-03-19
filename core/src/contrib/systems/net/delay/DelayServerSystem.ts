@@ -33,7 +33,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
   const handleMessage = () => {
     Object.keys(latestClientMessages).forEach((client) => {
       const messages = latestClientMessages[client].at(0);
-      // console.log("messages", messages);
+      if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length);
       if (!messages) return;
 
       // process message actions
