@@ -6,7 +6,7 @@ export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = ({
   init: ({ world }) => {
     let playersWithCharacters: Record<string, Entity> = {};
 
-    const onRemove = () => {
+    const onCleanup = () => {
       for (const playerId in playersWithCharacters) {
         world.removeEntity(`skelly-${playerId}`);
         delete playersWithCharacters[playerId];
@@ -49,7 +49,7 @@ export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = ({
       id: "PlayerSpawnSystem",
       query: ["player"],
       onTick,
-      onRemove
+      onCleanup
     }
   }
 });

@@ -3,6 +3,8 @@ import { Component } from "@piggo-gg/core";
 export type PositionProps = {
   x?: number
   y?: number
+  velocityX?: number
+  velocityY?: number
   velocityResets?: number
   offset?: "world" | "camera"
   screenFixed?: boolean
@@ -38,10 +40,12 @@ export class Position extends Component<"position"> {
   // TODO refactor and consolidate this somewhere
   renderMode: "isometric" | "cartesian";
 
-  constructor({ x, y, offset, screenFixed, renderMode, velocityResets }: PositionProps = {}) {
+  constructor({ x, y, velocityX, velocityY, offset, screenFixed, renderMode, velocityResets }: PositionProps = {}) {
     super();
     this.data.x = x ?? 0;
     this.data.y = y ?? 0;
+    this.data.velocityX = velocityX ?? 0;
+    this.data.velocityY = velocityY ?? 0;
     this.offset = offset ?? "world";
     this.screenFixed = screenFixed ?? false;
     this.renderMode = renderMode ?? "cartesian";

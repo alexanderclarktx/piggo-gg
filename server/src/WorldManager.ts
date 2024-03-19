@@ -1,5 +1,5 @@
 import { IsometricWorld, Noob, TickData, World, WsServerSystem } from "@piggo-gg/core";
-import { PiggoLegends, Soccer } from "@piggo-gg/games";
+import { Legends, Soccer, Strike } from "@piggo-gg/games";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
 
@@ -18,7 +18,7 @@ export type WorldManagerProps = {
 
 export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
 
-  const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, PiggoLegends] });
+  const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, Legends, Strike] });
 
   const latestClientMessages: Record<string, { td: TickData, latency: number }> = {};
 

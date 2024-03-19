@@ -4,8 +4,6 @@ import { Collider, Entity, Position, SystemBuilder } from '@piggo-gg/core';
 export let physics: RapierWorld;
 RAPIER.init().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
 
-const timeFactor = 0.025;
-
 // PhysicsSystem calculates the physics of entities
 export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
   id: "PhysicsSystem",
@@ -76,10 +74,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       });
 
       // run physics
-      physics.timestep = timeFactor;
-
-      // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
-      // physics.switchToSmallStepsPgsSolver();
+      // physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
+      physics.timestep = 0.025;
       physics.step();
 
       // update the entity positions

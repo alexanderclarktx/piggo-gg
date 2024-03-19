@@ -2,7 +2,7 @@ import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Pos
 import { AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
-  id?: string,
+  id?: string
   position?: { x: number, y: number }
 }
 

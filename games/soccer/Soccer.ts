@@ -1,4 +1,4 @@
-import { Ball, GameBuilder, Goal, PlayerSpawnSystem, SpaceBackground, World, Zombie } from "@piggo-gg/core";
+import { Ball, GameBuilder, Goal, PlayerSpawnSystem, Background, World, Zombie } from "@piggo-gg/core";
 import { FieldGrass, FieldWall, WallPoints } from "@piggo-gg/games";
 
 const wallPoints: WallPoints = [
@@ -24,7 +24,7 @@ export const Soccer: GameBuilder<"soccer"> = ({
     entities: [
       Zombie({ id: "zombie1", color: 0x00eeff, positionProps: { x: 200, y: 400 } }),
 
-      SpaceBackground(),    
+      Background(),    
 
       Goal({ id: "goal1", color: 0xff0000, position: { x: 148, y: 552 }, width: 98, length: 2 }),
       Goal({ id: "goal2", color: 0x0000ff, position: { x: 602, y: 98 }, width: 98, length: 2 }),

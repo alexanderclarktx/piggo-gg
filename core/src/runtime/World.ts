@@ -96,7 +96,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
     removeSystem: (id: string) => {
       const system = world.systems[id];
       if (system) {
-        world.systems[id].onRemove?.();
+        world.systems[id].onCleanup?.();
         delete world.systems[id];
       }
     },
