@@ -19,18 +19,18 @@ export const WsServerSystem = ({ world, clients, latestClientMessages }: ServerN
     // populate the first 15 ticks empty
     for (let i = 0; i < 15; i++) actions[world.tick + i] = {}
 
-    const latestActionForEntity: Record<string, [number, string[]]> = {};
+    // const latestActionForEntity: Record<string, [number, string[]]> = {};
 
     frames.forEach((tick) => {
-      const actionsAtTick = world.actionBuffer.atTick(tick);
-      if (actionsAtTick && Object.keys(actionsAtTick).length) {
-        actions[tick] = actionsAtTick;
-        Object.keys(actionsAtTick).forEach((playerId) => {
-          if (playerId.startsWith("skelly")) {
-            latestActionForEntity[playerId] = [tick, actionsAtTick[playerId]];
-          }
-        });
-      }
+      // const actionsAtTick = world.actionBuffer.atTick(tick);
+      // if (actionsAtTick && Object.keys(actionsAtTick).length) {
+      //   actions[tick] = actionsAtTick;
+      //   Object.keys(actionsAtTick).forEach((playerId) => {
+      //     if (playerId.startsWith("skelly") && tick > latestActionForEntity[playerId]?.[0]) {
+      //       latestActionForEntity[playerId] = [tick, actionsAtTick[playerId]];
+      //     }
+      //   });
+      // }
 
       const messagesAtTick = world.chatHistory.atTick(tick);
       if (messagesAtTick && Object.keys(messagesAtTick).length) {
@@ -52,32 +52,32 @@ export const WsServerSystem = ({ world, clients, latestClientMessages }: ServerN
     // send tick data to all clients
     Object.entries(clients).forEach(([id, client]) => {
 
-      const actionsAppend: Record<number, Record<string, string[]>> = {};
+      // const actionsAppend: Record<number, Record<string, string[]>> = {};
 
-      // predict other players' actions
-      Object.entries(latestActionForEntity).forEach(([entityId, tickActions]) => {
+      // // predict other players' actions
+      // Object.entries(latestActionForEntity).forEach(([entityId, tickActions]) => {
 
-        const [ tick, latestActions ] = tickActions;
-        const shouldAppendEmpty = latestClientMessages[entityId.split("-")[1]]?.td.tick > tick;
+      //   const [ tick, latestActions ] = tickActions;
+      //   const shouldAppendEmpty = latestClientMessages[entityId.split("-")[1]]?.td.tick > tick;
 
-        // skip for the client's own entity (TODO hacky)
-        if (entityId !== `skelly-${id}`) { // latestActions.length && 
-          const futureTicks = Object.keys(actions).map(Number).filter((t) => t > tick);
-          futureTicks.forEach((futureTick) => {
-            if (!actionsAppend[futureTick]) actionsAppend[futureTick] = {};
+      //   // skip for the client's own entity (TODO hacky)
+      //   if (entityId !== `skelly-${id}`) { // latestActions.length && 
+      //     const futureTicks = Object.keys(actions).map(Number).filter((t) => t > tick);
+      //     futureTicks.forEach((futureTick) => {
+      //       if (!actionsAppend[futureTick]) actionsAppend[futureTick] = {};
 
-            if (shouldAppendEmpty) {
-              actionsAppend[futureTick][entityId] = [];
-            } else {
-              actionsAppend[futureTick][entityId] = [...latestActions];
-            }
-          });
-        }
-      });
+      //       if (shouldAppendEmpty) {
+      //         actionsAppend[futureTick][entityId] = [];
+      //       } else {
+      //         actionsAppend[futureTick][entityId] = [...latestActions];
+      //       }
+      //     });
+      //   }
+      // });
 
       client.send(JSON.stringify({
         ...tickData,
-        actions: { ...actions, ...actionsAppend },
+        actions,
         latency: latestClientMessages[id]?.latency,
       }));
     })

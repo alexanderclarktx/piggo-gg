@@ -26,6 +26,7 @@ export type World = {
   isConnected: boolean
   lastTick: DOMHighResTimeStamp
   ms: number
+  framesAhead: number
   renderer: Renderer | undefined
   renderMode: "cartesian" | "isometric"
   runtimeMode: "client" | "server"
@@ -70,6 +71,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
     isConnected: false,
     lastTick: 0,
     ms: 0,
+    framesAhead: 0,
     renderer,
     renderMode,
     runtimeMode,
@@ -178,10 +180,12 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       const now = Date.now();
 
       // determine how many ticks to increment
-      let framesAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
-      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
+      world.framesAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
+      if (Math.abs(world.framesAhead - (world.tick - td.tick)) <= 1) {
+        world.framesAhead = world.tick - td.tick;
+      }
 
-      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + framesAhead}`);
+      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + world.framesAhead}`);
 
       // set tick
       world.tick = td.tick - 1;
@@ -235,7 +239,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       Object.values(world.systems).forEach((system) => system.onRollback ? system.onRollback() : null);
 
       // run system updates
-      for (let i = 0; i < framesAhead + 1; i++) world.onTick({ isRollback: true });
+      for (let i = 0; i < world.framesAhead + 1; i++) world.onTick({ isRollback: true });
 
       console.log(`rollback took ${Date.now() - now}ms`);
     },

@@ -10,8 +10,8 @@ const servers = {
 export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
   id: "WsClientSystem",
   init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
-    // const wsClient = new WebSocket(servers.staging);
+    // const wsClient = new WebSocket(servers.production);
+    const wsClient = new WebSocket(servers.staging);
     // const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
@@ -96,7 +96,12 @@ export const WsClientSystem: SystemBuilder<"WsClientSystem"> = ({
         Object.keys(message.actions).map(Number).filter((t) => t > world.tick).forEach((futureTick) => {
           Object.keys(message.actions[futureTick]).forEach((entityId) => {
             if ((entityId === clientPlayerId) || (entityId === `skelly-${clientPlayerId}`)) return;
-            world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
+
+            if (entityId.startsWith("skelly")) {
+              world.actionBuffer.set(futureTick + world.framesAhead, entityId, message.actions[futureTick][entityId]);  
+            } else {
+              world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
+            }
           });
         });
       }
