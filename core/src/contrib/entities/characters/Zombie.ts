@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Projectile, Renderable, ValidAction, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Debug, Entity, NPC, Networked, Position, PositionProps, Projectile, Renderable, ValidAction, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type ZombieProps = {
@@ -16,9 +16,8 @@ export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x
       width: 32,
       height: 32,
       active: true,
-      click: ValidAction((entity, world) => {
+      click: ValidAction((_, world) => {
         if (world.clientPlayerId) {
-          // world.actionBuffer.push(world.tick, world.clientPlayerId, `attack-${entity.id}`);
           world.addEntity(Projectile({ radius: 5 }));
         }
       })
