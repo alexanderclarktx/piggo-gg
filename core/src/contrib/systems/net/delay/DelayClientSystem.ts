@@ -10,8 +10,8 @@ const servers = {
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
-    // const wsClient = new WebSocket(servers.staging);
+    // const wsClient = new WebSocket(servers.production);
+    const wsClient = new WebSocket(servers.staging);
     // const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
@@ -62,8 +62,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     }
 
     const handleLatestMessage = () => {
-
-      console.log("serverMessageBuffer", serverMessageBuffer.length);
 
       if (serverMessageBuffer.length === 0) {
         world.skipNextTick = true;
