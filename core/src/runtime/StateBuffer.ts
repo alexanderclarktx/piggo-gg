@@ -45,7 +45,7 @@ export const StateBuffer = (): StateBuffer => {
       if (!buffer[tick][entityId]) buffer[tick][entityId] = [];
 
       // don't add action if it already exists
-      if (buffer[tick][entityId].includes(action)) return false;
+      // if (buffer[tick][entityId].includes(action)) return false;
 
       // push action
       buffer[tick][entityId].push(action);
