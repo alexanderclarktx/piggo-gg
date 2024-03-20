@@ -1,5 +1,4 @@
 import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie, SerializedEntity } from "@piggo-gg/core";
-import { compress } from "compress-json";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -11,9 +10,9 @@ const servers = {
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    // const wsClient = new WebSocket(servers.production);
+    const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    const wsClient = new WebSocket(servers.dev);
+    // const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
 

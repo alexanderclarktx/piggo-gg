@@ -30,6 +30,8 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     // remove from clients
     delete clients[ws.remoteAddress];
 
+    delete latestClientMessages[ws.data.playerName!];
+
     console.log(`${ws.data.playerName} disconnected`);
   }
 
@@ -55,7 +57,6 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
       td: parsedMessage,
       latency: now - parsedMessage.timestamp
     });
-    // console.log("push");
 
     if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
   }
