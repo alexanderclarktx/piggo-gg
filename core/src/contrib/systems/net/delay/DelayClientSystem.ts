@@ -22,17 +22,15 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     }, 200);
 
     let lastMessageTick: number = 0;
-    // let latestServerMessage: DelayTickData | null = null;
 
     wsClient.onmessage = (event) => {
       const message = JSON.parse(event.data) as DelayTickData;
 
-      // TODO buffer messages from server
+      // skip old messages
       if (message.tick < lastMessageTick) return;
 
       // store latest message
       serverMessageBuffer.push(message);
-      // latestServerMessage = message;
       lastMessageTick = message.tick;
 
       // record latency
@@ -44,8 +42,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     const onTick = (_: Entity[]) => {
       sendMessage(world);
       handleLatestMessage();
-      // serverMessageBuffer.shift();
-      // latestServerMessage = null;
     }
 
     const sendMessage = (world: World) => {
@@ -70,14 +66,12 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       console.log("serverMessageBuffer", serverMessageBuffer.length);
 
       if (serverMessageBuffer.length === 0) {
-        // world.tick = world.tick - 1;
         world.skipNextTick = true;
         return;
       }
 
       if (serverMessageBuffer.length > 2) {
         world.tickFaster = true;
-        // serverMessageBuffer.shift();
       } else {
         world.tickFaster = false;
       }
@@ -89,7 +83,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         if (world.entities[entityId]?.components.networked) {
 
           if (!message.serializedEntities[entityId]) {
-            // delete if not present in rollback frame
             console.log("DELETE ENTITY", entityId, message.serializedEntities);
             world.removeEntity(entityId);
           }
@@ -155,7 +148,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         world.tick = message.tick - 1;
         Object.keys(message.serializedEntities).forEach((entityId) => {
           if (world.entities[entityId]) {
-            // console.log("deserialize", entityId, message.serializedEntities[entityId]);
             world.entities[entityId].deserialize(message.serializedEntities[entityId]);
           }
         });
@@ -163,7 +155,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       // set actions
       Object.entries(message.actions).forEach(([entityId, actions]) => {
-        // console.log("set actions", entityId, actions);
         world.actionBuffer.set(message.tick, entityId, actions);
       });
 

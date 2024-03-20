@@ -22,7 +22,7 @@ export const Soccer: GameBuilder<"soccer"> = ({
   init: (_: World) => ({
     id: "soccer",
     entities: [
-      // Zombie({ id: "zombie1", color: 0x00eeff, positionProps: { x: 200, y: 400 } }),
+      Zombie({ id: "zombie1", color: 0x00eeff, positionProps: { x: 200, y: 400 } }),
 
       Background(),    
 
