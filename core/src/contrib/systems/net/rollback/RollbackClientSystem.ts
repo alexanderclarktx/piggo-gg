@@ -10,8 +10,8 @@ const servers = {
 export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
   id: "RollbackClientSystem",
   init: ({ world, clientPlayerId }) => {
-    // const wsClient = new WebSocket(servers.production);
-    const wsClient = new WebSocket(servers.staging);
+    const wsClient = new WebSocket(servers.production);
+    // const wsClient = new WebSocket(servers.staging);
     // const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
@@ -110,11 +110,9 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
       // handle future actions
       if (!rollback) {
         Object.keys(message.actions).map(Number).filter((t) => t > world.tick).forEach((futureTick) => {
-          // if (Object.keys(message.actions[futureTick]).length) console.log("futureTick", futureTick, message.actions[futureTick]);
           Object.keys(message.actions[futureTick]).forEach((entityId) => {
             if ((entityId === clientPlayerId) || (entityId === `skelly-${clientPlayerId}`)) return;
             world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
-            // console.log(`set future action ${futureTick} ${entityId} ${message.actions[futureTick][entityId]}`)
           });
         });
       }

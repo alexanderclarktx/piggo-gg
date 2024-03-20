@@ -36,7 +36,6 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
   }
 
   const handleMessage = (ws: WS, msg: string) => {
-    const now = Date.now();
     const parsedMessage = JSON.parse(msg) as DelayTickData;
 
     // add player entity if it doesn't exist
@@ -55,7 +54,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     // store last message for client
     latestClientMessages[parsedMessage.player].push({
       td: parsedMessage,
-      latency: now - parsedMessage.timestamp
+      latency: Date.now() - parsedMessage.timestamp
     });
 
     if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);

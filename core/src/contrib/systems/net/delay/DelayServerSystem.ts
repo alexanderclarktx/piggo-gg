@@ -33,33 +33,43 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
   const handleMessage = () => {
     Object.keys(latestClientMessages).forEach((client) => {
       if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length);
-      if (latestClientMessages[client].length > 3) latestClientMessages[client].shift();
-      if (latestClientMessages[client].length <= 1) return;
+      // if (latestClientMessages[client].length > 3) handleMessage();
+      // if (latestClientMessages[client].length <= 1) return;
 
-      const messages = latestClientMessages[client].at(0);
-      if (!messages) return;
+      let messages: ({ td: DelayTickData, latency: number } | undefined)[];
 
-      // process message actions
-      if (messages.td.actions) {
-        Object.keys(messages.td.actions).forEach((entityId) => {
-          if (world.entities[entityId]?.components.controlled?.data.entityId === client) {
-            world.actionBuffer.set(world.tick + 1, entityId, messages.td.actions[entityId]);
-          }
-        });
+      if (latestClientMessages[client].length > 2) {
+        messages = [latestClientMessages[client].at(0), latestClientMessages[client].at(1)]
+      } else {
+        messages = [latestClientMessages[client].at(0)]
       }
+      if (messages.length === 0) return;
 
-      // process message chats
-      if (messages.td.chats) {
-        Object.keys(messages.td.chats).map(Number).forEach((tick) => {
+      messages.forEach((message) => {
+        if (!message) return;
 
-          // add chats for the player
-          Object.keys(messages.td.chats[tick]).forEach((entityId) => {
-            if (entityId === client) {
-              world.chatHistory.set(tick, entityId, messages.td.chats[entityId]);
+        // process message actions
+        if (message.td.actions) {
+          Object.keys(message.td.actions).forEach((entityId) => {
+            if (world.entities[entityId]?.components.controlled?.data.entityId === client) {
+              world.actionBuffer.set(world.tick + 1, entityId, message.td.actions[entityId]);
             }
           });
-        });
-      }
+        }
+
+        // process message chats
+        if (message.td.chats) {
+          Object.keys(message.td.chats).map(Number).forEach((tick) => {
+
+            // add chats for the player
+            Object.keys(message.td.chats[tick]).forEach((entityId) => {
+              if (entityId === client) {
+                world.chatHistory.set(tick, entityId, message.td.chats[entityId]);
+              }
+            });
+          });
+        }
+      });
     });
   }
 

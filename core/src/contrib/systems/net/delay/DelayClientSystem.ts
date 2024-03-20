@@ -10,39 +10,42 @@ const servers = {
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
+    // const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    // const wsClient = new WebSocket(servers.dev);
+    const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
+    let serverMessageBuffer: DelayTickData[] = [];
 
     setInterval(() => {
       (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
     }, 200);
 
     let lastMessageTick: number = 0;
-    let latestServerMessage: DelayTickData | null = null;
+    // let latestServerMessage: DelayTickData | null = null;
 
     wsClient.onmessage = (event) => {
       const message = JSON.parse(event.data) as DelayTickData;
 
-      // ignore messages from the past
-      // if (latestServerMessage && (message.tick < latestServerMessage.tick)) return;
+      // TODO buffer messages from server
       if (message.tick < lastMessageTick) return;
 
       // store latest message
-      latestServerMessage = message;
+      serverMessageBuffer.push(message);
+      // latestServerMessage = message;
       lastMessageTick = message.tick;
 
       // record latency
       lastLatency = Date.now() - message.timestamp;
+
       if (message.latency) world.ms = (lastLatency + message.latency) / 2;
     }
 
     const onTick = (_: Entity[]) => {
       sendMessage(world);
       handleLatestMessage();
-      latestServerMessage = null;
+      // serverMessageBuffer.shift();
+      // latestServerMessage = null;
     }
 
     const sendMessage = (world: World) => {
@@ -63,8 +66,11 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     }
 
     const handleLatestMessage = () => {
-      if (latestServerMessage === null) return;
-      let message = latestServerMessage;
+      if (serverMessageBuffer.length === 0) {
+        world.tick = world.tick - 1;
+        return;
+      };
+      let message = serverMessageBuffer.shift() as DelayTickData;
 
       // remove old local entities
       Object.keys(world.entities).forEach((entityId) => {
