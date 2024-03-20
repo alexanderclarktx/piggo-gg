@@ -10,9 +10,9 @@ const servers = {
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    // const wsClient = new WebSocket(servers.production);
+    const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    const wsClient = new WebSocket(servers.dev);
+    // const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
     let serverMessageBuffer: DelayTickData[] = [];
