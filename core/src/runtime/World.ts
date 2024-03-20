@@ -26,10 +26,13 @@ export type World = {
   isConnected: boolean
   lastTick: DOMHighResTimeStamp
   ms: number
+  framesAhead: number
   renderer: Renderer | undefined
   renderMode: "cartesian" | "isometric"
   runtimeMode: "client" | "server"
   systems: Record<string, System>
+  skipNextTick: boolean
+  tickFaster: boolean
   tick: number
   tickrate: number
   addEntities: (entities: Entity[]) => void
@@ -70,10 +73,13 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
     isConnected: false,
     lastTick: 0,
     ms: 0,
+    framesAhead: 0,
     renderer,
     renderMode,
     runtimeMode,
     systems: {},
+    skipNextTick: false,
+    tickFaster: false,
     tick: 0,
     tickrate: 25,
     addEntity: (entity: Entity) => {
@@ -128,13 +134,13 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
-      if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
+      if (!world.tickFaster && !isRollback && ((world.lastTick + world.tickrate) > now)) {
         scheduleOnTick();
         return;
       }
 
       // update lastTick
-      if (!isRollback) {
+      if (!isRollback && !world.tickFaster) {
         if ((now - world.tickrate - world.tickrate) > world.lastTick) {
           // catch up (browser was delayed)
           world.lastTick = now;
@@ -144,32 +150,36 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
         }
       }
 
-      // increment tick
-      world.tick += 1;
+      if (world.skipNextTick) {
+        world.skipNextTick = false;
+      } else {
+        // increment tick
+        world.tick += 1;
 
-      // store serialized entities before systems run
-      const serializedEntities: Record<string, SerializedEntity> = {}
-      for (const entityId in world.entities) {
-        if (world.entities[entityId].components.networked) {
-          serializedEntities[entityId] = world.entities[entityId].serialize();
+        // store serialized entities before systems run
+        const serializedEntities: Record<string, SerializedEntity> = {}
+        for (const entityId in world.entities) {
+          if (world.entities[entityId].components.networked) {
+            serializedEntities[entityId] = world.entities[entityId].serialize();
+          }
         }
+        world.entitiesAtTick[world.tick] = serializedEntities;
+
+        // run system updates
+        Object.values(world.systems).forEach((system) => {
+          if (!isRollback || (isRollback && !system.skipOnRollback)) {
+            system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback) : system.onTick([], isRollback);
+          }
+        });
       }
-      world.entitiesAtTick[world.tick] = serializedEntities;
-
-      // run system updates
-      Object.values(world.systems).forEach((system) => {
-        if (!isRollback || (isRollback && !system.skipOnRollback)) {
-          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback) : system.onTick([], isRollback);
-        }
-      });
 
       // schedule onTick
       if (!isRollback) scheduleOnTick();
 
       // clear old buffered data
-      world.actionBuffer.clearBeforeTick(world.tick - 200);
+      world.actionBuffer.clearBeforeTick(world.tick - 100);
       Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
-        if ((world.tick - tick) > 200) {
+        if ((world.tick - tick) > 100) {
           delete world.entitiesAtTick[tick];
         }
       });
@@ -178,10 +188,12 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       const now = Date.now();
 
       // determine how many ticks to increment
-      let framesAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
-      if (Math.abs(framesAhead - (world.tick - td.tick)) <= 1) framesAhead = world.tick - td.tick;
+      world.framesAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
+      if (Math.abs(world.framesAhead - (world.tick - td.tick)) <= 1) {
+        world.framesAhead = world.tick - td.tick;
+      }
 
-      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + framesAhead}`);
+      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + world.framesAhead}`);
 
       // set tick
       world.tick = td.tick - 1;
@@ -217,7 +229,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
 
       // deserialize everything
       Object.keys(td.serializedEntities).forEach((entityId) => {
-        if (world.entities[entityId] && td.serializedEntities[entityId]) {
+        if (world.entities[entityId]) {
           world.entities[entityId].deserialize(td.serializedEntities[entityId]);
         }
       });
@@ -235,7 +247,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       Object.values(world.systems).forEach((system) => system.onRollback ? system.onRollback() : null);
 
       // run system updates
-      for (let i = 0; i < framesAhead + 1; i++) world.onTick({ isRollback: true });
+      for (let i = 0; i < world.framesAhead + 1; i++) world.onTick({ isRollback: true });
 
       console.log(`rollback took ${Date.now() - now}ms`);
     },
