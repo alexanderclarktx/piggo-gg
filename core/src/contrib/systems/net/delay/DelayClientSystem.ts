@@ -10,9 +10,9 @@ const servers = {
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
+    // const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    // const wsClient = new WebSocket(servers.dev);
+    const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
     let serverMessageBuffer: DelayTickData[] = [];
@@ -66,10 +66,20 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     }
 
     const handleLatestMessage = () => {
+
+      console.log("serverMessageBuffer", serverMessageBuffer.length);
+
       if (serverMessageBuffer.length === 0) {
         // world.tick = world.tick - 1;
         world.skipNextTick = true;
         return;
+      }
+
+      if (serverMessageBuffer.length > 2) {
+        world.tickFaster = true;
+        // serverMessageBuffer.shift();
+      } else {
+        world.tickFaster = false;
       }
 
       let message = serverMessageBuffer.shift() as DelayTickData;
@@ -109,6 +119,8 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         console.log("MUST ROLLBACK", reason);
         rollback = true;
       }
+
+      if ((message.tick - 1) !== world.tick) mustRollback("old tick");
 
       const sre: Record<string, SerializedEntity> = {}
       for (const entityId in world.entities) {

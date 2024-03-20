@@ -32,6 +32,7 @@ export type World = {
   runtimeMode: "client" | "server"
   systems: Record<string, System>
   skipNextTick: boolean
+  tickFaster: boolean
   tick: number
   tickrate: number
   addEntities: (entities: Entity[]) => void
@@ -78,6 +79,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
     runtimeMode,
     systems: {},
     skipNextTick: false,
+    tickFaster: false,
     tick: 0,
     tickrate: 25,
     addEntity: (entity: Entity) => {
@@ -132,13 +134,13 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       const now = performance.now();
 
       // check whether it's time to calculate the next tick
-      if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
+      if (!world.tickFaster && !isRollback && ((world.lastTick + world.tickrate) > now)) {
         scheduleOnTick();
         return;
       }
 
       // update lastTick
-      if (!isRollback) {
+      if (!isRollback && !world.tickFaster) {
         if ((now - world.tickrate - world.tickrate) > world.lastTick) {
           // catch up (browser was delayed)
           world.lastTick = now;

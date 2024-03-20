@@ -60,7 +60,11 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${parsedMessage.tick} diff:${world.tick - parsedMessage.tick}`);
   }
 
-  world.addSystems([DelayServerSystem({ world, clients, latestClientMessages })]);
+  world.systems = {
+    ...{ "DelayServerSystem": DelayServerSystem({ world, clients, latestClientMessages })},
+    ...world.systems
+  }
+  // world.addSystems([DelayServerSystem({ world, clients, latestClientMessages })]);
 
   return {
     world,

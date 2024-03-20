@@ -27,6 +27,13 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }));
+
+      if (latestClientMessages[id].length > 2) {
+        latestClientMessages[id].shift();
+        latestClientMessages[id].shift();
+      } else {
+        latestClientMessages[id].shift();
+      }
     })
   }
 
@@ -37,9 +44,9 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
       let messages: ({ td: DelayTickData, latency: number } | undefined)[];
 
       if (latestClientMessages[client].length > 2) {
-        messages = [latestClientMessages[client].shift(), latestClientMessages[client].shift()]
+        messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
       } else {
-        messages = [latestClientMessages[client].shift()]
+        messages = [latestClientMessages[client][0]]
       }
       if (messages.length === 0) return;
 
@@ -51,7 +58,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
           Object.keys(message.td.actions).forEach((entityId) => {
             if (world.entities[entityId]?.components.controlled?.data.entityId === client) {
               message.td.actions[entityId].forEach((action) => {
-                world.actionBuffer.push(world.tick + 1, entityId, action);
+                world.actionBuffer.push(world.tick, entityId, action);
               });
             }
           });
@@ -74,9 +81,8 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
   }
 
   const onTick = () => {
-    sendMessage();
     handleMessage();
-    // Object.keys(latestClientMessages).forEach((client) => latestClientMessages[client].shift());
+    sendMessage();
   }
 
   return {
