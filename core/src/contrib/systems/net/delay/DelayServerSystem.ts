@@ -16,7 +16,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
       player: "server",
       tick: world.tick,
       timestamp: Date.now(),
-      serializedEntities: world.entitiesAtTick[world.tick],
+      serializedEntities: world.entitiesAtTick[world.tick] ?? {},
       actions: world.actionBuffer.atTick(world.tick) ?? {},
       chats: world.chatHistory.atTick(world.tick) ?? {}
     }
@@ -28,7 +28,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }));
 
-      if (latestClientMessages[id].length > 2) {
+      if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
         latestClientMessages[id].shift();
         latestClientMessages[id].shift();
       } else {

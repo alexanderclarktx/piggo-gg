@@ -12,11 +12,11 @@
     "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitThis": true,
+    // "noUncheckedIndexedAccess": true,
     "outDir": "./dist",
-    "paths": {
-      "*": ["node_modules/*"]
-    },
+    "paths": { "*": ["node_modules/*"] },
     "sourceMap": true,
+    // "strictFunctionTypes": true,
     "strictNullChecks": true,
     "stripInternal": true,
     "target": "ESNext",

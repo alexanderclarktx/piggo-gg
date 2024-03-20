@@ -10,9 +10,9 @@ const servers = {
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    // const wsClient = new WebSocket(servers.production);
+    const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    const wsClient = new WebSocket(servers.dev);
+    // const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
     let serverMessageBuffer: DelayTickData[] = [];
@@ -86,7 +86,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       // remove old local entities
       Object.keys(world.entities).forEach((entityId) => {
-        if (world.entities[entityId].components.networked) {
+        if (world.entities[entityId]?.components.networked) {
 
           if (!message.serializedEntities[entityId]) {
             // delete if not present in rollback frame
