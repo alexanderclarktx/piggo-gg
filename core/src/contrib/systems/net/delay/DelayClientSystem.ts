@@ -67,9 +67,11 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
     const handleLatestMessage = () => {
       if (serverMessageBuffer.length === 0) {
-        world.tick = world.tick - 1;
+        // world.tick = world.tick - 1;
+        world.skipNextTick = true;
         return;
-      };
+      }
+
       let message = serverMessageBuffer.shift() as DelayTickData;
 
       // remove old local entities

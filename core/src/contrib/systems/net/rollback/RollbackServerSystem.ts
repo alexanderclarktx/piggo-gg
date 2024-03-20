@@ -42,7 +42,7 @@ export const RollbackServerSystem = ({ world, clients, latestClientMessages }: R
       serializedEntities: world.entitiesAtTick[world.tick],
       actions,
       chats
-    };
+    }
 
     // send tick data to all clients
     Object.entries(clients).forEach(([id, client]) => {

@@ -19,7 +19,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
       serializedEntities: world.entitiesAtTick[world.tick],
       actions: world.actionBuffer.atTick(world.tick) ?? {},
       chats: world.chatHistory.atTick(world.tick) ?? {}
-    };
+    }
 
     // send tick data to all clients
     Object.entries(clients).forEach(([id, client]) => {
