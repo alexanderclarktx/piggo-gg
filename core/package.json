@@ -4,6 +4,7 @@
   "main": "./main.ts",
   "dependencies": {
     "@dimforge/rapier2d-compat": "^0.12.0",
+    "compress-json": "^3.0.0",
     "pixi.js": "8.0.2"
   }
 }

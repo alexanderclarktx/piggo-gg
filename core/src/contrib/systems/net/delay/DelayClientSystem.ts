@@ -1,4 +1,5 @@
 import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie, SerializedEntity } from "@piggo-gg/core";
+import { compress } from "compress-json";
 
 const servers = {
   dev: "ws://localhost:3000",
