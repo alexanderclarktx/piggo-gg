@@ -19,7 +19,24 @@ export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorP
   }
 
   const fullscreenOnclick = () => {
-    world?.renderer?.app.canvas.requestFullscreen();
+    const canvas = world?.renderer?.app.canvas;
+    if (!canvas) return;
+
+    if (canvas.requestFullscreen) {
+      canvas.requestFullscreen();
+      // @ts-expect-error
+    } else if (canvas.mozRequestFullScreen) { /* Firefox */
+      // @ts-expect-error
+      canvas.mozRequestFullScreen();
+      // @ts-expect-error
+    } else if (canvas.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+      // @ts-expect-error
+      canvas.webkitRequestFullscreen();
+      // @ts-expect-error
+    } else if (canvas.msRequestFullscreen) { /* IE/Edge */
+      // @ts-expect-error
+      canvas.msRequestFullscreen();
+    }
   }
 
   return (
