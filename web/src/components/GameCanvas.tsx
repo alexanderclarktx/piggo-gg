@@ -21,8 +21,6 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
       { width: window.innerWidth, height: window.innerHeight } :
       { width: window.innerWidth * 0.98, height: window.innerHeight * 0.90 };
 
-      console.log("width", width, height);
-
     // remove border styling if mobile
     if (mobile) {
       canvas.style.border = "none";
