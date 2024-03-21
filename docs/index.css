@@ -8,6 +8,20 @@ html {
   color-scheme: dark !important;
 }
 
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* This will remove the scroll bars */
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
 h1 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
@@ -29,9 +43,12 @@ canvas {
   border-radius: 3px;
   top: 0;
   left: 0;
+  /* width: 100%;
+  height: 100%; */
   width: 100vw;
   height: 100vh;
   object-fit: fill;
+  display: block; /* Removes space below canvas */
 }
 
 video {

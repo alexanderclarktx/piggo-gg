@@ -6,14 +6,29 @@ export type GameCanvasProps = {
   setWorld: (_: World) => void
 }
 
+const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
 
+  console.log("isMobile", isMobile());
+
   useEffect(() => {
-    const renderer = new Renderer({
-      canvas: document.getElementById("canvas") as HTMLCanvasElement,
-      width: window.innerWidth * 0.98,
-      height: window.innerHeight * 0.90
-    });
+
+    const mobile = isMobile();
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+
+    const { width, height } = mobile ?
+      { width: window.innerWidth, height: window.innerHeight } :
+      { width: window.innerWidth * 0.98, height: window.innerHeight * 0.90 };
+
+      console.log("width", width, height);
+
+    // remove border styling if mobile
+    if (mobile) {
+      canvas.style.border = "none";
+    }
+
+    const renderer = new Renderer({ canvas, width, height });
 
     renderer.init().then(() => {
       const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Soccer, Strike, Legends] });

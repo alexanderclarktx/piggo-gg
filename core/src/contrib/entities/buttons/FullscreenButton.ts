@@ -14,7 +14,10 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
       height: 30,
       click: ValidAction((_, world: World) => {
         if (!document.fullscreenElement) {
-          world.renderer?.app.canvas.requestFullscreen();
+          const canvas = world.renderer?.app.canvas!;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          // world.renderer?.app.canvas.requestFullscreen();
         } else {
           document.exitFullscreen();
         }
