@@ -12,7 +12,7 @@ type ActionRegex = {
   handlers?: Record<string, (match: RegExpMatchArray) => boolean>
 }
 
-// InputSystem handles all keyboard inputs
+// InputSystem handles all keyboard/joystick inputs
 export const InputSystem: SystemBuilder<"InputSystem"> = ({
   id: "InputSystem",
   init: ({ clientPlayerId, world }) => {

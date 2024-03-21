@@ -50,15 +50,14 @@ export class Joystick extends PIXI.Container {
     if (!this.settings.outer) {
       const outer = new PIXI.Graphics();
       outer.circle(0, 0, 60);
-      outer.fill(0x0066ff);
-      outer.alpha = 0.5;
+      outer.fill({ color: 0x005588, alpha: 0.9 });
       this.settings.outer = outer;
     }
 
     if (!this.settings.inner) {
       const inner = new PIXI.Graphics();
       inner.circle(0, 0, 35);
-      inner.fill(0x00ff00);
+      inner.fill({ color: 0xffff00, alpha: 0.8 });
       inner.alpha = this.innerAlphaStandby;
       this.settings.inner = inner;
     }

@@ -5,6 +5,8 @@ import {
   RenderSystem, World, WorldBuilder
 } from "@piggo-gg/core";
 
+const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 export const IsometricWorld: WorldBuilder = (props) => {
 
   const playerId = `noob${Math.trunc((Math.random() * 100))}`;
@@ -16,7 +18,14 @@ export const IsometricWorld: WorldBuilder = (props) => {
     world.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem]);
 
     // ui
-    world.addEntityBuilders([FullscreenButton, DebugButton, Cursor, Joystickz, Chat]);
+    world.addEntityBuilders([FullscreenButton, DebugButton, Chat]);
+
+    // mobile elements
+    if (isMobile()) {
+      world.addEntityBuilders([Joystickz]);
+    } else {
+      world.addEntityBuilders([Cursor]);
+    }
 
     // client player
     if (world.clientPlayerId) world.addEntity(Noob({ id: world.clientPlayerId }));
