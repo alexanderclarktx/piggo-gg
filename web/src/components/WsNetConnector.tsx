@@ -18,10 +18,15 @@ export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorP
     if (world) world.addSystemBuilders([DelayClientSystem])
   }
 
+  const fullscreenOnclick = () => {
+    world?.renderer?.app.canvas.requestFullscreen();
+  }
+
   return (
     <div style={{ "paddingTop": 0 }}>
       <div style={{ width: "100%" }}>
         <div style={{ float: "left", marginLeft: 0, paddingLeft: 0, marginTop: 1 }}>
+          <button style={{ fontSize: 12, marginLeft: 0 }} onClick={fullscreenOnclick}>fullscreen</button>
           <button style={{ fontSize: 12, marginLeft: 0 }} onClick={onClick}>connect</button>
           <span style={{ color: NetStateColor[netState], paddingTop: 2 }}>{netState}</span>
         </div>
