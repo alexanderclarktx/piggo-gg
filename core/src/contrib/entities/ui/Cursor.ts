@@ -1,34 +1,5 @@
 import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
-import { Joystick } from "./Joystick";
-
-export const currentJoystickPosition = { angle: 0, power: 0 }
-
-export const Joystickz = (): Entity => {
-  const joystick = Entity<Renderable | Position>({
-    id: "joystick",
-    components: {
-      position: new Position({ x: 100, y: window.innerHeight - 100, screenFixed: true }),
-      renderable: new Renderable({
-        zIndex: 10,
-        interactiveChildren: true,
-        container: async (r: Renderer) => {
-          return new Joystick({
-            onChange: (data) => {
-              currentJoystickPosition.angle = data.angle;
-              currentJoystickPosition.power = data.power;
-            },
-            onEnd: () => {
-              currentJoystickPosition.power = 0;
-              currentJoystickPosition.angle = 0;
-            }
-          })
-        }
-      })
-    }
-  });
-  return joystick;
-}
 
 export const Cursor = (): Entity => {
 

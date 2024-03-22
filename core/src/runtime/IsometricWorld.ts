@@ -1,7 +1,7 @@
 import {
   ActionSystem, Chat, ClickableSystem, Cursor,
   DebugButton, DebugSystem, FullscreenButton,
-  InputSystem, Joystickz, NPCSystem, Noob, PhysicsSystem,
+  InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
   RenderSystem, World, WorldBuilder
 } from "@piggo-gg/core";
 
@@ -22,7 +22,7 @@ export const IsometricWorld: WorldBuilder = (props) => {
 
     // mobile elements
     if (isMobile()) {
-      world.addEntityBuilders([Joystickz]);
+      world.addEntityBuilders([Joystick]);
     } else {
       world.addEntityBuilders([Cursor]);
     }

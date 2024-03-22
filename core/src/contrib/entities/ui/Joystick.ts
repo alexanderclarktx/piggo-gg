@@ -1,5 +1,35 @@
 // from https://github.com/endel/pixi-virtual-joystick/
-import * as PIXI from "pixi.js";
+import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
+import { Container, Graphics, Sprite, FederatedPointerEvent, Point } from "pixi.js";
+
+export const currentJoystickPosition = { angle: 0, power: 0 }
+
+export const Joystick = (): Entity => {
+  const joystick = Entity<Renderable | Position>({
+    id: "joystick",
+    persists: true,
+    components: {
+      position: new Position({ x: 100, y: window.innerHeight - 100, screenFixed: true }),
+      renderable: new Renderable({
+        zIndex: 10,
+        interactiveChildren: true,
+        container: async () => {
+          return new JoystickContainer({
+            onChange: (data) => {
+              currentJoystickPosition.angle = data.angle;
+              currentJoystickPosition.power = data.power;
+            },
+            onEnd: () => {
+              currentJoystickPosition.power = 0;
+              currentJoystickPosition.angle = 0;
+            }
+          })
+        }
+      })
+    }
+  });
+  return joystick;
+}
 
 export interface JoystickChangeEvent {
   angle: number;
@@ -19,8 +49,8 @@ export enum Direction {
 }
 
 export interface JoystickSettings {
-  outer?: PIXI.Sprite | PIXI.Graphics | PIXI.Container,
-  inner?: PIXI.Sprite | PIXI.Graphics | PIXI.Container,
+  outer?: Sprite | Graphics | Container,
+  inner?: Sprite | Graphics | Container,
   outerScale?: { x: number, y: number },
   innerScale?: { x: number, y: number },
   onChange?: (data: JoystickChangeEvent) => void;
@@ -28,14 +58,14 @@ export interface JoystickSettings {
   onEnd?: () => void;
 }
 
-export class Joystick extends PIXI.Container {
+export class JoystickContainer extends Container {
   settings: JoystickSettings;
 
   outerRadius: number = 0;
   innerRadius: number = 0;
 
-  outer!: PIXI.Sprite | PIXI.Graphics | PIXI.Container;
-  inner!: PIXI.Sprite | PIXI.Graphics | PIXI.Container;
+  outer!: Sprite | Graphics | Container;
+  inner!: Sprite | Graphics | Container;
 
   innerAlphaStandby = 0.5;
 
@@ -48,14 +78,14 @@ export class Joystick extends PIXI.Container {
     }, opts);
 
     if (!this.settings.outer) {
-      const outer = new PIXI.Graphics();
+      const outer = new Graphics();
       outer.circle(0, 0, 60);
       outer.fill({ color: 0x005588, alpha: 0.9 });
       this.settings.outer = outer;
     }
 
     if (!this.settings.inner) {
-      const inner = new PIXI.Graphics();
+      const inner = new Graphics();
       inner.circle(0, 0, 35);
       inner.fill({ color: 0xffff00, alpha: 0.8 });
       inner.alpha = this.innerAlphaStandby;
@@ -92,9 +122,9 @@ export class Joystick extends PIXI.Container {
     let dragging: boolean = false;
     // let eventData: PIXI.FederatedEvent;
     let power: number;
-    let startPosition: PIXI.Point;
+    let startPosition: Point;
 
-    function onDragStart(event: PIXI.FederatedPointerEvent) {
+    function onDragStart(event: FederatedPointerEvent) {
       // eventData = event.data;
       startPosition = that.toLocal(event.global);
 
@@ -104,7 +134,7 @@ export class Joystick extends PIXI.Container {
       that.settings.onStart?.();
     }
 
-    function onDragEnd(event: PIXI.FederatedPointerEvent) {
+    function onDragEnd(event: FederatedPointerEvent) {
       if (dragging == false) { return; }
 
       that.inner.position.set(0, 0);
@@ -115,7 +145,7 @@ export class Joystick extends PIXI.Container {
       that.settings.onEnd?.();
     }
 
-    function onDragMove(event: PIXI.FederatedPointerEvent) {
+    function onDragMove(event: FederatedPointerEvent) {
       if (dragging == false) { return; }
 
       let newPosition = that.toLocal(event.global);
@@ -123,7 +153,7 @@ export class Joystick extends PIXI.Container {
       let sideX = newPosition.x - startPosition.x;
       let sideY = newPosition.y - startPosition.y;
 
-      let centerPoint = new PIXI.Point(0, 0);
+      let centerPoint = new Point(0, 0);
       let angle = 0;
 
       if (sideX == 0 && sideY == 0) { return; }
@@ -238,13 +268,13 @@ export class Joystick extends PIXI.Container {
       .on('pointermove', onDragMove)
   }
 
-  protected getPower(centerPoint: PIXI.Point) {
+  protected getPower(centerPoint: Point) {
     const a = centerPoint.x - 0;
     const b = centerPoint.y - 0;
     return Math.min(1, Math.sqrt(a * a + b * b) / this.outerRadius);
   }
 
-  protected getDirection(center: PIXI.Point) {
+  protected getDirection(center: Point) {
     let rad = Math.atan2(center.y, center.x);// [-PI, PI]
     if ((rad >= -Math.PI / 8 && rad < 0) || (rad >= 0 && rad < Math.PI / 8)) {
       return Direction.RIGHT;
