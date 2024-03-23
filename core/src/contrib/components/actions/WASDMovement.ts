@@ -1,6 +1,6 @@
 import { ActionMap, Entity, Position, ValidAction, currentJoystickPosition } from "@piggo-gg/core";
 
-const speed = 170;
+const speed = 140;
 const speedDiagonal = speed / Math.sqrt(2);
 const speedHorizontal = speed / 2;
 
@@ -21,8 +21,15 @@ const move = (entity: Entity<Position>, animation: string | undefined, velocity:
   const { position, renderable } = entity.components;
 
   if (currentJoystickPosition.power) {
-    velocity.x *= currentJoystickPosition.power;
-    velocity.y *= currentJoystickPosition.power;
+    const { power, angle } = currentJoystickPosition;
+
+    const x = speed * Math.cos(angle * Math.PI / 180);
+
+    velocity.x *= Math.min(1, power * 2);
+    velocity.y *= Math.min(1, power * 2);
+
+    // apply the angle
+    const angleRad = angle * Math.PI / 180;
   }
 
   position.setVelocity(velocity);
