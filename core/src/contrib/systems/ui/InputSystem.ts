@@ -117,16 +117,15 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
       // handle joystick input
       if (currentJoystickPosition.power > 0.1) {
         const increment = currentJoystickPosition.angle / (360 / 8);
-        console.log(increment);
-        ((increment > 0.5) && (increment < 1.5)) ? buffer.add("w").add("d") :
-        ((increment > 0.5) && (increment < 2.5)) ? buffer.add("w") :
-        ((increment > 0.5) && (increment < 3.5)) ? buffer.add("w").add("a") :
-        ((increment > 0.5) && (increment < 4.5)) ? buffer.add("a") :
-        ((increment > 0.5) && (increment < 5.5)) ? buffer.add("s").add("a") :
-        ((increment > 0.5) && (increment < 6.5)) ? buffer.add("s") :
-        ((increment > 0.5) && (increment < 7.5)) ? buffer.add("s").add("d") :
-        buffer.add("d");
-        console.log(buffer)
+
+        ((increment > 0.5) && (increment < 1.5)) ? buffer.add("w").add("d")
+        : ((increment > 0.5) && (increment < 2.5)) ? buffer.add("w")
+        : ((increment > 0.5) && (increment < 3.5)) ? buffer.add("w").add("a")
+        : ((increment > 0.5) && (increment < 4.5)) ? buffer.add("a")
+        : ((increment > 0.5) && (increment < 5.5)) ? buffer.add("s").add("a")
+        : ((increment > 0.5) && (increment < 6.5)) ? buffer.add("s")
+        : ((increment > 0.5) && (increment < 7.5)) ? buffer.add("s").add("d")
+        : buffer.add("d");
       }
 
       // handle standalone and composite (a,b) input controls

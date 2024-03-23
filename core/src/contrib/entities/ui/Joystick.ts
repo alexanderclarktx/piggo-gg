@@ -1,6 +1,5 @@
-// from https://github.com/endel/pixi-virtual-joystick/
-import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
-import { Container, Graphics, Sprite, FederatedPointerEvent, Point } from "pixi.js";
+import { Entity, Position, Renderable } from "@piggo-gg/core";
+import { Container, FederatedPointerEvent, Graphics, Point, Sprite } from "pixi.js";
 
 export const currentJoystickPosition = { angle: 0, power: 0 }
 
@@ -31,21 +30,12 @@ export const Joystick = (): Entity => {
   return joystick;
 }
 
-export interface JoystickChangeEvent {
-  angle: number;
-  direction: Direction;
-  power: number;
-}
+type Direction = "left" | "top" | "bottom" | "right" | "top_left" | "top_right" | "bottom_left" | "bottom_right";
 
-export enum Direction {
-  LEFT = 'left',
-  TOP = 'top',
-  BOTTOM = 'bottom',
-  RIGHT = 'right',
-  TOP_LEFT = 'top_left',
-  TOP_RIGHT = 'top_right',
-  BOTTOM_LEFT = 'bottom_left',
-  BOTTOM_RIGHT = 'bottom_right',
+export interface JoystickChangeEvent {
+  angle: number
+  direction: Direction
+  power: number
 }
 
 export interface JoystickSettings {
@@ -58,6 +48,7 @@ export interface JoystickSettings {
   onEnd?: () => void;
 }
 
+// from https://github.com/endel/pixi-virtual-joystick/
 export class JoystickContainer extends Container {
   settings: JoystickSettings;
 
@@ -102,8 +93,8 @@ export class JoystickContainer extends Container {
     this.outer.scale.set(this.settings.outerScale!.x, this.settings.outerScale!.y);
     this.inner.scale.set(this.settings.innerScale!.x, this.settings.innerScale!.y);
 
-    if ('anchor' in this.outer) { this.outer.anchor.set(0.5); }
-    if ('anchor' in this.inner) { this.inner.anchor.set(0.5); }
+    if ("anchor" in this.outer) { this.outer.anchor.set(0.5); }
+    if ("anchor" in this.inner) { this.inner.anchor.set(0.5); }
 
     this.addChild(this.outer);
     this.addChild(this.inner);
@@ -135,6 +126,7 @@ export class JoystickContainer extends Container {
     }
 
     function onDragEnd(event: FederatedPointerEvent) {
+      console.log("onDragEnd", event);
       if (dragging == false) { return; }
 
       that.inner.position.set(0, 0);
@@ -146,6 +138,7 @@ export class JoystickContainer extends Container {
     }
 
     function onDragMove(event: FederatedPointerEvent) {
+      console.log("onDragMove", event);
       if (dragging == false) { return; }
 
       let newPosition = that.toLocal(event.global);
@@ -180,17 +173,17 @@ export class JoystickContainer extends Container {
        *          |
        */
 
-      let direction = Direction.LEFT;
+      let direction: Direction = "left";
 
       if (sideX == 0) {
         if (sideY > 0) {
           centerPoint.set(0, (sideY > that.outerRadius) ? that.outerRadius : sideY);
           angle = 270;
-          direction = Direction.BOTTOM;
+          direction = "bottom";
         } else {
           centerPoint.set(0, -(Math.abs(sideY) > that.outerRadius ? that.outerRadius : Math.abs(sideY)));
           angle = 90;
-          direction = Direction.TOP;
+          direction = "top";
         }
         that.inner.position.set(centerPoint.x, centerPoint.y);
         power = that.getPower(centerPoint);
@@ -202,11 +195,11 @@ export class JoystickContainer extends Container {
         if (sideX > 0) {
           centerPoint.set((Math.abs(sideX) > that.outerRadius ? that.outerRadius : Math.abs(sideX)), 0);
           angle = 0;
-          direction = Direction.LEFT;
+          direction = "left";
         } else {
           centerPoint.set(-(Math.abs(sideX) > that.outerRadius ? that.outerRadius : Math.abs(sideX)), 0);
           angle = 180;
-          direction = Direction.RIGHT;
+          direction = "right";
         }
 
         that.inner.position.set(centerPoint.x, centerPoint.y);
@@ -262,10 +255,7 @@ export class JoystickContainer extends Container {
       that.settings.onChange?.({ angle, direction, power, });
     };
 
-    this.on('pointerdown', onDragStart)
-      .on('pointerup', onDragEnd)
-      .on('pointerupoutside', onDragEnd)
-      .on('pointermove', onDragMove)
+    this.on("pointerdown", onDragStart).on("pointerup", onDragEnd).on("pointerupoutside", onDragEnd).on("globalpointermove", onDragMove);
   }
 
   protected getPower(centerPoint: Point) {
@@ -274,24 +264,24 @@ export class JoystickContainer extends Container {
     return Math.min(1, Math.sqrt(a * a + b * b) / this.outerRadius);
   }
 
-  protected getDirection(center: Point) {
+  protected getDirection(center: Point): Direction {
     let rad = Math.atan2(center.y, center.x);// [-PI, PI]
     if ((rad >= -Math.PI / 8 && rad < 0) || (rad >= 0 && rad < Math.PI / 8)) {
-      return Direction.RIGHT;
+      return "right";
     } else if (rad >= Math.PI / 8 && rad < 3 * Math.PI / 8) {
-      return Direction.BOTTOM_RIGHT;
+      return "bottom_right";
     } else if (rad >= 3 * Math.PI / 8 && rad < 5 * Math.PI / 8) {
-      return Direction.BOTTOM;
+      return "bottom";
     } else if (rad >= 5 * Math.PI / 8 && rad < 7 * Math.PI / 8) {
-      return Direction.BOTTOM_LEFT;
+      return "bottom_left";
     } else if ((rad >= 7 * Math.PI / 8 && rad < Math.PI) || (rad >= -Math.PI && rad < -7 * Math.PI / 8)) {
-      return Direction.LEFT;
+      return "left";
     } else if (rad >= -7 * Math.PI / 8 && rad < -5 * Math.PI / 8) {
-      return Direction.TOP_LEFT;
+      return "top_left";
     } else if (rad >= -5 * Math.PI / 8 && rad < -3 * Math.PI / 8) {
-      return Direction.TOP;
+      return "top";
     } else {
-      return Direction.TOP_RIGHT;
+      return "top_right";
     }
   }
 }

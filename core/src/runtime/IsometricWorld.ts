@@ -1,5 +1,5 @@
 import {
-  ActionSystem, Chat, ClickableSystem, Cursor,
+  ActionSystem, Chat, ClickableSystem, ConnectButton, Cursor,
   DebugButton, DebugSystem, FullscreenButton,
   InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
   RenderSystem, World, WorldBuilder
@@ -21,11 +21,11 @@ export const IsometricWorld: WorldBuilder = (props) => {
     world.addEntityBuilders([FullscreenButton, DebugButton, Chat]);
 
     // mobile elements
-    if (isMobile()) {
-      world.addEntityBuilders([Joystick]);
-    } else {
+    // if (isMobile()) {
+      world.addEntityBuilders([Joystick, ConnectButton]);
+    // } else {
       world.addEntityBuilders([Cursor]);
-    }
+    // }
 
     // client player
     if (world.clientPlayerId) world.addEntity(Noob({ id: world.clientPlayerId }));
