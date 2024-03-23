@@ -21,11 +21,11 @@ export const IsometricWorld: WorldBuilder = (props) => {
     world.addEntityBuilders([FullscreenButton, DebugButton, Chat]);
 
     // mobile elements
-    // if (isMobile()) {
+    if (isMobile()) {
       world.addEntityBuilders([Joystick, ConnectButton]);
-    // } else {
+    } else {
       world.addEntityBuilders([Cursor]);
-    // }
+    }
 
     // client player
     if (world.clientPlayerId) world.addEntity(Noob({ id: world.clientPlayerId }));

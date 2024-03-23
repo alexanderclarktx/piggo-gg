@@ -8,7 +8,7 @@ export const Joystick = (): Entity => {
     id: "joystick",
     persists: true,
     components: {
-      position: new Position({ x: 100, y: window.innerHeight - 100, screenFixed: true }),
+      position: new Position({ x: -100, y: -100, screenFixed: true }),
       renderable: new Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -99,7 +99,6 @@ export class JoystickContainer extends Container {
     this.addChild(this.outer);
     this.addChild(this.inner);
 
-    // this.outerRadius = this.containerJoystick.width / 2;
     this.outerRadius = this.width / 2.5;
     this.innerRadius = this.inner.width / 2;
 
@@ -111,12 +110,10 @@ export class JoystickContainer extends Container {
     this.interactive = true;
 
     let dragging: boolean = false;
-    // let eventData: PIXI.FederatedEvent;
     let power: number;
     let startPosition: Point;
 
     function onDragStart(event: FederatedPointerEvent) {
-      // eventData = event.data;
       startPosition = that.toLocal(event.global);
 
       dragging = true;
@@ -150,15 +147,6 @@ export class JoystickContainer extends Container {
       let angle = 0;
 
       if (sideX == 0 && sideY == 0) { return; }
-
-      let calRadius = 0;
-
-      if (sideX * sideX + sideY * sideY >= that.outerRadius * that.outerRadius) {
-        calRadius = that.outerRadius;
-      }
-      else {
-        calRadius = that.outerRadius - that.innerRadius;
-      }
 
       /**
        * x:   -1 <-> 1
