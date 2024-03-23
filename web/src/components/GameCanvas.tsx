@@ -10,8 +10,6 @@ const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userA
 
 export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
 
-  console.log("isMobile", isMobile());
-
   useEffect(() => {
 
     const mobile = isMobile();
