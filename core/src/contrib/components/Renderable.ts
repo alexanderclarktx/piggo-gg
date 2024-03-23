@@ -5,6 +5,7 @@ export type RenderableProps = {
   container?: (r: Renderer) => Promise<Container>
   children?: (r: Renderer) => Promise<Renderable[]>
   dynamic?: (c: Container, r: Renderable, e: Entity, w: World) => void
+  interactiveChildren?: boolean
   position?: { x: number; y: number }
   zIndex?: number
   visible?: boolean
@@ -65,7 +66,7 @@ export class Renderable extends Component<"renderable"> {
   _init = async (renderer: Renderer | undefined) => {
     this.renderer = renderer;
 
-    const { children, position, id, visible, container, zIndex, setup, color } = this.props;
+    const { interactiveChildren, children, position, id, visible, container, zIndex, setup, color } = this.props;
 
     // add child container
     if (container && renderer) this.c = await container(renderer);
@@ -87,8 +88,8 @@ export class Renderable extends Component<"renderable"> {
     // set id
     this.id = id ?? "";
 
-    // set interactive children false
-    this.c.interactiveChildren = false;
+    // set interactive children
+    interactiveChildren ? this.c.interactiveChildren = true : this.c.interactiveChildren = false;
 
     // set visible
     this.c.visible = visible ?? true;

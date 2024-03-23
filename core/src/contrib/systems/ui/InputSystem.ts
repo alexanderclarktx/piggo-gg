@@ -1,4 +1,4 @@
-import { Actions, Ball, Controlled, Controller, Entity, World, Spaceship, SystemBuilder, Zombie } from "@piggo-gg/core";
+import { Actions, Ball, Controlled, Controller, Entity, World, Spaceship, SystemBuilder, Zombie, currentJoystickPosition } from "@piggo-gg/core";
 
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
@@ -12,7 +12,7 @@ type ActionRegex = {
   handlers?: Record<string, (match: RegExpMatchArray) => boolean>
 }
 
-// InputSystem handles all keyboard inputs
+// InputSystem handles all keyboard/joystick inputs
 export const InputSystem: SystemBuilder<"InputSystem"> = ({
   id: "InputSystem",
   init: ({ clientPlayerId, world }) => {
@@ -100,10 +100,7 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
 
       // handle inputs for controlled entities
       entities.forEach((entity) => {
-        const { controlled } = entity.components;
-
-        if (controlled.data.entityId !== world.clientPlayerId) return;
-        if (controlled.data.entityId === clientPlayerId) handleInputForControlledEntity(entity, world);
+        if (entity.components.controlled.data.entityId === clientPlayerId) handleInputForControlledEntity(entity, world);
       });
 
       // handle buffered backspace
@@ -116,6 +113,20 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
 
       // check for actions
       const { controller, actions } = controlledEntity.components;
+
+      // handle joystick input
+      if (currentJoystickPosition.power > 0.1) {
+        const increment = currentJoystickPosition.angle / (360 / 8);
+
+        ((increment > 0.5) && (increment < 1.5)) ? buffer.add("w").add("d")
+        : ((increment > 0.5) && (increment < 2.5)) ? buffer.add("w")
+        : ((increment > 0.5) && (increment < 3.5)) ? buffer.add("w").add("a")
+        : ((increment > 0.5) && (increment < 4.5)) ? buffer.add("a")
+        : ((increment > 0.5) && (increment < 5.5)) ? buffer.add("s").add("a")
+        : ((increment > 0.5) && (increment < 6.5)) ? buffer.add("s")
+        : ((increment > 0.5) && (increment < 7.5)) ? buffer.add("s").add("d")
+        : buffer.add("d");
+      }
 
       // handle standalone and composite (a,b) input controls
       for (const input in controller.controllerMap) {

@@ -1,9 +1,11 @@
 import {
-  ActionSystem, Chat, ClickableSystem, Cursor,
+  ActionSystem, Chat, ClickableSystem, ConnectButton, Cursor,
   DebugButton, DebugSystem, FullscreenButton,
-  InputSystem, NPCSystem, Noob, PhysicsSystem,
+  InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
   RenderSystem, World, WorldBuilder
 } from "@piggo-gg/core";
+
+const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const IsometricWorld: WorldBuilder = (props) => {
 
@@ -16,7 +18,14 @@ export const IsometricWorld: WorldBuilder = (props) => {
     world.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem]);
 
     // ui
-    world.addEntityBuilders([FullscreenButton, DebugButton, Cursor, Chat]);
+    world.addEntityBuilders([FullscreenButton, DebugButton, Chat]);
+
+    // mobile elements
+    if (isMobile()) {
+      world.addEntityBuilders([Joystick, ConnectButton]);
+    } else {
+      world.addEntityBuilders([Cursor]);
+    }
 
     // client player
     if (world.clientPlayerId) world.addEntity(Noob({ id: world.clientPlayerId }));

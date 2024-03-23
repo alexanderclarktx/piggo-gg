@@ -40,6 +40,7 @@ export * from "./src/contrib/entities/terrain/Wall";
 export * from "./src/contrib/entities/ui/Chat";
 export * from "./src/contrib/entities/ui/Cursor";
 export * from "./src/contrib/entities/ui/FpsText";
+export * from "./src/contrib/entities/ui/Joystick";
 export * from "./src/contrib/renderables/TextBox";
 export * from "./src/contrib/renderables/HealthBar";
 export * from "./src/contrib/renderables/DebugBounds";

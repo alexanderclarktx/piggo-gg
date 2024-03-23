@@ -1,4 +1,4 @@
-import { ActionMap, Entity, Position, ValidAction } from "@piggo-gg/core";
+import { ActionMap, Entity, Position, ValidAction, currentJoystickPosition } from "@piggo-gg/core";
 
 const speed = 170;
 const speedDiagonal = speed / Math.sqrt(2);
@@ -19,6 +19,12 @@ export const WASDMovementPhysics: ActionMap<WASDMovementActions> = {
 
 const move = (entity: Entity<Position>, animation: string | undefined, velocity: { x: number, y: number }) => {
   const { position, renderable } = entity.components;
+
+  if (currentJoystickPosition.power) {
+    velocity.x *= currentJoystickPosition.power;
+    velocity.y *= currentJoystickPosition.power;
+  }
+
   position.setVelocity(velocity);
 
   if (renderable && animation) renderable.setAnimation(animation);
