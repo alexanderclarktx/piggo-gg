@@ -17,19 +17,32 @@ export const WASDMovementPhysics: ActionMap<WASDMovementActions> = {
   "downright": ValidAction((entity: Entity<Position>) => move(entity, "dr", { x: speed, y: 0 }))
 }
 
+// shout out to chatgpt (best programmer i know fr)
 const move = (entity: Entity<Position>, animation: string | undefined, velocity: { x: number, y: number }) => {
   const { position, renderable } = entity.components;
 
   if (currentJoystickPosition.power) {
     const { power, angle } = currentJoystickPosition;
 
-    const x = speed * Math.cos(angle * Math.PI / 180);
+    // make the joystick feel stiff
+    const powerToApply = Math.min(1, power * 2);
 
-    velocity.x *= Math.min(1, power * 2);
-    velocity.y *= Math.min(1, power * 2);
+    // Adjusting the angle to match the isometric projection
+    const angleAdjusted = angle + 45;
+    const angleRad = angleAdjusted * Math.PI / 180;
 
-    // apply the angle
-    const angleRad = angle * Math.PI / 180;
+    // x,y components of the vector
+    let cosAngle = Math.cos(angleRad);
+    let sinAngle = -Math.sin(angleRad);
+
+    // Adjusting for consistent speed in isometric projection
+    const magnitude = Math.sqrt(cosAngle * cosAngle + sinAngle * sinAngle);
+    cosAngle /= magnitude;
+    sinAngle /= magnitude;
+
+    // Apply the power to the vector
+    velocity.x = cosAngle * powerToApply * speed;
+    velocity.y = sinAngle * powerToApply * speed;
   }
 
   position.setVelocity(velocity);

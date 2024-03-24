@@ -70,14 +70,14 @@ export class JoystickContainer extends Container {
 
     if (!this.settings.outer) {
       const outer = new Graphics();
-      outer.circle(0, 0, 60);
+      outer.circle(0, 0, 50);
       outer.fill({ color: 0x005588, alpha: 0.9 });
       this.settings.outer = outer;
     }
 
     if (!this.settings.inner) {
       const inner = new Graphics();
-      inner.circle(0, 0, 35);
+      inner.circle(0, 0, 30);
       inner.fill({ color: 0xffff00, alpha: 0.8 });
       inner.alpha = this.innerAlphaStandby;
       this.settings.inner = inner;
@@ -123,7 +123,6 @@ export class JoystickContainer extends Container {
     }
 
     function onDragEnd(event: FederatedPointerEvent) {
-      console.log("onDragEnd", event);
       if (dragging == false) { return; }
 
       that.inner.position.set(0, 0);
@@ -135,7 +134,6 @@ export class JoystickContainer extends Container {
     }
 
     function onDragMove(event: FederatedPointerEvent) {
-      console.log("onDragMove", event);
       if (dragging == false) { return; }
 
       let newPosition = that.toLocal(event.global);
