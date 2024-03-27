@@ -1,4 +1,5 @@
 import {
+  InvokedAction,
   Ball, Entity, Game, GameBuilder, Noob, Renderer,
   SerializedEntity, Skelly, StateBuffer, System,
   SystemBuilder, SystemEntity, TickData, Zombie
@@ -15,8 +16,8 @@ export type WorldProps = {
 export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
 
 export type World = {
-  actionBuffer: StateBuffer
-  chatHistory: StateBuffer
+  actionBuffer: StateBuffer<InvokedAction>
+  chatHistory: StateBuffer<string>
   clientPlayerId: string | undefined
   currentGame: Game
   debug: boolean

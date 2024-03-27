@@ -1,4 +1,4 @@
-import { Button, Clickable, Entity, Position, ValidAction, World } from "@piggo-gg/core";
+import { Button, Clickable, Entity, Position, World } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
@@ -12,13 +12,15 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
       active: true,
       width: 32,
       height: 30,
-      click: ValidAction((_, world: World) => {
-        if (!document.fullscreenElement) {
-          world.renderer?.app.canvas.requestFullscreen?.();
-        } else {
-          document.exitFullscreen();
+      click: {
+        apply: (_, __, world: World) => {
+          if (!document.fullscreenElement) {
+            world.renderer?.app.canvas.requestFullscreen?.();
+          } else {
+            document.exitFullscreen();
+          }
         }
-      })
+      }
     }),
     renderable: Button({
       dims: { w: 32, textX: 8, textY: 5 },

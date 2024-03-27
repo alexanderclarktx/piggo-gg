@@ -1,7 +1,7 @@
-import { Component, Entity, World } from "@piggo-gg/core";
+import { Component, Entity, InvokedAction, World } from "@piggo-gg/core";
 
-export type NPCProps<T> = {
-  onTick: (entity: Entity, world: World) => T | null | void;
+export type NPCProps<T extends string> = {
+  onTick: (entity: Entity, world: World) => InvokedAction<T> | null | void;
 }
 
 export class NPC<T extends string = string> extends Component<"npc"> {

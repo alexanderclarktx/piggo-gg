@@ -115,31 +115,22 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
       const { controller, actions } = controlledEntity.components;
 
       // handle joystick input
-      if (currentJoystickPosition.power > 0.1) {
-        const increment = currentJoystickPosition.angle / (360 / 8);
-
-        ((increment > 0.5) && (increment < 1.5)) ?
-          buffer.add("w").add("d") :
-          ((increment > 0.5) && (increment < 2.5)) ? buffer.add("w") :
-          ((increment > 0.5) && (increment < 3.5)) ? buffer.add("w").add("a") :
-          ((increment > 0.5) && (increment < 4.5)) ? buffer.add("a") :
-          ((increment > 0.5) && (increment < 5.5)) ? buffer.add("s").add("a") :
-          ((increment > 0.5) && (increment < 6.5)) ? buffer.add("s") :
-          ((increment > 0.5) && (increment < 7.5)) ? buffer.add("s").add("d") :
-          buffer.add("d");
+      if (currentJoystickPosition.power > 0.1 && controller.controllerMap.joystick) {
+        const joystickAction = controller.controllerMap.joystick();
+        if (joystickAction) world.actionBuffer.push(world.tick + 1, controlledEntity.id, joystickAction);
       }
 
       // handle standalone and composite (a,b) input controls
-      for (const input in controller.controllerMap) {
+      for (const input in controller.controllerMap.keyboard) {
         if (input.includes(",")) {
           const inputKeys = input.split(",");
 
           // check for multiple keys pressed at once
           if (inputKeys.every((key) => buffer.has(key))) {
             // run the callback
-            const controllerInput = controller.controllerMap[input];
+            const controllerInput = controller.controllerMap.keyboard[input];
             if (controllerInput != null) {
-              if (actions.actionMap[controllerInput]) {
+              if (actions.actionMap[controllerInput.action ?? ""]) {
                 world.actionBuffer.push(world.tick + 1, controlledEntity.id, controllerInput);
               }
             }
@@ -150,9 +141,9 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
         } else if (buffer.has(input)) {
 
           // check for single key pressed
-          const controllerInput = controller.controllerMap[input];
+          const controllerInput = controller.controllerMap.keyboard[input];
           if (controllerInput != null) {
-            if (actions.actionMap[controllerInput]) {
+            if (actions.actionMap[controllerInput.action ?? ""]) {
               world.actionBuffer.push(world.tick + 1, controlledEntity.id, controllerInput);
             }
           }

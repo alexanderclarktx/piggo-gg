@@ -68,6 +68,11 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         return;
       }
 
+      if (serverMessageBuffer.length > 10) {
+        serverMessageBuffer = [];
+        return;
+      }
+
       if (serverMessageBuffer.length > 2) {
         world.tickFaster = true;
       } else {

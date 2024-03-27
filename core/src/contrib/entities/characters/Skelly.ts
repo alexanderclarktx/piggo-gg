@@ -1,4 +1,4 @@
-import { Actions, Collider, Controlled, Controller, Debug, Entity, Networked, Position, Renderable, WASDMovementActions, WASDMovementPhysics } from "@piggo-gg/core";
+import { Actions, Collider, Controlled, Controller, Debug, Entity, Networked, Position, Renderable, WASDActionMap, WASDController } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number) => Entity({
@@ -9,12 +9,8 @@ export const Skelly = (id: string, tint?: number) => Entity({
     networked: new Networked({ isNetworked: true }),
     controlled: new Controlled({ entityId: "" }),
     collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
-    controller: new Controller<WASDMovementActions>({
-      "a,d": null, "w,s": null,
-      "w,a": "upleft", "w,d": "upright", "s,a": "downleft", "s,d": "downright",
-      "w": "up", "s": "down", "a": "left", "d": "right"
-    }),
-    actions: new Actions(WASDMovementPhysics),
+    controller: new Controller(WASDController),
+    actions: new Actions(WASDActionMap),
     renderable: new Renderable({
       anchor: { x: 0.5, y: 0.7 },
       scale: 2,

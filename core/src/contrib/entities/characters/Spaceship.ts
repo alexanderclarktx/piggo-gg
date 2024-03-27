@@ -18,11 +18,11 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       click: PlayerControlsEntity
     }),
     collider: new Collider({ shape: "cuboid", radius: 60 }),
-    controller: new Controller<VehicleMovementActions>({
-      "a,d": null, "w,s": null,
-      "shift,a": "skidleft", "shift,d": "skidright",
-      "w": "up", "s": "down", "a": "left", "d": "right"
-    }),
+    // controller: new Controller<VehicleMovementActions>({
+    //   "a,d": null, "w,s": null,
+    //   "shift,a": "skidleft", "shift,d": "skidright",
+    //   "w": "up", "s": "down", "a": "left", "d": "right"
+    // }),
     debug: new Debug(),
     actions: new Actions(VehicleMovement),
     renderable: new Renderable({

@@ -1,16 +1,20 @@
 import { Component, Entity, World } from "@piggo-gg/core";
 
-export interface Action {
-  apply: (entity: Entity, world: World, player?: string) => void
-  validate: (entity: Entity, world: World, player?: string) => boolean
+export type Action<T extends {} = {}> = {
+  apply: (params: T, entity: Entity, world: World, player?: string) => void
+  // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
-export const ValidAction = (apply: Action["apply"]): Action => ({
-  apply,
-  validate: () => true
-})
+export const Action = (apply: Action["apply"]): Action => {
+  return { apply };
+}
 
-export type ActionMap<T extends string = string> = Record<T, Action>;
+export type InvokedAction<A extends string = string, P extends {} = {}> = {
+  action: A,
+  params: P
+}
+
+export type ActionMap<T extends string = string, P extends {} = {}> = Record<T, Action<P>>;
 
 export class Actions extends Component<"actions"> {
   type: "actions" = "actions";
