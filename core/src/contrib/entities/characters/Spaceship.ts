@@ -18,11 +18,17 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       click: PlayerControlsEntity
     }),
     collider: new Collider({ shape: "cuboid", radius: 60 }),
-    // controller: new Controller<VehicleMovementActions>({
-    //   "a,d": null, "w,s": null,
-    //   "shift,a": "skidleft", "shift,d": "skidright",
-    //   "w": "up", "s": "down", "a": "left", "d": "right"
-    // }),
+    controller: new Controller<VehicleMovementActions>({
+      keyboard: {
+        "a,d": null, "w,s": null,
+        "shift,a": { action: "skidleft", params: {} },
+        "shift,d": { action: "skidright", params: {} },
+        "w": { action: "up", params: {} },
+        "s": { action: "down", params: {} },
+        "a": { action: "left", params: {} },
+        "d": { action: "right", params: {} }
+      }
+    }),
     debug: new Debug(),
     actions: new Actions(VehicleMovement),
     renderable: new Renderable({
@@ -32,6 +38,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
         const texture = (await r.loadTextures("spaceship.json"))["spaceship"];
         const sprite = new AnimatedSprite([texture]);
         sprite.scale = { x: 2, y: 2 };
+        sprite.anchor.set(0.5, 0.5);
         r.c = sprite;
       }
     })

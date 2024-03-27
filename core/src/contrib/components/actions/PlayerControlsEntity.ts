@@ -1,6 +1,7 @@
 import { Action, Controlled, Controlling, Entity, World } from "@piggo-gg/core";
 
 export const PlayerControlsEntity: Action = Action((_, entity: Entity, world: World, player: string) => {
+  console.log("PlayerControlsEntity");
 
   // check that the entity isn't already being controlled
   if (entity.components.controlled) return;

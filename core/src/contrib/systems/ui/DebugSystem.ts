@@ -77,7 +77,7 @@ export const DebugSystem: SystemBuilder<"DebugSystem"> = ({
         components: {
           position: new Position(),
           renderable: new Renderable({
-            zIndex: 2,
+            zIndex: 4,
             children: async () => [textBox, debugBounds]
           })
         }

@@ -11,7 +11,6 @@ export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = ({
       // despawn characters for players that have left
       for (const playerId in playersWithCharacters) {
         if (!players.find((player) => player.id === playerId)) {
-          // console.log(`despawn character for player:${playerId}`);
           world.removeEntity(`skelly-${playerId}`);
           world.removeEntity(playersWithCharacters[playerId].id);
           delete playersWithCharacters[playerId];
@@ -30,7 +29,6 @@ export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = ({
 
     const spawnCharacterForPlayer = async (player: Entity, world: World, color: number) => {
       const characterForPlayer = Skelly(`skelly-${player.id}`, color);
-      // console.log(`spawn character:${characterForPlayer.id} for player:${player.id}`);
 
       // give the player control of the character
       player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
