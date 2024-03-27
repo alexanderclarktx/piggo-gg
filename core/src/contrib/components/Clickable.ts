@@ -6,15 +6,15 @@ export type ClickableProps = {
   width: number
   height: number
   active: boolean
-  click: Action
+  click: Action<{}>
 }
 
 export class Clickable extends Component<"clickable"> {
-  type: "clickable" = "clickable";
-  width: number;
-  height: number;
-  active: boolean;
-  click: Action;
+  type: "clickable" = "clickable"
+  width: number
+  height: number
+  active: boolean
+  click: Action<{}>
 
   constructor(props: ClickableProps) {
     super();

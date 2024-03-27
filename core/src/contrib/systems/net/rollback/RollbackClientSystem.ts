@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, TickData, World } from "@piggo-gg/core";
+import { InvokedAction, Entity, SystemBuilder, TickData, World } from "@piggo-gg/core";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -65,7 +65,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
 
       // prepare actions from recent frames for the client entity
       const recentTicks = world.actionBuffer.keys().filter((tick) => tick >= (world.tick - 20));
-      let actions: Record<number, Record<string, string[]>> = {};
+      let actions: Record<number, Record<string, InvokedAction[]>> = {};
       let chats: Record<number, Record<string, string[]>> = {};
 
       recentTicks.forEach((tick) => {

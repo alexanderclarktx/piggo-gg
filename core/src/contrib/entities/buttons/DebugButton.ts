@@ -1,4 +1,4 @@
-import { Entity, ValidAction, World } from "@piggo-gg/core";
+import { Action, Entity, World } from "@piggo-gg/core";
 import { Button, Clickable, Position } from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
@@ -16,7 +16,7 @@ export const DebugButton = (): Entity => {
       position: new Position({ x: 40, y: 5, screenFixed: true }),
       clickable: new Clickable({
         width: 32, height: 32, active: true,
-        click: ValidAction((_, world: World) => {
+        click: Action((_, __, world: World) => {
           pressed = !pressed;
           if (pressed) {
             shadow.tint = 0x00ffff;

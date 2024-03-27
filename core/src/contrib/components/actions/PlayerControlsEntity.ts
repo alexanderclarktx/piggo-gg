@@ -1,7 +1,6 @@
-import { Action, Controlled, Controlling, Entity, ValidAction, World } from "@piggo-gg/core";
+import { Action, Controlled, Controlling, Entity, World } from "@piggo-gg/core";
 
-// TODO refactor
-export const PlayerControlsEntity: Action = ValidAction((entity: Entity, world: World, player: string) => {
+export const PlayerControlsEntity: Action = Action((_, entity: Entity, world: World, player: string) => {
 
   // check that the entity isn't already being controlled
   if (entity.components.controlled) return;

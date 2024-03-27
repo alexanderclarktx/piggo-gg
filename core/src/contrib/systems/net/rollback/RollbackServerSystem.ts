@@ -1,4 +1,4 @@
-import { System, TickData, World } from "@piggo-gg/core";
+import { InvokedAction, System, TickData, World } from "@piggo-gg/core";
 
 export type RollbackServerSystemProps = {
   world: World
@@ -13,7 +13,7 @@ export const RollbackServerSystem = ({ world, clients, latestClientMessages }: R
     // prepare actions & messages for this tick + future ticks
     const frames = world.actionBuffer.keys().filter((tick) => tick >= world.tick).reverse();
 
-    let actions: Record<number, Record<string, string[]>> = {};
+    let actions: Record<number, Record<string, InvokedAction[]>> = {};
     let chats: Record<number, Record<string, string[]>> = {};
 
     // populate the first 15 ticks empty

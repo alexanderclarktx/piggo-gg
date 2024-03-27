@@ -25,7 +25,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = ({
             }
 
             // find the action
-            const action = actions.actionMap[actionKey];
+            const action = actions.actionMap[actionKey.action];
 
             // action not found
             if (!action) {
@@ -34,8 +34,8 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = ({
             }
 
             // execute the action
-            // console.log(`集 ${entityId} action ${actionKey} executed ${world.tick}`);
-            action.apply(entity, world, clientPlayerId);
+            // console.log(`集 ${entityId} action=${JSON.stringify(actionKey)}}`);
+            action.apply(actionKey.params, entity, world, clientPlayerId);
           });
         });
       }

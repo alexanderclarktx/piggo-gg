@@ -23,7 +23,7 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => {
       </h1>
       <div style={{ position: 'absolute', right: 0, bottom: 0 }}>
         <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
-          v<b>0.3.4</b>
+          v<b>0.3.6</b>
         </span>
         <a style={{ margin: 0, color: "inherit", textDecoration: "none" }} target="_blank" href="https://discord.gg/VfFG9XqDpJ">
           <FaDiscord size={20} style={{ color: "white", verticalAlign: "-80%" }}></FaDiscord>

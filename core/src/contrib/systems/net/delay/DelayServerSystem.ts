@@ -32,7 +32,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         latestClientMessages[id].shift();
         latestClientMessages[id].shift();
       } else {
-        latestClientMessages[id].shift();
+        latestClientMessages[id]?.shift();
       }
     })
   }
