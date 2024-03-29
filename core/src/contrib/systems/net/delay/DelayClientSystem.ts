@@ -152,7 +152,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       if (rollback) {
         world.tick = message.tick - 1;
 
-        if (message.game !== world.currentGame.id) {
+        if (message.game && message.game !== world.currentGame.id) {
           world.setGame(world.games[message.game]);
         }
 

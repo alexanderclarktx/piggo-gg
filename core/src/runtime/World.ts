@@ -87,6 +87,8 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
     tick: 0,
     tickrate: 25,
     addEntity: (entity: Entity) => {
+      const oldEntity = world.entities[entity.id];
+      if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup();
       world.entities[entity.id] = entity;
       return entity.id;
     },

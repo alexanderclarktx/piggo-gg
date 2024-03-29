@@ -2,7 +2,7 @@ import {
   ActionSystem, Chat, ClickableSystem, CommandSystem, ConnectButton, Cursor,
   DebugButton, DebugSystem, FullscreenButton, GameCommand,
   InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
-  RenderSystem, World, WorldBuilder
+  RenderSystem, SpawnCommand, World, WorldBuilder
 } from "@piggo-gg/core";
 
 const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -15,7 +15,7 @@ export const IsometricWorld: WorldBuilder = (props) => {
     ...props,
     renderMode: "isometric",
     clientPlayerId: playerId,
-    commands: [GameCommand]
+    commands: [GameCommand, SpawnCommand]
   });
 
   world.addSystemBuilders([
