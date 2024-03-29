@@ -6,7 +6,7 @@ type GameCommandAction = InvokedAction<"game", GameCommandParams>
 export const GameCommand: Command<GameCommandParams> = {
   id: "game",
   regex: /\/game (\w+)/,
-  matcher: ({ world, match }): GameCommandAction | undefined => {
+  parse: ({ world, match }): GameCommandAction | undefined => {
     if (world.games[match[1]] && world.currentGame.id !== match[1]) return {
       action: "game",
       params: { game: match[1] }

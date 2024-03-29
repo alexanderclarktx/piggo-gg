@@ -12,7 +12,7 @@ const entityBuilders: Record<string, () => Entity> = {
 export const SpawnCommand: Command<SpawnCommandParams> = {
   id: "spawn",
   regex: /\/spawn (\w+)/,
-  matcher: ({ match }): SpawnCommandAction | undefined => {
+  parse: ({ match }): SpawnCommandAction | undefined => {
     let response: SpawnCommandAction | undefined = undefined;
     Object.keys(entityBuilders).forEach((id) => {
       if (id === match[1]) response = { action: "spawn", params: { entity: id } }
@@ -20,8 +20,6 @@ export const SpawnCommand: Command<SpawnCommandParams> = {
     return response;
   },
   apply: ({ params, world }) => {
-
-    console.log("spawning", params);
     Object.keys(entityBuilders).forEach((id) => {
       if (id === params.entity) {
         world.addEntity(entityBuilders[id]());

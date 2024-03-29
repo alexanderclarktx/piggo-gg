@@ -3,7 +3,7 @@ import { World, InvokedAction, Action, ClientSystemBuilder } from "@piggo-gg/cor
 export type Command<T extends {} = {}> = Action<T> & {
   id: string
   regex: RegExp
-  matcher: (_: { world: World, match: RegExpMatchArray }) => InvokedAction | undefined
+  parse: (_: { world: World, match: RegExpMatchArray }) => InvokedAction | undefined
 }
 
 export const CommandSystem = ClientSystemBuilder({
@@ -11,10 +11,10 @@ export const CommandSystem = ClientSystemBuilder({
   init: ({ world }) => {
 
     const processMessage = (message: string) => {
-      Object.values(world.commands).forEach(({ regex, matcher }) => {
+      Object.values(world.commands).forEach(({ regex, parse }) => {
         const match = message.match(regex);
         if (match) {
-          const action = matcher({ world, match });
+          const action = parse({ world, match });
           if (action) {
             world.actionBuffer.push(world.tick + 1, "world", action);
           }

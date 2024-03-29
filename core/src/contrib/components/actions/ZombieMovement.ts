@@ -3,10 +3,10 @@ import { Action, ActionMap, Entity, Position } from "@piggo-gg/core";
 const speed = 30;
 const t = (Math.PI * 2) / 16; // 22.5 degrees
 
-export type ZombieMovementActions = "chase"
+export type ZombieMovementActions = "chase";
 
 export const ZombieMovement: ActionMap<ZombieMovementActions> = {
-  "chase": Action(({ entity, world }) => {
+  chase: Action(({ entity, world }) => {
     if (!entity) return;
 
     const { position, renderable } = entity.components;

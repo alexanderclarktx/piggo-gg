@@ -47,7 +47,6 @@ export type World = {
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
-  // rollback: (td: TickData) => void
   setGame: (game: GameBuilder) => void
 }
 
