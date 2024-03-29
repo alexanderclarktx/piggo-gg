@@ -1,10 +1,10 @@
-import { Entity, SystemBuilder, Health, HealthBar, Position, Renderable } from "@piggo-gg/core";
+import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder } from "@piggo-gg/core";
 
 // HealthBarSystem displays gui elements
-export const HealthBarSystem: SystemBuilder<"HealthBarSystem"> = ({
+export const HealthBarSystem = ClientSystemBuilder({
   id: "HealthBarSystem",
   init: ({ world, renderer }) => {
-    if (!renderer) throw new Error("ClickableSystem requires a renderer");
+    if (!renderer) throw new Error("HealthBarSystem requires a renderer");
 
     let renderedEntities: Set<Entity> = new Set();
 

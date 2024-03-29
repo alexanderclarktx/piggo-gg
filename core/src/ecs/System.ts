@@ -21,5 +21,15 @@ export type SystemProps = {
 
 export type SystemBuilder<T extends string = string> = {
   id: T,
-  init: (props: SystemProps) => System<T>
+  init: (props: SystemProps) => System<T> | undefined
 }
+
+export const SystemBuilder = <T extends string = string>(builder: SystemBuilder<T>) => builder
+
+export const ClientSystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => ({
+  ...builder,
+  init: (props: SystemProps) => {
+    if (props.world.runtimeMode !== "client") return undefined;
+    return builder.init(props);
+  }
+})

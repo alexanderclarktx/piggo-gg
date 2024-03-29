@@ -1,13 +1,16 @@
-import { ActionMap, Entity, World, Position, Renderable, Action } from "@piggo-gg/core";
+import { Action, ActionMap, Entity, Position } from "@piggo-gg/core";
 
 const speed = 30;
 const t = (Math.PI * 2) / 16; // 22.5 degrees
 
-export type ZombieMovementActions = "chase"
+export type ZombieMovementActions = "chase";
 
 export const ZombieMovement: ActionMap<ZombieMovementActions> = {
-  "chase": Action((_, entity: Entity<Position | Renderable>, world: World) => {
+  chase: Action(({ entity, world }) => {
+    if (!entity) return;
+
     const { position, renderable } = entity.components;
+    if (!position || !renderable) return;
 
     // get the closest player entity position
     const entities = Object.values(world.entities).filter((e) => e.components.controlled && e.components.position)

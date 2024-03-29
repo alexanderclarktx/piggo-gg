@@ -6,7 +6,7 @@ const servers = {
   production: "wss://api.piggo.gg"
 } as const;
 
-// WssNetcodeSystem handles networked entities over WebSockets
+// delay netcode client
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
@@ -47,13 +47,14 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     const sendMessage = (world: World) => {
 
       const message: DelayTickData = {
-        type: "game",
-        tick: world.tick,
-        timestamp: Date.now(),
-        player: clientPlayerId ?? "unknown",
         actions: world.actionBuffer.atTick(world.tick + 1) ?? {},
         chats: world.chatHistory.atTick(world.tick) ?? {},
-        serializedEntities: {}
+        game: world.currentGame.id,
+        player: clientPlayerId ?? "unknown",
+        serializedEntities: {},
+        tick: world.tick,
+        timestamp: Date.now(),
+        type: "game"
       }
 
       if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
@@ -92,6 +93,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         }
       });
 
+      // TODO refactor use a table of entities
       // add new entities if not present locally
       Object.keys(message.serializedEntities).forEach((entityId) => {
         if (!world.entities[entityId]) {
@@ -149,6 +151,11 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       if (rollback) {
         world.tick = message.tick - 1;
+
+        if (message.game && message.game !== world.currentGame.id) {
+          world.setGame(world.games[message.game]);
+        }
+
         Object.keys(message.serializedEntities).forEach((entityId) => {
           if (world.entities[entityId]) {
             world.entities[entityId].deserialize(message.serializedEntities[entityId]);
@@ -164,10 +171,9 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       // handle new chat messages
       const numChats = Object.keys(message.chats).length;
       if (numChats) {
-        Object.keys(message.chats).map(Number).forEach((tick) => {
-          Object.keys(message.chats[tick]).forEach((entityId) => {
-            world.chatHistory.set(tick, entityId, message.chats[entityId]);
-          });
+        Object.entries(message.chats).forEach(([playerId, messages]) => {
+          if (playerId === clientPlayerId) return;
+          world.chatHistory.set(world.tick, playerId, messages);
         });
       }
     }

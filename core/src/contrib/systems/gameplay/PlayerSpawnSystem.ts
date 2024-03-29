@@ -1,7 +1,7 @@
 import { Controlled, Controlling, Entity, Player, Skelly, SystemBuilder, World } from "@piggo-gg/core";
 
 // PlayerSpawnSystem handles spawning characters for players
-export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = ({
+export const PlayerSpawnSystem = SystemBuilder({
   id: "PlayerSpawnSystem",
   init: ({ world }) => {
     let playersWithCharacters: Record<string, Entity> = {};

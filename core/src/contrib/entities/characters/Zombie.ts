@@ -2,13 +2,13 @@ import { Action, Actions, Clickable, Collider, Debug, Entity, NPC, Networked, Po
 import { AnimatedSprite } from "pixi.js";
 
 export type ZombieProps = {
-  id: string
+  id?: string
   color?: number
   positionProps?: PositionProps
 }
 
-export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps) => Entity({
-  id,
+export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps = {}) => Entity({
+  id: id ?? `zombie-${Math.round(Math.random() * 100)}`,
   components: {
     position: new Position({ ...positionProps, velocityResets: 1 }),
     networked: new Networked({ isNetworked: true }),
@@ -16,7 +16,7 @@ export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x
       width: 32,
       height: 32,
       active: true,
-      click: Action((_, __, world) => {
+      click: Action(({ world }) => {
         if (world.clientPlayerId) {
           world.addEntity(Projectile({ radius: 5 }));
         }

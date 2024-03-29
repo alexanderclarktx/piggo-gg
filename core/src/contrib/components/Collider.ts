@@ -1,4 +1,4 @@
-import { Component, Entity, World } from "@piggo-gg/core";
+import { Component, Entity, Position, World } from "@piggo-gg/core";
 import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat";
 
 export type ColliderShapes = "ball" | "cuboid" | "line";
@@ -14,7 +14,7 @@ export type ColliderProps = {
   mass?: number // default mass seems to be 100
   restitution?: number
   rotation?: number
-  sensor?: (e2: Entity, world: World) => void
+  sensor?: (e2: Entity<Position>, world: World) => void
 }
 
 export class Collider extends Component<"collider"> {
@@ -23,7 +23,7 @@ export class Collider extends Component<"collider"> {
   colliderDesc: ColliderDesc;
   rapierCollider: RapierCollider;
   body: RigidBody;
-  sensor: (e2: Entity, world: World) => void
+  sensor: (e2: Entity<Position>, world: World) => void
 
   constructor({ shape, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation }: ColliderProps) {
     super();

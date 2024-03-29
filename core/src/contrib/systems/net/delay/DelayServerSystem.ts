@@ -6,19 +6,21 @@ export type DelayServerSystemProps = {
   latestClientMessages: Record<string, { td: DelayTickData, latency: number }[]>
 }
 
+// delay netcode server
 export const DelayServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System => {
 
   const sendMessage = () => {
 
     // build tick data
     const tickData: DelayTickData = {
-      type: "game",
+      actions: world.actionBuffer.atTick(world.tick) ?? {},
+      chats: world.chatHistory.atTick(world.tick) ?? {},
+      game: world.currentGame.id,
       player: "server",
+      serializedEntities: world.entitiesAtTick[world.tick] ?? {},
       tick: world.tick,
       timestamp: Date.now(),
-      serializedEntities: world.entitiesAtTick[world.tick] ?? {},
-      actions: world.actionBuffer.atTick(world.tick) ?? {},
-      chats: world.chatHistory.atTick(world.tick) ?? {}
+      type: "game"
     }
 
     // send tick data to all clients
@@ -56,7 +58,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         // process message actions
         if (message.td.actions) {
           Object.keys(message.td.actions).forEach((entityId) => {
-            if (world.entities[entityId]?.components.controlled?.data.entityId === client) {
+            if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
               message.td.actions[entityId].forEach((action) => {
                 world.actionBuffer.push(world.tick, entityId, action);
               });
@@ -65,16 +67,8 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         }
 
         // process message chats
-        if (message.td.chats) {
-          Object.keys(message.td.chats).map(Number).forEach((tick) => {
-
-            // add chats for the player
-            Object.keys(message.td.chats[tick]).forEach((entityId) => {
-              if (entityId === client) {
-                world.chatHistory.set(tick, entityId, message.td.chats[entityId]);
-              }
-            });
-          });
+        if (message.td.chats[client]) {
+          world.chatHistory.set(world.tick, client, message.td.chats[client]);
         }
       });
     });

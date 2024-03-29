@@ -1,11 +1,12 @@
-import { InvokedAction, System, TickData, World } from "@piggo-gg/core";
+import { InvokedAction, System, RollbackTickData, World } from "@piggo-gg/core";
 
 export type RollbackServerSystemProps = {
   world: World
   clients: Record<string, { send: (_: string) => number }>
-  latestClientMessages: Record<string, { td: TickData, latency: number }>
+  latestClientMessages: Record<string, { td: RollbackTickData, latency: number }>
 }
 
+// rollback netcode server
 export const RollbackServerSystem = ({ world, clients, latestClientMessages }: RollbackServerSystemProps): System => {
 
   const onTick = () => {
@@ -34,7 +35,7 @@ export const RollbackServerSystem = ({ world, clients, latestClientMessages }: R
     });
 
     // build tick data
-    const tickData: TickData = {
+    const tickData: RollbackTickData = {
       type: "game",
       player: "server",
       tick: world.tick,

@@ -1,4 +1,4 @@
-import { Actions, Ball, Controlled, Controller, Entity, World, Spaceship, SystemBuilder, Zombie, currentJoystickPosition } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, World, currentJoystickPosition } from "@piggo-gg/core";
 
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
@@ -6,50 +6,13 @@ export var chatIsOpen = false;
 export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
 export const charactersPreventDefault = new Set(["'", "/", " "]);
 
-type ActionRegex = {
-  regex: RegExp,
-  handler?: (match: RegExpMatchArray) => boolean,
-  handlers?: Record<string, (match: RegExpMatchArray) => boolean>
-}
-
 // InputSystem handles all keyboard/joystick inputs
-export const InputSystem: SystemBuilder<"InputSystem"> = ({
+export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: ({ clientPlayerId, world }) => {
     let bufferedDown: Set<string> = new Set([]);
     let bufferedUp: Set<string> = new Set([]);
     let backspaceOn = false;
-
-    const actionRegexes: ActionRegex[] = [
-      {
-        regex: /\/spawn (\w+)/,
-        handlers: {
-          spaceship: () => {
-            world.addEntity(Spaceship({ id: 'spaceship-SPAWNED' }));
-            return true;
-          },
-          ball: () => {
-            world.addEntity(Ball());
-            return true;
-          },
-          zombie: () => {
-            world.addEntity(Zombie({ id: 'zombie-SPAWNED' }));
-            return true;
-          }
-        }
-      },
-      {
-        regex: /\/game (\w+)/,
-        handler: (match) => {
-          console.log(`game command ${match[1]}`);
-          if (world.games[match[1]] && world.currentGame.id !== match[1]) {
-            world.setGame(world.games[match[1]]);
-            return true;
-          }
-          return false;
-        }
-      }
-    ];
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
       if (document.hasFocus()) {
@@ -79,8 +42,7 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
             // push the message to chatHistory
             if (chatBuffer.length > 0) {
               const message = chatBuffer.join("");
-              world.chatHistory.push(world.tick, world.clientPlayerId ?? "", message);
-              processMessage(message);
+              world.chatHistory.push(world.tick + 1, world.clientPlayerId ?? "", message);
             }
 
             chatBuffer = [];
@@ -152,17 +114,6 @@ export const InputSystem: SystemBuilder<"InputSystem"> = ({
           buffer.delete(input);
         }
       }
-    }
-
-    const processMessage = (message: string) => {
-      actionRegexes.forEach(({ regex, handlers, handler }) => {
-        const match = message.match(regex);
-        if (match && handler) {
-          handler(match);
-        } else if (match && handlers && handlers[match[1]]) {
-          handlers[match[1]](match);
-        }
-      });
     }
 
     return {

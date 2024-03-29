@@ -6,7 +6,7 @@ export type BallProps = {
   position?: { x: number, y: number }
 }
 
-export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 50 } }) => Entity({
+export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 250 } }) => Entity({
   id: id ?? `ball${Math.trunc(Math.random() * 100)}`,
   components: {
     position: new Position(position),

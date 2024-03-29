@@ -16,7 +16,7 @@ export const DebugButton = (): Entity => {
       position: new Position({ x: 40, y: 5, screenFixed: true }),
       clickable: new Clickable({
         width: 32, height: 32, active: true,
-        click: Action((_, __, world: World) => {
+        click: Action(({ world }) => {
           pressed = !pressed;
           if (pressed) {
             shadow.tint = 0x00ffff;

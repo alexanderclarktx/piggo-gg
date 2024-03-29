@@ -96,7 +96,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
             const entry = Object.entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
             if (entry) {
               const id = entry[0];
-              if (world.entities[id]) collider.sensor(world.entities[id], world)
+              if (world.entities[id]) collider.sensor(world.entities[id] as Entity<Position>, world)
             }
           });
         }

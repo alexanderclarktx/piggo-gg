@@ -1,8 +1,8 @@
 import {
-  ActionSystem, Chat, ClickableSystem, ConnectButton, Cursor,
-  DebugButton, DebugSystem, FullscreenButton,
+  ActionSystem, Chat, ClickableSystem, CommandSystem, ConnectButton, Cursor,
+  DebugButton, DebugSystem, FullscreenButton, GameCommand,
   InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
-  RenderSystem, World, WorldBuilder
+  RenderSystem, SpawnCommand, World, WorldBuilder
 } from "@piggo-gg/core";
 
 const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -11,29 +11,28 @@ export const IsometricWorld: WorldBuilder = (props) => {
 
   const playerId = `noob${Math.trunc((Math.random() * 100))}`;
 
-  const world = World({ ...props, renderMode: "isometric", clientPlayerId: playerId });
+  const world = World({
+    ...props,
+    renderMode: "isometric",
+    clientPlayerId: playerId,
+    commands: [GameCommand, SpawnCommand]
+  });
+
+  world.addSystemBuilders([
+    InputSystem, ClickableSystem, DebugSystem,
+    CommandSystem, NPCSystem, ActionSystem, PhysicsSystem,
+    RenderSystem
+  ]);
 
   if (world.runtimeMode === "client") {
-    // client systems
-    world.addSystemBuilders([InputSystem, ClickableSystem, DebugSystem]);
+    world.addEntity(Noob({ id: playerId }));
 
-    // ui
     world.addEntityBuilders([FullscreenButton, DebugButton, Chat]);
 
-    // mobile
     isMobile() ?
       world.addEntityBuilders([Joystick, ConnectButton]) :
       world.addEntityBuilders([Cursor]);
-
-    // client player
-    if (world.clientPlayerId) world.addEntity(Noob({ id: world.clientPlayerId }));
   }
-
-  // add shared systems
-  world.addSystemBuilders([NPCSystem, ActionSystem, PhysicsSystem]);
-
-  // render system runs last
-  if (world.runtimeMode === "client") world.addSystemBuilders([RenderSystem]);
 
   return world;
 }
