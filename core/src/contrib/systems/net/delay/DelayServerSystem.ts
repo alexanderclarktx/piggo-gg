@@ -56,8 +56,9 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         // process message actions
         if (message.td.actions) {
           Object.keys(message.td.actions).forEach((entityId) => {
-            if (world.entities[entityId]?.components.controlled?.data.entityId === client) {
+            if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
               message.td.actions[entityId].forEach((action) => {
+                console.log("action", action);
                 world.actionBuffer.push(world.tick, entityId, action);
               });
             }
@@ -65,16 +66,8 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         }
 
         // process message chats
-        if (message.td.chats) {
-          Object.keys(message.td.chats).map(Number).forEach((tick) => {
-
-            // add chats for the player
-            Object.keys(message.td.chats[tick]).forEach((entityId) => {
-              if (entityId === client) {
-                world.chatHistory.set(tick, entityId, message.td.chats[entityId]);
-              }
-            });
-          });
+        if (message.td.chats[client]) {
+          world.chatHistory.set(world.tick, client, message.td.chats[client]);
         }
       });
     });

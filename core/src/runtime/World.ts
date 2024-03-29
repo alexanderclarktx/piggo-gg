@@ -1,16 +1,17 @@
 import {
-  InvokedAction,
-  Ball, Entity, Game, GameBuilder, Noob, Renderer,
+  Ball, Command, Entity, Game, GameBuilder,
+  InvokedAction, Noob, Renderer,
   SerializedEntity, Skelly, StateBuffer, System,
   SystemBuilder, SystemEntity, TickData, Zombie
 } from "@piggo-gg/core";
 
 export type WorldProps = {
-  renderMode: "cartesian" | "isometric"
-  runtimeMode: "client" | "server"
+  clientPlayerId?: string | undefined
+  commands?: Command[]
   games?: GameBuilder[]
   renderer?: Renderer | undefined
-  clientPlayerId?: string | undefined
+  renderMode: "cartesian" | "isometric"
+  runtimeMode: "client" | "server"
 }
 
 export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
@@ -19,6 +20,7 @@ export type World = {
   actionBuffer: StateBuffer<InvokedAction>
   chatHistory: StateBuffer<string>
   clientPlayerId: string | undefined
+  commands: Record<string, Command>
   currentGame: Game
   debug: boolean
   entities: Record<string, Entity>
@@ -49,7 +51,7 @@ export type World = {
   setGame: (game: GameBuilder) => void
 }
 
-export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId }: WorldProps): World => {
+export const World = ({ clientPlayerId, commands, games, renderer, renderMode, runtimeMode }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
@@ -67,6 +69,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
     chatHistory: StateBuffer(),
     clientPlayerId,
     currentGame: { id: "", entities: [], systems: [] },
+    commands: {},
     debug: false,
     entities: {},
     entitiesAtTick: {},
@@ -120,7 +123,7 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
       systemBuilders.forEach((systemBuilder) => {
         if (!world.systems[systemBuilder.id]) {
           const system = systemBuilder.init({ world, renderer: renderer, clientPlayerId: world.clientPlayerId, mode: renderMode });
-          world.addSystems([system]);
+          if (system) world.addSystems([system]);
         }
       })
     },
@@ -277,6 +280,9 @@ export const World = ({ renderMode, runtimeMode, games, renderer, clientPlayerId
   if (games) {
     games.forEach((game) => world.games[game.id] = game);
     if (games[0]) world.setGame(games[0]);
+  }
+  if (commands) {
+    commands.forEach((command) => world.commands[command.id] = command);
   }
 
   return world;

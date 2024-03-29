@@ -1,7 +1,7 @@
-import { Entity, SystemBuilder, Position, Renderable } from '@piggo-gg/core';
+import { Entity, Position, Renderable, ClientSystemBuilder } from '@piggo-gg/core';
 
 // RenderSystem handles rendering entities in isometric or cartesian space
-export const RenderSystem: SystemBuilder<"RenderSystem"> = ({
+export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: ({ renderer, mode, world }) => {
     if (!renderer) throw new Error("RendererSystem requires a renderer");

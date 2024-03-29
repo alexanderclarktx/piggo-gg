@@ -1,4 +1,4 @@
-import { ActionMap, ControllerMap, Entity, Position, currentJoystickPosition } from "@piggo-gg/core";
+import { ActionMap, ControllerMap, currentJoystickPosition } from "@piggo-gg/core";
 
 const speed = 140;
 const speedDiagonal = speed / Math.sqrt(2);
@@ -62,14 +62,16 @@ export const WASDController: ControllerMap<"move", WASDParams> = {
   joystick: () => ({ action: "move", params: getAnimationXYForJoystick() })
 }
 
-export const WASDmove = (params: WASDParams, entity: Entity<Position>) => {
-  const { position, renderable } = entity.components;
-
-  position.setVelocity({ x: params.x, y: params.y });
-
-  if (renderable && params.animation) renderable.setAnimation(params.animation);
-}
-
 export const WASDActionMap: ActionMap<"move", WASDParams> = {
-  move: { apply: WASDmove }
+  move: {
+    apply: ({ params, entity }) => {
+      if (!entity) return;
+
+      const { position, renderable } = entity.components;
+
+      position?.setVelocity({ x: params.x, y: params.y });
+
+      if (renderable && params.animation) renderable.setAnimation(params.animation);
+    }
+  }
 };

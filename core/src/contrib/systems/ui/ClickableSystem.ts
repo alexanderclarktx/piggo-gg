@@ -50,7 +50,7 @@ export const ClickableSystem: SystemBuilder<"ClickableSystem"> = ({
             clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
           )
 
-          if (clicked) clickable.click.apply({}, entity, world, world.clientPlayerId);
+          if (clicked) clickable.click.apply({ params: {}, entity, world, player: world.clientPlayerId });
         });
       });
       bufferClick = [];

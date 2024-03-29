@@ -1,7 +1,8 @@
-import { Controlled, Entity, Position, Renderable, SystemBuilder, TextBox } from "@piggo-gg/core";
+import { ClientSystemBuilder, Controlled, Entity, Position, Renderable, TextBox } from "@piggo-gg/core";
 
-export const ChatSystem: SystemBuilder<"ChatSystem"> = ({
-  id: "ChatSystem",
+// draws chat bubbles above characters
+export const ChatBubbleSystem = ClientSystemBuilder({
+  id: "ChatBubbleSystem",
 
   init: ({ world }) => {
 
@@ -46,7 +47,7 @@ export const ChatSystem: SystemBuilder<"ChatSystem"> = ({
     }
 
     return {
-      id: "ChatSystem",
+      id: "ChatBubbleSystem",
       query: ["position", "controlled", "renderable"],
       onTick
     }

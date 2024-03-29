@@ -1,6 +1,7 @@
 import {
-  ActionSystem, Chat, ClickableSystem, ConnectButton, Cursor,
+  ActionSystem, Chat, ClickableSystem, CommandSystem, ConnectButton, Cursor,
   DebugButton, DebugSystem, FullscreenButton,
+  GameCommand,
   InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
   RenderSystem, World, WorldBuilder
 } from "@piggo-gg/core";
@@ -11,7 +12,12 @@ export const IsometricWorld: WorldBuilder = (props) => {
 
   const playerId = `noob${Math.trunc((Math.random() * 100))}`;
 
-  const world = World({ ...props, renderMode: "isometric", clientPlayerId: playerId });
+  const world = World({
+    ...props,
+    renderMode: "isometric",
+    clientPlayerId: playerId,
+    commands: [ GameCommand ]
+  });
 
   if (world.runtimeMode === "client") {
     // client systems
@@ -30,7 +36,7 @@ export const IsometricWorld: WorldBuilder = (props) => {
   }
 
   // add shared systems
-  world.addSystemBuilders([NPCSystem, ActionSystem, PhysicsSystem]);
+  world.addSystemBuilders([CommandSystem, NPCSystem, ActionSystem, PhysicsSystem]);
 
   // render system runs last
   if (world.runtimeMode === "client") world.addSystemBuilders([RenderSystem]);

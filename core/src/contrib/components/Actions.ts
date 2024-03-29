@@ -1,7 +1,7 @@
 import { Component, Entity, World } from "@piggo-gg/core";
 
 export type Action<T extends {} = {}> = {
-  apply: (params: T, entity: Entity, world: World, player?: string) => void
+  apply: (_: { params: T, world: World, entity?: Entity, player?: string | undefined }) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 

@@ -12,7 +12,7 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
       active: true,
       width: 32,
       height: 30,
-      click: Action((_, __, world: World) => {
+      click: Action(({ world }) => {
         if (!document.fullscreenElement) {
           world.renderer?.app.canvas.requestFullscreen?.();
         } else {

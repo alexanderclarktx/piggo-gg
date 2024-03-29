@@ -16,7 +16,7 @@ export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x
       width: 32,
       height: 32,
       active: true,
-      click: Action((_, __, world) => {
+      click: Action(({ world }) => {
         if (world.clientPlayerId) {
           world.addEntity(Projectile({ radius: 5 }));
         }

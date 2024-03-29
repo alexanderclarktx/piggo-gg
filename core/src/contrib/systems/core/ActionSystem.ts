@@ -1,16 +1,23 @@
 import { SystemBuilder } from "@piggo-gg/core";
 
-export const ActionSystem: SystemBuilder<"ActionSystem"> = ({
+export const ActionSystem = SystemBuilder({
   id: "ActionSystem",
   init: ({ world, clientPlayerId }) => {
 
     const onTick = () => {
 
       const actionsAtTick = world.actionBuffer.atTick(world.tick);
-
       if (actionsAtTick) {
-        Object.keys(actionsAtTick).forEach((entityId) => {
-          const actions = actionsAtTick[entityId];
+        Object.entries(actionsAtTick).forEach(([entityId, actions]) => {
+
+          // handle commands
+          if (entityId === "world") {
+            console.log("world actions", actions);
+            const command = world.commands[actions[0].action]
+            if (command) command.apply({ params: actions[0].params, world, player: clientPlayerId });
+          }
+
+          // handle actions
           if (actions) actions.forEach((actionKey) => {
             const entity = world.entities[entityId];
 
@@ -35,7 +42,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = ({
 
             // execute the action
             // console.log(`集 ${entityId} action=${JSON.stringify(actionKey)}}`);
-            action.apply(actionKey.params, entity, world, clientPlayerId);
+            action.apply({ params: actionKey.params, entity, world, player: clientPlayerId });
           });
         });
       }

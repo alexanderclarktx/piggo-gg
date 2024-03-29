@@ -10,9 +10,9 @@ const servers = {
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
+    // const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    // const wsClient = new WebSocket(servers.dev);
+    const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
     let serverMessageBuffer: DelayTickData[] = [];
@@ -92,6 +92,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         }
       });
 
+      // TODO refactor use a table of entities
       // add new entities if not present locally
       Object.keys(message.serializedEntities).forEach((entityId) => {
         if (!world.entities[entityId]) {
@@ -164,10 +165,9 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       // handle new chat messages
       const numChats = Object.keys(message.chats).length;
       if (numChats) {
-        Object.keys(message.chats).map(Number).forEach((tick) => {
-          Object.keys(message.chats[tick]).forEach((entityId) => {
-            world.chatHistory.set(tick, entityId, message.chats[entityId]);
-          });
+        Object.entries(message.chats).forEach(([playerId, messages]) => {
+          if (playerId === clientPlayerId) return;
+          world.chatHistory.set(world.tick, playerId, messages);
         });
       }
     }
