@@ -6,13 +6,13 @@ const servers = {
   production: "wss://api.piggo.gg"
 } as const;
 
-// WssNetcodeSystem handles networked entities over WebSockets
+// delay netcode client
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    // const wsClient = new WebSocket(servers.production);
+    const wsClient = new WebSocket(servers.production);
     // const wsClient = new WebSocket(servers.staging);
-    const wsClient = new WebSocket(servers.dev);
+    // const wsClient = new WebSocket(servers.dev);
 
     let lastLatency = 0;
     let serverMessageBuffer: DelayTickData[] = [];
@@ -47,13 +47,14 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     const sendMessage = (world: World) => {
 
       const message: DelayTickData = {
-        type: "game",
-        tick: world.tick,
-        timestamp: Date.now(),
-        player: clientPlayerId ?? "unknown",
         actions: world.actionBuffer.atTick(world.tick + 1) ?? {},
         chats: world.chatHistory.atTick(world.tick) ?? {},
-        serializedEntities: {}
+        game: world.currentGame.id,
+        player: clientPlayerId ?? "unknown",
+        serializedEntities: {},
+        tick: world.tick,
+        timestamp: Date.now(),
+        type: "game"
       }
 
       if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
@@ -150,6 +151,11 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       if (rollback) {
         world.tick = message.tick - 1;
+
+        if (message.game !== world.currentGame.id) {
+          world.setGame(world.games[message.game]);
+        }
+
         Object.keys(message.serializedEntities).forEach((entityId) => {
           if (world.entities[entityId]) {
             world.entities[entityId].deserialize(message.serializedEntities[entityId]);

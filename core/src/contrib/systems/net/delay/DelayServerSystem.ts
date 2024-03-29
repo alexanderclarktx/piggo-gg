@@ -6,19 +6,21 @@ export type DelayServerSystemProps = {
   latestClientMessages: Record<string, { td: DelayTickData, latency: number }[]>
 }
 
+// delay netcode server
 export const DelayServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System => {
 
   const sendMessage = () => {
 
     // build tick data
     const tickData: DelayTickData = {
-      type: "game",
+      actions: world.actionBuffer.atTick(world.tick) ?? {},
+      chats: world.chatHistory.atTick(world.tick) ?? {},
+      game: world.currentGame.id,
       player: "server",
+      serializedEntities: world.entitiesAtTick[world.tick] ?? {},
       tick: world.tick,
       timestamp: Date.now(),
-      serializedEntities: world.entitiesAtTick[world.tick] ?? {},
-      actions: world.actionBuffer.atTick(world.tick) ?? {},
-      chats: world.chatHistory.atTick(world.tick) ?? {}
+      type: "game"
     }
 
     // send tick data to all clients
@@ -58,7 +60,6 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
           Object.keys(message.td.actions).forEach((entityId) => {
             if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
               message.td.actions[entityId].forEach((action) => {
-                console.log("action", action);
                 world.actionBuffer.push(world.tick, entityId, action);
               });
             }

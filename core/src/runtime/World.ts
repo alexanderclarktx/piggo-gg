@@ -1,8 +1,8 @@
 import {
-  Ball, Command, Entity, Game, GameBuilder,
-  InvokedAction, Noob, Renderer,
-  SerializedEntity, Skelly, StateBuffer, System,
-  SystemBuilder, SystemEntity, TickData, Zombie
+  Command, Entity, Game, GameBuilder,
+  InvokedAction, Renderer, SerializedEntity,
+  StateBuffer, System,
+  SystemBuilder, SystemEntity
 } from "@piggo-gg/core";
 
 export type WorldProps = {
@@ -47,7 +47,7 @@ export type World = {
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
-  rollback: (td: TickData) => void
+  // rollback: (td: TickData) => void
   setGame: (game: GameBuilder) => void
 }
 
@@ -187,73 +187,6 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
           delete world.entitiesAtTick[tick];
         }
       });
-    },
-    rollback: (td: TickData) => {
-      const now = Date.now();
-
-      // determine how many ticks to increment
-      world.framesAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
-      if (Math.abs(world.framesAhead - (world.tick - td.tick)) <= 1) {
-        world.framesAhead = world.tick - td.tick;
-      }
-
-      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + world.framesAhead}`);
-
-      // set tick
-      world.tick = td.tick - 1;
-
-      // remove old local entities
-      Object.keys(world.entities).forEach((entityId) => {
-        if (world.entities[entityId].components.networked) {
-
-          if (!td.serializedEntities[entityId]) {
-            // delete if not present in rollback frame
-            console.log("DELETE ENTITY", entityId, td.serializedEntities);
-            world.removeEntity(entityId);
-          }
-        }
-      });
-
-      // add new entities if not present locally
-      Object.keys(td.serializedEntities).forEach((entityId) => {
-        if (!world.entities[entityId]) {
-          if (entityId.startsWith("zombie")) {
-            world.addEntity(Zombie({ id: entityId }));
-          } else if (entityId.startsWith("ball")) {
-            world.addEntity(Ball({ id: entityId }));
-          } else if (entityId.startsWith("noob")) {
-            world.addEntity(Noob({ id: entityId }))
-          } else if (entityId.startsWith("skelly")) {
-            world.addEntity(Skelly(entityId));
-          } else {
-            console.error("UNKNOWN ENTITY ON SERVER", entityId);
-          }
-        }
-      });
-
-      // deserialize everything
-      Object.keys(td.serializedEntities).forEach((entityId) => {
-        if (world.entities[entityId]) {
-          world.entities[entityId].deserialize(td.serializedEntities[entityId]);
-        }
-      });
-
-      // update local action buffer
-      Object.keys(td.actions).map(Number).forEach((tick) => {
-        Object.keys(td.actions[tick]).forEach((entityId) => {
-          // skip future actions for controlled entities
-          if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
-
-          world.actionBuffer.set(tick, entityId, td.actions[tick][entityId]);
-        });
-      });
-
-      Object.values(world.systems).forEach((system) => system.onRollback ? system.onRollback() : null);
-
-      // run system updates
-      for (let i = 0; i < world.framesAhead + 1; i++) world.onTick({ isRollback: true });
-
-      console.log(`rollback took ${Date.now() - now}ms`);
     },
     setGame: (gameBuilder: GameBuilder) => {
 

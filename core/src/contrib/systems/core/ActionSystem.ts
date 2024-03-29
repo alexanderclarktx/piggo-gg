@@ -12,7 +12,6 @@ export const ActionSystem = SystemBuilder({
 
           // handle commands
           if (entityId === "world") {
-            console.log("world actions", actions);
             const command = world.commands[actions[0].action]
             if (command) command.apply({ params: actions[0].params, world, player: clientPlayerId });
           }

@@ -1,10 +1,10 @@
-import { Actions, Clickable, Entity, Position, SystemBuilder } from "@piggo-gg/core";
+import { Actions, Clickable, ClientSystemBuilder, Entity, Position } from "@piggo-gg/core";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
 
 // ClickableSystem handles clicks for clickable entities
-export const ClickableSystem: SystemBuilder<"ClickableSystem"> = ({
+export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
   init: ({ world, renderer, mode }) => {
     if (!renderer) throw new Error("ClickableSystem requires a renderer");
