@@ -1,10 +1,8 @@
 import {
   Command, Entity, Game, GameBuilder,
   InvokedAction, Renderer, SerializedEntity,
-  StateBuffer, System,
-  SystemBuilder, SystemEntity,
-  lastLatency,
-  serverMessageBuffer
+  StateBuffer, System, SystemBuilder, SystemEntity,
+  lastLatency, serverMessageBuffer
 } from "@piggo-gg/core";
 
 export type WorldProps = {
@@ -145,7 +143,8 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
       }
 
 
-      if (serverMessageBuffer.length === 0 && lastLatency > 0) {
+      if (serverMessageBuffer.length === 0 && lastLatency !== 0) {
+        console.log("DEFER");
         scheduleOnTick();
         return;
       }
@@ -184,12 +183,12 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
       if (!isRollback) scheduleOnTick();
 
       // clear old buffered data
-      // world.actionBuffer.clearBeforeTick(world.tick - 100);
-      // Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
-      //   if ((world.tick - tick) > 100) {
-      //     delete world.entitiesAtTick[tick];
-      //   }
-      // });
+      world.actionBuffer.clearBeforeTick(world.tick - 100);
+      Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
+        if ((world.tick - tick) > 100) {
+          delete world.entitiesAtTick[tick];
+        }
+      });
     },
     setGame: (gameBuilder: GameBuilder) => {
 

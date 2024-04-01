@@ -6,8 +6,8 @@ const servers = {
   production: "wss://api.piggo.gg"
 } as const;
 
-export let serverMessageBuffer: DelayTickData[] = [];
-export let lastLatency = 0;
+export var serverMessageBuffer: DelayTickData[] = [];
+export var lastLatency = 0;
 
 // delay netcode client
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
@@ -64,9 +64,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
     const handleLatestMessage = () => {
 
-      console.log(serverMessageBuffer.length);
-      // console.log(serverMessageBuffer[0]?.tick > serverMessageBuffer[1]?.tick);
-
       if (serverMessageBuffer.length === 0) return;
 
       if (serverMessageBuffer.length > 10) {
@@ -115,8 +112,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       const mustRollback = (reason: string) => {
         console.log("MUST ROLLBACK", reason);
-        console.log("msg", message);
-        console.log("buffer", serverMessageBuffer);
         rollback = true;
       }
 
