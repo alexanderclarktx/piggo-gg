@@ -2,7 +2,9 @@ import {
   Command, Entity, Game, GameBuilder,
   InvokedAction, Renderer, SerializedEntity,
   StateBuffer, System,
-  SystemBuilder, SystemEntity
+  SystemBuilder, SystemEntity,
+  lastLatency,
+  serverMessageBuffer
 } from "@piggo-gg/core";
 
 export type WorldProps = {
@@ -34,7 +36,6 @@ export type World = {
   renderMode: "cartesian" | "isometric"
   runtimeMode: "client" | "server"
   systems: Record<string, System>
-  skipNextTick: boolean
   tickFaster: boolean
   tick: number
   tickrate: number
@@ -81,7 +82,6 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
     renderMode,
     runtimeMode,
     systems: {},
-    skipNextTick: false,
     tickFaster: false,
     tick: 0,
     tickrate: 25,
@@ -144,6 +144,12 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
         return;
       }
 
+
+      if (serverMessageBuffer.length === 0 && lastLatency > 0) {
+        scheduleOnTick();
+        return;
+      }
+
       // update lastTick
       if (!isRollback && !world.tickFaster) {
         if ((now - world.tickrate - world.tickrate) > world.lastTick) {
@@ -155,28 +161,24 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
         }
       }
 
-      if (world.skipNextTick) {
-        world.skipNextTick = false;
-      } else {
-        // increment tick
-        world.tick += 1;
+      // increment tick
+      world.tick += 1;
 
-        // store serialized entities before systems run
-        const serializedEntities: Record<string, SerializedEntity> = {}
-        for (const entityId in world.entities) {
-          if (world.entities[entityId].components.networked) {
-            serializedEntities[entityId] = world.entities[entityId].serialize();
-          }
+      // store serialized entities before systems run
+      const serializedEntities: Record<string, SerializedEntity> = {}
+      for (const entityId in world.entities) {
+        if (world.entities[entityId].components.networked) {
+          serializedEntities[entityId] = world.entities[entityId].serialize();
         }
-        world.entitiesAtTick[world.tick] = serializedEntities;
-
-        // run system updates
-        Object.values(world.systems).forEach((system) => {
-          if (!isRollback || (isRollback && !system.skipOnRollback)) {
-            system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback) : system.onTick([], isRollback);
-          }
-        });
       }
+      world.entitiesAtTick[world.tick] = serializedEntities;
+
+      // run system updates
+      Object.values(world.systems).forEach((system) => {
+        if (!isRollback || (isRollback && !system.skipOnRollback)) {
+          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback) : system.onTick([], isRollback);
+        }
+      });
 
       // schedule onTick
       if (!isRollback) scheduleOnTick();

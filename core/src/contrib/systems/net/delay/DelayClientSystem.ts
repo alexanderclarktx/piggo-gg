@@ -6,16 +6,16 @@ const servers = {
   production: "wss://api.piggo.gg"
 } as const;
 
+export let serverMessageBuffer: DelayTickData[] = [];
+export let lastLatency = 0;
+
 // delay netcode client
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
-    // const wsClient = new WebSocket(servers.staging);
+    // const wsClient = new WebSocket(servers.production);
+    const wsClient = new WebSocket(servers.staging);
     // const wsClient = new WebSocket(servers.dev);
-
-    let lastLatency = 0;
-    let serverMessageBuffer: DelayTickData[] = [];
 
     setInterval(() => {
       (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
@@ -64,10 +64,10 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
     const handleLatestMessage = () => {
 
-      if (serverMessageBuffer.length === 0) {
-        world.skipNextTick = true;
-        return;
-      }
+      console.log(serverMessageBuffer.length);
+      // console.log(serverMessageBuffer[0]?.tick > serverMessageBuffer[1]?.tick);
+
+      if (serverMessageBuffer.length === 0) return;
 
       if (serverMessageBuffer.length > 10) {
         serverMessageBuffer = [];
@@ -115,10 +115,12 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       const mustRollback = (reason: string) => {
         console.log("MUST ROLLBACK", reason);
+        console.log("msg", message);
+        console.log("buffer", serverMessageBuffer);
         rollback = true;
       }
 
-      if ((message.tick - 1) !== world.tick) mustRollback("old tick");
+      if ((message.tick - 1) !== world.tick) mustRollback(`old tick world=${world.tick} msg=${message.tick}`);
 
       const sre: Record<string, SerializedEntity> = {}
       for (const entityId in world.entities) {
