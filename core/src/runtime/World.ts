@@ -184,12 +184,12 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
       if (!isRollback) scheduleOnTick();
 
       // clear old buffered data
-      world.actionBuffer.clearBeforeTick(world.tick - 100);
-      Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
-        if ((world.tick - tick) > 100) {
-          delete world.entitiesAtTick[tick];
-        }
-      });
+      // world.actionBuffer.clearBeforeTick(world.tick - 100);
+      // Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
+      //   if ((world.tick - tick) > 100) {
+      //     delete world.entitiesAtTick[tick];
+      //   }
+      // });
     },
     setGame: (gameBuilder: GameBuilder) => {
 
