@@ -14,8 +14,8 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
     // const wsClient = new WebSocket(servers.staging);
     // const wsClient = new WebSocket(servers.dev);
 
-    let lastLatency = 0;
     let serverMessageBuffer: DelayTickData[] = [];
+    let lastLatency = 0;
 
     setInterval(() => {
       (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
@@ -35,8 +35,10 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       // record latency
       lastLatency = Date.now() - message.timestamp;
-
       if (message.latency) world.ms = (lastLatency + message.latency) / 2;
+
+      // set flag to green
+      world.tickFlag = "green";
     }
 
     const onTick = (_: Entity[]) => {
@@ -64,10 +66,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
     const handleLatestMessage = () => {
 
-      if (serverMessageBuffer.length === 0) {
-        world.skipNextTick = true;
-        return;
-      }
+      if (serverMessageBuffer.length === 0) return;
 
       if (serverMessageBuffer.length > 10) {
         serverMessageBuffer = [];
@@ -118,7 +117,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         rollback = true;
       }
 
-      if ((message.tick - 1) !== world.tick) mustRollback("old tick");
+      if ((message.tick - 1) !== world.tick) mustRollback(`old tick world=${world.tick} msg=${message.tick}`);
 
       const sre: Record<string, SerializedEntity> = {}
       for (const entityId in world.entities) {
@@ -175,6 +174,11 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
           if (playerId === clientPlayerId) return;
           world.chatHistory.set(world.tick, playerId, messages);
         });
+      }
+
+      // if message buffer is empty, set flag to red
+      if (serverMessageBuffer.length === 0) {
+        world.tickFlag = "red";
       }
     }
 
