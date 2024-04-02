@@ -9,8 +9,6 @@ export type DelayServerSystemProps = {
 // delay netcode server
 export const DelayServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System => {
 
-  let lastTickSent = 0;
-
   const sendMessage = () => {
 
     // build tick data
@@ -24,9 +22,6 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
       timestamp: Date.now(),
       type: "game"
     }
-
-    if (world.tick > (lastTickSent + 1)) console.log("skipped ticks!", world.tick - lastTickSent);
-    lastTickSent = world.tick;
 
     // send tick data to all clients
     Object.entries(clients).forEach(([id, client]) => {
