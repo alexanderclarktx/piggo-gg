@@ -6,16 +6,16 @@ const servers = {
   production: "wss://api.piggo.gg"
 } as const;
 
-export var serverMessageBuffer: DelayTickData[] = [];
-export var lastLatency = 0;
-
 // delay netcode client
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    // const wsClient = new WebSocket(servers.production);
-    const wsClient = new WebSocket(servers.staging);
+    const wsClient = new WebSocket(servers.production);
+    // const wsClient = new WebSocket(servers.staging);
     // const wsClient = new WebSocket(servers.dev);
+
+    let serverMessageBuffer: DelayTickData[] = [];
+    let lastLatency = 0;
 
     setInterval(() => {
       (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
@@ -35,8 +35,10 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       // record latency
       lastLatency = Date.now() - message.timestamp;
-
       if (message.latency) world.ms = (lastLatency + message.latency) / 2;
+
+      // set flag to green
+      world.tickFlag = "green";
     }
 
     const onTick = (_: Entity[]) => {
@@ -172,6 +174,11 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
           if (playerId === clientPlayerId) return;
           world.chatHistory.set(world.tick, playerId, messages);
         });
+      }
+
+      // if message buffer is empty, set flag to red
+      if (serverMessageBuffer.length === 0) {
+        world.tickFlag = "red";
       }
     }
 

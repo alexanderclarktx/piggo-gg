@@ -14,6 +14,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
     // const wsClient = new WebSocket(servers.staging);
     // const wsClient = new WebSocket(servers.dev);
 
+    let ticksAhead = 0;
     let lastLatency = 0;
 
     setInterval(() => {
@@ -36,11 +37,11 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
           if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) {
             const actionsCopy = [...actions];
 
-            if (!message.actions[tick + world.framesAhead + 1]) {
-              message.actions[tick + world.framesAhead + 1] = {};
+            if (!message.actions[tick + ticksAhead + 1]) {
+              message.actions[tick + ticksAhead + 1] = {};
             }
 
-            message.actions[tick + world.framesAhead + 1][entityId] = actionsCopy;
+            message.actions[tick + ticksAhead + 1][entityId] = actionsCopy;
             delete message.actions[tick][entityId];
           }
         }
@@ -59,6 +60,74 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
       handleLatestMessage();
       latestServerMessage = null;
       sendMessage(world);
+    }
+
+    const rollback = (world: World, td: RollbackTickData) => {
+      const now = Date.now();
+    
+      // determine how many ticks to increment
+      ticksAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
+      if (Math.abs(ticksAhead - (world.tick - td.tick)) <= 1) {
+        ticksAhead = world.tick - td.tick;
+      }
+    
+      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + ticksAhead}`);
+    
+      // set tick
+      world.tick = td.tick - 1;
+    
+      // remove old local entities
+      Object.keys(world.entities).forEach((entityId) => {
+        if (world.entities[entityId].components.networked) {
+    
+          if (!td.serializedEntities[entityId]) {
+            // delete if not present in rollback frame
+            console.log("DELETE ENTITY", entityId, td.serializedEntities);
+            world.removeEntity(entityId);
+          }
+        }
+      });
+    
+      // add new entities if not present locally
+      Object.keys(td.serializedEntities).forEach((entityId) => {
+        if (!world.entities[entityId]) {
+          if (entityId.startsWith("zombie")) {
+            world.addEntity(Zombie({ id: entityId }));
+          } else if (entityId.startsWith("ball")) {
+            world.addEntity(Ball({ id: entityId }));
+          } else if (entityId.startsWith("noob")) {
+            world.addEntity(Noob({ id: entityId }))
+          } else if (entityId.startsWith("skelly")) {
+            world.addEntity(Skelly(entityId));
+          } else {
+            console.error("UNKNOWN ENTITY ON SERVER", entityId);
+          }
+        }
+      });
+    
+      // deserialize everything
+      Object.keys(td.serializedEntities).forEach((entityId) => {
+        if (world.entities[entityId]) {
+          world.entities[entityId].deserialize(td.serializedEntities[entityId]);
+        }
+      });
+    
+      // update local action buffer
+      Object.keys(td.actions).map(Number).forEach((tick) => {
+        Object.keys(td.actions[tick]).forEach((entityId) => {
+          // skip future actions for controlled entities
+          if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
+    
+          world.actionBuffer.set(tick, entityId, td.actions[tick][entityId]);
+        });
+      });
+    
+      Object.values(world.systems).forEach((system) => system.onRollback ? system.onRollback() : null);
+    
+      // run system updates
+      for (let i = 0; i < ticksAhead + 1; i++) world.onTick({ isRollback: true });
+    
+      console.log(`rollback took ${Date.now() - now}ms`);
     }
 
     const sendMessage = (world: World) => {
@@ -198,71 +267,3 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
     }
   }
 });
-
-const rollback = (world: World, td: RollbackTickData) => {
-  const now = Date.now();
-
-  // determine how many ticks to increment
-  world.framesAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
-  if (Math.abs(world.framesAhead - (world.tick - td.tick)) <= 1) {
-    world.framesAhead = world.tick - td.tick;
-  }
-
-  console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + world.framesAhead}`);
-
-  // set tick
-  world.tick = td.tick - 1;
-
-  // remove old local entities
-  Object.keys(world.entities).forEach((entityId) => {
-    if (world.entities[entityId].components.networked) {
-
-      if (!td.serializedEntities[entityId]) {
-        // delete if not present in rollback frame
-        console.log("DELETE ENTITY", entityId, td.serializedEntities);
-        world.removeEntity(entityId);
-      }
-    }
-  });
-
-  // add new entities if not present locally
-  Object.keys(td.serializedEntities).forEach((entityId) => {
-    if (!world.entities[entityId]) {
-      if (entityId.startsWith("zombie")) {
-        world.addEntity(Zombie({ id: entityId }));
-      } else if (entityId.startsWith("ball")) {
-        world.addEntity(Ball({ id: entityId }));
-      } else if (entityId.startsWith("noob")) {
-        world.addEntity(Noob({ id: entityId }))
-      } else if (entityId.startsWith("skelly")) {
-        world.addEntity(Skelly(entityId));
-      } else {
-        console.error("UNKNOWN ENTITY ON SERVER", entityId);
-      }
-    }
-  });
-
-  // deserialize everything
-  Object.keys(td.serializedEntities).forEach((entityId) => {
-    if (world.entities[entityId]) {
-      world.entities[entityId].deserialize(td.serializedEntities[entityId]);
-    }
-  });
-
-  // update local action buffer
-  Object.keys(td.actions).map(Number).forEach((tick) => {
-    Object.keys(td.actions[tick]).forEach((entityId) => {
-      // skip future actions for controlled entities
-      if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
-
-      world.actionBuffer.set(tick, entityId, td.actions[tick][entityId]);
-    });
-  });
-
-  Object.values(world.systems).forEach((system) => system.onRollback ? system.onRollback() : null);
-
-  // run system updates
-  for (let i = 0; i < world.framesAhead + 1; i++) world.onTick({ isRollback: true });
-
-  console.log(`rollback took ${Date.now() - now}ms`);
-}

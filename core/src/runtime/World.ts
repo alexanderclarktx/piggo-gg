@@ -1,8 +1,7 @@
 import {
   Command, Entity, Game, GameBuilder,
   InvokedAction, Renderer, SerializedEntity,
-  StateBuffer, System, SystemBuilder, SystemEntity,
-  lastLatency, serverMessageBuffer
+  StateBuffer, System, SystemBuilder, SystemEntity
 } from "@piggo-gg/core";
 
 export type WorldProps = {
@@ -29,13 +28,13 @@ export type World = {
   isConnected: boolean
   lastTick: DOMHighResTimeStamp
   ms: number
-  framesAhead: number
   renderer: Renderer | undefined
   renderMode: "cartesian" | "isometric"
   runtimeMode: "client" | "server"
   systems: Record<string, System>
-  tickFaster: boolean
   tick: number
+  tickFaster: boolean
+  tickFlag: "green" | "red"
   tickrate: number
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity) => string
@@ -66,8 +65,8 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
     actionBuffer: StateBuffer(),
     chatHistory: StateBuffer(),
     clientPlayerId,
-    currentGame: { id: "", entities: [], systems: [] },
     commands: {},
+    currentGame: { id: "", entities: [], systems: [] },
     debug: false,
     entities: {},
     entitiesAtTick: {},
@@ -75,13 +74,13 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
     isConnected: false,
     lastTick: 0,
     ms: 0,
-    framesAhead: 0,
     renderer,
     renderMode,
     runtimeMode,
     systems: {},
-    tickFaster: false,
     tick: 0,
+    tickFaster: false,
+    tickFlag: "green",
     tickrate: 25,
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id];
@@ -142,9 +141,8 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
         return;
       }
 
-
-      if (serverMessageBuffer.length === 0 && lastLatency !== 0) {
-        console.log("DEFER");
+      if (world.tickFlag === "red") {
+        console.log("defering tick");
         scheduleOnTick();
         return;
       }
