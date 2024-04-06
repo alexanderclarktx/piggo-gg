@@ -25,7 +25,7 @@ export class Renderer {
     // create the pixi.js application
     await this.app.init({
       view: this.props.canvas,
-      resolution: 2, // TODO configurable
+      resolution: 1, // TODO configurable
       autoDensity: true,
       backgroundColor: 0x6495ed,
       width: this.props.width ?? 800,
@@ -37,9 +37,6 @@ export class Renderer {
 
     // set up the camera
     this.camera = new Camera(this);
-    // this.camera.c.addChild(this.app.stage);
-    // this.app.stage = this.camera.c;
-
     this.app.stage.addChild(this.camera.c);
 
     // hide the cursor

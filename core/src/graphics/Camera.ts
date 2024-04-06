@@ -1,9 +1,6 @@
 import { Renderer, Renderable } from "@piggo-gg/core";
 import { Container } from "pixi.js";
 
-const scaleMin = 1;
-const scaleMax = 2;
-
 // Camera handles the viewport of the game
 export class Camera {
   renderables: Set<Renderable> = new Set();
@@ -23,10 +20,13 @@ export class Camera {
   }
 
   rescale = () => {
-    if (this.scale < scaleMin) {
-      this.scale = scaleMin;
-    } else if (this.scale > scaleMax) {
-      this.scale = scaleMax;
+    const min = 1;
+    const max = 2;
+
+    if (this.scale < min) {
+      this.scale = min;
+    } else if (this.scale > max) {
+      this.scale = max;
     }
 
     this.c.scale.set(this.scale, this.scale);
