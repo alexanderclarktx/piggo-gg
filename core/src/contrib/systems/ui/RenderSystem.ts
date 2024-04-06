@@ -122,7 +122,11 @@ export const RenderSystem = ClientSystemBuilder({
 
       await renderable._init(renderer);
 
-      renderer.addWorld(renderable);
+      if (position.screenFixed) {
+        renderer.addGui(renderable);
+      } else {
+        renderer.addWorld(renderable);
+      }
     }
 
     // updates the position of screenFixed entities
@@ -131,15 +135,15 @@ export const RenderSystem = ClientSystemBuilder({
       if (position.screenFixed) {
 
         if (position.data.x < 0) {
-          renderable.c.x = renderer.app.screen.width + position.data.x - renderer.camera.c.x;
+          renderable.c.x = renderer.app.screen.width + position.data.x;
         } else {
-          renderable.c.x = position.data.x - renderer.camera.c.x;
+          renderable.c.x = position.data.x;
         }
 
         if (position.data.y < 0) {
-          renderable.c.y = renderer.app.screen.height + position.data.y - renderer.camera.c.y;
+          renderable.c.y = renderer.app.screen.height + position.data.y;
         } else {
-          renderable.c.y = position.data.y - renderer.camera.c.y;
+          renderable.c.y = position.data.y;
         }
       }
     }

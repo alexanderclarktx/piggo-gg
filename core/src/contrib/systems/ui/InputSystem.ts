@@ -9,10 +9,14 @@ export const charactersPreventDefault = new Set(["'", "/", " "]);
 // InputSystem handles all keyboard/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
-  init: ({ clientPlayerId, world }) => {
+  init: ({ clientPlayerId, world, renderer }) => {
     let bufferedDown: Set<string> = new Set([]);
     let bufferedUp: Set<string> = new Set([]);
     let backspaceOn = false;
+
+    renderer?.props.canvas.addEventListener("wheel", (event) => {
+      renderer.camera.rescaleDelta(-event.deltaY / 1000);
+    });
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
       if (document.hasFocus()) {
