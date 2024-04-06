@@ -119,31 +119,31 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       if ((message.tick - 1) !== world.tick) mustRollback(`old tick world=${world.tick} msg=${message.tick}`);
 
-      const sre: Record<string, SerializedEntity> = {}
+      const localEntities: Record<string, SerializedEntity> = {}
       for (const entityId in world.entities) {
         if (world.entities[entityId].components.networked) {
-          sre[entityId] = world.entities[entityId].serialize();
+          localEntities[entityId] = world.entities[entityId].serialize();
         }
       }
 
       // compare entity counts
-      if (!rollback && world.entitiesAtTick[message.tick]) {
-        if (Object.keys(sre).length !== Object.keys(message.serializedEntities).length) {
-          mustRollback(`entity count local:${Object.keys(sre).length} remote:${Object.keys(message.serializedEntities).length}`);
+      if (!rollback) {
+        if (Object.keys(localEntities).length !== Object.keys(message.serializedEntities).length) {
+          mustRollback(`entity count local:${Object.keys(localEntities).length} remote:${Object.keys(message.serializedEntities).length}`);
         }
       }
 
       // compare entity states
       if (!rollback) {
         Object.entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
-          const localEntity = sre[entityId];
+          const localEntity = localEntities[entityId];
           if (localEntity) {
             if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) return;
             if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
               mustRollback(`entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
             }
           } else {
-            mustRollback(`no buffered message ${sre.serializedEntities}`);
+            mustRollback(`no buffered message ${localEntities.serializedEntities}`);
           }
         });
       }

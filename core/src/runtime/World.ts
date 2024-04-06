@@ -181,9 +181,9 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
       if (!isRollback) scheduleOnTick();
 
       // clear old buffered data
-      world.actionBuffer.clearBeforeTick(world.tick - 100);
+      world.actionBuffer.clearBeforeTick(world.tick - 5);
       Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
-        if ((world.tick - tick) > 100) {
+        if ((world.tick - tick) > 5) {
           delete world.entitiesAtTick[tick];
         }
       });

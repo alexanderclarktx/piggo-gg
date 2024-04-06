@@ -37,8 +37,7 @@ export class Renderer {
 
     // set up the camera
     this.camera = new Camera(this);
-    this.camera.c.addChild(this.app.stage);
-    this.app.stage = this.camera.c;
+    this.app.stage.addChild(this.camera.c);
 
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";
@@ -64,7 +63,11 @@ export class Renderer {
     }
   }
 
+  addGui = (renderable: Renderable) => {
+    if (renderable) this.app.stage.addChild(renderable.c);
+  }
+
   addWorld = (renderable: Renderable) => {
-    this.camera.add(renderable);
+    if (renderable) this.camera.add(renderable);
   }
 }
