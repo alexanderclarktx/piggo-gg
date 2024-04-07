@@ -30,22 +30,12 @@ export class PiggoApi {
         message: this.handleMessage,
       },
     });
-
-    setInterval(() => {
-      Object.values(this.clients).forEach((client) => {
-        const { playerName, worldId } = client.data;
-        if (playerName) {
-          if (!this.worlds[worldId].clients[playerName]) {
-            this.worlds[worldId].clients[playerName] = client
-          }
-        }
-      });
-    }, 10)
   }
 
   handleClose = (ws: ServerWebSocket<PerClientData>) => {
     const world = this.worlds[ws.data.worldId];
     world.handleClose(ws);
+
     delete this.clients[ws.data.id];
   }
 

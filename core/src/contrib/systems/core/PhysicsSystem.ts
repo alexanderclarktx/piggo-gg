@@ -1,5 +1,5 @@
 import RAPIER, { World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat";
-import { Collider, Entity, Position, SystemBuilder } from '@piggo-gg/core';
+import { Collider, Entity, Position, SystemBuilder } from "@piggo-gg/core";
 
 export let physics: RapierWorld;
 RAPIER.init().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
