@@ -19,17 +19,12 @@ export type WorldManagerProps = {
 export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
 
   const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, Legends, Strike] });
-
   const latestClientMessages: Record<string, { td: DelayTickData, latency: number }[]> = {};
 
   const handleClose = (ws: WS) => {
-
-    // remove player entity
     world.removeEntity(ws.data.playerName!);
 
-    // remove from clients
     delete clients[ws.remoteAddress];
-
     delete latestClientMessages[ws.data.playerName!];
 
     console.log(`${ws.data.playerName} disconnected`);
@@ -42,13 +37,12 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     if (!world.entities[parsedMessage.player]) {
       ws.data.playerName = parsedMessage.player;
 
-      clients[parsedMessage.player] = ws;
-
-      console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`);
-
       world.addEntity(Noob({ id: parsedMessage.player }));
 
+      clients[parsedMessage.player] = ws;
       latestClientMessages[parsedMessage.player] = [];
+
+      console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`);
     }
 
     // store last message for client
@@ -64,7 +58,6 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     ...{ "DelayServerSystem": DelayServerSystem({ world, clients, latestClientMessages })},
     ...world.systems
   }
-  // world.addSystems([DelayServerSystem({ world, clients, latestClientMessages })]);
 
   return {
     world,
