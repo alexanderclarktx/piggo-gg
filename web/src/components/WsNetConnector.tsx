@@ -1,5 +1,5 @@
 import React from "react";
-import { NetState, NetStateColor } from "../types/NetState";
+import { NetState, NetStateColor } from "@piggo-gg/web";
 import { World, DelayClientSystem } from "@piggo-gg/core";
 
 export type WsNetConnectorProps = {

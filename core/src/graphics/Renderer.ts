@@ -16,11 +16,10 @@ export class Renderer {
 
   constructor(props: RendererProps) {
     this.props = props;
-
     this.app = new Application();
   }
 
-  async init() {
+  init = async () => {
 
     // create the pixi.js application
     await this.app.init({
@@ -36,7 +35,7 @@ export class Renderer {
     });
 
     // set up the camera
-    this.camera = new Camera(this);
+    this.camera = Camera(this);
     this.app.stage.addChild(this.camera.c);
 
     // hide the cursor

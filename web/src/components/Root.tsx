@@ -1,8 +1,6 @@
 import { World } from "@piggo-gg/core";
+import { GameCanvas, Header, NetState } from "@piggo-gg/web";
 import React, { useEffect, useState } from "react";
-import { NetState } from "../types/NetState";
-import { GameCanvas } from "./GameCanvas";
-import { Header } from "./Header";
 
 const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 

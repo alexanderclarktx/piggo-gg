@@ -1,6 +1,6 @@
+import { WsNetConnector, WsNetConnectorProps } from "@piggo-gg/web";
 import React from "react";
 import { FaDiscord, FaGithub } from "react-icons/fa";
-import { WsNetConnector, WsNetConnectorProps } from "./WsNetConnector";
 
 export type HeaderProps = WsNetConnectorProps & {}
 
