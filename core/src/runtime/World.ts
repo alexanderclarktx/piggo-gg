@@ -1,19 +1,4 @@
-import {
-  Command, Entity, Game, GameBuilder,
-  InvokedAction, Renderer, SerializedEntity,
-  StateBuffer, System, SystemBuilder, SystemEntity
-} from "@piggo-gg/core";
-
-export type WorldProps = {
-  clientPlayerId?: string | undefined
-  commands?: Command[]
-  games?: GameBuilder[]
-  renderer?: Renderer | undefined
-  renderMode: "cartesian" | "isometric"
-  runtimeMode: "client" | "server"
-}
-
-export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
+import { Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity, StateBuffer, System, SystemBuilder, SystemEntity } from "@piggo-gg/core";
 
 export type World = {
   actionBuffer: StateBuffer<InvokedAction>
@@ -48,6 +33,18 @@ export type World = {
   setGame: (game: GameBuilder) => void
 }
 
+export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
+
+export type WorldProps = {
+  clientPlayerId?: string | undefined
+  commands?: Command[]
+  games?: GameBuilder[]
+  renderer?: Renderer | undefined
+  renderMode: "cartesian" | "isometric"
+  runtimeMode: "client" | "server"
+}
+
+// World manages all runtime state
 export const World = ({ clientPlayerId, commands, games, renderer, renderMode, runtimeMode }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
@@ -207,13 +204,19 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
     }
   }
 
-  // setup callbacks
+  // schedule tick
   scheduleOnTick();
+
+  // schedule System.onRender
   if (renderer) renderer.app.ticker.add(world.onRender);
+
+  // setup games
   if (games) {
     games.forEach((game) => world.games[game.id] = game);
     if (games[0]) world.setGame(games[0]);
   }
+
+  // setup commands
   if (commands) {
     commands.forEach((command) => world.commands[command.id] = command);
   }

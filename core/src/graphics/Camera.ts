@@ -1,54 +1,50 @@
 import { Renderer, Renderable } from "@piggo-gg/core";
 import { Container } from "pixi.js";
 
+export type Camera = {
+  c: Container
+  add: (r: Renderable) => void
+  rescaleDelta: (delta: number) => void
+  moveTo: ({ x, y }: { x: number, y: number }) => void
+  toWorldCoords: ({ x, y }: { x: number, y: number }) => { x: number, y: number }
+}
+
 // Camera handles the viewport of the game
-export class Camera {
-  renderables: Set<Renderable> = new Set();
-  renderer: Renderer;
-  c: Container = new Container();
+export const Camera = (renderer: Renderer): Camera => {
 
-  scale = 1;
+  const renderables: Set<Renderable> = new Set();
+  const c: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 });
+  let scale = 1.2;
 
-  constructor(renderer: Renderer) {
-    this.renderer = renderer;
-
-    this.c.sortableChildren = true;
-    this.c.zIndex = 0;
-    this.c.alpha = 1;
-
-    this.rescale();
-  }
-
-  rescale = () => {
+  const rescale = () => {
     const min = 1;
     const max = 2;
 
-    if (this.scale < min) {
-      this.scale = min;
-    } else if (this.scale > max) {
-      this.scale = max;
-    }
+    if (scale < min) scale = min;
+    if (scale > max) scale = max;
 
-    this.c.scale.set(this.scale, this.scale);
+    c.scale.set(scale, scale);
   }
 
-  rescaleDelta = (delta: number) => {
-    this.scale += delta;
-    this.rescale();
-  }
+  rescale();
 
-  add = (r: Renderable) => {
-    this.renderables.add(r);
-    this.c.addChild(r.c);
+  return {
+    c,
+    add: (r: Renderable) => {
+      renderables.add(r);
+      c.addChild(r.c);
+    },
+    rescaleDelta: (delta: number) => {
+      scale += delta;
+      rescale();
+    },
+    moveTo: ({ x, y }: { x: number, y: number }) => {
+      c.x = renderer.app.screen.width / 2 - x * scale;
+      c.y = renderer.app.screen.height / 2 - y * scale;
+    },
+    toWorldCoords: ({ x, y }: { x: number, y: number }) => ({
+      x: x - c.x,
+      y: y - c.y
+    })
   }
-
-  moveTo = ({ x, y }: { x: number, y: number }) => {
-    this.c.x = this.renderer.app.screen.width / 2 - x * this.scale;
-    this.c.y = this.renderer.app.screen.height / 2 - y * this.scale;
-  }
-
-  toWorldCoords = ({ x, y }: { x: number, y: number }) => ({
-    x: x - this.c.x,
-    y: y - this.c.y
-  })
 }
