@@ -23,7 +23,7 @@ export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x
       })
     }),
     npc: new NPC<ZombieMovementActions>({
-      onTick: (_) => ({ action: "chase", params: {} })
+      onTick: (_) => ({ action: "chase" })
     }),
     actions: new Actions(ZombieMovement),
     collider: new Collider({ shape: "ball", radius: 8, mass: 300 }),
