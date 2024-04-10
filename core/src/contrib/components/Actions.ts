@@ -5,13 +5,13 @@ export type Action<T extends {} = {}> = {
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
-export const Action = (apply: Action["apply"]): Action => {
+export const Action = <T extends {} = {}>(apply: Action<T>["apply"]): Action<T> => {
   return { apply };
 }
 
 export type InvokedAction<A extends string = string, P extends {} = {}> = {
   action: A,
-  params: P
+  params?: P
 }
 
 export type ActionMap<T extends string = string, P extends {} = {}> = Record<T, Action<P>>;

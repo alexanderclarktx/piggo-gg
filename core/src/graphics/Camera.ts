@@ -43,8 +43,8 @@ export const Camera = (renderer: Renderer): Camera => {
       c.y = renderer.app.screen.height / 2 - y * scale;
     },
     toWorldCoords: ({ x, y }: { x: number, y: number }) => ({
-      x: x - c.x,
-      y: y - c.y
+      x: (x - c.x) / scale,
+      y: (y - c.y) / scale
     })
   }
 }

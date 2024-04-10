@@ -49,15 +49,15 @@ const getAnimationXYForJoystick = (): WASDParams => {
 
 export const WASDController: ControllerMap<"move", WASDParams> = {
   keyboard: {
-    "a,d": null, "w,s": null,
-    "w,a": { action: "move", params: { animation: "ul", x: -speed, y: 0 } },
-    "w,d": { action: "move", params: { animation: "ur", x: 0, y: -speed } },
-    "s,a": { action: "move", params: { animation: "dl", x: 0, y: speed } },
-    "s,d": { action: "move", params: { animation: "dr", x: speed, y: 0 } },
-    "w": { action: "move", params: { animation: "u", x: -speedDiagonal, y: -speedDiagonal } },
-    "s": { action: "move", params: { animation: "d", x: speedDiagonal, y: speedDiagonal } },
-    "a": { action: "move", params: { animation: "l", x: -speedHorizontal, y: speedHorizontal } },
-    "d": { action: "move", params: { animation: "r", x: speedHorizontal, y: -speedHorizontal } }
+    "a,d": () => null, "w,s": () => null,
+    "w,a": () => ({ action: "move", params: { animation: "ul", x: -speed, y: 0 } }),
+    "w,d": () => ({ action: "move", params: { animation: "ur", x: 0, y: -speed } }),
+    "s,a": () => ({ action: "move", params: { animation: "dl", x: 0, y: speed } }),
+    "s,d": () => ({ action: "move", params: { animation: "dr", x: speed, y: 0 } }),
+    "w": () => ({ action: "move", params: { animation: "u", x: -speedDiagonal, y: -speedDiagonal } }),
+    "s": () => ({ action: "move", params: { animation: "d", x: speedDiagonal, y: speedDiagonal } }),
+    "a": () => ({ action: "move", params: { animation: "l", x: -speedHorizontal, y: speedHorizontal } }),
+    "d": () => ({ action: "move", params: { animation: "r", x: speedHorizontal, y: -speedHorizontal } }),
   },
   joystick: () => ({ action: "move", params: getAnimationXYForJoystick() })
 }
