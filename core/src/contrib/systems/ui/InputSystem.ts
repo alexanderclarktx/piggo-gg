@@ -1,16 +1,31 @@
 import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, World, currentJoystickPosition, screenToWorld } from "@piggo-gg/core";
 
+// TODO these are dependencies of Chat
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
 
-export const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
-export const charactersPreventDefault = new Set(["'", "/", " "]);
+type KeyMouse = { key: string, mouse: { x: number, y: number } };
+
+const KeyBuffer = (b?: KeyMouse[]) => {
+  let buffer: KeyMouse[] = b ? [...b] : [];
+
+  return {
+    contains: (key: string) => buffer.find((b) => b.key === key),
+    copy: () => KeyBuffer(buffer),
+    push: (km: KeyMouse) => { if (!buffer.find((b) => b.key === km.key)) return buffer.push(km) },
+    remove: (key: string) => buffer = buffer.filter((b) => b.key !== key)
+  }
+}
 
 // InputSystem handles all keyboard/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: ({ clientPlayerId, world, renderer }) => {
-    let bufferedDown: { key: string, mouse: { x: number, y: number } }[] = [];
+
+    const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
+    const charactersPreventDefault = new Set(["'", "/", " "]);
+
+    let bufferedDown = KeyBuffer();
     let backspaceOn = false;
     let mouse = { x: 0, y: 0 };
 
@@ -26,7 +41,7 @@ export const InputSystem = ClientSystemBuilder({
         if (chatIsOpen && keyName === "backspace") backspaceOn = false;
 
         // remove from bufferedDown and add to bufferedUp
-        bufferedDown = bufferedDown.filter((key) => key.key !== keyName);
+        bufferedDown.remove(keyName);
       }
     });
 
@@ -38,7 +53,7 @@ export const InputSystem = ClientSystemBuilder({
         if (charactersPreventDefault.has(keyName)) event.preventDefault();
 
         // add to buffer
-        if (!bufferedDown.find((key) => key.key === keyName)) {
+        if (!bufferedDown.contains(keyName)) {
 
           // toggle chat
           if (keyName === "enter" && !chatIsOpen) chatIsOpen = true
@@ -78,7 +93,7 @@ export const InputSystem = ClientSystemBuilder({
 
     const handleInputForControlledEntity = (controlledEntity: Entity<Controlled | Controller | Actions>, world: World) => {
       // copy the input buffer
-      let buffer: { key: string, mouse: { x: number, y: number } }[] = [...bufferedDown];
+      let buffer = bufferedDown.copy();
 
       // check for actions
       const { controller, actions } = controlledEntity.components;
@@ -95,7 +110,7 @@ export const InputSystem = ClientSystemBuilder({
           const inputKeys = input.split(",");
 
           // check for multiple keys pressed at once
-          if (inputKeys.every((key) => buffer.find((b) => b.key === key))) {
+          if (inputKeys.every((key) => buffer.contains(key))) {
             // run the callback
             const controllerInput = controller.controllerMap.keyboard[input];
             if (controllerInput != null) {
@@ -106,9 +121,9 @@ export const InputSystem = ClientSystemBuilder({
             }
 
             // remove all keys from the buffer
-            inputKeys.forEach((key) => buffer = buffer.filter((b) => b.key !== key));
+            inputKeys.forEach((key) => buffer.remove(key));
           }
-        } else if (buffer.find((b) => b.key === input)) {
+        } else if (buffer.contains(input)) {
 
           // check for single key pressed
           const controllerInput = controller.controllerMap.keyboard[input];
@@ -120,7 +135,7 @@ export const InputSystem = ClientSystemBuilder({
           }
 
           // remove the key from the buffer
-          buffer = buffer.filter((b) => b.key !== input);
+          buffer.remove(input);
         }
       }
     }
