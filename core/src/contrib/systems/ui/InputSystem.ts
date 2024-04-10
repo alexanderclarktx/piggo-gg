@@ -1,4 +1,4 @@
-import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, World, currentJoystickPosition } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, World, currentJoystickPosition, screenToWorld } from "@piggo-gg/core";
 
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
@@ -9,10 +9,14 @@ export const charactersPreventDefault = new Set(["'", "/", " "]);
 // InputSystem handles all keyboard/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
-  init: ({ clientPlayerId, world }) => {
-    let bufferedDown: Set<string> = new Set([]);
-    let bufferedUp: Set<string> = new Set([]);
+  init: ({ clientPlayerId, world, renderer }) => {
+    let bufferedDown: { key: string, mouse: { x: number, y: number } }[] = [];
     let backspaceOn = false;
+    let mouse = { x: 0, y: 0 };
+
+    renderer?.app.canvas.addEventListener('mousemove', function (event) {
+      mouse = screenToWorld(renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY }))
+    });
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
       if (document.hasFocus()) {
@@ -22,22 +26,23 @@ export const InputSystem = ClientSystemBuilder({
         if (chatIsOpen && keyName === "backspace") backspaceOn = false;
 
         // remove from bufferedDown and add to bufferedUp
-        bufferedUp.add(keyName);
-        bufferedDown.delete(keyName);
+        bufferedDown = bufferedDown.filter((key) => key.key !== keyName);
       }
     });
 
     document.addEventListener("keydown", (event) => {
       if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
+
+        // prevent defaults
         if (charactersPreventDefault.has(keyName)) event.preventDefault();
 
-        if (!bufferedDown.has(keyName)) {
+        // add to buffer
+        if (!bufferedDown.find((key) => key.key === keyName)) {
 
           // toggle chat
-          if (keyName === "enter" && !chatIsOpen) {
-            chatIsOpen = true;
-          } else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
+          if (keyName === "enter" && !chatIsOpen) chatIsOpen = true
+          else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
 
             // push the message to chatHistory
             if (chatBuffer.length > 0) {
@@ -53,7 +58,9 @@ export const InputSystem = ClientSystemBuilder({
           if (chatIsOpen && keyName === "backspace") backspaceOn = true;
 
           // push to chatBuffer or bufferedDown
-          (chatIsOpen && validChatCharacters.has(keyName)) ? chatBuffer.push(keyName) : bufferedDown.add(keyName);
+          (chatIsOpen && validChatCharacters.has(keyName)) ?
+            chatBuffer.push(keyName) :
+            bufferedDown.push({ key: keyName, mouse });
         }
       }
     });
@@ -71,7 +78,7 @@ export const InputSystem = ClientSystemBuilder({
 
     const handleInputForControlledEntity = (controlledEntity: Entity<Controlled | Controller | Actions>, world: World) => {
       // copy the input buffer
-      let buffer: Set<string> = new Set(bufferedDown);
+      let buffer: { key: string, mouse: { x: number, y: number } }[] = [...bufferedDown];
 
       // check for actions
       const { controller, actions } = controlledEntity.components;
@@ -88,30 +95,32 @@ export const InputSystem = ClientSystemBuilder({
           const inputKeys = input.split(",");
 
           // check for multiple keys pressed at once
-          if (inputKeys.every((key) => buffer.has(key))) {
+          if (inputKeys.every((key) => buffer.find((b) => b.key === key))) {
             // run the callback
             const controllerInput = controller.controllerMap.keyboard[input];
             if (controllerInput != null) {
-              if (actions.actionMap[controllerInput.action ?? ""]) {
-                world.actionBuffer.push(world.tick + 1, controlledEntity.id, controllerInput);
+              const invocation = controllerInput(mouse);
+              if (invocation && actions.actionMap[invocation.action ?? ""]) {
+                world.actionBuffer.push(world.tick + 1, controlledEntity.id, invocation);
               }
             }
 
             // remove all keys from the buffer
-            inputKeys.forEach((key) => buffer.delete(key));
+            inputKeys.forEach((key) => buffer = buffer.filter((b) => b.key !== key));
           }
-        } else if (buffer.has(input)) {
+        } else if (buffer.find((b) => b.key === input)) {
 
           // check for single key pressed
           const controllerInput = controller.controllerMap.keyboard[input];
           if (controllerInput != null) {
-            if (actions.actionMap[controllerInput.action ?? ""]) {
-              world.actionBuffer.push(world.tick + 1, controlledEntity.id, controllerInput);
+            const invocation = controllerInput(mouse);
+            if (invocation && actions.actionMap[invocation.action ?? ""]) {
+              world.actionBuffer.push(world.tick + 1, controlledEntity.id, invocation);
             }
           }
 
           // remove the key from the buffer
-          buffer.delete(input);
+          buffer = buffer.filter((b) => b.key !== input);
         }
       }
     }

@@ -2,7 +2,7 @@ import { InvokedAction, Component } from "@piggo-gg/core";
 
 // "" is always allowed to clear the input buffer
 export type ControllerMap<A extends string, P extends {}> = {
-  keyboard: Record<string, null | InvokedAction<A, P>>
+  keyboard: Record<string, (mouse: { x: number, y: number }) => null | InvokedAction<A, P>>
   joystick?: () => null | InvokedAction<A, P>
 }
 

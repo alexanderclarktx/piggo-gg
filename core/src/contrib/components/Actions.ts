@@ -5,7 +5,7 @@ export type Action<T extends {} = {}> = {
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
-export const Action = (apply: Action["apply"]): Action => {
+export const Action = <T extends {} = {}>(apply: Action<T>["apply"]): Action<T> => {
   return { apply };
 }
 
