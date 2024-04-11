@@ -1,4 +1,4 @@
-import { Action, Actions, Clickable, Collider, Debug, Entity, NPC, Networked, Position, PositionProps, Projectile, Renderable, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
+import { Action, Actions, Clickable, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Projectile, Renderable, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type ZombieProps = {
@@ -12,16 +12,7 @@ export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x
   components: {
     position: new Position({ ...positionProps, velocityResets: 1 }),
     networked: new Networked({ isNetworked: true }),
-    clickable: new Clickable({
-      width: 32,
-      height: 32,
-      active: true,
-      click: Action(({ world }) => {
-        if (world.clientPlayerId) {
-          world.addEntity(Projectile({ radius: 5 }));
-        }
-      })
-    }),
+    health: new Health(100, 100),
     npc: new NPC<ZombieMovementActions>({
       onTick: (_) => ({ action: "chase" })
     }),
