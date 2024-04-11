@@ -47,7 +47,7 @@ const getAnimationXYForJoystick = (): WASDParams => {
   return { x, y, animation };
 }
 
-export const WASDController: ControllerMap<"move", WASDParams> = {
+export const WASDController: ControllerMap<"move" | "shoot", WASDParams | { mouse: { x: number, y: number }}> = {
   keyboard: {
     "a,d": () => null, "w,s": () => null,
     "w,a": () => ({ action: "move", params: { animation: "ul", x: -speed, y: 0 } }),
@@ -58,6 +58,7 @@ export const WASDController: ControllerMap<"move", WASDParams> = {
     "s": () => ({ action: "move", params: { animation: "d", x: speedDiagonal, y: speedDiagonal } }),
     "a": () => ({ action: "move", params: { animation: "l", x: -speedHorizontal, y: speedHorizontal } }),
     "d": () => ({ action: "move", params: { animation: "r", x: speedHorizontal, y: -speedHorizontal } }),
+    "mb1": (mouse) => ({ action: "shoot", params: { mouse } })
   },
   joystick: () => ({ action: "move", params: getAnimationXYForJoystick() })
 }

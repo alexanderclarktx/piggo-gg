@@ -1,58 +1,71 @@
 import { Action, Actions, Collider, Controlled, Controller, Debug, Entity, Networked, Position, Projectile, Renderable, WASDActionMap, WASDController } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
-export const Skelly = (id: string, tint?: number) => Entity({
-  id: id,
-  components: {
-    debug: new Debug(),
-    position: new Position({ x: 300, y: 300, velocityResets: 1 }),
-    networked: new Networked({ isNetworked: true }),
-    controlled: new Controlled({ entityId: "" }),
-    collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
-    controller: new Controller({
-      keyboard: {
-        ...WASDController.keyboard,
-        "z": (mouse) => {
-          return { action: "z", params: { mouse } };
-        }
-      }
-    }),
-    actions: new Actions({
-      ...WASDActionMap,
-      "z": Action<{ mouse : {x: number, y: number}}>(({ world, params}) => {
-        if (world.clientPlayerId) {
-          world.addEntity(Projectile({ radius: 5, pos: params.mouse }));
+export const Skelly = (id: string, tint?: number) => {
+  const skelly = Entity({
+    id: id,
+    components: {
+      debug: new Debug(),
+      position: new Position({ x: 300, y: 300, velocityResets: 1 }),
+      networked: new Networked({ isNetworked: true }),
+      controlled: new Controlled({ entityId: "" }),
+      collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
+      controller: new Controller(WASDController),
+      actions: new Actions({
+        ...WASDActionMap,
+        "shoot": Action<{ mouse: { x: number, y: number } }>(({ world, params }) => {
+          if (world.clientPlayerId) {
+
+            const skellyPos = skelly.components.position!.data;
+            const mousePos = params.mouse;
+
+            // calculate velocity so it moves from skelly toward mouse (constant speed)
+            let Vx = mousePos.x - skellyPos.x;
+            let Vy = mousePos.y - skellyPos.y;
+            Vx = Vx / Math.sqrt(Vx * Vx + Vy * Vy) * 200;
+            Vy = Vy / Math.sqrt(Vx * Vx + Vy * Vy) * 200;
+
+            // calculate offset so projectile spawns at skelly's feet toward mouse
+            const offset = 20;
+            const Xoffset = offset * (Vx / Math.sqrt(Vx * Vx + Vy * Vy));
+            const Yoffset = offset * (Vy / Math.sqrt(Vx * Vx + Vy * Vy));
+
+            const pos = { x: skellyPos.x + Xoffset, y: skellyPos.y + Yoffset, Vx, Vy };
+
+            world.addEntity(Projectile({ radius: 5, pos }));
+          }
+        })
+      }),
+      renderable: new Renderable({
+        anchor: { x: 0.5, y: 0.7 },
+        scale: 2,
+        zIndex: 3,
+        scaleMode: "nearest",
+        setup: async (r: Renderable) => {
+          const textures = await r.loadTextures("chars.json");
+
+          r.animations = {
+            d: new AnimatedSprite([textures["d1"], textures["d2"], textures["d3"]]),
+            u: new AnimatedSprite([textures["u1"], textures["u2"], textures["u3"]]),
+            l: new AnimatedSprite([textures["l1"], textures["l2"], textures["l3"]]),
+            r: new AnimatedSprite([textures["r1"], textures["r2"], textures["r3"]]),
+            dl: new AnimatedSprite([textures["dl1"], textures["dl2"], textures["dl3"]]),
+            dr: new AnimatedSprite([textures["dr1"], textures["dr2"], textures["dr3"]]),
+            ul: new AnimatedSprite([textures["ul1"], textures["ul2"], textures["ul3"]]),
+            ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
+          }
+
+          r.bufferedAnimation = "d";
+
+          const nametag = new Text({
+            text: id.split("-")[1],
+            style: { fill: 0xffff00, fontSize: 14 }
+          }).updateTransform({ x: -20, y: -45 });
+
+          r.c.addChild(nametag);
         }
       })
-    }),
-    renderable: new Renderable({
-      anchor: { x: 0.5, y: 0.7 },
-      scale: 2,
-      zIndex: 3,
-      scaleMode: "nearest",
-      setup: async (r: Renderable) => {
-        const textures = await r.loadTextures("chars.json");
-
-        r.animations = {
-          d: new AnimatedSprite([textures["d1"], textures["d2"], textures["d3"]]),
-          u: new AnimatedSprite([textures["u1"], textures["u2"], textures["u3"]]),
-          l: new AnimatedSprite([textures["l1"], textures["l2"], textures["l3"]]),
-          r: new AnimatedSprite([textures["r1"], textures["r2"], textures["r3"]]),
-          dl: new AnimatedSprite([textures["dl1"], textures["dl2"], textures["dl3"]]),
-          dr: new AnimatedSprite([textures["dr1"], textures["dr2"], textures["dr3"]]),
-          ul: new AnimatedSprite([textures["ul1"], textures["ul2"], textures["ul3"]]),
-          ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
-        }
-
-        r.bufferedAnimation = "d";
-
-        const nametag = new Text({
-          text: id.split("-")[1],
-          style: { fill: 0xffff00, fontSize: 14 }
-        }).updateTransform({ x: -20, y: -45 });
-
-        r.c.addChild(nametag);
-      }
-    })
-  }
-});
+    }
+  });
+  return skelly;
+}

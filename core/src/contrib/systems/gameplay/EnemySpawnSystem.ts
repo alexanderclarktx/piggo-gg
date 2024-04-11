@@ -28,6 +28,7 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
     }
 
     const onTick = () => {
+
       // handle old entities
       Object.keys(enemiesInWave).forEach((id) => {
         if (!world.entities[id]) {
@@ -35,9 +36,16 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
         }
       });
 
-      if (Object.keys(enemiesInWave).length === 0) {
-        spawnWave(data.wave++);
-      }
+      // kill zombies with 0 health
+      Object.keys(enemiesInWave).forEach((id) => {
+        if ((enemiesInWave[id] && enemiesInWave[id].components.health) && (enemiesInWave[id].components.health!.data.health <= 0)) {
+          world.removeEntity(id);
+          delete enemiesInWave[id];
+        }
+      });
+
+      // spawn new wave
+      if (Object.keys(enemiesInWave).length === 0) spawnWave(data.wave++);
     }
 
     const spawnWave = async (wave: number) => {

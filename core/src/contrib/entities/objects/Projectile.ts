@@ -3,15 +3,14 @@ import { Graphics } from "pixi.js";
 
 export type ProjectileProps = {
   radius: number
-  pos?: { x: number, y: number }
+  pos?: { x: number, y: number, Vx: number, Vy: number }
 }
 
 export const Projectile = ({ radius, pos }: ProjectileProps) => {
-
   const projectile = Entity({
     id: `projectile-${Math.trunc(Math.random() * 1000)}`,
     components: {
-      position: new Position({ x: pos?.x ?? 200, y: pos?.y ?? 200, velocityX: 50, velocityY: 0 }),
+      position: new Position(pos ? { x: pos.x, y: pos.y, velocityX: pos.Vx, velocityY: pos.Vy } : { x: 200, y: 200, velocityX: 50, velocityY: 0 }),
       collider: new Collider({
         shape: "ball",
         radius: radius ?? 10,
@@ -27,7 +26,7 @@ export const Projectile = ({ radius, pos }: ProjectileProps) => {
         setup: async (r: Renderable) => {
           const g = new Graphics();
           g.circle(0, 0, radius ?? 10);
-          g.fill(0xff0000);
+          g.fill(0xffff00);
 
           r.c = g;
         }

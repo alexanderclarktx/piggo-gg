@@ -33,6 +33,16 @@ export const InputSystem = ClientSystemBuilder({
       mouse = screenToWorld(renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY }))
     });
 
+    renderer?.app.canvas.addEventListener('mousedown', function (event) {
+      const key = event.button === 0 ? "mb1" : "mb2";
+      bufferedDown.push({ key, mouse });
+    });
+
+    renderer?.app.canvas.addEventListener('mouseup', function (event) {
+      const key = event.button === 0 ? "mb1" : "mb2";
+      bufferedDown.remove(key);
+    });
+
     document.addEventListener("keyup", (event: KeyboardEvent) => {
       if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
