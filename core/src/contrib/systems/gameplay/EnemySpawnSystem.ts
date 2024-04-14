@@ -22,7 +22,7 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
     }
 
     const nextSpawnPosition = (): PositionProps => {
-      const p: PositionProps = { ...spawnLocations[data.lastSpawnIndex++], renderMode: "isometric" }
+      const p: PositionProps = { ...spawnLocations[data.lastSpawnIndex++] }
       data.lastSpawnIndex %= spawnLocations.length;
       return p;
     }

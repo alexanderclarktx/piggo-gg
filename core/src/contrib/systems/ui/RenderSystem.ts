@@ -3,7 +3,7 @@ import { Entity, Position, Renderable, ClientSystemBuilder } from "@piggo-gg/cor
 // RenderSystem handles rendering entities in isometric or cartesian space
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
-  init: ({ renderer, mode, world }) => {
+  init: ({ renderer, world }) => {
     if (!renderer) throw new Error("RendererSystem requires a renderer");
 
     let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
@@ -13,7 +13,7 @@ export const RenderSystem = ClientSystemBuilder({
     renderer.app.ticker.add(() => {
       if (centeredEntity) {
         const p = centeredEntity.components.position;
-        if (p) renderer.camera.moveTo(p.toScreenXY());
+        if (p) renderer.camera.moveTo(p.data);
       }
 
       // update screenFixed entities
@@ -50,12 +50,7 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.c.rotation = position.data.rotation;
           }
 
-          if (mode === "isometric") {
-            const screenXY = position.toScreenXY();
-            renderable.c.position.set(screenXY.x, screenXY.y);
-          } else {
-            renderable.c.position.set(position.data.x, position.data.y);
-          }
+          renderable.c.position.set(position.data.x, position.data.y);
           cachedEntityPositions[entity.id] = position;
         }
 
@@ -93,9 +88,8 @@ export const RenderSystem = ClientSystemBuilder({
 
       // sort cachedEntityPositions by position (closeness to camera)
       const sortedEntityPositions = Object.keys(cachedEntityPositions).sort((a, b) => {
-        const xDiff = cachedEntityPositions[a].data.x - cachedEntityPositions[b].data.x;
         const yDiff = cachedEntityPositions[a].data.y - cachedEntityPositions[b].data.y;
-        return xDiff + yDiff;
+        return yDiff;
       });
 
       // set zIndex

@@ -26,10 +26,10 @@ export const Soccer: GameBuilder<"soccer"> = ({
 
       Background(),
 
-      Ball({ position: { x: 370, y: 320 } }),
+      Ball({ position: { x: 50, y: 350 } }),
 
-      Goal({ id: "goal1", color: 0xff0000, position: { x: 148, y: 552 }, width: 98, length: 2 }),
-      Goal({ id: "goal2", color: 0x0000ff, position: { x: 602, y: 98 }, width: 98, length: 2 }),
+      Goal({ id: "goal1", color: 0xff0000, position: { x: -402, y: 350 }, width: 49, length: 2 }),
+      Goal({ id: "goal2", color: 0x0000ff, position: { x: 502, y: 350 }, width: 49, length: 2 }),
 
       FieldGrass(wallPoints),
       FieldWall(wallPoints)

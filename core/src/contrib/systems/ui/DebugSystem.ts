@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, physics, worldToScreen } from "@piggo-gg/core";
+import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, physics } from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
 // DebugSystem adds visual debug information to renderered entities
@@ -107,8 +107,8 @@ export const DebugSystem = ClientSystemBuilder({
             const { vertices } = physics.debugRender();
 
             for (let i = 0; i < vertices.length; i += 4) {
-              const one = worldToScreen({ x: vertices[i], y: vertices[i + 1] });
-              const two = worldToScreen({ x: vertices[i + 2], y: vertices[i + 3] });
+              const one = { x: vertices[i], y: vertices[i + 1] };
+              const two = { x: vertices[i + 2], y: vertices[i + 3] };
               c.moveTo(one.x, one.y);
               c.lineTo(two.x, two.y);
             }

@@ -47,28 +47,64 @@ const getAnimationXYForJoystick = (): WASDParams => {
   return { x, y, animation };
 }
 
-export const WASDController: ControllerMap<"move" | "shoot", WASDParams | { mouse: { x: number, y: number }}> = {
+export const WASDController: ControllerMap<"move" | "shoot" | "head", WASDParams | { mouse: { x: number, y: number }}> = {
   keyboard: {
     "a,d": () => null, "w,s": () => null,
-    "w,a": () => ({ action: "move", params: { animation: "ul", x: -speed, y: 0 } }),
-    "w,d": () => ({ action: "move", params: { animation: "ur", x: 0, y: -speed } }),
-    "s,a": () => ({ action: "move", params: { animation: "dl", x: 0, y: speed } }),
-    "s,d": () => ({ action: "move", params: { animation: "dr", x: speed, y: 0 } }),
-    "w": () => ({ action: "move", params: { animation: "u", x: -speedDiagonal, y: -speedDiagonal } }),
-    "s": () => ({ action: "move", params: { animation: "d", x: speedDiagonal, y: speedDiagonal } }),
-    "a": () => ({ action: "move", params: { animation: "l", x: -speedHorizontal, y: speedHorizontal } }),
-    "d": () => ({ action: "move", params: { animation: "r", x: speedHorizontal, y: -speedHorizontal } }),
-    "mb1": (mouse) => ({ action: "shoot", params: { mouse } })
+    "w,a": () => ({ action: "move", params: { animation: "ul", x: -speedDiagonal, y: -speedDiagonal } }),
+    "w,d": () => ({ action: "move", params: { animation: "ur", x: speedDiagonal, y: -speedDiagonal } }),
+    "s,a": () => ({ action: "move", params: { animation: "dl", x: -speedDiagonal, y: speedDiagonal } }),
+    "s,d": () => ({ action: "move", params: { animation: "dr", x: speedDiagonal, y: speedDiagonal } }),
+    "w": () => ({ action: "move", params: { animation: "u", x: 0, y: -speed } }),
+    "s": () => ({ action: "move", params: { animation: "d", x: 0, y: speed } }),
+    "a": () => ({ action: "move", params: { animation: "l", x: -speed, y: 0 } }),
+    "d": () => ({ action: "move", params: { animation: "r", x: speed, y: 0 } }),
+    "mb1": ({ mouse }) => ({ action: "shoot", params: { mouse } }),
+    "mb2": ({ mouse, entity } ) => {
+      const { position, renderable } = entity.components;
+      if (!position || !renderable) return null;
+
+      // set the heading
+      // position.setHeading({ x: mouse.x, y: mouse.y });
+
+      const dx = mouse.x - position.data.x;
+      const dy = mouse.y - position.data.y;
+
+      const tau16 = (Math.PI * 2) / 16; // 22.5 degrees
+      const angle = Math.atan2(dy, dx) + tau16 * 8;
+
+      if (angle >= 0 && angle < 1 * tau16) renderable.setAnimation("ul");
+      else if (angle >= 15 * tau16 && angle < 16 * tau16) renderable.setAnimation("l");
+      else if (angle >= 1 * tau16 && angle < 3 * tau16) renderable.setAnimation("ul");
+      else if (angle >= 3 * tau16 && angle < 5 * tau16) renderable.setAnimation("u");
+      else if (angle >= 5 * tau16 && angle < 7 * tau16) renderable.setAnimation("ur");
+      else if (angle >= 7 * tau16 && angle < 9 * tau16) renderable.setAnimation("r");
+      else if (angle >= 9 * tau16 && angle < 11 * tau16) renderable.setAnimation("dr");
+      else if (angle >= 11 * tau16 && angle < 13 * tau16) renderable.setAnimation("d");
+      else if (angle >= 13 * tau16 && angle < 15 * tau16) renderable.setAnimation("dl");
+
+      return { action: "head", params: { animation: "u", x: mouse.x, y: mouse.y } };
+    }
   },
   joystick: () => ({ action: "move", params: getAnimationXYForJoystick() })
 }
 
-export const WASDActionMap: ActionMap<"move", WASDParams> = {
+export const WASDActionMap: ActionMap<"move" | "head", WASDParams> = {
+  head: {
+    apply: ({ params, entity }) => {
+      if (!entity) return;
+
+      const { position } = entity.components;
+
+      position?.setHeading({ x: params.x, y: params.y });
+    }
+  },
   move: {
     apply: ({ params, entity }) => {
       if (!entity) return;
 
       const { position, renderable } = entity.components;
+
+      position?.setHeading({ x: NaN, y: NaN });
 
       position?.setVelocity({ x: params.x, y: params.y });
 

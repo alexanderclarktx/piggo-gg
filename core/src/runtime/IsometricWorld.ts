@@ -13,7 +13,6 @@ export const IsometricWorld: WorldBuilder = (props) => {
 
   const world = World({
     ...props,
-    renderMode: "isometric",
     clientPlayerId: playerId,
     commands: [GameCommand, SpawnCommand]
   });

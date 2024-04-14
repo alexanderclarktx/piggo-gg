@@ -102,11 +102,25 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
         }
       });
 
+      // clear heading if arrived
+      entities.forEach((entity) => {
+        const { position } = entity.components;
+        if (position.data.headingX || position.data.headingY) {
+          const dx = position.data.headingX - position.data.x;
+          const dy = position.data.headingY - position.data.y;
+          if (Math.abs(dx) < 5 && Math.abs(dy) < 5) {
+            position.data.headingX = NaN;
+            position.data.headingY = NaN;
+          }
+        }
+      });
+
       // reset velocities where needed
       entities.forEach((entity) => {
-        if (entity.components.position.data.velocityResets) {
-          entity.components.position.data.velocityX = 0;
-          entity.components.position.data.velocityY = 0;
+        const { position } = entity.components;
+        if (position.data.velocityResets && !position.data.headingX && !position.data.headingY) {
+          position.data.velocityX = 0;
+          position.data.velocityY = 0;
         }
       });
     }

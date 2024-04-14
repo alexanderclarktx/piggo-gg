@@ -16,7 +16,6 @@ export type SystemProps = {
   world: World
   renderer: Renderer | undefined
   clientPlayerId: string | undefined
-  mode: "cartesian" | "isometric"
 }
 
 export type SystemBuilder<T extends string = string> = {

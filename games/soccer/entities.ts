@@ -1,12 +1,10 @@
-import { Entity, LineWall, Position, Renderable, screenToWorld } from "@piggo-gg/core";
+import { Entity, LineWall, Position, Renderable } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export type WallPoints = [number, number][];
 
 export const FieldWall = (wallPoints: WallPoints): Entity => {
-  const wallPointsWorld = wallPoints.map(([x, y]) => screenToWorld({ x, y })).map(({ x, y }) => [x, y]);
-
-  return LineWall({ points: wallPointsWorld.flat() });
+  return LineWall({ points: wallPoints.flat() });
 }
 
 export const FieldGrass = (wallPoints: WallPoints) => Entity({
