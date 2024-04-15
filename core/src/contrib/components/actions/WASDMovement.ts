@@ -82,7 +82,7 @@ export const WASDController: ControllerMap<"move" | "shoot" | "head", WASDParams
       const tau16 = (Math.PI * 2) / 16; // 22.5 degrees
       const angle = Math.atan2(dy, dx) + tau16 * 8;
 
-      if (angle >= 0 && angle < 1 * tau16) renderable.setAnimation("ul");
+      if (angle >= 0 && angle < 1 * tau16) renderable.setAnimation("l");
       else if (angle >= 15 * tau16 && angle < 16 * tau16) renderable.setAnimation("l");
       else if (angle >= 1 * tau16 && angle < 3 * tau16) renderable.setAnimation("ul");
       else if (angle >= 3 * tau16 && angle < 5 * tau16) renderable.setAnimation("u");

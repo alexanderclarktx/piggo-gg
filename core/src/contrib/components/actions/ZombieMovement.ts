@@ -45,14 +45,14 @@ export const ZombieMovement: ActionMap<ZombieMovementActions> = {
     const angle = Math.atan2(moveY, moveX) + tau16 * 8;
 
     // set animation based on angle
-    if (angle >= 0 && angle < 1 * tau16) renderable.setAnimation("ul");
-    else if (angle >= 15 * tau16 && angle < 16 * tau16) renderable.setAnimation("ul");
-    else if (angle >= 1 * tau16 && angle < 3 * tau16) renderable.setAnimation("u");
-    else if (angle >= 3 * tau16 && angle < 5 * tau16) renderable.setAnimation("ur");
-    else if (angle >= 5 * tau16 && angle < 7 * tau16) renderable.setAnimation("r");
-    else if (angle >= 7 * tau16 && angle < 9 * tau16) renderable.setAnimation("dr");
-    else if (angle >= 9 * tau16 && angle < 11 * tau16) renderable.setAnimation("d");
-    else if (angle >= 11 * tau16 && angle < 13 * tau16) renderable.setAnimation("dl");
-    else if (angle >= 13 * tau16 && angle < 15 * tau16) renderable.setAnimation("l");
+    if (angle >= 0 && angle < 1 * tau16) renderable.setAnimation("l");
+    else if (angle >= 15 * tau16 && angle < 16 * tau16) renderable.setAnimation("l");
+    else if (angle >= 1 * tau16 && angle < 3 * tau16) renderable.setAnimation("ul");
+    else if (angle >= 3 * tau16 && angle < 5 * tau16) renderable.setAnimation("u");
+    else if (angle >= 5 * tau16 && angle < 7 * tau16) renderable.setAnimation("ur");
+    else if (angle >= 7 * tau16 && angle < 9 * tau16) renderable.setAnimation("r");
+    else if (angle >= 9 * tau16 && angle < 11 * tau16) renderable.setAnimation("dr");
+    else if (angle >= 11 * tau16 && angle < 13 * tau16) renderable.setAnimation("d");
+    else if (angle >= 13 * tau16 && angle < 15 * tau16) renderable.setAnimation("dl");
   })
 }
