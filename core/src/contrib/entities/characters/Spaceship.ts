@@ -17,7 +17,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       active: true,
       click: PlayerControlsEntity
     }),
-    collider: new Collider({ shape: "cuboid", radius: 60 }),
+    collider: new Collider({ shape: "ball", radius: 20 }),
     controller: new Controller<VehicleMovementActions>({
       keyboard: {
         "a,d": () => null, "w,s": () => null,

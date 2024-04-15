@@ -1,6 +1,6 @@
 import { ActionMap, ControllerMap, currentJoystickPosition } from "@piggo-gg/core";
 
-const speed = 140;
+const speed = 120;
 
 type WASDParams = { animation: string, x: number, y: number };
 
@@ -115,7 +115,6 @@ export const WASDActionMap: ActionMap<"move" | "head", WASDParams> = {
       const { position, renderable } = entity.components;
 
       position?.setHeading({ x: NaN, y: NaN });
-
       position?.setVelocity({ x: params.x, y: params.y });
 
       if (renderable && params.animation) renderable.setAnimation(params.animation);
