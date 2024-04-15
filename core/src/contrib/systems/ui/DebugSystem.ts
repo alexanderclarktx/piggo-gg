@@ -72,20 +72,34 @@ export const DebugSystem = ClientSystemBuilder({
       // debug bounds
       const debugBounds = DebugBounds({ debugRenderable: renderable });
 
+      const lineToHeading = new Renderable({
+        dynamic: (c: Graphics) => {
+          if (position.data.headingX || position.data.headingY) {
+            c.clear().setStrokeStyle({ width: 1, color: 0xffffff });
+            c.moveTo(0, 0).lineTo(position.data.headingX - position.data.x, position.data.headingY - position.data.y);
+            c.stroke();
+          } else {
+            c.clear();
+          }
+        },
+        zIndex: 5,
+        container: async () => new Graphics()
+      });
+
       const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
           position: new Position(),
           renderable: new Renderable({
             zIndex: 4,
-            children: async () => [textBox, debugBounds]
+            children: async () => [textBox, debugBounds, lineToHeading]
           })
         }
       });
 
       debugEntitiesPerEntity[entity.id].push(debugEntity);
       world.addEntity(debugEntity);
-      debugRenderables.push(textBox, debugBounds);
+      debugRenderables.push(textBox, debugBounds, lineToHeading);
     }
 
     const drawFpsText = () => {

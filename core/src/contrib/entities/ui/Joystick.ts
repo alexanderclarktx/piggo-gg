@@ -70,7 +70,7 @@ export class JoystickContainer extends Container {
 
     if (!this.settings.outer) {
       const outer = new Graphics();
-      outer.circle(0, 0, 50);
+      outer.circle(0, 0, 60);
       outer.fill({ color: 0x005588, alpha: 0.9 });
       this.settings.outer = outer;
     }

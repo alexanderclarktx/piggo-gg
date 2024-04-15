@@ -1,10 +1,24 @@
 import { ActionMap, ControllerMap, currentJoystickPosition } from "@piggo-gg/core";
 
 const speed = 140;
-const speedDiagonal = speed / Math.sqrt(2);
-const speedHorizontal = speed / 2;
 
 type WASDParams = { animation: string, x: number, y: number };
+
+const norm = <T extends { x: number, y: number }>(blob: T): T => {
+
+  const { x, y } = blob;
+
+  if (x === 0) return { ...blob, y: Math.sign(y) * speed };
+  if (y === 0) return { ...blob, x: Math.sign(x) * speed };
+
+  const ratio = x * x / (y * y);
+
+  const newX = Math.sqrt(speed * speed / (1 + ratio)) * Math.sign(x);
+  const newY = Math.sqrt(speed * speed / (1 + 1 / ratio)) * Math.sign(y);
+
+  const result = { ...blob, x: newX, y: newY };
+  return result;
+}
 
 const getAnimationXYForJoystick = (): WASDParams => {
   console.log("getAnimationXYForJoystick");
@@ -13,9 +27,8 @@ const getAnimationXYForJoystick = (): WASDParams => {
   // make the joystick feel stiff
   const powerToApply = Math.min(1, power * 2);
 
-  // Adjusting the angle to match the isometric projection
-  const angleAdjusted = angle + 45;
-  const angleRad = angleAdjusted * Math.PI / 180;
+  // convert the angle to radians
+  const angleRad = angle * Math.PI / 180;
 
   // x,y components of the vector
   let cosAngle = Math.cos(angleRad);
@@ -47,24 +60,21 @@ const getAnimationXYForJoystick = (): WASDParams => {
   return { x, y, animation };
 }
 
-export const WASDController: ControllerMap<"move" | "shoot" | "head", WASDParams | { mouse: { x: number, y: number }}> = {
+export const WASDController: ControllerMap<"move" | "shoot" | "head", WASDParams | { mouse: { x: number, y: number } }> = {
   keyboard: {
     "a,d": () => null, "w,s": () => null,
-    "w,a": () => ({ action: "move", params: { animation: "ul", x: -speedDiagonal, y: -speedDiagonal } }),
-    "w,d": () => ({ action: "move", params: { animation: "ur", x: speedDiagonal, y: -speedDiagonal } }),
-    "s,a": () => ({ action: "move", params: { animation: "dl", x: -speedDiagonal, y: speedDiagonal } }),
-    "s,d": () => ({ action: "move", params: { animation: "dr", x: speedDiagonal, y: speedDiagonal } }),
-    "w": () => ({ action: "move", params: { animation: "u", x: 0, y: -speed } }),
-    "s": () => ({ action: "move", params: { animation: "d", x: 0, y: speed } }),
-    "a": () => ({ action: "move", params: { animation: "l", x: -speed, y: 0 } }),
-    "d": () => ({ action: "move", params: { animation: "r", x: speed, y: 0 } }),
+    "w,a": () => ({ action: "move", params: norm({ animation: "ul", x: -1, y: -2 }) }),
+    "w,d": () => ({ action: "move", params: norm({ animation: "ur", x: 1, y: -2 }) }),
+    "s,a": () => ({ action: "move", params: norm({ animation: "dl", x: -1, y: 2 }) }),
+    "s,d": () => ({ action: "move", params: norm({ animation: "dr", x: 1, y: 2 }) }),
+    "w": () => ({ action: "move", params: norm({ animation: "u", x: 0, y: -1 }) }),
+    "a": () => ({ action: "move", params: norm({ animation: "l", x: -1, y: 0 }) }),
+    "d": () => ({ action: "move", params: norm({ animation: "r", x: 1, y: 0 }) }),
+    "s": () => ({ action: "move", params: norm({ animation: "d", x: 0, y: 1 }) }),
     "mb1": ({ mouse }) => ({ action: "shoot", params: { mouse } }),
-    "mb2": ({ mouse, entity } ) => {
+    "mb2": ({ mouse, entity }) => {
       const { position, renderable } = entity.components;
       if (!position || !renderable) return null;
-
-      // set the heading
-      // position.setHeading({ x: mouse.x, y: mouse.y });
 
       const dx = mouse.x - position.data.x;
       const dy = mouse.y - position.data.y;
