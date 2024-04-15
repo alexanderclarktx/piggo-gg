@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, physics, worldToScreen } from "@piggo-gg/core";
+import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, physics } from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
 // DebugSystem adds visual debug information to renderered entities
@@ -72,20 +72,34 @@ export const DebugSystem = ClientSystemBuilder({
       // debug bounds
       const debugBounds = DebugBounds({ debugRenderable: renderable });
 
+      const lineToHeading = new Renderable({
+        dynamic: (c: Graphics) => {
+          if (position.data.headingX || position.data.headingY) {
+            c.clear().setStrokeStyle({ width: 1, color: 0xffffff });
+            c.moveTo(0, 0).lineTo(position.data.headingX - position.data.x, position.data.headingY - position.data.y);
+            c.stroke();
+          } else {
+            c.clear();
+          }
+        },
+        zIndex: 5,
+        container: async () => new Graphics()
+      });
+
       const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
           position: new Position(),
           renderable: new Renderable({
             zIndex: 4,
-            children: async () => [textBox, debugBounds]
+            children: async () => [textBox, debugBounds, lineToHeading]
           })
         }
       });
 
       debugEntitiesPerEntity[entity.id].push(debugEntity);
       world.addEntity(debugEntity);
-      debugRenderables.push(textBox, debugBounds);
+      debugRenderables.push(textBox, debugBounds, lineToHeading);
     }
 
     const drawFpsText = () => {
@@ -107,8 +121,8 @@ export const DebugSystem = ClientSystemBuilder({
             const { vertices } = physics.debugRender();
 
             for (let i = 0; i < vertices.length; i += 4) {
-              const one = worldToScreen({ x: vertices[i], y: vertices[i + 1] });
-              const two = worldToScreen({ x: vertices[i + 2], y: vertices[i + 3] });
+              const one = { x: vertices[i], y: vertices[i + 1] };
+              const two = { x: vertices[i + 2], y: vertices[i + 3] };
               c.moveTo(one.x, one.y);
               c.lineTo(two.x, two.y);
             }

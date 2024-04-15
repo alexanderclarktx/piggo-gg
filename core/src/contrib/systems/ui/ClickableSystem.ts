@@ -6,7 +6,7 @@ export type Click = { x: number, y: number };
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
-  init: ({ world, renderer, mode }) => {
+  init: ({ world, renderer }) => {
     if (!renderer) throw new Error("ClickableSystem requires a renderer");
 
     let bufferClick: Click[] = [];
@@ -28,16 +28,6 @@ export const ClickableSystem = ClientSystemBuilder({
           }
           if (position.data.y < 0) {
             bounds.y = renderer.props.canvas.height + position.data.y;
-          }
-
-          if (mode === "isometric" && !position.screenFixed) {
-            const screenXY = position.toScreenXY();
-            bounds = {
-              // TODO clickable should define offset
-              x: screenXY.x - clickable.width / 2,
-              y: screenXY.y - clickable.height / 2,
-              w: clickable.width, h: clickable.height
-            }
           }
 
           // check bounds

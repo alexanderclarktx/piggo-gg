@@ -20,7 +20,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     if (e2.id.startsWith("ball") && ((world.tick - data.lastScored) > 100)) {
       data.goals += 1;
       data.lastScored = world.tick;
-      e2.components.position.setPosition({ x: 370, y: 320 }).setVelocity({ x: 0, y: 0 });
+      e2.components.position.setPosition({ x: 50, y: 350 }).setVelocity({ x: 0, y: 0 });
     }
   }
 
@@ -31,10 +31,10 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
 
     // draw goal
     g.poly([
-      -2, -width / 2,
-      2, -width / 2,
-      2, width / 2,
-      -2, width / 2
+      -2, -width,
+      2, -width,
+      2, width,
+      -2, width
     ]).fill({ color, alpha: 0.9 });
 
     // goal count
@@ -60,8 +60,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       collider: new Collider({
         shape: "cuboid",
         length: 1,
-        width: width / 4 * 3,
-        rotation: Math.PI * 3 / 4,
+        width: width,
         sensor: sensor
       }),
       renderable: new Renderable({
@@ -69,7 +68,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
           const t = c.children[1] as Text;
           if (t) t.text = `${data.goals}`
         },
-        zIndex: 2,
+        zIndex: 3,
         container: render
       })
     }

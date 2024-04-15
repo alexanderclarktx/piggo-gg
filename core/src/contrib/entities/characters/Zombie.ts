@@ -7,7 +7,7 @@ export type ZombieProps = {
   positionProps?: PositionProps
 }
 
-export const Zombie = ({ id, color, positionProps = { renderMode: "isometric", x: 100, y: 100 } }: ZombieProps = {}) => Entity({
+export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombieProps = {}) => Entity({
   id: id ?? `zombie-${Math.round(Math.random() * 100)}`,
   components: {
     position: new Position({ ...positionProps, velocityResets: 1 }),

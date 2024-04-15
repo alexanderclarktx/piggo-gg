@@ -14,7 +14,6 @@ export type World = {
   lastTick: DOMHighResTimeStamp
   ms: number
   renderer: Renderer | undefined
-  renderMode: "cartesian" | "isometric"
   runtimeMode: "client" | "server"
   systems: Record<string, System>
   tick: number
@@ -33,19 +32,18 @@ export type World = {
   setGame: (game: GameBuilder) => void
 }
 
-export type WorldBuilder = (_: Omit<WorldProps, "renderMode">) => World;
+export type WorldBuilder = (_: WorldProps) => World;
 
 export type WorldProps = {
   clientPlayerId?: string | undefined
   commands?: Command[]
   games?: GameBuilder[]
   renderer?: Renderer | undefined
-  renderMode: "cartesian" | "isometric"
   runtimeMode: "client" | "server"
 }
 
 // World manages all runtime state
-export const World = ({ clientPlayerId, commands, games, renderer, renderMode, runtimeMode }: WorldProps): World => {
+export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
@@ -72,7 +70,6 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
     lastTick: 0,
     ms: 0,
     renderer,
-    renderMode,
     runtimeMode,
     systems: {},
     tick: 0,
@@ -117,7 +114,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, renderMode, r
     addSystemBuilders: (systemBuilders: SystemBuilder[]) => {
       systemBuilders.forEach((systemBuilder) => {
         if (!world.systems[systemBuilder.id]) {
-          const system = systemBuilder.init({ world, renderer: renderer, clientPlayerId: world.clientPlayerId, mode: renderMode });
+          const system = systemBuilder.init({ world, renderer: renderer, clientPlayerId: world.clientPlayerId });
           if (system) world.addSystems([system]);
         }
       })
