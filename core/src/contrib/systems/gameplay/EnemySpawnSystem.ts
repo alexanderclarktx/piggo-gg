@@ -61,7 +61,13 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
     return {
       id: "EnemySpawnSystem",
       onTick,
-      data
+      data,
+      onRollback: () => {
+        Object.keys(enemiesInWave).forEach((id) => {
+          world.removeEntity(id);
+          delete enemiesInWave[id];
+        });
+      }
     }
   }
 });

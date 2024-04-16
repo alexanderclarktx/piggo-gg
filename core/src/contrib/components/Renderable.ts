@@ -31,6 +31,7 @@ export class Renderable extends Component<"renderable"> {
 
   id: string;
   props: RenderableProps;
+  position: { x: number; y: number };
   c: Container = new Container();
   r: Renderable | undefined;
   renderer: Renderer | undefined;
@@ -39,6 +40,7 @@ export class Renderable extends Component<"renderable"> {
   constructor(props: RenderableProps) {
     super();
     this.animations = props.animations ?? {}
+    this.position = props.position ?? { x: 0, y: 0 }
     this.props = { ...props, rotates: props.rotates ?? false }
   }
 
@@ -82,6 +84,8 @@ export class Renderable extends Component<"renderable"> {
       });
     }
 
+    if (setup) await setup(this, renderer);
+
     // set position
     if (position) this.c.position.set(position.x, position.y);
 
@@ -99,8 +103,6 @@ export class Renderable extends Component<"renderable"> {
     this.c.sortableChildren = true;
     this.c.alpha = 1;
     this.c.children.forEach((child) => { child.alpha = 1 });
-
-    if (setup) await setup(this, renderer);
 
     if (this.animations) this.setAnimationColor(color ?? 0xffffff)
   }

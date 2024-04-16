@@ -1,8 +1,8 @@
-import { Action, Actions, Collider, Controlled, Controller, Debug, Entity, Networked, Position, Projectile, Renderable, WASDActionMap, WASDController } from "@piggo-gg/core";
+import { Action, Actions, Collider, Controlled, Controller, Debug, Entity, Guns, Networked, Pistol, Position, Projectile, Renderable, WASDActionMap, WASDController } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number) => {
-  const skelly = Entity({
+  const skelly = Entity<Position | Guns>({
     id: id,
     components: {
       debug: new Debug(),
@@ -10,29 +10,30 @@ export const Skelly = (id: string, tint?: number) => {
       networked: new Networked({ isNetworked: true }),
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
+      guns: Pistol,
       controller: new Controller(WASDController),
       actions: new Actions({
         ...WASDActionMap,
         "shoot": Action<{ mouse: { x: number, y: number } }>(({ world, params }) => {
           if (world.clientPlayerId) {
 
-            const skellyPos = skelly.components.position!.data;
-            const mousePos = params.mouse;
+            const { x, y } = skelly.components.position.data;
+            const { speed } = skelly.components.guns
 
-            // calculate velocity so it moves from skelly toward mouse (constant speed)
-            let Vx = mousePos.x - skellyPos.x;
-            let Vy = mousePos.y - skellyPos.y;
-            Vx = Vx / Math.sqrt(Vx * Vx + Vy * Vy) * 200;
-            Vy = Vy / Math.sqrt(Vx * Vx + Vy * Vy) * 200;
+            // move bullet toward mouse
+            let Vx = params.mouse.x - x;
+            let Vy = params.mouse.y - y;
+            Vx = Vx / Math.sqrt(Vx * Vx + Vy * Vy) * speed;
+            Vy = Vy / Math.sqrt(Vx * Vx + Vy * Vy) * speed;
 
-            // calculate offset so projectile spawns at skelly's feet toward mouse
-            const offset = 20;
+            // spawn bullet at skelly's feet
+            const offset = 30;
             const Xoffset = offset * (Vx / Math.sqrt(Vx * Vx + Vy * Vy));
             const Yoffset = offset * (Vy / Math.sqrt(Vx * Vx + Vy * Vy));
 
-            const pos = { x: skellyPos.x + Xoffset, y: skellyPos.y + Yoffset, Vx, Vy };
+            const pos = { x: x + Xoffset, y: y + Yoffset, Vx, Vy };
 
-            world.addEntity(Projectile({ radius: 5, pos }));
+            world.addEntity(Projectile({ radius: 4, pos }));
           }
         })
       }),

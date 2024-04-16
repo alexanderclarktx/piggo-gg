@@ -50,7 +50,10 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.c.rotation = position.data.rotation;
           }
 
-          renderable.c.position.set(position.data.x, position.data.y);
+          renderable.c.position.set(
+            position.data.x + renderable.position.x,
+            position.data.y + renderable.position.y
+          );
           cachedEntityPositions[entity.id] = position;
         }
 
@@ -108,7 +111,10 @@ export const RenderSystem = ClientSystemBuilder({
       const { renderable, position } = entity.components;
 
       if (position) {
-        renderable.c.position.set(position.data.x, position.data.y);
+        renderable.c.position.set(
+          position.data.x + renderable.position.x,
+          position.data.y + renderable.position.y
+        );
         cachedEntityPositions[entity.id] = position;
       } else {
         renderable.c.position.set(0, 0);

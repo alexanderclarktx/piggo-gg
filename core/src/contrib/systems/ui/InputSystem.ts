@@ -1,8 +1,9 @@
 import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, World, currentJoystickPosition } from "@piggo-gg/core";
 
-// TODO these are dependencies of Chat
+// TODO these are global dependencies
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
+export var mouse = { x: 0, y: 0 };
 
 type KeyMouse = { key: string, mouse: { x: number, y: number } };
 
@@ -27,7 +28,6 @@ export const InputSystem = ClientSystemBuilder({
 
     let bufferedDown = KeyBuffer();
     let backspaceOn = false;
-    let mouse = { x: 0, y: 0 };
     let mouseEvent = { x: 0, y: 0 };
 
     renderer?.app.canvas.addEventListener('mousemove', function (event) {

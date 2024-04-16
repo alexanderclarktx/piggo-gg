@@ -24,6 +24,8 @@ export const isometricToWorld = ({ x, y }: { x: number, y: number }): { x: numbe
 export class Position extends Component<"position"> {
   type: "position" = "position";
 
+  ortho: number;
+
   override data = {
     x: 0,
     y: 0,
@@ -58,6 +60,11 @@ export class Position extends Component<"position"> {
   setVelocity = ({ x, y }: { x: number, y: number }) => {
     this.data.velocityX = x;
     this.data.velocityY = y;
+
+    if (x || y) {
+      this.ortho = Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8;
+    }
+
     return this;
   }
 
@@ -73,8 +80,7 @@ export class Position extends Component<"position"> {
     const Vx = Math.cos(angle) * 140;
     const Vy = Math.sin(angle) * 140;
 
-    this.data.velocityX = Vx;
-    this.data.velocityY = Vy;
+    this.setVelocity({ x: Vx, y: Vy });
 
     return this;
   }
