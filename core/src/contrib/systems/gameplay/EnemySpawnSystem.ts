@@ -4,9 +4,7 @@ const spawnLocations: PositionProps[] = [
   { x: 100, y: 100 }, { x: 100, y: 600 },
   { x: 200, y: 200 }, { x: 200, y: 500 },
   { x: 300, y: 300 }, { x: 300, y: 400 },
-  { x: 400, y: 400 }, { x: 400, y: 300 },
-  { x: 500, y: 500 }, { x: 500, y: 200 },
-  { x: 600, y: 600 }, { x: 600, y: 100 }
+  { x: 400, y: 400 }, { x: 400, y: 300 }
 ]
 
 // EnemySpawnSystem spawns waves of enemies

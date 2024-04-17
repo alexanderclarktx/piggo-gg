@@ -30,17 +30,21 @@ export const InputSystem = ClientSystemBuilder({
     let backspaceOn = false;
     let mouseEvent = { x: 0, y: 0 };
 
-    renderer?.app.canvas.addEventListener('mousemove', function (event) {
+    renderer?.app.canvas.addEventListener('pointerdown', ()  =>{
+      if (!currentJoystickPosition.active) bufferedDown.push({ key: "mb1", mouse });
+    });
+
+    renderer?.app.canvas.addEventListener('mousemove', (event) => {
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
     });
 
-    renderer?.app.canvas.addEventListener('mousedown', function (event) {
+    renderer?.app.canvas.addEventListener('mousedown', (event) => {
       const key = event.button === 0 ? "mb1" : "mb2";
       bufferedDown.push({ key, mouse });
     });
 
-    renderer?.app.canvas.addEventListener('mouseup', function (event) {
+    renderer?.app.canvas.addEventListener('mouseup', (event) => {
       const key = event.button === 0 ? "mb1" : "mb2";
       bufferedDown.remove(key);
     });
