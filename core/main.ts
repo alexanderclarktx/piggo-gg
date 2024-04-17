@@ -62,6 +62,7 @@ export * from "./src/contrib/components/Data";
 export * from "./src/contrib/components/Controller";
 export * from "./src/contrib/components/Collider";
 export * from "./src/contrib/components/Clickable";
+export * from "./src/contrib/components/Gun";
 export * from "./src/contrib/components/Actions";
 export * from "./src/contrib/components/actions/ZombieMovement";
 export * from "./src/contrib/components/actions/WASDMovement";

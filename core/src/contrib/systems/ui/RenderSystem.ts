@@ -7,7 +7,7 @@ export const RenderSystem = ClientSystemBuilder({
     if (!renderer) throw new Error("RendererSystem requires a renderer");
 
     let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
-    let cachedEntityPositions: Record<string, Position> = {};
+    let cache: Record<string, Position> = {};
     let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
 
     renderer.app.ticker.add(() => {
@@ -45,13 +45,17 @@ export const RenderSystem = ClientSystemBuilder({
         }
 
         // update renderable if position changed
-        if (position && cachedEntityPositions[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
+        if (position && cache[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
           if (renderable.props.rotates) {
             renderable.c.rotation = position.data.rotation;
           }
 
-          renderable.c.position.set(position.data.x, position.data.y);
-          cachedEntityPositions[entity.id] = position;
+          renderable.c.position.set(
+            position.data.x + renderable.position.x,
+            position.data.y + renderable.position.y
+          );
+
+          cache[entity.id] = position;
         }
 
         // handle animations
@@ -86,14 +90,14 @@ export const RenderSystem = ClientSystemBuilder({
         }
       });
 
-      // sort cachedEntityPositions by position (closeness to camera)
-      const sortedEntityPositions = Object.keys(cachedEntityPositions).sort((a, b) => {
-        const yDiff = cachedEntityPositions[a].data.y - cachedEntityPositions[b].data.y;
+      // sort cache by position (closeness to camera)
+      const sortedEntityPositions = Object.keys(cache).sort((a, b) => {
+        const yDiff = cache[a].data.y - cache[b].data.y;
         return yDiff;
       });
 
       // set zIndex
-      Object.keys(cachedEntityPositions).forEach((entityId) => {
+      Object.keys(cache).forEach((entityId) => {
         const entity = world.entities[entityId];
         if (entity) {
           const renderable = entity.components.renderable;
@@ -108,8 +112,11 @@ export const RenderSystem = ClientSystemBuilder({
       const { renderable, position } = entity.components;
 
       if (position) {
-        renderable.c.position.set(position.data.x, position.data.y);
-        cachedEntityPositions[entity.id] = position;
+        renderable.c.position.set(
+          position.data.x + renderable.position.x,
+          position.data.y + renderable.position.y
+        );
+        cache[entity.id] = position;
       } else {
         renderable.c.position.set(0, 0);
       }

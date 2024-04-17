@@ -1,7 +1,7 @@
 import { Entity, Position, Renderable } from "@piggo-gg/core";
 import { Container, FederatedPointerEvent, Graphics, Point, Sprite } from "pixi.js";
 
-export const currentJoystickPosition = { angle: 0, power: 0 }
+export const currentJoystickPosition = { angle: 0, power: 0, active: false }
 
 export const Joystick = (): Entity => {
   const joystick = Entity<Renderable | Position>({
@@ -21,6 +21,10 @@ export const Joystick = (): Entity => {
             onEnd: () => {
               currentJoystickPosition.power = 0;
               currentJoystickPosition.angle = 0;
+              currentJoystickPosition.active = false;
+            },
+            onStart: () => {
+              currentJoystickPosition.active = true;
             }
           })
         }

@@ -12,13 +12,13 @@ export const HealthBar = ({ health }: HealthBarProps): Renderable => {
 
   const draw = (g: Graphics) => {
     // gold outline
-    g.setStrokeStyle({ width: 1, color: 0xffd700, alpha: 1 });
+    g.setStrokeStyle({ width: 2, color: 0xffd700, alpha: 1 });
     g.rect(-15, -30, 30, 5);
     g.stroke();
 
     // red length proportional to percent health
     const length = 30 * (health.data.health / health.data.maxHealth);
-    g.rect(-15, -30, length, 5);
+    g.rect(-15, -29, length, 3);
     g.fill({ color: 0xff0000, alpha: 0.9 });
   }
 

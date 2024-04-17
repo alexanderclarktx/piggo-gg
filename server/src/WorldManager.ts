@@ -18,7 +18,7 @@ export type WorldManagerProps = {
 
 export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
 
-  const world = IsometricWorld({ runtimeMode: "server", games: [Soccer, Legends, Strike] });
+  const world = IsometricWorld({ runtimeMode: "server", games: [Strike, Soccer, Legends] });
   const latestClientMessages: Record<string, { td: DelayTickData, latency: number }[]> = {};
 
   const handleClose = (ws: WS) => {

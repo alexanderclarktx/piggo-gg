@@ -61,10 +61,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
         }
 
         // update body position
-        bodies[entity.id].setTranslation({
-          x: Math.round(position.data.x * 100) / 100,
-          y: Math.round(position.data.y * 100) / 100
-        }, true);
+        bodies[entity.id].setTranslation({ x: position.data.x, y: position.data.y }, true);
 
         // update body velocity
         bodies[entity.id].setLinvel({

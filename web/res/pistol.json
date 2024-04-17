@@ -1,0 +1,17 @@
+{
+  "frames": {
+    "pistol0": { "frame": { "x": 116, "y": 6, "w": 8, "h": 6 } },
+    "pistol1": { "frame": { "x": 7, "y": 6, "w": 4, "h": 6 } },
+    "pistol2": { "frame": { "x": 24, "y": 5, "w": 1, "h": 6 } },
+    "pistol3": { "frame": { "x": 37, "y": 6, "w": 4, "h": 6 } },
+    "pistol4": { "frame": { "x": 52, "y": 6, "w": 8, "h": 6 } },
+    "pistol5": { "frame": { "x": 69, "y": 6, "w": 4, "h": 6 } },
+    "pistol6": { "frame": { "x": 87, "y": 5, "w": 1, "h": 6 } },
+    "pistol7": { "frame": { "x": 102, "y": 6, "w": 4, "h": 6 } }
+  },
+  "meta": {
+    "image": "pistol.png",
+    "size": { "w": 128, "h": 16 },
+    "scale": "1"
+  }
+}

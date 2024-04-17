@@ -1,8 +1,9 @@
 import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, World, currentJoystickPosition } from "@piggo-gg/core";
 
-// TODO these are dependencies of Chat
+// TODO these are global dependencies
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
+export var mouse = { x: 0, y: 0 };
 
 type KeyMouse = { key: string, mouse: { x: number, y: number } };
 
@@ -27,20 +28,23 @@ export const InputSystem = ClientSystemBuilder({
 
     let bufferedDown = KeyBuffer();
     let backspaceOn = false;
-    let mouse = { x: 0, y: 0 };
     let mouseEvent = { x: 0, y: 0 };
 
-    renderer?.app.canvas.addEventListener('mousemove', function (event) {
+    renderer?.app.canvas.addEventListener('pointerdown', ()  =>{
+      if (!currentJoystickPosition.active) bufferedDown.push({ key: "mb1", mouse });
+    });
+
+    renderer?.app.canvas.addEventListener('mousemove', (event) => {
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
     });
 
-    renderer?.app.canvas.addEventListener('mousedown', function (event) {
+    renderer?.app.canvas.addEventListener('mousedown', (event) => {
       const key = event.button === 0 ? "mb1" : "mb2";
       bufferedDown.push({ key, mouse });
     });
 
-    renderer?.app.canvas.addEventListener('mouseup', function (event) {
+    renderer?.app.canvas.addEventListener('mouseup', (event) => {
       const key = event.button === 0 ? "mb1" : "mb2";
       bufferedDown.remove(key);
     });

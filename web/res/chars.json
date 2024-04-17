@@ -25,7 +25,6 @@
     "ul2": { "frame": { "x": 112, "y": 44, "w": 15, "h": 20 } },
     "ul3": { "frame": { "x": 112, "y": 68, "w": 15, "h": 20 } }
   },
-
   "meta": {
     "image": "chars.png",
     "format": "RGBA8888",

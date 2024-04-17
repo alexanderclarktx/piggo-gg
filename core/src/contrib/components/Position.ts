@@ -6,7 +6,6 @@ export type PositionProps = {
   velocityX?: number
   velocityY?: number
   velocityResets?: number
-  offset?: "world" | "camera"
   screenFixed?: boolean
 }
 
@@ -24,6 +23,8 @@ export const isometricToWorld = ({ x, y }: { x: number, y: number }): { x: numbe
 export class Position extends Component<"position"> {
   type: "position" = "position";
 
+  ortho = 0; // TODO use this to set character sprite animations
+
   override data = {
     x: 0,
     y: 0,
@@ -35,16 +36,14 @@ export class Position extends Component<"position"> {
     velocityResets: 0
   }
 
-  offset: "world" | "camera";
   screenFixed: boolean;
 
-  constructor({ x, y, velocityX, velocityY, offset, screenFixed, velocityResets }: PositionProps = {}) {
+  constructor({ x, y, velocityX, velocityY, screenFixed, velocityResets }: PositionProps = {}) {
     super();
     this.data.x = x ?? 0;
     this.data.y = y ?? 0;
     this.data.velocityX = velocityX ?? 0;
     this.data.velocityY = velocityY ?? 0;
-    this.offset = offset ?? "world";
     this.screenFixed = screenFixed ?? false;
     this.data.velocityResets = velocityResets ?? 0;
   }
@@ -58,6 +57,9 @@ export class Position extends Component<"position"> {
   setVelocity = ({ x, y }: { x: number, y: number }) => {
     this.data.velocityX = x;
     this.data.velocityY = y;
+
+    if (x || y) this.ortho = Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8;
+
     return this;
   }
 
@@ -73,8 +75,7 @@ export class Position extends Component<"position"> {
     const Vx = Math.cos(angle) * 140;
     const Vy = Math.sin(angle) * 140;
 
-    this.data.velocityX = Vx;
-    this.data.velocityY = Vy;
+    this.setVelocity({ x: Vx, y: Vy });
 
     return this;
   }
