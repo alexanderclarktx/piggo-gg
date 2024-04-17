@@ -18,8 +18,11 @@ export const GunSystem: SystemBuilder<"gun"> = ({
   id: "gun",
   init: ({ world }) => {
 
-    const draw = (entity: Entity<Gun | Position>): Entity<Renderable | Position> => Entity({
-      id: entity.id + `${entity.id}-gun-hud`,
+    let playerToGun: Record<string, number> = {};
+    let gunToRendered: Record<number, Entity<Renderable | Position>> = {};
+
+    const draw = (player: Entity<Gun | Position>, gunId: number): Entity<Renderable | Position> => Entity({
+      id: `${player.id}-gun${gunId}`,
       components: {
         renderable: new Renderable({
           scaleMode: "nearest",
@@ -30,7 +33,6 @@ export const GunSystem: SystemBuilder<"gun"> = ({
           dynamic: (_, r, e: Entity<Gun | Position>) => {
             const { position } = e.components;
 
-            // const mousePos = mouse;
             const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x);
             const ortho = Math.round((angle + Math.PI) / (Math.PI / 4)) % 8;
 
@@ -58,22 +60,30 @@ export const GunSystem: SystemBuilder<"gun"> = ({
             r.bufferedAnimation = "0";
           }
         }),
-        position: entity.components.position
+        position: player.components.position
       }
     });
-
-
-    let renderedGun: Record<string, Entity<Renderable | Position>> = {};
 
     return {
       id: "gun",
       onTick: (entities: Entity<Gun | Position>[]) => {
         entities.forEach((entity) => {
-          if (!renderedGun[entity.id]) {
-            const gun = draw(entity);
-            world.addEntity(gun);
-            renderedGun[entity.id] = gun;
+
+          const { gun } = entity.components;
+
+          // clean up old guns
+          if (entity.components.gun.data.id !== playerToGun[entity.id]) {
+            world.removeEntity(`${entity.id}-gun${playerToGun[entity.id]}`);
+            delete playerToGun[entity.id];
           }
+
+          // draw new guns
+          if (!playerToGun[entity.id]) {
+            const r = draw(entity, gun.data.id);
+            world.addEntity(r);
+            playerToGun[entity.id] = gun.data.id;
+            gunToRendered[gun.data.id] = r;
+          };
         });
       },
       query: ["gun"]

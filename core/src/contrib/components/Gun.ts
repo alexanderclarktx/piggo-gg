@@ -17,9 +17,10 @@ export class Gun extends Component<"gun"> {
   fireRate: number;
   clipSize: number;
   reloadTime: number;
+  lastShot = 0;
 
   override data = {
-    lastShot: 0
+    id: Math.round(Math.random() * 100000)
   }
 
   constructor(props: GunProps) {
@@ -33,11 +34,11 @@ export class Gun extends Component<"gun"> {
   }
 
   shoot = () => {
-    this.data.lastShot = Date.now();
+    this.lastShot = Date.now();
   }
 
   canShoot = () => {
-    const canShoot = Date.now() - this.data.lastShot > 10000 / this.fireRate;
+    const canShoot = Date.now() - this.lastShot > 10000 / this.fireRate;
     return canShoot;
   }
 }
