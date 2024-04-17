@@ -6,7 +6,7 @@ export const Skelly = (id: string, tint?: number) => {
     id: id,
     components: {
       debug: new Debug(),
-      position: new Position({ x: 300, y: 300, velocityResets: 1 }),
+      position: new Position({ x: 151, y: 300, velocityResets: 1 }),
       networked: new Networked({ isNetworked: true }),
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
@@ -15,7 +15,8 @@ export const Skelly = (id: string, tint?: number) => {
       actions: new Actions({
         ...WASDActionMap,
         "shoot": Action<{ mouse: { x: number, y: number } }>(({ world, params }) => {
-          if (world.clientPlayerId) {
+          if (world.clientPlayerId && skelly.components.guns.canShoot()) {
+            skelly.components.guns.shoot();
 
             const { x, y } = skelly.components.position.data;
             const { speed } = skelly.components.guns
@@ -33,7 +34,7 @@ export const Skelly = (id: string, tint?: number) => {
 
             const pos = { x: x + Xoffset, y: y + Yoffset, Vx, Vy };
 
-            world.addEntity(Projectile({ radius: 4, pos }));
+            world.addEntity(Projectile({ radius: 4, pos }), 2000);
           }
         })
       }),

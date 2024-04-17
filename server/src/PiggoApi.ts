@@ -1,3 +1,11 @@
+// export const window = {
+//   innerHeight: 1920,
+// }
+
+export let window = {
+  innerHeight: 1920,
+}
+
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 

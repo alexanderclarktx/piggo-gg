@@ -8,7 +8,7 @@ export type ProjectileProps = {
 
 export const Projectile = ({ radius, pos }: ProjectileProps) => {
   const projectile = Entity({
-    id: `projectile-${Math.trunc(Math.random() * 1000)}`,
+    id: `projectile-${Math.trunc(Math.random() * 1000000)}`,
     components: {
       position: new Position(pos ? { x: pos.x, y: pos.y, velocityX: pos.Vx, velocityY: pos.Vy } : { x: 200, y: 200, velocityX: 50, velocityY: 0 }),
       collider: new Collider({
@@ -17,8 +17,8 @@ export const Projectile = ({ radius, pos }: ProjectileProps) => {
         sensor: (e2: Entity<Position>, world: World) => {
           if (e2.components.health) {
             e2.components.health.data.health -= 25;
+            world.removeEntity(projectile.id);
           }
-          world.removeEntity(projectile.id);
         }
       }),
       renderable: new Renderable({

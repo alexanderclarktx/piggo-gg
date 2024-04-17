@@ -21,7 +21,7 @@ export type World = {
   tickFlag: "green" | "red"
   tickrate: number
   addEntities: (entities: Entity[]) => void
-  addEntity: (entity: Entity) => string
+  addEntity: (entity: Entity, timeout?: number) => string
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
@@ -76,10 +76,13 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     tickFaster: false,
     tickFlag: "green",
     tickrate: 25,
-    addEntity: (entity: Entity) => {
+    addEntity: (entity: Entity, timeout?: number) => {
       const oldEntity = world.entities[entity.id];
       if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup();
       world.entities[entity.id] = entity;
+
+      if (timeout) setTimeout(() => world.removeEntity(entity.id), timeout);
+
       return entity.id;
     },
     addEntities: (entities: Entity[]) => {

@@ -1,4 +1,5 @@
-import { Background, GameBuilder, Health, HealthBarSystem, PlayerSpawnSystem, FloorTiles, Zombie, EnemySpawnSystem } from "@piggo-gg/core";
+import { Background, EnemySpawnSystem, FloorTiles, GameBuilder, HealthBarSystem, PlayerSpawnSystem } from "@piggo-gg/core";
+import { GunsSystem } from "./systems/GunsSystem";
 
 export const Strike: GameBuilder<"strike"> = ({
   id: "strike",
@@ -8,6 +9,6 @@ export const Strike: GameBuilder<"strike"> = ({
       Background({ img: "stars.png" }),
       FloorTiles({ rows: 50, cols: 50 }),
     ],
-    systems: [PlayerSpawnSystem, HealthBarSystem, EnemySpawnSystem]
+    systems: [PlayerSpawnSystem, HealthBarSystem, EnemySpawnSystem, GunsSystem],
   })
 })

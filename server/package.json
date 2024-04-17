@@ -6,6 +6,7 @@
     "dev": "bun --watch src/PiggoApi.ts"
   },
   "dependencies": {
+    "@happy-dom/global-registrator": "14.7.1",
     "@piggo-gg/games": "1.0.0"
   },
   "devDependencies": {

@@ -31,7 +31,7 @@ export class Renderable extends Component<"renderable"> {
 
   id: string;
   props: RenderableProps;
-  position: { x: number; y: number };
+  position: { x: number; y: number } = { x: 0, y: 0 };
   c: Container = new Container();
   r: Renderable | undefined;
   renderer: Renderer | undefined;
