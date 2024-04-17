@@ -1,10 +1,10 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Data, Debug, Guns, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Data, Debug, Gun, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-gg/core";
 
 export type ComponentTypes =
   Actions | Clickable | Collider |
   Controller | Controlled | Controlling |
   Data | Debug | Health | Name | Networked |
-  NPC | Player | Position | Renderable | Guns
+  NPC | Player | Position | Renderable | Gun
 
 // 个 gè (one of)
 // a Component is an atomic unit of data that is attached to an entity

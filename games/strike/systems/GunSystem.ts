@@ -1,4 +1,4 @@
-import { Entity, Guns, Position, Renderable, SystemBuilder, mouse } from "@piggo-gg/core";
+import { Entity, Gun, Position, Renderable, SystemBuilder, mouse } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 import { OutlineFilter } from "pixi-filters";
 
@@ -14,11 +14,11 @@ const pz = [
   { x: -15, y: 15 }
 ]
 
-export const GunsSystem: SystemBuilder<"guns"> = ({
-  id: "guns",
+export const GunSystem: SystemBuilder<"gun"> = ({
+  id: "gun",
   init: ({ world }) => {
 
-    const draw = (entity: Entity<Guns | Position>): Entity<Renderable | Position> => Entity({
+    const draw = (entity: Entity<Gun | Position>): Entity<Renderable | Position> => Entity({
       id: entity.id + `${entity.id}-gun-hud`,
       components: {
         renderable: new Renderable({
@@ -27,7 +27,7 @@ export const GunsSystem: SystemBuilder<"guns"> = ({
           scale: 2.5,
           anchor: { x: 0.5, y: 0.5 },
           position: { x: 20, y: 0 },
-          dynamic: (_, r, e: Entity<Guns | Position>) => {
+          dynamic: (_, r, e: Entity<Gun | Position>) => {
             const { position } = e.components;
 
             // const mousePos = mouse;
@@ -38,7 +38,7 @@ export const GunsSystem: SystemBuilder<"guns"> = ({
             r.bufferedAnimation = ortho.toString();
           },
           setup: async (r: Renderable) => {
-            const textures = await r.loadTextures("guns.json");
+            const textures = await r.loadTextures("pistol.json");
 
             r.animations = {
               "0": new AnimatedSprite([textures["pistol0"]]),
@@ -63,20 +63,20 @@ export const GunsSystem: SystemBuilder<"guns"> = ({
     });
 
 
-    let renderedGuns: Record<string, Entity<Renderable | Position>> = {};
+    let renderedGun: Record<string, Entity<Renderable | Position>> = {};
 
     return {
-      id: "guns",
-      onTick: (entities: Entity<Guns | Position>[]) => {
+      id: "gun",
+      onTick: (entities: Entity<Gun | Position>[]) => {
         entities.forEach((entity) => {
-          if (!renderedGuns[entity.id]) {
+          if (!renderedGun[entity.id]) {
             const gun = draw(entity);
             world.addEntity(gun);
-            renderedGuns[entity.id] = gun;
+            renderedGun[entity.id] = gun;
           }
         });
       },
-      query: ["guns"]
+      query: ["gun"]
     }
   }
 })

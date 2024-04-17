@@ -1,6 +1,6 @@
 import { Component } from "@piggo-gg/core";
 
-export type GunsProps = {
+export type GunProps = {
   name: string;
   damage: number;
   speed: number;
@@ -9,8 +9,8 @@ export type GunsProps = {
   fireRate: number;
 }
 
-export class Guns extends Component<"guns"> {
-  type: "guns" = "guns";
+export class Gun extends Component<"gun"> {
+  type: "gun" = "gun";
   name: string;
   damage: number;
   speed: number;
@@ -22,7 +22,7 @@ export class Guns extends Component<"guns"> {
     lastShot: 0
   }
 
-  constructor(props: GunsProps) {
+  constructor(props: GunProps) {
     super();
     this.name = props.name;
     this.damage = props.damage;
@@ -38,12 +38,11 @@ export class Guns extends Component<"guns"> {
 
   canShoot = () => {
     const canShoot = Date.now() - this.data.lastShot > 10000 / this.fireRate;
-    console.log(canShoot, Date.now() - this.data.lastShot, 10000 / this.fireRate);
     return canShoot;
   }
 }
 
-export const Pistol = new Guns({ name: "pistol", damage: 10, speed: 200, clipSize: 7, reloadTime: 1, fireRate: 30 });
-export const Shotgun = new Guns({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2 });
-export const MachineGun = new Guns({ name: "machinegun", damage: 5, speed: 300, clipSize: 30, reloadTime: 3, fireRate: 10 });
-export const Sniper = new Guns({ name: "sniper", damage: 50, speed: 400, clipSize: 1, reloadTime: 2, fireRate: 2 });
+export const Pistol = new Gun({ name: "pistol", damage: 10, speed: 200, clipSize: 7, reloadTime: 1, fireRate: 30 });
+export const Shotgun = new Gun({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2 });
+export const MachineGun = new Gun({ name: "machinegun", damage: 5, speed: 300, clipSize: 30, reloadTime: 3, fireRate: 10 });
+export const Sniper = new Gun({ name: "sniper", damage: 50, speed: 400, clipSize: 1, reloadTime: 2, fireRate: 2 });

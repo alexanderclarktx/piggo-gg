@@ -1,8 +1,8 @@
-import { Action, Actions, Collider, Controlled, Controller, Debug, Entity, Guns, Networked, Pistol, Position, Projectile, Renderable, WASDActionMap, WASDController } from "@piggo-gg/core";
+import { Action, Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Projectile, Renderable, WASDActionMap, WASDController } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number) => {
-  const skelly = Entity<Position | Guns>({
+  const skelly = Entity<Position | Gun>({
     id: id,
     components: {
       debug: new Debug(),
@@ -10,16 +10,16 @@ export const Skelly = (id: string, tint?: number) => {
       networked: new Networked({ isNetworked: true }),
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
-      guns: Pistol,
+      gun: Pistol,
       controller: new Controller(WASDController),
       actions: new Actions({
         ...WASDActionMap,
         "shoot": Action<{ mouse: { x: number, y: number } }>(({ world, params }) => {
-          if (world.clientPlayerId && skelly.components.guns.canShoot()) {
-            skelly.components.guns.shoot();
+          if (world.clientPlayerId && skelly.components.gun.canShoot()) {
+            skelly.components.gun.shoot();
 
             const { x, y } = skelly.components.position.data;
-            const { speed } = skelly.components.guns
+            const { speed } = skelly.components.gun;
 
             // move bullet toward mouse
             let Vx = params.mouse.x - x;
@@ -27,7 +27,7 @@ export const Skelly = (id: string, tint?: number) => {
             Vx = Vx / Math.sqrt(Vx * Vx + Vy * Vy) * speed;
             Vy = Vy / Math.sqrt(Vx * Vx + Vy * Vy) * speed;
 
-            // spawn bullet at skelly's feet
+            // spawn bullet at offset
             const offset = 30;
             const Xoffset = offset * (Vx / Math.sqrt(Vx * Vx + Vy * Vy));
             const Yoffset = offset * (Vy / Math.sqrt(Vx * Vx + Vy * Vy));
