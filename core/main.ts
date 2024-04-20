@@ -40,6 +40,7 @@ export * from "./src/contrib/entities/objects/Projectile";
 export * from "./src/contrib/entities/terrain/Background";
 export * from "./src/contrib/entities/terrain/FloorTiles";
 export * from "./src/contrib/entities/terrain/Wall";
+export * from "./src/contrib/entities/ui/AbilityHUD";
 export * from "./src/contrib/entities/ui/Chat";
 export * from "./src/contrib/entities/ui/Cursor";
 export * from "./src/contrib/entities/ui/FpsText";
