@@ -4,7 +4,7 @@ const speed = 120;
 
 type WASDParams = { animation: string, x: number, y: number };
 
-const norm = <T extends { x: number, y: number }>(blob: T): T => {
+export const norm = <T extends { x: number, y: number }>(blob: T): T => {
 
   const { x, y } = blob;
 

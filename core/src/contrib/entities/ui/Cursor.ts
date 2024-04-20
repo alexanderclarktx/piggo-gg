@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
+import { Debug, Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export const Cursor = (): Entity => {
@@ -7,6 +7,7 @@ export const Cursor = (): Entity => {
     id: "cursor",
     persists: true,
     components: {
+      debug: new Debug(),
       position: new Position({ x: 2000, y: 2000, screenFixed: true }),
       renderable: new Renderable({
         container: async (r: Renderer) => {

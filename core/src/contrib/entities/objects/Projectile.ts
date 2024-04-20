@@ -1,16 +1,17 @@
-import { Collider, Entity, Position, Renderable, World } from "@piggo-gg/core";
+import { Collider, Debug, Entity, Position, Renderable, World } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export type ProjectileProps = {
   radius: number
-  pos?: { x: number, y: number, Vx: number, Vy: number }
+  pos?: { x: number, y: number, vx: number, vy: number }
 }
 
 export const Projectile = ({ radius, pos }: ProjectileProps) => {
   const projectile = Entity({
     id: `projectile-${Math.trunc(Math.random() * 1000000)}`,
     components: {
-      position: new Position(pos ? { x: pos.x, y: pos.y, velocityX: pos.Vx, velocityY: pos.Vy } : { x: 200, y: 200, velocityX: 50, velocityY: 0 }),
+      debug: new Debug(),
+      position: new Position(pos ? { x: pos.x, y: pos.y, velocityX: pos.vx, velocityY: pos.vy } : { x: 200, y: 200, velocityX: 50, velocityY: 0 }),
       collider: new Collider({
         shape: "ball",
         radius: radius ?? 10,
