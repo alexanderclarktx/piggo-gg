@@ -1,4 +1,4 @@
-__Piggo__ is a multiplayer social web game! Play online at [piggo.gg](https://piggo.gg) 
+__Piggo__ is an open-source web gaming platform! Play online at [piggo.gg](https://piggo.gg) 
 
 <p align="center">
   <img src="piggo-gg.gif" style="width:720px">
@@ -6,25 +6,23 @@ __Piggo__ is a multiplayer social web game! Play online at [piggo.gg](https://pi
 
 # Objectives
 
-🎮 making new games is easy
-
 👾 multiplayer is smooth & performant
+
+🎮 adding new game modes is easy
 
 # Features
 
-✅ server-authoritative netcode with client-side prediction & rollback
+✅ server-authoritative netcode
 
 ✅ 2D graphics, sprites, and animations ([pixiJS](https://github.com/pixijs/pixijs))
 
-✅ deterministic physics engine ([rapierJS](https://github.com/dimforge/rapier.js))
+✅ deterministic physics ([rapierJS](https://github.com/dimforge/rapier.js))
 
-✅ ecs architecture
+✅ ECS architecture
 
 ✅ WASD movement controls
 
 ✅ interactive entities & npc ai behavior
-
-✅ isometric projection from world coordinates
 
 ✅ switch between games
 

@@ -10,6 +10,8 @@ export * from "./src/ecs/Component";
 export * from "./src/contrib/components/Renderable";
 export * from "./src/contrib/systems/core/ActionSystem";
 export * from "./src/contrib/systems/core/CommandSystem";
+export * from "./src/contrib/systems/core/CooldownSystem";
+export * from "./src/contrib/systems/core/DamageSystem";
 export * from "./src/contrib/systems/core/NPCSystem";
 export * from "./src/contrib/systems/core/PhysicsSystem";
 export * from "./src/contrib/systems/gameplay/EnemySpawnSystem";

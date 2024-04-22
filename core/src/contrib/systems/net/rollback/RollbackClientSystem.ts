@@ -92,7 +92,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
       Object.keys(td.serializedEntities).forEach((entityId) => {
         if (!world.entities[entityId]) {
           if (entityId.startsWith("zombie")) {
-            world.addEntity(Zombie({ id: entityId }));
+            // world.addEntity(Zombie({ id: entityId }));
           } else if (entityId.startsWith("ball")) {
             world.addEntity(Ball({ id: entityId }));
           } else if (entityId.startsWith("noob")) {

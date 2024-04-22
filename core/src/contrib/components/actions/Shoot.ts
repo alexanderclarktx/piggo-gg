@@ -30,7 +30,7 @@ export const Shoot: ActionMap<{ mouse: { x: number, y: number } }> = {
     ]
 
     world.addEntity(LineWall({ points: coords, draw: true }));
-  }),
+  }, 50),
   shoot: Action(({ world, params, entity }) => {
 
     if (!entity) return;

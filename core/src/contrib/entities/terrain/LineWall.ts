@@ -1,4 +1,4 @@
-import { Collider, Debug, Entity, Health, Position, Renderable } from "@piggo-gg/core";
+import { Collider, Debug, Entity, Health, Networked, Position, Renderable } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export type LineWallProps = {
@@ -6,30 +6,48 @@ export type LineWallProps = {
   draw?: boolean
 }
 
-export const LineWall = ({ points, draw }: LineWallProps) => Entity({
-  id: `linewall-${points.join("-")}`,
-  components: {
-    position: new Position({ x: 0, y: 0 }),
-    debug: new Debug(),
-    health: new Health(100, 100),
-    collider: new Collider({
-      shape: "line",
-      isStatic: true,
-      points
-    }),
-    ... draw && {
-      renderable: new Renderable({
-        zIndex: 3,
-        setup: async (r: Renderable) => {
-          const g = new Graphics();
-          g.moveTo(points[0], points[1]);
-          for (let i = 2; i < points.length; i += 2) {
-            g.lineTo(points[i], points[i + 1]);
-          }
-          g.stroke({ width: 2, color: 0xffffff });
-          r.c.addChild(g);
-        }
-      })
+export const LineWall = ({ points, draw }: LineWallProps) => {
+
+  const newPoints = points.map((point, i) => {
+    if (i % 2 === 0) {
+      return point - points[0];
+    } else {
+      return point - points[1];
     }
-  }
-});
+  });
+
+  const wall = Entity({
+    id: `linewall-${points.join("-")}`,
+    components: {
+      position: new Position({ x: points[0], y: points[1] }),
+      debug: new Debug(),
+      health: new Health(75, 75, false),
+      networked: new Networked({ isNetworked: true }),
+      collider: new Collider({
+        shape: "line",
+        isStatic: true,
+        points: newPoints
+      }),
+      ...draw && {
+        renderable: new Renderable({
+          zIndex: 3,
+          dynamic: (g: Graphics) => {
+            const { health, maxHealth } = wall.components.health!.data;
+
+            const white = 255 * health / maxHealth;
+            g.tint = (white << 16) + (255 << 8) + 255;
+          },
+          container: async () => {
+            const g = new Graphics();
+            for (let i = 2; i < newPoints.length; i += 2) {
+              g.lineTo(newPoints[i], newPoints[i + 1]);
+            }
+            g.stroke({ width: 2, color: 0xffffff });
+            return g;
+          }
+        })
+      }
+    }
+  });
+  return wall;
+}

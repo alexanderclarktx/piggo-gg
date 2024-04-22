@@ -1,6 +1,6 @@
 import {
-  ActionSystem, Chat, ClickableSystem, CommandSystem, ConnectButton, Cursor,
-  DebugButton, DebugSystem, FullscreenButton, GameCommand,
+  ActionSystem, Chat, ClickableSystem, CommandSystem, ConnectButton, CooldownSystem, Cursor,
+  DamageSystem, DebugButton, DebugSystem, FullscreenButton, GameCommand,
   InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
   RenderSystem, SpawnCommand, World, WorldBuilder
 } from "@piggo-gg/core";
@@ -18,9 +18,9 @@ export const IsometricWorld: WorldBuilder = (props) => {
   });
 
   world.addSystemBuilders([
-    InputSystem, ClickableSystem, DebugSystem,
-    CommandSystem, NPCSystem, ActionSystem, PhysicsSystem,
-    RenderSystem
+    InputSystem, ClickableSystem, DebugSystem, DamageSystem,
+    CommandSystem, NPCSystem, CooldownSystem, ActionSystem,
+    PhysicsSystem, RenderSystem
   ]);
 
   if (world.runtimeMode === "client") {
