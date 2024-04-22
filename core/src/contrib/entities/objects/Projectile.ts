@@ -10,7 +10,6 @@ export const Projectile = ({ radius, pos }: ProjectileProps) => {
   const projectile = Entity({
     id: `projectile-${Math.trunc(Math.random() * 1000000)}`,
     components: {
-      debug: new Debug(),
       position: new Position(pos ? { x: pos.x, y: pos.y, velocityX: pos.vx, velocityY: pos.vy } : { x: 200, y: 200, velocityX: 50, velocityY: 0 }),
       collider: new Collider({
         shape: "ball",

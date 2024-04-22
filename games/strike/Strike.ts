@@ -11,6 +11,6 @@ export const Strike: GameBuilder<"strike"> = ({
       LineWall({ points: [ 32, 0, 832, 400, 32, 800, -768, 400, 32, 0 ] }),
       AbilityHUD(),
     ],
-    systems: [PlayerSpawnSystem, HealthBarSystem, GunSystem],
+    systems: [PlayerSpawnSystem, HealthBarSystem, EnemySpawnSystem, GunSystem],
   })
 })

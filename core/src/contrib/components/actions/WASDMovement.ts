@@ -4,7 +4,7 @@ const speed = 120;
 
 type WASDParams = { animation: string, x: number, y: number };
 
-export const norm = <T extends { x: number, y: number }>(blob: T): T => {
+const norm = <T extends { x: number, y: number }>(blob: T): T => {
 
   const { x, y } = blob;
 
@@ -60,7 +60,7 @@ const getAnimationXYForJoystick = (): WASDParams => {
   return { x, y, animation };
 }
 
-export const WASDController: ControllerMap<"move" | "shoot" | "head", WASDParams | { mouse: { x: number, y: number } }> = {
+export const WASDController: ControllerMap<WASDParams | { mouse: { x: number, y: number } }> = {
   keyboard: {
     "a,d": () => null, "w,s": () => null,
     "w,a": () => ({ action: "move", params: norm({ animation: "ul", x: -1, y: -2 }) }),
@@ -71,6 +71,7 @@ export const WASDController: ControllerMap<"move" | "shoot" | "head", WASDParams
     "a": () => ({ action: "move", params: norm({ animation: "l", x: -1, y: 0 }) }),
     "d": () => ({ action: "move", params: norm({ animation: "r", x: 1, y: 0 }) }),
     "s": () => ({ action: "move", params: norm({ animation: "d", x: 0, y: 1 }) }),
+    "q": ({ mouse }) => ({ action: "Q", params: { mouse } }),
     "mb1": ({ mouse }) => ({ action: "shoot", params: { mouse } }),
     "mb2": ({ mouse, entity }) => {
       const { position, renderable } = entity.components;
@@ -98,7 +99,7 @@ export const WASDController: ControllerMap<"move" | "shoot" | "head", WASDParams
   joystick: () => ({ action: "move", params: getAnimationXYForJoystick() })
 }
 
-export const WASDActionMap: ActionMap<"move" | "head", WASDParams> = {
+export const WASDActionMap: ActionMap<WASDParams> = {
   head: {
     apply: ({ params, entity }) => {
       if (!entity) return;

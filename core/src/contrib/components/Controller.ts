@@ -6,17 +6,17 @@ export type ControllerInput = {
 }
 
 // "" is always allowed to clear the input buffer
-export type ControllerMap<A extends string, P extends {}> = {
-  keyboard: Record<string, (_: ControllerInput) => null | InvokedAction<A, P>>
-  joystick?: () => null | InvokedAction<A, P>
+export type ControllerMap<P extends {}> = {
+  keyboard: Record<string, (_: ControllerInput) => null | InvokedAction<string, P>>
+  joystick?: () => null | InvokedAction<string, P>
 }
 
 // the Controller component maps inputs to Actions
-export class Controller<A extends string = string, P extends {} = {}> extends Component<"controller"> {
+export class Controller<P extends {} = {}> extends Component<"controller"> {
   type: "controller" = "controller";
-  controllerMap: ControllerMap<A, P>;
+  controllerMap: ControllerMap<P>;
 
-  constructor(controllerMap: ControllerMap<A, P>) {
+  constructor(controllerMap: ControllerMap<P>) {
     super();
     this.controllerMap = controllerMap;
   }

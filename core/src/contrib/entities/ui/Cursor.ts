@@ -7,7 +7,6 @@ export const Cursor = (): Entity => {
     id: "cursor",
     persists: true,
     components: {
-      debug: new Debug(),
       position: new Position({ x: 2000, y: 2000, screenFixed: true }),
       renderable: new Renderable({
         container: async (r: Renderer) => {

@@ -14,7 +14,7 @@ export type InvokedAction<A extends string = string, P extends {} = {}> = {
   params?: P
 }
 
-export type ActionMap<T extends string = string, P extends {} = {}> = Record<T, Action<P>>;
+export type ActionMap<P extends {} = {}> = Record<string, Action<P>>;
 
 export class Actions extends Component<"actions"> {
   type: "actions" = "actions";
