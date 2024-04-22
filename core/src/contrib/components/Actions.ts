@@ -1,12 +1,17 @@
 import { Component, Entity, World } from "@piggo-gg/core";
 
 export type Action<T extends {} = {}> = {
+  cooldown?: number
+  cdLeft?: number
   apply: (_: { params: T, world: World, entity?: Entity, player?: string | undefined }) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
-export const Action = <T extends {} = {}>(apply: Action<T>["apply"]): Action<T> => {
-  return { apply };
+export const Action = <T extends {} = {}>(apply: Action<T>["apply"], cooldown?: number): Action<T> => {
+  return {
+    apply,
+    ...cooldown ? { cooldown } : {}
+  };
 }
 
 export type InvokedAction<A extends string = string, P extends {} = {}> = {
@@ -14,7 +19,7 @@ export type InvokedAction<A extends string = string, P extends {} = {}> = {
   params?: P
 }
 
-export type ActionMap<T extends string = string, P extends {} = {}> = Record<T, Action<P>>;
+export type ActionMap<P extends {} = {}> = Record<string, Action<P>>;
 
 export class Actions extends Component<"actions"> {
   type: "actions" = "actions";

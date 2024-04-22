@@ -1,4 +1,4 @@
-import { Action, Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Projectile, Renderable, WASDActionMap, WASDController } from "@piggo-gg/core";
+import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
 export const Skelly = (id: string, tint?: number) => {
@@ -14,29 +14,7 @@ export const Skelly = (id: string, tint?: number) => {
       controller: new Controller(WASDController),
       actions: new Actions({
         ...WASDActionMap,
-        "shoot": Action<{ mouse: { x: number, y: number } }>(({ world, params }) => {
-          if (world.clientPlayerId && skelly.components.gun.canShoot()) {
-            skelly.components.gun.shoot();
-
-            const { x, y } = skelly.components.position.data;
-            const { speed } = skelly.components.gun;
-
-            // move bullet toward mouse
-            let Vx = params.mouse.x - x;
-            let Vy = params.mouse.y - y;
-            Vx = Vx / Math.sqrt(Vx * Vx + Vy * Vy) * speed;
-            Vy = Vy / Math.sqrt(Vx * Vx + Vy * Vy) * speed;
-
-            // spawn bullet at offset
-            const offset = 30;
-            const Xoffset = offset * (Vx / Math.sqrt(Vx * Vx + Vy * Vy));
-            const Yoffset = offset * (Vy / Math.sqrt(Vx * Vx + Vy * Vy));
-
-            const pos = { x: x + Xoffset, y: y + Yoffset, Vx, Vy };
-
-            world.addEntity(Projectile({ radius: 4, pos }), 2000);
-          }
-        })
+        ...Shoot
       }),
       renderable: new Renderable({
         anchor: { x: 0.5, y: 0.7 },
