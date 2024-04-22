@@ -11,19 +11,11 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
     const offCooldown = (entityId: string) => (invokedAction: InvokedAction) => {
       const key = `${entityId}|${invokedAction.action}`;
 
-      if (cooldowns[key]) {
-        console.log("on cooldown", cooldowns[key]);
-        return false;
-      }
+      if (cooldowns[key]) return false;
 
-      const entity = world.entities[entityId];
-      const actions = entity?.components.actions;
-      const action = actions?.actionMap[invokedAction.action];
+      const action = world.entities[entityId]?.components.actions?.actionMap[invokedAction.action];
+      if (action && action.cooldown) cooldowns[key] = action.cooldown;
 
-      if (action && action.cooldown) {
-        console.log("set cooldown", action.cooldown);
-        cooldowns[key] = action.cooldown;
-      }
       return true;
     }
 

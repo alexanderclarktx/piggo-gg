@@ -4,10 +4,12 @@ import { Graphics } from "pixi.js";
 export type LineWallProps = {
   points: number[]
   draw?: boolean
+  health?: boolean
 }
 
-export const LineWall = ({ points, draw }: LineWallProps) => {
+export const LineWall = ({ points, draw, health }: LineWallProps) => {
 
+  // const newPoints = points;
   const newPoints = points.map((point, i) => {
     if (i % 2 === 0) {
       return point - points[0];
@@ -16,12 +18,12 @@ export const LineWall = ({ points, draw }: LineWallProps) => {
     }
   });
 
-  const wall = Entity<Health>({
+  const wall = Entity({
     id: `linewall-${points.join("-")}`,
     components: {
       position: new Position({ x: points[0], y: points[1] }),
       debug: new Debug(),
-      health: new Health(75, 75, false),
+      ...health? { health: new Health(75, 75, false) } : {},
       networked: new Networked({ isNetworked: true }),
       collider: new Collider({
         shape: "line",
@@ -32,6 +34,7 @@ export const LineWall = ({ points, draw }: LineWallProps) => {
         renderable: new Renderable({
           zIndex: 3,
           dynamic: (g: Graphics) => {
+            if (!wall.components.health) return;
             const { health, maxHealth } = wall.components.health.data;
 
             const white = 255 * health / maxHealth;

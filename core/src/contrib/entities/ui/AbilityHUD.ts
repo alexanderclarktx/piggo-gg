@@ -65,7 +65,6 @@ export const AbilityHUD = (): Entity => {
           if (!Q.cdLeft || !Q.cooldown) return;
 
           const qCooldownRatio =  Q.cdLeft / Q.cooldown;
-          console.log(qCooldownRatio);
           squareQ.tint = (255 << 16) + (255 << 8) + (1 - qCooldownRatio) * 255;
         },
         zIndex: 10
