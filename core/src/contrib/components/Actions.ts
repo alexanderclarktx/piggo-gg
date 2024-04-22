@@ -2,6 +2,7 @@ import { Component, Entity, World } from "@piggo-gg/core";
 
 export type Action<T extends {} = {}> = {
   cooldown?: number
+  cdLeft?: number
   apply: (_: { params: T, world: World, entity?: Entity, player?: string | undefined }) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }

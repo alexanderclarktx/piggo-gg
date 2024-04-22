@@ -16,7 +16,7 @@ export const LineWall = ({ points, draw }: LineWallProps) => {
     }
   });
 
-  const wall = Entity({
+  const wall = Entity<Health>({
     id: `linewall-${points.join("-")}`,
     components: {
       position: new Position({ x: points[0], y: points[1] }),
@@ -32,7 +32,7 @@ export const LineWall = ({ points, draw }: LineWallProps) => {
         renderable: new Renderable({
           zIndex: 3,
           dynamic: (g: Graphics) => {
-            const { health, maxHealth } = wall.components.health!.data;
+            const { health, maxHealth } = wall.components.health.data;
 
             const white = 255 * health / maxHealth;
             g.tint = (white << 16) + (255 << 8) + 255;

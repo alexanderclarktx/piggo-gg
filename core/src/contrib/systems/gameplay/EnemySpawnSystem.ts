@@ -26,8 +26,6 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
 
     const onTick = () => {
 
-      // if (Object.keys(enemiesInWave).length !== data.wave
-
       // handle old entities
       Object.keys(enemiesInWave).forEach((id) => {
         if (!world.entities[id]) {

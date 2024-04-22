@@ -9,7 +9,7 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
     const cooldowns: Record<string, number> = {};
     
     const offCooldown = (entityId: string) => (invokedAction: InvokedAction) => {
-      const key = `${entityId}-${invokedAction.action}`;
+      const key = `${entityId}|${invokedAction.action}`;
 
       if (cooldowns[key]) {
         console.log("on cooldown", cooldowns[key]);
@@ -31,7 +31,13 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
 
       Object.keys(cooldowns).forEach((key) => {
         cooldowns[key]--;
+
         if (cooldowns[key] <= 0) delete cooldowns[key];
+
+        const [ entityId, actionId] = key.split("|");
+        const action = world.entities[entityId]?.components.actions?.actionMap[actionId]
+        if (!action) return;
+        action.cdLeft = cooldowns[key] ?? undefined;
       });
 
       const actions = world.actionBuffer.atTick(world.tick);

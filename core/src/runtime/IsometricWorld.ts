@@ -1,5 +1,5 @@
 import {
-  ActionSystem, Chat, ClickableSystem, CommandSystem, ConnectButton, CooldownSystem, Cursor,
+  AbilityHUD, ActionSystem, Chat, ClickableSystem, CommandSystem, ConnectButton, CooldownSystem, Cursor,
   DamageSystem, DebugButton, DebugSystem, FullscreenButton, GameCommand,
   InputSystem, Joystick, NPCSystem, Noob, PhysicsSystem,
   RenderSystem, SpawnCommand, World, WorldBuilder
@@ -30,7 +30,7 @@ export const IsometricWorld: WorldBuilder = (props) => {
 
     isMobile() ?
       world.addEntityBuilders([Joystick, ConnectButton]) :
-      world.addEntityBuilders([Cursor]);
+      world.addEntityBuilders([Cursor, AbilityHUD]);
   }
 
   return world;
