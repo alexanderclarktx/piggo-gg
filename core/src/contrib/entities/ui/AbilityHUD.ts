@@ -1,14 +1,14 @@
-import { Entity, Position, Renderable, pixiStyle, pixiText } from "@piggo-gg/core";
-import { Container, Graphics } from "pixi.js";
+import { Entity, Position, Renderable, pixiRect, pixiText } from "@piggo-gg/core";
+import { Container } from "pixi.js";
 
 export const AbilityHUD = (): Entity => {
 
   const w = 50;
 
-  const squareQ = new Graphics();
-  const squareW = new Graphics();
-  const squareE = new Graphics();
-  const squareR = new Graphics();
+  const squareQ = pixiRect({ x: -150, y: 0, w, h: w });
+  const squareW = pixiRect({ x: -75, y: 0, w, h: w });
+  const squareE = pixiRect({ x: 0, y: 0, w, h: w });
+  const squareR = pixiRect({ x: 75, y: 0, w, h: w });
 
   const abilityHud = Entity<Renderable | Position>({
     id: "abilityHud",
@@ -21,12 +21,6 @@ export const AbilityHUD = (): Entity => {
 
           const c = new Container();
 
-          // QWER squares
-          pixiStyle(squareQ.rect(-150, 0, w, w));
-          pixiStyle(squareW.rect(-75, 0, w, w));
-          pixiStyle(squareE.rect(0, 0, w, w));
-          pixiStyle(squareR.rect(75, 0, w, w));
-
           // QWER hotkeys text bottom-left of squares
           const keyQ = pixiText({ text: "Q", pos: { x: -148, y: 35 } });
           const keyW = pixiText({ text: "W", pos: { x: -73, y: 35 } });
@@ -38,7 +32,7 @@ export const AbilityHUD = (): Entity => {
           c.addChild(squareQ, keyQ, squareW, keyW, squareE, keyE, squareR, keyR, graphicsQ);
           return c;
         },
-        dynamic: (c, __, e, w) => {
+        dynamic: (_, __, ___, w) => {
           const playerEntity = w.clientPlayerId ? w.entities[w.clientPlayerId] : undefined;
           if (!playerEntity) return;
 

@@ -45,8 +45,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     t.updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 });
 
     // goal area
-    c.addChild(g);
-    c.addChild(t);
+    c.addChild(g, t);
 
     return c;
   }
