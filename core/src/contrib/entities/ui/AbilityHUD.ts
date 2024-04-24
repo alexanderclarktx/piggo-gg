@@ -1,5 +1,5 @@
-import { Entity, Position, Renderable } from "@piggo-gg/core";
-import { Container, Graphics, Text } from "pixi.js";
+import { Entity, Position, Renderable, pixiStyle, pixiText } from "@piggo-gg/core";
+import { Container, Graphics } from "pixi.js";
 
 export const AbilityHUD = (): Entity => {
 
@@ -22,37 +22,20 @@ export const AbilityHUD = (): Entity => {
           const c = new Container();
 
           // QWER squares
-          squareQ.rect(-150, 0, w, w).fill({ color: 0x000000, alpha: 0.4 }).stroke({ width: 1, color: 0xffffff });
-          squareW.rect(-75, 0, w, w).fill({ color: 0x000000, alpha: 0.4 }).stroke({ width: 1, color: 0xffffff });
-          squareE.rect(0, 0, w, w).fill({ color: 0x000000, alpha: 0.4 }).stroke({ width: 1, color: 0xffffff });
-          squareR.rect(75, 0, w, w).fill({ color: 0x000000, alpha: 0.4 }).stroke({ width: 1, color: 0xffffff });
+          pixiStyle(squareQ.rect(-150, 0, w, w));
+          pixiStyle(squareW.rect(-75, 0, w, w));
+          pixiStyle(squareE.rect(0, 0, w, w));
+          pixiStyle(squareR.rect(75, 0, w, w));
 
           // QWER hotkeys text bottom-left of squares
-          const keyQ = new Text({ text: "Q", style: { fill: 0xffffff, fontSize: 12 } });
-          const keyW = new Text({ text: "W", style: { fill: 0xffffff, fontSize: 12 } });
-          const keyE = new Text({ text: "E", style: { fill: 0xffffff, fontSize: 12 } });
-          const keyR = new Text({ text: "R", style: { fill: 0xffffff, fontSize: 12 } });
+          const keyQ = pixiText({ text: "Q", pos: { x: -148, y: 35 } });
+          const keyW = pixiText({ text: "W", pos: { x: -73, y: 35 } });
+          const keyE = pixiText({ text: "E", pos: { x: 2, y: 35 } });
+          const keyR = pixiText({ text: "R", pos: { x: 77, y: 35 } });
 
-          const graphicsQ = new Text({ resolution: 4, text: "wall", style: { fill: 0xffffff, fontSize: 18 } });
-          graphicsQ.position.set(-141, 10);
+          const graphicsQ = pixiText({ text: "wall", fontSize: 18, pos: { x: -141, y: 10 } });
 
-          keyQ.position.set(-148, 35);
-          keyW.position.set(-73, 35);
-          keyE.position.set(2, 35);
-          keyR.position.set(77, 35);
-
-          c.addChild(squareQ);
-          c.addChild(keyQ)
-          c.addChild(graphicsQ);
-
-          c.addChild(squareW);
-          c.addChild(keyW);
-
-          c.addChild(squareE);
-          c.addChild(keyE);
-
-          c.addChild(squareR);
-          c.addChild(keyR);
+          c.addChild(squareQ, keyQ, squareW, keyW, squareE, keyE, squareR, keyR, graphicsQ);
           return c;
         },
         dynamic: (c, __, e, w) => {
@@ -60,11 +43,9 @@ export const AbilityHUD = (): Entity => {
           if (!playerEntity) return;
 
           const Q = w.entities[playerEntity.components.controlling?.data.entityId ?? -1]?.components.actions?.actionMap["Q"]
-          if (!Q) return;
+          if (!Q || !Q.cdLeft || !Q.cooldown) return;
 
-          if (!Q.cdLeft || !Q.cooldown) return;
-
-          const qCooldownRatio =  Q.cdLeft / Q.cooldown;
+          const qCooldownRatio = Q.cdLeft / Q.cooldown;
           squareQ.tint = (255 << 16) + (255 << 8) + (1 - qCooldownRatio) * 255;
         },
         zIndex: 10
