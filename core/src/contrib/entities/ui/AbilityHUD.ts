@@ -3,12 +3,13 @@ import { Container } from "pixi.js";
 
 export const AbilityHUD = (): Entity => {
 
-  const w = 50;
+  const width = 50;
+  const height = 50;
 
-  const squareQ = pixiRect({ x: -150, y: 0, w, h: w });
-  const squareW = pixiRect({ x: -75, y: 0, w, h: w });
-  const squareE = pixiRect({ x: 0, y: 0, w, h: w });
-  const squareR = pixiRect({ x: 75, y: 0, w, h: w });
+  const squareQ = pixiRect({ w: width, h: height, y: 0, x: -150 });
+  const squareW = pixiRect({ w: width, h: height, y: 0, x: -75 });
+  const squareE = pixiRect({ w: width, h: height, y: 0, x: 0 });
+  const squareR = pixiRect({ w: width, h: height, y: 0, x: 75 });
 
   const abilityHud = Entity<Renderable | Position>({
     id: "abilityHud",

@@ -4,11 +4,11 @@ export type pixiRectProps = { x: number, y: number, w: number, h: number, style?
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number };
 export type pixiTextProps = { text: string, fontSize?: number, pos?: { x: number, y: number } };
 
-export const pixiRect = ({x, y, w, h, style}: pixiRectProps): Graphics => {
+export const pixiRect = ({x, y, w, h, style}: Omit<pixiRectProps, "g">): Graphics => {
   const g = new Graphics();
   g.rect(x, y, w, h);
 
-  return pixiStyle({ g });
+  return pixiStyle({ g, ...style });
 }
 
 export const pixiStyle = ({ g, color, alpha }: pixiStyleProps): Graphics => {
