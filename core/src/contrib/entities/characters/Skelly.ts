@@ -35,8 +35,6 @@ export const Skelly = (id: string, tint?: number) => {
             ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
           }
 
-          r.bufferedAnimation = "d";
-
           const nametag = new Text({
             text: id.split("-")[1],
             style: { fill: 0xffff00, fontSize: 14 }
