@@ -1,23 +1,6 @@
-import { Action, ActionMap, Entity, Position } from "@piggo-gg/core";
+import { Action, ActionMap, Entity, Position, getClosestEntity } from "@piggo-gg/core";
 
 export type ZombieMovementActions = "chase";
-
-export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number, y: number }): Entity<Position> => {
-  if (entities.length > 1) {
-    entities.sort((a: Entity<Position>, b: Entity<Position>) => {
-      const aPosition = a.components.position;
-      const bPosition = b.components.position;
-      const dx = aPosition.data.x - pos.x;
-      const dy = aPosition.data.y - pos.y;
-      const da = dx * dx + dy * dy;
-      const dx2 = bPosition.data.x - pos.x;
-      const dy2 = bPosition.data.y - pos.y;
-      const db = dx2 * dx2 + dy2 * dy2;
-      return da - db;
-    });
-  }
-  return entities[0];
-}
 
 export const ZombieMovement: ActionMap<ZombieMovementActions> = {
   chase: Action(({ entity, world }) => {

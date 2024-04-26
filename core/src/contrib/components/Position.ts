@@ -82,9 +82,6 @@ export class Position extends Component<"position"> {
     const Vx = Math.cos(angle) * this.data.speed;
     const Vy = Math.sin(angle) * this.data.speed;
 
-    // set ortho
-    // this.ortho = Math.round((angle / Math.PI) * 4 + 4) % 8;
-
     this.setVelocity({ x: Vx, y: Vy });
 
     return this;
