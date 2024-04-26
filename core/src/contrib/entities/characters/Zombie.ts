@@ -10,7 +10,7 @@ export type ZombieProps = {
 export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombieProps = {}) => Entity({
   id: id ?? `zombie-${Math.round(Math.random() * 100)}`,
   components: {
-    position: new Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 40 }),
+    position: new Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
     networked: new Networked({ isNetworked: true }),
     health: new Health(100, 100),
     npc: new NPC<ZombieMovementActions>({

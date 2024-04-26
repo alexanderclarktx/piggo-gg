@@ -1,12 +1,12 @@
 import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
-export const Skelly = (id: string, tint?: number) => {
+export const Skelly = (id: string, color?: number) => {
   const skelly = Entity<Position | Gun>({
     id: id,
     components: {
       debug: new Debug(),
-      position: new Position({ x: 151, y: 300, velocityResets: 1 }),
+      position: new Position({ x: 151, y: 300, velocityResets: 1, speed: 120 }),
       networked: new Networked({ isNetworked: true }),
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
@@ -21,6 +21,7 @@ export const Skelly = (id: string, tint?: number) => {
         scale: 2,
         zIndex: 3,
         scaleMode: "nearest",
+        color: color ?? 0xffffff,
         setup: async (r: Renderable) => {
           const textures = await r.loadTextures("chars.json");
 

@@ -6,7 +6,7 @@ export type ComponentTypes =
   Data | Debug | Health | Name | Networked |
   NPC | Player | Position | Renderable | Gun
 
-// 个 gè (one of)
+// 個 gè (generic measure word)
 // a Component is an atomic unit of data that is attached to an entity
 export abstract class Component<T extends string = string> {
   abstract type: T;
