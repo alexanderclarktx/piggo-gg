@@ -12,6 +12,18 @@ export const orthoToDirection = (o: number) => {
   return "d";
 }
 
+export const worldToIsometric = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
+  x: x - y,
+  y: (x + y) / 2
+});
+
+export const isometricToWorld = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
+  x: (2 * y + x) / 2,
+  y: (2 * y - x) / 2
+});
+
+export const mapIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
+
 export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number, y: number }): Entity<Position> => {
   if (entities.length > 1) {
     entities.sort((a: Entity<Position>, b: Entity<Position>) => {

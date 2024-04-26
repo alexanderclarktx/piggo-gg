@@ -1,19 +1,16 @@
-import { Entity, Position, Renderable, worldToIsometric } from "@piggo-gg/core";
-import { WallPoints } from "@piggo-gg/games";
+import { Entity, Position, Renderable, mapIsometric } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 const add = (arr1: number[], arr2: number[]): [number, number] => {
   return [arr1[0] + arr2[0], arr1[1] + arr2[1]];
 }
 
-export const Rift = (wallPoints: WallPoints) => Entity({
+export const Rift = (wallPoints: number[]) => Entity({
   id: "rift",
   components: {
     position: new Position({ x: 0, y: 0 }),
     renderable: new Renderable({
       setup: async (r) => {
-
-        const iso = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
 
         const top = [0, 0];
         const right = [2500, 0];
@@ -23,12 +20,12 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         // grass
         const grass = new Graphics();
         grass.setStrokeStyle({ width: 2, color: 0xffffff, alpha: 1 });
-        grass.poly(wallPoints.flat());
+        grass.poly(wallPoints);
         grass.fill(0x008833);
 
         // top right
         const lanes = new Graphics();
-        lanes.poly(iso([
+        lanes.poly(mapIsometric([
           add(top, [200, 1]),
           add(top, [200, 200]),
           add(right, [-200, 200]),
@@ -36,7 +33,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ]))
 
         // top left
-        lanes.poly(iso([
+        lanes.poly(mapIsometric([
           add(top, [1, 200]),
           add(top, [200, 200]),
 
@@ -45,7 +42,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ]));
 
         // bot right
-        lanes.poly(iso([
+        lanes.poly(mapIsometric([
           add(bottom, [-200, -200]),
           add(bottom, [-1, -200]),
           add(right, [-1, 200]),
@@ -53,7 +50,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ]));
 
         // bot left
-        lanes.poly(iso([
+        lanes.poly(mapIsometric([
           add(left, [200, -200]),
           add(left, [200, -1]),
           add(bottom, [-200, -1]),
@@ -61,7 +58,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ]));
 
         // mid
-        lanes.poly(iso([
+        lanes.poly(mapIsometric([
           add(right, [-400, 200]),
           add(right, [-200, 400]),
           add(left, [400, -200]),
@@ -73,7 +70,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         const spawns = new Graphics();
 
         // purple spawn
-        spawns.poly(iso([
+        spawns.poly(mapIsometric([
           right,
           add(right, [-600, 0]),
           add(right, [-600, 400]),
@@ -82,7 +79,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
         ]));
 
         // blue spawn
-        spawns.poly(iso([
+        spawns.poly(mapIsometric([
           left,
           add(left, [0, -600]),
           add(left, [400, -600]),

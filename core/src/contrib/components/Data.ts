@@ -1,7 +1,7 @@
-import { Component } from "@piggo-gg/core";
+import { Component, NetworkedEntityData } from "@piggo-gg/core";
 
 export type DataProps = {
-  data: Record<string, string | number>
+  data: NetworkedEntityData
 }
 
 export class Data extends Component<"data"> {
