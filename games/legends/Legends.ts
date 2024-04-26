@@ -1,4 +1,4 @@
-import { Background, GameBuilder, HealthBarSystem, LineWall, PlayerSpawnSystem, mapIsometric } from "@piggo-gg/core";
+import { Background, GameBuilder, HealthBarSystem, LineWall, PlayerSpawnSystem, pointsIsometric } from "@piggo-gg/core";
 import { Rift, WallPoints } from "@piggo-gg/games";
 
 const wallPoints: WallPoints = [
@@ -11,7 +11,7 @@ const wallPoints: WallPoints = [
   [0, 100]
 ]
 
-const wallPointsIso = mapIsometric(wallPoints);
+const wallPointsIso = pointsIsometric(wallPoints);
 
 export const Legends: GameBuilder<"legends"> = ({
   id: "legends",

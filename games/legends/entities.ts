@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, mapIsometric } from "@piggo-gg/core";
+import { Entity, Position, Renderable, pointsIsometric } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 const add = (arr1: number[], arr2: number[]): [number, number] => {
@@ -25,7 +25,7 @@ export const Rift = (wallPoints: number[]) => Entity({
 
         // top right
         const lanes = new Graphics();
-        lanes.poly(mapIsometric([
+        lanes.poly(pointsIsometric([
           add(top, [200, 1]),
           add(top, [200, 200]),
           add(right, [-200, 200]),
@@ -33,7 +33,7 @@ export const Rift = (wallPoints: number[]) => Entity({
         ]))
 
         // top left
-        lanes.poly(mapIsometric([
+        lanes.poly(pointsIsometric([
           add(top, [1, 200]),
           add(top, [200, 200]),
 
@@ -42,7 +42,7 @@ export const Rift = (wallPoints: number[]) => Entity({
         ]));
 
         // bot right
-        lanes.poly(mapIsometric([
+        lanes.poly(pointsIsometric([
           add(bottom, [-200, -200]),
           add(bottom, [-1, -200]),
           add(right, [-1, 200]),
@@ -50,7 +50,7 @@ export const Rift = (wallPoints: number[]) => Entity({
         ]));
 
         // bot left
-        lanes.poly(mapIsometric([
+        lanes.poly(pointsIsometric([
           add(left, [200, -200]),
           add(left, [200, -1]),
           add(bottom, [-200, -1]),
@@ -58,7 +58,7 @@ export const Rift = (wallPoints: number[]) => Entity({
         ]));
 
         // mid
-        lanes.poly(mapIsometric([
+        lanes.poly(pointsIsometric([
           add(right, [-400, 200]),
           add(right, [-200, 400]),
           add(left, [400, -200]),
@@ -70,7 +70,7 @@ export const Rift = (wallPoints: number[]) => Entity({
         const spawns = new Graphics();
 
         // purple spawn
-        spawns.poly(mapIsometric([
+        spawns.poly(pointsIsometric([
           right,
           add(right, [-600, 0]),
           add(right, [-600, 400]),
@@ -79,7 +79,7 @@ export const Rift = (wallPoints: number[]) => Entity({
         ]));
 
         // blue spawn
-        spawns.poly(mapIsometric([
+        spawns.poly(pointsIsometric([
           left,
           add(left, [0, -600]),
           add(left, [400, -600]),

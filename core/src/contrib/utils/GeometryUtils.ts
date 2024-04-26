@@ -22,7 +22,7 @@ export const isometricToWorld = ({ x, y }: { x: number, y: number }): { x: numbe
   y: (2 * y - x) / 2
 });
 
-export const mapIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
+export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
 
 export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number, y: number }): Entity<Position> => {
   if (entities.length > 1) {
