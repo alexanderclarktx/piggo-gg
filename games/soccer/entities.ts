@@ -69,8 +69,7 @@ export const FieldGrass = (wallPoints: WallPoints) => Entity({
 
         lines.stroke();
 
-        r.c.addChild(grass);
-        r.c.addChild(lines);
+        r.c.addChild(grass, lines);
       },
     })
   }

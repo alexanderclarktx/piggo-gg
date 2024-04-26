@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities in isometric or cartesian space
 export const RenderSystem = ClientSystemBuilder({
@@ -58,7 +58,12 @@ export const RenderSystem = ClientSystemBuilder({
           cache[entity.id] = position;
         }
 
-        // handle animations
+        // set buffered ortho animation
+        if (!renderable.bufferedAnimation) {
+          renderable.bufferedAnimation = orthoToDirection(position.ortho);
+        }
+
+        // handle buffered animations
         if (
           renderable.bufferedAnimation !== renderable.activeAnimation &&
           renderable.animations[renderable.bufferedAnimation]
@@ -77,6 +82,12 @@ export const RenderSystem = ClientSystemBuilder({
 
           // set activeAnimation
           renderable.activeAnimation = renderable.bufferedAnimation;
+
+          renderable.bufferedAnimation = "";
+        }
+
+        if (renderable.bufferedAnimation === renderable.activeAnimation) {
+          renderable.bufferedAnimation = "";
         }
 
         // run the dynamic callback

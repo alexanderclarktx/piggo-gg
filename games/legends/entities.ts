@@ -92,9 +92,7 @@ export const Rift = (wallPoints: WallPoints) => Entity({
 
         spawns.fill(0xaa00ff);
 
-        r.c.addChild(grass);
-        r.c.addChild(lanes);
-        r.c.addChild(spawns);
+        r.c.addChild(grass, lanes, spawns);
       },
     })
   }

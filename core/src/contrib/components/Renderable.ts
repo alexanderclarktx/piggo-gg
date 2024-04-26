@@ -20,7 +20,6 @@ export type RenderableProps = {
   setup?: (renderable: Renderable, renderer: Renderer | undefined) => Promise<void>
 }
 
-// TODO refactor and simplify how entities define renderables
 export class Renderable extends Component<"renderable"> {
   type: "renderable" = "renderable";
 
@@ -54,8 +53,7 @@ export class Renderable extends Component<"renderable"> {
     }
   }
 
-  setAnimationColor = (color: number) => {
-    // set the animation speed and scale for each sprite
+  prepareAnimations = (color: number) => {
     Object.values(this.animations).forEach((animation: AnimatedSprite) => {
       animation.animationSpeed = 0.1;
       animation.scale.set(this.props.scale || 1);
@@ -63,6 +61,7 @@ export class Renderable extends Component<"renderable"> {
       animation.texture.source.scaleMode = this.props.scaleMode ?? "linear";
       animation.tint = color;
     });
+    this.bufferedAnimation = Object.keys(this.animations)[0];
   }
 
   _init = async (renderer: Renderer | undefined) => {
@@ -104,7 +103,7 @@ export class Renderable extends Component<"renderable"> {
     this.c.alpha = 1;
     this.c.children.forEach((child) => { child.alpha = 1 });
 
-    if (this.animations) this.setAnimationColor(color ?? 0xffffff)
+    if (this.animations) this.prepareAnimations(color ?? 0xffffff)
   }
 
   // MUST be called to correctly destroy the object

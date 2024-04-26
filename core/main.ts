@@ -72,3 +72,5 @@ export * from "./src/contrib/components/actions/WASDMovement";
 export * from "./src/contrib/components/actions/VehicleMovement";
 export * from "./src/contrib/components/actions/PlayerControlsEntity";
 export * from "./src/contrib/components/actions/Shoot";
+export * from "./src/contrib/utils/PixiUtils";
+export * from "./src/contrib/utils/GeometryUtils";

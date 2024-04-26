@@ -56,8 +56,6 @@ export const GunSystem: SystemBuilder<"gun"> = ({
             Object.values(r.animations).forEach((animation) => {
               animation.filters = [new OutlineFilter({ thickness: 1, color: 0x000000 })]
             })
-
-            r.bufferedAnimation = "0";
           }
         }),
         position: player.components.position

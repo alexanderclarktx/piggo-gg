@@ -1,4 +1,4 @@
-import { Action, Actions, Clickable, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Projectile, Renderable, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
+import { Actions, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type ZombieProps = {
@@ -10,7 +10,7 @@ export type ZombieProps = {
 export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombieProps = {}) => Entity({
   id: id ?? `zombie-${Math.round(Math.random() * 100)}`,
   components: {
-    position: new Position({ ...positionProps, velocityResets: 1 }),
+    position: new Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 40 }),
     networked: new Networked({ isNetworked: true }),
     health: new Health(100, 100),
     npc: new NPC<ZombieMovementActions>({

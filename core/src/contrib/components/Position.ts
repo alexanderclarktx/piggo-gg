@@ -7,6 +7,7 @@ export type PositionProps = {
   velocityY?: number
   velocityResets?: number
   screenFixed?: boolean
+  speed?: number
 }
 
 export const worldToIsometric = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
@@ -31,6 +32,7 @@ export class Position extends Component<"position"> {
     headingX: NaN,
     headingY: NaN,
     rotation: 0,
+    speed: 0,
     velocityX: 0,
     velocityY: 0,
     velocityResets: 0
@@ -38,7 +40,7 @@ export class Position extends Component<"position"> {
 
   screenFixed: boolean;
 
-  constructor({ x, y, velocityX, velocityY, screenFixed, velocityResets }: PositionProps = {}) {
+  constructor({ x, y, velocityX, velocityY, screenFixed, velocityResets, speed }: PositionProps = {}) {
     super();
     this.data.x = x ?? 0;
     this.data.y = y ?? 0;
@@ -46,6 +48,7 @@ export class Position extends Component<"position"> {
     this.data.velocityY = velocityY ?? 0;
     this.screenFixed = screenFixed ?? false;
     this.data.velocityResets = velocityResets ?? 0;
+    this.data.speed = speed ?? 0;
   }
 
   setPosition = ({ x, y }: { x: number, y: number }) => {
@@ -63,6 +66,10 @@ export class Position extends Component<"position"> {
     return this;
   }
 
+  setSpeed = (speed: number) => {
+    this.data.speed = speed;
+  }
+
   setHeading = ({ x, y }: { x: number, y: number }) => {
     this.data.headingX = x;
     this.data.headingY = y;
@@ -72,8 +79,8 @@ export class Position extends Component<"position"> {
     const dy = y - this.data.y;
 
     const angle = Math.atan2(dy, dx);
-    const Vx = Math.cos(angle) * 140;
-    const Vy = Math.sin(angle) * 140;
+    const Vx = Math.cos(angle) * this.data.speed;
+    const Vy = Math.sin(angle) * this.data.speed;
 
     this.setVelocity({ x: Vx, y: Vy });
 
