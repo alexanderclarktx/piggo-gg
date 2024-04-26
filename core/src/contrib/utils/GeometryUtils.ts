@@ -9,4 +9,3 @@ export const orthoToDirection = (o: number) => {
   if (o === 7) return "dl";
   return "d";
 }
-

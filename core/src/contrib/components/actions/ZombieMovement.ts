@@ -1,8 +1,5 @@
 import { Action, ActionMap, Entity, Position } from "@piggo-gg/core";
 
-const speed = 30;
-const tau16 = (Math.PI * 2) / 16; // 22.5 degrees
-
 export type ZombieMovementActions = "chase";
 
 export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number, y: number }): Entity<Position> => {
@@ -35,30 +32,5 @@ export const ZombieMovement: ActionMap<ZombieMovementActions> = {
     if (!closestEntity) return;
 
     position.setHeading(closestEntity.components.position.data);
-
-    // const playerCharacterPosition = closestEntity.components.position!;
-
-    // delta toward player
-    // let dx = playerCharacterPosition.data.x - position.data.x;
-    // let dy = playerCharacterPosition.data.y - position.data.y;
-
-    // // normalize speed toward player
-    // let moveX = dx / Math.sqrt(dx * dx + dy * dy) * speed;
-    // let moveY = dy / Math.sqrt(dx * dx + dy * dy) * speed;
-    // position.setVelocity({ x: moveX, y: moveY });
-
-    // // get angle of movements
-    // const angle = Math.atan2(moveY, moveX) + tau16 * 8;
-
-    // set animation based on angle
-    // if (angle >= 0 && angle < 1 * tau16) renderable.setAnimation("l");
-    // else if (angle >= 15 * tau16 && angle < 16 * tau16) renderable.setAnimation("l");
-    // else if (angle >= 1 * tau16 && angle < 3 * tau16) renderable.setAnimation("ul");
-    // else if (angle >= 3 * tau16 && angle < 5 * tau16) renderable.setAnimation("u");
-    // else if (angle >= 5 * tau16 && angle < 7 * tau16) renderable.setAnimation("ur");
-    // else if (angle >= 7 * tau16 && angle < 9 * tau16) renderable.setAnimation("r");
-    // else if (angle >= 9 * tau16 && angle < 11 * tau16) renderable.setAnimation("dr");
-    // else if (angle >= 11 * tau16 && angle < 13 * tau16) renderable.setAnimation("d");
-    // else if (angle >= 13 * tau16 && angle < 15 * tau16) renderable.setAnimation("dl");
   })
 }
