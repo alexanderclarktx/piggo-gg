@@ -1,4 +1,4 @@
-import { Entity, PositionProps, SystemBuilder, Zombie } from "@piggo-gg/core";
+import { PositionProps, SystemBuilder, Zombie } from "@piggo-gg/core";
 
 const spawnLocations: PositionProps[] = [
   { x: 100, y: 100 }, { x: 100, y: 600 },
@@ -12,11 +12,10 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
   id: "EnemySpawnSystem",
   init: ({ world }) => {
 
-    const enemiesInWave: Record<string, Entity> = {};
-
-    const data: { wave: number, lastSpawnIndex: number } = {
+    const data: { wave: number, lastSpawnIndex: number, zombies: string[] } = {
       wave: 0,
       lastSpawnIndex: 0,
+      zombies: []
     }
 
     const nextSpawnPosition = (): PositionProps => {
@@ -27,14 +26,14 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
     const onTick = () => {
 
       // handle old entities
-      Object.keys(enemiesInWave).forEach((id) => {
+      data.zombies.forEach((id) => {
         if (!world.entities[id]) {
-          delete enemiesInWave[id];
+          data.zombies = data.zombies.filter((zid) => zid !== id);
         }
       });
 
       // spawn new wave
-      if (Object.keys(enemiesInWave).length === 0) {
+      if (data.zombies.length === 0) {
         spawnWave(data.wave++);
       }
     }
@@ -44,7 +43,7 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
 
       for (let i = 0; i < zombies; i++) {
         const z = Zombie({ id: `zombie-wave${wave}-${i}`, positionProps: nextSpawnPosition() });
-        enemiesInWave[z.id] = z;
+        data.zombies.push(z.id);
         world.addEntity(z);
       }
     }
@@ -52,13 +51,7 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
     return {
       id: "EnemySpawnSystem",
       onTick,
-      data,
-      onRollback: () => {
-        Object.keys(enemiesInWave).forEach((id) => {
-          world.removeEntity(id);
-          delete enemiesInWave[id];
-        });
-      }
+      data
     }
   }
 });

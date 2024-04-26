@@ -10,16 +10,6 @@ export type PositionProps = {
   speed?: number
 }
 
-export const worldToIsometric = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
-  x: x - y,
-  y: (x + y) / 2
-});
-
-export const isometricToWorld = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
-  x: (2 * y + x) / 2,
-  y: (2 * y - x) / 2
-});
-
 // the entity's position in the world
 export class Position extends Component<"position"> {
   type: "position" = "position";

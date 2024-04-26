@@ -19,7 +19,9 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
   }
 }
 
-export type SerializedEntity = Record<string, Record<string, string | number>>
+export type NetworkedEntityData = Record<string, string | number | string[] | number[]>
+export type SerializedEntity = Record<string, NetworkedEntityData>
+
 export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "extend">
 
 export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): Entity<T> => {
@@ -49,7 +51,7 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
   return entity
 }
 
-export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity) : void => {
+export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity): void => {
 
   // add new components if necessary
   Object.keys(serializedEntity).forEach((type) => {
@@ -67,5 +69,5 @@ export const deserializeEntity = (entity: ProtoEntity, serializedEntity: Seriali
     if (component.type in serializedEntity) {
       component.deserialize(serializedEntity[component.type]);
     }
-  });  
+  });
 }
