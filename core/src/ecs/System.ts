@@ -7,7 +7,6 @@ export interface System<T extends string = string> {
   data?: NetworkedEntityData
   query?: string[];
   skipOnRollback?: boolean
-  onRender?: (entities: Entity[]) => void;
   onRollback?: () => void
   onTick: (entities: Entity[], isRollback: boolean) => void;
 }

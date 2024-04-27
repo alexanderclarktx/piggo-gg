@@ -20,6 +20,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       });
       physics.free();
       physics = new RapierWorld({ x: 0, y: 0 });
+      physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
+      physics.timestep = 0.025;
     }
 
     const onTick = (entities: Entity<Position | Collider>[], isRollback: false) => {
@@ -40,11 +42,10 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
 
       // prepare physics bodies for each entity
       entities.sort((a, b) => a.id > b.id ? 1 : -1).forEach((entity) => {
-        const { position } = entity.components;
+        const { position, collider } = entity.components;
 
         // handle new physics bodies
         if (!bodies[entity.id]) {
-          const { collider } = entity.components;
 
           // create rapier body/collider
           const body = physics.createRigidBody(collider.bodyDesc);
@@ -71,8 +72,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       });
 
       // run physics
-      physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
-      physics.timestep = 0.025;
       physics.step();
 
       // update the entity positions

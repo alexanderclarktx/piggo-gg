@@ -38,7 +38,7 @@ export class Position extends Component<"position"> {
     this.data.velocityY = velocityY ?? 0;
     this.screenFixed = screenFixed ?? false;
     this.data.velocityResets = velocityResets ?? 0;
-    this.data.speed = speed ?? 0;
+    this.data.speed = speed ?? 400;
   }
 
   setPosition = ({ x, y }: { x: number, y: number }) => {

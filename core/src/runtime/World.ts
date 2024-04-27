@@ -25,7 +25,6 @@ export type World = {
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
-  onRender: () => void
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -122,13 +121,6 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
         }
       })
     },
-    onRender: () => {
-      Object.values(world.systems).forEach((system) => {
-        if (system.onRender) {
-          system.onRender(filterEntities(system.query ?? [], Object.values(world.entities)));
-        }
-      });
-    },
     onTick: ({ isRollback }) => {
       const now = performance.now();
 
@@ -206,9 +198,6 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
 
   // schedule tick
   scheduleOnTick();
-
-  // schedule System.onRender
-  if (renderer) renderer.app.ticker.add(world.onRender);
 
   // setup games
   if (games) {
