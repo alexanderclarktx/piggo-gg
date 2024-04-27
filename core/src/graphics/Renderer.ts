@@ -26,7 +26,7 @@ export class Renderer {
       canvas: this.props.canvas,
       resolution: 1, // TODO configurable
       autoDensity: true,
-      backgroundColor: 0x6495ed,
+      backgroundColor: 0x000000,
       width: this.props.width ?? 800,
       height: this.props.height ?? 600,
       antialias: false,
@@ -37,6 +37,8 @@ export class Renderer {
     // set up the camera
     this.camera = Camera(this);
     this.app.stage.addChild(this.camera.c);
+
+    this.app.renderer.background
 
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";

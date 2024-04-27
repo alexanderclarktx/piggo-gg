@@ -1,5 +1,5 @@
 import { Renderer, World, IsometricWorld } from "@piggo-gg/core";
-import { Legends, Soccer, Strike } from "@piggo-gg/games";
+import { Legends, MainMenu, Soccer, Strike } from "@piggo-gg/games";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
@@ -28,6 +28,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
 
     renderer.init().then(() => {
       const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Strike, Soccer, Legends] });
+      // const world = IsometricWorld({ renderer, runtimeMode: "client", games: [MainMenu, Strike, Soccer, Legends] });
       setWorld(world);
     })
   }, []);

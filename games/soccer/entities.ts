@@ -3,11 +3,27 @@ import { Graphics } from "pixi.js";
 
 export type WallPoints = [number, number][];
 
-export const FieldWall = (wallPoints: WallPoints): Entity => {
-  return LineWall({ points: wallPoints.flat() });
+const defaultPoints: number[] = [
+  -400, 100,
+  -400, 300,
+  -430, 300, // notch
+  -430, 400, // notch
+  -400, 400,
+  -400, 600,
+  +500, 600,
+  +500, 400,
+  +530, 400, // notch
+  +530, 300, // notch
+  +500, 300,
+  +500, 100,
+  -400, 100,
+]
+
+export const FieldWall = (wallPoints: number[] = defaultPoints): Entity => {
+  return LineWall({ points: wallPoints });
 }
 
-export const FieldGrass = (wallPoints: WallPoints) => Entity({
+export const FieldGrass = (wallPoints: number[] = defaultPoints) => Entity({
   id: "field",
   components: {
     position: new Position({ x: 0, y: 0 }),
@@ -17,7 +33,7 @@ export const FieldGrass = (wallPoints: WallPoints) => Entity({
         // grass
         const grass = new Graphics();
         grass.setStrokeStyle({ width: 2, color: 0xffffff, alpha: 1 });
-        grass.poly(wallPoints.flat());
+        grass.poly(wallPoints);
         grass.fill(0x008833).stroke();
 
         // field lines
