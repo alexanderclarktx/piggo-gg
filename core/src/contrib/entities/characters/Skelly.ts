@@ -38,7 +38,8 @@ export const Skelly = (id: string, color?: number) => {
 
           const nametag = new Text({
             text: id.split("-")[1],
-            style: { fill: 0xffff00, fontSize: 14 }
+            resolution: 2,
+            style: { fill: 0xffff00, fontSize: 13 }
           }).updateTransform({ x: -20, y: -45 });
 
           r.c.addChild(nametag);
