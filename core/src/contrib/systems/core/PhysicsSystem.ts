@@ -46,7 +46,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
 
         // handle new physics bodies
         if (!bodies[entity.id]) {
-          // const { collider } = entity.components;
 
           // create rapier body/collider
           const body = physics.createRigidBody(collider.bodyDesc);

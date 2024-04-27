@@ -24,7 +24,7 @@ export const InputSystem = ClientSystemBuilder({
   init: ({ clientPlayerId, world, renderer }) => {
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
-    const charactersPreventDefault = new Set(["'", "/", " "]);
+    const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab"]);
 
     let bufferedDown = KeyBuffer();
     let backspaceOn = false;
@@ -89,7 +89,7 @@ export const InputSystem = ClientSystemBuilder({
 
           // push to chatBuffer or bufferedDown
           (chatIsOpen && validChatCharacters.has(keyName)) ?
-            chatBuffer.push(keyName) :
+            chatBuffer.push(event.key) :
             bufferedDown.push({ key: keyName, mouse });
         }
       }
