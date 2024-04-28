@@ -54,35 +54,14 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
 
 export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity): void => {
 
-  const ComponentsTable = {
-    actions: Actions,
-    clickable: Clickable,
-    collider: Collider,
-    controller: Controller,
-    controlled: Controlled,
-    controlling: Controlling,
-    data: Data,
-    debug: Debug,
-    health: Health,
-    name: Name,
-    networked: Networked,
-    npc: NPC,
-    player: Player,
-    position: Position,
-    renderable: Renderable,
-    gun: Gun
-  } as const;
-
   // add new components if necessary
   Object.entries(serializedEntity).forEach(([type, data]) => {
     if (!(type in entity.components)) {
-      console.log(`adding component ${type}`);
       if (type === "controlling") {
         console.log("adding controlling");
         entity.components.controlling = new Controlling();
       } else {
-        // @ts-expect-error
-        entity.components[type] = new ComponentsTable[type](data);
+        console.error(`failed to add component: ${type}`);
       }
     }
   });
