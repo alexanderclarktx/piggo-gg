@@ -1,4 +1,4 @@
-import { Component, ComponentTypes, Controlling } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Component, ComponentTypes, Controlled, Controller, Controlling, Data, Debug, Gun, Health, NPC, Name, Networked, NetworkedComponentData, Player, Position, Renderable } from "@piggo-gg/core";
 
 // 集 jí (set)
 // an Entity is a uniquely identified set of Components
@@ -19,8 +19,7 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
   }
 }
 
-export type NetworkedEntityData = Record<string, string | number | string[] | number[]>
-export type SerializedEntity = Record<string, NetworkedEntityData>
+export type SerializedEntity = Record<string, NetworkedComponentData>
 
 export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "extend">
 
@@ -37,7 +36,9 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
     },
     serialize: () => {
       const serializedEntity: SerializedEntity = {};
-      Object.values(protoEntity.components).forEach((component: Component) => {
+
+      const sortedComponents = Object.values(protoEntity.components).sort((a: Component, b: Component) => a.type.localeCompare(b.type));
+      sortedComponents.forEach((component: Component) => {
         const serializedComponent = component.serialize();
         if (Object.keys(serializedComponent).length) {
           serializedEntity[component.type] = serializedComponent;
@@ -53,13 +54,35 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
 
 export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity): void => {
 
+  const ComponentsTable = {
+    actions: Actions,
+    clickable: Clickable,
+    collider: Collider,
+    controller: Controller,
+    controlled: Controlled,
+    controlling: Controlling,
+    data: Data,
+    debug: Debug,
+    health: Health,
+    name: Name,
+    networked: Networked,
+    npc: NPC,
+    player: Player,
+    position: Position,
+    renderable: Renderable,
+    gun: Gun
+  } as const;
+
   // add new components if necessary
-  Object.keys(serializedEntity).forEach((type) => {
+  Object.entries(serializedEntity).forEach(([type, data]) => {
     if (!(type in entity.components)) {
       console.log(`adding component ${type}`);
       if (type === "controlling") {
         console.log("adding controlling");
         entity.components.controlling = new Controlling();
+      } else {
+        // @ts-expect-error
+        entity.components[type] = new ComponentsTable[type](data);
       }
     }
   });

@@ -23,7 +23,7 @@ export class Collider extends Component<"collider"> {
   colliderDesc: ColliderDesc;
   rapierCollider: RapierCollider;
   body: RigidBody;
-  sensor: (e2: Entity<Position>, world: World) => void
+  sensor: (e2: Entity<Position>, world: World) => void;
 
   constructor({ shape, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation }: ColliderProps) {
     super();

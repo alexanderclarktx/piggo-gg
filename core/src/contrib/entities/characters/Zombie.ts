@@ -12,7 +12,7 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
   components: {
     position: new Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
     networked: new Networked({ isNetworked: true }),
-    health: new Health(100, 100),
+    health: new Health({ health: 100, maxHealth: 100 }),
     npc: new NPC<ZombieMovementActions>({
       onTick: (_) => ({ action: "chase" })
     }),

@@ -68,7 +68,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
           if (t) t.text = `${data.goals}`
         },
         zIndex: 3,
-        container: render
+        setContainer: render
       })
     }
   })

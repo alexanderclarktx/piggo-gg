@@ -36,7 +36,7 @@ export const ChatBubbleSystem = ClientSystemBuilder({
               renderable: new Renderable({
                 zIndex: 4,
                 scale: 1,
-                children: async () => [textBox]
+                setChildren: async () => [textBox]
               })
             }
           }));

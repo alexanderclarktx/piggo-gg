@@ -14,7 +14,7 @@ export const DebugBounds = (props: DebugBoundsProps): Renderable => {
       // get the bounds of the renderable
       const bounds = props.debugRenderable.c.getLocalBounds();
       if (bounds.width === 0 && bounds.height === 0) {
-        setTimeout(() => renderable.props.setup?.(r, renderable.renderer), 100);
+        setTimeout(() => renderable.setup?.(r, renderable.renderer), 100);
         return;
       }
 

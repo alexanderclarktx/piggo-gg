@@ -49,7 +49,11 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
 
           // create rapier body/collider
           const body = physics.createRigidBody(collider.bodyDesc);
-          collider.rapierCollider = physics.createCollider(collider.colliderDesc, body);
+          try {
+            collider.rapierCollider = physics.createCollider(collider.colliderDesc, body);
+          } catch (e) {
+            console.error(e);
+          }
 
           // set Collider.body
           collider.body = body;

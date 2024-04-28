@@ -43,7 +43,7 @@ export const FloorTiles = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor$
       for (let y = 0; y < cols; y++) {
         tiles.push(new Renderable({
           position: { x: y * texture.width - (x * texture.width), y: (y + x) * (texture.height - 4) },
-          container: async () => new Sprite(renderTexture),
+          setContainer: async () => new Sprite(renderTexture),
           visible: x < 25 ? (y < 25 ? true : false) : false
         }))
       }
@@ -57,7 +57,7 @@ export const FloorTiles = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor$
       position: new Position(position),
       renderable: new Renderable({
         zIndex: 0,
-        children: makeTiles
+        setChildren: makeTiles
       })
     }
   });

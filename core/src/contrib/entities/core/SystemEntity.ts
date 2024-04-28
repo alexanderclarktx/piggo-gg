@@ -1,8 +1,8 @@
-import { Data, Entity, Networked, NetworkedEntityData } from "@piggo-gg/core";
+import { Data, Entity, Networked, NetworkedComponentData } from "@piggo-gg/core";
 
 export type SystemEntityProps = {
   systemId: string
-  data: NetworkedEntityData
+  data: NetworkedComponentData
 }
 
 // a system entity is a special entity that stores networked system data

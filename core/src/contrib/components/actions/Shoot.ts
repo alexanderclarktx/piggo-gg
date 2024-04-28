@@ -29,7 +29,7 @@ export const Shoot: ActionMap<{ mouse: { x: number, y: number } }> = {
       mouseX + flip * Math.min(width, (width * ry)), mouseY + Math.min(width, (width * rx))
     ]
 
-    world.addEntity(LineWall({ points: coords, draw: true, health: true }));
+    world.addEntity(LineWall({ points: coords, visible: true, health: true }));
   }, 50),
   shoot: Action(({ world, params, entity }) => {
 

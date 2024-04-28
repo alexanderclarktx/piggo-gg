@@ -46,7 +46,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         // update renderable if position changed
         if (position && cache[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
-          if (renderable.props.rotates) {
+          if (renderable.rotates) {
             renderable.c.rotation = position.data.rotation;
           }
 
@@ -91,12 +91,12 @@ export const RenderSystem = ClientSystemBuilder({
         }
 
         // run the dynamic callback
-        if (renderable.props.dynamic) renderable.props.dynamic(renderable.c, renderable, entity, world);
+        if (renderable.dynamic) renderable.dynamic(renderable.c, renderable, entity, world);
 
         // run dynamic on children
         if (renderable.children) {
           renderable.children.forEach((child) => {
-            if (child.props.dynamic) child.props.dynamic(child.c, child, entity, world);
+            if (child.dynamic) child.dynamic(child.c, child, entity, world);
           });
         }
       });
@@ -113,7 +113,7 @@ export const RenderSystem = ClientSystemBuilder({
         if (entity) {
           const renderable = entity.components.renderable;
           if (renderable) {
-            renderable.c.zIndex = (renderable.props.zIndex ?? 2) + 0.0001 * sortedEntityPositions.indexOf(entityId);
+            renderable.c.zIndex = (renderable.zIndex) + 0.0001 * sortedEntityPositions.indexOf(entityId);
           }
         }
       });
