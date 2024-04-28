@@ -1,5 +1,5 @@
-import { Renderer, World, IsometricWorld } from "@piggo-gg/core";
-import { Legends, MainMenu, Soccer, Strike } from "@piggo-gg/games";
+import { Renderer, World, IsometricWorld, MainMenu } from "@piggo-gg/core";
+import { Legends, Soccer, Strike } from "@piggo-gg/games";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {

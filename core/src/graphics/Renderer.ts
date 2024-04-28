@@ -38,8 +38,6 @@ export class Renderer {
     this.camera = Camera(this);
     this.app.stage.addChild(this.camera.c);
 
-    this.app.renderer.background
-
     // hide the cursor
     this.app.renderer.events.cursorStyles.default = "none";
 
