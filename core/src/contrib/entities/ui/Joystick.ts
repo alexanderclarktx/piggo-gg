@@ -12,7 +12,7 @@ export const Joystick = (): Entity => {
       renderable: new Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        container: async () => {
+        setContainer: async () => {
           return new JoystickContainer({
             onChange: (data) => {
               currentJoystickPosition.angle = data.angle;

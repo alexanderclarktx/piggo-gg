@@ -20,7 +20,7 @@ export const HealthBarSystem = ClientSystemBuilder({
       // handle new entities
       entities.forEach((entity) => {
         const { health, position } = entity.components;
-        if (health && health.showHealthBar && position) {
+        if (health && health.data.showHealthBar && position) {
           if (!renderedEntities.has(entity)) {
             healthbarForEntity(entity);
           }

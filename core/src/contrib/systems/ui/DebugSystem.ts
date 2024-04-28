@@ -83,7 +83,7 @@ export const DebugSystem = ClientSystemBuilder({
           }
         },
         zIndex: 5,
-        container: async () => new Graphics()
+        setContainer: async () => new Graphics()
       });
 
       const debugEntity = Entity<Position | Renderable>({
@@ -92,7 +92,7 @@ export const DebugSystem = ClientSystemBuilder({
           position: new Position(),
           renderable: new Renderable({
             zIndex: 4,
-            children: async () => [textBox, debugBounds, lineToHeading]
+            setChildren: async () => [textBox, debugBounds, lineToHeading]
           })
         }
       });
@@ -130,7 +130,7 @@ export const DebugSystem = ClientSystemBuilder({
           }
         },
         zIndex: 5,
-        container: async () => new Graphics()
+        setContainer: async () => new Graphics()
       });
 
       const debugEntity = Entity<Position | Renderable>({

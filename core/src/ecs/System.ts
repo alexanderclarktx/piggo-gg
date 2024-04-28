@@ -1,10 +1,10 @@
-import { Entity, World, Renderer, NetworkedEntityData } from "@piggo-gg/core";
+import { Entity, World, Renderer, NetworkedComponentData } from "@piggo-gg/core";
 
 // 制 zhì (system)
 // a System is a function that runs on every tick
 export interface System<T extends string = string> {
   id: T,
-  data?: NetworkedEntityData
+  data?: NetworkedComponentData
   query?: string[];
   skipOnRollback?: boolean
   onRollback?: () => void

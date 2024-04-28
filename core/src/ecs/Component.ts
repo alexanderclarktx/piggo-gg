@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Data, Debug, Gun, Health, NPC, Name, Networked, NetworkedEntityData, Player, Position, Renderable } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Controlled, Controller, Controlling, Data, Debug, Gun, Health, NPC, Name, Networked, Player, Position, Renderable } from "@piggo-gg/core";
 
 export type ComponentTypes =
   Actions | Clickable | Collider |
@@ -6,23 +6,25 @@ export type ComponentTypes =
   Data | Debug | Health | Name | Networked |
   NPC | Player | Position | Renderable | Gun
 
+export type NetworkedComponentData = Record<string, boolean | string | number | string[] | number[]>
+
 // 個 gè (generic measure word)
 // a Component is an atomic unit of data that is attached to an entity
 export abstract class Component<T extends string = string> {
   abstract type: T;
 
-  data: NetworkedEntityData = {};
+  data: NetworkedComponentData = {};
 
   // serializes data from component
-  serialize: () => Record<string, string | number | string[] | number[]> = () => {
-    let data: Record<string, string | number | string[] | number[]> = {};
+  serialize: () => NetworkedComponentData = () => {
+    let data: NetworkedComponentData = {};
     Object.keys(this.data).forEach((key) => data[key] = this.data[key]);
 
     return data;
   }
 
   // copies networked data to the component
-  deserialize: (data: Record<string, string | number | string[] | number[]>) => void = (data) => {
+  deserialize: (data: NetworkedComponentData) => void = (data) => {
     for (const [key, value] of Object.entries(data)) {
       this.data[key] = value;
     }

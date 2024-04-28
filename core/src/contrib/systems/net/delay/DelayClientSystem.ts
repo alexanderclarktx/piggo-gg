@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie, SerializedEntity } from "@piggo-gg/core";
+import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie, SerializedEntity, LineWall } from "@piggo-gg/core";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -104,6 +104,9 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
             world.addEntity(Noob({ id: entityId }))
           } else if (entityId.startsWith("skelly")) {
             world.addEntity(Skelly(entityId));
+          } else if (entityId.startsWith("linewall")) {
+            const points = entityId.split("-").slice(1).map((p) => parseInt(p));
+            world.addEntity(LineWall({ id: entityId, points }));
           } else {
             console.error("UNKNOWN ENTITY ON SERVER", entityId);
           }

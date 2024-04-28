@@ -52,7 +52,7 @@ export const Chat = (): Entity => {
       position: new Position({ x: -400, y: -200, screenFixed: true }),
       renderable: new Renderable({
         zIndex: 4,
-        children: async () => [chatHistoryText(), chatBufferText()]
+        setChildren: async () => [chatHistoryText(), chatBufferText()]
       })
     }
   });

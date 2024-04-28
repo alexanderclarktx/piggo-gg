@@ -1,4 +1,4 @@
-import { Component, ComponentTypes, Controlling } from "@piggo-gg/core";
+import { Component, ComponentTypes, Controlling, NetworkedComponentData } from "@piggo-gg/core";
 
 // 集 jí (set)
 // an Entity is a uniquely identified set of Components
@@ -19,8 +19,7 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
   }
 }
 
-export type NetworkedEntityData = Record<string, string | number | string[] | number[]>
-export type SerializedEntity = Record<string, NetworkedEntityData>
+export type SerializedEntity = Record<string, NetworkedComponentData>
 
 export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "extend">
 
@@ -37,7 +36,9 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
     },
     serialize: () => {
       const serializedEntity: SerializedEntity = {};
-      Object.values(protoEntity.components).forEach((component: Component) => {
+
+      const sortedComponents = Object.values(protoEntity.components).sort((a: Component, b: Component) => a.type.localeCompare(b.type));
+      sortedComponents.forEach((component: Component) => {
         const serializedComponent = component.serialize();
         if (Object.keys(serializedComponent).length) {
           serializedEntity[component.type] = serializedComponent;
@@ -56,10 +57,11 @@ export const deserializeEntity = (entity: ProtoEntity, serializedEntity: Seriali
   // add new components if necessary
   Object.keys(serializedEntity).forEach((type) => {
     if (!(type in entity.components)) {
-      console.log(`adding component ${type}`);
       if (type === "controlling") {
         console.log("adding controlling");
         entity.components.controlling = new Controlling();
+      } else {
+        console.error(`failed to add component: ${type}`);
       }
     }
   });

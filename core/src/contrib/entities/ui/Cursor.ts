@@ -9,7 +9,7 @@ export const Cursor = (): Entity => {
     components: {
       position: new Position({ x: 2000, y: 2000, screenFixed: true }),
       renderable: new Renderable({
-        container: async (r: Renderer) => {
+        setContainer: async (r: Renderer) => {
           r.props.canvas.addEventListener("mousemove", (event) => {
             const rect = r.props.canvas.getBoundingClientRect();
 

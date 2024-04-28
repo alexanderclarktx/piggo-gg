@@ -1,4 +1,4 @@
-import { Collider, Debug, Entity, Position, Renderable, World } from "@piggo-gg/core";
+import { Collider, Entity, Position, Renderable, World } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export type ProjectileProps = {
@@ -15,7 +15,7 @@ export const Projectile = ({ radius, pos }: ProjectileProps) => {
         shape: "ball",
         radius: radius ?? 10,
         sensor: (e2: Entity<Position>, world: World) => {
-          if (e2.components.health) {
+          if (e2.components.health && e2.components.health.data.shootable) {
             e2.components.health.data.health -= 25;
             world.removeEntity(projectile.id);
           }
