@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Component, ComponentTypes, Controlled, Controller, Controlling, Data, Debug, Gun, Health, NPC, Name, Networked, NetworkedComponentData, Player, Position, Renderable } from "@piggo-gg/core";
+import { Component, ComponentTypes, Controlling, NetworkedComponentData } from "@piggo-gg/core";
 
 // 集 jí (set)
 // an Entity is a uniquely identified set of Components
@@ -55,7 +55,7 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
 export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity): void => {
 
   // add new components if necessary
-  Object.entries(serializedEntity).forEach(([type, data]) => {
+  Object.keys(serializedEntity).forEach((type) => {
     if (!(type in entity.components)) {
       if (type === "controlling") {
         console.log("adding controlling");

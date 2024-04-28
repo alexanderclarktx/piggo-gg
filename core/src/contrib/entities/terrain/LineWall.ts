@@ -4,15 +4,13 @@ import { Graphics } from "pixi.js";
 export type LineWallProps = {
   points: number[]
   visible?: boolean
-  health?: boolean
+  health?: number
+  shootable?: boolean
   id?: string
 }
 
-export const LineWall = ({ points, visible, health, id }: LineWallProps) => {
+export const LineWall = ({ points, visible, health, id, shootable }: LineWallProps) => {
 
-  points = points.map(Math.round);
-
-  // const newPoints = points;
   const newPoints = points.map((point, i) => {
     if (i % 2 === 0) {
       return point - points[0];
@@ -26,7 +24,7 @@ export const LineWall = ({ points, visible, health, id }: LineWallProps) => {
     components: {
       position: new Position({ x: points[0], y: points[1] }),
       debug: new Debug(),
-      ...health ? { health: new Health({ health: 75, maxHealth: 75, showHealthBar: false }) } : {},
+      health: new Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false, shootable: shootable ?? false }),
       networked: new Networked({ isNetworked: true }),
       collider: new Collider({
         shape: "line",
