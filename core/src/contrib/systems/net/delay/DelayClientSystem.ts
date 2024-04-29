@@ -106,7 +106,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
             world.addEntity(Skelly(entityId));
           } else if (entityId.startsWith("linewall")) {
             const points = entityId.split("-").slice(1).map((p) => parseInt(p)).filter(Number);
-            world.addEntity(LineWall({ id: entityId, points }));
+            world.addEntity(LineWall({ id: entityId, points, visible: true }));
           } else {
             console.error("UNKNOWN ENTITY ON SERVER", entityId);
           }

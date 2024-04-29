@@ -1,5 +1,4 @@
-import { Action, Entity, World } from "@piggo-gg/core";
-import { Button, Clickable, Position } from "@piggo-gg/core";
+import { Action, Button, Clickable, Entity, Position } from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
 export const DebugButton = (): Entity => {

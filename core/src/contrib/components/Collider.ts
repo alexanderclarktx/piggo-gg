@@ -14,6 +14,7 @@ export type ColliderProps = {
   mass?: number // default mass seems to be 100
   restitution?: number
   rotation?: number
+  priority?: number
   sensor?: (e2: Entity<Position>, world: World) => void
 }
 
@@ -23,9 +24,11 @@ export class Collider extends Component<"collider"> {
   colliderDesc: ColliderDesc;
   rapierCollider: RapierCollider;
   body: RigidBody;
+  priority: number = 0;
+
   sensor: (e2: Entity<Position>, world: World) => void;
 
-  constructor({ shape, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation }: ColliderProps) {
+  constructor({ shape, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority }: ColliderProps) {
     super();
 
     if (isStatic) {
@@ -39,18 +42,16 @@ export class Collider extends Component<"collider"> {
     } else if (shape === "cuboid") {
       this.colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1);
     } else if (shape === "line" && points) {
-      const s = ColliderDesc.polyline(Float32Array.from(points));
-      if (s) {
-        this.colliderDesc = s;
-      } else {
-        this.colliderDesc = ColliderDesc.capsule(length ?? 1, width ?? 1);
-      }
+      const s = ColliderDesc.polyline(Float32Array.from(points))
+      this.colliderDesc = s;
     }
 
     if (sensor) {
       this.colliderDesc.setSensor(true);
       this.sensor = sensor;
     }
+
+    if (priority) this.priority = priority;
 
     if (mass) this.colliderDesc.setMass(mass);
     if (restitution) this.colliderDesc.setRestitution(restitution);

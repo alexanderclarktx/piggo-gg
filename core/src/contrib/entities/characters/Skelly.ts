@@ -40,7 +40,7 @@ export const Skelly = (id: string, color?: number) => {
             text: id.split("-")[1],
             resolution: 2,
             style: { fill: 0xffff00, fontSize: 13 }
-          }).updateTransform({ x: -20, y: -45 });
+          }).updateTransform({ x: -18, y: -45 });
 
           r.c.addChild(nametag);
         }

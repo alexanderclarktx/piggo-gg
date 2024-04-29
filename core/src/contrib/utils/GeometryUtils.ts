@@ -12,6 +12,10 @@ export const orthoToDirection = (o: number) => {
   return "d";
 }
 
+export const addPoints = (arr1: [number, number] | number[], arr2: [number, number]): [number, number] => {
+  return [arr1[0] + arr2[0], arr1[1] + arr2[1]];
+}
+
 export const worldToIsometric = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
   x: x - y,
   y: (x + y) / 2

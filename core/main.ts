@@ -16,6 +16,7 @@ export * from "./src/contrib/systems/core/DamageSystem";
 export * from "./src/contrib/systems/core/NPCSystem";
 export * from "./src/contrib/systems/core/PhysicsSystem";
 export * from "./src/contrib/systems/gameplay/EnemySpawnSystem";
+export * from "./src/contrib/systems/gameplay/GunSystem";
 export * from "./src/contrib/systems/gameplay/PlayerSpawnSystem";
 export * from "./src/contrib/systems/net/delay/DelayClientSystem";
 export * from "./src/contrib/systems/net/delay/DelayServerSystem";

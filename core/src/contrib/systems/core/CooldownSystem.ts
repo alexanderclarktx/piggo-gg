@@ -5,7 +5,6 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
   id: "CooldownSystem",
   init: ({ world }) => {
 
-    // record of ability cooldowns
     const cooldowns: Record<string, number> = {};
     
     const offCooldown = (entityId: string) => (invokedAction: InvokedAction) => {
