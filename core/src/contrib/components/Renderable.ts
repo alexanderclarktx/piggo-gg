@@ -33,12 +33,13 @@ export class Renderable extends Component<"renderable"> {
   rotates: boolean;
   zIndex: number;
   color: number;
+  visible: boolean;
   scaleMode: "nearest" | "linear";
   interactiveChildren: boolean;
 
   anchor: { x: number; y: number };
   position: { x: number; y: number };
-  
+
   r: Renderable | undefined;
   renderer: Renderer | undefined;
   children: Renderable[] | undefined;
@@ -48,17 +49,13 @@ export class Renderable extends Component<"renderable"> {
   setup: undefined | ((renderable: Renderable, renderer: Renderer | undefined) => Promise<void>);
   dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void);
 
-  override data = {
-    visible: true
-  }
-
   constructor(props: RenderableProps) {
     super();
     this.animations = props.animations ?? {};
     this.position = props.position ?? { x: 0, y: 0 };
     this.rotates = props.rotates ?? false;
     this.scale = props.scale ?? 1;
-    this.data.visible = props.visible ?? true;
+    this.visible = props.visible ?? true;
     this.zIndex = props.zIndex ?? 0;
     this.color = props.color ?? 0xffffff;
     this.interactiveChildren = props.interactiveChildren ?? false;
@@ -74,7 +71,7 @@ export class Renderable extends Component<"renderable"> {
   overrideDynamic = (dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)) => {
     return (c: Container, r: Renderable, e: Entity, w: World) => {
       if (dynamic) dynamic(c, r, e, w);
-      if (this.data.visible !== this.c.visible) this.c.visible = this.data.visible;
+      if (this.c.visible !== this.visible) this.c.visible = this.visible;
     }
   }
 
@@ -125,7 +122,7 @@ export class Renderable extends Component<"renderable"> {
     this.interactiveChildren ? this.c.interactiveChildren = true : this.c.interactiveChildren = false;
 
     // set visible
-    this.c.visible = this.data.visible ?? true;
+    this.c.visible = this.visible ?? true;
 
     // set container properties
     this.c.zIndex = this.zIndex || 0;
