@@ -92,12 +92,16 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = ({
       // sensor callbacks
       Object.values(colliders).forEach((collider: Collider) => {
         if (collider.sensor) {
+          const collidedWith: Entity<Collider | Position>[] = [];
+
           physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
-            const entry = Object.entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
-            if (entry) {
-              const id = entry[0];
-              if (world.entities[id]) collider.sensor(world.entities[id] as Entity<Position>, world)
-            }
+            const collided = Object.entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
+            if (collided && world.entities[collided[0]]) collidedWith.push(world.entities[collided[0]] as Entity<Collider | Position>);
+          });
+
+          // collide only once
+          collidedWith.sort((a, b) => b.components.collider.priority - a.components.collider.priority).slice(0, 1).forEach((entity) => {
+            collider.sensor(entity, world);
           });
         }
       });

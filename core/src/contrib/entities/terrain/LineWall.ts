@@ -29,7 +29,8 @@ export const LineWall = ({ points, visible, health, id, shootable }: LineWallPro
       collider: new Collider({
         shape: "line",
         isStatic: true,
-        points: newPoints
+        points: newPoints,
+        priority: 1
       }),
       renderable: new Renderable({
         visible: visible ?? false,
