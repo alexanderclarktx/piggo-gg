@@ -99,6 +99,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     },
     removeSystem: (id: string) => {
       const system = world.systems[id];
+      if (system.data) world.removeEntity(`SystemEntity-${id}`);
       if (system) delete world.systems[id];
     },
     addSystems: (systems: System[]) => {
