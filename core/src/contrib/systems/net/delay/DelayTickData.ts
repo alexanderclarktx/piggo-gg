@@ -1,6 +1,33 @@
 import { InvokedAction, SerializedEntity } from "@piggo-gg/core";
 
-export type DelayTickData = GameData
+type BaseRequest = {
+  type: "request"
+  id: string
+}
+
+export type LobbyList = BaseRequest & {
+  route: "lobby/list"
+  response: {}
+}
+
+export type LobbyCreate = BaseRequest & {
+  route: "lobby/create"
+  response: {}
+}
+
+export type LobbyJoin = BaseRequest & {
+  route: "lobby/join"
+  response: {}
+}
+
+export type LobbyExit = BaseRequest & {
+  route: "lobby/exit"
+  response: {}
+}
+
+export type ClientRequest = LobbyList | LobbyCreate | LobbyJoin | LobbyExit
+
+export type DelayTickData = GameData | LobbiesData
 
 export type GameData = {
   type: "game"
@@ -14,3 +41,11 @@ export type GameData = {
   tick: number
   timestamp: number
 }
+
+export type LobbiesData = {
+  type: "lobbies"
+
+  lobbies: Record<string, number> // player count per lobby
+}
+
+// type A = DelayTickData["type"]

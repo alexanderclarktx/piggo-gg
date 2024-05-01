@@ -1,30 +1,25 @@
 import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie, SerializedEntity, LineWall } from "@piggo-gg/core";
 
-const servers = {
-  dev: "ws://localhost:3000",
-  staging: "wss://piggo-api-staging.up.railway.app",
-  production: "wss://api.piggo.gg"
-} as const;
-
 // delay netcode client
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
   init: ({ world, clientPlayerId }) => {
-    // const wsClient = new WebSocket(servers.production);
-    // const wsClient = new WebSocket(servers.staging);
-    const wsClient = new WebSocket(servers.dev);
+    if (!world.wsClient) return undefined;
 
+    const wsClient = world.wsClient;
     let serverMessageBuffer: DelayTickData[] = [];
     let lastLatency = 0;
+    let lastMessageTick: number = 0;
 
     setInterval(() => {
       (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
     }, 200);
 
-    let lastMessageTick: number = 0;
-
-    wsClient.onmessage = (event) => {
+    world.wsClient.onmessage = (event) => {
       const message = JSON.parse(event.data) as DelayTickData;
+      console.log("message", message);
+
+      if (message.type !== "game") return; // todo
 
       // skip old messages
       if (message.tick < lastMessageTick) return;
@@ -59,7 +54,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         type: "game"
       }
 
-      if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
+      if (wsClient.readyState === WebSocket.OPEN) wsClient.send(JSON.stringify(message));
 
       world.actionBuffer.clearTick(world.tick + 1);
     }
@@ -80,6 +75,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       }
 
       let message = serverMessageBuffer.shift() as DelayTickData;
+      if (message.type !== "game") return; // todo
 
       // remove old local entities
       Object.keys(world.entities).forEach((entityId) => {

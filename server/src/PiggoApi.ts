@@ -1,3 +1,4 @@
+import { ClientRequest, DelayTickData } from "@piggo-gg/core";
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
@@ -10,12 +11,27 @@ export type PerClientData = {
 export class PiggoApi {
 
   bun: Server;
-  clientCount = 1;
+  clientIncr = 1;
   clients: Record<string, ServerWebSocket<PerClientData>> = {};
 
   worlds: Record<string, WorldManager> = {
     "A": WorldManager(),
     "B": WorldManager()
+  }
+
+  handlers: Record<ClientRequest["route"], (ws: ServerWebSocket<PerClientData>, msg: ClientRequest) => void> = {
+    "lobby/list": (ws, msg) => {
+      console.log("lobby/list", msg);
+    },
+    "lobby/create": (ws, msg) => {
+      console.log("lobby/create", msg);
+    },
+    "lobby/join": (ws, msg) => {
+      console.log("lobby/join", msg);
+    },
+    "lobby/exit": (ws, msg) => {
+      console.log("lobby/exit", msg);
+    },
   }
 
   constructor() {
@@ -41,17 +57,26 @@ export class PiggoApi {
 
   handleOpen = (ws: ServerWebSocket<PerClientData>) => {
     // set data for this client
-    ws.data = { id: this.clientCount, worldId: "A", playerName: "UNKNOWN" };
+    ws.data = { id: this.clientIncr, worldId: "A", playerName: "UNKNOWN" };
 
     // increment id
-    this.clientCount += 1;
+    this.clientIncr += 1;
   }
 
   handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {
     if (typeof msg != "string") return;
 
+    const wsData = JSON.parse(msg) as ClientRequest | DelayTickData;
+    if (!wsData.type) return;
+
+    if (wsData.type === "request") {
+      const handler = this.handlers[wsData.route];
+      if (handler) handler(ws, wsData);
+      return;
+    }
+
     const world = this.worlds[ws.data.worldId];
-    world.handleMessage(ws, msg);
+    world.handleMessage(ws, wsData);
   }
 }
 

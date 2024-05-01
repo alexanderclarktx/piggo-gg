@@ -55,11 +55,14 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
       messages.forEach((message) => {
         if (!message) return;
 
+        const tickData = message.td;
+        if (tickData.type !== "game") return; // todo
+
         // process message actions
-        if (message.td.actions) {
-          Object.keys(message.td.actions).forEach((entityId) => {
+        if (tickData.actions) {
+          Object.keys(tickData.actions).forEach((entityId) => {
             if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-              message.td.actions[entityId].forEach((action) => {
+              tickData.actions[entityId].forEach((action) => {
                 world.actionBuffer.push(world.tick, entityId, action);
               });
             }
@@ -67,8 +70,8 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         }
 
         // process message chats
-        if (message.td.chats[client]) {
-          world.chatHistory.set(world.tick, client, message.td.chats[client]);
+        if (tickData.chats[client]) {
+          world.chatHistory.set(world.tick, client, tickData.chats[client]);
         }
       });
     });

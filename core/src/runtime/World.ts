@@ -1,5 +1,11 @@
 import { Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity, StateBuffer, System, SystemBuilder, SystemEntity } from "@piggo-gg/core";
 
+const servers = {
+  dev: "ws://localhost:3000",
+  staging: "wss://piggo-api-staging.up.railway.app",
+  production: "wss://api.piggo.gg"
+} as const;
+
 export type World = {
   actionBuffer: StateBuffer<InvokedAction>
   chatHistory: StateBuffer<string>
@@ -20,6 +26,7 @@ export type World = {
   tickFaster: boolean
   tickFlag: "green" | "red"
   tickrate: number
+  wsClient: WebSocket | undefined
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
@@ -75,6 +82,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     tickFaster: false,
     tickFlag: "green",
     tickrate: 25,
+    wsClient: undefined,
     addEntity: (entity: Entity, timeout?: number) => {
       const oldEntity = world.entities[entity.id];
       if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup();
@@ -209,6 +217,13 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
   // setup commands
   if (commands) {
     commands.forEach((command) => world.commands[command.id] = command);
+  }
+
+  // connect to server
+  if (runtimeMode === "client") {
+    // world.wsClient = new WebSocket(servers.production);
+    // world.wsClient = new WebSocket(servers.staging);
+    world.wsClient = new WebSocket(servers.dev);
   }
 
   return world;
