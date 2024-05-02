@@ -46,7 +46,7 @@ export const Hubworld = IsometricGame({
           32 * -22, 32 * 4.5,
           32 * -15, 32 * 1,
           32 * -8, 32 * 4.5
-        ], health: 75
+        ]
       })
     ],
     systems: [PlayerSpawnSystem, HealthBarSystem, EnemySpawnSystem, GunSystem],
