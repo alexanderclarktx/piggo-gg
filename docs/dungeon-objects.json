@@ -1,6 +1,6 @@
 {
   "frames": {
-    "light": { "frame": { "x": 769, "y": 400, "w": 63, "h": 48 } }
+    "invite-stone": { "frame": { "x": 769, "y": 400, "w": 63, "h": 48 } }
   },
   "meta": {
     "image": "dungeons-sheet.png",

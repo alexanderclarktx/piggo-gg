@@ -51,8 +51,8 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
         zIndex: 3,
         color: tint ?? 0xffffff,
         setContainer: async () => {
-          const textures = await loadTexture("dungeons.json");
-          const sprite = new Sprite({ texture: textures["light"] });
+          const textures = await loadTexture("dungeon-objects.json");
+          const sprite = new Sprite({ texture: textures["invite-stone"] });
           sprite.anchor.set(0.5, 0.5);
           return sprite;
         }
