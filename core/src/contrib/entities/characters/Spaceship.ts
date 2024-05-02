@@ -11,12 +11,11 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
   components: {
     position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
     networked: new Networked({ isNetworked: true }),
-    clickable: new Clickable({
-      width: 100,
-      height: 120,
-      active: true,
+    actions: new Actions({
+      ...VehicleMovement,
       click: PlayerControlsEntity
     }),
+    clickable: new Clickable({ width: 100, height: 120, active: true }),
     collider: new Collider({ shape: "ball", radius: 20 }),
     controller: new Controller<VehicleMovementActions>({
       keyboard: {
@@ -30,7 +29,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       }
     }),
     debug: new Debug(),
-    actions: new Actions(VehicleMovement),
+    // actions: new Actions(VehicleMovement),
     renderable: new Renderable({
       rotates: true,
       zIndex: 3,

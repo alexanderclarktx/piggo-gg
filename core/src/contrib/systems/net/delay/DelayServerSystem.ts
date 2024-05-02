@@ -61,11 +61,11 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         // process message actions
         if (tickData.actions) {
           Object.keys(tickData.actions).forEach((entityId) => {
-            if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
+            // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
               tickData.actions[entityId].forEach((action) => {
                 world.actionBuffer.push(world.tick, entityId, action);
               });
-            }
+            // }
           });
         }
 

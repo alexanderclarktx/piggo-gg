@@ -71,7 +71,7 @@ export const WASDController: ControllerMap<WASDParams | { mouse: { x: number, y:
 
 export const WASDActionMap: ActionMap<WASDParams> = {
   head: {
-    apply: ({ params, entity }) => {
+    invoke: ({ params, entity }) => {
       if (!entity) return;
 
       const { position } = entity.components;
@@ -80,7 +80,7 @@ export const WASDActionMap: ActionMap<WASDParams> = {
     }
   },
   move: {
-    apply: ({ params, entity }) => {
+    invoke: ({ params, entity }) => {
       if (!entity) return;
 
       const { position } = entity.components;

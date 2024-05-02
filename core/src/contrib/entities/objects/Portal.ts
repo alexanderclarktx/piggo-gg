@@ -1,6 +1,6 @@
-import { Clickable, Debug, Entity, Position, Renderable, loadTexture } from "@piggo-gg/core";
+import { Actions, Clickable, Entity, Networked, Position, Renderable, loadTexture } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
-import { Sprite, Matrix } from "pixi.js";
+import { Matrix, Sprite } from "pixi.js";
 
 export type PortalProps = {
   pos: { x: number, y: number }
@@ -12,6 +12,14 @@ export const Portal = ({ pos, game }: PortalProps): Entity => {
     id: `portal-${game}`,
     components: {
       position: new Position(pos),
+      networked: new Networked({ isNetworked: true }),
+      actions: new Actions<{ game: string }>({
+        click: {
+          invoke: ({ world, params }) => {
+            world.setGame(params.game);
+          }
+        }
+      }),
       clickable: new Clickable({
         active: true,
         width: 256,
@@ -22,11 +30,7 @@ export const Portal = ({ pos, game }: PortalProps): Entity => {
         hoverOut: () => {
           portal.components.renderable.c.filters = []
         },
-        click: {
-          apply: ({ world }) => {
-            world.setGame(game);
-          }
-        }
+        click: () => ({ action: "click", params: { game } }),
       }),
       renderable: new Renderable({
         zIndex: 1,

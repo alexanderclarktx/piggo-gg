@@ -12,7 +12,7 @@ export const GameCommand: Command<GameCommandParams> = {
       params: { game: match[1] }
     }
   },
-  apply: ({ params, world }) => {
+  invoke: ({ params, world }) => {
     console.log("GameCommand", params);
     if (world.games[params.game] && world.currentGame.id !== params.game) {
       world.setGame(world.games[params.game]);

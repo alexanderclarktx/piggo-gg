@@ -1,30 +1,7 @@
-import { Actions, Clickable, ClientSystemBuilder, Entity, Position, Renderer, mouse } from "@piggo-gg/core";
+import { Actions, Clickable, ClientSystemBuilder, Entity, Position, boundsCheck, mouse } from "@piggo-gg/core";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
-
-const boundsCheck = (renderer: Renderer, position: Position, clickable: Clickable, click: Click, clickWorld: Click): boolean => {
-
-  let bounds = { x: position.data.x, y: position.data.y, w: clickable.width, h: clickable.height };
-
-  if (position.screenFixed && position.data.x < 0) {
-    bounds.x = position.data.x + renderer.props.canvas.width;
-  }
-  if (position.screenFixed && position.data.y < 0) {
-    bounds.y = position.data.y + renderer.props.canvas.height;
-  }
-
-  let clicked = false;
-  position.screenFixed ? clicked = (
-    click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
-    click.y >= bounds.y && click.y <= bounds.y + bounds.h
-  ) : clicked = (
-    clickWorld.x >= bounds.x && clickWorld.x <= bounds.x + bounds.w &&
-    clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
-  )
-
-  return clicked;
-}
 
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
@@ -61,11 +38,19 @@ export const ClickableSystem = ClientSystemBuilder({
         const clickWorld = renderer.camera.toWorldCoords(click);
 
         entities.forEach((entity) => {
-          const { clickable, position } = entity.components;
+          const { clickable, position, networked } = entity.components;
           if (!clickable.active || !clickable.click) return;
 
           const clicked = boundsCheck(renderer, position, clickable, click, clickWorld);
-          if (clicked) clickable.click.apply({ params: {}, entity, world, player: world.clientPlayerId });
+          if (clicked) {
+            const invocation = clickable.click();
+
+            if (networked && networked.isNetworked) {
+              world.actionBuffer.push(world.tick + 1, entity.id, invocation);
+            } else {
+              world.actionBuffer.push(world.tick, entity.id, invocation);
+            }
+          }
         });
       });
       bufferClick = [];

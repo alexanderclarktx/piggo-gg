@@ -19,7 +19,7 @@ export const SpawnCommand: Command<SpawnCommandParams> = {
     });
     return response;
   },
-  apply: ({ params, world }) => {
+  invoke: ({ params, world }) => {
     Object.keys(entityBuilders).forEach((id) => {
       if (id === params.entity) {
         world.addEntity(entityBuilders[id]());

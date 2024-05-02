@@ -1,4 +1,4 @@
-import { Action, Button, Clickable, DelayClientSystem, Entity, Position } from "@piggo-gg/core";
+import { Actions, Button, Clickable, DelayClientSystem, Entity, Position } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const ConnectButton = () => Entity({
@@ -6,12 +6,14 @@ export const ConnectButton = () => Entity({
   persists: true,
   components: {
     position: new Position({ x: 75, y: 5, screenFixed: true }),
-    clickable: new Clickable({
-      width: 80, height: 32, active: true,
-      click: Action(({ world }) => {
-        if (world) world.addSystemBuilders([DelayClientSystem]);
-      })
+    actions: new Actions({
+      click: {
+        invoke: ({ world }) => {
+          if (world) world.addSystemBuilders([DelayClientSystem]);
+        }
+      }
     }),
+    clickable: new Clickable({ width: 80, height: 32, active: true }),
     renderable: Button({
       dims: { w: 72, textX: 8, textY: 5 },
       zIndex: 1,

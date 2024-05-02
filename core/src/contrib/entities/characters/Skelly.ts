@@ -12,7 +12,7 @@ export const Skelly = (id: string, color?: number) => {
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       gun: Pistol,
       controller: new Controller(WASDController),
-      actions: new Actions({
+      actions: new Actions<{}>({
         ...WASDActionMap,
         ...Shoot
       }),

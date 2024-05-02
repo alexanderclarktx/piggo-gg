@@ -1,4 +1,4 @@
-import { Action, Button, Clickable, Entity, Position } from "@piggo-gg/core";
+import { Actions, Button, Clickable, Entity, Position } from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
 export const DebugButton = (): Entity => {
@@ -13,21 +13,23 @@ export const DebugButton = (): Entity => {
     persists: true,
     components: {
       position: new Position({ x: 40, y: 5, screenFixed: true }),
-      clickable: new Clickable({
-        width: 32, height: 32, active: true,
-        click: Action(({ world }) => {
-          pressed = !pressed;
-          if (pressed) {
-            shadow.tint = 0x00ffff;
-            outline.tint = 0x00ffff;
-            if (world.renderer) world.debug = true;
-          } else {
-            shadow.tint = 0xffffff;
-            outline.tint = 0xffFFFF;
-            if (world.renderer) world.debug = false;
+      actions: new Actions({
+        click: {
+          invoke: ({ world }) => {
+            pressed = !pressed;
+            if (pressed) {
+              shadow.tint = 0x00ffff;
+              outline.tint = 0x00ffff;
+              if (world.renderer) world.debug = true;
+            } else {
+              shadow.tint = 0xffffff;
+              outline.tint = 0xffFFFF;
+              if (world.renderer) world.debug = false;
+            }
           }
-        })
+        }
       }),
+      clickable: new Clickable({ width: 32, height: 32, active: true }),
       renderable: Button({
         dims: { w: 32, textX: 8, textY: 5 },
         zIndex: 4,
