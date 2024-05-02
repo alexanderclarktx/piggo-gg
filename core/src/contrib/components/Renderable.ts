@@ -127,6 +127,8 @@ export class Renderable extends Component<"renderable"> {
     this.c.alpha = 1;
     this.c.children.forEach((child) => { child.alpha = 1 });
 
+    this.c.tint = this.color;
+
     if (this.animations) this.prepareAnimations(this.color ?? 0xffffff)
   }
 

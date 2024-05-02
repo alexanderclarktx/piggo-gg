@@ -5,9 +5,10 @@ import { Matrix, Sprite } from "pixi.js";
 export type PortalProps = {
   pos: { x: number, y: number }
   game: string
+  tint?: number
 }
 
-export const Portal = ({ pos, game }: PortalProps): Entity => {
+export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
   const portal = Entity<Renderable>({
     id: `portal-${game}`,
     components: {
@@ -25,7 +26,7 @@ export const Portal = ({ pos, game }: PortalProps): Entity => {
         width: 256,
         height: 128,
         hoverOver: () => {
-          portal.components.renderable.c.filters = [new OutlineFilter({ thickness: 0.1, color: 0xffffff })]
+          portal.components.renderable.c.filters = [new OutlineFilter({ thickness: 0.1, color: 0xffff00 })]
         },
         hoverOut: () => {
           portal.components.renderable.c.filters = []
@@ -34,6 +35,7 @@ export const Portal = ({ pos, game }: PortalProps): Entity => {
       }),
       renderable: new Renderable({
         zIndex: 1,
+        color: tint ?? 0xffffff,
         setContainer: async () => {
           const textures = await loadTexture("portal.json");
           const sprite = new Sprite({ texture: textures["portal"] });
