@@ -56,7 +56,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
         if (!message) return;
 
         const tickData = message.td;
-        if (tickData.type !== "game") return; // todo
+        if (tickData.type !== "game") return;
 
         // process message actions
         if (tickData.actions) {

@@ -1,6 +1,6 @@
 import { Actions, Clickable, Entity, Networked, Position, Renderable, loadTexture } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
-import { Matrix, Sprite } from "pixi.js";
+import { Matrix, Sprite, Text } from "pixi.js";
 
 export type PortalProps = {
   pos: { x: number, y: number }
@@ -40,6 +40,9 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
           const textures = await loadTexture("portal.json");
           const sprite = new Sprite({ texture: textures["portal"] });
           sprite.setFromMatrix(new Matrix(2, 0, 0, 1, 0, 0));
+
+          const t = new Text({ text: game, resolution: 2, position: { x: 64, y: 64 }, anchor: 0.5, style: { fill: 0xffffff, fontSize: 14 } });
+          sprite.addChild(t);
           return sprite;
         }
       })

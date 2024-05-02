@@ -6,7 +6,7 @@ import {
 } from "@piggo-gg/core";
 
 export const Hubworld = IsometricGame({
-  id: "Hubworld",
+  id: "hubworld",
   init: () => ({
     id: "hubworld",
     entities: [

@@ -14,7 +14,7 @@ export type PositionProps = {
 export class Position extends Component<"position"> {
   type: "position" = "position";
 
-  ortho = 0; // TODO use this to set character sprite animations
+  ortho = 0;
 
   override data = {
     x: 0,
