@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, PlayerControlsEntity } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, PlayerControlsEntity, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
@@ -35,7 +35,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       rotates: true,
       zIndex: 3,
       setup: async (r: Renderable) => {
-        const texture = (await r.loadTextures("spaceship.json"))["spaceship"];
+        const texture = (await loadTexture("spaceship.json"))["spaceship"];
         const sprite = new AnimatedSprite([texture]);
         sprite.scale = { x: 2, y: 2 };
         sprite.anchor.set(0.5, 0.5);

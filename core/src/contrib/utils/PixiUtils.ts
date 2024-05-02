@@ -1,4 +1,4 @@
-import { Graphics, Text } from "pixi.js";
+import { Assets, Graphics, Text } from "pixi.js";
 
 export type pixiRectProps = { x: number, y: number, w: number, h: number, style?: pixiStyleProps };
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number };
@@ -20,4 +20,8 @@ export const pixiText = ({ text, fontSize, pos }: pixiTextProps): Text => {
   const t = new Text({ text, style: { fill: 0xffffff, fontSize: fontSize ?? 12 } })
   if (pos) t.position.set(pos.x, pos.y);
   return t;
+}
+
+export const loadTexture = async (file: string): Promise<Record<string, any>> => {
+  return (await Assets.load(file)).textures;
 }

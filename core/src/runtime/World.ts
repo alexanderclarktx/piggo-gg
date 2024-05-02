@@ -35,7 +35,7 @@ export type World = {
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
-  setGame: (game: GameBuilder) => void
+  setGame: (game: GameBuilder | string) => void
 }
 
 export type WorldBuilder = (_: WorldProps) => World;
@@ -186,7 +186,9 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
         }
       });
     },
-    setGame: (gameBuilder: GameBuilder) => {
+    setGame: (game: GameBuilder | string) => {
+      if (typeof game === "string") game = world.games[game];
+      if (!game) return;
 
       // remove old entities
       Object.values(world.entities).forEach((entity) => {
@@ -197,7 +199,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
       world.currentGame.systems.forEach((system) => world.removeSystem(system.id));
 
       // set new game
-      world.currentGame = gameBuilder.init(world);
+      world.currentGame = game.init(world);
 
       // initialize new game
       world.addEntities(world.currentGame.entities);

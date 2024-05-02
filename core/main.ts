@@ -40,6 +40,7 @@ export * from "./src/contrib/entities/core/Noob";
 export * from "./src/contrib/entities/core/SystemEntity";
 export * from "./src/contrib/entities/objects/Ball";
 export * from "./src/contrib/entities/objects/Goal";
+export * from "./src/contrib/entities/objects/Portal";
 export * from "./src/contrib/entities/objects/Projectile";
 export * from "./src/contrib/entities/terrain/Background";
 export * from "./src/contrib/entities/terrain/FloorTiles";

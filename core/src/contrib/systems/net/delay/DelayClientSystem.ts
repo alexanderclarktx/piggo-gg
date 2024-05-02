@@ -17,7 +17,6 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
     world.wsClient.onmessage = (event) => {
       const message = JSON.parse(event.data) as DelayTickData;
-      console.log("message", message);
 
       if (message.type !== "game") return; // todo
 

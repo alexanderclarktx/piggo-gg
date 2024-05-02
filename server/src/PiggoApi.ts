@@ -15,8 +15,7 @@ export class PiggoApi {
   clients: Record<string, ServerWebSocket<PerClientData>> = {};
 
   worlds: Record<string, WorldManager> = {
-    "A": WorldManager(),
-    "B": WorldManager()
+    "hub": WorldManager()
   }
 
   handlers: Record<ClientRequest["route"], (ws: ServerWebSocket<PerClientData>, msg: ClientRequest) => void> = {
@@ -57,7 +56,7 @@ export class PiggoApi {
 
   handleOpen = (ws: ServerWebSocket<PerClientData>) => {
     // set data for this client
-    ws.data = { id: this.clientIncr, worldId: "A", playerName: "UNKNOWN" };
+    ws.data = { id: this.clientIncr, worldId: "hub", playerName: "UNKNOWN" };
 
     // increment id
     this.clientIncr += 1;

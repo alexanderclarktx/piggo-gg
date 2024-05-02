@@ -1,4 +1,4 @@
-import { Actions, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, ZombieMovement, ZombieMovementActions } from "@piggo-gg/core";
+import { Actions, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, ZombieMovement, ZombieMovementActions, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type ZombieProps = {
@@ -26,7 +26,7 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
       scaleMode: "nearest",
       anchor: { x: 0.5, y: 0.7 },
       setup: async (r: Renderable) => {
-        const textures = await r.loadTextures("chars.json")
+        const textures = await loadTexture("chars.json")
         r.animations = {
           d: new AnimatedSprite([textures["d1"], textures["d2"], textures["d3"]]),
           u: new AnimatedSprite([textures["u1"], textures["u2"], textures["u3"]]),

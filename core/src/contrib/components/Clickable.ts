@@ -6,7 +6,9 @@ export type ClickableProps = {
   width: number
   height: number
   active: boolean
-  click: Action<{}>
+  click?: Action<{}>
+  hoverOver?: () => void
+  hoverOut?: () => void
 }
 
 export class Clickable extends Component<"clickable"> {
@@ -14,7 +16,9 @@ export class Clickable extends Component<"clickable"> {
   width: number
   height: number
   active: boolean
-  click: Action<{}>
+  click: Action<{}> | undefined
+  hoverOver: (() => void) | undefined
+  hoverOut: (() => void) | undefined
 
   constructor(props: ClickableProps) {
     super();
@@ -22,5 +26,7 @@ export class Clickable extends Component<"clickable"> {
     this.height = props.height;
     this.active = props.active;
     this.click = props.click;
+    this.hoverOver = props.hoverOver;
+    this.hoverOut = props.hoverOut;
   }
 }

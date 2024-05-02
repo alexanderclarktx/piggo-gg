@@ -1,5 +1,5 @@
-import { Application } from "pixi.js";
 import { Camera, Renderable } from "@piggo-gg/core";
+import { Application } from "pixi.js";
 
 export type RendererProps = {
   canvas: HTMLCanvasElement;

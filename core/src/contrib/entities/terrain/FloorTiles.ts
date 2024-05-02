@@ -1,5 +1,5 @@
-import { Entity, Renderer, Position, Renderable } from "@piggo-gg/core";
-import { Assets, Texture, Sprite, RenderTexture, Matrix } from "pixi.js";
+import { Entity, Renderer, Position, Renderable, Debug } from "@piggo-gg/core";
+import { Assets, Texture, Sprite, RenderTexture, Matrix, Graphics } from "pixi.js";
 
 let index = 0;
 
@@ -55,7 +55,7 @@ export const FloorTiles = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor$
     components: {
       position: new Position(position),
       renderable: new Renderable({
-        zIndex: 0,
+        zIndex: 0 + index * 0.01,
         setChildren: makeTiles
       })
     }

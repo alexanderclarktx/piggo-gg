@@ -1,5 +1,5 @@
-import { AnimatedSprite, Assets, Container } from "pixi.js";
-import { Component, Entity, World, Renderer } from "@piggo-gg/core";
+import { Component, Entity, Renderer, World } from "@piggo-gg/core";
+import { AnimatedSprite, Container } from "pixi.js";
 
 export type RenderableProps = {
   setContainer?: (r: Renderer) => Promise<Container>
@@ -16,7 +16,7 @@ export type RenderableProps = {
   cacheAsBitmap?: boolean
   rotates?: boolean
   animations?: Record<string, AnimatedSprite>
-  setup?: (renderable: Renderable, renderer: Renderer | undefined) => Promise<void>
+  setup?: (renderable: Renderable, renderer: Renderer) => Promise<void>
 }
 
 export class Renderable extends Component<"renderable"> {
@@ -41,12 +41,12 @@ export class Renderable extends Component<"renderable"> {
   position: { x: number; y: number };
 
   r: Renderable | undefined;
-  renderer: Renderer | undefined;
+  renderer: Renderer;
   children: Renderable[] | undefined;
 
   setContainer: undefined | ((r: Renderer) => Promise<Container>);
   setChildren: undefined | ((r: Renderer) => Promise<Renderable[]>);
-  setup: undefined | ((renderable: Renderable, renderer: Renderer | undefined) => Promise<void>);
+  setup: undefined | ((renderable: Renderable, renderer: Renderer) => Promise<void>);
   dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void);
 
   constructor(props: RenderableProps) {
@@ -75,10 +75,6 @@ export class Renderable extends Component<"renderable"> {
     }
   }
 
-  loadTextures = async (file: string): Promise<Record<string, any>> => {
-    return (await Assets.load(file)).textures;
-  }
-
   setAnimation = (animationKey: string) => {
     if (Object.values(this.animations).length && this.animations[animationKey]) {
       this.bufferedAnimation = animationKey;
@@ -97,6 +93,7 @@ export class Renderable extends Component<"renderable"> {
   }
 
   _init = async (renderer: Renderer | undefined) => {
+    if (!renderer) return;
     this.renderer = renderer;
 
     // add child container

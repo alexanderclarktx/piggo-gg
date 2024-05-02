@@ -14,7 +14,7 @@ export const Camera = (renderer: Renderer): Camera => {
 
   const renderables: Set<Renderable> = new Set();
   const c: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 });
-  let scale = 1.2;
+  let scale = 1.4;
 
   const rescale = () => {
     const min = 1;

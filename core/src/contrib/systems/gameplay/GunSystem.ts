@@ -1,6 +1,6 @@
-import { Entity, Gun, Position, Renderable, SystemBuilder, mouse } from "@piggo-gg/core";
-import { AnimatedSprite } from "pixi.js";
+import { Entity, Gun, Position, Renderable, SystemBuilder, loadTexture, mouse } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
+import { AnimatedSprite } from "pixi.js";
 
 // ortho positions
 const pz = [
@@ -40,7 +40,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
             r.bufferedAnimation = ortho.toString();
           },
           setup: async (r: Renderable) => {
-            const textures = await r.loadTextures("pistol.json");
+            const textures = await loadTexture("pistol.json");
 
             r.animations = {
               "0": new AnimatedSprite([textures["pistol0"]]),

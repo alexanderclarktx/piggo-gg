@@ -1,7 +1,6 @@
-import { Debug, DebugButton, Entity, GameBuilder, Position, Renderable } from "@piggo-gg/core";
+import { Debug, Entity, GameBuilder, Position, Renderable } from "@piggo-gg/core";
 import { ScrollBox } from "@pixi/ui";
-import { OutlineFilter } from "pixi-filters";
-import { Text, Graphics, Container } from "pixi.js";
+import { Container, Graphics, Text } from "pixi.js";
 
 // TODO should this be a "scene" instead of a "game"
 export const Homescreen: GameBuilder<"main-menu"> = ({
@@ -11,9 +10,10 @@ export const Homescreen: GameBuilder<"main-menu"> = ({
     id: "main-menu",
     entities: [
       Singleplayer(),
+      Createlobby(),
       JoinLobby(),
       LobbiesTable(),
-      DebugButton()
+      // DebugButton()
     ],
     systems: [],
   })
@@ -30,7 +30,7 @@ export const JoinLobby = (): Entity => {
           s.components.position.setPosition({ x: canvasWidth / 2, y: 230 })
 
           const c = new Container();
-          const title = new Text({ text: "Join Lobby:", anchor: 0.5, resolution: 2, style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff } });
+          const title = new Text({ text: "Lobbies:", anchor: 0.5, resolution: 2, style: { fontFamily: "Arial", fontSize: 16, fill: 0xffffff } });
           c.addChild(title);
           return c;
         }
@@ -40,24 +40,61 @@ export const JoinLobby = (): Entity => {
   return s;
 }
 
-export const Singleplayer = (): Entity => {
+export const Createlobby = (): Entity => {
   const s = Entity<Position>({
-    id: "singleplayer",
+    id: "createlobby",
     components: {
       position: new Position({ x: 0, y: 0, screenFixed: true }),
       renderable: new Renderable({
         setContainer: async (renderer) => {
           const canvasWidth = renderer.props.canvas.width;
-          s.components.position.setPosition({ x: canvasWidth / 2, y: 100 })
+          s.components.position.setPosition({ x: canvasWidth / 2, y: 150 })
 
           const c = new Container();
-          const title = new Text({ text: "Singleplayer", anchor: 0.5, resolution: 2, style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff } });
+          const title = new Text({ text: "Create Lobby", anchor: 0.5, resolution: 2, style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff } });
           c.addChild(title);
           return c;
         }
       })
     }
   });
+  return s;
+}
+
+const menuItemText = (text: string): Container => {
+  const c = new Container();
+  const t = new Text({ text, anchor: 0.5, resolution: 2, style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff } });
+  t.onpointerover = () => {
+    t.style.fill = 0xffa0ab;
+    t.updateTransform({});
+    console.log("mouseover");
+  }
+  t.onpointerout = () => {
+    t.style.fill = 0xffffff;
+  }
+
+  c.addChild(t);
+
+  return c;
+}
+
+export const Singleplayer = (): Entity => {
+  const s = Entity<Position>({
+    id: "singleplayer",
+    components: {
+      position: new Position({ x: 0, y: 0, screenFixed: true }),
+      renderable: new Renderable({
+        interactiveChildren: true,
+        setContainer: async (renderer) => {
+          const canvasWidth = renderer.props.canvas.width;
+          s.components.position.setPosition({ x: canvasWidth / 2, y: 100 })
+
+          return menuItemText("Singleplayer");
+        }
+      })
+    }
+  });
+
   return s;
 }
 
@@ -109,16 +146,16 @@ export const LobbiesTable = (): Entity => {
 
   let lobbies: Record<string, number> = {};
   let items: Container[] = [
-    // makeInnerContainer("panda", 2),
-    // makeInnerContainer("bear", 2),
-    // makeInnerContainer("apple", 2),
-    // makeInnerContainer("orange", 2),
-    // makeInnerContainer("squadron", 2),
-    // makeInnerContainer("red", 2),
-    // makeInnerContainer("purple", 2),
-    // makeInnerContainer("zebra", 2),
-    // makeInnerContainer("washington", 2),
-    // makeInnerContainer("octopus", 2),
+    makeInnerContainer("panda", 21),
+    makeInnerContainer("bear", 13),
+    makeInnerContainer("apple", 6),
+    makeInnerContainer("orange", 18),
+    makeInnerContainer("squadron", 4),
+    makeInnerContainer("red", 5),
+    makeInnerContainer("purple", 4),
+    makeInnerContainer("zebra", 20),
+    makeInnerContainer("washington", 54),
+    makeInnerContainer("octopus", 19),
   ];
 
   const t = Entity<Position>({
