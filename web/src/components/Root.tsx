@@ -1,6 +1,7 @@
 import { World } from "@piggo-gg/core";
 import { GameCanvas, Header, NetState } from "@piggo-gg/web";
 import React, { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -19,6 +20,10 @@ export const Root = () => {
 
   return (
     <div>
+      <Toaster
+      position="bottom-center"
+        // containerStyle={}
+      />
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {mobile ? null :

@@ -7,25 +7,41 @@ type BaseRequest = {
 
 export type LobbyList = BaseRequest & {
   route: "lobby/list"
-  response: {}
+  response: {
+    id: string
+  }
 }
 
 export type LobbyCreate = BaseRequest & {
   route: "lobby/create"
-  response: {}
+  response: {
+    id: string
+  }
 }
 
 export type LobbyJoin = BaseRequest & {
   route: "lobby/join"
-  response: {}
+  code: string
+  response: {
+    id: string
+  }
 }
 
 export type LobbyExit = BaseRequest & {
   route: "lobby/exit"
-  response: {}
+  response: {
+    id: string
+  }
 }
 
+export type LobbyListRequest = Omit<LobbyList, "response">
+export type LobbyCreateRequest = Omit<LobbyCreate, "response">
+export type LobbyJoinRequest = Omit<LobbyJoin, "response">
+export type LobbyExitRequest = Omit<LobbyExit, "response">
+
 export type ClientRequest = LobbyList | LobbyCreate | LobbyJoin | LobbyExit
+
+export type ExtractedRequestTypes<T extends ClientRequest['route']> = Extract<ClientRequest, { route: T }>;
 
 export type DelayTickData = GameData | LobbiesData
 

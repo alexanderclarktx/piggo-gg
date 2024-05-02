@@ -48,7 +48,12 @@ export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number,
 
 export const boundsCheck = (renderer: Renderer, position: Position, clickable: Clickable, click: Click, clickWorld: Click): boolean => {
 
-  let bounds = { x: position.data.x, y: position.data.y, w: clickable.width, h: clickable.height };
+  let { x, y } = position.data;
+  if (clickable.anchor) {
+    x -= clickable.width * clickable.anchor.x;
+    y -= clickable.height * clickable.anchor.y;
+  }
+  let bounds = { x, y, w: clickable.width, h: clickable.height };
 
   if (position.screenFixed && position.data.x < 0) {
     bounds.x = position.data.x + renderer.props.canvas.width;

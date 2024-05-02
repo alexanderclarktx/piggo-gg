@@ -1,4 +1,4 @@
-import { Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity, StateBuffer, System, SystemBuilder, SystemEntity } from "@piggo-gg/core";
+import { Command, DelayClientSystem, Entity, Game, GameBuilder, InvokedAction, LobbyJoinRequest, Renderer, SerializedEntity, StateBuffer, System, SystemBuilder, SystemEntity, genHash } from "@piggo-gg/core";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -223,9 +223,21 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
 
   // connect to server
   if (runtimeMode === "client") {
-    world.wsClient = new WebSocket(servers.production);
+    // world.wsClient = new WebSocket(servers.production);
     // world.wsClient = new WebSocket(servers.staging);
-    // world.wsClient = new WebSocket(servers.dev);
+    world.wsClient = new WebSocket(servers.dev);
+
+    const join = new URLSearchParams(window.location.search).get("join");
+    if (join) {
+      world.wsClient.onopen = () => {
+        const request: LobbyJoinRequest = {
+          id: genHash(), type: "request", route: "lobby/join", code: join
+        };
+
+        world.wsClient?.send(JSON.stringify(request));
+        world.addSystemBuilders([DelayClientSystem]);
+      }
+    }
   }
 
   return world;

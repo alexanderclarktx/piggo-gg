@@ -1,4 +1,4 @@
-import { ClientRequest, DelayTickData } from "@piggo-gg/core";
+import { ClientRequest, DelayTickData, ExtractedRequestTypes } from "@piggo-gg/core";
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
@@ -18,18 +18,22 @@ export class PiggoApi {
     "hub": WorldManager()
   }
 
-  handlers: Record<ClientRequest["route"], (ws: ServerWebSocket<PerClientData>, msg: ClientRequest) => void> = {
-    "lobby/list": (ws, msg) => {
+  handlers: { [R in ClientRequest["route"]]: (ws: ServerWebSocket<PerClientData>, msg: ExtractedRequestTypes<R>) => Promise<ExtractedRequestTypes<R>['response']> } = {
+    "lobby/list": async (ws, msg) => {
       console.log("lobby/list", msg);
+      return { id: msg.id }
     },
-    "lobby/create": (ws, msg) => {
+    "lobby/create": async (ws, msg) => {
       console.log("lobby/create", msg);
+      return { id: msg.id }
     },
-    "lobby/join": (ws, msg) => {
+    "lobby/join": async (ws, msg) => {
       console.log("lobby/join", msg);
+      return { id: msg.id }
     },
-    "lobby/exit": (ws, msg) => {
+    "lobby/exit": async (ws, msg) => {
       console.log("lobby/exit", msg);
+      return { id: msg.id }
     },
   }
 
@@ -70,7 +74,11 @@ export class PiggoApi {
 
     if (wsData.type === "request") {
       const handler = this.handlers[wsData.route];
-      if (handler) handler(ws, wsData);
+      if (handler) {
+        // @ts-expect-error
+        const response = handler(ws, wsData);
+        response.then((data) => ws.send(JSON.stringify(data)));
+      }
       return;
     }
 

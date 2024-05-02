@@ -3,7 +3,7 @@ import { ScrollBox } from "@pixi/ui";
 import { Container, Graphics, Text } from "pixi.js";
 
 // TODO should this be a "scene" instead of a "game"
-export const Homescreen: GameBuilder<"main-menu"> = ({
+export const Menu: GameBuilder<"main-menu"> = ({
 
   id: "main-menu",
   init: () => ({
