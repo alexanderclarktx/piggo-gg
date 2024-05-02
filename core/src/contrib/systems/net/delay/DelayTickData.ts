@@ -44,8 +44,5 @@ export type GameData = {
 
 export type LobbiesData = {
   type: "lobbies"
-
   lobbies: Record<string, number> // player count per lobby
 }
-
-// type A = DelayTickData["type"]

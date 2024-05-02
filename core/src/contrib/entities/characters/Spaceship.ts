@@ -29,7 +29,6 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       }
     }),
     debug: new Debug(),
-    // actions: new Actions(VehicleMovement),
     renderable: new Renderable({
       rotates: true,
       zIndex: 3,

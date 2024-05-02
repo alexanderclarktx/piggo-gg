@@ -74,7 +74,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       }
 
       let message = serverMessageBuffer.shift() as DelayTickData;
-      if (message.type !== "game") return; // todo
+      if (message.type !== "game") return;
 
       // remove old local entities
       Object.keys(world.entities).forEach((entityId) => {

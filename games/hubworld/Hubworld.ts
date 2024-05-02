@@ -12,10 +12,10 @@ export const Hubworld = IsometricGame({
     entities: [
       Background({ img: "stars.png" }),
 
-      Portal({ pos: { x: 416, y: 80 }, game: "aram", tint: 0x00ff00 }),
-      Portal({ pos: { x: -608, y: 80 }, game: "legends", tint: 0xff0000 }),
-      Portal({ pos: { x: 416, y: 592 }, game: "soccer", tint: 0x0000ff }),
-      Portal({ pos: { x: -608, y: 592 }, game: "strike", tint: 0x000000 }),
+      Portal({ pos: { x: 416, y: 80 }, game: "aram", tint: 0xaaaaff }),
+      Portal({ pos: { x: -608, y: 80 }, game: "legends", tint: 0xaaaaff }),
+      Portal({ pos: { x: 416, y: 592 }, game: "soccer", tint: 0xaaaaff }),
+      Portal({ pos: { x: -608, y: 592 }, game: "strike", tint: 0xaaaaff }),
 
       FloorTiles({ rows: 7, cols: 7, position: { x: -32 * 16, y: 32 } }),
       FloorTiles({ rows: 7, cols: 7, position: { x: 32 * 16, y: 32 } }),
