@@ -1,5 +1,11 @@
 import { Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity, StateBuffer, System, SystemBuilder, SystemEntity } from "@piggo-gg/core";
 
+const servers = {
+  dev: "ws://localhost:3000",
+  staging: "wss://piggo-api-staging.up.railway.app",
+  production: "wss://api.piggo.gg"
+} as const;
+
 export type World = {
   actionBuffer: StateBuffer<InvokedAction>
   chatHistory: StateBuffer<string>
@@ -20,6 +26,7 @@ export type World = {
   tickFaster: boolean
   tickFlag: "green" | "red"
   tickrate: number
+  wsClient: WebSocket | undefined
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
@@ -28,7 +35,7 @@ export type World = {
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
-  setGame: (game: GameBuilder) => void
+  setGame: (game: GameBuilder | string) => void
 }
 
 export type WorldBuilder = (_: WorldProps) => World;
@@ -75,6 +82,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     tickFaster: false,
     tickFlag: "green",
     tickrate: 25,
+    wsClient: undefined,
     addEntity: (entity: Entity, timeout?: number) => {
       const oldEntity = world.entities[entity.id];
       if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup();
@@ -99,6 +107,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     },
     removeSystem: (id: string) => {
       const system = world.systems[id];
+      if (system && system.data) world.removeEntity(`SystemEntity-${id}`);
       if (system) delete world.systems[id];
     },
     addSystems: (systems: System[]) => {
@@ -177,7 +186,9 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
         }
       });
     },
-    setGame: (gameBuilder: GameBuilder) => {
+    setGame: (game: GameBuilder | string) => {
+      if (typeof game === "string") game = world.games[game];
+      if (!game) return;
 
       // remove old entities
       Object.values(world.entities).forEach((entity) => {
@@ -188,7 +199,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
       world.currentGame.systems.forEach((system) => world.removeSystem(system.id));
 
       // set new game
-      world.currentGame = gameBuilder.init(world);
+      world.currentGame = game.init(world);
 
       // initialize new game
       world.addEntities(world.currentGame.entities);
@@ -208,6 +219,13 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
   // setup commands
   if (commands) {
     commands.forEach((command) => world.commands[command.id] = command);
+  }
+
+  // connect to server
+  if (runtimeMode === "client") {
+    world.wsClient = new WebSocket(servers.production);
+    // world.wsClient = new WebSocket(servers.staging);
+    // world.wsClient = new WebSocket(servers.dev);
   }
 
   return world;

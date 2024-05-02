@@ -1,0 +1,10 @@
+{
+  "frames": {
+    "portal": { "frame": { "x": 0, "y": 0, "w": 128, "h": 128 } }
+  },
+  "meta": {
+    "image": "portal.png",
+    "size": { "w": 128, "h": 128 },
+    "scale": "1"
+  }
+}

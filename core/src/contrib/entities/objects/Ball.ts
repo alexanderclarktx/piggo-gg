@@ -1,4 +1,4 @@
-import { Collider, Debug, Entity, NPC, Networked, Position, Renderable } from "@piggo-gg/core";
+import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, loadTexture } from "@piggo-gg/core";
 import { Sprite } from "pixi.js";
 
 export type BallProps = {
@@ -30,7 +30,7 @@ export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 250 }
       rotates: true,
       setup: async (r: Renderable) => {
 
-        const texture = (await r.loadTextures("ball.json"))["ball"];
+        const texture = (await loadTexture("ball.json"))["ball"];
         const sprite = new Sprite(texture);
 
         sprite.anchor.set(0.5, 0.5);

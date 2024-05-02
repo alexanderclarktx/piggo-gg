@@ -14,7 +14,7 @@ export const AbilityHUD = (): Entity => {
   const abilityHud = Entity<Renderable | Position>({
     id: "abilityHud",
     components: {
-      position: new Position({ x: 300, y: -100, screenFixed: true }),
+      position: new Position({ x: 0, y: 0, screenFixed: true }),
       renderable: new Renderable({
         setContainer: async (renderer) => {
           const canvasWidth = renderer.props.canvas.width;

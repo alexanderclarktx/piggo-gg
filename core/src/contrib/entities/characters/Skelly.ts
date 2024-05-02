@@ -1,4 +1,4 @@
-import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController } from "@piggo-gg/core";
+import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite, Text } from "pixi.js";
 
 export const Skelly = (id: string, color?: number) => {
@@ -12,7 +12,7 @@ export const Skelly = (id: string, color?: number) => {
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       gun: Pistol,
       controller: new Controller(WASDController),
-      actions: new Actions({
+      actions: new Actions<{}>({
         ...WASDActionMap,
         ...Shoot
       }),
@@ -22,8 +22,8 @@ export const Skelly = (id: string, color?: number) => {
         zIndex: 3,
         scaleMode: "nearest",
         color: color ?? 0xffffff,
-        setup: async (r: Renderable) => {
-          const textures = await r.loadTextures("chars.json");
+        setup: async (r) => {
+          const textures = await loadTexture("chars.json");
 
           r.animations = {
             d: new AnimatedSprite([textures["d1"], textures["d2"], textures["d3"]]),

@@ -1,7 +1,7 @@
 export * from "./src/runtime/Game";
 export * from "./src/runtime/IsometricGame";
 export * from "./src/runtime/IsometricWorld";
-export * from "./src/runtime/MainMenu";
+export * from "./src/runtime/Homescreen";
 export * from "./src/runtime/StateBuffer";
 export * from "./src/runtime/World";
 export * from "./src/graphics/Renderer";
@@ -40,6 +40,7 @@ export * from "./src/contrib/entities/core/Noob";
 export * from "./src/contrib/entities/core/SystemEntity";
 export * from "./src/contrib/entities/objects/Ball";
 export * from "./src/contrib/entities/objects/Goal";
+export * from "./src/contrib/entities/objects/Portal";
 export * from "./src/contrib/entities/objects/Projectile";
 export * from "./src/contrib/entities/terrain/Background";
 export * from "./src/contrib/entities/terrain/FloorTiles";

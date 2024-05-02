@@ -13,7 +13,7 @@ export const ActionSystem = SystemBuilder({
           // handle commands
           if (entityId === "world") {
             const command = world.commands[actions[0].action]
-            if (command) command.apply({ params: actions[0].params ?? {}, world, player: clientPlayerId });
+            if (command) command.invoke({ params: actions[0].params ?? {}, world, player: clientPlayerId });
           }
 
           // handle actions
@@ -41,7 +41,7 @@ export const ActionSystem = SystemBuilder({
 
             // execute the action
             // console.log(`集 ${entityId} action=${JSON.stringify(actionKey)}}`);
-            action.apply({ params: actionKey.params ?? {}, entity, world, player: clientPlayerId });
+            action.invoke({ params: actionKey.params ?? {}, entity, world, player: clientPlayerId });
           });
         });
       }

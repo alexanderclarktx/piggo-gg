@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, PlayerControlsEntity } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, PlayerControlsEntity, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
@@ -11,12 +11,11 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
   components: {
     position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
     networked: new Networked({ isNetworked: true }),
-    clickable: new Clickable({
-      width: 100,
-      height: 120,
-      active: true,
+    actions: new Actions({
+      ...VehicleMovement,
       click: PlayerControlsEntity
     }),
+    clickable: new Clickable({ width: 100, height: 120, active: true }),
     collider: new Collider({ shape: "ball", radius: 20 }),
     controller: new Controller<VehicleMovementActions>({
       keyboard: {
@@ -30,12 +29,11 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       }
     }),
     debug: new Debug(),
-    actions: new Actions(VehicleMovement),
     renderable: new Renderable({
       rotates: true,
       zIndex: 3,
       setup: async (r: Renderable) => {
-        const texture = (await r.loadTextures("spaceship.json"))["spaceship"];
+        const texture = (await loadTexture("spaceship.json"))["spaceship"];
         const sprite = new AnimatedSprite([texture]);
         sprite.scale = { x: 2, y: 2 };
         sprite.anchor.set(0.5, 0.5);

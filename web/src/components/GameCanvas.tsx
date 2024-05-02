@@ -1,5 +1,5 @@
-import { Renderer, World, IsometricWorld, MainMenu } from "@piggo-gg/core";
-import { ARAM, Legends, Soccer, Strike } from "@piggo-gg/games";
+import { IsometricWorld, Renderer, World } from "@piggo-gg/core";
+import { ARAM, Hubworld, Legends, Soccer, Strike } from "@piggo-gg/games";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
@@ -19,16 +19,12 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
       { width: window.innerWidth, height: window.innerHeight } :
       { width: window.innerWidth * 0.98, height: window.innerHeight * 0.90 };
 
-    // remove border styling if mobile
-    if (mobile) {
-      canvas.style.border = "none";
-    }
+    if (mobile) canvas.style.border = "none";
 
     const renderer = new Renderer({ canvas, width, height });
 
     renderer.init().then(() => {
-      const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Strike, ARAM, Soccer, Legends] });
-      // const world = IsometricWorld({ renderer, runtimeMode: "client", games: [MainMenu, Strike, ARAM, Soccer, Legends] });
+      const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Hubworld, Strike, ARAM, Soccer, Legends] });
       setWorld(world);
     })
   }, []);

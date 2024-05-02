@@ -16,7 +16,7 @@ export const Projectile = ({ radius, pos }: ProjectileProps) => {
         radius: radius ?? 10,
         sensor: (e2: Entity<Position>, world: World) => {
           if (e2.components.health && e2.components.health.data.shootable) {
-            e2.components.health.data.health -= 25;
+            e2.components.health.data.health -= 25; // TODO Action
             world.removeEntity(projectile.id);
           }
         }

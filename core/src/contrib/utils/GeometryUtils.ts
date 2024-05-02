@@ -1,4 +1,4 @@
-import { Entity, Position } from "@piggo-gg/core";
+import { Click, Clickable, Entity, Position, Renderer } from "@piggo-gg/core";
 
 export const orthoToDirection = (o: number) => {
   if (o === 0) return "l";
@@ -43,4 +43,28 @@ export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number,
     });
   }
   return entities[0];
+}
+
+
+export const boundsCheck = (renderer: Renderer, position: Position, clickable: Clickable, click: Click, clickWorld: Click): boolean => {
+
+  let bounds = { x: position.data.x, y: position.data.y, w: clickable.width, h: clickable.height };
+
+  if (position.screenFixed && position.data.x < 0) {
+    bounds.x = position.data.x + renderer.props.canvas.width;
+  }
+  if (position.screenFixed && position.data.y < 0) {
+    bounds.y = position.data.y + renderer.props.canvas.height;
+  }
+
+  let clicked = false;
+  position.screenFixed ? clicked = (
+    click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
+    click.y >= bounds.y && click.y <= bounds.y + bounds.h
+  ) : clicked = (
+    clickWorld.x >= bounds.x && clickWorld.x <= bounds.x + bounds.w &&
+    clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
+  )
+
+  return clicked;
 }

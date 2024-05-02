@@ -24,7 +24,7 @@ export const InputSystem = ClientSystemBuilder({
   init: ({ clientPlayerId, world, renderer }) => {
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
-    const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab"]);
+    const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter"]);
 
     let bufferedDown = KeyBuffer();
     let backspaceOn = false;
