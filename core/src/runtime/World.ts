@@ -223,9 +223,9 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
 
   // connect to server
   if (runtimeMode === "client") {
-    // world.wsClient = new WebSocket(servers.production);
+    world.wsClient = new WebSocket(servers.production);
     // world.wsClient = new WebSocket(servers.staging);
-    world.wsClient = new WebSocket(servers.dev);
+    // world.wsClient = new WebSocket(servers.dev);
 
     const join = new URLSearchParams(window.location.search).get("join");
     if (join) {

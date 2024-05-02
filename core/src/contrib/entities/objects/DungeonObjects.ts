@@ -49,15 +49,11 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
       }),
       renderable: new Renderable({
         zIndex: 3,
-        anchor: { x: 0.5, y: 0.5 },
         color: tint ?? 0xffffff,
         setContainer: async () => {
           const textures = await loadTexture("dungeons.json");
           const sprite = new Sprite({ texture: textures["light"] });
           sprite.anchor.set(0.5, 0.5);
-
-          // const t = new Text({ text: game, resolution: 2, position: { x: 64, y: 64 }, anchor: 0.5, style: { fill: 0xffffff, fontSize: 14 } });
-          // sprite.addChild(t);
           return sprite;
         }
       })
