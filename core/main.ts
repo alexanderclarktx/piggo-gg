@@ -80,3 +80,4 @@ export * from "./src/contrib/components/actions/Shoot";
 export * from "./src/contrib/utils/GeometryUtils";
 export * from "./src/contrib/utils/PixiUtils";
 export * from "./src/contrib/utils/StringUtils";
+export * from "./src/contrib/utils/SystemUtils";

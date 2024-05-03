@@ -4,7 +4,7 @@ import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } f
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: ({ renderer, world }) => {
-    if (!renderer) throw new Error("RendererSystem requires a renderer");
+    if (!renderer) return undefined;
 
     let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
     let cache: Record<string, Position> = {};

@@ -17,7 +17,8 @@ export const Hubworld = IsometricGame({
       Portal({ pos: { x: 416, y: 592 }, game: "soccer", tint: 0xaaaaff }),
       Portal({ pos: { x: -608, y: 592 }, game: "strike", tint: 0x000000 }),
 
-      InviteStone({ pos: { x: 32 * 1, y: 32 * 12.25 }, tint: 0xddddff }),
+      // InviteStone({ pos: { x: 32 * 1, y: 32 * 12.25 }, tint: 0xddddff }),
+      InviteStone({ pos: { x: 32 * 1, y: 32 * 2.25 }, tint: 0xddddff }),
 
       FloorTiles({ rows: 7, cols: 7, position: { x: -32 * 16, y: 32 } }),
       FloorTiles({ rows: 7, cols: 7, position: { x: 32 * 16, y: 32 } }),

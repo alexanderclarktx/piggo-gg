@@ -27,11 +27,9 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
       actions: new Actions({
         click: {
           invoke: () => {
-            const code = `https://piggo.gg/?join=${genHash(7)}`;
-            navigator.clipboard.writeText(code);
-            toast.success(`Copied Invite Code`);
-            console.log(`Copied Invite Code: ${code}`);
-            // alert(`Copied Invite Code: ${code}`);
+            const url = `https://piggo.gg/?join=${genHash(7)}`;
+            navigator.clipboard.writeText(url);
+            toast.success(`Copied Invite URL`);
           }
         }
       }),

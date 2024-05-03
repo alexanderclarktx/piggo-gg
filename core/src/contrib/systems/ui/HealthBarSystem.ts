@@ -4,7 +4,7 @@ import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder } 
 export const HealthBarSystem = ClientSystemBuilder({
   id: "HealthBarSystem",
   init: ({ world, renderer }) => {
-    if (!renderer) throw new Error("HealthBarSystem requires a renderer");
+    if (!renderer) return undefined;
 
     let renderedEntities: Set<Entity> = new Set();
 

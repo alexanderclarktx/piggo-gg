@@ -7,7 +7,7 @@ export type Click = { x: number, y: number };
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
   init: ({ world, renderer }) => {
-    if (!renderer) throw new Error("ClickableSystem requires a renderer");
+    if (!renderer) return undefined;
 
     let bufferClick: Click[] = [];
     const hovered: Set<string> = new Set();

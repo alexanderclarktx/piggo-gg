@@ -1,6 +1,4 @@
-import { AbilityHUD, Chat, ConnectButton, DebugButton, FullscreenButton, GameBuilder, Joystick, Noob } from "@piggo-gg/core";
-
-export const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+import { AbilityHUD, Chat, ConnectButton, DebugButton, FullscreenButton, GameBuilder, Joystick, Noob, isMobile } from "@piggo-gg/core";
 
 export const IsometricGame = <T extends string>(g: GameBuilder<T>): GameBuilder<T> => ({
   ...g,
