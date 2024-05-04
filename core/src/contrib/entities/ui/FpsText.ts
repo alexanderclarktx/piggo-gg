@@ -39,7 +39,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
       zIndex: 3,
       setContainer: async () => new Text({ text: "", style: { fontSize: 14, fill: "#FFFFFF" } }),
       dynamic: (t: Text, _, __, w: World) => {
-        const lag = Math.round(w.ms);
+        const lag = Math.round(w.client?.ms ?? 0);
         if (w.tick % 5 !== 0) return;
         if (t) {
           t.style.fill = lag < 50 ? "#00ff00" : lag < 200 ? "yellow" : "red";

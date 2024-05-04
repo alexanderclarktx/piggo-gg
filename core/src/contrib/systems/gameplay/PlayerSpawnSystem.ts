@@ -20,7 +20,7 @@ export const PlayerSpawnSystem = SystemBuilder({
       // spawn characters for players
       players.forEach((player) => {
         if (!playersWithCharacters[player.id]) {
-          // spawnCharacterForPlayer(player, world, clientPlayerId === player.id ? 0xffffff : 0xffff00);
+          // spawnCharacterForPlayer(player, world, world.client.playerId === player.id ? 0xffffff : 0xffff00);
           spawnCharacterForPlayer(player, world, 0xffffff);
           playersWithCharacters[player.id] = player;
         }

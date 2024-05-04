@@ -13,8 +13,6 @@ export interface System<T extends string = string> {
 
 export type SystemProps = {
   world: World
-  renderer: Renderer | undefined
-  clientPlayerId: string | undefined
 }
 
 export type SystemBuilder<T extends string = string> = {

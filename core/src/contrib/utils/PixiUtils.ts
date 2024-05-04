@@ -1,18 +1,26 @@
 import { Assets, Graphics, Text } from "pixi.js";
 
-export type pixiRectProps = { x: number, y: number, w: number, h: number, style?: pixiStyleProps };
-export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number };
+export type pixiRectProps = { x: number, y: number, w: number, h: number, style?: Omit<pixiStyleProps, "g"> };
+export type pixiCircleProps = { x: number, y: number, r: number, style?: Omit<pixiStyleProps, "g">};
+export type pixiStyleProps = { g: Graphics, color?: number, strokeColor?: number, alpha?: number };
 export type pixiTextProps = { text: string, fontSize?: number, pos?: { x: number, y: number } };
 
-export const pixiRect = ({x, y, w, h, style}: Omit<pixiRectProps, "g">): Graphics => {
+export const pixiRect = ({x, y, w, h, style}: pixiRectProps): Graphics => {
   const g = new Graphics();
   g.rect(x, y, w, h);
 
   return pixiStyle({ g, ...style });
 }
 
-export const pixiStyle = ({ g, color, alpha }: pixiStyleProps): Graphics => {
-  g.fill({ color: color ?? 0x000000, alpha: alpha ?? 0.4 }).stroke({ width: 1, color: 0xffffff });
+export const pixiCircle = ({x, y, r, style}: pixiCircleProps): Graphics => {
+  const g = new Graphics();
+  g.circle(x, y, r);
+
+  return pixiStyle({ g, ...style });
+}
+
+export const pixiStyle = ({ g, color, alpha, strokeColor }: pixiStyleProps): Graphics => {
+  g.fill({ color: color ?? 0x000000, alpha: alpha ?? 0.4 }).stroke({ width: 1, color: strokeColor ?? color ?? 0xffffff });
   return g;
 }
 

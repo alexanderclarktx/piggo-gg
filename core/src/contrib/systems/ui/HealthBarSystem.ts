@@ -3,8 +3,10 @@ import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder } 
 // HealthBarSystem displays gui elements
 export const HealthBarSystem = ClientSystemBuilder({
   id: "HealthBarSystem",
-  init: ({ world, renderer }) => {
-    if (!renderer) return undefined;
+  init: ({ world }) => {
+    if (!world.renderer) return undefined;
+
+    const renderer = world.renderer;
 
     let renderedEntities: Set<Entity> = new Set();
 

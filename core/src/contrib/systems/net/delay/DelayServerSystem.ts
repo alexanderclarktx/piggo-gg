@@ -41,7 +41,7 @@ export const DelayServerSystem = ({ world, clients, latestClientMessages }: Dela
 
   const handleMessage = () => {
     Object.keys(latestClientMessages).forEach((client) => {
-      if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length);
+      // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length);
 
       let messages: ({ td: DelayTickData, latency: number } | undefined)[];
 

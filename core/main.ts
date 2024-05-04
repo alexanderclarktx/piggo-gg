@@ -1,3 +1,4 @@
+export * from "./src/runtime/Client";
 export * from "./src/runtime/Game";
 export * from "./src/runtime/IsometricGame";
 export * from "./src/runtime/IsometricWorld";
@@ -39,7 +40,7 @@ export * from "./src/contrib/entities/characters/Zombie";
 export * from "./src/contrib/entities/core/Noob";
 export * from "./src/contrib/entities/core/SystemEntity";
 export * from "./src/contrib/entities/objects/Ball";
-export * from "./src/contrib/entities/objects/DungeonObjects";
+export * from "./src/contrib/entities/objects/InviteStone";
 export * from "./src/contrib/entities/objects/Goal";
 export * from "./src/contrib/entities/objects/Portal";
 export * from "./src/contrib/entities/objects/Projectile";

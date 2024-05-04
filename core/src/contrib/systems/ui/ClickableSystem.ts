@@ -6,8 +6,10 @@ export type Click = { x: number, y: number };
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
-  init: ({ world, renderer }) => {
-    if (!renderer) return undefined;
+  init: ({ world }) => {
+    if (!world.renderer) return undefined;
+
+    const renderer = world.renderer;
 
     let bufferClick: Click[] = [];
     const hovered: Set<string> = new Set();

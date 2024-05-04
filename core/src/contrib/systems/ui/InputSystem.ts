@@ -21,7 +21,10 @@ const KeyBuffer = (b?: KeyMouse[]) => {
 // InputSystem handles all keyboard/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
-  init: ({ clientPlayerId, world, renderer }) => {
+  init: ({ world }) => {
+    if (!world.renderer) return undefined;
+
+    const renderer = world.renderer;
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter"]);
@@ -77,7 +80,7 @@ export const InputSystem = ClientSystemBuilder({
             // push the message to chatHistory
             if (chatBuffer.length > 0) {
               const message = chatBuffer.join("");
-              world.chatHistory.push(world.tick + 1, world.clientPlayerId ?? "", message);
+              world.chatHistory.push(world.tick + 1, world.client?.playerId ?? "", message);
             }
 
             chatBuffer = [];
@@ -101,7 +104,7 @@ export const InputSystem = ClientSystemBuilder({
 
       // handle inputs for controlled entities
       entities.forEach((entity) => {
-        if (entity.components.controlled.data.entityId === clientPlayerId) handleInputForEntity(entity, world);
+        if (entity.components.controlled.data.entityId === world.client?.playerId) handleInputForEntity(entity, world);
       });
 
       // handle buffered backspace

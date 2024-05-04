@@ -3,10 +3,10 @@ import { Entity, SystemBuilder, DelayTickData, World, Ball, Noob, Skelly, Zombie
 // delay netcode client
 export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
   id: "DelayClientSystem",
-  init: ({ world, clientPlayerId }) => {
-    if (!world.wsClient) return undefined;
+  init: ({ world }) => {
+    if (!world.client) return undefined;
 
-    const wsClient = world.wsClient;
+    const client = world.client;
     let serverMessageBuffer: DelayTickData[] = [];
     let lastLatency = 0;
     let lastMessageTick: number = 0;
@@ -15,7 +15,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       (lastMessageTick && ((world.tick - lastMessageTick) < 500)) ? world.isConnected = true : world.isConnected = false;
     }, 200);
 
-    world.wsClient.onmessage = (event) => {
+    client.ws.onmessage = (event) => {
       const message = JSON.parse(event.data) as DelayTickData;
 
       if (message.type !== "game") return; // todo
@@ -29,7 +29,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
 
       // record latency
       lastLatency = Date.now() - message.timestamp;
-      if (message.latency) world.ms = (lastLatency + message.latency) / 2;
+      if (message.latency) client.ms = (lastLatency + message.latency) / 2;
 
       // set flag to green
       world.tickFlag = "green";
@@ -46,14 +46,14 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         actions: world.actionBuffer.atTick(world.tick + 1) ?? {},
         chats: world.chatHistory.atTick(world.tick) ?? {},
         game: world.currentGame.id,
-        player: clientPlayerId ?? "unknown",
+        player: client.playerId,
         serializedEntities: {},
         tick: world.tick,
         timestamp: Date.now(),
         type: "game"
       }
 
-      if (wsClient.readyState === WebSocket.OPEN) wsClient.send(JSON.stringify(message));
+      if (client.ws.readyState === WebSocket.OPEN) client.ws.send(JSON.stringify(message));
 
       world.actionBuffer.clearTick(world.tick + 1);
     }
@@ -136,7 +136,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
         Object.entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
           const localEntity = localEntities[entityId];
           if (localEntity) {
-            if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) return;
+            if (entityId.startsWith("skelly") && entityId !== `skelly-${client.playerId}`) return;
             if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
               mustRollback(`entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
             }
@@ -169,7 +169,7 @@ export const DelayClientSystem: SystemBuilder<"DelayClientSystem"> = ({
       const numChats = Object.keys(message.chats).length;
       if (numChats) {
         Object.entries(message.chats).forEach(([playerId, messages]) => {
-          if (playerId === clientPlayerId) return;
+          if (playerId === client.playerId) return;
           world.chatHistory.set(world.tick, playerId, messages);
         });
       }

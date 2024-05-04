@@ -3,8 +3,10 @@ import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } f
 // RenderSystem handles rendering entities in isometric or cartesian space
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
-  init: ({ renderer, world }) => {
-    if (!renderer) return undefined;
+  init: ({ world }) => {
+    if (!world.renderer) return undefined;
+
+    const renderer = world.renderer;
 
     let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
     let cache: Record<string, Position> = {};
@@ -40,7 +42,7 @@ export const RenderSystem = ClientSystemBuilder({
         }
 
         // track entity if controlled by player
-        if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.clientPlayerId) {
+        if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
           centeredEntity = entity;
         }
 

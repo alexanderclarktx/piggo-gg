@@ -11,7 +11,13 @@ export const Skelly = (id: string, color?: number) => {
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       gun: Pistol,
-      controller: new Controller(WASDController),
+      controller: new Controller({
+        keyboard: {
+          ...WASDController.keyboard,
+          "mb1": ({ mouse }) => ({ action: "shoot", params: { mouse, id: Math.round(Math.random() * 10000) } }),
+        },
+        joystick: WASDController.joystick
+      }),
       actions: new Actions<{}>({
         ...WASDActionMap,
         ...Shoot

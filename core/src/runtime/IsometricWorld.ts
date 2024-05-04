@@ -7,11 +7,8 @@ import {
 
 export const IsometricWorld: WorldBuilder = (props) => {
 
-  const playerId = `noob${Math.trunc((Math.random() * 100))}`;
-
   const world = World({
     ...props,
-    clientPlayerId: playerId,
     commands: [GameCommand, SpawnCommand]
   });
 

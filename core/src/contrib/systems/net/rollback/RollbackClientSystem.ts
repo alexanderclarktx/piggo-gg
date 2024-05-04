@@ -9,10 +9,10 @@ const servers = {
 // rollback netcode client
 export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
   id: "RollbackClientSystem",
-  init: ({ world, clientPlayerId }) => {
-    const wsClient = new WebSocket(servers.production);
-    // const wsClient = new WebSocket(servers.staging);
-    // const wsClient = new WebSocket(servers.dev);
+  init: ({ world }) => {
+    if (!world.client) return undefined;
+
+    const client = world.client;
 
     let ticksAhead = 0;
     let lastLatency = 0;
@@ -24,7 +24,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
     let lastMessageTick: number = 0;
     let latestServerMessage: RollbackTickData | null = null;
 
-    wsClient.onmessage = (event) => {
+    client.ws.onmessage = (event) => {
       const message = JSON.parse(event.data) as RollbackTickData;
 
       // ignore messages from the past
@@ -34,7 +34,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
       // handle interpolated entities
       Object.keys(message.actions).map(Number).forEach((tick) => {
         for (const [entityId, actions] of Object.entries(message.actions[tick])) {
-          if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) {
+          if (entityId.startsWith("skelly") && entityId !== `skelly-${client.playerId}`) {
             const actionsCopy = [...actions];
 
             if (!message.actions[tick + ticksAhead + 1]) {
@@ -53,7 +53,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
 
       // record latency
       lastLatency = Date.now() - message.timestamp;
-      if (message.latency) world.ms = (lastLatency + message.latency) / 2;
+      if (message.latency) client.ms = (lastLatency + message.latency) / 2;
     }
 
     const onTick = (_: Entity[]) => {
@@ -66,12 +66,12 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
       const now = Date.now();
     
       // determine how many ticks to increment
-      ticksAhead = Math.ceil((((world.ms) / world.tickrate) * 2) + 1);
+      ticksAhead = Math.ceil((((client.ms) / world.tickrate) * 2) + 1);
       if (Math.abs(ticksAhead - (world.tick - td.tick)) <= 1) {
         ticksAhead = world.tick - td.tick;
       }
     
-      console.log(`ms:${world.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + ticksAhead}`);
+      console.log(`ms:${client.ms} msgFrame:${td.tick} clientFrame:${world.tick} targetFrame:${td.tick + ticksAhead}`);
     
       // set tick
       world.tick = td.tick - 1;
@@ -116,7 +116,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
       Object.keys(td.actions).map(Number).forEach((tick) => {
         Object.keys(td.actions[tick]).forEach((entityId) => {
           // skip future actions for controlled entities
-          if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === world.clientPlayerId) return;
+          if (tick > td.tick && world.entities[entityId]?.components.controlled?.data.entityId === client.playerId) return;
     
           world.actionBuffer.set(tick, entityId, td.actions[tick][entityId]);
         });
@@ -153,13 +153,13 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
         type: "game",
         tick: world.tick,
         timestamp: Date.now(),
-        player: clientPlayerId ?? "unknown",
+        player: client.playerId ?? "unknown",
         actions,
         chats,
         serializedEntities: {}
       }
 
-      if (wsClient.readyState === wsClient.OPEN) wsClient.send(JSON.stringify(message));
+      if (client.ws.readyState === client.ws.OPEN) client.ws.send(JSON.stringify(message));
     }
 
     const handleLatestMessage = () => {
@@ -180,7 +180,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
       if (!shouldRollback) {
         Object.keys(message.actions).map(Number).filter((t) => t > world.tick).forEach((futureTick) => {
           Object.keys(message.actions[futureTick]).forEach((entityId) => {
-            if ((entityId === clientPlayerId) || (entityId === `skelly-${clientPlayerId}`)) return;
+            if ((entityId === client.playerId) || (entityId === `skelly-${client.playerId}`)) return;
             world.actionBuffer.set(futureTick, entityId, message.actions[futureTick][entityId]);
           });
         });
@@ -233,7 +233,7 @@ export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
           if (entitiesAtTick) {
             const localEntity = entitiesAtTick[entityId];
             if (localEntity) {
-              if (entityId.startsWith("skelly") && entityId !== `skelly-${clientPlayerId}`) return;
+              if (entityId.startsWith("skelly") && entityId !== `skelly-${client.playerId}`) return;
               if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
                 mustRollback(`entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
               }
