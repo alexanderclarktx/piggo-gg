@@ -29,17 +29,15 @@ export const RenderSystem = ClientSystemBuilder({
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
 
+      cache[entity.id] = position;
+      await renderable._init(renderer);
+
       if (position) {
         renderable.c.position.set(
           position.data.x + renderable.position.x,
           position.data.y + renderable.position.y
         );
-        cache[entity.id] = position;
-      } else {
-        renderable.c.position.set(0, 0);
       }
-
-      await renderable._init(renderer);
 
       if (position.screenFixed) {
         renderer.addGui(renderable);
@@ -51,19 +49,18 @@ export const RenderSystem = ClientSystemBuilder({
     // updates the position of screenFixed entities
     const updateScreenFixed = (entity: Entity<Renderable | Position>) => {
       const { position, renderable } = entity.components;
-      if (position.screenFixed) {
+      if (!position.screenFixed) return;
 
-        if (position.data.x < 0) {
-          renderable.c.x = renderer.app.screen.width + position.data.x;
-        } else {
-          renderable.c.x = position.data.x;
-        }
+      if (position.data.x < 0) {
+        renderable.c.x = renderer.app.screen.width + position.data.x;
+      } else {
+        renderable.c.x = position.data.x;
+      }
 
-        if (position.data.y < 0) {
-          renderable.c.y = renderer.app.screen.height + position.data.y;
-        } else {
-          renderable.c.y = position.data.y;
-        }
+      if (position.data.y < 0) {
+        renderable.c.y = renderer.app.screen.height + position.data.y;
+      } else {
+        renderable.c.y = position.data.y;
       }
     }
 
@@ -74,37 +71,37 @@ export const RenderSystem = ClientSystemBuilder({
 
         entities.forEach((entity) => {
           const { position, renderable, controlled } = entity.components;
-  
+
           // add new entities to the renderer
           if (!renderable.rendered) {
             renderable.rendered = true;
             renderNewEntity(entity);
           }
-  
+
           // track entity if controlled by player
           if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
             centeredEntity = entity;
           }
-  
+
           // update renderable if position changed
           if (position && cache[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
             if (renderable.rotates) {
               renderable.c.rotation = position.data.rotation;
             }
-  
+
             renderable.c.position.set(
               position.data.x + renderable.position.x,
               position.data.y + renderable.position.y
             );
-  
+
             cache[entity.id] = position;
           }
-  
+
           // set buffered ortho animation
           if (!renderable.bufferedAnimation) {
             renderable.bufferedAnimation = orthoToDirection(position.ortho);
           }
-  
+
           // handle buffered animations
           if (
             renderable.bufferedAnimation !== renderable.activeAnimation &&
@@ -112,29 +109,29 @@ export const RenderSystem = ClientSystemBuilder({
           ) {
             // remove current animation
             if (renderable.animation) renderable.c.removeChild(renderable.animation);
-  
+
             // set new animation
             renderable.animation = renderable.animations[renderable.bufferedAnimation];
-  
+
             // add animation to container
             renderable.c.addChild(renderable.animation);
-  
+
             // play the animation
             renderable.animation.play();
-  
+
             // set activeAnimation
             renderable.activeAnimation = renderable.bufferedAnimation;
-  
+
             renderable.bufferedAnimation = "";
           }
-  
+
           if (renderable.bufferedAnimation === renderable.activeAnimation) {
             renderable.bufferedAnimation = "";
           }
-  
+
           // run the dynamic callback
           if (renderable.dynamic) renderable.dynamic(renderable.c, renderable, entity, world);
-  
+
           // run dynamic on children
           if (renderable.children) {
             renderable.children.forEach((child) => {
@@ -142,13 +139,13 @@ export const RenderSystem = ClientSystemBuilder({
             });
           }
         });
-  
+
         // sort cache by position (closeness to camera)
         const sortedEntityPositions = Object.keys(cache).sort((a, b) => {
           const yDiff = cache[a].data.y - cache[b].data.y;
           return yDiff;
         });
-  
+
         // set zIndex
         Object.keys(cache).forEach((entityId) => {
           const entity = world.entities[entityId];

@@ -66,7 +66,6 @@ export class Renderable extends Component<"renderable"> {
     this.anchor = props.anchor ?? { x: 0.5, y: 0.5 };
     this.scaleMode = props.scaleMode ?? "linear";
     this.setup = props.setup ?? undefined;
-    this.position = props.position ?? { x: 0, y: 0 };
     this.dynamic = this.overrideDynamic(props.dynamic ?? undefined);
   }
 
