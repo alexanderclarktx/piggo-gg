@@ -1,6 +1,6 @@
 import React from "react";
 import { NetState, NetStateColor } from "@piggo-gg/web";
-import { World, DelayClientSystem } from "@piggo-gg/core";
+import { World, NetClientSystem } from "@piggo-gg/core";
 
 export type WsNetConnectorProps = {
   world: World | undefined
@@ -15,7 +15,7 @@ export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorP
   }, 200)
 
   const onClick = () => {
-    if (world) world.addSystemBuilders([DelayClientSystem])
+    if (world) world.addSystemBuilders([NetClientSystem])
   }
 
   return (

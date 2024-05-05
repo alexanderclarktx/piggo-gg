@@ -1,4 +1,4 @@
-import { IsometricWorld, Noob, DelayTickData, World, DelayServerSystem, GameData } from "@piggo-gg/core";
+import { NetServerSystem, NetMessageTypes, IsometricWorld, Noob, World } from "@piggo-gg/core";
 import { ARAM, Hubworld, Legends, Soccer, Strike } from "@piggo-gg/games";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
@@ -11,7 +11,7 @@ export type WorldManager = {
 
   getNumClients: () => number
 
-  handleMessage: (ws: WS, msg: DelayTickData) => void
+  handleMessage: (ws: WS, msg: NetMessageTypes) => void
   handleClose: (ws: WS) => void
 }
 
@@ -22,10 +22,10 @@ export type WorldManagerProps = {
 export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
 
   const world = IsometricWorld({ runtimeMode: "server", games: [Hubworld, Strike, ARAM, Soccer, Legends] });
-  const latestClientMessages: Record<string, { td: DelayTickData, latency: number }[]> = {};
+  const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {};
 
   world.systems = {
-    ...{ "DelayServerSystem": DelayServerSystem({ world, clients, latestClientMessages }) },
+    ...{ "DelayServerSystem": NetServerSystem({ world, clients, latestClientMessages }) },
     ...world.systems
   }
 
@@ -33,7 +33,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     world,
     clients,
     getNumClients: () => Object.keys(clients).length,
-    handleMessage: (ws: WS, msg: DelayTickData) => {
+    handleMessage: (ws: WS, msg: NetMessageTypes) => {
       if (msg.type !== "game") return;
 
       // add player entity if it doesn't exist

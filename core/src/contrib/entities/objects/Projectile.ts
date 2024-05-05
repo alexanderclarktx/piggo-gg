@@ -1,4 +1,4 @@
-import { Collider, Entity, Networked, Position, Renderable, World, pixiCircle } from "@piggo-gg/core";
+import { Collider, Entity, Expires, Networked, Position, Renderable, World, pixiCircle } from "@piggo-gg/core";
 
 export type ProjectileProps = {
   id: number
@@ -15,6 +15,7 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
         { x: 200, y: 200, velocityX: 50, velocityY: 0 }
       ),
       networked: new Networked({ isNetworked: true }),
+      expires: new Expires({ ticksLeft: 60 }),
       collider: new Collider({
         shape: "ball",
         radius: radius ?? 10,

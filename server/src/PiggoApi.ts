@@ -1,4 +1,4 @@
-import { ClientRequest, DelayTickData, ExtractedRequestTypes } from "@piggo-gg/core";
+import { ClientRequest, NetMessageTypes, ExtractedRequestTypes } from "@piggo-gg/core";
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
@@ -69,11 +69,11 @@ export class PiggoApi {
   handleMessage = (ws: ServerWebSocket<PerClientData>, msg: string) => {
     if (typeof msg != "string") return;
 
-    const wsData = JSON.parse(msg) as ClientRequest | DelayTickData;
+    const wsData = JSON.parse(msg) as NetMessageTypes;
     if (!wsData.type) return;
 
     if (wsData.type === "request") {
-      const handler = this.handlers[wsData.route];
+      const handler = this.handlers[wsData.request.route];
       if (handler) {
         // @ts-expect-error
         const response = handler(ws, wsData);
