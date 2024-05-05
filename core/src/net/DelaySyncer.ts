@@ -43,8 +43,6 @@ export const DelaySyncer: Syncer = {
           world.addEntity(Ball({ id: entityId }));
         } else if (entityId.startsWith("noob")) {
           world.addEntity(Noob({ id: entityId }))
-        } else if (entityId.startsWith("skelly")) {
-        // world.addEntity(Skelly(entityId));
         } else if (entityId.startsWith("projectile")) {
           world.addEntity(Projectile({id: entityId, radius: 3}));
         } else if (entityId.startsWith("linewall")) {
