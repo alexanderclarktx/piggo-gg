@@ -14,50 +14,6 @@ export const ClickableSystem = ClientSystemBuilder({
     let bufferClick: Click[] = [];
     const hovered: Set<string> = new Set();
 
-    const onTick = (entities: Entity<Clickable | Actions | Position>[]) => {
-
-      entities.forEach((entity) => {
-        const { clickable, position } = entity.components;
-
-        if (hovered.has(entity.id)) {
-          const hovering = boundsCheck(renderer, position, clickable, mouse, mouse);
-          if (!hovering) {
-            if (clickable.hoverOut) clickable.hoverOut();
-            hovered.delete(entity.id);
-          }
-        }
-
-        if (clickable.active && clickable.hoverOver && !hovered.has(entity.id)) {
-          const hovering = boundsCheck(renderer, position, clickable, mouse, mouse);
-          if (hovering) {
-            clickable.hoverOver();
-            hovered.add(entity.id);
-          }
-        }
-      })
-
-      bufferClick.forEach((click) => {
-        const clickWorld = renderer.camera.toWorldCoords(click);
-
-        entities.forEach((entity) => {
-          const { clickable, position, networked } = entity.components;
-          if (!clickable.active || !clickable.click) return;
-
-          const clicked = boundsCheck(renderer, position, clickable, click, clickWorld);
-          if (clicked) {
-            const invocation = clickable.click();
-
-            if (networked && networked.isNetworked) {
-              world.actionBuffer.push(world.tick + 1, entity.id, invocation);
-            } else {
-              world.actionBuffer.push(world.tick, entity.id, invocation);
-            }
-          }
-        });
-      });
-      bufferClick = [];
-    }
-
     renderer.props.canvas.addEventListener("mousedown", (event: FederatedPointerEvent) => {
       bufferClick.push({ x: event.offsetX, y: event.offsetY });
     });
@@ -65,8 +21,50 @@ export const ClickableSystem = ClientSystemBuilder({
     return {
       id: "ClickableSystem",
       query: ["clickable", "position"],
-      onTick,
-      skipOnRollback: true
+      skipOnRollback: true,
+      onTick: (entities: Entity<Clickable | Actions | Position>[]) => {
+
+        entities.forEach((entity) => {
+          const { clickable, position } = entity.components;
+  
+          if (hovered.has(entity.id)) {
+            const hovering = boundsCheck(renderer, position, clickable, mouse, mouse);
+            if (!hovering) {
+              if (clickable.hoverOut) clickable.hoverOut();
+              hovered.delete(entity.id);
+            }
+          }
+  
+          if (clickable.active && clickable.hoverOver && !hovered.has(entity.id)) {
+            const hovering = boundsCheck(renderer, position, clickable, mouse, mouse);
+            if (hovering) {
+              clickable.hoverOver();
+              hovered.add(entity.id);
+            }
+          }
+        })
+  
+        bufferClick.forEach((click) => {
+          const clickWorld = renderer.camera.toWorldCoords(click);
+  
+          entities.forEach((entity) => {
+            const { clickable, position, networked } = entity.components;
+            if (!clickable.active || !clickable.click) return;
+  
+            const clicked = boundsCheck(renderer, position, clickable, click, clickWorld);
+            if (clicked) {
+              const invocation = clickable.click();
+  
+              if (networked && networked.isNetworked) {
+                world.actionBuffer.push(world.tick + 1, entity.id, invocation);
+              } else {
+                world.actionBuffer.push(world.tick, entity.id, invocation);
+              }
+            }
+          });
+        });
+        bufferClick = [];
+      }
     }
   }
 })

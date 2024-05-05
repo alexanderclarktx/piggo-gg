@@ -1,12 +1,11 @@
-import { DelaySyncer, Entity, GameData, Syncer, SystemBuilder } from "@piggo-gg/core";
+import { Entity, GameData, Syncer, SystemBuilder } from "@piggo-gg/core";
 
 // netcode client system
-export const NetClientSystem: SystemBuilder<"NetClientSystem"> = ({
+export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem"> = (syncer) => ({
   id: "NetClientSystem",
   init: ({ world }) => {
     if (!world.client) return undefined;
 
-    const syncer: Syncer = DelaySyncer;
     const client = world.client;
 
     let serverMessageBuffer: GameData[] = [];
@@ -40,39 +39,37 @@ export const NetClientSystem: SystemBuilder<"NetClientSystem"> = ({
       }
     }
 
-    const onTick = (_: Entity[]) => {
-      const message = syncer.writeMessage(world);
-      if (client.ws.readyState === WebSocket.OPEN) client.ws.send(JSON.stringify(message));
-
-      // hard reset if very behind
-      if (serverMessageBuffer.length > 10) {
-        serverMessageBuffer = [];
-        return;
-      }
-
-      // tick faster if slightly behind
-      if (serverMessageBuffer.length > 2) {
-        world.tickFaster = true;
-      } else {
-        world.tickFaster = false;
-      }
-
-      // handle oldest message in buffer
-      if (serverMessageBuffer.length > 0) {
-        syncer.handleMessage(world, serverMessageBuffer.shift() as GameData);
-      }
-
-      // set flag to red if no messages
-      if (serverMessageBuffer.length === 0) {
-        world.tickFlag = "red";
-      }
-    }
-
     return {
       id: "NetClientSystem",
       query: ["networked"],
-      onTick,
-      skipOnRollback: true
+      skipOnRollback: true,
+      onTick: (_: Entity[]) => {
+        const message = syncer.writeMessage(world);
+        if (client.ws.readyState === WebSocket.OPEN) client.ws.send(JSON.stringify(message));
+  
+        // hard reset if very behind
+        if (serverMessageBuffer.length > 10) {
+          serverMessageBuffer = [];
+          return;
+        }
+  
+        // tick faster if slightly behind
+        if (serverMessageBuffer.length > 2) {
+          world.tickFaster = true;
+        } else {
+          world.tickFaster = false;
+        }
+  
+        // handle oldest message in buffer
+        if (serverMessageBuffer.length > 0) {
+          syncer.handleMessage(world, serverMessageBuffer.shift() as GameData);
+        }
+  
+        // set flag to red if no messages
+        if (serverMessageBuffer.length === 0) {
+          world.tickFlag = "red";
+        }
+      }
     }
   }
 });

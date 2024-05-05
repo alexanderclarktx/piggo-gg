@@ -64,6 +64,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
 
     return {
       id: "gun",
+      query: ["gun"],
       onTick: (entities: Entity<Gun | Position>[]) => {
         entities.forEach((entity) => {
 
@@ -83,8 +84,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
             gunToRendered[gun.data.id] = r;
           };
         });
-      },
-      query: ["gun"]
+      }
     }
   }
 })

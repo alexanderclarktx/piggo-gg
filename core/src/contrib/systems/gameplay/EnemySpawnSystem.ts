@@ -23,21 +23,6 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
       return spawnLocations[data.lastSpawnIndex % spawnLocations.length];
     }
 
-    const onTick = () => {
-
-      // handle old entities
-      data.zombies.forEach((id) => {
-        if (!world.entities[id]) {
-          data.zombies = data.zombies.filter((zid) => zid !== id);
-        }
-      });
-
-      // spawn new wave
-      if (data.zombies.length === 0) {
-        spawnWave(data.wave++);
-      }
-    }
-
     const spawnWave = async (wave: number) => {
       const zombies = 1 + wave;
 
@@ -50,8 +35,21 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
 
     return {
       id: "EnemySpawnSystem",
-      onTick,
-      data
+      data,
+      onTick: () => {
+
+        // handle old entities
+        data.zombies.forEach((id) => {
+          if (!world.entities[id]) {
+            data.zombies = data.zombies.filter((zid) => zid !== id);
+          }
+        });
+  
+        // spawn new wave
+        if (data.zombies.length === 0) {
+          spawnWave(data.wave++);
+        }
+      }
     }
   }
 });

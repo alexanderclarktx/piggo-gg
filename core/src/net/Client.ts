@@ -1,4 +1,4 @@
-import { LobbyCreateRequest, LobbyJoinRequest, NetClientSystem, World, genPlayerId } from "@piggo-gg/core";
+import { DelaySyncer, LobbyCreateRequest, LobbyJoinRequest, NetClientSystem, Syncer, World, genPlayerId } from "@piggo-gg/core";
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -18,6 +18,9 @@ export type ClientProps = {
 }
 
 export const Client = ({ world }: ClientProps): Client => {
+
+  let syncer: Syncer = DelaySyncer;
+
   const client = {
     ws: new WebSocket(servers.production),
     // ws: new WebSocket(servers.staging),
@@ -27,7 +30,7 @@ export const Client = ({ world }: ClientProps): Client => {
     createLobby: () => {
       const request = LobbyCreateRequest();
       client.ws.send(JSON.stringify(request));
-      world.addSystemBuilders([NetClientSystem]);
+      world.addSystemBuilders([NetClientSystem(syncer)]);
     }
   }
 
@@ -41,7 +44,7 @@ export const Client = ({ world }: ClientProps): Client => {
     client.ws.onopen = () => {
       const request = LobbyJoinRequest(join);
       client.ws.send(JSON.stringify(request));
-      world.addSystemBuilders([NetClientSystem]);
+      world.addSystemBuilders([NetClientSystem(syncer)]);
     }
   }
 

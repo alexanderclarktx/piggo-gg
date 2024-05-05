@@ -98,19 +98,6 @@ export const InputSystem = ClientSystemBuilder({
       }
     });
 
-    const onTick = (entities: Entity<Controlled | Controller | Actions>[]) => {
-      // update mouse position, the camera might have moved
-      if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent);
-
-      // handle inputs for controlled entities
-      entities.forEach((entity) => {
-        if (entity.components.controlled.data.entityId === world.client?.playerId) handleInputForEntity(entity, world);
-      });
-
-      // handle buffered backspace
-      if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop();
-    }
-
     const handleInputForEntity = (entity: Entity<Controlled | Controller | Actions>, world: World) => {
       // copy the input buffer
       let buffer = bufferedDown.copy();
@@ -164,8 +151,19 @@ export const InputSystem = ClientSystemBuilder({
     return {
       id: "InputSystem",
       query: ["controlled", "controller", "actions"],
-      onTick,
-      skipOnRollback: true
+      skipOnRollback: true,
+      onTick: (entities: Entity<Controlled | Controller | Actions>[]) => {
+        // update mouse position, the camera might have moved
+        if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent);
+  
+        // handle inputs for controlled entities
+        entities.forEach((entity) => {
+          if (entity.components.controlled.data.entityId === world.client?.playerId) handleInputForEntity(entity, world);
+        });
+  
+        // handle buffered backspace
+        if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop();
+      }
     }
   }
 });

@@ -2,9 +2,10 @@ import { Entity, Expires, SystemBuilder } from "@piggo-gg/core";
 
 export const ExpiresSystem: SystemBuilder<"ExpiresSystem"> = {
   id: "ExpiresSystem",
-  init: ({ world }) => {
-
-    const onTick = (entities: Entity<Expires>[]) => {
+  init: ({ world }) => ({
+    id: "ExpiresSystem",
+    query: ["expires"],
+    onTick: (entities: Entity<Expires>[]) => {
       entities.forEach((entity) => {
         const { expires } = entity.components;
 
@@ -15,11 +16,5 @@ export const ExpiresSystem: SystemBuilder<"ExpiresSystem"> = {
         }
       })
     }
-
-    return {
-      id: "ExpiresSystem",
-      onTick,
-      query: ["expires"]
-    }
-  }
+  })
 }

@@ -77,13 +77,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     });
   }
 
-  const onTick = () => {
-    handleMessage();
-    sendMessage();
-  }
-
   return {
     id: "NetServerSystem",
-    onTick
+    onTick: () => {
+      handleMessage();
+      sendMessage();
+    }
   }
 }

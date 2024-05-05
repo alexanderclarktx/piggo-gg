@@ -20,8 +20,6 @@ export type SystemBuilder<T extends string = string> = {
   init: (props: SystemProps) => System<T> | undefined
 }
 
-export const SystemBuilder = <T extends string = string>(builder: SystemBuilder<T>) => builder
-
 export const ClientSystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => ({
   ...builder,
   init: (props: SystemProps) => {

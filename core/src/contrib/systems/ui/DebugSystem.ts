@@ -8,52 +8,6 @@ export const DebugSystem = ClientSystemBuilder({
     let debugRenderables: Renderable[] = [];
     let debugEntitiesPerEntity: Record<string, Entity<Renderable | Position>[]> = {};
 
-    const onTick = (entities: Entity<Position>[]) => {
-      if (world.debug) {
-        // handle new entities
-        entities.forEach((entity) => {
-          const { renderable } = entity.components;
-
-          if (!debugEntitiesPerEntity[entity.id] || !debugEntitiesPerEntity[entity.id].length) {
-            debugEntitiesPerEntity[entity.id] = [];
-            if (renderable) addEntityForRenderable(entity as Entity<Renderable | Position>);
-          }
-        });
-
-        // draw all colliders
-        if (!world.entities["collider-debug"]) drawAllColliders();
-
-        // draw the fps text
-        if (!world.entities["fpsText"]) drawFpsText();
-
-        // update all debug entities
-        Object.entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
-          const entity = world.entities[id] as Entity<Position>;
-          if (entity) {
-            // update debug entity positions
-            debugEntities.forEach((debugEntity) => {
-              debugEntity.components.position = entity.components.position;
-            });
-          } else {
-            // handle old entities
-            debugEntities.forEach((debugEntity) => {
-              world.removeEntity(debugEntity.id);
-              delete debugEntitiesPerEntity[id];
-            });
-          }
-        });
-      } else {
-        // remove all debug entities
-        Object.values(debugEntitiesPerEntity).forEach((debugEntities) => {
-          debugEntities.forEach((debugEntity) => world.removeEntity(debugEntity.id));
-        });
-        debugEntitiesPerEntity = {};
-
-        // clear debug renderables
-        debugRenderables = [];
-      }
-    }
-
     const addEntityForRenderable = (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
 
@@ -151,8 +105,52 @@ export const DebugSystem = ClientSystemBuilder({
     return {
       id: "DebugSystem",
       query: ["debug", "position"],
-      onTick,
-      skipOnRollback: true
+      skipOnRollback: true,
+      onTick: (entities: Entity<Position>[]) => {
+        if (world.debug) {
+          // handle new entities
+          entities.forEach((entity) => {
+            const { renderable } = entity.components;
+  
+            if (!debugEntitiesPerEntity[entity.id] || !debugEntitiesPerEntity[entity.id].length) {
+              debugEntitiesPerEntity[entity.id] = [];
+              if (renderable) addEntityForRenderable(entity as Entity<Renderable | Position>);
+            }
+          });
+  
+          // draw all colliders
+          if (!world.entities["collider-debug"]) drawAllColliders();
+  
+          // draw the fps text
+          if (!world.entities["fpsText"]) drawFpsText();
+  
+          // update all debug entities
+          Object.entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
+            const entity = world.entities[id] as Entity<Position>;
+            if (entity) {
+              // update debug entity positions
+              debugEntities.forEach((debugEntity) => {
+                debugEntity.components.position = entity.components.position;
+              });
+            } else {
+              // handle old entities
+              debugEntities.forEach((debugEntity) => {
+                world.removeEntity(debugEntity.id);
+                delete debugEntitiesPerEntity[id];
+              });
+            }
+          });
+        } else {
+          // remove all debug entities
+          Object.values(debugEntitiesPerEntity).forEach((debugEntities) => {
+            debugEntities.forEach((debugEntity) => world.removeEntity(debugEntity.id));
+          });
+          debugEntitiesPerEntity = {};
+  
+          // clear debug renderables
+          debugRenderables = [];
+        }
+      }
     }
   }
 });

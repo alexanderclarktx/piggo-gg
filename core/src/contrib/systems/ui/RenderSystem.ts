@@ -22,105 +22,6 @@ export const RenderSystem = ClientSystemBuilder({
       renderedEntities.forEach((entity) => updateScreenFixed(entity));
     });
 
-    const onTick = (entities: Entity<Renderable | Position>[]) => {
-
-      // cleanup old entities
-      renderedEntities.forEach((entity) => {
-        if (!Object.keys(world.entities).includes(entity.id)) {
-          renderedEntities.delete(entity);
-          entity.components.renderable.cleanup();
-        }
-      });
-
-      entities.forEach(async (entity) => {
-        const { position, renderable, controlled } = entity.components;
-
-        // add new entities to the renderer
-        if (!renderedEntities.has(entity)) {
-          renderedEntities.add(entity);
-          await renderNewEntity(entity);
-        }
-
-        // track entity if controlled by player
-        if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
-          centeredEntity = entity;
-        }
-
-        // update renderable if position changed
-        if (position && cache[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
-          if (renderable.rotates) {
-            renderable.c.rotation = position.data.rotation;
-          }
-
-          renderable.c.position.set(
-            position.data.x + renderable.position.x,
-            position.data.y + renderable.position.y
-          );
-
-          cache[entity.id] = position;
-        }
-
-        // set buffered ortho animation
-        if (!renderable.bufferedAnimation) {
-          renderable.bufferedAnimation = orthoToDirection(position.ortho);
-        }
-
-        // handle buffered animations
-        if (
-          renderable.bufferedAnimation !== renderable.activeAnimation &&
-          renderable.animations[renderable.bufferedAnimation]
-        ) {
-          // remove current animation
-          if (renderable.animation) renderable.c.removeChild(renderable.animation);
-
-          // set new animation
-          renderable.animation = renderable.animations[renderable.bufferedAnimation];
-
-          // add animation to container
-          renderable.c.addChild(renderable.animation);
-
-          // play the animation
-          renderable.animation.play();
-
-          // set activeAnimation
-          renderable.activeAnimation = renderable.bufferedAnimation;
-
-          renderable.bufferedAnimation = "";
-        }
-
-        if (renderable.bufferedAnimation === renderable.activeAnimation) {
-          renderable.bufferedAnimation = "";
-        }
-
-        // run the dynamic callback
-        if (renderable.dynamic) renderable.dynamic(renderable.c, renderable, entity, world);
-
-        // run dynamic on children
-        if (renderable.children) {
-          renderable.children.forEach((child) => {
-            if (child.dynamic) child.dynamic(child.c, child, entity, world);
-          });
-        }
-      });
-
-      // sort cache by position (closeness to camera)
-      const sortedEntityPositions = Object.keys(cache).sort((a, b) => {
-        const yDiff = cache[a].data.y - cache[b].data.y;
-        return yDiff;
-      });
-
-      // set zIndex
-      Object.keys(cache).forEach((entityId) => {
-        const entity = world.entities[entityId];
-        if (entity) {
-          const renderable = entity.components.renderable;
-          if (renderable) {
-            renderable.c.zIndex = (renderable.zIndex) + 0.0001 * sortedEntityPositions.indexOf(entityId);
-          }
-        }
-      });
-    }
-
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
 
@@ -165,7 +66,104 @@ export const RenderSystem = ClientSystemBuilder({
     return {
       id: "RenderSystem",
       query: ["renderable", "position"],
-      onTick
+      onTick: (entities: Entity<Renderable | Position>[]) => {
+
+        // cleanup old entities
+        renderedEntities.forEach((entity) => {
+          if (!Object.keys(world.entities).includes(entity.id)) {
+            renderedEntities.delete(entity);
+            entity.components.renderable.cleanup();
+          }
+        });
+  
+        entities.forEach(async (entity) => {
+          const { position, renderable, controlled } = entity.components;
+  
+          // add new entities to the renderer
+          if (!renderedEntities.has(entity)) {
+            renderedEntities.add(entity);
+            await renderNewEntity(entity);
+          }
+  
+          // track entity if controlled by player
+          if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
+            centeredEntity = entity;
+          }
+  
+          // update renderable if position changed
+          if (position && cache[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
+            if (renderable.rotates) {
+              renderable.c.rotation = position.data.rotation;
+            }
+  
+            renderable.c.position.set(
+              position.data.x + renderable.position.x,
+              position.data.y + renderable.position.y
+            );
+  
+            cache[entity.id] = position;
+          }
+  
+          // set buffered ortho animation
+          if (!renderable.bufferedAnimation) {
+            renderable.bufferedAnimation = orthoToDirection(position.ortho);
+          }
+  
+          // handle buffered animations
+          if (
+            renderable.bufferedAnimation !== renderable.activeAnimation &&
+            renderable.animations[renderable.bufferedAnimation]
+          ) {
+            // remove current animation
+            if (renderable.animation) renderable.c.removeChild(renderable.animation);
+  
+            // set new animation
+            renderable.animation = renderable.animations[renderable.bufferedAnimation];
+  
+            // add animation to container
+            renderable.c.addChild(renderable.animation);
+  
+            // play the animation
+            renderable.animation.play();
+  
+            // set activeAnimation
+            renderable.activeAnimation = renderable.bufferedAnimation;
+  
+            renderable.bufferedAnimation = "";
+          }
+  
+          if (renderable.bufferedAnimation === renderable.activeAnimation) {
+            renderable.bufferedAnimation = "";
+          }
+  
+          // run the dynamic callback
+          if (renderable.dynamic) renderable.dynamic(renderable.c, renderable, entity, world);
+  
+          // run dynamic on children
+          if (renderable.children) {
+            renderable.children.forEach((child) => {
+              if (child.dynamic) child.dynamic(child.c, child, entity, world);
+            });
+          }
+        });
+  
+        // sort cache by position (closeness to camera)
+        const sortedEntityPositions = Object.keys(cache).sort((a, b) => {
+          const yDiff = cache[a].data.y - cache[b].data.y;
+          return yDiff;
+        });
+  
+        // set zIndex
+        Object.keys(cache).forEach((entityId) => {
+          const entity = world.entities[entityId];
+          if (entity) {
+            const renderable = entity.components.renderable;
+            if (renderable) {
+              renderable.c.zIndex = (renderable.zIndex) + 0.0001 * sortedEntityPositions.indexOf(entityId);
+            }
+          }
+        });
+      }
     }
   }
 });
