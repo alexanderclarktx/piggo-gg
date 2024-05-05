@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Debug, Entity, Networked, Position, Renderable, genHash, loadTexture } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, loadTexture } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
 import { Sprite } from "pixi.js";
 import toast from "react-hot-toast";
@@ -10,11 +10,10 @@ export type InviteStoneProps = {
 
 export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
   const portal = Entity<Renderable>({
-    id: `dungeonobject`,
+    id: `invite-stone`,
     components: {
       position: new Position(pos),
       debug: new Debug(),
-      networked: new Networked({ isNetworked: true }),
       collider: new Collider({
         shape: "line", points: [
           -32, 8,
@@ -26,16 +25,27 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
       }),
       actions: new Actions({
         click: {
-          invoke: () => {
-            const url = `https://piggo.gg/?join=${genHash(7)}`;
-            navigator.clipboard.writeText(url);
-            toast.success(`Copied Invite URL`);
+          invoke: ({ world }) => {
+            if (!world.client) return;
+
+            let url = "";
+            if (world.client.lobbyId) {
+              url = `https://piggo.gg/?join=${world.client.lobbyId}`;
+              navigator.clipboard.writeText(url);
+              toast.success(`Copied Invite URL`);
+            } else {
+              world.client.createLobby((response) => {
+                url = `https://piggo.gg/?join=${response.lobbyId}`;
+                navigator.clipboard.writeText(url);
+                toast.success(`Copied Invite URL`);
+              });
+            }
           }
         }
       }),
       clickable: new Clickable({
         active: true,
-        anchor: { x: 0.5, y: 0.5 }, 
+        anchor: { x: 0.5, y: 0.5 },
         width: 64,
         height: 48,
         hoverOver: () => {

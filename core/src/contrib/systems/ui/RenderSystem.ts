@@ -8,7 +8,7 @@ export const RenderSystem = ClientSystemBuilder({
 
     const renderer = world.renderer;
 
-    let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
+    // let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
     let cache: Record<string, Position> = {};
     let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
 
@@ -19,7 +19,11 @@ export const RenderSystem = ClientSystemBuilder({
       }
 
       // update screenFixed entities
-      renderedEntities.forEach((entity) => updateScreenFixed(entity));
+      Object.values(world.entities).forEach((entity) => {
+        if (entity.components.renderable && entity.components.position) {
+          updateScreenFixed(entity as Entity<Renderable | Position>);
+        }
+      });
     });
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
@@ -68,21 +72,13 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       onTick: (entities: Entity<Renderable | Position>[]) => {
 
-        // cleanup old entities
-        renderedEntities.forEach((entity) => {
-          if (!Object.keys(world.entities).includes(entity.id)) {
-            renderedEntities.delete(entity);
-            entity.components.renderable.cleanup();
-          }
-        });
-  
-        entities.forEach(async (entity) => {
+        entities.forEach((entity) => {
           const { position, renderable, controlled } = entity.components;
   
           // add new entities to the renderer
-          if (!renderedEntities.has(entity)) {
-            renderedEntities.add(entity);
-            await renderNewEntity(entity);
+          if (!renderable.rendered) {
+            renderable.rendered = true;
+            renderNewEntity(entity);
           }
   
           // track entity if controlled by player

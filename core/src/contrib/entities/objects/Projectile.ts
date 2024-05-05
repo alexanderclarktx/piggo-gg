@@ -1,14 +1,14 @@
 import { Collider, Entity, Expires, Networked, Position, Renderable, World, pixiCircle } from "@piggo-gg/core";
 
 export type ProjectileProps = {
-  id: number
+  id: string
   radius: number
   pos?: { x: number, y: number, vx: number, vy: number }
 }
 
 export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
   const projectile = Entity({
-    id: `projectile-${id}`,
+    id,
     components: {
       position: new Position(pos ?
         { x: pos.x, y: pos.y, velocityX: pos.vx, velocityY: pos.vy } :

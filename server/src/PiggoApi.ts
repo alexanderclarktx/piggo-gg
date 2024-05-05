@@ -1,4 +1,4 @@
-import { ClientRequest, NetMessageTypes, ExtractedRequestTypes } from "@piggo-gg/core";
+import { ExtractedRequestTypes, NetMessageTypes, RequestTypes, ResponseData, genHash } from "@piggo-gg/core";
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
@@ -13,26 +13,29 @@ export class PiggoApi {
   bun: Server;
   clientIncr = 1;
   clients: Record<string, ServerWebSocket<PerClientData>> = {};
+  worlds: Record<string, WorldManager> = {};
 
-  worlds: Record<string, WorldManager> = {
-    "hub": WorldManager()
-  }
-
-  handlers: { [R in ClientRequest["route"]]: (ws: ServerWebSocket<PerClientData>, msg: ExtractedRequestTypes<R>) => Promise<ExtractedRequestTypes<R>['response']> } = {
+  handlers: { [R in RequestTypes["route"]]: (ws: ServerWebSocket<PerClientData>, msg: ExtractedRequestTypes<R>) => Promise<ExtractedRequestTypes<R>['response']> } = {
     "lobby/list": async (ws, msg) => {
-      console.log("lobby/list", msg);
       return { id: msg.id }
     },
     "lobby/create": async (ws, msg) => {
-      console.log("lobby/create", msg);
-      return { id: msg.id }
+      const lobbyId = genHash();
+
+      // create world
+      this.worlds[lobbyId] = WorldManager();
+
+      // set world id for this client
+      ws.data.worldId = lobbyId;
+
+      return { id: msg.id, lobbyId };
     },
     "lobby/join": async (ws, msg) => {
-      console.log("lobby/join", msg);
+      if (!this.worlds[msg.join]) return { id: msg.id, error: "world does not exist" };
+      ws.data.worldId = msg.join;
       return { id: msg.id }
     },
     "lobby/exit": async (ws, msg) => {
-      console.log("lobby/exit", msg);
       return { id: msg.id }
     },
   }
@@ -49,6 +52,12 @@ export class PiggoApi {
         message: this.handleMessage,
       },
     });
+
+    setInterval(() => {
+      Object.entries(this.worlds).forEach(([id, world]) => {
+        if (Object.keys(world.clients).length === 0) delete this.worlds[id];
+      });
+    }, 10000);
   }
 
   handleClose = (ws: ServerWebSocket<PerClientData>) => {
@@ -60,7 +69,7 @@ export class PiggoApi {
 
   handleOpen = (ws: ServerWebSocket<PerClientData>) => {
     // set data for this client
-    ws.data = { id: this.clientIncr, worldId: "hub", playerName: "UNKNOWN" };
+    ws.data = { id: this.clientIncr, worldId: "", playerName: "UNKNOWN" };
 
     // increment id
     this.clientIncr += 1;
@@ -74,10 +83,14 @@ export class PiggoApi {
 
     if (wsData.type === "request") {
       const handler = this.handlers[wsData.request.route];
+
       if (handler) {
         // @ts-expect-error
-        const response = handler(ws, wsData);
-        response.then((data) => ws.send(JSON.stringify(data)));
+        const result = handler(ws, wsData.request);
+        result.then((data) => {
+          const responseData: ResponseData = { type: "response", response: data }
+          ws.send(JSON.stringify(responseData));
+        });
       }
       return;
     }

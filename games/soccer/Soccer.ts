@@ -8,7 +8,7 @@ export const Soccer = IsometricGame({
     entities: [
       Background(), FieldGrass(), FieldWall(),
       Zombie({ id: "zombie1", color: 0x00eeff, positionProps: { x: 200, y: 400 } }),
-      Ball({ position: { x: 50, y: 350 } }),
+      Ball({ id: "ball", position: { x: 50, y: 350 } }),
       Goal({ id: "goal1", color: 0xff0000, position: { x: -402, y: 350 }, width: 49, length: 2 }),
       Goal({ id: "goal2", color: 0x0000ff, position: { x: 502, y: 350 }, width: 49, length: 2 }),
     ],

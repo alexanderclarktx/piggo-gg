@@ -7,14 +7,9 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
     if (!world.client) return undefined;
 
     const client = world.client;
-
     let serverMessageBuffer: GameData[] = [];
-    let lastLatency = 0;
-    let lastMessageTick: number = 0;
 
-    setInterval(() => {
-      world.isConnected = Boolean(lastMessageTick && ((world.tick - lastMessageTick) < 500));
-    }, 200);
+    world.actionBuffer.clearBeforeTick(world.tick + 2);
 
     client.ws.onmessage = (event) => {
       try {
@@ -22,15 +17,15 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
         if (!message.type || message.type !== "game") return;
 
         // skip old messages
-        if (message.tick < lastMessageTick) return;
+        if (message.tick < client.lastMessageTick) return;
 
         // store latest message
         serverMessageBuffer.push(message);
-        lastMessageTick = message.tick;
+        client.lastMessageTick = message.tick;
 
         // record latency
-        lastLatency = Date.now() - message.timestamp;
-        if (message.latency) client.ms = (lastLatency + message.latency) / 2;
+        client.lastLatency = Date.now() - message.timestamp;
+        if (message.latency) client.ms = (client.lastLatency + message.latency) / 2;
 
         // set flag to green
         world.tickFlag = "green";

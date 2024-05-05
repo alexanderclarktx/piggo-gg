@@ -131,7 +131,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       }
 
       if (world.tickFlag === "red") {
-        console.log("defering tick");
+        console.log("defer tick");
         scheduleOnTick();
         return;
       }

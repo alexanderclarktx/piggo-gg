@@ -1,4 +1,4 @@
-__Piggo__ is an opensource web gaming platform! Play online at [piggo.gg](https://piggo.gg) 
+__Piggo__ is an open-source web gaming platform! Play online at [piggo.gg](https://piggo.gg) 
 
 <p align="center">
   <img src="piggo-gg.gif" style="width:720px">

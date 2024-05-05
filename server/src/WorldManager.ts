@@ -8,9 +8,7 @@ export type WS = ServerWebSocket<PerClientData>
 export type WorldManager = {
   world: World
   clients: Record<string, WS>
-
   getNumClients: () => number
-
   handleMessage: (ws: WS, msg: NetMessageTypes) => void
   handleClose: (ws: WS) => void
 }
@@ -33,6 +31,14 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
     world,
     clients,
     getNumClients: () => Object.keys(clients).length,
+    handleClose: (ws: WS) => {
+      world.removeEntity(ws.data.playerName!);
+
+      delete clients[ws.remoteAddress];
+      delete latestClientMessages[ws.data.playerName!];
+
+      console.log(`${ws.data.playerName} disconnected`);
+    },
     handleMessage: (ws: WS, msg: NetMessageTypes) => {
       if (msg.type !== "game") return;
 
@@ -55,14 +61,6 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
       });
 
       if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${world.tick - msg.tick}`);
-    },
-    handleClose: (ws: WS) => {
-      world.removeEntity(ws.data.playerName!);
-
-      delete clients[ws.remoteAddress];
-      delete latestClientMessages[ws.data.playerName!];
-
-      console.log(`${ws.data.playerName} disconnected`);
     }
   }
 }

@@ -59,7 +59,7 @@ export const Shoot: ActionMap<{ mouse: { x: number, y: number }, id: number }> =
       const Yoffset = offset * (vy / Math.sqrt(vx * vx + vy * vy));
 
       const pos = { x: x + Xoffset, y: y + Yoffset, vx, vy };
-      world.addEntity(Projectile({ radius: 4, pos, id: params.id }));
+      world.addEntity(Projectile({ radius: 4, pos, id: `projectile-${params.id}` }));
     }
   })
 }

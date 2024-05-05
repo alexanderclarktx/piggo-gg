@@ -29,6 +29,8 @@ export class Renderable extends Component<"renderable"> {
 
   c: Container = new Container();
 
+  rendered: boolean = false;
+
   scale: number;
   rotates: boolean;
   zIndex: number;
