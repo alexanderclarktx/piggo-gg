@@ -1,15 +1,13 @@
-import { Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity, StateBuffer, System, SystemBuilder, SystemEntity } from "@piggo-gg/core";
-
-const servers = {
-  dev: "ws://localhost:3000",
-  staging: "wss://piggo-api-staging.up.railway.app",
-  production: "wss://api.piggo.gg"
-} as const;
+import {
+  Client, Command, Entity, Game, GameBuilder,
+  InvokedAction, Renderer, SerializedEntity,
+  StateBuffer, System, SystemBuilder, SystemEntity
+} from "@piggo-gg/core";
 
 export type World = {
   actionBuffer: StateBuffer<InvokedAction>
   chatHistory: StateBuffer<string>
-  clientPlayerId: string | undefined
+  client: Client | undefined
   commands: Record<string, Command>
   currentGame: Game
   debug: boolean
@@ -18,7 +16,6 @@ export type World = {
   games: Record<string, GameBuilder>
   isConnected: boolean
   lastTick: DOMHighResTimeStamp
-  ms: number
   renderer: Renderer | undefined
   runtimeMode: "client" | "server"
   systems: Record<string, System>
@@ -26,7 +23,6 @@ export type World = {
   tickFaster: boolean
   tickFlag: "green" | "red"
   tickrate: number
-  wsClient: WebSocket | undefined
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
@@ -41,7 +37,6 @@ export type World = {
 export type WorldBuilder = (_: WorldProps) => World;
 
 export type WorldProps = {
-  clientPlayerId?: string | undefined
   commands?: Command[]
   games?: GameBuilder[]
   renderer?: Renderer | undefined
@@ -49,7 +44,7 @@ export type WorldProps = {
 }
 
 // World manages all runtime state
-export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }: WorldProps): World => {
+export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
@@ -65,7 +60,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
   const world: World = {
     actionBuffer: StateBuffer(),
     chatHistory: StateBuffer(),
-    clientPlayerId,
+    client: undefined,
     commands: {},
     currentGame: { id: "", entities: [], systems: [] },
     debug: false,
@@ -74,7 +69,6 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     games: {},
     isConnected: false,
     lastTick: 0,
-    ms: 0,
     renderer,
     runtimeMode,
     systems: {},
@@ -82,13 +76,10 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     tickFaster: false,
     tickFlag: "green",
     tickrate: 25,
-    wsClient: undefined,
-    addEntity: (entity: Entity, timeout?: number) => {
+    addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id];
       if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup();
       world.entities[entity.id] = entity;
-
-      if (timeout) setTimeout(() => world.removeEntity(entity.id), timeout);
 
       return entity.id;
     },
@@ -125,7 +116,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     addSystemBuilders: (systemBuilders: SystemBuilder[]) => {
       systemBuilders.forEach((systemBuilder) => {
         if (!world.systems[systemBuilder.id]) {
-          const system = systemBuilder.init({ world, renderer: renderer, clientPlayerId: world.clientPlayerId });
+          const system = systemBuilder.init({ world });
           if (system) world.addSystems([system]);
         }
       })
@@ -140,7 +131,7 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
       }
 
       if (world.tickFlag === "red") {
-        console.log("defering tick");
+        console.log("defer tick");
         scheduleOnTick();
         return;
       }
@@ -207,6 +198,9 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
     }
   }
 
+  // set up client
+  if (runtimeMode === "client") world.client = Client({ world });
+
   // schedule tick
   scheduleOnTick();
 
@@ -219,13 +213,6 @@ export const World = ({ clientPlayerId, commands, games, renderer, runtimeMode }
   // setup commands
   if (commands) {
     commands.forEach((command) => world.commands[command.id] = command);
-  }
-
-  // connect to server
-  if (runtimeMode === "client") {
-    world.wsClient = new WebSocket(servers.production);
-    // world.wsClient = new WebSocket(servers.staging);
-    // world.wsClient = new WebSocket(servers.dev);
   }
 
   return world;

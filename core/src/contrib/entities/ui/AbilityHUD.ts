@@ -34,7 +34,7 @@ export const AbilityHUD = (): Entity => {
           return c;
         },
         dynamic: (_, __, ___, w) => {
-          const playerEntity = w.clientPlayerId ? w.entities[w.clientPlayerId] : undefined;
+          const playerEntity = w.client?.playerId ? w.entities[w.client.playerId] : undefined;
           if (!playerEntity) return;
 
           const Q = w.entities[playerEntity.components.controlling?.data.entityId ?? -1]?.components.actions?.actionMap["Q"]

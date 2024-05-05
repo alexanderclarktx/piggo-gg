@@ -9,15 +9,15 @@
     "docs": "bun pages",
     "pages": "ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME"
   },
-  "license": "ISC",
+  "license": "MIT+CC",
   "dependencies": {
-    "typescript": "^5.4.2"
+    "typescript": "5.4.5"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^11.0.0",
-    "ts-loader": "^9.4.2",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1"
+    "copy-webpack-plugin": "11.0.0",
+    "ts-loader": "9.4.2",
+    "webpack": "5.75.0",
+    "webpack-cli": "5.0.1",
+    "webpack-dev-server": "4.11.1"
   }
 }

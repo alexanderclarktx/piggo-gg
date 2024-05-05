@@ -1,8 +1,7 @@
-import { World } from "@piggo-gg/core";
+import { World, isMobile } from "@piggo-gg/core";
 import { GameCanvas, Header, NetState } from "@piggo-gg/web";
 import React, { useEffect, useState } from "react";
-
-const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+import { Toaster } from "react-hot-toast";
 
 // Piggo webapp root component
 export const Root = () => {
@@ -19,15 +18,10 @@ export const Root = () => {
 
   return (
     <div>
+      <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
-          {mobile ? null :
-            <Header
-              netState={netState}
-              setNetState={setNetState}
-              world={world}
-            />
-          }
+          {mobile ? null : <Header netState={netState} setNetState={setNetState} world={world} />}
           <GameCanvas setWorld={setWorld} />
         </div>
       </div>

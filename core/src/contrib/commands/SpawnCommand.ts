@@ -4,7 +4,7 @@ type SpawnCommandParams = { entity: string }
 type SpawnCommandAction = InvokedAction<"spawn", SpawnCommandParams>
 
 const entityBuilders: Record<string, () => Entity> = {
-  "ball": Ball,
+  // "ball": Ball,
   "spaceship": Spaceship,
   "zombie": Zombie
 }

@@ -1,11 +1,11 @@
 import { Entity, Health, Position, SystemBuilder } from "@piggo-gg/core";
 
-
 export const DamageSystem: SystemBuilder<"DamageSystem"> = {
   id: "DamageSystem",
-  init: ({ world }) => {
-
-    const onTick = (entities: Entity<Health | Position>[]) => {
+  init: ({ world }) => ({
+    id: "DamageSystem",
+    query: ["health", "position"],
+    onTick: (entities: Entity<Health | Position>[]) => {
       entities.forEach((entity) => {
         const { health } = entity.components;
 
@@ -14,11 +14,5 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
         }
       })
     }
-
-    return {
-      id: "DamageSystem",
-      onTick,
-      query: ["health", "position"]
-    }
-  }
+  })
 }

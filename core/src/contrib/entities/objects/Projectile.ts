@@ -1,34 +1,35 @@
-import { Collider, Entity, Position, Renderable, World } from "@piggo-gg/core";
-import { Graphics } from "pixi.js";
+import { Collider, Entity, Expires, Networked, Position, Renderable, World, pixiCircle } from "@piggo-gg/core";
 
 export type ProjectileProps = {
+  id: string
   radius: number
   pos?: { x: number, y: number, vx: number, vy: number }
 }
 
-export const Projectile = ({ radius, pos }: ProjectileProps) => {
+export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
   const projectile = Entity({
-    id: `projectile-${Math.trunc(Math.random() * 1000000)}`,
+    id,
     components: {
-      position: new Position(pos ? { x: pos.x, y: pos.y, velocityX: pos.vx, velocityY: pos.vy } : { x: 200, y: 200, velocityX: 50, velocityY: 0 }),
+      position: new Position(pos ?
+        { x: pos.x, y: pos.y, velocityX: pos.vx, velocityY: pos.vy } :
+        { x: 200, y: 200, velocityX: 50, velocityY: 0 }
+      ),
+      networked: new Networked({ isNetworked: true }),
+      expires: new Expires({ ticksLeft: 60 }),
       collider: new Collider({
         shape: "ball",
         radius: radius ?? 10,
         sensor: (e2: Entity<Position>, world: World) => {
           if (e2.components.health && e2.components.health.data.shootable) {
-            e2.components.health.data.health -= 25; // TODO Action
+            e2.components.health.data.health -= 25;
             world.removeEntity(projectile.id);
           }
         }
       }),
       renderable: new Renderable({
         zIndex: 3,
-        setup: async (r: Renderable) => {
-          const g = new Graphics();
-          g.circle(0, 0, radius ?? 10);
-          g.fill(0xffff00);
-
-          r.c = g;
+        setContainer: async () => {
+          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color: 0xffff00, alpha: 1 } });
         }
       })
     }

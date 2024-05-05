@@ -1,4 +1,4 @@
-import { Actions, Button, Clickable, DelayClientSystem, Entity, Position } from "@piggo-gg/core";
+import { Actions, Button, Clickable, NetClientSystem, Entity, Position, DelaySyncer } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const ConnectButton = () => Entity({
@@ -9,7 +9,7 @@ export const ConnectButton = () => Entity({
     actions: new Actions({
       click: {
         invoke: ({ world }) => {
-          if (world) world.addSystemBuilders([DelayClientSystem]);
+          if (world) world.addSystemBuilders([NetClientSystem(DelaySyncer)]);
         }
       }
     }),

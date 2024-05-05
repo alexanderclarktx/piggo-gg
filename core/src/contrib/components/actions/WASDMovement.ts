@@ -58,7 +58,6 @@ export const WASDController: ControllerMap<WASDParams | { mouse: { x: number, y:
     "d": () => ({ action: "move", params: norm({ x: 1, y: 0 }) }),
     "s": () => ({ action: "move", params: norm({ x: 0, y: 1 }) }),
     "q": ({ mouse }) => ({ action: "Q", params: { mouse } }),
-    "mb1": ({ mouse }) => ({ action: "shoot", params: { mouse } }),
     "mb2": ({ mouse, entity }) => {
       const { position, renderable } = entity.components;
       if (!position || !renderable) return null;

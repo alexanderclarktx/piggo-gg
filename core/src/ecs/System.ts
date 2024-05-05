@@ -13,16 +13,12 @@ export interface System<T extends string = string> {
 
 export type SystemProps = {
   world: World
-  renderer: Renderer | undefined
-  clientPlayerId: string | undefined
 }
 
 export type SystemBuilder<T extends string = string> = {
   id: T,
   init: (props: SystemProps) => System<T> | undefined
 }
-
-export const SystemBuilder = <T extends string = string>(builder: SystemBuilder<T>) => builder
 
 export const ClientSystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => ({
   ...builder,

@@ -2,14 +2,14 @@ import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, loadText
 import { Sprite } from "pixi.js";
 
 export type BallProps = {
-  id?: string
+  id: string
   position?: { x: number, y: number }
 }
 
-export const Ball = ({ position, id }: BallProps = { position: { x: 50, y: 250 } }) => Entity({
-  id: id ?? `ball${Math.trunc(Math.random() * 100)}`,
+export const Ball = ({ position, id }: BallProps) => Entity({
+  id: id,
   components: {
-    position: new Position(position),
+    position: new Position(position ?? { x: 50, y: 250 }),
     networked: new Networked({ isNetworked: true }),
     collider: new Collider({
       shape: "ball",

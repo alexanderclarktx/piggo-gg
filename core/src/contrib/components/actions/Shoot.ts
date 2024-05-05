@@ -1,6 +1,6 @@
 import { Action, ActionMap, LineWall, Projectile } from "@piggo-gg/core";
 
-export const Shoot: ActionMap<{ mouse: { x: number, y: number } }> = {
+export const Shoot: ActionMap<{ mouse: { x: number, y: number }, id: number }> = {
   Q: Action(({ world, params, entity }) => {
     if (!entity || !entity.components.position) return;
 
@@ -38,7 +38,7 @@ export const Shoot: ActionMap<{ mouse: { x: number, y: number } }> = {
     const { gun, position } = entity.components;
     if (!gun || !position) return;
 
-    if (world.clientPlayerId && gun.canShoot()) {
+    if (gun.canShoot()) {
       gun.shoot();
 
       const { x, y } = position.data;
@@ -59,7 +59,7 @@ export const Shoot: ActionMap<{ mouse: { x: number, y: number } }> = {
       const Yoffset = offset * (vy / Math.sqrt(vx * vx + vy * vy));
 
       const pos = { x: x + Xoffset, y: y + Yoffset, vx, vy };
-      world.addEntity(Projectile({ radius: 4, pos }), 2000);
+      world.addEntity(Projectile({ radius: 4, pos, id: `projectile-${params.id}` }));
     }
   })
 }

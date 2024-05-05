@@ -1,14 +1,12 @@
-import { AbilityHUD, Chat, ConnectButton, DebugButton, FullscreenButton, GameBuilder, Joystick, Noob } from "@piggo-gg/core";
+import { AbilityHUD, Chat, ConnectButton, DebugButton, FullscreenButton, GameBuilder, Joystick, Noob, isMobile } from "@piggo-gg/core";
 
-export const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-export const IsometricGame = <T extends string>(g: GameBuilder<T>): GameBuilder<T> => ({
-  ...g,
+export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): GameBuilder<T> => ({
+  ...gameBuilder,
   init: (world) => {
-    const game = g.init(world);
+    const game = gameBuilder.init(world);
 
     if (world.runtimeMode === "client") {
-      game.entities.push(Noob({ id: world.clientPlayerId! }));
+      game.entities.push(Noob({ id: world.client!.playerId }));
       game.entities.push(FullscreenButton(), DebugButton(), Chat());
 
       isMobile() ?

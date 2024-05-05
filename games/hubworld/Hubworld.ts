@@ -1,8 +1,7 @@
 import {
   Background, EnemySpawnSystem, FloorTiles,
-  GunSystem, HealthBarSystem, IsometricGame,
-  LineWall, PlayerSpawnSystem,
-  Portal
+  GunSystem, HealthBarSystem, InviteStone, IsometricGame,
+  LineWall, PlayerSpawnSystem, Portal
 } from "@piggo-gg/core";
 
 export const Hubworld = IsometricGame({
@@ -12,10 +11,12 @@ export const Hubworld = IsometricGame({
     entities: [
       Background({ img: "stars.png" }),
 
-      Portal({ pos: { x: 416, y: 80 }, game: "aram", tint: 0xaaaaff }),
-      Portal({ pos: { x: -608, y: 80 }, game: "legends", tint: 0xaaaaff }),
+      Portal({ pos: { x: 416, y: 80 }, game: "aram", tint: 0xff0055 }),
+      Portal({ pos: { x: -608, y: 80 }, game: "legends", tint: 0x00ffcc }),
       Portal({ pos: { x: 416, y: 592 }, game: "soccer", tint: 0xaaaaff }),
-      Portal({ pos: { x: -608, y: 592 }, game: "strike", tint: 0xaaaaff }),
+      Portal({ pos: { x: -608, y: 592 }, game: "strike", tint: 0x000000 }),
+
+      InviteStone({ pos: { x: 32 * 1, y: 32 * 3.25 }, tint: 0xddddff }),
 
       FloorTiles({ rows: 7, cols: 7, position: { x: -32 * 16, y: 32 } }),
       FloorTiles({ rows: 7, cols: 7, position: { x: 32 * 16, y: 32 } }),

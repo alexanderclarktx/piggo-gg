@@ -1,12 +1,10 @@
-import { IsometricWorld, Renderer, World } from "@piggo-gg/core";
+import { IsometricWorld, Renderer, World, isMobile } from "@piggo-gg/core";
 import { ARAM, Hubworld, Legends, Soccer, Strike } from "@piggo-gg/games";
 import React, { useEffect } from "react";
 
 export type GameCanvasProps = {
   setWorld: (_: World) => void
 }
-
-const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
 

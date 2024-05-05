@@ -3,30 +3,10 @@ import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder } 
 // HealthBarSystem displays gui elements
 export const HealthBarSystem = ClientSystemBuilder({
   id: "HealthBarSystem",
-  init: ({ world, renderer }) => {
-    if (!renderer) throw new Error("HealthBarSystem requires a renderer");
+  init: ({ world }) => {
+    if (!world.renderer) return undefined;
 
     let renderedEntities: Set<Entity> = new Set();
-
-    const onTick = (entities: Entity<Health | Position | Renderable>[]) => {
-      // handle old entities
-      renderedEntities.forEach((entity) => {
-        if (!world.entities[entity.id]) {
-          world.removeEntity(`${entity.id}-health`);
-          renderedEntities.delete(entity);
-        }
-      });
-
-      // handle new entities
-      entities.forEach((entity) => {
-        const { health, position } = entity.components;
-        if (health && health.data.showHealthBar && position) {
-          if (!renderedEntities.has(entity)) {
-            healthbarForEntity(entity);
-          }
-        }
-      });
-    }
 
     const healthbarForEntity = (entity: Entity<Health | Position | Renderable>) => {
       if (entity.components.renderable) {
@@ -47,8 +27,26 @@ export const HealthBarSystem = ClientSystemBuilder({
     return {
       id: "HealthBarSystem",
       query: ["health", "position", "renderable"],
-      onTick,
-      skipOnRollback: true
+      skipOnRollback: true,
+      onTick: (entities: Entity<Health | Position | Renderable>[]) => {
+        // handle old entities
+        renderedEntities.forEach((entity) => {
+          if (!world.entities[entity.id]) {
+            world.removeEntity(`${entity.id}-health`);
+            renderedEntities.delete(entity);
+          }
+        });
+  
+        // handle new entities
+        entities.forEach((entity) => {
+          const { health, position } = entity.components;
+          if (health && health.data.showHealthBar && position) {
+            if (!renderedEntities.has(entity)) {
+              healthbarForEntity(entity);
+            }
+          }
+        });
+      }
     }
   }
 });
