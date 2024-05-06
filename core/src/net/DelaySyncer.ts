@@ -1,7 +1,4 @@
-import {
-  Ball, GameData, LineWall, Noob, Projectile, SerializedEntity,
-  Skelly, Syncer, World, Zombie
-} from "@piggo-gg/core";
+import { Ball, GameData, LineWall, Noob, Projectile, SerializedEntity, Syncer, World, Zombie } from "@piggo-gg/core";
 
 export const DelaySyncer: Syncer = {
   writeMessage: (world: World) => {
@@ -44,7 +41,7 @@ export const DelaySyncer: Syncer = {
         } else if (entityId.startsWith("noob")) {
           world.addEntity(Noob({ id: entityId }))
         } else if (entityId.startsWith("projectile")) {
-          world.addEntity(Projectile({id: entityId, radius: 3}));
+          world.addEntity(Projectile({ id: entityId, radius: 3 }));
         } else if (entityId.startsWith("linewall")) {
           const points = entityId.split("-").slice(1).map((p) => parseInt(p)).filter(Number);
           world.addEntity(LineWall({ id: entityId, points, visible: true }));

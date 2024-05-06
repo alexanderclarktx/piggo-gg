@@ -141,7 +141,9 @@ export class Renderable extends Component<"renderable"> {
     // remove all event listeners
     this.c.removeAllListeners();
 
-    this.c.visible = false;
+    // this.c.visible = false;
+
+    this.c.renderable = false;
 
     // remove from the world
     // this.c.destroy(); // TODO disabled because it breaks from collider debug

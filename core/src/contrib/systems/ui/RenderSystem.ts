@@ -7,9 +7,6 @@ export const RenderSystem = ClientSystemBuilder({
     if (!world.renderer) return undefined;
 
     const renderer = world.renderer;
-
-    // let renderedEntities: Set<Entity<Renderable | Position>> = new Set();
-    let cache: Record<string, Position> = {};
     let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
 
     renderer.app.ticker.add(() => {
@@ -29,7 +26,6 @@ export const RenderSystem = ClientSystemBuilder({
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
 
-      cache[entity.id] = position;
       await renderable._init(renderer);
 
       if (position) {
@@ -78,24 +74,21 @@ export const RenderSystem = ClientSystemBuilder({
             renderNewEntity(entity);
           }
 
-          // track entity if controlled by player
+          // center this entity if controlled by player
           if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
             centeredEntity = entity;
           }
 
-          // update renderable if position changed
-          if (position && cache[entity.id].serialize() !== position.serialize() && !position.screenFixed) {
-            if (renderable.rotates) {
-              renderable.c.rotation = position.data.rotation;
-            }
-
-            renderable.c.position.set(
-              position.data.x + renderable.position.x,
-              position.data.y + renderable.position.y
-            );
-
-            cache[entity.id] = position;
+          // update rotation
+          if (renderable.rotates) {
+            renderable.c.rotation = position.data.rotation;
           }
+
+          // update position
+          renderable.c.position.set(
+            position.data.x + renderable.position.x,
+            position.data.y + renderable.position.y
+          );
 
           // set buffered ortho animation
           if (!renderable.bufferedAnimation) {
@@ -141,19 +134,15 @@ export const RenderSystem = ClientSystemBuilder({
         });
 
         // sort cache by position (closeness to camera)
-        const sortedEntityPositions = Object.keys(cache).sort((a, b) => {
-          const yDiff = cache[a].data.y - cache[b].data.y;
-          return yDiff;
+        const sortedEntityPositions = Object.values(entities).sort((a, b) => {
+          return a.components.position.data.y - b.components.position.data.y;
         });
 
-        // set zIndex
-        Object.keys(cache).forEach((entityId) => {
-          const entity = world.entities[entityId];
-          if (entity) {
-            const renderable = entity.components.renderable;
-            if (renderable) {
-              renderable.c.zIndex = (renderable.zIndex) + 0.0001 * sortedEntityPositions.indexOf(entityId);
-            }
+        // sort entities by zIndex
+        sortedEntityPositions.forEach((entity, index) => {
+          const renderable = entity.components.renderable;
+          if (renderable) {
+            renderable.c.zIndex = renderable.zIndex + 0.0001 * index;
           }
         });
       }
