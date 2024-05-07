@@ -8,9 +8,10 @@ export type FloorTilesProps = {
   cols: number
   position?: { x: number, y: number }
   id?: string
+  tint?: number
 }
 
-export const FloorTiles = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => {
+export const FloorTiles = ({ tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => {
 
   const makeTiles = async (r: Renderer) => {
     const sandbox = await Assets.load("sandbox.json");
@@ -22,7 +23,7 @@ export const FloorTiles = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor$
     tile.anchor.set(0.5, 0.5);
     tile.scale.set(2);
     tile.eventMode = "static";
-    tile.tint = 0x7777aa;
+    tile.tint = tint ?? 0x7777aa;
 
     // create a render texture
     const renderTexture = RenderTexture.create({
