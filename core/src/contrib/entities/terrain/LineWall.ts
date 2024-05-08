@@ -31,13 +31,14 @@ export const LineWall = ({ points, position, visible, health, id, shootable }: L
     components: {
       position: new Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
       debug: new Debug(),
-      health: new Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false, shootable: shootable ?? false }),
+      health: new Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false }),
       networked: new Networked({ isNetworked: true }),
       collider: new Collider({
         shape: "line",
         isStatic: true,
         points: newPoints,
-        priority: 1
+        priority: 1,
+        shootable: shootable ?? true
       }),
       renderable: new Renderable({
         visible: visible ?? false,

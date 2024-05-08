@@ -25,6 +25,7 @@ export const Home = IsometricGame({
       FloorTiles({ rows: 7, cols: 7, position: { x: -32 * 16, y: 32 * 17 } }),
 
       LineWall({
+        shootable: false,
         points: [
           32 * -8, 32 * 4.5,
           32, 0,

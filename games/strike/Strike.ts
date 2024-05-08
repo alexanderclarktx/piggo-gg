@@ -7,7 +7,7 @@ export const Strike = IsometricGame({
   init: () => ({
     id: "strike",
     entities: [
-      Background({ img: "stars.png" }),
+      Background(),
       FloorTiles({ rows: 15, cols: 7, position: { x: W32 * 3, y: W32 * 6.5 }, tint: 0xff6666 }), // T
 
       FloorTiles({ rows: 20, cols: 4, position: { x: W32 * 26, y: W32 * 2 } }),
@@ -35,7 +35,7 @@ export const Strike = IsometricGame({
       FloorTiles({ rows: 15, cols: 10, position: { x: W32 * 47, y: W32 * 28.5 }, tint: 0xffccaa }), // A
 
       LineWall({ points: [224, 384, 864, 704, 640, 816, 0, 496, 224, 384] }),
-      LineWall({ points: [-352, 448, 128, 208, 128, 208, 352, 320, 864, 64, 1248, 256, 1632, 64, 2752, 624, 1376, 1312, -352, 448] }),
+      LineWall({ shootable: false, points: [-352, 448, 128, 208, 128, 208, 352, 320, 864, 64, 1248, 256, 1632, 64, 2752, 624, 1376, 1312, -352, 448] }),
       LineWall({ points: [864, 192, 1376, 448, 992, 640, 480, 384, 864, 192] }),
       LineWall({ points: [1376, 320, 1504, 384, 1760, 256, 1632, 192, 1376, 320] }),
       LineWall({ points: [1920, 528, 1856, 560, 1632, 448, 1696, 416, 1920, 528] }),

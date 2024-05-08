@@ -19,9 +19,11 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
       collider: new Collider({
         shape: "ball",
         radius: radius ?? 10,
-        sensor: (e2: Entity<Position>, world: World) => {
-          if (e2.components.health && e2.components.health.data.shootable) {
-            e2.components.health.data.health -= 25;
+        sensor: (e2: Entity<Position | Collider>, world: World) => {
+          if (e2.components.collider.shootable) {
+            if (e2.components.health) {
+              e2.components.health.data.health -= 25;
+            }
             world.removeEntity(projectile.id);
           }
         }
