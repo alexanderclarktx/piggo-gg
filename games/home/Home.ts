@@ -4,10 +4,10 @@ import {
   LineWall, PlayerSpawnSystem, Portal
 } from "@piggo-gg/core";
 
-export const Hubworld = IsometricGame({
-  id: "hubworld",
+export const Home = IsometricGame({
+  id: "home",
   init: () => ({
-    id: "hubworld",
+    id: "home",
     entities: [
       Background({ img: "stars.png" }),
 
