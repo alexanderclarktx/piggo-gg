@@ -3,26 +3,33 @@ import { Graphics } from "pixi.js";
 
 export type LineWallProps = {
   points: number[]
+  position?: { x: number, y: number }
   visible?: boolean
   health?: number
   shootable?: boolean
   id?: string
 }
 
-export const LineWall = ({ points, visible, health, id, shootable }: LineWallProps) => {
+export const LineWall = ({ points, position, visible, health, id, shootable }: LineWallProps) => {
 
-  const newPoints = points.map((point, i) => {
-    if (i % 2 === 0) {
-      return point - points[0];
-    } else {
-      return point - points[1];
-    }
-  });
+  let newPoints: number[] = [];
+
+  if (position) {
+    newPoints = points;
+  } else {
+    newPoints = points.map((point, i) => {
+      if (i % 2 === 0) {
+        return point - points[0];
+      } else {
+        return point - points[1];
+      }
+    });
+  }
 
   const wall = Entity({
     id: id ?? `linewall-${points.join("-")}`,
     components: {
-      position: new Position({ x: points[0], y: points[1] }),
+      position: new Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
       debug: new Debug(),
       health: new Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false, shootable: shootable ?? false }),
       networked: new Networked({ isNetworked: true }),

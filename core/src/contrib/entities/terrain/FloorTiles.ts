@@ -1,5 +1,5 @@
-import { Entity, Renderer, Position, Renderable, Debug } from "@piggo-gg/core";
-import { Assets, Texture, Sprite, RenderTexture, Matrix, Graphics } from "pixi.js";
+import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
+import { Assets, Matrix, RenderTexture, Sprite, Texture } from "pixi.js";
 
 let index = 0;
 
@@ -10,6 +10,14 @@ export type FloorTilesProps = {
   id?: string
   tint?: number
 }
+
+export const FloorTilesPoints = (rows: number, cols: number, x: number, y: number) => [
+  32 + x, 0 + y,
+  (cols * 32 + 32) + x, (cols * 16) + y,
+  ((cols - rows) * 32 + 32) + x, ((cols + rows) * 16) + y,
+  (-rows * 32 + 32) + x, (rows * 16) + y,
+  32 + x, 0 + y
+]
 
 export const FloorTiles = ({ tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => {
 
