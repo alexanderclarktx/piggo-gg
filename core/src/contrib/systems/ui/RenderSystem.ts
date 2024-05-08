@@ -73,16 +73,16 @@ export const RenderSystem = ClientSystemBuilder({
           return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2);
         }
 
-        const cullVisible = (p: Position, r: Renderable) => {
-          r.visible = (!isFarFromCamera({ x: p.data.x + r.position.x, y: p.data.y + r.position.y }));
-        }
-
         entities.forEach((entity) => {
           const { position, renderable, controlled } = entity.components;
 
+          // cull entities that are far from the camera
           if (!position.screenFixed && renderable.children) {
             renderable.children.forEach((child) => {
-              if (child.c) cullVisible(position, child);
+              if (child.c) child.visible = !isFarFromCamera({
+                x: position.data.x + child.position.x,
+                y: position.data.y + child.position.y
+              });
             });
           }
 
