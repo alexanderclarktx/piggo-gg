@@ -65,8 +65,26 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       onTick: (entities: Entity<Renderable | Position>[]) => {
 
+        const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 };
+        const { width, height } = renderer.app.screen;
+        const cameraScale = renderer.camera.c.scale.x - 0.4;
+
+        const isFarFromCamera = ({ x, y }: { x: number, y: number }) => {
+          return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2);
+        }
+
+        const cullVisible = (p: Position, r: Renderable) => {
+          r.visible = (!isFarFromCamera({ x: p.data.x + r.position.x, y: p.data.y + r.position.y }));
+        }
+
         entities.forEach((entity) => {
           const { position, renderable, controlled } = entity.components;
+
+          if (!position.screenFixed && renderable.children) {
+            renderable.children.forEach((child) => {
+              if (child.c) cullVisible(position, child);
+            });
+          }
 
           // add new entities to the renderer
           if (!renderable.rendered) {
