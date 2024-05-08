@@ -76,7 +76,7 @@ export const RenderSystem = ClientSystemBuilder({
         entities.forEach((entity) => {
           const { position, renderable, controlled } = entity.components;
 
-          // cull entities that are far from the camera
+          // cull if far from camera
           if (!position.screenFixed && renderable.children) {
             renderable.children.forEach((child) => {
               if (child.c) child.visible = !isFarFromCamera({
@@ -86,13 +86,13 @@ export const RenderSystem = ClientSystemBuilder({
             });
           }
 
-          // add new entities to the renderer
+          // render if new entity
           if (!renderable.rendered) {
             renderable.rendered = true;
             renderNewEntity(entity);
           }
 
-          // center this entity if controlled by player
+          // center it if controlled by player
           if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
             centeredEntity = entity;
           }
@@ -132,10 +132,10 @@ export const RenderSystem = ClientSystemBuilder({
 
             // set activeAnimation
             renderable.activeAnimation = renderable.bufferedAnimation;
-
             renderable.bufferedAnimation = "";
           }
 
+          // reset buffered animation
           if (renderable.bufferedAnimation === renderable.activeAnimation) {
             renderable.bufferedAnimation = "";
           }
