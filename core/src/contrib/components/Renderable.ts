@@ -72,7 +72,7 @@ export class Renderable extends Component<"renderable"> {
   overrideDynamic = (dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)) => {
     return (c: Container, r: Renderable, e: Entity, w: World) => {
       if (dynamic) dynamic(c, r, e, w);
-      if (this.c.visible !== this.visible) this.c.visible = this.visible;
+      if (this.c.renderable !== this.visible) this.c.renderable = this.visible;
     }
   }
 
@@ -120,7 +120,7 @@ export class Renderable extends Component<"renderable"> {
     this.interactiveChildren ? this.c.interactiveChildren = true : this.c.interactiveChildren = false;
 
     // set visible
-    this.c.visible = this.visible ?? true;
+    this.c.renderable = this.visible ?? true;
 
     // set container properties
     this.c.zIndex = this.zIndex || 0;
@@ -141,9 +141,9 @@ export class Renderable extends Component<"renderable"> {
     // remove all event listeners
     this.c.removeAllListeners();
 
-    this.c.visible = false;
+    this.c.renderable = false;
 
     // remove from the world
-    // this.c.destroy(); // TODO disabled because it breaks from collider debug
+    // this.c.destroy(); // TODO disabled because it breaks debug mode
   }
 }

@@ -56,7 +56,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
             try {
               collider.rapierCollider = physics.createCollider(collider.colliderDesc, body);
             } catch (e) {
-              console.log("Error creating collider");
+              console.log("Error creating collider", e);
             }
 
             // set Collider.body

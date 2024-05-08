@@ -1,4 +1,4 @@
-import { Actions, Clickable, ClientSystemBuilder, Entity, Position, boundsCheck, mouse } from "@piggo-gg/core";
+import { Actions, Clickable, ClientSystemBuilder, Entity, Position, checkBounds, mouse } from "@piggo-gg/core";
 import { FederatedPointerEvent } from "pixi.js";
 
 export type Click = { x: number, y: number };
@@ -28,7 +28,7 @@ export const ClickableSystem = ClientSystemBuilder({
           const { clickable, position } = entity.components;
   
           if (hovered.has(entity.id)) {
-            const hovering = boundsCheck(renderer, position, clickable, mouse, mouse);
+            const hovering = checkBounds(renderer, position, clickable, mouse, mouse);
             if (!hovering) {
               if (clickable.hoverOut) clickable.hoverOut();
               hovered.delete(entity.id);
@@ -36,7 +36,7 @@ export const ClickableSystem = ClientSystemBuilder({
           }
   
           if (clickable.active && clickable.hoverOver && !hovered.has(entity.id)) {
-            const hovering = boundsCheck(renderer, position, clickable, mouse, mouse);
+            const hovering = checkBounds(renderer, position, clickable, mouse, mouse);
             if (hovering) {
               clickable.hoverOver();
               hovered.add(entity.id);
@@ -51,7 +51,7 @@ export const ClickableSystem = ClientSystemBuilder({
             const { clickable, position, networked } = entity.components;
             if (!clickable.active || !clickable.click) return;
   
-            const clicked = boundsCheck(renderer, position, clickable, click, clickWorld);
+            const clicked = checkBounds(renderer, position, clickable, click, clickWorld);
             if (clicked) {
               const invocation = clickable.click();
   

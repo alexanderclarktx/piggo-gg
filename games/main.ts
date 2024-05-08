@@ -3,5 +3,5 @@ export * from "./legends/entities";
 export * from "./soccer/Soccer";
 export * from "./soccer/entities";
 export * from "./strike/Strike";
-export * from "./hubworld/Hubworld";
+export * from "./home/Home";
 export * from "./aram/ARAM";

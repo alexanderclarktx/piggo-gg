@@ -1,5 +1,5 @@
 import { NetServerSystem, NetMessageTypes, IsometricWorld, Noob, World } from "@piggo-gg/core";
-import { ARAM, Hubworld, Legends, Soccer, Strike } from "@piggo-gg/games";
+import { ARAM, Home, Legends, Soccer, Strike } from "@piggo-gg/games";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
 
@@ -19,7 +19,7 @@ export type WorldManagerProps = {
 
 export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
 
-  const world = IsometricWorld({ runtimeMode: "server", games: [Hubworld, Strike, ARAM, Soccer, Legends] });
+  const world = IsometricWorld({ runtimeMode: "server", games: [Home, Strike, ARAM, Soccer, Legends] });
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {};
 
   world.systems = {

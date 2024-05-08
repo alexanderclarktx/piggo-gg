@@ -45,8 +45,21 @@ export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number,
   return entities[0];
 }
 
+export const normalize = ({ x, y, entity }: { x: number, y: number, entity: Entity<Position> }): { x: number, y: number } => {
+  const { speed } = entity.components.position.data;
 
-export const boundsCheck = (renderer: Renderer, position: Position, clickable: Clickable, click: Click, clickWorld: Click): boolean => {
+  if (x === 0) return { x, y: Math.sign(y) * speed };
+  if (y === 0) return { x: Math.sign(x) * speed, y };
+
+  const ratio = x * x / (y * y);
+
+  const newX = Math.sqrt(speed * speed / (1 + ratio)) * Math.sign(x);
+  const newY = Math.sqrt(speed * speed / (1 + 1 / ratio)) * Math.sign(y);
+
+  return { x: newX, y: newY };
+}
+
+export const checkBounds = (renderer: Renderer, position: Position, clickable: Clickable, click: Click, clickWorld: Click): boolean => {
 
   let { x, y } = position.data;
   if (clickable.anchor) {

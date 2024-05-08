@@ -5,13 +5,14 @@ export type ColliderShapes = "ball" | "cuboid" | "line";
 
 export type ColliderProps = {
   shape: ColliderShapes
+  shootable?: boolean
   points?: number[]
   radius?: number
   length?: number
   width?: number
   isStatic?: boolean
   frictionAir?: number
-  mass?: number // default mass seems to be 100
+  mass?: number // default 100
   restitution?: number
   rotation?: number
   priority?: number
@@ -24,11 +25,12 @@ export class Collider extends Component<"collider"> {
   colliderDesc: ColliderDesc;
   rapierCollider: RapierCollider;
   body: RigidBody;
-  priority: number = 0;
+  priority: number;
+  shootable: boolean;
 
   sensor: (e2: Entity<Position>, world: World) => void;
 
-  constructor({ shape, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority }: ColliderProps) {
+  constructor({ shape, shootable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority }: ColliderProps) {
     super();
 
     if (isStatic) {
@@ -38,11 +40,11 @@ export class Collider extends Component<"collider"> {
     }
 
     if (shape === "ball" && radius) {
-      this.colliderDesc = ColliderDesc.ball(radius)
+      this.colliderDesc = ColliderDesc.ball(radius);
     } else if (shape === "cuboid") {
       this.colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1);
     } else if (shape === "line" && points) {
-      const s = ColliderDesc.polyline(Float32Array.from(points))
+      const s = ColliderDesc.polyline(Float32Array.from(points));
       this.colliderDesc = s;
     }
 
@@ -51,7 +53,9 @@ export class Collider extends Component<"collider"> {
       this.sensor = sensor;
     }
 
-    if (priority) this.priority = priority;
+    this.shootable = shootable ?? true;
+
+    this.priority = priority ?? 0;
 
     if (mass) this.colliderDesc.setMass(mass);
     if (restitution) this.colliderDesc.setRestitution(restitution);

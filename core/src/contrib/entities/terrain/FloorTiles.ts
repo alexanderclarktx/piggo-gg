@@ -1,5 +1,5 @@
-import { Entity, Renderer, Position, Renderable, Debug } from "@piggo-gg/core";
-import { Assets, Texture, Sprite, RenderTexture, Matrix, Graphics } from "pixi.js";
+import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
+import { Assets, Matrix, RenderTexture, Sprite, Texture } from "pixi.js";
 
 let index = 0;
 
@@ -8,9 +8,18 @@ export type FloorTilesProps = {
   cols: number
   position?: { x: number, y: number }
   id?: string
+  tint?: number
 }
 
-export const FloorTiles = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => {
+export const FloorTilesPoints = (rows: number, cols: number, x: number, y: number) => [
+  32 + x, 0 + y,
+  (cols * 32 + 32) + x, (cols * 16) + y,
+  ((cols - rows) * 32 + 32) + x, ((cols + rows) * 16) + y,
+  (-rows * 32 + 32) + x, (rows * 16) + y,
+  32 + x, 0 + y
+]
+
+export const FloorTiles = ({ tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => {
 
   const makeTiles = async (r: Renderer) => {
     const sandbox = await Assets.load("sandbox.json");
@@ -22,7 +31,7 @@ export const FloorTiles = ({ rows, cols, position = { x: 0, y: 0 }, id = `floor$
     tile.anchor.set(0.5, 0.5);
     tile.scale.set(2);
     tile.eventMode = "static";
-    tile.tint = 0x7777aa;
+    tile.tint = tint ?? 0x7777aa;
 
     // create a render texture
     const renderTexture = RenderTexture.create({

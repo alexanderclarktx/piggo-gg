@@ -62,7 +62,7 @@ export class PiggoApi {
 
   handleClose = (ws: ServerWebSocket<PerClientData>) => {
     const world = this.worlds[ws.data.worldId];
-    world.handleClose(ws);
+    if (world) world.handleClose(ws);
 
     delete this.clients[ws.data.id];
   }
@@ -96,7 +96,7 @@ export class PiggoApi {
     }
 
     const world = this.worlds[ws.data.worldId];
-    world.handleMessage(ws, wsData);
+    if (world) world.handleMessage(ws, wsData);
   }
 }
 

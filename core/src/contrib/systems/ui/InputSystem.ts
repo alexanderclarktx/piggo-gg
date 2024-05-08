@@ -1,4 +1,4 @@
-import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, World, currentJoystickPosition } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Controlled, Controller, Entity, Position, World, currentJoystickPosition } from "@piggo-gg/core";
 
 // TODO these are global dependencies
 export var chatBuffer: string[] = [];
@@ -98,7 +98,7 @@ export const InputSystem = ClientSystemBuilder({
       }
     });
 
-    const handleInputForEntity = (entity: Entity<Controlled | Controller | Actions>, world: World) => {
+    const handleInputForEntity = (entity: Entity<Controlled | Controller | Actions | Position>, world: World) => {
       // copy the input buffer
       let buffer = bufferedDown.copy();
 
@@ -107,7 +107,7 @@ export const InputSystem = ClientSystemBuilder({
 
       // handle joystick input
       if (currentJoystickPosition.power > 0.1 && controller.controllerMap.joystick) {
-        const joystickAction = controller.controllerMap.joystick();
+        const joystickAction = controller.controllerMap.joystick({ entity });
         if (joystickAction) world.actionBuffer.push(world.tick + 1, entity.id, joystickAction);
       }
 
@@ -150,17 +150,17 @@ export const InputSystem = ClientSystemBuilder({
 
     return {
       id: "InputSystem",
-      query: ["controlled", "controller", "actions"],
+      query: ["controlled", "controller", "actions", "position"],
       skipOnRollback: true,
-      onTick: (entities: Entity<Controlled | Controller | Actions>[]) => {
+      onTick: (entities: Entity<Controlled | Controller | Actions | Position>[]) => {
         // update mouse position, the camera might have moved
         if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent);
-  
+
         // handle inputs for controlled entities
         entities.forEach((entity) => {
           if (entity.components.controlled.data.entityId === world.client?.playerId) handleInputForEntity(entity, world);
         });
-  
+
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop();
       }
