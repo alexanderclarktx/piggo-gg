@@ -72,6 +72,7 @@ export * from "./src/contrib/components/NPC";
 export * from "./src/contrib/components/Player";
 export * from "./src/contrib/components/Position";
 export * from "./src/contrib/components/Renderable";
+export * from "./src/contrib/components/Team";
 export * from "./src/contrib/components/actions/PlayerControlsEntity";
 export * from "./src/contrib/components/actions/Shoot";
 export * from "./src/contrib/components/actions/VehicleMovement";

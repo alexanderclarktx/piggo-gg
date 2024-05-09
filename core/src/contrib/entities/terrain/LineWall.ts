@@ -1,4 +1,4 @@
-import { Collider, Debug, Entity, Health, Networked, Position, Renderable } from "@piggo-gg/core";
+import { Collider, Entity, Health, Networked, Position, Renderable } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export type LineWallProps = {
@@ -30,7 +30,6 @@ export const LineWall = ({ points, position, visible, health, id, shootable }: L
     id: id ?? `linewall-${points.join("-")}`,
     components: {
       position: new Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
-      debug: new Debug(),
       health: new Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false }),
       networked: new Networked({ isNetworked: true }),
       collider: new Collider({
