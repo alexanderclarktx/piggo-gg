@@ -87,10 +87,20 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           const body = bodies[id];
           const entity = world.entities[id] as Entity<Position>;
 
-          entity.components.position.data.x = Math.round(body.translation().x * 100) / 100;
-          entity.components.position.data.y = Math.round(body.translation().y * 100) / 100;
-          entity.components.position.data.velocityX = Math.floor(body.linvel().x * 100) / 100;
-          entity.components.position.data.velocityY = Math.floor(body.linvel().y * 100) / 100;
+          const { position } = entity.components;
+
+          // check if the entity has collided
+          const diffX = position.data.velocityX - Math.floor(body.linvel().x * 100) / 100;
+          const diffY = position.data.velocityY - Math.floor(body.linvel().y * 100) / 100;
+          if (Math.abs(diffX) > 1 || Math.abs(diffY) > 1) {
+            position.lastCollided = world.tick;
+          }
+
+          // update the entity position/velocity
+          position.data.x = Math.round(body.translation().x * 100) / 100;
+          position.data.y = Math.round(body.translation().y * 100) / 100;
+          position.data.velocityX = Math.floor(body.linvel().x * 100) / 100;
+          position.data.velocityY = Math.floor(body.linvel().y * 100) / 100;
         });
 
         // sensor callbacks

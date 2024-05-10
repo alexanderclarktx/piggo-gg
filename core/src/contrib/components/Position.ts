@@ -15,6 +15,7 @@ export class Position extends Component<"position"> {
   type: "position" = "position";
 
   ortho = 0;
+  lastCollided: number = 0;
 
   override data = {
     x: 0,
