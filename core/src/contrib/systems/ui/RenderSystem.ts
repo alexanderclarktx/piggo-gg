@@ -163,19 +163,23 @@ export const RenderSystem = ClientSystemBuilder({
 
           const { x, y, velocityX, velocityY } = position.data;
 
+          if (centeredEntity && entity.id === centeredEntity.id) {
+            renderer.camera.moveTo({ x, y });
+          }
+
           const dx = velocityX * elapsedTime / 1000;
           const dy = velocityY * elapsedTime / 1000;
 
           // calculate interpolation with deltaMS
-          if (velocityX || velocityY) {
+          if (((world.tick - position.lastCollided) > 4) && (velocityX || velocityY)) {
             renderable.c.position.set(
               x + dx + renderable.position.x,
               y + dy + renderable.position.y
             );
-          }
 
-          if (centeredEntity && entity.id === centeredEntity.id) {
-            renderer.camera.moveTo({ x: x + dx, y: y + dy });
+            if (centeredEntity && entity.id === centeredEntity.id) {
+              renderer.camera.moveTo({ x: x + dx, y: y + dy });
+            }
           }
         });
 
