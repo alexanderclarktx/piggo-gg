@@ -33,9 +33,9 @@ export const Client = ({ world }: ClientProps): Client => {
   let requestBuffer: Record<string, Callback> = {};
 
   const client: Client = {
-    // ws: new WebSocket(servers.production),
+    ws: new WebSocket(servers.production),
     // ws: new WebSocket(servers.staging),
-    ws: new WebSocket(servers.dev),
+    // ws: new WebSocket(servers.dev),
     playerId: genPlayerId(),
     ms: 0,
     lastLatency: 0,
