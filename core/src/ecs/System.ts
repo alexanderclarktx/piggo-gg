@@ -9,7 +9,6 @@ export interface System<T extends string = string> {
   skipOnRollback?: boolean
   onTick: (entities: Entity[], isRollback: boolean) => void;
   onRollback?: () => void
-  onBeforeTick?: (entities: Entity[]) => void;
   onRender?: (entities: Entity[], deltaMS: number) => void;
 }
 

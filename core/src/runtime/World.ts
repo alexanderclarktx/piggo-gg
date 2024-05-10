@@ -159,13 +159,6 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       }
       world.entitiesAtTick[world.tick] = serializedEntities;
 
-      // run system onBeforeTick
-      Object.values(world.systems).forEach((system) => {
-        if (system.onBeforeTick) {
-          system.onBeforeTick(filterEntities(system.query, Object.values(world.entities)));
-        }
-      });
-
       // run system onTick
       Object.values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
