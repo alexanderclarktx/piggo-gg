@@ -13,7 +13,9 @@ export class PiggoApi {
   bun: Server;
   clientIncr = 1;
   clients: Record<string, ServerWebSocket<PerClientData>> = {};
-  worlds: Record<string, WorldManager> = {};
+  worlds: Record<string, WorldManager> = {
+    "hub": WorldManager(),
+  };
 
   handlers: { [R in RequestTypes["route"]]: (ws: ServerWebSocket<PerClientData>, msg: ExtractedRequestTypes<R>) => Promise<ExtractedRequestTypes<R>['response']> } = {
     "lobby/list": async (ws, msg) => {
@@ -95,7 +97,7 @@ export class PiggoApi {
       return;
     }
 
-    const world = this.worlds[ws.data.worldId];
+    const world = this.worlds[ws.data.worldId] ?? this.worlds["hub"];
     if (world) world.handleMessage(ws, wsData);
   }
 }

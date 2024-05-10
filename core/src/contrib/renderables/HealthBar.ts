@@ -5,10 +5,10 @@ export type HealthBarProps = RenderableProps & {
   health: Health
 }
 
-// TODO redrawing on every tick
 export const HealthBar = ({ health }: HealthBarProps): Renderable => {
 
   const g = new Graphics();
+  let cachedHealthPercent = 0;
 
   const draw = (g: Graphics) => {
     // gold outline
@@ -25,8 +25,10 @@ export const HealthBar = ({ health }: HealthBarProps): Renderable => {
   const renderable = new Renderable({
     zIndex: 10,
     dynamic: () => {
-      g.clear();
-      draw(g);
+      const healthPercent = health.data.health / health.data.maxHealth;
+      if (healthPercent !== cachedHealthPercent) {
+        draw(g.clear());
+      }
     },
     setup: async (r: Renderable) => {
       draw(g);

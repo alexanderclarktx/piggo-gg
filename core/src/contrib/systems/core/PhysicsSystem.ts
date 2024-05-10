@@ -28,6 +28,16 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
       id: "PhysicsSystem",
       query: ["position", "collider"],
       onRollback: resetPhysics,
+      onBeforeTick: (entities: Entity<Position | Collider>[]) => {
+        // reset velocities where needed
+        entities.forEach((entity) => {
+          const { position } = entity.components;
+          if (position.data.velocityResets && !position.data.headingX && !position.data.headingY) {
+            position.data.velocityX = 0;
+            position.data.velocityY = 0;
+          }
+        });
+      },
       onTick: (entities: Entity<Position | Collider>[], isRollback: false) => {
 
         // wait until rapier is ready
@@ -120,15 +130,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
               position.data.headingX = NaN;
               position.data.headingY = NaN;
             }
-          }
-        });
-
-        // reset velocities where needed
-        entities.forEach((entity) => {
-          const { position } = entity.components;
-          if (position.data.velocityResets && !position.data.headingX && !position.data.headingY) {
-            position.data.velocityX = 0;
-            position.data.velocityY = 0;
           }
         });
       }

@@ -4,14 +4,10 @@ import { AnimatedSprite } from "pixi.js";
 
 // ortho positions
 const pz = [
-  { x: -20, y: 0 },
-  { x: -20, y: -15 },
-  { x: 0, y: -25 },
-  { x: 20, y: -15 },
-  { x: 20, y: 0 },
-  { x: 15, y: 15 },
-  { x: 0, y: 15 },
-  { x: -15, y: 15 }
+  { x: -20, y: 0 }, { x: -20, y: -15 },
+  { x: 0, y: -25 }, { x: 20, y: -15 },
+  { x: 20, y: 0 }, { x: 15, y: 15 },
+  { x: 0, y: 15 }, { x: -15, y: 15 }
 ]
 
 export const GunSystem: SystemBuilder<"gun"> = ({
@@ -24,6 +20,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
     const draw = (player: Entity<Gun | Position>, gunId: number): Entity<Renderable | Position> => Entity({
       id: `${player.id}-gun${gunId}`,
       components: {
+        position: player.components.position,
         renderable: new Renderable({
           scaleMode: "nearest",
           zIndex: 2,
@@ -57,8 +54,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
               animation.filters = [new OutlineFilter({ thickness: 1, color: 0x000000 })]
             })
           }
-        }),
-        position: player.components.position
+        })
       }
     });
 

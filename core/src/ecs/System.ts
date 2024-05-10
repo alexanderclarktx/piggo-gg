@@ -5,10 +5,12 @@ import { Entity, World, Renderer, NetworkedComponentData } from "@piggo-gg/core"
 export interface System<T extends string = string> {
   id: T,
   data?: NetworkedComponentData
-  query?: string[];
+  query: string[];
   skipOnRollback?: boolean
-  onRollback?: () => void
   onTick: (entities: Entity[], isRollback: boolean) => void;
+  onRollback?: () => void
+  onBeforeTick?: (entities: Entity[]) => void;
+  onRender?: (entities: Entity[], deltaMS: number) => void;
 }
 
 export type SystemProps = {

@@ -1,4 +1,4 @@
-import { Renderer, Renderable } from "@piggo-gg/core";
+import { Renderable, Renderer } from "@piggo-gg/core";
 import { Container } from "pixi.js";
 
 export type Camera = {

@@ -33,9 +33,9 @@ export const Client = ({ world }: ClientProps): Client => {
   let requestBuffer: Record<string, Callback> = {};
 
   const client: Client = {
-    ws: new WebSocket(servers.production),
+    // ws: new WebSocket(servers.production),
     // ws: new WebSocket(servers.staging),
-    // ws: new WebSocket(servers.dev),
+    ws: new WebSocket(servers.dev),
     playerId: genPlayerId(),
     ms: 0,
     lastLatency: 0,
@@ -57,6 +57,8 @@ export const Client = ({ world }: ClientProps): Client => {
       // send join lobby request
       const requestData: RequestData = { type: "request", request: LobbyJoinRequest(lobbyId) };
       client.ws.send(JSON.stringify(requestData));
+
+      console.log(requestData);
 
       // store callback
       requestBuffer[requestData.request.id] = (response: LobbyJoin["response"]) => {
