@@ -24,7 +24,7 @@ export const DelaySyncer: Syncer = {
       if (world.entities[entityId]?.components.networked) {
 
         if (!message.serializedEntities[entityId]) {
-          console.log("DELETE ENTITY", entityId, message.serializedEntities);
+          console.log("DELETE ENTITY", entityId);
           world.removeEntity(entityId);
         }
       }
