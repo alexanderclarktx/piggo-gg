@@ -159,10 +159,10 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       }
       world.entitiesAtTick[world.tick] = serializedEntities;
 
-      // run system updates
+      // run system onTick
       Object.values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
-          system.query ? system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback) : system.onTick([], isRollback);
+          system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback);
         }
       });
 
@@ -201,8 +201,17 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
   // set up client
   if (runtimeMode === "client") world.client = Client({ world });
 
-  // schedule tick
+  // schedule onTick
   scheduleOnTick();
+
+  // schedule onRender
+  if (renderer) {
+    renderer.app.ticker.add((ticker) => {
+      Object.values(world.systems).forEach((system) => {
+        if (system.onRender) system.onRender(filterEntities(system.query, Object.values(world.entities)), ticker.deltaMS);
+      });
+    });
+  }
 
   // setup games
   if (games) {

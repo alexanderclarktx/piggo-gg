@@ -26,7 +26,8 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
         width: 256,
         height: 128,
         hoverOver: () => {
-          portal.components.renderable.c.filters = [new OutlineFilter({ thickness: 0.1, color: 0xffff00 })]
+          const outlineFilter = new OutlineFilter({ thickness: 0.1, color: 0xffff00 });
+          portal.components.renderable.c.filters = [outlineFilter];
         },
         hoverOut: () => {
           portal.components.renderable.c.filters = []

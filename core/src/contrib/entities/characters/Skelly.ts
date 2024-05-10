@@ -6,7 +6,7 @@ export const Skelly = (id: string, color?: number) => {
     id: id,
     components: {
       debug: new Debug(),
-      position: new Position({ x: 151, y: 300, velocityResets: 1, speed: 160 }),
+      position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 160 }),
       networked: new Networked({ isNetworked: true }),
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),

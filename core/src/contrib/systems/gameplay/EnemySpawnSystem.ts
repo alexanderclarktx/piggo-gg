@@ -36,6 +36,7 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
     return {
       id: "EnemySpawnSystem",
       data,
+      query: [],
       onTick: () => {
 
         // handle old entities

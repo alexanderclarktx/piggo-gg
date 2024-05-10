@@ -8,20 +8,7 @@ export const RenderSystem = ClientSystemBuilder({
 
     const renderer = world.renderer;
     let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
-
-    renderer.app.ticker.add(() => {
-      if (centeredEntity) {
-        const p = centeredEntity.components.position;
-        if (p) renderer.camera.moveTo(p.data);
-      }
-
-      // update screenFixed entities
-      Object.values(world.entities).forEach((entity) => {
-        if (entity.components.renderable && entity.components.position) {
-          updateScreenFixed(entity as Entity<Renderable | Position>);
-        }
-      });
-    });
+    let lastOntick = Date.now();
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
@@ -64,6 +51,8 @@ export const RenderSystem = ClientSystemBuilder({
       id: "RenderSystem",
       query: ["renderable", "position"],
       onTick: (entities: Entity<Renderable | Position>[]) => {
+
+        lastOntick = Date.now();
 
         const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 };
         const { width, height } = renderer.app.screen;
@@ -163,7 +152,40 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.c.zIndex = renderable.zIndex + 0.0001 * index;
           }
         });
-      }
+      },
+      onRender(entities: Entity<Renderable | Position>[]) {
+        const elapsedTime = Date.now() - lastOntick;
+
+        // interpolate entity positions
+        entities.forEach((entity) => {
+          const { position, renderable } = entity.components;
+          if (position.screenFixed) return;
+
+          const { x, y, velocityX, velocityY } = position.data;
+
+          const dx = velocityX * elapsedTime / 1000;
+          const dy = velocityY * elapsedTime / 1000;
+
+          // calculate interpolation with deltaMS
+          if (velocityX || velocityY) {
+            renderable.c.position.set(
+              x + dx + renderable.position.x,
+              y + dy + renderable.position.y
+            );
+          }
+
+          if (centeredEntity && entity.id === centeredEntity.id) {
+            renderer.camera.moveTo({ x: x + dx, y: y + dy });
+          }
+        });
+
+        // update screenFixed entities
+        Object.values(world.entities).forEach((entity) => {
+          if (entity.components.renderable && entity.components.position) {
+            updateScreenFixed(entity as Entity<Renderable | Position>);
+          }
+        });
+      },
     }
   }
 });

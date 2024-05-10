@@ -1,6 +1,6 @@
-import React from "react";
+import { World } from "@piggo-gg/core";
 import { NetState, NetStateColor } from "@piggo-gg/web";
-import { World, NetClientSystem, DelaySyncer } from "@piggo-gg/core";
+import React from "react";
 
 export type WsNetConnectorProps = {
   world: World | undefined
@@ -15,14 +15,14 @@ export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorP
   }, 200)
 
   const onClick = () => {
-    if (world) world.addSystemBuilders([NetClientSystem(DelaySyncer)])
+    if (world && world.client) world.client.joinLobby("hub", () => {});
   }
 
   return (
     <div style={{ "paddingTop": 0 }}>
       <div style={{ width: "100%" }}>
         <div style={{ float: "left", marginLeft: 0, paddingLeft: 0, marginTop: 1 }}>
-          {/* <button style={{ fontSize: 12, marginLeft: 0 }} onClick={onClick}>connect</button> */}
+          <button style={{ fontSize: 12, marginLeft: 0 }} onClick={onClick}>connect</button>
           <span style={{ color: NetStateColor[netState], fontSize: 14, fontFamily: "sans-serif", paddingTop: 2 }}>{netState}</span>
         </div>
       </div>
