@@ -9,7 +9,7 @@ export const ConnectButton = () => Entity({
     actions: new Actions({
       click: {
         invoke: ({ world }) => {
-          if (world) world.addSystemBuilders([NetClientSystem(DelaySyncer)]);
+          if (world && world.client) world.client.joinLobby("hub", () => {});
         }
       }
     }),

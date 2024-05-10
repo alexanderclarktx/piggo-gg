@@ -49,8 +49,8 @@ export class Position extends Component<"position"> {
   }
 
   setVelocity = ({ x, y }: { x: number, y: number }) => {
-    this.data.velocityX = x;
-    this.data.velocityY = y;
+    this.data.velocityX = Math.round(x * 100) / 100;
+    this.data.velocityY = Math.round(y * 100) / 100;
 
     if (x || y) this.ortho = Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8;
 
