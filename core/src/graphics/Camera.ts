@@ -17,7 +17,7 @@ export const Camera = (renderer: Renderer): Camera => {
   let scale = 1.4;
 
   const rescale = () => {
-    const min = 1;
+    const min = 1.2;
     const max = 2;
 
     if (scale < min) scale = min;

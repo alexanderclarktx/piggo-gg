@@ -1,5 +1,5 @@
-import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture } from "@piggo-gg/core";
-import { AnimatedSprite, Text } from "pixi.js";
+import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture, pixiText } from "@piggo-gg/core";
+import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, color?: number) => {
   const skelly = Entity<Position | Gun>({
@@ -42,10 +42,9 @@ export const Skelly = (id: string, color?: number) => {
             ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
           }
 
-          const nametag = new Text({
+          const nametag = pixiText({
             text: id.split("-")[1],
-            resolution: 2,
-            style: { fill: 0xffff00, fontSize: 13 }
+            style: { fill: 0xffff00,fontSize: 13 }
           }).updateTransform({ x: -18, y: -45 });
 
           r.c.addChild(nametag);

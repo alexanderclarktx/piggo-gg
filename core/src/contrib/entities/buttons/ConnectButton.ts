@@ -1,5 +1,4 @@
-import { Actions, Button, Clickable, NetClientSystem, Entity, Position, DelaySyncer } from "@piggo-gg/core";
-import { Text } from "pixi.js";
+import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
 
 export const ConnectButton = () => Entity({
   id: "connectButton",
@@ -17,7 +16,7 @@ export const ConnectButton = () => Entity({
     renderable: Button({
       dims: { w: 72, textX: 8, textY: 5 },
       zIndex: 1,
-      text: new Text({ text: "connect", style: { fill: "#FFFFFF", fontSize: 16 } }),
+      text: pixiText({ text: "connect", style: { fill: 0xffffff, fontSize: 16 } })
     })
   }
 })

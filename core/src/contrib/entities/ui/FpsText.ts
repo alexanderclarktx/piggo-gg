@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, World } from "@piggo-gg/core";
+import { Entity, Position, Renderable, World, pixiText } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export type FpsTextProps = {
@@ -15,7 +15,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
     }),
     renderable: new Renderable({
       zIndex: 3,
-      setContainer: async () => new Text({ text: "", style: { fontSize: 14, fill: "#00ff00" }, resolution: 2 }),
+      setContainer: async () => pixiText({ text: "", style: { fontSize: 14, fill: 0x00ff00 } }),
       dynamic: (t: Text, _, __, w: World) => {
         if (w.tick % 5 !== 0) return;
         if (t) {
@@ -37,7 +37,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
     }),
     renderable: new Renderable({
       zIndex: 3,
-      setContainer: async () => new Text({ text: "", style: { fontSize: 14, fill: "#00ff00" }, resolution: 2 }),
+      setContainer: async () => pixiText({ text: "", style: { fontSize: 14, fill: 0x00ff00 } }),
       dynamic: (t: Text, _, __, w: World) => {
         const lag = Math.round(w.client?.ms ?? 0);
         if (w.tick % 5 !== 0) return;
