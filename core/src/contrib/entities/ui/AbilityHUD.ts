@@ -28,7 +28,7 @@ export const AbilityHUD = (): Entity => {
           const keyE = pixiText({ text: "E", pos: { x: 2, y: 35 } });
           const keyR = pixiText({ text: "R", pos: { x: 77, y: 35 } });
 
-          const graphicsQ = pixiText({ text: "wall", fontSize: 18, pos: { x: -141, y: 10 } });
+          const graphicsQ = pixiText({ text: "wall", pos: { x: -141, y: 10 }, style: { fontSize: 18 } });
 
           c.addChild(squareQ, keyQ, squareW, keyW, squareE, keyE, squareR, keyR, graphicsQ);
           return c;

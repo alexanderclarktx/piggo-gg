@@ -1,5 +1,4 @@
-import { Actions, Button, Clickable, Entity, Position } from "@piggo-gg/core";
-import { Text } from "pixi.js";
+import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
 
 export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
   id: id,
@@ -23,7 +22,7 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
     renderable: Button({
       dims: { w: 32, textX: 8, textY: 5 },
       zIndex: 4,
-      text: (new Text({ text: "⚁", style: { fill: "#FFFFFF", fontSize: 16 } }))
+      text: pixiText({ text: "⚁", style: { fill: 0xffffff, fontSize: 16 } })
     })
   }
 });

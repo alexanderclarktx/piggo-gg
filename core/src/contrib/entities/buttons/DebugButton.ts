@@ -1,5 +1,5 @@
-import { Actions, Button, Clickable, Entity, Position } from "@piggo-gg/core";
-import { Graphics, Text } from "pixi.js";
+import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
+import { Graphics } from "pixi.js";
 
 export const DebugButton = (): Entity => {
 
@@ -33,7 +33,7 @@ export const DebugButton = (): Entity => {
       renderable: Button({
         dims: { w: 32, textX: 8, textY: 5 },
         zIndex: 4,
-        text: new Text({ text: "🔍", style: { fill: "#FFFFFF", fontSize: 16 } }),
+        text: pixiText({ text: "🔍", style: { fill: 0xffffff, fontSize: 16 }}),
         outline, shadow
       })
     }

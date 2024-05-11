@@ -2,49 +2,46 @@ import { Component, Entity, Renderer, World } from "@piggo-gg/core";
 import { AnimatedSprite, Container } from "pixi.js";
 
 export type RenderableProps = {
-  setContainer?: (r: Renderer) => Promise<Container>
-  setChildren?: (r: Renderer) => Promise<Renderable[]>
-  dynamic?: (c: Container, r: Renderable, e: Entity, w: World) => void
-  interactiveChildren?: boolean
-  position?: { x: number; y: number }
-  zIndex?: number
-  visible?: boolean
-  scale?: number,
   anchor?: { x: number, y: number }
-  color?: number
-  scaleMode?: "nearest" | "linear"
-  cacheAsBitmap?: boolean
-  rotates?: boolean
   animations?: Record<string, AnimatedSprite>
+  cacheAsBitmap?: boolean
+  color?: number
+  interactiveChildren?: boolean
+  interpolate?: boolean
+  position?: { x: number; y: number }
+  rotates?: boolean
+  scale?: number,
+  scaleMode?: "nearest" | "linear"
+  visible?: boolean
+  zIndex?: number
+  dynamic?: (c: Container, r: Renderable, e: Entity, w: World) => void
+  setChildren?: (r: Renderer) => Promise<Renderable[]>
+  setContainer?: (r: Renderer) => Promise<Container>
   setup?: (renderable: Renderable, renderer: Renderer) => Promise<void>
 }
 
 export class Renderable extends Component<"renderable"> {
   type: "renderable" = "renderable";
 
-  animations: Record<string, AnimatedSprite>;
-  animation: AnimatedSprite | undefined;
-  bufferedAnimation = "";
   activeAnimation = "";
-
-  c: Container = new Container();
-
-  rendered: boolean = false;
-
-  scale: number;
-  rotates: boolean;
-  zIndex: number;
-  color: number;
-  visible: boolean;
-  scaleMode: "nearest" | "linear";
-  interactiveChildren: boolean;
-
   anchor: { x: number; y: number };
-  position: { x: number; y: number };
-
-  r: Renderable | undefined;
-  renderer: Renderer;
+  animation: AnimatedSprite | undefined;
+  animations: Record<string, AnimatedSprite>;
+  bufferedAnimation = "";
+  c: Container = new Container();
   children: Renderable[] | undefined;
+  color: number;
+  interactiveChildren: boolean;
+  interpolate: boolean;
+  position: { x: number; y: number };
+  r: Renderable | undefined;
+  rendered: boolean = false;
+  renderer: Renderer;
+  rotates: boolean;
+  scale: number;
+  scaleMode: "nearest" | "linear";
+  visible: boolean;
+  zIndex: number;
 
   setContainer: undefined | ((r: Renderer) => Promise<Container>);
   setChildren: undefined | ((r: Renderer) => Promise<Renderable[]>);
@@ -53,20 +50,21 @@ export class Renderable extends Component<"renderable"> {
 
   constructor(props: RenderableProps) {
     super();
+    this.anchor = props.anchor ?? { x: 0.5, y: 0.5 };
     this.animations = props.animations ?? {};
+    this.color = props.color ?? 0xffffff;
+    this.dynamic = this.overrideDynamic(props.dynamic ?? undefined);
+    this.interactiveChildren = props.interactiveChildren ?? false;
+    this.interpolate = props.interpolate ?? false;
     this.position = props.position ?? { x: 0, y: 0 };
     this.rotates = props.rotates ?? false;
     this.scale = props.scale ?? 1;
+    this.scaleMode = props.scaleMode ?? "linear";
+    this.setChildren = props.setChildren ?? undefined;
+    this.setContainer = props.setContainer ?? undefined;
+    this.setup = props.setup ?? undefined;
     this.visible = props.visible ?? true;
     this.zIndex = props.zIndex ?? 0;
-    this.color = props.color ?? 0xffffff;
-    this.interactiveChildren = props.interactiveChildren ?? false;
-    this.setContainer = props.setContainer ?? undefined;
-    this.setChildren = props.setChildren ?? undefined;
-    this.anchor = props.anchor ?? { x: 0.5, y: 0.5 };
-    this.scaleMode = props.scaleMode ?? "linear";
-    this.setup = props.setup ?? undefined;
-    this.dynamic = this.overrideDynamic(props.dynamic ?? undefined);
   }
 
   overrideDynamic = (dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)) => {

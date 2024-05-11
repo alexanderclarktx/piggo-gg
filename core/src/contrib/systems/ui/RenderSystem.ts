@@ -167,7 +167,11 @@ export const RenderSystem = ClientSystemBuilder({
         // interpolate entity positions
         entities.forEach((entity) => {
           const { position, renderable } = entity.components;
-          if (position.screenFixed) return;
+          if (position.screenFixed) {
+            if (renderable.interpolate) {
+              updateScreenFixed(entity as Entity<Renderable | Position>);
+            } else return;
+          }
 
           const { x, y, velocityX, velocityY } = position.data;
 
@@ -178,7 +182,6 @@ export const RenderSystem = ClientSystemBuilder({
           const dx = velocityX * elapsedTime / 1000;
           const dy = velocityY * elapsedTime / 1000;
 
-          // calculate interpolation with deltaMS
           if (((world.tick - position.lastCollided) > 4) && (velocityX || velocityY)) {
             renderable.c.position.set(
               x + dx + renderable.position.x,

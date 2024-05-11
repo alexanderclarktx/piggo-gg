@@ -1,4 +1,4 @@
-import { Collider, Data, Entity, Networked, Position, Renderable, World } from "@piggo-gg/core";
+import { Collider, Data, Entity, Networked, Position, Renderable, World, pixiText } from "@piggo-gg/core";
 import { Container, Graphics, Text } from "pixi.js";
 
 export type GoalProps = {
@@ -26,7 +26,6 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
 
   const render = async (): Promise<Container> => {
     const c = new Container();
-
     const g = new Graphics();
 
     // draw goal
@@ -38,11 +37,10 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     ]).fill({ color, alpha: 0.9 });
 
     // goal count
-    const t = new Text({
+    const t = pixiText({
       text: "0",
-      style: { "fill": "yellow" }
-    });
-    t.updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 });
+      style: { fill: 0xffff00 } }
+    ).updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 });
 
     // goal area
     c.addChild(g, t);

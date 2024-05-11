@@ -1,5 +1,5 @@
-import { Graphics, Text } from "pixi.js";
-import { Renderable, RenderableProps } from "@piggo-gg/core";
+import { Renderable, RenderableProps, pixiText } from "@piggo-gg/core";
+import { Graphics } from "pixi.js";
 
 export type TextBoxProps = RenderableProps & {
   text?: string
@@ -17,15 +17,7 @@ export const TextBox = (props: TextBoxProps): Renderable => {
   return new Renderable({
     ...props,
     setup: async (r: Renderable) => {
-      const textContainer = new Text({
-        text,
-        style: {
-          fill: color,
-          fontSize,
-          dropShadow,
-          padding
-        }
-      })
+      const textContainer = pixiText({ text, style: { fill: color, fontSize } });
 
       if (boxOutline) {
         const bg = new Graphics()
