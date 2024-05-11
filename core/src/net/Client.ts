@@ -6,9 +6,10 @@ import {
 
 const servers = {
   dev: "ws://localhost:3000",
-  staging: "wss://piggo-api-staging.up.railway.app",
+  // dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const;
+const env = location.hostname === "localhost" ? "dev" : "production";
 
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void;
 
@@ -33,9 +34,7 @@ export const Client = ({ world }: ClientProps): Client => {
   let requestBuffer: Record<string, Callback> = {};
 
   const client: Client = {
-    ws: new WebSocket(servers.production),
-    // ws: new WebSocket(servers.staging),
-    // ws: new WebSocket(servers.dev),
+    ws: new WebSocket(servers[env]),
     playerId: genPlayerId(),
     ms: 0,
     lastLatency: 0,
