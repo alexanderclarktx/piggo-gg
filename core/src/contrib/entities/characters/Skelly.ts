@@ -44,7 +44,7 @@ export const Skelly = (id: string, color?: number) => {
 
           const nametag = pixiText({
             text: id.split("-")[1],
-            style: { fill: 0xffff00,fontSize: 13 }
+            style: { fill: 0xffff00, fontSize: 13 }
           }).updateTransform({ x: -18, y: -45 });
 
           r.c.addChild(nametag);

@@ -42,7 +42,12 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
           const sprite = new Sprite({ texture: textures["portal"] });
           sprite.setFromMatrix(new Matrix(2, 0, 0, 1, 0, 0));
 
-          const t = pixiText({ text: game, anchor: { x: 0.5, y: 0.5 }, style: { fill: 0xffffff, fontSize: 14 }, pos: { x: 64, y: 64 } });
+          const t = pixiText({
+            text: game,
+            pos: { x: 64, y: 64 },
+            anchor: { x: 0.5, y: 0.5 },
+            style: { fill: 0xffffff, fontSize: 14 }
+          });
           sprite.addChild(t);
           return sprite;
         }
