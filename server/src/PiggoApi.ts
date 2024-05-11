@@ -33,7 +33,10 @@ export class PiggoApi {
       return { id: msg.id, lobbyId };
     },
     "lobby/join": async (ws, msg) => {
-      if (!this.worlds[msg.join]) return { id: msg.id, error: "world does not exist" };
+      if (!this.worlds[msg.join]) {
+        this.worlds[msg.join] = WorldManager();
+      }
+
       ws.data.worldId = msg.join;
       return { id: msg.id }
     },

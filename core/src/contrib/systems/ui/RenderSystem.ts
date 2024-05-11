@@ -58,6 +58,7 @@ export const RenderSystem = ClientSystemBuilder({
         const { width, height } = renderer.app.screen;
         const cameraScale = renderer.camera.c.scale.x - 0.5;
 
+        // todo this is calculating difference from centered entity, not the camera
         const isFarFromCamera = ({ x, y }: { x: number, y: number }) => {
           return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2);
         }
@@ -152,6 +153,13 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.c.zIndex = renderable.zIndex + 0.0001 * index;
           }
         });
+
+        // update screenFixed entities
+        Object.values(world.entities).forEach((entity) => {
+          if (entity.components.renderable && entity.components.position) {
+            updateScreenFixed(entity as Entity<Renderable | Position>);
+          }
+        });
       },
       onRender(entities: Entity<Renderable | Position>[]) {
         const elapsedTime = Date.now() - lastOntick;
@@ -180,13 +188,6 @@ export const RenderSystem = ClientSystemBuilder({
             if (centeredEntity && entity.id === centeredEntity.id) {
               renderer.camera.moveTo({ x: x + dx, y: y + dy });
             }
-          }
-        });
-
-        // update screenFixed entities
-        Object.values(world.entities).forEach((entity) => {
-          if (entity.components.renderable && entity.components.position) {
-            updateScreenFixed(entity as Entity<Renderable | Position>);
           }
         });
       },
