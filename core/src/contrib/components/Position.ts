@@ -3,11 +3,11 @@ import { Component } from "@piggo-gg/core";
 export type PositionProps = {
   x?: number
   y?: number
-  velocityX?: number
-  velocityY?: number
+  vx?: number
+  vy?: number
+  speed?: number
   velocityResets?: number
   screenFixed?: boolean
-  speed?: number
 }
 
 // the entity's position in the world
@@ -18,25 +18,23 @@ export class Position extends Component<"position"> {
   lastCollided: number = 0;
 
   override data = {
-    x: 0,
-    y: 0,
+    x: 0, y: 0,
+    vx: 0, vy: 0,
+    speed: 0,
+    rotation: 0,
     headingX: NaN,
     headingY: NaN,
-    rotation: 0,
-    speed: 0,
-    velocityX: 0,
-    velocityY: 0,
     velocityResets: 0
   }
 
   screenFixed: boolean;
 
-  constructor({ x, y, velocityX, velocityY, screenFixed, velocityResets, speed }: PositionProps = {}) {
+  constructor({ x, y, vx, vy, screenFixed, velocityResets, speed }: PositionProps = {}) {
     super();
     this.data.x = x ?? 0;
     this.data.y = y ?? 0;
-    this.data.velocityX = velocityX ?? 0;
-    this.data.velocityY = velocityY ?? 0;
+    this.data.vx = vx ?? 0;
+    this.data.vy = vy ?? 0;
     this.screenFixed = screenFixed ?? false;
     this.data.velocityResets = velocityResets ?? 0;
     this.data.speed = speed ?? 400;
@@ -49,8 +47,8 @@ export class Position extends Component<"position"> {
   }
 
   setVelocity = ({ x, y }: { x: number, y: number }) => {
-    this.data.velocityX = Math.round(x * 100) / 100;
-    this.data.velocityY = Math.round(y * 100) / 100;
+    this.data.vx = Math.round(x * 100) / 100;
+    this.data.vy = Math.round(y * 100) / 100;
 
     if (x || y) this.ortho = Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8;
 

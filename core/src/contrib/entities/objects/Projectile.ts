@@ -10,10 +10,7 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
   const projectile = Entity({
     id,
     components: {
-      position: new Position(pos ?
-        { x: pos.x, y: pos.y, velocityX: pos.vx, velocityY: pos.vy } :
-        { x: 200, y: 200, velocityX: 50, velocityY: 0 }
-      ),
+      position: new Position(pos ? pos : { x: 200, y: 200, vx: 50, vy: 0 }),
       networked: new Networked({ isNetworked: true }),
       expires: new Expires({ ticksLeft: 60 }),
       collider: new Collider({
@@ -22,7 +19,7 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
         sensor: (e2: Entity<Position | Collider>, world: World) => {
           if (e2.components.collider.shootable) {
             if (e2.components.health) {
-              e2.components.health.data.health -= 25;
+              e2.components.health.data.health -= 25; // TODO configurable
             }
             world.removeEntity(projectile.id);
           }

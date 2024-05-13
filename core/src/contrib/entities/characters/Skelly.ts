@@ -1,4 +1,4 @@
-import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture, pixiText } from "@piggo-gg/core";
+import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Health, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture, pixiText } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, color?: number) => {
@@ -10,7 +10,8 @@ export const Skelly = (id: string, color?: number) => {
       networked: new Networked({ isNetworked: true }),
       controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
-      gun: Pistol,
+      health: new Health({ health: 200, maxHealth: 200 }),
+      gun: Pistol(),
       controller: new Controller({
         keyboard: {
           ...WASDController.keyboard,
@@ -44,8 +45,10 @@ export const Skelly = (id: string, color?: number) => {
 
           const nametag = pixiText({
             text: id.split("-")[1],
-            style: { fill: 0xffff00, fontSize: 13 }
-          }).updateTransform({ x: -18, y: -45 });
+            style: { fill: 0xffff00, fontSize: 13 },
+            anchor: { x: 0.48, y: 0 },
+            pos: { x: 0, y: -46 }
+          });
 
           r.c.addChild(nametag);
         }
