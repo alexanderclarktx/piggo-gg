@@ -140,6 +140,7 @@ export class Renderable extends Component<"renderable"> {
     this.c.removeAllListeners();
 
     this.c.renderable = false;
+    this.visible = false;
 
     // remove from the world
     // this.c.destroy(); // TODO disabled because it breaks debug mode

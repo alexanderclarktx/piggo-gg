@@ -21,8 +21,8 @@ export const Ball = ({ position, id }: BallProps) => Entity({
     debug: new Debug(),
     npc: new NPC({
       onTick: (e: Entity<Position>) => {
-        const { velocityX, velocityY } = e.components.position.data;
-        e.components.position.data.rotation += 0.002 * Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
+        const { vx, vy } = e.components.position.data;
+        e.components.position.data.rotation += 0.002 * Math.sqrt((vx * vx) + (vy * vy));
       }
     }),
     renderable: new Renderable({

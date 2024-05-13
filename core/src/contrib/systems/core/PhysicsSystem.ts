@@ -74,8 +74,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
 
           // update body velocity
           bodies[entity.id].setLinvel({
-            x: Math.floor(position.data.velocityX * 100) / 100,
-            y: Math.floor(position.data.velocityY * 100) / 100
+            x: Math.floor(position.data.vx * 100) / 100,
+            y: Math.floor(position.data.vy * 100) / 100
           }, true);
         });
 
@@ -90,8 +90,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           const { position } = entity.components;
 
           // check if the entity has collided
-          const diffX = position.data.velocityX - Math.floor(body.linvel().x * 100) / 100;
-          const diffY = position.data.velocityY - Math.floor(body.linvel().y * 100) / 100;
+          const diffX = position.data.vx - Math.floor(body.linvel().x * 100) / 100;
+          const diffY = position.data.vy - Math.floor(body.linvel().y * 100) / 100;
           if (Math.abs(diffX) > 1 || Math.abs(diffY) > 1) {
             position.lastCollided = world.tick;
           }
@@ -99,8 +99,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           // update the entity position/velocity
           position.data.x = Math.round(body.translation().x * 100) / 100;
           position.data.y = Math.round(body.translation().y * 100) / 100;
-          position.data.velocityX = Math.floor(body.linvel().x * 100) / 100;
-          position.data.velocityY = Math.floor(body.linvel().y * 100) / 100;
+          position.data.vx = Math.floor(body.linvel().x * 100) / 100;
+          position.data.vy = Math.floor(body.linvel().y * 100) / 100;
         });
 
         // sensor callbacks
@@ -137,8 +137,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
         entities.forEach((entity) => {
           const { position } = entity.components;
           if (position.data.velocityResets && !position.data.headingX && !position.data.headingY) {
-            position.data.velocityX = 0;
-            position.data.velocityY = 0;
+            position.data.vx = 0;
+            position.data.vy = 0;
           }
         });
       }
