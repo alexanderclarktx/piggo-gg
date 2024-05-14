@@ -31,6 +31,7 @@ export const InputSystem = ClientSystemBuilder({
 
     let bufferedDown = KeyBuffer();
     let backspaceOn = false;
+    let joystickOn = false;
     let mouseEvent = { x: 0, y: 0 };
 
     renderer?.app.canvas.addEventListener('mousemove', (event) => {
@@ -43,7 +44,14 @@ export const InputSystem = ClientSystemBuilder({
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
-      if (!currentJoystickPosition.active) bufferedDown.push({ key, mouse });
+
+      if (!currentJoystickPosition.active && joystickOn) joystickOn = false;
+      if (currentJoystickPosition.active && !joystickOn) {
+        joystickOn = true;
+        return;
+      }
+
+      bufferedDown.push({ key, mouse });
     });
 
     renderer?.app.canvas.addEventListener('pointerup', (event) => {
