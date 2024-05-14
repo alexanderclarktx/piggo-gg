@@ -1,5 +1,5 @@
 __Piggo__ is an open-source web gaming platform! Play online at [piggo.gg](https://piggo.gg)
-<img height="30" style="float:right" src="./web/res/piggo.svg">
+<img height="30" align="bottom" src="./web/res/piggo.svg">
 
 <p align="center">
   <img src="piggo-gg.gif" style="width:720px">
