@@ -1,9 +1,11 @@
-<img style="float:left" height="25" src="web/res/piggo-profile-small.png">
+<p align="center">
+  <img align="center" height="60" hspace="0" src="web/res/piggo-profile-small.png">
+</p>
 
 __Piggo__ is an open-source web gaming platform! Play online at [piggo.gg](https://piggo.gg)
 
 <p align="center">
-  <img src="piggo-gg.gif" style="width:720px">
+  <img src="piggo-gg.gif" style="width:600px">
 </p>
 
 # Objectives
