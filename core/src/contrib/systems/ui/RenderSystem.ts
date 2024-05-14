@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection, Player, Controlling } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities in isometric or cartesian space
 export const RenderSystem = ClientSystemBuilder({
@@ -64,7 +64,7 @@ export const RenderSystem = ClientSystemBuilder({
         }
 
         entities.forEach((entity) => {
-          const { position, renderable, controlled } = entity.components;
+          const { position, renderable } = entity.components;
 
           // cull if far from camera
           if (!position.screenFixed && renderable.children) {
@@ -80,11 +80,6 @@ export const RenderSystem = ClientSystemBuilder({
           if (!renderable.rendered) {
             renderable.rendered = true;
             renderNewEntity(entity);
-          }
-
-          // center it if controlled by player
-          if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
-            centeredEntity = entity;
           }
 
           // update rotation
@@ -140,6 +135,13 @@ export const RenderSystem = ClientSystemBuilder({
             });
           }
         });
+
+        // center camera on player's controlled entity
+        const playerEntity = world.client?.playerEntity;
+        if (playerEntity) {
+          const controlledEntity = world.entities[playerEntity.components.controlling.data.entityId] as Entity<Renderable | Position>;
+          if (controlledEntity) centeredEntity = controlledEntity;
+        }
 
         // sort cache by position (closeness to camera)
         const sortedEntityPositions = Object.values(entities).sort((a, b) => {

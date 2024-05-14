@@ -1,4 +1,4 @@
-import { Controlled, Controlling, Entity, Player, Skelly, SystemBuilder, World } from "@piggo-gg/core";
+import { Controlling, Entity, Player, Skelly, SystemBuilder, World } from "@piggo-gg/core";
 
 // PlayerSpawnSystem handles spawning characters for players
 export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = {
@@ -11,7 +11,6 @@ export const PlayerSpawnSystem: SystemBuilder<"PlayerSpawnSystem"> = {
 
       // give the player control of the character
       player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
-      characterForPlayer.components.controlled = new Controlled({ entityId: player.id });
       world.addEntity(characterForPlayer);
       return characterForPlayer;
     }

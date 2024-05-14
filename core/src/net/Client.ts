@@ -1,7 +1,7 @@
 import {
-  DelaySyncer, LobbyCreate, LobbyCreateRequest, LobbyJoin,
-  LobbyJoinRequest, NetClientSystem, NetMessageTypes,
-  RequestData, RequestTypes, Syncer, World, genPlayerId
+  Controlling, DelaySyncer, Entity, LobbyCreate, LobbyCreateRequest,
+  LobbyJoin, LobbyJoinRequest, NetClientSystem, NetMessageTypes,
+  Noob, Player, RequestData, RequestTypes, Syncer, World, genPlayerId
 } from "@piggo-gg/core";
 
 const servers = {
@@ -15,6 +15,7 @@ type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"])
 
 export type Client = {
   playerId: string
+  playerEntity: Entity<Player | Controlling>
   ms: number
   ws: WebSocket
   lobbyId: string | undefined
@@ -33,9 +34,14 @@ export const Client = ({ world }: ClientProps): Client => {
   let syncer: Syncer = DelaySyncer;
   let requestBuffer: Record<string, Callback> = {};
 
+  const playerId = genPlayerId();
+  const noob = Noob({ id: playerId });
+  world.addEntity(noob);
+
   const client: Client = {
     ws: new WebSocket(servers[env]),
-    playerId: genPlayerId(),
+    playerId,
+    playerEntity: noob,
     ms: 0,
     lastLatency: 0,
     lastMessageTick: 0,
@@ -98,7 +104,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   client.ws.onopen = () => {
     const join = new URLSearchParams(window.location.search).get("join");
-    if (join) client.joinLobby(join, () => {});
+    if (join) client.joinLobby(join, () => { });
   }
 
   return client;

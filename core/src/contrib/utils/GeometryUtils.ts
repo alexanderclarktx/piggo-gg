@@ -28,7 +28,7 @@ export const isometricToWorld = ({ x, y }: { x: number, y: number }): { x: numbe
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
 
-export const getClosestEntity = (entities: Entity<Position>[], pos: { x: number, y: number }): Entity<Position> => {
+export const closestEntity = (entities: Entity<Position>[], pos: { x: number, y: number }): Entity<Position> | undefined => {
   if (entities.length > 1) {
     entities.sort((a: Entity<Position>, b: Entity<Position>) => {
       const aPosition = a.components.position;

@@ -4,7 +4,7 @@ export type NoobProps = {
   id: string
 }
 
-export const Noob = ({ id }: NoobProps) => Entity({
+export const Noob = ({ id }: NoobProps) => Entity<Player | Controlling>({
   id: id,
   persists: true,
   components: {

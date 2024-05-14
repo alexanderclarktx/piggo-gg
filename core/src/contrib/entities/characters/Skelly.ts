@@ -1,4 +1,4 @@
-import { Actions, Collider, Controlled, Controller, Debug, Entity, Gun, Health, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture, pixiText } from "@piggo-gg/core";
+import { Actions, Collider, Controller, Debug, Entity, Gun, Health, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture, pixiText } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, color?: number) => {
@@ -8,7 +8,6 @@ export const Skelly = (id: string, color?: number) => {
       debug: new Debug(),
       position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 160 }),
       networked: new Networked({ isNetworked: true }),
-      controlled: new Controlled({ entityId: "" }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       health: new Health({ health: 200, maxHealth: 200 }),
       gun: Pistol(),
