@@ -32,7 +32,8 @@ module.exports = {
       patterns: [
         { from: "./src/*.html", to: () => "[name].html" },
         { from: "./src/*.css", to: () => "[name].css" },
-        { from: "./src/favicon.ico", to: () => "favicon.ico" },
+        { from: "./res/favicon.ico", to: () => "favicon.ico" },
+        { from: "./res/*.svg", to: () => "[name].svg" },
         { from: "./res/*.png", to: () => "[name].png" },
         { from: "./res/*.json", to: () => "[name].json" }
       ],

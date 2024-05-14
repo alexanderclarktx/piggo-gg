@@ -6,6 +6,7 @@ export const Strike = IsometricGame({
   id: "strike",
   init: () => ({
     id: "strike",
+    systems: [PlayerSpawnSystem, HealthBarSystem, GunSystem],
     entities: [
       Background(),
       FloorTiles({ rows: 15, cols: 7, position: { x: W32 * 3, y: W32 * 6.5 }, tint: 0xff6666 }), // T
@@ -42,7 +43,6 @@ export const Strike = IsometricGame({
       LineWall({ points: [2048, 784, 1856, 688, 2240, 496, 2496, 624, 2336, 704, 2272, 672, 2048, 784] }),
       LineWall({ points: [1120, 1056, 1344, 944, 1408, 976, 1184, 1088, 1120, 1056] }),
       LineWall({ points: [1856, 944, 1728, 1008, 1472, 880, 1728, 752, 1920, 848, 1792, 912, 1856, 944] }),
-    ],
-    systems: [PlayerSpawnSystem, HealthBarSystem, GunSystem],
+    ]
   })
 })

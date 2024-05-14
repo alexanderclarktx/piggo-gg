@@ -20,6 +20,22 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => (
     <h1 style={{ textAlign: "center", fontFamily: "Courier New", fontSize: 36, textShadow: "1px 1px purple", margin: "0 10px" }}>
       Piggo
     </h1>
+    <svg width="25" height="25" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id="mask1">
+          <rect width="200" height="200" fill="white" />
+          <path d="M30 75 Q45 45 60 75" fill="none" stroke="black" stroke-width="9" />
+          <path d="M100 75 Q115 45 130 75" fill="none" stroke="black" stroke-width="9" />
+          <circle cx="70" cy="115" r="7" fill="black" />
+          <circle cx="90" cy="115" r="7" fill="black" />
+          <ellipse cx="80" cy="115" rx="30" ry="20" fill="none" stroke="black" stroke-width="6" />
+        </mask>
+      </defs>
+      <circle cx="80" cy="90" r="80" fill="#FFC0CB" mask="url(#mask1)" />
+      <path d="M10 52 C10 -10, 20 0, 60 12" fill="#FFC0CB" mask="url(#mask1)" />
+      <path d="M150 52 C150 -10, 140 0, 100 12" fill="#FFC0CB" mask="url(#mask1)" />
+    </svg>
+
     <div style={{ position: 'absolute', right: 0, bottom: 0 }}>
       <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
         v<b>0.5.8</b>
