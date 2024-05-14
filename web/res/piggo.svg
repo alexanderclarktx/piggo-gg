@@ -1,7 +1,7 @@
 <svg width="160" height="170" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <mask id="mask1">
-      <rect width="200" height="200" fill="white" />
+      <rect width="160" height="170" fill="white" />
       <path d="M30 75 Q45 45 60 75" fill="none" stroke="black" stroke-width="9" />
       <path d="M100 75 Q115 45 130 75" fill="none" stroke="black" stroke-width="9" />
       <circle cx="70" cy="115" r="7" fill="black" />
