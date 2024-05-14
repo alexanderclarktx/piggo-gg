@@ -1,4 +1,4 @@
-import { Background, FloorTiles, GunSystem, HealthBarSystem, IsometricGame, LineWall, PlayerSpawnSystem } from "@piggo-gg/core";
+import { Background, FloorTiles, GunSystem, HealthBarSystem, IsometricGame, LineWall } from "@piggo-gg/core";
 import { StrikeSystem } from "@piggo-gg/games";
 
 const W32 = 32;

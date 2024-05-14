@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection, Player, Controlling } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities in isometric or cartesian space
 export const RenderSystem = ClientSystemBuilder({

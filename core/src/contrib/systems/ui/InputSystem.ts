@@ -1,4 +1,4 @@
-import { Actions, ClientSystemBuilder, Controller, Controlling, Entity, Position, World, currentJoystickPosition } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Controller, Entity, Position, World, currentJoystickPosition } from "@piggo-gg/core";
 
 // TODO these are global dependencies
 export var chatBuffer: string[] = [];
