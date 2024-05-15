@@ -27,7 +27,7 @@ export const Skelly = (id: string, color?: number) => {
         scale: 2,
         zIndex: 3,
         scaleMode: "nearest",
-        color: color ?? 0xffffff,
+        animationColor: color ?? 0xffffff,
         setup: async (r) => {
           const textures = await loadTexture("chars.json");
 

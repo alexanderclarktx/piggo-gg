@@ -1,6 +1,6 @@
 import { Controlling, Entity, Player, SystemBuilder, Team, spawnSkellyForNoob } from "@piggo-gg/core";
 
-const teamColors = [0xFFddaa, 0x00ffff];
+const teamColors = [0xffffff, 0x00ffff];
 
 export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
   id: "StrikeSystem",
@@ -12,7 +12,7 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
         players.forEach((player) => {
 
           if (!player.components.team) {
-            player.components.team = new Team({ team: 1 });
+            player.components.team = new Team({ team: 0 });
           }
 
           const team = player.components.team.data.team as number;
