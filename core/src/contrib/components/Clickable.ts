@@ -1,4 +1,4 @@
-import { Action, Component, InvokedAction } from "@piggo-gg/core";
+import { World, Component, InvokedAction } from "@piggo-gg/core";
 
 export type Bounds = { x: number, y: number, w: number, h: number };
 
@@ -7,7 +7,7 @@ export type ClickableProps = {
   height: number
   active: boolean
   anchor?: { x: number, y: number }
-  click?: () => InvokedAction
+  click?: (_: { world: World }) => InvokedAction
   hoverOver?: () => void
   hoverOut?: () => void
 }
@@ -18,7 +18,7 @@ export class Clickable extends Component<"clickable"> {
   height: number
   active: boolean
   anchor: { x: number, y: number }
-  click: (() => InvokedAction) | undefined
+  click: ((_: { world: World }) => InvokedAction) | undefined
   hoverOver: (() => void) | undefined
   hoverOut: (() => void) | undefined
 
@@ -28,7 +28,7 @@ export class Clickable extends Component<"clickable"> {
     this.height = props.height;
     this.active = props.active;
     this.anchor = props.anchor ?? { x: 0, y: 0 };
-    this.click = props.click ?? (() => ({ action: "click" }));
+    this.click = props.click ?? (({world}) => ({ action: "click", playerId: world.client?.playerId }));
     this.hoverOver = props.hoverOver;
     this.hoverOut = props.hoverOut;
   }

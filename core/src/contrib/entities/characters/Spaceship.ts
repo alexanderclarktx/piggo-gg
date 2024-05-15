@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controller, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, PlayerControlsEntity, loadTexture } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Input, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, controlEntity, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
@@ -13,19 +13,19 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
     networked: new Networked({ isNetworked: true }),
     actions: new Actions({
       ...VehicleMovement,
-      click: PlayerControlsEntity
+      click: controlEntity
     }),
     clickable: new Clickable({ width: 100, height: 120, active: true }),
     collider: new Collider({ shape: "ball", radius: 20 }),
-    controller: new Controller<VehicleMovementActions>({
+    input: new Input<VehicleMovementActions>({
       keyboard: {
         "a,d": () => null, "w,s": () => null,
-        "shift,a": () => ({ action: "skidleft" }),
-        "shift,d": () => ({ action: "skidright" }),
-        "w": () => ({ action: "up" }),
-        "s": () => ({ action: "down" }),
-        "a": () => ({ action: "left" }),
-        "d": () => ({ action: "right" })
+        "shift,a": ({ world }) => ({ action: "skidleft", playerId: world.client?.playerId }),
+        "shift,d": ({ world }) => ({ action: "skidright", playerId: world.client?.playerId }),
+        "w": ({ world }) => ({ action: "up", playerId: world.client?.playerId }),
+        "s": ({ world }) => ({ action: "down", playerId: world.client?.playerId }),
+        "a": ({ world }) => ({ action: "left", playerId: world.client?.playerId }),
+        "d": ({ world }) => ({ action: "right", playerId: world.client?.playerId })
       },
       joystick: () => null
     }),

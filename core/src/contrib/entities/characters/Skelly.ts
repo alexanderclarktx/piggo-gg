@@ -1,4 +1,4 @@
-import { Actions, Collider, Controller, Debug, Entity, Gun, Health, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDController, loadTexture, pixiText } from "@piggo-gg/core";
+import { Actions, Collider, Input, Debug, Entity, Gun, Health, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDInput, loadTexture, pixiText } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, color?: number) => {
@@ -11,12 +11,12 @@ export const Skelly = (id: string, color?: number) => {
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       health: new Health({ health: 200, maxHealth: 200 }),
       gun: Pistol(),
-      controller: new Controller({
+      input: new Input({
         keyboard: {
-          ...WASDController.keyboard,
-          "mb1": ({ mouse }) => ({ action: "shoot", params: { mouse, id: Math.round(Math.random() * 10000) } }),
+          ...WASDInput.keyboard,
+          "mb1": ({ mouse, world }) => ({ action: "shoot", playerId: world.client?.playerId, params: { mouse, id: Math.round(Math.random() * 10000) } }),
         },
-        joystick: WASDController.joystick
+        joystick: WASDInput.joystick
       }),
       actions: new Actions<{}>({
         ...WASDActionMap,

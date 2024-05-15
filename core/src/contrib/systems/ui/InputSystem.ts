@@ -1,4 +1,4 @@
-import { Actions, ClientSystemBuilder, Controller, Entity, Position, World, currentJoystickPosition } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition } from "@piggo-gg/core";
 
 // TODO these are global dependencies
 export var chatBuffer: string[] = [];
@@ -106,31 +106,31 @@ export const InputSystem = ClientSystemBuilder({
       }
     });
 
-    const handleInputForEntity = (entity: Entity<Controller | Actions | Position>, world: World) => {
+    const handleInputForEntity = (entity: Entity<Input | Actions | Position>, world: World) => {
       // copy the input buffer
       let buffer = bufferedDown.copy();
 
       // check for actions
-      const { controller, actions } = entity.components;
+      const { input, actions } = entity.components;
 
       // handle joystick input
-      if (currentJoystickPosition.power > 0.1 && controller.controllerMap.joystick) {
-        const joystickAction = controller.controllerMap.joystick({ entity });
+      if (currentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
+        const joystickAction = input.inputMap.joystick({ entity, world });
         if (joystickAction) world.actionBuffer.push(world.tick + 1, entity.id, joystickAction);
       }
 
       // handle standalone and composite (a,b) input controls
-      for (const input in controller.controllerMap.keyboard) {
-        if (input.includes(",")) {
-          const inputKeys = input.split(",");
+      for (const keyPress in input.inputMap.keyboard) {
+        if (keyPress.includes(",")) {
+          const inputKeys = keyPress.split(",");
 
           // check for multiple keys pressed at once
           if (inputKeys.every((key) => buffer.contains(key))) {
 
             // run the callback
-            const controllerInput = controller.controllerMap.keyboard[input];
+            const controllerInput = input.inputMap.keyboard[keyPress];
             if (controllerInput != null) {
-              const invocation = controllerInput({ mouse, entity });
+              const invocation = controllerInput({ mouse, entity, world });
               if (invocation && actions.actionMap[invocation.action ?? ""]) {
                 world.actionBuffer.push(world.tick + 1, entity.id, invocation);
               }
@@ -139,19 +139,19 @@ export const InputSystem = ClientSystemBuilder({
             // remove all keys from the buffer
             inputKeys.forEach((key) => buffer.remove(key));
           }
-        } else if (buffer.contains(input)) {
+        } else if (buffer.contains(keyPress)) {
 
           // check for single key pressed
-          const controllerInput = controller.controllerMap.keyboard[input];
+          const controllerInput = input.inputMap.keyboard[keyPress];
           if (controllerInput != null) {
-            const invocation = controllerInput({ mouse, entity });
+            const invocation = controllerInput({ mouse, entity, world });
             if (invocation && actions.actionMap[invocation.action ?? ""]) {
               world.actionBuffer.push(world.tick + 1, entity.id, invocation);
             }
           }
 
           // remove the key from the buffer
-          buffer.remove(input);
+          buffer.remove(keyPress);
         }
       }
     }
@@ -167,7 +167,7 @@ export const InputSystem = ClientSystemBuilder({
         const playerEntity = world.client?.playerEntity;
         if (!playerEntity) return;
 
-        const controlledEntity = world.entities[playerEntity.components.controlling.data.entityId] as Entity<Controller | Actions | Position>;
+        const controlledEntity = world.entities[playerEntity.components.controlling.data.entityId] as Entity<Input | Actions | Position>;
         if (!controlledEntity) return;
 
         handleInputForEntity(controlledEntity, world);

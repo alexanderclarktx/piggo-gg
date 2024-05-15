@@ -92,9 +92,10 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           // check if the entity has collided
           const diffX = position.data.vx - Math.floor(body.linvel().x * 100) / 100;
           const diffY = position.data.vy - Math.floor(body.linvel().y * 100) / 100;
-          if (Math.abs(diffX) > 1 || Math.abs(diffY) > 1) {
+          if (position.data.velocityResets && (Math.abs(diffX) > 1 || Math.abs(diffY) > 1)) {
             position.lastCollided = world.tick;
           }
+
 
           // update the entity position/velocity
           position.data.x = Math.round(body.translation().x * 100) / 100;

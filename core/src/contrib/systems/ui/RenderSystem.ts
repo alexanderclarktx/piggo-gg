@@ -1,26 +1,24 @@
 import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } from "@piggo-gg/core";
 
-// RenderSystem handles rendering entities in isometric or cartesian space
+// RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: ({ world }) => {
     if (!world.renderer) return undefined;
 
     const renderer = world.renderer;
-    let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
     let lastOntick = Date.now();
+    let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
 
       await renderable._init(renderer);
 
-      if (position) {
-        renderable.c.position.set(
-          position.data.x + renderable.position.x,
-          position.data.y + renderable.position.y
-        );
-      }
+      if (position) renderable.c.position.set(
+        position.data.x + renderable.position.x,
+        position.data.y + renderable.position.y
+      );
 
       if (position.screenFixed) {
         renderer.addGui(renderable);

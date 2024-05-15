@@ -1,9 +1,9 @@
-import { Component, Entity, World } from "@piggo-gg/core";
+import { Component, Controlling, Entity, Player, World } from "@piggo-gg/core";
 
 export type Action<T extends {} = {}> = {
   cooldown?: number
   cdLeft?: number
-  invoke: (_: { params: T, world: World, entity?: Entity, player?: string | undefined }) => void
+  invoke: (_: { params: T, world: World, entity?: Entity, player?: Entity<Player | Controlling> | undefined }) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
@@ -16,6 +16,7 @@ export const Action = <T extends {} = {}>(invoke: Action<T>["invoke"], cooldown?
 
 export type InvokedAction<A extends string = string, P extends {} = {}> = {
   action: A,
+  playerId: string | undefined,
   params?: P
 }
 

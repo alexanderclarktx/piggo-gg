@@ -1,4 +1,4 @@
-import { SystemBuilder } from "@piggo-gg/core";
+import { Controlling, Entity, Player, SystemBuilder } from "@piggo-gg/core";
 
 export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   id: "ActionSystem",
@@ -13,12 +13,18 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
 
         // handle commands
         if (entityId === "world") {
-          const command = world.commands[actions[0].action]
-          if (command) command.invoke({ params: actions[0].params ?? {}, world, player: world.client?.playerId });
+          actions.forEach((actions) => {
+            const command = world.commands[actions.action];
+
+            let player: Entity<Player | Controlling> | undefined = undefined;
+            if (actions.playerId) player = world.entities[actions.playerId] as Entity<Player | Controlling>;
+
+            if (command) command.invoke({ params: actions.params ?? {}, world, player });
+          });
         }
 
         // handle actions
-        if (actions) actions.forEach((actionKey) => {
+        if (actions) actions.forEach((invokedAction) => {
           const entity = world.entities[entityId];
 
           // entity not found
@@ -32,16 +38,19 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           }
 
           // find the action
-          const action = actions.actionMap[actionKey.action];
+          const action = actions.actionMap[invokedAction.action];
 
           // action not found
           if (!action) {
-            console.log(`action ${actionKey} not found`);
+            console.log(`action ${invokedAction} not found`);
             return;
           }
 
           // execute the action
-          action.invoke({ params: actionKey.params ?? {}, entity, world, player: world.client?.playerId });
+          // TODO shouldn't always be client player
+          let player: Entity<Player | Controlling> | undefined = undefined;
+          if (invokedAction.playerId) player = world.entities[invokedAction.playerId] as Entity<Player | Controlling>;
+          action.invoke({ params: invokedAction.params ?? {}, entity, world, player });
         });
       });
     }

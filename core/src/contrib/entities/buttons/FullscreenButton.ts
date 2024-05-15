@@ -2,7 +2,6 @@ import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-g
 
 export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
   id: id,
-  persists: true,
   components: {
     position: new Position({
       x: 5, y: 5, screenFixed: true

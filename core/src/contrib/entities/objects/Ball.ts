@@ -22,7 +22,7 @@ export const Ball = ({ position, id }: BallProps) => Entity({
     npc: new NPC({
       onTick: (e: Entity<Position>) => {
         const { vx, vy } = e.components.position.data;
-        e.components.position.data.rotation += 0.002 * Math.sqrt((vx * vx) + (vy * vy));
+        e.components.position.data.rotation += 0.001 * Math.sqrt((vx * vx) + (vy * vy));
       }
     }),
     renderable: new Renderable({

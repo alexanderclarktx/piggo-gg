@@ -1,7 +1,7 @@
-import { Actions, Clickable, Collider, Controller, Controlling, Data, Debug, Expires, Gun, Health, NPC, Name, Networked, Player, Position, Renderable, Team } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Input, Controlling, Data, Debug, Expires, Gun, Health, NPC, Name, Networked, Player, Position, Renderable, Team } from "@piggo-gg/core";
 
 export type ComponentTypes =
-  Actions | Clickable | Collider | Controller |
+  Actions | Clickable | Collider | Input |
   Controlling | Data | Debug | Expires | Health |
   Name | Team | Networked | NPC | Player |
   Position | Renderable | Gun
