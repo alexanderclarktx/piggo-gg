@@ -28,7 +28,7 @@ export class Clickable extends Component<"clickable"> {
     this.height = props.height;
     this.active = props.active;
     this.anchor = props.anchor ?? { x: 0, y: 0 };
-    this.click = props.click ?? (({world}) => ({ action: "click", playerId: world.client?.playerId }));
+    this.click = props.click ?? (({ world }) => ({ action: "click", playerId: world.client?.playerId }));
     this.hoverOver = props.hoverOver;
     this.hoverOut = props.hoverOut;
   }

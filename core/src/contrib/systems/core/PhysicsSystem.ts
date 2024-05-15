@@ -96,7 +96,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
             position.lastCollided = world.tick;
           }
 
-
           // update the entity position/velocity
           position.data.x = Math.round(body.translation().x * 100) / 100;
           position.data.y = Math.round(body.translation().y * 100) / 100;

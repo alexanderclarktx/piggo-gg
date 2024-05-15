@@ -13,13 +13,11 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
 
         // handle commands
         if (entityId === "world") {
-          actions.forEach((actions) => {
-            const command = world.commands[actions.action];
+          actions.forEach((invokedAction) => {
+            const command = world.commands[invokedAction.action];
 
-            let player: Entity<Player | Controlling> | undefined = undefined;
-            if (actions.playerId) player = world.entities[actions.playerId] as Entity<Player | Controlling>;
-
-            if (command) command.invoke({ params: actions.params ?? {}, world, player });
+            const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Entity<Player | Controlling> : undefined;
+            if (command) command.invoke({ params: invokedAction.params ?? {}, world, player });
           });
         }
 
@@ -47,9 +45,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           }
 
           // execute the action
-          // TODO shouldn't always be client player
-          let player: Entity<Player | Controlling> | undefined = undefined;
-          if (invokedAction.playerId) player = world.entities[invokedAction.playerId] as Entity<Player | Controlling>;
+          const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Entity<Player | Controlling> : undefined;
           action.invoke({ params: invokedAction.params ?? {}, entity, world, player });
         });
       });
