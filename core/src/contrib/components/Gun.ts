@@ -45,7 +45,7 @@ export class Gun extends Component<"gun"> {
 
 const GunBuilder = (props: GunProps) => () => new Gun(props);
 
-export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 400, clipSize: 7, reloadTime: 1, fireRate: 30 });
+export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 500, clipSize: 7, reloadTime: 1, fireRate: 30 });
 export const Shotgun = GunBuilder({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2 });
 export const MachineGun = GunBuilder({ name: "machinegun", damage: 5, speed: 300, clipSize: 30, reloadTime: 3, fireRate: 10 });
 export const Sniper = GunBuilder({ name: "sniper", damage: 50, speed: 400, clipSize: 1, reloadTime: 2, fireRate: 2 });

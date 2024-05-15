@@ -6,7 +6,7 @@ export const Skelly = (id: string, color?: number) => {
     id: id,
     components: {
       debug: new Debug(),
-      position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 160 }),
+      position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 130 }),
       networked: new Networked({ isNetworked: true }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       health: new Health({ health: 200, maxHealth: 200 }),
@@ -42,6 +42,7 @@ export const Skelly = (id: string, color?: number) => {
             ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
           }
 
+          // TODO refactor should be added by a separate system
           const nametag = pixiText({
             text: id.split("-")[1],
             style: { fill: 0xffff00, fontSize: 13 },

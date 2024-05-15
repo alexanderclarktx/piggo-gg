@@ -59,6 +59,7 @@ export class Position extends Component<"position"> {
     this.data.speed = speed;
   }
 
+  // TODO refactor, the xv/vy should be recalculated every tick
   setHeading = ({ x, y }: { x: number, y: number }) => {
     this.data.headingX = x;
     this.data.headingY = y;
