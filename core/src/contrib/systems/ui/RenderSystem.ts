@@ -1,26 +1,24 @@
 import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } from "@piggo-gg/core";
 
-// RenderSystem handles rendering entities in isometric or cartesian space
+// RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: ({ world }) => {
     if (!world.renderer) return undefined;
 
     const renderer = world.renderer;
-    let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
     let lastOntick = Date.now();
+    let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
 
       await renderable._init(renderer);
 
-      if (position) {
-        renderable.c.position.set(
-          position.data.x + renderable.position.x,
-          position.data.y + renderable.position.y
-        );
-      }
+      if (position) renderable.c.position.set(
+        position.data.x + renderable.position.x,
+        position.data.y + renderable.position.y
+      );
 
       if (position.screenFixed) {
         renderer.addGui(renderable);
@@ -64,7 +62,7 @@ export const RenderSystem = ClientSystemBuilder({
         }
 
         entities.forEach((entity) => {
-          const { position, renderable, controlled } = entity.components;
+          const { position, renderable } = entity.components;
 
           // cull if far from camera
           if (!position.screenFixed && renderable.children) {
@@ -80,11 +78,6 @@ export const RenderSystem = ClientSystemBuilder({
           if (!renderable.rendered) {
             renderable.rendered = true;
             renderNewEntity(entity);
-          }
-
-          // center it if controlled by player
-          if (controlled && position && centeredEntity !== entity && controlled.data.entityId === world.client?.playerId) {
-            centeredEntity = entity;
           }
 
           // update rotation
@@ -140,6 +133,13 @@ export const RenderSystem = ClientSystemBuilder({
             });
           }
         });
+
+        // center camera on player's controlled entity
+        const playerEntity = world.client?.playerEntity;
+        if (playerEntity) {
+          const controlledEntity = world.entities[playerEntity.components.controlling.data.entityId] as Entity<Renderable | Position>;
+          if (controlledEntity) centeredEntity = controlledEntity;
+        }
 
         // sort cache by position (closeness to camera)
         const sortedEntityPositions = Object.values(entities).sort((a, b) => {

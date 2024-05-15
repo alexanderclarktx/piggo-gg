@@ -32,7 +32,7 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
         hoverOut: () => {
           portal.components.renderable.c.filters = []
         },
-        click: () => ({ action: "click", params: { game } }),
+        click: ({ world }) => ({ action: "click", playerId: world.client?.playerId, params: { game } }),
       }),
       renderable: new Renderable({
         zIndex: 1,

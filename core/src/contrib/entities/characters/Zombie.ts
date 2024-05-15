@@ -14,7 +14,7 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
     networked: new Networked({ isNetworked: true }),
     health: new Health({ health: 100, maxHealth: 100 }),
     npc: new NPC<ZombieMovementActions>({
-      onTick: (_) => ({ action: "chase" })
+      onTick: (_) => ({ action: "chase", playerId: "" })
     }),
     actions: new Actions(ZombieMovement),
     collider: new Collider({ shape: "ball", radius: 8, mass: 300 }),

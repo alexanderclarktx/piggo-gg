@@ -1,4 +1,4 @@
-import { Action, ActionMap, Entity, Position, getClosestEntity } from "@piggo-gg/core";
+import { Action, ActionMap, Controlling, Entity, Player, Position, closestEntity } from "@piggo-gg/core";
 
 export type ZombieMovementActions = "chase";
 
@@ -9,11 +9,18 @@ export const ZombieMovement: ActionMap<ZombieMovementActions> = {
     const { position, renderable } = entity.components;
     if (!position || !renderable) return;
 
-    // get the closest player entity position
-    const entities = Object.values(world.entities).filter((e) => e.components.controlled && e.components.position) as Entity<Position>[];
-    const closestEntity = getClosestEntity(entities, position.data);
-    if (!closestEntity) return;
+    // get all the player controlled entities
+    const players = world.queryEntities(["player"]) as Entity<Player | Controlling>[];
+    let playerControlledEntities: Entity<Position>[] = [];
+    players.forEach((player) => {
+      const controlledEntities = world.entities[player.components.controlling.data.entityId] as Entity<Position>;
+      if (controlledEntities) playerControlledEntities.push(controlledEntities);
+    });
 
-    position.setHeading(closestEntity.components.position.data);
+    // find the closest player entity position
+    const closest = closestEntity(playerControlledEntities, position.data);
+    if (!closest) return;
+
+    position.setHeading(closest.components.position.data);
   })
 }

@@ -10,7 +10,6 @@ export const DebugButton = (): Entity => {
 
   const debugButton = Entity({
     id: "debugButton",
-    persists: true,
     components: {
       position: new Position({ x: 40, y: 5, screenFixed: true }),
       actions: new Actions({

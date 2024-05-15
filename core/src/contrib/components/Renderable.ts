@@ -135,6 +135,7 @@ export class Renderable extends Component<"renderable"> {
   cleanup = () => {
     // remove from the renderer
     this.renderer?.app.stage.removeChild(this.c);
+    this.renderer?.camera.c.removeChild(this.c);
 
     // remove all event listeners
     this.c.removeAllListeners();

@@ -26,7 +26,7 @@ export const ClickableSystem = ClientSystemBuilder({
 
         entities.forEach((entity) => {
           const { clickable, position } = entity.components;
-  
+
           if (hovered.has(entity.id)) {
             const hovering = checkBounds(renderer, position, clickable, mouse, mouse);
             if (!hovering) {
@@ -34,7 +34,7 @@ export const ClickableSystem = ClientSystemBuilder({
               hovered.delete(entity.id);
             }
           }
-  
+
           if (clickable.active && clickable.hoverOver && !hovered.has(entity.id)) {
             const hovering = checkBounds(renderer, position, clickable, mouse, mouse);
             if (hovering) {
@@ -43,18 +43,18 @@ export const ClickableSystem = ClientSystemBuilder({
             }
           }
         })
-  
+
         bufferClick.forEach((click) => {
           const clickWorld = renderer.camera.toWorldCoords(click);
-  
+
           entities.forEach((entity) => {
             const { clickable, position, networked } = entity.components;
             if (!clickable.active || !clickable.click) return;
-  
+
             const clicked = checkBounds(renderer, position, clickable, click, clickWorld);
             if (clicked) {
-              const invocation = clickable.click();
-  
+              const invocation = clickable.click({ world });
+
               if (networked && networked.isNetworked) {
                 world.actionBuffer.push(world.tick + 1, entity.id, invocation);
               } else {

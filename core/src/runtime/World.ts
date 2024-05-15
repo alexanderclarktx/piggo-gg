@@ -28,6 +28,7 @@ export type World = {
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
+  queryEntities: (query: string[]) => Entity[]
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -120,6 +121,9 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
           if (system) world.addSystems([system]);
         }
       })
+    },
+    queryEntities: (query: string[]) => {
+      return filterEntities(query, Object.values(world.entities));
     },
     onTick: ({ isRollback }) => {
       const now = performance.now();

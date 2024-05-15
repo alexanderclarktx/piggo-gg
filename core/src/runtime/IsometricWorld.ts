@@ -1,8 +1,9 @@
 import {
   ActionSystem, ClickableSystem, CommandSystem,
-  CooldownSystem, Cursor, DamageSystem, DebugSystem,
-  ExpiresSystem, GameCommand, InputSystem, NPCSystem, PhysicsSystem,
-  RenderSystem, SpawnCommand, World, WorldBuilder, isMobile
+  ControlSystem, CooldownSystem, DamageSystem,
+  DebugSystem, ExpiresSystem, GameCommand, InputSystem,
+  NPCSystem, PhysicsSystem, RenderSystem, SpawnCommand,
+  World, WorldBuilder
 } from "@piggo-gg/core";
 
 export const IsometricWorld: WorldBuilder = (props) => {
@@ -12,10 +13,8 @@ export const IsometricWorld: WorldBuilder = (props) => {
     commands: [GameCommand, SpawnCommand]
   });
 
-  if (!isMobile()) world.addEntity(Cursor());
-
   world.addSystemBuilders([
-    ExpiresSystem, InputSystem, ClickableSystem, DebugSystem,
+    ExpiresSystem, ControlSystem, InputSystem, ClickableSystem, DebugSystem,
     DamageSystem, CommandSystem, NPCSystem, CooldownSystem,
     PhysicsSystem, ActionSystem, RenderSystem
   ]);
