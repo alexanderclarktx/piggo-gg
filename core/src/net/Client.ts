@@ -82,7 +82,7 @@ export const Client = ({ world }: ClientProps): Client => {
   }, 200);
 
   client.ws.addEventListener("close", () => {
-    console.log("CLOSED");
+    console.error("websocket closed");
     world.removeSystem(NetClientSystem(syncer).id);
   });
 
@@ -103,8 +103,8 @@ export const Client = ({ world }: ClientProps): Client => {
   });
 
   client.ws.onopen = () => {
-    const join = new URLSearchParams(window.location.search).get("join");
-    if (join) client.joinLobby(join, () => { });
+    const joinString: string = new URLSearchParams(window.location.search).get("join") ?? "hub";
+    if (joinString) client.joinLobby(joinString, () => { });
   }
 
   return client;

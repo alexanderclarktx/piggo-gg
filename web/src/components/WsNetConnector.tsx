@@ -1,6 +1,13 @@
 import { World } from "@piggo-gg/core";
-import { NetState, NetStateColor } from "@piggo-gg/web";
+import { NetState } from "@piggo-gg/web";
 import React from "react";
+
+const colors: Record<NetState, string> = {
+  "disconnected": "red",
+  "offering": "yellow",
+  "answering": "orange",
+  "connected": "lightgreen"
+}
 
 export type WsNetConnectorProps = {
   world: World | undefined
@@ -15,7 +22,7 @@ export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorP
   }, 200)
 
   const onClick = () => {
-    if (world && world.client) world.client.joinLobby("hub", () => {});
+    if (world && world.client) world.client.joinLobby("hub", () => { });
   }
 
   return (
@@ -23,7 +30,7 @@ export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorP
       <div style={{ width: "100%" }}>
         <div style={{ float: "left", marginLeft: 0, paddingLeft: 0, marginTop: 1 }}>
           <button style={{ fontSize: 12, marginLeft: 0 }} onClick={onClick}>connect</button>
-          <span style={{ color: NetStateColor[netState], fontSize: 14, fontFamily: "sans-serif", paddingTop: 2 }}>{netState}</span>
+          <span style={{ color: colors[netState], fontSize: 14, fontFamily: "sans-serif", paddingTop: 2 }}>{netState}</span>
         </div>
       </div>
     </div>
