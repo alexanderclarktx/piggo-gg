@@ -1,7 +1,7 @@
 import {
   Background, EnemySpawnSystem, FloorTiles,
   GunSystem, HealthBarSystem, InviteStone, IsometricGame,
-  LineWall, PlayerSpawnSystem, Portal
+  LineWall, SkellySpawnSystem, Portal
 } from "@piggo-gg/core";
 
 export const Home = IsometricGame({
@@ -25,7 +25,7 @@ export const Home = IsometricGame({
       FloorTiles({ rows: 7, cols: 7, position: { x: -32 * 16, y: 32 * 17 } }),
 
       LineWall({
-        shootable: false,
+        shootable: true,
         points: [
           32 * -8, 32 * 4.5,
           32, 0,
@@ -51,6 +51,6 @@ export const Home = IsometricGame({
         ]
       })
     ],
-    systems: [PlayerSpawnSystem, HealthBarSystem, EnemySpawnSystem, GunSystem],
+    systems: [SkellySpawnSystem, HealthBarSystem, EnemySpawnSystem, GunSystem],
   })
 })

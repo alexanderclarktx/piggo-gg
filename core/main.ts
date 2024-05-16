@@ -19,7 +19,7 @@ export * from "./src/contrib/systems/core/NPCSystem";
 export * from "./src/contrib/systems/core/PhysicsSystem";
 export * from "./src/contrib/systems/gameplay/EnemySpawnSystem";
 export * from "./src/contrib/systems/gameplay/GunSystem";
-export * from "./src/contrib/systems/gameplay/PlayerSpawnSystem";
+export * from "./src/contrib/systems/gameplay/SkellySpawnSystem";
 export * from "./src/contrib/systems/net/NetClientSystem";
 export * from "./src/contrib/systems/net/NetServerSystem";
 export * from "./src/net/Client";
