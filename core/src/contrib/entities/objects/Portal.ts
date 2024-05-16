@@ -17,7 +17,8 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
       actions: new Actions<{ game: string }>({
         click: {
           invoke: ({ world, params }) => {
-            world.setGame(params.game);
+            console.log("change game to", params.game);
+            // world.setGame(params.game);
           }
         }
       }),
