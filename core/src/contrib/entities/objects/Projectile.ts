@@ -14,12 +14,17 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
       networked: new Networked({ isNetworked: true }),
       expires: new Expires({ ticksLeft: 60 }),
       collider: new Collider({
-        shape: "ball",
-        radius: radius ?? 10,
+        shape: "cuboid",
+        length: radius ?? 8,
+        width: radius ?? 8,
+        ccd: true,
         sensor: (e2: Entity<Position | Collider>, world: World) => {
           if (e2.components.collider.shootable) {
             if (e2.components.health) {
-              e2.components.health.data.health -= 25; // TODO configurable
+              const { health } = e2.components;
+              if (health) {
+                health.data.health -= 25; // TODO configurable
+              }
             }
             world.removeEntity(projectile.id);
           }

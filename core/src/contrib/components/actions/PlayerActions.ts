@@ -6,8 +6,8 @@ export const controlEntity: Action = Action(({ entity, player }) => {
   player.components.controlling = new Controlling({ entityId: entity.id });
 })
 
-export const spawnSkellyForNoob = (player: Entity<Player>): InvokedAction => ({
+export const spawnSkellyForNoob = (player: Entity<Player>, color?: number): InvokedAction => ({
   action: "spawnSkelly",
   playerId: player.id,
-  params: {}
+  params: { color }
 })

@@ -6,7 +6,7 @@ export const Skelly = (id: string, color?: number) => {
     id: id,
     components: {
       debug: new Debug(),
-      position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 160 }),
+      position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 130 }),
       networked: new Networked({ isNetworked: true }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       health: new Health({ health: 200, maxHealth: 200 }),
@@ -27,7 +27,7 @@ export const Skelly = (id: string, color?: number) => {
         scale: 2,
         zIndex: 3,
         scaleMode: "nearest",
-        color: color ?? 0xffffff,
+        animationColor: color ?? 0xffffff,
         setup: async (r) => {
           const textures = await loadTexture("chars.json");
 
@@ -42,11 +42,12 @@ export const Skelly = (id: string, color?: number) => {
             ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
           }
 
+          // TODO refactor to new system
           const nametag = pixiText({
             text: id.split("-")[1],
             style: { fill: 0xffff00, fontSize: 13 },
             anchor: { x: 0.48, y: 0 },
-            pos: { x: 0, y: -46 }
+            pos: { x: 0, y: -40 }
           });
 
           r.c.addChild(nametag);

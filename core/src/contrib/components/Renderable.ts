@@ -6,6 +6,7 @@ export type RenderableProps = {
   animations?: Record<string, AnimatedSprite>
   cacheAsBitmap?: boolean
   color?: number
+  animationColor?: number
   interactiveChildren?: boolean
   interpolate?: boolean
   position?: { x: number; y: number }
@@ -30,6 +31,7 @@ export class Renderable extends Component<"renderable"> {
   bufferedAnimation = "";
   c: Container = new Container();
   children: Renderable[] | undefined;
+  animationColor: number;
   color: number;
   interactiveChildren: boolean;
   interpolate: boolean;
@@ -52,6 +54,7 @@ export class Renderable extends Component<"renderable"> {
     super();
     this.anchor = props.anchor ?? { x: 0.5, y: 0.5 };
     this.animations = props.animations ?? {};
+    this.animationColor = props.animationColor ?? 0xffffff;
     this.color = props.color ?? 0xffffff;
     this.dynamic = this.overrideDynamic(props.dynamic ?? undefined);
     this.interactiveChildren = props.interactiveChildren ?? false;
@@ -128,7 +131,7 @@ export class Renderable extends Component<"renderable"> {
 
     this.c.tint = this.color;
 
-    if (this.animations) this.prepareAnimations(this.color ?? 0xffffff)
+    if (this.animations) this.prepareAnimations(this.animationColor ?? 0xffffff)
   }
 
   // MUST be called to correctly destroy the object

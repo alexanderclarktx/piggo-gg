@@ -54,7 +54,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 };
         const { width, height } = renderer.app.screen;
-        const cameraScale = renderer.camera.c.scale.x - 0.5;
+        const cameraScale = renderer.camera.c.scale.x - 0.4;
 
         // todo this is calculating difference from centered entity, not the camera
         const isFarFromCamera = ({ x, y }: { x: number, y: number }) => {
@@ -90,6 +90,8 @@ export const RenderSystem = ClientSystemBuilder({
             position.data.x + renderable.position.x,
             position.data.y + renderable.position.y
           );
+
+          renderable.c.tint = renderable.color;
 
           // set buffered ortho animation
           if (!renderable.bufferedAnimation) {

@@ -1,5 +1,4 @@
-import { Actions, Clickable, Entity, Networked, Position, Renderable, loadTexture, pixiText } from "@piggo-gg/core";
-import { OutlineFilter } from "pixi-filters";
+import { Actions, Collider, Debug, Entity, Networked, Position, Renderable, loadTexture, pixiText } from "@piggo-gg/core";
 import { Matrix, Sprite } from "pixi.js";
 
 export type PortalProps = {
@@ -14,42 +13,42 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
     components: {
       position: new Position(pos),
       networked: new Networked({ isNetworked: true }),
+      collider: new Collider({
+        shape: "ball", radius: 32,
+        sensor: (e2, world) => {
+          if (e2.id.startsWith("skelly")) {
+            // todo actionBuffer push should be handled by PhysicsSystem
+            world.actionBuffer.push(world.tick + 1, portal.id, {playerId: world.client?.playerId, action: "teleport", params: { game }});
+          }
+        }
+      }),
       actions: new Actions<{ game: string }>({
-        click: {
+        teleport: {
           invoke: ({ world, params }) => {
             world.setGame(params.game);
           }
         }
       }),
-      clickable: new Clickable({
-        active: true,
-        width: 256,
-        height: 128,
-        hoverOver: () => {
-          const outlineFilter = new OutlineFilter({ thickness: 0.1, color: 0xffff00 });
-          portal.components.renderable.c.filters = [outlineFilter];
-        },
-        hoverOut: () => {
-          portal.components.renderable.c.filters = []
-        },
-        click: ({ world }) => ({ action: "click", playerId: world.client?.playerId, params: { game } }),
-      }),
+      debug: new Debug(),
       renderable: new Renderable({
         zIndex: 1,
         color: tint ?? 0xffffff,
-        setContainer: async () => {
+        anchor: { x: 0.5, y: 0.5 },
+        setup: async (r) => {
           const textures = await loadTexture("portal.json");
           const sprite = new Sprite({ texture: textures["portal"] });
           sprite.setFromMatrix(new Matrix(2, 0, 0, 1, 0, 0));
 
-          const t = pixiText({
+          sprite.anchor.set(0.5, 0.5);
+
+          const text = pixiText({
             text: game,
-            pos: { x: 64, y: 64 },
             anchor: { x: 0.5, y: 0.5 },
             style: { fill: 0xffffff, fontSize: 14 }
           });
-          sprite.addChild(t);
-          return sprite;
+          sprite.addChild(text);
+
+          r.c.addChild(sprite);
         }
       })
     }
