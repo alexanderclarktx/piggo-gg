@@ -1,20 +1,20 @@
 import {
-  Background, EnemySpawnSystem, FloorTiles,
-  GunSystem, HealthBarSystem, InviteStone, IsometricGame,
-  LineWall, SkellySpawnSystem, Portal
+  Background, ZombieSpawnSystem, FloorTiles, GunSystem,
+  InviteStone, IsometricGame,
+  LineWall, Portal, SkellySpawnSystem
 } from "@piggo-gg/core";
 
 export const Home = IsometricGame({
-  id: "home",
+  id: "hub",
   init: () => ({
-    id: "home",
+    id: "hub",
     entities: [
       Background({ img: "stars.png" }),
 
-      Portal({ pos: { x: 416, y: 80 }, game: "aram", tint: 0xff0055 }),
-      Portal({ pos: { x: -608, y: 80 }, game: "legends", tint: 0x00ffcc }),
-      Portal({ pos: { x: 416, y: 592 }, game: "soccer", tint: 0xaaaaff }),
-      Portal({ pos: { x: -608, y: 592 }, game: "strike", tint: 0x000000 }),
+      Portal({ pos: { x: 544, y: 144 }, game: "aram", tint: 0xff0055 }),
+      Portal({ pos: { x: -480, y: 144 }, game: "legends", tint: 0x00ffcc }),
+      Portal({ pos: { x: 544, y: 656 }, game: "soccer", tint: 0xaaaaff }),
+      Portal({ pos: { x: -480, y: 656 }, game: "strike", tint: 0x000000 }),
 
       InviteStone({ pos: { x: 32 * 1, y: 32 * 3.25 }, tint: 0xddddff }),
 
@@ -25,7 +25,7 @@ export const Home = IsometricGame({
       FloorTiles({ rows: 7, cols: 7, position: { x: -32 * 16, y: 32 * 17 } }),
 
       LineWall({
-        shootable: true,
+        shootable: false,
         points: [
           32 * -8, 32 * 4.5,
           32, 0,
@@ -51,6 +51,6 @@ export const Home = IsometricGame({
         ]
       })
     ],
-    systems: [SkellySpawnSystem, HealthBarSystem, EnemySpawnSystem, GunSystem],
+    systems: [SkellySpawnSystem, ZombieSpawnSystem, GunSystem],
   })
 })

@@ -7,9 +7,9 @@ const spawnLocations: PositionProps[] = [
   { x: 400, y: 400 }, { x: 400, y: 300 }
 ]
 
-// EnemySpawnSystem spawns waves of enemies
-export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
-  id: "EnemySpawnSystem",
+// ZombieSpawnSystem spawns waves of zombies
+export const ZombieSpawnSystem: SystemBuilder<"ZombieSpawnSystem"> = ({
+  id: "ZombieSpawnSystem",
   init: ({ world }) => {
 
     const data: { wave: number, lastSpawnIndex: number, zombies: string[] } = {
@@ -34,7 +34,7 @@ export const EnemySpawnSystem: SystemBuilder<"EnemySpawnSystem"> = ({
     }
 
     return {
-      id: "EnemySpawnSystem",
+      id: "ZombieSpawnSystem",
       data,
       query: [],
       onTick: () => {

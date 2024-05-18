@@ -104,7 +104,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   client.ws.onopen = () => {
     const joinString: string = new URLSearchParams(window.location.search).get("join") ?? "hub";
-    if (joinString) client.joinLobby(joinString, () => { });
+    // if (joinString) client.joinLobby(joinString, () => { });
   }
 
   return client;

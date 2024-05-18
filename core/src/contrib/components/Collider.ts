@@ -53,7 +53,7 @@ export class Collider extends Component<"collider"> {
       this.sensor = sensor;
     }
 
-    this.shootable = shootable ?? true;
+    this.shootable = shootable ?? false;
 
     this.priority = priority ?? 0;
 

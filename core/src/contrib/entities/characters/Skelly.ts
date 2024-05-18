@@ -42,12 +42,12 @@ export const Skelly = (id: string, color?: number) => {
             ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
           }
 
-          // TODO refactor should be added by a separate system
+          // TODO refactor to new system
           const nametag = pixiText({
             text: id.split("-")[1],
             style: { fill: 0xffff00, fontSize: 13 },
             anchor: { x: 0.48, y: 0 },
-            pos: { x: 0, y: -46 }
+            pos: { x: 0, y: -40 }
           });
 
           r.c.addChild(nametag);

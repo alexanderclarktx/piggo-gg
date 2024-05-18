@@ -19,7 +19,21 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
         sensor: (e2: Entity<Position | Collider>, world: World) => {
           if (e2.components.collider.shootable) {
             if (e2.components.health) {
-              e2.components.health.data.health -= 25; // TODO configurable
+              const { renderable, health } = e2.components;
+              if (renderable && health) {
+                // const before = renderable.color;
+                // const ratio = health.data.health / health.data.maxHealth;
+                // console.log(ratio);
+                // renderable.color -= 0x110000;
+                // renderable.color += (ratio * 0xff0000)
+                // renderable.color = 0x00ff00 + (0x110000 * (health.data.health / health.data.maxHealth));
+                // renderable.color = renderable.color ^ 0x110000;
+                // console.log(`before ${before.toString(16)} after ${renderable.color.toString(16)}`);
+              }
+              
+              if (health) {
+                health.data.health -= 25; // TODO configurable
+              }
             }
             world.removeEntity(projectile.id);
           }

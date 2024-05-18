@@ -29,7 +29,7 @@ export class Renderer {
       backgroundColor: 0x000000,
       width: this.props.width ?? 800,
       height: this.props.height ?? 600,
-      antialias: false,
+      antialias: true,
       hello: true,
       roundPixels: false
     });

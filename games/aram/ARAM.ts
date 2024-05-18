@@ -1,4 +1,4 @@
-import { Background, FloorTiles, GunSystem, HealthBarSystem, IsometricGame, LineWall, SkellySpawnSystem } from "@piggo-gg/core";
+import { Background, FloorTiles, GunSystem, IsometricGame, LineWall, SkellySpawnSystem } from "@piggo-gg/core";
 
 export const ARAM = IsometricGame({
   id: "aram",
@@ -15,6 +15,6 @@ export const ARAM = IsometricGame({
         32, 0
       ], health: 75 })
     ],
-    systems: [SkellySpawnSystem, HealthBarSystem, GunSystem],
+    systems: [SkellySpawnSystem, GunSystem],
   })
 })
