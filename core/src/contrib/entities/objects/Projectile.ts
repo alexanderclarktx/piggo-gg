@@ -14,23 +14,14 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
       networked: new Networked({ isNetworked: true }),
       expires: new Expires({ ticksLeft: 60 }),
       collider: new Collider({
-        shape: "ball",
-        radius: radius ?? 10,
+        shape: "cuboid",
+        length: radius ?? 8,
+        width: radius ?? 8,
+        ccd: true,
         sensor: (e2: Entity<Position | Collider>, world: World) => {
           if (e2.components.collider.shootable) {
             if (e2.components.health) {
-              const { renderable, health } = e2.components;
-              if (renderable && health) {
-                // const before = renderable.color;
-                // const ratio = health.data.health / health.data.maxHealth;
-                // console.log(ratio);
-                // renderable.color -= 0x110000;
-                // renderable.color += (ratio * 0xff0000)
-                // renderable.color = 0x00ff00 + (0x110000 * (health.data.health / health.data.maxHealth));
-                // renderable.color = renderable.color ^ 0x110000;
-                // console.log(`before ${before.toString(16)} after ${renderable.color.toString(16)}`);
-              }
-              
+              const { health } = e2.components;
               if (health) {
                 health.data.health -= 25; // TODO configurable
               }

@@ -9,6 +9,7 @@ export type ColliderProps = {
   points?: number[]
   radius?: number
   length?: number
+  ccd?: boolean
   width?: number
   isStatic?: boolean
   frictionAir?: number
@@ -30,7 +31,7 @@ export class Collider extends Component<"collider"> {
 
   sensor: (e2: Entity<Position>, world: World) => void;
 
-  constructor({ shape, shootable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority }: ColliderProps) {
+  constructor({ shape, ccd, shootable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority }: ColliderProps) {
     super();
 
     if (isStatic) {
@@ -53,6 +54,8 @@ export class Collider extends Component<"collider"> {
       this.sensor = sensor;
     }
 
+    if (ccd) this.bodyDesc.setCcdEnabled(true);
+
     this.shootable = shootable ?? false;
 
     this.priority = priority ?? 0;
@@ -60,8 +63,6 @@ export class Collider extends Component<"collider"> {
     if (mass) this.colliderDesc.setMass(mass);
     if (restitution) this.colliderDesc.setRestitution(restitution);
     if (rotation) this.colliderDesc.setRotation(rotation);
-
-    this.bodyDesc.setCcdEnabled(true);
 
     this.bodyDesc.setLinearDamping(frictionAir ?? 0);
   }

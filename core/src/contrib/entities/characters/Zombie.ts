@@ -28,15 +28,10 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
         anchor: { x: 0.5, y: 0.7 },
         dynamic: (_, r) => {
           const { health, maxHealth } = zombie.components.health.data;
-          const ratio = health / maxHealth;
 
-          const color =
-            ratio > 0.75 ? 0x00ff00 :
-            ratio > 0.5 ? 0xffaa00 :
-            ratio > 0.25 ? 0xff5500 :
-            0xff0000;
-
-          r.color = color
+          const ratio = Math.round(health / maxHealth * 4);
+          const colors = [0xff0000, 0xff5500, 0xffaa00, 0x00ff00];
+          r.color = colors[ratio - 1];
         },
         setup: async (r: Renderable) => {
           const textures = await loadTexture("chars.json")
