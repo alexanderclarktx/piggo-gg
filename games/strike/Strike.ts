@@ -7,7 +7,7 @@ export const Strike = IsometricGame({
   id: "strike",
   init: () => ({
     id: "strike",
-    systems: [SkellySpawnSystem],
+    systems: [SkellySpawnSystem, StrikeSystem],
     entities: [
       Background(),
       FloorTiles({ rows: 15, cols: 7, position: { x: W32 * 3, y: W32 * 6.5 }, tint: 0xff6666 }), // T

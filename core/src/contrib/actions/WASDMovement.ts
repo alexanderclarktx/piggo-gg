@@ -1,9 +1,7 @@
-import { ActionMap, InputMap, Entity, Position, currentJoystickPosition, normalize, World, InvokedAction } from "@piggo-gg/core";
-
-type WASDParams = { x: number, y: number };
+import { ActionMap, InputMap, Entity, Position, currentJoystickPosition, normalize, World, InvokedAction, XY } from "@piggo-gg/core";
 
 // TODO refactor mb2 and joystick out from this controller
-export const WASDInput: InputMap<WASDParams | { mouse: { x: number, y: number } }> = {
+export const WASDInput: InputMap<XY> = {
   keyboard: {
     "a,d": () => null, "w,s": () => null,
     "w,a": ({entity, world}) => move(entity, world, -1, -2),
@@ -14,7 +12,6 @@ export const WASDInput: InputMap<WASDParams | { mouse: { x: number, y: number } 
     "a": ({entity, world}) => move(entity, world, -1, 0),
     "d": ({entity, world}) => move(entity, world, 1, 0),
     "s": ({entity, world}) => move(entity, world, 0, 1),
-    "q": ({ mouse, world }) => ({ action: "Q", playerId: world.client?.playerId, params: { mouse } }),
     "mb2": ({ mouse, entity, world }) => {
       const { position, renderable } = entity.components;
       if (!position || !renderable) return null;
@@ -25,11 +22,11 @@ export const WASDInput: InputMap<WASDParams | { mouse: { x: number, y: number } 
   joystick: ({ entity, world }) => ({ action: "move", playerId: world.client?.playerId, params: handleJoystick(entity) })
 }
 
-const move = (entity: Entity<Position>, world: World, x: number, y: number): InvokedAction<"move", WASDParams> => ({
+const move = (entity: Entity<Position>, world: World, x: number, y: number): InvokedAction<"move", XY> => ({
   action: "move", playerId: world.client?.playerId, params: normalize({ x, y, entity })
 })
 
-export const WASDActionMap: ActionMap<WASDParams> = {
+export const WASDActionMap: ActionMap<XY> = {
   head: {
     invoke: ({ params, entity }) => {
       if (!entity) return;
@@ -51,7 +48,7 @@ export const WASDActionMap: ActionMap<WASDParams> = {
   }
 };
 
-const handleJoystick = (entity: Entity<Position>): WASDParams => {
+const handleJoystick = (entity: Entity<Position>): XY => {
   const { position } = entity.components;
   const { power, angle } = currentJoystickPosition;
 

@@ -1,7 +1,7 @@
-import { InvokedAction, Component, Entity, Position, World } from "@piggo-gg/core";
+import { InvokedAction, Component, Entity, Position, World, XY } from "@piggo-gg/core";
 
 export type InputState = {
-  mouse: { x: number, y: number }
+  mouse: XY
   entity: Entity<Position>
   world: World
 }

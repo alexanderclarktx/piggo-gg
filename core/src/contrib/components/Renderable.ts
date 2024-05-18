@@ -1,8 +1,8 @@
-import { Component, Entity, Renderer, World } from "@piggo-gg/core";
+import { Component, Entity, Renderer, World, XY } from "@piggo-gg/core";
 import { AnimatedSprite, Container } from "pixi.js";
 
 export type RenderableProps = {
-  anchor?: { x: number, y: number }
+  anchor?: XY
   animations?: Record<string, AnimatedSprite>
   cacheAsBitmap?: boolean
   color?: number

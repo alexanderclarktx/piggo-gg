@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable } from "@piggo-gg/core";
+import { Entity, Position, Renderable, XY } from "@piggo-gg/core";
 import { Container, FederatedPointerEvent, Graphics, Point, Sprite } from "pixi.js";
 
 export const currentJoystickPosition = { angle: 0, power: 0, active: false }
@@ -45,8 +45,8 @@ export interface JoystickChangeEvent {
 export interface JoystickSettings {
   outer?: Sprite | Graphics | Container,
   inner?: Sprite | Graphics | Container,
-  outerScale?: { x: number, y: number },
-  innerScale?: { x: number, y: number },
+  outerScale?: XY,
+  innerScale?: XY,
   onChange?: (data: JoystickChangeEvent) => void;
   onStart?: () => void;
   onEnd?: () => void;

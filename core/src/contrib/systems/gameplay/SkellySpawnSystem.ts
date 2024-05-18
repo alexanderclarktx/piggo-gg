@@ -1,4 +1,4 @@
-import { Controlling, Entity, Player, SystemBuilder, spawnSkellyForNoob } from "@piggo-gg/core";
+import { Controlling, Entity, Player, SystemBuilder, invokeSpawnSkelly } from "@piggo-gg/core";
 
 // SkellySpawnSystem handles spawning characters for players
 export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
@@ -21,7 +21,7 @@ export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
 
         players.forEach((player) => {
           if (!player.components.controlling.data.entityId) {
-            world.actionBuffer.push(world.tick + 1, player.id, spawnSkellyForNoob(player));
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
             spawnedPlayers.add(player.id);
           }
         });

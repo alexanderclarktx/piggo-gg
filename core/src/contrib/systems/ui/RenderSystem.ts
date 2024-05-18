@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection, XY } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -57,7 +57,7 @@ export const RenderSystem = ClientSystemBuilder({
         const cameraScale = renderer.camera.c.scale.x - 0.4;
 
         // todo this is calculating difference from centered entity, not the camera
-        const isFarFromCamera = ({ x, y }: { x: number, y: number }) => {
+        const isFarFromCamera = ({ x, y }: XY) => {
           return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2);
         }
 

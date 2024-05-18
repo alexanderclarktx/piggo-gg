@@ -1,3 +1,4 @@
+import { XY } from "@piggo-gg/core";
 import { Assets, Graphics, Text } from "pixi.js";
 
 export type pixiRectProps = { x: number, y: number, w: number, h: number, style?: Omit<pixiStyleProps, "g"> };
@@ -5,7 +6,7 @@ export type pixiCircleProps = { x: number, y: number, r: number, style?: Omit<pi
 export type pixiStyleProps = { g: Graphics, color?: number, strokeColor?: number, alpha?: number };
 
 export type pixiTextStyle = { fill?: number, fontSize?: number };
-export type pixiTextProps = { text: string, anchor?: { x: number, y: number }, pos?: { x: number, y: number }, style?: pixiTextStyle };
+export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle };
 
 export const pixiRect = ({ x, y, w, h, style }: pixiRectProps): Graphics => {
   const g = new Graphics();

@@ -1,4 +1,6 @@
-import { Click, Clickable, Entity, Position, Renderer } from "@piggo-gg/core";
+import { Clickable, Entity, Position, Renderer } from "@piggo-gg/core";
+
+export type XY = { x: number, y: number };
 
 export const orthoToDirection = (o: number) => {
   if (o === 0) return "l";
@@ -16,19 +18,19 @@ export const addPoints = (arr1: [number, number] | number[], arr2: [number, numb
   return [arr1[0] + arr2[0], arr1[1] + arr2[1]];
 }
 
-export const worldToIsometric = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
+export const worldToIsometric = ({ x, y }: XY): XY => ({
   x: x - y,
   y: (x + y) / 2
 });
 
-export const isometricToWorld = ({ x, y }: { x: number, y: number }): { x: number, y: number } => ({
+export const isometricToWorld = ({ x, y }: XY): XY => ({
   x: (2 * y + x) / 2,
   y: (2 * y - x) / 2
 });
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
 
-export const closestEntity = (entities: Entity<Position>[], pos: { x: number, y: number }): Entity<Position> | undefined => {
+export const closestEntity = (entities: Entity<Position>[], pos: XY): Entity<Position> | undefined => {
   if (entities.length > 1) {
     entities.sort((a: Entity<Position>, b: Entity<Position>) => {
       const aPosition = a.components.position;
@@ -45,7 +47,7 @@ export const closestEntity = (entities: Entity<Position>[], pos: { x: number, y:
   return entities[0];
 }
 
-export const normalize = ({ x, y, entity }: { x: number, y: number, entity: Entity<Position> }): { x: number, y: number } => {
+export const normalize = ({ x, y, entity }: { x: number, y: number, entity: Entity<Position> }): XY => {
   const { speed } = entity.components.position.data;
 
   if (x === 0) return { x, y: Math.sign(y) * speed };
@@ -59,7 +61,7 @@ export const normalize = ({ x, y, entity }: { x: number, y: number, entity: Enti
   return { x: newX, y: newY };
 }
 
-export const checkBounds = (renderer: Renderer, position: Position, clickable: Clickable, click: Click, clickWorld: Click): boolean => {
+export const checkBounds = (renderer: Renderer, position: Position, clickable: Clickable, click: XY, clickWorld: XY): boolean => {
 
   let { x, y } = position.data;
   if (clickable.anchor) {

@@ -1,9 +1,9 @@
-import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, loadTexture } from "@piggo-gg/core";
+import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, XY, loadTexture } from "@piggo-gg/core";
 import { Sprite } from "pixi.js";
 
 export type BallProps = {
   id: string
-  position?: { x: number, y: number }
+  position?: XY
 }
 
 export const Ball = ({ position, id }: BallProps) => Entity({

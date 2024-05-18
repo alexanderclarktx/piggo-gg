@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
+import { Entity, Position, Renderable, Renderer, XY } from "@piggo-gg/core";
 import { Assets, Matrix, RenderTexture, Sprite, Texture } from "pixi.js";
 
 let index = 0;
@@ -6,7 +6,7 @@ let index = 0;
 export type FloorTilesProps = {
   rows: number
   cols: number
-  position?: { x: number, y: number }
+  position?: XY
   id?: string
   tint?: number
 }

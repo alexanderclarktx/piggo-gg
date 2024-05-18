@@ -1,4 +1,4 @@
-import { Component } from "@piggo-gg/core";
+import { Component, XY } from "@piggo-gg/core";
 
 export type PositionProps = {
   x?: number
@@ -40,13 +40,13 @@ export class Position extends Component<"position"> {
     this.data.speed = speed ?? 400;
   }
 
-  setPosition = ({ x, y }: { x: number, y: number }) => {
+  setPosition = ({ x, y }: XY) => {
     this.data.x = x;
     this.data.y = y;
     return this;
   }
 
-  setVelocity = ({ x, y }: { x: number, y: number }) => {
+  setVelocity = ({ x, y }: XY) => {
     this.data.vx = Math.round(x * 100) / 100;
     this.data.vy = Math.round(y * 100) / 100;
 
@@ -60,7 +60,7 @@ export class Position extends Component<"position"> {
   }
 
   // TODO refactor, the xv/vy should be recalculated every tick
-  setHeading = ({ x, y }: { x: number, y: number }) => {
+  setHeading = ({ x, y }: XY) => {
     this.data.headingX = x;
     this.data.headingY = y;
 

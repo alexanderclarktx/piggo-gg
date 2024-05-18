@@ -1,11 +1,11 @@
-import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition, XY } from "@piggo-gg/core";
 
 // TODO these are global dependencies
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
 export var mouse = { x: 0, y: 0 };
 
-type KeyMouse = { key: string, mouse: { x: number, y: number } };
+type KeyMouse = { key: string, mouse: XY };
 
 const KeyBuffer = (b?: KeyMouse[]) => {
   let buffer: KeyMouse[] = b ? [...b] : [];

@@ -1,9 +1,9 @@
-import { Collider, Entity, Health, Networked, Position, Renderable } from "@piggo-gg/core";
+import { Collider, Entity, Health, Networked, Position, Renderable, XY } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export type LineWallProps = {
   points: number[]
-  position?: { x: number, y: number }
+  position?: XY
   visible?: boolean
   health?: number
   shootable?: boolean

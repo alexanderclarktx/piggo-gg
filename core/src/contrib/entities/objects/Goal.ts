@@ -1,8 +1,8 @@
-import { Collider, Data, Entity, Networked, Position, Renderable, World, pixiText } from "@piggo-gg/core";
+import { Collider, Data, Entity, Networked, Position, Renderable, World, XY, pixiText } from "@piggo-gg/core";
 import { Container, Graphics, Text } from "pixi.js";
 
 export type GoalProps = {
-  position: { x: number, y: number }
+  position: XY
   length: number
   width: number
   id?: string

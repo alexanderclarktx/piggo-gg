@@ -7,6 +7,8 @@ export type ZombieProps = {
   positionProps?: PositionProps
 }
 
+const colors = [0xff5533, 0xff9900, 0xccff00, 0x00ff00];
+
 export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombieProps = {}) => {
   const zombie = Entity<Health>({
     id: id ?? `zombie-${Math.round(Math.random() * 100)}`,
@@ -30,7 +32,6 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
           const { health, maxHealth } = zombie.components.health.data;
 
           const ratio = Math.round(health / maxHealth * 4);
-          const colors = [0xff0000, 0xff5500, 0xffaa00, 0x00ff00];
           r.color = colors[ratio - 1];
         },
         setup: async (r: Renderable) => {
