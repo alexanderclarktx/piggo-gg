@@ -13,7 +13,7 @@ export const ARAM = IsometricGame({
         -1408, 1200,
         -1884, 960,
         32, 0
-      ], health: 75 })
+      ], shootable: false })
     ],
     systems: [SkellySpawnSystem, GunSystem],
   })
