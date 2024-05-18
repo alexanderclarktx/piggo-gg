@@ -5,7 +5,7 @@ export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
   id: "SkellySpawnSystem",
   init: ({ world }) => {
 
-    const spawnedPlayers: string[] = [];
+    const spawnedPlayers: Set<string> = new Set();
 
     return {
       id: "SkellySpawnSystem",
@@ -15,13 +15,14 @@ export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
         spawnedPlayers.forEach((playerId) => {
           if (!world.entities[playerId]) {
             world.removeEntity(`skelly-${playerId}`);
+            spawnedPlayers.delete(playerId);
           }
         })
 
         players.forEach((player) => {
           if (!player.components.controlling.data.entityId) {
             world.actionBuffer.push(world.tick + 1, player.id, spawnSkellyForNoob(player));
-            spawnedPlayers.push(player.id);
+            spawnedPlayers.add(player.id);
           }
         });
       }

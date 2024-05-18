@@ -54,7 +54,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 };
         const { width, height } = renderer.app.screen;
-        const cameraScale = renderer.camera.c.scale.x - 0.3;
+        const cameraScale = renderer.camera.c.scale.x - 0.4;
 
         // todo this is calculating difference from centered entity, not the camera
         const isFarFromCamera = ({ x, y }: { x: number, y: number }) => {
