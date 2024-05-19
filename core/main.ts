@@ -84,7 +84,7 @@ export * from "./src/contrib/actions/Wall";
 export * from "./src/contrib/actions/WASDMovement";
 export * from "./src/contrib/actions/ZombieMovement";
 export * from "./src/contrib/components/Controlling";
-export * from "./src/contrib/utils/GeometryUtils";
+export * from "./src/contrib/utils/MathUtils";
 export * from "./src/contrib/utils/PixiUtils";
 export * from "./src/contrib/utils/StringUtils";
 export * from "./src/contrib/utils/SystemUtils";

@@ -6,7 +6,7 @@ export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): Ga
     const game = gameBuilder.init(world);
 
     if (world.runtimeMode === "client") {
-      game.entities.push(FullscreenButton(), Chat(), PlayerTable());
+      game.entities.push(FullscreenButton(), DebugButton(), Chat(), PlayerTable());
 
       isMobile() ?
         game.entities.push(Joystick(), ConnectButton()) :

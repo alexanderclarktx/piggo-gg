@@ -9,9 +9,9 @@ export const Menu: GameBuilder<"menu"> = ({
   init: () => ({
     id: "menu",
     entities: [
-      Singleplayer(),
-      Createlobby(),
-      JoinLobby(),
+      // Singleplayer(),
+      // Createlobby(),
+      // JoinLobby(),
       LobbiesTable(),
       // DebugButton()
     ],
@@ -124,9 +124,7 @@ export const LobbiesTable = (): Entity => {
       style: { fontFamily: "Arial", fontSize: 12, fill: 0xffffff }
     });
 
-    outline.addChild(titleText, subtitleText);
-    c.addChild(outline);
-    // c.addChild(outline, titleText, subtitleText);
+    c.addChild(outline, titleText, subtitleText);
 
     c.onpointertap = () => {
       console.log(`pointertap ${title}`);
@@ -139,7 +137,6 @@ export const LobbiesTable = (): Entity => {
     c.onmouseleave = () => {
       box(outline, 0xffffff);
     }
-
 
     return c;
   }

@@ -14,6 +14,10 @@ export const orthoToDirection = (o: number) => {
   return "d";
 }
 
+export const setsEqual = <T>(xs: Set<T>, ys: Set<T>) => {
+  return xs.size === ys.size && [...xs].every((x) => ys.has(x));
+}
+
 export const addPoints = (arr1: [number, number] | number[], arr2: [number, number]): [number, number] => {
   return [arr1[0] + arr2[0], arr1[1] + arr2[1]];
 }

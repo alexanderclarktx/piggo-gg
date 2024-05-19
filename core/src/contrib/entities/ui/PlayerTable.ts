@@ -1,70 +1,94 @@
-import { Actions, Debug, Entity, Input, Position, Renderable, ToggleHidden, ToggleVisible } from "@piggo-gg/core";
-import { List } from "@pixi/ui";
-import { Container, Graphics, Text } from "pixi.js";
+import { Actions, Debug, Entity, Input, Position, Renderable, ToggleHidden, ToggleVisible, pixiText, setsEqual } from "@piggo-gg/core";
+import { List, ScrollBox } from "@pixi/ui";
+import { Container, Graphics } from "pixi.js";
 
-export const PlayerTable = (): Entity => Entity({
-  id: "player-table",
-  components: {
-    debug: new Debug(),
-    input: new Input({
-      press: {
-        "tab": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId })
-      },
-      release: {
-        "tab": ({ world }) => ({ action: "ToggleHidden", playerId: world.client?.playerId })
-      },
-      joystick: () => null
-    }),
-    actions: new Actions({ ToggleVisible, ToggleHidden }),
-    position: new Position({ x: 200, y: 200, screenFixed: true }),
-    renderable: Table()
-  }
-});
+export const PlayerTable = (): Entity => {
+  let players: Set<string> = new Set();
 
-export const Table = (): Renderable => {
-  return new Renderable({
-    visible: false,
-    setup: async (r) => {
-      const c = new List({
-        type: "vertical",
-        items
-      });
-      r.c.addChild(c);
+  const playerTable = Entity<Position>({
+    id: "player-table",
+    components: {
+      debug: new Debug(),
+      input: new Input({
+        press: {
+          "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId })
+        },
+        release: {
+          "shift": ({ world }) => ({ action: "ToggleHidden", playerId: world.client?.playerId })
+        },
+        joystick: () => null
+      }),
+      actions: new Actions({ ToggleVisible, ToggleHidden }),
+      position: new Position({ x: 200, y: 200, screenFixed: true }),
+      renderable: new Renderable({
+        visible: false,
+        interactiveChildren: true,
+        zIndex: 10,
+        dynamic: (c: ScrollBox, _, __, w) => {
+          const currentPlayerEntities = w.queryEntities(["player"]);
+          let currentPlayers = new Set(currentPlayerEntities.map((p) => p.id));
+
+          // update player table
+          if (!setsEqual(players, currentPlayers)) {
+            players = currentPlayers;
+
+            c.removeItems();
+
+            const width = w.renderer!.props.canvas.width * 0.7;
+
+            players.forEach((player) => {
+              c.addItem(makeInnerContainer(player, width, 0));
+            });
+          }
+        },
+        setup: async (r, renderer) => {
+          const canvasWidth = renderer.props.canvas.width;
+          const width = canvasWidth * 0.7;
+          playerTable.components.position.setPosition({ x: canvasWidth * 0.15, y: 150 });
+
+          r.c = new ScrollBox({
+            width: width,
+            height: 201,
+          });
+        }
+      })
     }
-  })
+  });
+  return playerTable;
 }
 
-const makeInnerContainer = (title: string, players: number): Container => {
+const makeInnerContainer = (title: string, width: number, team: number): Container => {
 
   const box = (g: Graphics, outline: number): Graphics => {
-    return g.clear().roundRect(2, 2, 196, 46, 0).fill({ color: 0x000000 }).stroke({ color: outline, width: 2 });
+    return g.clear().roundRect(2, 2, width - 4, 46, 0).fill({ color: 0x000000, alpha: 0.7 }).stroke({ color: outline, width: 2 });
   }
 
   const c = new Container();
+
+  const titleText = pixiText({
+    text: title,
+    style: { fill: 0xffffff, fontSize: 24 },
+    pos: { x: 20, y: 10 },
+    anchor: { x: 0, y: 0 }
+  })
+
+  const scorelineText = pixiText({
+    text: `0/0/0`,
+    style: { fill: 0xffffff, fontSize: 24 },
+    pos: { x: width / 2, y: 10 },
+    anchor: { x: 0.5, y: 0 }
+  })
+
   const outline = box(new Graphics(), 0xffffff);
 
-  const titleText = new Text({
-    text: title,
-    resolution: 2,
-    anchor: { y: 0, x: 0.5 },
-    position: { x: 100, y: 2 },
-    style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff }
-  });
-  const subtitleText = new Text({
-    text: `players: ${players}`,
-    resolution: 2,
-    anchor: { y: 0, x: 0.5 },
-    position: { x: 100, y: 30 },
-    style: { fontFamily: "Arial", fontSize: 12, fill: 0xffffff }
-  });
-
-  c.addChild(outline, titleText, subtitleText);
+  c.addChild(outline, titleText, scorelineText);
 
   c.onpointertap = () => {
     console.log(`pointertap ${title}`);
   }
 
-  c.onmouseover = () => {
+  c.onpointerover = () => {
+    console.log("hover");
     box(outline, 0xffa0ab);
   }
 
@@ -74,9 +98,3 @@ const makeInnerContainer = (title: string, players: number): Container => {
 
   return c;
 }
-
-let items: Container[] = [
-  makeInnerContainer("panda", 21),
-  makeInnerContainer("bear", 13),
-  makeInnerContainer("apple", 6)
-];

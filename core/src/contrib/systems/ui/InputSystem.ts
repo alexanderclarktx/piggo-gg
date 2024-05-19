@@ -28,7 +28,7 @@ export const InputSystem = ClientSystemBuilder({
     const renderer = world.renderer;
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
-    const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter"]);
+    const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"]);
 
     let bufferedDown = KeyBuffer();
     let bufferedUp = KeyBuffer();
@@ -65,6 +65,8 @@ export const InputSystem = ClientSystemBuilder({
       if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
 
+        if (charactersPreventDefault.has(keyName)) event.preventDefault();
+
         // handle released backspace
         if (chatIsOpen && keyName === "backspace") backspaceOn = false;
 
@@ -73,6 +75,12 @@ export const InputSystem = ClientSystemBuilder({
         bufferedUp.push({ key: keyName, mouse });
       }
     });
+
+    document.addEventListener("keypress", (event) => {
+      if (document.hasFocus() && (charactersPreventDefault.has(event.key))) {
+        event.preventDefault();
+      }
+    })
 
     document.addEventListener("keydown", (event) => {
       if (document.hasFocus()) {
@@ -103,7 +111,7 @@ export const InputSystem = ClientSystemBuilder({
 
           // push to chatBuffer or bufferedDown
           (chatIsOpen && validChatCharacters.has(keyName)) ?
-            chatBuffer.push(event.key) :
+            chatBuffer.push(keyName) :
             bufferedDown.push({ key: keyName, mouse });
         }
       }
