@@ -4,7 +4,7 @@ export const WASDJoystick: JoystickHandler = ({ entity, world }) => ({
   action: "move", playerId: world.client?.playerId, params: handleJoystick(entity)
 })
 
-export const WASDInput: InputMap<XY> = {
+export const WASDInput: InputMap = {
   press: {
     "a,d": () => null, "w,s": () => null,
     "w,a": ({ entity, world }) => move(entity, world, -1, -2),

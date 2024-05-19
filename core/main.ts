@@ -56,7 +56,7 @@ export * from "./src/contrib/entities/ui/Joystick";
 export * from "./src/contrib/renderables/Button";
 export * from "./src/contrib/renderables/DebugBounds";
 export * from "./src/contrib/renderables/HealthBar";
-export * from "./src/contrib/renderables/Table";
+export * from "./src/contrib/entities/ui/PlayerTable";
 export * from "./src/contrib/renderables/TextBox";
 export * from "./src/contrib/commands/GameCommand";
 export * from "./src/contrib/commands/SpawnCommand";

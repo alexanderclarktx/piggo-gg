@@ -11,7 +11,7 @@ export const Skelly = (id: string, color?: number) => {
       collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
       health: new Health({ health: 200, maxHealth: 200 }),
       gun: Pistol(),
-      input: new Input<XY | { mouse: XY }>({
+      input: new Input({
         press: {
           ...WASDInput.press,
           "q": ({ mouse, world }) => ({ action: "Wall", playerId: world.client?.playerId, params: { mouse } }),

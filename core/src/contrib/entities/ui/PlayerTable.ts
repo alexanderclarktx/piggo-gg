@@ -58,8 +58,7 @@ const makeInnerContainer = (title: string, players: number): Container => {
     style: { fontFamily: "Arial", fontSize: 12, fill: 0xffffff }
   });
 
-  outline.addChild(titleText, subtitleText);
-  c.addChild(outline);
+  c.addChild(outline, titleText, subtitleText);
 
   c.onpointertap = () => {
     console.log(`pointertap ${title}`);
