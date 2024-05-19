@@ -1,11 +1,11 @@
-import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition, XY } from "@piggo-gg/core";
 
 // TODO these are global dependencies
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
 export var mouse = { x: 0, y: 0 };
 
-type KeyMouse = { key: string, mouse: { x: number, y: number } };
+type KeyMouse = { key: string, mouse: XY };
 
 const KeyBuffer = (b?: KeyMouse[]) => {
   let buffer: KeyMouse[] = b ? [...b] : [];
@@ -13,6 +13,7 @@ const KeyBuffer = (b?: KeyMouse[]) => {
   return {
     contains: (key: string) => buffer.find((b) => b.key === key),
     copy: () => KeyBuffer(buffer),
+    clear: () => buffer = [],
     push: (km: KeyMouse) => { if (!buffer.find((b) => b.key === km.key)) return buffer.push(km) },
     remove: (key: string) => buffer = buffer.filter((b) => b.key !== key)
   }
@@ -30,6 +31,7 @@ export const InputSystem = ClientSystemBuilder({
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter"]);
 
     let bufferedDown = KeyBuffer();
+    let bufferedUp = KeyBuffer();
     let backspaceOn = false;
     let joystickOn = false;
     let mouseEvent = { x: 0, y: 0 };
@@ -68,6 +70,7 @@ export const InputSystem = ClientSystemBuilder({
 
         // remove from bufferedDown and add to bufferedUp
         bufferedDown.remove(keyName);
+        bufferedUp.push({ key: keyName, mouse });
       }
     });
 
@@ -106,7 +109,7 @@ export const InputSystem = ClientSystemBuilder({
       }
     });
 
-    const handleInputForEntity = (entity: Entity<Input | Actions | Position>, world: World) => {
+    const handleInputForCharacterEntity = (entity: Entity<Input | Actions | Position>, world: World) => {
       // copy the input buffer
       let buffer = bufferedDown.copy();
 
@@ -120,7 +123,7 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       // handle standalone and composite (a,b) input controls
-      for (const keyPress in input.inputMap.keyboard) {
+      for (const keyPress in input.inputMap.press) {
         if (keyPress.includes(",")) {
           const inputKeys = keyPress.split(",");
 
@@ -128,7 +131,7 @@ export const InputSystem = ClientSystemBuilder({
           if (inputKeys.every((key) => buffer.contains(key))) {
 
             // run the callback
-            const controllerInput = input.inputMap.keyboard[keyPress];
+            const controllerInput = input.inputMap.press[keyPress];
             if (controllerInput != null) {
               const invocation = controllerInput({ mouse, entity, world });
               if (invocation && actions.actionMap[invocation.action ?? ""]) {
@@ -142,7 +145,7 @@ export const InputSystem = ClientSystemBuilder({
         } else if (buffer.contains(keyPress)) {
 
           // check for single key pressed
-          const controllerInput = input.inputMap.keyboard[keyPress];
+          const controllerInput = input.inputMap.press[keyPress];
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world });
             if (invocation && actions.actionMap[invocation.action ?? ""]) {
@@ -156,11 +159,50 @@ export const InputSystem = ClientSystemBuilder({
       }
     }
 
+    const handleInputForUIEntity = (entity: Entity<Input | Actions>, world: World) => {
+      // copy the input buffer
+      let bufferDown = bufferedDown.copy();
+      let bufferUp = bufferedUp.copy()
+
+      // check for actions
+      const { input, actions } = entity.components;
+
+      for (const keyPress in input.inputMap.press) {
+        if (bufferDown.contains(keyPress)) {
+          const controllerInput = input.inputMap.press[keyPress];
+          if (controllerInput != null) {
+            const invocation = controllerInput({ mouse, entity, world });
+            if (invocation && actions.actionMap[invocation.action ?? ""]) {
+              world.actionBuffer.push(world.tick, entity.id, invocation);
+            }
+          }
+
+          // remove the key from the buffer
+          bufferDown.remove(keyPress);
+        }
+      }
+
+      for (const keyUp in input.inputMap.release) {
+        if (bufferUp.contains(keyUp)) {
+          const controllerInput = input.inputMap.release[keyUp];
+          if (controllerInput != null) {
+            const invocation = controllerInput({ mouse, entity, world });
+            if (invocation && actions.actionMap[invocation.action ?? ""]) {
+              world.actionBuffer.push(world.tick, entity.id, invocation);
+            }
+          }
+
+          // remove the key from the buffer
+          bufferUp.remove(keyUp);
+        }
+      }
+    }
+
     return {
       id: "InputSystem",
-      query: [],
+      query: ["input", "actions"],
       skipOnRollback: true,
-      onTick: () => {
+      onTick: (enitities: Entity<Input | Actions>[]) => {
         // update mouse position, the camera might have moved
         if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent);
 
@@ -170,10 +212,20 @@ export const InputSystem = ClientSystemBuilder({
         const controlledEntity = world.entities[playerEntity.components.controlling.data.entityId] as Entity<Input | Actions | Position>;
         if (!controlledEntity) return;
 
-        handleInputForEntity(controlledEntity, world);
+        handleInputForCharacterEntity(controlledEntity, world);
 
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop();
+
+        enitities.forEach((entity) => {
+          const { networked } = entity.components;
+
+          if (!networked) {
+            handleInputForUIEntity(entity, world);
+          }
+        })
+
+        bufferedUp.clear();
       }
     }
   }

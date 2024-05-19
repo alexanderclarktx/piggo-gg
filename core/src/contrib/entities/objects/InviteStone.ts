@@ -1,10 +1,10 @@
-import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, loadTexture } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, loadTexture } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
 import { Sprite } from "pixi.js";
 import toast from "react-hot-toast";
 
 export type InviteStoneProps = {
-  pos: { x: number, y: number }
+  pos: XY
   tint?: number
 }
 

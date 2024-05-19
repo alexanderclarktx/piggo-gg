@@ -1,4 +1,4 @@
-import { Debug, Entity, Position, Renderable } from "@piggo-gg/core";
+import { Debug, Entity, Position, Renderable, XY } from "@piggo-gg/core";
 import { Graphics, Matrix } from "pixi.js";
 
 const width = 25;
@@ -7,7 +7,7 @@ let index = 0;
 export type FloorMatrixProps = {
   rows: number
   cols: number
-  position: { x: number, y: number }
+  position: XY
 }
 
 export const FloorMatrix = ({ rows, cols, position }: FloorMatrixProps): Entity => Entity({

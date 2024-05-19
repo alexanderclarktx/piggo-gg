@@ -1,7 +1,5 @@
-import { Actions, Clickable, ClientSystemBuilder, Entity, Position, checkBounds, mouse } from "@piggo-gg/core";
+import { Actions, Clickable, ClientSystemBuilder, Entity, Position, XY, checkBounds, mouse } from "@piggo-gg/core";
 import { FederatedPointerEvent } from "pixi.js";
-
-export type Click = { x: number, y: number };
 
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
@@ -11,7 +9,7 @@ export const ClickableSystem = ClientSystemBuilder({
 
     const renderer = world.renderer;
 
-    let bufferClick: Click[] = [];
+    let bufferClick: XY[] = [];
     const hovered: Set<string> = new Set();
 
     renderer.props.canvas.addEventListener("mousedown", (event: FederatedPointerEvent) => {

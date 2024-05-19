@@ -1,8 +1,8 @@
-import { Actions, Collider, Debug, Entity, Networked, Position, Renderable, loadTexture, pixiText } from "@piggo-gg/core";
+import { Actions, Collider, Debug, Entity, Networked, Position, Renderable, XY, loadTexture, pixiText } from "@piggo-gg/core";
 import { Matrix, Sprite } from "pixi.js";
 
 export type PortalProps = {
-  pos: { x: number, y: number }
+  pos: XY
   game: string
   tint?: number
 }
