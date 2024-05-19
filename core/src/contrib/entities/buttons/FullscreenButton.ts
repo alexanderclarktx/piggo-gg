@@ -19,9 +19,9 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
     }),
     clickable: new Clickable({ active: true, width: 32, height: 30 }),
     renderable: Button({
-      dims: { w: 32, textX: 8, textY: 5 },
+      dims: { w: 32, textX: 7, textY: 2 },
       zIndex: 4,
-      text: pixiText({ text: "⚁", style: { fill: 0xffffff, fontSize: 16 } })
+      text: pixiText({ text: "⛶", style: { fill: 0xffffff, fontSize: 22 } })
     })
   }
 });
