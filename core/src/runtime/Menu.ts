@@ -3,11 +3,11 @@ import { ScrollBox } from "@pixi/ui";
 import { Container, Graphics, Text } from "pixi.js";
 
 // TODO should this be a "scene" instead of a "game"
-export const Menu: GameBuilder<"main-menu"> = ({
+export const Menu: GameBuilder<"menu"> = ({
 
-  id: "main-menu",
+  id: "menu",
   init: () => ({
-    id: "main-menu",
+    id: "menu",
     entities: [
       Singleplayer(),
       Createlobby(),
@@ -196,4 +196,3 @@ export const LobbiesTable = (): Entity => {
 
   return t;
 }
-

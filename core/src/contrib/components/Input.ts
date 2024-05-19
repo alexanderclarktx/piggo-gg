@@ -2,14 +2,18 @@ import { InvokedAction, Component, Entity, Position, World, XY } from "@piggo-gg
 
 export type InputState = {
   mouse: XY
-  entity: Entity<Position>
+  entity: Entity
   world: World
 }
 
+export type KeyHandler = (_: InputState) => null | InvokedAction<string, {}>
+export type JoystickHandler = (_: { entity: Entity<Position>, world: World }) => null | InvokedAction<string, {}>
+
 // "" is always allowed to clear the input buffer
 export type InputMap<P extends {}> = {
-  keyboard: Record<string, (_: InputState) => null | InvokedAction<string, P>>
-  joystick: (_: { entity: Entity<Position>, world: World }) => null | InvokedAction<string, P>
+  press?: Record<string, KeyHandler>
+  release?: Record<string, KeyHandler>
+  joystick?: JoystickHandler
 }
 
 // the Input component maps inputs to Actions

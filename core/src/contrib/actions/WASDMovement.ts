@@ -1,17 +1,18 @@
-import { ActionMap, InputMap, Entity, Position, currentJoystickPosition, normalize, World, InvokedAction, XY } from "@piggo-gg/core";
+import { ActionMap, InputMap, Entity, Position, currentJoystickPosition, normalize, World, InvokedAction, XY, JoystickHandler } from "@piggo-gg/core";
 
-// TODO refactor mb2 and joystick out from this controller
+export const WASDJoystick: JoystickHandler = ({ entity, world }) => ({ action: "move", playerId: world.client?.playerId, params: handleJoystick(entity) })
+
 export const WASDInput: InputMap<XY> = {
-  keyboard: {
+  press: {
     "a,d": () => null, "w,s": () => null,
-    "w,a": ({entity, world}) => move(entity, world, -1, -2),
-    "w,d": ({entity, world}) => move(entity, world, 1, -2),
-    "s,a": ({entity, world}) => move(entity, world, -1, 2),
-    "s,d": ({entity, world}) => move(entity, world, 1, 2),
-    "w": ({entity, world}) => move(entity, world, 0, -1), 
-    "a": ({entity, world}) => move(entity, world, -1, 0),
-    "d": ({entity, world}) => move(entity, world, 1, 0),
-    "s": ({entity, world}) => move(entity, world, 0, 1),
+    "w,a": ({ entity, world }) => move(entity, world, -1, -2),
+    "w,d": ({ entity, world }) => move(entity, world, 1, -2),
+    "s,a": ({ entity, world }) => move(entity, world, -1, 2),
+    "s,d": ({ entity, world }) => move(entity, world, 1, 2),
+    "w": ({ entity, world }) => move(entity, world, 0, -1),
+    "a": ({ entity, world }) => move(entity, world, -1, 0),
+    "d": ({ entity, world }) => move(entity, world, 1, 0),
+    "s": ({ entity, world }) => move(entity, world, 0, 1),
     "mb2": ({ mouse, entity, world }) => {
       const { position, renderable } = entity.components;
       if (!position || !renderable) return null;
@@ -19,12 +20,13 @@ export const WASDInput: InputMap<XY> = {
       return { action: "head", playerId: world.client?.playerId, params: { animation: "u", x: mouse.x, y: mouse.y } };
     }
   },
-  joystick: ({ entity, world }) => ({ action: "move", playerId: world.client?.playerId, params: handleJoystick(entity) })
+  // joystick: ({ entity, world }) => ({ action: "move", playerId: world.client?.playerId, params: handleJoystick(entity) })
 }
 
-const move = (entity: Entity<Position>, world: World, x: number, y: number): InvokedAction<"move", XY> => ({
-  action: "move", playerId: world.client?.playerId, params: normalize({ x, y, entity })
-})
+const move = (entity: Entity, world: World, x: number, y: number): null | InvokedAction<"move", XY> => {
+  if (!entity.components.position) return null;
+  return { action: "move", playerId: world.client?.playerId, params: normalize({ x, y, entity: entity as Entity<Position> }) }
+}
 
 export const WASDActionMap: ActionMap<XY> = {
   head: {

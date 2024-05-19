@@ -13,25 +13,8 @@ const GameStateTimers: Record<GameStates, number> = {
   "game-over": 10,
 }
 
-const GameStateHooks: Record<GameStates, (world: World) => void> = {
-  "warmup": (world) => {
-    world.chatHistory.push(world.tick + 1, "GameState", "warmup");
-  },
-  "pre-round": (world) => {
-    world.chatHistory.push(world.tick + 1, "GameState", "pre-round");
-  },
-  "round": (world) => {
-    world.chatHistory.push(world.tick + 1, "GameState", "round");
-  },
-  "planted": (world) => {
-    world.chatHistory.push(world.tick + 1, "GameState", "planted");
-  },
-  "post-round": (world) => {
-    world.chatHistory.push(world.tick + 1, "GameState", "post-round");
-  },
-  "game-over": (world) => {
-    world.chatHistory.push(world.tick + 1, "GameState", "game-over");
-  }
+const logToChat = (world: World, message: string) => {
+  world.chatHistory.push(world.tick + 1, "game", message);
 }
 
 export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
@@ -48,7 +31,7 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
           if (!state) {
             state = "warmup";
-            GameStateHooks[state](world);
+            GameStateHooks[state].onStart(world);
           }
 
           if (!player.components.team) {
@@ -64,4 +47,48 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
       }
     }
   }
+}
+
+type Hooks = {
+  onStart: (world: World) => void
+  onTick: (world: World) => void
+}
+
+const GameStateHooks: Record<GameStates, Hooks> = {
+  "warmup": {
+    onStart: (world) => {
+      logToChat(world, "warmup started");
+    },
+    onTick: (world) => {}
+  },
+  "pre-round": {
+    onStart: (world) => {
+      logToChat(world, "pre-round started");
+    },
+    onTick: (world) => {}
+  },
+  "round": {
+    onStart: (world) => {
+      logToChat(world, "round started");
+    },
+    onTick: (world) => {}
+  },
+  "planted": {
+    onStart: (world) => {
+      logToChat(world, "bomb planted");
+    },
+    onTick: (world) => {}
+  },
+  "post-round": {
+    onStart: (world) => {
+      logToChat(world, "post-round started");
+    },
+    onTick: (world) => {}
+  },
+  "game-over": {
+    onStart: (world) => {
+      logToChat(world, "game over");
+    },
+    onTick: (world) => {}
+  },
 }

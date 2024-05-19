@@ -18,7 +18,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
     clickable: new Clickable({ width: 100, height: 120, active: true }),
     collider: new Collider({ shape: "ball", radius: 20 }),
     input: new Input<VehicleMovementActions>({
-      keyboard: {
+      press: {
         "a,d": () => null, "w,s": () => null,
         "shift,a": ({ world }) => ({ action: "skidleft", playerId: world.client?.playerId }),
         "shift,d": ({ world }) => ({ action: "skidright", playerId: world.client?.playerId }),
