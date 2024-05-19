@@ -1,6 +1,8 @@
 import { ActionMap, InputMap, Entity, Position, currentJoystickPosition, normalize, World, InvokedAction, XY, JoystickHandler } from "@piggo-gg/core";
 
-export const WASDJoystick: JoystickHandler = ({ entity, world }) => ({ action: "move", playerId: world.client?.playerId, params: handleJoystick(entity) })
+export const WASDJoystick: JoystickHandler = ({ entity, world }) => ({
+  action: "move", playerId: world.client?.playerId, params: handleJoystick(entity)
+})
 
 export const WASDInput: InputMap<XY> = {
   press: {
@@ -16,11 +18,9 @@ export const WASDInput: InputMap<XY> = {
     "mb2": ({ mouse, entity, world }) => {
       const { position, renderable } = entity.components;
       if (!position || !renderable) return null;
-
       return { action: "head", playerId: world.client?.playerId, params: { animation: "u", x: mouse.x, y: mouse.y } };
     }
-  },
-  // joystick: ({ entity, world }) => ({ action: "move", playerId: world.client?.playerId, params: handleJoystick(entity) })
+  }
 }
 
 const move = (entity: Entity, world: World, x: number, y: number): null | InvokedAction<"move", XY> => {
