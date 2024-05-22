@@ -1,6 +1,9 @@
-import { Controlling, Entity, Player, SystemBuilder, Team, World } from "@piggo-gg/core";
+import { Controlling, Entity, Player, SystemBuilder, Team, TeamNumber, World, invokeSpawnSkelly } from "@piggo-gg/core";
 
-const teamColors = [0xffffff, 0x00ffff];
+const teamColors: Record<TeamNumber, number> = {
+  1: 0xffffff,
+  2: 0x00ffff
+}
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over";
 
@@ -17,28 +20,42 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
   id: "StrikeSystem",
   init: ({ world }) => {
 
-    let state: GameStates | undefined = undefined;
+    let state: GameStates = "warmup";
+    const spawnedPlayers: Set<string> = new Set();
+
+    GameStateHooks[state].onStart(world);
 
     return {
       id: "StrikeSystem",
       query: ["player"],
       onTick: (players: Entity<Player | Controlling | Team>[]) => {
+
+        spawnedPlayers.forEach((playerId) => {
+          if (!world.entities[playerId]) {
+            world.removeEntity(`skelly-${playerId}`);
+            spawnedPlayers.delete(playerId);
+          }
+        })
+
         players.forEach((player) => {
 
-          if (!state) {
-            state = "warmup";
-            GameStateHooks[state].onStart(world);
+          // not controlling a character
+          if (!player.components.controlling.data.entityId) {
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
+            spawnedPlayers.add(player.id);
+          }
+
+          // new player
+          if (!spawnedPlayers.has(player.id)) {
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
+            spawnedPlayers.add(player.id);
           }
 
           if (!player.components.team) {
-            player.components.team = new Team({ team: 0 });
+            player.components.team = new Team({ team: 1 });
           }
 
           const team = player.components.team.data.team as number;
-
-          // if (!player.components.controlling.data.entityId) {
-          //   world.actionBuffer.push(world.tick + 1, player.id, spawnSkellyForNoob(player, teamColors[team]));
-          // }
         });
       }
     }

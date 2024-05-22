@@ -203,6 +203,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       // initialize new game
       world.addEntities(world.currentGame.entities);
       world.addSystemBuilders(world.currentGame.systems);
+      world.currentGame.commands?.forEach((command) => world.commands[command.id] = command);
     }
   }
 

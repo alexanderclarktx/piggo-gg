@@ -20,7 +20,7 @@ export const Legends = IsometricGame({
     entities: [
       Background(),
       Rift(wallPointsIso),
-      // FloorMatrix({ rows: 5, cols: 5, position: { x: 0, y: 0 } }),
+      // FloorMatrix({ rows: 50, cols: 50, position: { x: 0, y: 0 } }),
       LineWall({ points: wallPointsIso, shootable: false })
     ],
     systems: [SkellySpawnSystem]
