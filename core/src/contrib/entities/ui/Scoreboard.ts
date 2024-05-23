@@ -2,11 +2,11 @@ import { Actions, Debug, Entity, Input, Position, Renderable, ToggleHidden, Togg
 import { List, ScrollBox } from "@pixi/ui";
 import { Container, Graphics } from "pixi.js";
 
-export const PlayerTable = (): Entity => {
+export const Scoreboard = (): Entity => {
   let players: Set<string> = new Set();
 
-  const playerTable = Entity<Position>({
-    id: "player-table",
+  const scoreboard = Entity<Position>({
+    id: "scoreboard",
     components: {
       debug: new Debug(),
       input: new Input({
@@ -44,7 +44,7 @@ export const PlayerTable = (): Entity => {
         setup: async (r, renderer) => {
           const canvasWidth = renderer.props.canvas.width;
           const width = canvasWidth * 0.7;
-          playerTable.components.position.setPosition({ x: canvasWidth * 0.15, y: 150 });
+          scoreboard.components.position.setPosition({ x: canvasWidth * 0.15, y: 150 });
 
           r.c = new ScrollBox({
             width: width,
@@ -54,7 +54,7 @@ export const PlayerTable = (): Entity => {
       })
     }
   });
-  return playerTable;
+  return scoreboard;
 }
 
 const makeInnerContainer = (title: string, width: number, team: number): Container => {
