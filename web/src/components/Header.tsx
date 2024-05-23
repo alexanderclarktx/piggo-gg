@@ -20,7 +20,7 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => (
     <h1 style={{ textAlign: "center", fontFamily: "Courier New", fontSize: 36, textShadow: "1px 1px purple", margin: "0 10px" }}>
       Piggo
     </h1>
-    <svg height="25" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
+    <svg height="30" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <mask id="mask1">
           <rect width="200" height="200" fill="white" />
