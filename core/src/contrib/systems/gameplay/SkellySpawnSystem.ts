@@ -12,6 +12,7 @@ export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
       query: ["player"],
       onTick: (players: Entity<Player | Controlling>[]) => {
 
+        // cleanup
         spawnedPlayers.forEach((playerId) => {
           if (!world.entities[playerId]) {
             world.removeEntity(`skelly-${playerId}`);

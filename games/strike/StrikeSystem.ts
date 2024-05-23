@@ -1,6 +1,9 @@
-import { Controlling, Entity, Player, SystemBuilder, Team, World } from "@piggo-gg/core";
+import { Controlling, Entity, Player, SystemBuilder, Team, TeamNumber, World, invokeSpawnSkelly } from "@piggo-gg/core";
 
-const teamColors = [0xffffff, 0x00ffff];
+const teamColors: Record<TeamNumber, number> = {
+  1: 0xffffff,
+  2: 0x00ffff
+}
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over";
 
@@ -13,36 +16,46 @@ const GameStateTimers: Record<GameStates, number> = {
   "game-over": 10,
 }
 
-const logToChat = (world: World, message: string) => {
-  world.chatHistory.push(world.tick + 1, "game", message);
-}
-
 export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
   id: "StrikeSystem",
   init: ({ world }) => {
 
-    let state: GameStates | undefined = undefined;
+    let state: GameStates = "warmup";
+    const spawnedPlayers: Set<string> = new Set();
+
+    GameStateHooks[state].onStart(world);
 
     return {
       id: "StrikeSystem",
       query: ["player"],
       onTick: (players: Entity<Player | Controlling | Team>[]) => {
+
+        spawnedPlayers.forEach((playerId) => {
+          if (!world.entities[playerId]) {
+            world.removeEntity(`skelly-${playerId}`);
+            spawnedPlayers.delete(playerId);
+          }
+        })
+
         players.forEach((player) => {
 
-          if (!state) {
-            state = "warmup";
-            GameStateHooks[state].onStart(world);
+          // not controlling a character
+          if (!player.components.controlling.data.entityId) {
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
+            spawnedPlayers.add(player.id);
+          }
+
+          // new player
+          if (!spawnedPlayers.has(player.id)) {
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
+            spawnedPlayers.add(player.id);
           }
 
           if (!player.components.team) {
-            player.components.team = new Team({ team: 0 });
+            player.components.team = new Team({ team: 1 });
           }
 
           const team = player.components.team.data.team as number;
-
-          // if (!player.components.controlling.data.entityId) {
-          //   world.actionBuffer.push(world.tick + 1, player.id, spawnSkellyForNoob(player, teamColors[team]));
-          // }
         });
       }
     }
@@ -57,37 +70,37 @@ type Hooks = {
 const GameStateHooks: Record<GameStates, Hooks> = {
   "warmup": {
     onStart: (world) => {
-      logToChat(world, "warmup started");
+      world.log("warmup started");
     },
     onTick: (world) => {}
   },
   "pre-round": {
     onStart: (world) => {
-      logToChat(world, "pre-round started");
+      world.log("pre-round started");
     },
     onTick: (world) => {}
   },
   "round": {
     onStart: (world) => {
-      logToChat(world, "round started");
+      world.log("round started");
     },
     onTick: (world) => {}
   },
   "planted": {
     onStart: (world) => {
-      logToChat(world, "bomb planted");
+      world.log("bomb planted");
     },
     onTick: (world) => {}
   },
   "post-round": {
     onStart: (world) => {
-      logToChat(world, "post-round started");
+      world.log("post-round started");
     },
     onTick: (world) => {}
   },
   "game-over": {
     onStart: (world) => {
-      logToChat(world, "game over");
+      world.log("game over");
     },
     onTick: (world) => {}
   },

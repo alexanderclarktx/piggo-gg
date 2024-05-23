@@ -20,7 +20,7 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => (
     <h1 style={{ textAlign: "center", fontFamily: "Courier New", fontSize: 36, textShadow: "1px 1px purple", margin: "0 10px" }}>
       Piggo
     </h1>
-    <svg height="25" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
+    <svg height="30" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <mask id="mask1">
           <rect width="200" height="200" fill="white" />
@@ -38,7 +38,7 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => (
 
     <div style={{ position: 'absolute', right: 0, bottom: 0 }}>
       <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
-        v<b>0.5.12</b>
+        v<b>0.6.1</b>
       </span>
       <a style={{ margin: 0, color: "inherit", textDecoration: "none" }} target="_blank" href="https://discord.gg/VfFG9XqDpJ">
         <FaDiscord size={20} style={{ color: "white", verticalAlign: "-80%" }}></FaDiscord>

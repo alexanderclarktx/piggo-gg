@@ -12,7 +12,7 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
     components: {
       position: new Position(pos ? pos : { x: 200, y: 200, vx: 50, vy: 0 }),
       networked: new Networked({ isNetworked: true }),
-      expires: new Expires({ ticksLeft: 60 }),
+      expires: new Expires({ ticksLeft: 35 }),
       collider: new Collider({
         shape: "cuboid",
         length: radius ?? 8,
