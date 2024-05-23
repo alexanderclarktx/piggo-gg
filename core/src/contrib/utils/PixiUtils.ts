@@ -27,11 +27,6 @@ export const pixiStyle = ({ g, color, alpha, strokeColor }: pixiStyleProps): Gra
   return g;
 }
 
-export const pixiBox = (x: number, y: number, w: number, h: number, outlineColor: number): Graphics => {
-  const g = new Graphics();
-  return g.clear().roundRect(x, y, w, h, 0).fill({ color: 0x000000 }).stroke({ color: outlineColor, width: 2 });
-}
-
 export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
   return new Text({
     text,
