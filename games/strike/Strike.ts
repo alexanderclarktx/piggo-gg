@@ -1,4 +1,4 @@
-import { Background, FloorTiles, IsometricGame, LineWall, SkellySpawnSystem } from "@piggo-gg/core";
+import { Background, FloorTiles, GunSystem, IsometricGame, LineWall } from "@piggo-gg/core";
 import { StrikeSystem } from "@piggo-gg/games";
 
 const W32 = 32;
@@ -7,7 +7,7 @@ export const Strike = IsometricGame({
   id: "strike",
   init: () => ({
     id: "strike",
-    systems: [StrikeSystem],
+    systems: [StrikeSystem, GunSystem],
     entities: [
       Background(),
       FloorTiles({ rows: 15, cols: 7, position: { x: W32 * 3, y: W32 * 6.5 }, tint: 0xff6666 }), // T

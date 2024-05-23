@@ -1,4 +1,4 @@
-import { Actions, Collider, Input, Debug, Entity, Gun, Health, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDInput, loadTexture, pixiText, Wall, XY, WASDJoystick } from "@piggo-gg/core";
+import { Actions, Collider, Debug, Entity, Gun, Health, Input, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDInput, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, color?: number) => {
