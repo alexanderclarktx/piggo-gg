@@ -17,3 +17,12 @@ export const spawnSkelly = Action<{ color: number }>(({ player, world, params })
   player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
   world.addEntity(characterForPlayer);
 })
+
+export const changeTeam = Action(({ entity }) => {
+  if (!entity) return;
+
+  const { team } = entity.components;
+  if (!team) return;
+
+  team.data.team = team.data.team === 1 ? 2 : 1;
+});

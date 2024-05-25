@@ -17,7 +17,7 @@ export class Team extends Component<"team"> {
 
 export const TeamSystem: SystemBuilder<"TeamSystem"> = {
   id: "TeamSystem",
-  init: ({ world }) => {
+  init: () => {
     return {
       id: "TeamSystem",
       query: ["team"],
