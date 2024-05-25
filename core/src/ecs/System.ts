@@ -1,4 +1,4 @@
-import { Entity, World, Renderer, NetworkedComponentData } from "@piggo-gg/core";
+import { Entity, NetworkedComponentData, World } from "@piggo-gg/core";
 
 // 制 zhì (system)
 // a System is a function that runs on every tick
