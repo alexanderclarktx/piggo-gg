@@ -53,7 +53,7 @@ export const Scoreboard = (): Entity => {
 
           scoreboard.components.position.setPosition({ x: canvasWidth * 0.15, y: 100 });
 
-          const rect = pixiRect({ w: width, h: 46 * 10, x: 0, y: 0, style: { color: 0x000000, alpha: 0 } });
+          const rect = pixiRect({ w: width, h: 46 * 10, x: 0, y: 0, style: { color: 0xffffff, alpha: 0, strokeWidth: 2 } });
 
           team1 = new ScrollBox({ width: width, height: 201 });
           team2 = new ScrollBox({ width: width, height: 201 });
@@ -70,11 +70,8 @@ export const Scoreboard = (): Entity => {
 const makeInnerContainer = (entity: Entity<Team | Player>, width: number, world: World): Container => {
   const { team, player } = entity.components;
 
-  const box = (g: Graphics, outline: number): Graphics => {
-    return g.clear()
-      .roundRect(2, 2, width - 4, 46, 0)
-      .fill({ color: team.data.team === 1 ? 0x5555ff : 0xff5555, alpha: 0.7 })
-      .stroke({ color: outline, width: 2, alpha: 1 });
+  const box = (g: Graphics): Graphics => {
+    return g.clear().roundRect(2, 2, width - 4, 46, 0).fill({ color: team.data.team === 1 ? 0x5555ff : 0xff5555, alpha: 0.7 })
   }
 
   const c = new Container();
@@ -93,7 +90,7 @@ const makeInnerContainer = (entity: Entity<Team | Player>, width: number, world:
     anchor: { x: 0.5, y: 0 }
   })
 
-  const outline = box(new Graphics(), 0xffffff);
+  const outline = box(new Graphics());
 
   c.addChild(outline, titleText, scorelineText);
 
