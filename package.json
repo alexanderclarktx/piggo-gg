@@ -1,6 +1,5 @@
 {
   "name": "piggo-gg",
-  "version": "1.0.0",
   "private": true,
   "workspaces": [ "core", "games", "web", "server" ],
   "scripts": {
