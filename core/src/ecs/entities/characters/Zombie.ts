@@ -7,7 +7,7 @@ export type ZombieProps = {
   positionProps?: PositionProps
 }
 
-const colors = [0xff5533, 0xff9900, 0xccff00, 0x00ff00];
+const colors = [0xff3300, 0xff7700, 0xccee00, 0x00ff00];
 
 export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombieProps = {}) => {
   const zombie = Entity<Health>({
