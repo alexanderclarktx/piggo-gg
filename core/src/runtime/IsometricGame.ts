@@ -1,4 +1,4 @@
-import { AbilityHUD, Chat, ConnectButton, Cursor, DebugButton, FullscreenButton, GameBuilder, Joystick, Noob, Scoreboard, isMobile } from "@piggo-gg/core";
+import { AbilityHUD, Chat, ConnectButton, Cursor, DebugButton, FullscreenButton, GameBuilder, Joystick, Scoreboard, isMobile } from "@piggo-gg/core";
 
 export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): GameBuilder<T> => ({
   ...gameBuilder,
@@ -10,7 +10,7 @@ export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): Ga
 
       isMobile() ?
         game.entities.push(Joystick(), ConnectButton()) :
-        game.entities.push(AbilityHUD(), Cursor());
+        game.entities.push(AbilityHUD(["q", "e", "c", "x"], ["wall", "boost", "", ""]), Cursor());
     }
 
     return game;
