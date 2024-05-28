@@ -1,9 +1,9 @@
-import { Actions, Debug, Entity, Input, Player, Position, Renderable, Team, ToggleHidden, ToggleVisible, World, pixiRect, pixiText, setsEqual } from "@piggo-gg/core";
+import { Actions, Debug, Entity, Input, Noob, Player, Position, Renderable, Team, ToggleHidden, ToggleVisible, World, pixiRect, pixiText, setsEqual } from "@piggo-gg/core";
 import { ScrollBox } from "@pixi/ui";
 import { Container, Graphics } from "pixi.js";
 
 export const Scoreboard = (): Entity => {
-  let players: Set<{name: string, entity: Entity<Player | Team>}> = new Set();
+  let players: Set<{name: string, entity: Noob}> = new Set();
   let team1: ScrollBox;
   let team2: ScrollBox;
   let width: number;
@@ -28,7 +28,7 @@ export const Scoreboard = (): Entity => {
         interactiveChildren: true,
         zIndex: 10,
         dynamic: (_, __, ___, w) => {
-          const currentPlayerEntities = w.queryEntities(["player"]) as Entity<Team | Player>[];
+          const currentPlayerEntities = w.queryEntities(["player"]) as Noob[];
           const currentPlayers = new Set(currentPlayerEntities.map((p) => ({ name: p.id, entity: p })));
 
           // update player table

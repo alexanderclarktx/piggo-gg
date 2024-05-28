@@ -1,4 +1,4 @@
-import { Controlling, Entity, Player, SystemBuilder, Team, TeamNumber, World, invokeSpawnSkelly } from "@piggo-gg/core";
+import { Controlling, Entity, Noob, Player, SystemBuilder, Team, TeamNumber, World, invokeSpawnSkelly } from "@piggo-gg/core";
 
 const teamColors: Record<TeamNumber, number> = {
   1: 0xffffff,
@@ -28,7 +28,7 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
     return {
       id: "StrikeSystem",
       query: ["player"],
-      onTick: (players: Entity<Player | Controlling | Team>[]) => {
+      onTick: (players: Noob[]) => {
 
         spawnedPlayers.forEach((playerId) => {
           if (!world.entities[playerId]) {

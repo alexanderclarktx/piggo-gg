@@ -1,4 +1,4 @@
-import { Controlling, Entity, Player, SystemBuilder, invokeSpawnSkelly } from "@piggo-gg/core";
+import { Noob, SystemBuilder, invokeSpawnSkelly } from "@piggo-gg/core";
 
 // SkellySpawnSystem handles spawning characters for players
 export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
@@ -10,7 +10,7 @@ export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
     return {
       id: "SkellySpawnSystem",
       query: ["player"],
-      onTick: (players: Entity<Player | Controlling>[]) => {
+      onTick: (players: Noob[]) => {
 
         // cleanup
         spawnedPlayers.forEach((playerId) => {
