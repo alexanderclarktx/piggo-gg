@@ -1,4 +1,4 @@
-import { Action, Controlling, InvokedAction, Noob, Skelly } from "@piggo-gg/core";
+import { Action, Controlling, InvokedAction, Noob, Skelly, TeamColors } from "@piggo-gg/core";
 
 export const controlEntity: Action = Action(({ entity, player }) => {
   if (!entity || !player) return;
@@ -24,12 +24,23 @@ export const changeTeam = Action(({ entity, world }) => {
   const { team, controlling } = entity.components;
   if (!team) return;
 
-  team.data.team = team.data.team === 1 ? 2 : 1;
+  // update player team
+  team.switchTeam();
 
   if (controlling) {
     const character = world.entities[controlling.data.entityId];
-    if (character && character.components.team) {
-      character.components.team.data.team = team.data.team;
+    if (!character) return;
+
+    const { team, renderable } = character.components;
+
+    // update character team
+    if (team) team.switchTeam();
+
+    // update the color
+    if (team && renderable) {
+      console.log("changing color to", TeamColors[team.data.team]);
+      renderable.prepareAnimations(TeamColors[team.data.team])
+      // renderable.animationColor = TeamColors[team.data.team];
     }
   }
 });

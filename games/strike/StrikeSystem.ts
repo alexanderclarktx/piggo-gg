@@ -1,9 +1,4 @@
-import { Controlling, Entity, Noob, Player, SystemBuilder, Team, TeamNumber, World, invokeSpawnSkelly } from "@piggo-gg/core";
-
-const teamColors: Record<TeamNumber, number> = {
-  1: 0xffffff,
-  2: 0x00ffff
-}
+import { Noob, SystemBuilder, Team, TeamColors, World, invokeSpawnSkelly } from "@piggo-gg/core";
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over";
 
@@ -39,23 +34,19 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
         players.forEach((player) => {
 
+          const { team, controlling } = player.components;
+
           // not controlling a character
-          if (!player.components.controlling.data.entityId) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
+          if (!controlling.data.entityId) {
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team]));
             spawnedPlayers.add(player.id);
           }
 
           // new player
           if (!spawnedPlayers.has(player.id)) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team]));
             spawnedPlayers.add(player.id);
           }
-
-          if (!player.components.team) {
-            player.components.team = new Team({ team: 1 });
-          }
-
-          const team = player.components.team.data.team as number;
         });
       }
     }
