@@ -8,11 +8,11 @@ export const Boost = Action<{ mouse: XY }>(({ entity }) => {
   if (!effects) return;
 
   effects.addEffect("boost", BoostEffect(entity.components.position.data.speed));
-}, 120);
+}, 200);
 
 
 const BoostEffect = (originalSpeed: number): Effect => ({
-  duration: 40,
+  duration: 60,
   onStart: (entity) => {
     const { position } = entity.components;
     if (!position) return;

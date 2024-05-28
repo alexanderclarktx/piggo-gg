@@ -14,10 +14,6 @@ export class Effects extends Component<"effects"> {
 
   effects: Record<string, EffectWithCd> = {};
 
-  constructor() {
-    super();
-  }
-
   addEffect(name: string, effect: Omit<Effect, "cdLeft">) {
     this.effects[name] = {
       ...effect,

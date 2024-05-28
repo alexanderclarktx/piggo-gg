@@ -17,6 +17,7 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
     components: {
       position: new Position({ x: 0, y: 0, screenFixed: true }),
       renderable: new Renderable({
+        zIndex: 10,
         setup: async (renderable, renderer) => {
           const canvasWidth = renderer.props.canvas.width;
           abilityHud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
@@ -33,7 +34,7 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
           const label3 = pixiText({ text: labels[2], pos: { x: 5, y: 11 }, style: { fontSize: 16 } });
           const label4 = pixiText({ text: labels[3], pos: { x: 80, y: 11 }, style: { fontSize: 16 } });
 
-          renderable.c.addChild(square1, square2, square3, square4, key1, key2, key3, key4, label1, label2);
+          renderable.c.addChild(square1, square2, square3, square4, key1, key2, key3, key4, label1, label2, label3, label4);
         },
         dynamic: (_, __, ___, w) => {
           const playerEntity = w.client?.playerEntity;
@@ -42,13 +43,20 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
           const controlledEntity = w.entities[playerEntity.components.controlling?.data.entityId ?? -1];
           if (!controlledEntity) return;
 
-          const ability1 = controlledEntity.components.actions?.actionMap[labels[0]];
-          if (!ability1 || !ability1.cdLeft || !ability1.cooldown) return;
+          labels.forEach((label, i) => {
+            const ability = controlledEntity.components.actions?.actionMap[label];
+            if (!ability) return;
 
-          const qCooldownRatio = ability1.cdLeft / ability1.cooldown;
-          square1.tint = (255 << 16) + (255 << 8) + (1 - qCooldownRatio) * 255;
-        },
-        zIndex: 10
+            const square = [square1, square2, square3, square4][i];
+            if (!ability.cdLeft || !ability.cooldown) {
+              square.alpha = 1;
+              return;
+            }
+
+            const cooldownRatio = ability.cdLeft / ability.cooldown;
+            square.alpha = 1 - 0.7 * Math.sqrt(cooldownRatio);
+          });
+        }
       })
     }
   });
