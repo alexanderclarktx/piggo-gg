@@ -29,4 +29,4 @@ export const Wall = Action<{ mouse: XY }>(({ world, params, entity }) => {
   ].map(Math.round);
 
   world.addEntity(LineWall({ points: coords, visible: true, health: 75, shootable: true }));
-}, 50);
+}, 100);

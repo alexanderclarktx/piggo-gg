@@ -1,4 +1,4 @@
-import { Actions, Collider, Debug, Entity, Gun, Health, Input, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDInput, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
+import { Actions, Boost, Collider, Debug, Effects, Entity, Gun, Health, Input, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDInput, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, color?: number) => {
@@ -14,17 +14,19 @@ export const Skelly = (id: string, color?: number) => {
       input: new Input({
         press: {
           ...WASDInput.press,
-          "q": ({ mouse, world }) => ({ action: "Wall", playerId: world.client?.playerId, params: { mouse } }),
-          "e": ({ mouse, world }) => ({ action: "Boost", playerId: world.client?.playerId, params: { mouse } }),
-          "mb1": ({ mouse, world }) => ({ action: "Shoot", playerId: world.client?.playerId, params: { mouse, id: Math.round(Math.random() * 10000) } }),
+          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId, params: { mouse } }),
+          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId, params: { mouse } }),
+          "mb1": ({ mouse, world }) => ({ action: "shoot", playerId: world.client?.playerId, params: { mouse, id: Math.round(Math.random() * 10000) } }),
         },
         joystick: WASDJoystick
       }),
       actions: new Actions<{}>({
         ...WASDActionMap,
-        Shoot,
-        Wall
+        "shoot": Shoot,
+        "wall": Wall,
+        "boost": Boost
       }),
+      effects: new Effects(),
       renderable: new Renderable({
         anchor: { x: 0.5, y: 0.7 },
         scale: 2,
