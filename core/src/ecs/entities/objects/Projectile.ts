@@ -4,9 +4,10 @@ export type ProjectileProps = {
   id: string
   radius: number
   pos?: { x: number, y: number, vx: number, vy: number }
+  onHit?: (e2: Entity<Position | Collider>, world: World) => void
 }
 
-export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
+export const Projectile = ({ radius, pos, id, onHit }: ProjectileProps) => {
   const projectile = Entity({
     id,
     components: {
@@ -18,16 +19,11 @@ export const Projectile = ({ radius, pos, id }: ProjectileProps) => {
         length: radius ?? 8,
         width: radius ?? 8,
         ccd: true,
-        sensor: (e2: Entity<Position | Collider>, world: World) => {
-          if (e2.components.collider.shootable) {
-            if (e2.components.health) {
-              const { health } = e2.components;
-              if (health) {
-                health.data.health -= 25; // TODO configurable
-              }
-            }
-            world.removeEntity(projectile.id);
-          }
+        sensor: onHit ? onHit : (e2: Entity<Position | Collider>, world: World) => {
+          const { collider, health } = e2.components;
+
+          if (collider.shootable && health) health.data.health -= 25;
+          world.removeEntity(projectile.id);
         }
       }),
       renderable: new Renderable({
