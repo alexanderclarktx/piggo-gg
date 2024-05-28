@@ -10,7 +10,7 @@ export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): Ga
 
       isMobile() ?
         game.entities.push(Joystick(), ConnectButton()) :
-        game.entities.push(AbilityHUD(["q", "e", "c", "x"], ["wall", "boost", "", ""]), Cursor());
+        game.entities.push(AbilityHUD(["Q", "E", "C", "X"], ["wall", "boost", "", ""]), Cursor());
     }
 
     return game;
