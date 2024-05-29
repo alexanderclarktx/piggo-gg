@@ -1,8 +1,7 @@
 import {
   ActionSystem, ClickableSystem, CommandSystem,
   ControlSystem, CooldownSystem, DamageSystem,
-  DebugCommand,
-  DebugSystem, EffectsSystem, ExpiresSystem, GameCommand, InputSystem,
+  DebugCommand, DebugSystem, EffectsSystem, ExpiresSystem, GameCommand, InputSystem,
   NPCSystem, PhysicsSystem, RenderSystem, SpawnCommand,
   World, WorldBuilder
 } from "@piggo-gg/core";
