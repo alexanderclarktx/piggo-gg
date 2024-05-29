@@ -9,9 +9,10 @@ export type ProjectileProps = {
 
 export const onHitTeam = (allyTeam: TeamNumber) => (e2: Entity<Position | Collider>) => {
   const { collider, health, team } = e2.components;
-  if (!team) return;
-  if (collider.shootable && health && (team.data.team !== allyTeam)) {
-    health.data.health -= 25;
+  if (health && collider.shootable) {
+    if (!team || (team.data.team !== allyTeam)) {
+      health.data.health -= 25;
+    }
   }
 }
 
