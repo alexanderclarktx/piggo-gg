@@ -1,6 +1,7 @@
 import {
   ActionSystem, ClickableSystem, CommandSystem,
   ControlSystem, CooldownSystem, DamageSystem,
+  DebugCommand,
   DebugSystem, EffectsSystem, ExpiresSystem, GameCommand, InputSystem,
   NPCSystem, PhysicsSystem, RenderSystem, SpawnCommand,
   World, WorldBuilder
@@ -10,7 +11,7 @@ export const IsometricWorld: WorldBuilder = (props) => {
 
   const world = World({
     ...props,
-    commands: [GameCommand, SpawnCommand]
+    commands: [GameCommand, SpawnCommand, DebugCommand]
   });
 
   world.addSystemBuilders([

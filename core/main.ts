@@ -57,6 +57,7 @@ export * from "./src/ecs/renderables/DebugBounds";
 export * from "./src/ecs/renderables/HealthBar";
 export * from "./src/ecs/entities/ui/Scoreboard";
 export * from "./src/ecs/renderables/TextBox";
+export * from "./src/ecs/commands/DebugCommand";
 export * from "./src/ecs/commands/GameCommand";
 export * from "./src/ecs/commands/SpawnCommand";
 export * from "./src/ecs/components/Actions";

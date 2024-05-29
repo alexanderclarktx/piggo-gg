@@ -9,19 +9,7 @@ export type FloorTilesProps = {
   tint?: number
 }
 
-const width = 64;
-const height = 32;
 let index = 0;
-
-const square = new Graphics()
-  .transform(new Matrix(1, 0, 0, 0.5, 0, 0))
-  .moveTo(width / 2, 0)
-  .lineTo(width, width / 2)
-  .lineTo(width / 2, width)
-  .lineTo(0, width / 2)
-  .lineTo(width / 2, 0)
-  .fill({ color: 0x7777aa, alpha: 1 })
-  .stroke({ width: 1, color: 0x000000 });
 
 export const FloorTiles = ({ tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => Entity({
   id: id,
@@ -31,16 +19,20 @@ export const FloorTiles = ({ tint, rows, cols, position = { x: 0, y: 0 }, id = `
       zIndex: 0 + index * 0.01,
       setChildren: async (r: Renderer) => {
 
-        // create a render texture
-        const renderTexture = RenderTexture.create({
-          width,
-          height,
-          resolution: window.devicePixelRatio
-        });
+        // draw the square
+        const width = 64;
+        const height = 32;
+        const square = new Graphics()
+          .transform(new Matrix(1, 0, 0, 1, 0, 16))
+          .poly([0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2])
+          .fill({ color: 0x7777aa, alpha: 1 })
+          .stroke({ width: 1, color: 0x000000 });
 
-        // // render the tile to the render texture
+        // create a render texture
+        const renderTexture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
         r.app.renderer.render({ container: square, target: renderTexture });
 
+        // create the tiles
         let tiles: Renderable[] = [];
         for (let x = 0; x < rows; x++) {
           for (let y = 0; y < cols; y++) {
