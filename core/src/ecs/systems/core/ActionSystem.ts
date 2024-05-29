@@ -1,4 +1,4 @@
-import { Controlling, Entity, Player, SystemBuilder } from "@piggo-gg/core";
+import { Noob, SystemBuilder } from "@piggo-gg/core";
 
 export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   id: "ActionSystem",
@@ -16,7 +16,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           actions.forEach((invokedAction) => {
             const command = world.commands[invokedAction.action];
 
-            const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Entity<Player | Controlling> : undefined;
+            const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Noob : undefined;
             if (command) command.invoke({ params: invokedAction.params ?? {}, world, player });
           });
         }
@@ -45,7 +45,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           }
 
           // execute the action
-          const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Entity<Player | Controlling> : undefined;
+          const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Noob : undefined;
           action.invoke({ params: invokedAction.params ?? {}, entity, world, player });
         });
       });

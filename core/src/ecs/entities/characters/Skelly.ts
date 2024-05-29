@@ -1,15 +1,16 @@
-import { Actions, Boost, Collider, Debug, Effects, Entity, Gun, Health, Input, Networked, Pistol, Position, Renderable, Shoot, WASDActionMap, WASDInput, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
+import { Actions, Boost, Collider, Debug, Effects, Entity, Gun, Health, Input, Networked, Pistol, Position, Renderable, Shoot, Team, TeamNumber, WASDActionMap, WASDInput, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
-export const Skelly = (id: string, color?: number) => {
+export const Skelly = (id: string, team: TeamNumber, color?: number) => {
   const skelly = Entity<Position | Gun>({
     id: id,
     components: {
       debug: new Debug(),
       position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 130 }),
       networked: new Networked({ isNetworked: true }),
-      collider: new Collider({ shape: "ball", radius: 8, mass: 600 }),
+      collider: new Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: new Health({ health: 200, maxHealth: 200 }),
+      team: new Team({ team }),
       gun: Pistol(),
       input: new Input({
         press: {
@@ -52,7 +53,7 @@ export const Skelly = (id: string, color?: number) => {
             text: id.split("-")[1],
             style: { fill: 0xffff00, fontSize: 13 },
             anchor: { x: 0.48, y: 0 },
-            pos: { x: 0, y: -40 }
+            pos: { x: 0, y: -45 }
           });
 
           r.c.addChild(nametag);

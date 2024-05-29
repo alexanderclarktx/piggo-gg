@@ -1,7 +1,7 @@
 import {
-  Controlling, DelaySyncer, Entity, LobbyCreate, LobbyCreateRequest,
+  DelaySyncer, LobbyCreate, LobbyCreateRequest,
   LobbyJoin, LobbyJoinRequest, NetClientSystem, NetMessageTypes,
-  Noob, Player, RequestData, RequestTypes, Syncer, World, genPlayerId
+  Noob, RequestData, RequestTypes, Syncer, World, genPlayerId
 } from "@piggo-gg/core";
 
 const servers = {
@@ -15,7 +15,7 @@ type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"])
 
 export type Client = {
   playerId: string
-  playerEntity: Entity<Player | Controlling>
+  playerEntity: Noob
   ms: number
   ws: WebSocket
   lobbyId: string | undefined

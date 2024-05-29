@@ -1,4 +1,4 @@
-import { Action, ActionMap, Controlling, Entity, Player, Position, closestEntity } from "@piggo-gg/core";
+import { Action, ActionMap, Entity, Noob, Position, closestEntity } from "@piggo-gg/core";
 
 export type ZombieMovementActions = "chase";
 
@@ -10,7 +10,7 @@ export const ZombieMovement: ActionMap<ZombieMovementActions> = {
     if (!position || !renderable) return;
 
     // get all the player controlled entities
-    const players = world.queryEntities(["player"]) as Entity<Player | Controlling>[];
+    const players = world.queryEntities(["player"]) as Noob[];
     let playerControlledEntities: Entity<Position>[] = [];
     players.forEach((player) => {
       const controlledEntities = world.entities[player.components.controlling.data.entityId] as Entity<Position>;
