@@ -18,7 +18,7 @@ export const spawnSkelly = Action<{ color: number }>(({ player, world, params })
   world.addEntity(characterForPlayer);
 })
 
-export const changeTeam = Action(({ entity, world }) => {
+export const switchTeam = Action(({ entity, world }) => {
   if (!entity) return;
 
   const { team, controlling } = entity.components;
@@ -33,14 +33,10 @@ export const changeTeam = Action(({ entity, world }) => {
 
     const { team, renderable } = character.components;
 
-    // update character team
     if (team) team.switchTeam();
 
-    // update the color
     if (team && renderable) {
-      console.log("changing color to", TeamColors[team.data.team]);
       renderable.prepareAnimations(TeamColors[team.data.team])
-      // renderable.animationColor = TeamColors[team.data.team];
     }
   }
 });

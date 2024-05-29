@@ -95,7 +95,7 @@ const makeInnerContainer = (entity: Entity<Team | Player>, width: number, world:
   c.addChild(outline, titleText, scorelineText);
 
   c.onpointerdown = () => {
-    world.actionBuffer.push(world.tick + 2, player.name, { action: "changeTeam", playerId: world.client?.playerId });
+    world.actionBuffer.push(world.tick + 2, player.name, { action: "switchTeam", playerId: world.client?.playerId });
   }
 
   return c;
