@@ -20,18 +20,17 @@ export class Renderer {
   }
 
   init = async () => {
+    const { canvas } = this.props;
 
     // create the pixi.js application
     await this.app.init({
-      canvas: this.props.canvas,
-      resolution: 1, // TODO configurable
+      canvas,
+      resolution: 1,
+      antialias: true,
       autoDensity: true,
       backgroundColor: 0x000000,
       width: this.props.width ?? 800,
-      height: this.props.height ?? 600,
-      antialias: true,
-      hello: true,
-      roundPixels: false
+      height: this.props.height ?? 600
     });
 
     // set up the camera
@@ -48,10 +47,10 @@ export class Renderer {
     document.addEventListener("fullscreenchange", this.handleResize);
 
     // prevent right-click
-    this.props.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
+    canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
     // handle zoom
-    this.props.canvas.addEventListener("wheel", (event) => {
+    canvas.addEventListener("wheel", (event) => {
       this.camera.rescaleDelta(-event.deltaY / 1000);
     });
   }

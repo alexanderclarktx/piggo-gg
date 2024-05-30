@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection, XY } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, XY } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -95,7 +95,7 @@ export const RenderSystem = ClientSystemBuilder({
 
           // set buffered ortho animation
           if (!renderable.bufferedAnimation) {
-            renderable.bufferedAnimation = orthoToDirection(position.ortho);
+            renderable.bufferedAnimation = position.orientation;
           }
 
           // handle buffered animations
@@ -181,10 +181,10 @@ export const RenderSystem = ClientSystemBuilder({
             renderer.camera.moveTo({ x, y });
           }
 
-          const dx = vx * elapsedTime / 1000;
-          const dy = vy * elapsedTime / 1000;
+          let dx = vx * elapsedTime / 1000;
+          let dy = vy * elapsedTime / 1000;
 
-          if (((world.tick - position.lastCollided) > 4) && (vx || vy)) {
+          if (((world.tick - position.lastCollided) > 4) && (vx || vy) && renderable.interpolate) {
             renderable.c.position.set(
               x + dx + renderable.position.x,
               y + dy + renderable.position.y

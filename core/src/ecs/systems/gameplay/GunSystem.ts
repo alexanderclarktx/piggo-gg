@@ -1,4 +1,4 @@
-import { Entity, Gun, Position, Renderable, SystemBuilder, loadTexture, mouse } from "@piggo-gg/core";
+import { Entity, Gun, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
 import { AnimatedSprite } from "pixi.js";
 
@@ -27,14 +27,12 @@ export const GunSystem: SystemBuilder<"gun"> = ({
           scale: 2.5,
           anchor: { x: 0.5, y: 0.5 },
           position: { x: 20, y: 0 },
+          interpolate: true,
           dynamic: (_, r, e: Entity<Gun | Position>) => {
-            const { position } = e.components;
+            const { pointing } = e.components.position.data;
 
-            const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x);
-            const ortho = Math.round((angle + Math.PI) / (Math.PI / 4)) % 8;
-
-            r.position = pz[ortho];
-            r.bufferedAnimation = ortho.toString();
+            r.position = pz[pointing];
+            r.bufferedAnimation = pointing.toString();
           },
           setup: async (r: Renderable) => {
             const textures = await loadTexture("pistol.json");

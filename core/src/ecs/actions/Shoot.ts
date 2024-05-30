@@ -1,5 +1,14 @@
 import { Action, Projectile, XY, onHitTeam } from "@piggo-gg/core";
 
+export const Point = Action<{ pointing: number }>(({ params, entity }) => {
+  if (!entity) return;
+
+  const { position } = entity.components;
+  if (!position) return;
+
+  position.data.pointing = params.pointing;
+});
+
 export const Shoot = Action<{ id: number, mouse: XY }>(({ world, params, entity }) => {
 
   if (!entity) return;

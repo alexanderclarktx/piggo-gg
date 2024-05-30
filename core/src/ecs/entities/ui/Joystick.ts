@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, XY } from "@piggo-gg/core";
+import { Entity, JoystickHandler, Position, Renderable, XY } from "@piggo-gg/core";
 import { Container, FederatedPointerEvent, Graphics, Point, Sprite } from "pixi.js";
 
 export const currentJoystickPosition = { angle: 0, power: 0, active: false }
@@ -32,6 +32,36 @@ export const Joystick = (): Entity => {
     }
   });
   return joystick;
+}
+
+export const DefaultJoystickHandler: JoystickHandler = ({ entity, world }) => ({
+  action: "move", playerId: world.client?.playerId, params: handleJoystick(entity)
+});
+
+const handleJoystick = (entity: Entity<Position>): XY => {
+  const { position } = entity.components;
+  const { power, angle } = currentJoystickPosition;
+
+  // make the joystick feel stiff
+  const powerToApply = Math.min(1, power * 2);
+
+  // convert the angle to radians
+  const angleRad = angle * Math.PI / 180;
+
+  // x,y components of the vector
+  let cosAngle = Math.cos(angleRad);
+  let sinAngle = -Math.sin(angleRad);
+
+  // Adjusting for consistent speed in isometric projection
+  const magnitude = Math.sqrt(cosAngle * cosAngle + sinAngle * sinAngle);
+  cosAngle /= magnitude;
+  sinAngle /= magnitude;
+
+  // Apply the power to the vector
+  const x = cosAngle * powerToApply * position.data.speed;
+  const y = sinAngle * powerToApply * position.data.speed;
+
+  return { x, y };
 }
 
 type Direction = "left" | "top" | "bottom" | "right" | "top_left" | "top_right" | "bottom_left" | "bottom_right";

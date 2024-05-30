@@ -1,4 +1,9 @@
-import { Actions, Boost, Collider, Debug, Effects, Entity, Gun, Health, Input, Networked, Pistol, Position, Renderable, Shoot, Team, TeamNumber, WASDActionMap, WASDInput, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
+import {
+  Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health,
+  Input, Move, Networked, Pistol, Position, Renderable, Shoot, Team,
+  TeamNumber, WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, pixiText,
+  Point
+} from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, team: TeamNumber, color?: number) => {
@@ -14,24 +19,28 @@ export const Skelly = (id: string, team: TeamNumber, color?: number) => {
       gun: Pistol(),
       input: new Input({
         press: {
-          ...WASDInput.press,
-          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId, params: { mouse } }),
-          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId, params: { mouse } }),
+          ...WASDInputMap.press,
+          "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId, params: mouse }),
           "mb1": ({ mouse, world }) => ({ action: "shoot", playerId: world.client?.playerId, params: { mouse, id: Math.round(Math.random() * 10000) } }),
+          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId, params: mouse }),
+          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId, params: mouse })
         },
-        joystick: WASDJoystick
+        joystick: DefaultJoystickHandler
       }),
       actions: new Actions<{}>({
-        ...WASDActionMap,
+        "boost": Boost,
+        "head": Head,
+        "move": Move,
         "shoot": Shoot,
         "wall": Wall,
-        "boost": Boost
+        "point": Point
       }),
       effects: new Effects(),
       renderable: new Renderable({
         anchor: { x: 0.5, y: 0.7 },
         scale: 2,
         zIndex: 3,
+        interpolate: true,
         scaleMode: "nearest",
         animationColor: color ?? 0xffffff,
         setup: async (r) => {
