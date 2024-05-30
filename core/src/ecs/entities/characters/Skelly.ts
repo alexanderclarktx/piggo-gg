@@ -40,6 +40,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number) => {
         anchor: { x: 0.5, y: 0.7 },
         scale: 2,
         zIndex: 3,
+        interpolate: true,
         scaleMode: "nearest",
         animationColor: color ?? 0xffffff,
         setup: async (r) => {

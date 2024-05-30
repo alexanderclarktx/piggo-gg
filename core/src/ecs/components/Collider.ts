@@ -26,6 +26,7 @@ export class Collider extends Component<"collider"> {
   colliderDesc: ColliderDesc;
   rapierCollider: RapierCollider;
   body: RigidBody;
+  frictionAir: number;
   priority: number;
   shootable: boolean;
 
@@ -64,6 +65,7 @@ export class Collider extends Component<"collider"> {
     if (restitution) this.colliderDesc.setRestitution(restitution);
     if (rotation) this.colliderDesc.setRotation(rotation);
 
-    this.bodyDesc.setLinearDamping(frictionAir ?? 0);
+    this.frictionAir = frictionAir ?? 0;
+    this.bodyDesc.setLinearDamping(this.frictionAir);
   }
 }

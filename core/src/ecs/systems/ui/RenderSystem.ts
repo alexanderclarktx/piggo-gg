@@ -181,10 +181,10 @@ export const RenderSystem = ClientSystemBuilder({
             renderer.camera.moveTo({ x, y });
           }
 
-          const dx = vx * elapsedTime / 1000;
-          const dy = vy * elapsedTime / 1000;
+          let dx = vx * elapsedTime / 1000;
+          let dy = vy * elapsedTime / 1000;
 
-          if (((world.tick - position.lastCollided) > 4) && (vx || vy)) {
+          if (((world.tick - position.lastCollided) > 4) && (vx || vy) && renderable.interpolate) {
             renderable.c.position.set(
               x + dx + renderable.position.x,
               y + dy + renderable.position.y

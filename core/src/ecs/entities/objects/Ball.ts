@@ -28,6 +28,7 @@ export const Ball = ({ position, id }: BallProps) => Entity({
     renderable: new Renderable({
       zIndex: 3,
       rotates: true,
+      interpolate: true,
       setup: async (r: Renderable) => {
 
         const texture = (await loadTexture("ball.json"))["ball"];

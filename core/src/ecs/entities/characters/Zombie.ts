@@ -27,6 +27,7 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
       renderable: new Renderable({
         scale: 2,
         zIndex: 3,
+        interpolate: true,
         color: color ?? 0x00ff00,
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },

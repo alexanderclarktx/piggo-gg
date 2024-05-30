@@ -27,6 +27,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
           scale: 2.5,
           anchor: { x: 0.5, y: 0.5 },
           position: { x: 20, y: 0 },
+          interpolate: true,
           dynamic: (_, r, e: Entity<Gun | Position>) => {
             const { pointing } = e.components.position.data;
 

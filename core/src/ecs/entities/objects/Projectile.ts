@@ -40,6 +40,7 @@ export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: Projectile
       }),
       renderable: new Renderable({
         zIndex: 3,
+        interpolate: true,
         setContainer: async () => {
           return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color: 0xffff00, alpha: 1 } });
         }
