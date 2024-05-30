@@ -5,6 +5,7 @@ export type Camera = {
   c: Container
   add: (r: Renderable) => void
   rescaleDelta: (delta: number) => void
+  moveBy: ({ x, y }: XY) => void
   moveTo: ({ x, y }: XY) => void
   toWorldCoords: ({ x, y }: XY) => XY
 }
@@ -37,6 +38,10 @@ export const Camera = (renderer: Renderer): Camera => {
     rescaleDelta: (delta: number) => {
       scale += delta;
       rescale();
+    },
+    moveBy: ({ x, y }: XY) => {
+      c.x += x;
+      c.y += y;
     },
     moveTo: ({ x, y }: XY) => {
       c.x = renderer.app.screen.width / 2 - x * scale;

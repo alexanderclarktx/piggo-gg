@@ -1,4 +1,4 @@
-import { Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input, Move, Networked, Pistol, Position, Renderable, Shoot, Team, TeamNumber, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
+import { Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input, Move, Networked, Pistol, Position, Renderable, Shoot, Team, TeamNumber, WASDInputMap, WASDJoystick, Wall, loadTexture, pixiText } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, team: TeamNumber, color?: number) => {
@@ -14,14 +14,11 @@ export const Skelly = (id: string, team: TeamNumber, color?: number) => {
       gun: Pistol(),
       input: new Input({
         press: {
-          "mb2": ({ mouse, entity, world }) => {
-            const { position, renderable } = entity.components;
-            if (!position || !renderable) return null;
-            return { action: "head", playerId: world.client?.playerId, params: { x: mouse.x, y: mouse.y } };
-          },
+          ...WASDInputMap.press,
+          "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId, params: mouse }),
           "mb1": ({ mouse, world }) => ({ action: "shoot", playerId: world.client?.playerId, params: { mouse, id: Math.round(Math.random() * 10000) } }),
-          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId, params: { mouse } }),
-          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId, params: { mouse } })
+          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId, params: mouse }),
+          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId, params: mouse })
         },
         joystick: WASDJoystick
       }),

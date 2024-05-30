@@ -178,7 +178,7 @@ export const RenderSystem = ClientSystemBuilder({
           const { x, y, vx, vy } = position.data;
 
           if (centeredEntity && entity.id === centeredEntity.id) {
-            // renderer.camera.moveTo({ x, y });
+            renderer.camera.moveTo({ x, y });
           }
 
           const dx = vx * elapsedTime / 1000;
@@ -191,7 +191,7 @@ export const RenderSystem = ClientSystemBuilder({
             );
 
             if (centeredEntity && entity.id === centeredEntity.id) {
-              // renderer.camera.moveTo({ x: x + dx, y: y + dy });
+              renderer.camera.moveTo({ x: x + dx, y: y + dy });
             }
           }
         });
