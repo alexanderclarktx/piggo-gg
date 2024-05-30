@@ -34,7 +34,7 @@ export const Joystick = (): Entity => {
   return joystick;
 }
 
-export const WASDJoystick: JoystickHandler = ({ entity, world }) => ({
+export const DefaultJoystickHandler: JoystickHandler = ({ entity, world }) => ({
   action: "move", playerId: world.client?.playerId, params: handleJoystick(entity)
 });
 

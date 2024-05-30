@@ -1,4 +1,4 @@
-import { Component, XY } from "@piggo-gg/core";
+import { Component, XY, orthoToDirection } from "@piggo-gg/core";
 
 export type PositionProps = {
   x?: number
@@ -14,14 +14,15 @@ export type PositionProps = {
 export class Position extends Component<"position"> {
   type: "position" = "position";
 
-  ortho = 0;
-  lastCollided: number = 0;
+  orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul" = "r";
+  lastCollided = 0;
 
   override data = {
     x: 0, y: 0,
     vx: 0, vy: 0,
     speed: 0,
     rotation: 0,
+    pointing: 0,
     headingX: NaN,
     headingY: NaN,
     velocityResets: 0
@@ -50,7 +51,7 @@ export class Position extends Component<"position"> {
     this.data.vx = Math.round(x * 100) / 100;
     this.data.vy = Math.round(y * 100) / 100;
 
-    if (x || y) this.ortho = Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8;
+    if (x || y) this.orientation = orthoToDirection(Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8);
 
     return this;
   }

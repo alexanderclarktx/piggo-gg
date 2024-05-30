@@ -1,11 +1,11 @@
 import { Action, LineWall, XY } from "@piggo-gg/core";
 
-export const Wall = Action<{ mouse: XY }>(({ world, params, entity }) => {
+export const Wall = Action<XY>(({ world, params, entity }) => {
   if (!entity || !entity.components.position) return;
 
   const width = 50;
 
-  const { x: mouseX, y: mouseY } = params.mouse;
+  const { x: mouseX, y: mouseY } = params;
   const { x, y } = entity.components.position.data;
 
   // distance to mouse

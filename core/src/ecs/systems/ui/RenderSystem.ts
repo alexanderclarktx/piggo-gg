@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, orthoToDirection, XY } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, XY } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -95,7 +95,7 @@ export const RenderSystem = ClientSystemBuilder({
 
           // set buffered ortho animation
           if (!renderable.bufferedAnimation) {
-            renderable.bufferedAnimation = orthoToDirection(position.ortho);
+            renderable.bufferedAnimation = position.orientation;
           }
 
           // handle buffered animations

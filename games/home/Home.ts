@@ -5,9 +5,9 @@ import {
 } from "@piggo-gg/core";
 
 export const Home = IsometricGame({
-  id: "hub",
+  id: "home",
   init: () => ({
-    id: "hub",
+    id: "home",
     entities: [
       Background({ img: "stars.png" }),
 

@@ -1,7 +1,7 @@
 import { Action, Effect, XY } from "@piggo-gg/core";
 
 // increases speed temporarily
-export const Boost = Action<{ mouse: XY }>(({ entity }) => {
+export const Boost = Action(({ entity }) => {
   if (!entity || !entity.components.position) return;
 
   const { effects } = entity.components;

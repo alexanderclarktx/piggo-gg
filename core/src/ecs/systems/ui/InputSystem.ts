@@ -123,7 +123,15 @@ export const InputSystem = ClientSystemBuilder({
       let buffer = bufferedDown.copy();
 
       // check for actions
-      const { input, actions } = entity.components;
+      const { input, actions, position } = entity.components;
+
+      // update Position.pointing based on mouse
+      const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x);
+      const pointing = Math.round((angle + Math.PI) / (Math.PI / 4)) % 8;
+
+      world.actionBuffer.push(world.tick + 1, entity.id,
+        { action: "point", playerId: world.client?.playerId, params: { pointing } }
+      );
 
       // handle joystick input
       if (currentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
