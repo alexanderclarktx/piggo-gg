@@ -1,6 +1,6 @@
 import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition, XY } from "@piggo-gg/core";
 
-// TODO these are global dependencies
+// TODO these are global
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
 export var mouse = { x: 0, y: 0 };
@@ -30,8 +30,9 @@ export const InputSystem = ClientSystemBuilder({
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|;:'\",./<>?`~ ");
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"]);
 
-    let bufferedDown = KeyBuffer();
-    let bufferedUp = KeyBuffer();
+    const bufferedDown = KeyBuffer();
+    const bufferedUp = KeyBuffer();
+
     let backspaceOn = false;
     let joystickOn = false;
     let mouseEvent = { x: 0, y: 0 };
@@ -213,6 +214,13 @@ export const InputSystem = ClientSystemBuilder({
       onTick: (enitities: Entity<Input | Actions>[]) => {
         // update mouse position, the camera might have moved
         if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent);
+
+        // clear buffer if the window is not focused
+        if (!document.hasFocus()) {
+          bufferedDown.clear();
+          bufferedUp.clear();
+          return;
+        }
 
         const playerEntity = world.client?.playerEntity;
         if (!playerEntity) return;
