@@ -7,9 +7,6 @@ export type ButtonProps = RenderableProps & {
 }
 
 export const Button = <T extends ButtonProps = ButtonProps>(props: T): Renderable => {
-  // const outline = props.outline ?? new Graphics();
-  // const shadow = props.shadow ?? new Graphics();
-
   const dims = props.dims;
   let text: Text;
 

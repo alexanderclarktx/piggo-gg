@@ -55,7 +55,6 @@ export const ClickableSystem = ClientSystemBuilder({
 
             const clicked = checkBounds(renderer, position, clickable, click, clickWorld);
             if (clicked) {
-              console.log("click", entity.id);
               clickableClickedThisFrame = true;
               const invocation = clickable.click({ world });
 
