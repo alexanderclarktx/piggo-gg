@@ -1,24 +1,32 @@
 import { Collider, Entity, Expires, Networked, Position, Renderable, TeamNumber, World, pixiCircle } from "@piggo-gg/core";
 
+export type OnHitHandler = (e2: Entity<Position | Collider>, world: World) => boolean
+
 export type ProjectileProps = {
   id: string
   radius: number
   pos?: { x: number, y: number, vx: number, vy: number }
-  onHit?: (e2: Entity<Position | Collider>, world: World) => void
+  onHit?: OnHitHandler
 }
 
-export const onHitTeam = (allyTeam: TeamNumber) => (e2: Entity<Position | Collider>) => {
+export const onHitTeam = (allyTeam: TeamNumber): OnHitHandler => (e2: Entity<Position | Collider>) => {
   const { collider, health, team } = e2.components;
   if (health && collider.shootable) {
     if (!team || (team.data.team !== allyTeam)) {
       health.data.health -= 25;
+      return true;
     }
   }
+  return false;
 }
 
 const onHitDefault = (e2: Entity<Position | Collider>) => {
   const { collider, health } = e2.components;
-  if (collider.shootable && health) health.data.health -= 25;
+  if (collider.shootable && health) {
+    health.data.health -= 25;
+    return true;
+  }
+  return false;
 }
 
 export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: ProjectileProps) => {
@@ -34,8 +42,7 @@ export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: Projectile
         width: radius ?? 8,
         ccd: true,
         sensor: (e2: Entity<Position | Collider>, world: World) => {
-          onHit(e2, world);
-          world.removeEntity(projectile.id);
+          if (onHit(e2, world)) world.removeEntity(projectile.id);
         }
       }),
       renderable: new Renderable({

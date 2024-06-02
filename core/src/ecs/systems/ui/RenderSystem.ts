@@ -1,4 +1,5 @@
 import { Entity, Position, Renderable, ClientSystemBuilder, XY } from "@piggo-gg/core";
+import { Container } from "pixi.js";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -59,6 +60,17 @@ export const RenderSystem = ClientSystemBuilder({
         // todo this is calculating difference from centered entity, not the camera
         const isFarFromCamera = ({ x, y }: XY) => {
           return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2);
+        }
+
+        if (renderer.resizedFlag) {
+          renderer.guiRenderables.forEach((renderable) => renderer.app.stage.removeChild(renderable.c));
+
+          entities.forEach((entity) => {
+            const { position, renderable } = entity.components;
+            if (position.screenFixed) renderable.rendered = false;
+          });
+
+          renderer.resizedFlag = false;
         }
 
         entities.forEach((entity) => {

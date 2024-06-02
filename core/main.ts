@@ -32,7 +32,6 @@ export * from "./src/ecs/systems/ui/HealthBarSystem";
 export * from "./src/ecs/systems/ui/InputSystem";
 export * from "./src/ecs/systems/ui/RenderSystem";
 export * from "./src/ecs/entities/buttons/ConnectButton";
-export * from "./src/ecs/entities/buttons/DebugButton";
 export * from "./src/ecs/entities/buttons/FullscreenButton";
 export * from "./src/ecs/entities/characters/Skelly";
 export * from "./src/ecs/entities/characters/Spaceship";

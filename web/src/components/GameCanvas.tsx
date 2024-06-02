@@ -19,7 +19,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
 
     if (mobile) canvas.style.border = "none";
 
-    const renderer = new Renderer({ canvas, width, height });
+    const renderer = Renderer({ canvas, width, height });
 
     renderer.init().then(() => {
       const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Home, Strike, ARAM, Soccer, Legends] });

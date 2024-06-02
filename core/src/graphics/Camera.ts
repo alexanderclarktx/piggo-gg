@@ -1,5 +1,5 @@
 import { Renderable, Renderer, XY } from "@piggo-gg/core";
-import { Container } from "pixi.js";
+import { Application, Container } from "pixi.js";
 
 export type Camera = {
   c: Container
@@ -11,7 +11,7 @@ export type Camera = {
 }
 
 // Camera handles the viewport of the game
-export const Camera = (renderer: Renderer): Camera => {
+export const Camera = (app: Application): Camera => {
 
   const renderables: Set<Renderable> = new Set();
   const c: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 });
@@ -44,8 +44,8 @@ export const Camera = (renderer: Renderer): Camera => {
       c.y += y;
     },
     moveTo: ({ x, y }: XY) => {
-      c.x = renderer.app.screen.width / 2 - x * scale;
-      c.y = renderer.app.screen.height / 2 - y * scale;
+      c.x = app.screen.width / 2 - x * scale;
+      c.y = app.screen.height / 2 - y * scale;
     },
     toWorldCoords: ({ x, y }: XY) => ({
       x: (x - c.x) / scale,

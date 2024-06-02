@@ -1,6 +1,8 @@
 import { Actions, Clickable, ClientSystemBuilder, Entity, Position, XY, checkBounds, mouse } from "@piggo-gg/core";
 import { FederatedPointerEvent } from "pixi.js";
 
+export let clickableClickedThisFrame = false;
+
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
@@ -21,6 +23,8 @@ export const ClickableSystem = ClientSystemBuilder({
       query: ["clickable", "position"],
       skipOnRollback: true,
       onTick: (entities: Entity<Clickable | Actions | Position>[]) => {
+
+        clickableClickedThisFrame = false;
 
         entities.forEach((entity) => {
           const { clickable, position } = entity.components;
@@ -51,6 +55,7 @@ export const ClickableSystem = ClientSystemBuilder({
 
             const clicked = checkBounds(renderer, position, clickable, click, clickWorld);
             if (clicked) {
+              clickableClickedThisFrame = true;
               const invocation = clickable.click({ world });
 
               if (networked && networked.isNetworked) {

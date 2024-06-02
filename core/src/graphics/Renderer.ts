@@ -7,70 +7,84 @@ export type RendererProps = {
   height?: number;
 }
 
+export type Renderer = {
+  props: RendererProps
+  app: Application
+  camera: Camera
+  guiRenderables: Renderable[]
+  resizedFlag: boolean
+  init: () => Promise<void>
+  handleResize: () => void
+  addGui: (renderable: Renderable) => void
+  addWorld: (renderable: Renderable) => void
+}
+
 // Renderer draws the game to a canvas
-export class Renderer {
-  props: RendererProps;
+export const Renderer = (props: RendererProps): Renderer => {
 
-  app: Application;
-  camera: Camera;
+  const app = new Application();
 
-  constructor(props: RendererProps) {
-    this.props = props;
-    this.app = new Application();
-  }
+  const renderer: Renderer = {
+    props: props,
+    app,
+    camera: Camera(app),
+    guiRenderables: [],
+    resizedFlag: false,
+    init: async () => {
+      const { canvas } = props;
 
-  init = async () => {
-    const { canvas } = this.props;
+      // create the pixi.js application
+      await renderer.app.init({
+        canvas,
+        resolution: 1,
+        antialias: true,
+        autoDensity: true,
+        backgroundColor: 0x000000,
+        width: renderer.props.width ?? 800,
+        height: renderer.props.height ?? 600
+      });
 
-    // create the pixi.js application
-    await this.app.init({
-      canvas,
-      resolution: 1,
-      antialias: true,
-      autoDensity: true,
-      backgroundColor: 0x000000,
-      width: this.props.width ?? 800,
-      height: this.props.height ?? 600
-    });
+      // set up the camera
+      renderer.app.stage.addChild(renderer.camera.c);
 
-    // set up the camera
-    this.camera = Camera(this);
-    this.app.stage.addChild(this.camera.c);
+      // hide the cursor
+      renderer.app.renderer.events.cursorStyles.default = "none";
 
-    // hide the cursor
-    this.app.renderer.events.cursorStyles.default = "none";
+      // handle screen resize
+      window.addEventListener("resize", renderer.handleResize);
 
-    // handle screen resize
-    window.addEventListener("resize", this.handleResize);
+      // handle fullscreen change
+      document.addEventListener("fullscreenchange", renderer.handleResize);
 
-    // handle fullscreen change
-    document.addEventListener("fullscreenchange", this.handleResize);
+      // prevent right-click
+      canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
-    // prevent right-click
-    canvas.addEventListener("contextmenu", (event) => event.preventDefault());
+      // handle zoom
+      canvas.addEventListener("wheel", (event) => {
+        renderer.camera?.rescaleDelta(-event.deltaY / 1000);
+      });
+    },
+    handleResize: () => {
+      if (document.fullscreenElement && renderer.app.renderer) {
+        renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
+      } else {
+        const computedCanvasStyle = window.getComputedStyle(renderer.props.canvas);
+        const width = Math.min(parseInt(computedCanvasStyle.width), renderer.props.width ?? 800);
+        const height = Math.min(parseInt(computedCanvasStyle.height), renderer.props.height ?? 600);
+        renderer.app.renderer.resize(width, height);
+      }
 
-    // handle zoom
-    canvas.addEventListener("wheel", (event) => {
-      this.camera.rescaleDelta(-event.deltaY / 1000);
-    });
-  }
-
-  handleResize = () => {
-    if (document.fullscreenElement && this.app.renderer) {
-      this.app.renderer.resize(window.innerWidth, window.innerHeight);
-    } else {
-      const computedCanvasStyle = window.getComputedStyle(this.props.canvas);
-      const width = Math.min(parseInt(computedCanvasStyle.width), this.props.width ?? 800);
-      const height = Math.min(parseInt(computedCanvasStyle.height), this.props.height ?? 600);
-      this.app.renderer.resize(width, height);
+      renderer.resizedFlag = true;
+    },
+    addGui: (renderable: Renderable) => {
+      if (renderable) {
+        renderer.app.stage.addChild(renderable.c);
+        renderer.guiRenderables.push(renderable);
+      }
+    },
+    addWorld: (renderable: Renderable) => {
+      if (renderable) renderer.camera?.add(renderable);
     }
   }
-
-  addGui = (renderable: Renderable) => {
-    if (renderable) this.app.stage.addChild(renderable.c);
-  }
-
-  addWorld = (renderable: Renderable) => {
-    if (renderable) this.camera.add(renderable);
-  }
+  return renderer;
 }
