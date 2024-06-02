@@ -98,6 +98,8 @@ export class Renderable extends Component<"renderable"> {
     if (!renderer) return;
     this.renderer = renderer;
 
+    this.c = new Container();
+
     // add child container
     if (this.setContainer && renderer) this.c = await this.setContainer(renderer);
 

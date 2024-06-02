@@ -4,13 +4,11 @@ import { Renderable, RenderableProps } from "@piggo-gg/core";
 export type ButtonProps = RenderableProps & {
   dims: { w: number, textX: number, textY: number },
   text: Text
-  outline?: Graphics
-  shadow?: Graphics
 }
 
 export const Button = <T extends ButtonProps = ButtonProps>(props: T): Renderable => {
-  const outline = props.outline ?? new Graphics();
-  const shadow = props.shadow ?? new Graphics();
+  // const outline = props.outline ?? new Graphics();
+  // const shadow = props.shadow ?? new Graphics();
 
   const dims = props.dims;
   let text: Text;
@@ -26,10 +24,12 @@ export const Button = <T extends ButtonProps = ButtonProps>(props: T): Renderabl
       const radius = 10;
 
       // button outline
+      const outline = new Graphics();
       outline.roundRect(0, 0, width, height, radius);
       outline.fill(0x000066);
 
       // button shadow
+      const shadow = new Graphics();
       shadow.roundRect(0, -1, width, height, radius);
       shadow.fill({ color: 0xFFFF33, alpha: 0.3 });
 

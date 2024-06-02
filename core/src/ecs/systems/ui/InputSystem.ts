@@ -1,9 +1,8 @@
-import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition, XY } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition, XY, clickableClickedThisFrame } from "@piggo-gg/core";
 
-// TODO these are global
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
-export var mouse = { x: 0, y: 0 };
+export var mouse: XY = { x: 0, y: 0 };
 
 type KeyMouse = { key: string, mouse: XY };
 
@@ -37,12 +36,12 @@ export const InputSystem = ClientSystemBuilder({
     let joystickOn = false;
     let mouseEvent = { x: 0, y: 0 };
 
-    renderer?.app.canvas.addEventListener('mousemove', (event) => {
+    renderer?.app.canvas.addEventListener("mousemove", (event) => {
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
     });
 
-    renderer?.app.canvas.addEventListener('pointerdown', (event) => {
+    renderer?.app.canvas.addEventListener("pointerdown", (event) => {
       const key = event.button === 0 ? "mb1" : "mb2";
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
@@ -57,7 +56,7 @@ export const InputSystem = ClientSystemBuilder({
       bufferedDown.push({ key, mouse });
     });
 
-    renderer?.app.canvas.addEventListener('pointerup', (event) => {
+    document.addEventListener("pointerup", (event) => {
       const key = event.button === 0 ? "mb1" : "mb2";
       bufferedDown.remove(key);
     });
@@ -229,6 +228,8 @@ export const InputSystem = ClientSystemBuilder({
           bufferedUp.clear();
           return;
         }
+
+        if (clickableClickedThisFrame || joystickOn) bufferedDown.remove("mb1");
 
         const playerEntity = world.client?.playerEntity;
         if (!playerEntity) return;
