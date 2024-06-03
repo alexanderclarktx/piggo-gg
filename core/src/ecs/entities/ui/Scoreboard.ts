@@ -1,4 +1,4 @@
-import { Actions, Debug, Entity, Input, Noob, Player, Position, Renderable, Team, ToggleHidden, ToggleVisible, World, pixiRect, pixiText, setsEqual } from "@piggo-gg/core";
+import { Actions, Entity, Input, Noob, Player, Position, Renderable, Team, TeamColors, ToggleHidden, ToggleVisible, World, pixiRect, pixiText, setsEqual } from "@piggo-gg/core";
 import { ScrollBox } from "@pixi/ui";
 import { Container, Graphics } from "pixi.js";
 
@@ -11,7 +11,6 @@ export const Scoreboard = (): Entity => {
   const scoreboard = Entity<Position>({
     id: "scoreboard",
     components: {
-      debug: new Debug(),
       input: new Input({
         press: {
           "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId })
@@ -71,7 +70,7 @@ const makeInnerContainer = (entity: Entity<Team | Player>, width: number, world:
   const { team, player } = entity.components;
 
   const box = (g: Graphics): Graphics => {
-    return g.clear().roundRect(2, 2, width - 4, 46, 0).fill({ color: team.data.team === 1 ? 0x5555ff : 0xff5555, alpha: 0.7 })
+    return g.clear().roundRect(2, 2, width - 4, 46, 0).fill({ color: team.data.team === 1 ? TeamColors[1] : TeamColors[2], alpha: 0.7 })
   }
 
   const c = new Container();
