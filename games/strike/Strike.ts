@@ -1,4 +1,4 @@
-import { Background, FloorTiles, GunSystem, HealthBarSystem, IsometricGame, LineWall } from "@piggo-gg/core";
+import { Background, FloorTiles, GunSystem, HealthBarSystem, HomeButton, IsometricGame, LineWall, ScorePanel, Scoreboard } from "@piggo-gg/core";
 import { StrikeSystem } from "@piggo-gg/games";
 
 const W32 = 32;
@@ -9,7 +9,9 @@ export const Strike = IsometricGame({
     id: "strike",
     systems: [StrikeSystem, GunSystem, HealthBarSystem],
     entities: [
+      HomeButton(),
       Background(),
+      ScorePanel(), Scoreboard(),
       FloorTiles({ rows: 15, cols: 7, position: { x: W32 * 3, y: W32 * 6.5 }, tint: 0xff6666 }), // T
 
       FloorTiles({ rows: 20, cols: 4, position: { x: W32 * 26, y: W32 * 2 } }),

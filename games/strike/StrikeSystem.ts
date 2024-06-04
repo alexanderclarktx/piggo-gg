@@ -1,15 +1,6 @@
-import { Noob, SystemBuilder, Team, TeamColors, World, invokeSpawnSkelly } from "@piggo-gg/core";
+import { Noob, SystemBuilder, TeamColors, World, invokeSpawnSkelly } from "@piggo-gg/core";
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over";
-
-const GameStateTimers: Record<GameStates, number> = {
-  "warmup": -1,
-  "pre-round": 10,
-  "round": 120,
-  "planted": 40,
-  "post-round": 10,
-  "game-over": 10,
-}
 
 export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
   id: "StrikeSystem",
@@ -56,6 +47,7 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 type Hooks = {
   onStart: (world: World) => void
   onTick: (world: World) => void
+  timer: number
 }
 
 const GameStateHooks: Record<GameStates, Hooks> = {
@@ -63,36 +55,42 @@ const GameStateHooks: Record<GameStates, Hooks> = {
     onStart: (world) => {
       world.log("warmup started");
     },
-    onTick: (world) => {}
+    onTick: (world) => {},
+    timer: -1
   },
   "pre-round": {
     onStart: (world) => {
       world.log("pre-round started");
     },
-    onTick: (world) => {}
+    onTick: (world) => {},
+    timer: 10
   },
   "round": {
     onStart: (world) => {
       world.log("round started");
     },
-    onTick: (world) => {}
+    onTick: (world) => {},
+    timer: 120
   },
   "planted": {
     onStart: (world) => {
       world.log("bomb planted");
     },
-    onTick: (world) => {}
+    onTick: (world) => {},
+    timer: 40
   },
   "post-round": {
     onStart: (world) => {
       world.log("post-round started");
     },
-    onTick: (world) => {}
+    onTick: (world) => {},
+    timer: 10
   },
   "game-over": {
     onStart: (world) => {
       world.log("game over");
     },
-    onTick: (world) => {}
+    onTick: (world) => {},
+    timer: 10
   },
 }

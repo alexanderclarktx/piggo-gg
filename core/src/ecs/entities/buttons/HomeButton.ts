@@ -1,0 +1,23 @@
+import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
+
+export const HomeButton = () => Entity({
+  id: "homeButton",
+  components: {
+    position: new Position({ x: 40, y: 5, screenFixed: true }),
+    clickable: new Clickable({ width: 80, height: 32, active: true }),
+    actions: new Actions({
+      click: {
+        invoke: ({ world }) => {
+          world.actionBuffer.push(world.tick + 1, "world",
+            { action: "game", playerId: world.client?.playerEntity.id, params: { game: "home" } }
+          );
+        }
+      }
+    }),
+    renderable: Button({
+      dims: { w: 55, textX: 8, textY: 5 },
+      zIndex: 1,
+      text: pixiText({ text: "home", style: { fill: 0xffffff, fontSize: 16 } })
+    })
+  }
+})

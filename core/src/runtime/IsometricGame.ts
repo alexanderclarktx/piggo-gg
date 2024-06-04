@@ -1,4 +1,4 @@
-import { AbilityHUD, Chat, ConnectButton, Cursor, FullscreenButton, GameBuilder, Joystick, Scoreboard, isMobile } from "@piggo-gg/core";
+import { AbilityHUD, Chat, ConnectButton, Cursor, FullscreenButton, GameBuilder, Joystick, isMobile } from "@piggo-gg/core";
 
 export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): GameBuilder<T> => ({
   ...gameBuilder,
@@ -6,7 +6,7 @@ export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): Ga
     const game = gameBuilder.init(world);
 
     if (world.runtimeMode === "client") {
-      game.entities.push(FullscreenButton(), Chat(), Scoreboard());
+      game.entities.push(FullscreenButton(), Chat());
 
       isMobile() ?
         game.entities.push(Joystick(), ConnectButton()) :

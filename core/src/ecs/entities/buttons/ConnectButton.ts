@@ -8,9 +8,7 @@ export const ConnectButton = () => Entity({
     clickable: new Clickable({ width: 80, height: 32, active: true }),
     actions: new Actions({
       click: {
-        invoke: ({ world }) => {
-          if (world && world.client) world.client.joinLobby("hub", () => {});
-        }
+        invoke: ({ world }) => world.client?.joinLobby("hub", () => { })
       }
     }),
     renderable: Button({

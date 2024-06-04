@@ -170,6 +170,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       // run system onTick
       Object.values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
+          if (!world.systems[system.id]) return;
           system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback);
         }
       });

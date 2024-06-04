@@ -24,6 +24,7 @@ export const HealthBar = ({ health }: HealthBarProps): Renderable => {
 
   const renderable = new Renderable({
     zIndex: 10,
+    interpolate: true,
     dynamic: () => {
       const healthPercent = health.data.health / health.data.maxHealth;
       if (healthPercent !== cachedHealthPercent) {
