@@ -3,11 +3,15 @@ import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-g
 export const HomeButton = () => Entity({
   id: "homeButton",
   components: {
-    position: new Position({ x: 45, y: 5, screenFixed: true }),
+    position: new Position({ x: 40, y: 5, screenFixed: true }),
     clickable: new Clickable({ width: 80, height: 32, active: true }),
     actions: new Actions({
       click: {
-        invoke: ({ world }) => world.setGame("home")
+        invoke: ({ world }) => {
+          world.actionBuffer.push(world.tick + 1, "world",
+            { action: "game", playerId: world.client?.playerEntity.id, params: { game: "home" } }
+          );
+        }
       }
     }),
     renderable: Button({

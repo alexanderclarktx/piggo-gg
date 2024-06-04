@@ -102,6 +102,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       const system = world.systems[id];
       if (system && system.data) world.removeEntity(`SystemEntity-${id}`);
       if (system) delete world.systems[id];
+      console.log(`removed system ${id}`);
     },
     addSystems: (systems: System[]) => {
       systems.forEach((system) => {
@@ -170,6 +171,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       // run system onTick
       Object.values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
+          if (!world.systems[system.id]) return;
           system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback);
         }
       });

@@ -24,6 +24,7 @@ export const ZombieSpawnSystem: SystemBuilder<"ZombieSpawnSystem"> = ({
     }
 
     const spawnWave = async (wave: number) => {
+      console.log(`Spawning wave ${wave}`);
       const zombies = 1 + wave;
 
       for (let i = 0; i < zombies; i++) {
