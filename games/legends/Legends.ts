@@ -1,4 +1,4 @@
-import { Background, IsometricGame, LineWall, SkellySpawnSystem, pointsIsometric } from "@piggo-gg/core";
+import { Background, HomeButton, IsometricGame, LineWall, SkellySpawnSystem, pointsIsometric } from "@piggo-gg/core";
 import { Rift } from "@piggo-gg/games";
 
 const wallPoints: number[][] = [
@@ -18,6 +18,7 @@ export const Legends = IsometricGame({
   init: () => ({
     id: "legends",
     entities: [
+      HomeButton(),
       Background(),
       Rift(wallPointsIso),
       LineWall({ points: wallPointsIso, shootable: false })

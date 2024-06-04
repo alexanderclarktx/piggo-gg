@@ -33,6 +33,7 @@ export * from "./src/ecs/systems/ui/InputSystem";
 export * from "./src/ecs/systems/ui/RenderSystem";
 export * from "./src/ecs/entities/buttons/ConnectButton";
 export * from "./src/ecs/entities/buttons/FullscreenButton";
+export * from "./src/ecs/entities/buttons/HomeButton";
 export * from "./src/ecs/entities/characters/Skelly";
 export * from "./src/ecs/entities/characters/Spaceship";
 export * from "./src/ecs/entities/characters/Zombie";

@@ -1,4 +1,4 @@
-import { Background, Ball, Goal, IsometricGame, SkellySpawnSystem, Zombie } from "@piggo-gg/core";
+import { Background, Ball, Goal, HomeButton, IsometricGame, SkellySpawnSystem, Zombie } from "@piggo-gg/core";
 import { FieldGrass, FieldWall } from "@piggo-gg/games";
 
 export const Soccer = IsometricGame({
@@ -6,6 +6,7 @@ export const Soccer = IsometricGame({
   init: () => ({
     id: "soccer",
     entities: [
+      HomeButton(),
       Background(), FieldGrass(), FieldWall(),
       Zombie({ id: "zombie1", color: 0x00eeff, positionProps: { x: 200, y: 400 } }),
       Ball({ id: "ball", position: { x: 50, y: 350 } }),
