@@ -12,7 +12,7 @@ export const Strike = IsometricGame({
       HomeButton(),
       Background(),
       ScorePanel(), Scoreboard(),
-      FloorTiles({ rows: 15, cols: 7, position: { x: W32 * 3, y: W32 * 6.5 }, tint: 0xff6666 }), // T
+      FloorTiles({ rows: 15, cols: 7, position: { x: W32 * 3, y: W32 * 6.5 }, color: 0xff6666 }), // T
 
       FloorTiles({ rows: 20, cols: 4, position: { x: W32 * 26, y: W32 * 2 } }),
 
@@ -22,7 +22,7 @@ export const Strike = IsometricGame({
       FloorTiles({ rows: 4, cols: 16, position: { x: W32 * 14, y: W32 * 12 } }),
       FloorTiles({ rows: 4, cols: 4, position: { x: W32 * 54, y: W32 * 4 } }),
 
-      FloorTiles({ rows: 10, cols: 15, position: { x: W32 * 58, y: W32 * 6 }, tint: 0xffccaa }), // B
+      FloorTiles({ rows: 10, cols: 15, position: { x: W32 * 58, y: W32 * 6 }, color: 0xffccaa }), // B
       FloorTiles({ rows: 2, cols: 4, position: { x: W32 * 59, y: W32 * 16.5 } }),
       FloorTiles({ rows: 2, cols: 4, position: { x: W32 * 48, y: W32 * 11 } }),
       FloorTiles({ rows: 31, cols: 15, position: { x: W32 * 46, y: W32 * 12 } }), // mid
@@ -30,13 +30,13 @@ export const Strike = IsometricGame({
       FloorTiles({ rows: 4, cols: 8, position: { x: W32 * 73, y: W32 * 13.5 } }),
       FloorTiles({ rows: 9, cols: 4, position: { x: W32 * 81, y: W32 * 17.5 } }),
       FloorTiles({ rows: 4, cols: 6, position: { x: W32 * 57, y: W32 * 21.5 } }),
-      FloorTiles({ rows: 15, cols: 6, position: { x: W32 * 70, y: W32 * 21 }, tint: 0x6666ff }), // CT
+      FloorTiles({ rows: 15, cols: 6, position: { x: W32 * 70, y: W32 * 21 }, color: 0x6666ff }), // CT
 
       FloorTiles({ rows: 4, cols: 2, position: { x: W32 * 34, y: W32 * 33 } }),
       FloorTiles({ rows: 4, cols: 2, position: { x: W32 * 45, y: W32 * 27.5 } }),
       FloorTiles({ rows: 4, cols: 4, position: { x: W32 * 57, y: W32 * 29.5 } }),
 
-      FloorTiles({ rows: 15, cols: 10, position: { x: W32 * 47, y: W32 * 28.5 }, tint: 0xffccaa }), // A
+      FloorTiles({ rows: 15, cols: 10, position: { x: W32 * 47, y: W32 * 28.5 }, color: 0xffccaa }), // A
 
       LineWall({ shootable: false, points: [224, 384, 864, 704, 640, 816, 0, 496, 224, 384] }),
       LineWall({ shootable: false, points: [-352, 448, 128, 208, 128, 208, 352, 320, 864, 64, 1248, 256, 1632, 64, 2752, 624, 1376, 1312, -352, 448] }),

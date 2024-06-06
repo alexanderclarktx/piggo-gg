@@ -7,11 +7,12 @@ export type FloorTilesProps = {
   position?: XY
   id?: string
   tint?: number
+  color?: number
 }
 
 let index = 0;
 
-export const FloorTiles = ({ tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => Entity({
+export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => Entity({
   id: id,
   components: {
     position: new Position(position),
@@ -25,7 +26,7 @@ export const FloorTiles = ({ tint, rows, cols, position = { x: 0, y: 0 }, id = `
         const square = new Graphics()
           .transform(new Matrix(1, 0, 0, 1, 0, 16))
           .poly([0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2])
-          .fill({ color: 0x7777aa, alpha: 1 })
+          .fill({ color: color ?? 0x7777aa, alpha: 1 })
           .stroke({ width: 1, color: 0x000000 });
 
         // create a render texture
