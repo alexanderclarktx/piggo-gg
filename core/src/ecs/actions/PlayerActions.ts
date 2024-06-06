@@ -1,4 +1,4 @@
-import { Action, Controlling, InvokedAction, Noob, Skelly, TeamColors } from "@piggo-gg/core";
+import { Action, Controlling, InvokedAction, Noob, Skelly, TeamColors, XY } from "@piggo-gg/core";
 
 export const controlEntity: Action = Action(({ entity, player }) => {
   if (!entity || !player) return;
@@ -6,14 +6,14 @@ export const controlEntity: Action = Action(({ entity, player }) => {
   player.components.controlling = new Controlling({ entityId: entity.id });
 })
 
-export const invokeSpawnSkelly = (player: Noob, color?: number): InvokedAction => ({
-  action: "spawnSkelly", playerId: player.id, params: { color }
+export const invokeSpawnSkelly = (player: Noob, color?: number, pos?: XY): InvokedAction => ({
+  action: "spawnSkelly", playerId: player.id, params: { color, pos }
 })
 
-export const spawnSkelly = Action<{ color: number }>(({ player, world, params }) => {
+export const spawnSkelly = Action<{ color: number, pos: XY }>(({ player, world, params }) => {
   if (!player) return;
 
-  const characterForPlayer = Skelly(`skelly-${player.id}`, player.components.team.data.team, params.color);
+  const characterForPlayer = Skelly(`skelly-${player.id}`, player.components.team.data.team, params.color, params.pos);
   player.components.controlling = new Controlling({ entityId: characterForPlayer.id });
   world.addEntity(characterForPlayer);
 })

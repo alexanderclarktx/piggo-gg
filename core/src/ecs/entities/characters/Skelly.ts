@@ -2,16 +2,17 @@ import {
   Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health,
   Input, Move, Networked, Pistol, Position, Renderable, Shoot, Team,
   TeamNumber, WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, pixiText,
-  Point
+  Point,
+  XY
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
-export const Skelly = (id: string, team: TeamNumber, color?: number) => {
+export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) => {
   const skelly = Entity<Position | Gun>({
     id: id,
     components: {
       debug: new Debug(),
-      position: new Position({ x: 32, y: 400, velocityResets: 1, speed: 130 }),
+      position: new Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 160 }),
       networked: new Networked({ isNetworked: true }),
       collider: new Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: new Health({ health: 200, maxHealth: 200 }),

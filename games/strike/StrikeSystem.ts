@@ -1,6 +1,11 @@
-import { Noob, SystemBuilder, TeamColors, World, invokeSpawnSkelly } from "@piggo-gg/core";
+import { Noob, SystemBuilder, TeamColors, TeamNumber, World, XY, invokeSpawnSkelly } from "@piggo-gg/core";
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over";
+
+const TeamSpawns: Record<TeamNumber, XY> = {
+  1: { x: 1100, y: 700 },
+  2: { x: -1050, y: 1850 },
+}
 
 export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
   id: "StrikeSystem",
@@ -29,13 +34,13 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
           // not controlling a character
           if (!controlling.data.entityId) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team]));
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
             spawnedPlayers.add(player.id);
           }
 
           // new player
           if (!spawnedPlayers.has(player.id)) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team]));
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
             spawnedPlayers.add(player.id);
           }
         });
@@ -55,42 +60,42 @@ const GameStateHooks: Record<GameStates, Hooks> = {
     onStart: (world) => {
       world.log("warmup started");
     },
-    onTick: (world) => {},
+    onTick: (world) => { },
     timer: -1
   },
   "pre-round": {
     onStart: (world) => {
       world.log("pre-round started");
     },
-    onTick: (world) => {},
+    onTick: (world) => { },
     timer: 10
   },
   "round": {
     onStart: (world) => {
       world.log("round started");
     },
-    onTick: (world) => {},
+    onTick: (world) => { },
     timer: 120
   },
   "planted": {
     onStart: (world) => {
       world.log("bomb planted");
     },
-    onTick: (world) => {},
+    onTick: (world) => { },
     timer: 40
   },
   "post-round": {
     onStart: (world) => {
       world.log("post-round started");
     },
-    onTick: (world) => {},
+    onTick: (world) => { },
     timer: 10
   },
   "game-over": {
     onStart: (world) => {
       world.log("game over");
     },
-    onTick: (world) => {},
+    onTick: (world) => { },
     timer: 10
   },
 }
