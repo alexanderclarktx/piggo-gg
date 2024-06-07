@@ -3,8 +3,8 @@ import { Noob, SystemBuilder, TeamColors, TeamNumber, World, XY, invokeSpawnSkel
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over";
 
 const TeamSpawns: Record<TeamNumber, XY> = {
-  1: { x: 1100, y: 700 },
-  2: { x: -1050, y: 1850 },
+  1: { x: -1050, y: 1850 },
+  2: { x: 1100, y: 700 }
 }
 
 export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
