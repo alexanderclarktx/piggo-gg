@@ -65,7 +65,6 @@ export const Client = ({ world }: ClientProps): Client => {
 
       // store callback
       requestBuffer[requestData.request.id] = (response: LobbyJoin["response"]) => {
-        console.log(response);
         if (response.error) {
           console.error("Client: failed to join lobby", response.error)
         } else {

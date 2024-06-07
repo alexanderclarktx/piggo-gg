@@ -23,7 +23,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {};
 
   world.systems = {
-    ...{ "DelayServerSystem": NetServerSystem({ world, clients, latestClientMessages }) },
+    ...{ "NetServerSystem": NetServerSystem({ world, clients, latestClientMessages }) },
     ...world.systems
   }
 
