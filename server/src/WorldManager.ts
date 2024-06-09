@@ -1,4 +1,4 @@
-import { NetServerSystem, NetMessageTypes, IsometricWorld, Noob, World } from "@piggo-gg/core";
+import { NetServerSystem, NetMessageTypes, IsometricWorld, Noob, World, keys } from "@piggo-gg/core";
 import { ARAM, Home, Legends, Soccer, Strike } from "@piggo-gg/games";
 import { PerClientData } from "@piggo-gg/server";
 import { ServerWebSocket } from "bun";
@@ -30,7 +30,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
   return {
     world,
     clients,
-    getNumClients: () => Object.keys(clients).length,
+    getNumClients: () => keys(clients).length,
     handleClose: (ws: WS) => {
       world.removeEntity(ws.data.playerName!);
 

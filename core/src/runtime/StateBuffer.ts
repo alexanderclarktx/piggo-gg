@@ -1,3 +1,5 @@
+import { keys } from "@piggo-gg/core"
+
 export type StateBuffer<T extends ({} | string)> = {
   at: (tick: number, entityId: string) => T[] | undefined
   atTick: (tick: number) => Record<string, T[]> | undefined
@@ -23,12 +25,12 @@ export const StateBuffer = <T extends ({} | string)>(): StateBuffer<T> => {
       delete buffer[tick];
     },
     clearBeforeTick: (tick) => {
-      Object.keys(buffer).map(Number).forEach((t) => {
+      keys(buffer).map(Number).forEach((t) => {
         if (t < tick) delete buffer[t];
       });
     },
     keys: () => {
-      return Object.keys(buffer).map(Number).reverse();
+      return keys(buffer).map(Number).reverse();
     },
     set: (tick, entityId, state) => {
       // empty buffer for tick if it doesn't exist

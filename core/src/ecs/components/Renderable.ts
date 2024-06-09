@@ -1,4 +1,4 @@
-import { Component, Entity, Renderer, World, XY } from "@piggo-gg/core";
+import { Component, Entity, Renderer, World, XY, keys, values } from "@piggo-gg/core";
 import { AnimatedSprite, Container } from "pixi.js";
 
 export type Renderable = Component<"renderable"> & {
@@ -90,17 +90,17 @@ export const Renderable = (props: RenderableProps): Renderable => {
     renderer: undefined as unknown as Renderer,
 
     prepareAnimations: (color: number) => {
-      Object.values(renderable.animations).forEach((animation: AnimatedSprite) => {
+      values(renderable.animations).forEach((animation: AnimatedSprite) => {
         animation.animationSpeed = 0.1;
         animation.scale.set(renderable.scale);
         animation.anchor.set(renderable.anchor.x, renderable.anchor.y);
         animation.texture.source.scaleMode = renderable.scaleMode;
         animation.tint = color;
       });
-      renderable.bufferedAnimation = Object.keys(renderable.animations)[0];
+      renderable.bufferedAnimation = keys(renderable.animations)[0];
     },
     setAnimation: (animationKey: string) => {
-      if (Object.values(renderable.animations).length && renderable.animations[animationKey]) {
+      if (values(renderable.animations).length && renderable.animations[animationKey]) {
         renderable.bufferedAnimation = animationKey;
       }
     },

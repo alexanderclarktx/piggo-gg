@@ -1,4 +1,4 @@
-import { Entity, InvokedAction, SystemBuilder } from "@piggo-gg/core";
+import { Entity, InvokedAction, SystemBuilder, entries, keys } from "@piggo-gg/core";
 
 export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
   id: "CooldownSystem",
@@ -23,7 +23,7 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
       data: cooldowns,
       onTick: (_: Entity[]) => {
 
-        Object.keys(cooldowns).forEach((key) => {
+        keys(cooldowns).forEach((key) => {
           cooldowns[key]--;
 
           if (cooldowns[key] <= 0) delete cooldowns[key];
@@ -37,7 +37,7 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
         const actions = world.actionBuffer.atTick(world.tick);
         if (!actions) return;
 
-        Object.entries(actions).forEach(([entityId, invokedActions]) => {
+        entries(actions).forEach(([entityId, invokedActions]) => {
           world.actionBuffer.set(world.tick, entityId, invokedActions.filter(offCooldown(entityId)));
         });
       }

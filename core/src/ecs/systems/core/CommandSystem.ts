@@ -1,4 +1,4 @@
-import { World, InvokedAction, Action, ClientSystemBuilder } from "@piggo-gg/core";
+import { World, InvokedAction, Action, ClientSystemBuilder, values } from "@piggo-gg/core";
 
 export type Command<T extends {} = {}> = Action<T> & {
   id: string
@@ -11,7 +11,7 @@ export const CommandSystem = ClientSystemBuilder({
   init: ({ world }) => {
 
     const processMessage = (message: string) => {
-      Object.values(world.commands).forEach(({ regex, parse }) => {
+      values(world.commands).forEach(({ regex, parse }) => {
         const match = message.match(regex);
         if (match) {
           const action = parse({ world, match });
@@ -29,7 +29,7 @@ export const CommandSystem = ClientSystemBuilder({
         const messagesFromPlayer = world.chatHistory.atTick(world.tick);
 
         if (messagesFromPlayer) {
-          Object.values(messagesFromPlayer).forEach((messages) => messages.forEach((message) => {
+          values(messagesFromPlayer).forEach((messages) => messages.forEach((message) => {
             processMessage(message);
           }));
         }
