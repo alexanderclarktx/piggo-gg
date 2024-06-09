@@ -22,7 +22,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
     const renderer = Renderer({ canvas, width, height });
 
     renderer.init().then(() => {
-      const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Home, Strike,  ARAM, Soccer, Legends] });
+      const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Strike, Home, ARAM, Soccer, Legends] });
       setWorld(world);
     })
   }, []);
