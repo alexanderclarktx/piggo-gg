@@ -13,7 +13,7 @@ export type Renderable = Component<"renderable"> & {
   color: number
   interactiveChildren: boolean
   interpolate: boolean
-  position: { x: number; y: number }
+  position: { x: number, y: number }
   r: Renderable | undefined
   rendered: boolean
   renderer: Renderer

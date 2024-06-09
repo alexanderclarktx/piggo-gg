@@ -40,14 +40,16 @@ export const Position = (props: PositionProps = {}): Position => {
   const position: Position = {
     type: "position",
     data: {
-      x: 0, y: 0,
-      vx: 0, vy: 0,
-      speed: 0,
+      x: props.x ?? 0,
+      y: props.y ?? 0,
+      vx: props.vx ?? 0,
+      vy: props.vy ?? 0,
+      speed: props.speed ?? 0,
       rotation: 0,
       pointing: 0,
-      headingX: NaN,
-      headingY: NaN,
-      velocityResets: 0
+      headingX: 0,
+      headingY: 0,
+      velocityResets: props.velocityResets ?? 0
     },
     orientation: "r",
     lastCollided: 0,
@@ -65,11 +67,9 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position;
     },
-
     setSpeed: (speed: number) => {
       position.data.speed = speed;
     },
-
     // TODO refactor, the xv/vy should be recalculated every tick
     setHeading: ({ x, y }: XY) => {
       position.data.headingX = x;
@@ -87,12 +87,10 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position;
     },
-
     rotateUp: (amount: number) => {
       position.data.rotation += amount;
       return position;
     },
-
     rotateDown: (amount: number) => {
       position.data.rotation -= amount;
       return position;
