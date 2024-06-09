@@ -55,12 +55,12 @@ export type RenderableProps = {
 
 export const Renderable = (props: RenderableProps): Renderable => {
 
-  // const overrideDynamic = (dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)) => {
-  //   return (c: Container, r: Renderable, e: Entity, w: World) => {
-  //     if (dynamic) dynamic(c, r, e, w);
-  //     if (c.renderable !== r.visible) c.renderable = r.visible;
-  //   }
-  // }
+  const overrideDynamic = (dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)) => {
+    return (c: Container, r: Renderable, e: Entity, w: World) => {
+      if (dynamic) dynamic(c, r, e, w);
+      if (c.renderable !== r.visible) c.renderable = r.visible;
+    }
+  }
 
   const renderable: Renderable = {
     type: "renderable",
@@ -74,7 +74,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     r: undefined,
     color: props.color ?? 0xffffff,
     children: undefined,
-    dynamic: props.dynamic ?? undefined,
+    dynamic: overrideDynamic(props.dynamic),
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,
     position: props.position ?? { x: 0, y: 0 },
@@ -144,7 +144,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.c.position.set(renderable.position.x, renderable.position.y);
 
       // set interactive children
-      renderable.interactiveChildren ? renderable.c.interactiveChildren = true : renderable.c.interactiveChildren = false;
+      renderable.c.interactiveChildren = renderable.interactiveChildren;
 
       // set visible
       renderable.c.renderable = renderable.visible ?? true;

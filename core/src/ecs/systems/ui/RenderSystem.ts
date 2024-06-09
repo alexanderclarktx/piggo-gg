@@ -54,7 +54,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 };
         const { width, height } = renderer.app.screen;
-        const cameraScale = renderer.camera.c.scale.x - 0.5;
+        const cameraScale = renderer.camera.c.scale.x - 0.1;
 
         // todo this is calculating difference from centered entity, not the camera
         const isFarFromCamera = ({ x, y }: XY) => {
@@ -72,6 +72,8 @@ export const RenderSystem = ClientSystemBuilder({
           renderer.resizedFlag = false;
         }
 
+        let numHidden = 0;
+
         entities.forEach((entity) => {
           const { position, renderable } = entity.components;
 
@@ -82,6 +84,8 @@ export const RenderSystem = ClientSystemBuilder({
                 x: position.data.x + child.position.x,
                 y: position.data.y + child.position.y
               });
+
+              if (!child.visible) numHidden++;
             });
           }
 
@@ -146,6 +150,8 @@ export const RenderSystem = ClientSystemBuilder({
             });
           }
         });
+
+        // console.log("numHidden", numHidden);
 
         // center camera on player's controlled entity
         const playerEntity = world.client?.playerEntity;
