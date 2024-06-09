@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, XY } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, XY, values } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -161,7 +161,7 @@ export const RenderSystem = ClientSystemBuilder({
         }
 
         // sort cache by position (closeness to camera)
-        const sortedEntityPositions = Object.values(entities).sort((a, b) => {
+        const sortedEntityPositions = values(entities).sort((a, b) => {
           return a.components.position.data.y - b.components.position.data.y;
         });
 
@@ -174,7 +174,7 @@ export const RenderSystem = ClientSystemBuilder({
         });
 
         // update screenFixed entities
-        Object.values(world.entities).forEach((entity) => {
+        values(world.entities).forEach((entity) => {
           if (entity.components.renderable && entity.components.position) {
             updateScreenFixed(entity as Entity<Renderable | Position>);
           }

@@ -1,5 +1,5 @@
 import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat";
-import { Collider, Entity, Position, SystemBuilder } from "@piggo-gg/core";
+import { Collider, Entity, Position, SystemBuilder, entries, keys, values } from "@piggo-gg/core";
 
 export let physics: RapierWorld;
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
@@ -14,7 +14,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
 
     // reset the world state
     const resetPhysics = () => {
-      Object.keys(bodies).forEach((id) => {
+      keys(bodies).forEach((id) => {
         delete bodies[id];
         if (colliders[id]) delete colliders[id];
       });
@@ -37,7 +37,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
         if (!isRollback) resetPhysics();
 
         // remove old bodies
-        Object.keys(bodies).forEach((id) => {
+        keys(bodies).forEach((id) => {
           if (!world.entities[id]) {
             physics.removeRigidBody(bodies[id]);
             delete bodies[id];
@@ -83,7 +83,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
         physics.step();
 
         // update the entity positions
-        Object.keys(bodies).forEach((id) => {
+        keys(bodies).forEach((id) => {
           const body = bodies[id];
           const entity = world.entities[id] as Entity<Position>;
 
@@ -104,12 +104,12 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
         });
 
         // sensor callbacks
-        Object.values(colliders).forEach((collider: Collider) => {
+        values(colliders).forEach((collider: Collider) => {
           if (collider.sensor && collider.rapierCollider) {
             const collidedWith: Entity<Collider | Position>[] = [];
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
-              const collided = Object.entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
+              const collided = entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
               if (collided && world.entities[collided[0]]) collidedWith.push(world.entities[collided[0]] as Entity<Collider | Position>);
             });
 

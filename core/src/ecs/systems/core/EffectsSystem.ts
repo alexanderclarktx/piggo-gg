@@ -1,4 +1,4 @@
-import { Entity, SystemBuilder } from "@piggo-gg/core";
+import { Entity, SystemBuilder, entries } from "@piggo-gg/core";
 
 export const EffectsSystem: SystemBuilder<"EffectsSystem"> = {
   id: "EffectsSystem",
@@ -11,7 +11,7 @@ export const EffectsSystem: SystemBuilder<"EffectsSystem"> = {
         const { effects } = entity.components;
         if (!effects) return;
 
-        Object.entries(effects.effects).forEach(([name, effect]) => {
+        entries(effects.effects).forEach(([name, effect]) => {
           if (effect.cdLeft === undefined) {
             effect.cdLeft = effect.duration;
             effect.onStart(entity, world);

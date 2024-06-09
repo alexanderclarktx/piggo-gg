@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controlling, Data, Debug, Effects, Expires, Gun, Health, Input, NPC, Networked, Player, Position, Renderable, Team } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Controlling, Data, Debug, Effects, Expires, Gun, Health, Input, NPC, Networked, Player, Position, Renderable, Team, entries, keys } from "@piggo-gg/core";
 
 export type ComponentTypes =
   Actions | Clickable | Collider | Controlling |
@@ -19,12 +19,12 @@ export const serializeComponent = (c: Component): NetworkedComponentData => {
   let data: NetworkedComponentData = {};
   if (!c.data) return data;
 
-  Object.keys(c.data).forEach((key) => data[key] = c.data![key]);
+  keys(c.data).forEach((key) => data[key] = c.data![key]);
   return data;
 }
 
 export const deserializeComponent = (c: Component, data: NetworkedComponentData): void => {
-  for (const [key, value] of Object.entries(data)) {
+  for (const [key, value] of entries(data)) {
     c.data![key] = value;
   }
 }

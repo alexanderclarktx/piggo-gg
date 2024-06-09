@@ -1,4 +1,4 @@
-import { Entity, Gun, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core";
+import { Entity, Gun, Position, Renderable, SystemBuilder, loadTexture, values } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
 import { AnimatedSprite } from "pixi.js";
 
@@ -48,7 +48,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
               "7": new AnimatedSprite([textures["pistol7"]]),
             }
 
-            Object.values(r.animations).forEach((animation) => {
+            values(r.animations).forEach((animation) => {
               animation.filters = [new OutlineFilter({ thickness: 1, color: 0x000000 })]
             })
           }

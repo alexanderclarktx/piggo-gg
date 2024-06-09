@@ -1,7 +1,8 @@
 import {
   Client, Command, Entity, Game, GameBuilder,
-  InvokedAction, Renderer, SerializedEntity,
-  StateBuffer, System, SystemBuilder, SystemEntity
+  InvokedAction, Renderer, SerializedEntity, values,
+  StateBuffer, System, SystemBuilder, SystemEntity,
+  keys,
 } from "@piggo-gg/core";
 
 export type World = {
@@ -53,7 +54,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
   const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
       for (const componentType of query) {
-        if (!Object.keys(e.components).includes(componentType)) return false;
+        if (!keys(e.components).includes(componentType)) return false;
       }
       return true;
     });
@@ -124,7 +125,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       })
     },
     queryEntities: (query: string[]) => {
-      return filterEntities(query, Object.values(world.entities));
+      return filterEntities(query, values(world.entities));
     },
     log: (message: string) => {
       world.chatHistory.push(world.tick + 1, "game", message);
@@ -168,10 +169,10 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       world.entitiesAtTick[world.tick] = serializedEntities;
 
       // run system onTick
-      Object.values(world.systems).forEach((system) => {
+      values(world.systems).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
           if (!world.systems[system.id]) return;
-          system.onTick(filterEntities(system.query, Object.values(world.entities)), isRollback);
+          system.onTick(filterEntities(system.query, values(world.entities)), isRollback);
         }
       });
 
@@ -180,7 +181,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
 
       // clear old buffered data
       world.actionBuffer.clearBeforeTick(world.tick - 5);
-      Object.keys(world.entitiesAtTick).map(Number).forEach((tick) => {
+      keys(world.entitiesAtTick).map(Number).forEach((tick) => {
         if ((world.tick - tick) > 5) {
           delete world.entitiesAtTick[tick];
         }
@@ -191,7 +192,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
       if (!game) return;
 
       // remove old entities
-      Object.values(world.entities).forEach((entity) => {
+      values(world.entities).forEach((entity) => {
         if (!entity.persists) world.removeEntity(entity.id);
       });
 
@@ -217,8 +218,8 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
   // schedule onRender
   if (renderer) {
     renderer.app.ticker.add((ticker) => {
-      Object.values(world.systems).forEach((system) => {
-        if (system.onRender) system.onRender(filterEntities(system.query, Object.values(world.entities)), ticker.deltaMS);
+      values(world.systems).forEach((system) => {
+        if (system.onRender) system.onRender(filterEntities(system.query, values(world.entities)), ticker.deltaMS);
       });
     });
   }

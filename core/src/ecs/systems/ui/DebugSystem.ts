@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, physics } from "@piggo-gg/core";
+import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, entries, physics, values } from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
 // DebugSystem adds visual debug information to renderered entities
@@ -125,7 +125,7 @@ export const DebugSystem = ClientSystemBuilder({
           if (!world.entities["fpsText"]) drawFpsText();
   
           // update all debug entities
-          Object.entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
+          entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
             const entity = world.entities[id] as Entity<Position>;
             if (entity) {
               // update debug entity positions
@@ -142,7 +142,7 @@ export const DebugSystem = ClientSystemBuilder({
           });
         } else {
           // remove all debug entities
-          Object.values(debugEntitiesPerEntity).forEach((debugEntities) => {
+          values(debugEntitiesPerEntity).forEach((debugEntities) => {
             debugEntities.forEach((debugEntity) => world.removeEntity(debugEntity.id));
           });
           debugEntitiesPerEntity = {};

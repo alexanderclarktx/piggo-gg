@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, TextBox, World, chatBuffer, chatIsOpen } from "@piggo-gg/core";
+import { Entity, Position, Renderable, TextBox, World, chatBuffer, chatIsOpen, entries } from "@piggo-gg/core";
 import { Text } from "pixi.js";
 
 export const Chat = (): Entity => {
@@ -18,7 +18,7 @@ export const Chat = (): Entity => {
         // get last 4 messages
         w.chatHistory.keys().slice(0, 4).forEach((tick) => {
           const messagesForEntity = w.chatHistory.atTick(tick);
-          if (messagesForEntity) Object.entries(messagesForEntity).forEach(([player, messages]) => {
+          if (messagesForEntity) entries(messagesForEntity).forEach(([player, messages]) => {
             messages.forEach((message) => {
               if (messages.length < 4) lastMessages.push(`${player}: ${message}`);
             });

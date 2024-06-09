@@ -1,4 +1,4 @@
-import { Ball, GameData, LineWall, Noob, Projectile, SerializedEntity, Syncer, World, Zombie } from "@piggo-gg/core";
+import { Ball, GameData, LineWall, Noob, Projectile, SerializedEntity, Syncer, World, Zombie, entries, keys } from "@piggo-gg/core";
 
 export const DelaySyncer: Syncer = {
   writeMessage: (world: World) => {
@@ -20,7 +20,7 @@ export const DelaySyncer: Syncer = {
   handleMessage: (world: World, message: GameData) => {
 
     // remove old local entities
-    Object.keys(world.entities).forEach((entityId) => {
+    keys(world.entities).forEach((entityId) => {
       if (world.entities[entityId]?.components.networked) {
 
         if (!message.serializedEntities[entityId]) {
@@ -32,7 +32,7 @@ export const DelaySyncer: Syncer = {
 
     // TODO refactor use a table of entities
     // add new entities if not present locally
-    Object.keys(message.serializedEntities).forEach((entityId) => {
+    keys(message.serializedEntities).forEach((entityId) => {
       if (!world.entities[entityId]) {
         if (entityId.startsWith("zombie")) {
           world.addEntity(Zombie({ id: entityId }));
@@ -69,14 +69,14 @@ export const DelaySyncer: Syncer = {
 
     // compare entity counts
     if (!rollback) {
-      if (Object.keys(localEntities).length !== Object.keys(message.serializedEntities).length) {
-        mustRollback(`entity count local:${Object.keys(localEntities).length} remote:${Object.keys(message.serializedEntities).length}`);
+      if (keys(localEntities).length !== keys(message.serializedEntities).length) {
+        mustRollback(`entity count local:${keys(localEntities).length} remote:${keys(message.serializedEntities).length}`);
       }
     }
 
     // compare entity states
     if (!rollback) {
-      Object.entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
+      entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
         const localEntity = localEntities[entityId];
         if (localEntity) {
           if (entityId.startsWith("skelly") && entityId !== `skelly-${world.client?.playerId}`) return;
@@ -96,7 +96,7 @@ export const DelaySyncer: Syncer = {
         world.setGame(world.games[message.game]);
       }
 
-      Object.keys(message.serializedEntities).forEach((entityId) => {
+      keys(message.serializedEntities).forEach((entityId) => {
         if (world.entities[entityId]) {
           world.entities[entityId].deserialize(message.serializedEntities[entityId]);
         }
@@ -104,14 +104,14 @@ export const DelaySyncer: Syncer = {
     }
 
     // set actions
-    Object.entries(message.actions).forEach(([entityId, actions]) => {
+    entries(message.actions).forEach(([entityId, actions]) => {
       world.actionBuffer.set(message.tick, entityId, actions);
     });
 
     // handle new chat messages
-    const numChats = Object.keys(message.chats).length;
+    const numChats = keys(message.chats).length;
     if (numChats) {
-      Object.entries(message.chats).forEach(([playerId, messages]) => {
+      entries(message.chats).forEach(([playerId, messages]) => {
         if (playerId === world.client?.playerId) return;
         world.chatHistory.set(world.tick, playerId, messages);
       });

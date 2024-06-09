@@ -1,4 +1,4 @@
-import { Noob, SystemBuilder } from "@piggo-gg/core";
+import { Noob, SystemBuilder, entries } from "@piggo-gg/core";
 
 export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   id: "ActionSystem",
@@ -9,7 +9,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
       const actionsAtTick = world.actionBuffer.atTick(world.tick);
       if (!actionsAtTick) return;
 
-      Object.entries(actionsAtTick).forEach(([entityId, actions]) => {
+      entries(actionsAtTick).forEach(([entityId, actions]) => {
 
         // handle commands
         if (entityId === "world") {

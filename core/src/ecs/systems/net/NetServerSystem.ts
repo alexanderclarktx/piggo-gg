@@ -1,4 +1,4 @@
-import { System, NetMessageTypes, World } from "@piggo-gg/core";
+import { System, NetMessageTypes, World, entries, keys } from "@piggo-gg/core";
 
 export type DelayServerSystemProps = {
   world: World
@@ -24,7 +24,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     }
 
     // send tick data to all clients
-    Object.entries(clients).forEach(([id, client]) => {
+    entries(clients).forEach(([id, client]) => {
       client.send(JSON.stringify({
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
@@ -40,7 +40,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
   }
 
   const handleMessage = () => {
-    Object.keys(latestClientMessages).forEach((client) => {
+    keys(latestClientMessages).forEach((client) => {
       // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length);
 
       let messages: ({ td: NetMessageTypes, latency: number } | undefined)[];
@@ -60,7 +60,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
         // process message actions
         if (tickData.actions) {
-          Object.keys(tickData.actions).forEach((entityId) => {
+          keys(tickData.actions).forEach((entityId) => {
             // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
               tickData.actions[entityId].forEach((action) => {
                 world.actionBuffer.push(world.tick, entityId, action);
