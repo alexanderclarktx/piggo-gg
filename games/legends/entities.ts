@@ -4,8 +4,8 @@ import { Graphics } from "pixi.js";
 export const Rift = (wallPoints: number[]) => Entity({
   id: "rift",
   components: {
-    position: new Position({ x: 0, y: 0 }),
-    renderable: new Renderable({
+    position: Position({ x: 0, y: 0 }),
+    renderable: Renderable({
       setup: async (r) => {
 
         const top = [0, 0];

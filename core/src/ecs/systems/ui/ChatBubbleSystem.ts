@@ -35,8 +35,8 @@ export const ChatBubbleSystem = ClientSystemBuilder({
           //   world.addEntity(Entity({
           //     id: "chatBubble",
           //     components: {
-          //       position: new Position({ x: 200, y: 200, screenFixed: true }),
-          //       renderable: new Renderable({
+          //       position: Position({ x: 200, y: 200, screenFixed: true }),
+          //       renderable: Renderable({
           //         zIndex: 4,
           //         scale: 1,
           //         setChildren: async () => [textBox]

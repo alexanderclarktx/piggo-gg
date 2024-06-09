@@ -1,5 +1,4 @@
 import { Entity, Position, Renderable, ClientSystemBuilder, XY } from "@piggo-gg/core";
-import { Container } from "pixi.js";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({

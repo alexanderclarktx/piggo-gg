@@ -8,8 +8,8 @@ export const Joystick = (): Entity => {
     id: "joystick",
     persists: true,
     components: {
-      position: new Position({ x: -100, y: -100, screenFixed: true }),
-      renderable: new Renderable({
+      position: Position({ x: -100, y: -100, screenFixed: true }),
+      renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
         setContainer: async () => {

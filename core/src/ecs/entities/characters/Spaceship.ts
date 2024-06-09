@@ -9,15 +9,15 @@ export type SpaceshipProps = {
 export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
   id: id ?? `spaceship${Math.trunc(Math.random() * 100)}`,
   components: {
-    position: new Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
-    networked: new Networked({ isNetworked: true }),
-    actions: new Actions({
+    position: Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
+    networked: Networked({ isNetworked: true }),
+    actions: Actions({
       ...VehicleMovement,
       click: controlEntity
     }),
-    clickable: new Clickable({ width: 100, height: 120, active: true }),
-    collider: new Collider({ shape: "ball", radius: 20 }),
-    input: new Input({
+    clickable: Clickable({ width: 100, height: 120, active: true }),
+    collider: Collider({ shape: "ball", radius: 20 }),
+    input: Input({
       press: {
         "a,d": () => null, "w,s": () => null,
         "shift,a": ({ world }) => ({ action: "skidleft", playerId: world.client?.playerId }),
@@ -29,8 +29,8 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       },
       joystick: () => null
     }),
-    debug: new Debug(),
-    renderable: new Renderable({
+    debug: Debug(),
+    renderable: Renderable({
       rotates: true,
       zIndex: 3,
       setup: async (r: Renderable) => {

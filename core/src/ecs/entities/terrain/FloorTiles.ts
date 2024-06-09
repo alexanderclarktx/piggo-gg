@@ -19,8 +19,8 @@ const tileCoordinates = [ 0, 0, width / 2, height / 2, width, 0, width / 2, -hei
 export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => Entity({
   id: id,
   components: {
-    position: new Position(position),
-    renderable: new Renderable({
+    position: Position(position),
+    renderable: Renderable({
       zIndex: 0 + index * 0.01,
       setChildren: async (r: Renderer) => {
 
@@ -39,7 +39,7 @@ export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 },
         let tiles: Renderable[] = [];
         for (let x = 0; x < rows; x++) {
           for (let y = 0; y < cols; y++) {
-            tiles.push(new Renderable({
+            tiles.push(Renderable({
               position: { x: y * width / 2 - (x * width / 2), y: (y + x) * height / 2 },
               color: tint ?? 0xffffff,
               setContainer: async () => new Sprite(renderTexture)
@@ -55,8 +55,8 @@ export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 },
 export const FloorTilesArray = (dim: number, tileArray: number[]): Entity => Entity({
   id: "floorTilesArray",
   components: {
-    position: new Position(),
-    renderable: new Renderable({
+    position: Position(),
+    renderable: Renderable({
       zIndex: 0 + index * 0.01,
       setContainer: async (r: Renderer) => {
 
@@ -117,11 +117,11 @@ export const FloorCollidersArray = (dim: number, tileArray: number[]): Entity[] 
         const entity = Entity({
           id: `floorCollider-${x}-${y}`,
           components: {
-            position: new Position({
+            position: Position({
               x: y * width / 2 - (x * width / 2),
               y: (y + x) * height / 2 + 16
             }),
-            collider: new Collider({
+            collider: Collider({
               shape: "line",
               isStatic: true,
               points: tileCoordinates

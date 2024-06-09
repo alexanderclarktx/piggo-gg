@@ -7,7 +7,7 @@ export type DebugBoundsProps = RenderableProps & {
 
 export const DebugBounds = (props: DebugBoundsProps): Renderable => {
 
-  const renderable = new Renderable({
+  const renderable = Renderable({
     ...props,
     setup: async (r: Renderable) => {
 

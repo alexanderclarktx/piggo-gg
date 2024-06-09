@@ -12,9 +12,9 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
   const portal = Entity<Renderable>({
     id: `invite-stone`,
     components: {
-      position: new Position(pos),
-      debug: new Debug(),
-      collider: new Collider({
+      position: Position(pos),
+      debug: Debug(),
+      collider: Collider({
         shape: "line", points: [
           -32, 8,
           0, -8,
@@ -23,7 +23,7 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
           -32, 8
         ]
       }),
-      actions: new Actions({
+      actions: Actions({
         click: {
           invoke: ({ world }) => {
             if (!world.client) return;
@@ -43,7 +43,7 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
           }
         }
       }),
-      clickable: new Clickable({
+      clickable: Clickable({
         active: true,
         anchor: { x: 0.5, y: 0.5 },
         width: 64,
@@ -55,7 +55,7 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
           portal.components.renderable.c.filters = []
         }
       }),
-      renderable: new Renderable({
+      renderable: Renderable({
         zIndex: 3,
         color: tint ?? 0xffffff,
         setContainer: async () => {

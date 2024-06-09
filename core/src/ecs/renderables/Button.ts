@@ -10,7 +10,7 @@ export const Button = <T extends ButtonProps = ButtonProps>(props: T): Renderabl
   const dims = props.dims;
   let text: Text;
 
-  return new Renderable({
+  return Renderable({
     ...props,
     interactiveChildren: true,
     setup: async (r: Renderable) => {

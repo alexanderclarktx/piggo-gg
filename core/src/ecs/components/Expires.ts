@@ -1,18 +1,18 @@
 import { Component } from "@piggo-gg/core";
 
+export type Expires = Component<"expires"> & {
+  data: {
+    ticksLeft: number
+  }
+}
+
 export type ExpiresProps = {
   ticksLeft: number
 }
 
-export class Expires extends Component<"expires"> {
-  type: "expires" = "expires";
-
-  override data = {
-    ticksLeft: 0
+export const Expires = (props: ExpiresProps): Expires => ({
+  type: "expires",
+  data: {
+    ticksLeft: props.ticksLeft
   }
-
-  constructor({ ticksLeft }: ExpiresProps) {
-    super();
-    this.data.ticksLeft = ticksLeft;
-  }
-}
+})

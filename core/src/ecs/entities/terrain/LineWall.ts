@@ -29,17 +29,17 @@ export const LineWall = ({ points, position, visible, health, id, shootable }: L
   const wall = Entity({
     id: id ?? `linewall-${points.join("-")}`,
     components: {
-      position: new Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
-      health: new Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false }),
-      networked: new Networked({ isNetworked: true }),
-      collider: new Collider({
+      position: Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
+      health: Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false }),
+      networked: Networked({ isNetworked: true }),
+      collider: Collider({
         shape: "line",
         isStatic: true,
         points: newPoints,
         priority: 1,
         shootable: shootable ?? true
       }),
-      renderable: new Renderable({
+      renderable: Renderable({
         visible: visible ?? false,
         zIndex: 3,
         dynamic: (g: Graphics) => {

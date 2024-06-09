@@ -22,7 +22,7 @@ export const HealthBar = ({ health }: HealthBarProps): Renderable => {
     g.fill({ color: 0xff0000, alpha: 1 });
   }
 
-  const renderable = new Renderable({
+  const renderable = Renderable({
     zIndex: 10,
     interpolate: true,
     dynamic: () => {

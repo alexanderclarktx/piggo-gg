@@ -1,5 +1,29 @@
 import { Component, XY, orthoToDirection } from "@piggo-gg/core";
 
+export type Position = Component<"position"> & {
+  lastCollided: number
+  screenFixed: boolean
+  orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
+  data: {
+    x: number
+    y: number
+    vx: number
+    vy: number
+    speed: number
+    rotation: number
+    pointing: number
+    headingX: number
+    headingY: number
+    velocityResets: number
+  }
+  setPosition: (_: XY) => Position
+  setVelocity: (_: XY) => Position
+  setSpeed: (_: number) => void
+  setHeading: (_: XY) => Position
+  rotateUp: (_: number) => Position
+  rotateDown: (_: number) => Position
+}
+
 export type PositionProps = {
   x?: number
   y?: number
@@ -11,80 +35,68 @@ export type PositionProps = {
 }
 
 // the entity's position in the world
-export class Position extends Component<"position"> {
-  type: "position" = "position";
+export const Position = (props: PositionProps = {}): Position => {
 
-  orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul" = "r";
-  lastCollided = 0;
+  const position: Position = {
+    type: "position",
+    data: {
+      x: 0, y: 0,
+      vx: 0, vy: 0,
+      speed: 0,
+      rotation: 0,
+      pointing: 0,
+      headingX: NaN,
+      headingY: NaN,
+      velocityResets: 0
+    },
+    orientation: "r",
+    lastCollided: 0,
+    screenFixed: props.screenFixed ?? false,
+    setPosition: ({ x, y }: XY) => {
+      position.data.x = x;
+      position.data.y = y;
+      return position;
+    },
+    setVelocity: ({ x, y }: XY) => {
+      position.data.vx = Math.round(x * 100) / 100;
+      position.data.vy = Math.round(y * 100) / 100;
 
-  override data = {
-    x: 0, y: 0,
-    vx: 0, vy: 0,
-    speed: 0,
-    rotation: 0,
-    pointing: 0,
-    headingX: NaN,
-    headingY: NaN,
-    velocityResets: 0
+      if (x || y) position.orientation = orthoToDirection(Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8);
+
+      return position;
+    },
+
+    setSpeed: (speed: number) => {
+      position.data.speed = speed;
+    },
+
+    // TODO refactor, the xv/vy should be recalculated every tick
+    setHeading: ({ x, y }: XY) => {
+      position.data.headingX = x;
+      position.data.headingY = y;
+
+      // set velocity toward heading from current position
+      const dx = x - position.data.x;
+      const dy = y - position.data.y;
+
+      const angle = Math.atan2(dy, dx);
+      const Vx = Math.cos(angle) * position.data.speed;
+      const Vy = Math.sin(angle) * position.data.speed;
+
+      position.setVelocity({ x: Vx, y: Vy });
+
+      return position;
+    },
+
+    rotateUp: (amount: number) => {
+      position.data.rotation += amount;
+      return position;
+    },
+
+    rotateDown: (amount: number) => {
+      position.data.rotation -= amount;
+      return position;
+    }
   }
-
-  screenFixed: boolean;
-
-  constructor({ x, y, vx, vy, screenFixed, velocityResets, speed }: PositionProps = {}) {
-    super();
-    this.data.x = x ?? 0;
-    this.data.y = y ?? 0;
-    this.data.vx = vx ?? 0;
-    this.data.vy = vy ?? 0;
-    this.screenFixed = screenFixed ?? false;
-    this.data.velocityResets = velocityResets ?? 0;
-    this.data.speed = speed ?? 400;
-  }
-
-  setPosition = ({ x, y }: XY) => {
-    this.data.x = x;
-    this.data.y = y;
-    return this;
-  }
-
-  setVelocity = ({ x, y }: XY) => {
-    this.data.vx = Math.round(x * 100) / 100;
-    this.data.vy = Math.round(y * 100) / 100;
-
-    if (x || y) this.orientation = orthoToDirection(Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8);
-
-    return this;
-  }
-
-  setSpeed = (speed: number) => {
-    this.data.speed = speed;
-  }
-
-  // TODO refactor, the xv/vy should be recalculated every tick
-  setHeading = ({ x, y }: XY) => {
-    this.data.headingX = x;
-    this.data.headingY = y;
-
-    // set velocity toward heading from current position
-    const dx = x - this.data.x;
-    const dy = y - this.data.y;
-
-    const angle = Math.atan2(dy, dx);
-    const Vx = Math.cos(angle) * this.data.speed;
-    const Vy = Math.sin(angle) * this.data.speed;
-
-    this.setVelocity({ x: Vx, y: Vy });
-
-    return this;
-  }
-
-  rotateUp = (amount: number) => {
-    this.data.rotation += amount;
-    return this;
-  }
-
-  rotateDown = (amount: number) => {
-    this.data.rotation -= amount;
-    return this;
-  }
+  return position;
 }

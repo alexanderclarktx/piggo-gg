@@ -3,9 +3,9 @@ import { Action, Actions, Button, Clickable, Entity, Position, pixiText } from "
 export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
   id: id,
   components: {
-    position: new Position({ x: 5, y: 5, screenFixed: true }),
-    clickable: new Clickable({ active: true, width: 32, height: 30 }),
-    actions: new Actions({
+    position: Position({ x: 5, y: 5, screenFixed: true }),
+    clickable: Clickable({ active: true, width: 32, height: 30 }),
+    actions: Actions({
       click: Action(({ world }) => {
         if (!document.fullscreenElement) {
           world.renderer?.app.canvas.requestFullscreen?.();

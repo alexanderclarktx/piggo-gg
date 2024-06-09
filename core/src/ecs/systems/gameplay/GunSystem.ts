@@ -21,7 +21,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
       id: `${player.id}-gun${gunId}`,
       components: {
         position: player.components.position,
-        renderable: new Renderable({
+        renderable: Renderable({
           scaleMode: "nearest",
           zIndex: 2,
           scale: 2.5,

@@ -10,10 +10,10 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
   id: "fpsText",
   persists: true,
   components: {
-    position: new Position({
+    position: Position({
       x: x ?? -60, y: y ?? 5, screenFixed: true
     }),
-    renderable: new Renderable({
+    renderable: Renderable({
       zIndex: 3,
       setContainer: async () => pixiText({ text: "", style: { fontSize: 14, fill: 0x00ff00 } }),
       dynamic: (t: Text, _, __, w: World) => {
@@ -32,10 +32,10 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
   id: "lagText",
   persists: true,
   components: {
-    position: new Position({
+    position: Position({
       x: x ?? -60, y: y ?? 25, screenFixed: true
     }),
-    renderable: new Renderable({
+    renderable: Renderable({
       zIndex: 3,
       setContainer: async () => pixiText({ text: "", style: { fontSize: 14, fill: 0x00ff00 } }),
       dynamic: (t: Text, _, __, w: World) => {
