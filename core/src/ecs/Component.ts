@@ -11,45 +11,18 @@ export type NetworkedComponentData = Record<string, boolean | string | number | 
 export type Component<type extends string = string> = {
   type: type
   data?: NetworkedComponentData
-  // serialize: () => NetworkedComponentData
-  // deserialize: (data: NetworkedComponentData) => void
 }
 
-// type ComponentNoSerialize = Omit<Omit<Component, "serialize">, "deserialize">
+export const serializeComponent = (c: Component): NetworkedComponentData => {
+  let data: NetworkedComponentData = {};
+  if (!c.data) return data;
 
-// export const Component = <C extends ComponentNoSerialize>(c: C): Component => ({
-//   ...c,
-//   serialize: () => {
-//     let data: NetworkedComponentData = {};
-//     Object.keys(c.data).forEach((key) => data[key] = c.data[key]);
-//     return data;
-//   },
-//   deserialize: (data) => {
-//     for (const [key, value] of Object.entries(data)) {
-//       c.data[key] = value;
-//     }
-//   }
-// })
+  Object.keys(c.data).forEach((key) => data[key] = c.data![key]);
+  return data;
+}
 
-// 個 gè (generic measure word)
-// a Component is an atomic unit of data that is attached to an entity
-// export abstract class Component<T extends string = string> {
-//   abstract type: T;
-
-//   data: NetworkedComponentData = {};
-
-//   // serializes data from component
-//   serialize: () => NetworkedComponentData = () => {
-//     let data: NetworkedComponentData = {};
-//     Object.keys(this.data).forEach((key) => data[key] = this.data[key]);
-
-//     return data;
-//   }
-
-//   // copies networked data to the component
-//   deserialize: (data: NetworkedComponentData) => void = (data) => {
-//     for (const [key, value] of Object.entries(data)) {
-//       this.data[key] = value;
-//     }
-//   }
-// }
+export const deserializeComponent = (c: Component, data: NetworkedComponentData): void => {
+  for (const [key, value] of Object.entries(data)) {
+    c.data![key] = value;
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, ComponentTypes, NetworkedComponentData } from "@piggo-gg/core";
+import { Component, ComponentTypes, NetworkedComponentData, deserializeComponent, serializeComponent } from "@piggo-gg/core";
 
 // 集 jí (set)
 // an Entity is a uniquely identified set of Components
@@ -39,10 +39,10 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
 
       const sortedComponents = Object.values(protoEntity.components).sort((a: Component, b: Component) => a.type.localeCompare(b.type));
       sortedComponents.forEach((component: Component) => {
-        // const serializedComponent = component.serialize();
-        // if (Object.keys(serializedComponent).length) {
-        //   serializedEntity[component.type] = serializedComponent;
-        // }
+        const serializedComponent = serializeComponent(component);
+        if (Object.keys(serializedComponent).length) {
+          serializedEntity[component.type] = serializedComponent;
+        }
       });
       return serializedEntity;
     },
@@ -62,9 +62,9 @@ export const deserializeEntity = (entity: ProtoEntity, serializedEntity: Seriali
   });
 
   // update existing components
-  // Object.values(entity.components).forEach((component) => {
-  //   if (component.type in serializedEntity) {
-  //     component.deserialize(serializedEntity[component.type]);
-  //   }
-  // });
+  Object.values(entity.components).forEach((component) => {
+    if (component.type in serializedEntity) {
+      deserializeComponent(component, serializedEntity[component.type]);
+    }
+  });
 }
