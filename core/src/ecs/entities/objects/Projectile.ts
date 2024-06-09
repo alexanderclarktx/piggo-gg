@@ -33,10 +33,10 @@ export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: Projectile
   const projectile = Entity({
     id,
     components: {
-      position: new Position(pos ? pos : { x: 200, y: 200, vx: 50, vy: 0 }),
-      networked: new Networked({ isNetworked: true }),
-      expires: new Expires({ ticksLeft: 35 }),
-      collider: new Collider({
+      position: Position(pos ? pos : { x: 200, y: 200, vx: 50, vy: 0 }),
+      networked: Networked({ isNetworked: true }),
+      expires: Expires({ ticksLeft: 35 }),
+      collider: Collider({
         shape: "cuboid",
         length: radius ?? 8,
         width: radius ?? 8,
@@ -45,7 +45,7 @@ export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: Projectile
           if (onHit(e2, world)) world.removeEntity(projectile.id);
         }
       }),
-      renderable: new Renderable({
+      renderable: Renderable({
         zIndex: 3,
         interpolate: true,
         setContainer: async () => {

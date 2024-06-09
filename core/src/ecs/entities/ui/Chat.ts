@@ -49,8 +49,8 @@ export const Chat = (): Entity => {
     id: "chat",
     persists: true,
     components: {
-      position: new Position({ x: -400, y: -200, screenFixed: true }),
-      renderable: new Renderable({
+      position: Position({ x: -400, y: -200, screenFixed: true }),
+      renderable: Renderable({
         zIndex: 4,
         setChildren: async () => [chatHistoryText(), chatBufferText()]
       })

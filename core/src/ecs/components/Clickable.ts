@@ -2,6 +2,17 @@ import { World, Component, InvokedAction, XY } from "@piggo-gg/core";
 
 export type Bounds = { x: number, y: number, w: number, h: number };
 
+export type Clickable = Component<"clickable"> & {
+  type: "clickable"
+  width: number
+  height: number
+  active: boolean
+  anchor: XY
+  click?: (_: { world: World }) => InvokedAction
+  hoverOver?: undefined | (() => void)
+  hoverOut?: undefined | (() => void)
+}
+
 export type ClickableProps = {
   width: number
   height: number
@@ -12,24 +23,16 @@ export type ClickableProps = {
   hoverOut?: () => void
 }
 
-export class Clickable extends Component<"clickable"> {
-  type: "clickable" = "clickable"
-  width: number
-  height: number
-  active: boolean
-  anchor: XY
-  click: ((_: { world: World }) => InvokedAction) | undefined
-  hoverOver: (() => void) | undefined
-  hoverOut: (() => void) | undefined
-
-  constructor(props: ClickableProps) {
-    super();
-    this.width = props.width;
-    this.height = props.height;
-    this.active = props.active;
-    this.anchor = props.anchor ?? { x: 0, y: 0 };
-    this.click = props.click ?? (({ world }) => ({ action: "click", playerId: world.client?.playerId }));
-    this.hoverOver = props.hoverOver;
-    this.hoverOut = props.hoverOut;
+export const Clickable = (props: ClickableProps): Clickable => {
+  return {
+    type: "clickable",
+    data: {},
+    width: props.width,
+    height: props.height,
+    active: props.active,
+    anchor: props.anchor ?? { x: 0, y: 0 },
+    click: props.click ?? (({ world }) => ({ action: "click", playerId: world.client?.playerId })),
+    hoverOver: props.hoverOver,
+    hoverOut: props.hoverOut
   }
 }

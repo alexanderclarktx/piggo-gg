@@ -16,13 +16,11 @@ export type InputMap = {
   joystick?: JoystickHandler
 }
 
-// the Input component maps inputs to Actions
-export class Input extends Component<"input"> {
-  type: "input" = "input";
-  inputMap: InputMap;
-
-  constructor(inputMap: InputMap) {
-    super();
-    this.inputMap = inputMap;
-  }
+export type Input = Component<"input"> & {
+  inputMap: InputMap
 }
+
+export const Input = (inputMap: InputMap): Input => ({
+  type: "input",
+  inputMap
+})

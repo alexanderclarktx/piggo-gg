@@ -1,5 +1,20 @@
 import { Component } from "@piggo-gg/core";
 
+export type Gun = Component<"gun"> & {
+  data: {
+    id: number
+  },
+  name: string
+  damage: number
+  speed: number
+  clipSize: number
+  lastShot: number
+  reloadTime: number
+  fireRate: number
+  canShoot: () => boolean
+  shoot: () => void
+}
+
 export type GunProps = {
   name: string;
   damage: number;
@@ -9,41 +24,32 @@ export type GunProps = {
   fireRate: number;
 }
 
-export class Gun extends Component<"gun"> {
-  type: "gun" = "gun";
-  name: string;
-  damage: number;
-  speed: number;
-  fireRate: number;
-  clipSize: number;
-  reloadTime: number;
-  lastShot = 0;
+export const Gun = (props: GunProps): Gun => {
 
-  override data = {
-    id: Math.round(Math.random() * 100000)
+  const gun: Gun = {
+    type: "gun",
+    data: {
+      id: Math.round(Math.random() * 100000)
+    },
+    name: props.name,
+    damage: props.damage,
+    speed: props.speed,
+    clipSize: props.clipSize,
+    lastShot: 0,
+    reloadTime: props.reloadTime,
+    fireRate: props.fireRate,
+    canShoot: () => {
+      const canShoot = Date.now() - gun.lastShot > 10000 / gun.fireRate;
+      return canShoot;
+    },
+    shoot: () => {
+      gun.lastShot = Date.now();
+    }
   }
-
-  constructor(props: GunProps) {
-    super();
-    this.name = props.name;
-    this.damage = props.damage;
-    this.speed = props.speed;
-    this.clipSize = props.clipSize;
-    this.reloadTime = props.reloadTime;
-    this.fireRate = props.fireRate;
-  }
-
-  shoot = () => {
-    this.lastShot = Date.now();
-  }
-
-  canShoot = () => {
-    const canShoot = Date.now() - this.lastShot > 10000 / this.fireRate;
-    return canShoot;
-  }
+  return gun;
 }
 
-const GunBuilder = (props: GunProps) => () => new Gun(props);
+const GunBuilder = (props: GunProps) => () => Gun(props);
 
 export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 500, clipSize: 7, reloadTime: 1, fireRate: 30 });
 export const Shotgun = GunBuilder({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2 });

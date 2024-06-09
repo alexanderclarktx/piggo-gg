@@ -6,8 +6,8 @@ export const Cursor = (): Entity => {
   const cursor = Entity<Renderable | Position>({
     id: "cursor",
     components: {
-      position: new Position({ x: 2000, y: 2000, screenFixed: true }),
-      renderable: new Renderable({
+      position: Position({ x: 2000, y: 2000, screenFixed: true }),
+      renderable: Renderable({
         interpolate: true,
         setContainer: async (r: Renderer) => {
           r.props.canvas.addEventListener("mousemove", (event) => {

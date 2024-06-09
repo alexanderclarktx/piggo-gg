@@ -11,7 +11,7 @@ export const Scoreboard = (): Entity => {
   const scoreboard = Entity<Position>({
     id: "scoreboard",
     components: {
-      input: new Input({
+      input: Input({
         press: {
           "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId })
         },
@@ -20,9 +20,9 @@ export const Scoreboard = (): Entity => {
         },
         joystick: () => null
       }),
-      actions: new Actions({ ToggleVisible, ToggleHidden }),
-      position: new Position({ x: 200, y: 200, screenFixed: true }),
-      renderable: new Renderable({
+      actions: Actions({ ToggleVisible, ToggleHidden }),
+      position: Position({ x: 200, y: 200, screenFixed: true }),
+      renderable: Renderable({
         visible: false,
         interactiveChildren: true,
         zIndex: 10,

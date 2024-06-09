@@ -5,9 +5,9 @@ export const ScorePanel = (): Entity => {
   const scorePanel = Entity<Position>({
     id: "scorepanel",
     components: {
-      position: new Position({ screenFixed: true }),
-      debug: new Debug(),
-      renderable: new Renderable({
+      position: Position({ screenFixed: true }),
+      debug: Debug(),
+      renderable: Renderable({
         zIndex: 10,
         anchor: { x: 0.5, y: 0 },
         setup: async (r, renderer) => {

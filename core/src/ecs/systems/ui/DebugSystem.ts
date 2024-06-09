@@ -26,7 +26,7 @@ export const DebugSystem = ClientSystemBuilder({
       // debug bounds
       const debugBounds = DebugBounds({ debugRenderable: renderable });
 
-      const lineToHeading = new Renderable({
+      const lineToHeading = Renderable({
         dynamic: (c: Graphics) => {
           if (position.data.headingX || position.data.headingY) {
             c.clear().setStrokeStyle({ width: 1, color: 0x00ffff });
@@ -43,8 +43,8 @@ export const DebugSystem = ClientSystemBuilder({
       const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
-          position: new Position(),
-          renderable: new Renderable({
+          position: Position(),
+          renderable: Renderable({
             zIndex: 4,
             setChildren: async () => [textBox, debugBounds, lineToHeading]
           })
@@ -68,7 +68,7 @@ export const DebugSystem = ClientSystemBuilder({
 
     const drawAllColliders = () => {
 
-      const r = new Renderable({
+      const r = Renderable({
         dynamic: (c: Graphics) => {
           if (c.clear) {
             c.clear().setStrokeStyle({ width: 1, color: 0xffff00 });
@@ -90,7 +90,7 @@ export const DebugSystem = ClientSystemBuilder({
       const debugEntity = Entity<Position | Renderable>({
         id: `collider-debug`,
         components: {
-          position: new Position(),
+          position: Position(),
           renderable: r
         }
       })

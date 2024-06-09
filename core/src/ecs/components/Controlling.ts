@@ -1,18 +1,19 @@
 import { Component } from "@piggo-gg/core";
 
+export type Controlling = Component<"controlling"> & {
+  type: "controlling"
+  data: {
+    entityId: string
+  }
+}
+
 export type ControllingProps = {
   entityId?: string
 }
 
-export class Controlling extends Component<"controlling"> {
-  type: "controlling" = "controlling";
-
-  override data = {
-    entityId: ""
+export const Controlling = (props: ControllingProps): Controlling => ({
+  type: "controlling",
+  data: {
+    entityId: props.entityId ?? ""
   }
-
-  constructor(props: ControllingProps = {}) {
-    super();
-    this.data.entityId = props.entityId ?? "";
-  }
-}
+})

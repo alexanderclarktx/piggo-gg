@@ -22,12 +22,11 @@ export type InvokedAction<A extends string = string, P extends {} = {}> = {
 
 export type ActionMap<P extends {} = {}> = Record<string, Action<P>>;
 
-export class Actions<P extends {} = {}> extends Component<"actions"> {
-  type: "actions" = "actions";
-  actionMap: ActionMap<P>;
-
-  constructor(actionMap: ActionMap<P>) {
-    super();
-    this.actionMap = actionMap;
-  }
+export type Actions = Component<"actions"> & {
+  actionMap: ActionMap
 }
+
+export const Actions = <P extends {} = {}>(actionMap: ActionMap<P>): Actions => ({
+  type: "actions",
+  actionMap
+})

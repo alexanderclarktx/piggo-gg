@@ -10,7 +10,7 @@ export const SystemEntity = ({ systemId, data }: SystemEntityProps) => Entity({
   id: `SystemEntity-${systemId}`,
   persists: true,
   components: {
-    networked: new Networked({ isNetworked: true }),
-    data: new Data({ data }),
+    networked: Networked({ isNetworked: true }),
+    data: Data({ data }),
   }
 });

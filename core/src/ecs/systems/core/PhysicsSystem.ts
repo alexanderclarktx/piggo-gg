@@ -28,7 +28,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
       id: "PhysicsSystem",
       query: ["position", "collider"],
       onRollback: resetPhysics,
-      onTick: (entities: Entity<Position | Collider>[], isRollback: false) => {
+      onTick: (entities: Entity<Collider | Position>[], isRollback: false) => {
 
         // wait until rapier is ready
         if (!physics) return;
@@ -105,7 +105,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
 
         // sensor callbacks
         Object.values(colliders).forEach((collider: Collider) => {
-          if (collider.sensor) {
+          if (collider.sensor && collider.rapierCollider) {
             const collidedWith: Entity<Collider | Position>[] = [];
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {

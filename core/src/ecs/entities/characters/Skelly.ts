@@ -2,8 +2,7 @@ import {
   Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health,
   Input, Move, Networked, Pistol, Position, Renderable, Shoot, Team,
   TeamNumber, WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, pixiText,
-  Point,
-  XY
+  Point, XY
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -11,14 +10,14 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
   const skelly = Entity<Position | Gun>({
     id: id,
     components: {
-      debug: new Debug(),
-      position: new Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 160 }),
-      networked: new Networked({ isNetworked: true }),
-      collider: new Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
-      health: new Health({ health: 200, maxHealth: 200 }),
-      team: new Team({ team }),
+      debug: Debug(),
+      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 160 }),
+      networked: Networked({ isNetworked: true }),
+      collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
+      health: Health({ health: 200, maxHealth: 200 }),
+      team: Team(team),
       gun: Pistol(),
-      input: new Input({
+      input: Input({
         press: {
           ...WASDInputMap.press,
           "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId, params: mouse }),
@@ -28,7 +27,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         },
         joystick: DefaultJoystickHandler
       }),
-      actions: new Actions<{}>({
+      actions: Actions({
         "boost": Boost,
         "head": Head,
         "move": Move,
@@ -36,8 +35,8 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         "wall": Wall,
         "point": Point
       }),
-      effects: new Effects(),
-      renderable: new Renderable({
+      effects: Effects(),
+      renderable: Renderable({
         anchor: { x: 0.5, y: 0.7 },
         scale: 2,
         zIndex: 3,

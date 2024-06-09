@@ -13,18 +13,18 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
   const zombie = Entity<Health>({
     id: id ?? `zombie-${Math.round(Math.random() * 100)}`,
     components: {
-      position: new Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
-      networked: new Networked({ isNetworked: true }),
-      health: new Health({ health: 100, maxHealth: 100 }),
-      npc: new NPC({
+      position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
+      networked: Networked({ isNetworked: true }),
+      health: Health({ health: 100, maxHealth: 100 }),
+      npc: NPC({
         onTick: (_) => ({ action: "chase", playerId: "" })
       }),
-      actions: new Actions({
+      actions: Actions({
         "chase": Chase
       }),
-      collider: new Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
-      debug: new Debug(),
-      renderable: new Renderable({
+      collider: Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
+      debug: Debug(),
+      renderable: Renderable({
         scale: 2,
         zIndex: 3,
         interpolate: true,

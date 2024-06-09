@@ -1,13 +1,12 @@
 import { Component } from "@piggo-gg/core";
 
+export type Player = Component<"player"> & {
+  name: string
+}
+
 export type PlayerProps = { name: string };
 
-export class Player extends Component<"player"> {
-  type: "player" = "player";
-  name: string;
-
-  constructor(props: PlayerProps) {
-    super();
-    this.name = props.name
-  }
-}
+export const Player = (props: PlayerProps): Player => ({
+  type: "player",
+  name: props.name
+})

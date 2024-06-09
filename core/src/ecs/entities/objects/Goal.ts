@@ -51,16 +51,16 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
   return Entity({
     id: id ?? `goal1`,
     components: {
-      networked: new Networked({ isNetworked: true }),
-      data: new Data({ data: data }),
-      position: new Position(position),
-      collider: new Collider({
+      networked: Networked({ isNetworked: true }),
+      data: Data({ data: data }),
+      position: Position(position),
+      collider: Collider({
         shape: "cuboid",
         length: 1,
         width: width,
         sensor: sensor
       }),
-      renderable: new Renderable({
+      renderable: Renderable({
         dynamic: (c) => {
           const t = c.children[1] as Text;
           if (t) t.text = `${data.goals}`

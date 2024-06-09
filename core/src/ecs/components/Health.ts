@@ -1,25 +1,21 @@
 import { Component } from "@piggo-gg/core";
 
+export type Health = Component<"health"> & {
+  data: {
+    health: number,
+    maxHealth: number,
+  }
+  showHealthBar: boolean
+}
+
 export type HealthProps = {
   health: number,
   maxHealth: number,
   showHealthBar?: boolean
 }
 
-// the health component includes health, maxHealth, and damage
-export class Health extends Component<"health"> {
-  type: "health" = "health";
-
-  override data = {
-    health: 0,
-    maxHealth: 0,
-    showHealthBar: true,
-  }
-
-  constructor({health, maxHealth, showHealthBar}: HealthProps) {
-    super();
-    this.data.health = health;
-    this.data.maxHealth = maxHealth;
-    this.data.showHealthBar = showHealthBar ?? true;
-  }
-}
+export const Health = ({ health, maxHealth, showHealthBar = true }: HealthProps): Health => ({
+  type: "health",
+  data: { health, maxHealth },
+  showHealthBar
+})

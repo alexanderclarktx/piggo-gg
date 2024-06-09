@@ -9,15 +9,21 @@ export type Effect = {
 
 type EffectWithCd = Effect & { cdLeft: number | undefined }
 
-export class Effects extends Component<"effects"> {
-  type: "effects" = "effects";
+export type Effects = Component<"effects"> & {
+  effects: Record<string, EffectWithCd>
+  addEffect: (name: string, effect: Omit<Effect, "cdLeft">) => void
+}
 
-  effects: Record<string, EffectWithCd> = {};
-
-  addEffect(name: string, effect: Omit<Effect, "cdLeft">) {
-    this.effects[name] = {
-      ...effect,
-      cdLeft: undefined
-    };
+export const Effects = (): Effects => {
+  const effects: Effects = {
+    type: "effects",
+    effects: {},
+    addEffect: (name, effect) => {
+      effects.effects[name] = {
+        ...effect,
+        cdLeft: undefined
+      };
+    }
   }
+  return effects;
 }

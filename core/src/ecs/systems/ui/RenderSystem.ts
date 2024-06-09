@@ -1,5 +1,4 @@
 import { Entity, Position, Renderable, ClientSystemBuilder, XY } from "@piggo-gg/core";
-import { Container } from "pixi.js";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -73,6 +72,8 @@ export const RenderSystem = ClientSystemBuilder({
           renderer.resizedFlag = false;
         }
 
+        let numHidden = 0;
+
         entities.forEach((entity) => {
           const { position, renderable } = entity.components;
 
@@ -83,6 +84,8 @@ export const RenderSystem = ClientSystemBuilder({
                 x: position.data.x + child.position.x,
                 y: position.data.y + child.position.y
               });
+
+              if (!child.visible) numHidden++;
             });
           }
 
@@ -147,6 +150,8 @@ export const RenderSystem = ClientSystemBuilder({
             });
           }
         });
+
+        // console.log("numHidden", numHidden);
 
         // center camera on player's controlled entity
         const playerEntity = world.client?.playerEntity;

@@ -14,7 +14,7 @@ export const TextBox = (props: TextBoxProps): Renderable => {
 
   const { text = "", color = 0x55FF00, fontSize = 16, dropShadow = false, padding = 0, boxOutline = false } = props;
 
-  return new Renderable({
+  return Renderable({
     ...props,
     setup: async (r: Renderable) => {
       const textContainer = pixiText({ text, style: { fill: color, fontSize } });

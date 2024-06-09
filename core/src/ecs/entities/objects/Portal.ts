@@ -11,9 +11,9 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
   const portal = Entity<Renderable>({
     id: `portal-${game}`,
     components: {
-      position: new Position(pos),
-      networked: new Networked({ isNetworked: true }),
-      collider: new Collider({
+      position: Position(pos),
+      networked: Networked({ isNetworked: true }),
+      collider: Collider({
         shape: "ball", radius: 32,
         sensor: (e2, world) => {
           if (e2.id.startsWith("skelly")) {
@@ -22,15 +22,15 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
           }
         }
       }),
-      actions: new Actions<{ game: string }>({
+      actions: Actions<{ game: string }>({
         teleport: {
           invoke: ({ world, params }) => {
             world.setGame(params.game);
           }
         }
       }),
-      debug: new Debug(),
-      renderable: new Renderable({
+      debug: Debug(),
+      renderable: Renderable({
         zIndex: 1,
         color: tint ?? 0xffffff,
         anchor: { x: 0.5, y: 0.5 },

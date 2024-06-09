@@ -7,21 +7,22 @@ export const TeamColors: Record<TeamNumber, number> = {
   2: 0x00ccff
 }
 
-export class Team extends Component<"team"> {
-  type: "team" = "team";
-
-  override data = {
-    team: 1 as TeamNumber
+export type Team = Component<"team"> & {
+  data: {
+    team: TeamNumber
   }
+  switchTeam: () => void
+}
 
-  switchTeam = () => {
-    this.data.team = this.data.team === 1 ? 2 : 1;
+export const Team = (teamNumber: TeamNumber): Team => {
+  const team: Team = {
+    type: "team",
+    data: { team: teamNumber },
+    switchTeam: () => {
+      team.data.team = team.data.team === 1 ? 2 : 1;
+    }
   }
-
-  constructor({ team }: { team: TeamNumber }) {
-    super();
-    this.data.team = team;
-  }
+  return team;
 }
 
 export const TeamSystem: SystemBuilder<"TeamSystem"> = {
