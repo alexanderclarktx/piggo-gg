@@ -28,9 +28,9 @@ export const DebugSystem = ClientSystemBuilder({
 
       const lineToHeading = Renderable({
         dynamic: (c: Graphics) => {
-          if (position.data.headingX || position.data.headingY) {
+          if (position.data.heading.x || position.data.heading.y) {
             c.clear().setStrokeStyle({ width: 1, color: 0x00ffff });
-            c.moveTo(0, 0).lineTo(position.data.headingX - position.data.x, position.data.headingY - position.data.y);
+            c.moveTo(0, 0).lineTo(position.data.heading.x - position.data.x, position.data.heading.y - position.data.y);
             c.stroke();
           } else {
             c.clear();

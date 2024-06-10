@@ -1,10 +1,7 @@
 import { Component } from "@piggo-gg/core";
 
-export type Controlling = Component<"controlling"> & {
+export type Controlling = Component<"controlling", { entityId: string }> & {
   type: "controlling"
-  data: {
-    entityId: string
-  }
 }
 
 export type ControllingProps = {

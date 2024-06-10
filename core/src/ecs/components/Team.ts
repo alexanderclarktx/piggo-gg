@@ -7,10 +7,7 @@ export const TeamColors: Record<TeamNumber, number> = {
   2: 0x00ccff
 }
 
-export type Team = Component<"team"> & {
-  data: {
-    team: TeamNumber
-  }
+export type Team = Component<"team", { team: TeamNumber }> & {
   switchTeam: () => void
 }
 

@@ -26,7 +26,6 @@ export type ClickableProps = {
 export const Clickable = (props: ClickableProps): Clickable => {
   return {
     type: "clickable",
-    data: {},
     width: props.width,
     height: props.height,
     active: props.active,

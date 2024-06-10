@@ -1,4 +1,8 @@
-import { Actions, Clickable, Collider, Controlling, Data, Debug, Effects, Expires, Gun, Health, Input, NPC, Networked, Player, Position, Renderable, Team, entries, keys } from "@piggo-gg/core";
+import {
+  Actions, Clickable, Collider, Controlling, Data, Debug,
+  Effects, Expires, Gun, Health, Input, NPC, Networked,
+  Player, Position, Renderable, Team, XY, entries, keys
+} from "@piggo-gg/core";
 
 export type ComponentTypes =
   Actions | Clickable | Collider | Controlling |
@@ -6,16 +10,15 @@ export type ComponentTypes =
   Input | Team | Networked | NPC | Player |
   Position | Renderable | Gun
 
-export type NetworkedComponentData = Record<string, boolean | string | number | string[] | number[]>
+export type NetworkedComponentData = Record<string, boolean | string | number | string[] | number[] | XY>
 
 // 個 gè (generic measure word)
 // a Component is an atomic unit of data that is attached to an entity
-export type Component<type extends string = string> = {
+export type Component<type extends string = string, D extends NetworkedComponentData | undefined = undefined> = {
   type: type
-  data?: NetworkedComponentData
-}
+} & (D extends undefined ? {} : { data: D })
 
-export const serializeComponent = (c: Component): NetworkedComponentData => {
+export const serializeComponent = (c: Component<string, NetworkedComponentData>): NetworkedComponentData => {
   let data: NetworkedComponentData = {};
   if (!c.data) return data;
 
@@ -23,8 +26,8 @@ export const serializeComponent = (c: Component): NetworkedComponentData => {
   return data;
 }
 
-export const deserializeComponent = (c: Component, data: NetworkedComponentData): void => {
+export const deserializeComponent = (c: Component<string, NetworkedComponentData>, data: NetworkedComponentData): void => {
   for (const [key, value] of entries(data)) {
-    c.data![key] = value;
+    c.data[key] = value;
   }
 }
