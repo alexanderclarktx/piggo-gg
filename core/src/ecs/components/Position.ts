@@ -1,20 +1,30 @@
 import { Component, XY, orthoToDirection } from "@piggo-gg/core";
 
-export type Position = Component<"position"> & {
+export type Position = Component<"position", {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  speed: number
+  rotation: number
+  pointing: number
+  heading: XY
+  velocityResets: number
+}> & {
   lastCollided: number
   screenFixed: boolean
   orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
-  data: {
-    x: number
-    y: number
-    vx: number
-    vy: number
-    speed: number
-    rotation: number
-    pointing: number
-    heading: XY
-    velocityResets: number
-  }
+  // data: {
+  //   x: number
+  //   y: number
+  //   vx: number
+  //   vy: number
+  //   speed: number
+  //   rotation: number
+  //   pointing: number
+  //   heading: XY
+  //   velocityResets: number
+  // }
   setPosition: (_: XY) => Position
   setVelocity: (_: XY) => Position
   setSpeed: (_: number) => void

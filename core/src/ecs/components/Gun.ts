@@ -1,9 +1,6 @@
 import { Component } from "@piggo-gg/core";
 
-export type Gun = Component<"gun"> & {
-  data: {
-    id: number
-  },
+export type Gun = Component<"gun", { id: number }> & {
   name: string
   damage: number
   speed: number

@@ -1,10 +1,9 @@
 import { Component } from "@piggo-gg/core";
 
-export type Health = Component<"health"> & {
-  data: {
-    health: number,
-    maxHealth: number,
-  }
+export type Health = Component<"health", {
+  health: number,
+  maxHealth: number,
+}> & {
   showHealthBar: boolean
 }
 

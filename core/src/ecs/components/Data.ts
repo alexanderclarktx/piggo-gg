@@ -1,6 +1,6 @@
 import { Component, NetworkedComponentData } from "@piggo-gg/core";
 
-export type Data = Component<"data">
+export type Data = Component<"data", NetworkedComponentData>
 
 export type DataProps = {
   data: NetworkedComponentData
