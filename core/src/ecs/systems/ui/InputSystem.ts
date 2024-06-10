@@ -1,4 +1,4 @@
-import { Actions, ClientSystemBuilder, Input, Entity, Position, World, currentJoystickPosition, XY, clickableClickedThisFrame } from "@piggo-gg/core";
+import { Actions, ClientSystemBuilder, Input, Entity, Position, World, CurrentJoystickPosition, XY, clickableClickedThisFrame } from "@piggo-gg/core";
 
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
@@ -47,8 +47,8 @@ export const InputSystem = ClientSystemBuilder({
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
 
-      if (!currentJoystickPosition.active && joystickOn) joystickOn = false;
-      if (currentJoystickPosition.active && !joystickOn) {
+      if (!CurrentJoystickPosition.active && joystickOn) joystickOn = false;
+      if (CurrentJoystickPosition.active && !joystickOn) {
         joystickOn = true;
         return;
       }
@@ -133,7 +133,7 @@ export const InputSystem = ClientSystemBuilder({
       );
 
       // handle joystick input
-      if (currentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
+      if (CurrentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
         const joystickAction = input.inputMap.joystick({ entity, world });
         if (joystickAction) world.actionBuffer.push(world.tick + 1, entity.id, joystickAction);
       }

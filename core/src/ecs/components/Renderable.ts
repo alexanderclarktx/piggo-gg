@@ -153,7 +153,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.c.zIndex = renderable.zIndex || 0;
       renderable.c.sortableChildren = true;
       renderable.c.alpha = 1;
-      renderable.c.children.forEach((child) => { child.alpha = 1 });
 
       renderable.c.tint = renderable.color;
 
