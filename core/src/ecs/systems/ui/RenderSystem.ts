@@ -192,16 +192,16 @@ export const RenderSystem = ClientSystemBuilder({
             } else return;
           }
 
-          const { x, y, vx, vy } = position.data;
+          const { x, y, velocity } = position.data;
 
           if (centeredEntity && entity.id === centeredEntity.id) {
             renderer.camera.moveTo({ x, y });
           }
 
-          let dx = vx * elapsedTime / 1000;
-          let dy = vy * elapsedTime / 1000;
+          let dx = velocity.x * elapsedTime / 1000;
+          let dy = velocity.y * elapsedTime / 1000;
 
-          if (((world.tick - position.lastCollided) > 4) && (vx || vy) && renderable.interpolate) {
+          if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
             renderable.c.position.set(
               x + dx + renderable.position.x,
               y + dy + renderable.position.y

@@ -3,8 +3,7 @@ import { Component, XY, orthoToDirection } from "@piggo-gg/core";
 export type Position = Component<"position", {
   x: number
   y: number
-  vx: number
-  vy: number
+  velocity: XY
   speed: number
   rotation: number
   pointing: number
@@ -14,17 +13,6 @@ export type Position = Component<"position", {
   lastCollided: number
   screenFixed: boolean
   orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
-  // data: {
-  //   x: number
-  //   y: number
-  //   vx: number
-  //   vy: number
-  //   speed: number
-  //   rotation: number
-  //   pointing: number
-  //   heading: XY
-  //   velocityResets: number
-  // }
   setPosition: (_: XY) => Position
   setVelocity: (_: XY) => Position
   setSpeed: (_: number) => void
@@ -37,8 +25,7 @@ export type Position = Component<"position", {
 export type PositionProps = {
   x?: number
   y?: number
-  vx?: number
-  vy?: number
+  velocity?: XY
   speed?: number
   velocityResets?: number
   screenFixed?: boolean
@@ -52,8 +39,7 @@ export const Position = (props: PositionProps = {}): Position => {
     data: {
       x: props.x ?? 0,
       y: props.y ?? 0,
-      vx: props.vx ?? 0,
-      vy: props.vy ?? 0,
+      velocity: props.velocity ?? { x: 0, y: 0 },
       speed: props.speed ?? 0,
       rotation: 0,
       pointing: 0,
@@ -69,8 +55,8 @@ export const Position = (props: PositionProps = {}): Position => {
       return position;
     },
     setVelocity: ({ x, y }: XY) => {
-      position.data.vx = Math.round(x * 100) / 100;
-      position.data.vy = Math.round(y * 100) / 100;
+      position.data.velocity.x = Math.round(x * 100) / 100;
+      position.data.velocity.y = Math.round(y * 100) / 100;
 
       if (x || y) position.orientation = orthoToDirection(Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8);
 

@@ -1,11 +1,11 @@
-import { Collider, Entity, Expires, Networked, Position, Renderable, TeamNumber, World, pixiCircle } from "@piggo-gg/core";
+import { Collider, Entity, Expires, Networked, Position, PositionProps, Renderable, TeamNumber, World, pixiCircle } from "@piggo-gg/core";
 
 export type OnHitHandler = (e2: Entity<Position | Collider>, world: World) => boolean
 
 export type ProjectileProps = {
   id: string
   radius: number
-  pos?: { x: number, y: number, vx: number, vy: number }
+  pos?: PositionProps
   onHit?: OnHitHandler
 }
 
@@ -33,7 +33,7 @@ export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: Projectile
   const projectile = Entity({
     id,
     components: {
-      position: Position(pos ? pos : { x: 200, y: 200, vx: 50, vy: 0 }),
+      position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 }}),
       networked: Networked({ isNetworked: true }),
       expires: Expires({ ticksLeft: 35 }),
       collider: Collider({
