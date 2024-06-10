@@ -12,14 +12,14 @@ export type Position = Component<"position"> & {
     speed: number
     rotation: number
     pointing: number
-    headingX: number
-    headingY: number
+    heading: XY
     velocityResets: number
   }
   setPosition: (_: XY) => Position
   setVelocity: (_: XY) => Position
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
+  updateVelocity: () => Position
   rotateUp: (_: number) => Position
   rotateDown: (_: number) => Position
 }
@@ -47,8 +47,7 @@ export const Position = (props: PositionProps = {}): Position => {
       speed: props.speed ?? 0,
       rotation: 0,
       pointing: 0,
-      headingX: 0,
-      headingY: 0,
+      heading: { x: 0, y: 0 },
       velocityResets: props.velocityResets ?? 0
     },
     orientation: "r",
@@ -70,14 +69,14 @@ export const Position = (props: PositionProps = {}): Position => {
     setSpeed: (speed: number) => {
       position.data.speed = speed;
     },
-    // TODO refactor, the xv/vy should be recalculated every tick
-    setHeading: ({ x, y }: XY) => {
-      position.data.headingX = x;
-      position.data.headingY = y;
-
-      // set velocity toward heading from current position
-      const dx = x - position.data.x;
-      const dy = y - position.data.y;
+    setHeading: (xy: XY) => {
+      position.data.heading = xy;
+      return position;
+    },
+    updateVelocity: () => {
+      if (!position.data.heading.x || !position.data.heading.y) return position;
+      const dx = position.data.heading.x - position.data.x;
+      const dy = position.data.heading.y - position.data.y;
 
       const angle = Math.atan2(dy, dx);
       const Vx = Math.cos(angle) * position.data.speed;

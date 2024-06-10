@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Controlling, Data, Debug, Effects, Expires, Gun, Health, Input, NPC, Networked, Player, Position, Renderable, Team, entries, keys } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Controlling, Data, Debug, Effects, Expires, Gun, Health, Input, NPC, Networked, Player, Position, Renderable, Team, XY, entries, keys } from "@piggo-gg/core";
 
 export type ComponentTypes =
   Actions | Clickable | Collider | Controlling |
@@ -6,7 +6,7 @@ export type ComponentTypes =
   Input | Team | Networked | NPC | Player |
   Position | Renderable | Gun
 
-export type NetworkedComponentData = Record<string, boolean | string | number | string[] | number[]>
+export type NetworkedComponentData = Record<string, boolean | string | number | string[] | number[] | XY>
 
 // 個 gè (generic measure word)
 // a Component is an atomic unit of data that is attached to an entity
