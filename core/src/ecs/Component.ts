@@ -27,8 +27,7 @@ export const serializeComponent = (c: Component<string, NetworkedComponentData>)
 }
 
 export const deserializeComponent = (c: Component<string, NetworkedComponentData>, data: NetworkedComponentData): void => {
-  if (!c.data) return;
   for (const [key, value] of entries(data)) {
-    c.data![key] = value;
+    c.data[key] = value;
   }
 }
