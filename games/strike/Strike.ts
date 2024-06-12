@@ -1,15 +1,17 @@
-import { Background, FloorCollidersArray, FloorTilesArray, GunSystem, HealthBarSystem, HomeButton, IsometricGame, ScorePanel, Scoreboard } from "@piggo-gg/core";
+import { Background, FloorCollidersArray, FloorTilesArray, GunSystem, HealthBarSystem, HomeButton, IsometricGame, Minimap, ScorePanel, Scoreboard } from "@piggo-gg/core";
 import { StrikeSystem } from "@piggo-gg/games";
 
 export const Strike = IsometricGame({
   id: "strike",
-  init: () => ({
+  init: (world) => ({
     id: "strike",
     systems: [StrikeSystem, GunSystem, HealthBarSystem],
     entities: [
       HomeButton(),
       Background(),
-      ScorePanel(), Scoreboard(),
+      ScorePanel(),
+      // Scoreboard(),
+      Minimap(80, mapTiles),
       FloorTilesArray(80, mapTiles),
       ...FloorCollidersArray(80, mapTiles)
     ]
