@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, entries, physics, values } from "@piggo-gg/core";
+import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, entries, physics, randomColor, values } from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
 // DebugSystem adds visual debug information to renderered entities
@@ -71,16 +71,20 @@ export const DebugSystem = ClientSystemBuilder({
       const r = Renderable({
         dynamic: (c: Graphics) => {
           if (c.clear) {
-            c.clear().setStrokeStyle({ width: 1, color: 0xffff00 });
             const { vertices } = physics.debugRender();
 
+            c.clear().setStrokeStyle({ width: 4 });
+
+            let color = 0xff0000;
+
             for (let i = 0; i < vertices.length; i += 4) {
+              color = color === 0xff0000 ? 0x00ff00 : 0xff0000;
               const one = { x: vertices[i], y: vertices[i + 1] };
               const two = { x: vertices[i + 2], y: vertices[i + 3] };
               c.moveTo(one.x, one.y);
               c.lineTo(two.x, two.y);
+              c.stroke({ color });
             }
-            c.stroke();
           }
         },
         zIndex: 5,
@@ -111,19 +115,19 @@ export const DebugSystem = ClientSystemBuilder({
           // handle new entities
           entities.forEach((entity) => {
             const { renderable } = entity.components;
-  
+
             if (!debugEntitiesPerEntity[entity.id] || !debugEntitiesPerEntity[entity.id].length) {
               debugEntitiesPerEntity[entity.id] = [];
               if (renderable) addEntityForRenderable(entity as Entity<Renderable | Position>);
             }
           });
-  
+
           // draw all colliders
           if (!world.entities["collider-debug"]) drawAllColliders();
-  
+
           // draw the fps text
           if (!world.entities["fpsText"]) drawFpsText();
-  
+
           // update all debug entities
           entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
             const entity = world.entities[id] as Entity<Position>;
@@ -146,7 +150,7 @@ export const DebugSystem = ClientSystemBuilder({
             debugEntities.forEach((debugEntity) => world.removeEntity(debugEntity.id));
           });
           debugEntitiesPerEntity = {};
-  
+
           // clear debug renderables
           debugRenderables = [];
         }
