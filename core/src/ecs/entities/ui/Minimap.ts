@@ -1,5 +1,5 @@
-import { Entity, Position, Renderable, TeamColors, World, pixiCircle } from "@piggo-gg/core";
-import { Container, Graphics, Matrix } from "pixi.js";
+import { Entity, Position, Renderable, TeamColors } from "@piggo-gg/core";
+import { Container, Graphics } from "pixi.js";
 
 export const Minimap = (dim: number, tileArray: number[]): Entity => {
   const container = new Container();
@@ -45,15 +45,16 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
           let color = 0xccccff
           tileArray.forEach((tile, i) => {
             if (tile === 0) return;
+
             color = 0xaaaacc;
             if (tile === 37) color = TeamColors[1];
             if (tile === 64) color = TeamColors[2];
-            // if (tile === 19) color = 0xffccaa;
+            if (tile === 19) color = 0xffccaa;
+
             const x = i % dim;
             const y = Math.floor(i / dim);
 
             tileGraphics.rect(x * tileSize, y * tileSize, tileSize, tileSize);
-            console.log(color.toString(16));
             tileGraphics.fill({ color });
           });
 
