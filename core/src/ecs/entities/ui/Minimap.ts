@@ -5,6 +5,12 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
   const container = new Container();
   const tileGraphics = new Graphics({ alpha: 0.9, rotation: Math.PI / 4 });
 
+  const Colors: Record<number, number> = {
+    37: TeamColors[1],
+    64: TeamColors[2],
+    19: 0xffccaa
+  }
+
   const minimap = Entity({
     id: "minimap",
     components: {
@@ -41,21 +47,17 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
           playerDot.circle(0, 0, 3).fill({ color: 0x00ff00 });
 
           // draw the tiles
-          const tileSize = 8;
+          const width = 8;
           let color = 0xccccff
           tileArray.forEach((tile, i) => {
             if (tile === 0) return;
 
-            color = 0xaaaacc;
-            if (tile === 37) color = TeamColors[1];
-            if (tile === 64) color = TeamColors[2];
-            if (tile === 19) color = 0xffccaa;
+            color = Colors[tile] || 0xccccff;
 
             const x = i % dim;
             const y = Math.floor(i / dim);
 
-            tileGraphics.rect(x * tileSize, y * tileSize, tileSize, tileSize);
-            tileGraphics.fill({ color });
+            tileGraphics.rect(x * width, y * width, width, width).fill({ color });
           });
 
           container.addChild(background, tileGraphics, outline, playerDot, mask);
