@@ -1,9 +1,9 @@
-import { Entity, Position, Renderable, TeamColors, World } from "@piggo-gg/core";
+import { Entity, Position, Renderable, TeamColors, World, pixiCircle } from "@piggo-gg/core";
 import { Container, Graphics, Matrix } from "pixi.js";
 
 export const Minimap = (dim: number, tileArray: number[]): Entity => {
   const container = new Container();
-  const tileGraphics = new Graphics({ alpha: 0.9 });
+  const tileGraphics = new Graphics({ alpha: 0.9, rotation: Math.PI / 4 });
 
   const minimap = Entity({
     id: "minimap",
@@ -20,31 +20,32 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
 
           const { position } = entity.components;
           if (!position) return;
-          tileGraphics.position.set(-position.data.x / 8 - 300, - position.data.y / 8);
+          tileGraphics.position.set(-position.data.x / 5.6 + 5, - position.data.y / 2.8 + 2);
         },
         setContainer: async () => {
 
+          // background
+          const background = new Graphics();
+          background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 })
+
           // outline
           const outline = new Graphics();
-          outline.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 }).stroke({ color: 0xffffaa, width: 2 });
-          // outline.roundRect(-100, -100, 200, 200).fill({ color: 0x000000, alpha: 0.5 });
+          outline.circle(0, 0, 100).stroke({ color: 0xffffaa, width: 2 });
 
           // mask
-          const mask = outline.clone();
+          const mask = background.clone();
+          tileGraphics.mask = mask;
 
           // player dot
           const playerDot = new Graphics();
-          playerDot.circle(0, 0, 3).fill({ color: 0xffff00 });
-
-          tileGraphics.mask = mask;
-          // tileGraphics.setTransform(new Matrix(, 0, 1, 2, 0, 0));
+          playerDot.circle(0, 0, 3).fill({ color: 0x00ff00 });
 
           // draw the tiles
           const tileSize = 8;
           let color = 0xccccff
           tileArray.forEach((tile, i) => {
             if (tile === 0) return;
-            color = 0xccccff;
+            color = 0xaaaacc;
             if (tile === 37) color = TeamColors[1];
             if (tile === 64) color = TeamColors[2];
             // if (tile === 19) color = 0xffccaa;
@@ -56,7 +57,7 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
             tileGraphics.fill({ color });
           });
 
-          container.addChild(outline, tileGraphics, playerDot, mask);
+          container.addChild(background, tileGraphics, outline, playerDot, mask);
           return container;
         }
       })

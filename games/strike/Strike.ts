@@ -3,7 +3,7 @@ import { StrikeSystem } from "@piggo-gg/games";
 
 export const Strike = IsometricGame({
   id: "strike",
-  init: (world) => ({
+  init: () => ({
     id: "strike",
     systems: [StrikeSystem, GunSystem, HealthBarSystem],
     entities: [
