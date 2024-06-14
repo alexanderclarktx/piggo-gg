@@ -2,6 +2,8 @@ import { Clickable, Entity, Position, Renderer } from "@piggo-gg/core";
 
 export type XY = { x: number, y: number };
 
+export const equalsXY = (a: XY, b: XY) => a.x === b.x && a.y === b.y;
+
 export const orthoToDirection = (o: number) => {
   if (o === 0) return "l";
   if (o === 1) return "ul";
@@ -92,3 +94,5 @@ export const checkBounds = (renderer: Renderer, position: Position, clickable: C
 
   return clicked;
 }
+
+export const randomColor = () => Math.random() * 0xffffff;

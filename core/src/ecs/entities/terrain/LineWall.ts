@@ -8,9 +8,10 @@ export type LineWallProps = {
   health?: number
   shootable?: boolean
   id?: string
+  color?: number
 }
 
-export const LineWall = ({ points, position, visible, health, id, shootable }: LineWallProps) => {
+export const LineWall = ({ points, position, visible, color, health, id, shootable }: LineWallProps) => {
 
   let newPoints: number[] = [];
 
@@ -54,7 +55,7 @@ export const LineWall = ({ points, position, visible, health, id, shootable }: L
           for (let i = 2; i < newPoints.length; i += 2) {
             g.lineTo(newPoints[i], newPoints[i + 1]);
           }
-          g.stroke({ width: 2, color: 0xffffff });
+          g.stroke({ width: 2, color: color ?? 0xffffff });
           return g;
         }
       })
