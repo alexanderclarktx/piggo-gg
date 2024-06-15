@@ -5,6 +5,8 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
   const container = new Container();
   const tileGraphics = new Graphics({ alpha: 0.9, rotation: Math.PI / 4 });
 
+  let scale = 0.5;
+
   const Colors: Record<number, number> = {
     37: TeamColors[1],
     64: TeamColors[2],
@@ -26,7 +28,7 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
 
           const { position } = entity.components;
           if (!position) return;
-          tileGraphics.position.set(-position.data.x / 5.6 + 5, - position.data.y / 2.8 + 2);
+          tileGraphics.position.set(-position.data.x / 5.6 * scale + 5, - position.data.y / 2.8 * scale + 2);
         },
         setContainer: async () => {
 
@@ -47,7 +49,7 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
           playerDot.circle(0, 0, 3).fill({ color: 0x00ff00 });
 
           // draw the tiles
-          const width = 8;
+          const width = 8 * scale;
           let color = 0xccccff
           tileArray.forEach((tile, i) => {
             if (tile === 0) return;
