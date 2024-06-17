@@ -1,23 +1,141 @@
-import { Background, FloorCollidersArray, FloorTilesArray, GunSystem, HealthBarSystem, HomeButton, IsometricGame, Minimap, ScorePanel, Scoreboard, SightSystem, SystemBuilder, isMobile, isometricToWorld } from "@piggo-gg/core";
-import { StrikeSystem } from "@piggo-gg/games";
+import { SystemBuilder, XY, isometricToWorld } from "@piggo-gg/core";
+import { Container } from "pixi.js";
 
-export const Strike = IsometricGame({
-  id: "strike",
-  init: () => ({
-    id: "strike",
-    systems: [StrikeSystem, SightSystem, GunSystem, HealthBarSystem],
-    entities: [
-      HomeButton(),
-      Background(),
-      ScorePanel(),
-      Scoreboard(),
-      FloorTilesArray(80, tileMap),
-      ...FloorCollidersArray(80, tileMap),
-      ... (isMobile() ? [] : [Minimap(80, tileMap)])
-    ]
-  })
-})
+const tileIndex = (num: number): number => {
+  let numZeros = 0;
+  for (let i = 0; i < num; i++) {
+    if (tileMap[i] === 0) numZeros++;
+  }
+  return num - numZeros;
+}
 
+export const SightSystem: SystemBuilder<"SightSystem"> = {
+  id: "SightSystem",
+  init: ({ world }) => {
+
+    let last: { tint: number, container: Container }[] = [];
+
+    return {
+      id: "SightSystem",
+      query: [],
+      onTick: () => {
+        if (!world.client) return;
+
+        const floorTilesArray = world.entities["floorTilesArray"];
+        if (!floorTilesArray) return;
+
+        const { playerEntity } = world.client;
+        const skelly = world.entities[playerEntity.components.controlling.data.entityId];
+        if (!skelly) return;
+
+        const { position } = skelly.components;
+        if (!position) return;
+
+        const { x, y } = isometricToWorld(position.data)
+
+        const tileX = Math.round(x / 32);
+        const tileY = Math.round(y / 32);
+
+        const num = tileY * 80 + tileX - 1;
+        const index = tileIndex(num);
+
+        const child = floorTilesArray.components.renderable?.c.children[index];
+        if (!child) return;
+
+        last.forEach(({ container, tint }) => {
+          container.tint = tint;
+        });
+
+        const visibleTiles: (Container | undefined)[] = [];
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num - i] === 0) break;
+          const tile = floorTilesArray.components.renderable?.c.children[index - i];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num + i] === 0) break;
+          const tile = floorTilesArray.components.renderable?.c.children[index + i];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num - (i * 80)] === 0) break;
+
+          const index = tileIndex(num - (i * 80))
+          const tile = floorTilesArray.components.renderable?.c.children[index];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num + (i * 80)] === 0) break;
+
+          const index = tileIndex(num + (i * 80))
+          const tile = floorTilesArray.components.renderable?.c.children[index];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num + (i * 80) - i] === 0) break;
+
+          const index = tileIndex(num + (i * 80) - i)
+          const tile = floorTilesArray.components.renderable?.c.children[index];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num + (i * 80) + i] === 0) break;
+
+          const index = tileIndex(num + (i * 80) + i)
+          const tile = floorTilesArray.components.renderable?.c.children[index];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num - (i * 80) - i] === 0) break;
+
+          const index = tileIndex(num - (i * 80) - i)
+          const tile = floorTilesArray.components.renderable?.c.children[index];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+          if (tileMap[num - (i * 80) + i] === 0) break;
+
+          const index = tileIndex(num - (i * 80) + i)
+          const tile = floorTilesArray.components.renderable?.c.children[index];
+          if (!tile) continue;
+          visibleTiles.push(tile);
+          last.push({ container: tile, tint: tile.tint });
+        }
+
+        visibleTiles.forEach((tile) => {
+          if (tile) tile.tint = 0x00aaff;
+        });
+
+        // if (last) last.container.tint = last.tint;
+        last.push({ container: child, tint: child.tint });
+        child.tint = 0x00ff00;
+      }
+    }
+  }
+}
+
+// TODO this data is a duplicate
 const tileMap = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
