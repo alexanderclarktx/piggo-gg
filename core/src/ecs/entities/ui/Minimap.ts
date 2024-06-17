@@ -1,7 +1,7 @@
 import { Entity, Position, Renderable, TeamColors } from "@piggo-gg/core";
 import { Container, Graphics } from "pixi.js";
 
-export const Minimap = (dim: number, tileArray: number[]): Entity => {
+export const Minimap = (dim: number, tileMap: number[]): Entity => {
   const container = new Container();
   const tileGraphics = new Graphics({ alpha: 0.9, rotation: Math.PI / 4 });
 
@@ -51,7 +51,7 @@ export const Minimap = (dim: number, tileArray: number[]): Entity => {
           // draw the tiles
           const width = 8 * scale;
           let color = 0xccccff
-          tileArray.forEach((tile, i) => {
+          tileMap.forEach((tile, i) => {
             if (tile === 0) return;
 
             color = Colors[tile] || 0xccccff;
