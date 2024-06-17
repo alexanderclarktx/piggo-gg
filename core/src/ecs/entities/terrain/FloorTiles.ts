@@ -52,7 +52,7 @@ export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 },
   }
 });
 
-export const FloorTilesArray = (dim: number, tileArray: number[]): Entity => Entity({
+export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entity({
   id: "floorTilesArray",
   components: {
     position: Position(),
@@ -77,7 +77,7 @@ export const FloorTilesArray = (dim: number, tileArray: number[]): Entity => Ent
         for (let x = 0; x < dim; x++) {
           for (let y = 0; y < dim; y++) {
 
-            const value = tileArray[x * dim + y];
+            const value = tileMap[x * dim + y];
             let tint = 0x7777aa;
 
             if (value === 0 || value === 10) continue;
@@ -98,16 +98,16 @@ export const FloorTilesArray = (dim: number, tileArray: number[]): Entity => Ent
   }
 })
 
-export const FloorCollidersArray = (dim: number, tileArray: number[]): Entity[] => {
+export const FloorCollidersArray = (dim: number, tileMap: number[]): Entity[] => {
   const entities: Entity[] = [];
   for (let x = 0; x < dim; x++) {
     for (let y = 0; y < dim; y++) {
 
-      const value = tileArray[x * dim + y];
-      const value9 = tileArray[x * dim + y + 1];
-      const value5 = tileArray[x * dim + y - 1];
-      const value7 = tileArray[(x - 1) * dim + y];
-      const value1 = tileArray[(x + 1) * dim + y];
+      const value = tileMap[x * dim + y];
+      const value9 = tileMap[x * dim + y + 1];
+      const value5 = tileMap[x * dim + y - 1];
+      const value7 = tileMap[(x - 1) * dim + y];
+      const value1 = tileMap[(x + 1) * dim + y];
 
       if (value !== 0) continue;
 

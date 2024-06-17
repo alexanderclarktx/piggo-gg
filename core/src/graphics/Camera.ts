@@ -1,13 +1,13 @@
-import { Renderable, Renderer, XY } from "@piggo-gg/core";
+import { Renderable, XY } from "@piggo-gg/core";
 import { Application, Container } from "pixi.js";
 
 export type Camera = {
   c: Container
   add: (r: Renderable) => void
   rescaleDelta: (delta: number) => void
-  moveBy: ({ x, y }: XY) => void
-  moveTo: ({ x, y }: XY) => void
-  toWorldCoords: ({ x, y }: XY) => XY
+  moveBy: (_: XY) => void
+  moveTo: (_: XY) => void
+  toWorldCoords: (_: XY) => XY
 }
 
 // Camera handles the viewport of the game
@@ -15,10 +15,10 @@ export const Camera = (app: Application): Camera => {
 
   const renderables: Set<Renderable> = new Set();
   const c: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 });
-  let scale = 1.4;
+  let scale = 1.6;
 
   const rescale = () => {
-    const min = 1;
+    const min = 1.2;
     const max = 2;
 
     if (scale < min) scale = min;
