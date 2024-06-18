@@ -10,7 +10,7 @@ export const Strike = IsometricGame({
       HomeButton(),
       Background(),
       ScorePanel(),
-      Scoreboard(),
+      // Scoreboard(),
       FloorTilesArray(80, tileMap),
       ...FloorCollidersArray(80, tileMap),
       ... (isMobile() ? [] : [Minimap(80, tileMap)])

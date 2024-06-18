@@ -1,5 +1,9 @@
-import { SystemBuilder, XY, isometricToWorld } from "@piggo-gg/core";
+import { Entity, SystemBuilder, XY, isometricToWorld } from "@piggo-gg/core";
 import { Container } from "pixi.js";
+
+
+const precalc = () => {
+}
 
 const tileIndex = (num: number): number => {
   let numZeros = 0;
@@ -7,6 +11,23 @@ const tileIndex = (num: number): number => {
     if (tileMap[i] === 0) numZeros++;
   }
   return num - numZeros;
+}
+
+const castRay = (start: XY, direction: XY, maxDistance: number, floorTilesArray: Entity) => {
+  const visibleTiles = [];
+
+  for (let i = 0; i < maxDistance; i++) {
+    const x = Math.round(start.x + direction.x * i);
+    const y = Math.round(start.y + direction.y * i);
+
+    if (tileMap[x + (y * 80)] === 0) break;
+
+    const index = tileIndex(x + (y * 80));
+    const tile = floorTilesArray.components.renderable?.c.children[index];
+    if (!tile) continue;
+    visibleTiles.push(tile);
+  }
+  return visibleTiles;
 }
 
 export const SightSystem: SystemBuilder<"SightSystem"> = {
@@ -33,103 +54,93 @@ export const SightSystem: SystemBuilder<"SightSystem"> = {
 
         const { x, y } = isometricToWorld(position.data)
 
-        const tileX = Math.round(x / 32);
+        const tileX = Math.round(x / 32) - 1;
         const tileY = Math.round(y / 32);
 
-        const num = tileY * 80 + tileX - 1;
-        const index = tileIndex(num);
-
+        const index = tileIndex(tileY * 80 + tileX);
         const child = floorTilesArray.components.renderable?.c.children[index];
         if (!child) return;
 
+        const visibleTiles: (Container | undefined)[] = [child];
+
         last.forEach(({ container, tint }) => {
-          container.tint = tint;
+          // container.tint = tint;
+          container.alpha = 0.5;
         });
 
-        const visibleTiles: (Container | undefined)[] = [];
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num - i] === 0) break;
-          const tile = floorTilesArray.components.renderable?.c.children[index - i];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
 
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num + i] === 0) break;
-          const tile = floorTilesArray.components.renderable?.c.children[index + i];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
+        const distanceDefault = 11;
+        const directions: (XY & { plus?: number })[] = [
+          { x: 1, y: 0 },
+          { x: 0, y: 1 },
+          { x: -1, y: 0 },
+          { x: 0, y: -1 },
+          { x: 0.1, y: 0.9 },
+          { x: 0.2, y: 0.8 },
+          { x: 0.3, y: 0.7, plus: 1 },
+          { x: 0.4, y: 0.6, plus: 1 },
+          { x: 0.45, y: 0.55, plus: 1 },
+          { x: 0.5, y: 0.5, plus: 2 },
+          { x: 0.55, y: 0.45, plus: 1 },
+          { x: 0.6, y: 0.4, plus: 1 },
+          { x: 0.7, y: 0.3, plus: 1 },
+          { x: 0.8, y: 0.2 },
+          { x: 0.9, y: 0.1 },
 
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num - (i * 80)] === 0) break;
+          { x: -0.1, y: 0.9 },
+          { x: -0.2, y: 0.8 },
+          { x: -0.3, y: 0.7, plus: 1 },
+          { x: -0.4, y: 0.6, plus: 1 },
+          { x: -0.45, y: 0.55, plus: 1 },
+          { x: -0.5, y: 0.5, plus: 2 },
+          { x: -0.55, y: 0.45, plus: 1 },
+          { x: -0.6, y: 0.4, plus: 1 },
+          { x: -0.7, y: 0.3, plus: 1 },
+          { x: -0.8, y: 0.2 },
+          { x: -0.9, y: 0.1 },
 
-          const index = tileIndex(num - (i * 80))
-          const tile = floorTilesArray.components.renderable?.c.children[index];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
+          { x: 0.1, y: -0.9 },
+          { x: 0.2, y: -0.8 },
+          { x: 0.3, y: -0.7, plus: 1 },
+          { x: 0.4, y: -0.6, plus: 1 },
+          { x: 0.45, y: -0.55, plus: 1 },
+          { x: 0.5, y: -0.5, plus: 2 },
+          { x: 0.55, y: -0.45, plus: 1 },
+          { x: 0.6, y: -0.4, plus: 1 },
+          { x: 0.7, y: -0.3, plus: 1 },
+          { x: 0.8, y: -0.2 },
+          { x: 0.9, y: -0.1 },
 
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num + (i * 80)] === 0) break;
+          { x: -0.1, y: -0.9 },
+          { x: -0.2, y: -0.8 },
+          { x: -0.3, y: -0.7, plus: 1 },
+          { x: -0.4, y: -0.6, plus: 1 },
+          { x: -0.45, y: -0.55, plus: 1 },
+          { x: -0.5, y: -0.5, plus: 2 },
+          { x: -0.55, y: -0.45, plus: 1 },
+          { x: -0.6, y: -0.4, plus: 1 },
+          { x: -0.7, y: -0.3, plus: 1 },
+          { x: -0.8, y: -0.2 },
+          { x: -0.9, y: -0.1 }
+        ]
 
-          const index = tileIndex(num + (i * 80))
-          const tile = floorTilesArray.components.renderable?.c.children[index];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
-
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num + (i * 80) - i] === 0) break;
-
-          const index = tileIndex(num + (i * 80) - i)
-          const tile = floorTilesArray.components.renderable?.c.children[index];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
-
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num + (i * 80) + i] === 0) break;
-
-          const index = tileIndex(num + (i * 80) + i)
-          const tile = floorTilesArray.components.renderable?.c.children[index];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
-
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num - (i * 80) - i] === 0) break;
-
-          const index = tileIndex(num - (i * 80) - i)
-          const tile = floorTilesArray.components.renderable?.c.children[index];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
-
-        for (let i = 1; i <= 8; i++) {
-          if (tileMap[num - (i * 80) + i] === 0) break;
-
-          const index = tileIndex(num - (i * 80) + i)
-          const tile = floorTilesArray.components.renderable?.c.children[index];
-          if (!tile) continue;
-          visibleTiles.push(tile);
-          last.push({ container: tile, tint: tile.tint });
-        }
+        directions.forEach(({ x, y, plus = 0 }) => {
+          const rayCast = castRay({ x: tileX, y: tileY }, { x, y }, distanceDefault + plus, floorTilesArray);
+          visibleTiles.push(...rayCast);
+        });
 
         visibleTiles.forEach((tile) => {
-          if (tile) tile.tint = 0x00aaff;
+          if (!tile) return;
+          last.push({ container: tile, tint: tile.tint });
         });
 
-        // if (last) last.container.tint = last.tint;
-        last.push({ container: child, tint: child.tint });
-        child.tint = 0x00ff00;
+        visibleTiles.forEach((tile) => {
+          // if (tile) tile.tint = 0x00aaff;
+          if (tile) tile.alpha = 1;
+          // if (tile) tile.filters = [];
+        });
+
+        // child.tint = 0x00ff00;
       }
     }
   }
