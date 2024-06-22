@@ -15,6 +15,7 @@ export * from "./src/ecs/systems/core/CooldownSystem";
 export * from "./src/ecs/systems/core/DamageSystem";
 export * from "./src/ecs/systems/core/EffectsSystem";
 export * from "./src/ecs/systems/core/ExpiresSystem";
+export * from "./src/ecs/systems/core/FogSystem";
 export * from "./src/ecs/systems/core/NPCSystem";
 export * from "./src/ecs/systems/core/PhysicsSystem";
 export * from "./src/ecs/systems/core/SightSystem";

@@ -32,13 +32,14 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
           const { team, controlling } = player.components;
 
+          if (spawnedPlayers.has(player.id)) return;
+
           // not controlling a character
           if (!controlling.data.entityId) {
             world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
             spawnedPlayers.add(player.id);
           }
 
-          // new player
           if (!spawnedPlayers.has(player.id)) {
             world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
             spawnedPlayers.add(player.id);

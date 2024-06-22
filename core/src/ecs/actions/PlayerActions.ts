@@ -6,9 +6,12 @@ export const controlEntity: Action = Action(({ entity, player }) => {
   player.components.controlling = Controlling({ entityId: entity.id });
 })
 
-export const invokeSpawnSkelly = (player: Noob, color?: number, pos?: XY): InvokedAction => ({
-  action: "spawnSkelly", playerId: player.id, params: { color, pos }
-})
+export const invokeSpawnSkelly = (player: Noob, color?: number, pos?: XY): InvokedAction => {
+  console.log("invokeSpawnSkelly", player.id, color, pos);
+  return {
+    action: "spawnSkelly", playerId: player.id, params: { color, pos }
+  }
+}
 
 export const spawnSkelly = Action<{ color: number, pos: XY }>(({ player, world, params }) => {
   if (!player) return;

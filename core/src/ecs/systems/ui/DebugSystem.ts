@@ -46,6 +46,7 @@ export const DebugSystem = ClientSystemBuilder({
           position: Position(),
           renderable: Renderable({
             zIndex: 4,
+            interpolate: true,
             setChildren: async () => [textBox, debugBounds, lineToHeading]
           })
         }

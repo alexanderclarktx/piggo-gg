@@ -87,7 +87,6 @@ export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entit
             if (value === 19) tint = 0xffccaa;
 
             const child = new Sprite({ texture, tint });
-            child.alpha = 0.5;
             child.position.set(y * width / 2 - (x * width / 2), (y + x) * height / 2);
 
             c.addChild(child);

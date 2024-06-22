@@ -1,27 +1,57 @@
-import {
-  Background, FloorCollidersArray, FloorTilesArray, GunSystem,
-  HealthBarSystem, HomeButton, IsometricGame, Minimap,
-  ScorePanel, Scoreboard, SightSystem, isMobile
-} from "@piggo-gg/core";
-import { StrikeSystem } from "@piggo-gg/games";
+import { SystemBuilder, isometricToWorld, searchVisibleTiles, tileIndex } from "@piggo-gg/core";
+import { Container } from "pixi.js";
 
-export const Strike = IsometricGame({
-  id: "strike",
-  init: () => ({
-    id: "strike",
-    systems: [StrikeSystem, SightSystem, GunSystem, HealthBarSystem],
-    entities: [
-      HomeButton(),
-      Background(),
-      ScorePanel(),
-      Scoreboard(),
-      FloorTilesArray(80, tileMap),
-      ...FloorCollidersArray(80, tileMap),
-      ... (isMobile() ? [] : [Minimap(80, tileMap)])
-    ]
-  })
-})
+export const FogSystem: SystemBuilder<"FogSystem"> = {
+  id: "FogSystem",
+  init: ({ world }) => {
 
+    let last: { tint: number, container: Container }[] = [];
+
+    return {
+      id: "FogSystem",
+      query: [],
+      onTick: () => {
+        if (!world.client) return;
+
+        const floorTilesArray = world.entities["floorTilesArray"];
+        if (!floorTilesArray) return;
+
+        const { playerEntity } = world.client;
+        const skelly = world.entities[playerEntity.components.controlling.data.entityId];
+        if (!skelly) return;
+
+        const { position } = skelly.components;
+        if (!position) return;
+
+        const { x, y } = isometricToWorld(position.data)
+
+        const tileX = Math.round(x / 32) - 1;
+        const tileY = Math.round(y / 32);
+
+        const index = tileIndex(tileY * 80 + tileX, tileMap);
+        const child = floorTilesArray.components.renderable?.c.children[index];
+        if (!child) return;
+
+        const visibleTiles: Container[] = [child];
+
+        last.forEach(({ container, tint }) => container.tint = tint);
+        last = [];
+
+        visibleTiles.push(...searchVisibleTiles({ x: tileX, y: tileY }, floorTilesArray, tileMap));
+
+        visibleTiles.forEach((tile) => {
+          last.push({ container: tile, tint: tile.tint });
+        });
+
+        visibleTiles.forEach((tile) => {
+          if (tile && tile.tint === 0x7777aa) tile.tint = 0x8888cc;
+        });
+      }
+    }
+  }
+}
+
+// TODO this data is a duplicate
 const tileMap = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
