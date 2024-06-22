@@ -12,19 +12,15 @@ export interface System<T extends string = string> {
   onRender?: (entities: Entity[], deltaMS: number) => void;
 }
 
-export type SystemProps = {
-  world: World
-}
-
 export type SystemBuilder<T extends string = string> = {
   id: T,
-  init: (props: SystemProps) => System<T> | undefined
+  init: (world: World) => System<T> | undefined
 }
 
 export const ClientSystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => ({
   ...builder,
-  init: (props: SystemProps) => {
-    if (props.world.runtimeMode !== "client") return undefined;
-    return builder.init(props);
+  init: (world: World) => {
+    if (world.runtimeMode !== "client") return undefined;
+    return builder.init(world);
   }
 })

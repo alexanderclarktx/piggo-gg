@@ -2,7 +2,7 @@ import { Entity, InvokedAction, SystemBuilder, entries, keys } from "@piggo-gg/c
 
 export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
   id: "CooldownSystem",
-  init: ({ world }) => {
+  init: (world) => {
 
     const cooldowns: Record<string, number> = {};
 

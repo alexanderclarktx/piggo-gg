@@ -1,15 +1,15 @@
-import { Entity, Renderable, SystemBuilder, Team } from "@piggo-gg/core";
+import { ClientSystemBuilder, Entity, Renderable, Team } from "@piggo-gg/core";
 
-export const SightSystem: SystemBuilder<"SightSystem"> = {
+export const SightSystem = ClientSystemBuilder({
   id: "SightSystem",
-  init: ({ world }) => {
+  init: ({ client }) => {
 
     return {
       id: "SightSystem",
       query: ["team", "renderable"],
       onTick: (entities: Entity<Team | Renderable>[]) => {
 
-        const player = world.client?.playerEntity;
+        const player = client?.playerEntity;
         if (!player) return;
 
         const { team: playerTeam } = player.components.team.data;
@@ -29,4 +29,4 @@ export const SightSystem: SystemBuilder<"SightSystem"> = {
     }
 
   }
-}
+});

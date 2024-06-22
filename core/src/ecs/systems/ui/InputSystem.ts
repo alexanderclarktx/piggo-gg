@@ -21,7 +21,7 @@ const KeyBuffer = (b?: KeyMouse[]) => {
 // InputSystem handles all keyboard/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
-  init: ({ world }) => {
+  init: (world) => {
     if (!world.renderer) return undefined;
 
     const renderer = world.renderer;

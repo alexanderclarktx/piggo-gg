@@ -2,7 +2,7 @@ import { Entity, SystemBuilder, entries } from "@piggo-gg/core";
 
 export const EffectsSystem: SystemBuilder<"EffectsSystem"> = {
   id: "EffectsSystem",
-  init: ({ world }) => ({
+  init: (world) => ({
     id: "EffectsSystem",
     query: ["effects"],
     onTick: (entities: Entity[]) => {

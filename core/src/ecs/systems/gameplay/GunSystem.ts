@@ -12,7 +12,7 @@ const pz = [
 
 export const GunSystem: SystemBuilder<"gun"> = ({
   id: "gun",
-  init: ({ world }) => {
+  init: (world) => {
 
     let playerToGun: Record<string, number> = {};
     let gunToRendered: Record<number, Entity<Renderable | Position>> = {};

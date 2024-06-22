@@ -3,7 +3,7 @@ import { Entity, NPC, Position, SystemBuilder } from "@piggo-gg/core";
 // NPCSystem invokes ai logic for NPCs
 export const NPCSystem: SystemBuilder<"NPCSystem"> = {
   id: "NPCSystem",
-  init: ({ world }) => ({
+  init: (world) => ({
     id: "NPCSystem",
     query: ["npc", "position"],
     onTick: (entities: Entity<NPC | Position>[]) => {

@@ -9,7 +9,7 @@ const TeamSpawns: Record<TeamNumber, XY> = {
 
 export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
   id: "StrikeSystem",
-  init: ({ world }) => {
+  init: (world) => {
 
     let state: GameStates = "warmup";
     const spawnedPlayers: Set<string> = new Set();

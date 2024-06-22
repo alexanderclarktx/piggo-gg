@@ -4,7 +4,7 @@ import { Graphics, Text } from "pixi.js";
 // DebugSystem adds visual debug information to renderered entities
 export const DebugSystem = ClientSystemBuilder({
   id: "DebugSystem",
-  init: ({ world }) => {
+  init: (world) => {
     let debugRenderables: Renderable[] = [];
     let debugEntitiesPerEntity: Record<string, Entity<Renderable | Position>[]> = {};
 

@@ -3,7 +3,7 @@ import { Noob, SystemBuilder, invokeSpawnSkelly } from "@piggo-gg/core";
 // SkellySpawnSystem handles spawning characters for players
 export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
   id: "SkellySpawnSystem",
-  init: ({ world }) => {
+  init: (world) => {
 
     const spawnedPlayers: Set<string> = new Set();
 

@@ -10,19 +10,20 @@ export const Strike = IsometricGame({
   init: () => ({
     id: "strike",
     systems: [StrikeSystem, SightSystem, GunSystem, HealthBarSystem],
+    tileMap: StrikeTileMap,
     entities: [
       HomeButton(),
       Background(),
       ScorePanel(),
       Scoreboard(),
-      FloorTilesArray(80, tileMap),
-      ...FloorCollidersArray(80, tileMap),
-      ... (isMobile() ? [] : [Minimap(80, tileMap)])
+      FloorTilesArray(80, StrikeTileMap),
+      ...FloorCollidersArray(80, StrikeTileMap),
+      ... (isMobile() ? [] : [Minimap(80, StrikeTileMap)])
     ]
   })
 })
 
-const tileMap = [
+export const StrikeTileMap = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

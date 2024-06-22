@@ -3,7 +3,7 @@
 // // rollback netcode client
 // export const RollbackClientSystem: SystemBuilder<"RollbackClientSystem"> = ({
 //   id: "RollbackClientSystem",
-//   init: ({ world }) => {
+//   init: (world) => {
 //     if (!world.client) return undefined;
 
 //     const client = world.client;

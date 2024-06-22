@@ -8,7 +8,7 @@ export type Command<T extends {} = {}> = Action<T> & {
 
 export const CommandSystem = ClientSystemBuilder({
   id: "CommandSystem",
-  init: ({ world }) => {
+  init: (world) => {
 
     const processMessage = (message: string) => {
       values(world.commands).forEach(({ regex, parse }) => {

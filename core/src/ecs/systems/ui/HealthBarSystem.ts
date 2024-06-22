@@ -3,7 +3,7 @@ import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder, e
 // HealthBarSystem displays character health bars
 export const HealthBarSystem = ClientSystemBuilder({
   id: "HealthBarSystem",
-  init: ({ world }) => {
+  init: (world) => {
     if (!world.renderer) return undefined;
 
     const characterHealthBars: Record<string, Entity<Renderable | Position>> = {};
@@ -30,10 +30,10 @@ export const HealthBarSystem = ClientSystemBuilder({
       query: ["health", "position", "renderable"],
       skipOnRollback: true,
       onTick: (entities: Entity<Health | Position | Renderable>[]) => {
+
         // handle old entities
         entries(characterHealthBars).forEach(([entityId, healthbar]) => {
           if (!world.entities[entityId]) {
-            console.log("DELETEDDD")
             world.removeEntity(healthbar.id);
             delete characterHealthBars[entityId];
           }
