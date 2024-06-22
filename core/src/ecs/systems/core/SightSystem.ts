@@ -1,32 +1,42 @@
-import { ClientSystemBuilder, Entity, Renderable, Team } from "@piggo-gg/core";
+import { Polyline } from "@dimforge/rapier2d-compat";
+import { ClientSystemBuilder, Collider, Entity, Position, Renderable, Team, physics } from "@piggo-gg/core";
 
 export const SightSystem = ClientSystemBuilder({
   id: "SightSystem",
-  init: ({ client }) => {
+  init: (world) => ({
+    id: "SightSystem",
+    query: ["team", "renderable"],
+    onTick: (entities: Entity<Team | Renderable | Position | Collider>[]) => {
 
-    return {
-      id: "SightSystem",
-      query: ["team", "renderable"],
-      onTick: (entities: Entity<Team | Renderable>[]) => {
+      const playerCharacter = world.client?.playerCharacter();
+      if (!playerCharacter) return;
 
-        const player = client?.playerEntity;
-        if (!player) return;
+      const { position: playerPosition, collider: playerCollider, team: playerTeam } = playerCharacter.components;
+      if (!playerPosition || !playerCollider || !playerTeam) return;
 
-        const { team: playerTeam } = player.components.team.data;
+      entities.forEach((entity) => {
 
-        entities.forEach((entity) => {
-          const { team, renderable } = entity.components;
+        // ignore the player character
+        if (entity.id === playerCharacter.id) return;
 
-          if (team.data.team === playerTeam) {
-            renderable.c.alpha = 1;
-            renderable.visible = true;
-          } else {
-            renderable.c.alpha = 0.5;
-            renderable.visible = false;
-          }
-        });
-      }
+        const { team, renderable, collider, position } = entity.components;
+
+        if (team.data.team === playerTeam.data.team) {
+          renderable.visible = true;
+        } else {
+          let hit = false;
+
+          const line = [0, 0, playerPosition.data.x - position.data.x, playerPosition.data.y - position.data.y];
+          physics.intersectionsWithShape(position.data, 0, new Polyline(Float32Array.from(line)), (c) => {
+            if (c.isSensor() || c === collider.rapierCollider || c === playerCollider.rapierCollider) return true;
+
+            hit = true;
+            return false;
+          });
+
+          renderable.visible = !hit;
+        }
+      });
     }
-
-  }
-});
+  })
+})

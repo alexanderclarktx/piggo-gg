@@ -1,7 +1,7 @@
 import {
-  DelaySyncer, LobbyCreate, LobbyCreateRequest,
+  DelaySyncer, Entity, LobbyCreate, LobbyCreateRequest,
   LobbyJoin, LobbyJoinRequest, NetClientSystem, NetMessageTypes,
-  Noob, RequestData, RequestTypes, Syncer, World, genPlayerId
+  Noob, Position, RequestData, RequestTypes, Syncer, World, genPlayerId
 } from "@piggo-gg/core";
 
 const servers = {
@@ -21,6 +21,7 @@ export type Client = {
   lobbyId: string | undefined
   lastLatency: number
   lastMessageTick: number
+  playerCharacter: () => undefined | Entity<Position>
   createLobby: (callback: Callback<LobbyCreate>) => void
   joinLobby: (lobbyId: string, callback: Callback<LobbyJoin>) => void
 }
@@ -46,6 +47,13 @@ export const Client = ({ world }: ClientProps): Client => {
     lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
+    playerCharacter: () => {
+      const { controlling } = client.playerEntity.components;
+
+      const pc = world.entities[controlling.data.entityId] as Entity<Position>;
+      if (!pc || !pc.components.position) return undefined;
+      return pc;
+    },
     createLobby: (callback) => {
       // send create lobby request
       const requestData: RequestData = { type: "request", request: LobbyCreateRequest() };

@@ -49,7 +49,9 @@ export const HealthBarSystem = ClientSystemBuilder({
           }
 
           // update visibility
-          characterHealthBars[entity.id].components.renderable.visible = renderable.visible;
+          if (characterHealthBars[entity.id]) {
+            characterHealthBars[entity.id].components.renderable.visible = renderable.visible;
+          }
         });
       }
     }
