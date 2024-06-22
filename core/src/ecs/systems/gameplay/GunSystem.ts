@@ -12,7 +12,7 @@ const pz = [
 
 export const GunSystem: SystemBuilder<"gun"> = ({
   id: "gun",
-  init: ({ world }) => {
+  init: (world) => {
 
     let playerToGun: Record<string, number> = {};
     let gunToRendered: Record<number, Entity<Renderable | Position>> = {};
@@ -58,14 +58,14 @@ export const GunSystem: SystemBuilder<"gun"> = ({
 
     return {
       id: "gun",
-      query: ["gun"],
-      onTick: (entities: Entity<Gun | Position>[]) => {
+      query: ["gun", "position", "renderable"],
+      onTick: (entities: Entity<Gun | Position | Renderable>[]) => {
         entities.forEach((entity) => {
 
-          const { gun } = entity.components;
+          const { gun, renderable } = entity.components;
 
           // clean up old guns
-          if (entity.components.gun.data.id !== playerToGun[entity.id]) {
+          if (gun.data.id !== playerToGun[entity.id]) {
             world.removeEntity(`${entity.id}-gun${playerToGun[entity.id]}`);
             delete playerToGun[entity.id];
           }
@@ -77,6 +77,9 @@ export const GunSystem: SystemBuilder<"gun"> = ({
             playerToGun[entity.id] = gun.data.id;
             gunToRendered[gun.data.id] = r;
           };
+
+          // update gun visibility
+          gunToRendered[gun.data.id].components.renderable.visible = renderable.visible;
         });
       }
     }

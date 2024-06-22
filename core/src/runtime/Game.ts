@@ -6,6 +6,7 @@ export type Game<T extends string = string> = {
   entities: Entity[]
   systems: SystemBuilder[]
   commands?: Command[]
+  tileMap?: number[]
 }
 
 export type GameBuilder<T extends string = string> = {

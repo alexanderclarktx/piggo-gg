@@ -1,26 +1,27 @@
-import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder } from "@piggo-gg/core";
+import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder, entries } from "@piggo-gg/core";
 
-// HealthBarSystem displays gui elements
+// HealthBarSystem displays character health bars
 export const HealthBarSystem = ClientSystemBuilder({
   id: "HealthBarSystem",
-  init: ({ world }) => {
+  init: (world) => {
     if (!world.renderer) return undefined;
 
-    let renderedEntities: Set<Entity> = new Set();
+    const characterHealthBars: Record<string, Entity<Renderable | Position>> = {};
 
     const healthbarForEntity = (entity: Entity<Health | Position | Renderable>) => {
       if (entity.components.renderable) {
         const { health, position } = entity.components;
 
-        world.addEntity(Entity({
+        const healthbar = Entity<Position | Renderable>({
           id: `${entity.id}-health`,
           components: {
             position: position,
             renderable: HealthBar({ health })
           }
-        }));
+        });
 
-        renderedEntities.add(entity);
+        characterHealthBars[entity.id] = healthbar;
+        world.addEntity(healthbar);
       }
     }
 
@@ -29,21 +30,27 @@ export const HealthBarSystem = ClientSystemBuilder({
       query: ["health", "position", "renderable"],
       skipOnRollback: true,
       onTick: (entities: Entity<Health | Position | Renderable>[]) => {
+
         // handle old entities
-        renderedEntities.forEach((entity) => {
-          if (!world.entities[entity.id]) {
-            world.removeEntity(`${entity.id}-health`);
-            renderedEntities.delete(entity);
+        entries(characterHealthBars).forEach(([entityId, healthbar]) => {
+          if (!world.entities[entityId]) {
+            world.removeEntity(healthbar.id);
+            delete characterHealthBars[entityId];
           }
         });
   
         // handle new entities
         entities.forEach((entity) => {
-          const { health, position } = entity.components;
+          const { health, position, renderable } = entity.components;
           if (health && health.showHealthBar && position) {
-            if (!renderedEntities.has(entity)) {
+            if (!characterHealthBars[entity.id] || position !== characterHealthBars[entity.id].components.position) {
               healthbarForEntity(entity);
             }
+          }
+
+          // update visibility
+          if (characterHealthBars[entity.id]) {
+            characterHealthBars[entity.id].components.renderable.visible = renderable.visible;
           }
         });
       }

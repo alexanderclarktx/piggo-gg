@@ -2,7 +2,7 @@ import { Noob, SystemBuilder, entries } from "@piggo-gg/core";
 
 export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   id: "ActionSystem",
-  init: ({ world }) => ({
+  init: (world) => ({
     id: "ActionSystem",
     query: [],
     onTick: () => {

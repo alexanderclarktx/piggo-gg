@@ -39,4 +39,4 @@ export const switchTeam = Action(({ entity, world }) => {
       renderable.prepareAnimations(TeamColors[team.data.team])
     }
   }
-});
+})

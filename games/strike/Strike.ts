@@ -1,24 +1,29 @@
-import { Background, FloorCollidersArray, FloorTilesArray, GunSystem, HealthBarSystem, HomeButton, IsometricGame, Minimap, ScorePanel, Scoreboard, isMobile } from "@piggo-gg/core";
+import {
+  Background, FloorCollidersArray, FloorTilesArray, GunSystem,
+  HealthBarSystem, HomeButton, IsometricGame, Minimap,
+  ScorePanel, Scoreboard, SightSystem, isMobile
+} from "@piggo-gg/core";
 import { StrikeSystem } from "@piggo-gg/games";
 
 export const Strike = IsometricGame({
   id: "strike",
   init: () => ({
     id: "strike",
-    systems: [StrikeSystem, GunSystem, HealthBarSystem],
+    systems: [StrikeSystem, SightSystem, GunSystem, HealthBarSystem],
+    tileMap: StrikeTileMap,
     entities: [
       HomeButton(),
       Background(),
       ScorePanel(),
       Scoreboard(),
-      FloorTilesArray(80, tileMap),
-      ...FloorCollidersArray(80, tileMap),
-      ... (isMobile() ? [] : [Minimap(80, tileMap)])
+      FloorTilesArray(80, StrikeTileMap),
+      ...FloorCollidersArray(80, StrikeTileMap),
+      ... (isMobile() ? [] : [Minimap(80, StrikeTileMap)])
     ]
   })
 })
 
-const tileMap = [
+const StrikeTileMap = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

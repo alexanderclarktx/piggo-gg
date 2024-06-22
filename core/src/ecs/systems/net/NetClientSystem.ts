@@ -3,7 +3,7 @@ import { Entity, GameData, Syncer, SystemBuilder } from "@piggo-gg/core";
 // netcode client system
 export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem"> = (syncer) => ({
   id: "NetClientSystem",
-  init: ({ world }) => {
+  init: (world) => {
     if (!world.client) return undefined;
 
     const client = world.client;

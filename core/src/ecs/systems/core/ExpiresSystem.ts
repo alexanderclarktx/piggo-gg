@@ -2,7 +2,7 @@ import { Entity, Expires, SystemBuilder } from "@piggo-gg/core";
 
 export const ExpiresSystem: SystemBuilder<"ExpiresSystem"> = {
   id: "ExpiresSystem",
-  init: ({ world }) => ({
+  init: (world) => ({
     id: "ExpiresSystem",
     query: ["expires"],
     onTick: (entities: Entity<Expires>[]) => {

@@ -7,7 +7,7 @@ RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
 // PhysicsSystem calculates the physics of entities
 export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
   id: "PhysicsSystem",
-  init: ({ world }) => {
+  init: (world) => {
 
     let bodies: Record<string, RigidBody> = {};
     let colliders: Record<string, Collider> = {};

@@ -3,7 +3,7 @@ import { Entity, Position, Renderable, ClientSystemBuilder, XY, values } from "@
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
-  init: ({ world }) => {
+  init: (world) => {
     if (!world.renderer) return undefined;
 
     const renderer = world.renderer;

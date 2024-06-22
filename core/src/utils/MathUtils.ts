@@ -1,4 +1,5 @@
 import { Clickable, Entity, Position, Renderer } from "@piggo-gg/core";
+import { Container } from "pixi.js";
 
 export type XY = { x: number, y: number };
 
@@ -33,6 +34,14 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
 });
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
+
+export const colorAdd = (color: number, add: number): number => {
+  const r = Math.min(255, ((color >> 16) & 0xff) + ((add >> 16) & 0xff));
+  const g = Math.min(255, ((color >> 8) & 0xff) + ((add >> 8) & 0xff));
+  const b = Math.min(255, (color & 0xff) + (add & 0xff));
+
+  return (r << 16) + (g << 8) + b;
+}
 
 export const closestEntity = (entities: Entity<Position>[], pos: XY): Entity<Position> | undefined => {
   if (entities.length > 1) {
@@ -91,4 +100,84 @@ export const checkBounds = (renderer: Renderer, position: Position, clickable: C
   )
 
   return clicked;
+}
+
+export const tileIndex = (n: number, tileMap: number[]): number => {
+  let numZeros = 0;
+  for (let i = 0; i < n; i++) {
+    if (tileMap[i] === 0) numZeros++;
+  }
+  return n - numZeros;
+}
+
+export const searchVisibleTiles = (start: XY, floorTilesArray: Entity, tileMap: number[]): Set<Container> => {
+  const visibleTilesContainers: Set<Container> = new Set();
+
+  const directions: (XY & { plus?: number })[] = [
+    { x: 1, y: 0 }, { x: 0, y: 1 }, { x: -1, y: 0 }, { x: 0, y: -1 },
+    { x: 0.1, y: 0.9 },
+    { x: 0.2, y: 0.8 },
+    { x: 0.3, y: 0.7, plus: 1 },
+    { x: 0.4, y: 0.6, plus: 1 },
+    { x: 0.45, y: 0.55, plus: 1 },
+    { x: 0.5, y: 0.5, plus: 2 },
+    { x: 0.55, y: 0.45, plus: 1 },
+    { x: 0.6, y: 0.4, plus: 1 },
+    { x: 0.7, y: 0.3, plus: 1 },
+    { x: 0.8, y: 0.2 },
+    { x: 0.9, y: 0.1 },
+    { x: -0.1, y: 0.9 },
+    { x: -0.2, y: 0.8 },
+    { x: -0.3, y: 0.7, plus: 1 },
+    { x: -0.4, y: 0.6, plus: 1 },
+    { x: -0.45, y: 0.55, plus: 1 },
+    { x: -0.5, y: 0.5, plus: 2 },
+    { x: -0.55, y: 0.45, plus: 1 },
+    { x: -0.6, y: 0.4, plus: 1 },
+    { x: -0.7, y: 0.3, plus: 1 },
+    { x: -0.8, y: 0.2 },
+    { x: -0.9, y: 0.1 },
+    { x: 0.1, y: -0.9 },
+    { x: 0.2, y: -0.8 },
+    { x: 0.3, y: -0.7, plus: 1 },
+    { x: 0.4, y: -0.6, plus: 1 },
+    { x: 0.45, y: -0.55, plus: 1 },
+    { x: 0.5, y: -0.5, plus: 2 },
+    { x: 0.55, y: -0.45, plus: 1 },
+    { x: 0.6, y: -0.4, plus: 1 },
+    { x: 0.7, y: -0.3, plus: 1 },
+    { x: 0.8, y: -0.2 },
+    { x: 0.9, y: -0.1 },
+    { x: -0.1, y: -0.9 },
+    { x: -0.2, y: -0.8 },
+    { x: -0.3, y: -0.7, plus: 1 },
+    { x: -0.4, y: -0.6, plus: 1 },
+    { x: -0.45, y: -0.55, plus: 1 },
+    { x: -0.5, y: -0.5, plus: 2 },
+    { x: -0.55, y: -0.45, plus: 1 },
+    { x: -0.6, y: -0.4, plus: 1 },
+    { x: -0.7, y: -0.3, plus: 1 },
+    { x: -0.8, y: -0.2 },
+    { x: -0.9, y: -0.1 }
+  ]
+
+  const castRay = (direction: XY, maxDistance: number): void => {
+    for (let i = 0; i < maxDistance; i++) {
+      const x = Math.round(start.x + direction.x * i);
+      const y = Math.round(start.y + direction.y * i);
+  
+      if (tileMap[x + (y * 80)] === 0) break;
+  
+      const index = tileIndex(x + (y * 80), tileMap);
+      const tile = floorTilesArray.components.renderable?.c.children[index];
+      if (!tile) continue;
+      visibleTilesContainers.add(tile);
+    }
+  }
+
+  directions.forEach(({ x, y, plus = 0 }) => {
+    castRay({ x, y }, 15 + plus);
+  });
+
+  return visibleTilesContainers;
 }

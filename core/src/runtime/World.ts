@@ -24,6 +24,7 @@ export type World = {
   tickFaster: boolean
   tickFlag: "green" | "red"
   tickrate: number
+  tileMap: number[] | undefined
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
@@ -79,6 +80,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
     tickFaster: false,
     tickFlag: "green",
     tickrate: 25,
+    tileMap: undefined,
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id];
       if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup();
@@ -119,7 +121,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
     addSystemBuilders: (systemBuilders: SystemBuilder[]) => {
       systemBuilders.forEach((systemBuilder) => {
         if (!world.systems[systemBuilder.id]) {
-          const system = systemBuilder.init({ world });
+          const system = systemBuilder.init(world);
           if (system) world.addSystems([system]);
         }
       })
@@ -201,6 +203,9 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
 
       // set new game
       world.currentGame = game.init(world);
+
+      // set tileMap
+      world.tileMap = world.currentGame.tileMap;
 
       // initialize new game
       world.addEntities(world.currentGame.entities);

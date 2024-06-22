@@ -10,7 +10,7 @@ const spawnLocations: PositionProps[] = [
 // ZombieSpawnSystem spawns waves of zombies
 export const ZombieSpawnSystem: SystemBuilder<"ZombieSpawnSystem"> = ({
   id: "ZombieSpawnSystem",
-  init: ({ world }) => {
+  init: (world) => {
 
     const data: { wave: number, lastSpawnIndex: number, zombies: string[] } = {
       wave: 0,

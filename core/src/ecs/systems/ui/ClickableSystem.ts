@@ -6,7 +6,7 @@ export let clickableClickedThisFrame = false;
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
-  init: ({ world }) => {
+  init: (world) => {
     if (!world.renderer) return undefined;
 
     const renderer = world.renderer;

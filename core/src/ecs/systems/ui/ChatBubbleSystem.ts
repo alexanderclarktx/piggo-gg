@@ -4,7 +4,7 @@ import { ClientSystemBuilder, Entity, Position, Renderable, TextBox } from "@pig
 export const ChatBubbleSystem = ClientSystemBuilder({
   id: "ChatBubbleSystem",
 
-  init: ({ world }) => {
+  init: (world) => {
 
     const entityChatBubble: Record<string, [Renderable, number]> = {};
 
