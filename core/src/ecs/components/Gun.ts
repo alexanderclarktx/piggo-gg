@@ -44,7 +44,7 @@ export const Gun = (props: GunProps): Gun => {
       if ((gun.lastShot + gun.fireRate) > world.tick) return false;
 
       // check auto/semi
-      if (!props.automatic && tick < world.tick - 2) return false;
+      if (!props.automatic && gun.lastShot >= tick) return false;
 
       return true;
     },

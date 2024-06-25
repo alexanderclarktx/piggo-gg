@@ -11,7 +11,7 @@ const Nametag = (entity: Noob): Renderable => {
   });
 
   return Renderable({
-    zIndex: 2,
+    zIndex: 10,
     interpolate: true,
     dynamic: async () => {
       if (entity.components.player.data.name !== name) {

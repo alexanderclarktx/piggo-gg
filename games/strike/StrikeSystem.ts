@@ -21,11 +21,17 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
       query: ["player"],
       onTick: (players: Noob[]) => {
 
+        // despawn disconnected players
         spawnedPlayers.forEach((playerId) => {
           if (!world.entities[playerId]) {
             world.removeEntity(`skelly-${playerId}`);
             spawnedPlayers.delete(playerId);
           }
+        })
+
+        // despawn dead players
+        spawnedPlayers.forEach((playerId) => {
+          if (!world.entities[`skelly-${playerId}`]) spawnedPlayers.delete(playerId);
         })
 
         players.forEach((player) => {
@@ -34,12 +40,13 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
           if (spawnedPlayers.has(player.id)) return;
 
-          // not controlling a character
+          // player not controlling a character
           if (!controlling.data.entityId) {
             world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
             spawnedPlayers.add(player.id);
           }
 
+          // new player
           if (!spawnedPlayers.has(player.id)) {
             world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
             spawnedPlayers.add(player.id);
