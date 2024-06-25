@@ -4,7 +4,7 @@ export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
 export var mouse: XY = { x: 0, y: 0 };
 
-type KeyMouse = { key: string, mouse: XY };
+type KeyMouse = { key: string, mouse: XY, tick: number };
 
 const KeyBuffer = (b?: KeyMouse[]) => {
   let buffer: KeyMouse[] = b ? [...b] : [];
@@ -53,7 +53,7 @@ export const InputSystem = ClientSystemBuilder({
         return;
       }
 
-      bufferedDown.push({ key, mouse });
+      bufferedDown.push({ key, mouse, tick: world.tick });
     });
 
     document.addEventListener("pointerup", (event) => {
@@ -72,7 +72,7 @@ export const InputSystem = ClientSystemBuilder({
 
         // remove from bufferedDown and add to bufferedUp
         bufferedDown.remove(keyName);
-        bufferedUp.push({ key: keyName, mouse });
+        bufferedUp.push({ key: keyName, mouse, tick: world.tick });
       }
     });
 
@@ -99,7 +99,7 @@ export const InputSystem = ClientSystemBuilder({
             // push the message to chatHistory
             if (chatBuffer.length > 0) {
               const message = chatBuffer.join("");
-              world.chatHistory.push(world.tick + 1, world.client?.playerId ?? "", message);
+              world.chatHistory.push(world.tick + 1, world.client?.playerId() ?? "", message);
             }
 
             chatBuffer = [];
@@ -112,7 +112,7 @@ export const InputSystem = ClientSystemBuilder({
           // push to chatBuffer or bufferedDown
           (chatIsOpen && validChatCharacters.has(keyName)) ?
             chatBuffer.push(keyName) :
-            bufferedDown.push({ key: keyName, mouse });
+            bufferedDown.push({ key: keyName, mouse, tick: world.tick });
         }
       }
     });
@@ -129,7 +129,7 @@ export const InputSystem = ClientSystemBuilder({
       const pointing = Math.round((angle + Math.PI) / (Math.PI / 4)) % 8;
 
       world.actionBuffer.push(world.tick + 1, entity.id,
-        { action: "point", playerId: world.client?.playerId, params: { pointing } }
+        { action: "point", playerId: world.client?.playerId(), params: { pointing } }
       );
 
       // handle joystick input
@@ -140,6 +140,7 @@ export const InputSystem = ClientSystemBuilder({
 
       // handle standalone and composite (a,b) input controls
       for (const keyPress in input.inputMap.press) {
+        const keyMouse = buffer.contains(keyPress);
         if (keyPress.includes(",")) {
           const inputKeys = keyPress.split(",");
 
@@ -158,12 +159,12 @@ export const InputSystem = ClientSystemBuilder({
             // remove all keys from the buffer
             inputKeys.forEach((key) => buffer.remove(key));
           }
-        } else if (buffer.contains(keyPress)) {
+        } else if (keyMouse) {
 
           // check for single key pressed
           const controllerInput = input.inputMap.press[keyPress];
           if (controllerInput != null) {
-            const invocation = controllerInput({ mouse, entity, world });
+            const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick });
             if (invocation && actions.actionMap[invocation.action ?? ""]) {
               world.actionBuffer.push(world.tick + 1, entity.id, invocation);
             }
@@ -184,10 +185,11 @@ export const InputSystem = ClientSystemBuilder({
       const { input, actions } = entity.components;
 
       for (const keyPress in input.inputMap.press) {
-        if (bufferDown.contains(keyPress)) {
+        const keyMouse = bufferDown.contains(keyPress);
+        if (keyMouse) {
           const controllerInput = input.inputMap.press[keyPress];
           if (controllerInput != null) {
-            const invocation = controllerInput({ mouse, entity, world });
+            const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick });
             if (invocation && actions.actionMap[invocation.action ?? ""]) {
               world.actionBuffer.push(world.tick, entity.id, invocation);
             }
@@ -229,7 +231,7 @@ export const InputSystem = ClientSystemBuilder({
           return;
         }
 
-        if (clickableClickedThisFrame || joystickOn) bufferedDown.remove("mb1");
+        if (clickableClickedThisFrame.value || joystickOn) bufferedDown.remove("mb1");
 
         const playerEntity = world.client?.playerEntity;
         if (!playerEntity) return;

@@ -32,6 +32,7 @@ export * from "./src/ecs/systems/ui/ClickableSystem";
 export * from "./src/ecs/systems/ui/DebugSystem";
 export * from "./src/ecs/systems/ui/HealthBarSystem";
 export * from "./src/ecs/systems/ui/InputSystem";
+export * from "./src/ecs/systems/ui/NametagSystem";
 export * from "./src/ecs/systems/ui/RenderSystem";
 export * from "./src/ecs/entities/buttons/ConnectButton";
 export * from "./src/ecs/entities/buttons/FullscreenButton";

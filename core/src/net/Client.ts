@@ -14,13 +14,13 @@ const env = location.hostname === "localhost" ? "dev" : "production";
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void;
 
 export type Client = {
-  playerId: string
   playerEntity: Noob
   ms: number
   ws: WebSocket
   lobbyId: string | undefined
   lastLatency: number
   lastMessageTick: number
+  playerId: () => string
   playerCharacter: () => undefined | Entity<Position>
   createLobby: (callback: Callback<LobbyCreate>) => void
   joinLobby: (lobbyId: string, callback: Callback<LobbyJoin>) => void
@@ -35,18 +35,19 @@ export const Client = ({ world }: ClientProps): Client => {
   let syncer: Syncer = DelaySyncer;
   let requestBuffer: Record<string, Callback> = {};
 
-  const playerId = genPlayerId();
-  const noob = Noob({ id: playerId });
+  const noob = Noob({ id: genPlayerId() });
   world.addEntity(noob);
 
   const client: Client = {
     ws: new WebSocket(servers[env]),
-    playerId,
     playerEntity: noob,
     ms: 0,
     lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
+    playerId: () => {
+      return client.playerEntity.id;
+    },
     playerCharacter: () => {
       const { controlling } = client.playerEntity.components;
 

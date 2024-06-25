@@ -1,8 +1,7 @@
 import {
-  Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health,
-  Input, Move, Networked, Pistol, Position, Renderable, Shoot, Team,
-  TeamNumber, WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, pixiText,
-  Point, XY
+  Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input,
+  Move, Networked, Pistol, Position, Renderable, Shoot, Team, TeamNumber,
+  WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, Point, XY
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -20,10 +19,10 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       input: Input({
         press: {
           ...WASDInputMap.press,
-          "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId, params: mouse }),
-          "mb1": ({ mouse, world }) => ({ action: "shoot", playerId: world.client?.playerId, params: { mouse, id: Math.round(Math.random() * 10000) } }),
-          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId, params: mouse }),
-          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId, params: mouse })
+          "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId(), params: { mouse } }),
+          "mb1": ({ mouse, world, tick }) => ({ action: "shoot", playerId: world.client?.playerId(), params: { tick, mouse, id: Math.round(Math.random() * 10000) } }),
+          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId(), params: mouse }),
+          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId(), params: mouse })
         },
         joystick: DefaultJoystickHandler
       }),
@@ -56,16 +55,6 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
             ul: new AnimatedSprite([textures["ul1"], textures["ul2"], textures["ul3"]]),
             ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
           }
-
-          // TODO refactor to new system
-          const nametag = pixiText({
-            text: id.split("-")[1],
-            style: { fill: 0xffff00, fontSize: 13 },
-            anchor: { x: 0.48, y: 0 },
-            pos: { x: 0, y: -45 }
-          });
-
-          r.c.addChild(nametag);
         }
       })
     }

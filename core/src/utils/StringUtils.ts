@@ -4,5 +4,5 @@ export const genHash = (substr: number = 7) => {
 }
 
 export const genPlayerId = () => {
-  return `noob${Math.trunc((Math.random() * 100))}`;
+  return `noob${Math.trunc((Math.random() * 1000))}`;
 }
