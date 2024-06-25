@@ -16,8 +16,8 @@ export const Shoot = Action<{ id: number, mouse: XY }>(({ world, params, entity 
   const { gun, position, team } = entity.components;
   if (!gun || !position || !team) return;
 
-  if (gun.canShoot()) {
-    gun.shoot();
+  if (gun.canShoot(world)) {
+    gun.shoot(world);
 
     const { x, y } = position.data;
     const { speed } = gun;

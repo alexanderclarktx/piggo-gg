@@ -16,7 +16,7 @@ export const SpawnCommand: Command<SpawnCommandParams> = {
     let response: SpawnCommandAction | undefined = undefined;
     keys(entityBuilders).forEach((id) => {
       if (id === match[1]) response = {
-        action: "spawn", playerId: world.client?.playerId, params: { entity: id }
+        action: "spawn", playerId: world.client?.playerId(), params: { entity: id }
       }
     });
     return response;

@@ -7,7 +7,7 @@ export const DelaySyncer: Syncer = {
       actions: world.actionBuffer.atTick(world.tick + 1) ?? {},
       chats: world.chatHistory.atTick(world.tick) ?? {},
       game: world.currentGame.id,
-      player: world.client?.playerId ?? "",
+      player: world.client?.playerId() ?? "",
       serializedEntities: {},
       tick: world.tick,
       timestamp: Date.now(),
@@ -112,7 +112,7 @@ export const DelaySyncer: Syncer = {
     const numChats = keys(message.chats).length;
     if (numChats) {
       entries(message.chats).forEach(([playerId, messages]) => {
-        if (playerId === world.client?.playerId) return;
+        if (playerId === world.client?.playerId()) return;
         world.chatHistory.set(world.tick, playerId, messages);
       });
     }

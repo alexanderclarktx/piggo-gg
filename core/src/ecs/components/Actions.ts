@@ -16,7 +16,7 @@ export const Action = <T extends {} = {}>(invoke: Action<T>["invoke"], cooldown?
 
 export type InvokedAction<A extends string = string, P extends {} = {}> = {
   action: A,
-  playerId: string | undefined,
+  playerId?: string | undefined,
   params?: P
 }
 

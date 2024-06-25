@@ -1,4 +1,4 @@
-import { Actions, Entity, Input, Noob, Player, Position, Renderable, Team, TeamColors, ToggleHidden, ToggleVisible, World, pixiRect, pixiText, setsEqual } from "@piggo-gg/core";
+import { Actions, Entity, Input, Noob, Player, Position, Renderable, Team, TeamColors, ToggleHidden, ToggleVisible, World, clickableClickedThisFrame, pixiRect, pixiText, setsEqual } from "@piggo-gg/core";
 import { ScrollBox } from "@pixi/ui";
 import { Container, Graphics } from "pixi.js";
 
@@ -13,10 +13,10 @@ export const Scoreboard = (): Entity => {
     components: {
       input: Input({
         press: {
-          "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId })
+          "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId() })
         },
         release: {
-          "shift": ({ world }) => ({ action: "ToggleHidden", playerId: world.client?.playerId })
+          "shift": ({ world }) => ({ action: "ToggleHidden", playerId: world.client?.playerId() })
         },
         joystick: () => null
       }),
@@ -76,7 +76,7 @@ const makeInnerContainer = (entity: Entity<Team | Player>, width: number, world:
   const c = new Container();
 
   const titleText = pixiText({
-    text: player.name,
+    text: player.data.name,
     style: { fill: 0xffffff, fontSize: 24 },
     pos: { x: 20, y: 10 },
     anchor: { x: 0, y: 0 }
@@ -94,7 +94,8 @@ const makeInnerContainer = (entity: Entity<Team | Player>, width: number, world:
   c.addChild(outline, titleText, scorelineText);
 
   c.onpointerdown = () => {
-    world.actionBuffer.push(world.tick + 2, player.name, { action: "switchTeam", playerId: world.client?.playerId });
+    clickableClickedThisFrame.set(world.tick + 1);
+    world.actionBuffer.push(world.tick + 2, player.data.name, { action: "switchTeam", playerId: world.client?.playerId() });
   }
 
   return c;

@@ -99,7 +99,7 @@ export const InputSystem = ClientSystemBuilder({
             // push the message to chatHistory
             if (chatBuffer.length > 0) {
               const message = chatBuffer.join("");
-              world.chatHistory.push(world.tick + 1, world.client?.playerId ?? "", message);
+              world.chatHistory.push(world.tick + 1, world.client?.playerId() ?? "", message);
             }
 
             chatBuffer = [];
@@ -129,7 +129,7 @@ export const InputSystem = ClientSystemBuilder({
       const pointing = Math.round((angle + Math.PI) / (Math.PI / 4)) % 8;
 
       world.actionBuffer.push(world.tick + 1, entity.id,
-        { action: "point", playerId: world.client?.playerId, params: { pointing } }
+        { action: "point", playerId: world.client?.playerId(), params: { pointing } }
       );
 
       // handle joystick input
@@ -229,7 +229,7 @@ export const InputSystem = ClientSystemBuilder({
           return;
         }
 
-        if (clickableClickedThisFrame || joystickOn) bufferedDown.remove("mb1");
+        if (clickableClickedThisFrame.value || joystickOn) bufferedDown.remove("mb1");
 
         const playerEntity = world.client?.playerEntity;
         if (!playerEntity) return;

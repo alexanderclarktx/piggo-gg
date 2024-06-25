@@ -30,7 +30,7 @@ export const Clickable = (props: ClickableProps): Clickable => {
     height: props.height,
     active: props.active,
     anchor: props.anchor ?? { x: 0, y: 0 },
-    click: props.click ?? (({ world }) => ({ action: "click", playerId: world.client?.playerId })),
+    click: props.click ?? (({ world }) => ({ action: "click", playerId: world.client?.playerId() })),
     hoverOver: props.hoverOver,
     hoverOut: props.hoverOut
   }

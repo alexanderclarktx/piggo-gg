@@ -16,5 +16,5 @@ export const WASDInputMap: InputMap = {
 
 const move = (entity: Entity, world: World, x: number, y: number): null | InvokedAction<"move", XY> => {
   if (!entity.components.position) return null;
-  return { action: "move", playerId: world.client?.playerId, params: normalize({ x, y, entity: entity as Entity<Position> }) }
+  return { action: "move", playerId: world.client?.playerId(), params: normalize({ x, y, entity: entity as Entity<Position> }) }
 }

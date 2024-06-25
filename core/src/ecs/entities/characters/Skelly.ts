@@ -20,10 +20,10 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       input: Input({
         press: {
           ...WASDInputMap.press,
-          "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId, params: mouse }),
-          "mb1": ({ mouse, world }) => ({ action: "shoot", playerId: world.client?.playerId, params: { mouse, id: Math.round(Math.random() * 10000) } }),
-          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId, params: mouse }),
-          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId, params: mouse })
+          "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId(), params: mouse }),
+          "mb1": ({ mouse, world }) => ({ action: "shoot", playerId: world.client?.playerId(), params: { mouse, id: Math.round(Math.random() * 10000) } }),
+          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId(), params: mouse }),
+          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId(), params: mouse })
         },
         joystick: DefaultJoystickHandler
       }),
@@ -58,14 +58,14 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
           }
 
           // TODO refactor to new system
-          const nametag = pixiText({
-            text: id.split("-")[1],
-            style: { fill: 0xffff00, fontSize: 13 },
-            anchor: { x: 0.48, y: 0 },
-            pos: { x: 0, y: -45 }
-          });
+          // const nametag = pixiText({
+          //   text: id.split("-")[1],
+          //   style: { fill: 0xffff00, fontSize: 13 },
+          //   anchor: { x: 0.48, y: 0 },
+          //   pos: { x: 0, y: -45 }
+          // });
 
-          r.c.addChild(nametag);
+          // r.c.addChild(nametag);
         }
       })
     }

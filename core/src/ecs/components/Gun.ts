@@ -1,4 +1,4 @@
-import { Component } from "@piggo-gg/core";
+import { Component, World } from "@piggo-gg/core";
 
 export type Gun = Component<"gun", { id: number }> & {
   name: string
@@ -8,8 +8,8 @@ export type Gun = Component<"gun", { id: number }> & {
   lastShot: number
   reloadTime: number
   fireRate: number
-  canShoot: () => boolean
-  shoot: () => void
+  canShoot: (world: World) => boolean
+  shoot: (world: World) => void
 }
 
 export type GunProps = {
@@ -35,12 +35,12 @@ export const Gun = (props: GunProps): Gun => {
     lastShot: 0,
     reloadTime: props.reloadTime,
     fireRate: props.fireRate,
-    canShoot: () => {
-      const canShoot = Date.now() - gun.lastShot > 10000 / gun.fireRate;
+    canShoot: (world: World) => {
+      const canShoot = (gun.lastShot + gun.fireRate) <= world.tick;
       return canShoot;
     },
-    shoot: () => {
-      gun.lastShot = Date.now();
+    shoot: (world: World) => {
+      gun.lastShot = world.tick;
     }
   }
   return gun;
@@ -48,7 +48,7 @@ export const Gun = (props: GunProps): Gun => {
 
 const GunBuilder = (props: GunProps) => () => Gun(props);
 
-export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 500, clipSize: 7, reloadTime: 1, fireRate: 40 });
+export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 500, clipSize: 7, reloadTime: 1, fireRate: 6 });
 export const Shotgun = GunBuilder({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2 });
 export const MachineGun = GunBuilder({ name: "machinegun", damage: 5, speed: 300, clipSize: 30, reloadTime: 3, fireRate: 10 });
 export const Sniper = GunBuilder({ name: "sniper", damage: 50, speed: 400, clipSize: 1, reloadTime: 2, fireRate: 2 });
