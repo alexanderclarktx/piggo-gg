@@ -25,7 +25,7 @@ const Nametag = (entity: Noob): Renderable => {
   })
 }
 
-// HealthBarSystem displays character health bars
+// NameTagSystem displays character nametags
 export const NametagSystem = ClientSystemBuilder({
   id: "NametagSystem",
   init: (world) => {
@@ -37,7 +37,7 @@ export const NametagSystem = ClientSystemBuilder({
       const { position } = character.components;
       if (!position) return;
 
-      const healthbar = Entity<Position | Renderable>({
+      const nametag = Entity<Position | Renderable>({
         id: `${player.id}-nametag`,
         components: {
           position: position,
@@ -45,8 +45,8 @@ export const NametagSystem = ClientSystemBuilder({
         }
       });
 
-      characterNametags[player.id] = healthbar;
-      world.addEntity(healthbar);
+      characterNametags[player.id] = nametag;
+      world.addEntity(nametag);
     }
 
     return {
