@@ -1,8 +1,7 @@
 import {
-  Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health,
-  Input, Move, Networked, Pistol, Position, Renderable, Shoot, Team,
-  TeamNumber, WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, pixiText,
-  Point, XY
+  Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input,
+  Move, Networked, Pistol, Position, Renderable, Shoot, Team, TeamNumber,
+  WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, Point, XY
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -56,16 +55,6 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
             ul: new AnimatedSprite([textures["ul1"], textures["ul2"], textures["ul3"]]),
             ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
           }
-
-          // TODO refactor to new system
-          // const nametag = pixiText({
-          //   text: id.split("-")[1],
-          //   style: { fill: 0xffff00, fontSize: 13 },
-          //   anchor: { x: 0.48, y: 0 },
-          //   pos: { x: 0, y: -45 }
-          // });
-
-          // r.c.addChild(nametag);
         }
       })
     }
