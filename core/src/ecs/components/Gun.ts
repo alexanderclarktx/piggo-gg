@@ -8,18 +8,21 @@ export type Gun = Component<"gun", { id: number }> & {
   lastShot: number
   reloadTime: number
   fireRate: number
-  canShoot: (world: World) => boolean
+  canShoot: (world: World, tick: number) => boolean
   shoot: (world: World) => void
 }
 
 export type GunProps = {
-  name: string;
-  damage: number;
-  speed: number;
-  clipSize: number;
-  reloadTime: number;
-  fireRate: number;
+  name: string
+  damage: number
+  speed: number
+  clipSize: number
+  reloadTime: number
+  fireRate: number
+  automatic: boolean
 }
+
+const GunBuilder = (props: GunProps) => () => Gun(props);
 
 export const Gun = (props: GunProps): Gun => {
 
@@ -35,9 +38,15 @@ export const Gun = (props: GunProps): Gun => {
     lastShot: 0,
     reloadTime: props.reloadTime,
     fireRate: props.fireRate,
-    canShoot: (world: World) => {
-      const canShoot = (gun.lastShot + gun.fireRate) <= world.tick;
-      return canShoot;
+    canShoot: (world: World, tick: number) => {
+
+      // check firing rate
+      if ((gun.lastShot + gun.fireRate) > world.tick) return false;
+
+      // check auto/semi
+      if (!props.automatic && tick < world.tick - 2) return false;
+
+      return true;
     },
     shoot: (world: World) => {
       gun.lastShot = world.tick;
@@ -46,9 +55,7 @@ export const Gun = (props: GunProps): Gun => {
   return gun;
 }
 
-const GunBuilder = (props: GunProps) => () => Gun(props);
-
-export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 500, clipSize: 7, reloadTime: 1, fireRate: 6 });
-export const Shotgun = GunBuilder({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2 });
-export const MachineGun = GunBuilder({ name: "machinegun", damage: 5, speed: 300, clipSize: 30, reloadTime: 3, fireRate: 10 });
-export const Sniper = GunBuilder({ name: "sniper", damage: 50, speed: 400, clipSize: 1, reloadTime: 2, fireRate: 2 });
+export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 500, clipSize: 7, reloadTime: 1, fireRate: 3, automatic: false });
+export const Shotgun = GunBuilder({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2, automatic: false });
+export const MachineGun = GunBuilder({ name: "machinegun", damage: 5, speed: 300, clipSize: 30, reloadTime: 3, fireRate: 10, automatic: true });
+export const Sniper = GunBuilder({ name: "sniper", damage: 50, speed: 400, clipSize: 1, reloadTime: 2, fireRate: 2, automatic: false });
