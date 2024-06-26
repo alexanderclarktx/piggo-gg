@@ -5,15 +5,16 @@ export type OnHitHandler = (e2: Entity<Position | Collider>, world: World) => bo
 export type ProjectileProps = {
   id: string
   radius: number
+  color: number
   pos?: PositionProps
   onHit?: OnHitHandler
 }
 
-export const onHitTeam = (allyTeam: TeamNumber): OnHitHandler => (e2: Entity<Position | Collider>) => {
+export const onHitTeam = (allyTeam: TeamNumber, damage: number): OnHitHandler => (e2: Entity<Position | Collider>) => {
   const { collider, health, team } = e2.components;
   if (health && collider.shootable) {
     if (!team || (team.data.team !== allyTeam)) {
-      health.data.health -= 25;
+      health.data.health -= damage;
       return true;
     }
   }
@@ -29,7 +30,7 @@ const onHitDefault = (e2: Entity<Position | Collider>) => {
   return false;
 }
 
-export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: ProjectileProps) => {
+export const Projectile = ({ radius, pos, id, color, onHit = onHitDefault }: ProjectileProps) => {
   const projectile = Entity({
     id,
     components: {
@@ -49,7 +50,7 @@ export const Projectile = ({ radius, pos, id, onHit = onHitDefault }: Projectile
         zIndex: 3,
         interpolate: true,
         setContainer: async () => {
-          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color: 0xffff00, alpha: 1 } });
+          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1 } });
         }
       })
     }

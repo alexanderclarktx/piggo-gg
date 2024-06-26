@@ -38,7 +38,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
 
           // outline
           const outline = new Graphics();
-          outline.circle(0, 0, 100).stroke({ color: 0xffffaa, width: 2 });
+          outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 });
 
           // mask
           const mask = background.clone();

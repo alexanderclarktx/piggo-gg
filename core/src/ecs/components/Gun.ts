@@ -1,25 +1,28 @@
 import { Component, World } from "@piggo-gg/core";
 
-export type Gun = Component<"gun", { id: number }> & {
-  name: string
+export type Gun = Component<"gun", { id: number, clip: number, ammo: number }> & {
+  automatic: boolean
+  size: number
   damage: number
-  speed: number
-  clipSize: number
-  lastShot: number
-  reloadTime: number
   fireRate: number
+  lastShot: number
+  name: string
+  reloadTime: number
+  speed: number
   canShoot: (world: World, tick: number) => boolean
   shoot: (world: World) => void
 }
 
 export type GunProps = {
-  name: string
-  damage: number
-  speed: number
-  clipSize: number
-  reloadTime: number
-  fireRate: number
   automatic: boolean
+  ammo: number
+  size: number
+  clip: number
+  damage: number
+  fireRate: number
+  name: string
+  reloadTime: number
+  speed: number
 }
 
 const GunBuilder = (props: GunProps) => () => Gun(props);
@@ -29,15 +32,18 @@ export const Gun = (props: GunProps): Gun => {
   const gun: Gun = {
     type: "gun",
     data: {
-      id: Math.round(Math.random() * 100000)
+      id: Math.round(Math.random() * 100000),
+      clip: props.clip,
+      ammo: props.ammo,
     },
-    name: props.name,
+    automatic: props.automatic,
+    size: props.size,
     damage: props.damage,
-    speed: props.speed,
-    clipSize: props.clipSize,
-    lastShot: 0,
-    reloadTime: props.reloadTime,
     fireRate: props.fireRate,
+    lastShot: 0,
+    name: props.name,
+    reloadTime: props.reloadTime,
+    speed: props.speed,
     canShoot: (world: World, tick: number) => {
 
       // check firing rate
@@ -46,16 +52,51 @@ export const Gun = (props: GunProps): Gun => {
       // check auto/semi
       if (!props.automatic && gun.lastShot >= tick) return false;
 
+      // check has clip
+      if (gun.data.clip <= 0) return false;
+
       return true;
     },
     shoot: (world: World) => {
       gun.lastShot = world.tick;
+      gun.data.clip -= 1;
     }
   }
   return gun;
 }
 
-export const Pistol = GunBuilder({ name: "pistol", damage: 10, speed: 500, clipSize: 7, reloadTime: 1, fireRate: 3, automatic: false });
-export const Shotgun = GunBuilder({ name: "shotgun", damage: 20, speed: 150, clipSize: 2, reloadTime: 2, fireRate: 2, automatic: false });
-export const MachineGun = GunBuilder({ name: "machinegun", damage: 5, speed: 300, clipSize: 30, reloadTime: 3, fireRate: 10, automatic: true });
-export const Sniper = GunBuilder({ name: "sniper", damage: 50, speed: 400, clipSize: 1, reloadTime: 2, fireRate: 2, automatic: false });
+export const Deagle = GunBuilder({
+  name: "deagle",
+  automatic: false,
+  ammo: 45,
+  clip: 15,
+  damage: 15,
+  fireRate: 3,
+  reloadTime: 1,
+  size: 3,
+  speed: 400
+});
+
+export const AK = GunBuilder({
+  name: "ak",
+  automatic: true,
+  ammo: 50,
+  clip: 25,
+  damage: 25,
+  fireRate: 12,
+  reloadTime: 3,
+  size: 4,
+  speed: 500
+});
+
+export const AWP = GunBuilder({
+  name: "awp",
+  automatic: false,
+  ammo: 15,
+  clip: 1,
+  damage: 100,
+  fireRate: 40,
+  reloadTime: 2,
+  size: 5,
+  speed: 600
+});

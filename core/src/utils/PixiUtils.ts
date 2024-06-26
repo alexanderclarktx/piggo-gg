@@ -26,7 +26,7 @@ export const pixiStyle = ({ g, color, alpha, strokeColor, strokeAlpha, strokeWid
   g.fill(
     { color: color ?? 0x000000, alpha: alpha ?? 0.4 }
   ).stroke(
-    { width: strokeWidth ?? 1, color: strokeColor ?? color ?? 0xffffff, alpha: strokeAlpha ?? 1 }
+    { width: strokeWidth ?? 2, color: strokeColor ?? color ?? 0xffffff, alpha: strokeAlpha ?? 0.9 }
   );
   return g;
 }
@@ -39,7 +39,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     resolution: 2,
     style: {
       fill: style?.fill ?? 0xffffff,
-      fontSize: style?.fontSize ?? 14
+      fontSize: style?.fontSize ?? 14,
     }
   });
 }

@@ -41,7 +41,7 @@ export const DelaySyncer: Syncer = {
         } else if (entityId.startsWith("noob")) {
           world.addEntity(Noob({ id: entityId }))
         } else if (entityId.startsWith("projectile")) {
-          world.addEntity(Projectile({ id: entityId, radius: 3 }));
+          world.addEntity(Projectile({ id: entityId, radius: 3, color: 0xffff00 }));
         } else if (entityId.startsWith("linewall")) {
           const points = entityId.split("-").slice(1).map((p) => parseInt(p)).filter(Number);
           world.addEntity(LineWall({ id: entityId, points, visible: true }));

@@ -45,6 +45,7 @@ export const LineWall = ({ points, position, visible, health, id, shootable }: L
         dynamic: (g: Graphics) => {
           if (!wall.components.health) return;
           const { health, maxHealth } = wall.components.health.data;
+          if (health <= 0) return;
 
           const white = 255 * health / maxHealth;
           g.tint = (white << 16) + (255 << 8) + 255;
