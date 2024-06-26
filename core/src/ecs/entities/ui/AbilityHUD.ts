@@ -1,4 +1,5 @@
 import { Entity, Position, Renderable, pixiRect, pixiText } from "@piggo-gg/core";
+import { Graphics } from "pixi.js";
 
 type AbilityStrings = [string, string, string, string];
 
@@ -11,6 +12,8 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
   const square2 = pixiRect({ w: width, h: height, y: 0, x: -75 });
   const square3 = pixiRect({ w: width, h: height, y: 0, x: 0 });
   const square4 = pixiRect({ w: width, h: height, y: 0, x: 75 });
+
+  const ammo = pixiText({ text: "", pos: { x: 340, y: 10 }, anchor: { x: 1, y: 0 }, style: { fontSize: 32 } });
 
   const abilityHud = Entity<Renderable | Position>({
     id: "abilityHud",
@@ -34,25 +37,45 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
           const label3 = pixiText({ text: labels[2], pos: { x: 5, y: 11 }, style: { fontSize: 16 } });
           const label4 = pixiText({ text: labels[3], pos: { x: 80, y: 11 }, style: { fontSize: 16 } });
 
-          renderable.c.addChild(square1, square2, square3, square4, key1, key2, key3, key4, label1, label2, label3, label4);
+          // outline
+          const outline = new Graphics();
+          outline.moveTo(-400, 50)
+            .lineTo(-230, 50)
+            .lineTo(-170, -10)
+            .lineTo(150, -10)
+            .lineTo(210, 50)
+            .lineTo(380, 50)
+            .stroke({ width: 2, color: 0xffffff, alpha: 0.9 });
+
+          renderable.c.addChild(outline, ammo, square1, square2, square3, square4, key1, key2, key3, key4, label1, label2, label3, label4);
         },
         dynamic: (_, __, ___, w) => {
-          const playerEntity = w.client?.playerEntity;
-          if (!playerEntity) return;
+          const playerCharacter = w.client?.playerCharacter();
+          if (!playerCharacter) return;
 
-          const controlledEntity = w.entities[playerEntity.components.controlling?.data.entityId ?? -1];
-          if (!controlledEntity) return;
+          const { gun, actions } = playerCharacter.components;
 
+          // handle ammo
+          if (gun) ammo.text = `${gun.data.clip} ‖ ${gun.data.ammo}`;
+
+          // handle abilities
           labels.forEach((label, i) => {
-            const ability = controlledEntity.components.actions?.actionMap[label];
-            if (!ability) return;
-
             const square = [square1, square2, square3, square4][i];
+            const ability = actions?.actionMap[label];
+
+            // no ability
+            if (!ability) {
+              square.alpha = 0.4;
+              return;
+            }
+
+            // no cooldown timer
             if (!ability.cdLeft || !ability.cooldown) {
               square.alpha = 1;
               return;
             }
 
+            // cooldown
             const cooldownRatio = ability.cdLeft / ability.cooldown;
             square.alpha = 1 - 0.7 * Math.sqrt(cooldownRatio);
           });

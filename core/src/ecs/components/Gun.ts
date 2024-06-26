@@ -1,9 +1,8 @@
 import { Component, World } from "@piggo-gg/core";
 
-export type Gun = Component<"gun", { id: number }> & {
+export type Gun = Component<"gun", { id: number, clip: number, ammo: number }> & {
   automatic: boolean
-  bulletSize: number
-  clipSize: number
+  size: number
   damage: number
   fireRate: number
   lastShot: number
@@ -16,8 +15,9 @@ export type Gun = Component<"gun", { id: number }> & {
 
 export type GunProps = {
   automatic: boolean
-  bulletSize: number
-  clipSize: number
+  ammo: number
+  size: number
+  clip: number
   damage: number
   fireRate: number
   name: string
@@ -32,11 +32,12 @@ export const Gun = (props: GunProps): Gun => {
   const gun: Gun = {
     type: "gun",
     data: {
-      id: Math.round(Math.random() * 100000)
+      id: Math.round(Math.random() * 100000),
+      clip: props.clip,
+      ammo: props.ammo,
     },
     automatic: props.automatic,
-    bulletSize: props.bulletSize,
-    clipSize: props.clipSize,
+    size: props.size,
     damage: props.damage,
     fireRate: props.fireRate,
     lastShot: 0,
@@ -51,10 +52,14 @@ export const Gun = (props: GunProps): Gun => {
       // check auto/semi
       if (!props.automatic && gun.lastShot >= tick) return false;
 
+      // check has clip
+      if (gun.data.clip <= 0) return false;
+
       return true;
     },
     shoot: (world: World) => {
       gun.lastShot = world.tick;
+      gun.data.clip -= 1;
     }
   }
   return gun;
@@ -63,32 +68,35 @@ export const Gun = (props: GunProps): Gun => {
 export const Deagle = GunBuilder({
   name: "deagle",
   automatic: false,
-  bulletSize: 3,
-  clipSize: 15,
+  ammo: 45,
+  clip: 15,
   damage: 15,
   fireRate: 3,
   reloadTime: 1,
+  size: 3,
   speed: 400
 });
 
 export const AK = GunBuilder({
   name: "ak",
   automatic: true,
-  bulletSize: 4,
-  clipSize: 25,
+  ammo: 50,
+  clip: 25,
   damage: 25,
   fireRate: 12,
   reloadTime: 3,
+  size: 4,
   speed: 500
 });
 
 export const AWP = GunBuilder({
   name: "awp",
   automatic: false,
-  bulletSize: 5,
-  clipSize: 1,
+  ammo: 15,
+  clip: 1,
   damage: 100,
   fireRate: 40,
   reloadTime: 2,
+  size: 5,
   speed: 600
 });

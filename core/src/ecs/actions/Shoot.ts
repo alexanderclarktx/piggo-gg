@@ -40,7 +40,7 @@ export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, p
     world.addEntity(Projectile({
       id: `projectile-${params.id}`,
       pos,
-      radius: gun.bulletSize,
+      radius: gun.size,
       color: TeamColors[team.data.team],
       onHit: onHitTeam(team.data.team, gun.damage)
     }));
