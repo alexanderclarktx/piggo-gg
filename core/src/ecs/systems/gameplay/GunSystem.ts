@@ -38,14 +38,14 @@ export const GunSystem: SystemBuilder<"gun"> = ({
             const textures = await loadTexture(`${player.components.gun.name}.json`);
 
             r.animations = {
-              "0": new AnimatedSprite([textures["pistol0"]]),
-              "1": new AnimatedSprite([textures["pistol1"]]),
-              "2": new AnimatedSprite([textures["pistol2"]]),
-              "3": new AnimatedSprite([textures["pistol3"]]),
-              "4": new AnimatedSprite([textures["pistol4"]]),
-              "5": new AnimatedSprite([textures["pistol5"]]),
-              "6": new AnimatedSprite([textures["pistol6"]]),
-              "7": new AnimatedSprite([textures["pistol7"]]),
+              "0": new AnimatedSprite([textures["0"]]),
+              "1": new AnimatedSprite([textures["1"]]),
+              "2": new AnimatedSprite([textures["2"]]),
+              "3": new AnimatedSprite([textures["3"]]),
+              "4": new AnimatedSprite([textures["4"]]),
+              "5": new AnimatedSprite([textures["5"]]),
+              "6": new AnimatedSprite([textures["6"]]),
+              "7": new AnimatedSprite([textures["7"]]),
             }
 
             values(r.animations).forEach((animation) => {

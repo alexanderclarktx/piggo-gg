@@ -77,7 +77,7 @@ export const AK = GunBuilder({
   bulletSize: 4,
   clipSize: 25,
   damage: 25,
-  fireRate: 8,
+  fireRate: 12,
   reloadTime: 3,
   speed: 500
 });
