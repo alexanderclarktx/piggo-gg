@@ -35,7 +35,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
             r.bufferedAnimation = pointing.toString();
           },
           setup: async (r: Renderable) => {
-            const textures = await loadTexture("pistol.json");
+            const textures = await loadTexture(`${player.components.gun.name}.json`);
 
             r.animations = {
               "0": new AnimatedSprite([textures["pistol0"]]),

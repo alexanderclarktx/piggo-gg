@@ -16,42 +16,6 @@ const width = 64;
 const height = 32;
 const tileCoordinates = [ 0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2, 0, 0 ]
 
-export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => Entity({
-  id: id,
-  components: {
-    position: Position(position),
-    renderable: Renderable({
-      zIndex: 0 + index * 0.01,
-      setChildren: async (r: Renderer) => {
-
-        // draw the square
-        const square = new Graphics()
-          .transform(new Matrix(1, 0, 0, 1, 0, 16))
-          .poly(tileCoordinates)
-          .fill({ color: color ?? 0x7777aa, alpha: 1 })
-          .stroke({ width: 1, color: 0x000000 });
-
-        // create a render texture
-        const renderTexture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
-        r.app.renderer.render({ container: square, target: renderTexture });
-
-        // create the tiles
-        let tiles: Renderable[] = [];
-        for (let x = 0; x < rows; x++) {
-          for (let y = 0; y < cols; y++) {
-            tiles.push(Renderable({
-              position: { x: y * width / 2 - (x * width / 2), y: (y + x) * height / 2 },
-              color: tint ?? 0xffffff,
-              setContainer: async () => new Sprite(renderTexture)
-            }))
-          }
-        }
-        return tiles;
-      }
-    })
-  }
-});
-
 export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entity({
   id: "floorTilesArray",
   components: {
@@ -84,7 +48,7 @@ export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entit
 
             if (value === 37) tint = TeamColors[1];
             if (value === 64) tint = TeamColors[2];
-            if (value === 19) tint = 0xffccaa;
+            if (value === 19) tint = 0xccaa99;
 
             const child = new Sprite({ texture, tint });
             child.position.set(y * width / 2 - (x * width / 2), (y + x) * height / 2);
@@ -134,3 +98,40 @@ export const FloorCollidersArray = (dim: number, tileMap: number[]): Entity[] =>
   }
   return entities;
 }
+
+// DEPRECATED
+export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => Entity({
+  id: id,
+  components: {
+    position: Position(position),
+    renderable: Renderable({
+      zIndex: 0 + index * 0.01,
+      setChildren: async (r: Renderer) => {
+
+        // draw the square
+        const square = new Graphics()
+          .transform(new Matrix(1, 0, 0, 1, 0, 16))
+          .poly(tileCoordinates)
+          .fill({ color: color ?? 0x7777aa, alpha: 1 })
+          .stroke({ width: 1, color: 0x000000 });
+
+        // create a render texture
+        const renderTexture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
+        r.app.renderer.render({ container: square, target: renderTexture });
+
+        // create the tiles
+        let tiles: Renderable[] = [];
+        for (let x = 0; x < rows; x++) {
+          for (let y = 0; y < cols; y++) {
+            tiles.push(Renderable({
+              position: { x: y * width / 2 - (x * width / 2), y: (y + x) * height / 2 },
+              color: tint ?? 0xffffff,
+              setContainer: async () => new Sprite(renderTexture)
+            }))
+          }
+        }
+        return tiles;
+      }
+    })
+  }
+});

@@ -1,4 +1,4 @@
-import { Action, PositionProps, Projectile, XY, onHitTeam } from "@piggo-gg/core";
+import { Action, PositionProps, Projectile, TeamColors, XY, onHitTeam } from "@piggo-gg/core";
 
 export const Point = Action<{ pointing: number }>(({ params, entity }) => {
   if (!entity) return;
@@ -36,7 +36,13 @@ export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, p
     const Xoffset = offset * (vx / Math.sqrt(vx * vx + vy * vy));
     const Yoffset = offset * (vy / Math.sqrt(vx * vx + vy * vy));
 
-    const pos: PositionProps = { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy }};
-    world.addEntity(Projectile({ radius: 4, pos, id: `projectile-${params.id}`, onHit: onHitTeam(team.data.team) }));
+    const pos: PositionProps = { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } };
+    world.addEntity(Projectile({
+      id: `projectile-${params.id}`,
+      pos,
+      radius: gun.bulletSize,
+      color: TeamColors[team.data.team],
+      onHit: onHitTeam(team.data.team, gun.damage)
+    }));
   }
 })
