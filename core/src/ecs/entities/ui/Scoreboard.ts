@@ -3,7 +3,7 @@ import { ScrollBox } from "@pixi/ui";
 import { Container, Graphics } from "pixi.js";
 
 export const Scoreboard = (): Entity => {
-  let players: Set<{name: string, entity: Noob}> = new Set();
+  let players: Set<{ name: string, entity: Noob }> = new Set();
   let team1: ScrollBox;
   let team2: ScrollBox;
   let width: number;
@@ -11,17 +11,12 @@ export const Scoreboard = (): Entity => {
   const scoreboard = Entity<Position>({
     id: "scoreboard",
     components: {
+      position: Position({ x: 200, y: 200, screenFixed: true }),
       input: Input({
-        press: {
-          "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId() })
-        },
-        release: {
-          "shift": ({ world }) => ({ action: "ToggleHidden", playerId: world.client?.playerId() })
-        },
-        joystick: () => null
+        press: { "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId() }) },
+        release: { "shift": ({ world }) => ({ action: "ToggleHidden", playerId: world.client?.playerId() }) }
       }),
       actions: Actions({ ToggleVisible, ToggleHidden }),
-      position: Position({ x: 200, y: 200, screenFixed: true }),
       renderable: Renderable({
         visible: false,
         interactiveChildren: true,
@@ -39,9 +34,9 @@ export const Scoreboard = (): Entity => {
 
             players.forEach((player) => {
               if (player.entity.components.team.data.team === 1) {
-                team1.addItem(makeInnerContainer(player.entity, width, w));
+                team1.addItem(playerRow(player.entity, width, w));
               } else {
-                team2.addItem(makeInnerContainer(player.entity, width, w));
+                team2.addItem(playerRow(player.entity, width, w));
               }
             });
           }
@@ -66,7 +61,7 @@ export const Scoreboard = (): Entity => {
   return scoreboard;
 }
 
-const makeInnerContainer = (entity: Entity<Team | Player>, width: number, world: World): Container => {
+const playerRow = (entity: Entity<Team | Player>, width: number, world: World): Container => {
   const { team, player } = entity.components;
 
   const box = (g: Graphics): Graphics => {

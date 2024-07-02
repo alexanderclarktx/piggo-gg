@@ -50,7 +50,7 @@ export const Projectile = ({ radius, pos, id, color, onHit = onHitDefault }: Pro
         zIndex: 3,
         interpolate: true,
         setContainer: async () => {
-          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1 } });
+          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1, strokeColor: 0x000000, strokeWidth: 1, strokeAlpha: 0.5 } });
         }
       })
     }
