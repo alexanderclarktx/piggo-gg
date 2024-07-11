@@ -86,6 +86,9 @@ export const InputSystem = ClientSystemBuilder({
       if (document.hasFocus()) {
         const keyName = event.key.toLowerCase();
 
+        // ignore noisy capslock events
+        if (keyName === "capslock" && !event.getModifierState("CapsLock")) return;
+
         // prevent defaults
         if (charactersPreventDefault.has(keyName)) event.preventDefault();
 
@@ -253,6 +256,7 @@ export const InputSystem = ClientSystemBuilder({
         })
 
         bufferedUp.clear();
+        bufferedDown.remove("capslock"); // capslock doesn't emit keyup event
       }
     }
   }

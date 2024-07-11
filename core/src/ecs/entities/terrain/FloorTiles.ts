@@ -14,7 +14,7 @@ let index = 0;
 
 const width = 64;
 const height = 32;
-const tileCoordinates = [ 0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2, 0, 0 ]
+const tileCoordinates = [0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2, 0, 0]
 
 export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entity({
   id: "floorTilesArray",
@@ -64,38 +64,54 @@ export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entit
 
 export const FloorCollidersArray = (dim: number, tileMap: number[]): Entity[] => {
   const entities: Entity[] = [];
+  let coords: number[][] = [];
+
   for (let x = 0; x < dim; x++) {
     for (let y = 0; y < dim; y++) {
 
       const value = tileMap[x * dim + y];
+      if (value !== 0) continue;
+
       const value9 = tileMap[x * dim + y + 1];
       const value5 = tileMap[x * dim + y - 1];
       const value7 = tileMap[(x - 1) * dim + y];
       const value1 = tileMap[(x + 1) * dim + y];
 
-      if (value !== 0) continue;
+      const pos = { x: y * width / 2 - (x * width / 2), y: (y + x) * height / 2 + 16 };
+      const adjustedPos = (p: number, i: number) => i % 2 === 0 ? p + pos.x : p + pos.y;
 
-      if (value9 || value5 || value7 || value1) {
-        const width = 64;
-        const height = 32;
-        const entity = Entity({
-          id: `floorCollider-${x}-${y}`,
-          components: {
-            position: Position({
-              x: y * width / 2 - (x * width / 2),
-              y: (y + x) * height / 2 + 16
-            }),
-            collider: Collider({
-              shape: "line",
-              isStatic: true,
-              points: tileCoordinates
-            })
-          }
-        });
-        entities.push(entity);
+      if (value5) {
+        const points = [width / 2, -height / 2, 0, 0];
+        coords.push(points.map(adjustedPos));
       }
-    };
+
+      if (value9) {
+        const points = [width, 0, width / 2, height / 2];
+        coords.push(points.map(adjustedPos));
+      }
+
+      if (value1) {
+        const points = [0, 0, width / 2, height / 2];
+        coords.push(points.map(adjustedPos));
+      }
+
+      if (value7) {
+        const points = [width / 2, -height / 2, width, 0];
+        coords.push(points.map(adjustedPos));
+      }
+    }
   }
+
+  coords.forEach((points, i) => {
+    entities.push(Entity({
+      id: `floorCollider-${i}`,
+      components: {
+        position: Position(),
+        collider: Collider({ shape: "line", isStatic: true, points })
+      }
+    }));
+  });
+
   return entities;
 }
 

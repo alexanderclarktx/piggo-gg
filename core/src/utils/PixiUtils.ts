@@ -39,7 +39,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     resolution: 2,
     style: {
       fill: style?.fill ?? 0xffffff,
-      fontSize: style?.fontSize ?? 14,
+      fontSize: style?.fontSize ?? 14
     }
   });
 }

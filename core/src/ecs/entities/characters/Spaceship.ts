@@ -26,8 +26,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
         "s": ({ world }) => ({ action: "down", playerId: world.client?.playerId() }),
         "a": ({ world }) => ({ action: "left", playerId: world.client?.playerId() }),
         "d": ({ world }) => ({ action: "right", playerId: world.client?.playerId() })
-      },
-      joystick: () => null
+      }
     }),
     debug: Debug(),
     renderable: Renderable({
