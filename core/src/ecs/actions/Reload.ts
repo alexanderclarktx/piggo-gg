@@ -17,18 +17,15 @@ export const Reload = Action(({ entity }) => {
 const ReloadEffect = (gun: Gun): Effect => ({
   duration: gun.reloadTime,
   onStart: () => {
-    console.log("reloading");
     gun.reloading = true;
   },
   onEnd: () => {
-    if (gun.data.ammo < gun.clipSize) {
-      gun.data.clip = gun.data.ammo;
-      gun.data.ammo = 0;
-    } else {
-      gun.data.ammo -= gun.clipSize - gun.data.clip;
-      gun.data.clip = gun.clipSize;
-    }
-
     gun.reloading = false;
+
+    const clip = Math.min(gun.data.clip + gun.data.ammo, gun.clipSize);
+    const ammo = Math.max(gun.data.ammo - gun.clipSize + gun.data.clip, 0);
+
+    gun.data.clip = clip;
+    gun.data.ammo = ammo;
   }
 })
