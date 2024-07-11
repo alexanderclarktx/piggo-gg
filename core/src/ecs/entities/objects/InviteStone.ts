@@ -1,5 +1,4 @@
 import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, loadTexture } from "@piggo-gg/core";
-import { OutlineFilter } from "pixi-filters";
 import { Sprite } from "pixi.js";
 import toast from "react-hot-toast";
 
@@ -49,10 +48,10 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
         width: 64,
         height: 48,
         hoverOver: () => {
-          portal.components.renderable.c.filters = [new OutlineFilter({ thickness: 0.1, color: 0xffff00 })]
+          portal.components.renderable.setOutline(0xffff00, 0.1);
         },
         hoverOut: () => {
-          portal.components.renderable.c.filters = []
+          portal.components.renderable.setOutline(0xffff00, 0);
         }
       }),
       renderable: Renderable({

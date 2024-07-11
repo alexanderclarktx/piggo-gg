@@ -83,6 +83,8 @@ export * from "./src/ecs/components/Renderable";
 export * from "./src/ecs/components/Team";
 export * from "./src/ecs/actions/Boost";
 export * from "./src/ecs/actions/PlayerActions";
+export * from "./src/ecs/actions/Point";
+export * from "./src/ecs/actions/Reload";
 export * from "./src/ecs/actions/Shoot";
 export * from "./src/ecs/actions/MovementActions";
 export * from "./src/ecs/actions/ToggleVisible";
