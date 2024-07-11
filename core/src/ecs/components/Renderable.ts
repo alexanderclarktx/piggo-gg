@@ -1,4 +1,5 @@
 import { Component, Entity, Renderer, World, XY, keys, values } from "@piggo-gg/core";
+import { OutlineFilter } from "pixi-filters";
 import { AnimatedSprite, Container } from "pixi.js";
 
 export type Renderable = Component<"renderable"> & {
@@ -30,6 +31,7 @@ export type Renderable = Component<"renderable"> & {
   prepareAnimations: (color: number) => void
   _init: (renderer: Renderer | undefined) => Promise<void>
   setAnimation: (animationKey: string) => void
+  setOutline: (color: number, thickness?: number) => void
   cleanup: () => void
 }
 
@@ -102,6 +104,15 @@ export const Renderable = (props: RenderableProps): Renderable => {
     setAnimation: (animationKey: string) => {
       if (values(renderable.animations).length && renderable.animations[animationKey]) {
         renderable.bufferedAnimation = animationKey;
+      }
+    },
+    setOutline: (color: number, thickness: number = 1) => {
+      if (keys(renderable.animations).length) {
+        values(renderable.animations).forEach((animation) => {
+          animation.filters = [new OutlineFilter({ thickness, color })]
+        });
+      } else {
+        renderable.c.filters = [new OutlineFilter({ thickness, color })]
       }
     },
     cleanup: () => {

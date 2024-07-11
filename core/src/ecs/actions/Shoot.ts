@@ -1,14 +1,5 @@
 import { Action, PositionProps, Projectile, TeamColors, XY, onHitTeam } from "@piggo-gg/core";
 
-export const Point = Action<{ pointing: number }>(({ params, entity }) => {
-  if (!entity) return;
-
-  const { position } = entity.components;
-  if (!position) return;
-
-  position.data.pointing = params.pointing;
-});
-
 export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, params, entity }) => {
 
   if (!entity) return;
@@ -40,7 +31,7 @@ export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, p
     world.addEntity(Projectile({
       id: `projectile-${params.id}`,
       pos,
-      radius: gun.size,
+      radius: gun.bulletSize,
       color: TeamColors[team.data.team],
       onHit: onHitTeam(team.data.team, gun.damage)
     }));

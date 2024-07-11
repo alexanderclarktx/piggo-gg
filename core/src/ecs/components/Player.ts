@@ -1,16 +1,10 @@
 import { Component } from "@piggo-gg/core";
 
 export type Player = Component<"player"> & {
-  data: {
-    name: string
-  }
+  data: { name: string }
 }
 
-export type PlayerProps = { name: string };
-
-export const Player = (props: PlayerProps): Player => ({
+export const Player = ({ name }: { name: string }): Player => ({
   type: "player",
-  data: {
-    name: props.name
-  }
+  data: { name }
 })

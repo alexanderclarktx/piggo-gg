@@ -1,4 +1,4 @@
-import { Action, Effect, XY } from "@piggo-gg/core";
+import { Action, Effect } from "@piggo-gg/core";
 
 // increases speed temporarily
 export const Boost = Action(({ entity }) => {
@@ -9,7 +9,6 @@ export const Boost = Action(({ entity }) => {
 
   effects.addEffect("boost", BoostEffect(entity.components.position.data.speed));
 }, 200);
-
 
 const BoostEffect = (originalSpeed: number): Effect => ({
   duration: 60,

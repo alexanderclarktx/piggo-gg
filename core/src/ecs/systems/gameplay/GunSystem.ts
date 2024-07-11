@@ -1,5 +1,4 @@
-import { Entity, Gun, Position, Renderable, SystemBuilder, loadTexture, values } from "@piggo-gg/core";
-import { OutlineFilter } from "pixi-filters";
+import { Entity, Gun, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 // ortho positions
@@ -29,13 +28,17 @@ export const GunSystem: SystemBuilder<"gun"> = ({
           position: { x: 20, y: 0 },
           interpolate: true,
           dynamic: (_, r, e: Entity<Gun | Position>) => {
-            const { pointing } = e.components.position.data;
+            const { gun, position } = player.components;
+            const { pointing } = position.data;
 
             r.position = pz[pointing];
             r.bufferedAnimation = pointing.toString();
+
+            r.setOutline(gun.reloading ? 0xff0000 : gun.outlineColor);
           },
           setup: async (r: Renderable) => {
-            const textures = await loadTexture(`${player.components.gun.name}.json`);
+            const { gun } = player.components;
+            const textures = await loadTexture(`${gun.name}.json`);
 
             r.animations = {
               "0": new AnimatedSprite([textures["0"]]),
@@ -48,9 +51,7 @@ export const GunSystem: SystemBuilder<"gun"> = ({
               "7": new AnimatedSprite([textures["7"]]),
             }
 
-            values(r.animations).forEach((animation) => {
-              animation.filters = [new OutlineFilter({ thickness: 1, color: 0x000000 })]
-            })
+            r.setOutline(gun.outlineColor);
           }
         })
       }
