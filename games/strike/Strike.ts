@@ -1,5 +1,5 @@
 import {
-  Background, BuyScreen, FloorCollidersArray, FloorTilesArray, GunSystem,
+  Background, BuyMenu, FloorCollidersArray, FloorTilesArray, GunSystem,
   HealthBarSystem, HomeButton, IsometricGame, Minimap,
   ScorePanel, Scoreboard, SightSystem, isMobile
 } from "@piggo-gg/core";
@@ -16,7 +16,7 @@ export const Strike = IsometricGame({
       Background(),
       ScorePanel(),
       Scoreboard(),
-      BuyScreen(),
+      BuyMenu(),
       FloorTilesArray(80, StrikeTileMap),
       ...FloorCollidersArray(80, StrikeTileMap),
       ... (isMobile() ? [] : [Minimap(80, StrikeTileMap)])

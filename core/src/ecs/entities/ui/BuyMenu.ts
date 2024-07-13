@@ -1,7 +1,7 @@
 import { Action, Actions, Entity, Input, Position, Renderable } from "@piggo-gg/core";
 import { Container, Graphics } from "pixi.js";
 
-export const BuyScreen = (): Entity => {
+export const BuyMenu = (): Entity => {
 
   let visible = false;
 
@@ -9,8 +9,8 @@ export const BuyScreen = (): Entity => {
   const background = new Graphics();
   const outline = new Graphics();
 
-  const buyScreen = Entity<Position | Renderable>({
-    id: "buyScreen",
+  const buyMenu = Entity<Position | Renderable>({
+    id: "buyMenu",
     components: {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       input: Input({
@@ -19,7 +19,7 @@ export const BuyScreen = (): Entity => {
       actions: Actions({
         toggleVisible: Action(() => {
           visible = !visible;
-          buyScreen.components.renderable.visible = visible;
+          buyMenu.components.renderable.visible = visible;
         })
       }),
       renderable: Renderable({
@@ -38,5 +38,5 @@ export const BuyScreen = (): Entity => {
     }
   });
 
-  return buyScreen;
+  return buyMenu;
 }

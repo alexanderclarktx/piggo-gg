@@ -58,7 +58,7 @@ export * from "./src/ecs/entities/ui/Joystick";
 export * from "./src/ecs/renderables/Button";
 export * from "./src/ecs/renderables/DebugBounds";
 export * from "./src/ecs/renderables/HealthBar";
-export * from "./src/ecs/entities/ui/BuyScreen";
+export * from "./src/ecs/entities/ui/BuyMenu";
 export * from "./src/ecs/entities/ui/Minimap";
 export * from "./src/ecs/entities/ui/Scoreboard";
 export * from "./src/ecs/entities/ui/ScorePanel";
