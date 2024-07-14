@@ -3,6 +3,8 @@ import { Container } from "pixi.js";
 
 export type XY = { x: number, y: number };
 
+export type TwoPoints = [number, number, number, number];
+
 export const equalsXY = (a: XY, b: XY) => a.x === b.x && a.y === b.y;
 
 export const orthoToDirection = (o: number) => {
