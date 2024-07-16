@@ -25,11 +25,11 @@ export type Renderable = Component<"renderable"> & {
   zIndex: number
   setContainer: undefined | ((r: Renderer) => Promise<Container>)
   setChildren: undefined | ((r: Renderer) => Promise<Renderable[]>)
-  setup: undefined | ((renderable: Renderable, renderer: Renderer) => Promise<void>)
+  setup: undefined | ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>)
   dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)
 
   prepareAnimations: (color: number) => void
-  _init: (renderer: Renderer | undefined) => Promise<void>
+  _init: (renderer: Renderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
   setOutline: (color: number, thickness?: number) => void
   cleanup: () => void
@@ -52,7 +52,7 @@ export type RenderableProps = {
   dynamic?: (c: Container, r: Renderable, e: Entity, w: World) => void
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
-  setup?: (renderable: Renderable, renderer: Renderer) => Promise<void>
+  setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void>
 }
 
 export const Renderable = (props: RenderableProps): Renderable => {
@@ -129,7 +129,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       // remove from the world
       // renderable.c.destroy(); // TODO disabled because it breaks debug mode
     },
-    _init: async (renderer: Renderer | undefined) => {
+    _init: async (renderer: Renderer | undefined, world: World) => {
       if (!renderer) return;
       renderable.renderer = renderer;
 
@@ -144,12 +144,12 @@ export const Renderable = (props: RenderableProps): Renderable => {
         renderable.children = childRenderables;
 
         childRenderables.forEach(async (child) => {
-          await child._init(renderer);
+          await child._init(renderer, world);
           renderable.c.addChild(child.c);
         });
       }
 
-      if (renderable.setup) await renderable.setup(renderable, renderer);
+      if (renderable.setup) await renderable.setup(renderable, renderer, world);
 
       // set position
       renderable.c.position.set(renderable.position.x, renderable.position.y);

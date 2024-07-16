@@ -23,7 +23,7 @@ export const Cursor = (): Entity => {
 
           return circle;
         },
-        zIndex: 10
+        zIndex: 12
       })
     }
   });

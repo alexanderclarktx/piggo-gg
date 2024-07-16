@@ -190,6 +190,11 @@ export const InputSystem = ClientSystemBuilder({
       for (const keyPress in input.inputMap.press) {
         const keyMouse = bufferDown.contains(keyPress);
         if (keyMouse) {
+
+          // ignore stale inputs
+          if (keyMouse.tick + 1 != world.tick) continue;
+
+          // find the callback
           const controllerInput = input.inputMap.press[keyPress];
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick });

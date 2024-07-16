@@ -66,7 +66,7 @@ type Hooks = {
 const GameStateHooks: Record<GameStates, Hooks> = {
   "warmup": {
     onStart: (world) => {
-      world.log("warmup started");
+      // world.log("warmup started");
     },
     onTick: (world) => { },
     timer: -1

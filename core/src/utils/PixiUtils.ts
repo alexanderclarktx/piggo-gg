@@ -1,5 +1,5 @@
 import { XY } from "@piggo-gg/core";
-import { Assets, Graphics, Text } from "pixi.js";
+import { Assets, Graphics, GraphicsContext, GraphicsOptions, Text } from "pixi.js";
 
 export type pixiRectProps = { x: number, y: number, w: number, h: number, style?: Omit<pixiStyleProps, "g"> };
 export type pixiCircleProps = { x: number, y: number, r: number, style?: Omit<pixiStyleProps, "g"> };
@@ -7,6 +7,8 @@ export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, stro
 
 export type pixiTextStyle = { fill?: number, fontSize?: number };
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle };
+
+export const pixiGraphics = (opts: GraphicsOptions | GraphicsContext = {}): Graphics => new Graphics(opts);
 
 export const pixiRect = ({ x, y, w, h, style }: pixiRectProps): Graphics => {
   const g = new Graphics();
