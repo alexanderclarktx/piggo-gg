@@ -82,7 +82,7 @@ export const Deagle = GunBuilder({
   damage: 15,
   fireRate: 3,
   reloadTime: 40,
-  bulletSize: 3,
+  bulletSize: 4,
   speed: 400
 });
 
@@ -105,7 +105,14 @@ export const AWP = GunBuilder({
   clipSize: 1,
   damage: 100,
   fireRate: 40,
-  reloadTime: 80,
+  reloadTime: 40,
   bulletSize: 5,
   speed: 600
 });
+
+
+export const WeaponTable: Record<string, () => Gun> = {
+  "deagle": Deagle,
+  "ak": AK,
+  "awp": AWP
+}

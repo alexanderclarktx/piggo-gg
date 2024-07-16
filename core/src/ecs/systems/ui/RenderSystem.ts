@@ -13,7 +13,7 @@ export const RenderSystem = ClientSystemBuilder({
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
 
-      await renderable._init(renderer);
+      await renderable._init(renderer, world);
 
       if (position) renderable.c.position.set(
         position.data.x + renderable.position.x,

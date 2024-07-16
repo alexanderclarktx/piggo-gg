@@ -1,4 +1,4 @@
-import { Action, Actions, Entity, Input, Position, Renderable, TwoPoints, loadTexture, pixiGraphics, pixiText } from "@piggo-gg/core";
+import { Action, Actions, Entity, Input, Position, Renderable, TwoPoints, WeaponTable, World, clickableClickedThisFrame, loadTexture, pixiGraphics, pixiText } from "@piggo-gg/core";
 import { ScrollBox } from "@pixi/ui";
 import { OutlineFilter } from "pixi-filters";
 import { Container, Sprite } from "pixi.js";
@@ -28,7 +28,7 @@ export const BuyMenu = (): Entity => {
         zIndex: 11,
         visible: false,
         interactiveChildren: true,
-        setup: async (renderable, renderer) => {
+        setup: async (renderable, renderer, world) => {
           const { width, height } = renderer.app.screen;
 
           // const coords: TwoPoints = [width / 6, height / 6, width / 1.5, height / 1.5]
@@ -37,9 +37,9 @@ export const BuyMenu = (): Entity => {
           background.rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0.5 });
           outline.roundRect(...coords).stroke({ color: 0xffffff, alpha: 1, width: 2 });
 
-          const deagle = await cell("Deagle", width, height);
-          const ak = await cell("AK", width, height);
-          const awp = await cell("AWP", width, height);
+          const deagle = await cell("Deagle", width, height, world);
+          const ak = await cell("AK", width, height, world);
+          const awp = await cell("AWP", width, height, world);
 
           const box = new ScrollBox({ width, height, type: "horizontal", elementsMargin: 20 });
           box.addItem(deagle, ak, awp);
@@ -58,7 +58,7 @@ export const BuyMenu = (): Entity => {
   return buyMenu;
 }
 
-const cell = async (text: string, width: number, height: number): Promise<Container> => {
+const cell = async (text: string, width: number, height: number, world: World): Promise<Container> => {
   const c = new Container();
   c.interactiveChildren = true;
 
@@ -87,7 +87,17 @@ const cell = async (text: string, width: number, height: number): Promise<Contai
 
   c.addChild(light, dark, outline, name, decal);
 
-  c.onpointerdown = console.log;
+  c.onpointerdown = () => {
+    const playerCharacter = world.client?.playerCharacter();
+    if (!playerCharacter) return;
+
+    const newGun = WeaponTable[text.toLowerCase()];
+    if (!newGun) return;
+
+    playerCharacter.components.gun = newGun();
+
+    clickableClickedThisFrame.set(world.tick + 1);
+  };
   c.onmouseenter = () => dark.visible = true;
   c.onmouseleave = () => dark.visible = false;
 

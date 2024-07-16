@@ -9,12 +9,12 @@ export const DebugBounds = (props: DebugBoundsProps): Renderable => {
 
   const renderable = Renderable({
     ...props,
-    setup: async (r: Renderable) => {
+    setup: async (r: Renderable, _, world) => {
 
       // get the bounds of the renderable
       const bounds = props.debugRenderable.c.getLocalBounds();
       if (bounds.width === 0 && bounds.height === 0) {
-        setTimeout(() => renderable.setup?.(r, renderable.renderer), 100);
+        setTimeout(() => renderable.setup?.(r, renderable.renderer, world), 100);
         return;
       }
 
