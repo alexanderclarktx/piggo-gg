@@ -35,5 +35,11 @@ export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, p
       color: TeamColors[team.data.team],
       onHit: onHitTeam(team.data.team, gun.damage)
     }));
+
+    // auto reload
+    if (gun.data.clip === 0) {
+      const reload = entity.components.actions?.actionMap["reload"];
+      if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { action: "reload" });
+    }
   }
 })
