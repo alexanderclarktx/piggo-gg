@@ -36,8 +36,6 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             tileGraphics.mask = null;
             tileGraphics.scale = 1.5;
 
-            // const bounds = tileGraphics.getLocalBounds();
-
             const x = (world.renderer?.app.canvas.width ?? 0) / 2;
             const y = (world.renderer?.app.canvas.height ?? 0) / 2;
             minimap.components.position = Position({ x, y, screenFixed: true });
