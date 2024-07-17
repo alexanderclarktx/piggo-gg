@@ -84,8 +84,8 @@ const playerRow = (entity: Noob, width: number, world: World): Container => {
     anchor: { x: 0.5, y: 0 }
   })
 
-  const walletText = pixiText({
-    text: `$${entity.components.wallet.data.dollars}`,
+  const moneyText = pixiText({
+    text: `$${entity.components.money.data.balance}`,
     style: { fill: 0xffffff, fontSize: 24 },
     pos: { x: width / 1.2, y: 10 },
     anchor: { x: 1, y: 0 }
@@ -93,7 +93,7 @@ const playerRow = (entity: Noob, width: number, world: World): Container => {
 
   const outline = box(new Graphics());
 
-  c.addChild(outline, titleText, scorelineText, walletText);
+  c.addChild(outline, titleText, scorelineText, moneyText);
 
   c.onpointerdown = () => {
     clickableClickedThisFrame.set(world.tick + 1);

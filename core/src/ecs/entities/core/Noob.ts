@@ -1,10 +1,10 @@
-import { Actions, Controlling, Entity, Networked, Player, Team, switchTeam, spawnSkelly, Wallet } from "@piggo-gg/core";
+import { Actions, Controlling, Entity, Networked, Player, Team, switchTeam, spawnSkelly, Money } from "@piggo-gg/core";
 
 export type NoobProps = {
   id: string
 }
 
-export type Noob = Entity<Player | Controlling | Actions | Team | Wallet>
+export type Noob = Entity<Player | Controlling | Actions | Team | Money>
 
 export const Noob = ({ id }: NoobProps): Noob => Entity({
   id: id,
@@ -15,6 +15,6 @@ export const Noob = ({ id }: NoobProps): Noob => Entity({
     controlling: Controlling({ entityId: "" }),
     actions: Actions({ spawnSkelly, switchTeam }),
     team: Team(1),
-    wallet: Wallet(1000)
+    money: Money(1000)
   }
 });

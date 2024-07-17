@@ -1,8 +1,7 @@
 import {
   Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input,
-  Move, Networked, Position, Renderable, Shoot, Team, TeamNumber,
-  WASDInputMap, DefaultJoystickHandler, Wall, loadTexture, Point, XY, Deagle, Reload,
-  Wallet
+  Move, Networked, Position, Renderable, Shoot, Team, TeamNumber, WASDInputMap,
+  DefaultJoystickHandler, Wall, loadTexture, Point, XY, Deagle, Reload
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 

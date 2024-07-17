@@ -82,7 +82,7 @@ export * from "./src/ecs/components/Player";
 export * from "./src/ecs/components/Position";
 export * from "./src/ecs/components/Renderable";
 export * from "./src/ecs/components/Team";
-export * from "./src/ecs/components/Wallet";
+export * from "./src/ecs/components/Money";
 export * from "./src/ecs/actions/Boost";
 export * from "./src/ecs/actions/PlayerActions";
 export * from "./src/ecs/actions/Point";
