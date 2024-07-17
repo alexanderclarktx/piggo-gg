@@ -67,11 +67,6 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.rendered = false;
           });
 
-          // entities.forEach((entity) => {
-          //   const { position, renderable } = entity.components;
-          //   if (position.screenFixed) renderable.rendered = false;
-          // });
-
           renderer.resizedFlag = false;
         }
 
