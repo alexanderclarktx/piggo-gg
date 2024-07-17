@@ -103,7 +103,7 @@ export const AWP = GunBuilder({
   automatic: false,
   ammo: 15,
   clipSize: 1,
-  damage: 100,
+  damage: 200,
   fireRate: 40,
   reloadTime: 40,
   bulletSize: 5,
