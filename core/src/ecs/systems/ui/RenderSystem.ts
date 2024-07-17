@@ -62,12 +62,15 @@ export const RenderSystem = ClientSystemBuilder({
         }
 
         if (renderer.resizedFlag) {
-          renderer.guiRenderables.forEach((renderable) => renderer.app.stage.removeChild(renderable.c));
-
-          entities.forEach((entity) => {
-            const { position, renderable } = entity.components;
-            if (position.screenFixed) renderable.rendered = false;
+          renderer.guiRenderables.forEach((renderable) => {
+            renderer.app.stage.removeChild(renderable.c);
+            renderable.rendered = false;
           });
+
+          // entities.forEach((entity) => {
+          //   const { position, renderable } = entity.components;
+          //   if (position.screenFixed) renderable.rendered = false;
+          // });
 
           renderer.resizedFlag = false;
         }

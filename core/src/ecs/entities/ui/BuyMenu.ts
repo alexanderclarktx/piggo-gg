@@ -7,10 +7,6 @@ export const BuyMenu = (): Entity => {
 
   let visible = false;
 
-  const container = new Container();
-  const background = pixiGraphics();
-  const outline = pixiGraphics();
-
   const buyMenu = Entity<Position | Renderable>({
     id: "buyMenu",
     components: {
@@ -31,6 +27,9 @@ export const BuyMenu = (): Entity => {
         setup: async (renderable, renderer, world) => {
           const { width, height } = renderer.app.screen;
 
+          const background = pixiGraphics();
+          const outline = pixiGraphics();
+
           // const coords: TwoPoints = [width / 6, height / 6, width / 1.5, height / 1.5]
           const coords: TwoPoints = [width / 6, height / 4, width / 1.5, height / 2]
 
@@ -45,11 +44,7 @@ export const BuyMenu = (): Entity => {
           box.addItem(deagle, ak, awp);
           box.position.set(coords[0] + width / 16, coords[1] + height / 12);
 
-          container.addChild(background, outline, box);
-          container.interactive = true;
-          container.interactiveChildren = true;
-
-          renderable.c.addChild(container);
+          renderable.c.addChild(background, outline, box);
         }
       })
     }

@@ -3,7 +3,7 @@ import { Graphics } from "pixi.js";
 
 type AbilityStrings = [string, string, string, string];
 
-export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => {
+export const HUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => {
 
   const width = 50;
   const height = 50;
@@ -14,16 +14,17 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
   const square4 = pixiRect({ w: width, h: height, y: 0, x: 75 });
 
   const ammo = pixiText({ text: "", pos: { x: 340, y: 10 }, anchor: { x: 1, y: 0 }, style: { fontSize: 32 } });
+  const hp = pixiText({ text: "100 ⛨", pos: { x: -310, y: 10 }, anchor: { x: 0.5, y: 0 }, style: { fontSize: 32 } });
 
-  const abilityHud = Entity<Renderable | Position>({
-    id: "abilityHud",
+  const hud = Entity<Renderable | Position>({
+    id: "HUD",
     components: {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable, renderer) => {
           const canvasWidth = renderer.props.canvas.width;
-          abilityHud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
+          hud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
 
           // hotkey text
           const key1 = pixiText({ text: keys[0], pos: { x: -148, y: 35 } });
@@ -47,16 +48,19 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
             .lineTo(380, 50)
             .stroke({ width: 2, color: 0xffffff, alpha: 0.9 });
 
-          renderable.c.addChild(outline, ammo, square1, square2, square3, square4, key1, key2, key3, key4, label1, label2, label3, label4);
+          renderable.c.addChild(outline, hp, ammo, square1, square2, square3, square4, key1, key2, key3, key4, label1, label2, label3, label4);
         },
         dynamic: (_, __, ___, w) => {
           const playerCharacter = w.client?.playerCharacter();
           if (!playerCharacter) return;
 
-          const { gun, actions } = playerCharacter.components;
+          const { gun, actions, health } = playerCharacter.components;
 
           // handle ammo
           if (gun) ammo.text = `${gun.data.clip} ‖ ${gun.data.ammo}`;
+
+          // handle health
+          if (health) hp.text = `${health.data.health} ⛨`;
 
           // handle abilities
           labels.forEach((label, i) => {
@@ -84,5 +88,5 @@ export const AbilityHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity
     }
   });
 
-  return abilityHud;
+  return hud;
 }
