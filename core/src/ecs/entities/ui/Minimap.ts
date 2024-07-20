@@ -36,8 +36,10 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             tileGraphics.mask = null;
             tileGraphics.scale = 1.5;
 
+            const bounds = container.getBounds();
+
             const x = (world.renderer?.app.canvas.width ?? 0) / 2;
-            const y = (world.renderer?.app.canvas.height ?? 0) / 2;
+            const y = ((world.renderer?.app.canvas.height ?? 0) - bounds.height - 100) / 2;
             minimap.components.position = Position({ x, y, screenFixed: true });
 
             background.clear();
@@ -65,16 +67,11 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
 
           // update positions
           if (fullscreen) {
-            const offset = [0, -(w.renderer?.app.canvas.height ?? 1) / 2]
-            tileGraphics.position.set(...offset);
-
-            const playerOffset = [position.data.x / 7.6 - 4, offset[1] + position.data.y / 3.8 + 2];
-            playerDot.position.set(...playerOffset);
+            tileGraphics.position.set(0, 0);
+            playerDot.position.set(position.data.x / 7.6 - 4, position.data.y / 3.8 + 2);
           } else {
             playerDot.position.set(0, 0);
-
-            const offset = [-position.data.x / 5.6 * scale + 5, - position.data.y / 2.8 * scale + 2]
-            tileGraphics.position.set(...offset);
+            tileGraphics.position.set(-position.data.x / 5.6 * scale + 5, - position.data.y / 2.8 * scale + 2);
           }
         },
         setContainer: async () => {
