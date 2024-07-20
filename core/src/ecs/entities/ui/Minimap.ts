@@ -13,9 +13,6 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
   const mask = background.clone();
   const outline = pixiGraphics();
 
-  background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 });
-  outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 });
-
   const Colors: Record<number, number> = {
     37: TeamColors[1],
     64: TeamColors[2],
@@ -115,10 +112,12 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
           }
         },
         setContainer: async () => {
-          // mask
+
+          background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 });
+          outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 });
+
           tileGraphics.mask = mask;
 
-          // draw the tiles
           const width = 8 * scale;
           let color = 0xccccff
 
