@@ -90,7 +90,6 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             if (!character) return;
 
             const { position } = character.components;
-            if (!position) return;
 
             if (fullscreen) dots[entity.id].position.set(position.data.x / 7.6 - 4, position.data.y / 3.8 + 2);
 
