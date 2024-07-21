@@ -37,11 +37,11 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
 
             const bounds = tileGraphics.getBounds();
 
-            const x = (world.renderer?.app.canvas.width ?? 0) / 2;
-            const y = Math.max(0, ((world.renderer?.app.canvas.height ?? 0) - bounds.height) / 2 - 100);
-
-            minimap.components.position.data.x = x;
-            minimap.components.position.data.y = y;
+            minimap.components.position.data = {
+              ...minimap.components.position.data,
+              x: world.renderer!.app.canvas.width / 2,
+              y: Math.max(0, (world.renderer!.app.canvas.height - bounds.height) / 2 - 100)
+            }
 
             background.clear();
             outline.clear();
@@ -50,8 +50,10 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             tileGraphics.scale = 1;
             values(dots).forEach((dot) => dot.mask = mask);
 
-            minimap.components.position.data.x = -125;
-            minimap.components.position.data.y = 125;
+            minimap.components.position.data = {
+              ...minimap.components.position.data,
+              x: -125, y: 125
+            }
 
             background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 });
             outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 });
