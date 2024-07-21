@@ -3,7 +3,7 @@ import { Actions, Component, Entity, Input, Position, Renderable, World } from "
 export type Character = Entity<Position | Input | Actions | Renderable>
 
 export type Controlling = Component<"controlling", { entityId: string }> & {
-  getControlledEntity: (world: World) => undefined | Character
+  getControlledEntity: (world: World) => Character | undefined
 }
 
 export type ControllingProps = {

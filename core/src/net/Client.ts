@@ -21,7 +21,7 @@ export type Client = {
   lastLatency: number
   lastMessageTick: number
   playerId: () => string
-  playerCharacter: () => undefined | Character
+  playerCharacter: () => Character | undefined
   createLobby: (callback: Callback<LobbyCreate>) => void
   joinLobby: (lobbyId: string, callback: Callback<LobbyJoin>) => void
 }
