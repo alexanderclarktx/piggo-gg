@@ -24,13 +24,10 @@ export const switchTeam = Action(({ entity, world }) => {
   const { team, controlling } = entity.components;
   if (!team) return;
 
-  // update player team
   team.switchTeam();
 
-  if (controlling) {
-    const character = world.entities[controlling.data.entityId];
-    if (!character) return;
-
+  const character = controlling?.getControlledEntity(world);
+  if (character) {
     const { team, renderable } = character.components;
 
     if (team) team.switchTeam();

@@ -2,7 +2,7 @@ import { XY } from "@piggo-gg/core";
 import { Assets, Graphics, GraphicsContext, GraphicsOptions, Text } from "pixi.js";
 
 export type pixiRectProps = { x: number, y: number, w: number, h: number, style?: Omit<pixiStyleProps, "g"> };
-export type pixiCircleProps = { x: number, y: number, r: number, style?: Omit<pixiStyleProps, "g"> };
+export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<pixiStyleProps, "g"> };
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, strokeColor?: number, strokeAlpha?: number, strokeWidth?: number };
 
 export type pixiTextStyle = { fill?: number, fontSize?: number };
@@ -17,11 +17,11 @@ export const pixiRect = ({ x, y, w, h, style }: pixiRectProps): Graphics => {
   return pixiStyle({ g, ...style });
 }
 
-export const pixiCircle = ({ x, y, r, style }: pixiCircleProps): Graphics => {
+export const pixiCircle = ({ x = 0, y = 0, r, style }: pixiCircleProps): Graphics => {
   const g = new Graphics();
   g.circle(x, y, r);
 
-  return pixiStyle({ g, ...style });
+  return pixiStyle({ g, strokeWidth: 0, ...style });
 }
 
 export const pixiStyle = ({ g, color, alpha, strokeColor, strokeAlpha, strokeWidth }: pixiStyleProps): Graphics => {

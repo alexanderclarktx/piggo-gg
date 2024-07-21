@@ -1,4 +1,4 @@
-import { Action, Entity, Noob, Position, XY, closestEntity } from "@piggo-gg/core";
+import { Action, Character, Noob, XY, closestEntity } from "@piggo-gg/core";
 
 export const Head = Action<XY>(({ params, entity }) => {
   if (!entity) return;
@@ -24,14 +24,14 @@ export const Chase = Action(({ world, entity }) => {
   if (!position) return;
 
   const players = world.queryEntities(["player"]) as Noob[];
-    let playerControlledEntities: Entity<Position>[] = [];
+    let characters: Character[] = [];
     players.forEach((player) => {
-      const controlledEntities = world.entities[player.components.controlling.data.entityId] as Entity<Position>;
-      if (controlledEntities) playerControlledEntities.push(controlledEntities);
+      const character = player.components.controlling.getControlledEntity(world);
+      if (character) characters.push(character);
     });
 
     // find the closest player entity position
-    const closest = closestEntity(playerControlledEntities, position.data);
+    const closest = closestEntity(characters, position.data);
     if (!closest) return;
 
     position.setHeading(closest.components.position.data);

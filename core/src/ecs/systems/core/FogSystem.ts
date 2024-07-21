@@ -3,7 +3,8 @@ import { Container } from "pixi.js";
 
 export const FogSystem: SystemBuilder<"FogSystem"> = {
   id: "FogSystem",
-  init: ({ client, entities, tileMap }) => {
+  init: (world) => {
+    const { client, entities, tileMap } = world;
 
     if (!tileMap) return undefined;
 
@@ -19,13 +20,10 @@ export const FogSystem: SystemBuilder<"FogSystem"> = {
         if (!floorTilesArray) return;
 
         const { playerEntity } = client;
-        const skelly = entities[playerEntity.components.controlling.data.entityId];
-        if (!skelly) return;
+        const character = playerEntity.components.controlling.getControlledEntity(world);
+        if (!character) return;
 
-        const { position } = skelly.components;
-        if (!position) return;
-
-        const { x, y } = isometricToWorld(position.data)
+        const { x, y } = isometricToWorld(character.components.position.data)
 
         const tileX = Math.round(x / 32) - 1;
         const tileY = Math.round(y / 32);

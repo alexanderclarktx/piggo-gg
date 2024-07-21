@@ -8,39 +8,31 @@ __Piggo__ is an open-source multiplayer web game! Play online at [piggo.gg](http
   <img src="piggo-gg.gif" style="width:100%">
 </p>
 
-# Objectives
+## Product Objectives
+
+🐷 piggo is fun to play
+
+🕹️ the UI is clean & simple
+
+🥳 playing with friends is easy
+
+## Technical Objectives
+
+👨🏻‍💻 the code is readable
 
 👾 multiplayer is smooth & performant
 
-🎮 adding new game modes is easy
-
-# Features
-
-✅ server-authoritative netcode
-
-✅ 2D graphics, sprites, and animations ([pixiJS](https://github.com/pixijs/pixijs))
-
-✅ deterministic physics ([rapierJS](https://github.com/dimforge/rapier.js))
-
-✅ ECS architecture
-
-✅ WASD movement controls
-
-✅ interactive entities & npc ai behavior
-
-✅ switch between games
-
-✅ networked chat
+🎮 creating new game modes is straightforward
 
 # Development
 
 |package|description|
 |--|--|
-|`core`| core piggo source files
-|`games`| piggo games
-|`web`| webapp serving piggo
+|`core`| core game engine
+|`games`| games
+|`web`| webapp
 |`server`| game server
-|`docs`| resources & js bundle served statically by GitHub Pages
+|`docs`| js bundle & resources (served statically by GitHub Pages)
 
 ### setup
 

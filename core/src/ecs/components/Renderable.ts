@@ -23,10 +23,10 @@ export type Renderable = Component<"renderable"> & {
   scaleMode: "nearest" | "linear"
   visible: boolean
   zIndex: number
-  setContainer: undefined | ((r: Renderer) => Promise<Container>)
-  setChildren: undefined | ((r: Renderer) => Promise<Renderable[]>)
-  setup: undefined | ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>)
-  dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)
+  setContainer: ((r: Renderer) => Promise<Container>) | undefined
+  setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
+  setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
+  dynamic: ((c: Container, r: Renderable, e: Entity, w: World) => void) | undefined
 
   prepareAnimations: (color: number) => void
   _init: (renderer: Renderer | undefined, world: World) => Promise<void>
@@ -57,7 +57,7 @@ export type RenderableProps = {
 
 export const Renderable = (props: RenderableProps): Renderable => {
 
-  const overrideDynamic = (dynamic: undefined | ((c: Container, r: Renderable, e: Entity, w: World) => void)) => {
+  const overrideDynamic = (dynamic: ((c: Container, r: Renderable, e: Entity, w: World) => void) | undefined) => {
     return (c: Container, r: Renderable, e: Entity, w: World) => {
       if (dynamic) dynamic(c, r, e, w);
       if (c.renderable !== r.visible) c.renderable = r.visible;

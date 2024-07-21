@@ -1,4 +1,4 @@
-import { Actions, ClientSystemBuilder, Input, Entity, Position, World, CurrentJoystickPosition, XY, clickableClickedThisFrame } from "@piggo-gg/core";
+import { Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity, Input, World, XY, clickableClickedThisFrame } from "@piggo-gg/core";
 
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
@@ -120,25 +120,25 @@ export const InputSystem = ClientSystemBuilder({
       }
     });
 
-    const handleInputForCharacterEntity = (entity: Entity<Input | Actions | Position>, world: World) => {
+    const handleInputForCharacter = (character: Character, world: World) => {
       // copy the input buffer
       let buffer = bufferedDown.copy();
 
       // check for actions
-      const { input, actions, position } = entity.components;
+      const { input, actions, position } = character.components;
 
       // update Position.pointing based on mouse
       const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x);
       const pointing = Math.round((angle + Math.PI) / (Math.PI / 4)) % 8;
 
-      world.actionBuffer.push(world.tick + 1, entity.id,
+      world.actionBuffer.push(world.tick + 1, character.id,
         { action: "point", playerId: world.client?.playerId(), params: { pointing } }
       );
 
       // handle joystick input
       if (CurrentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
-        const joystickAction = input.inputMap.joystick({ entity, world });
-        if (joystickAction) world.actionBuffer.push(world.tick + 1, entity.id, joystickAction);
+        const joystickAction = input.inputMap.joystick({ character, world });
+        if (joystickAction) world.actionBuffer.push(world.tick + 1, character.id, joystickAction);
       }
 
       // handle standalone and composite (a,b) input controls
@@ -153,9 +153,9 @@ export const InputSystem = ClientSystemBuilder({
             // run the callback
             const controllerInput = input.inputMap.press[keyPress];
             if (controllerInput != null) {
-              const invocation = controllerInput({ mouse, entity, world });
+              const invocation = controllerInput({ mouse, entity: character, world });
               if (invocation && actions.actionMap[invocation.action ?? ""]) {
-                world.actionBuffer.push(world.tick + 1, entity.id, invocation);
+                world.actionBuffer.push(world.tick + 1, character.id, invocation);
               }
             }
 
@@ -167,9 +167,9 @@ export const InputSystem = ClientSystemBuilder({
           // check for single key pressed
           const controllerInput = input.inputMap.press[keyPress];
           if (controllerInput != null) {
-            const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick });
+            const invocation = controllerInput({ mouse, entity: character, world, tick: keyMouse.tick });
             if (invocation && actions.actionMap[invocation.action ?? ""]) {
-              world.actionBuffer.push(world.tick + 1, entity.id, invocation);
+              world.actionBuffer.push(world.tick + 1, character.id, invocation);
             }
           }
 
@@ -241,13 +241,10 @@ export const InputSystem = ClientSystemBuilder({
 
         if (clickableClickedThisFrame.value || joystickOn) bufferedDown.remove("mb1");
 
-        const playerEntity = world.client?.playerEntity;
-        if (!playerEntity) return;
+        const character = world.client?.playerEntity.components.controlling.getControlledEntity(world);
+        if (!character) return;
 
-        const controlledEntity = world.entities[playerEntity.components.controlling.data.entityId] as Entity<Input | Actions | Position>;
-        if (!controlledEntity) return;
-
-        handleInputForCharacterEntity(controlledEntity, world);
+        handleInputForCharacter(character, world);
 
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop();
@@ -261,7 +258,7 @@ export const InputSystem = ClientSystemBuilder({
         })
 
         bufferedUp.clear();
-        bufferedDown.remove("capslock"); // capslock doesn't emit keyup event
+        bufferedDown.remove("capslock"); // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
       }
     }
   }
