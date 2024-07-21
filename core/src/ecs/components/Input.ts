@@ -1,4 +1,4 @@
-import { InvokedAction, Component, Entity, Position, World, XY } from "@piggo-gg/core";
+import { Character, Component, Entity, InvokedAction, World, XY } from "@piggo-gg/core";
 
 export type InputState = {
   mouse: XY
@@ -8,7 +8,7 @@ export type InputState = {
 }
 
 export type KeyHandler = (_: InputState) => null | InvokedAction<string, {}>
-export type JoystickHandler = (_: { entity: Entity<Position>, world: World }) => null | InvokedAction<string, {}>
+export type JoystickHandler = (_: { character: Character, world: World }) => null | InvokedAction<string, {}>
 
 // "" is always allowed to clear the input buffer
 export type InputMap = {

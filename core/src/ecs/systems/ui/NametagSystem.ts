@@ -65,14 +65,14 @@ export const NametagSystem = ClientSystemBuilder({
 
         // handle new entities
         entities.forEach((entity) => {
-          const controlledEntity = world.entities[entity.components.controlling.data.entityId];
-          if (!controlledEntity) return;
+          const character = entity.components.controlling.getControlledEntity(world);
+          if (!character) return;
 
-          const { position, renderable } = controlledEntity.components;
+          const { position, renderable } = character.components;
 
           // new nametag
           if (!characterNametags[entity.id] || position !== characterNametags[entity.id].components.position) {
-            nametagForEntity(entity, controlledEntity);
+            nametagForEntity(entity, character);
           }
 
           // update visibility

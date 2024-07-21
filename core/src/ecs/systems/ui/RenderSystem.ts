@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, XY, values } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, XY, values, Character } from "@piggo-gg/core";
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -8,7 +8,7 @@ export const RenderSystem = ClientSystemBuilder({
 
     const renderer = world.renderer;
     let lastOntick = Date.now();
-    let centeredEntity: Entity<Renderable | Position> | undefined = undefined;
+    let centeredEntity: Character | undefined = undefined;
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components;
@@ -154,8 +154,8 @@ export const RenderSystem = ClientSystemBuilder({
         // center camera on player's controlled entity
         const playerEntity = world.client?.playerEntity;
         if (playerEntity) {
-          const controlledEntity = world.entities[playerEntity.components.controlling.data.entityId] as Entity<Renderable | Position>;
-          if (controlledEntity) centeredEntity = controlledEntity;
+          const character = playerEntity.components.controlling.getControlledEntity(world);
+          if (character) centeredEntity = character;
         }
 
         // sort cache by position (closeness to camera)

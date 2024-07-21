@@ -1,4 +1,4 @@
-import { Action, Actions, Debug, Entity, Input, Position, Renderable, TeamColors, keys, pixiGraphics, values } from "@piggo-gg/core";
+import { Action, Actions, Debug, Entity, Input, Position, Renderable, TeamColors, keys, pixiCircle, pixiGraphics, values } from "@piggo-gg/core";
 import { Container, Graphics } from "pixi.js";
 
 export const Minimap = (dim: number, tileMap: number[]): Entity => {
@@ -10,10 +10,10 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
   const container = new Container();
   const tileGraphics = pixiGraphics({ alpha: 0.9, rotation: Math.PI / 4 });
   const background = pixiGraphics();
-  const mask = background.clone();
   const outline = pixiGraphics();
+  const mask = background.clone();
 
-  const Colors: Record<number, number> = {
+  const tileColors: Record<number, number> = {
     37: TeamColors[1],
     64: TeamColors[2],
     19: 0xffccaa
@@ -81,15 +81,12 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
 
             if (!dots[entity.id]) {
               const color = (entity.id === w.client?.playerId()) ? 0x00ff00 : 0xff0000;
-              dots[entity.id] = pixiGraphics().circle(0, 0, 3).fill({ color });
+              dots[entity.id] = pixiCircle({ r: 3 }).fill({ color });
               dots[entity.id].mask = mask;
               container.addChild(dots[entity.id]);
             }
 
-            const { controlling } = entity.components;
-            if (!controlling) return;
-
-            const character = w.entities[controlling.data.entityId];
+            const character = entity.components.controlling?.getControlledEntity(w);
             if (!character) return;
 
             const { position } = character.components;
@@ -127,7 +124,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
           tileMap.forEach((tile, i) => {
             if (tile === 0) return;
 
-            color = Colors[tile] || 0xccccff;
+            color = tileColors[tile] || 0xccccff;
 
             const x = i % dim;
             const y = Math.floor(i / dim);

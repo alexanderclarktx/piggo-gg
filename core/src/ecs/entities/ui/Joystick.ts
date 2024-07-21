@@ -32,8 +32,8 @@ export const Joystick = (): Entity => {
   return joystick;
 }
 
-export const DefaultJoystickHandler: JoystickHandler = ({ entity, world }) => ({
-  action: "move", playerId: world.client?.playerId(), params: handleJoystick(entity)
+export const DefaultJoystickHandler: JoystickHandler = ({ character, world }) => ({
+  action: "move", playerId: world.client?.playerId(), params: handleJoystick(character)
 });
 
 const handleJoystick = (entity: Entity<Position>): XY => {
