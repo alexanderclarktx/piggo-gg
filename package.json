@@ -4,6 +4,7 @@
   "workspaces": [ "core", "games", "web", "server" ],
   "scripts": {
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",
+    "branch": "git checkout main && git pull && git branch -D dev && git checkout -b dev && git push -u origin dev",
     "server": "bun --cwd server start",
     "docs": "bun pages",
     "pages": "ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME"

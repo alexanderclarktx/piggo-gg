@@ -7,10 +7,9 @@ export const ControlSystem: SystemBuilder = ({
     query: ["controlling"],
     onTick: (entities: Entity<Controlling>[]) => {
       entities.forEach((entity) => {
+        const character = entity.components.controlling.getControlledEntity(world);
 
-        const controlledEntity = entity.components.controlling.getControlledEntity(world);
-
-        if (!controlledEntity) {
+        if (!character) {
           entity.components.controlling.data.entityId = "";
         }
       });
