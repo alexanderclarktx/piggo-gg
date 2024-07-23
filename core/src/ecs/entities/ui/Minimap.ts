@@ -72,6 +72,20 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             }
           });
 
+          // update dot visibility
+          keys(dots).forEach((id) => {
+            dots[id].visible = true;
+
+            if (id === w.client?.playerId()) return;
+
+            const character = w.entities[id]?.components.controlling?.getControlledEntity(w);
+            if (!character) return;
+
+            const { team } = character.components;
+            if (!team || team.data.team === w.client?.playerCharacter()?.components.team?.data.team) return;
+            dots[id].visible = team.visible;
+          });
+
           const playerCharacter = w.client?.playerCharacter();
           if (!playerCharacter) return;
           const playerPosition = playerCharacter.components.position;

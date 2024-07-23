@@ -9,6 +9,7 @@ export const TeamColors: Record<TeamNumber, number> = {
 
 export type Team = Component<"team", { team: TeamNumber }> & {
   switchTeam: () => void
+  visible: boolean // visible to the other team
 }
 
 export const Team = (teamNumber: TeamNumber): Team => {
@@ -17,7 +18,8 @@ export const Team = (teamNumber: TeamNumber): Team => {
     data: { team: teamNumber },
     switchTeam: () => {
       team.data.team = team.data.team === 1 ? 2 : 1;
-    }
+    },
+    visible: false
   }
   return team;
 }

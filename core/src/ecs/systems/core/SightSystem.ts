@@ -1,11 +1,10 @@
-import { Polyline } from "@dimforge/rapier2d-compat";
-import { ClientSystemBuilder, Collider, Entity, Position, Renderable, Team, physics } from "@piggo-gg/core";
+import { ClientSystemBuilder, Collider, Entity, Position, Renderable, Team, physics, polyline } from "@piggo-gg/core";
 
 export const SightSystem = ClientSystemBuilder({
   id: "SightSystem",
   init: (world) => ({
     id: "SightSystem",
-    query: ["team", "renderable"],
+    query: ["team", "renderable", "position", "collider"],
     onTick: (entities: Entity<Team | Renderable | Position | Collider>[]) => {
 
       const playerCharacter = world.client?.playerCharacter();
@@ -24,17 +23,18 @@ export const SightSystem = ClientSystemBuilder({
         if (team.data.team === playerTeam.data.team) {
           renderable.visible = true;
         } else {
-          let hit = false;
+          let visible = true;
 
           const line = [0, 0, playerPosition.data.x - position.data.x, playerPosition.data.y - position.data.y];
-          physics.intersectionsWithShape(position.data, 0, new Polyline(Float32Array.from(line)), (c) => {
+          physics.intersectionsWithShape(position.data, 0, polyline(line), (c) => {
             if (c.isSensor() || c === collider.rapierCollider || c === playerCollider.rapierCollider) return true;
 
-            hit = true;
+            visible = false;
             return false;
           });
 
-          renderable.visible = !hit;
+          team.visible = visible;
+          renderable.visible = visible;
         }
       });
     }

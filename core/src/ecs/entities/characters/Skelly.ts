@@ -13,7 +13,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 140 }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
-      health: Health({ health: 100, maxHealth: 100 }),
+      health: Health({ health: 100 }),
       team: Team(team),
       gun: Deagle(),
       input: Input({

@@ -30,7 +30,7 @@ export const LineWall = ({ points, position, visible, health, id, shootable }: L
     id: id ?? `linewall-${points.join("-")}`,
     components: {
       position: Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
-      health: Health({ health: health ?? 9999, maxHealth: health ?? 9999, showHealthBar: false }),
+      health: Health({ health: health ?? 9999, showHealthBar: false }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({
         shape: "line",
