@@ -96,5 +96,6 @@ export * from "./src/ecs/actions/WASDInputMap";
 export * from "./src/ecs/components/Controlling";
 export * from "./src/utils/MathUtils";
 export * from "./src/utils/PixiUtils";
+export * from "./src/utils/RapierUtils";
 export * from "./src/utils/StringUtils";
 export * from "./src/utils/SystemUtils";
