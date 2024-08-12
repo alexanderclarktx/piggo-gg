@@ -2,7 +2,7 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "build": "rm -rf ./dist && NODE_ENV=production bun webpack && rm -r dist/games dist/core dist/web",
+    "build": "rm -rf ./dist && NODE_ENV=production bun webpack",
     "dev": "bun webpack serve --port 8000"
   },
   "dependencies": {
