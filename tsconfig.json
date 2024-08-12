@@ -14,12 +14,12 @@
     "noImplicitThis": true,
     // "noUncheckedIndexedAccess": true,
     "outDir": "./dist",
-    "paths": { "*": ["node_modules/*"] },
     "sourceMap": true,
+    "skipLibCheck": true,
     // "strictFunctionTypes": true,
     "strictNullChecks": true,
     "stripInternal": true,
-    "target": "ESNext",
+    "target": "ESNext"
   },
-  "include": ["web/**/*", "server/**/*", "core/**/*", "games/**/*"]
+  "include": ["web/**/*", "server/**/*", "core/**/*", "games/**/*", "electron/**/*"],
 }
