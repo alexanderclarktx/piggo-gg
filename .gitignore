@@ -3,5 +3,6 @@ dist
 .DS_STORE
 out/
 bun.lockb
+dist/
 todo.md
 .vscode

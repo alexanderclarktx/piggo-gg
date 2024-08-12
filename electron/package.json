@@ -1,0 +1,18 @@
+{
+  "name": "@piggo-gg/electron",
+  "type": "module",
+  "scripts": {
+    "pack": "tsc && NODE_ENV=production bun webpack serve --port 8000",
+    "watch": "tsc -w",
+    "lint": "eslint -c .eslintrc --ext .ts ./src",
+    "start": "bun tsc && electron dist/electron/main.js & NODE_ENV=production bun webpack serve --port 8000"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0"
+  },
+  "dependencies": {
+    "electron": "31.3.1",
+    "@piggo-gg/games": "1.0.0"
+  }
+}

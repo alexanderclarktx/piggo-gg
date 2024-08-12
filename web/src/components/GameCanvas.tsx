@@ -13,9 +13,9 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
     const mobile = isMobile();
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
-    const { width, height } = mobile ?
-      { width: window.innerWidth, height: window.innerHeight } :
-      { width: window.innerWidth * 0.98, height: window.innerHeight * 0.90 };
+    const [width, height] = mobile ?
+      [window.innerWidth, window.innerHeight] :
+      [window.innerWidth * 0.98, window.innerHeight * 0.90];
 
     if (mobile) canvas.style.border = "none";
 

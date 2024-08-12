@@ -1,5 +1,6 @@
 import { Camera, Renderable } from "@piggo-gg/core";
 import { Application } from "pixi.js";
+import 'pixi.js/unsafe-eval';
 
 export type RendererProps = {
   canvas: HTMLCanvasElement;
@@ -23,6 +24,11 @@ export type Renderer = {
 export const Renderer = (props: RendererProps): Renderer => {
 
   const app = new Application();
+
+  window.onresize = () => {
+    console.log("RESIZE");
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+  };
 
   const renderer: Renderer = {
     props: props,
@@ -65,7 +71,8 @@ export const Renderer = (props: RendererProps): Renderer => {
       });
     },
     handleResize: () => {
-      if (document.fullscreenElement && renderer.app.renderer) {
+      console.log("resize");
+      if (process.versions.hasOwnProperty('electron') || (document.fullscreenElement && renderer.app.renderer)) {
         renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
       } else {
         const computedCanvasStyle = window.getComputedStyle(renderer.props.canvas);

@@ -9,7 +9,6 @@ const servers = {
   // dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const;
-const env = location.hostname === "localhost" ? "dev" : "production";
 
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void;
 
@@ -37,6 +36,8 @@ export const Client = ({ world }: ClientProps): Client => {
 
   const noob = Noob({ id: genPlayerId() });
   world.addEntity(noob);
+
+  const env = location ? (location.hostname === "localhost" ? "dev" : "production") : "production";
 
   const client: Client = {
     ws: new WebSocket(servers[env]),

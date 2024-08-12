@@ -2,8 +2,8 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "build": "rm -rf ./dist && NODE_ENV=production bun x webpack",
-    "dev": "bun x webpack serve --port 8000"
+    "build": "rm -rf ./dist && NODE_ENV=production bun webpack && rm -r dist/games dist/core dist/web",
+    "dev": "bun webpack serve --port 8000"
   },
   "dependencies": {
     "@piggo-gg/games": "1.0.0",
@@ -16,7 +16,6 @@
   "devDependencies": {
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@types/react-modal": "^3.13.1",
-    "webpack": "^5.75.0"
+    "@types/react-modal": "^3.13.1"
   }
 }
