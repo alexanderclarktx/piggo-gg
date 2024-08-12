@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "declaration": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
@@ -12,14 +12,11 @@
     "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitThis": true,
-    // "noUncheckedIndexedAccess": true,
-    "outDir": "./dist",
-    "sourceMap": true,
     "skipLibCheck": true,
-    // "strictFunctionTypes": true,
     "strictNullChecks": true,
     "stripInternal": true,
-    "target": "ESNext"
+    // "noUncheckedIndexedAccess": true,
+    // "strictFunctionTypes": true,
   },
   "include": ["web/**/*", "server/**/*", "core/**/*", "games/**/*", "electron/**/*"],
 }
