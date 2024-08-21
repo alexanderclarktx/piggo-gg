@@ -35,7 +35,8 @@ module.exports = {
         { from: "./res/favicon.ico", to: () => "favicon.ico" },
         { from: "./res/*.svg", to: () => "[name].svg" },
         { from: "./res/*.png", to: () => "[name].png" },
-        { from: "./res/*.json", to: () => "[name].json" }
+        { from: "./res/*.json", to: () => "[name].json" },
+        { from: "./res/*.mp3", to: () => "[name].mp3" }
       ],
     }),
     new webpack.optimize.LimitChunkCountPlugin({
