@@ -8,5 +8,5 @@ const sound: (url: string) => Player = (url) => new Player({ url, volume: -30 })
 export const Sounds = (): Sounds => ({
   deagle: sound("pistol.mp3"),
   ak: sound("ak.mp3"),
-  awp: sound("aw.mp3"),
+  awp: sound("awp.mp3"),
 })

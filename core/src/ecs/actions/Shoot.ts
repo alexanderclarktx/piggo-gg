@@ -36,7 +36,7 @@ export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, p
       onHit: onHitTeam(team.data.team, gun.damage)
     }));
 
-    if (world.sounds[gun.name].loaded) world.sounds[gun.name].restart().start();
+    if (world.client?.sounds[gun.name].loaded) world.client.sounds[gun.name].restart().start();
 
     // auto reload
     if (gun.data.clip === 0) {
