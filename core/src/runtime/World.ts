@@ -3,6 +3,7 @@ import {
   InvokedAction, Renderer, SerializedEntity, values,
   StateBuffer, System, SystemBuilder, SystemEntity,
   keys,
+  Sounds,
 } from "@piggo-gg/core";
 
 export type World = {
@@ -20,6 +21,7 @@ export type World = {
   renderer: Renderer | undefined
   runtimeMode: "client" | "server"
   systems: Record<string, System>
+  sounds: Sounds
   tick: number
   tickFaster: boolean
   tickFlag: "green" | "red"
@@ -76,6 +78,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
     renderer,
     runtimeMode,
     systems: {},
+    sounds: Sounds(),
     tick: 0,
     tickFaster: false,
     tickFlag: "green",

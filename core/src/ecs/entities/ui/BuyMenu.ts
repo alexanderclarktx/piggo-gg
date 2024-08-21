@@ -1,4 +1,4 @@
-import { Action, Actions, Entity, Input, Position, Renderable, TwoPoints, WeaponTable, World, clickableClickedThisFrame, loadTexture, pixiGraphics, pixiText } from "@piggo-gg/core";
+import { Action, Actions, Entity, GunNames, Input, Position, Renderable, TwoPoints, WeaponTable, World, clickableClickedThisFrame, loadTexture, pixiGraphics, pixiText } from "@piggo-gg/core";
 import { ScrollBox } from "@pixi/ui";
 import { OutlineFilter } from "pixi-filters";
 import { Container, Sprite } from "pixi.js";
@@ -86,7 +86,7 @@ const cell = async (text: string, width: number, height: number, world: World): 
     const playerCharacter = world.client?.playerCharacter();
     if (!playerCharacter) return;
 
-    const newGun = WeaponTable[text.toLowerCase()];
+    const newGun = WeaponTable[text.toLowerCase() as GunNames];
     if (!newGun) return;
 
     playerCharacter.components.gun = newGun();

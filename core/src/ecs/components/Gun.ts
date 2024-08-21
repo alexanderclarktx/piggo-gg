@@ -1,5 +1,7 @@
 import { Component, World } from "@piggo-gg/core";
 
+export type GunNames = "deagle" | "ak" | "awp";
+
 export type Gun = Component<"gun", { id: number, clip: number, ammo: number }> & {
   automatic: boolean
   bulletSize: number
@@ -8,7 +10,7 @@ export type Gun = Component<"gun", { id: number, clip: number, ammo: number }> &
   fireRate: number
   lastShot: number
   outlineColor: number
-  name: string
+  name: GunNames
   reloading: boolean
   reloadTime: number
   speed: number
@@ -23,7 +25,7 @@ export type GunProps = {
   clipSize: number
   damage: number
   fireRate: number
-  name: string
+  name: GunNames
   reloadTime: number
   speed: number
 }
@@ -110,8 +112,7 @@ export const AWP = GunBuilder({
   speed: 600
 });
 
-
-export const WeaponTable: Record<string, () => Gun> = {
+export const WeaponTable: Record<GunNames, () => Gun> = {
   "deagle": Deagle,
   "ak": AK,
   "awp": AWP
