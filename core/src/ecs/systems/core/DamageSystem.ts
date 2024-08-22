@@ -1,4 +1,4 @@
-import { Entity, Health, Position, SystemBuilder } from "@piggo-gg/core";
+import { Entity, Health, Position, SystemBuilder, randomChoice } from "@piggo-gg/core";
 
 export const DamageSystem: SystemBuilder<"DamageSystem"> = {
   id: "DamageSystem",
@@ -8,8 +8,15 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
     onTick: (entities: Entity<Health | Position>[]) => {
       entities.forEach((entity) => {
         const { health } = entity.components;
-
         if (health.data.health <= 0) {
+
+          // play death sound
+          if (health.deathSounds.length > 0) {
+            const sound = randomChoice(health.deathSounds);
+            if (sound.loaded) sound.start(0, 0.1);
+          }
+
+          // remove entity
           world.removeEntity(entity.id);
         }
       })

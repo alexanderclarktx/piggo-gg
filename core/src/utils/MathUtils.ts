@@ -5,6 +5,8 @@ export type XY = { x: number, y: number };
 
 export type TwoPoints = [number, number, number, number];
 
+export const randomChoice = <T>(xs: T[]): T => xs[Math.floor(Math.random() * xs.length)];
+
 export const equalsXY = (a: XY, b: XY) => a.x === b.x && a.y === b.y;
 
 export const orthoToDirection = (o: number) => {
