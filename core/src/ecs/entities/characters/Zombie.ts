@@ -1,4 +1,4 @@
-import { Actions, Chase, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, loadTexture } from "@piggo-gg/core";
+import { Actions, Chase, Collider, Debug, Entity, Health, NPC, Networked, Position, PositionProps, Renderable, Sounds, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type ZombieProps = {
@@ -15,7 +15,7 @@ export const Zombie = ({ id, color, positionProps = { x: 100, y: 100 } }: Zombie
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
       networked: Networked({ isNetworked: true }),
-      health: Health({ health: 60 }),
+      health: Health({ health: 60, deathSounds: [ "zombieDeath1", "zombieDeath2", "zombieDeath3", "zombieDeath4" ] }),
       npc: NPC({
         onTick: (_) => ({ action: "chase", playerId: "" })
       }),

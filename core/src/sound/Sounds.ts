@@ -1,12 +1,23 @@
 import { GunNames } from "@piggo-gg/core";
 import { Player } from "tone";
 
-export type Sounds = Record<GunNames, Player>;
+export type Sound = Player;
 
-const sound: (url: string) => Player = (url) => new Player({ url, volume: -30 }).toDestination();
+type ZombieDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4";
+export type ValidSounds = GunNames | ZombieDeathSounds;
+export type Sounds = Record<ValidSounds, Sound>;
+
+const load = (url: string, volume: number): Sound => {
+  const player = new Player({ url, volume })
+  return player.toDestination();
+}
 
 export const Sounds = (): Sounds => ({
-  deagle: sound("pistol.mp3"),
-  ak: sound("ak.mp3"),
-  awp: sound("awp.mp3"),
+  deagle: load("pistol.mp3", -40),
+  ak: load("ak.mp3", -30),
+  awp: load("awp.mp3", -40),
+  zombieDeath1: load("zombieDeath1.wav", -30),
+  zombieDeath2: load("zombieDeath2.wav", -30),
+  zombieDeath3: load("zombieDeath3.wav", -30),
+  zombieDeath4: load("zombieDeath4.wav", -30)
 })

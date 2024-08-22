@@ -36,7 +36,8 @@ module.exports = {
         { from: "./res/*.svg", to: () => "[name].svg" },
         { from: "./res/*.png", to: () => "[name].png" },
         { from: "./res/*.json", to: () => "[name].json" },
-        { from: "./res/*.mp3", to: () => "[name].mp3" }
+        { from: "./res/*.mp3", to: () => "[name].mp3" },
+        { from: "./res/*.wav", to: () => "[name].wav" },
       ],
     }),
     new webpack.optimize.LimitChunkCountPlugin({
