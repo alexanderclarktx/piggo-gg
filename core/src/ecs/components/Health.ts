@@ -1,16 +1,15 @@
-import { Component } from "@piggo-gg/core";
-import { Player } from "tone";
+import { Component, Sound, ValidSounds } from "@piggo-gg/core";
 
 export type Health = Component<"health", { health: number, maxHealth: number }> & {
   showHealthBar: boolean
-  deathSounds: Player[]
+  deathSounds: ValidSounds[]
 }
 
 export type HealthProps = {
   health: number,
   maxHealth?: number,
   showHealthBar?: boolean
-  deathSounds?: Player[]
+  deathSounds?: ValidSounds[]
 }
 
 export const Health = ({ health, maxHealth, showHealthBar = true, deathSounds }: HealthProps): Health => ({

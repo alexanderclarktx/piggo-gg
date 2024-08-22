@@ -12,8 +12,8 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
 
           // play death sound
           if (health.deathSounds.length > 0) {
-            const sound = randomChoice(health.deathSounds);
-            if (sound.loaded) sound.start(0, 0.1);
+            const sound = world.client?.sounds[randomChoice(health.deathSounds)];
+            if (sound?.loaded) sound.start(0, 0.1);
           }
 
           // remove entity
