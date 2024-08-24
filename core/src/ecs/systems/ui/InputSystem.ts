@@ -1,4 +1,4 @@
-import { Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity, Input, World, XY, clickableClickedThisFrame } from "@piggo-gg/core";
+import { Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity, Input, World, XY, XYdifferent, clickableClickedThisFrame } from "@piggo-gg/core";
 
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
@@ -34,10 +34,11 @@ export const InputSystem = ClientSystemBuilder({
 
     let backspaceOn = false;
     let joystickOn = false;
-    let mouseEvent = { x: 0, y: 0 };
+    let mouseEvent: XY = { x: 0, y: 0 };
 
     renderer?.app.canvas.addEventListener("pointermove", (event) => {
       mouseEvent = { x: event.offsetX, y: event.offsetY };
+      if (XYdifferent(mouseEvent, mouse, 50)) return;
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
     });
 

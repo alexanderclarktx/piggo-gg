@@ -9,7 +9,11 @@ export const randomChoice = <T>(xs: T[]): T => {
   return xs[Math.floor(Math.random() * xs.length)];
 }
 
-export const equalsXY = (a: XY, b: XY) => a.x === b.x && a.y === b.y;
+export const XYdifferent = (a: XY, b: XY, threshold: number) => {
+  return Math.abs(a.x - b.x) > threshold || Math.abs(a.y - b.y) > threshold;
+}
+
+export const XYequal = (a: XY, b: XY) => a.x === b.x && a.y === b.y;
 
 export const orthoToDirection = (o: number) => {
   if (o === 0) return "l";

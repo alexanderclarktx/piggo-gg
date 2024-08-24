@@ -1,4 +1,4 @@
-import { Entity, JoystickHandler, Position, Renderable, XY, loadTexture } from "@piggo-gg/core";
+import { Entity, JoystickHandler, Position, Renderable, XY, XYdifferent, loadTexture } from "@piggo-gg/core";
 import { Container, FederatedPointerEvent, Graphics, Sprite, Texture } from "pixi.js";
 
 export const CurrentJoystickPosition = { angle: 0, power: 0, active: false }
@@ -120,7 +120,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
     if (dragging === false) return;
 
     let newPosition = c.toLocal(event.global);
-    if (Math.abs(newPosition.x - dragPoint.x) > 100 || Math.abs(newPosition.y - dragPoint.y) > 100) return;
+    if (XYdifferent(newPosition, dragPoint, 50)) return;
     dragPoint = newPosition;
 
     let sideX = newPosition.x - dragStart.x;
