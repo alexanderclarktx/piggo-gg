@@ -5,8 +5,8 @@ type AbilityStrings = [string, string, string, string];
 
 export const MobileHUD = (): Entity => {
 
-  const ammo = pixiText({ text: "", pos: { x: 120, y: 10 }, anchor: { x: 1, y: 0 }, style: { fontSize: 32 } });
-  const hp = pixiText({ text: "100 ⛨", pos: { x: -100, y: 10 }, anchor: { x: 0.5, y: 0 }, style: { fontSize: 32 } });
+  const ammo = pixiText({ text: "", pos: { x: 120, y: 5 }, anchor: { x: 1, y: 0 }, style: { fontSize: 32 } });
+  const hp = pixiText({ text: "100 ⛨", pos: { x: -100, y: 5 }, anchor: { x: 0.5, y: 0 }, style: { fontSize: 32 } });
 
   const hud = Entity<Renderable | Position>({
     id: "MobileHUD",
@@ -20,12 +20,12 @@ export const MobileHUD = (): Entity => {
 
           // outline
           const outline = new Graphics();
-          outline.moveTo(-150, 50)
-            .lineTo(-50, 50)
-            .lineTo(-20, 30)
-            .lineTo(20, 30)
-            .lineTo(50, 50)
-            .lineTo(150, 50)
+          outline.moveTo(-150, 45)
+            .lineTo(-50, 45)
+            .lineTo(-20, 25)
+            .lineTo(20, 25)
+            .lineTo(50, 45)
+            .lineTo(150, 45)
             .stroke({ width: 2, color: 0xffffff, alpha: 0.9 });
 
           renderable.c.addChild(outline, hp, ammo);
