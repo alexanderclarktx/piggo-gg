@@ -1,5 +1,5 @@
-import { Entity, JoystickHandler, Position, Renderable, XY } from "@piggo-gg/core";
-import { Container, FederatedPointerEvent, Graphics } from "pixi.js";
+import { Entity, JoystickHandler, Position, Renderable, XY, XYdifferent, loadTexture } from "@piggo-gg/core";
+import { Container, FederatedPointerEvent, Graphics, Sprite, Texture } from "pixi.js";
 
 export const CurrentJoystickPosition = { angle: 0, power: 0, active: false }
 
@@ -8,11 +8,11 @@ export const Joystick = (): Entity => {
     id: "joystick",
     persists: true,
     components: {
-      position: Position({ x: -(window.innerWidth / 2), y: -100, screenFixed: true }),
+      position: Position({ x: -(window.innerWidth / 2), y: -85, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        setContainer: async () => JoystickContainer({
+        setContainer: async () => await JoystickContainer({
           onChange: (data) => {
             CurrentJoystickPosition.angle = data.angle;
             CurrentJoystickPosition.power = data.power;
@@ -63,27 +63,27 @@ const handleJoystick = (entity: Entity<Position>): XY => {
 }
 
 export interface JoystickSettings {
-  onChange?: (data: { angle: number, power: number }) => void;
-  onStart?: () => void;
-  onEnd?: () => void;
+  onChange: (data: { angle: number, power: number }) => void;
+  onStart: () => void;
+  onEnd: () => void;
 }
 
-export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings): Container => {
+export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSettings): Promise<Container> => {
 
-  const outerRadius = 55;
-  const innerRadius = 30;
+  const outerRadius = 45;
 
   let dragging: boolean = false;
   let dragStart: XY;
+  let dragPoint: XY;
   let power: number;
 
   const c = new Container({ interactive: true });
 
   const outer = new Graphics({ alpha: 0.9 });
-  outer.circle(0, 0, outerRadius).fill({ color: 0x005588 });
+  outer.circle(0, 0, outerRadius).fill({ color: 0x000022, alpha: 0.8 });
 
-  const inner = new Graphics({ alpha: 0.5 });
-  inner.circle(0, 0, innerRadius).fill({ color: 0xffff00 });
+  const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"] as Texture;
+  const inner = new Sprite({ texture: logo, alpha: 0.7, anchor: 0.5 });
 
   c.addChild(outer, inner);
 
@@ -95,27 +95,31 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
   const onDragStart = (event: FederatedPointerEvent) => {
     dragStart = c.toLocal(event.global);
+    dragPoint = dragStart;
 
     dragging = true;
     inner.alpha = 1;
 
-    onStart?.();
+    onStart();
   }
 
   const onDragEnd = () => {
     if (dragging === false) return;
 
-    inner.position.set(0, 0);
     dragging = false;
-    inner.alpha = 0.5;
 
-    onEnd?.();
+    inner.position.set(0, 0);
+    inner.alpha = 0.7;
+
+    onEnd();
   }
 
   const onDragMove = (event: FederatedPointerEvent) => {
     if (dragging === false) return;
 
     let newPosition = c.toLocal(event.global);
+    if (XYdifferent(newPosition, dragPoint, 80)) return;
+    dragPoint = newPosition;
 
     let sideX = newPosition.x - dragStart.x;
     let sideY = newPosition.y - dragStart.y;
@@ -135,7 +139,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
       }
       inner.position.set(centerPoint.x, centerPoint.y);
       power = getPower(centerPoint);
-      onChange?.({ angle, power });
+      onChange({ angle, power });
       return;
     }
 
@@ -150,7 +154,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
       inner.position.set(centerPoint.x, centerPoint.y);
       power = getPower(centerPoint);
-      onChange?.({ angle, power });
+      onChange({ angle, power });
       return;
     }
 
@@ -190,7 +194,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
     inner.position.set(centerPoint.x, centerPoint.y);
 
-    onChange?.({ angle, power });
+    onChange({ angle, power });
   };
 
   c.on("pointerdown", onDragStart)

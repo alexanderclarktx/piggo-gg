@@ -17,7 +17,7 @@ export const Root = () => {
   }, [world]);
 
   return (
-    <div>
+    <div style={{ userSelect: "none" }}>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>

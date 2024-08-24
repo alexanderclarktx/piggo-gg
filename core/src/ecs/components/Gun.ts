@@ -15,7 +15,7 @@ export type Gun = Component<"gun", { id: number, clip: number, ammo: number }> &
   reloadTime: number
   speed: number
   canShoot: (world: World, tick: number) => boolean
-  shoot: (world: World) => void
+  didShoot: (world: World) => void
 }
 
 export type GunProps = {
@@ -68,7 +68,7 @@ export const Gun = (props: GunProps): Gun => {
 
       return true;
     },
-    shoot: (world: World) => {
+    didShoot: (world: World) => {
       gun.lastShot = world.tick;
       gun.data.clip -= 1;
     }

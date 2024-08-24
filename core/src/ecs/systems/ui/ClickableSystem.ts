@@ -3,12 +3,8 @@ import { FederatedPointerEvent } from "pixi.js";
 
 export const clickableClickedThisFrame = {
   value: 0,
-  set: (value: number) => {
-    clickableClickedThisFrame.value = value
-  },
-  reset: () => {
-    clickableClickedThisFrame.value = 0
-  }
+  set: (value: number) => clickableClickedThisFrame.value = value,
+  reset: () => clickableClickedThisFrame.value = 0
 } 
 
 // ClickableSystem handles clicks for clickable entities
@@ -22,7 +18,7 @@ export const ClickableSystem = ClientSystemBuilder({
     let bufferClick: XY[] = [];
     const hovered: Set<string> = new Set();
 
-    renderer.props.canvas.addEventListener("mousedown", (event: FederatedPointerEvent) => {
+    renderer.app.canvas.addEventListener("pointerdown", (event: FederatedPointerEvent) => {
       bufferClick.push({ x: event.offsetX, y: event.offsetY });
     });
 

@@ -1,6 +1,6 @@
 import {
   Background, ZombieSpawnSystem, FloorTiles, GunSystem, InviteStone,
-  IsometricGame, LineWall, Portal, SkellySpawnSystem, BuyMenu
+  IsometricGame, LineWall, Portal, SkellySpawnSystem, Shop
 } from "@piggo-gg/core";
 
 export const Home = IsometricGame({
@@ -11,14 +11,14 @@ export const Home = IsometricGame({
     entities: [
       Background({ img: "stars.png" }),
 
-      BuyMenu(),
+      Shop(),
 
       Portal({ pos: { x: 544, y: 144 }, game: "aram", tint: 0xff0055 }),
       Portal({ pos: { x: -480, y: 144 }, game: "legends", tint: 0x00ffcc }),
       Portal({ pos: { x: 544, y: 656 }, game: "soccer", tint: 0xaaaaff }),
       Portal({ pos: { x: -480, y: 656 }, game: "strike", tint: 0x000000 }),
 
-      InviteStone({ pos: { x: 32 * 1, y: 32 * 3.25 }, tint: 0xddddff }),
+      // InviteStone({ pos: { x: 32 * 1, y: 32 * 3.25 }, tint: 0xddddff }),
 
       FloorTiles({ rows: 7, cols: 7, position: { x: -32 * 16, y: 32 } }),
       FloorTiles({ rows: 7, cols: 7, position: { x: 32 * 16, y: 32 } }),
