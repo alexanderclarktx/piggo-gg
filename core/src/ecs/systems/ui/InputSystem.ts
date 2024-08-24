@@ -18,7 +18,7 @@ const KeyBuffer = (b?: KeyMouse[]) => {
   }
 }
 
-// InputSystem handles all keyboard/joystick inputs
+// InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: (world) => {
@@ -37,15 +37,16 @@ export const InputSystem = ClientSystemBuilder({
     let mouseEvent: XY = { x: 0, y: 0 };
 
     renderer?.app.canvas.addEventListener("pointermove", (event) => {
-      if (XYdifferent(mouseEvent, { x: event.offsetX, y: event.offsetY }, 50)) return;
+      if (CurrentJoystickPosition.active && XYdifferent(mouseEvent, { x: event.offsetX, y: event.offsetY }, 100)) return;
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
     });
 
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {
-      // ignore clicks if the joystick just became active
       if (!joystickOn && CurrentJoystickPosition.active) return;
+
+      if (clickableClickedThisFrame.value === world.tick + 1) return;
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
@@ -62,6 +63,9 @@ export const InputSystem = ClientSystemBuilder({
 
     document.addEventListener("pointerup", (event) => {
       const key = event.button === 0 ? "mb1" : "mb2";
+
+      if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return;
+
       bufferedDown.remove(key);
     });
 
@@ -241,10 +245,6 @@ export const InputSystem = ClientSystemBuilder({
           bufferedDown.clear();
           bufferedUp.clear();
           return;
-        }
-
-        if (clickableClickedThisFrame.value || (CurrentJoystickPosition.active && !joystickOn)) {
-          bufferedDown.remove("mb1");
         }
 
         const character = world.client?.playerEntity.components.controlling.getControlledEntity(world);
