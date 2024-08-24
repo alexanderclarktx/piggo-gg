@@ -1,4 +1,4 @@
-import { Action, LineWall, XY, randomChoice } from "@piggo-gg/core";
+import { Action, LineWall, XY, playSound } from "@piggo-gg/core";
 
 export const Wall = Action<XY>(({ world, params, entity }) => {
   if (!entity || !entity.components.position) return;
@@ -30,8 +30,6 @@ export const Wall = Action<XY>(({ world, params, entity }) => {
 
   world.addEntity(LineWall({ points: coords, visible: true, health: 75, shootable: true }));
 
-  if (world.client?.sounds["wallPlace1"].loaded) {
-    randomChoice([world.client.sounds["wallPlace1"], world.client.sounds["wallPlace2"]]).restart().start();
-  }
+  playSound([world.client?.sounds["wallPlace1"], world.client?.sounds["wallPlace2"]]);
 
 }, 100);

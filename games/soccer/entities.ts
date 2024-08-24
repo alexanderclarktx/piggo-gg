@@ -39,7 +39,7 @@ export const FieldGrass = (wallPoints: number[] = defaultPoints) => Entity({
         // field lines
         const lines = new Graphics();
         lines.setStrokeStyle({ width: 2, color: 0xffffff, alpha: 1 });
-        lines.setFillStyle({ alpha: 0, width: 0 })
+        lines.setFillStyle({ alpha: 0 })
 
         // center line
         lines.moveTo(50, 100);

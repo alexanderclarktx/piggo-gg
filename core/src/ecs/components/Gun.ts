@@ -79,7 +79,7 @@ export const Gun = (props: GunProps): Gun => {
 export const Deagle = GunBuilder({
   name: "deagle",
   automatic: false,
-  ammo: 45,
+  ammo: 60,
   clipSize: 15,
   damage: 15,
   fireRate: 3,
@@ -91,11 +91,11 @@ export const Deagle = GunBuilder({
 export const AK = GunBuilder({
   name: "ak",
   automatic: true,
-  ammo: 50,
-  clipSize: 25,
+  ammo: 90,
+  clipSize: 30,
   damage: 25,
-  fireRate: 12,
-  reloadTime: 60,
+  fireRate: 8,
+  reloadTime: 50,
   bulletSize: 4,
   speed: 500
 });
@@ -103,7 +103,7 @@ export const AK = GunBuilder({
 export const AWP = GunBuilder({
   name: "awp",
   automatic: false,
-  ammo: 15,
+  ammo: 20,
   clipSize: 1,
   damage: 200,
   fireRate: 40,
