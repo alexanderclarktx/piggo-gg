@@ -11,19 +11,19 @@ export const MobileHUD = (): Entity => {
   const hud = Entity<Renderable | Position>({
     id: "MobileHUD",
     components: {
-      position: Position({ x: 0, y: 0, screenFixed: true }),
+      position: Position({ screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable, renderer) => {
           const canvasWidth = renderer.props.canvas.width;
-          hud.components.position.setPosition({ x: canvasWidth / 2, y: -60 })
+          hud.components.position.setPosition({ x: canvasWidth / 2, y: -90 })
 
           // outline
           const outline = new Graphics();
           outline.moveTo(-150, 45)
             .lineTo(-50, 45)
-            .lineTo(-20, 25)
-            .lineTo(20, 25)
+            .lineTo(-20, 65)
+            .lineTo(20, 65)
             .lineTo(50, 45)
             .lineTo(150, 45)
             .stroke({ width: 2, color: 0xffffff, alpha: 0.9 });

@@ -1,5 +1,5 @@
 import { Entity, JoystickHandler, Position, Renderable, XY } from "@piggo-gg/core";
-import { Container, FederatedPointerEvent, Graphics } from "pixi.js";
+import { Container, FederatedPointerEvent, Graphics, Rectangle } from "pixi.js";
 
 export const CurrentJoystickPosition = { angle: 0, power: 0, active: false }
 
@@ -8,7 +8,7 @@ export const Joystick = (): Entity => {
     id: "joystick",
     persists: true,
     components: {
-      position: Position({ x: -(window.innerWidth / 2), y: -105, screenFixed: true }),
+      position: Position({ x: -(window.innerWidth / 2), y: -85, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -70,14 +70,14 @@ export interface JoystickSettings {
 
 export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings): Container => {
 
-  const outerRadius = 55;
+  const outerRadius = 45;
   const innerRadius = 30;
 
   let dragging: boolean = false;
   let dragStart: XY;
   let power: number;
 
-  const c = new Container({ interactive: true });
+  const c = new Container({ interactive: true, hitArea: new Rectangle(-outerRadius, -outerRadius, outerRadius * 2, outerRadius * 2) });
 
   const outer = new Graphics({ alpha: 0.9 });
   outer.circle(0, 0, outerRadius).fill({ color: 0x005588 });
