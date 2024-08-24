@@ -48,15 +48,14 @@ export const InputSystem = ClientSystemBuilder({
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
 
-      if (!CurrentJoystickPosition.active && joystickOn) {
-        joystickOn = false;
-        joystickClickedThisFrame = false;
-      }
-
       if (CurrentJoystickPosition.active && !joystickOn) {
         joystickClickedThisFrame = true;
         joystickOn = true;
         return;
+      }
+
+      if (!CurrentJoystickPosition.active && joystickOn) {
+        joystickOn = false;
       }
 
       bufferedDown.push({ key, mouse, tick: world.tick });
