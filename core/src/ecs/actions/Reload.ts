@@ -6,11 +6,14 @@ export const Reload = Action(({ entity }) => {
   const { gun, effects } = entity.components;
   if (!gun || !effects) return;
 
-  // check if gun can be reloaded
   if (gun.reloading) return;
-  if (gun.data.clip === gun.clipSize) return;
-  if (gun.data.ammo <= 0) return;
 
+  if (gun.data.clip === gun.clipSize) return;
+
+  // TODO infinite ammo
+  // if (gun.data.ammo <= 0) return;
+
+  console.log("reloading");
   effects.addEffect("reload", ReloadEffect(gun));
 });
 
@@ -25,7 +28,8 @@ const ReloadEffect = (gun: Gun): Effect => ({
     const clip = Math.min(gun.data.clip + gun.data.ammo, gun.clipSize);
     const ammo = Math.max(gun.data.ammo - gun.clipSize + gun.data.clip, 0);
 
-    gun.data.clip = clip;
+    // gun.data.clip = clip;
+    gun.data.clip = gun.clipSize; // TODO infinite ammo
     gun.data.ammo = ammo;
   }
 })

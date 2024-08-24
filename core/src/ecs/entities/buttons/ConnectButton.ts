@@ -4,7 +4,7 @@ export const ConnectButton = () => Entity({
   id: "connectButton",
   persists: true,
   components: {
-    position: Position({ x: -75, y: 5, screenFixed: true }),
+    position: Position({ x: 5, y: 5, screenFixed: true }),
     clickable: Clickable({ width: 80, height: 32, active: true }),
     actions: Actions({
       click: {
