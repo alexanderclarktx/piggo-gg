@@ -1,4 +1,4 @@
-import { Entity, Health, Position, SystemBuilder, randomChoice } from "@piggo-gg/core";
+import { Entity, Health, Position, SystemBuilder, playSound, randomChoice } from "@piggo-gg/core";
 
 export const DamageSystem: SystemBuilder<"DamageSystem"> = {
   id: "DamageSystem",
@@ -12,8 +12,7 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
 
           // play death sound
           if (health.deathSounds.length > 0) {
-            const sound = world.client?.sounds[randomChoice(health.deathSounds)];
-            if (sound?.loaded) sound.start(0, 0.1);
+            playSound(world.client?.sounds[randomChoice(health.deathSounds)], 0.1);
           }
 
           // remove entity

@@ -11,7 +11,7 @@ export type Sounds = Record<ValidSounds, Sound>;
 
 let state: "closed" | "running" | "suspended" = "closed";
 
-export const playSound = (sound: Sound | (Sound | undefined)[] | undefined) => {
+export const playSound = (sound: Sound | (Sound | undefined)[] | undefined, startTime: number = 0) => {
   if (!sound) return;
 
   if (state !== "running") {
@@ -23,9 +23,9 @@ export const playSound = (sound: Sound | (Sound | undefined)[] | undefined) => {
 
   if (Array.isArray(sound)) {
     const choice = randomChoice(sound);
-    if (choice?.loaded) choice.start();
+    if (choice?.loaded) choice.start(0, startTime);
   } else {
-    if (sound.loaded) sound.start();
+    if (sound.loaded) sound.start(0, startTime);
   }
 }
 
