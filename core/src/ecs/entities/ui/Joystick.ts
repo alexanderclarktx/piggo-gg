@@ -63,9 +63,9 @@ const handleJoystick = (entity: Entity<Position>): XY => {
 }
 
 export interface JoystickSettings {
-  onChange?: (data: { angle: number, power: number }) => void;
-  onStart?: () => void;
-  onEnd?: () => void;
+  onChange: (data: { angle: number, power: number }) => void;
+  onStart: () => void;
+  onEnd: () => void;
 }
 
 export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings): Container => {
@@ -75,9 +75,10 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
   let dragging: boolean = false;
   let dragStart: XY;
+  let pointerId: number = -1;
   let power: number;
 
-  const c = new Container({ interactive: true, hitArea: new Rectangle(-outerRadius, -outerRadius, outerRadius * 2, outerRadius * 2) });
+  const c = new Container({ interactive: true });
 
   const outer = new Graphics({ alpha: 0.9 });
   outer.circle(0, 0, outerRadius).fill({ color: 0x005588 });
@@ -95,25 +96,28 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
   const onDragStart = (event: FederatedPointerEvent) => {
     dragStart = c.toLocal(event.global);
+    pointerId = event.pointerId;
 
     dragging = true;
     inner.alpha = 1;
 
-    onStart?.();
+    onStart();
   }
 
   const onDragEnd = () => {
     if (dragging === false) return;
 
-    inner.position.set(0, 0);
     dragging = false;
+
+    inner.position.set(0, 0);
     inner.alpha = 0.5;
 
-    onEnd?.();
+    onEnd();
   }
 
   const onDragMove = (event: FederatedPointerEvent) => {
     if (dragging === false) return;
+    if (event.pointerId !== pointerId) return;
 
     let newPosition = c.toLocal(event.global);
 
@@ -135,7 +139,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
       }
       inner.position.set(centerPoint.x, centerPoint.y);
       power = getPower(centerPoint);
-      onChange?.({ angle, power });
+      onChange({ angle, power });
       return;
     }
 
@@ -150,7 +154,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
       inner.position.set(centerPoint.x, centerPoint.y);
       power = getPower(centerPoint);
-      onChange?.({ angle, power });
+      onChange({ angle, power });
       return;
     }
 
@@ -190,7 +194,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
     inner.position.set(centerPoint.x, centerPoint.y);
 
-    onChange?.({ angle, power });
+    onChange({ angle, power });
   };
 
   c.on("pointerdown", onDragStart)

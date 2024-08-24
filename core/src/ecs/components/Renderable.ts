@@ -10,6 +10,7 @@ export type Renderable = Component<"renderable"> & {
   bufferedAnimation: string
   c: Container
   children: Renderable[] | undefined
+  cullable: boolean
   animationColor: number
   color: number
   interactiveChildren: boolean
@@ -40,6 +41,7 @@ export type RenderableProps = {
   animations?: Record<string, AnimatedSprite>
   cacheAsBitmap?: boolean
   color?: number
+  cullable?: boolean
   animationColor?: number
   interactiveChildren?: boolean
   interpolate?: boolean
@@ -76,6 +78,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     r: undefined,
     color: props.color ?? 0xffffff,
     children: undefined,
+    cullable: props.cullable ?? false,
     dynamic: overrideDynamic(props.dynamic),
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,

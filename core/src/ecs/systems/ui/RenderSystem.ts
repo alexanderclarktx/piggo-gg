@@ -76,7 +76,7 @@ export const RenderSystem = ClientSystemBuilder({
           const { position, renderable } = entity.components;
 
           // cull if far from camera
-          if (!position.screenFixed && renderable.c.children) {
+          if (renderable.cullable && !position.screenFixed && renderable.c.children) {
             renderable.c.children.forEach((child) => {
               child.visible = !isFarFromCamera({
                 x: position.data.x + child.position.x,

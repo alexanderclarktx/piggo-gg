@@ -22,6 +22,7 @@ export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entit
     position: Position(),
     renderable: Renderable({
       zIndex: 0 + index * 0.01,
+      cullable: true,
       setContainer: async (r: Renderer) => {
 
         // draw the square
