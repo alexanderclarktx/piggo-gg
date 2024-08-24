@@ -34,7 +34,6 @@ export const InputSystem = ClientSystemBuilder({
 
     let backspaceOn = false;
     let joystickOn = false;
-    let joystickClickedThisFrame = false;
     let mouseEvent = { x: 0, y: 0 };
 
     renderer?.app.canvas.addEventListener("mousemove", (event) => {
@@ -49,13 +48,8 @@ export const InputSystem = ClientSystemBuilder({
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
 
       if (CurrentJoystickPosition.active && !joystickOn) {
-        joystickClickedThisFrame = true;
         joystickOn = true;
         return;
-      }
-
-      if (!CurrentJoystickPosition.active && joystickOn) {
-        joystickOn = false;
       }
 
       bufferedDown.push({ key, mouse, tick: world.tick });
@@ -244,7 +238,10 @@ export const InputSystem = ClientSystemBuilder({
           return;
         }
 
-        if (clickableClickedThisFrame.value || joystickClickedThisFrame) bufferedDown.remove("mb1");
+        if (clickableClickedThisFrame.value || (
+          CurrentJoystickPosition.active && !joystickOn
+        )) bufferedDown.remove("mb1");
+        console.log(CurrentJoystickPosition.active, joystickOn);
 
         const character = world.client?.playerEntity.components.controlling.getControlledEntity(world);
         if (!character) return;
@@ -265,7 +262,7 @@ export const InputSystem = ClientSystemBuilder({
         bufferedUp.clear();
         bufferedDown.remove("capslock"); // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
 
-        joystickClickedThisFrame = false;
+        joystickOn = CurrentJoystickPosition.active;
       }
     }
   }
