@@ -75,7 +75,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
   let dragging: boolean = false;
   let dragStart: XY;
-  let pointerId: number = -1;
+  let dragPoint: XY;
   let power: number;
 
   const c = new Container({ interactive: true });
@@ -96,7 +96,7 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
   const onDragStart = (event: FederatedPointerEvent) => {
     dragStart = c.toLocal(event.global);
-    pointerId = event.pointerId;
+    dragPoint = dragStart;
 
     dragging = true;
     inner.alpha = 1;
@@ -117,9 +117,10 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
 
   const onDragMove = (event: FederatedPointerEvent) => {
     if (dragging === false) return;
-    if (event.pointerId !== pointerId) return;
 
     let newPosition = c.toLocal(event.global);
+    if (Math.abs(newPosition.x - dragPoint.x) > 100 || Math.abs(newPosition.y - dragPoint.y) > 100) return;
+    dragPoint = newPosition;
 
     let sideX = newPosition.x - dragStart.x;
     let sideY = newPosition.y - dragStart.y;
