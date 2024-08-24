@@ -6,6 +6,10 @@ html {
   border-top-color: rgb(115, 107, 94);
   color: rgb(232, 230, 227);
   color-scheme: dark !important;
+
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 body, html {
