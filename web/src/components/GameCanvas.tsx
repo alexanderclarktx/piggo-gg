@@ -28,6 +28,18 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
   }, []);
 
   return (
-    <canvas id="canvas" />
+    <div>
+      <audio>
+      <source src="/silent.mp3" type="audio/mp3"></source>
+    </audio>
+    <canvas id="canvas" onPointerDown={
+      () => {
+        console.log("touch start");
+        const audioElement = document.querySelector("audio") as HTMLAudioElement;
+        audioElement.play();
+      }
+    }>
+    </canvas>
+    </div>
   );
 }
