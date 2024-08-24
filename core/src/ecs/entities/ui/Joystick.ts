@@ -71,7 +71,6 @@ export interface JoystickSettings {
 export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSettings): Promise<Container> => {
 
   const outerRadius = 45;
-  const innerRadius = 30;
 
   let dragging: boolean = false;
   let dragStart: XY;
@@ -84,8 +83,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
   outer.circle(0, 0, outerRadius).fill({ color: 0x000022, alpha: 0.8 });
 
   const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"] as Texture;
-  const inner = new Sprite(logo);
-  inner.anchor.set(0.5);
+  const inner = new Sprite({ texture: logo, alpha: 0.7, anchor: 0.5 });
 
   c.addChild(outer, inner);
 
@@ -111,7 +109,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
     dragging = false;
 
     inner.position.set(0, 0);
-    inner.alpha = 0.5;
+    inner.alpha = 0.7;
 
     onEnd();
   }
@@ -120,7 +118,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
     if (dragging === false) return;
 
     let newPosition = c.toLocal(event.global);
-    if (XYdifferent(newPosition, dragPoint, 50)) return;
+    if (XYdifferent(newPosition, dragPoint, 80)) return;
     dragPoint = newPosition;
 
     let sideX = newPosition.x - dragStart.x;

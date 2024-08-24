@@ -37,14 +37,15 @@ export const InputSystem = ClientSystemBuilder({
     let mouseEvent: XY = { x: 0, y: 0 };
 
     renderer?.app.canvas.addEventListener("pointermove", (event) => {
-      if (XYdifferent(mouse, { x: event.offsetX, y: event.offsetY }, 50)) return;
+      if (XYdifferent(mouseEvent, { x: event.offsetX, y: event.offsetY }, 50)) return;
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
     });
 
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {
-      const key = event.button === 0 ? "mb1" : "mb2";
+      // ignore clicks if the joystick just became active
+      if (!joystickOn && CurrentJoystickPosition.active) return;
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
@@ -53,6 +54,8 @@ export const InputSystem = ClientSystemBuilder({
         joystickOn = true;
         return;
       }
+
+      const key = event.button === 0 ? "mb1" : "mb2";
 
       bufferedDown.push({ key, mouse, tick: world.tick });
     });
