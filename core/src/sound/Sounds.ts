@@ -13,9 +13,9 @@ const load = (url: string, volume: number): Sound => {
 }
 
 export const Sounds = (): Sounds => ({
-  deagle: load("pistol.mp3", -35),
-  ak: load("ak.mp3", -30),
-  awp: load("awp.mp3", -35),
+  deagle: load("pistol.mp3", -30),
+  ak: load("ak.mp3", -25),
+  awp: load("awp.mp3", -30),
   zombieDeath1: load("zombieDeath1.wav", -25),
   zombieDeath2: load("zombieDeath2.wav", -25),
   zombieDeath3: load("zombieDeath3.wav", -25),
