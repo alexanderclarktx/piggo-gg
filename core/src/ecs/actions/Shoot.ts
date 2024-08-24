@@ -1,4 +1,4 @@
-import { Action, PositionProps, Projectile, TeamColors, XY, onHitTeam } from "@piggo-gg/core";
+import { Action, PositionProps, Projectile, TeamColors, XY, onHitTeam, playSound } from "@piggo-gg/core";
 
 export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, params, entity }) => {
 
@@ -36,7 +36,7 @@ export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, p
       onHit: onHitTeam(team.data.team, gun.damage)
     }));
 
-    if (world.client?.sounds[gun.name].loaded) world.client.sounds[gun.name].restart().start();
+    playSound(world.client?.sounds[gun.name]);
 
     // auto reload
     if (gun.data.clip === 0) {
