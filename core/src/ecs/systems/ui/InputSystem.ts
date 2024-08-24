@@ -36,7 +36,7 @@ export const InputSystem = ClientSystemBuilder({
     let joystickOn = false;
     let mouseEvent = { x: 0, y: 0 };
 
-    renderer?.app.canvas.addEventListener("mousemove", (event) => {
+    renderer?.app.canvas.addEventListener("pointermove", (event) => {
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
     });
@@ -240,7 +240,6 @@ export const InputSystem = ClientSystemBuilder({
 
         if (clickableClickedThisFrame.value || (CurrentJoystickPosition.active && !joystickOn)) {
           bufferedDown.remove("mb1");
-          console.log("rm mb1", world.tick);
         }
 
         const character = world.client?.playerEntity.components.controlling.getControlledEntity(world);

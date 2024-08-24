@@ -8,7 +8,7 @@ export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, p
   if (!gun || !position || !team) return;
 
   if (gun.canShoot(world, params.tick)) {
-    gun.shoot(world);
+    gun.didShoot(world);
 
     const { x, y } = position.data;
     const { speed } = gun;
