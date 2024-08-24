@@ -3,7 +3,7 @@ import { Action, Actions, Button, Clickable, Entity, Position, pixiText } from "
 export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
   id: id,
   components: {
-    position: Position({ x: 5, y: 5, screenFixed: true }),
+    position: Position({ x: -40, y: 5, screenFixed: true }),
     clickable: Clickable({ active: true, width: 32, height: 30 }),
     actions: Actions({
       click: Action(({ world }) => {
