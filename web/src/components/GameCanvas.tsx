@@ -34,8 +34,14 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
       </audio>
       <canvas id="canvas" onPointerDown={
         () => {
+          // @ts-expect-error
+          if (globalThis.playedAudio) return;
+
           const audioElement = document.querySelector("audio") as HTMLAudioElement;
           audioElement.play();
+
+          // @ts-expect-error
+          globalThis.playedAudio = true;
         }
       }>
       </canvas>

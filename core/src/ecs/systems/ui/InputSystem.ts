@@ -265,6 +265,8 @@ export const InputSystem = ClientSystemBuilder({
 
         bufferedUp.clear();
         bufferedDown.remove("capslock"); // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
+
+        joystickClickedThisFrame = false;
       }
     }
   }
