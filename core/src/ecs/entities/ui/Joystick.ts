@@ -1,5 +1,5 @@
-import { Entity, JoystickHandler, Position, Renderable, XY } from "@piggo-gg/core";
-import { Container, FederatedPointerEvent, Graphics } from "pixi.js";
+import { Entity, JoystickHandler, Position, Renderable, XY, loadTexture } from "@piggo-gg/core";
+import { Container, FederatedPointerEvent, Graphics, Sprite, Texture } from "pixi.js";
 
 export const CurrentJoystickPosition = { angle: 0, power: 0, active: false }
 
@@ -12,7 +12,7 @@ export const Joystick = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        setContainer: async () => JoystickContainer({
+        setContainer: async () => await JoystickContainer({
           onChange: (data) => {
             CurrentJoystickPosition.angle = data.angle;
             CurrentJoystickPosition.power = data.power;
@@ -68,7 +68,7 @@ export interface JoystickSettings {
   onEnd: () => void;
 }
 
-export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings): Container => {
+export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSettings): Promise<Container> => {
 
   const outerRadius = 45;
   const innerRadius = 30;
@@ -81,10 +81,11 @@ export const JoystickContainer = ({ onChange, onStart, onEnd }: JoystickSettings
   const c = new Container({ interactive: true });
 
   const outer = new Graphics({ alpha: 0.9 });
-  outer.circle(0, 0, outerRadius).fill({ color: 0x005588 });
+  outer.circle(0, 0, outerRadius).fill({ color: 0x000022, alpha: 0.8 });
 
-  const inner = new Graphics({ alpha: 0.5 });
-  inner.circle(0, 0, innerRadius).fill({ color: 0xffff00 });
+  const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"] as Texture;
+  const inner = new Sprite(logo);
+  inner.anchor.set(0.5);
 
   c.addChild(outer, inner);
 

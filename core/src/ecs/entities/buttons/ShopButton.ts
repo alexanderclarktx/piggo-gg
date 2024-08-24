@@ -3,7 +3,7 @@ import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-g
 export const ShopButton = () => Entity({
   id: "shopButton",
   components: {
-    position: Position({ x: -130, y: 5, screenFixed: true }),
+    position: Position({ x: -55, y: 5, screenFixed: true }),
     clickable: Clickable({ width: 45, height: 32, active: true }),
     actions: Actions({
       click: {

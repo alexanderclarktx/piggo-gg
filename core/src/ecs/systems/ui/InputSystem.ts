@@ -238,7 +238,10 @@ export const InputSystem = ClientSystemBuilder({
           return;
         }
 
-        if (clickableClickedThisFrame.value || (CurrentJoystickPosition.active && !joystickOn)) bufferedDown.remove("mb1");
+        if (clickableClickedThisFrame.value || (CurrentJoystickPosition.active && !joystickOn)) {
+          bufferedDown.remove("mb1");
+          console.log("rm mb1", world.tick);
+        }
 
         const character = world.client?.playerEntity.components.controlling.getControlledEntity(world);
         if (!character) return;

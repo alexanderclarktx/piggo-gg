@@ -5,7 +5,7 @@ type AbilityStrings = [string, string, string, string];
 
 export const MobileHUD = (): Entity => {
 
-  const ammo = pixiText({ text: "", pos: { x: 120, y: 5 }, anchor: { x: 1, y: 0 }, style: { fontSize: 32 } });
+  const ammo = pixiText({ text: "", pos: { x: 130, y: 5 }, anchor: { x: 1, y: 0 }, style: { fontSize: 32 } });
   const hp = pixiText({ text: "100 ⛨", pos: { x: -100, y: 5 }, anchor: { x: 0.5, y: 0 }, style: { fontSize: 32 } });
 
   const hud = Entity<Renderable | Position>({
