@@ -126,7 +126,8 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.c.addChild(renderable.animation);
 
             // play the animation
-            renderable.animation.play();
+            // @ts-expect-error
+            if (renderable.animation.play) renderable.animation.play();
 
             // set activeAnimation
             renderable.activeAnimation = renderable.bufferedAnimation;

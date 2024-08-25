@@ -23,8 +23,8 @@ export const onHitTeam = (allyTeam: TeamNumber, damage: number): OnHitHandler =>
 
 const onHitDefault = (e2: Entity<Position | Collider>) => {
   const { collider, health } = e2.components;
-  if (collider.shootable && health) {
-    health.data.health -= 25;
+  if (collider.shootable) {
+    if (health) health.data.health -= 25;
     return true;
   }
   return false;
@@ -34,9 +34,9 @@ export const Projectile = ({ radius, pos, id, color, onHit = onHitDefault }: Pro
   const projectile = Entity({
     id,
     components: {
-      position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 }}),
+      position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 } }),
       networked: Networked({ isNetworked: true }),
-      expires: Expires({ ticksLeft: 35 }),
+      expires: Expires({ ticksLeft: 50 }),
       collider: Collider({
         shape: "cuboid",
         length: radius ?? 8,
@@ -49,9 +49,9 @@ export const Projectile = ({ radius, pos, id, color, onHit = onHitDefault }: Pro
       renderable: Renderable({
         zIndex: 3,
         interpolate: true,
-        setContainer: async () => {
-          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1, strokeColor: 0x000000, strokeWidth: 1, strokeAlpha: 0.5 } });
-        }
+        setContainer: async () => pixiCircle(
+          { x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1, strokeColor: 0x000000, strokeWidth: 1, strokeAlpha: 0.5 } }
+        )
       })
     }
   })

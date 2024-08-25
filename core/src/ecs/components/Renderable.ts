@@ -1,12 +1,12 @@
 import { Component, Entity, Renderer, World, XY, keys, values } from "@piggo-gg/core";
 import { OutlineFilter } from "pixi-filters";
-import { AnimatedSprite, Container } from "pixi.js";
+import { AnimatedSprite, Container, ViewContainer } from "pixi.js";
 
 export type Renderable = Component<"renderable"> & {
   activeAnimation: string
   anchor: { x: number; y: number }
-  animation: AnimatedSprite | undefined
-  animations: Record<string, AnimatedSprite>
+  animation: ViewContainer | undefined
+  animations: Record<string, ViewContainer>
   bufferedAnimation: string
   c: Container
   children: Renderable[] | undefined
@@ -96,10 +96,13 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
     prepareAnimations: (color: number) => {
       values(renderable.animations).forEach((animation: AnimatedSprite) => {
-        animation.animationSpeed = 0.1;
+        if (animation.animationSpeed) {
+          animation.animationSpeed = 0.1;
+          animation.anchor.set(renderable.anchor.x, renderable.anchor.y);
+          animation.texture.source.scaleMode = renderable.scaleMode;
+        }
+
         animation.scale.set(renderable.scale);
-        animation.anchor.set(renderable.anchor.x, renderable.anchor.y);
-        animation.texture.source.scaleMode = renderable.scaleMode;
         animation.tint = color;
       });
       renderable.bufferedAnimation = keys(renderable.animations)[0];

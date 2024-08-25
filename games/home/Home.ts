@@ -7,7 +7,7 @@ export const Home = IsometricGame({
   id: "home",
   init: () => ({
     id: "home",
-    systems: [SkellySpawnSystem, ZombieSpawnSystem, GunSystem],
+    systems: [SkellySpawnSystem, GunSystem],
     entities: [
       Background({ img: "stars.png" }),
 
