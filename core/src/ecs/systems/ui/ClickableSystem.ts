@@ -13,13 +13,29 @@ export const ClickableSystem = ClientSystemBuilder({
   init: (world) => {
     if (!world.renderer) return undefined;
 
+    let clickables: Entity<Clickable | Actions | Position>[] = [];
+
     const renderer = world.renderer;
 
     let bufferClick: XY[] = [];
     const hovered: Set<string> = new Set();
 
     renderer.app.canvas.addEventListener("pointerdown", (event: FederatedPointerEvent) => {
-      bufferClick.push({ x: event.offsetX, y: event.offsetY });
+      const click = { x: event.offsetX, y: event.offsetY };
+      bufferClick.push(click);
+
+      const clickWorld = renderer.camera.toWorldCoords(click);
+
+      clickables.forEach((entity) => {
+        const { clickable, position } = entity.components;
+        if (!clickable.active || !clickable.click) return;
+
+        const clicked = checkBounds(renderer, position, clickable, click, clickWorld);
+        if (clicked) {
+          clickableClickedThisFrame.set(world.tick);
+          return;
+        }
+      });
     });
 
     return {
@@ -28,9 +44,7 @@ export const ClickableSystem = ClientSystemBuilder({
       skipOnRollback: true,
       onTick: (entities: Entity<Clickable | Actions | Position>[]) => {
 
-        if (clickableClickedThisFrame.value !== world.tick) {
-          clickableClickedThisFrame.reset();
-        }
+        clickables = entities;
 
         entities.forEach((entity) => {
           const { clickable, position } = entity.components;

@@ -13,7 +13,6 @@ export const Reload = Action(({ entity }) => {
   // TODO infinite ammo
   // if (gun.data.ammo <= 0) return;
 
-  console.log("reloading");
   effects.addEffect("reload", ReloadEffect(gun));
 });
 

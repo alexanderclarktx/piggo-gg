@@ -46,7 +46,7 @@ export const InputSystem = ClientSystemBuilder({
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {
       if (!joystickOn && CurrentJoystickPosition.active) return;
 
-      if (clickableClickedThisFrame.value === world.tick + 1) return;
+      if (world.tick <= clickableClickedThisFrame.value) return;
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
       mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
@@ -250,7 +250,9 @@ export const InputSystem = ClientSystemBuilder({
         const character = world.client?.playerEntity.components.controlling.getControlledEntity(world);
         if (!character) return;
 
-        handleInputForCharacter(character, world);
+        if (world.tick > clickableClickedThisFrame.value) {
+          handleInputForCharacter(character, world);
+        }
 
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop();
