@@ -14,7 +14,7 @@ export type Gun = Component<"gun", { id: number, clip: number, ammo: number }> &
   reloading: boolean
   reloadTime: number
   speed: number
-  canShoot: (world: World, tick: number) => boolean
+  canShoot: (world: World, tick: number, hold: boolean) => boolean
   didShoot: (world: World) => void
 }
 
@@ -52,18 +52,23 @@ export const Gun = (props: GunProps): Gun => {
     reloading: false,
     reloadTime: props.reloadTime,
     speed: props.speed,
-    canShoot: (world: World, tick: number) => {
+    canShoot: (world: World, tick: number, hold: boolean) => {
 
-      // check firing rate
-      if ((gun.lastShot + gun.fireRate) > world.tick) return false;
+      if (hold) {
+        // only hold automatic
+        if (!props.automatic) return false;
 
-      // check auto/semi
+        // firing rate
+        if ((gun.lastShot + gun.fireRate) > world.tick) return false;
+      }
+
+      // auto/semi
       if (!props.automatic && gun.lastShot >= tick) return false;
 
-      // check has clip
+      // has clip
       if (gun.data.clip <= 0) return false;
 
-      // check if it's reloading
+      // if it's reloading
       if (gun.reloading) return false;
 
       return true;
@@ -94,7 +99,7 @@ export const AK = GunBuilder({
   ammo: 90,
   clipSize: 30,
   damage: 25,
-  fireRate: 8,
+  fireRate: 10,
   reloadTime: 50,
   bulletSize: 4,
   speed: 500

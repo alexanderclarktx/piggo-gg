@@ -1,21 +1,4 @@
-import { Action, Character, Noob, XY, closestEntity } from "@piggo-gg/core";
-
-export const Head = Action<XY>(({ params, entity }) => {
-  if (!entity) return;
-
-  const { position } = entity.components;
-
-  position?.setHeading({ x: params.x, y: params.y });
-});
-
-export const Move = Action<XY>(({ params, entity }) => {
-  if (!entity) return;
-
-  const { position } = entity.components;
-
-  position?.setHeading({ x: NaN, y: NaN });
-  position?.setVelocity({ x: params.x, y: params.y });
-});
+import { Action, Character, Noob, closestEntity } from "@piggo-gg/core";
 
 export const Chase = Action(({ world, entity }) => {
   if (!entity) return;

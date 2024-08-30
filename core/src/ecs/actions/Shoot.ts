@@ -1,13 +1,13 @@
-import { Action, PositionProps, Projectile, TeamColors, XY, onHitTeam, playSound } from "@piggo-gg/core";
+import { Action, KeyMouse, PositionProps, Projectile, TeamColors, onHitTeam, playSound } from "@piggo-gg/core";
 
-export const Shoot = Action<{ id: number, mouse: XY, tick: number }>(({ world, params, entity }) => {
+export const Shoot = Action<KeyMouse & { id: number }>(({ world, params, entity }) => {
 
   if (!entity) return;
 
   const { gun, position, team } = entity.components;
   if (!gun || !position || !team) return;
 
-  if (gun.canShoot(world, params.tick)) {
+  if (gun.canShoot(world, params.tick, params.mouse.hold)) {
     gun.didShoot(world);
 
     const { x, y } = position.data;

@@ -16,6 +16,12 @@ const width = 64;
 const height = 32;
 const tileCoordinates = [0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2, 0, 0]
 
+const tileGraphic = (): Graphics => new Graphics()
+  .transform(new Matrix(1, 0, 0, 1, 0, 16))
+  .poly(tileCoordinates)
+  .fill({ color: 0x7777aa, alpha: 1 })
+  .stroke({ width: 1, color: 0x000000 });
+
 export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entity({
   id: "floorTilesArray",
   components: {
@@ -25,16 +31,12 @@ export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entit
       cullable: true,
       setContainer: async (r: Renderer) => {
 
-        // draw the square
-        const square = new Graphics()
-          .transform(new Matrix(1, 0, 0, 1, 0, 16))
-          .poly(tileCoordinates)
-          .fill({ color: 0xffffff, alpha: 1 })
-          .stroke({ width: 1, color: 0x000000 });
+        // draw the tile
+        const tile = tileGraphic();
 
         // create a render texture
         const texture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
-        r.app.renderer.render({ container: square, target: texture });
+        r.app.renderer.render({ container: tile, target: texture });
 
         const c = new Container();
 
@@ -125,16 +127,12 @@ export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 },
       zIndex: 0 + index * 0.01,
       setChildren: async (r: Renderer) => {
 
-        // draw the square
-        const square = new Graphics()
-          .transform(new Matrix(1, 0, 0, 1, 0, 16))
-          .poly(tileCoordinates)
-          .fill({ color: color ?? 0x7777aa, alpha: 1 })
-          .stroke({ width: 1, color: 0x000000 });
+        // draw the tile
+        const tile = tileGraphic();
 
         // create a render texture
         const renderTexture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
-        r.app.renderer.render({ container: square, target: renderTexture });
+        r.app.renderer.render({ container: tile, target: renderTexture });
 
         // create the tiles
         let tiles: Renderable[] = [];
