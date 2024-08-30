@@ -1,20 +1,22 @@
 import { Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity, Input, World, XY, XYdifferent, clickableClickedThisFrame } from "@piggo-gg/core";
 
+export type Mouse = XY & { hold: boolean };
+
 export var chatBuffer: string[] = [];
 export var chatIsOpen = false;
-export var mouse: XY = { x: 0, y: 0 };
+export var mouse: Mouse = { x: 0, y: 0, hold: false };
 
-type KeyMouse = { key: string, mouse: XY, tick: number };
+export type KeyMouse = { key: string, mouse: Mouse, tick: number };
 
 const KeyBuffer = (b?: KeyMouse[]) => {
   let buffer: KeyMouse[] = b ? [...b] : [];
 
   return {
-    contains: (key: string) => buffer.find((b) => b.key === key),
+    get: (key: string) => buffer.find((b) => b.key === key),
     copy: () => KeyBuffer(buffer),
     clear: () => buffer = [],
     push: (km: KeyMouse) => { if (!buffer.find((b) => b.key === km.key)) return buffer.push(km) },
-    remove: (key: string) => buffer = buffer.filter((b) => b.key !== key)
+    remove: (key: string) => buffer = buffer.filter((b) => b.key !== key),
   }
 }
 
@@ -40,16 +42,15 @@ export const InputSystem = ClientSystemBuilder({
       if (CurrentJoystickPosition.active && XYdifferent(mouseEvent, { x: event.offsetX, y: event.offsetY }, 100)) return;
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
-      mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
+      mouse = { hold: mouse.hold, ...renderer.camera.toWorldCoords(mouseEvent) }
     });
 
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {
       if (!joystickOn && CurrentJoystickPosition.active) return;
-
       if (world.tick <= clickableClickedThisFrame.value) return;
 
       mouseEvent = { x: event.offsetX, y: event.offsetY };
-      mouse = renderer.camera.toWorldCoords({ x: event.offsetX, y: event.offsetY })
+      mouse = { hold: false, ...renderer.camera.toWorldCoords(mouseEvent) }
 
       if (CurrentJoystickPosition.active && !joystickOn) {
         joystickOn = true;
@@ -101,7 +102,7 @@ export const InputSystem = ClientSystemBuilder({
         if (charactersPreventDefault.has(keyName)) event.preventDefault();
 
         // add to buffer
-        if (!bufferedDown.contains(keyName)) {
+        if (!bufferedDown.get(keyName)) {
 
           // toggle chat
           if (keyName === "enter" && !chatIsOpen) chatIsOpen = true
@@ -151,17 +152,17 @@ export const InputSystem = ClientSystemBuilder({
 
       // handle standalone and composite (a,b) input controls
       for (const keyPress in input.inputMap.press) {
-        const keyMouse = buffer.contains(keyPress);
+        const keyMouse = buffer.get(keyPress);
         if (keyPress.includes(",")) {
           const inputKeys = keyPress.split(",");
 
           // check for multiple keys pressed at once
-          if (inputKeys.every((key) => buffer.contains(key))) {
+          if (inputKeys.every((key) => buffer.get(key))) {
 
             // run the callback
             const controllerInput = input.inputMap.press[keyPress];
             if (controllerInput != null) {
-              const invocation = controllerInput({ mouse, entity: character, world });
+              const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world });
               if (invocation && actions.actionMap[invocation.action ?? ""]) {
                 world.actionBuffer.push(world.tick + 1, character.id, invocation);
               }
@@ -175,7 +176,7 @@ export const InputSystem = ClientSystemBuilder({
           // check for single key pressed
           const controllerInput = input.inputMap.press[keyPress];
           if (controllerInput != null) {
-            const invocation = controllerInput({ mouse, entity: character, world, tick: keyMouse.tick });
+            const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world, tick: keyMouse.tick });
             if (invocation && actions.actionMap[invocation.action ?? ""]) {
               world.actionBuffer.push(world.tick + 1, character.id, invocation);
             }
@@ -195,15 +196,15 @@ export const InputSystem = ClientSystemBuilder({
       // check for actions
       const { input, actions } = entity.components;
 
-      for (const keyPress in input.inputMap.press) {
-        const keyMouse = bufferDown.contains(keyPress);
+      for (const inputKey in input.inputMap.press) {
+        const keyMouse = bufferDown.get(inputKey);
         if (keyMouse) {
 
           // ignore stale inputs
           if (keyMouse.tick + 1 != world.tick) continue;
 
           // find the callback
-          const controllerInput = input.inputMap.press[keyPress];
+          const controllerInput = input.inputMap.press[inputKey];
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick });
             if (invocation && actions.actionMap[invocation.action ?? ""]) {
@@ -212,12 +213,12 @@ export const InputSystem = ClientSystemBuilder({
           }
 
           // remove the key from the buffer
-          bufferDown.remove(keyPress);
+          bufferDown.remove(inputKey);
         }
       }
 
       for (const keyUp in input.inputMap.release) {
-        if (bufferUp.contains(keyUp)) {
+        if (bufferUp.get(keyUp)) {
           const controllerInput = input.inputMap.release[keyUp];
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world });
@@ -238,7 +239,7 @@ export const InputSystem = ClientSystemBuilder({
       skipOnRollback: true,
       onTick: (enitities: Entity<Input | Actions>[]) => {
         // update mouse position, the camera might have moved
-        if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent);
+        if (renderer) mouse = { hold: mouse.hold, ...renderer.camera.toWorldCoords(mouseEvent) }
 
         // clear buffer if the window is not focused
         if (!document.hasFocus()) {
@@ -259,14 +260,15 @@ export const InputSystem = ClientSystemBuilder({
 
         enitities.forEach((entity) => {
           const { networked } = entity.components;
-
-          if (!networked) {
-            handleInputForUIEntity(entity, world);
-          }
+          if (!networked) handleInputForUIEntity(entity, world);
         })
 
         bufferedUp.clear();
         bufferedDown.remove("capslock"); // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
+
+        if (bufferedDown.get("mb2") || bufferedDown.get("mb1")) {
+          mouse.hold = true;
+        }
 
         joystickOn = CurrentJoystickPosition.active;
       }
