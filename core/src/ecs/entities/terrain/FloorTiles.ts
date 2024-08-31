@@ -1,4 +1,4 @@
-import { Collider, Entity, Position, Renderable, Renderer, TeamColors, XY } from "@piggo-gg/core";
+import { Collider, Entity, Position, PositionProps, Renderable, Renderer, TeamColors, XY } from "@piggo-gg/core";
 import { Container, Graphics, Matrix, RenderTexture, Sprite } from "pixi.js";
 
 export type FloorTilesProps = {
@@ -14,6 +14,7 @@ let index = 0;
 
 const width = 64;
 const height = 32;
+
 const tileCoordinates = [0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2, 0, 0]
 
 const tileGraphic = (): Graphics => new Graphics()
@@ -118,6 +119,50 @@ export const FloorCollidersArray = (dim: number, tileMap: number[]): Entity[] =>
   return entities;
 }
 
+export const lineFloor = (dim: number, pos: PositionProps, color: number, width: number, height: number): Entity => Entity({
+  id: "lineFloor",
+  components: {
+    position: Position(pos),
+    renderable: Renderable({
+      zIndex: 0 + index * 0.01,
+      setContainer: async (r) => {
+
+        const c = new Container();
+        const g = new Graphics();
+        c.addChild(g);
+
+        // draw the tile
+        const tile = tileGraphic();
+
+        // create a render texture
+        const texture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
+        r.app.renderer.render({ container: tile, target: texture });
+
+        // background
+        g.poly([
+          0, 0,
+          dim * width / 2, -dim * height / 2,
+          dim * width, 0,
+          dim * width / 2, dim * height / 2
+        ]).fill({ color: 0x000000, alpha: 1 });
+
+        // lines
+        for (let x = 0; x <= dim; x++) {
+
+          g.moveTo(x * width / 2, x * height / 2);
+          g.lineTo((dim + x) * width / 2, (-dim + x) * height / 2);
+          g.stroke({ width: 1.2, color });
+
+          g.moveTo(x * width / 2, x * -height / 2);
+          g.lineTo((dim + x) * width / 2, (dim - x) * height / 2);
+          g.stroke({ width: 1.2, color });
+        }
+        return c;
+      }
+    })
+  }
+})
+
 // DEPRECATED
 export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 }, id = `floor${index++}` }: FloorTilesProps): Entity => Entity({
   id: id,
@@ -149,4 +194,4 @@ export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 },
       }
     })
   }
-});
+})

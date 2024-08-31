@@ -15,7 +15,7 @@ const BoostEffect = (originalSpeed: number): Effect => ({
   onStart: (entity) => {
     const { position } = entity.components;
     if (!position) return;
-    position.setSpeed(250);
+    position.setSpeed(200);
   },
   onEnd: (entity) => {
     const { position } = entity.components;
