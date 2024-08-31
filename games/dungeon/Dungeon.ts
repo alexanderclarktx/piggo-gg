@@ -1,7 +1,7 @@
 import {
   ZombieSpawnSystem, GunSystem,
   IsometricGame, LineWall, SkellySpawnSystem,
-  Shop, lineFloor, HomeButton, Background
+  Shop, LineFloor, HomeButton, Background
 } from "@piggo-gg/core";
 
 const width = 72;
@@ -20,7 +20,7 @@ export const Dungeon = IsometricGame({
       Background({ img: "space.png" }),
       HomeButton(),
       Shop(),
-      lineFloor(dim, { x, y }, 0x0066bb, width, height),
+      LineFloor(dim, { x, y }, 0x0066bb, width, height),
       LineWall({
         shootable: false,
         points: [

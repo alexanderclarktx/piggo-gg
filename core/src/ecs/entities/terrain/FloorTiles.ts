@@ -119,7 +119,7 @@ export const FloorCollidersArray = (dim: number, tileMap: number[]): Entity[] =>
   return entities;
 }
 
-export const lineFloor = (dim: number, pos: PositionProps, color: number, width: number, height: number): Entity => Entity({
+export const LineFloor = (dim: number, pos: PositionProps, color: number, width: number, height: number): Entity => Entity({
   id: "lineFloor",
   components: {
     position: Position(pos),
