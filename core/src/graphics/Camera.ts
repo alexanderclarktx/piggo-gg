@@ -15,10 +15,10 @@ export const Camera = (app: Application): Camera => {
 
   const renderables: Set<Renderable> = new Set();
   const c: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 });
-  let scale = 1.5;
+  let scale = 2;
 
   const rescale = () => {
-    const min = 1.2;
+    const min = 1.6;
     const max = 5;
 
     if (scale < min) scale = min;

@@ -1,3 +1,4 @@
+export * from "./dungeon/Dungeon";
 export * from "./legends/Legends";
 export * from "./legends/entities";
 export * from "./soccer/Soccer";

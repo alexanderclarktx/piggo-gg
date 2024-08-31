@@ -1,10 +1,14 @@
 import { PositionProps, SystemBuilder, Zombie } from "@piggo-gg/core";
 
 const spawnLocations: PositionProps[] = [
-  { x: 100, y: 100 }, { x: 100, y: 600 },
-  { x: 200, y: 200 }, { x: 200, y: 500 },
-  { x: 300, y: 300 }, { x: 300, y: 400 },
-  { x: 400, y: 400 }, { x: 400, y: 300 }
+  { x: -100, y: 400 },
+  { x: -100, y: 600 },
+  { x: -200, y: 400 },
+  { x: -200, y: 600 },
+  { x: -300, y: 400 },
+  { x: -300, y: 600 },
+  { x: -400, y: 400 },
+  { x: -400, y: 600 }
 ]
 
 // ZombieSpawnSystem spawns waves of zombies

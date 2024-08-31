@@ -1,4 +1,4 @@
-import { Action, KeyMouse, PositionProps, Projectile, TeamColors, onHitTeam, playSound } from "@piggo-gg/core";
+import { Action, Gun, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound } from "@piggo-gg/core";
 
 export const Shoot = Action<KeyMouse & { id: number }>(({ world, params, entity }) => {
 
@@ -28,13 +28,8 @@ export const Shoot = Action<KeyMouse & { id: number }>(({ world, params, entity 
     const Yoffset = offset * (vy / Math.sqrt(vx * vx + vy * vy));
 
     const pos: PositionProps = { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } };
-    world.addEntity(Projectile({
-      id: `projectile-${params.id}`,
-      pos,
-      radius: gun.bulletSize,
-      color: TeamColors[team.data.team],
-      onHit: onHitTeam(team.data.team, gun.damage)
-    }));
+
+    world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnBullet", params: { team, gun, ...pos, id: params.id } });
 
     playSound(world.client?.sounds[gun.name]);
 
@@ -44,4 +39,17 @@ export const Shoot = Action<KeyMouse & { id: number }>(({ world, params, entity 
       if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { action: "reload" });
     }
   }
+})
+
+export const SpawnBullet = Action<PositionProps & { team: Team, gun: Gun, id: number }>(({ world, params }) => {
+
+  const { team, gun } = params;
+
+  world.addEntity(Projectile({
+    id: `projectile-${Math.random()}`,
+    pos: params,
+    radius: gun.bulletSize,
+    color: TeamColors[team.data.team],
+    onHit: onHitTeam(team.data.team, gun.damage)
+  }));
 })
