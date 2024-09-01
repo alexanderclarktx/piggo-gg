@@ -55,6 +55,10 @@ export const colorAdd = (color: number, add: number): number => {
   return (r << 16) + (g << 8) + b;
 }
 
+export const distancePosition = (a: Position, b: Position): number => {
+  return Math.sqrt(Math.pow(a.data.x - b.data.x, 2) + Math.pow(a.data.y - b.data.y, 2));
+}
+
 export const closestEntity = (entities: Entity<Position>[], pos: XY): Entity<Position> | undefined => {
   if (entities.length > 1) {
     entities.sort((a: Entity<Position>, b: Entity<Position>) => {

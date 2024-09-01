@@ -151,11 +151,11 @@ export const LineFloor = (dim: number, pos: PositionProps, color: number, width:
 
           g.moveTo(x * width / 2, x * height / 2);
           g.lineTo((dim + x) * width / 2, (-dim + x) * height / 2);
-          g.stroke({ width: 1.2, color });
+          g.stroke({ width: 1, color });
 
           g.moveTo(x * width / 2, x * -height / 2);
           g.lineTo((dim + x) * width / 2, (dim - x) * height / 2);
-          g.stroke({ width: 1.2, color });
+          g.stroke({ width: 1, color });
         }
         return c;
       }

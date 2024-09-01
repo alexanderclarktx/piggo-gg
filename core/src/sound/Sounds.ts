@@ -3,10 +3,11 @@ import { getContext, getTransport, Player } from "tone";
 
 export type Sound = Player;
 
-type WallPlaceSounds = "wallPlace1" | "wallPlace2";
-type ZombieDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4";
+export type WallPlaceSounds = "wallPlace1" | "wallPlace2";
+export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4";
+export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4";
 
-export type ValidSounds = GunNames | ZombieDeathSounds | WallPlaceSounds;
+export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds;
 export type Sounds = Record<ValidSounds, Sound>;
 
 let state: "closed" | "running" | "suspended" = "closed";
@@ -38,10 +39,14 @@ export const Sounds = (): Sounds => ({
   deagle: load("pistol.mp3", -30),
   ak: load("ak.mp3", -25),
   awp: load("awp.mp3", -30),
+  wallPlace1: load("wallPlace1.wav", -20),
+  wallPlace2: load("wallPlace2.wav", -20),
   zombieDeath1: load("zombieDeath1.wav", -25),
   zombieDeath2: load("zombieDeath2.wav", -25),
   zombieDeath3: load("zombieDeath3.wav", -25),
   zombieDeath4: load("zombieDeath4.wav", -25),
-  wallPlace1: load("wallPlace1.wav", -20),
-  wallPlace2: load("wallPlace2.wav", -20)
+  attack1: load("attack1.wav", -25),
+  attack2: load("attack2.wav", -25),
+  attack3: load("attack3.wav", -25),
+  attack4: load("attack4.wav", -25)
 })
