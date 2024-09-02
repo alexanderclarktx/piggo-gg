@@ -17,6 +17,7 @@ export type Position = Component<"position", {
   setVelocity: (_: XY) => Position
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
+  clearHeading: () => Position
   updateVelocity: () => Position
   rotateUp: (_: number) => Position
   rotateDown: (_: number) => Position
@@ -67,6 +68,10 @@ export const Position = (props: PositionProps = {}): Position => {
     },
     setHeading: (xy: XY) => {
       position.data.heading = xy;
+      return position;
+    },
+    clearHeading: () => {
+      position.data.heading = { x: NaN, y: NaN };
       return position;
     },
     updateVelocity: () => {

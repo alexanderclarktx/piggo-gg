@@ -1,4 +1,4 @@
-import { PositionProps, SystemBuilder, Zombie } from "@piggo-gg/core";
+import { PositionProps, SystemBuilder, Zomi } from "@piggo-gg/core";
 
 const spawnLocations: PositionProps[] = [
   { x: -100, y: 400 },
@@ -31,7 +31,7 @@ export const ZombieSpawnSystem: SystemBuilder<"ZombieSpawnSystem"> = ({
       const zombies = 1 + wave;
 
       for (let i = 0; i < zombies; i++) {
-        const z = Zombie({ id: `zombie-wave${wave}-${i}`, positionProps: nextSpawnPosition() });
+        const z = Zomi({ id: `zombie-wave${wave}-${i}`, positionProps: nextSpawnPosition() });
         data.zombies.push(z.id);
         world.addEntity(z);
       }

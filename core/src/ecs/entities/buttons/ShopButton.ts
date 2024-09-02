@@ -1,9 +1,9 @@
-import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
+import { Actions, Button, Clickable, Entity, Position, PositionProps, pixiText } from "@piggo-gg/core";
 
-export const ShopButton = () => Entity({
+export const ShopButton = (pos: PositionProps = { x: -55, y: 5, screenFixed: true }) => Entity({
   id: "shopButton",
   components: {
-    position: Position({ x: -55, y: 5, screenFixed: true }),
+    position: Position(pos),
     clickable: Clickable({ width: 45, height: 32, active: true }),
     actions: Actions({
       click: {

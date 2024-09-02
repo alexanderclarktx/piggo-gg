@@ -1,4 +1,4 @@
-import { Ball, Command, Entity, InvokedAction, Spaceship, Zombie, keys } from "@piggo-gg/core";
+import { Ball, Command, Entity, InvokedAction, Spaceship, Zomi, keys } from "@piggo-gg/core";
 
 type SpawnCommandParams = { entity: string }
 type SpawnCommandAction = InvokedAction<"spawn", SpawnCommandParams>
@@ -6,7 +6,7 @@ type SpawnCommandAction = InvokedAction<"spawn", SpawnCommandParams>
 const entityBuilders: Record<string, () => Entity> = {
   // "ball": Ball,
   "spaceship": Spaceship,
-  "zombie": Zombie
+  "zombie": Zomi
 }
 
 export const SpawnCommand: Command<SpawnCommandParams> = {

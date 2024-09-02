@@ -1,4 +1,4 @@
-import { Ball, GameData, LineWall, Noob, Projectile, SerializedEntity, Syncer, World, Zombie, entries, keys } from "@piggo-gg/core";
+import { Ball, GameData, LineWall, Noob, Projectile, SerializedEntity, Syncer, World, Zomi, entries, keys } from "@piggo-gg/core";
 
 export const DelaySyncer: Syncer = {
   writeMessage: (world: World) => {
@@ -35,7 +35,7 @@ export const DelaySyncer: Syncer = {
     keys(message.serializedEntities).forEach((entityId) => {
       if (!world.entities[entityId]) {
         if (entityId.startsWith("zombie")) {
-          world.addEntity(Zombie({ id: entityId }));
+          world.addEntity(Zomi({ id: entityId }));
         } else if (entityId.startsWith("ball")) {
           world.addEntity(Ball({ id: entityId }));
         } else if (entityId.startsWith("noob")) {

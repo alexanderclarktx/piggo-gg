@@ -1,7 +1,7 @@
 import {
-  ZombieSpawnSystem, GunSystem,
-  IsometricGame, LineWall, SkellySpawnSystem,
-  Shop, LineFloor, HomeButton, Background
+  ZombieSpawnSystem, GunSystem, IsometricGame,
+  LineWall, SkellySpawnSystem, Shop, LineFloor,
+  HomeButton, Background, ShopButton
 } from "@piggo-gg/core";
 
 const width = 72;
@@ -19,6 +19,7 @@ export const Dungeon = IsometricGame({
     entities: [
       Background({ img: "space.png" }),
       HomeButton(),
+      ShopButton({ screenFixed: true, x: -95, y: 5 }),
       Shop(),
       LineFloor(dim, { x, y }, 0x0066bb, width, height),
       LineWall({
