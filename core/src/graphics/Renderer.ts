@@ -1,4 +1,4 @@
-import { Camera, Renderable } from "@piggo-gg/core";
+import { Camera, Renderable, isMobile } from "@piggo-gg/core";
 import { Application } from "pixi.js";
 
 export type RendererProps = {
@@ -56,6 +56,9 @@ export const Renderer = (props: RendererProps): Renderer => {
       // handle fullscreen change
       document.addEventListener("fullscreenchange", renderer.handleResize);
 
+      // handle orientation change
+      screen?.orientation?.addEventListener("change", () => renderer.handleResize);
+
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
@@ -65,7 +68,8 @@ export const Renderer = (props: RendererProps): Renderer => {
       });
     },
     handleResize: () => {
-      if (document.fullscreenElement && renderer.app.renderer) {
+      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
+        console.log("resizing to fullscreen");
         renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
       } else {
         const computedCanvasStyle = window.getComputedStyle(renderer.props.canvas);

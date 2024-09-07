@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, Renderer } from "@piggo-gg/core";
+import { Entity, Position, Renderable, Renderer, round } from "@piggo-gg/core";
 import { Graphics } from "pixi.js";
 
 export const Cursor = (): Entity => {
@@ -13,8 +13,8 @@ export const Cursor = (): Entity => {
           r.props.canvas.addEventListener("mousemove", (event) => {
             const rect = r.props.canvas.getBoundingClientRect();
 
-            cursor.components.position.data.x = Math.round(event.clientX - rect.left - 2);
-            cursor.components.position.data.y = Math.round(event.clientY - rect.top - 2);
+            cursor.components.position.data.x = round(event.clientX - rect.left - 2);
+            cursor.components.position.data.y = round(event.clientY - rect.top - 2);
           });
 
           const circle = new Graphics();

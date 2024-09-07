@@ -8,7 +8,7 @@ export const HealthBarSystem = ClientSystemBuilder({
 
     const characterHealthBars: Record<string, Entity<Renderable | Position>> = {};
 
-    const healthbarForEntity = (entity: Entity<Health | Position | Renderable>) => {
+    const healthbarEntity = (entity: Entity<Health | Position | Renderable>) => {
       if (entity.components.renderable) {
         const { health, position } = entity.components;
 
@@ -44,7 +44,7 @@ export const HealthBarSystem = ClientSystemBuilder({
           const { health, position, renderable } = entity.components;
           if (health && health.showHealthBar && position) {
             if (!characterHealthBars[entity.id] || position !== characterHealthBars[entity.id].components.position) {
-              healthbarForEntity(entity);
+              healthbarEntity(entity);
             }
           }
 

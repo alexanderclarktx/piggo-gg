@@ -1,4 +1,4 @@
-import { Collider, Entity, Position, PositionProps, Renderable, Renderer, TeamColors, XY } from "@piggo-gg/core";
+import { Collider, Entity, Position, PositionProps, Renderable, Renderer, TeamColors, XY, round } from "@piggo-gg/core";
 import { Container, Graphics, Matrix, RenderTexture, Sprite } from "pixi.js";
 
 export type FloorTilesProps = {
@@ -151,11 +151,11 @@ export const LineFloor = (dim: number, pos: PositionProps, color: number, width:
 
           g.moveTo(x * width / 2, x * height / 2);
           g.lineTo((dim + x) * width / 2, (-dim + x) * height / 2);
-          g.stroke({ width: 1, color });
+          g.stroke({ width: 2, color, alpha: 0.8 });
 
           g.moveTo(x * width / 2, x * -height / 2);
           g.lineTo((dim + x) * width / 2, (dim - x) * height / 2);
-          g.stroke({ width: 1, color });
+          g.stroke({ width: 2, color, alpha: 0.8 });
         }
         return c;
       }

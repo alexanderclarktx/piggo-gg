@@ -1,4 +1,4 @@
-import { Component, XY, orthoToDirection } from "@piggo-gg/core";
+import { Component, XY, orthoToDirection, round } from "@piggo-gg/core";
 
 export type Position = Component<"position", {
   x: number
@@ -56,10 +56,10 @@ export const Position = (props: PositionProps = {}): Position => {
       return position;
     },
     setVelocity: ({ x, y }: XY) => {
-      position.data.velocity.x = Math.round(x * 100) / 100;
-      position.data.velocity.y = Math.round(y * 100) / 100;
+      position.data.velocity.x = round(x * 100) / 100;
+      position.data.velocity.y = round(y * 100) / 100;
 
-      if (x || y) position.orientation = orthoToDirection(Math.round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8);
+      if (x || y) position.orientation = orthoToDirection(round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8);
 
       return position;
     },

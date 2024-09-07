@@ -1,4 +1,4 @@
-import { SystemBuilder, isometricToWorld, searchVisibleTiles, tileIndex } from "@piggo-gg/core";
+import { SystemBuilder, isometricToWorld, round, searchVisibleTiles, tileIndex } from "@piggo-gg/core";
 import { Container } from "pixi.js";
 
 export const FogSystem: SystemBuilder<"FogSystem"> = {
@@ -25,8 +25,8 @@ export const FogSystem: SystemBuilder<"FogSystem"> = {
 
         const { x, y } = isometricToWorld(character.components.position.data)
 
-        const tileX = Math.round(x / 32) - 1;
-        const tileY = Math.round(y / 32);
+        const tileX = round(x / 32) - 1;
+        const tileY = round(y / 32);
 
         const index = tileIndex(tileY * 80 + tileX, tileMap);
         const child = floorTilesArray.components.renderable?.c.children[index];

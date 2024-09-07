@@ -1,4 +1,4 @@
-import { Actions, Clickable, Collider, Input, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, controlEntity, loadTexture, XY } from "@piggo-gg/core";
+import { Actions, Clickable, Collider, Input, Debug, Entity, Networked, Position, Renderable, VehicleMovement, VehicleMovementActions, controlEntity, loadTexture, XY, random } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type SpaceshipProps = {
@@ -7,9 +7,9 @@ export type SpaceshipProps = {
 }
 
 export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
-  id: id ?? `spaceship${Math.trunc(Math.random() * 100)}`,
+  id: id ?? `spaceship${Math.trunc(random() * 100)}`,
   components: {
-    position: Position(position ?? { x: Math.random() * 600, y: Math.random() * 600 }),
+    position: Position(position ?? { x: random() * 600, y: random() * 600 }),
     networked: Networked({ isNetworked: true }),
     actions: Actions({
       ...VehicleMovement,

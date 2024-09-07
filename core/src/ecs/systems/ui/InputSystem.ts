@@ -1,4 +1,4 @@
-import { Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity, Input, World, XY, XYdifferent, clickableClickedThisFrame } from "@piggo-gg/core";
+import { Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity, Input, World, XY, XYdifferent, clickableClickedThisFrame, round } from "@piggo-gg/core";
 
 export type Mouse = XY & { hold: boolean };
 
@@ -138,7 +138,7 @@ export const InputSystem = ClientSystemBuilder({
 
       // update Position.pointing based on mouse
       const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x);
-      const pointing = Math.round((angle + Math.PI) / (Math.PI / 4)) % 8;
+      const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8;
 
       world.actionBuffer.push(world.tick + 1, character.id,
         { action: "point", playerId: world.client?.playerId(), params: { pointing } }

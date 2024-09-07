@@ -1,5 +1,5 @@
 import { Graphics, Text } from "pixi.js";
-import { Renderable, RenderableProps } from "@piggo-gg/core";
+import { Renderable, RenderableProps, round } from "@piggo-gg/core";
 
 export type ButtonProps = RenderableProps & {
   dims: { w: number, textX: number, textY: number },
@@ -36,7 +36,7 @@ export const Button = <T extends ButtonProps = ButtonProps>(props: T): Renderabl
 
       // button text
       text = props.text;
-      text.position.set(Math.round(dims.textX), Math.round(dims.textY));
+      text.position.set(round(dims.textX), round(dims.textY));
       r.c.addChild(text);
     }
   })

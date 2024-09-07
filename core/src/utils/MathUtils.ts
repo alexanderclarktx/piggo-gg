@@ -5,8 +5,10 @@ export type XY = { x: number, y: number };
 
 export type TwoPoints = [number, number, number, number];
 
+export const { round, random } = Math;
+
 export const randomChoice = <T>(xs: T[]): T => {
-  return xs[Math.floor(Math.random() * xs.length)];
+  return xs[Math.floor(random() * xs.length)];
 }
 
 export const XYdifferent = (a: XY, b: XY, threshold: number) => {
@@ -179,8 +181,8 @@ export const searchVisibleTiles = (start: XY, floorTilesArray: Entity, tileMap: 
 
   const castRay = (direction: XY, maxDistance: number): void => {
     for (let i = 0; i < maxDistance; i++) {
-      const x = Math.round(start.x + direction.x * i);
-      const y = Math.round(start.y + direction.y * i);
+      const x = round(start.x + direction.x * i);
+      const y = round(start.y + direction.y * i);
   
       if (tileMap[x + (y * 80)] === 0) break;
   
