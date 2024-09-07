@@ -2,8 +2,7 @@ import {
   Actions, Character, Chase, Collider, Debug, Entity, Health,
   InvokedAction, NPC, Networked, Noob, Position, PositionProps,
   Renderable, World, ZomiAttack, closestEntity, distancePosition, loadTexture,
-  random,
-  round
+  random, round
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
