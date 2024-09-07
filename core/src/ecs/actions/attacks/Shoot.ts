@@ -1,4 +1,4 @@
-import { Action, Gun, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound } from "@piggo-gg/core";
+import { Action, Gun, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound, random } from "@piggo-gg/core";
 
 export const Shoot = Action<KeyMouse & { id: number }>(({ world, params, entity }) => {
 
@@ -46,7 +46,7 @@ export const SpawnBullet = Action<PositionProps & { team: Team, gun: Gun, id: nu
   const { team, gun } = params;
 
   world.addEntity(Projectile({
-    id: `projectile-${Math.random()}`,
+    id: `projectile-${random()}`,
     pos: params,
     radius: gun.bulletSize,
     color: TeamColors[team.data.team],

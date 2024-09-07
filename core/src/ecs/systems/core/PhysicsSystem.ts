@@ -1,5 +1,5 @@
 import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat";
-import { Collider, Entity, Position, SystemBuilder, entries, keys, values } from "@piggo-gg/core";
+import { Collider, Entity, Position, SystemBuilder, entries, keys, round, values } from "@piggo-gg/core";
 
 export let physics: RapierWorld;
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
@@ -97,8 +97,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           }
 
           // update the entity position/velocity
-          position.data.x = Math.round(body.translation().x * 100) / 100;
-          position.data.y = Math.round(body.translation().y * 100) / 100;
+          position.data.x = round(body.translation().x * 100) / 100;
+          position.data.y = round(body.translation().y * 100) / 100;
           position.data.velocity.x = Math.floor(body.linvel().x * 100) / 100;
           position.data.velocity.y = Math.floor(body.linvel().y * 100) / 100;
         });

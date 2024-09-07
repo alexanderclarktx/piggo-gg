@@ -1,7 +1,8 @@
 import {
   Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input,
   Move, Networked, Position, Renderable, Shoot, Team, TeamNumber, WASDInputMap,
-  DefaultJoystickHandler, Wall, loadTexture, Point, XY, Deagle, Reload, SpawnBullet
+  DefaultJoystickHandler, Wall, loadTexture, Point, XY, Deagle, Reload, SpawnBullet,
+  round, random
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -20,7 +21,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         press: {
           ...WASDInputMap.press,
           "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId(), params: { mouse } }),
-          "mb1": ({ mouse, world, tick }) => ({ action: "shoot", playerId: world.client?.playerId(), params: { tick, mouse, id: Math.round(Math.random() * 10000) } }),
+          "mb1": ({ mouse, world, tick }) => ({ action: "shoot", playerId: world.client?.playerId(), params: { tick, mouse, id: round(random() * 10000) } }),
           "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId(), params: mouse }),
           "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId(), params: mouse }),
           "r": ({ world }) => ({ action: "reload", playerId: world.client?.playerId() })
