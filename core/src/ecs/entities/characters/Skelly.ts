@@ -1,7 +1,7 @@
 import {
   Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input,
   Move, Networked, Position, Renderable, Shoot, Team, TeamNumber, WASDInputMap,
-  DefaultJoystickHandler, Wall, loadTexture, Point, XY, Deagle, Reload, SpawnBullet,
+  DefaultJoystickHandler, IceWall, loadTexture, Point, XY, Deagle, Reload, SpawnBullet,
   round, random
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
@@ -33,7 +33,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         "head": Head,
         "move": Move,
         "shoot": Shoot,
-        "wall": Wall,
+        "wall": IceWall,
         "point": Point,
         "reload": Reload,
         "spawnBullet": SpawnBullet

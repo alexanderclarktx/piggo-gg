@@ -1,8 +1,7 @@
 import {
-  Actions, Character, Chase, Collider, Debug, Entity, Health,
-  InvokedAction, NPC, Networked, Noob, Position, PositionProps,
-  Renderable, World, ZomiAttack, closestEntity, distancePosition, loadTexture,
-  random, round
+  Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
+  NPC, Networked, Position, PositionProps, Renderable, World, ZomiAttack,
+  closestEntity, positionDelta, loadTexture, random, round
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -21,7 +20,7 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombiePr
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
       networked: Networked({ isNetworked: true }),
       health: Health({ health: 60, deathSounds: ["zombieDeath1", "zombieDeath2", "zombieDeath3", "zombieDeath4"] }),
-      npc: NPC({ onTick }),
+      npc: NPC({ npcOnTick }),
       actions: Actions({
         "chase": Chase,
         "attack": ZomiAttack(10, 40)
@@ -35,8 +34,8 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombiePr
         color: color ?? 0x00ff00,
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
-        dynamic: (_, r) => {
-          const { health, maxHealth } = zomi.components.health.data;
+        dynamic: (_, r, z) => {
+          const { health, maxHealth } = z.components.health!.data;
 
           const ratio = round(health / maxHealth * 4);
           r.color = colors[Math.max(ratio - 1, 0)];
@@ -60,23 +59,17 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombiePr
   return zomi;
 }
 
-const onTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
+const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components;
 
-  const players = world.queryEntities(["player"]) as Noob[];
-  let characters: Character[] = [];
-  players.forEach((player) => {
-    const character = player.components.controlling.getControlledEntity(world);
-    if (character) characters.push(character);
-  });
+  const entitiesWithHealth = world.queryEntities(["health", "position"])
+    .filter((e) => !(e.id.includes("zomi"))) as Entity<Health | Position>[];
 
-  const closest = closestEntity(characters, position.data);
+  const closest = closestEntity(entitiesWithHealth, position.data);
   if (!closest) return;
 
-  const distance = distancePosition(position, closest.components.position);
-  if (distance < 30) {
-    return { action: "attack", params: { target: closest } }
-  }
+  const distance = positionDelta(position, closest.components.position);
+  if (distance < 30) return { action: "attack", params: { target: closest } };
 
   return { action: "chase", params: { target: closest } }
 }

@@ -11,15 +11,15 @@ const spawnLocations: PositionProps[] = [
   { x: -400, y: 600 }
 ]
 
-// ZombieSpawnSystem spawns waves of zombies
-export const ZombieSpawnSystem: SystemBuilder<"ZombieSpawnSystem"> = ({
-  id: "ZombieSpawnSystem",
+// ZomiSpawnSystem spawns waves of zomis
+export const ZomiSpawnSystem: SystemBuilder<"ZomiSpawnSystem"> = ({
+  id: "ZomiSpawnSystem",
   init: (world) => {
 
-    const data: { wave: number, lastSpawnIndex: number, zombies: string[] } = {
+    const data: { wave: number, lastSpawnIndex: number, zomis: string[] } = {
       wave: 0,
       lastSpawnIndex: 0,
-      zombies: []
+      zomis: []
     }
 
     const nextSpawnPosition = (): PositionProps => {
@@ -28,30 +28,30 @@ export const ZombieSpawnSystem: SystemBuilder<"ZombieSpawnSystem"> = ({
     }
 
     const spawnWave = async (wave: number) => {
-      const zombies = 1 + wave;
+      const zomis = 1 + wave;
 
-      for (let i = 0; i < zombies; i++) {
-        const z = Zomi({ id: `zombie-wave${wave}-${i}`, positionProps: nextSpawnPosition() });
-        data.zombies.push(z.id);
+      for (let i = 0; i < zomis; i++) {
+        const z = Zomi({ id: `zomi-wave${wave}-${i}`, positionProps: nextSpawnPosition() });
+        data.zomis.push(z.id);
         world.addEntity(z);
       }
     }
 
     return {
-      id: "ZombieSpawnSystem",
+      id: "ZomiSpawnSystem",
       data,
       query: [],
       onTick: () => {
 
         // handle old entities
-        data.zombies.forEach((id) => {
+        data.zomis.forEach((id) => {
           if (!world.entities[id]) {
-            data.zombies = data.zombies.filter((zid) => zid !== id);
+            data.zomis = data.zomis.filter((zid) => zid !== id);
           }
         });
   
         // spawn new wave
-        if (data.zombies.length === 0) {
+        if (data.zomis.length === 0) {
           spawnWave(data.wave++);
         }
       }

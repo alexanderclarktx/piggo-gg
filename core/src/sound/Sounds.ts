@@ -1,4 +1,4 @@
-import { GunNames, isMobile, randomChoice } from "@piggo-gg/core";
+import { GunNames, isArray, isMobile, randomChoice } from "@piggo-gg/core";
 import { getContext, getTransport, Player } from "tone";
 
 export type Sound = Player;
@@ -15,18 +15,22 @@ let state: "closed" | "running" | "suspended" = "closed";
 export const playSound = (sound: Sound | (Sound | undefined)[] | undefined, startTime: number = 0) => {
   if (!sound) return;
 
-  if (state !== "running") {
-    state = getContext().state;
-    getTransport().start();
-  }
+  try {
+    if (state !== "running") {
+      state = getContext().state;
+      getTransport().start();
+    }
 
-  if (state !== "running" && isMobile()) return;
+    if (state !== "running" && isMobile()) return;
 
-  if (Array.isArray(sound)) {
-    const choice = randomChoice(sound);
-    if (choice?.loaded) choice.start(0, startTime);
-  } else {
-    if (sound.loaded) sound.start(0, startTime);
+    if (isArray(sound)) {
+      const choice = randomChoice(sound);
+      if (choice?.loaded) choice.start(0, startTime);
+    } else {
+      if (sound.loaded) sound.start(0, startTime);
+    }
+  } catch (e) {
+    console.error("error while playing a sound", e);
   }
 }
 

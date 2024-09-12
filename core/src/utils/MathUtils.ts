@@ -7,6 +7,8 @@ export type TwoPoints = [number, number, number, number];
 
 export const { round, random } = Math;
 
+export const { isArray } = Array;
+
 export const randomChoice = <T>(xs: T[]): T => {
   return xs[Math.floor(random() * xs.length)];
 }
@@ -57,7 +59,7 @@ export const colorAdd = (color: number, add: number): number => {
   return (r << 16) + (g << 8) + b;
 }
 
-export const distancePosition = (a: Position, b: Position): number => {
+export const positionDelta = (a: Position, b: Position): number => {
   return Math.sqrt(Math.pow(a.data.x - b.data.x, 2) + Math.pow(a.data.y - b.data.y, 2));
 }
 

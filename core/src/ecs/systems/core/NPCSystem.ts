@@ -8,7 +8,7 @@ export const NPCSystem: SystemBuilder<"NPCSystem"> = {
     query: ["npc", "position"],
     onTick: (entities: Entity<NPC | Position>[]) => {
       entities.forEach((entity) => {
-        const action = entity.components.npc.onTick(entity, world);
+        const action = entity.components.npc.npcOnTick(entity, world);
         if (action) {
           world.actionBuffer.push(world.tick, entity.id, action);
         }
