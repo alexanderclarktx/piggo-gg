@@ -1,6 +1,6 @@
 import { Action, LineWall, XY, playSound } from "@piggo-gg/core";
 
-export const Wall = Action<XY>(({ world, params, entity }) => {
+export const IceWall = Action<XY>(({ world, params, entity }) => {
   if (!entity || !entity.components.position) return;
 
   const width = 50;
@@ -28,7 +28,7 @@ export const Wall = Action<XY>(({ world, params, entity }) => {
     mouseX + flip * Math.min(width, (width * ry)), mouseY + Math.min(width, (width * rx))
   ].map(Math.round);
 
-  world.addEntity(LineWall({ points: coords, visible: true, health: 75, shootable: true }));
+  world.addEntity(LineWall({ points: coords, visible: true, health: 30, shootable: false }));
 
   playSound([world.client?.sounds["wallPlace1"], world.client?.sounds["wallPlace2"]]);
 
