@@ -38,7 +38,7 @@ export * from "./src/ecs/entities/buttons/ConnectButton";
 export * from "./src/ecs/entities/buttons/FullscreenButton";
 export * from "./src/ecs/entities/buttons/HomeButton";
 export * from "./src/ecs/entities/buttons/ShopButton";
-export * from "./src/ecs/entities/characters/Oinky";
+export * from "./src/ecs/entities/characters/Piggo";
 export * from "./src/ecs/entities/characters/Skelly";
 export * from "./src/ecs/entities/characters/Spaceship";
 export * from "./src/ecs/entities/characters/Zomi";

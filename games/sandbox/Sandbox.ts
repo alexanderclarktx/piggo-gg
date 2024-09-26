@@ -1,5 +1,5 @@
 import {
-  GunSystem, IsometricGame, Oinky,
+  GunSystem, IsometricGame, Piggo,
   SkellySpawnSystem, Shop, LineFloor,
   HomeButton, Background, ShopButton, HealthBarSystem
 } from "@piggo-gg/core";
@@ -21,7 +21,7 @@ export const Sandbox = IsometricGame({
       HomeButton(),
       ShopButton({ screenFixed: true, x: -95, y: 5 }),
       Shop(),
-      Oinky(),
+      Piggo(),
       LineFloor(dim, { x, y }, 0x0066bb, width, height),
     ]
   })

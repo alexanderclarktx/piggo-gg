@@ -5,14 +5,14 @@ import {
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export type OinkyProps = {
+export type PiggoProps = {
   id?: string
   positionProps?: PositionProps
 }
 
-export const Oinky = ({ id, positionProps = { x: 100, y: 100 } }: OinkyProps = {}) => {
-  const oinky = Entity<Health | Actions | Position>({
-    id: id ?? `oinky-${round(random() * 100)}`,
+export const Piggo = ({ id, positionProps = { x: 100, y: 100 } }: PiggoProps = {}) => {
+  const piggo = Entity<Health | Actions | Position>({
+    id: id ?? `piggo-${round(random() * 100)}`,
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked({ isNetworked: true }),
@@ -31,13 +31,13 @@ export const Oinky = ({ id, positionProps = { x: 100, y: 100 } }: OinkyProps = {
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
         dynamic: (_, r) => {
-          const { orientationRads } = oinky.components.position
+          const { orientationRads } = piggo.components.position
 
           const x = (orientationRads > 2 && orientationRads < 6) ? 1 : -1
           r.setScale({ x, y: 1 })
         },
         setup: async (r: Renderable) => {
-          const t = await loadTexture("oinky.json")
+          const t = await loadTexture("piggo.json")
           r.animations = {
             d: new AnimatedSprite([t["2"], t["1"], t["3"]]),
             u: new AnimatedSprite([t["2"], t["1"], t["3"]]),
@@ -52,7 +52,7 @@ export const Oinky = ({ id, positionProps = { x: 100, y: 100 } }: OinkyProps = {
       })
     }
   })
-  return oinky
+  return piggo
 }
 
 const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
@@ -60,7 +60,7 @@ const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction
 
   // TODO food entities
   const entitiesWithHealth = world.queryEntities(["health", "position"])
-    .filter((e) => !(e.id.includes("oinky"))) as Entity<Health | Position>[]
+    .filter((e) => !(e.id.includes("piggo"))) as Entity<Health | Position>[]
 
   const closest = closestEntity(entitiesWithHealth, position.data)
   if (!closest) return

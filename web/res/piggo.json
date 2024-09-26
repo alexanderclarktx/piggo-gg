@@ -7,7 +7,7 @@
     "5": { "frame": { "y": 1, "h": 11, "x": 67, "w": 13 } }
   },
   "meta": {
-    "image": "oinky.png",
+    "image": "piggo-sprites.png",
     "format": "RGBA8888",
     "size": { "w": 80, "h": 13 },
     "scale": "1"
