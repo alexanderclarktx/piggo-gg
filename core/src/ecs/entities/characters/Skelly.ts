@@ -1,8 +1,8 @@
 import {
-  Actions, Boost, Collider, Debug, Effects, Entity, Head, Health, Input,
-  Move, Networked, Position, Renderable, Shoot, Team, TeamNumber, WASDInputMap,
-  DefaultJoystickHandler, IceWall, loadTexture, Point, XY, Reload, SpawnBullet,
-  Inventory, Deagle, Name
+  Actions, Axe, Boost, Collider, DeagleItem, Debug,
+  DefaultJoystickHandler, Effects, Entity, Head, Health,
+  IceWall, Input, Inventory, Move, Networked, Point, Position,
+  Renderable, Team, TeamNumber, WASDInputMap, XY, loadTexture
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -16,26 +16,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: Team(team),
-      inventory: Inventory([
-        Entity({
-          id: "deagle",
-          components: {
-            name: Name("deagle"),
-            input: Input({
-              press: {
-                "r": ({ character, mouse }) => ({ action: "reload", params: { character, mouse } }),
-                "mb1": ({ character, mouse }) => ({ action: "shoot", params: { character, mouse } })
-              }
-            }),
-            actions: Actions<{}>({
-              "spawnBullet": SpawnBullet,
-              "shoot": Shoot,
-              "reload": Reload
-            }),
-            gun: Deagle()
-          }
-        })
-      ]),
+      inventory: Inventory([Axe(), DeagleItem()]),
       input: Input({
         press: {
           ...WASDInputMap.press,

@@ -1,4 +1,4 @@
-import { random } from "@piggo-gg/core";
+import { random, randomInt } from "@piggo-gg/core";
 
 export const { stringify } = JSON
 
@@ -8,5 +8,5 @@ export const genHash = (length: number = 7) => {
 }
 
 export const genPlayerId = () => {
-  return `noob${Math.trunc((random() * 100))}`
+  return `noob${randomInt(100)}`
 }

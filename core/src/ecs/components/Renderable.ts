@@ -180,7 +180,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
       if (keys(renderable.animations).length) {
         renderable.prepareAnimations(renderable.animationColor)
       } else {
-        console.log("setting scale", props.scale)
         renderable.c.scale = props.scale ?? 1
 
         // @ts-expect-error

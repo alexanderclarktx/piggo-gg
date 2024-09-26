@@ -7,6 +7,7 @@ export const clickableClickedThisFrame = {
   reset: () => clickableClickedThisFrame.value = 0
 } 
 
+// TODO merge this into InputSystem
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",

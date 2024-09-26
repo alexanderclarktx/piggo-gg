@@ -1,7 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Edible, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, XY,
-  closestEntity, loadTexture, random, round
+  closestEntity, loadTexture, random, randomInt, round
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -12,7 +12,7 @@ export type PiggoProps = {
 
 export const Piggo = ({ id, positionProps = { x: 100, y: 100 } }: PiggoProps = {}) => {
   const piggo = Entity<Health | Actions | Position>({
-    id: id ?? `piggo-${round(random() * 100)}`,
+    id: id ?? `piggo-${randomInt(1000)}`,
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked({ isNetworked: true }),
@@ -73,7 +73,6 @@ const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction
       }
 
       position.setHeading(randomHeading)
-      console.log("heading", randomHeading)
     }
   }
 

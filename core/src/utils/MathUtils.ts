@@ -7,6 +7,10 @@ export type TwoPoints = [number, number, number, number];
 
 export const { round, random } = Math;
 
+export const randomInt = (n: number) => {
+  return round(random() * n)
+}
+
 export const { isArray } = Array;
 
 export const randomChoice = <T>(xs: T[]): T => {

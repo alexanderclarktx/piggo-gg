@@ -1,4 +1,4 @@
-import { Actions, Component, Entity, Input, Name, SystemBuilder, random, round } from "@piggo-gg/core"
+import { Actions, Component, Entity, Input, Name, SystemBuilder, randomInt } from "@piggo-gg/core"
 
 export type Item = Entity<Name | Input | Actions>
 
@@ -33,7 +33,7 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
             const { name } = item.components.name.data
 
             if (!items[item.id]) {
-              const newId = `item-${round(random() * 1000)}-${name}`
+              const newId = `item-${randomInt(1000)}-${name}`
 
               // update the entity id
               item.id = newId

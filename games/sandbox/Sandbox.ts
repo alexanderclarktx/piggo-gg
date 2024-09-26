@@ -13,7 +13,7 @@ export const Sandbox = IsometricGame({
       ShopButton({ screenFixed: true, x: -95, y: 5 }),
       Shop(),
       Piggo(), Piggo(), Piggo(),
-      Tree({ "id": "tree" })
+      Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree()
     ]
   })
 })

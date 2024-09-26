@@ -1,15 +1,15 @@
-import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, XY, loadTexture } from "@piggo-gg/core";
+import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, XY, loadTexture, randomInt } from "@piggo-gg/core";
 import { Sprite } from "pixi.js";
 
 export type TreeProps = {
-  id: string
+  id?: string
   position?: XY
 }
 
-export const Tree = ({ position, id }: TreeProps) => Entity({
-  id: id,
+export const Tree = ({ position, id }: TreeProps = {}) => Entity({
+  id: id ?? `tree-${randomInt(1000)}`,
   components: {
-    position: Position(position ?? { x: 50, y: 250 }),
+    position: Position(position ?? { x: randomInt(1000), y: randomInt(1000) }),
     networked: Networked({ isNetworked: true }),
     collider: Collider({
       shape: "ball",
@@ -27,12 +27,13 @@ export const Tree = ({ position, id }: TreeProps) => Entity({
       zIndex: 3,
       scale: 3,
       scaleMode: "nearest",
+      cullable: true,
       setup: async (r: Renderable) => {
 
         const texture = (await loadTexture("c_tiles.json"))["tree"];
         const sprite = new Sprite(texture);
 
-        sprite.anchor.set(0.5, 0.7);
+        sprite.anchor.set(0.5, 0.6);
 
         r.c = sprite;
       }
