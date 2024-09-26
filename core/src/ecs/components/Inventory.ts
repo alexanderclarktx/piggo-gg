@@ -1,14 +1,6 @@
-import { Actions, Component, Entity, Name, SystemBuilder, random, round } from "@piggo-gg/core";
+import { Actions, Component, Entity, Input, Name, SystemBuilder, random, round } from "@piggo-gg/core"
 
-export type Item = Entity<Name | Actions>
-
-export const Item = (name: string, components: Entity<Actions>["components"]) => Entity<Name | Actions>({
-  id: `${round(random() * 1000)}-${name}`,
-  components: {
-    ...components,
-    name: Name(name),
-  }
-})
+export type Item = Entity<Name | Input | Actions>
 
 export type Inventory = Component<"inventory"> & {
   items: Item[]
@@ -21,24 +13,40 @@ export const Inventory = (items: Item[]): Inventory => {
     items,
     activeItem: items[0] ?? null
   }
-  return inventory;
+  return inventory
 }
 
 export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
-  init: (world) => ({
-    id: "InventorySystem",
-    query: ["inventory"],
-    onTick: (entities: Entity<Inventory>[]) => {
-      entities.forEach(entity => {
-        const { inventory } = entity.components;
+  init: (world) => {
+    const items: Record<string, Item> = {}
 
-        inventory.items.forEach(item => {
-          if (!world.entities[item.id]) {
-            world.addEntity(item);
-          }
+    return {
+      id: "InventorySystem",
+      query: ["inventory"],
+      onTick: (entities: Entity<Inventory>[]) => {
+        entities.forEach(entity => {
+          const { inventory } = entity.components
+
+          inventory.items.forEach(item => {
+
+            const { name } = item.components.name.data
+
+            if (!items[item.id]) {
+              const newId = `item-${round(random() * 1000)}-${name}`
+
+              // update the entity id
+              item.id = newId
+
+              // add it to the dict
+              items[newId] = item
+
+              // add it to the world
+              world.addEntity(item)
+            }
+          })
         })
-      })
+      }
     }
-  })
+  }
 }
