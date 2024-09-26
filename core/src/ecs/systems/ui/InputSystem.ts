@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity,
-  Input, InvokedAction, World, XY, XYdifferent, clickableClickedThisFrame, round
+  Input, World, XY, XYdifferent, clickableClickedThisFrame, round
 } from "@piggo-gg/core"
 
 export type Mouse = XY & { hold: boolean }
@@ -168,7 +168,7 @@ export const InputSystem = ClientSystemBuilder({
             const controllerInput = input.inputMap.press[keyPress]
             if (controllerInput != null) {
               const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world })
-              if (invocation && actions.actionMap[invocation.action ?? ""]) {
+              if (invocation && actions.actionMap[invocation.action]) {
                 world.actionBuffer.push(world.tick + 1, character.id, invocation)
               }
             }
@@ -180,9 +180,9 @@ export const InputSystem = ClientSystemBuilder({
 
           // check for single key pressed
           const controllerInput = input.inputMap.press[keyPress]
-          if (controllerInput != null) {
+          if (controllerInput) {
             const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world, tick: keyMouse.tick })
-            if (invocation && actions.actionMap[invocation.action ?? ""]) {
+            if (invocation && actions.actionMap[invocation.action]) {
               world.actionBuffer.push(world.tick + 1, character.id, invocation)
             }
           }
@@ -192,16 +192,27 @@ export const InputSystem = ClientSystemBuilder({
         }
       }
 
+      // handle character inventory
       if (inventory && inventory.activeItem) {
-        const mb1 = buffer.get("mb1")
-        if (mb1) {
-          const invocation: InvokedAction = {
-            action: "mb1",
-            playerId: world.client?.playerId(),
-            entityId: inventory.activeItem.id,
-            params: { mouse: mb1.mouse, world, tick: mb1.tick, character }
+        for (const keyPress in inventory.activeItem.components.input.inputMap.press) {
+          const keyMouse = buffer.get(keyPress)
+
+          if (keyMouse) {
+            const controllerInput = inventory.activeItem.components.input.inputMap.press?.[keyPress]
+            if (controllerInput) {
+              const invocation = controllerInput({
+                mouse: { ...mouse },
+                entity: inventory.activeItem,
+                world,
+                tick: keyMouse.tick,
+                character
+              })
+
+              if (invocation && inventory.activeItem.components.actions.actionMap[invocation.action]) {
+                world.actionBuffer.push(world.tick + 1, inventory.activeItem.id, invocation)
+              }
+            }
           }
-          world.actionBuffer.push(world.tick + 1, inventory.activeItem.id, invocation)
         }
       }
     }
@@ -225,7 +236,7 @@ export const InputSystem = ClientSystemBuilder({
           const controllerInput = input.inputMap.press[inputKey]
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick })
-            if (invocation && actions.actionMap[invocation.action ?? ""]) {
+            if (invocation && actions.actionMap[invocation.action]) {
               world.actionBuffer.push(world.tick, entity.id, invocation)
             }
           }
@@ -240,7 +251,7 @@ export const InputSystem = ClientSystemBuilder({
           const controllerInput = input.inputMap.release[keyUp]
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world })
-            if (invocation && actions.actionMap[invocation.action ?? ""]) {
+            if (invocation && actions.actionMap[invocation.action]) {
               world.actionBuffer.push(world.tick, entity.id, invocation)
             }
           }
@@ -253,7 +264,7 @@ export const InputSystem = ClientSystemBuilder({
 
     return {
       id: "InputSystem",
-      query: ["input", "actions"],
+      query: ["input", "actions", "position"],
       skipOnRollback: true,
       onTick: (enitities: Entity<Input | Actions>[]) => {
         // update mouse position, the camera might have moved

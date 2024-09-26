@@ -23,12 +23,13 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
             name: Name("deagle"),
             input: Input({
               press: {
-                "r": ({ world }) => ({ action: "reload", playerId: world.client?.playerId() })
+                "r": ({ character, mouse }) => ({ action: "reload", params: { character, mouse } }),
+                "mb1": ({ character, mouse }) => ({ action: "shoot", params: { character, mouse } })
               }
             }),
             actions: Actions<{}>({
               "spawnBullet": SpawnBullet,
-              "mb1": Shoot,
+              "shoot": Shoot,
               "reload": Reload
             }),
             gun: Deagle()
