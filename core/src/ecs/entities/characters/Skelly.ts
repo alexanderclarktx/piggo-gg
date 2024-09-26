@@ -1,13 +1,13 @@
 import {
-  Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input,
+  Actions, Boost, Collider, Debug, Effects, Entity, Head, Health, Input,
   Move, Networked, Position, Renderable, Shoot, Team, TeamNumber, WASDInputMap,
-  DefaultJoystickHandler, IceWall, loadTexture, Point, XY, Deagle, Reload, SpawnBullet,
-  round, random
+  DefaultJoystickHandler, IceWall, loadTexture, Point, XY, Reload, SpawnBullet,
+  Inventory, Item, Deagle
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) => {
-  const skelly = Entity<Position | Gun>({
+  const skelly = Entity<Position>({
     id: id,
     components: {
       debug: Debug(),
@@ -16,12 +16,19 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: Team(team),
-      gun: Deagle(),
+      inventory: Inventory([
+        Item("deagle", {
+          actions: Actions<{}>({
+            "spawnBullet": SpawnBullet,
+            "mb1": Shoot
+          }),
+          gun: Deagle()
+        })
+      ]),
       input: Input({
         press: {
           ...WASDInputMap.press,
           "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId(), params: { mouse } }),
-          "mb1": ({ mouse, world, tick }) => ({ action: "shoot", playerId: world.client?.playerId(), params: { tick, mouse, id: round(random() * 10000) } }),
           "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId(), params: mouse }),
           "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId(), params: mouse }),
           "r": ({ world }) => ({ action: "reload", playerId: world.client?.playerId() })
@@ -32,11 +39,9 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         "boost": Boost,
         "head": Head,
         "move": Move,
-        "shoot": Shoot,
         "wall": IceWall,
         "point": Point,
-        "reload": Reload,
-        "spawnBullet": SpawnBullet
+        "reload": Reload
       }),
       effects: Effects(),
       renderable: Renderable({

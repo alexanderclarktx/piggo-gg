@@ -78,6 +78,8 @@ export * from "./src/ecs/components/Expires";
 export * from "./src/ecs/components/Gun";
 export * from "./src/ecs/components/Health";
 export * from "./src/ecs/components/Input";
+export * from "./src/ecs/components/Inventory";
+export * from "./src/ecs/components/Name";
 export * from "./src/ecs/components/Networked";
 export * from "./src/ecs/components/NPC";
 export * from "./src/ecs/components/Player";

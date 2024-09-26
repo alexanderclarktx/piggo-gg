@@ -1,10 +1,11 @@
-import { Action, Gun, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound, random } from "@piggo-gg/core";
+import { Action, Character, Gun, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound, random } from "@piggo-gg/core";
 
-export const Shoot = Action<KeyMouse & { id: number }>(({ world, params, entity }) => {
+export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ world, params, entity }) => {
 
   if (!entity) return;
 
-  const { gun, position, team } = entity.components;
+  const { position, team } = params.character.components
+  const { gun } = entity.components;
   if (!gun || !position || !team) return;
 
   if (gun.canShoot(world, params.tick, params.mouse.hold)) {

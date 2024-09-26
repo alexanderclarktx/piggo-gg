@@ -1,6 +1,6 @@
 import {
   Character, DelaySyncer, LobbyCreate, LobbyCreateRequest, LobbyJoin,
-  LobbyJoinRequest, NetClientSystem, NetMessageTypes, Noob,
+  LobbyJoinRequest, NetClientSystem, NetMessageTypes, Noob, stringify,
   RequestData, RequestTypes, Sounds, Syncer, World, genPlayerId
 } from "@piggo-gg/core";
 
@@ -56,7 +56,7 @@ export const Client = ({ world }: ClientProps): Client => {
     createLobby: (callback) => {
       // send create lobby request
       const requestData: RequestData = { type: "request", request: LobbyCreateRequest() };
-      client.ws.send(JSON.stringify(requestData));
+      client.ws.send(stringify(requestData));
 
       // store callback
       requestBuffer[requestData.request.id] = (response: LobbyCreate["response"]) => {
@@ -68,7 +68,7 @@ export const Client = ({ world }: ClientProps): Client => {
     joinLobby: (lobbyId, callback) => {
       // send join lobby request
       const requestData: RequestData = { type: "request", request: LobbyJoinRequest(lobbyId) };
-      client.ws.send(JSON.stringify(requestData));
+      client.ws.send(stringify(requestData));
 
       // store callback
       requestBuffer[requestData.request.id] = (response: LobbyJoin["response"]) => {

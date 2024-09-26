@@ -1,14 +1,14 @@
 import {
-  Actions, Clickable, Collider, Controlling, Data, Debug,
-  Effects, Expires, Gun, Health, Input, NPC, Networked,
-  Player, Position, Renderable, Team, Money, XY, entries, keys
+  Actions, Clickable, Collider, Controlling, Data, Debug, Name,
+  Effects, Expires, Gun, Health, Input, NPC, Networked, Player,
+  Position, Renderable, Team, Money, XY, entries, keys, Inventory
 } from "@piggo-gg/core";
 
 export type ComponentTypes =
   Actions | Clickable | Collider | Controlling |
   Data | Debug | Effects | Expires | Health |
-  Input | Team | Networked | NPC | Player |
-  Position | Renderable | Gun | Money
+  Input | Team | Networked | NPC | Player | Name |
+  Position | Renderable | Gun | Money | Inventory
 
 export type NetworkedComponentData = Record<string, boolean | string | number | string[] | number[] | XY>
 

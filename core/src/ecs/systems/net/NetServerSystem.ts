@@ -1,4 +1,4 @@
-import { System, NetMessageTypes, World, entries, keys } from "@piggo-gg/core";
+import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo-gg/core";
 
 export type DelayServerSystemProps = {
   world: World
@@ -25,7 +25,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
     // send tick data to all clients
     entries(clients).forEach(([id, client]) => {
-      client.send(JSON.stringify({
+      client.send(stringify({
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }));

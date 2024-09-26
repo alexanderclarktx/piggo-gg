@@ -1,4 +1,4 @@
-import { ExtractedRequestTypes, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys } from "@piggo-gg/core";
+import { ExtractedRequestTypes, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core";
 import { WorldManager } from "@piggo-gg/server";
 import { Server, ServerWebSocket, env } from "bun";
 
@@ -97,7 +97,7 @@ export const PiggoApi = (): PiggoApi => {
           const result = handler(ws, wsData.request);
           result.then((data) => {
             const responseData: ResponseData = { type: "response", response: data }
-            ws.send(JSON.stringify(responseData));
+            ws.send(stringify(responseData));
           });
         }
         return;

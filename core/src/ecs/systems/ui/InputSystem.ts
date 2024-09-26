@@ -1,4 +1,7 @@
-import { Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity, Input, World, XY, XYdifferent, clickableClickedThisFrame, round } from "@piggo-gg/core";
+import {
+  Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity,
+  Input, InvokedAction, World, XY, XYdifferent, clickableClickedThisFrame, round
+} from "@piggo-gg/core";
 
 export type Mouse = XY & { hold: boolean };
 
@@ -134,7 +137,7 @@ export const InputSystem = ClientSystemBuilder({
       let buffer = bufferedDown.copy();
 
       // check for actions
-      const { input, actions, position } = character.components;
+      const { input, actions, position, inventory } = character.components;
 
       // update Position.pointing based on mouse
       const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x);
@@ -168,7 +171,7 @@ export const InputSystem = ClientSystemBuilder({
               }
             }
 
-            // remove all keys from the buffer
+            // remove each key from the buffer
             inputKeys.forEach((key) => buffer.remove(key));
           }
         } else if (keyMouse) {
@@ -184,6 +187,19 @@ export const InputSystem = ClientSystemBuilder({
 
           // remove the key from the buffer
           buffer.remove(keyPress);
+        }
+      }
+
+      if (inventory && inventory.activeItem) {
+        const mb1 = buffer.get("mb1")
+        if (mb1) {
+          const invocation: InvokedAction = {
+            action: "mb1",
+            playerId: world.client?.playerId(),
+            entityId: inventory.activeItem.id,
+            params: { mouse: mb1.mouse, world, tick: mb1.tick, character }
+          }
+          world.actionBuffer.push(world.tick + 1, inventory.activeItem.id, invocation)
         }
       }
     }

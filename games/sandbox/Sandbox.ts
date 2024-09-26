@@ -1,7 +1,5 @@
 import {
-  GunSystem, IsometricGame, Piggo,
-  SkellySpawnSystem, Shop, LineFloor,
-  HomeButton, Background, ShopButton, HealthBarSystem
+  HealthBarSystem, HomeButton, InventorySystem, IsometricGame, LineFloor, Piggo, Shop, ShopButton, SkellySpawnSystem
 } from "@piggo-gg/core";
 
 const width = 72;
@@ -15,9 +13,8 @@ export const Sandbox = IsometricGame({
   id: "sandbox",
   init: () => ({
     id: "sandbox",
-    systems: [SkellySpawnSystem, GunSystem, HealthBarSystem],
+    systems: [SkellySpawnSystem, HealthBarSystem, InventorySystem],
     entities: [
-      Background({ img: "space.png" }),
       HomeButton(),
       ShopButton({ screenFixed: true, x: -95, y: 5 }),
       Shop(),
