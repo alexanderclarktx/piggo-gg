@@ -1,6 +1,7 @@
 import {
-  Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
+  Actions, Chase, Collider, Debug, Edible, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World,
+  XY,
   closestEntity, loadTexture, random, round
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
@@ -58,12 +59,26 @@ export const Piggo = ({ id, positionProps = { x: 100, y: 100 } }: PiggoProps = {
 const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components
 
-  // TODO food entities
-  const entitiesWithHealth = world.queryEntities(["health", "position"])
-    .filter((e) => !(e.id.includes("piggo"))) as Entity<Health | Position>[]
+  const edibles = world.queryEntities(["edible", "position"])
+    .filter((e) => !(e.id.includes("piggo"))) as Entity<Edible | Position>[]
 
-  const closest = closestEntity(entitiesWithHealth, position.data)
-  if (!closest) return
+  const closest = closestEntity(edibles, position.data)
+  if (closest) {
+    return { action: "chase", params: { target: closest } }
+  }
 
-  return { action: "chase", params: { target: closest } }
+  if (!position.data.heading.x && !position.data.heading.y) {
+
+    if (random() * 100 > 98) {
+      const randomHeading: XY = {
+        x: position.data.x + round(random() * 200 - 100),
+        y: position.data.y + round(random() * 200 - 100)
+      }
+
+      position.setHeading(randomHeading)
+      console.log("heading", randomHeading)
+    }
+  }
+
+  if (position.lastCollided - world.tick > -2) position.clearHeading()
 }

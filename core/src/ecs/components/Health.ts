@@ -1,4 +1,4 @@
-import { Component, Sound, ValidSounds } from "@piggo-gg/core";
+import { Component, ValidSounds } from "@piggo-gg/core";
 
 export type Health = Component<"health", { health: number, maxHealth: number }> & {
   showHealthBar: boolean
