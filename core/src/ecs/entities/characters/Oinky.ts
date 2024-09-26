@@ -2,8 +2,8 @@ import {
   Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World,
   closestEntity, loadTexture, random, round
-} from "@piggo-gg/core";
-import { AnimatedSprite } from "pixi.js";
+} from "@piggo-gg/core"
+import { AnimatedSprite } from "pixi.js"
 
 export type OinkyProps = {
   id?: string
@@ -11,10 +11,10 @@ export type OinkyProps = {
 }
 
 export const Oinky = ({ id, positionProps = { x: 100, y: 100 } }: OinkyProps = {}) => {
-  const oinky = Entity<Health | Actions>({
+  const oinky = Entity<Health | Actions | Position>({
     id: id ?? `oinky-${round(random() * 100)}`,
     components: {
-      position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
+      position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked({ isNetworked: true }),
       health: Health({ health: 600 }),
       npc: NPC({ npcOnTick }),
@@ -30,14 +30,11 @@ export const Oinky = ({ id, positionProps = { x: 100, y: 100 } }: OinkyProps = {
         color: 0xffffff,
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
-        dynamic: (_, r, z) => {
-          const animation = z.components.renderable?.activeAnimation
+        dynamic: (_, r) => {
+          const { orientationRads } = oinky.components.position
 
-          if (animation && ["l", "dl", "ul"].includes(animation)) {
-            r.setScale({x: -1, y: 1});
-          } else {
-            r.setScale({x: 1, y: 1});
-          }
+          const x = (orientationRads > 2 && orientationRads < 6) ? 1 : -1
+          r.setScale({ x, y: 1 })
         },
         setup: async (r: Renderable) => {
           const t = await loadTexture("oinky.json")
@@ -55,18 +52,18 @@ export const Oinky = ({ id, positionProps = { x: 100, y: 100 } }: OinkyProps = {
       })
     }
   })
-  return oinky;
+  return oinky
 }
 
 const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
-  const { position } = entity.components;
+  const { position } = entity.components
 
   // TODO food entities
   const entitiesWithHealth = world.queryEntities(["health", "position"])
-    .filter((e) => !(e.id.includes("oinky"))) as Entity<Health | Position>[];
+    .filter((e) => !(e.id.includes("oinky"))) as Entity<Health | Position>[]
 
-  const closest = closestEntity(entitiesWithHealth, position.data);
-  if (!closest) return;
+  const closest = closestEntity(entitiesWithHealth, position.data)
+  if (!closest) return
 
   return { action: "chase", params: { target: closest } }
 }

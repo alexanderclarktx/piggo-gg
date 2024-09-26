@@ -13,6 +13,7 @@ export type Position = Component<"position", {
   lastCollided: number
   screenFixed: boolean
   orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
+  orientationRads: number
   setPosition: (_: XY) => Position
   setVelocity: (_: XY) => Position
   setSpeed: (_: number) => void
@@ -48,6 +49,7 @@ export const Position = (props: PositionProps = {}): Position => {
       velocityResets: props.velocityResets ?? 0
     },
     orientation: "r",
+    orientationRads: 0,
     lastCollided: 0,
     screenFixed: props.screenFixed ?? false,
     setPosition: ({ x, y }: XY) => {
@@ -59,7 +61,10 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.velocity.x = round(x * 100) / 100;
       position.data.velocity.y = round(y * 100) / 100;
 
-      if (x || y) position.orientation = orthoToDirection(round((Math.atan2(y, x) / Math.PI) * 4 + 4) % 8);
+      const rads = (Math.atan2(y, x) / Math.PI) * 4 + 4;
+      position.orientationRads = rads;
+
+      if (x || y) position.orientation = orthoToDirection(round(rads) % 8);
 
       return position;
     },
