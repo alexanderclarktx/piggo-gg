@@ -29,7 +29,8 @@ export type Renderable = Component<"renderable"> & {
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
   dynamic: ((c: Container, r: Renderable, e: Entity, w: World) => void) | undefined
 
-  prepareAnimations: (color: number) => void
+  prepareAnimations: (color?: number) => void
+  setScale: (xy: XY) => void
   _init: (renderer: Renderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
   setOutline: (color: number, thickness?: number) => void
@@ -47,7 +48,7 @@ export type RenderableProps = {
   interpolate?: boolean
   position?: { x: number; y: number }
   rotates?: boolean
-  scale?: number,
+  scale?: number
   scaleMode?: "nearest" | "linear"
   visible?: boolean
   zIndex?: number
@@ -94,7 +95,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     rendered: false,
     renderer: undefined as unknown as Renderer,
 
-    prepareAnimations: (color: number) => {
+    prepareAnimations: (color: number = 0xffffff) => {
       values(renderable.animations).forEach((animation: AnimatedSprite) => {
         animation.animationSpeed = 0.1;
         animation.scale.set(renderable.scale);
@@ -103,6 +104,14 @@ export const Renderable = (props: RenderableProps): Renderable => {
         animation.tint = color;
       });
       renderable.bufferedAnimation = keys(renderable.animations)[0];
+    },
+    setScale: (xy: XY) => {
+      values(renderable.animations).forEach((animation: AnimatedSprite) => {
+        const { x, y } = xy;
+        if (x != animation.scale.x || y != animation.scale.y) {
+          animation.scale.set(x * renderable.scale, y * renderable.scale);
+        }
+      });
     },
     setAnimation: (animationKey: string) => {
       if (values(renderable.animations).length && renderable.animations[animationKey]) {
@@ -170,7 +179,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
       renderable.c.tint = renderable.color;
 
-      if (renderable.animations) renderable.prepareAnimations(renderable.animationColor ?? 0xffffff)
+      if (renderable.animations) renderable.prepareAnimations(renderable.animationColor)
     }
   }
 
