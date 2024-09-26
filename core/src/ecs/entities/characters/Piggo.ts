@@ -1,7 +1,6 @@
 import {
   Actions, Chase, Collider, Debug, Edible, Entity, Health, InvokedAction,
-  NPC, Networked, Position, PositionProps, Renderable, World,
-  XY,
+  NPC, Networked, Position, PositionProps, Renderable, World, XY,
   closestEntity, loadTexture, random, round
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
@@ -63,13 +62,11 @@ const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction
     .filter((e) => !(e.id.includes("piggo"))) as Entity<Edible | Position>[]
 
   const closest = closestEntity(edibles, position.data)
-  if (closest) {
-    return { action: "chase", params: { target: closest } }
-  }
+  if (closest) return { action: "chase", params: { target: closest } }
 
   if (!position.data.heading.x && !position.data.heading.y) {
 
-    if (random() * 100 > 98) {
+    if (random() * 100 > 96) {
       const randomHeading: XY = {
         x: position.data.x + round(random() * 200 - 100),
         y: position.data.y + round(random() * 200 - 100)
