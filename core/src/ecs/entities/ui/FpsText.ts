@@ -11,11 +11,11 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
   persists: true,
   components: {
     position: Position({
-      x: x ?? -60, y: y ?? 5, screenFixed: true
+      x: x ?? -200, y: y ?? 10, screenFixed: true
     }),
     renderable: Renderable({
       zIndex: 3,
-      setContainer: async () => pixiText({ text: "", style: { fontSize: 14, fill: 0x00ff00 } }),
+      setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0x00ff00 } }),
       dynamic: (t: Text, _, __, w: World) => {
         if (w.tick % 5 !== 0) return;
         if (t) {
@@ -33,11 +33,11 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
   persists: true,
   components: {
     position: Position({
-      x: x ?? -60, y: y ?? 25, screenFixed: true
+      x: x ?? -250, y: y ?? 10, screenFixed: true
     }),
     renderable: Renderable({
       zIndex: 3,
-      setContainer: async () => pixiText({ text: "", style: { fontSize: 14, fill: 0x00ff00 } }),
+      setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0x00ff00 } }),
       dynamic: (t: Text, _, __, w: World) => {
         const lag = round(w.client?.ms ?? 0);
         if (w.tick % 5 !== 0) return;
