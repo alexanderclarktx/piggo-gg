@@ -1,6 +1,7 @@
 {
   "frames": {
-    "grass": { "frame": { "x": 2, "y": 108, "w": 31, "h": 24 } }
+    "grass": { "frame": { "x": 2, "y": 108, "w": 31, "h": 24 } },
+    "tree": { "frame": { "x": 209, "y": 12, "w": 19, "h": 19 }}
   },
   "meta": {
     "image": "c_tiles.png",
