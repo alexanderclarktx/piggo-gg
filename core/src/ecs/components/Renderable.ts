@@ -24,7 +24,6 @@ export type Renderable = Component<"renderable"> & {
   scaleMode: "nearest" | "linear"
   visible: boolean
   zIndex: number
-  ignoreDepth: boolean
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
@@ -53,7 +52,6 @@ export type RenderableProps = {
   scaleMode?: "nearest" | "linear"
   visible?: boolean
   zIndex?: number
-  ignoreDepth?: boolean
   dynamic?: (c: Container, r: Renderable, e: Entity, w: World) => void
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
@@ -94,7 +92,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
     setup: props.setup ?? undefined,
     visible: props.visible ?? true,
     zIndex: props.zIndex ?? 0,
-    ignoreDepth: props.ignoreDepth ?? false,
     rendered: false,
     renderer: undefined as unknown as Renderer,
 

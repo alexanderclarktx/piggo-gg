@@ -18,7 +18,6 @@ export const Pickaxe = (character: Character): Item => Entity({
       interpolate: true,
       visible: false,
       rotates: true,
-      ignoreDepth: true,
       dynamic: (_, r, e, w) => {
         const { pointingDelta, rotation } = character.components.position.data
 
