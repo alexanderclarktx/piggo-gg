@@ -1,4 +1,4 @@
-import { Actions, Deagle, Entity, Input, Item, Name, Reload, Shoot, SpawnBullet } from "@piggo-gg/core"
+import { Actions, Deagle, Effects, Entity, Input, Item, Name, Reload, Shoot, SpawnBullet } from "@piggo-gg/core"
 
 export const DeagleItem = (): Item => Entity({
   id: "deagle",
@@ -15,6 +15,7 @@ export const DeagleItem = (): Item => Entity({
       "shoot": Shoot,
       "reload": Reload
     }),
-    gun: Deagle()
+    gun: Deagle(),
+    effects: Effects()
   }
 })

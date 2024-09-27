@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Entity, Input, Item, KeyMouse, Name } from "@piggo-gg/core"
+import { Action, Actions, Character, Effects, Entity, Input, Item, KeyMouse, Name } from "@piggo-gg/core"
 
 export const Axe = (): Item => Entity({
   id: "axe",
@@ -12,6 +12,7 @@ export const Axe = (): Item => Entity({
     actions: Actions<any>({
       "whack": Whack,
     }),
+    effects: Effects()
   }
 })
 
