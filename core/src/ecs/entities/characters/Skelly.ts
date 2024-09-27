@@ -1,9 +1,8 @@
 import {
-  AK, AWP, Actions, Boost, Character, Collider, Deagle, Debug,
+  Actions, Axe, Boost, Character, Collider, Debug,
   DefaultJoystickHandler, Effects, Entity, Head, Health,
   IceWall, Input, Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
-  Renderable, WASDInputMap, XY, loadTexture,
-  setActiveItemIndex
+  Renderable, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -17,21 +16,21 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
-      inventory: Inventory([Pickaxe, AK, AWP, Deagle]),
+      inventory: Inventory([Pickaxe, Axe]),
       input: Input({
         press: {
           ...WASDInputMap.press,
           "mb2": ({ mouse }) => ({ action: "head", params: { mouse } }),
           "q": ({ mouse }) => ({ action: "wall", params: mouse }),
           "e": ({ mouse }) => ({ action: "boost", params: mouse }),
-          "1": ({ }) => ({ action: "setActiveItemIndex", params: { index: 0 } }),
-          "2": ({ }) => ({ action: "setActiveItemIndex", params: { index: 1 } }),
-          "3": ({ }) => ({ action: "setActiveItemIndex", params: { index: 2 } }),
-          "4": ({ }) => ({ action: "setActiveItemIndex", params: { index: 3 } }),
-          "5": ({ }) => ({ action: "setActiveItemIndex", params: { index: 4 } }),
-          "6": ({ }) => ({ action: "setActiveItemIndex", params: { index: 5 } }),
-          "7": ({ }) => ({ action: "setActiveItemIndex", params: { index: 6 } }),
-          "8": ({ }) => ({ action: "setActiveItemIndex", params: { index: 7 } })
+          "1": () => ({ action: "setActiveItemIndex", params: { index: 0 } }),
+          "2": () => ({ action: "setActiveItemIndex", params: { index: 1 } }),
+          "3": () => ({ action: "setActiveItemIndex", params: { index: 2 } }),
+          "4": () => ({ action: "setActiveItemIndex", params: { index: 3 } }),
+          "5": () => ({ action: "setActiveItemIndex", params: { index: 4 } }),
+          "6": () => ({ action: "setActiveItemIndex", params: { index: 5 } }),
+          "7": () => ({ action: "setActiveItemIndex", params: { index: 6 } }),
+          "8": () => ({ action: "setActiveItemIndex", params: { index: 7 } })
         },
         joystick: DefaultJoystickHandler
       }),
