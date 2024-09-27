@@ -47,6 +47,14 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           }
 
           if (!world.entities[item.id]) world.addEntity(item)
+
+          item.components.renderable.visible = false
+
+          const activeItem = inventory.activeItem()
+
+          if (activeItem) {
+            activeItem.components.renderable.visible = true
+          }
         })
       })
     }

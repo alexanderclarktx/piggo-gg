@@ -23,7 +23,7 @@ export const Pickaxe = (character: Character): Item => Entity({
         const { pointingDelta, rotation } = character.components.position.data
 
         if (rotation) {
-          character.components.position.rotateDown(rotation > 0 ? 0.1 : -0.1)
+          character.components.position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
         }
 
         const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
