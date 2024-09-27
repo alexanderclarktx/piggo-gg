@@ -1,5 +1,5 @@
-import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core";
-import { AnimatedSprite } from "pixi.js";
+import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core"
+import { AnimatedSprite } from "pixi.js"
 
 // ortho positions
 const pz = [
@@ -15,8 +15,8 @@ export const ItemSystem: SystemBuilder<"item"> = ({
   id: "item",
   init: (world) => {
 
-    let playerToItem: Record<string, string | null> = {};
-    let itemToRenderable: Record<string, Entity<Renderable | Position>> = {};
+    let playerToItem: Record<string, string | null> = {}
+    let itemToRenderable: Record<string, Entity<Renderable | Position>> = {}
 
     const draw = (player: Entity<Inventory | Position>, item: Item): Entity<Renderable | Position> => Entity({
       id: renderableId(player.id, item.id),
@@ -30,16 +30,16 @@ export const ItemSystem: SystemBuilder<"item"> = ({
           position: { x: 20, y: 0 },
           interpolate: true,
           dynamic: (_, r) => {
-            const { position } = player.components;
-            const { pointing } = position.data;
+            const { position } = player.components
+            const { pointing } = position.data
 
-            r.position = pz[pointing];
-            r.bufferedAnimation = pointing.toString();
+            r.position = pz[pointing]
+            r.bufferedAnimation = pointing.toString()
 
-            // r.setOutline(item.reloading ? 0xff0000 : item.outlineColor);
+            // r.setOutline(item.reloading ? 0xff0000 : item.outlineColor)
           },
           setup: async (r: Renderable) => {
-            const textures = await loadTexture(`${item.components.name.data.name}.json`);
+            const textures = await loadTexture(`${item.components.name.data.name}.json`)
 
             r.animations = {
               "0": new AnimatedSprite([textures["0"]]),
@@ -52,11 +52,11 @@ export const ItemSystem: SystemBuilder<"item"> = ({
               "7": new AnimatedSprite([textures["7"]]),
             }
 
-            r.setOutline(0x000000);
+            r.setOutline(0x000000)
           }
         })
       }
-    });
+    })
 
     return {
       id: "item",
@@ -64,7 +64,7 @@ export const ItemSystem: SystemBuilder<"item"> = ({
       onTick: (entities: Entity<Inventory | Position | Renderable>[]) => {
         entities.forEach((entity) => {
 
-          const { inventory, renderable } = entity.components;
+          const { inventory, renderable } = entity.components
 
           // const z = inventory.activeItem
           const { activeItem } = inventory
@@ -72,7 +72,7 @@ export const ItemSystem: SystemBuilder<"item"> = ({
           if (!activeItem) {
             // rm from playerToItem
             if (playerToItem[entity.id]) {
-              world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!));
+              world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!))
             }
             playerToItem[entity.id] = null
             return
@@ -80,7 +80,7 @@ export const ItemSystem: SystemBuilder<"item"> = ({
 
           // clean up old items
           if (activeItem.id !== playerToItem[entity.id]) {
-            world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!));
+            world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!))
             playerToItem[entity.id] = null
           }
 
@@ -89,12 +89,12 @@ export const ItemSystem: SystemBuilder<"item"> = ({
             const r = draw(entity, activeItem)
             world.addEntity(r)
             playerToItem[entity.id] = activeItem.id
-            itemToRenderable[activeItem.id] = r;
-          };
+            itemToRenderable[activeItem.id] = r
+          }
 
           // update item visibility
-          itemToRenderable[activeItem.id].components.renderable.visible = renderable.visible;
-        });
+          itemToRenderable[activeItem.id].components.renderable.visible = renderable.visible
+        })
       }
     }
   }
