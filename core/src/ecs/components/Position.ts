@@ -21,8 +21,8 @@ export type Position = Component<"position", {
   setHeading: (_: XY) => Position
   clearHeading: () => Position
   updateVelocity: () => Position
-  rotateUp: (_: number) => Position
-  rotateDown: (_: number) => Position
+  rotateUp: (_: number, stopAtZero?: boolean) => Position
+  rotateDown: (_: number, stopAtZero?: boolean) => Position
 }
 
 export type PositionProps = {
@@ -46,7 +46,7 @@ export const Position = (props: PositionProps = {}): Position => {
       speed: props.speed ?? 0,
       rotation: 0,
       pointing: 0,
-      pointingDelta: { x: 0, y: 0 },
+      pointingDelta: { x: NaN, y: NaN },
       heading: { x: NaN, y: NaN },
       velocityResets: props.velocityResets ?? 0
     },
@@ -94,12 +94,26 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position;
     },
-    rotateUp: (amount: number) => {
+    rotateUp: (amount: number, stopAtZero: boolean = false) => {
       position.data.rotation += amount;
+
+      if (stopAtZero) {
+        if (position.data.rotation > 0 && position.data.rotation - amount < 0) {
+          position.data.rotation = 0;
+        }
+      }
+
       return position;
     },
-    rotateDown: (amount: number) => {
+    rotateDown: (amount: number, stopAtZero: boolean = false) => {
       position.data.rotation -= amount;
+
+      if (stopAtZero) {
+        if (position.data.rotation < 0 && position.data.rotation + amount > 0) {
+          position.data.rotation = 0;
+        }
+      }
+
       return position;
     }
   }

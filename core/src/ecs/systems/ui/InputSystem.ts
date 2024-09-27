@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity,
-  Input, World, XY, XYdifferent, clickableClickedThisFrame, round
+  Input, InvokedAction, World, XY, XYdifferent, clickableClickedThisFrame, round
 } from "@piggo-gg/core"
 
 export type Mouse = XY & { hold: boolean }
@@ -200,26 +200,24 @@ export const InputSystem = ClientSystemBuilder({
       // handle character inventory
       const activeItem = inventory?.activeItem()
       if (activeItem) {
-        for (const keyPress in activeItem.components.input.inputMap.press) {
+        ["mb1", "mb2"].forEach((keyPress) => {
 
           const keyMouse = buffer.get(keyPress)
 
-          if (keyMouse) {
-            const controllerInput = activeItem.components.input.inputMap.press?.[keyPress]
-            if (controllerInput) {
-              const invocation = controllerInput({
-                mouse: { ...mouse },
-                entity: activeItem,
-                world,
-                tick: keyMouse.tick,
-                character
-              })
-              if (invocation && activeItem.components.actions.actionMap[invocation.action]) {
-                world.actionBuffer.push(world.tick + 1, activeItem.id, invocation)
+          if (keyMouse && activeItem.components.actions.actionMap[keyPress]) {
+            const invocation: InvokedAction = {
+              action: keyPress,
+              playerId: world.client?.playerId(),
+              entityId: activeItem.id,
+              params: {
+                mouse: { ...mouse }, entity: activeItem, world, tick: keyMouse.tick, character
               }
             }
+            if (invocation && activeItem.components.actions.actionMap[invocation.action]) {
+              world.actionBuffer.push(world.tick + 1, activeItem.id, invocation)
+            }
           }
-        }
+        })
       }
     }
 

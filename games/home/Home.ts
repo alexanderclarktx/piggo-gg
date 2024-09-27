@@ -1,5 +1,5 @@
 import {
-  Background, ZomiSpawnSystem, FloorTiles, ItemSystem, InviteStone,
+  Background, ZomiSpawnSystem, FloorTiles, InviteStone,
   IsometricGame, LineWall, Portal, SkellySpawnSystem, Shop
 } from "@piggo-gg/core";
 
@@ -7,7 +7,7 @@ export const Home = IsometricGame({
   id: "home",
   init: () => ({
     id: "home",
-    systems: [SkellySpawnSystem, ZomiSpawnSystem, ItemSystem],
+    systems: [SkellySpawnSystem, ZomiSpawnSystem],
     entities: [
       Background({ img: "stars.png" }),
 

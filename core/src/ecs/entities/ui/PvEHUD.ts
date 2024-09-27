@@ -1,15 +1,15 @@
-import { Entity, Position, Renderable, loadTexture, loadTextureCached, pixiRect } from "@piggo-gg/core"
+import { Entity, Position, Renderable, loadTextureCached, pixiRect } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
 export const PvEHUD = (): Entity => {
 
   const width = 50
   const height = 50
-
   const start = -width * 4
-  const squares = Array.from({ length: 8 }, (_, i) => pixiRect({ w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }))
 
-  const squareIcons: Record<number, Sprite | undefined> = {}
+  const squares = Array.from({ length: 8 }, (_, i) =>
+    pixiRect({ w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }))
+  const icons: Record<number, Sprite | undefined> = {}
 
   const hud = Entity<Renderable | Position>({
     id: "PvEHUD",
@@ -31,14 +31,22 @@ export const PvEHUD = (): Entity => {
 
           if (!inventory) return
 
+          // highlight the active item slot
+          const { activeItemIndex } = inventory
+          squares.forEach((s, i) => {
+            s.tint = activeItemIndex === i ? 0xffff00 : 0xcccccc
+            s.alpha = activeItemIndex === i ? 1 : 0.8
+          })
+
+          // update icons
           for (let i = 0; i < 8; i++) {
             const item = inventory.items[i]
-            if (!item && squareIcons[i]) {
-              c.removeChild(squareIcons[i]!)
-              squareIcons[i] = undefined
+            if (!item && icons[i]) {
+              c.removeChild(icons[i]!)
+              icons[i] = undefined
             }
 
-            if (item && !squareIcons[i]) {
+            if (item && !icons[i]) {
               const textures = loadTextureCached(`${item.components.name.data.name}.json`)
               if (!textures) continue
 
@@ -47,7 +55,7 @@ export const PvEHUD = (): Entity => {
               slotSprite.scale.set(5)
               slotSprite.anchor.set(0.5)
               c.addChild(slotSprite)
-              squareIcons[i] = slotSprite
+              icons[i] = slotSprite
             }
           }
         }
@@ -58,7 +66,6 @@ export const PvEHUD = (): Entity => {
 }
 
 export const MobilePvEHUD = (): Entity => {
-
   const hud = Entity<Renderable | Position>({
     id: "MobilePvEHUD",
     components: {
@@ -76,4 +83,3 @@ export const MobilePvEHUD = (): Entity => {
   })
   return hud
 }
-

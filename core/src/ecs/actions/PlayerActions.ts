@@ -22,7 +22,9 @@ export const setActiveItemIndex = Action<{ index: number }>(({ params, entity })
 export const spawnSkelly = Action<{ color: number, pos: XY }>(({ player, world, params }) => {
   if (!player) return
 
-  const characterForPlayer = Skelly(`skelly-${player.id}`, player.components.team.data.team, params.color, params.pos)
+  if (player.components.controlling.getControlledEntity(world)) return
+
+  const characterForPlayer = Skelly(player, params.color, params.pos)
   player.components.controlling = Controlling({ entityId: characterForPlayer.id })
   world.addEntity(characterForPlayer)
 })

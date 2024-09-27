@@ -5,7 +5,7 @@ export type XY = { x: number, y: number };
 
 export type TwoPoints = [number, number, number, number];
 
-export const { random, max, min, sign, abs } = Math;
+export const { random, max, min, sign, abs, hypot } = Math;
 
 export const round = (n: number, places = 0) => {
   const factor = Math.pow(10, places);
