@@ -1,6 +1,6 @@
-import { Actions, Component, Entity, Input, Name, SystemBuilder, randomInt } from "@piggo-gg/core"
+import { Actions, Component, Effects, Entity, Input, Name, SystemBuilder, randomInt } from "@piggo-gg/core"
 
-export type Item = Entity<Name | Input | Actions>
+export type Item = Entity<Name | Input | Actions | Effects>
 
 export type Inventory = Component<"inventory"> & {
   items: Item[]

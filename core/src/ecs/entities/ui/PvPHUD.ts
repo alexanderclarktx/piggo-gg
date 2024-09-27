@@ -3,13 +3,13 @@ import { Graphics } from "pixi.js";
 
 type AbilityStrings = [string, string, string, string];
 
-export const MobileHUD = (): Entity => {
+export const MobilePvPHUD = (): Entity => {
 
   const ammo = pixiText({ text: "", pos: { x: 130, y: 5 }, anchor: { x: 1, y: 0 }, style: { fontSize: 32 } });
   const hp = pixiText({ text: "100 ⛨", pos: { x: -100, y: 5 }, anchor: { x: 0.5, y: 0 }, style: { fontSize: 32 } });
 
   const hud = Entity<Renderable | Position>({
-    id: "MobileHUD",
+    id: "MobilePvPHUD",
     components: {
       position: Position({ screenFixed: true }),
       renderable: Renderable({
@@ -49,7 +49,7 @@ export const MobileHUD = (): Entity => {
   return hud;
 }
 
-export const HUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => {
+export const PvPHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => {
 
   const width = 50;
   const height = 50;
@@ -63,7 +63,7 @@ export const HUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => {
   const hp = pixiText({ text: "100 ⛨", pos: { x: -310, y: 10 }, anchor: { x: 0.5, y: 0 }, style: { fontSize: 32 } });
 
   const hud = Entity<Renderable | Position>({
-    id: "HUD",
+    id: "PvPHUD",
     components: {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       renderable: Renderable({

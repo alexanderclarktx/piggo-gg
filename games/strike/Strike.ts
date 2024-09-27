@@ -1,5 +1,5 @@
 import {
-  Background, Shop, FloorCollidersArray, FloorTilesArray, GunSystem,
+  Background, Shop, FloorCollidersArray, FloorTilesArray, ItemSystem,
   HealthBarSystem, HomeButton, IsometricGame, Minimap,
   ScorePanel, Scoreboard, SightSystem, isMobile
 } from "@piggo-gg/core";
@@ -9,7 +9,7 @@ export const Strike = IsometricGame({
   id: "strike",
   init: () => ({
     id: "strike",
-    systems: [StrikeSystem, SightSystem, GunSystem, HealthBarSystem],
+    systems: [StrikeSystem, SightSystem, ItemSystem, HealthBarSystem],
     tileMap: StrikeTileMap,
     entities: [
       HomeButton(),
