@@ -1,7 +1,8 @@
 import {
   Actions, Chase, Collider, Debug, Edible, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, XY,
-  closestEntity, loadTexture, random, randomInt, round
+  closestEntity, loadTexture, random, randomInt, round,
+  values
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -24,7 +25,7 @@ export const Piggo = ({ id, positionProps = { x: 100, y: 100 } }: PiggoProps = {
       collider: Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
       debug: Debug(),
       renderable: Renderable({
-        scale: 1.2,
+        scale: 1.5,
         zIndex: 3,
         interpolate: true,
         color: 0xffffff,
@@ -39,14 +40,7 @@ export const Piggo = ({ id, positionProps = { x: 100, y: 100 } }: PiggoProps = {
         setup: async (r: Renderable) => {
           const t = await loadTexture("piggo.json")
           r.animations = {
-            d: new AnimatedSprite([t["2"], t["1"], t["3"]]),
-            u: new AnimatedSprite([t["2"], t["1"], t["3"]]),
-            l: new AnimatedSprite([t["2"], t["1"], t["3"]]),
-            r: new AnimatedSprite([t["2"], t["1"], t["3"]]),
-            dl: new AnimatedSprite([t["2"], t["1"], t["3"]]),
-            dr: new AnimatedSprite([t["2"], t["1"], t["3"]]),
-            ul: new AnimatedSprite([t["2"], t["1"], t["3"]]),
-            ur: new AnimatedSprite([t["2"], t["1"], t["3"]])
+            d: new AnimatedSprite([t["2"], t["1"], t["3"]])
           }
         }
       })

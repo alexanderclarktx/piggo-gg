@@ -11,7 +11,7 @@ export const Sandbox = IsometricGame({
     entities: [
       HomeButton(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
-      Piggo(), Piggo(), Piggo(),
+      Piggo(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree()
     ]
   })

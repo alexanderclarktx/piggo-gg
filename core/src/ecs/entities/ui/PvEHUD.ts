@@ -1,5 +1,5 @@
 import { Entity, Position, Renderable, loadTextureCached, pixiRect } from "@piggo-gg/core"
-import { AnimatedSprite, Sprite } from "pixi.js"
+import { AnimatedSprite, Graphics, Sprite } from "pixi.js"
 
 export const PvEHUD = (): Entity => {
 
@@ -7,9 +7,8 @@ export const PvEHUD = (): Entity => {
   const height = 50
   const start = -width * 4
 
-  const squares = Array.from({ length: 8 }, (_, i) =>
-    pixiRect({ w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }))
-  const icons: Record<number, Sprite | undefined> = {}
+  let squares: Graphics[] = []
+  let icons: Record<number, Sprite | undefined> = {}
 
   const hud = Entity<Renderable | Position>({
     id: "PvEHUD",
@@ -21,9 +20,18 @@ export const PvEHUD = (): Entity => {
           const canvasWidth = renderer.props.canvas.width
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
 
+          squares = Array.from({ length: 8 }, (_, i) => pixiRect(
+            { w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }
+          ))
+
+          icons = {}
+
+          renderable.c.removeChildren()
+
           renderable.c.addChild(...squares)
         },
         dynamic: async (c, __, ___, w) => {
+          console.log("PvEHUD dynamic")
           const playerCharacter = w.client?.playerCharacter()
           if (!playerCharacter) return
 

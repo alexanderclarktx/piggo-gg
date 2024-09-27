@@ -139,10 +139,10 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // run the dynamic callback
-          if (renderable.dynamic) renderable.dynamic(renderable.c, renderable, entity, world);
+          if (renderable.dynamic && renderable.initialized) renderable.dynamic(renderable.c, renderable, entity, world);
 
           // run dynamic on children
-          if (renderable.children) {
+          if (renderable.children && renderable.initialized) {
             renderable.children.forEach((child) => {
               if (child.dynamic) child.dynamic(child.c, child, entity, world);
             });

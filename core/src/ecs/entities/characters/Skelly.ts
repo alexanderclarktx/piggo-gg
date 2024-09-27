@@ -1,5 +1,5 @@
 import {
-  AK, AWP, Actions, Boost, Character, Collider, Deagle, Debug,
+  AK, AWP, Actions, Axe, Boost, Character, Collider, Deagle, Debug,
   DefaultJoystickHandler, Effects, Entity, Head, Health,
   IceWall, Input, Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
   Renderable, WASDInputMap, XY, loadTexture,
@@ -17,7 +17,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
-      inventory: Inventory([Pickaxe, AK, AWP, Deagle]),
+      inventory: Inventory([Pickaxe, Axe]),
       input: Input({
         press: {
           ...WASDInputMap.press,

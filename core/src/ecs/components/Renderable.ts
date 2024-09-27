@@ -15,6 +15,7 @@ export type Renderable = Component<"renderable"> & {
   color: number
   interactiveChildren: boolean
   interpolate: boolean
+  initialized: boolean
   position: { x: number, y: number }
   r: Renderable | undefined
   rendered: boolean
@@ -83,6 +84,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     dynamic: overrideDynamic(props.dynamic),
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,
+    initialized: false,
     position: props.position ?? { x: 0, y: 0 },
     rotates: props.rotates ?? false,
     scale: props.scale ?? 1,
@@ -185,16 +187,17 @@ export const Renderable = (props: RenderableProps): Renderable => {
         renderable.prepareAnimations(renderable.animationColor)
       } else {
         const c = renderable.c as Sprite | Graphics
-        if (!c.texture) return
+        if (c.texture) {
+          c.scale = props.scale ?? 1
 
-        c.scale = props.scale ?? 1
+          // @ts-expect-error
+          if (c.anchor) c.anchor.set(renderable.anchor.x, renderable.anchor.y)
 
-        // @ts-expect-error
-        if (c.anchor) c.anchor.set(renderable.anchor.x, renderable.anchor.y)
-
-        // @ts-expect-error
-        if (c.texture && c.texture.source) c.texture.source.scaleMode = props.scaleMode ?? "nearest"
+          // @ts-expect-error
+          if (c.texture.source) c.texture.source.scaleMode = props.scaleMode ?? "nearest"
+        }
       }
+      renderable.initialized = true
     }
   }
 
