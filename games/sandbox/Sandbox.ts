@@ -13,7 +13,7 @@ export const Sandbox = IsometricGame({
       HomeButton(),
       ShopButton({ screenFixed: true, x: -95, y: 5 }),
       Shop(),
-      isMobile() ? MobilePvEHUD() : PvEHUD(["Q", "E", "C", "X"], ["wall", "boost", "", ""]),
+      isMobile() ? MobilePvEHUD() : PvEHUD(),
       Piggo(), Piggo(), Piggo(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree()
     ]
