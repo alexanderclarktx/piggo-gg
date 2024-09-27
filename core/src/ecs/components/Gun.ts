@@ -1,4 +1,4 @@
-import { Component, World, random, round } from "@piggo-gg/core";
+import { Component, World, randomInt } from "@piggo-gg/core";
 
 export type GunNames = "deagle" | "ak" | "awp";
 
@@ -37,7 +37,7 @@ export const Gun = (props: GunProps): Gun => {
   const gun: Gun = {
     type: "gun",
     data: {
-      id: round(random() * 100000),
+      id: randomInt(100000),
       clip: props.clipSize,
       ammo: props.ammo
     },

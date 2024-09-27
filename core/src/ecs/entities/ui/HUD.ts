@@ -34,7 +34,10 @@ export const MobileHUD = (): Entity => {
           const playerCharacter = w.client?.playerCharacter();
           if (!playerCharacter) return;
 
-          const { gun, health } = playerCharacter.components;
+          const { health } = playerCharacter.components;
+          const gun = playerCharacter.components.inventory?.activeItem?.components?.gun
+
+          console.log("z", gun)
 
           if (gun) ammo.text = `${gun.data.clip} ‖` // TODO infinite ammo ${gun.data.ammo}`;
           if (health) hp.text = `${health.data.health} ⛨`;
@@ -97,7 +100,8 @@ export const HUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => {
           const playerCharacter = w.client?.playerCharacter();
           if (!playerCharacter) return;
 
-          const { gun, actions, health } = playerCharacter.components;
+          const { actions, health } = playerCharacter.components;
+          const gun = playerCharacter.components.inventory?.activeItem?.components?.gun
 
           if (gun) ammo.text = `${gun.data.clip} ‖` // TODO infinite ammo ${gun.data.ammo}`;
           if (health) hp.text = `${health.data.health} ⛨`;

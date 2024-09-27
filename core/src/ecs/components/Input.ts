@@ -5,6 +5,7 @@ export type InputState = {
   tick?: number
   entity: Entity
   world: World
+  character?: Character
 }
 
 export type KeyHandler = (_: InputState) => null | InvokedAction<string, {}>

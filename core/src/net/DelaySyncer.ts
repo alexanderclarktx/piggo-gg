@@ -1,4 +1,4 @@
-import { Ball, GameData, LineWall, Noob, Projectile, SerializedEntity, Syncer, World, Zomi, entries, keys } from "@piggo-gg/core";
+import { Ball, GameData, LineWall, Noob, Projectile, SerializedEntity, Syncer, World, Zomi, entries, keys, stringify } from "@piggo-gg/core";
 
 export const DelaySyncer: Syncer = {
   writeMessage: (world: World) => {
@@ -80,8 +80,8 @@ export const DelaySyncer: Syncer = {
         const localEntity = localEntities[entityId];
         if (localEntity) {
           if (entityId.startsWith("skelly") && entityId !== `skelly-${world.client?.playerId}`) return;
-          if (JSON.stringify(localEntity) !== JSON.stringify(msgEntity)) {
-            mustRollback(`entity state ${entityId} local:${JSON.stringify(localEntity)}\nremote:${JSON.stringify(msgEntity)}`);
+          if (stringify(localEntity) !== stringify(msgEntity)) {
+            mustRollback(`entity state ${entityId} local:${stringify(localEntity)}\nremote:${stringify(msgEntity)}`);
           }
         } else {
           mustRollback(`no buffered message ${localEntities.serializedEntities}`);

@@ -1,4 +1,4 @@
-import { Noob, SystemBuilder, entries } from "@piggo-gg/core";
+import { Noob, SystemBuilder, entries, keys, stringify } from "@piggo-gg/core";
 
 export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   id: "ActionSystem",
@@ -40,7 +40,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
 
           // action not found
           if (!action) {
-            console.log(`action ${invokedAction} not found`);
+            console.log(`action ${stringify(invokedAction)} not found in actionMap ${keys(actions.actionMap)}`);
             return;
           }
 

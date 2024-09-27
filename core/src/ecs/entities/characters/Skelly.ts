@@ -1,13 +1,13 @@
 import {
-  Actions, Boost, Collider, Debug, Effects, Entity, Gun, Head, Health, Input,
-  Move, Networked, Position, Renderable, Shoot, Team, TeamNumber, WASDInputMap,
-  DefaultJoystickHandler, IceWall, loadTexture, Point, XY, Deagle, Reload, SpawnBullet,
-  round, random
-} from "@piggo-gg/core";
-import { AnimatedSprite } from "pixi.js";
+  Actions, Axe, Boost, Collider, DeagleItem, Debug,
+  DefaultJoystickHandler, Effects, Entity, Head, Health,
+  IceWall, Input, Inventory, Move, Networked, Point, Position,
+  Renderable, Team, TeamNumber, WASDInputMap, XY, loadTexture
+} from "@piggo-gg/core"
+import { AnimatedSprite } from "pixi.js"
 
 export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) => {
-  const skelly = Entity<Position | Gun>({
+  const skelly = Entity<Position>({
     id: id,
     components: {
       debug: Debug(),
@@ -16,15 +16,13 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: Team(team),
-      gun: Deagle(),
+      inventory: Inventory([Axe(), DeagleItem()]),
       input: Input({
         press: {
           ...WASDInputMap.press,
           "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId(), params: { mouse } }),
-          "mb1": ({ mouse, world, tick }) => ({ action: "shoot", playerId: world.client?.playerId(), params: { tick, mouse, id: round(random() * 10000) } }),
           "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId(), params: mouse }),
           "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId(), params: mouse }),
-          "r": ({ world }) => ({ action: "reload", playerId: world.client?.playerId() })
         },
         joystick: DefaultJoystickHandler
       }),
@@ -32,11 +30,8 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         "boost": Boost,
         "head": Head,
         "move": Move,
-        "shoot": Shoot,
         "wall": IceWall,
         "point": Point,
-        "reload": Reload,
-        "spawnBullet": SpawnBullet
       }),
       effects: Effects(),
       renderable: Renderable({
@@ -47,7 +42,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         scaleMode: "nearest",
         animationColor: color ?? 0xffffff,
         setup: async (r) => {
-          const textures = await loadTexture("chars.json");
+          const textures = await loadTexture("chars.json")
 
           r.animations = {
             d: new AnimatedSprite([textures["d1"], textures["d2"], textures["d3"]]),
@@ -62,6 +57,6 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         }
       })
     }
-  });
-  return skelly;
+  })
+  return skelly
 }

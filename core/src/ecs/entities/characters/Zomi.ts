@@ -1,11 +1,11 @@
 import {
   Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, ZomiAttack,
-  closestEntity, positionDelta, loadTexture, random, round
+  closestEntity, positionDelta, loadTexture, round, randomInt
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
-export type ZombieProps = {
+export type ZomiProps = {
   id?: string
   color?: number
   positionProps?: PositionProps
@@ -13,9 +13,9 @@ export type ZombieProps = {
 
 const colors = [0xff3300, 0xff7700, 0xccee00, 0x00ff00];
 
-export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZombieProps = {}) => {
+export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProps = {}) => {
   const zomi = Entity<Health | Actions>({
-    id: id ?? `zomi-${round(random() * 100)}`,
+    id: id ?? `zomi-${randomInt(1000)}`,
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
       networked: Networked({ isNetworked: true }),
