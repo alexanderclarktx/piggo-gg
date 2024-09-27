@@ -1,13 +1,15 @@
-import { Entity, Position, Renderable, loadTexture, pixiRect } from "@piggo-gg/core"
-import { AnimatedSprite } from "pixi.js"
+import { Entity, Position, Renderable, loadTexture, loadTextureCached, pixiRect } from "@piggo-gg/core"
+import { AnimatedSprite, Sprite } from "pixi.js"
 
 export const PvEHUD = (): Entity => {
 
   const width = 50
   const height = 50
 
-  const slot1 = -width * 4
-  const squares = Array.from({ length: 8 }, (_, i) => pixiRect({ w: width, h: height, y: 0, x: slot1 + i * (width + 10), rounded: 5 }))
+  const start = -width * 4
+  const squares = Array.from({ length: 8 }, (_, i) => pixiRect({ w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }))
+
+  const squareIcons: Record<number, Sprite | undefined> = {}
 
   const hud = Entity<Renderable | Position>({
     id: "PvEHUD",
@@ -27,13 +29,26 @@ export const PvEHUD = (): Entity => {
 
           const { inventory } = playerCharacter.components
 
-          if (inventory?.activeItem) {
-            const textures = await loadTexture(`${inventory.activeItem.components.name.data.name}.json`)
-            const slotSprite = new AnimatedSprite([textures["0"]])
-            slotSprite.position.set(slot1 + (width / 2), height / 2)
-            slotSprite.scale.set(5)
-            slotSprite.anchor.set(0.5)
-            c.addChild(slotSprite)
+          if (!inventory) return
+
+          for (let i = 0; i < 8; i++) {
+            const item = inventory.items[i]
+            if (!item && squareIcons[i]) {
+              c.removeChild(squareIcons[i]!)
+              squareIcons[i] = undefined
+            }
+
+            if (item && !squareIcons[i]) {
+              const textures = loadTextureCached(`${item.components.name.data.name}.json`)
+              if (!textures) continue
+
+              const slotSprite = new AnimatedSprite([textures["0"]])
+              slotSprite.position.set(start + (width / 2) + i * (width + 10), height / 2)
+              slotSprite.scale.set(5)
+              slotSprite.anchor.set(0.5)
+              c.addChild(slotSprite)
+              squareIcons[i] = slotSprite
+            }
           }
         }
       })

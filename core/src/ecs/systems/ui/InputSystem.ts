@@ -145,8 +145,13 @@ export const InputSystem = ClientSystemBuilder({
       const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x)
       const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
+      const pointingDelta = {
+        x: round(mouse.x - position.data.x, 2),
+        y: round(mouse.y - position.data.y, 2)
+      }
+
       world.actionBuffer.push(world.tick + 1, character.id,
-        { action: "point", playerId: world.client?.playerId(), params: { pointing } }
+        { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
       )
 
       // handle joystick input
@@ -193,23 +198,24 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       // handle character inventory
-      if (inventory && inventory.activeItem) {
-        for (const keyPress in inventory.activeItem.components.input.inputMap.press) {
+      const activeItem = inventory?.activeItem()
+      if (activeItem) {
+        for (const keyPress in activeItem.components.input.inputMap.press) {
+
           const keyMouse = buffer.get(keyPress)
 
           if (keyMouse) {
-            const controllerInput = inventory.activeItem.components.input.inputMap.press?.[keyPress]
+            const controllerInput = activeItem.components.input.inputMap.press?.[keyPress]
             if (controllerInput) {
               const invocation = controllerInput({
                 mouse: { ...mouse },
-                entity: inventory.activeItem,
+                entity: activeItem,
                 world,
                 tick: keyMouse.tick,
                 character
               })
-
-              if (invocation && inventory.activeItem.components.actions.actionMap[invocation.action]) {
-                world.actionBuffer.push(world.tick + 1, inventory.activeItem.id, invocation)
+              if (invocation && activeItem.components.actions.actionMap[invocation.action]) {
+                world.actionBuffer.push(world.tick + 1, activeItem.id, invocation)
               }
             }
           }

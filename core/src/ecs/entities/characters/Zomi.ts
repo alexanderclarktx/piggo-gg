@@ -1,7 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, ZomiAttack,
-  closestEntity, positionDelta, loadTexture, round, randomInt
+  closestEntity, positionDelta, loadTexture, round, randomInt, max
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -38,7 +38,7 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
           const { health, maxHealth } = z.components.health!.data;
 
           const ratio = round(health / maxHealth * 4);
-          r.color = colors[Math.max(ratio - 1, 0)];
+          r.color = colors[max(ratio - 1, 0)];
         },
         setup: async (r: Renderable) => {
           const t = await loadTexture("chars.json")

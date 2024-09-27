@@ -1,8 +1,9 @@
 import {
-  Actions, Axe, Boost, Collider, DeagleItem, Debug,
+  AK, AWP, Actions, Boost, Collider, Deagle, Debug,
   DefaultJoystickHandler, Effects, Entity, Head, Health,
-  IceWall, Input, Inventory, Move, Networked, Point, Position,
-  Renderable, Team, TeamNumber, WASDInputMap, XY, loadTexture
+  IceWall, Input, Inventory, Move, Networked, Pickaxe, Point, Position,
+  Renderable, Team, TeamNumber, WASDInputMap, XY, loadTexture,
+  setActiveItemIndex
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -16,13 +17,21 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: Team(team),
-      inventory: Inventory([Axe(), DeagleItem()]),
+      inventory: Inventory([Pickaxe(), AK(), AWP(), Deagle()]),
       input: Input({
         press: {
           ...WASDInputMap.press,
           "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId(), params: { mouse } }),
           "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId(), params: mouse }),
           "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId(), params: mouse }),
+          "1": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 0 } }),
+          "2": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 1 } }),
+          "3": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 2 } }),
+          "4": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 3 } }),
+          "5": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 4 } }),
+          "6": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 5 } }),
+          "7": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 6 } }),
+          "8": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 7 } })
         },
         joystick: DefaultJoystickHandler
       }),
@@ -32,6 +41,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
         "move": Move,
         "wall": IceWall,
         "point": Point,
+        "setActiveItemIndex": setActiveItemIndex
       }),
       effects: Effects(),
       renderable: Renderable({

@@ -7,6 +7,7 @@ export type Position = Component<"position", {
   speed: number
   rotation: number
   pointing: number
+  pointingDelta: XY
   heading: XY
   velocityResets: number
 }> & {
@@ -45,6 +46,7 @@ export const Position = (props: PositionProps = {}): Position => {
       speed: props.speed ?? 0,
       rotation: 0,
       pointing: 0,
+      pointingDelta: { x: 0, y: 0 },
       heading: { x: NaN, y: NaN },
       velocityResets: props.velocityResets ?? 0
     },
@@ -62,7 +64,7 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.velocity.y = round(y * 100) / 100;
 
       const rads = (Math.atan2(y, x) / Math.PI) * 4 + 4;
-      position.orientationRads = rads;
+      position.orientationRads = round(rads, 2);
 
       if (x || y) position.orientation = orthoToDirection(round(rads) % 8);
 

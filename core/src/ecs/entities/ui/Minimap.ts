@@ -1,4 +1,4 @@
-import { Action, Actions, Debug, Entity, Input, Position, Renderable, TeamColors, keys, pixiCircle, pixiGraphics, values } from "@piggo-gg/core";
+import { Action, Actions, Debug, Entity, Input, Position, Renderable, TeamColors, keys, max, pixiCircle, pixiGraphics, values } from "@piggo-gg/core";
 import { Container, Graphics } from "pixi.js";
 
 export const Minimap = (dim: number, tileMap: number[]): Entity => {
@@ -40,7 +40,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             minimap.components.position.data = {
               ...minimap.components.position.data,
               x: world.renderer!.app.canvas.width / 2,
-              y: Math.max(0, (world.renderer!.app.canvas.height - bounds.height) / 2 - 100)
+              y: max(0, (world.renderer!.app.canvas.height - bounds.height) / 2 - 100)
             }
 
             background.clear();

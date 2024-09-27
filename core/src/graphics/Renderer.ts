@@ -1,4 +1,4 @@
-import { Camera, Renderable, isMobile } from "@piggo-gg/core";
+import { Camera, Renderable, isMobile, min } from "@piggo-gg/core";
 import { Application } from "pixi.js";
 
 export type RendererProps = {
@@ -73,8 +73,8 @@ export const Renderer = (props: RendererProps): Renderer => {
         renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
       } else {
         const computedCanvasStyle = window.getComputedStyle(renderer.props.canvas);
-        const width = Math.min(parseInt(computedCanvasStyle.width), renderer.props.width ?? 800);
-        const height = Math.min(parseInt(computedCanvasStyle.height), renderer.props.height ?? 600);
+        const width = min(parseInt(computedCanvasStyle.width), renderer.props.width ?? 800);
+        const height = min(parseInt(computedCanvasStyle.height), renderer.props.height ?? 600);
         renderer.app.renderer.resize(width, height);
       }
 

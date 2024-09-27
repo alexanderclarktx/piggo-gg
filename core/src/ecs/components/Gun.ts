@@ -1,4 +1,4 @@
-import { Component, World, randomInt } from "@piggo-gg/core";
+import { Actions, Component, Effects, Entity, Input, Item, Name, Reload, Shoot, SpawnBullet, World, randomInt } from "@piggo-gg/core";
 
 export type GunNames = "deagle" | "ak" | "awp";
 
@@ -30,7 +30,7 @@ export type GunProps = {
   speed: number
 }
 
-const GunBuilder = (props: GunProps) => () => Gun(props);
+const GunBuilder = (props: GunProps) => () => Gun(props)
 
 export const Gun = (props: GunProps): Gun => {
 
@@ -81,7 +81,7 @@ export const Gun = (props: GunProps): Gun => {
   return gun;
 }
 
-export const Deagle = GunBuilder({
+const DeagleBuilder = GunBuilder({
   name: "deagle",
   automatic: false,
   ammo: 60,
@@ -93,7 +93,7 @@ export const Deagle = GunBuilder({
   speed: 400
 });
 
-export const AK = GunBuilder({
+const AKBuilder = GunBuilder({
   name: "ak",
   automatic: true,
   ammo: 90,
@@ -105,7 +105,7 @@ export const AK = GunBuilder({
   speed: 500
 });
 
-export const AWP = GunBuilder({
+const AWPBuilder = GunBuilder({
   name: "awp",
   automatic: false,
   ammo: 20,
@@ -118,7 +118,31 @@ export const AWP = GunBuilder({
 });
 
 export const WeaponTable: Record<GunNames, () => Gun> = {
-  "deagle": Deagle,
-  "ak": AK,
-  "awp": AWP
+  "deagle": DeagleBuilder,
+  "ak": AKBuilder,
+  "awp": AWPBuilder
 }
+
+export const GunItem = (name: string, gun: () => Gun): Item => Entity({
+  id: name,
+  components: {
+    name: Name(name),
+    input: Input({
+      press: {
+        "r": ({ character, mouse }) => ({ action: "reload", params: { character, mouse } }),
+        "mb1": ({ character, mouse }) => ({ action: "shoot", params: { character, mouse } })
+      }
+    }),
+    actions: Actions<any>({
+      "spawnBullet": SpawnBullet,
+      "shoot": Shoot,
+      "reload": Reload
+    }),
+    gun: gun(),
+    effects: Effects()
+  }
+})
+
+export const Deagle = () => GunItem("deagle", WeaponTable["deagle"]);
+export const AK = () => GunItem("ak", WeaponTable["ak"]);
+export const AWP = () => GunItem("awp", WeaponTable["awp"]);

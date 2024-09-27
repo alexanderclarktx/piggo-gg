@@ -1,13 +1,5 @@
-import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core"
+import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, abs, loadTexture, min, values } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
-
-// ortho positions
-const pz = [
-  { x: -20, y: 0 }, { x: -20, y: -15 },
-  { x: 0, y: -25 }, { x: 20, y: -15 },
-  { x: 20, y: 0 }, { x: 15, y: 15 },
-  { x: 0, y: 15 }, { x: -15, y: 15 }
-]
 
 const renderableId = (playerId: string, itemId: string) => `item-draw-${playerId}-${itemId}`
 
@@ -15,7 +7,6 @@ export const ItemSystem: SystemBuilder<"item"> = ({
   id: "item",
   init: (world) => {
 
-    let playerToItem: Record<string, string | null> = {}
     let itemToRenderable: Record<string, Entity<Renderable | Position>> = {}
 
     const draw = (player: Entity<Inventory | Position>, item: Item): Entity<Renderable | Position> => Entity({
@@ -29,14 +20,27 @@ export const ItemSystem: SystemBuilder<"item"> = ({
           anchor: { x: 0.5, y: 0.5 },
           position: { x: 20, y: 0 },
           interpolate: true,
+          visible: false,
           dynamic: (_, r) => {
             const { position } = player.components
-            const { pointing } = position.data
+            const { pointing, pointingDelta } = position.data
 
-            r.position = pz[pointing]
+            const hypotenuse = Math.sqrt(pointingDelta.x ** 2 + pointingDelta.y ** 2)
+
+            const hyp_x = pointingDelta.x / hypotenuse
+            const hyp_y = pointingDelta.y / hypotenuse
+
+            r.position = {
+              x: hyp_x * min(20, abs(pointingDelta.x)),
+              y: hyp_y * min(20, abs(pointingDelta.y)) - 5
+            }
+
+            r.zIndex = (pointingDelta.y > 0) ? 3 : 2
+
             r.bufferedAnimation = pointing.toString()
 
-            // r.setOutline(item.reloading ? 0xff0000 : item.outlineColor)
+            const flip = pointingDelta.x > 0 ? 1 : -1
+            r.setScale({ x: flip, y: 1 })
           },
           setup: async (r: Renderable) => {
             const textures = await loadTexture(`${item.components.name.data.name}.json`)
@@ -66,34 +70,21 @@ export const ItemSystem: SystemBuilder<"item"> = ({
 
           const { inventory, renderable } = entity.components
 
-          // const z = inventory.activeItem
-          const { activeItem } = inventory
-
-          if (!activeItem) {
-            // rm from playerToItem
-            if (playerToItem[entity.id]) {
-              world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!))
+          inventory.items.forEach((item) => {
+            if (!itemToRenderable[item.id]) {
+              const r = draw(entity, item)
+              world.addEntity(r)
+              itemToRenderable[item.id] = r
             }
-            playerToItem[entity.id] = null
-            return
-          }
+          })
 
-          // clean up old items
-          if (activeItem.id !== playerToItem[entity.id]) {
-            world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!))
-            playerToItem[entity.id] = null
-          }
+          values(itemToRenderable).forEach(r => r.components.renderable.visible = false)
 
-          // draw new items
-          if (!playerToItem[entity.id]) {
-            const r = draw(entity, activeItem)
-            world.addEntity(r)
-            playerToItem[entity.id] = activeItem.id
-            itemToRenderable[activeItem.id] = r
-          }
+          const activeItem = inventory.activeItem()
 
-          // update item visibility
-          itemToRenderable[activeItem.id].components.renderable.visible = renderable.visible
+          if (activeItem) {
+            itemToRenderable[activeItem.id].components.renderable.visible = renderable.visible
+          }
         })
       }
     }

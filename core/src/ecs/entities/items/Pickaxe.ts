@@ -1,9 +1,9 @@
 import { Action, Actions, Character, Effects, Entity, Input, Item, KeyMouse, Name } from "@piggo-gg/core"
 
-export const Axe = (): Item => Entity({
-  id: "axe",
+export const Pickaxe = (): Item => Entity({
+  id: "pickaxe",
   components: {
-    name: Name("axe"),
+    name: Name("pickaxe"),
     input: Input({
       press: {
         "mb1": ({ character, mouse }) => ({ action: "whack", params: { character, mouse } })

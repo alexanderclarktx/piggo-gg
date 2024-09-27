@@ -11,8 +11,6 @@ export const Sandbox = IsometricGame({
     systems: [SkellySpawnSystem, InventorySystem, ItemSystem],
     entities: [
       HomeButton(),
-      ShopButton({ screenFixed: true, x: -95, y: 5 }),
-      Shop(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       Piggo(), Piggo(), Piggo(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree()

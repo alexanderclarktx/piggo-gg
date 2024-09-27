@@ -1,5 +1,5 @@
 import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat";
-import { Collider, Entity, Position, SystemBuilder, entries, keys, round, values } from "@piggo-gg/core";
+import { Collider, Entity, Position, SystemBuilder, abs, entries, keys, round, values } from "@piggo-gg/core";
 
 export let physics: RapierWorld;
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
@@ -92,7 +92,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           // check if the entity has collided
           const diffX = position.data.velocity.x - Math.floor(body.linvel().x * 100) / 100;
           const diffY = position.data.velocity.y - Math.floor(body.linvel().y * 100) / 100;
-          if (position.data.velocityResets && (Math.abs(diffX) > 1 || Math.abs(diffY) > 1)) {
+          if (position.data.velocityResets && (abs(diffX) > 1 || abs(diffY) > 1)) {
             position.lastCollided = world.tick;
           }
 
@@ -126,7 +126,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           if (position.data.heading.x || position.data.heading.y) {
             const dx = position.data.heading.x - position.data.x;
             const dy = position.data.heading.y - position.data.y;
-            if (Math.abs(dx) < 5 && Math.abs(dy) < 5) {
+            if (abs(dx) < 5 && abs(dy) < 5) {
               position.data.heading = { x: NaN, y: NaN };
             }
           }

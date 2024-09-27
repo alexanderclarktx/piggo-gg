@@ -46,6 +46,14 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
   });
 }
 
+const textureCache: Record<string, Record<string, any>> = {};
+
 export const loadTexture = async (file: string): Promise<Record<string, any>> => {
-  return (await Assets.load(file)).textures;
+  const textures = (await Assets.load(file)).textures;
+  textureCache[file] = textures;
+  return textures;
+}
+
+export const loadTextureCached = (file: string): Record<string, any> | undefined => {
+  return textureCache[file];
 }
