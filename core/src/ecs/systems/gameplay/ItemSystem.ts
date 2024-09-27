@@ -80,7 +80,7 @@ export const ItemSystem: SystemBuilder<"item"> = ({
 
           values(itemToRenderable).forEach(r => r.components.renderable.visible = false)
 
-          const activeItem = inventory.activeItem();
+          const activeItem = inventory.activeItem()
 
           if (activeItem) {
             itemToRenderable[activeItem.id].components.renderable.visible = renderable.visible
