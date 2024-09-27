@@ -1,7 +1,6 @@
 import {
   ItemSystem, HomeButton, InventorySystem, IsometricGame,
-  Piggo, Shop, ShopButton, SkellySpawnSystem, Tree,
-  isMobile, MobilePvEHUD, PvEHUD
+  Piggo, SkellySpawnSystem, Tree, isMobile, MobilePvEHUD, PvEHUD
 } from "@piggo-gg/core"
 
 export const Sandbox = IsometricGame({

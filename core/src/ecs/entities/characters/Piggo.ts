@@ -24,7 +24,7 @@ export const Piggo = ({ id, positionProps = { x: 100, y: 100 } }: PiggoProps = {
       collider: Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
       debug: Debug(),
       renderable: Renderable({
-        scale: 1.5,
+        scale: 1.2,
         zIndex: 3,
         interpolate: true,
         color: 0xffffff,

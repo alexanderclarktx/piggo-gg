@@ -46,7 +46,7 @@ export const Position = (props: PositionProps = {}): Position => {
       speed: props.speed ?? 0,
       rotation: 0,
       pointing: 0,
-      pointingDelta: { x: 0, y: 0 },
+      pointingDelta: { x: NaN, y: NaN },
       heading: { x: NaN, y: NaN },
       velocityResets: props.velocityResets ?? 0
     },

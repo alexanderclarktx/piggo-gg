@@ -1,37 +1,37 @@
 import {
-  AK, AWP, Actions, Boost, Collider, Deagle, Debug,
+  AK, AWP, Actions, Boost, Character, Collider, Deagle, Debug,
   DefaultJoystickHandler, Effects, Entity, Head, Health,
-  IceWall, Input, Inventory, Move, Networked, Pickaxe, Point, Position,
-  Renderable, Team, TeamNumber, WASDInputMap, XY, loadTexture,
+  IceWall, Input, Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
+  Renderable, WASDInputMap, XY, loadTexture,
   setActiveItemIndex
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) => {
-  const skelly = Entity<Position>({
-    id: id,
+export const Skelly = (player: Noob, color?: number, pos?: XY) => {
+  const skelly: Character = Entity({
+    id: `skelly-${player.id}`,
     components: {
       debug: Debug(),
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 120 }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
-      team: Team(team),
-      inventory: Inventory([Pickaxe(), AK(), AWP(), Deagle()]),
+      team: player.components.team,
+      inventory: Inventory([Pickaxe, AK, AWP, Deagle]),
       input: Input({
         press: {
           ...WASDInputMap.press,
-          "mb2": ({ mouse, world }) => ({ action: "head", playerId: world.client?.playerId(), params: { mouse } }),
-          "q": ({ mouse, world }) => ({ action: "wall", playerId: world.client?.playerId(), params: mouse }),
-          "e": ({ mouse, world }) => ({ action: "boost", playerId: world.client?.playerId(), params: mouse }),
-          "1": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 0 } }),
-          "2": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 1 } }),
-          "3": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 2 } }),
-          "4": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 3 } }),
-          "5": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 4 } }),
-          "6": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 5 } }),
-          "7": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 6 } }),
-          "8": ({ }) => ({ action: "setActiveItemIndex", playerId: id, params: { index: 7 } })
+          "mb2": ({ mouse }) => ({ action: "head", params: { mouse } }),
+          "q": ({ mouse }) => ({ action: "wall", params: mouse }),
+          "e": ({ mouse }) => ({ action: "boost", params: mouse }),
+          "1": ({ }) => ({ action: "setActiveItemIndex", params: { index: 0 } }),
+          "2": ({ }) => ({ action: "setActiveItemIndex", params: { index: 1 } }),
+          "3": ({ }) => ({ action: "setActiveItemIndex", params: { index: 2 } }),
+          "4": ({ }) => ({ action: "setActiveItemIndex", params: { index: 3 } }),
+          "5": ({ }) => ({ action: "setActiveItemIndex", params: { index: 4 } }),
+          "6": ({ }) => ({ action: "setActiveItemIndex", params: { index: 5 } }),
+          "7": ({ }) => ({ action: "setActiveItemIndex", params: { index: 6 } }),
+          "8": ({ }) => ({ action: "setActiveItemIndex", params: { index: 7 } })
         },
         joystick: DefaultJoystickHandler
       }),

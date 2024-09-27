@@ -1,42 +1,46 @@
-import { GunNames, isArray, isMobile, randomChoice } from "@piggo-gg/core";
-import { getContext, getTransport, Player } from "tone";
+import { GunNames, isArray, isMobile, randomChoice } from "@piggo-gg/core"
+import { getContext, getTransport, Player } from "tone"
 
-export type Sound = Player;
+export type Sound = Player
 
-export type WallPlaceSounds = "wallPlace1" | "wallPlace2";
-export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4";
-export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4";
+export type ToolSounds = "whiff" | "thunk" | "clink"
 
-export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds;
-export type Sounds = Record<ValidSounds, Sound>;
+export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
+export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4"
+export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
 
-let state: "closed" | "running" | "suspended" = "closed";
+export type ValidSounds =
+  GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds
+
+export type Sounds = Record<ValidSounds, Sound>
+
+let state: "closed" | "running" | "suspended" = "closed"
 
 export const playSound = (sound: Sound | (Sound | undefined)[] | undefined, startTime: number = 0) => {
-  if (!sound) return;
+  if (!sound) return
 
   try {
     if (state !== "running") {
-      state = getContext().state;
-      getTransport().start();
+      state = getContext().state
+      getTransport().start()
     }
 
-    if (state !== "running" && isMobile()) return;
+    if (state !== "running" && isMobile()) return
 
     if (isArray(sound)) {
-      const choice = randomChoice(sound);
-      if (choice?.loaded) choice.start(0, startTime);
+      const choice = randomChoice(sound)
+      if (choice?.loaded) choice.start(0, startTime)
     } else {
-      if (sound.loaded) sound.start(0, startTime);
+      if (sound.loaded) sound.start(0, startTime)
     }
   } catch (e) {
-    console.error("error while playing a sound", e);
+    console.error("error while playing a sound", e)
   }
 }
 
 const load = (url: string, volume: number): Sound => {
   const player = new Player({ url, volume })
-  return player.toDestination();
+  return player.toDestination()
 }
 
 export const Sounds = (): Sounds => ({
@@ -52,5 +56,8 @@ export const Sounds = (): Sounds => ({
   attack1: load("attack1.wav", -25),
   attack2: load("attack2.wav", -25),
   attack3: load("attack3.wav", -25),
-  attack4: load("attack4.wav", -25)
+  attack4: load("attack4.wav", -25),
+  whiff: load("whiff.mp3", -15),
+  thunk: load("thunk.mp3", -15),
+  clink: load("clink.mp3", -15),
 })

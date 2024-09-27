@@ -25,12 +25,14 @@ export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
 
           // if player is not controlling a character
           if (!player.components.controlling.data.entityId) {
+            console.log("1 invokeSpawnSkelly", player.id);
             world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
             spawnedPlayers.add(player.id);
           }
 
           // if it's a new player
           if (!spawnedPlayers.has(player.id)) {
+            console.log("2 invokeSpawnSkelly", player.id);
             world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player));
             spawnedPlayers.add(player.id);
           }

@@ -1,6 +1,6 @@
 import { Component, Entity, Renderer, World, XY, keys, values } from "@piggo-gg/core"
 import { OutlineFilter } from "pixi-filters"
-import { AnimatedSprite, Container } from "pixi.js"
+import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js"
 
 export type Renderable = Component<"renderable"> & {
   activeAnimation: string
@@ -24,6 +24,7 @@ export type Renderable = Component<"renderable"> & {
   scaleMode: "nearest" | "linear"
   visible: boolean
   zIndex: number
+  ignoreDepth: boolean
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
@@ -52,6 +53,7 @@ export type RenderableProps = {
   scaleMode?: "nearest" | "linear"
   visible?: boolean
   zIndex?: number
+  ignoreDepth?: boolean
   dynamic?: (c: Container, r: Renderable, e: Entity, w: World) => void
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
@@ -92,6 +94,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     setup: props.setup ?? undefined,
     visible: props.visible ?? true,
     zIndex: props.zIndex ?? 0,
+    ignoreDepth: props.ignoreDepth ?? false,
     rendered: false,
     renderer: undefined as unknown as Renderer,
 
@@ -106,12 +109,16 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.bufferedAnimation = keys(renderable.animations)[0]
     },
     setScale: (xy: XY) => {
-      values(renderable.animations).forEach((animation: AnimatedSprite) => {
-        const { x, y } = xy
-        if (x != animation.scale.x || y != animation.scale.y) {
-          animation.scale.set(x * renderable.scale, y * renderable.scale)
-        }
-      })
+      const { x, y } = xy
+      if (keys(renderable.animations).length) {
+        values(renderable.animations).forEach((animation: AnimatedSprite) => {
+          if (x != animation.scale.x || y != animation.scale.y) {
+            animation.scale.set(x * renderable.scale, y * renderable.scale)
+          }
+        })
+      } else {
+        renderable.c.scale.set(x * renderable.scale, y * renderable.scale)
+      }
     },
     setAnimation: (animationKey: string) => {
       if (values(renderable.animations).length && renderable.animations[animationKey]) {
@@ -180,10 +187,16 @@ export const Renderable = (props: RenderableProps): Renderable => {
       if (keys(renderable.animations).length) {
         renderable.prepareAnimations(renderable.animationColor)
       } else {
-        renderable.c.scale = props.scale ?? 1
+        const c = renderable.c as Sprite | Graphics
+        if (!c.texture) return
+
+        c.scale = props.scale ?? 1
 
         // @ts-expect-error
-        if (renderable.c.texture && renderable.c.texture.source) renderable.c.texture.source.scaleMode = props.scaleMode ?? "nearest"
+        if (c.anchor) c.anchor.set(renderable.anchor.x, renderable.anchor.y)
+
+        // @ts-expect-error
+        if (c.texture && c.texture.source) c.texture.source.scaleMode = props.scaleMode ?? "nearest"
       }
     }
   }

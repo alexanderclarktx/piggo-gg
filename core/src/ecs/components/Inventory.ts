@@ -1,18 +1,21 @@
-import { Actions, Component, Effects, Entity, Input, Name, SystemBuilder, randomInt } from "@piggo-gg/core"
+import { Actions, Component, Effects, Position, Entity, Input, Name, Renderable, SystemBuilder, randomInt, Character } from "@piggo-gg/core"
 
-export type Item = Entity<Name | Input | Actions | Effects>
+export type Item = Entity<Name | Position | Actions | Effects | Renderable>
+export type ItemBuilder = (character: Character) => Item
 
 export type Inventory = Component<"inventory"> & {
   items: Item[]
+  itemBuilders: ItemBuilder[]
   activeItemIndex: number
   activeItem: () => Item | null
   setActiveItemIndex: (index: number) => void
 }
 
-export const Inventory = (items: Item[]): Inventory => {
+export const Inventory = (items: ((character: Character) => Item)[]): Inventory => {
   const inventory: Inventory = {
     type: "inventory",
-    items,
+    items: [],
+    itemBuilders: items,
     activeItemIndex: 0,
     activeItem: () => inventory.items[inventory.activeItemIndex] ?? null,
     setActiveItemIndex: (index: number) => {
@@ -24,32 +27,28 @@ export const Inventory = (items: Item[]): Inventory => {
 
 export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
-  init: (world) => {
-    const items: Record<string, Item> = {}
+  init: (world) => ({
+    id: "InventorySystem",
+    query: ["position", "input", "actions", "renderable", "inventory"],
+    onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory>[]) => {
+      entities.forEach(entity => {
+        const { inventory } = entity.components
 
-    return {
-      id: "InventorySystem",
-      query: ["inventory"],
-      onTick: (entities: Entity<Inventory>[]) => {
-        entities.forEach(entity => {
-          const { inventory } = entity.components
+        if (inventory.itemBuilders.length) {
+          inventory.items = inventory.itemBuilders.map(builder => builder(entity))
+          inventory.itemBuilders = []
+        }
 
-          inventory.items.forEach(item => {
-            if (!items[item.id]) {
-              const newId = `item-${randomInt(1000)}-${item.components.name.data.name}`
+        inventory.items.forEach(item => {
 
-              // update the entity id
-              item.id = newId
+          // TODO this should be typed
+          if (item.components.input) {
+            throw new Error("Item cannot have input component (it breaks InputSystem)")
+          }
 
-              // save it
-              items[newId] = item
-
-              // add it to the world
-              world.addEntity(item)
-            }
-          })
+          if (!world.entities[item.id]) world.addEntity(item)
         })
-      }
+      })
     }
-  }
+  })
 }

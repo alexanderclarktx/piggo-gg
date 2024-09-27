@@ -1,4 +1,5 @@
-import { Actions, Component, Effects, Entity, Input, Item, Name, Reload, Shoot, SpawnBullet, World, randomInt } from "@piggo-gg/core";
+import { Actions, Component, Effects, Entity, ItemBuilder, Name, Reload, Renderable, Shoot, SpawnBullet, World, abs, hypot, loadTexture, min, randomInt } from "@piggo-gg/core";
+import { AnimatedSprite } from "pixi.js";
 
 export type GunNames = "deagle" | "ak" | "awp";
 
@@ -123,26 +124,63 @@ export const WeaponTable: Record<GunNames, () => Gun> = {
   "awp": AWPBuilder
 }
 
-export const GunItem = (name: string, gun: () => Gun): Item => Entity({
+export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character) => Entity({
   id: name,
   components: {
     name: Name(name),
-    input: Input({
-      press: {
-        "r": ({ character, mouse }) => ({ action: "reload", params: { character, mouse } }),
-        "mb1": ({ character, mouse }) => ({ action: "shoot", params: { character, mouse } })
-      }
-    }),
+    position: character.components.position,
     actions: Actions<any>({
       "spawnBullet": SpawnBullet,
-      "shoot": Shoot,
+      "mb1": Shoot,
       "reload": Reload
     }),
     gun: gun(),
-    effects: Effects()
+    effects: Effects(),
+    renderable: Renderable({
+      scaleMode: "nearest",
+      zIndex: 2,
+      scale: 2,
+      anchor: { x: 0.5, y: 0.5 },
+      position: { x: 20, y: 0 },
+      interpolate: true,
+      visible: false,
+      dynamic: (_, r) => {
+        const { pointing, pointingDelta } = character.components.position.data
+
+        const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
+
+        const hyp_x = pointingDelta.x / hypotenuse
+        const hyp_y = pointingDelta.y / hypotenuse
+
+        r.position = {
+          x: hyp_x * min(20, abs(pointingDelta.x)),
+          y: hyp_y * min(20, abs(pointingDelta.y)) - 5
+        }
+
+        r.zIndex = (pointingDelta.y > 0) ? 3 : 2
+
+        r.bufferedAnimation = pointing.toString()
+      },
+      setup: async (r: Renderable) => {
+        const textures = await loadTexture(`${name}.json`)
+
+        r.animations = {
+          "0": new AnimatedSprite([textures["0"]]),
+          "1": new AnimatedSprite([textures["1"]]),
+          "2": new AnimatedSprite([textures["2"]]),
+          "3": new AnimatedSprite([textures["3"]]),
+          "4": new AnimatedSprite([textures["4"]]),
+          "5": new AnimatedSprite([textures["5"]]),
+          "6": new AnimatedSprite([textures["6"]]),
+          "7": new AnimatedSprite([textures["7"]]),
+        }
+
+        r.setOutline(0x000000)
+      }
+    })
   }
 })
 
-export const Deagle = () => GunItem("deagle", WeaponTable["deagle"]);
-export const AK = () => GunItem("ak", WeaponTable["ak"]);
-export const AWP = () => GunItem("awp", WeaponTable["awp"]);
+export const Deagle = GunItem("deagle", WeaponTable["deagle"]);
+export const AK = GunItem("ak", WeaponTable["ak"]);
+export const AWP = GunItem("awp", WeaponTable["awp"]);
