@@ -145,8 +145,13 @@ export const InputSystem = ClientSystemBuilder({
       const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x)
       const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
+      const pointingDelta = {
+        x: mouse.x - position.data.x,
+        y: mouse.y - position.data.y
+      }
+
       world.actionBuffer.push(world.tick + 1, character.id,
-        { action: "point", playerId: world.client?.playerId(), params: { pointing } }
+        { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
       )
 
       // handle joystick input

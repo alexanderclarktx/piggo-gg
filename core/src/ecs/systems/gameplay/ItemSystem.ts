@@ -1,13 +1,5 @@
-import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core"
+import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, abs, loadTexture, min } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
-
-// ortho positions
-const pz = [
-  { x: -20, y: 0 }, { x: -20, y: -15 },
-  { x: 0, y: -25 }, { x: 20, y: -15 },
-  { x: 20, y: 0 }, { x: 15, y: 15 },
-  { x: 0, y: 15 }, { x: -15, y: 15 }
-]
 
 const renderableId = (playerId: string, itemId: string) => `item-draw-${playerId}-${itemId}`
 
@@ -31,12 +23,24 @@ export const ItemSystem: SystemBuilder<"item"> = ({
           interpolate: true,
           dynamic: (_, r) => {
             const { position } = player.components
-            const { pointing } = position.data
+            const { pointing, pointingDelta } = position.data
 
-            r.position = pz[pointing]
+            const hypotenuse = Math.sqrt(pointingDelta.x ** 2 + pointingDelta.y ** 2)
+
+            const hyp_x = pointingDelta.x / hypotenuse
+            const hyp_y = pointingDelta.y / hypotenuse
+
+            r.position = {
+              x: hyp_x * min(20, abs(pointingDelta.x)),
+              y: hyp_y * min(20, abs(pointingDelta.y)) - 5
+            }
+
+            r.zIndex = (pointingDelta.y > 0) ? 3 : 2
+
             r.bufferedAnimation = pointing.toString()
 
-            // r.setOutline(item.reloading ? 0xff0000 : item.outlineColor)
+            const flip = pointingDelta.x > 0 ? 1 : -1
+            r.setScale({ x: flip, y: 1 })
           },
           setup: async (r: Renderable) => {
             const textures = await loadTexture(`${item.components.name.data.name}.json`)

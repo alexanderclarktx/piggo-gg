@@ -6,8 +6,8 @@ export const PvEHUD = (): Entity => {
   const width = 50
   const height = 50
 
-  const slot1 = -width * 4
-  const squares = Array.from({ length: 8 }, (_, i) => pixiRect({ w: width, h: height, y: 0, x: slot1 + i * (width + 10), rounded: 5 }))
+  const start = -width * 4
+  const squares = Array.from({ length: 8 }, (_, i) => pixiRect({ w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }))
 
   const hud = Entity<Renderable | Position>({
     id: "PvEHUD",
@@ -30,7 +30,7 @@ export const PvEHUD = (): Entity => {
           if (inventory?.activeItem) {
             const textures = await loadTexture(`${inventory.activeItem.components.name.data.name}.json`)
             const slotSprite = new AnimatedSprite([textures["0"]])
-            slotSprite.position.set(slot1 + (width / 2), height / 2)
+            slotSprite.position.set(start + (width / 2), height / 2)
             slotSprite.scale.set(5)
             slotSprite.anchor.set(0.5)
             c.addChild(slotSprite)

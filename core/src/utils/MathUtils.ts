@@ -5,7 +5,12 @@ export type XY = { x: number, y: number };
 
 export type TwoPoints = [number, number, number, number];
 
-export const { round, random } = Math;
+export const { random, max, min, sign, abs } = Math;
+
+export const round = (n: number, places = 0) => {
+  const factor = Math.pow(10, places);
+  return Math.round(n * factor) / factor;
+}
 
 export const randomInt = (n: number) => {
   return round(random() * n)
