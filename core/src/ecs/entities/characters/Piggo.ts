@@ -1,8 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Edible, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, XY,
-  closestEntity, loadTexture, random, randomInt, round,
-  values
+  closestEntity, loadTexture, random, randomInt, round
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
