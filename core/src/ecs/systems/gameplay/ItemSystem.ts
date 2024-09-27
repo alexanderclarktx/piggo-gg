@@ -1,4 +1,4 @@
-import { Entity, Gun, Inventory, Item, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core";
+import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, loadTexture } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 // ortho positions
@@ -29,7 +29,7 @@ export const ItemSystem: SystemBuilder<"item"> = ({
           anchor: { x: 0.5, y: 0.5 },
           position: { x: 20, y: 0 },
           interpolate: true,
-          dynamic: (_, r, e: Entity<Gun | Position>) => {
+          dynamic: (_, r) => {
             const { position } = player.components;
             const { pointing } = position.data;
 

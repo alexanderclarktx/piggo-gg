@@ -28,7 +28,7 @@ export const pixiStyle = ({ g, color, alpha, strokeColor, strokeAlpha, strokeWid
   g.fill(
     { color: color ?? 0x000000, alpha: alpha ?? 0.4 }
   ).stroke(
-    { width: strokeWidth ?? 2, color: strokeColor ?? color ?? 0xffffff, alpha: strokeAlpha ?? 0.9, miterLimit: 3 }
+    { width: strokeWidth ?? 2, color: strokeColor ?? color ?? 0xffffff, alpha: strokeAlpha ?? 0.9 }
   );
   return g;
 }

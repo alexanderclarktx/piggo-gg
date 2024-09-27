@@ -16,6 +16,6 @@ export const DeagleItem = (): Item => Entity({
       "reload": Reload
     }),
     gun: Deagle(),
-    effects: Effects(),
+    effects: Effects()
   }
 })

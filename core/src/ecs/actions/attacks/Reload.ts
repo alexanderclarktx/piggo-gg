@@ -3,8 +3,6 @@ import { Action, Effect, Gun } from "@piggo-gg/core";
 export const Reload = Action(({ entity }) => {
   if (!entity) return;
 
-  console.log("reload", entity.id);
-
   const { gun, effects } = entity.components;
   if (!gun || !effects) return;
 
