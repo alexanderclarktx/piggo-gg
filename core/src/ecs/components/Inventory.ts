@@ -29,16 +29,13 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           const { inventory } = entity.components
 
           inventory.items.forEach(item => {
-
-            const { name } = item.components.name.data
-
             if (!items[item.id]) {
-              const newId = `item-${randomInt(1000)}-${name}`
+              const newId = `item-${randomInt(1000)}-${item.components.name.data.name}`
 
               // update the entity id
               item.id = newId
 
-              // add it to the dict
+              // save it
               items[newId] = item
 
               // add it to the world

@@ -28,7 +28,7 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
   const entity = {
     ...protoEntity,
     extend: (components: ComponentTypes[]) => {
-      components.forEach((component) => {
+      components.forEach(component => {
         // @ts-expect-error
         entity.components[component.type] = component;
       });
