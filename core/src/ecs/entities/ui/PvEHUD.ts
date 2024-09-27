@@ -23,15 +23,12 @@ export const PvEHUD = (): Entity => {
           squares = Array.from({ length: 8 }, (_, i) => pixiRect(
             { w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }
           ))
-
           icons = {}
 
           renderable.c.removeChildren()
-
           renderable.c.addChild(...squares)
         },
         dynamic: async (c, __, ___, w) => {
-          console.log("PvEHUD dynamic")
           const playerCharacter = w.client?.playerCharacter()
           if (!playerCharacter) return
 

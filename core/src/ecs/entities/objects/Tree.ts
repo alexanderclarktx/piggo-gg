@@ -9,7 +9,7 @@ export type TreeProps = {
 export const Tree = ({ position, id }: TreeProps = {}) => Entity({
   id: id ?? `tree-${randomInt(1000)}`,
   components: {
-    position: Position(position ?? { x: randomInt(1000), y: randomInt(1000) }),
+    position: Position(position ?? { x: randomInt(500), y: randomInt(500) }),
     networked: Networked({ isNetworked: true }),
     collider: Collider({
       shape: "ball",
