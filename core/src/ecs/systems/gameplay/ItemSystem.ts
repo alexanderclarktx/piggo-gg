@@ -1,4 +1,4 @@
-import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, abs, loadTexture, min } from "@piggo-gg/core"
+import { Entity, Inventory, Item, Position, Renderable, SystemBuilder, abs, loadTexture, min, values } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
 const renderableId = (playerId: string, itemId: string) => `item-draw-${playerId}-${itemId}`
@@ -7,7 +7,6 @@ export const ItemSystem: SystemBuilder<"item"> = ({
   id: "item",
   init: (world) => {
 
-    let playerToItem: Record<string, string | null> = {}
     let itemToRenderable: Record<string, Entity<Renderable | Position>> = {}
 
     const draw = (player: Entity<Inventory | Position>, item: Item): Entity<Renderable | Position> => Entity({
@@ -21,6 +20,7 @@ export const ItemSystem: SystemBuilder<"item"> = ({
           anchor: { x: 0.5, y: 0.5 },
           position: { x: 20, y: 0 },
           interpolate: true,
+          visible: false,
           dynamic: (_, r) => {
             const { position } = player.components
             const { pointing, pointingDelta } = position.data
@@ -70,34 +70,21 @@ export const ItemSystem: SystemBuilder<"item"> = ({
 
           const { inventory, renderable } = entity.components
 
-          // const z = inventory.activeItem
-          const { activeItem } = inventory
-
-          if (!activeItem) {
-            // rm from playerToItem
-            if (playerToItem[entity.id]) {
-              world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!))
+          inventory.items.forEach((item) => {
+            if (!itemToRenderable[item.id]) {
+              const r = draw(entity, item)
+              world.addEntity(r)
+              itemToRenderable[item.id] = r
             }
-            playerToItem[entity.id] = null
-            return
-          }
+          })
 
-          // clean up old items
-          if (activeItem.id !== playerToItem[entity.id]) {
-            world.removeEntity(renderableId(entity.id, playerToItem[entity.id]!))
-            playerToItem[entity.id] = null
-          }
+          values(itemToRenderable).forEach(r => r.components.renderable.visible = false)
 
-          // draw new items
-          if (!playerToItem[entity.id]) {
-            const r = draw(entity, activeItem)
-            world.addEntity(r)
-            playerToItem[entity.id] = activeItem.id
-            itemToRenderable[activeItem.id] = r
-          }
+          const activeItem = inventory.activeItem();
 
-          // update item visibility
-          itemToRenderable[activeItem.id].components.renderable.visible = renderable.visible
+          if (activeItem) {
+            itemToRenderable[activeItem.id].components.renderable.visible = renderable.visible
+          }
         })
       }
     }

@@ -1,4 +1,4 @@
-import { Collider, Entity, Position, PositionProps, Renderable, Renderer, TeamColors, XY, round } from "@piggo-gg/core";
+import { Collider, Entity, Position, PositionProps, Renderable, Renderer, TeamColors, XY } from "@piggo-gg/core";
 import { Container, Graphics, Matrix, RenderTexture, Sprite } from "pixi.js";
 
 export type FloorTilesProps = {

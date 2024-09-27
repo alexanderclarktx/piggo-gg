@@ -4,14 +4,20 @@ export type Item = Entity<Name | Input | Actions | Effects>
 
 export type Inventory = Component<"inventory"> & {
   items: Item[]
-  activeItem: Item | null
+  activeItemIndex: number
+  activeItem: () => Item | null
+  setActiveItemIndex: (index: number) => void
 }
 
 export const Inventory = (items: Item[]): Inventory => {
   const inventory: Inventory = {
     type: "inventory",
     items,
-    activeItem: items[0] ?? null
+    activeItemIndex: 0,
+    activeItem: () => inventory.items[inventory.activeItemIndex] ?? null,
+    setActiveItemIndex: (index: number) => {
+      inventory.activeItemIndex = index
+    }
   }
   return inventory
 }
