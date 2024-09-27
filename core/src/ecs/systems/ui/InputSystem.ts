@@ -146,9 +146,10 @@ export const InputSystem = ClientSystemBuilder({
       const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
       const pointingDelta = {
-        x: mouse.x - position.data.x,
-        y: mouse.y - position.data.y
+        x: round(mouse.x - position.data.x, 2),
+        y: round(mouse.y - position.data.y, 2)
       }
+      console.log(pointingDelta)
 
       world.actionBuffer.push(world.tick + 1, character.id,
         { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }

@@ -23,7 +23,7 @@ export const randomChoice = <T>(xs: T[]): T => {
 }
 
 export const XYdifferent = (a: XY, b: XY, threshold: number) => {
-  return Math.abs(a.x - b.x) > threshold || Math.abs(a.y - b.y) > threshold;
+  return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold;
 }
 
 export const XYequal = (a: XY, b: XY) => a.x === b.x && a.y === b.y;
@@ -61,9 +61,9 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat();
 
 export const colorAdd = (color: number, add: number): number => {
-  const r = Math.min(255, ((color >> 16) & 0xff) + ((add >> 16) & 0xff));
-  const g = Math.min(255, ((color >> 8) & 0xff) + ((add >> 8) & 0xff));
-  const b = Math.min(255, (color & 0xff) + (add & 0xff));
+  const r = min(255, ((color >> 16) & 0xff) + ((add >> 16) & 0xff));
+  const g = min(255, ((color >> 8) & 0xff) + ((add >> 8) & 0xff));
+  const b = min(255, (color & 0xff) + (add & 0xff));
 
   return (r << 16) + (g << 8) + b;
 }

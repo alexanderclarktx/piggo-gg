@@ -1,4 +1,4 @@
-import { Action, LineWall, XY, playSound } from "@piggo-gg/core";
+import { Action, LineWall, XY, abs, min, playSound, round, sign } from "@piggo-gg/core";
 
 export const IceWall = Action<XY>(({ world, params, entity }) => {
   if (!entity || !entity.components.position) return;
@@ -9,12 +9,12 @@ export const IceWall = Action<XY>(({ world, params, entity }) => {
   const { x, y } = entity.components.position.data;
 
   // distance to mouse
-  const dx = Math.abs(mouseX - x);
-  const dy = Math.abs(mouseY - y);
+  const dx = abs(mouseX - x);
+  const dy = abs(mouseY - y);
 
   // sign
-  const sx = Math.sign(mouseX - x);
-  const sy = Math.sign(mouseY - y);
+  const sx = sign(mouseX - x);
+  const sy = sign(mouseY - y);
 
   // flip X axis
   const flip = sx === sy ? -1 : 1;
@@ -24,9 +24,9 @@ export const IceWall = Action<XY>(({ world, params, entity }) => {
   const ry = dy / (dx + dy)
 
   const coords = [
-    mouseX - flip * Math.min(width, (width * ry)), mouseY - Math.min(width, (width * rx)),
-    mouseX + flip * Math.min(width, (width * ry)), mouseY + Math.min(width, (width * rx))
-  ].map(Math.round);
+    mouseX - flip * min(width, (width * ry)), mouseY - min(width, (width * rx)),
+    mouseX + flip * min(width, (width * ry)), mouseY + min(width, (width * rx))
+  ].map(round);
 
   world.addEntity(LineWall({ points: coords, visible: true, health: 30, shootable: false }));
 

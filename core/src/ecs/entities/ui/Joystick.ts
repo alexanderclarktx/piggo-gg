@@ -1,4 +1,4 @@
-import { Entity, JoystickHandler, Position, Renderable, XY, XYdifferent, loadTexture } from "@piggo-gg/core";
+import { Entity, JoystickHandler, Position, Renderable, XY, XYdifferent, abs, loadTexture, min } from "@piggo-gg/core";
 import { Container, FederatedPointerEvent, Graphics, Sprite, Texture } from "pixi.js";
 
 export const CurrentJoystickPosition = { angle: 0, power: 0, active: false }
@@ -41,7 +41,7 @@ const handleJoystick = (entity: Entity<Position>): XY => {
   const { power, angle } = CurrentJoystickPosition;
 
   // stiffen the joystick
-  const powerToApply = Math.min(1, power * 2);
+  const powerToApply = min(1, power * 2);
 
   // convert the angle to radians
   const angleRad = angle * Math.PI / 180;
@@ -90,7 +90,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
   const getPower = (centerPoint: XY) => {
     const a = centerPoint.x - 0;
     const b = centerPoint.y - 0;
-    return Math.min(1, Math.sqrt(a * a + b * b) / outerRadius);
+    return min(1, Math.sqrt(a * a + b * b) / outerRadius);
   }
 
   const onDragStart = (event: FederatedPointerEvent) => {
@@ -134,7 +134,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
         centerPoint = { x: 0, y: (sideY > outerRadius) ? outerRadius : sideY };
         angle = 270;
       } else {
-        centerPoint = { x: 0, y: -(Math.abs(sideY) > outerRadius ? outerRadius : Math.abs(sideY)) };
+        centerPoint = { x: 0, y: -(abs(sideY) > outerRadius ? outerRadius : abs(sideY)) };
         angle = 90;
       }
       inner.position.set(centerPoint.x, centerPoint.y);
@@ -145,10 +145,10 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
 
     if (sideY === 0) {
       if (sideX > 0) {
-        centerPoint = { x: (Math.abs(sideX) > outerRadius ? outerRadius : Math.abs(sideX)), y: 0 };
+        centerPoint = { x: (abs(sideX) > outerRadius ? outerRadius : abs(sideX)), y: 0 };
         angle = 0;
       } else {
-        centerPoint = { x: -(Math.abs(sideX) > outerRadius ? outerRadius : Math.abs(sideX)), y: 0 };
+        centerPoint = { x: -(abs(sideX) > outerRadius ? outerRadius : abs(sideX)), y: 0 };
         angle = 180;
       }
 
@@ -158,7 +158,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
       return;
     }
 
-    let tanVal = Math.abs(sideY / sideX);
+    let tanVal = abs(sideY / sideX);
     let radian = Math.atan(tanVal);
     angle = radian * 180 / Math.PI;
 
@@ -169,15 +169,15 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
       centerX = outerRadius * Math.cos(radian);
       centerY = outerRadius * Math.sin(radian);
     } else {
-      centerX = Math.abs(sideX) > outerRadius ? outerRadius : Math.abs(sideX);
-      centerY = Math.abs(sideY) > outerRadius ? outerRadius : Math.abs(sideY);
+      centerX = abs(sideX) > outerRadius ? outerRadius : abs(sideX);
+      centerY = abs(sideY) > outerRadius ? outerRadius : abs(sideY);
     }
 
     if (sideY < 0) {
-      centerY = -Math.abs(centerY);
+      centerY = -abs(centerY);
     }
     if (sideX < 0) {
-      centerX = -Math.abs(centerX);
+      centerX = -abs(centerX);
     }
 
     if (sideX > 0 && sideY < 0) {

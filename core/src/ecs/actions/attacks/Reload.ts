@@ -1,4 +1,4 @@
-import { Action, Effect, Gun } from "@piggo-gg/core"
+import { Action, Effect, Gun, max, min } from "@piggo-gg/core"
 
 export const Reload = Action(({ entity }) => {
   if (!entity) return
@@ -24,8 +24,8 @@ const ReloadEffect = (gun: Gun): Effect => ({
   onEnd: () => {
     gun.reloading = false
 
-    const clip = Math.min(gun.data.clip + gun.data.ammo, gun.clipSize)
-    const ammo = Math.max(gun.data.ammo - gun.clipSize + gun.data.clip, 0)
+    const clip = min(gun.data.clip + gun.data.ammo, gun.clipSize)
+    const ammo = max(gun.data.ammo - gun.clipSize + gun.data.clip, 0)
 
     // gun.data.clip = clip
     gun.data.clip = gun.clipSize // TODO infinite ammo

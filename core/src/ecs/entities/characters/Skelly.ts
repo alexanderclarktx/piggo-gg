@@ -16,7 +16,7 @@ export const Skelly = (id: string, team: TeamNumber, color?: number, pos?: XY) =
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: Team(team),
-      inventory: Inventory([ AWP(), Axe(), AK(), Deagle()]),
+      inventory: Inventory([ AK(), Axe(), AWP(),  Deagle()]),
       input: Input({
         press: {
           ...WASDInputMap.press,
