@@ -205,10 +205,6 @@ export const RenderSystem = ClientSystemBuilder({
               y + dy + renderable.position.y
             );
 
-            if (entity.id.includes("skelly")) {
-              console.log("interpolating", entity.id, x, y, dx, dy)
-            }
-
             if (centeredEntity && entity.id === centeredEntity.id) {
               renderer.camera.moveTo({ x: x + dx, y: y + dy });
             }
