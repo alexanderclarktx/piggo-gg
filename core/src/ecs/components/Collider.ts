@@ -3,6 +3,8 @@ import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } fr
 
 export type ColliderShapes = "ball" | "cuboid" | "line";
 
+export type SensorCallback = (e2: Entity<Position>, world: World) => boolean;
+
 export type Collider = Component<"collider"> & {
   type: "collider"
   bodyDesc: RigidBodyDesc
@@ -12,7 +14,7 @@ export type Collider = Component<"collider"> & {
   frictionAir: number
   priority: number
   shootable: boolean
-  sensor: (e2: Entity<Position>, world: World) => void
+  sensor: SensorCallback
 }
 
 export type ColliderProps = {
@@ -29,7 +31,7 @@ export type ColliderProps = {
   restitution?: number
   rotation?: number
   priority?: number
-  sensor?: (e2: Entity<Position>, world: World) => void
+  sensor?: SensorCallback
 }
 
 export const Collider = (props: ColliderProps): Collider => {
@@ -76,7 +78,7 @@ export const Collider = (props: ColliderProps): Collider => {
     rapierCollider: undefined,
     body: undefined,
     bodyDesc,
-    sensor: sensor ?? (() => {}),
+    sensor: sensor ?? (() => false),
     frictionAir: frictionAir ?? 0,
     priority: priority ?? 0,
     shootable: shootable ?? false

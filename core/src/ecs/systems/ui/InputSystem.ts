@@ -8,6 +8,7 @@ export type Mouse = XY & { hold: boolean }
 export var chatBuffer: string[] = []
 export var chatIsOpen = false
 export var mouse: Mouse = { x: 0, y: 0, hold: false }
+export var mouseScreen: XY = { x: 0, y: 0 }
 
 export type KeyMouse = { key: string, mouse: Mouse, tick: number }
 
@@ -46,6 +47,7 @@ export const InputSystem = ClientSystemBuilder({
 
       mouseEvent = { x: event.offsetX, y: event.offsetY }
       mouse = { hold: mouse.hold, ...renderer.camera.toWorldCoords(mouseEvent) }
+      mouseScreen = { x: event.offsetX, y: event.offsetY }
     })
 
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {

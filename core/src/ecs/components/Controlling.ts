@@ -1,6 +1,6 @@
-import { Actions, Component, Entity, Input, Position, Renderable, World } from "@piggo-gg/core";
+import { Actions, Component, Entity, Input, Position, Renderable, Team, World } from "@piggo-gg/core";
 
-export type Character = Entity<Position | Input | Actions | Renderable>
+export type Character = Entity<Position | Input | Actions | Renderable | Team>
 
 export type Controlling = Component<"controlling", { entityId: string }> & {
   getControlledEntity: (world: World) => Character | undefined

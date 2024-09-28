@@ -22,7 +22,7 @@ export const randomChoice = <T>(xs: T[]): T => {
   return xs[Math.floor(random() * xs.length)];
 }
 
-export const XYdifferent = (a: XY, b: XY, threshold: number) => {
+export const XYdifferent = (a: XY, b: XY, threshold: number = 0) => {
   return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold;
 }
 

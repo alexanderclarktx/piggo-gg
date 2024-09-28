@@ -1,4 +1,4 @@
-import { Actions, Component, Effects, Position, Entity, Input, Name, Renderable, SystemBuilder, randomInt, Character } from "@piggo-gg/core"
+import { Actions, Character, Component, Effects, Entity, Input, Name, Position, Renderable, SystemBuilder, Team } from "@piggo-gg/core"
 
 export type Item = Entity<Name | Position | Actions | Effects | Renderable>
 export type ItemBuilder = (character: Character) => Item
@@ -29,8 +29,8 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
   init: (world) => ({
     id: "InventorySystem",
-    query: ["position", "input", "actions", "renderable", "inventory"],
-    onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory>[]) => {
+    query: ["position", "input", "actions", "renderable", "inventory", "team"],
+    onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory | Team>[]) => {
       entities.forEach(entity => {
         const { inventory } = entity.components
 

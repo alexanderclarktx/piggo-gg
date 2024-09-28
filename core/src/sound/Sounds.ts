@@ -3,7 +3,7 @@ import { getContext, getTransport, Player } from "tone"
 
 export type Sound = Player
 
-export type ToolSounds = "whiff" | "thunk" | "clink"
+export type ToolSounds = "whiff" | "thud" | "clink"
 
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
 export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4"
@@ -58,6 +58,6 @@ export const Sounds = (): Sounds => ({
   attack3: load("attack3.wav", -25),
   attack4: load("attack4.wav", -25),
   whiff: load("whiff.mp3", -15),
-  thunk: load("thunk.mp3", -15),
+  thud: load("thud.mp3", -15),
   clink: load("clink.mp3", -15),
 })
