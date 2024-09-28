@@ -56,6 +56,7 @@ export const InputSystem = ClientSystemBuilder({
 
       mouseEvent = { x: event.offsetX, y: event.offsetY }
       mouse = { hold: false, ...renderer.camera.toWorldCoords(mouseEvent) }
+      mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (CurrentJoystickPosition.active && !joystickOn) {
         joystickOn = true
