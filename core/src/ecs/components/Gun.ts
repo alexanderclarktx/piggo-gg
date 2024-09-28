@@ -1,4 +1,4 @@
-import { Actions, Component, Effects, Entity, ItemBuilder, Name, Reload, Renderable, Shoot, SpawnBullet, World, abs, hypot, loadTexture, min, randomInt } from "@piggo-gg/core";
+import { Actions, Component, Effects, Entity, ItemBuilder, Name, Reload, Renderable, Shoot, SpawnHitbox, World, abs, hypot, loadTexture, min, randomInt } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
 export type GunNames = "deagle" | "ak" | "awp";
@@ -130,7 +130,7 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
     name: Name(name),
     position: character.components.position,
     actions: Actions<any>({
-      "spawnBullet": SpawnBullet,
+      "spawnHitbox": SpawnHitbox,
       "mb1": Shoot,
       "reload": Reload
     }),

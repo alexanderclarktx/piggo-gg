@@ -23,13 +23,8 @@ export const Tree = ({ position, id }: TreeProps = {}) => {
       }),
       health: Health({
         health: 100,
-        onDamage: (damage: number) => {
-          console.log("yikes")
-          const c = tree.components.renderable.c
-          console.log(c)
-
-          c.filters = [filter]
-          brightness = 2
+        onDamage: (damage) => {
+          brightness = 1 + (damage / 25)
         }
       }),
       debug: Debug(),
@@ -56,6 +51,7 @@ export const Tree = ({ position, id }: TreeProps = {}) => {
           sprite.anchor.set(0.5, 0.6)
 
           r.c = sprite
+          r.c.filters = [filter]
         }
       })
     }

@@ -1,4 +1,4 @@
-import { Action, Character, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound, random, randomInt } from "@piggo-gg/core"
+import { Action, Character, KeyMouse, SpawnHitboxProps, playSound, randomInt } from "@piggo-gg/core"
 
 export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ world, params, entity }) => {
 
@@ -28,7 +28,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
     const Xoffset = offset * (vx / Math.sqrt(vx * vx + vy * vy))
     const Yoffset = offset * (vy / Math.sqrt(vx * vx + vy * vy))
 
-    const bulletParams: SpawnBulletProps = {
+    const bulletParams: SpawnHitboxProps = {
       pos: { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } },
       team,
       radius: gun.bulletSize,
@@ -48,29 +48,4 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
       if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { action: "reload" })
     }
   }
-})
-
-export type SpawnBulletProps = {
-  pos: PositionProps,
-  team: Team
-  radius: number
-  damage: number
-  id: number
-  visible: boolean
-  expireTicks: number
-}
-
-export const SpawnBullet = Action<SpawnBulletProps>(({ world, params }) => {
-
-  const { team, pos, radius, damage, visible, expireTicks } = params
-
-  world.addEntity(Projectile({
-    id: `projectile-${random()}`,
-    pos,
-    radius,
-    visible,
-    expireTicks,
-    color: TeamColors[team.data.team],
-    onHit: onHitTeam(team.data.team, damage)
-  }))
 })

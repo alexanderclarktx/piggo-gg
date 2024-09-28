@@ -1,6 +1,6 @@
-import { Collider, Entity, Expires, Networked, Position, PositionProps, Renderable, SensorCallback, TeamNumber, World, pixiCircle } from "@piggo-gg/core";
+import { Action, Collider, Entity, Expires, Networked, Position, PositionProps, Renderable, SensorCallback, Team, TeamColors, TeamNumber, World, pixiCircle, randomInt } from "@piggo-gg/core";
 
-export type ProjectileProps = {
+export type HitboxProps = {
   id: string
   radius: number
   color: number
@@ -31,8 +31,8 @@ const onHitDefault = (e2: Entity<Position | Collider>) => {
   return false;
 }
 
-export const Projectile = ({ radius, pos, id, color, visible, expireTicks, onHit = onHitDefault }: ProjectileProps) => {
-  const projectile = Entity({
+export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onHit = onHitDefault }: HitboxProps) => {
+  const hitbox = Entity({
     id,
     components: {
       position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 }}),
@@ -45,7 +45,7 @@ export const Projectile = ({ radius, pos, id, color, visible, expireTicks, onHit
         ccd: true,
         sensor: (e2: Entity<Position | Collider>, world: World) => {
           const hit = onHit(e2, world);
-          if (hit) world.removeEntity(projectile.id);
+          if (hit) world.removeEntity(hitbox.id);
           return hit;
         }
       }),
@@ -60,5 +60,31 @@ export const Projectile = ({ radius, pos, id, color, visible, expireTicks, onHit
     }
   })
 
-  return projectile
+  return hitbox
 }
+
+
+export type SpawnHitboxProps = {
+  pos: PositionProps,
+  team: Team
+  radius: number
+  damage: number
+  id: number
+  visible: boolean
+  expireTicks: number
+}
+
+export const SpawnHitbox = Action<SpawnHitboxProps>(({ world, params }) => {
+
+  const { team, pos, radius, damage, visible, expireTicks } = params
+
+  world.addEntity(Hitbox({
+    id: `hitbox-${randomInt(1000)}`,
+    pos,
+    radius,
+    visible,
+    expireTicks,
+    color: TeamColors[team.data.team],
+    onHit: onHitTeam(team.data.team, damage)
+  }))
+})

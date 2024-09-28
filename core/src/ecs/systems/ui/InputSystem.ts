@@ -8,6 +8,7 @@ export type Mouse = XY & { hold: boolean }
 export var chatBuffer: string[] = []
 export var chatIsOpen = false
 export var mouse: Mouse = { x: 0, y: 0, hold: false }
+export var mouseScreen: XY = { x: 0, y: 0 }
 
 export type KeyMouse = { key: string, mouse: Mouse, tick: number }
 
@@ -46,6 +47,7 @@ export const InputSystem = ClientSystemBuilder({
 
       mouseEvent = { x: event.offsetX, y: event.offsetY }
       mouse = { hold: mouse.hold, ...renderer.camera.toWorldCoords(mouseEvent) }
+      mouseScreen = { x: event.offsetX, y: event.offsetY }
     })
 
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {
@@ -142,17 +144,17 @@ export const InputSystem = ClientSystemBuilder({
       const { input, actions, position, inventory } = character.components
 
       // update Position.pointing based on mouse
-      const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x)
-      const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
+      // const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x)
+      // const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
-      const pointingDelta = {
-        x: round(mouse.x - position.data.x, 2),
-        y: round(mouse.y - position.data.y, 2)
-      }
+      // const pointingDelta = {
+      //   x: round(mouse.x - position.data.x, 2),
+      //   y: round(mouse.y - position.data.y, 2)
+      // }
 
-      world.actionBuffer.push(world.tick + 1, character.id,
-        { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
-      )
+      // world.actionBuffer.push(world.tick + 1, character.id,
+      //   { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+      // )
 
       // handle joystick input
       if (CurrentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
@@ -270,6 +272,27 @@ export const InputSystem = ClientSystemBuilder({
       id: "InputSystem",
       query: ["input", "actions", "position"],
       skipOnRollback: true,
+      onRender: () => {
+        const character = world.client?.playerEntity.components.controlling.getControlledEntity(world)
+        if (!character) return
+
+        const { position } = character.components
+
+        const angle = Math.atan2(mouse.y - position.data.y, mouse.x - position.data.x)
+        const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
+
+        const pointingDelta = {
+          x: round(mouse.x - position.data.x, 2),
+          y: round(mouse.y - position.data.y, 2)
+        }
+
+        position.data.pointingDelta = pointingDelta
+        position.data.pointing = pointing
+
+        // world.actionBuffer.push(world.tick + 1, character.id,
+          // { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+        // )
+      },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         // update mouse position, the camera might have moved
         if (renderer) mouse = { hold: mouse.hold, ...renderer.camera.toWorldCoords(mouseEvent) }
