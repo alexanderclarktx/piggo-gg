@@ -11,7 +11,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
   persists: true,
   components: {
     position: Position({
-      x: x ?? -200, y: y ?? 10, screenFixed: true
+      x: x ?? 5, y: y ?? 10, screenFixed: true
     }),
     renderable: Renderable({
       zIndex: 3,
@@ -33,7 +33,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
   persists: true,
   components: {
     position: Position({
-      x: x ?? -250, y: y ?? 10, screenFixed: true
+      x: x ?? 5, y: y ?? 30, screenFixed: true
     }),
     renderable: Renderable({
       zIndex: 3,
