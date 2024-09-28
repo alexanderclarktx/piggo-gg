@@ -159,6 +159,4 @@ const Whack = (sound: ValidSounds, damage: number) => Action<KeyMouse & { charac
   }
 
   world.actionBuffer.push(world.tick + 1, entity.id, { action: "spawnHitbox", params: hurtboxParams })
-
-  console.log("whack", params.mouse)
 }, 15)
