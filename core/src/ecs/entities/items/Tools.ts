@@ -1,7 +1,7 @@
 import {
   Action, Actions, Character, Effects, Entity, Item, KeyMouse,
   Name, Renderable, SpawnHitbox, SpawnHitboxProps, ValidSounds,
-  XYdifferent, abs, hypot, loadTexture, min, mouseScreen, playSound, randomInt
+  XYdifferent, abs, hypot, loadTexture, min, mouseScreen, onHitTeam, playSound, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
@@ -132,8 +132,6 @@ const Whack = (sound: ValidSounds, damage: number) => Action<KeyMouse & { charac
 
   if (!mouse || !character) return
 
-  playSound(world.client?.sounds[sound])
-
   const { position } = entity.components
   if (!position) return
 
@@ -155,7 +153,13 @@ const Whack = (sound: ValidSounds, damage: number) => Action<KeyMouse & { charac
     damage,
     id: randomInt(1000),
     visible: false,
-    expireTicks: 5
+    expireTicks: 2,
+    onHit: () => {
+      playSound(world.client?.sounds[sound])
+    },
+    onExpire: () => {
+      playSound(world.client?.sounds["whiff"])
+    }
   }
 
   world.actionBuffer.push(world.tick + 1, entity.id, { action: "spawnHitbox", params: hurtboxParams })

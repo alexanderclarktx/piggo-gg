@@ -5,7 +5,7 @@ export const PvEHUD = (): Entity => {
 
   const width = 50
   const height = 50
-  const start = -width * 4
+  const start = -width * 3
 
   let squares: Graphics[] = []
   let icons: Record<number, Sprite | undefined> = {}
@@ -20,7 +20,7 @@ export const PvEHUD = (): Entity => {
           const canvasWidth = renderer.props.canvas.width
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
 
-          squares = Array.from({ length: 8 }, (_, i) => pixiRect(
+          squares = Array.from({ length: 5 }, (_, i) => pixiRect(
             { w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }
           ))
           icons = {}
