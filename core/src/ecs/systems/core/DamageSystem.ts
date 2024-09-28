@@ -45,6 +45,9 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
 
             // remove entity
             world.removeEntity(entity.id);
+
+            // clean up filterMap
+            delete filterMap[entity.id];
           }
         })
       }
