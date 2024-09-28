@@ -7,7 +7,7 @@
     "server": "bun --cwd server start",
     "pages": "ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME",
     "docs": "bun pages",
-    "ship": "bun pages",
+    "ship": "bun pages && git add . && git commit -m 'ship' && git push",
     "branch": "git checkout main && git pull && git branch -D $(whoami) && git checkout -b $(whoami)"
   },
   "license": "MIT+CC",

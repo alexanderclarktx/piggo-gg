@@ -1,4 +1,4 @@
-import { Camera, Renderable, isMobile, min } from "@piggo-gg/core";
+import { Camera, Renderable, isMobile } from "@piggo-gg/core";
 import { Application } from "pixi.js";
 
 export type RendererProps = {
@@ -72,12 +72,8 @@ export const Renderer = (props: RendererProps): Renderer => {
         console.log("resizing to fullscreen");
         renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
       } else {
-        const computedCanvasStyle = window.getComputedStyle(renderer.props.canvas);
-        const width = min(parseInt(computedCanvasStyle.width), renderer.props.width ?? 800);
-        const height = min(parseInt(computedCanvasStyle.height), renderer.props.height ?? 600);
-        renderer.app.renderer.resize(width, height);
+        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.90);
       }
-
       renderer.resizedFlag = true;
     },
     addGui: (renderable: Renderable) => {
