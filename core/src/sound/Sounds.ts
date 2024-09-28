@@ -57,7 +57,7 @@ export const Sounds = (): Sounds => ({
   attack2: load("attack2.wav", -25),
   attack3: load("attack3.wav", -25),
   attack4: load("attack4.wav", -25),
-  whiff: load("whiff.mp3", -15),
   thud: load("thud.mp3", -15),
   clink: load("clink.mp3", -15),
+  whiff: load("whiff.wav", -20),
 })

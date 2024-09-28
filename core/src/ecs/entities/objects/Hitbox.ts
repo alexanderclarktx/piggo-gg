@@ -1,4 +1,25 @@
-import { Action, Collider, Entity, Expires, Networked, Position, PositionProps, Renderable, SensorCallback, Team, TeamColors, TeamNumber, World, pixiCircle, randomInt } from "@piggo-gg/core";
+import { Action, Collider, Entity, Expires, Networked, Position, PositionProps, Renderable, SensorCallback, Team, TeamColors, TeamNumber, World, pixiCircle, randomInt } from "@piggo-gg/core"
+
+export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>) => {
+  const { collider, health, team } = e2.components
+  if (health && collider.shootable) {
+    if (!team || (team.data.team !== allyTeam)) {
+      health.data.health -= damage
+      health.onDamage?.(damage)
+      return true
+    }
+  }
+  return false
+}
+
+const onHitDefault = (e2: Entity<Position | Collider>) => {
+  const { collider, health } = e2.components
+  if (collider.shootable && health) {
+    health.data.health -= 25
+    return true
+  }
+  return false
+}
 
 export type HitboxProps = {
   id: string
@@ -8,45 +29,25 @@ export type HitboxProps = {
   onHit?: SensorCallback
   visible?: boolean
   expireTicks?: number
+  onExpire?: () => void
 }
 
-export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>) => {
-  const { collider, health, team } = e2.components;
-  if (health && collider.shootable) {
-    if (!team || (team.data.team !== allyTeam)) {
-      health.data.health -= damage;
-      health.onDamage?.(damage);
-      return true;
-    }
-  }
-  return false;
-}
-
-const onHitDefault = (e2: Entity<Position | Collider>) => {
-  const { collider, health } = e2.components;
-  if (collider.shootable && health) {
-    health.data.health -= 25;
-    return true;
-  }
-  return false;
-}
-
-export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onHit = onHitDefault }: HitboxProps) => {
+export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire, onHit = onHitDefault }: HitboxProps) => {
   const hitbox = Entity({
     id,
     components: {
       position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 }}),
       networked: Networked({ isNetworked: true }),
-      expires: Expires({ ticksLeft: expireTicks ?? 35 }),
+      expires: Expires({ ticksLeft: expireTicks ?? 35, onExpire: onExpire ?? (() => {}) }),
       collider: Collider({
         shape: "cuboid",
         length: radius ?? 8,
         width: radius ?? 8,
         ccd: true,
         sensor: (e2: Entity<Position | Collider>, world: World) => {
-          const hit = onHit(e2, world);
-          if (hit) world.removeEntity(hitbox.id);
-          return hit;
+          const hit = onHit(e2, world)
+          if (hit) world.removeEntity(hitbox.id)
+          return hit
         }
       }),
       renderable: Renderable({
@@ -54,12 +55,11 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onHit = o
         interpolate: true,
         visible: visible ?? true,
         setContainer: async () => {
-          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1, strokeColor: 0x000000, strokeWidth: 1, strokeAlpha: 0.5 } });
+          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1, strokeColor: 0x000000, strokeWidth: 1, strokeAlpha: 0.5 } })
         }
       })
     }
   })
-
   return hitbox
 }
 
@@ -72,11 +72,13 @@ export type SpawnHitboxProps = {
   id: number
   visible: boolean
   expireTicks: number
+  onHit?: () => void
+  onExpire?: () => void
 }
 
 export const SpawnHitbox = Action<SpawnHitboxProps>(({ world, params }) => {
 
-  const { team, pos, radius, damage, visible, expireTicks } = params
+  const { team, pos, radius, damage, visible, expireTicks, onHit, onExpire } = params
 
   world.addEntity(Hitbox({
     id: `hitbox-${randomInt(1000)}`,
@@ -85,6 +87,11 @@ export const SpawnHitbox = Action<SpawnHitboxProps>(({ world, params }) => {
     visible,
     expireTicks,
     color: TeamColors[team.data.team],
-    onHit: onHitTeam(team.data.team, damage)
+    onHit: (entity, world) => {
+      const hit = onHitTeam(team.data.team, damage)(entity, world)
+      if (hit && onHit) onHit()
+      return hit
+    },
+    onExpire: onExpire ?? (() => {})
   }))
 })

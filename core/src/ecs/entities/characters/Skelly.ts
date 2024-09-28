@@ -27,10 +27,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
           "2": () => ({ action: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ action: "setActiveItemIndex", params: { index: 2 } }),
           "4": () => ({ action: "setActiveItemIndex", params: { index: 3 } }),
-          "5": () => ({ action: "setActiveItemIndex", params: { index: 4 } }),
-          "6": () => ({ action: "setActiveItemIndex", params: { index: 5 } }),
-          "7": () => ({ action: "setActiveItemIndex", params: { index: 6 } }),
-          "8": () => ({ action: "setActiveItemIndex", params: { index: 7 } })
+          "5": () => ({ action: "setActiveItemIndex", params: { index: 4 } })
         },
         joystick: DefaultJoystickHandler
       }),
