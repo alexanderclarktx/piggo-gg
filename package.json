@@ -4,13 +4,13 @@
   "workspaces": [ "core", "games", "web", "server" ],
   "scripts": {
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",
-    "server": "bun --cwd server start",
+    "branch": "git checkout main && git pull && git branch -D $( whoami) && git checkout -b $(whoami)",
     "pages": "ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME",
     "docs": "bun pages",
     "ship": "bun pages && git add . && git commit -m 'ship' && git push",
-    "s": "bun ship",
-    "branch": "git checkout main && git pull && git branch -D $(whoami) && git checkout -b $(whoami)",
-    "b": "bun branch"
+    "d": "bun dev",
+    "b": "bun branch",
+    "s": "bun ship"
   },
   "license": "MIT+CC",
   "dependencies": {

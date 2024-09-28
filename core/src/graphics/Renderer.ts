@@ -1,4 +1,4 @@
-import { Camera, Renderable, isMobile } from "@piggo-gg/core";
+import { Camera, Renderable, isMobile, max } from "@piggo-gg/core";
 import { Application } from "pixi.js";
 
 export type RendererProps = {
@@ -70,7 +70,9 @@ export const Renderer = (props: RendererProps): Renderer => {
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
         console.log("resizing to fullscreen");
-        renderer.app.renderer.resize(window.innerWidth, window.outerHeight);
+        const sat: number = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sat")) || 0
+        const sab: number = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sab")) || 0
+        renderer.app.renderer.resize(window.innerWidth, window.innerHeight + max(sat, sab));
       } else {
         renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.90);
       }
