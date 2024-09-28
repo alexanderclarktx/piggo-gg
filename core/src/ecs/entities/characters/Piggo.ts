@@ -1,6 +1,6 @@
 import {
   Actions, Chase, Collider, Debug, Edible, Entity, Health, InvokedAction,
-  NPC, Networked, Position, PositionProps, Renderable, Team, World, XY,
+  NPC, Networked, Position, PositionProps, Renderable, World, XY,
   closestEntity, loadTexture, random, randomInt, round
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
@@ -16,9 +16,8 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked({ isNetworked: true }),
-      health: Health({ health: 600 }),
+      health: Health({ health: 75 }),
       npc: NPC({ npcOnTick }),
-      team: Team(1),
       actions: Actions({
         "chase": Chase
       }),

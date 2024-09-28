@@ -1,7 +1,7 @@
 import {
-  Actions, Axe, Boost, Character, Collider, Debug,
-  DefaultJoystickHandler, Effects, Entity, Head, Health,
-  IceWall, Input, Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
+  Actions, Axe, Character, Collider, Debug,
+  DefaultJoystickHandler, Effects, Entity, Health, Input,
+  Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
   Renderable, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
@@ -20,9 +20,6 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       input: Input({
         press: {
           ...WASDInputMap.press,
-          "mb2": ({ mouse }) => ({ action: "head", params: { mouse } }),
-          "q": ({ mouse }) => ({ action: "wall", params: mouse }),
-          "e": ({ mouse }) => ({ action: "boost", params: mouse }),
           "1": () => ({ action: "setActiveItemIndex", params: { index: 0 } }),
           "2": () => ({ action: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ action: "setActiveItemIndex", params: { index: 2 } }),
@@ -31,11 +28,8 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
         },
         joystick: DefaultJoystickHandler
       }),
-      actions: Actions({
-        "boost": Boost,
-        "head": Head,
+      actions: Actions<{}>({
         "move": Move,
-        "wall": IceWall,
         "point": Point,
         "setActiveItemIndex": setActiveItemIndex
       }),
