@@ -1,3 +1,8 @@
+:root {
+  --sat: env(safe-area-inset-top);
+  --sab: env(safe-area-inset-bottom);
+}
+
 html {
   background-color: #191b1c;
   border-bottom-color: rgb(115, 107, 94);
@@ -42,8 +47,8 @@ canvas {
   border-radius: 3px;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   object-fit: fill;
   display: block;
   user-select: none;
