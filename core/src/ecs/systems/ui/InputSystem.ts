@@ -153,7 +153,7 @@ export const InputSystem = ClientSystemBuilder({
         y: round(mouse.y - position.data.y, 2)
       }
 
-      world.actionBuffer.push(world.tick + 1, character.id,
+      world.actionBuffer.push(world.tick, character.id,
         { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
       )
 
