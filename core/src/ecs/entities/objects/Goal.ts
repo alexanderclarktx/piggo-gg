@@ -16,12 +16,14 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     lastScored: 0
   }
 
-  const sensor = (e2: Entity<Position>, world: World) => {
+  const sensor = (e2: Entity<Position>, world: World): boolean => {
     if (e2.id.startsWith("ball") && ((world.tick - data.lastScored) > 100)) {
       data.goals += 1;
       data.lastScored = world.tick;
       e2.components.position.setPosition({ x: 50, y: 350 }).setVelocity({ x: 0, y: 0 });
+      return true
     }
+    return false
   }
 
   const render = async (): Promise<Container> => {

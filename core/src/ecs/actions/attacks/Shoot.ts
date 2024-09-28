@@ -1,4 +1,4 @@
-import { Action, Character, Gun, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound, random } from "@piggo-gg/core"
+import { Action, Character, KeyMouse, PositionProps, Projectile, Team, TeamColors, onHitTeam, playSound, random, randomInt } from "@piggo-gg/core"
 
 export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ world, params, entity }) => {
 
@@ -28,9 +28,17 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
     const Xoffset = offset * (vx / Math.sqrt(vx * vx + vy * vy))
     const Yoffset = offset * (vy / Math.sqrt(vx * vx + vy * vy))
 
-    const pos: PositionProps = { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } }
+    const bulletParams: SpawnBulletProps = {
+      pos: { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } },
+      team,
+      radius: gun.bulletSize,
+      damage: gun.damage,
+      id: randomInt(1000),
+      visible: true,
+      expireTicks: 35
+    }
 
-    world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnBullet", params: { team, gun, ...pos, id: params.id } })
+    world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnBullet", params: bulletParams })
 
     playSound(world.client?.sounds[gun.name])
 
@@ -42,15 +50,27 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
   }
 })
 
-export const SpawnBullet = Action<PositionProps & { team: Team, gun: Gun, id: number }>(({ world, params }) => {
+export type SpawnBulletProps = {
+  pos: PositionProps,
+  team: Team
+  radius: number
+  damage: number
+  id: number
+  visible: boolean
+  expireTicks: number
+}
 
-  const { team, gun } = params
+export const SpawnBullet = Action<SpawnBulletProps>(({ world, params }) => {
+
+  const { team, pos, radius, damage, visible, expireTicks } = params
 
   world.addEntity(Projectile({
     id: `projectile-${random()}`,
-    pos: params,
-    radius: gun.bulletSize,
+    pos,
+    radius,
+    visible,
+    expireTicks,
     color: TeamColors[team.data.team],
-    onHit: onHitTeam(team.data.team, gun.damage)
+    onHit: onHitTeam(team.data.team, damage)
   }))
 })

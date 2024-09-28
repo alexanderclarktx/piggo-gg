@@ -114,8 +114,9 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
             });
 
             // collide only once
-            collidedWith.sort((a, b) => b.components.collider.priority - a.components.collider.priority).slice(0, 1).forEach((entity) => {
-              collider.sensor(entity, world);
+            let collided = false;
+            collidedWith.sort((a, b) => b.components.collider.priority - a.components.collider.priority).forEach((entity) => {
+              if (!collided) collided = collider.sensor(entity, world)
             });
           }
         });

@@ -1,4 +1,8 @@
-import { Action, Actions, Character, Effects, Entity, Item, KeyMouse, Name, Renderable, ValidSounds, abs, hypot, loadTexture, min, playSound, randomInt } from "@piggo-gg/core"
+import {
+  Action, Actions, Character, Effects, Entity, Item, KeyMouse,
+  Name, Renderable, SpawnBullet, SpawnBulletProps, ValidSounds,
+  abs, hypot, loadTexture, min, playSound, randomInt
+} from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
 export const Axe = (character: Character): Item => Entity({
@@ -7,7 +11,8 @@ export const Axe = (character: Character): Item => Entity({
     name: Name("axe"),
     position: character.components.position,
     actions: Actions<any>({
-      "mb1": Whack("thunk"),
+      "mb1": Whack("thud"),
+      "spawnBullet": SpawnBullet
     }),
     effects: Effects(),
     renderable: Renderable({
@@ -55,7 +60,8 @@ export const Pickaxe = (character: Character): Item => Entity({
     name: Name("pickaxe"),
     position: character.components.position,
     actions: Actions<any>({
-      "mb1": Whack("clink")
+      "mb1": Whack("clink"),
+      "spawnBullet": SpawnBullet
     }),
     effects: Effects(),
     renderable: Renderable({
@@ -97,7 +103,7 @@ export const Pickaxe = (character: Character): Item => Entity({
   }
 })
 
-const Whack = (sound: ValidSounds) => Action<KeyMouse & { character: Character }>(({ world, params, entity }) => {
+const Whack = (sound: ValidSounds) => Action<KeyMouse & { character: Character }>(({ world, params, entity, player }) => {
   if (!entity) return
 
   const { mouse, character } = params
@@ -114,6 +120,23 @@ const Whack = (sound: ValidSounds) => Action<KeyMouse & { character: Character }
   } else {
     position.rotateDown(1)
   }
+
+  const angle = Math.atan2(position.data.pointingDelta.y, position.data.pointingDelta.x)
+
+  const hurtboxParams: SpawnBulletProps = {
+    pos: {
+      x: position.data.x + Math.cos(angle) * 30,
+      y: position.data.y + Math.sin(angle) * 30,
+    },
+    team: character.components.team,
+    radius: 20,
+    damage: 25,
+    id: randomInt(1000),
+    visible: false,
+    expireTicks: 5
+  }
+
+  world.actionBuffer.push(world.tick + 1, entity.id, { action: "spawnBullet", params: hurtboxParams })
 
   console.log("whack", params.mouse)
 }, 15)
