@@ -72,7 +72,7 @@ export const Renderer = (props: RendererProps): Renderer => {
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
-        renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
+        renderer.app.renderer.resize(window.innerWidth, window.outerHeight);
       } else {
         renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.90);
       }
