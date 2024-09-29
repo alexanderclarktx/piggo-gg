@@ -2,7 +2,7 @@ import {
   Actions, Axe, Character, Collider, Debug,
   DefaultJoystickHandler, Effects, Entity, Health, Input,
   Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
-  Renderable, WASDInputMap, XY, loadTexture, setActiveItemIndex
+  Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -16,7 +16,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
-      inventory: Inventory([Axe, Pickaxe]),
+      inventory: Inventory([Sword, Axe, Pickaxe]),
       input: Input({
         press: {
           ...WASDInputMap.press,
