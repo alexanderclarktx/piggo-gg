@@ -1,6 +1,6 @@
 :root {
-  --sat: env(safe-area-inset-top);
-  --sab: env(safe-area-inset-bottom);
+  --sat: env(safe-area-inset-top, 0.5vh);
+  --sab: env(safe-area-inset-bottom, 0.5vh);
 }
 
 html {
@@ -47,10 +47,10 @@ canvas {
   border-radius: 3px;
   top: 0;
   left: 0;
-  width: auto;
-  height: auto;
-  object-fit: fill;
-  display: block;
+  width: 100vw;
+  height: 400px;
+  object-fit: none;
+  /* display: block; */
   user-select: none;
   -webkit-touch-callout: none; /* Disable the callout on iOS */
   -webkit-user-select: none;   /* Disable text selection on iOS */
