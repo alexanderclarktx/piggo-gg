@@ -1,8 +1,3 @@
-:root {
-  --sat: env(safe-area-inset-top, 0.5vh);
-  --sab: env(safe-area-inset-bottom, 0.5vh);
-}
-
 html {
   background-color: #191b1c;
   border-bottom-color: rgb(115, 107, 94);
@@ -48,7 +43,6 @@ canvas {
   width: auto;
   height: auto;
   object-fit: none;
-  /* display: block; */
   user-select: none;
   -webkit-touch-callout: none; /* Disable the callout on iOS */
   -webkit-user-select: none;   /* Disable text selection on iOS */
