@@ -25,6 +25,8 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
       const world = IsometricWorld({ renderer, runtimeMode: "client", games: [Sandbox, Dungeon, Home, Strike, ARAM, Soccer, Legends] });
       setWorld(world);
     })
+
+    renderer.handleResize();
   }, []);
 
   return (
