@@ -66,15 +66,10 @@ export const Renderer = (props: RendererProps): Renderer => {
       canvas.addEventListener("wheel", (event) => {
         renderer.camera?.rescaleDelta(-event.deltaY / 1000);
       });
-
-      // resize once (for mobile PWA)
-      renderer.handleResize();
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
-        const sat: number = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sat")) || 0
-        const sab: number = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sab")) || 0
-        renderer.app.renderer.resize(window.innerWidth, window.innerHeight + max(sat, sab));
+        renderer.app.renderer.resize(window.innerWidth, window.outerHeight);
       } else {
         renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.90);
       }
