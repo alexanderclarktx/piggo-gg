@@ -47,8 +47,8 @@ canvas {
   border-radius: 3px;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: calc(100vh + env(safe-area-inset-bottom));
+  width: auto;
+  height: auto;
   object-fit: fill;
   display: block;
   user-select: none;

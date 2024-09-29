@@ -72,7 +72,6 @@ export const Renderer = (props: RendererProps): Renderer => {
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
-        console.log("resizing to fullscreen");
         const sat: number = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sat")) || 0
         const sab: number = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sab")) || 0
         renderer.app.renderer.resize(window.innerWidth, window.innerHeight + max(sat, sab));
