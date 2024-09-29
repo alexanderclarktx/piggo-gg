@@ -66,9 +66,6 @@ export const Renderer = (props: RendererProps): Renderer => {
       canvas.addEventListener("wheel", (event) => {
         renderer.camera?.rescaleDelta(-event.deltaY / 1000);
       });
-
-      // PWA
-      renderer.handleResize();
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
