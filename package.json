@@ -3,10 +3,10 @@
   "private": true,
   "workspaces": [ "core", "games", "web", "server" ],
   "scripts": {
+    "server": "bun --cwd server start",
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",
     "branch": "git checkout main && git pull && git branch -D $( whoami) && git checkout -b $(whoami)",
     "pages": "ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME",
-    "docs": "bun pages",
     "ship": "bun pages && git add . && git commit -m 'ship' && git push",
     "d": "bun dev",
     "b": "bun branch",
