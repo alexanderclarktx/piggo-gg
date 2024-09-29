@@ -45,8 +45,8 @@ canvas {
   border-radius: 3px;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 400px;
+  width: auto;
+  height: auto;
   object-fit: none;
   /* display: block; */
   user-select: none;
