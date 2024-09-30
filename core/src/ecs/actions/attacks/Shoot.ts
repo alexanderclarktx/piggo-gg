@@ -32,7 +32,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
       pos: { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } },
       team,
       radius: gun.bulletSize,
-      damage: gun.damage,
+      damage: () => gun.damage,
       id: randomInt(1000),
       visible: true,
       expireTicks: 35

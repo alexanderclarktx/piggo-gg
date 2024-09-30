@@ -1,11 +1,13 @@
 import {
-  Actions, Character, Effects, Entity, Item, Name,
+  Actions, Character, Effects, ElementKinds, Entity, Item, Name,
   Renderable, SpawnHitbox, ValidSounds, Whack, XYdifferent,
   abs, hypot, loadTexture, min, mouseScreen, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
-export const Tool = (name: string, sound: ValidSounds) => (character: Character): Item => {
+type ElementToDamage = Record<ElementKinds, number>
+
+export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) => (character: Character): Item => {
 
   let mouseLast = { x: 0, y: 0 }
 
@@ -15,7 +17,10 @@ export const Tool = (name: string, sound: ValidSounds) => (character: Character)
       name: Name(name),
       position: character.components.position,
       actions: Actions<any>({
-        "mb1": Whack(sound, 25),
+        "mb1": Whack(sound, (e => {
+          const { element } = e.components
+          return damage[element?.data.kind ?? "flesh"]
+        })),
         "spawnHitbox": SpawnHitbox
       }),
       effects: Effects(),
@@ -65,6 +70,6 @@ export const Tool = (name: string, sound: ValidSounds) => (character: Character)
   return tool
 }
 
-export const Axe = Tool("axe", "thud")
-export const Sword = Tool("sword", "slash")
-export const Pickaxe = Tool("pickaxe", "clink")
+export const Axe = Tool("axe", "thud", {flesh: 15, wood: 25, rock: 10})
+export const Sword = Tool("sword", "slash", {flesh: 25, wood: 10, rock: 10})
+export const Pickaxe = Tool("pickaxe", "clink", {flesh: 10, wood: 10, rock: 25})

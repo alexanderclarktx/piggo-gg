@@ -4,13 +4,13 @@ import {
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
-export type TreeProps = {
+export type RockProps = {
   id?: string
   position?: XY
 }
 
-export const Tree = ({ position, id }: TreeProps = {}) => Entity<Renderable>({
-  id: id ?? `tree-${randomInt(1000)}`,
+export const Rock = ({ position, id }: RockProps = {}) => Entity<Renderable>({
+  id: id ?? `rock-${randomInt(1000)}`,
   components: {
     position: Position(position ?? { x: randomInt(1000, 500), y: randomInt(1000, 500) }),
     networked: Networked({ isNetworked: true }),
@@ -20,7 +20,7 @@ export const Tree = ({ position, id }: TreeProps = {}) => Entity<Renderable>({
       radius: 11,
       shootable: true
     }),
-    element: Element("wood"),
+    element: Element("rock"),
     health: Health({ health: 100 }),
     debug: Debug(),
     npc: NPC({
@@ -31,12 +31,12 @@ export const Tree = ({ position, id }: TreeProps = {}) => Entity<Renderable>({
     }),
     renderable: Renderable({
       zIndex: 3,
-      scale: 3,
+      scale: 1.5,
       scaleMode: "nearest",
       cullable: true,
       setup: async (r: Renderable) => {
 
-        const texture = (await loadTexture("c_tiles.json"))["tree"]
+        const texture = (await loadTexture("retro.json"))["rock"]
         const sprite = new Sprite(texture)
 
         sprite.anchor.set(0.5, 0.6)
