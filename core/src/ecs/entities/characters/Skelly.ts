@@ -1,6 +1,6 @@
 import {
   Actions, Axe, Character, Collider, Debug,
-  DefaultJoystickHandler, Effects, Entity, Health, Input,
+  DefaultJoystickHandler, Effects, Element, Entity, Health, Input,
   Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
   Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
@@ -17,6 +17,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       health: Health({ health: 100 }),
       team: player.components.team,
       inventory: Inventory([Sword, Axe, Pickaxe]),
+      element: Element("flesh"),
       input: Input({
         press: {
           ...WASDInputMap.press,

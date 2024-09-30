@@ -63,12 +63,13 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
   return hitbox
 }
 
+export type DamageCalculation = (entity: Entity<Position>) => number
 
 export type SpawnHitboxProps = {
   pos: PositionProps,
   team: Team
   radius: number
-  damage: number
+  damage: DamageCalculation
   id: number
   visible: boolean
   expireTicks: number
@@ -88,7 +89,7 @@ export const SpawnHitbox = Action<SpawnHitboxProps>(({ world, params }) => {
     expireTicks,
     color: TeamColors[team.data.team],
     onHit: (entity, world) => {
-      const hit = onHitTeam(team.data.team, damage)(entity, world)
+      const hit = onHitTeam(team.data.team, damage(entity))(entity, world)
       if (hit && onHit) onHit()
       return hit
     },

@@ -1,5 +1,5 @@
 import {
-  Actions, Chase, Collider, Debug, Edible, Entity, Health, InvokedAction,
+  Actions, Chase, Collider, Debug, Edible, Element, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, XY,
   closestEntity, loadTexture, random, randomInt, round
 } from "@piggo-gg/core"
@@ -21,6 +21,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
       actions: Actions({
         "chase": Chase
       }),
+      element: Element("flesh"),
       collider: Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
       debug: Debug(),
       renderable: Renderable({

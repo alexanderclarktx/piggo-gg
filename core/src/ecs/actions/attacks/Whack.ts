@@ -1,6 +1,6 @@
-import { Action, Character, KeyMouse, playSound, randomInt, SpawnHitboxProps, ValidSounds } from "@piggo-gg/core"
+import { Action, Character, DamageCalculation, KeyMouse, playSound, randomInt, SpawnHitboxProps, ValidSounds } from "@piggo-gg/core"
 
-export const Whack = (sound: ValidSounds, damage: number) => Action<KeyMouse & { character: Character }>(({ world, params, entity }) => {
+export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: Character }>(({ world, params, entity }) => {
   if (!entity) return
 
   const { mouse, character } = params

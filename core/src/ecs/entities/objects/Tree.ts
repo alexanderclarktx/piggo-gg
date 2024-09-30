@@ -1,5 +1,5 @@
 import {
-  Collider, Debug, Entity, Health, NPC, Networked,
+  Collider, Debug, Element, Entity, Health, NPC, Networked,
   Position, Renderable, XY, loadTexture, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
@@ -12,7 +12,7 @@ export type TreeProps = {
 export const Tree = ({ position, id }: TreeProps = {}) => Entity<Renderable>({
   id: id ?? `tree-${randomInt(1000)}`,
   components: {
-    position: Position(position ?? { x: randomInt(500), y: randomInt(500) }),
+    position: Position(position ?? { x: randomInt(1000, 500), y: randomInt(1000, 500) }),
     networked: Networked({ isNetworked: true }),
     collider: Collider({
       shape: "ball",
@@ -20,6 +20,7 @@ export const Tree = ({ position, id }: TreeProps = {}) => Entity<Renderable>({
       radius: 11,
       shootable: true
     }),
+    element: Element("wood"),
     health: Health({ health: 100 }),
     debug: Debug(),
     npc: NPC({

@@ -1,7 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, ZomiAttack,
-  closestEntity, positionDelta, loadTexture, round, randomInt, max
+  closestEntity, positionDelta, loadTexture, round, randomInt, max, Element
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -25,6 +25,7 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
         "chase": Chase,
         "attack": ZomiAttack(10, 40)
       }),
+      element: Element("flesh"),
       collider: Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
       debug: Debug(),
       renderable: Renderable({

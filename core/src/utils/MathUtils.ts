@@ -12,8 +12,8 @@ export const round = (n: number, places = 0) => {
   return Math.round(n * factor) / factor;
 }
 
-export const randomInt = (n: number) => {
-  return round(random() * n)
+export const randomInt = (n: number, s: number = 0) => {
+  return round(random() * n - s)
 }
 
 export const { isArray } = Array;
