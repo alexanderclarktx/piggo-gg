@@ -1,7 +1,6 @@
 import {
-  Apple,
-  Collider, Debug, Element, Entity, Health, NPC, Networked,
-  Position, Renderable, XY, loadTexture, randomInt
+  Apple, Collider, Debug, Element, Entity, Health, NPC,
+  Networked, Position, Renderable, XY, loadTexture, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 

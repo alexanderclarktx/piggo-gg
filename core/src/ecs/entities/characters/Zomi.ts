@@ -2,8 +2,8 @@ import {
   Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, ZomiAttack,
   closestEntity, positionDelta, loadTexture, round, randomInt, max, Element
-} from "@piggo-gg/core";
-import { AnimatedSprite } from "pixi.js";
+} from "@piggo-gg/core"
+import { AnimatedSprite } from "pixi.js"
 
 export type ZomiProps = {
   id?: string
@@ -11,7 +11,7 @@ export type ZomiProps = {
   positionProps?: PositionProps
 }
 
-const colors = [0xff3300, 0xff7700, 0xccee00, 0x00ff00];
+const colors = [0xff3300, 0xff7700, 0xccee00, 0x00ff00]
 
 export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProps = {}) => {
   const zomi = Entity<Health | Actions>({
@@ -36,10 +36,10 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
         dynamic: (_, r, z) => {
-          const { health, maxHealth } = z.components.health!.data;
+          const { health, maxHealth } = z.components.health!.data
 
-          const ratio = round(health / maxHealth * 4);
-          r.color = colors[max(ratio - 1, 0)];
+          const ratio = round(health / maxHealth * 4)
+          r.color = colors[max(ratio - 1, 0)]
         },
         setup: async (r: Renderable) => {
           const t = await loadTexture("chars.json")
@@ -57,22 +57,21 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
       })
     }
   })
-  return zomi;
+  return zomi
 }
 
 const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
-  const { position } = entity.components;
+  const { position } = entity.components
 
-  const entitiesWithHealth = world.queryEntities(["health", "position", "element"])
-    .filter((e) => !(e.id.includes("zomi"))) as Entity<Health | Position | Element>[];
+  const targets = world.queryEntities(["health", "position", "element"])
+    .filter((e) => !(e.id.includes("zomi")))
+    .filter((e) => e.components.element!.data.kind === "flesh") as Entity<Health | Position | Element>[]
 
-  const closest = closestEntity(entitiesWithHealth.filter(
-    e => e.components.element.data.kind === "flesh"
-  ), position.data);
-  if (!closest) return;
+  const closest = closestEntity(targets, position.data)
+  if (!closest) return
 
-  const distance = positionDelta(position, closest.components.position);
-  if (distance < 30) return { action: "attack", params: { target: closest } };
+  const distance = positionDelta(position, closest.components.position)
+  if (distance < 30) return { action: "attack", params: { target: closest } }
 
   return { action: "chase", params: { target: closest } }
 }
