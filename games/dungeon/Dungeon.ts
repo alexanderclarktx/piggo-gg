@@ -23,7 +23,7 @@ export const Dungeon = IsometricGame({
       Shop(),
       LineFloor(dim, { x, y }, 0x0066bb, width, height),
       LineWall({
-        shootable: false,
+        hittable: false,
         points: [
           x, y,
           x + dim * width / 2, y - dim * height / 2,

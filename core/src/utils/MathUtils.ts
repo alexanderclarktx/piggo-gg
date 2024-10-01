@@ -26,6 +26,10 @@ export const XYdifferent = (a: XY, b: XY, threshold: number = 0) => {
   return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold;
 }
 
+export const XYdelta = (a: XY, b: XY): number => {
+  return hypot(a.x - b.x, a.y - b.y);
+}
+
 export const XYequal = (a: XY, b: XY) => a.x === b.x && a.y === b.y;
 
 export const orthoToDirection = (o: number) => {
@@ -69,10 +73,10 @@ export const colorAdd = (color: number, add: number): number => {
 }
 
 export const positionDelta = (a: Position, b: Position): number => {
-  return Math.sqrt(Math.pow(a.data.x - b.data.x, 2) + Math.pow(a.data.y - b.data.y, 2));
+  return hypot(a.data.x - b.data.x, a.data.y - b.data.y);
 }
 
-export const closestEntity = (entities: Entity<Position>[], pos: XY): Entity<Position> | undefined => {
+export const closestEntity = (entities: Entity<Position>[], pos: XY, maxDistance?: number): Entity<Position> | undefined => {
   if (entities.length > 1) {
     entities.sort((a: Entity<Position>, b: Entity<Position>) => {
       const aPosition = a.components.position;
@@ -85,6 +89,9 @@ export const closestEntity = (entities: Entity<Position>[], pos: XY): Entity<Pos
       const db = dx2 * dx2 + dy2 * dy2;
       return da - db;
     });
+  }
+  if (maxDistance) {
+    entities = entities.filter((e) => positionDelta(e.components.position, Position(pos)) < maxDistance);
   }
   return entities[0];
 }

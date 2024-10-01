@@ -1,7 +1,8 @@
 import {
   Client, Command, Entity, Game, GameBuilder,
   InvokedAction, Renderer, SerializedEntity, values,
-  StateBuffer, System, SystemBuilder, SystemEntity, keys
+  StateBuffer, System, SystemBuilder, SystemEntity, keys,
+  ValidComponents
 } from "@piggo-gg/core";
 
 export type World = {
@@ -29,7 +30,7 @@ export type World = {
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
-  queryEntities: (query: string[]) => Entity[]
+  queryEntities: (query: ValidComponents[]) => Entity[]
   log: (message: string) => void
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
@@ -51,7 +52,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
-  const filterEntities = (query: string[], entities: Entity[]): Entity[] => {
+  const filterEntities = (query: ValidComponents[], entities: Entity[]): Entity[] => {
     return entities.filter((e) => {
       for (const componentType of query) {
         if (!keys(e.components).includes(componentType)) return false;
@@ -125,7 +126,7 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
         }
       })
     },
-    queryEntities: (query: string[]) => {
+    queryEntities: (query: ValidComponents[]) => {
       return filterEntities(query, values(world.entities));
     },
     log: (message: string) => {

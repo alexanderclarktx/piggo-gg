@@ -26,7 +26,7 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
         "attack": ZomiAttack(10, 40)
       }),
       element: Element("flesh"),
-      collider: Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
+      collider: Collider({ shape: "ball", radius: 8, mass: 300, hittable: true }),
       debug: Debug(),
       renderable: Renderable({
         scale: 2,
@@ -63,10 +63,12 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
 const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components;
 
-  const entitiesWithHealth = world.queryEntities(["health", "position"])
-    .filter((e) => !(e.id.includes("zomi"))) as Entity<Health | Position>[];
+  const entitiesWithHealth = world.queryEntities(["health", "position", "element"])
+    .filter((e) => !(e.id.includes("zomi"))) as Entity<Health | Position | Element>[];
 
-  const closest = closestEntity(entitiesWithHealth, position.data);
+  const closest = closestEntity(entitiesWithHealth.filter(
+    e => e.components.element.data.kind === "flesh"
+  ), position.data);
   if (!closest) return;
 
   const distance = positionDelta(position, closest.components.position);

@@ -1,11 +1,11 @@
 import { Action, Collider, Entity, Expires, Networked, Position, PositionProps, Renderable, SensorCallback, Team, TeamColors, TeamNumber, World, pixiCircle, randomInt } from "@piggo-gg/core"
 
-export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>) => {
+export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>, world) => {
   const { collider, health, team } = e2.components
-  if (health && collider.shootable) {
+  if (health && collider.hittable) {
     if (!team || (team.data.team !== allyTeam)) {
       health.data.health -= damage
-      health.onDamage?.(damage)
+      health.onDamage?.(damage, world)
       return true
     }
   }
@@ -14,7 +14,7 @@ export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback 
 
 const onHitDefault = (e2: Entity<Position | Collider>) => {
   const { collider, health } = e2.components
-  if (collider.shootable && health) {
+  if (collider.hittable && health) {
     health.data.health -= 25
     return true
   }
