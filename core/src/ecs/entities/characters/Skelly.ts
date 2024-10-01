@@ -13,7 +13,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       debug: Debug(),
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 120 }),
       networked: Networked({ isNetworked: true }),
-      collider: Collider({ shape: "ball", radius: 8, mass: 600, shootable: true }),
+      collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
       inventory: Inventory([Sword, Axe, Pickaxe]),

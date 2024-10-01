@@ -1,5 +1,5 @@
 import {
-  Actions, Chase, Collider, Debug, Edible, Element, Entity, Health, InvokedAction,
+  Actions, Chase, Collider, Debug, Food, Element, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, XY,
   closestEntity, loadTexture, random, randomInt, round
 } from "@piggo-gg/core"
@@ -22,7 +22,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
         "chase": Chase
       }),
       element: Element("flesh"),
-      collider: Collider({ shape: "ball", radius: 8, mass: 300, shootable: true }),
+      collider: Collider({ shape: "ball", radius: 8, mass: 300, hittable: true }),
       debug: Debug(),
       renderable: Renderable({
         scale: 1.5,
@@ -52,10 +52,11 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
 const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components
 
-  const edibles = world.queryEntities(["edible", "position"])
-    .filter((e) => !(e.id.includes("piggo"))) as Entity<Edible | Position>[]
+  const edibles = world.queryEntities(["food", "position"])
+    .filter((e) => !(e.id.includes("piggo"))) as Entity<Food | Position>[]
 
-  const closest = closestEntity(edibles, position.data)
+  const closest = closestEntity(edibles, position.data, 250)
+
   if (closest) return { action: "chase", params: { target: closest } }
 
   if (!position.data.heading.x && !position.data.heading.y) {

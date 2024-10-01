@@ -6,11 +6,11 @@ export type LineWallProps = {
   position?: XY
   visible?: boolean
   health?: number
-  shootable?: boolean
+  hittable?: boolean
   id?: string
 }
 
-export const LineWall = ({ points, position, visible, health, id, shootable }: LineWallProps) => {
+export const LineWall = ({ points, position, visible, health, id, hittable }: LineWallProps) => {
 
   let newPoints: number[] = [];
 
@@ -37,7 +37,7 @@ export const LineWall = ({ points, position, visible, health, id, shootable }: L
         isStatic: true,
         points: newPoints,
         priority: 1,
-        shootable: shootable ?? true
+        hittable: hittable ?? true
       }),
       renderable: Renderable({
         visible: visible ?? false,

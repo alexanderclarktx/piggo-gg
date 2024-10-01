@@ -13,13 +13,13 @@ export type Collider = Component<"collider"> & {
   body: RigidBody | undefined
   frictionAir: number
   priority: number
-  shootable: boolean
+  hittable: boolean
   sensor: SensorCallback
 }
 
 export type ColliderProps = {
   shape: ColliderShapes
-  shootable?: boolean
+  hittable?: boolean
   points?: number[]
   radius?: number
   length?: number
@@ -36,7 +36,7 @@ export type ColliderProps = {
 
 export const Collider = (props: ColliderProps): Collider => {
 
-  const { shape, ccd, shootable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority } = props;
+  const { shape, ccd, hittable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority } = props;
 
   let colliderDesc: ColliderDesc;
 
@@ -81,7 +81,7 @@ export const Collider = (props: ColliderProps): Collider => {
     sensor: sensor ?? (() => false),
     frictionAir: frictionAir ?? 0,
     priority: priority ?? 0,
-    shootable: shootable ?? false
+    hittable: hittable ?? false
   }
 
   return collider;

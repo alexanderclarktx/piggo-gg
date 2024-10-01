@@ -20,7 +20,7 @@ const defaultPoints: number[] = [
 ]
 
 export const FieldWall = (wallPoints: number[] = defaultPoints): Entity => {
-  return LineWall({ points: wallPoints, shootable: false });
+  return LineWall({ points: wallPoints, hittable: false });
 }
 
 export const FieldGrass = (wallPoints: number[] = defaultPoints) => Entity({

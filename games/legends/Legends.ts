@@ -21,7 +21,7 @@ export const Legends = IsometricGame({
       HomeButton(),
       Background(),
       Rift(wallPointsIso),
-      LineWall({ points: wallPointsIso, shootable: false })
+      LineWall({ points: wallPointsIso, hittable: false })
     ],
     systems: [SkellySpawnSystem]
   })

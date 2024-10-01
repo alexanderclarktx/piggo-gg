@@ -1,9 +1,9 @@
-import { Component, ValidSounds } from "@piggo-gg/core";
+import { Component, ValidSounds, World } from "@piggo-gg/core";
 
 export type Health = Component<"health", { health: number, maxHealth: number }> & {
   showHealthBar: boolean
   deathSounds: ValidSounds[]
-  onDamage: (damage: number) => void
+  onDamage: null | ((damage: number, world: World) => void)
 }
 
 export type HealthProps = {
@@ -11,7 +11,7 @@ export type HealthProps = {
   maxHealth?: number,
   showHealthBar?: boolean
   deathSounds?: ValidSounds[]
-  onDamage?: (damage: number) => void
+  onDamage?: null | ((damage: number, world: World) => void)
 }
 
 export const Health = ({ health, maxHealth, showHealthBar = true, deathSounds, onDamage }: HealthProps): Health => ({
@@ -19,5 +19,5 @@ export const Health = ({ health, maxHealth, showHealthBar = true, deathSounds, o
   data: { health, maxHealth: maxHealth ?? health },
   showHealthBar,
   deathSounds: deathSounds ?? [],
-  onDamage: onDamage ?? (() => {})
+  onDamage: onDamage ?? null
 })

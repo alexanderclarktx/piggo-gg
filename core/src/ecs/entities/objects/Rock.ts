@@ -18,7 +18,7 @@ export const Rock = ({ position, id }: RockProps = {}) => Entity<Renderable>({
       shape: "ball",
       isStatic: true,
       radius: 11,
-      shootable: true
+      hittable: true
     }),
     element: Element("rock"),
     health: Health({ health: 100 }),
