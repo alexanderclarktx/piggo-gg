@@ -1,8 +1,7 @@
 import {
-  Client, Command, Entity, Game, GameBuilder,
-  InvokedAction, Renderer, SerializedEntity, values,
-  StateBuffer, System, SystemBuilder, SystemEntity, keys,
-  ValidComponents
+  Client, Command, Entity, Game, GameBuilder, InvokedAction,
+  Renderer, SerializedEntity, values, StateBuffer, System,
+  SystemBuilder, SystemEntity, keys, ValidComponents
 } from "@piggo-gg/core";
 
 export type World = {
