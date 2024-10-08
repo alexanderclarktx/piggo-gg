@@ -21,7 +21,9 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
             renderable.c.filters = filter
 
             // set default onDamage
-            if (!health.onDamage) health.onDamage = ((damage) => {
+            const originalOnDamage = health.onDamage
+            health.onDamage = ((damage, world) => {
+              originalOnDamage?.(damage, world)
               const newBrightness = 1 + (damage / 25)
               filter.brightness(newBrightness, false)
               filterMap[entity.id] = [newBrightness, filter]

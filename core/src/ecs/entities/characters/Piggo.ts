@@ -1,7 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Food, Element, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World, XY,
-  closestEntity, loadTexture, random, randomInt, round
+  closestEntity, loadTexture, random, randomInt, round, XYdelta, Eat
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -19,7 +19,8 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
       health: Health({ health: 75 }),
       npc: NPC({ npcOnTick }),
       actions: Actions({
-        "chase": Chase
+        "chase": Chase,
+        "eat": Eat
       }),
       element: Element("flesh"),
       collider: Collider({ shape: "ball", radius: 8, mass: 300, hittable: true }),
@@ -55,9 +56,14 @@ const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction
   const edibles = world.queryEntities(["food", "position"])
     .filter((e) => !(e.id.includes("piggo"))) as Entity<Food | Position>[]
 
-  const closest = closestEntity(edibles, position.data, 250)
+  const closest = closestEntity(edibles, position.data, 200)
 
-  if (closest) return { action: "chase", params: { target: closest } }
+  if (closest) {
+    if (XYdelta(position.data, closest.components.position.data) < 20) {
+      return { action: "eat", params: { target: closest } }
+    }
+    return { action: "chase", params: { target: closest } }
+  }
 
   if (!position.data.heading.x && !position.data.heading.y) {
 
