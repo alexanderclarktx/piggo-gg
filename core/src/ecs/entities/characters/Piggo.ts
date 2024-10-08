@@ -60,7 +60,6 @@ const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction
 
   if (closest) {
     if (XYdelta(position.data, closest.components.position.data) < 20) {
-      console.log("eat")
       return { action: "eat", params: { target: closest } }
     }
     return { action: "chase", params: { target: closest } }
