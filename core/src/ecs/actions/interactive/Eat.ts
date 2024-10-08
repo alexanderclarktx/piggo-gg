@@ -11,12 +11,4 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
   if (entity.components.renderable?.scale) {
     entity.components.renderable.scale += 0.5;
   }
-
-
-  console.log("eating", entity.id)
-
-  const { position } = entity.components;
-  if (!position) return;
-
-  position.setHeading(target.components.position.data);
 });
