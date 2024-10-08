@@ -1,9 +1,8 @@
 import {
-  ActionSystem, ClickableSystem, CommandSystem,
-  ControlSystem, CooldownSystem, DamageSystem,
-  DebugCommand, DebugSystem, EffectsSystem, ExpiresSystem, GameCommand, InputSystem,
-  NPCSystem, NametagSystem, PhysicsSystem, RenderSystem, SpawnCommand,
-  World, WorldBuilder
+  ActionSystem, ClickableSystem, CommandSystem, ControlSystem, CooldownSystem,
+  DamageSystem, DebugCommand, DebugSystem, EffectsSystem, ExpiresSystem,
+  GameCommand, InputSystem, NPCSystem, NametagSystem, PhysicsSystem,
+  RenderSystem, SpawnCommand, World, WorldBuilder
 } from "@piggo-gg/core";
 import { NameCommand } from "../ecs/commands/NameCommand";
 
