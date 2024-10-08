@@ -9,7 +9,7 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
   world.removeEntity(target.id);
 
   if (entity.components.renderable?.scale) {
-    entity.components.renderable.scale += 1;
+    entity.components.renderable.scale += 0.5;
   }
 
 
