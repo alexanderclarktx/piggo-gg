@@ -11,7 +11,7 @@ export type PiggoProps = {
 }
 
 export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(500) } }: PiggoProps = {}) => {
-  const piggo = Entity<Health | Actions | Position>({
+  const piggo = Entity<Health | Actions | Position | Renderable>({
     id: id ?? `piggo-${randomInt(1000)}`,
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),

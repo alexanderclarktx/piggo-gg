@@ -1,9 +1,9 @@
-import { Component, Entity, Position, World } from "@piggo-gg/core";
-import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat";
+import { Component, Entity, Position, World } from "@piggo-gg/core"
+import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat"
 
-export type ColliderShapes = "ball" | "cuboid" | "line";
+export type ColliderShapes = "ball" | "cuboid" | "line"
 
-export type SensorCallback = (e2: Entity<Position>, world: World) => boolean;
+export type SensorCallback = (e2: Entity<Position>, world: World) => boolean
 
 export type Collider = Component<"collider"> & {
   type: "collider"
@@ -36,41 +36,41 @@ export type ColliderProps = {
 
 export const Collider = (props: ColliderProps): Collider => {
 
-  const { shape, ccd, hittable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority } = props;
+  const { shape, ccd, hittable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority } = props
 
-  let colliderDesc: ColliderDesc;
+  let colliderDesc: ColliderDesc
 
   if (shape === "ball" && radius) {
-    colliderDesc = ColliderDesc.ball(radius);
+    colliderDesc = ColliderDesc.ball(radius)
   } else if (shape === "cuboid") {
-    colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1);
+    colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1)
   } else if (shape === "line" && points) {
-    const s = ColliderDesc.polyline(Float32Array.from(points));
-    colliderDesc = s;
+    const s = ColliderDesc.polyline(Float32Array.from(points))
+    colliderDesc = s
   } else {
-    throw new Error("Invalid collider shape");
+    throw new Error("Invalid collider shape")
   }
 
-  let bodyDesc: RigidBodyDesc;
+  let bodyDesc: RigidBodyDesc
   if (isStatic) {
-    bodyDesc = RigidBodyDesc.fixed();
+    bodyDesc = RigidBodyDesc.fixed()
   } else {
-    bodyDesc = RigidBodyDesc.dynamic();
+    bodyDesc = RigidBodyDesc.dynamic()
   }
 
-  if (ccd) bodyDesc.setCcdEnabled(true);
+  if (ccd) bodyDesc.setCcdEnabled(true)
 
   if (sensor) {
-    colliderDesc.setSensor(true);
+    colliderDesc.setSensor(true)
   }
 
-  if (mass) colliderDesc.setMass(mass);
+  if (mass) colliderDesc.setMass(mass)
 
-  if (restitution) colliderDesc.setRestitution(restitution);
+  if (restitution) colliderDesc.setRestitution(restitution)
 
-  if (rotation) colliderDesc.setRotation(rotation);
+  if (rotation) colliderDesc.setRotation(rotation)
 
-  bodyDesc.setLinearDamping(frictionAir ?? 0);
+  bodyDesc.setLinearDamping(frictionAir ?? 0)
 
   const collider: Collider = {
     type: "collider",
@@ -84,5 +84,5 @@ export const Collider = (props: ColliderProps): Collider => {
     hittable: hittable ?? false
   }
 
-  return collider;
+  return collider
 }
