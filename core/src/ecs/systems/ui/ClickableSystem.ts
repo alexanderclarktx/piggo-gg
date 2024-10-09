@@ -7,7 +7,6 @@ export const clickableClickedThisFrame = {
   reset: () => clickableClickedThisFrame.value = 0
 }
 
-// TODO merge this into InputSystem
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
@@ -23,7 +22,14 @@ export const ClickableSystem = ClientSystemBuilder({
     let hoveredEntityId: { id: string, zIndex: number } | undefined = undefined
 
     const getHoveredEntity = (): undefined | Entity<Position | Clickable | Renderable> => {
-      if (hoveredEntityId) return world.entities[hoveredEntityId.id] as Entity<Position | Clickable | Renderable>
+      if (hoveredEntityId) {
+        const entity = world.entities[hoveredEntityId.id] as Entity<Position | Clickable | Renderable>
+        if (!entity) {
+          hoveredEntityId = undefined
+          return undefined
+        }
+        return entity
+      }
       return undefined
     }
 
@@ -64,7 +70,7 @@ export const ClickableSystem = ClientSystemBuilder({
           }
         }
 
-        // check each entity for hovering (sorted by zIndex)
+        // check each entity for hovering (sorted by zIndex) (max 1 hovered)
         for (const entity of entities.sort((a, b) => b.components.renderable.c.zIndex - a.components.renderable.c.zIndex)) {
           const { clickable, position, renderable } = entity.components
 
@@ -80,7 +86,7 @@ export const ClickableSystem = ClientSystemBuilder({
                 if (hoveredClickable.hoverOut) hoveredClickable.hoverOut()
               }
               hoveredEntityId = { id: entity.id, zIndex: renderable.c.zIndex }
-              break // exit the iteration because we only want to hover over one entity
+              break
             }
           }
         }

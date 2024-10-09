@@ -43,7 +43,6 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
           r.animations = {
             d: new AnimatedSprite([t["2"], t["1"], t["3"]])
           }
-          piggo.components.renderable.setOutline(0x444444, 1)
         }
       })
     }
