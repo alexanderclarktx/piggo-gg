@@ -31,7 +31,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           // entity has no actions
           const actions = entity.components.actions;
           if (!actions) {
-            console.log(`集 ${entityId} has no actions`);
+            console.log(`${entityId} has no actions`);
             return;
           }
 

@@ -1,93 +1,111 @@
-import { Actions, Clickable, ClientSystemBuilder, Entity, Position, XY, checkBounds, mouse } from "@piggo-gg/core";
-import { FederatedPointerEvent } from "pixi.js";
+import { Clickable, ClientSystemBuilder, Entity, Position, Renderable, XY, checkBounds, mouse } from "@piggo-gg/core"
+import { FederatedPointerEvent } from "pixi.js"
 
 export const clickableClickedThisFrame = {
   value: 0,
   set: (value: number) => clickableClickedThisFrame.value = value,
   reset: () => clickableClickedThisFrame.value = 0
-} 
+}
 
 // TODO merge this into InputSystem
 // ClickableSystem handles clicks for clickable entities
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
   init: (world) => {
-    if (!world.renderer) return undefined;
+    if (!world.renderer) return undefined
 
-    let clickables: Entity<Clickable | Actions | Position>[] = [];
+    let clickables: Entity<Clickable | Position>[] = []
 
-    const renderer = world.renderer;
+    const renderer = world.renderer
 
-    let bufferClick: XY[] = [];
-    const hovered: Set<string> = new Set();
+    let bufferClick: XY[] = []
+
+    let hoveredEntityId: { id: string, zIndex: number } | undefined = undefined
+
+    const getHoveredEntity = (): undefined | Entity<Position | Clickable | Renderable> => {
+      if (hoveredEntityId) return world.entities[hoveredEntityId.id] as Entity<Position | Clickable | Renderable>
+      return undefined
+    }
 
     renderer.app.canvas.addEventListener("pointerdown", (event: FederatedPointerEvent) => {
-      const click = { x: event.offsetX, y: event.offsetY };
-      bufferClick.push(click);
+      const click = { x: event.offsetX, y: event.offsetY }
+      bufferClick.push(click)
 
-      const clickWorld = renderer.camera.toWorldCoords(click);
+      const clickWorld = renderer.camera.toWorldCoords(click)
 
       clickables.forEach((entity) => {
-        const { clickable, position } = entity.components;
-        if (!clickable.active || !clickable.click) return;
+        const { clickable, position } = entity.components
+        if (!clickable.active || !clickable.click) return
 
-        const clicked = checkBounds(renderer, position, clickable, click, clickWorld);
+        const clicked = checkBounds(renderer, position, clickable, click, clickWorld)
         if (clicked) {
-          clickableClickedThisFrame.set(world.tick);
-          return;
+          clickableClickedThisFrame.set(world.tick)
+          return
         }
-      });
-    });
+      })
+    })
 
     return {
       id: "ClickableSystem",
-      query: ["clickable", "position"],
+      query: ["clickable", "position", "renderable"],
       skipOnRollback: true,
-      onTick: (entities: Entity<Clickable | Actions | Position>[]) => {
+      onTick: (entities: Entity<Clickable | Position | Renderable>[]) => {
 
-        clickables = entities;
+        clickables = entities
 
-        entities.forEach((entity) => {
-          const { clickable, position } = entity.components;
+        const hoveredEntity = getHoveredEntity()
 
-          if (hovered.has(entity.id)) {
-            const hovering = checkBounds(renderer, position, clickable, mouse, mouse);
-            if (!hovering) {
-              if (clickable.hoverOut) clickable.hoverOut();
-              hovered.delete(entity.id);
-            }
+        if (hoveredEntity) {
+          const { clickable, position } = hoveredEntity.components
+          const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
+          if (!hovering) {
+            if (clickable.hoverOut) clickable.hoverOut()
+            hoveredEntityId = undefined
           }
+        }
 
-          if (clickable.active && clickable.hoverOver && !hovered.has(entity.id)) {
-            const hovering = checkBounds(renderer, position, clickable, mouse, mouse);
+        // check each entity for hovering (sorted by zIndex)
+        for (const entity of entities.sort((a, b) => b.components.renderable.c.zIndex - a.components.renderable.c.zIndex)) {
+          const { clickable, position, renderable } = entity.components
+
+          if (hoveredEntityId && hoveredEntityId?.zIndex > renderable.c.zIndex) break
+
+          if (clickable.active && clickable.hoverOver && hoveredEntityId?.id !== entity.id) {
+            const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
             if (hovering) {
-              clickable.hoverOver();
-              hovered.add(entity.id);
+              clickable.hoverOver()
+
+              if (hoveredEntity) {
+                const { clickable: hoveredClickable } = hoveredEntity.components
+                if (hoveredClickable.hoverOut) hoveredClickable.hoverOut()
+              }
+              hoveredEntityId = { id: entity.id, zIndex: renderable.c.zIndex }
+              break // exit the iteration because we only want to hover over one entity
             }
           }
-        })
+        }
 
         bufferClick.forEach((click) => {
-          const clickWorld = renderer.camera.toWorldCoords(click);
+          const clickWorld = renderer.camera.toWorldCoords(click)
 
           entities.forEach((entity) => {
-            const { clickable, position, networked } = entity.components;
-            if (!clickable.active || !clickable.click) return;
+            const { clickable, position, networked } = entity.components
+            if (!clickable.active || !clickable.click) return
 
-            const clicked = checkBounds(renderer, position, clickable, click, clickWorld);
+            const clicked = checkBounds(renderer, position, clickable, click, clickWorld)
             if (clicked) {
-              clickableClickedThisFrame.set(world.tick);
-              const invocation = clickable.click({ world });
+              clickableClickedThisFrame.set(world.tick)
+              const invocation = clickable.click({ world })
 
               if (networked && networked.isNetworked) {
-                world.actionBuffer.push(world.tick + 1, entity.id, invocation);
+                world.actionBuffer.push(world.tick + 1, entity.id, invocation)
               } else {
-                world.actionBuffer.push(world.tick, entity.id, invocation);
+                world.actionBuffer.push(world.tick, entity.id, invocation)
               }
             }
-          });
-        });
-        bufferClick = [];
+          })
+        })
+        bufferClick = []
       }
     }
   }

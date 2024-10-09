@@ -1,6 +1,6 @@
-import { WsNetConnector, WsNetConnectorProps } from "@piggo-gg/web";
-import { FaDiscord, FaGithub } from "react-icons/fa";
-import React from "react";
+import { WsNetConnector, WsNetConnectorProps } from "@piggo-gg/web"
+import { FaDiscord, FaGithub } from "react-icons/fa"
+import React from "react"
 
 export type HeaderProps = WsNetConnectorProps & {}
 
@@ -48,4 +48,4 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => (
       </a>
     </div>
   </div>
-);
+)
