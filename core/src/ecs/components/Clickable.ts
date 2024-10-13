@@ -9,8 +9,8 @@ export type Clickable = Component<"clickable"> & {
   active: boolean
   anchor: XY
   click?: (_: { world: World }) => InvokedAction
-  hoverOver?: (() => void) | undefined
-  hoverOut?: (() => void) | undefined
+  hoverOver?: ((world: World) => void) | undefined
+  hoverOut?: ((world: World) => void) | undefined
 }
 
 export type ClickableProps = {
@@ -19,8 +19,8 @@ export type ClickableProps = {
   active: boolean
   anchor?: XY
   click?: (_: { world: World }) => InvokedAction
-  hoverOver?: () => void
-  hoverOut?: () => void
+  hoverOver?: (world: World) => void
+  hoverOut?: (world: World) => void
 }
 
 export const Clickable = (props: ClickableProps): Clickable => {

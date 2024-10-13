@@ -1,7 +1,7 @@
 {
   "name": "piggo-gg",
   "private": true,
-  "workspaces": [ "core", "games", "web", "server" ],
+  "workspaces": ["core", "games", "web", "server"],
   "scripts": {
     "server": "bun --cwd server start",
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",

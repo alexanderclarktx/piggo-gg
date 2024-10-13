@@ -65,7 +65,7 @@ export const ClickableSystem = ClientSystemBuilder({
           const { clickable, position } = hoveredEntity.components
           const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
           if (!hovering) {
-            if (clickable.hoverOut) clickable.hoverOut()
+            if (clickable.hoverOut) clickable.hoverOut(world)
             hoveredEntityId = undefined
           }
         }
@@ -79,11 +79,11 @@ export const ClickableSystem = ClientSystemBuilder({
           if (clickable.active && clickable.hoverOver && hoveredEntityId?.id !== entity.id) {
             const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
             if (hovering) {
-              clickable.hoverOver()
+              clickable.hoverOver(world)
 
               if (hoveredEntity) {
                 const { clickable: hoveredClickable } = hoveredEntity.components
-                if (hoveredClickable.hoverOut) hoveredClickable.hoverOut()
+                if (hoveredClickable.hoverOut) hoveredClickable.hoverOut(world)
               }
               hoveredEntityId = { id: entity.id, zIndex: renderable.c.zIndex }
               break
@@ -91,26 +91,24 @@ export const ClickableSystem = ClientSystemBuilder({
           }
         }
 
-        bufferClick.forEach((click) => {
-          const clickWorld = renderer.camera.toWorldCoords(click)
+        // TODO does this make sense? just using hovered entity
+        if (bufferClick.length) {
+          const clicked = getHoveredEntity()
 
-          entities.forEach((entity) => {
-            const { clickable, position, networked } = entity.components
-            if (!clickable.active || !clickable.click) return
+          if (clicked) {
+            const { clickable, networked } = clicked.components
 
-            const clicked = checkBounds(renderer, position, clickable, click, clickWorld)
-            if (clicked) {
-              clickableClickedThisFrame.set(world.tick)
+            if (clickable.click) {
               const invocation = clickable.click({ world })
 
               if (networked && networked.isNetworked) {
-                world.actionBuffer.push(world.tick + 1, entity.id, invocation)
+                world.actionBuffer.push(world.tick + 1, clicked.id, invocation)
               } else {
-                world.actionBuffer.push(world.tick, entity.id, invocation)
+                world.actionBuffer.push(world.tick, clicked.id, invocation)
               }
             }
-          })
-        })
+          }
+        }
         bufferClick = []
       }
     }

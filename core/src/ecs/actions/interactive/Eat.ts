@@ -14,6 +14,6 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
 
   if (entity.components.collider) {
     // @ts-expect-error
-    entity.components.collider.colliderDesc.shape.radius *= 1.2
+    entity.components.collider.colliderDesc.shape.radius *= 1.1
   }
 })
