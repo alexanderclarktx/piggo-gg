@@ -177,6 +177,7 @@ export const InputSystem = ClientSystemBuilder({
             if (controllerInput != null) {
               const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world })
               if (invocation && actions.actionMap[invocation.action]) {
+                invocation.playerId = world.client?.playerId()
                 world.actionBuffer.push(world.tick + 1, character.id, invocation)
               }
             }
@@ -191,6 +192,7 @@ export const InputSystem = ClientSystemBuilder({
           if (controllerInput) {
             const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world, tick: keyMouse.tick })
             if (invocation && actions.actionMap[invocation.action]) {
+              invocation.playerId = world.client?.playerId()
               world.actionBuffer.push(world.tick + 1, character.id, invocation)
             }
           }
@@ -244,6 +246,7 @@ export const InputSystem = ClientSystemBuilder({
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick })
             if (invocation && actions.actionMap[invocation.action]) {
+              invocation.playerId = world.client?.playerId()
               world.actionBuffer.push(world.tick, entity.id, invocation)
             }
           }
@@ -259,6 +262,7 @@ export const InputSystem = ClientSystemBuilder({
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world })
             if (invocation && actions.actionMap[invocation.action]) {
+              invocation.playerId = world.client?.playerId()
               world.actionBuffer.push(world.tick, entity.id, invocation)
             }
           }

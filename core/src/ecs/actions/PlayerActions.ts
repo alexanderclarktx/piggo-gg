@@ -1,4 +1,4 @@
-import { Action, Controlling, Inventory, InvokedAction, Noob, Skelly, TeamColors, XY } from "@piggo-gg/core"
+import { Action, Controlling, InvokedAction, Noob, Skelly, TeamColors, XY } from "@piggo-gg/core"
 
 export const controlEntity: Action = Action(({ entity, player }) => {
   if (!entity || !player) return

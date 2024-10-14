@@ -1,13 +1,13 @@
 import {
   InventorySystem, IsometricGame, Piggo, SkellySpawnSystem,
-  Tree, isMobile, MobilePvEHUD, PvEHUD, Rock, DroppableSystem
+  Tree, isMobile, MobilePvEHUD, PvEHUD, Rock
 } from "@piggo-gg/core"
 
 export const Sandbox = IsometricGame({
   id: "sandbox",
   init: () => ({
     id: "sandbox",
-    systems: [SkellySpawnSystem, InventorySystem, DroppableSystem],
+    systems: [SkellySpawnSystem, InventorySystem],
     entities: [
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(),

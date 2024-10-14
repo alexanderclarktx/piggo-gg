@@ -19,6 +19,7 @@ export type Collider = Component<"collider"> & {
 
 export type ColliderProps = {
   shape: ColliderShapes
+
   hittable?: boolean
   points?: number[]
   radius?: number

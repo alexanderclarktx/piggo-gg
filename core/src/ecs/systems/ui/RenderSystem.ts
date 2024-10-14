@@ -200,6 +200,7 @@ export const RenderSystem = ClientSystemBuilder({
           let dy = velocity.y * elapsedTime / 1000;
 
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
+
             renderable.c.position.set(
               x + dx + renderable.position.x,
               y + dy + renderable.position.y

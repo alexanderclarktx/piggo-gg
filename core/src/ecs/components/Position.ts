@@ -1,4 +1,4 @@
-import { Component, XY, orthoToDirection, round } from "@piggo-gg/core";
+import { Component, Entity, SystemBuilder, XY, orthoToDirection, round } from "@piggo-gg/core";
 
 export type Position = Component<"position", {
   x: number
@@ -10,6 +10,7 @@ export type Position = Component<"position", {
   pointingDelta: XY
   heading: XY
   velocityResets: number
+  follows: string | undefined
 }> & {
   lastCollided: number
   screenFixed: boolean
@@ -32,6 +33,7 @@ export type PositionProps = {
   speed?: number
   velocityResets?: number
   screenFixed?: boolean
+  follows?: string
 }
 
 // the entity's position in the world
@@ -48,7 +50,8 @@ export const Position = (props: PositionProps = {}): Position => {
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
       heading: { x: NaN, y: NaN },
-      velocityResets: props.velocityResets ?? 0
+      velocityResets: props.velocityResets ?? 0,
+      follows: props.follows ?? undefined
     },
     orientation: "r",
     orientationRads: 0,
@@ -118,4 +121,27 @@ export const Position = (props: PositionProps = {}): Position => {
     }
   }
   return position;
+}
+
+export const PositionSystem: SystemBuilder<"PositionSystem"> = {
+  id: "PositionSystem",
+  init: (world) => ({
+    id: "PositionSystem",
+    query: ["position"],
+    onTick: (entities: Entity<Position>[]) => {
+      entities.forEach(entity => {
+
+        const { position } = entity.components;
+
+        if (position.data.follows) {
+          const following = world.entities[position.data.follows]
+
+          if (following && following.components.position) {
+            const { x, y, velocity, pointing, pointingDelta, speed } = following.components.position.data;
+            position.data = { ...position.data, x, y, velocity, pointing, pointingDelta, speed }
+          }
+        }
+      })
+    }
+  })
 }

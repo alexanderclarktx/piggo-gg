@@ -51,6 +51,7 @@ export const PvEHUD = (): Entity => {
               icons[i] = undefined
             }
 
+            // TODO handle icons changing
             if (item && !icons[i]) {
               const textures = loadTextureCached(`${item.components.name.data.name}.json`)
               if (!textures) continue
