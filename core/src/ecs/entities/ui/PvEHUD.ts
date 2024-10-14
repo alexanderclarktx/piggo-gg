@@ -44,7 +44,7 @@ export const PvEHUD = (): Entity => {
           })
 
           // update icons
-          for (let i = 0; i < 8; i++) {
+          for (let i = 0; i < squares.length; i++) {
             const item = inventory.items[i]
             if (!item && icons[i]) {
               c.removeChild(icons[i]!)

@@ -6,6 +6,8 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
   const { target } = params
   if (!target || !world.entities[target.id]) return
 
+  if (target.components.collider?.active === false) return
+
   world.removeEntity(target.id)
 
   if (entity.components.renderable?.scale) {

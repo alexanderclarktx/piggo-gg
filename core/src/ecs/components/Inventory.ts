@@ -1,6 +1,11 @@
-import { Actions, Character, Component, Effects, Entity, Input, Name, Position, Renderable, SystemBuilder, Team } from "@piggo-gg/core"
+import {
+  Actions, Character, Component, Effects, Entity, Input,
+  Name, Position, Renderable, SystemBuilder, Team
+} from "@piggo-gg/core"
 
 export type Item = Entity<Name | Position | Actions | Effects | Renderable>
+export const Item = Entity<Name | Position | Actions | Effects | Renderable>
+
 export type ItemBuilder = (character: Character) => Item
 
 export type Inventory = Component<"inventory"> & {
@@ -8,6 +13,7 @@ export type Inventory = Component<"inventory"> & {
   itemBuilders: ItemBuilder[]
   activeItemIndex: number
   activeItem: () => Item | null
+  addItem: (item: Item) => void
   setActiveItemIndex: (index: number) => void
 }
 
@@ -18,6 +24,11 @@ export const Inventory = (items: ((character: Character) => Item)[]): Inventory 
     itemBuilders: items,
     activeItemIndex: 0,
     activeItem: () => inventory.items[inventory.activeItemIndex] ?? null,
+    addItem: (item: Item) => {
+      if (!inventory.items.map(x => x.id).includes(item.id)) {
+        inventory.items.push(item)
+      }
+    },
     setActiveItemIndex: (index: number) => {
       inventory.activeItemIndex = index
     }

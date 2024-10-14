@@ -52,9 +52,10 @@ export const World = ({ commands, games, renderer, runtimeMode }: WorldProps): W
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3);
 
   const filterEntities = (query: ValidComponents[], entities: Entity[]): Entity[] => {
-    return entities.filter((e) => {
+    return entities.filter(e => {
       for (const componentType of query) {
         if (!keys(e.components).includes(componentType)) return false;
+        if (e.components[componentType]?.active === false) return false;
       }
       return true;
     });

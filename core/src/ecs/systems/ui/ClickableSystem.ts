@@ -1,4 +1,4 @@
-import { Clickable, ClientSystemBuilder, Entity, Position, Renderable, XY, checkBounds, mouse } from "@piggo-gg/core"
+import { Clickable, ClientSystemBuilder, Entity, InvokedAction, Position, Renderable, XY, checkBounds, mouse, stringify } from "@piggo-gg/core"
 import { FederatedPointerEvent } from "pixi.js"
 
 export const clickableClickedThisFrame = {
@@ -63,8 +63,14 @@ export const ClickableSystem = ClientSystemBuilder({
 
         if (hoveredEntity) {
           const { clickable, position } = hoveredEntity.components
-          const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
-          if (!hovering) {
+
+          if (entities.find(e => e.id === hoveredEntity.id)) {
+            const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
+            if (!hovering) {
+              if (clickable.hoverOut) clickable.hoverOut(world)
+              hoveredEntityId = undefined
+            }
+          } else {
             if (clickable.hoverOut) clickable.hoverOut(world)
             hoveredEntityId = undefined
           }
@@ -99,7 +105,10 @@ export const ClickableSystem = ClientSystemBuilder({
             const { clickable, networked } = clicked.components
 
             if (clickable.click) {
-              const invocation = clickable.click({ world })
+              const invocation: InvokedAction = {
+                ...clickable.click({ world }),
+                playerId: world.client?.playerId()
+              }
 
               if (networked && networked.isNetworked) {
                 world.actionBuffer.push(world.tick + 1, clicked.id, invocation)

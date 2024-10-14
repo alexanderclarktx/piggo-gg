@@ -1,5 +1,5 @@
 import {
-  Actions, Character, Effects, ElementKinds, Entity, Item, Name,
+  Actions, Character, Effects, ElementKinds, Item, Name,
   Renderable, SpawnHitbox, ValidSounds, Whack, XYdifferent,
   abs, hypot, loadTexture, min, mouseScreen, randomInt
 } from "@piggo-gg/core"
@@ -11,7 +11,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
 
   let mouseLast = { x: 0, y: 0 }
 
-  const tool: Item = Entity({
+  const tool = Item({
     id: `${character.id}-${name}-${randomInt(1000)}`,
     components: {
       name: Name(name),
