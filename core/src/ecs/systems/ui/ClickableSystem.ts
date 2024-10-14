@@ -1,4 +1,4 @@
-import { Clickable, ClientSystemBuilder, Entity, Position, Renderable, XY, checkBounds, mouse } from "@piggo-gg/core"
+import { Clickable, ClientSystemBuilder, Entity, InvokedAction, Position, Renderable, XY, checkBounds, mouse, stringify } from "@piggo-gg/core"
 import { FederatedPointerEvent } from "pixi.js"
 
 export const clickableClickedThisFrame = {
@@ -63,9 +63,15 @@ export const ClickableSystem = ClientSystemBuilder({
 
         if (hoveredEntity) {
           const { clickable, position } = hoveredEntity.components
-          const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
-          if (!hovering) {
-            if (clickable.hoverOut) clickable.hoverOut()
+
+          if (entities.find(e => e.id === hoveredEntity.id)) {
+            const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
+            if (!hovering) {
+              if (clickable.hoverOut) clickable.hoverOut(world)
+              hoveredEntityId = undefined
+            }
+          } else {
+            if (clickable.hoverOut) clickable.hoverOut(world)
             hoveredEntityId = undefined
           }
         }
@@ -79,11 +85,11 @@ export const ClickableSystem = ClientSystemBuilder({
           if (clickable.active && clickable.hoverOver && hoveredEntityId?.id !== entity.id) {
             const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
             if (hovering) {
-              clickable.hoverOver()
+              clickable.hoverOver(world)
 
               if (hoveredEntity) {
                 const { clickable: hoveredClickable } = hoveredEntity.components
-                if (hoveredClickable.hoverOut) hoveredClickable.hoverOut()
+                if (hoveredClickable.hoverOut) hoveredClickable.hoverOut(world)
               }
               hoveredEntityId = { id: entity.id, zIndex: renderable.c.zIndex }
               break
@@ -91,26 +97,27 @@ export const ClickableSystem = ClientSystemBuilder({
           }
         }
 
-        bufferClick.forEach((click) => {
-          const clickWorld = renderer.camera.toWorldCoords(click)
+        // TODO does this make sense? just using hovered entity
+        if (bufferClick.length) {
+          const clicked = getHoveredEntity()
 
-          entities.forEach((entity) => {
-            const { clickable, position, networked } = entity.components
-            if (!clickable.active || !clickable.click) return
+          if (clicked) {
+            const { clickable, networked } = clicked.components
 
-            const clicked = checkBounds(renderer, position, clickable, click, clickWorld)
-            if (clicked) {
-              clickableClickedThisFrame.set(world.tick)
-              const invocation = clickable.click({ world })
+            if (clickable.click) {
+              const invocation: InvokedAction = {
+                ...clickable.click({ world }),
+                playerId: world.client?.playerId()
+              }
 
               if (networked && networked.isNetworked) {
-                world.actionBuffer.push(world.tick + 1, entity.id, invocation)
+                world.actionBuffer.push(world.tick + 1, clicked.id, invocation)
               } else {
-                world.actionBuffer.push(world.tick, entity.id, invocation)
+                world.actionBuffer.push(world.tick, clicked.id, invocation)
               }
             }
-          })
-        })
+          }
+        }
         bufferClick = []
       }
     }

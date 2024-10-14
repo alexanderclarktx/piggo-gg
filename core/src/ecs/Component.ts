@@ -2,23 +2,23 @@ import {
   Actions, Clickable, Collider, Controlling, Data, Debug, Name,
   Effects, Expires, Gun, Health, Input, NPC, Networked, Player,
   Position, Renderable, Team, Money, XY, entries, keys, Inventory,
-  Food, Element
+  Food, Element, Droppable
 } from "@piggo-gg/core";
 
 export type ComponentTypes =
   Actions | Clickable | Collider | Controlling | Element |
   Data | Debug | Effects | Expires | Health | Food |
   Input | Team | Networked | NPC | Player | Name |
-  Position | Renderable | Gun | Money | Inventory
+  Position | Renderable | Gun | Money | Inventory | Droppable
 
-export type ValidComponents = ComponentTypes[keyof ComponentTypes]
+export type ValidComponents = ComponentTypes["type"]
 
-export type NetworkedComponentData = Record<string, boolean | string | number | string[] | number[] | XY>
+export type NetworkedComponentData = Record<string, undefined | boolean | string | number | string[] | number[] | XY>
 
-// 個 gè (generic measure word)
 // a Component is an atomic unit of data that is attached to an entity
 export type Component<type extends string = string, D extends NetworkedComponentData | undefined = undefined> = {
   type: type
+  active?: boolean
 } & (D extends undefined ? {} : { data: D })
 
 export const serializeComponent = (c: Component<string, NetworkedComponentData>): NetworkedComponentData => {

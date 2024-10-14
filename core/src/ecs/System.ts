@@ -1,6 +1,5 @@
 import { Entity, NetworkedComponentData, ValidComponents, World } from "@piggo-gg/core";
 
-// 制 zhì (system)
 // a System is a function that runs on every tick
 export interface System<T extends string = string> {
   id: T,

@@ -25,6 +25,7 @@ export type Renderable = Component<"renderable"> & {
   scaleMode: "nearest" | "linear"
   visible: boolean
   zIndex: number
+
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined

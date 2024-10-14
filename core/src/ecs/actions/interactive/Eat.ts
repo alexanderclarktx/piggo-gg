@@ -6,6 +6,8 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
   const { target } = params
   if (!target || !world.entities[target.id]) return
 
+  if (target.components.collider?.active === false) return
+
   world.removeEntity(target.id)
 
   if (entity.components.renderable?.scale) {
@@ -14,6 +16,6 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
 
   if (entity.components.collider) {
     // @ts-expect-error
-    entity.components.collider.colliderDesc.shape.radius *= 1.2
+    entity.components.collider.colliderDesc.shape.radius *= 1.1
   }
 })

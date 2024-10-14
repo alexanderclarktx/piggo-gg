@@ -1,6 +1,6 @@
 import {
   Actions, Axe, Character, Collider, Debug,
-  DefaultJoystickHandler, Effects, Element, Entity, Health, Input,
+  DefaultJoystickHandler, Drop, Effects, Element, Entity, Health, Input,
   Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
   Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
@@ -21,6 +21,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       input: Input({
         press: {
           ...WASDInputMap.press,
+          "g": () => ({ action: "drop"}),
           "1": () => ({ action: "setActiveItemIndex", params: { index: 0 } }),
           "2": () => ({ action: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ action: "setActiveItemIndex", params: { index: 2 } }),
@@ -30,9 +31,10 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
         joystick: DefaultJoystickHandler
       }),
       actions: Actions<{}>({
-        "move": Move,
-        "point": Point,
-        "setActiveItemIndex": setActiveItemIndex
+        move: Move,
+        point: Point,
+        setActiveItemIndex,
+        drop: Drop
       }),
       effects: Effects(),
       renderable: Renderable({

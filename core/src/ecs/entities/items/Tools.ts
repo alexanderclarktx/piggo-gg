@@ -1,6 +1,6 @@
 import {
-  Actions, Character, Effects, ElementKinds, Entity, Item, Name,
-  Renderable, SpawnHitbox, ValidSounds, Whack, XYdifferent,
+  Actions, Character, Clickable, Debug, Droppable, Effects, ElementKinds, Item, Name,
+  Pickup, Position, Renderable, SpawnHitbox, ValidSounds, Whack, XYdifferent,
   abs, hypot, loadTexture, min, mouseScreen, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
@@ -11,19 +11,32 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
 
   let mouseLast = { x: 0, y: 0 }
 
-  const tool: Item = Entity({
+  const tool = Item({
     id: `${character.id}-${name}-${randomInt(1000)}`,
     components: {
       name: Name(name),
-      position: character.components.position,
-      actions: Actions<any>({
-        "mb1": Whack(sound, (e => {
+      position: Position({ follows: character.id }),
+      actions: Actions({
+        mb1: Whack(sound, (e => {
           const { element } = e.components
           return damage[element?.data.kind ?? "flesh"]
         })),
-        "spawnHitbox": SpawnHitbox
+        spawnHitbox: SpawnHitbox,
+        pickup: Pickup
       }),
+      droppable: Droppable(false),
       effects: Effects(),
+      clickable: Clickable({
+        width: 20, height: 20, active: true, anchor: { x: 0.5, y: 0.5 },
+        click: () => ({ action: "pickup" }),
+        hoverOver: () => {
+          tool.components.renderable.setOutline(0xffffff, 2)
+        },
+        hoverOut: () => {
+          tool.components.renderable.setOutline(0x000000, 1)
+        },
+      }),
+      debug: Debug(),
       renderable: Renderable({
         scaleMode: "nearest",
         zIndex: character.components.renderable.zIndex,
@@ -33,29 +46,32 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
         visible: false,
         rotates: true,
         dynamic: (_, r) => {
-          const { pointingDelta, rotation } = character.components.position.data
+          const { pointingDelta, rotation } = tool.components.position.data
 
           if (rotation) {
-            character.components.position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
+            tool.components.position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
           }
 
-          if (XYdifferent(mouseScreen, mouseLast)) {
+          if (!tool.components.droppable.dropped) {
 
-            const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
+            if (XYdifferent(mouseScreen, mouseLast)) {
 
-            const hyp_x = pointingDelta.x / hypotenuse
-            const hyp_y = pointingDelta.y / hypotenuse
+              const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
 
-            r.position = {
-              x: hyp_x * min(20, abs(pointingDelta.x)),
-              y: hyp_y * min(20, abs(pointingDelta.y)) - 5
+              const hyp_x = pointingDelta.x / hypotenuse
+              const hyp_y = pointingDelta.y / hypotenuse
+
+              r.position = {
+                x: hyp_x * min(20, abs(pointingDelta.x)),
+                y: hyp_y * min(20, abs(pointingDelta.y)) - 5
+              }
+
+              const flip = pointingDelta.x > 0 ? 1 : -1
+              r.setScale({ x: flip, y: 1 })
             }
 
-            const flip = pointingDelta.x > 0 ? 1 : -1
-            r.setScale({ x: flip, y: 1 })
+            mouseLast = mouseScreen
           }
-
-          mouseLast = mouseScreen
         },
         setup: async (r: Renderable) => {
           const textures = await loadTexture(`${name}.json`)
@@ -70,6 +86,6 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
   return tool
 }
 
-export const Axe = Tool("axe", "thud", {flesh: 15, wood: 25, rock: 10})
-export const Sword = Tool("sword", "slash", {flesh: 25, wood: 10, rock: 10})
-export const Pickaxe = Tool("pickaxe", "clink", {flesh: 10, wood: 10, rock: 25})
+export const Axe = Tool("axe", "thud", { flesh: 15, wood: 25, rock: 10 })
+export const Sword = Tool("sword", "slash", { flesh: 25, wood: 10, rock: 10 })
+export const Pickaxe = Tool("pickaxe", "clink", { flesh: 10, wood: 10, rock: 25 })
