@@ -10,7 +10,7 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
   const { position } = entity.components
   if (!position) return
 
-  if (character.components.position.data.pointingDelta.x > 0) {
+  if (position.data.pointingDelta.x > 0) {
     position.rotateUp(1)
   } else {
     position.rotateDown(1)
