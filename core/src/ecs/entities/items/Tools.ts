@@ -77,7 +77,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
         interpolate: true,
         visible: false,
         rotates: true,
-        dynamic: dynamicItem(mouseLast, true),
+        // dynamic: dynamicItem(mouseLast, true),
         setup: async (r: Renderable) => {
           const textures = await loadTexture(`${name}.json`)
 
