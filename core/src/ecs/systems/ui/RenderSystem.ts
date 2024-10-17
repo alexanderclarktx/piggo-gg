@@ -198,29 +198,6 @@ export const RenderSystem = ClientSystemBuilder({
 
           let dx = velocity.x * elapsedTime / 1000;
           let dy = velocity.y * elapsedTime / 1000;
-          // if (entity.id.startsWith("skelly")) {
-          //   console.log(
-          //     // "dx", dx,
-          //     // "dy", dy,
-          //     "x", x,
-          //     "y", y,
-          //     "vx", velocity.x,
-          //     "vy", velocity.y
-          //   )
-          // }
-
-          // if (entity.id.startsWith("skelly")) {
-          //   console.log(
-          //     // entity.id,
-          //     // "dx", dx,
-          //     // "dy", dy,
-          //     "x", x,
-          //     "y", y,
-          //     "vx", velocity.x,
-          //     "vy", velocity.y
-          //   )
-          // }
-          
 
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
 

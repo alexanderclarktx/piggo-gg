@@ -1,10 +1,10 @@
 import {
-  Actions, Character, Component, Droppable, Effects, Entity, Input,
+  Actions, Character, Component, Equip, Effects, Entity, Input,
   Name, Position, Renderable, SystemBuilder, Team
 } from "@piggo-gg/core"
 
-export type Item = Entity<Name | Position | Actions | Effects | Renderable | Droppable>
-export const Item = Entity<Name | Position | Actions | Effects | Renderable | Droppable>
+export type Item = Entity<Name | Position | Actions | Effects | Renderable | Equip>
+export const Item = Entity<Name | Position | Actions | Effects | Renderable | Equip>
 
 export type ItemBuilder = (character: Character) => Item
 
@@ -30,7 +30,6 @@ export const Inventory = (items: ((character: Character) => Item)[]): Inventory 
         let inserted = false
 
         inventory.items.forEach((slot, index) => {
-          console.log("slot", slot, index)
           if (!slot && !inserted) {
             inventory.items[index] = item
             inserted = true
@@ -76,11 +75,17 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           if (!world.entities[item.id]) world.addEntity(item)
 
           item.components.renderable.visible = false
+          item.components.equip.equipped = false
+
+          // values(item.components).forEach(component => {
+          //   component.active = false
+          // })
 
           const activeItem = inventory.activeItem()
 
           if (activeItem) {
             activeItem.components.renderable.visible = true
+            activeItem.components.equip.equipped = true
           }
         })
       })

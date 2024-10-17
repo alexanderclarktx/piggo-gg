@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Collider, Debug, Droppable, Effects, Element,
+  Actions, Clickable, Collider, Debug, Equip, Effects, Element,
   Food, Health, Item, Name, Networked, PickupItem, Position,
   Renderable, XY, dynamicItem, loadTexture, randomInt
 } from "@piggo-gg/core"
@@ -23,10 +23,10 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
       collider: Collider({
         shape: "ball",
         isStatic: true,
-        radius: 6,
+        radius: 5,
         hittable: false
       }),
-      droppable: Droppable(true),
+      equip: Equip({ dropped: true }),
       actions: Actions({ pickup: PickupItem }),
       clickable: Clickable({
         width: 16, height: 16, active: true, anchor: { x: 0.5, y: 0.5 },
@@ -49,7 +49,7 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
         scaleMode: "nearest",
         interpolate: true,
         cullable: true,
-        dynamic: dynamicItem(mouseLast, false),
+        dynamic: dynamicItem({ mouseLast, flip: false }),
         setup: async (r: Renderable) => {
 
           const texture = (await loadTexture("apple.json"))["0"]

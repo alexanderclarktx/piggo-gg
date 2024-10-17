@@ -1,4 +1,7 @@
-import { ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Position, Renderable, TextBox, entries, physics, values } from "@piggo-gg/core";
+import {
+  ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText,
+  Position, Renderable, TextBox, entries, physics, values
+} from "@piggo-gg/core";
 import { Graphics, Text } from "pixi.js";
 
 // DebugSystem adds visual debug information to renderered entities
@@ -17,10 +20,10 @@ export const DebugSystem = ClientSystemBuilder({
           if (renderable && position) {
             const bounds = renderable.c.getLocalBounds();
             c.position.set(bounds.x, bounds.top - 25);
-            c.text = debugText(position, renderable);
+            c.text = debugText(position);
           }
         },
-        fontSize: 12, color: 0x00ff00
+        fontSize: 8, color: 0x00ff00
       });
 
       // debug bounds
@@ -43,7 +46,7 @@ export const DebugSystem = ClientSystemBuilder({
       const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
-          position: Position(),
+          position,
           renderable: Renderable({
             zIndex: 4,
             interpolate: true,
@@ -101,7 +104,7 @@ export const DebugSystem = ClientSystemBuilder({
       debugEntitiesPerEntity["collider-debug"] = [debugEntity];
     }
 
-    const debugText = (p: Position, r: Renderable) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
+    const debugText = (p: Position) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)}`;
 
     return {
       id: "DebugSystem",
@@ -130,9 +133,9 @@ export const DebugSystem = ClientSystemBuilder({
             const entity = world.entities[id] as Entity<Position>;
             if (entity) {
               // update debug entity positions
-              debugEntities.forEach((debugEntity) => {
-                debugEntity.components.position = entity.components.position;
-              });
+              // debugEntities.forEach((debugEntity) => {
+              //   debugEntity.components.position = entity.components.position;
+              // });
             } else {
               // handle old entities
               debugEntities.forEach((debugEntity) => {

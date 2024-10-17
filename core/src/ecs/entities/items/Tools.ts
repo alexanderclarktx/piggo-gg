@@ -1,5 +1,5 @@
 import {
-  Actions, Character, Clickable, Debug, Droppable, Effects, ElementKinds, Item, Name,
+  Actions, Character, Clickable, Debug, Equip, Effects, ElementKinds, Item, Name,
   PickupItem, Position, Renderable, SpawnHitbox, ValidSounds, Whack, XY, XYdifferent,
   abs, hypot, loadTexture, min, mouseScreen, randomInt
 } from "@piggo-gg/core"
@@ -7,7 +7,7 @@ import { Sprite } from "pixi.js"
 
 type ElementToDamage = Record<ElementKinds, number>
 
-export const dynamicItem = (mouseLast: XY, flip: boolean) => async (_: any, r: Renderable, item: Item) => {
+export const dynamicItem = ({ mouseLast, flip }: { mouseLast: XY, flip: boolean }) => async (_: any, r: Renderable, item: Item) => {
   const { pointingDelta, rotation, follows } = item.components.position.data
   if (!follows) return
 
@@ -15,7 +15,7 @@ export const dynamicItem = (mouseLast: XY, flip: boolean) => async (_: any, r: R
     item.components.position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
   }
 
-  if (!item.components.droppable.dropped) {
+  if (!item.components.equip.dropped) {
 
     if (XYdifferent(mouseScreen, mouseLast)) {
 
@@ -24,6 +24,7 @@ export const dynamicItem = (mouseLast: XY, flip: boolean) => async (_: any, r: R
       const hyp_x = pointingDelta.x / hypotenuse
       const hyp_y = pointingDelta.y / hypotenuse
 
+      // TODO use some kind of follow-offset mechanism on Position (to get piggos to chase)
       r.position = {
         x: hyp_x * min(20, abs(pointingDelta.x)),
         y: hyp_y * min(20, abs(pointingDelta.y)) - 5
@@ -44,7 +45,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
   let mouseLast = { x: 0, y: 0 }
 
   const tool = Item({
-    id: `${character.id}-${name}-${randomInt(1000)}`,
+    id: `${name}-${randomInt(1000)}`,
     components: {
       name: Name(name),
       position: Position({ follows: character.id }),
@@ -56,7 +57,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
         spawnHitbox: SpawnHitbox,
         pickup: PickupItem
       }),
-      droppable: Droppable(false),
+      equip: Equip(),
       effects: Effects(),
       clickable: Clickable({
         width: 20, height: 20, active: true, anchor: { x: 0.5, y: 0.5 },
@@ -77,7 +78,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
         interpolate: true,
         visible: false,
         rotates: true,
-        // dynamic: dynamicItem(mouseLast, true),
+        dynamic: dynamicItem({ mouseLast, flip: true }),
         setup: async (r: Renderable) => {
           const textures = await loadTexture(`${name}.json`)
 
