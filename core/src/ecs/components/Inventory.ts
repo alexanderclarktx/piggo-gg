@@ -63,11 +63,10 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           inventory.itemBuilders = []
         }
 
+        // reset state for all items
         inventory.items.forEach(item => {
-
           if (!item) return
 
-          // TODO this should be typed
           if (item.components.input) {
             throw new Error("Item cannot have input component (it breaks InputSystem)")
           }
@@ -76,18 +75,14 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
 
           item.components.renderable.visible = false
           item.components.equip.equipped = false
-
-          // values(item.components).forEach(component => {
-          //   component.active = false
-          // })
-
-          const activeItem = inventory.activeItem()
-
-          if (activeItem) {
-            activeItem.components.renderable.visible = true
-            activeItem.components.equip.equipped = true
-          }
         })
+
+        // set state for active item
+        const activeItem = inventory.activeItem()
+        if (activeItem) {
+          activeItem.components.renderable.visible = true
+          activeItem.components.equip.equipped = true
+        }
       })
     }
   })

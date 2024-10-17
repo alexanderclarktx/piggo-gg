@@ -129,10 +129,10 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
   components: {
     name: Name(name),
     position: character.components.position,
-    actions: Actions<any>({
-      "spawnHitbox": SpawnHitbox,
-      "mb1": Shoot,
-      "reload": Reload
+    actions: Actions({
+      spawnHitbox: SpawnHitbox,
+      mb1: Shoot,
+      reload: Reload
     }),
     gun: gun(),
     effects: Effects(),
