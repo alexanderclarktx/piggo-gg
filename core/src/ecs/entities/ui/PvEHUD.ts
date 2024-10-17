@@ -57,10 +57,13 @@ export const PvEHUD = (): Entity => {
               if (!textures) continue
 
               const slotSprite = new AnimatedSprite([textures["0"]])
+
               slotSprite.position.set(start + (width / 2) + i * (width + 10), height / 2)
-              slotSprite.scale.set(5)
+              slotSprite.scale.set(2 * item.components.renderable.scale)
               slotSprite.anchor.set(0.5)
+
               c.addChild(slotSprite)
+
               icons[i] = slotSprite
             }
           }
