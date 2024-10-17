@@ -1,7 +1,7 @@
 import {
-  Actions, Clickable, Collider, Debug, Droppable, Effects, Element,
-  Food, Health, Item, Name, Networked, Pickup, Position,
-  Renderable, XY, loadTexture, randomInt
+  Actions, Clickable, Collider, Debug, Equip, Effects, Element,
+  Food, Health, Item, Name, Networked, PickupItem, Position,
+  Renderable, XY, dynamicItem, loadTexture, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
@@ -11,6 +11,9 @@ export type AppleProps = {
 }
 
 export const Apple = ({ position, id }: AppleProps = {}) => {
+
+  let mouseLast = { x: 0, y: 0 }
+
   const apple = Item({
     id: id ?? `apple-${randomInt(1000)}`,
     components: {
@@ -20,35 +23,16 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
       collider: Collider({
         shape: "ball",
         isStatic: true,
-        radius: 6,
+        radius: 5,
         hittable: false
       }),
-      droppable: Droppable(true),
-      actions: Actions({ pickup: Pickup }),
+      equip: Equip({ dropped: true }),
+      actions: Actions({ pickup: PickupItem }),
       clickable: Clickable({
         width: 16, height: 16, active: true, anchor: { x: 0.5, y: 0.5 },
         click: () => ({ action: "pickup" }),
         hoverOver: (world) => {
           apple.components.renderable.setOutline(0xffffff, 2)
-
-          // const { x, y } = apple.components.position.data
-          // const tooltip = Entity({
-          //   id: "tooltip",
-          //   components: {
-          //     position: Position({ x, y: y - 20, screenFixed: false }),
-          //     renderable: Renderable({
-          //       zIndex: 10,
-          //       scale: 1,
-          //       scaleMode: "nearest",
-          //       cullable: true,
-          //       setContainer: async () => {
-          //         const texture = (await loadTexture("key.json"))["0"]
-          //         return new Sprite({ texture, anchor: { x: 0.5, y: 0.5 } })
-          //       }
-          //     })
-          //   }
-          // })
-          // world.addEntity(tooltip)
         },
         hoverOut: () => {
           apple.components.renderable.setOutline(0xffffff, 0)
@@ -63,7 +47,9 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
         zIndex: 3,
         scale: 1,
         scaleMode: "nearest",
+        interpolate: true,
         cullable: true,
+        dynamic: dynamicItem({ mouseLast, flip: false }),
         setup: async (r: Renderable) => {
 
           const texture = (await loadTexture("apple.json"))["0"]

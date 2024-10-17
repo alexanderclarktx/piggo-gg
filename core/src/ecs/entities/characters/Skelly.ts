@@ -1,6 +1,6 @@
 import {
   Actions, Axe, Character, Collider, Debug,
-  DefaultJoystickHandler, Drop, Effects, Element, Entity, Health, Input,
+  DefaultJoystickHandler, DropItem, Effects, Element, Entity, Health, Input,
   Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
   Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
@@ -34,7 +34,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
         move: Move,
         point: Point,
         setActiveItemIndex,
-        drop: Drop
+        drop: DropItem
       }),
       effects: Effects(),
       renderable: Renderable({

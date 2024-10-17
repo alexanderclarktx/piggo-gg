@@ -1,10 +1,10 @@
 import {
-  Actions, Character, Component, Droppable, Effects, Entity, Input,
+  Actions, Character, Component, Equip, Effects, Entity, Input,
   Name, Position, Renderable, SystemBuilder, Team
 } from "@piggo-gg/core"
 
-export type Item = Entity<Name | Position | Actions | Effects | Renderable | Droppable>
-export const Item = Entity<Name | Position | Actions | Effects | Renderable | Droppable>
+export type Item = Entity<Name | Position | Actions | Effects | Renderable | Equip>
+export const Item = Entity<Name | Position | Actions | Effects | Renderable | Equip>
 
 export type ItemBuilder = (character: Character) => Item
 
@@ -30,7 +30,6 @@ export const Inventory = (items: ((character: Character) => Item)[]): Inventory 
         let inserted = false
 
         inventory.items.forEach((slot, index) => {
-          console.log("slot", slot, index)
           if (!slot && !inserted) {
             inventory.items[index] = item
             inserted = true
@@ -64,11 +63,10 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           inventory.itemBuilders = []
         }
 
+        // reset state for all items
         inventory.items.forEach(item => {
-
           if (!item) return
 
-          // TODO this should be typed
           if (item.components.input) {
             throw new Error("Item cannot have input component (it breaks InputSystem)")
           }
@@ -76,13 +74,15 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           if (!world.entities[item.id]) world.addEntity(item)
 
           item.components.renderable.visible = false
-
-          const activeItem = inventory.activeItem()
-
-          if (activeItem) {
-            activeItem.components.renderable.visible = true
-          }
+          item.components.equip.equipped = false
         })
+
+        // set state for active item
+        const activeItem = inventory.activeItem()
+        if (activeItem) {
+          activeItem.components.renderable.visible = true
+          activeItem.components.equip.equipped = true
+        }
       })
     }
   })
