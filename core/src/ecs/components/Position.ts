@@ -128,7 +128,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   init: (world) => ({
     id: "PositionSystem",
     query: ["position"],
-    onTick: (entities: Entity<Position>[]) => {
+    onRender: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
         const { position } = entity.components;
@@ -138,7 +138,14 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
           if (following && following.components.position) {
             const { x, y, velocity, pointing, pointingDelta, speed } = following.components.position.data;
-            position.data = { ...position.data, x, y, velocity, pointing, pointingDelta, speed }
+            position.data = {
+              ...position.data,
+              x, y,
+              velocity: { ...velocity },
+              pointing,
+              pointingDelta: { ...pointingDelta },
+              speed
+            }
           }
         }
       })

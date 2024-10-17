@@ -1,6 +1,6 @@
 import { Action, Item } from "@piggo-gg/core"
 
-export const Pickup = Action(({player, entity, world}) => {
+export const PickupItem = Action(({player, entity, world}) => {
   if (!entity) return
 
   const character = player?.components.controlling.getControlledEntity(world)
@@ -19,7 +19,7 @@ export const Pickup = Action(({player, entity, world}) => {
   inventory.addItem(entity as Item)
 })
 
-export const Drop = Action(({player, world}) => {
+export const DropItem = Action(({player, world}) => {
   const character = player?.components.controlling.getControlledEntity(world)
   if (!character) return
 
