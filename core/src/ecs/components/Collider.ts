@@ -11,7 +11,6 @@ export type Collider = Component<"collider"> & {
   colliderDesc: ColliderDesc
   rapierCollider: RapierCollider | undefined
   body: RigidBody | undefined
-  frictionAir: number
   priority: number
   hittable: boolean
   sensor: SensorCallback
@@ -35,6 +34,7 @@ export type ColliderProps = {
   sensor?: SensorCallback
 }
 
+// TODO Collider.frictionAir deprecated
 export const Collider = (props: ColliderProps): Collider => {
 
   const { shape, ccd, hittable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority } = props
@@ -80,7 +80,6 @@ export const Collider = (props: ColliderProps): Collider => {
     body: undefined,
     bodyDesc,
     sensor: sensor ?? (() => false),
-    frictionAir: frictionAir ?? 0,
     priority: priority ?? 0,
     hittable: hittable ?? false
   }

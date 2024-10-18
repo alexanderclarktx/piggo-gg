@@ -16,7 +16,7 @@ export const IsometricWorld: WorldBuilder = (props) => {
   world.addSystemBuilders([
     ExpiresSystem, ControlSystem, ClickableSystem, InputSystem, DebugSystem,
     DamageSystem, CommandSystem, NPCSystem, NametagSystem, CooldownSystem,
-    ActionSystem, EffectsSystem, PhysicsSystem, PositionSystem, RenderSystem
+    PhysicsSystem, ActionSystem, EffectsSystem, PositionSystem, RenderSystem
   ]);
 
   return world;

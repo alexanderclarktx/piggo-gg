@@ -17,14 +17,14 @@ export const Rock = ({ position, id }: RockProps = {}) => Entity<Renderable>({
     collider: Collider({
       shape: "ball",
       isStatic: true,
-      radius: 11,
+      radius: 13,
       hittable: true
     }),
     element: Element("rock"),
     health: Health({ health: 100 }),
     debug: Debug(),
     npc: NPC({
-      npcOnTick: (e: Entity<Position>) => {
+      behavior: (e: Entity<Position>) => {
         const { x, y } = e.components.position.data.velocity
         e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y))
       }

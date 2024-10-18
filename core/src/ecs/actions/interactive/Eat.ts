@@ -11,11 +11,11 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
   world.removeEntity(target.id)
 
   if (entity.components.renderable?.scale) {
-    entity.components.renderable.scale += 0.5
+    entity.components.renderable.scale += 0.3
   }
 
   if (entity.components.collider) {
     // @ts-expect-error
-    entity.components.collider.colliderDesc.shape.radius *= 1.1
+    entity.components.collider.colliderDesc.shape.radius += 1
   }
 })

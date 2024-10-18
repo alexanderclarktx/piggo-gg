@@ -25,14 +25,14 @@ export const Tree = ({ position, id }: TreeProps = {}) => {
       health: Health({
         health: 100,
         onDamage: (damage, world) => {
-          if (damage > 20 && randomInt(10) < 5) world.addEntity(
-            Apple({ position: { x: tree.components.position.data.x + randomInt(5), y: tree.components.position.data.y + randomInt(5) } })
+          if (damage > 20 && randomInt(10) < 9) world.addEntity(
+            Apple({ position: { x: tree.components.position.data.x + randomInt(10, 5), y: tree.components.position.data.y + randomInt(10, 5) } })
           )
         }
       }),
       debug: Debug(),
       npc: NPC({
-        npcOnTick: (e: Entity<Position>) => {
+        behavior: (e: Entity<Position>) => {
           const { x, y } = e.components.position.data.velocity
           e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y))
         }
