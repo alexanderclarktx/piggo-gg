@@ -34,17 +34,12 @@ export const DropItem = Action(({player, world}) => {
   const activeItem = inventory.activeItem()
   if (!activeItem) return
 
-  const { equip, position, collider, renderable } = activeItem.components
+  const { equip, position, collider } = activeItem.components
 
   equip.dropped = true
   position.data.follows = undefined
 
-  position.data.x += renderable.position.x
-  position.data.y += renderable.position.y
-
   if (collider) collider.active = true
-
-  renderable.position = { x: 0, y: 0 }
 
   inventory.dropActiveItem()
 }, 10)
