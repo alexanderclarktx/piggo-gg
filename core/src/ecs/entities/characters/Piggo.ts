@@ -54,8 +54,9 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
 const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components
 
-  const edibles = world.queryEntities(["food", "position", "collider"])
-    .filter((e) => !(e.id.includes("piggo"))) as Entity<Food | Position | Collider>[]
+  const edibles = world.queryEntities(["food", "position"])
+    .filter((e) => !(e.id.includes("piggo")))
+    .filter(e => (e.components.equip?.equipped || e.components.equip?.dropped)) as Entity<Food | Position>[]
 
   const closest = closestEntity(edibles, position.data, 200)
 

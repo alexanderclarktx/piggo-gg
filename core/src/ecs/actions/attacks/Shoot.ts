@@ -38,7 +38,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
       expireTicks: 35
     }
 
-    world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnBullet", params: bulletParams })
+    world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnHitbox", params: bulletParams })
 
     playSound(world.client?.sounds[gun.name])
 
