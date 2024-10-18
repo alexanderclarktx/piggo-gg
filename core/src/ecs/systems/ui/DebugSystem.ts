@@ -16,11 +16,12 @@ export const DebugSystem = ClientSystemBuilder({
 
       // text box
       const textBox = TextBox({
-        dynamic: (c: Text) => {
+        dynamic: (c: Text, textRenderable) => {
           if (renderable && position) {
             const bounds = renderable.c.getLocalBounds()
             c.position.set(bounds.x, bounds.top - 25)
             c.text = debugText(position)
+            textRenderable.visible = renderable.visible
           }
         },
         fontSize: 8, color: 0x00ff00

@@ -11,6 +11,7 @@ export type Position = Component<"position", {
   heading: XY
   velocityResets: number
   follows: string | undefined
+  offset: XY
 }> & {
   lastCollided: number
   screenFixed: boolean
@@ -51,7 +52,8 @@ export const Position = (props: PositionProps = {}): Position => {
       pointingDelta: { x: NaN, y: NaN },
       heading: { x: NaN, y: NaN },
       velocityResets: props.velocityResets ?? 0,
-      follows: props.follows ?? undefined
+      follows: props.follows ?? undefined,
+      offset: { x: 0, y: 0 }
     },
     orientation: "r",
     orientationRads: 0,
@@ -141,7 +143,8 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
             position.data = {
               ...position.data,
-              x, y,
+              x: x + position.data.offset.x,
+              y: y + position.data.offset.y,
               pointing,
               speed,
               velocity: { ...velocity },

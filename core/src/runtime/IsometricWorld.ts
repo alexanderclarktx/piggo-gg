@@ -1,7 +1,7 @@
 import {
   ActionSystem, ClickableSystem, CommandSystem, ControlSystem, CooldownSystem,
   DamageSystem, DebugCommand, DebugSystem, EffectsSystem, ExpiresSystem,
-  GameCommand, InputSystem, NPCSystem, NametagSystem, PhysicsSystem,
+  GameCommand, InputSystem, InventorySystem, NPCSystem, NametagSystem, PhysicsSystem,
   PositionSystem, RenderSystem, SpawnCommand, World, WorldBuilder
 } from "@piggo-gg/core";
 import { NameCommand } from "../ecs/commands/NameCommand";
@@ -15,7 +15,7 @@ export const IsometricWorld: WorldBuilder = (props) => {
 
   world.addSystemBuilders([
     ExpiresSystem, ControlSystem, ClickableSystem, InputSystem, DebugSystem,
-    DamageSystem, CommandSystem, NPCSystem, NametagSystem, CooldownSystem,
+    DamageSystem, CommandSystem, NPCSystem, NametagSystem, CooldownSystem, InventorySystem,
     PhysicsSystem, ActionSystem, EffectsSystem, PositionSystem, RenderSystem
   ]);
 
