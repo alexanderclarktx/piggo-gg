@@ -22,14 +22,14 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
       networked: Networked({ isNetworked: true }),
       collider: Collider({
         shape: "ball",
-        frictionAir: 0.7,
+        frictionAir: 0.6,
         radius: 5,
         hittable: false
       }),
       npc: NPC({
         behavior: (e) => {
-          const { x, y } = e.components.position.data.velocity;
-          e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y));
+          const { x, y } = e.components.position.data.velocity
+          e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y))
         }
       }),
       equip: Equip({ dropped: true }),

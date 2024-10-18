@@ -149,8 +149,6 @@ export const RenderSystem = ClientSystemBuilder({
           }
         });
 
-        // console.log("numHidden", numHidden);
-
         // center camera on player's controlled entity
         const playerEntity = world.client?.playerEntity;
         if (playerEntity) {
@@ -196,10 +194,10 @@ export const RenderSystem = ClientSystemBuilder({
             renderer.camera.moveTo({ x, y });
           }
 
-          let dx = velocity.x * elapsedTime / 1000;
-          let dy = velocity.y * elapsedTime / 1000;
-
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
+
+            const dx = velocity.x * elapsedTime / 1000;
+            const dy = velocity.y * elapsedTime / 1000;
 
             renderable.c.position.set(
               x + dx + renderable.position.x,

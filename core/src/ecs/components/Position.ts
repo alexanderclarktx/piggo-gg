@@ -1,4 +1,4 @@
-import { Component, Entity, SystemBuilder, XY, orthoToDirection, round, stringify } from "@piggo-gg/core";
+import { Component, Entity, SystemBuilder, XY, orthoToDirection, round, stringify } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
   x: number
@@ -58,69 +58,69 @@ export const Position = (props: PositionProps = {}): Position => {
     lastCollided: 0,
     screenFixed: props.screenFixed ?? false,
     setPosition: ({ x, y }: XY) => {
-      position.data.x = x;
-      position.data.y = y;
-      return position;
+      position.data.x = x
+      position.data.y = y
+      return position
     },
     setVelocity: ({ x, y }: XY) => {
-      position.data.velocity.x = round(x * 100) / 100;
-      position.data.velocity.y = round(y * 100) / 100;
+      position.data.velocity.x = round(x * 100) / 100
+      position.data.velocity.y = round(y * 100) / 100
 
-      const rads = (Math.atan2(y, x) / Math.PI) * 4 + 4;
-      position.orientationRads = round(rads, 2);
+      const rads = (Math.atan2(y, x) / Math.PI) * 4 + 4
+      position.orientationRads = round(rads, 2)
 
-      if (x || y) position.orientation = orthoToDirection(round(rads) % 8);
+      if (x || y) position.orientation = orthoToDirection(round(rads) % 8)
 
-      return position;
+      return position
     },
     setSpeed: (speed: number) => {
-      position.data.speed = speed;
+      position.data.speed = speed
     },
     setHeading: (xy: XY) => {
-      position.data.heading = xy;
-      return position;
+      position.data.heading = xy
+      return position
     },
     clearHeading: () => {
-      position.data.heading = { x: NaN, y: NaN };
-      return position;
+      position.data.heading = { x: NaN, y: NaN }
+      return position
     },
     updateVelocity: () => {
-      if (!position.data.heading.x || !position.data.heading.y) return position;
-      const dx = position.data.heading.x - position.data.x;
-      const dy = position.data.heading.y - position.data.y;
+      if (!position.data.heading.x || !position.data.heading.y) return position
+      const dx = position.data.heading.x - position.data.x
+      const dy = position.data.heading.y - position.data.y
 
-      const angle = Math.atan2(dy, dx);
-      const Vx = Math.cos(angle) * position.data.speed;
-      const Vy = Math.sin(angle) * position.data.speed;
+      const angle = Math.atan2(dy, dx)
+      const Vx = Math.cos(angle) * position.data.speed
+      const Vy = Math.sin(angle) * position.data.speed
 
-      position.setVelocity({ x: Vx, y: Vy });
+      position.setVelocity({ x: Vx, y: Vy })
 
-      return position;
+      return position
     },
     rotateUp: (amount: number, stopAtZero: boolean = false) => {
-      position.data.rotation += amount;
+      position.data.rotation += amount
 
       if (stopAtZero) {
         if (position.data.rotation > 0 && position.data.rotation - amount < 0) {
-          position.data.rotation = 0;
+          position.data.rotation = 0
         }
       }
 
-      return position;
+      return position
     },
     rotateDown: (amount: number, stopAtZero: boolean = false) => {
-      position.data.rotation -= amount;
+      position.data.rotation -= amount
 
       if (stopAtZero) {
         if (position.data.rotation < 0 && position.data.rotation + amount > 0) {
-          position.data.rotation = 0;
+          position.data.rotation = 0
         }
       }
 
-      return position;
+      return position
     }
   }
-  return position;
+  return position
 }
 
 export const PositionSystem: SystemBuilder<"PositionSystem"> = {
@@ -131,13 +131,13 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
-        const { position } = entity.components;
+        const { position } = entity.components
 
         if (position.data.follows) {
           const following = world.entities[position.data.follows]
 
           if (following && following.components.position) {
-            const { x, y, velocity, pointing, pointingDelta, speed } = following.components.position.data;
+            const { x, y, velocity, pointing, pointingDelta, speed } = following.components.position.data
 
             position.data = {
               ...position.data,
@@ -147,6 +147,8 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
               velocity: { ...velocity },
               pointingDelta: { ...pointingDelta },
             }
+
+            position.lastCollided = following.components.position.lastCollided
           }
         }
       })

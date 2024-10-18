@@ -50,7 +50,6 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
   return piggo
 }
 
-// TODO piggo keeps chasing apple even after it's gone
 const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position, renderable } = entity.components
 
