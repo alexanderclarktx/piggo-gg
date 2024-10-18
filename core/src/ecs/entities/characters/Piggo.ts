@@ -17,7 +17,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked({ isNetworked: true }),
       health: Health({ health: 75 }),
-      npc: NPC({ npcOnTick }),
+      npc: NPC({ behavior }),
       actions: Actions({
         "chase": Chase,
         "eat": Eat
@@ -51,8 +51,9 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
 }
 
 // TODO piggo keeps chasing apple even after it's gone
-const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
-  const { position } = entity.components
+const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
+  const { position, renderable } = entity.components
+
 
   const edibles = world.queryEntities(["food", "position"])
     .filter((e) => !(e.id.includes("piggo")))
@@ -61,7 +62,7 @@ const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction
   const closest = closestEntity(edibles, position.data, 200)
 
   if (closest) {
-    if (XYdelta(position.data, closest.components.position.data) < 20) {
+    if (XYdelta(position.data, closest.components.position.data) < 20 + (0.5 * renderable!.scale * renderable!.scale)) {
       return { action: "eat", params: { target: closest } }
     }
     return { action: "chase", params: { target: closest } }

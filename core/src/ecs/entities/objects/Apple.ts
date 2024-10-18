@@ -27,7 +27,7 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
         hittable: false
       }),
       npc: NPC({
-        npcOnTick: (e) => {
+        behavior: (e) => {
           const { x, y } = e.components.position.data.velocity;
           e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y));
         }

@@ -21,7 +21,7 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
       networked: Networked({ isNetworked: true }),
       health: Health({ health: 60, deathSounds: ["zombieDeath1", "zombieDeath2", "zombieDeath3", "zombieDeath4"] }),
-      npc: NPC({ npcOnTick }),
+      npc: NPC({ behavior }),
       actions: Actions({
         "chase": Chase,
         "attack": ZomiAttack(10, 40)
@@ -61,7 +61,7 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
   return zomi
 }
 
-const npcOnTick = (entity: Entity<Position>, world: World): void | InvokedAction => {
+const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components
 
   const targets = world.queryEntities(["health", "position", "element"])
