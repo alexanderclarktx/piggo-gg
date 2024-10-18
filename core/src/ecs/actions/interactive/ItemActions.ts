@@ -9,11 +9,16 @@ export const PickupItem = Action(({player, entity, world}) => {
   const { inventory } = character.components
   if (!inventory) return
 
-  const { name, position, actions, effects, equip, collider } = entity.components
-  if (!name || !position || !actions || !effects || !equip) return
+  const { name, position, actions, effects, equip, collider, renderable } = entity.components
+  if (!name || !position || !actions || !effects || !equip || !renderable) return
 
   equip.dropped = false
+
   position.data.follows = character.id
+  position.data.rotation = 0
+
+  renderable.visible = false
+
   if (collider) collider.active = false
 
   inventory.addItem(entity as Item)

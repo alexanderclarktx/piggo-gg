@@ -26,7 +26,7 @@ export const Tree = ({ position, id }: TreeProps = {}) => {
         health: 100,
         onDamage: (damage, world) => {
           if (damage > 20 && randomInt(10) < 5) world.addEntity(
-            Apple({ position: { x: tree.components.position.data.x + randomInt(20), y: tree.components.position.data.y + randomInt(20) } })
+            Apple({ position: { x: tree.components.position.data.x + randomInt(5), y: tree.components.position.data.y + randomInt(5) } })
           )
         }
       }),
