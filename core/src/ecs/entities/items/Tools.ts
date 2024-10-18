@@ -25,7 +25,12 @@ export const dynamicItem = ({ mouseLast, flip }: { mouseLast: XY, flip: boolean 
       const hyp_y = pointingDelta.y / hypotenuse
 
       // TODO use some kind of follow-offset mechanism on Position (to get piggos to chase)
-      r.position = {
+      // r.position = {
+        // x: hyp_x * min(20, abs(pointingDelta.x)),
+        // y: hyp_y * min(20, abs(pointingDelta.y)) - 5
+      // }
+
+      item.components.position.data.offset = {
         x: hyp_x * min(20, abs(pointingDelta.x)),
         y: hyp_y * min(20, abs(pointingDelta.y)) - 5
       }

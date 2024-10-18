@@ -16,7 +16,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
-      inventory: Inventory([Sword, Axe, Pickaxe]),
+      inventory: Inventory([Axe, Pickaxe, Sword]),
       element: Element("flesh"),
       input: Input({
         press: {
