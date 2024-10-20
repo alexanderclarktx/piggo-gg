@@ -10,15 +10,6 @@ export const invokeSpawnSkelly = (player: Noob, color?: number, pos?: XY): Invok
   action: "spawnSkelly", playerId: player.id, params: { color, pos }
 })
 
-export const setActiveItemIndex = Action<{ index: number }>(({ params, entity }) => {
-  if (params.index === null || params.index === undefined) return
-
-  const inventory = entity?.components.inventory
-  if (!inventory) return
-
-  inventory.setActiveItemIndex(params.index)
-})
-
 export const spawnSkelly = Action<{ color: number, pos: XY }>(({ player, world, params }) => {
   if (!player) return
 

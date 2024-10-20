@@ -1,5 +1,14 @@
 import { Action, Item } from "@piggo-gg/core"
 
+export const setActiveItemIndex = Action<{ index: number }>(({ params, entity }) => {
+  if (params.index === null || params.index === undefined) return
+
+  const inventory = entity?.components.inventory
+  if (!inventory) return
+
+  inventory.setActiveItemIndex(params.index)
+})
+
 export const PickupItem = Action(({player, entity, world}) => {
   if (!entity) return
 

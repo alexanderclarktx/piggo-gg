@@ -46,7 +46,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
-    soundManager: SoundManager(),
+    soundManager: SoundManager(world),
     playerId: () => {
       return client.playerEntity.id;
     },
