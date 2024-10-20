@@ -17,7 +17,6 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
 
           if (!filterMap[entity.id]) {
             const filter = new ColorMatrixFilter()
-            // filter.matrix = [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]
             filterMap[entity.id] = [1, filter]
             renderable.c.filters = filter
 
