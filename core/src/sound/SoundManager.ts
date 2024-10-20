@@ -20,28 +20,19 @@ export type SoundManager = {
   muted: boolean
   state: "closed" | "running" | "suspended"
   sounds: Record<ValidSounds, Sound>
-  playSound: (sound: ValidSounds | ValidSounds[], startTime?: number) => void
+  play: (sound: ValidSounds | ValidSounds[], startTime?: number) => void
 }
 
 export const SoundManager = (): SoundManager => {
 
   // mute when tab is not visible
-  document.addEventListener("visibilitychange", () => {
-    console.log("visibilitychange", document.hidden)
-    soundManager.muted = document.hidden
-  })
+  document.addEventListener("visibilitychange", () => soundManager.muted = document.hidden)
 
   // mute when window is not focused
-  window.addEventListener("blur", () => {
-    console.log("blur")
-    soundManager.muted = true
-  })
+  window.addEventListener("blur", () => soundManager.muted = true)
 
   // unmute when window is focused
-  window.addEventListener("focus", () => {
-    console.log("focus")
-    soundManager.muted = false
-  })
+  window.addEventListener("focus", () => soundManager.muted = false)
 
   const soundManager: SoundManager = {
     muted: false,
@@ -67,7 +58,7 @@ export const SoundManager = (): SoundManager => {
       eat: load("eat.mp3", -20),
       eat2: load("eat2.mp3", -20)
     },
-    playSound: (soundName: ValidSounds | ValidSounds[], startTime: number = 0) => {
+    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0) => {
       if (soundManager.muted) return
 
       try {

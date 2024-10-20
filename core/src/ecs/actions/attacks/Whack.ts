@@ -30,10 +30,10 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
     visible: false,
     expireTicks: 2,
     onHit: () => {
-      world.client?.soundManager.playSound(sound)
+      world.client?.soundManager.play(sound)
     },
     onExpire: () => {
-      world.client?.soundManager.playSound("whiff")
+      world.client?.soundManager.play("whiff")
     }
   }
 

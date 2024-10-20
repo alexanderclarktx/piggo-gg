@@ -42,7 +42,7 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
 
             // play death sound
             if (health.deathSounds.length > 0) {
-              world.client?.soundManager.playSound(health.deathSounds, 0.1)
+              world.client?.soundManager.play(health.deathSounds, 0.1)
             }
 
             // remove entity
