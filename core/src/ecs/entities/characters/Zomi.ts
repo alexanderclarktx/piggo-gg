@@ -86,5 +86,5 @@ export const ZomiAttack = (damage: number, cooldown: number) => Action<{ target:
   
   target.components.health?.onDamage?.(damage, world)
 
-  world.client?.soundManager.play(["attack1", "attack2", "attack3", "attack4"])
+  world.client?.soundManager.play(["attack1", "attack2", "attack3", "attack4"], 0, target.components.position?.data)
 }, cooldown)

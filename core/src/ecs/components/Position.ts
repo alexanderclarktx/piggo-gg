@@ -1,4 +1,4 @@
-import { Component, Entity, SystemBuilder, XY, orthoToDirection, round, stringify } from "@piggo-gg/core"
+import { Component, Entity, SystemBuilder, XY, orthoToDirection, round } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
   x: number

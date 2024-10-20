@@ -1,4 +1,4 @@
-import { GunNames, isArray, isMobile, randomChoice } from "@piggo-gg/core"
+import { GunNames, isArray, isMobile, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player } from "tone"
 
 export type Sound = Player
@@ -20,10 +20,10 @@ export type SoundManager = {
   muted: boolean
   state: "closed" | "running" | "suspended"
   sounds: Record<ValidSounds, Sound>
-  play: (sound: ValidSounds | ValidSounds[], startTime?: number) => void
+  play: (sound: ValidSounds | ValidSounds[], startTime?: number, pos?: XY) => void
 }
 
-export const SoundManager = (): SoundManager => {
+export const SoundManager = (world: World): SoundManager => {
 
   // mute when tab is not visible
   document.addEventListener("visibilitychange", () => soundManager.muted = document.hidden)
@@ -58,8 +58,17 @@ export const SoundManager = (): SoundManager => {
       eat: load("eat.mp3", -20),
       eat2: load("eat2.mp3", -20)
     },
-    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0) => {
+    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0, pos: XY | undefined = undefined) => {
       if (soundManager.muted) return
+
+      // if the sound is too far away, don't play it
+      if (pos) {
+        const character = world.client?.playerCharacter()
+        if (character) {
+          const distance = XYdistance(character.components.position.data, pos)
+          if (distance > 250) return
+        }
+      }
 
       try {
         if (soundManager.state !== "running") {

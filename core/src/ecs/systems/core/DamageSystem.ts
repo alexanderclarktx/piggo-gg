@@ -12,11 +12,12 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
       query: ["health", "position", "renderable"],
       onTick: (entities: Entity<Health | Position | Renderable>[]) => {
         entities.forEach((entity) => {
-          const { health, renderable } = entity.components
+          const { health, renderable, element } = entity.components
           if (!renderable.initialized) return
 
           if (!filterMap[entity.id]) {
             const filter = new ColorMatrixFilter()
+            // filter.matrix = [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]
             filterMap[entity.id] = [1, filter]
             renderable.c.filters = filter
 
@@ -24,8 +25,12 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
             const originalOnDamage = health.onDamage
             health.onDamage = ((damage, world) => {
               originalOnDamage?.(damage, world)
+
               const newBrightness = 1 + (damage / 25)
+              
               filter.brightness(newBrightness, false)
+              if (element?.data.kind === "flesh") filter.tint(0xff9999, true)
+
               filterMap[entity.id] = [newBrightness, filter]
             })
           }
@@ -34,7 +39,10 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
           const [brightness, filter] = filterMap[entity.id]
           if (brightness > 1) {
             filter.brightness(brightness - 0.1, false)
+            if (element?.data.kind === "flesh") filter.tint(0xff9999, true)
             filterMap[entity.id] = [brightness - 0.1, filter]
+          } else {
+            filter.tint(0xffffff, false)
           }
 
           // handle death
