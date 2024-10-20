@@ -1,4 +1,4 @@
-import { Entity, Health, Position, Renderable, SystemBuilder, playSound, randomChoice } from "@piggo-gg/core"
+import { Entity, Health, Position, Renderable, SystemBuilder } from "@piggo-gg/core"
 import { ColorMatrixFilter } from "pixi.js"
 
 export const DamageSystem: SystemBuilder<"DamageSystem"> = {
@@ -42,7 +42,7 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
 
             // play death sound
             if (health.deathSounds.length > 0) {
-              playSound(world.client?.sounds[randomChoice(health.deathSounds)], 0.1)
+              world.client?.soundManager.playSound(health.deathSounds, 0.1)
             }
 
             // remove entity

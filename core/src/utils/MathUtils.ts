@@ -26,6 +26,10 @@ export const XYdifferent = (a: XY, b: XY, threshold: number = 0) => {
   return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold;
 }
 
+export const XYdistance = (a: XY, b: XY): number => {
+  return hypot(a.x - b.x, a.y - b.y);
+}
+
 export const XYdelta = (a: XY, b: XY): number => {
   return hypot(a.x - b.x, a.y - b.y);
 }

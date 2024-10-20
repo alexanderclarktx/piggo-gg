@@ -1,7 +1,8 @@
 import {
   Character, DelaySyncer, LobbyCreate, LobbyCreateRequest, LobbyJoin,
   LobbyJoinRequest, NetClientSystem, NetMessageTypes, Noob, stringify,
-  RequestData, RequestTypes, Sounds, Syncer, World, genPlayerId
+  RequestData, RequestTypes, Syncer, World, genPlayerId,
+  SoundManager
 } from "@piggo-gg/core";
 
 const servers = {
@@ -20,7 +21,7 @@ export type Client = {
   lobbyId: string | undefined
   lastLatency: number
   lastMessageTick: number
-  sounds: Sounds
+  soundManager: SoundManager
   playerId: () => string
   playerCharacter: () => Character | undefined
   createLobby: (callback: Callback<LobbyCreate>) => void
@@ -46,7 +47,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
-    sounds: Sounds(),
+    soundManager: SoundManager(),
     playerId: () => {
       return client.playerEntity.id;
     },

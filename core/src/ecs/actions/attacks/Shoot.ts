@@ -1,4 +1,4 @@
-import { Action, Character, KeyMouse, SpawnHitboxProps, playSound, randomInt } from "@piggo-gg/core"
+import { Action, Character, KeyMouse, SpawnHitboxProps, randomInt } from "@piggo-gg/core"
 
 export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ world, params, entity }) => {
 
@@ -40,7 +40,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
 
     world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnHitbox", params: bulletParams })
 
-    playSound(world.client?.sounds[gun.name])
+    world.client?.soundManager.playSound(gun.name)
 
     // auto reload
     if (gun.data.clip === 0) {

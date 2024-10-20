@@ -1,4 +1,4 @@
-import { Action, Character, DamageCalculation, KeyMouse, playSound, randomInt, SpawnHitboxProps, ValidSounds } from "@piggo-gg/core"
+import { Action, Character, DamageCalculation, KeyMouse, randomInt, SpawnHitboxProps, ValidSounds } from "@piggo-gg/core"
 
 export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: Character }>(({ world, params, entity }) => {
   if (!entity) return
@@ -30,10 +30,10 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
     visible: false,
     expireTicks: 2,
     onHit: () => {
-      playSound(world.client?.sounds[sound])
+      world.client?.soundManager.playSound(sound)
     },
     onExpire: () => {
-      playSound(world.client?.sounds["whiff"])
+      world.client?.soundManager.playSound("whiff")
     }
   }
 
