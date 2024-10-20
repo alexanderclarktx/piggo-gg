@@ -1,5 +1,5 @@
 import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat";
-import { Collider, Entity, Position, SystemBuilder, abs, entries, keys, round, values } from "@piggo-gg/core";
+import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, entries, keys, round, values } from "@piggo-gg/core";
 
 export let physics: RapierWorld;
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }));
@@ -10,14 +10,14 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
   init: (world) => {
 
     let bodies: Record<string, RigidBody> = {};
-    let colliders: Record<string, Collider> = {};
+    let colliders: Map<Entity<Collider | Position>, Collider> = new Map();
 
     // reset the world state
     const resetPhysics = () => {
       keys(bodies).forEach((id) => {
         delete bodies[id];
-        if (colliders[id]) delete colliders[id];
       });
+      colliders.clear();
       physics.free();
       physics = new RapierWorld({ x: 0, y: 0 });
       physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
@@ -66,7 +66,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
             bodies[entity.id] = body;
 
             // store collider
-            colliders[entity.id] = collider;
+            colliders.set(entity, collider);
           }
 
           // update body position
@@ -104,22 +104,28 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
         });
 
         // sensor callbacks
-        values(colliders).forEach((collider: Collider) => {
+        for (const [entity, collider] of colliders.entries()) {
           if (collider.sensor && collider.rapierCollider) {
+            
             const collidedWith: Entity<Collider | Position>[] = [];
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
-              const collided = entries(colliders).find(([_, c]) => c.rapierCollider === collider2);
-              if (collided && world.entities[collided[0]]) collidedWith.push(world.entities[collided[0]] as Entity<Collider | Position>);
+              const collided = colliders.entries().find(([_, c]) => c.rapierCollider === collider2);
+              if (collided && world.entities[collided[0].id]) collidedWith.push(world.entities[collided[0].id] as Entity<Collider | Position>);
             });
 
             // collide only once
             let collided = false;
-            collidedWith.sort((a, b) => b.components.collider.priority - a.components.collider.priority).forEach((entity) => {
+
+            collidedWith.sort((a, b) => {
+              const aDistance = XYdistance(a.components.position.data, entity.components.position.data);
+              const bDistance = XYdistance(b.components.position.data, entity.components.position.data);
+              return aDistance > bDistance ? 1 : -1;
+            }).forEach((entity) => {
               if (!collided) collided = collider.sensor(entity, world)
             });
-          }
-        });
+          } 
+        };
 
         // clear heading if arrived
         entities.forEach((entity) => {

@@ -1,4 +1,4 @@
-import { Action, LineWall, XY, abs, min, playSound, round, sign } from "@piggo-gg/core";
+import { Action, LineWall, XY, abs, min, round, sign } from "@piggo-gg/core";
 
 export const IceWall = Action<XY>(({ world, params, entity }) => {
   if (!entity || !entity.components.position) return;
@@ -30,6 +30,6 @@ export const IceWall = Action<XY>(({ world, params, entity }) => {
 
   world.addEntity(LineWall({ points: coords, visible: true, health: 30, hittable: false }));
 
-  playSound([world.client?.sounds["wallPlace1"], world.client?.sounds["wallPlace2"]]);
+  world.client?.soundManager.play(["wallPlace1", "wallPlace2"]);
 
 }, 100);

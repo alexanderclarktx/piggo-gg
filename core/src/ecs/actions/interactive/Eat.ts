@@ -1,4 +1,4 @@
-import { Action, Entity, playSound, Position, Sounds } from "@piggo-gg/core"
+import { Action, Entity, Position } from "@piggo-gg/core"
 
 export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world }) => {
   if (!entity) return
@@ -12,7 +12,7 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
     entity.components.renderable.scale += 0.3
   }
 
-  playSound(world.client?.sounds["eat"], 0.2)
+  world.client?.soundManager.play("eat", 0.2)
 
   if (entity.components.collider) {
     // @ts-expect-error

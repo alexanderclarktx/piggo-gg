@@ -59,7 +59,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
       equip: Equip(),
       effects: Effects(),
       clickable: Clickable({
-        width: 20, height: 20, active: true, anchor: { x: 0.5, y: 0.5 },
+        width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 },
         click: () => ({ action: "pickup" }),
         hoverOver: () => {
           tool.components.renderable.setOutline(0xffffff, 2)

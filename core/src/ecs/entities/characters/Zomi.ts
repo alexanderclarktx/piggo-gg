@@ -1,8 +1,7 @@
 import {
-  Actions, Chase, Collider, Debug, Entity, Health, InvokedAction,
-  NPC, Networked, Position, PositionProps, Renderable, World,
-  closestEntity, positionDelta, loadTexture, round, randomInt, max, Element,
-  Action, ZomiAttackSounds, playSound, randomChoice
+  Actions, Chase, Collider, Debug, Entity, Health, InvokedAction, NPC,
+  Networked, Position, PositionProps, Renderable, World, closestEntity,
+  positionDelta, loadTexture, round, randomInt, max, Element, Action
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -84,6 +83,8 @@ export const ZomiAttack = (damage: number, cooldown: number) => Action<{ target:
   if (health) health.data.health -= damage
 
   entity?.components.position?.clearHeading()
+  
+  target.components.health?.onDamage?.(damage, world)
 
-  playSound(world.client?.sounds[randomChoice(["attack1", "attack2", "attack3", "attack4"]) as ZomiAttackSounds])
+  world.client?.soundManager.play(["attack1", "attack2", "attack3", "attack4"])
 }, cooldown)
