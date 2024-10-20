@@ -20,8 +20,8 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
 
   const hurtboxParams: SpawnHitboxProps = {
     pos: {
-      x: position.data.x + Math.cos(angle) * 30,
-      y: position.data.y + Math.sin(angle) * 30,
+      x: position.data.x + Math.cos(angle) * 10,
+      y: position.data.y + Math.sin(angle) * 10,
     },
     team: character.components.team,
     radius: 20,

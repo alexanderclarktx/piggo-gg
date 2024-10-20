@@ -53,7 +53,6 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
 const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position, renderable } = entity.components
 
-
   const edibles = world.queryEntities(["food", "position"])
     .filter((e) => !(e.id.includes("piggo")))
     .filter(e => (e.components.equip?.equipped || e.components.equip?.dropped)) as Entity<Food | Position>[]
