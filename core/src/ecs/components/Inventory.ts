@@ -22,7 +22,7 @@ export type Inventory = Component<"inventory"> & {
 export const Inventory = (items: ((character: Character) => Item)[]): Inventory => {
   const inventory: Inventory = {
     type: "inventory",
-    items: { "1": undefined, "2": undefined, "3": undefined, "4": undefined, "5": undefined },
+    items: { 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined },
     itemBuilders: items,
     activeItemIndex: 0,
     activeItem: () => inventory.items[inventory.activeItemIndex] ?? null,

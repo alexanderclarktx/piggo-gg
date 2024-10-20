@@ -4,13 +4,13 @@ import { getContext, getTransport, Player } from "tone"
 export type Sound = Player
 
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
-
+export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
 export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4"
 export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
 
 export type ValidSounds =
-  GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds
+  GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds
 
 export type Sounds = Record<ValidSounds, Sound>
 
@@ -60,5 +60,7 @@ export const Sounds = (): Sounds => ({
   thud: load("thud.mp3", -15),
   clink: load("clink.mp3", -15),
   whiff: load("whiff.wav", -15),
-  slash: load("slash.mp3", -20)
+  slash: load("slash.mp3", -20),
+  eat: load("eat.mp3", -20),
+  eat2: load("eat2.mp3", -20)
 })
