@@ -26,8 +26,8 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
               originalOnDamage?.(damage, world)
 
               const newBrightness = 1 + (damage / 25)
-              
               filter.brightness(newBrightness, false)
+
               if (element?.data.kind === "flesh") filter.tint(0xff9999, true)
 
               filterMap[entity.id] = [newBrightness, filter]

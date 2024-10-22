@@ -1,9 +1,9 @@
 import {
   Background, ZomiSpawnSystem, FloorTiles, InviteStone,
-  IsometricGame, LineWall, Portal, SkellySpawnSystem, Shop
+  DefaultGame, LineWall, Portal, SkellySpawnSystem, Shop
 } from "@piggo-gg/core";
 
-export const Home = IsometricGame({
+export const Home = DefaultGame({
   id: "home",
   init: () => ({
     id: "home",

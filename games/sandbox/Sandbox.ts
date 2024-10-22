@@ -1,9 +1,9 @@
 import {
-  IsometricGame, Piggo, SkellySpawnSystem, Tree,
-  isMobile, MobilePvEHUD, PvEHUD, Rock, Zomi
+  DefaultGame, Piggo, SkellySpawnSystem, Tree,
+  isMobile, MobilePvEHUD, PvEHUD, Rock, Zomi, Chicko
 } from "@piggo-gg/core"
 
-export const Sandbox = IsometricGame({
+export const Sandbox = DefaultGame({
   id: "sandbox",
   init: () => ({
     id: "sandbox",
@@ -11,6 +11,7 @@ export const Sandbox = IsometricGame({
     entities: [
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       Zomi(),
+      Chicko(), Chicko(),
       Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),

@@ -45,17 +45,17 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
         scaleMode: "nearest",
         animationColor: color ?? 0xffffff,
         setup: async (r) => {
-          const textures = await loadTexture("chars.json")
+          const t = await loadTexture("chars.json")
 
           r.animations = {
-            d: new AnimatedSprite([textures["d1"], textures["d2"], textures["d3"]]),
-            u: new AnimatedSprite([textures["u1"], textures["u2"], textures["u3"]]),
-            l: new AnimatedSprite([textures["l1"], textures["l2"], textures["l3"]]),
-            r: new AnimatedSprite([textures["r1"], textures["r2"], textures["r3"]]),
-            dl: new AnimatedSprite([textures["dl1"], textures["dl2"], textures["dl3"]]),
-            dr: new AnimatedSprite([textures["dr1"], textures["dr2"], textures["dr3"]]),
-            ul: new AnimatedSprite([textures["ul1"], textures["ul2"], textures["ul3"]]),
-            ur: new AnimatedSprite([textures["ur1"], textures["ur2"], textures["ur3"]])
+            d: new AnimatedSprite([t["d1"], t["d2"], t["d3"]]),
+            u: new AnimatedSprite([t["u1"], t["u2"], t["u3"]]),
+            l: new AnimatedSprite([t["l1"], t["l2"], t["l3"]]),
+            r: new AnimatedSprite([t["r1"], t["r2"], t["r3"]]),
+            dl: new AnimatedSprite([t["dl1"], t["dl2"], t["dl3"]]),
+            dr: new AnimatedSprite([t["dr1"], t["dr2"], t["dr3"]]),
+            ul: new AnimatedSprite([t["ul1"], t["ul2"], t["ul3"]]),
+            ur: new AnimatedSprite([t["ur1"], t["ur2"], t["ur3"]])
           }
         }
       })

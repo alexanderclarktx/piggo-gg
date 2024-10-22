@@ -1,6 +1,6 @@
 import { Chat, Cursor, FullscreenButton, GameBuilder, isMobile, Joystick } from "@piggo-gg/core";
 
-export const IsometricGame = <T extends string>(gameBuilder: GameBuilder<T>): GameBuilder<T> => ({
+export const DefaultGame = <T extends string>(gameBuilder: GameBuilder<T>): GameBuilder<T> => ({
   ...gameBuilder,
   init: (world) => {
     const game = gameBuilder.init(world);

@@ -1,11 +1,11 @@
 import {
   Background, Shop, FloorCollidersArray, FloorTilesArray,
-  HealthBarSystem, HomeButton, IsometricGame, Minimap,
+  HealthBarSystem, HomeButton, DefaultGame, Minimap,
   ScorePanel, Scoreboard, SightSystem, isMobile
 } from "@piggo-gg/core";
 import { StrikeSystem } from "@piggo-gg/games";
 
-export const Strike = IsometricGame({
+export const Strike = DefaultGame({
   id: "strike",
   init: () => ({
     id: "strike",

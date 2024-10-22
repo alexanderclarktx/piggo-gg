@@ -12,7 +12,7 @@ export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
 export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds
 
 const load = (url: string, volume: number): Sound => {
-  const player = new Player({ url, volume })
+  const player = new Player({ url, volume: volume - 10 })
   return player.toDestination()
 }
 
