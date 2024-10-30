@@ -1,5 +1,5 @@
 import {
-  Actions, Character, Clickable, Debug, Item, Effects, ElementKinds, ItemEntity, Name,
+  Actions, Character, Clickable, Debug, Item, Effects, ElementKinds, ItemEntity,
   PickupItem, Position, Renderable, SpawnHitbox, ValidSounds, Whack, XY, XYdifferent,
   abs, hypot, loadTexture, min, mouseScreen, randomInt
 } from "@piggo-gg/core"
@@ -15,7 +15,7 @@ export const dynamicItem = ({ mouseLast, flip }: { mouseLast: XY, flip: boolean 
     item.components.position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
   }
 
-  if (!item.components.equip.dropped) {
+  if (!item.components.item.dropped) {
 
     if (XYdifferent(mouseScreen, mouseLast)) {
 
@@ -46,7 +46,6 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
   const tool = ItemEntity({
     id: `${name}-${randomInt(1000)}`,
     components: {
-      name: Name(name),
       position: Position({ follows: character.id }),
       actions: Actions({
         mb1: Whack(sound, (e => {
@@ -56,7 +55,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
         spawnHitbox: SpawnHitbox,
         pickup: PickupItem
       }),
-      equip: Item(),
+      item: Item({ name }),
       effects: Effects(),
       clickable: Clickable({
         width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 },

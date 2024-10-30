@@ -55,7 +55,7 @@ const behavior = (entity: Entity<Position>, world: World): void | InvokedAction 
 
   const edibles = world.queryEntities(["food", "position"])
     .filter((e) => !(e.id.includes("chicko")))
-    .filter(e => (e.components.equip?.equipped || e.components.equip?.dropped)) as Entity<Food | Position>[]
+    .filter(e => (e.components.item?.equipped || e.components.item?.dropped)) as Entity<Food | Position>[]
 
   const closest = closestEntity(edibles, position.data, 200)
 

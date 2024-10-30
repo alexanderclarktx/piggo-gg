@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Collider, Controlling, Data, Debug, Name,
+  Actions, Clickable, Collider, Controlling, Data, Debug,
   Effects, Expires, Gun, Health, Input, NPC, Networked, Player,
   Position, Renderable, Team, Money, XY, entries, keys, Inventory,
   Food, Element, Item
@@ -8,7 +8,7 @@ import {
 export type ComponentTypes =
   Actions | Clickable | Collider | Controlling | Element |
   Data | Debug | Effects | Expires | Health | Food |
-  Input | Team | Networked | NPC | Player | Name |
+  Input | Team | Networked | NPC | Player |
   Position | Renderable | Gun | Money | Inventory | Item
 
 export type ValidComponents = ComponentTypes["type"]

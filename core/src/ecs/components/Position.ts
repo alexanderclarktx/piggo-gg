@@ -18,7 +18,7 @@ export type Position = Component<"position", {
   orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
   orientationRads: number
   setPosition: (_: XY) => Position
-  setVelocity: (_: XY) => Position
+  setVelocity: (_?: XY) => Position
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
@@ -64,7 +64,7 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.y = y
       return position
     },
-    setVelocity: ({ x, y }: XY) => {
+    setVelocity: ({ x, y }: XY = { x: 0, y: 0 }) => {
       position.data.velocity.x = round(x * 100) / 100
       position.data.velocity.y = round(y * 100) / 100
 

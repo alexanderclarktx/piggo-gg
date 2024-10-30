@@ -1,20 +1,22 @@
-import { Actions, Component, Effects, Entity, Name, Renderable, Position } from "@piggo-gg/core";
+import { Actions, Component, Effects, Entity, Renderable, Position } from "@piggo-gg/core";
 
-export type Item = Component<"equip"> & {
+export type Item = Component<"item"> & {
+  name: string
   dropped: boolean
   equipped: boolean
-  stackable?: boolean
+  stackable: boolean
 }
 
 export type ItemProps = {
+  name: string
   dropped?: boolean
   equipped?: boolean
   stackable?: boolean
 }
 
-export const Item = ({ dropped = false, equipped = false, stackable = false }: ItemProps = {}): Item => ({
-  type: "equip", dropped, equipped, stackable
+export const Item = ({ name, dropped = false, equipped = false, stackable = false }: ItemProps): Item => ({
+  type: "item", name, dropped, equipped, stackable
 })
 
-export type ItemEntity = Entity<Name | Position | Actions | Effects | Renderable | Item>
-export const ItemEntity = Entity<Name | Position | Actions | Effects | Renderable | Item>
+export type ItemEntity = Entity<Position | Actions | Effects | Renderable | Item>
+export const ItemEntity = Entity<Position | Actions | Effects | Renderable | Item>

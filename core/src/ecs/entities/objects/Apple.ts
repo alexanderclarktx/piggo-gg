@@ -1,6 +1,6 @@
 import {
   Actions, Clickable, Collider, Debug, Item, Effects, Element,
-  Food, Health, ItemEntity, Name, Networked, PickupItem, Position,
+  Food, Health, ItemEntity, Networked, PickupItem, Position,
   Renderable, XY, dynamicItem, loadTexture, randomInt, NPC
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
@@ -17,7 +17,6 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
   const apple = ItemEntity({
     id: id ?? `apple-${randomInt(1000)}`,
     components: {
-      name: Name("apple"),
       position: Position(position ?? { x: randomInt(1000, 500), y: randomInt(1000, 500) }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({
@@ -28,13 +27,13 @@ export const Apple = ({ position, id }: AppleProps = {}) => {
       }),
       npc: NPC({
         behavior: (e) => {
-          if (!apple.components.equip.dropped) return
+          if (!apple.components.item.dropped) return
 
           const { x, y } = e.components.position.data.velocity
           e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y))
         }
       }),
-      equip: Item({ dropped: true }),
+      item: Item({ name: "apple", dropped: true, stackable: true }),
       actions: Actions({ pickup: PickupItem }),
       clickable: Clickable({
         width: 16, height: 16, active: true, anchor: { x: 0.5, y: 0.5 },
