@@ -34,6 +34,7 @@ export const PickupItem = Action(({player, entity, world}) => {
   inventory.addItem(entity as ItemEntity)
 })
 
+// TODO handle stackable items
 export const DropItem = Action(({player, world}) => {
   const character = player?.components.controlling.getControlledEntity(world)
   if (!character) return

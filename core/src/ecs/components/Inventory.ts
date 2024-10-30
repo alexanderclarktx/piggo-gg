@@ -47,6 +47,12 @@ export const Inventory = (items: ((character: Character) => ItemEntity)[]): Inve
       }
     },
     dropActiveItem: () => {
+      const slot = inventory.items[inventory.activeItemIndex]
+      if (!slot) return
+      if (slot.length > 1) {
+        slot.shift()
+        return
+      }
       inventory.items[inventory.activeItemIndex] = undefined
     },
     setActiveItemIndex: (index: number) => {
