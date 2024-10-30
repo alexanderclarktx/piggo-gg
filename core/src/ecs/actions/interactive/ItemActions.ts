@@ -1,4 +1,4 @@
-import { Action, Item } from "@piggo-gg/core"
+import { Action, ItemEntity } from "@piggo-gg/core"
 
 export const setActiveItemIndex = Action<{ index: number }>(({ params, entity }) => {
   if (params.index === null || params.index === undefined) return
@@ -31,7 +31,7 @@ export const PickupItem = Action(({player, entity, world}) => {
   if (clickable) clickable.active = false
   if (collider) collider.active = false
 
-  inventory.addItem(entity as Item)
+  inventory.addItem(entity as ItemEntity)
 })
 
 export const DropItem = Action(({player, world}) => {

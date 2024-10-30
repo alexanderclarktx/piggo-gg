@@ -45,11 +45,12 @@ export const PvEHUD = (): Entity => {
 
           // update icons
           for (let i = 0; i < squares.length; i++) {
-            const item = inventory.items[i]
-            if (!item && icons[i]) {
+            const slot = inventory.items[i]
+            if (!slot && icons[i]) {
               c.removeChild(icons[i]!)
               icons[i] = undefined
             }
+            const { item } = slot || {}
 
             // TODO handle icons changing
             if (item && !icons[i]) {

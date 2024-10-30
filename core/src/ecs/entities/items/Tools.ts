@@ -1,5 +1,5 @@
 import {
-  Actions, Character, Clickable, Debug, Equip, Effects, ElementKinds, Item, Name,
+  Actions, Character, Clickable, Debug, Item, Effects, ElementKinds, ItemEntity, Name,
   PickupItem, Position, Renderable, SpawnHitbox, ValidSounds, Whack, XY, XYdifferent,
   abs, hypot, loadTexture, min, mouseScreen, randomInt
 } from "@piggo-gg/core"
@@ -7,7 +7,7 @@ import { Sprite } from "pixi.js"
 
 type ElementToDamage = Record<ElementKinds, number>
 
-export const dynamicItem = ({ mouseLast, flip }: { mouseLast: XY, flip: boolean }) => async (_: any, r: Renderable, item: Item) => {
+export const dynamicItem = ({ mouseLast, flip }: { mouseLast: XY, flip: boolean }) => async (_: any, r: Renderable, item: ItemEntity) => {
   const { pointingDelta, rotation, follows } = item.components.position.data
   if (!follows) return
 
@@ -39,11 +39,11 @@ export const dynamicItem = ({ mouseLast, flip }: { mouseLast: XY, flip: boolean 
   }
 }
 
-export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) => (character: Character): Item => {
+export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) => (character: Character): ItemEntity => {
 
   let mouseLast = { x: 0, y: 0 }
 
-  const tool = Item({
+  const tool = ItemEntity({
     id: `${name}-${randomInt(1000)}`,
     components: {
       name: Name(name),
@@ -56,7 +56,7 @@ export const Tool = (name: string, sound: ValidSounds, damage: ElementToDamage) 
         spawnHitbox: SpawnHitbox,
         pickup: PickupItem
       }),
-      equip: Equip(),
+      equip: Item(),
       effects: Effects(),
       clickable: Clickable({
         width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 },
