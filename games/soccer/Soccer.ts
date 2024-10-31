@@ -1,7 +1,7 @@
-import { Background, Ball, Goal, HomeButton, IsometricGame, SkellySpawnSystem, Zomi } from "@piggo-gg/core";
+import { Background, Ball, Goal, HomeButton, DefaultGame, SkellySpawnSystem, Zomi } from "@piggo-gg/core";
 import { FieldGrass, FieldWall } from "@piggo-gg/games";
 
-export const Soccer = IsometricGame({
+export const Soccer = DefaultGame({
   id: "soccer",
   init: () => ({
     id: "soccer",

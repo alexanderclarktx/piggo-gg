@@ -1,5 +1,10 @@
-import { Entity, Position, Renderable, loadTextureCached, pixiRect } from "@piggo-gg/core"
-import { AnimatedSprite, Graphics, Sprite } from "pixi.js"
+import { Entity, Position, Renderable, loadTextureCached, pixiRect, pixiText } from "@piggo-gg/core"
+import { AnimatedSprite, Graphics, Sprite, Text } from "pixi.js"
+
+type SlotVisuals = {
+  icon: Sprite
+  count?: Text | undefined
+}
 
 export const PvEHUD = (): Entity => {
 
@@ -8,7 +13,7 @@ export const PvEHUD = (): Entity => {
   const start = -width * 3
 
   let squares: Graphics[] = []
-  let icons: Record<number, Sprite | undefined> = {}
+  let icons: Record<number, SlotVisuals | undefined> = {}
 
   const hud = Entity<Renderable | Position>({
     id: "PvEHUD",
@@ -45,15 +50,17 @@ export const PvEHUD = (): Entity => {
 
           // update icons
           for (let i = 0; i < squares.length; i++) {
-            const item = inventory.items[i]
-            if (!item && icons[i]) {
-              c.removeChild(icons[i]!)
+            const slot = inventory.items[i]
+            if (!slot && icons[i]) {
+              c.removeChild(icons[i]!.icon)
               icons[i] = undefined
             }
+            if (!slot) continue
+            const item = slot[0]
 
-            // TODO handle icons changing
+            // set up new icon
             if (item && !icons[i]) {
-              const textures = loadTextureCached(`${item.components.name.data.name}.json`)
+              const textures = loadTextureCached(`${item.components.item.name}.json`)
               if (!textures) continue
 
               const slotSprite = new AnimatedSprite([textures["0"]])
@@ -62,9 +69,17 @@ export const PvEHUD = (): Entity => {
               slotSprite.scale.set(2 * item.components.renderable.scale)
               slotSprite.anchor.set(0.5)
 
-              c.addChild(slotSprite)
+              const count = item.components.item.stackable ?
+                pixiText({ text: `${slot!.length}`, pos: { x: 4, y: 0 }, style: { fontSize: 12, fill: 0xffffff } }) :
+                undefined
 
-              icons[i] = slotSprite
+              icons[i] = { icon: slotSprite, count }
+
+              c.addChild(slotSprite)
+              if (count) slotSprite.addChild(count)
+            } else {
+              const { count } = icons[i] || {}
+              if (count) count.text = `${slot!.length}`
             }
           }
         }

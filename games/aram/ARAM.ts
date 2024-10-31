@@ -1,6 +1,6 @@
-import { Background, FloorTiles, HomeButton, IsometricGame, LineWall, SkellySpawnSystem } from "@piggo-gg/core";
+import { Background, FloorTiles, HomeButton, DefaultGame, LineWall, SkellySpawnSystem } from "@piggo-gg/core";
 
-export const ARAM = IsometricGame({
+export const ARAM = DefaultGame({
   id: "aram",
   init: () => ({
     id: "aram",

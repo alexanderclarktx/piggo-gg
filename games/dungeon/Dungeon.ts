@@ -1,5 +1,5 @@
 import {
-  ZomiSpawnSystem, IsometricGame,
+  ZomiSpawnSystem, DefaultGame,
   LineWall, SkellySpawnSystem, Shop, LineFloor,
   HomeButton, Background, ShopButton, HealthBarSystem
 } from "@piggo-gg/core";
@@ -11,7 +11,7 @@ const dim = 16;
 const x = -700;
 const y = 500;
 
-export const Dungeon = IsometricGame({
+export const Dungeon = DefaultGame({
   id: "dungeon",
   init: () => ({
     id: "dungeon",

@@ -18,4 +18,4 @@ export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world
     // @ts-expect-error
     entity.components.collider.colliderDesc.shape.radius += 1
   }
-})
+}, 40)
