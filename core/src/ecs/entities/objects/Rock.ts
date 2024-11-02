@@ -17,7 +17,7 @@ export const Rock = ({ position, id }: RockProps = {}) => Entity<Renderable>({
     collider: Collider({
       shape: "ball",
       isStatic: true,
-      radius: 13,
+      radius: 8,
       hittable: true
     }),
     element: Element("rock"),
@@ -31,7 +31,7 @@ export const Rock = ({ position, id }: RockProps = {}) => Entity<Renderable>({
     }),
     renderable: Renderable({
       zIndex: 3,
-      scale: 1.5,
+      scale: 1,
       scaleMode: "nearest",
       cullable: true,
       setup: async (r: Renderable) => {
