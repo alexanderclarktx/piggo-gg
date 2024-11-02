@@ -1,7 +1,6 @@
 import {
   Actions, Component, Item, Effects, Entity, ItemBuilder, Reload, Renderable,
-  Shoot, SpawnHitbox, World, abs, hypot, loadTexture, min, randomInt,
-  Clickable
+  Shoot, SpawnHitbox, World, abs, hypot, loadTexture, min, randomInt, Clickable
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 

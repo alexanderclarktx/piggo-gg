@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Collider, Debug, Item, Effects, Element,
+  Actions, Clickable, Collider, Item, Effects, Element,
   Food, Health, ItemEntity, Networked, Position,
   Renderable, XY, loadTexture, randomInt, NPC
 } from "@piggo-gg/core"

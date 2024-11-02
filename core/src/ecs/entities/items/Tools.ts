@@ -1,6 +1,6 @@
 import {
-  Actions, Character, Clickable, Debug, Effects, ElementKinds, Item,
-  ItemEntity, PickupItem, Position, Renderable, SpawnHitbox,
+  Actions, Character, Clickable, Effects, ElementKinds, Item,
+  ItemEntity, Position, Renderable, SpawnHitbox,
   ValidSounds, Whack, loadTexture, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"

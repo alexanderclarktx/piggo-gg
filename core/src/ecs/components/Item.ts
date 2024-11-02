@@ -1,4 +1,7 @@
-import { Actions, Component, Effects, Entity, Renderable, Position, ProtoEntity, XY, XYdifferent, abs, hypot, min, mouseScreen, Clickable, PickupItem, Debug } from "@piggo-gg/core";
+import {
+  Actions, Component, Effects, Entity, Renderable, Position, ProtoEntity, XY,
+  XYdifferent, abs, hypot, min, mouseScreen, Clickable, PickupItem, Debug
+} from "@piggo-gg/core"
 
 export type Item = Component<"item"> & {
   name: string
