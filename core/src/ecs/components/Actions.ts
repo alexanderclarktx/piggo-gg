@@ -27,7 +27,7 @@ export type Actions = Component<"actions"> & {
   actionMap: ActionMap
 }
 
-export const Actions = <P extends {} = {}>(actionMap: ActionMap<P>): Actions => ({
+export const Actions = <P extends {} = {}>(actionMap: ActionMap<P> = {}): Actions => ({
   type: "actions",
   actionMap
 })

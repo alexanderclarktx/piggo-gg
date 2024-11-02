@@ -39,12 +39,14 @@ export const Tree = ({ position, id }: TreeProps = {}) => {
       }),
       renderable: Renderable({
         zIndex: 3,
+        // scale: 1,
         scale: 3,
         scaleMode: "nearest",
         cullable: true,
         setup: async (r: Renderable) => {
 
           const texture = (await loadTexture("c_tiles.json"))["tree"]
+          // const texture = (await loadTexture("wood.json"))["0"]
           const sprite = new Sprite(texture)
 
           sprite.anchor.set(0.5, 0.6)

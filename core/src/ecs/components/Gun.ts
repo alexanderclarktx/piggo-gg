@@ -1,6 +1,7 @@
 import {
   Actions, Component, Item, Effects, Entity, ItemBuilder, Reload, Renderable,
-  Shoot, SpawnHitbox, World, abs, hypot, loadTexture, min, randomInt
+  Shoot, SpawnHitbox, World, abs, hypot, loadTexture, min, randomInt,
+  Clickable
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -139,6 +140,7 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
     gun: gun(),
     effects: Effects(),
     item: Item({ name }),
+    clickable: Clickable({ width: 0, height: 0, active: false }),
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 2,
@@ -147,6 +149,7 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
       position: { x: 20, y: 0 },
       interpolate: true,
       visible: false,
+      outline: { color: 0x000000, thickness: 1 },
       dynamic: (_, r) => {
         const { pointing, pointingDelta } = character.components.position.data
 
@@ -177,8 +180,6 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
           "6": new AnimatedSprite([textures["6"]]),
           "7": new AnimatedSprite([textures["7"]]),
         }
-
-        r.setOutline(0x000000)
       }
     })
   }
