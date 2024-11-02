@@ -36,7 +36,7 @@ export type Renderable = Component<"renderable"> & {
   setScale: (xy: XY) => void
   _init: (renderer: Renderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
-  setOutline: (_?: { color: number, thickness: number}) => void
+  setOutline: (_?: { color: number, thickness: number }) => void
   cleanup: () => void
 }
 
@@ -121,7 +121,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
         renderable.bufferedAnimation = animationKey
       }
     },
-    setOutline: (props?: { color: number, thickness: number}) => {
+    setOutline: (props?: { color: number, thickness: number }) => {
       const { thickness, color } = props ?? renderable.outline
       if (keys(renderable.animations).length) {
         values(renderable.animations).forEach((animation) => {
