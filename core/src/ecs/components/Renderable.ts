@@ -62,13 +62,6 @@ export type RenderableProps = {
 
 export const Renderable = (props: RenderableProps): Renderable => {
 
-  const overrideDynamic = (dynamic: ((c: Container, r: Renderable, e: Entity, w: World) => void) | undefined) => {
-    return (c: Container, r: Renderable, e: Entity, w: World) => {
-      if (dynamic) dynamic(c, r, e, w)
-      if (c.renderable !== r.visible) c.renderable = r.visible
-    }
-  }
-
   const renderable: Renderable = {
     type: "renderable",
     activeAnimation: "",
@@ -82,7 +75,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     color: props.color ?? 0xffffff,
     children: undefined,
     cullable: props.cullable ?? false,
-    dynamic: overrideDynamic(props.dynamic),
+    dynamic: props.dynamic,
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,
     initialized: false,
