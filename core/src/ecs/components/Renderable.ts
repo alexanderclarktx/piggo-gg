@@ -21,6 +21,7 @@ export type Renderable = Component<"renderable"> & {
   rendered: boolean
   renderer: Renderer
   rotates: boolean
+  outline: { color: number, thickness: number }
   scale: number
   scaleMode: "nearest" | "linear"
   visible: boolean
@@ -35,7 +36,7 @@ export type Renderable = Component<"renderable"> & {
   setScale: (xy: XY) => void
   _init: (renderer: Renderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
-  setOutline: (color: number, thickness?: number) => void
+  setOutline: (_?: { color: number, thickness: number }) => void
   cleanup: () => void
 }
 
@@ -50,6 +51,7 @@ export type RenderableProps = {
   interpolate?: boolean
   position?: { x: number, y: number }
   rotates?: boolean
+  outline?: { color: number, thickness: number }
   scale?: number
   scaleMode?: "nearest" | "linear"
   visible?: boolean
@@ -61,13 +63,6 @@ export type RenderableProps = {
 }
 
 export const Renderable = (props: RenderableProps): Renderable => {
-
-  const overrideDynamic = (dynamic: ((c: Container, r: Renderable, e: Entity, w: World) => void) | undefined) => {
-    return (c: Container, r: Renderable, e: Entity, w: World) => {
-      if (dynamic) dynamic(c, r, e, w)
-      if (c.renderable !== r.visible) c.renderable = r.visible
-    }
-  }
 
   const renderable: Renderable = {
     type: "renderable",
@@ -82,12 +77,13 @@ export const Renderable = (props: RenderableProps): Renderable => {
     color: props.color ?? 0xffffff,
     children: undefined,
     cullable: props.cullable ?? false,
-    dynamic: overrideDynamic(props.dynamic),
+    dynamic: props.dynamic,
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,
     initialized: false,
     position: props.position ?? { x: 0, y: 0 },
     rotates: props.rotates ?? false,
+    outline: props.outline ?? { color: 0x000000, thickness: 0 },
     scale: props.scale ?? 1,
     scaleMode: props.scaleMode ?? "linear",
     setChildren: props.setChildren ?? undefined,
@@ -125,7 +121,8 @@ export const Renderable = (props: RenderableProps): Renderable => {
         renderable.bufferedAnimation = animationKey
       }
     },
-    setOutline: (color: number, thickness: number = 1) => {
+    setOutline: (props?: { color: number, thickness: number }) => {
+      const { thickness, color } = props ?? renderable.outline
       if (keys(renderable.animations).length) {
         values(renderable.animations).forEach((animation) => {
           animation.filters = [new OutlineFilter({ thickness, color })]
@@ -183,6 +180,9 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.c.zIndex = renderable.zIndex || 0
       renderable.c.sortableChildren = true
       renderable.c.alpha = 1
+
+      // outline
+      if (renderable.outline) renderable.setOutline()
 
       if (keys(renderable.animations).length) {
         renderable.prepareAnimations(renderable.animationColor)

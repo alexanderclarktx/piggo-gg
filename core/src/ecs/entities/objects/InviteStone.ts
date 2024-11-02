@@ -48,10 +48,10 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
         width: 64,
         height: 48,
         hoverOver: () => {
-          portal.components.renderable.setOutline(0xffff00, 0.1);
+          portal.components.renderable.setOutline({ color: 0xffff00, thickness: 0.1 });
         },
         hoverOut: () => {
-          portal.components.renderable.setOutline(0xffff00, 0);
+          portal.components.renderable.setOutline({ color: 0xffff00, thickness: 0 });
         }
       }),
       renderable: Renderable({

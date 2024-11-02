@@ -1,4 +1,4 @@
-import { Component, ComponentTypes, NetworkedComponentData, deserializeComponent, entries, keys, serializeComponent, values } from "@piggo-gg/core";
+import { Component, ComponentTypes, NetworkedComponentData, deserializeComponent, entries, keys, serializeComponent, values } from "@piggo-gg/core"
 
 // an Entity is a uniquely identified set of Components
 export type Entity<T extends ComponentTypes = ComponentTypes> = {
@@ -29,21 +29,21 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
     extend: (components: ComponentTypes[]) => {
       components.forEach(component => {
         // @ts-expect-error
-        entity.components[component.type] = component;
-      });
-      return entity;
+        entity.components[component.type] = component
+      })
+      return entity
     },
     serialize: () => {
-      const serializedEntity: SerializedEntity = {};
+      const serializedEntity: SerializedEntity = {}
 
-      const sortedComponents = values(protoEntity.components).sort((a: Component, b: Component) => a.type.localeCompare(b.type));
+      const sortedComponents = values(protoEntity.components).sort((a: Component, b: Component) => a.type.localeCompare(b.type))
       sortedComponents.forEach((component: Component<string, NetworkedComponentData>) => {
-        const serializedComponent = serializeComponent(component);
+        const serializedComponent = serializeComponent(component)
         if (keys(serializedComponent).length) {
-          serializedEntity[component.type] = serializedComponent;
+          serializedEntity[component.type] = serializedComponent
         }
-      });
-      return serializedEntity;
+      })
+      return serializedEntity
     },
     deserialize: (serializedEntity: SerializedEntity) => deserializeEntity(entity, serializedEntity)
   }
@@ -56,14 +56,14 @@ export const deserializeEntity = (entity: ProtoEntity, serializedEntity: Seriali
   // deprecated
   keys(serializedEntity).forEach((type) => {
     if (!(type in entity.components)) {
-      console.error(`MISSING COMPONENT type=${type} entity=${entity.id}`);
+      console.error(`MISSING COMPONENT type=${type} entity=${entity.id}`)
     }
-  });
+  })
 
   entries(serializedEntity).forEach(([type, serializedComponent]) => {
     if (type in entity.components) {
       // @ts-expect-error
-      deserializeComponent(entity.components[type], serializedComponent);
+      deserializeComponent(entity.components[type], serializedComponent)
     }
-  });
+  })
 }
