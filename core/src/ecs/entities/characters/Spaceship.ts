@@ -1,5 +1,5 @@
-import { Actions, Clickable, Collider, Debug, Entity, Input, Networked, Position, Renderable, VehicleMovement, XY, controlEntity, loadTexture, random, randomInt } from "@piggo-gg/core";
-import { AnimatedSprite } from "pixi.js";
+import { Actions, Clickable, Collider, Debug, Entity, Input, Networked, Position, Renderable, VehicleMovement, XY, controlEntity, loadTexture, random, randomInt } from "@piggo-gg/core"
+import { AnimatedSprite } from "pixi.js"
 
 export type SpaceshipProps = {
   id?: string
@@ -33,12 +33,12 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       rotates: true,
       zIndex: 3,
       setup: async (r: Renderable) => {
-        const texture = (await loadTexture("spaceship.json"))["spaceship"];
-        const sprite = new AnimatedSprite([texture]);
-        sprite.scale = { x: 2, y: 2 };
-        sprite.anchor.set(0.5, 0.5);
-        r.c = sprite;
+        const texture = (await loadTexture("spaceship.json"))["spaceship"]
+        const sprite = new AnimatedSprite([texture])
+        sprite.scale = { x: 2, y: 2 }
+        sprite.anchor.set(0.5, 0.5)
+        r.c = sprite
       }
     })
   }
-});
+})

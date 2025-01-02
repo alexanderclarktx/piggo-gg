@@ -1,47 +1,47 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, XY, values, Character } from "@piggo-gg/core";
+import { Entity, Position, Renderable, ClientSystemBuilder, XY, values, Character } from "@piggo-gg/core"
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
-    if (!world.renderer) return undefined;
+    if (!world.renderer) return undefined
 
-    const renderer = world.renderer;
-    let lastOntick = Date.now();
-    let centeredEntity: Character | undefined = undefined;
+    const renderer = world.renderer
+    let lastOntick = Date.now()
+    let centeredEntity: Character | undefined = undefined
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
-      const { renderable, position } = entity.components;
+      const { renderable, position } = entity.components
 
-      await renderable._init(renderer, world);
+      await renderable._init(renderer, world)
 
       if (position) renderable.c.position.set(
         position.data.x + renderable.position.x,
         position.data.y + renderable.position.y
-      );
+      )
 
       if (position.screenFixed) {
-        renderer.addGui(renderable);
+        renderer.addGui(renderable)
       } else {
-        renderer.addWorld(renderable);
+        renderer.addWorld(renderable)
       }
     }
 
     // updates the position of screenFixed entities
     const updateScreenFixed = (entity: Entity<Renderable | Position>) => {
-      const { position, renderable } = entity.components;
-      if (!position.screenFixed) return;
+      const { position, renderable } = entity.components
+      if (!position.screenFixed) return
 
       if (position.data.x < 0) {
-        renderable.c.x = renderer.app.screen.width + position.data.x;
+        renderable.c.x = renderer.app.screen.width + position.data.x
       } else {
-        renderable.c.x = position.data.x;
+        renderable.c.x = position.data.x
       }
 
       if (position.data.y < 0) {
-        renderable.c.y = renderer.app.screen.height + position.data.y;
+        renderable.c.y = renderer.app.screen.height + position.data.y
       } else {
-        renderable.c.y = position.data.y;
+        renderable.c.y = position.data.y
       }
     }
 
@@ -50,30 +50,30 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       onTick: (entities: Entity<Renderable | Position>[]) => {
 
-        lastOntick = Date.now();
+        lastOntick = Date.now()
 
-        const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 };
-        const { width, height } = renderer.app.screen;
-        const cameraScale = renderer.camera.c.scale.x - 0.9;
+        const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 }
+        const { width, height } = renderer.app.screen
+        const cameraScale = renderer.camera.c.scale.x - 0.9
 
         // todo this is calculating difference from centered entity, not the camera
         const isFarFromCamera = ({ x, y }: XY) => {
-          return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2);
+          return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2)
         }
 
         if (renderer.resizedFlag) {
           renderer.guiRenderables.forEach((renderable) => {
-            renderer.app.stage.removeChild(renderable.c);
-            renderable.rendered = false;
-          });
+            renderer.app.stage.removeChild(renderable.c)
+            renderable.rendered = false
+          })
 
-          renderer.resizedFlag = false;
+          renderer.resizedFlag = false
         }
 
-        let numHidden = 0;
+        let numHidden = 0
 
         entities.forEach((entity) => {
-          const { position, renderable } = entity.components;
+          const { position, renderable } = entity.components
 
           // cull if far from camera
           if (renderable.cullable && !position.screenFixed && renderable.c.children) {
@@ -81,34 +81,34 @@ export const RenderSystem = ClientSystemBuilder({
               child.visible = !isFarFromCamera({
                 x: position.data.x + child.position.x,
                 y: position.data.y + child.position.y
-              });
+              })
 
-              if (!child.visible) numHidden++;
-            });
+              if (!child.visible) numHidden++
+            })
           }
 
           // render if new entity
           if (!renderable.rendered) {
-            renderable.rendered = true;
-            renderNewEntity(entity);
+            renderable.rendered = true
+            renderNewEntity(entity)
           }
 
           // update rotation
           if (renderable.rotates) {
-            renderable.c.rotation = position.data.rotation;
+            renderable.c.rotation = position.data.rotation
           }
 
           // update position
           renderable.c.position.set(
             position.data.x + renderable.position.x,
             position.data.y + renderable.position.y
-          );
+          )
 
-          renderable.c.tint = renderable.color;
+          renderable.c.tint = renderable.color
 
           // set buffered ortho animation
           if (!renderable.bufferedAnimation) {
-            renderable.bufferedAnimation = position.orientation;
+            renderable.bufferedAnimation = position.orientation
           }
 
           // handle buffered animations
@@ -117,29 +117,29 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.animations[renderable.bufferedAnimation]
           ) {
             // remove current animation
-            if (renderable.animation) renderable.c.removeChild(renderable.animation);
+            if (renderable.animation) renderable.c.removeChild(renderable.animation)
 
             // set new animation
-            renderable.animation = renderable.animations[renderable.bufferedAnimation];
+            renderable.animation = renderable.animations[renderable.bufferedAnimation]
 
             // add animation to container
-            renderable.c.addChild(renderable.animation);
+            renderable.c.addChild(renderable.animation)
 
             // play the animation
-            renderable.animation.play();
+            renderable.animation.play()
 
             // set activeAnimation
-            renderable.activeAnimation = renderable.bufferedAnimation;
-            renderable.bufferedAnimation = "";
+            renderable.activeAnimation = renderable.bufferedAnimation
+            renderable.bufferedAnimation = ""
           }
 
           // reset buffered animation
           if (renderable.bufferedAnimation === renderable.activeAnimation) {
-            renderable.bufferedAnimation = "";
+            renderable.bufferedAnimation = ""
           }
 
           // run the dynamic callback
-          if (renderable.dynamic && renderable.initialized) renderable.dynamic(renderable.c, renderable, entity, world);
+          if (renderable.dynamic && renderable.initialized) renderable.dynamic(renderable.c, renderable, entity, world)
 
           // set visible
           if (renderable.c.renderable !== renderable.visible) renderable.c.renderable = renderable.visible
@@ -147,72 +147,72 @@ export const RenderSystem = ClientSystemBuilder({
           // run dynamic on children
           if (renderable.children && renderable.initialized) {
             renderable.children.forEach((child) => {
-              if (child.dynamic) child.dynamic(child.c, child, entity, world);
-            });
+              if (child.dynamic) child.dynamic(child.c, child, entity, world)
+            })
           }
-        });
+        })
 
         // center camera on player's controlled entity
-        const playerEntity = world.client?.playerEntity;
+        const playerEntity = world.client?.playerEntity
         if (playerEntity) {
-          const character = playerEntity.components.controlling.getControlledEntity(world);
-          if (character) centeredEntity = character;
+          const character = playerEntity.components.controlling.getControlledEntity(world)
+          if (character) centeredEntity = character
         }
 
         // sort cache by position (closeness to camera)
         const sortedEntityPositions = values(entities).sort((a, b) => {
           return a.components.renderable.c.position.y - b.components.renderable.c.position.y
-        });
+        })
 
         // sort entities by zIndex
         sortedEntityPositions.forEach((entity, index) => {
-          const renderable = entity.components.renderable;
+          const renderable = entity.components.renderable
           if (renderable) {
-            renderable.c.zIndex = renderable.zIndex + 0.0001 * index;
+            renderable.c.zIndex = renderable.zIndex + 0.0001 * index
           }
-        });
+        })
 
         // update screenFixed entities
         values(world.entities).forEach((entity) => {
           if (entity.components.renderable && entity.components.position) {
-            updateScreenFixed(entity as Entity<Renderable | Position>);
+            updateScreenFixed(entity as Entity<Renderable | Position>)
           }
-        });
+        })
       },
       onRender(entities: Entity<Renderable | Position>[]) {
-        const elapsedTime = Date.now() - lastOntick;
+        const elapsedTime = Date.now() - lastOntick
 
         // interpolate entity positions
         entities.forEach((entity) => {
-          const { position, renderable } = entity.components;
+          const { position, renderable } = entity.components
           if (position.screenFixed) {
             if (renderable.interpolate) {
-              updateScreenFixed(entity as Entity<Renderable | Position>);
-            } else return;
+              updateScreenFixed(entity as Entity<Renderable | Position>)
+            } else return
           }
 
-          const { x, y, velocity } = position.data;
+          const { x, y, velocity } = position.data
 
           if (centeredEntity && entity.id === centeredEntity.id) {
-            renderer.camera.moveTo({ x, y });
+            renderer.camera.moveTo({ x, y })
           }
 
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
 
-            const dx = velocity.x * elapsedTime / 1000;
-            const dy = velocity.y * elapsedTime / 1000;
+            const dx = velocity.x * elapsedTime / 1000
+            const dy = velocity.y * elapsedTime / 1000
 
             renderable.c.position.set(
               x + dx + renderable.position.x,
               y + dy + renderable.position.y
-            );
+            )
 
             if (centeredEntity && entity.id === centeredEntity.id) {
-              renderer.camera.moveTo({ x: x + dx, y: y + dy });
+              renderer.camera.moveTo({ x: x + dx, y: y + dy })
             }
           }
-        });
+        })
       },
     }
   }
-});
+})

@@ -1,4 +1,4 @@
-import { Command, InvokedAction } from "@piggo-gg/core";
+import { Command, InvokedAction } from "@piggo-gg/core"
 
 type GameCommandParams = { game: string }
 type GameCommandAction = InvokedAction<"game", GameCommandParams>
@@ -14,7 +14,7 @@ export const GameCommand: Command<GameCommandParams> = {
   },
   invoke: ({ params, world }) => {
     if (world.games[params.game] && world.currentGame.id !== params.game) {
-      world.setGame(world.games[params.game]);
+      world.setGame(world.games[params.game])
     }
   }
 }

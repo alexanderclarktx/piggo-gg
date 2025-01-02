@@ -2,8 +2,8 @@ import {
   Background, Shop, FloorCollidersArray, FloorTilesArray,
   HealthBarSystem, HomeButton, DefaultGame, Minimap,
   ScorePanel, Scoreboard, SightSystem, isMobile
-} from "@piggo-gg/core";
-import { StrikeSystem } from "@piggo-gg/games";
+} from "@piggo-gg/core"
+import { StrikeSystem } from "@piggo-gg/games"
 
 export const Strike = DefaultGame({
   id: "strike",

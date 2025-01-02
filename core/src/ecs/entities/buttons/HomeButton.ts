@@ -1,4 +1,4 @@
-import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
+import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core"
 
 export const HomeButton = () => Entity({
   id: "homeButton",
@@ -10,7 +10,7 @@ export const HomeButton = () => Entity({
         invoke: ({ world }) => {
           world.actionBuffer.push(world.tick + 1, "world",
             { action: "game", playerId: world.client?.playerEntity.id, params: { game: "home" } }
-          );
+          )
         }
       }
     }),

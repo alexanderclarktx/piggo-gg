@@ -1,4 +1,4 @@
-import { InvokedAction, SerializedEntity, World, genHash } from "@piggo-gg/core";
+import { InvokedAction, SerializedEntity, World, genHash } from "@piggo-gg/core"
 
 export type Syncer = {
   handleMessage: (world: World, gameData: GameData) => void
@@ -12,10 +12,10 @@ export type Request<Route extends string, Response extends {} = {}> = {
   response: Response & { id: string, error?: string }
 }
 
-export type LobbyList = Request<"lobby/list">;
-export type LobbyCreate = Request<"lobby/create", { lobbyId: string }>;
-export type LobbyJoin = Request<"lobby/join"> & { join: string };
-export type LobbyExit = Request<"lobby/exit">;
+export type LobbyList = Request<"lobby/list">
+export type LobbyCreate = Request<"lobby/create", { lobbyId: string }>
+export type LobbyJoin = Request<"lobby/join"> & { join: string }
+export type LobbyExit = Request<"lobby/exit">
 
 export type LobbyListRequest = Omit<LobbyList, "response">
 export type LobbyCreateRequest = Omit<LobbyCreate, "response">
@@ -40,7 +40,7 @@ export type ResponseData = {
 }
 
 export type RequestTypes = LobbyList | LobbyCreate | LobbyJoin | LobbyExit
-export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>;
+export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
 
 export type NetMessageTypes = GameData | RequestData | ResponseData
 

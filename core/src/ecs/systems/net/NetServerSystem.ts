@@ -1,4 +1,4 @@
-import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo-gg/core";
+import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo-gg/core"
 
 export type DelayServerSystemProps = {
   world: World
@@ -28,61 +28,61 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
       client.send(stringify({
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
-      }));
+      }))
 
       if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
-        latestClientMessages[id].shift();
-        latestClientMessages[id].shift();
+        latestClientMessages[id].shift()
+        latestClientMessages[id].shift()
       } else {
-        latestClientMessages[id]?.shift();
+        latestClientMessages[id]?.shift()
       }
     })
   }
 
   const handleMessage = () => {
     keys(latestClientMessages).forEach((client) => {
-      // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length);
+      // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
 
-      let messages: ({ td: NetMessageTypes, latency: number } | undefined)[];
+      let messages: ({ td: NetMessageTypes, latency: number } | undefined)[]
 
       if (latestClientMessages[client].length > 2) {
         messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
       } else {
         messages = [latestClientMessages[client][0]]
       }
-      if (messages.length === 0) return;
+      if (messages.length === 0) return
 
       messages.forEach((message) => {
-        if (!message) return;
+        if (!message) return
 
-        const tickData = message.td;
-        if (tickData.type !== "game") return;
+        const tickData = message.td
+        if (tickData.type !== "game") return
 
         // process message actions
         if (tickData.actions) {
           keys(tickData.actions).forEach((entityId) => {
             // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
               tickData.actions[entityId].forEach((action) => {
-                world.actionBuffer.push(world.tick, entityId, action);
-              });
+                world.actionBuffer.push(world.tick, entityId, action)
+              })
             // }
-          });
+          })
         }
 
         // process message chats
         if (tickData.chats[client]) {
-          world.chatHistory.set(world.tick, client, tickData.chats[client]);
+          world.chatHistory.set(world.tick, client, tickData.chats[client])
         }
-      });
-    });
+      })
+    })
   }
 
   return {
     id: "NetServerSystem",
     query: [],
     onTick: () => {
-      handleMessage();
-      sendMessage();
+      handleMessage()
+      sendMessage()
     }
   }
 }

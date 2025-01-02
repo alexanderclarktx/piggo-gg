@@ -1,4 +1,4 @@
-import { random, randomInt } from "@piggo-gg/core";
+import { random, randomInt } from "@piggo-gg/core"
 
 export const { stringify } = JSON
 

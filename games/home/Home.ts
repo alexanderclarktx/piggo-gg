@@ -1,7 +1,7 @@
 import {
   Background, ZomiSpawnSystem, FloorTiles, InviteStone,
   DefaultGame, LineWall, Portal, SkellySpawnSystem, Shop
-} from "@piggo-gg/core";
+} from "@piggo-gg/core"
 
 export const Home = DefaultGame({
   id: "home",

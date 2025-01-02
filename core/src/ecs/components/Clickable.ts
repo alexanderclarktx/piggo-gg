@@ -1,6 +1,6 @@
-import { World, Component, InvokedAction, XY } from "@piggo-gg/core";
+import { World, Component, InvokedAction, XY } from "@piggo-gg/core"
 
-export type Bounds = { x: number, y: number, w: number, h: number };
+export type Bounds = { x: number, y: number, w: number, h: number }
 
 export type Clickable = Component<"clickable"> & {
   type: "clickable"

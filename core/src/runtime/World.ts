@@ -130,6 +130,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     queryEntities: (query: ValidComponents[]) => {
       return filterEntities(query, values(world.entities))
     },
+    // TODO rename
     log: (message: string) => {
       world.chatHistory.push(world.tick + 1, "game", message)
     },

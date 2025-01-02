@@ -1,4 +1,4 @@
-import { Component, Entity, World } from "@piggo-gg/core";
+import { Component, Entity, World } from "@piggo-gg/core"
 
 export type Effect = {
   duration: number
@@ -22,8 +22,8 @@ export const Effects = (): Effects => {
       effects.effects[name] = {
         ...effect,
         cdLeft: undefined
-      };
+      }
     }
   }
-  return effects;
+  return effects
 }

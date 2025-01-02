@@ -1,5 +1,5 @@
-import { Collider, Data, Entity, Networked, Position, Renderable, World, XY, pixiText } from "@piggo-gg/core";
-import { Container, Graphics, Text } from "pixi.js";
+import { Collider, Data, Entity, Networked, Position, Renderable, World, XY, pixiText } from "@piggo-gg/core"
+import { Container, Graphics, Text } from "pixi.js"
 
 export type GoalProps = {
   position: XY
@@ -18,17 +18,17 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
 
   const sensor = (e2: Entity<Position>, world: World): boolean => {
     if (e2.id.startsWith("ball") && ((world.tick - data.lastScored) > 100)) {
-      data.goals += 1;
-      data.lastScored = world.tick;
-      e2.components.position.setPosition({ x: 50, y: 350 }).setVelocity({ x: 0, y: 0 });
+      data.goals += 1
+      data.lastScored = world.tick
+      e2.components.position.setPosition({ x: 50, y: 350 }).setVelocity({ x: 0, y: 0 })
       return true
     }
     return false
   }
 
   const render = async (): Promise<Container> => {
-    const c = new Container();
-    const g = new Graphics();
+    const c = new Container()
+    const g = new Graphics()
 
     // draw goal
     g.poly([
@@ -36,18 +36,18 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       2, -width,
       2, width,
       -2, width
-    ]).fill({ color, alpha: 0.9 });
+    ]).fill({ color, alpha: 0.9 })
 
     // goal count
     const t = pixiText({
       text: "0",
       style: { fill: 0xffff00 } }
-    ).updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 });
+    ).updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 })
 
     // goal area
-    c.addChild(g, t);
+    c.addChild(g, t)
 
-    return c;
+    return c
   }
 
   return Entity({
@@ -64,7 +64,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
       }),
       renderable: Renderable({
         dynamic: (c) => {
-          const t = c.children[1] as Text;
+          const t = c.children[1] as Text
           if (t) t.text = `${data.goals}`
         },
         zIndex: 3,

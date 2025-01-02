@@ -38,7 +38,7 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>, props?: ItemEnti
   const { renderable, clickable, actions } = entity.components
 
   // renderable
-  renderable.dynamic = dynamicItem({ mouseLast, flip })
+  if (!renderable.dynamic) renderable.dynamic = dynamicItem({ mouseLast, flip })
 
   // clickable
   clickable.click = () => ({ action: "pickup" })

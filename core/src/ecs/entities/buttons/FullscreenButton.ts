@@ -1,4 +1,4 @@
-import { Action, Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
+import { Action, Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core"
 
 export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
   id: id,
@@ -8,9 +8,9 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
     actions: Actions({
       click: Action(({ world }) => {
         if (!document.fullscreenElement) {
-          world.renderer?.app.canvas.requestFullscreen?.();
+          world.renderer?.app.canvas.requestFullscreen?.()
         } else {
-          document.exitFullscreen();
+          document.exitFullscreen()
         }
       })
     }),
@@ -20,4 +20,4 @@ export const FullscreenButton = (id: string = "fullscreenButton") => Entity({
       text: pixiText({ text: "⛶", style: { fill: 0xffffff, fontSize: 22 } })
     })
   }
-});
+})

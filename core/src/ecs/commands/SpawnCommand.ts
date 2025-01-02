@@ -1,4 +1,4 @@
-import { Ball, Command, Entity, InvokedAction, Spaceship, Zomi, keys } from "@piggo-gg/core";
+import { Ball, Command, Entity, InvokedAction, Spaceship, Zomi, keys } from "@piggo-gg/core"
 
 type SpawnCommandParams = { entity: string }
 type SpawnCommandAction = InvokedAction<"spawn", SpawnCommandParams>
@@ -13,19 +13,19 @@ export const SpawnCommand: Command<SpawnCommandParams> = {
   id: "spawn",
   regex: /\/spawn (\w+)/,
   parse: ({ match, world }): SpawnCommandAction | undefined => {
-    let response: SpawnCommandAction | undefined = undefined;
+    let response: SpawnCommandAction | undefined = undefined
     keys(entityBuilders).forEach((id) => {
       if (id === match[1]) response = {
         action: "spawn", playerId: world.client?.playerId(), params: { entity: id }
       }
-    });
-    return response;
+    })
+    return response
   },
   invoke: ({ params, world }) => {
     keys(entityBuilders).forEach((id) => {
       if (id === params.entity) {
-        world.addEntity(entityBuilders[id]());
+        world.addEntity(entityBuilders[id]())
       }
-    });
+    })
   }
 }

@@ -1,5 +1,5 @@
-import { Collider, Entity, Position, PositionProps, Renderable, Renderer, TeamColors, XY } from "@piggo-gg/core";
-import { Container, Graphics, Matrix, RenderTexture, Sprite } from "pixi.js";
+import { Collider, Entity, Position, PositionProps, Renderable, Renderer, TeamColors, XY } from "@piggo-gg/core"
+import { Container, Graphics, Matrix, RenderTexture, Sprite } from "pixi.js"
 
 export type FloorTilesProps = {
   rows: number
@@ -10,10 +10,10 @@ export type FloorTilesProps = {
   color?: number
 }
 
-let index = 0;
+let index = 0
 
-const width = 64;
-const height = 32;
+const width = 64
+const height = 32
 
 const tileCoordinates = [0, 0, width / 2, height / 2, width, 0, width / 2, -height / 2, 0, 0]
 
@@ -21,7 +21,7 @@ const tileGraphic = (): Graphics => new Graphics()
   .transform(new Matrix(1, 0, 0, 1, 0, 16))
   .poly(tileCoordinates)
   .fill({ color: 0x7777aa, alpha: 1 })
-  .stroke({ width: 1, color: 0x000000 });
+  .stroke({ width: 1, color: 0x000000 })
 
 export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entity({
   id: "floorTilesArray",
@@ -33,75 +33,75 @@ export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entit
       setContainer: async (r: Renderer) => {
 
         // draw the tile
-        const tile = tileGraphic();
+        const tile = tileGraphic()
 
         // create a render texture
-        const texture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
-        r.app.renderer.render({ container: tile, target: texture });
+        const texture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio })
+        r.app.renderer.render({ container: tile, target: texture })
 
-        const c = new Container();
+        const c = new Container()
 
         // create the tiles
         for (let x = 0; x < dim; x++) {
           for (let y = 0; y < dim; y++) {
 
-            const value = tileMap[x * dim + y];
-            let tint = 0x7777aa;
+            const value = tileMap[x * dim + y]
+            let tint = 0x7777aa
 
-            if (value === 0 || value === 10) continue;
+            if (value === 0 || value === 10) continue
 
-            if (value === 37) tint = TeamColors[1];
-            if (value === 64) tint = TeamColors[2];
-            if (value === 19) tint = 0xccaa99;
+            if (value === 37) tint = TeamColors[1]
+            if (value === 64) tint = TeamColors[2]
+            if (value === 19) tint = 0xccaa99
 
-            const child = new Sprite({ texture, tint });
-            child.position.set(y * width / 2 - (x * width / 2), (y + x) * height / 2);
+            const child = new Sprite({ texture, tint })
+            child.position.set(y * width / 2 - (x * width / 2), (y + x) * height / 2)
 
-            c.addChild(child);
+            c.addChild(child)
           }
         }
-        return c;
+        return c
       }
     })
   }
 })
 
 export const FloorCollidersArray = (dim: number, tileMap: number[]): Entity[] => {
-  const entities: Entity[] = [];
-  let coords: number[][] = [];
+  const entities: Entity[] = []
+  let coords: number[][] = []
 
   for (let x = 0; x < dim; x++) {
     for (let y = 0; y < dim; y++) {
 
-      const value = tileMap[x * dim + y];
-      if (value !== 0) continue;
+      const value = tileMap[x * dim + y]
+      if (value !== 0) continue
 
-      const value9 = tileMap[x * dim + y + 1];
-      const value5 = tileMap[x * dim + y - 1];
-      const value7 = tileMap[(x - 1) * dim + y];
-      const value1 = tileMap[(x + 1) * dim + y];
+      const value9 = tileMap[x * dim + y + 1]
+      const value5 = tileMap[x * dim + y - 1]
+      const value7 = tileMap[(x - 1) * dim + y]
+      const value1 = tileMap[(x + 1) * dim + y]
 
-      const pos = { x: y * width / 2 - (x * width / 2), y: (y + x) * height / 2 + 16 };
-      const adjustedPos = (p: number, i: number) => i % 2 === 0 ? p + pos.x : p + pos.y;
+      const pos = { x: y * width / 2 - (x * width / 2), y: (y + x) * height / 2 + 16 }
+      const adjustedPos = (p: number, i: number) => i % 2 === 0 ? p + pos.x : p + pos.y
 
       if (value5) {
-        const points = [width / 2, -height / 2, 0, 0];
-        coords.push(points.map(adjustedPos));
+        const points = [width / 2, -height / 2, 0, 0]
+        coords.push(points.map(adjustedPos))
       }
 
       if (value9) {
-        const points = [width, 0, width / 2, height / 2];
-        coords.push(points.map(adjustedPos));
+        const points = [width, 0, width / 2, height / 2]
+        coords.push(points.map(adjustedPos))
       }
 
       if (value1) {
-        const points = [0, 0, width / 2, height / 2];
-        coords.push(points.map(adjustedPos));
+        const points = [0, 0, width / 2, height / 2]
+        coords.push(points.map(adjustedPos))
       }
 
       if (value7) {
-        const points = [width / 2, -height / 2, width, 0];
-        coords.push(points.map(adjustedPos));
+        const points = [width / 2, -height / 2, width, 0]
+        coords.push(points.map(adjustedPos))
       }
     }
   }
@@ -113,10 +113,10 @@ export const FloorCollidersArray = (dim: number, tileMap: number[]): Entity[] =>
         position: Position(),
         collider: Collider({ shape: "line", isStatic: true, points })
       }
-    }));
-  });
+    }))
+  })
 
-  return entities;
+  return entities
 }
 
 export const LineFloor = (dim: number, pos: PositionProps, color: number, width: number, height: number): Entity => Entity({
@@ -127,16 +127,16 @@ export const LineFloor = (dim: number, pos: PositionProps, color: number, width:
       zIndex: 0 + index * 0.01,
       setContainer: async (r) => {
 
-        const c = new Container();
-        const g = new Graphics();
-        c.addChild(g);
+        const c = new Container()
+        const g = new Graphics()
+        c.addChild(g)
 
         // draw the tile
-        const tile = tileGraphic();
+        const tile = tileGraphic()
 
         // create a render texture
-        const texture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
-        r.app.renderer.render({ container: tile, target: texture });
+        const texture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio })
+        r.app.renderer.render({ container: tile, target: texture })
 
         // background
         g.poly([
@@ -144,20 +144,20 @@ export const LineFloor = (dim: number, pos: PositionProps, color: number, width:
           dim * width / 2, -dim * height / 2,
           dim * width, 0,
           dim * width / 2, dim * height / 2
-        ]).fill({ color: 0x000000, alpha: 1 });
+        ]).fill({ color: 0x000000, alpha: 1 })
 
         // lines
         for (let x = 0; x <= dim; x++) {
 
-          g.moveTo(x * width / 2, x * height / 2);
-          g.lineTo((dim + x) * width / 2, (-dim + x) * height / 2);
-          g.stroke({ width: 2, color, alpha: 0.8 });
+          g.moveTo(x * width / 2, x * height / 2)
+          g.lineTo((dim + x) * width / 2, (-dim + x) * height / 2)
+          g.stroke({ width: 2, color, alpha: 0.8 })
 
-          g.moveTo(x * width / 2, x * -height / 2);
-          g.lineTo((dim + x) * width / 2, (dim - x) * height / 2);
-          g.stroke({ width: 2, color, alpha: 0.8 });
+          g.moveTo(x * width / 2, x * -height / 2)
+          g.lineTo((dim + x) * width / 2, (dim - x) * height / 2)
+          g.stroke({ width: 2, color, alpha: 0.8 })
         }
-        return c;
+        return c
       }
     })
   }
@@ -173,14 +173,14 @@ export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 },
       setChildren: async (r: Renderer) => {
 
         // draw the tile
-        const tile = tileGraphic();
+        const tile = tileGraphic()
 
         // create a render texture
-        const renderTexture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio });
-        r.app.renderer.render({ container: tile, target: renderTexture });
+        const renderTexture = RenderTexture.create({ width, height, resolution: window.devicePixelRatio })
+        r.app.renderer.render({ container: tile, target: renderTexture })
 
         // create the tiles
-        let tiles: Renderable[] = [];
+        let tiles: Renderable[] = []
         for (let x = 0; x < rows; x++) {
           for (let y = 0; y < cols; y++) {
             tiles.push(Renderable({
@@ -190,7 +190,7 @@ export const FloorTiles = ({ color, tint, rows, cols, position = { x: 0, y: 0 },
             }))
           }
         }
-        return tiles;
+        return tiles
       }
     })
   }

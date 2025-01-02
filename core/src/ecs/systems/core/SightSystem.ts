@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Collider, Entity, Position, Renderable, Team, physics, polyline } from "@piggo-gg/core";
+import { ClientSystemBuilder, Collider, Entity, Position, Renderable, Team, physics, polyline } from "@piggo-gg/core"
 
 export const SightSystem = ClientSystemBuilder({
   id: "SightSystem",
@@ -7,36 +7,36 @@ export const SightSystem = ClientSystemBuilder({
     query: ["team", "renderable", "position", "collider"],
     onTick: (entities: Entity<Team | Renderable | Position | Collider>[]) => {
 
-      const playerCharacter = world.client?.playerCharacter();
-      if (!playerCharacter) return;
+      const playerCharacter = world.client?.playerCharacter()
+      if (!playerCharacter) return
 
-      const { position: playerPosition, collider: playerCollider, team: playerTeam } = playerCharacter.components;
-      if (!playerPosition || !playerCollider || !playerTeam) return;
+      const { position: playerPosition, collider: playerCollider, team: playerTeam } = playerCharacter.components
+      if (!playerPosition || !playerCollider || !playerTeam) return
 
       entities.forEach((entity) => {
 
         // ignore the player character
-        if (entity.id === playerCharacter.id) return;
+        if (entity.id === playerCharacter.id) return
 
-        const { team, renderable, collider, position } = entity.components;
+        const { team, renderable, collider, position } = entity.components
 
         if (team.data.team === playerTeam.data.team) {
-          renderable.visible = true;
+          renderable.visible = true
         } else {
-          let visible = true;
+          let visible = true
 
-          const line = [0, 0, playerPosition.data.x - position.data.x, playerPosition.data.y - position.data.y];
+          const line = [0, 0, playerPosition.data.x - position.data.x, playerPosition.data.y - position.data.y]
           physics.intersectionsWithShape(position.data, 0, polyline(line), (c) => {
-            if (c.isSensor() || c === collider.rapierCollider || c === playerCollider.rapierCollider) return true;
+            if (c.isSensor() || c === collider.rapierCollider || c === playerCollider.rapierCollider) return true
 
-            visible = false;
-            return false;
-          });
+            visible = false
+            return false
+          })
 
-          team.visible = visible;
-          renderable.visible = visible;
+          team.visible = visible
+          renderable.visible = visible
         }
-      });
+      })
     }
   })
 })

@@ -1,4 +1,4 @@
-import { Entity, InputMap, InvokedAction, Position, World, XY, normalize } from "@piggo-gg/core";
+import { Entity, InputMap, InvokedAction, Position, World, XY, normalize } from "@piggo-gg/core"
 
 export const WASDInputMap: InputMap = {
   press: {
@@ -15,6 +15,6 @@ export const WASDInputMap: InputMap = {
 }
 
 const move = (entity: Entity, world: World, x: number, y: number): null | InvokedAction<"move", XY> => {
-  if (!entity.components.position) return null;
+  if (!entity.components.position) return null
   return { action: "move", playerId: world.client?.playerId(), params: normalize({ x, y, entity: entity as Entity<Position> }) }
 }

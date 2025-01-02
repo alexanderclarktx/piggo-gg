@@ -1,17 +1,17 @@
-import { Action, Actions, Debug, Entity, Input, Position, Renderable, TeamColors, keys, max, pixiCircle, pixiGraphics, values } from "@piggo-gg/core";
-import { Container, Graphics } from "pixi.js";
+import { Action, Actions, Debug, Entity, Input, Position, Renderable, TeamColors, keys, max, pixiCircle, pixiGraphics, values } from "@piggo-gg/core"
+import { Container, Graphics } from "pixi.js"
 
 export const Minimap = (dim: number, tileMap: number[]): Entity => {
-  let scale = 0.5;
-  let fullscreen = false;
+  let scale = 0.5
+  let fullscreen = false
 
-  const dots: Record<string, Graphics> = {};
+  const dots: Record<string, Graphics> = {}
 
-  const container = new Container();
-  const tileGraphics = pixiGraphics({ alpha: 0.9, rotation: Math.PI / 4 });
-  const background = pixiGraphics();
-  const outline = pixiGraphics();
-  const mask = background.clone();
+  const container = new Container()
+  const tileGraphics = pixiGraphics({ alpha: 0.9, rotation: Math.PI / 4 })
+  const background = pixiGraphics()
+  const outline = pixiGraphics()
+  const mask = background.clone()
 
   const tileColors: Record<number, number> = {
     37: TeamColors[1],
@@ -29,13 +29,13 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
       }),
       actions: Actions({
         toggleFS: Action(({ world }) => {
-          fullscreen = !fullscreen;
+          fullscreen = !fullscreen
           if (fullscreen) {
-            tileGraphics.mask = null;
-            tileGraphics.scale = 1.5;
-            values(dots).forEach((dot) => dot.mask = null);
+            tileGraphics.mask = null
+            tileGraphics.scale = 1.5
+            values(dots).forEach((dot) => dot.mask = null)
 
-            const bounds = tileGraphics.getBounds();
+            const bounds = tileGraphics.getBounds()
 
             minimap.components.position.data = {
               ...minimap.components.position.data,
@@ -43,20 +43,20 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
               y: max(0, (world.renderer!.app.canvas.height - bounds.height) / 2 - 100)
             }
 
-            background.clear();
-            outline.clear();
+            background.clear()
+            outline.clear()
           } else {
-            tileGraphics.mask = mask;
-            tileGraphics.scale = 1;
-            values(dots).forEach((dot) => dot.mask = mask);
+            tileGraphics.mask = mask
+            tileGraphics.scale = 1
+            values(dots).forEach((dot) => dot.mask = mask)
 
             minimap.components.position.data = {
               ...minimap.components.position.data,
               x: -125, y: 125
             }
 
-            background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 });
-            outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 });
+            background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 })
+            outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 })
           }
         }),
       }),
@@ -67,90 +67,90 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
           // remove dots that are no longer in the world
           keys(dots).forEach((id) => {
             if (!w.entities[id]) {
-              container.removeChild(dots[id]);
-              delete dots[id];
+              container.removeChild(dots[id])
+              delete dots[id]
             }
-          });
+          })
 
           // update dot visibility
           keys(dots).forEach((id) => {
-            dots[id].visible = true;
+            dots[id].visible = true
 
-            if (id === w.client?.playerId()) return;
+            if (id === w.client?.playerId()) return
 
-            const character = w.entities[id]?.components.controlling?.getControlledEntity(w);
-            if (!character) return;
+            const character = w.entities[id]?.components.controlling?.getControlledEntity(w)
+            if (!character) return
 
-            const { team } = character.components;
-            if (!team || team.data.team === w.client?.playerCharacter()?.components.team?.data.team) return;
-            dots[id].visible = team.visible;
-          });
+            const { team } = character.components
+            if (!team || team.data.team === w.client?.playerCharacter()?.components.team?.data.team) return
+            dots[id].visible = team.visible
+          })
 
-          const playerCharacter = w.client?.playerCharacter();
-          if (!playerCharacter) return;
-          const playerPosition = playerCharacter.components.position;
+          const playerCharacter = w.client?.playerCharacter()
+          if (!playerCharacter) return
+          const playerPosition = playerCharacter.components.position
 
           // update player dots
           w.queryEntities(["player"]).forEach((entity) => {
 
             if (!dots[entity.id]) {
-              const color = (entity.id === w.client?.playerId()) ? 0x00ff00 : 0xff0000;
-              dots[entity.id] = pixiCircle({ r: 3 }).fill({ color });
-              dots[entity.id].mask = mask;
-              container.addChild(dots[entity.id]);
+              const color = (entity.id === w.client?.playerId()) ? 0x00ff00 : 0xff0000
+              dots[entity.id] = pixiCircle({ r: 3 }).fill({ color })
+              dots[entity.id].mask = mask
+              container.addChild(dots[entity.id])
             }
 
-            const character = entity.components.controlling?.getControlledEntity(w);
-            if (!character) return;
+            const character = entity.components.controlling?.getControlledEntity(w)
+            if (!character) return
 
-            const { position } = character.components;
+            const { position } = character.components
 
-            if (fullscreen) dots[entity.id].position.set(position.data.x / 7.6 - 4, position.data.y / 3.8 + 2);
+            if (fullscreen) dots[entity.id].position.set(position.data.x / 7.6 - 4, position.data.y / 3.8 + 2)
 
             if (!fullscreen) {
               if (entity.id === w.client?.playerId()) {
-                dots[entity.id].position.set(0, 0);
+                dots[entity.id].position.set(0, 0)
               } else {
-                dots[entity.id].position.set((position.data.x - playerPosition.data.x) * scale / 5.6, (position.data.y - playerPosition.data.y) * scale / 2.8);
+                dots[entity.id].position.set((position.data.x - playerPosition.data.x) * scale / 5.6, (position.data.y - playerPosition.data.y) * scale / 2.8)
               }
             }
-          });
+          })
 
           // update tile graphic position
           if (fullscreen) {
-            tileGraphics.position.set(0, 0);
+            tileGraphics.position.set(0, 0)
           } else {
-            tileGraphics.position.set(-playerPosition.data.x / 5.6 * scale + 5, - playerPosition.data.y / 2.8 * scale + 2);
+            tileGraphics.position.set(-playerPosition.data.x / 5.6 * scale + 5, - playerPosition.data.y / 2.8 * scale + 2)
           }
         },
         setContainer: async () => {
 
-          background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 });
-          outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 });
+          background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 })
+          outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 })
 
-          tileGraphics.mask = mask;
+          tileGraphics.mask = mask
 
-          const width = 8 * scale;
+          const width = 8 * scale
           let color = 0xccccff
 
           // draw the tiles
           tileMap.forEach((tile, i) => {
-            if (tile === 0) return;
+            if (tile === 0) return
 
-            color = tileColors[tile] || 0xccccff;
+            color = tileColors[tile] || 0xccccff
 
-            const x = i % dim;
-            const y = Math.floor(i / dim);
+            const x = i % dim
+            const y = Math.floor(i / dim)
 
-            tileGraphics.rect(x * width, y * width, width, width).fill({ color });
-          });
+            tileGraphics.rect(x * width, y * width, width, width).fill({ color })
+          })
 
-          container.addChild(background, tileGraphics, outline, mask);
-          return container;
+          container.addChild(background, tileGraphics, outline, mask)
+          return container
         }
       })
     }
-  });
+  })
 
-  return minimap;
+  return minimap
 }

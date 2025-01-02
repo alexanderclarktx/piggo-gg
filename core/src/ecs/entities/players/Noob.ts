@@ -1,4 +1,4 @@
-import { Actions, Controlling, Entity, Networked, Player, Team, switchTeam, spawnSkelly, Money } from "@piggo-gg/core";
+import { Actions, Controlling, Entity, Networked, Player, Team, switchTeam, spawnSkelly, Money } from "@piggo-gg/core"
 
 export type NoobProps = {
   id: string
@@ -17,4 +17,4 @@ export const Noob = ({ id }: NoobProps): Noob => Entity({
     team: Team(1),
     money: Money(1000)
   }
-});
+})

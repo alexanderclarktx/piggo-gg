@@ -1,4 +1,4 @@
-import { Component, Entity, Noob, World } from "@piggo-gg/core";
+import { Component, Entity, Noob, World } from "@piggo-gg/core"
 
 export type Action<T extends {} = {}> = {
   cooldown?: number
@@ -11,7 +11,7 @@ export const Action = <T extends {} = {}>(invoke: Action<T>["invoke"], cooldown?
   return {
     invoke,
     ...cooldown ? { cooldown } : {}
-  };
+  }
 }
 
 export type InvokedAction<A extends string = string, P extends {} = {}> = {
@@ -21,7 +21,7 @@ export type InvokedAction<A extends string = string, P extends {} = {}> = {
   params?: P
 }
 
-export type ActionMap<P extends {} = {}> = Record<string, Action<P>>;
+export type ActionMap<P extends {} = {}> = Record<string, Action<P>>
 
 export type Actions = Component<"actions"> & {
   actionMap: ActionMap

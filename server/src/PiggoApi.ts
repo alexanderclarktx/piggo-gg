@@ -1,6 +1,6 @@
-import { ExtractedRequestTypes, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core";
-import { WorldManager } from "@piggo-gg/server";
-import { Server, ServerWebSocket, env } from "bun";
+import { ExtractedRequestTypes, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
+import { WorldManager } from "@piggo-gg/server"
+import { Server, ServerWebSocket, env } from "bun"
 
 export type PerClientData = {
   id: number
@@ -33,22 +33,22 @@ export const PiggoApi = (): PiggoApi => {
         return { id: msg.id }
       },
       "lobby/create": async (ws, msg) => {
-        const lobbyId = genHash();
+        const lobbyId = genHash()
 
         // create world
-        piggoApi.worlds[lobbyId] = WorldManager();
+        piggoApi.worlds[lobbyId] = WorldManager()
 
         // set world id for this client
-        ws.data.worldId = lobbyId;
+        ws.data.worldId = lobbyId
 
-        return { id: msg.id, lobbyId };
+        return { id: msg.id, lobbyId }
       },
       "lobby/join": async (ws, msg) => {
         if (!piggoApi.worlds[msg.join]) {
-          piggoApi.worlds[msg.join] = WorldManager();
+          piggoApi.worlds[msg.join] = WorldManager()
         }
 
-        ws.data.worldId = msg.join;
+        ws.data.worldId = msg.join
         return { id: msg.id }
       },
       "lobby/exit": async (ws, msg) => {
@@ -66,56 +66,56 @@ export const PiggoApi = (): PiggoApi => {
           open: piggoApi.handleOpen,
           message: piggoApi.handleMessage,
         },
-      });
+      })
 
-      return piggoApi;
+      return piggoApi
     },
     handleClose: (ws: ServerWebSocket<PerClientData>) => {
-      const world = piggoApi.worlds[ws.data.worldId];
-      if (world) world.handleClose(ws);
+      const world = piggoApi.worlds[ws.data.worldId]
+      if (world) world.handleClose(ws)
 
-      delete piggoApi.clients[ws.data.id];
+      delete piggoApi.clients[ws.data.id]
     },
     handleOpen: (ws: ServerWebSocket<PerClientData>) => {
       // set data for this client
-      ws.data = { id: piggoApi.clientIncr, worldId: "", playerName: "UNKNOWN" };
+      ws.data = { id: piggoApi.clientIncr, worldId: "", playerName: "UNKNOWN" }
 
       // increment id
-      piggoApi.clientIncr += 1;
+      piggoApi.clientIncr += 1
     },
     handleMessage: (ws: ServerWebSocket<PerClientData>, msg: string) => {
-      if (typeof msg != "string") return;
+      if (typeof msg != "string") return
 
-      const wsData = JSON.parse(msg) as NetMessageTypes;
-      if (!wsData.type) return;
+      const wsData = JSON.parse(msg) as NetMessageTypes
+      if (!wsData.type) return
 
       if (wsData.type === "request") {
-        const handler = piggoApi.handlers[wsData.request.route];
+        const handler = piggoApi.handlers[wsData.request.route]
 
         if (handler) {
           // @ts-expect-error
-          const result = handler(ws, wsData.request);
+          const result = handler(ws, wsData.request)
           result.then((data) => {
             const responseData: ResponseData = { type: "response", response: data }
-            ws.send(stringify(responseData));
-          });
+            ws.send(stringify(responseData))
+          })
         }
-        return;
+        return
       }
 
-      const world = piggoApi.worlds[ws.data.worldId] ?? piggoApi.worlds["hub"];
-      if (world) world.handleMessage(ws, wsData);
+      const world = piggoApi.worlds[ws.data.worldId] ?? piggoApi.worlds["hub"]
+      if (world) world.handleMessage(ws, wsData)
     }
   }
 
   setInterval(() => {
     entries(piggoApi.worlds).forEach(([id, world]) => {
-      if (keys(world.clients).length === 0) delete piggoApi.worlds[id];
-    });
-  }, 10000);
+      if (keys(world.clients).length === 0) delete piggoApi.worlds[id]
+    })
+  }, 10000)
 
-  return piggoApi;
+  return piggoApi
 }
 
-const server = PiggoApi().init();
-console.log(`包 ${server.bun?.url}`);
+const server = PiggoApi().init()
+console.log(`包 ${server.bun?.url}`)

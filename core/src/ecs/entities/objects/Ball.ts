@@ -1,5 +1,5 @@
-import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, XY, loadTexture } from "@piggo-gg/core";
-import { Sprite } from "pixi.js";
+import { Collider, Debug, Entity, NPC, Networked, Position, Renderable, XY, loadTexture } from "@piggo-gg/core"
+import { Sprite } from "pixi.js"
 
 export type BallProps = {
   id: string
@@ -21,8 +21,8 @@ export const Ball = ({ position, id }: BallProps) => Entity({
     debug: Debug(),
     npc: NPC({
       behavior: (e: Entity<Position>) => {
-        const { x, y } = e.components.position.data.velocity;
-        e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y));
+        const { x, y } = e.components.position.data.velocity
+        e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y))
       }
     }),
     renderable: Renderable({
@@ -31,13 +31,13 @@ export const Ball = ({ position, id }: BallProps) => Entity({
       interpolate: true,
       setup: async (r: Renderable) => {
 
-        const texture = (await loadTexture("ball.json"))["ball"];
-        const sprite = new Sprite(texture);
+        const texture = (await loadTexture("ball.json"))["ball"]
+        const sprite = new Sprite(texture)
 
-        sprite.anchor.set(0.5, 0.5);
+        sprite.anchor.set(0.5, 0.5)
 
-        r.c = sprite;
+        r.c = sprite
       }
     })
   }
-});
+})

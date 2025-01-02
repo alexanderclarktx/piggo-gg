@@ -1,4 +1,4 @@
-import { Component } from "@piggo-gg/core";
+import { Component } from "@piggo-gg/core"
 
 export type Expires = Component<"expires"> & {
   data: {
