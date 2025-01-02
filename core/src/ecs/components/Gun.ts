@@ -1,6 +1,7 @@
 import {
-  Actions, Component, Item, Effects, Entity, ItemBuilder, Reload, Renderable,
-  Shoot, SpawnHitbox, World, abs, hypot, loadTexture, min, randomInt, Clickable
+  Actions, Clickable, Component, Effects, Item, ItemBuilder, ItemEntity, Position,
+  Reload, Renderable, Shoot, SpawnHitbox, World,
+  abs, hypot, loadTexture, min, randomInt
 } from "@piggo-gg/core";
 import { AnimatedSprite } from "pixi.js";
 
@@ -93,7 +94,7 @@ const DeagleBuilder = GunBuilder({
   damage: 15,
   fireRate: 3,
   reloadTime: 40,
-  bulletSize: 4,
+  bulletSize: 3,
   speed: 400
 });
 
@@ -105,7 +106,7 @@ const AKBuilder = GunBuilder({
   damage: 25,
   fireRate: 10,
   reloadTime: 50,
-  bulletSize: 4,
+  bulletSize: 3,
   speed: 500
 });
 
@@ -127,10 +128,10 @@ export const WeaponTable: Record<GunNames, () => Gun> = {
   "awp": AWPBuilder
 }
 
-export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character) => Entity({
+export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character) => ItemEntity({
   id: name,
   components: {
-    position: character.components.position,
+    position: Position({ follows: character.id }),
     actions: Actions({
       spawnHitbox: SpawnHitbox,
       mb1: Shoot,
@@ -145,7 +146,6 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
       zIndex: 2,
       scale: 2,
       anchor: { x: 0.5, y: 0.5 },
-      position: { x: 20, y: 0 },
       interpolate: true,
       visible: false,
       outline: { color: 0x000000, thickness: 1 },

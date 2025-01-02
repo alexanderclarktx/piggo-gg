@@ -1,12 +1,14 @@
 import { Component, Entity, SystemBuilder, XY, orthoToDirection, round } from "@piggo-gg/core"
 
+export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+
 export type Position = Component<"position", {
   x: number
   y: number
   velocity: XY
   speed: number
   rotation: number
-  pointing: number
+  pointing: Oct
   pointingDelta: XY
   heading: XY
   velocityResets: number

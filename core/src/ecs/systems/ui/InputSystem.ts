@@ -215,7 +215,11 @@ export const InputSystem = ClientSystemBuilder({
               playerId: world.client?.playerId(),
               entityId: activeItem.id,
               params: {
-                mouse: { ...mouse }, entity: activeItem, world, tick: keyMouse.tick, character
+                mouse: { ...mouse },
+                entity: activeItem,
+                world,
+                tick: keyMouse.tick,
+                character
               }
             }
             if (invocation && activeItem.components.actions.actionMap[invocation.action]) {

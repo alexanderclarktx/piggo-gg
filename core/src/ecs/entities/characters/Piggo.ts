@@ -50,33 +50,49 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
   return piggo
 }
 
+const log = (message: string, world: World) => {
+  if (world.tick % 100 === 0) {
+    world.log(message)
+  }
+}
+
 const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position, renderable } = entity.components
 
-  const edibles = world.queryEntities(["food", "position"])
-    .filter((e) => !(e.id.includes("piggo")))
-    .filter(e => (e.components.item?.equipped || e.components.item?.dropped)) as Entity<Food | Position>[]
+  // console.log("piggo behavior")
+
+  const edibles = world.queryEntities(["inventory"]) as Entity<Position>[]
+    // .filter((e) => !(e.id.includes("piggo")))
+    // .filter(e => (e.components.item?.equipped || e.components.item?.dropped)) as Entity<Food | Position>[]
+
+  // if (edibles.length) {
+  //   console.log(edibles)
+  // }
+
+  if (!edibles.length) return
 
   const closest = closestEntity(edibles, position.data, 200)
 
   if (closest) {
-    if (XYdelta(position.data, closest.components.position.data) < 20 + (0.5 * renderable!.scale * renderable!.scale)) {
-      return { action: "eat", params: { target: closest } }
-    }
     return { action: "chase", params: { target: closest } }
   }
+  //   if (XYdelta(position.data, closest.components.position.data) < 20 + (0.5 * renderable!.scale * renderable!.scale)) {
+  //     return { action: "chase", params: { target: closest } }
+  //   }
+  //   return { action: "chase", params: { target: closest } }
+  // }
 
-  if (!position.data.heading.x && !position.data.heading.y) {
+  // if (!position.data.heading.x && !position.data.heading.y) {
 
-    if (random() * 100 > 96) {
-      const randomHeading: XY = {
-        x: position.data.x + round(random() * 200 - 100),
-        y: position.data.y + round(random() * 200 - 100)
-      }
+  //   if (random() * 100 > 96) {
+  //     const randomHeading: XY = {
+  //       x: position.data.x + round(random() * 200 - 100),
+  //       y: position.data.y + round(random() * 200 - 100)
+  //     }
 
-      position.setHeading(randomHeading)
-    }
-  }
+  //     position.setHeading(randomHeading)
+  //   }
+  // }
 
-  if (position.lastCollided - world.tick > -2) position.clearHeading()
+  // if (position.lastCollided - world.tick > -2) position.clearHeading()
 }

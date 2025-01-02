@@ -39,7 +39,8 @@ export const Renderer = (props: RendererProps): Renderer => {
         resolution: 1,
         antialias: true,
         autoDensity: true,
-        backgroundColor: 0x006633,
+        // backgroundColor: 0x006633,
+        backgroundColor: 0x000000,
         width: renderer.props.width ?? 800,
         height: renderer.props.height ?? 600
       });
