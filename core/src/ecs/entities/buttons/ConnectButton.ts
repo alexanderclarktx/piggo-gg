@@ -1,4 +1,4 @@
-import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core";
+import { Actions, Button, Clickable, Entity, Position, pixiText } from "@piggo-gg/core"
 
 export const ConnectButton = () => Entity({
   id: "connectButton",

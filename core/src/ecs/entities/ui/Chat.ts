@@ -1,5 +1,5 @@
-import { Entity, Position, Renderable, TextBox, World, chatBuffer, chatIsOpen, entries } from "@piggo-gg/core";
-import { Text } from "pixi.js";
+import { Entity, Position, Renderable, TextBox, World, chatBuffer, chatIsOpen, entries } from "@piggo-gg/core"
+import { Text } from "pixi.js"
 
 export const Chat = (): Entity => {
 
@@ -11,27 +11,27 @@ export const Chat = (): Entity => {
 
       // hide chat if no recent messages
       if ((w.tick - w.chatHistory.keys()[0]) > 125) {
-        t.text = "";
+        t.text = ""
       } else {
-        let lastMessages: string[] = [];
+        let lastMessages: string[] = []
 
         // get last 4 messages
         w.chatHistory.keys().slice(0, 4).forEach((tick) => {
-          const messagesForEntity = w.chatHistory.atTick(tick);
+          const messagesForEntity = w.chatHistory.atTick(tick)
           if (messagesForEntity) entries(messagesForEntity).forEach(([player, messages]) => {
             messages.forEach((message) => {
-              if (messages.length < 4) lastMessages.push(`${player}: ${message}`);
-            });
-          });
-        });
+              if (messages.length < 4) lastMessages.push(`${player}: ${message}`)
+            })
+          })
+        })
 
-        t.text = lastMessages.reverse().join("\n");
+        t.text = lastMessages.reverse().join("\n")
       }
 
       // offset from bottom
-      r.c.position.set(0, -1 * t.height + 20);
+      r.c.position.set(0, -1 * t.height + 20)
     }
-  });
+  })
 
   const chatBufferText = () => TextBox({
     position: { x: 0, y: 25 },
@@ -40,10 +40,10 @@ export const Chat = (): Entity => {
     // boxOutline: true,
     // visible: false,
     dynamic: (t: Text) => {
-      const textToRender = chatBuffer.join("");
-      chatIsOpen ? t.text = `${textToRender}|` : t.text = "";
+      const textToRender = chatBuffer.join("")
+      chatIsOpen ? t.text = `${textToRender}|` : t.text = ""
     }
-  });
+  })
 
   return Entity({
     id: "chat",
@@ -55,5 +55,5 @@ export const Chat = (): Entity => {
         setChildren: async () => [chatHistoryText(), chatBufferText()]
       })
     }
-  });
+  })
 }

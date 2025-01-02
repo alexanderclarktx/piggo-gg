@@ -1,5 +1,5 @@
-import { Renderable, XY } from "@piggo-gg/core";
-import { Application, Container } from "pixi.js";
+import { Renderable, XY } from "@piggo-gg/core"
+import { Application, Container } from "pixi.js"
 
 export type Camera = {
   c: Container
@@ -13,39 +13,39 @@ export type Camera = {
 // Camera handles the viewport of the game
 export const Camera = (app: Application): Camera => {
 
-  const renderables: Set<Renderable> = new Set();
-  const c: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 });
-  let scale = 2;
+  const renderables: Set<Renderable> = new Set()
+  const c: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 })
+  let scale = 2
 
   const rescale = () => {
-    const min = 1.6;
-    const max = 5;
+    const min = 1.6
+    const max = 5
 
-    if (scale < min) scale = min;
-    if (scale > max) scale = max;
+    if (scale < min) scale = min
+    if (scale > max) scale = max
 
-    c.scale.set(scale, scale);
+    c.scale.set(scale, scale)
   }
 
-  rescale();
+  rescale()
 
   return {
     c,
     add: (r: Renderable) => {
-      renderables.add(r);
-      c.addChild(r.c);
+      renderables.add(r)
+      c.addChild(r.c)
     },
     rescaleDelta: (delta: number) => {
-      scale += delta;
-      rescale();
+      scale += delta
+      rescale()
     },
     moveBy: ({ x, y }: XY) => {
-      c.x += x;
-      c.y += y;
+      c.x += x
+      c.y += y
     },
     moveTo: ({ x, y }: XY) => {
-      c.x = app.screen.width / 2 - x * scale;
-      c.y = app.screen.height / 2 - y * scale;
+      c.x = app.screen.width / 2 - x * scale
+      c.y = app.screen.height / 2 - y * scale
     },
     toWorldCoords: ({ x, y }: XY) => ({
       x: (x - c.x) / scale,

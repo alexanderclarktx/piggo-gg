@@ -1,6 +1,6 @@
-import { World } from "@piggo-gg/core";
-import { NetState } from "@piggo-gg/web";
-import React from "react";
+import { World } from "@piggo-gg/core"
+import { NetState } from "@piggo-gg/web"
+import React from "react"
 
 const colors: Record<NetState, string> = {
   "disconnected": "red",
@@ -18,11 +18,11 @@ export type WsNetConnectorProps = {
 export const WsNetConnector = ({ world, setNetState, netState }: WsNetConnectorProps) => {
 
   setInterval(() => {
-    world?.isConnected ? setNetState("connected") : setNetState("disconnected");
+    world?.isConnected ? setNetState("connected") : setNetState("disconnected")
   }, 200)
 
   const onClick = () => {
-    if (world && world.client) world.client.joinLobby("hub", () => { });
+    if (world && world.client) world.client.joinLobby("hub", () => { })
   }
 
   return (

@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Entity, Position, Renderable, TextBox } from "@piggo-gg/core";
+import { ClientSystemBuilder, Entity, Position, Renderable, TextBox } from "@piggo-gg/core"
 
 // draws chat bubbles above characters
 export const ChatBubbleSystem = ClientSystemBuilder({
@@ -6,7 +6,7 @@ export const ChatBubbleSystem = ClientSystemBuilder({
 
   init: (world) => {
 
-    const entityChatBubble: Record<string, [Renderable, number]> = {};
+    const entityChatBubble: Record<string, [Renderable, number]> = {}
 
     return {
       id: "ChatBubbleSystem",
@@ -17,9 +17,9 @@ export const ChatBubbleSystem = ClientSystemBuilder({
   
         entities.forEach((entity) => {
   
-          const { renderable } = entity.components;
+          const { renderable } = entity.components
   
-          // const textForEntity = world.chatHistory.at(world.tick - 1, controlled.data.entityId);
+          // const textForEntity = world.chatHistory.at(world.tick - 1, controlled.data.entityId)
           // if (textForEntity?.length) {
   
           //   const textBox = TextBox({
@@ -28,9 +28,9 @@ export const ChatBubbleSystem = ClientSystemBuilder({
           //     color: 0xffffff,
           //     padding: 5,
           //     boxOutline: true
-          //   });
+          //   })
   
-          //   entityChatBubble[entity.id] = [textBox, world.tick - 1];
+          //   entityChatBubble[entity.id] = [textBox, world.tick - 1]
   
           //   world.addEntity(Entity({
           //     id: "chatBubble",
@@ -42,12 +42,12 @@ export const ChatBubbleSystem = ClientSystemBuilder({
           //         setChildren: async () => [textBox]
           //       })
           //     }
-          //   }));
+          //   }))
   
             // todo attach chat bubble to character
           // }
-        });
+        })
       }
     }
   }
-});
+})

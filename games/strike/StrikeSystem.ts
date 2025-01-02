@@ -1,6 +1,6 @@
-import { Noob, SystemBuilder, TeamColors, TeamNumber, World, XY, invokeSpawnSkelly } from "@piggo-gg/core";
+import { Noob, SystemBuilder, TeamColors, TeamNumber, World, XY, invokeSpawnSkelly } from "@piggo-gg/core"
 
-type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over";
+type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over"
 
 const TeamSpawns: Record<TeamNumber, XY> = {
   1: { x: -1050, y: 1850 },
@@ -11,10 +11,10 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
   id: "StrikeSystem",
   init: (world) => {
 
-    let state: GameStates = "warmup";
-    const spawnedPlayers: Set<string> = new Set();
+    let state: GameStates = "warmup"
+    const spawnedPlayers: Set<string> = new Set()
 
-    GameStateHooks[state].onStart(world);
+    GameStateHooks[state].onStart(world)
 
     return {
       id: "StrikeSystem",
@@ -24,34 +24,34 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
         // despawn disconnected players
         spawnedPlayers.forEach((playerId) => {
           if (!world.entities[playerId]) {
-            world.removeEntity(`skelly-${playerId}`);
-            spawnedPlayers.delete(playerId);
+            world.removeEntity(`skelly-${playerId}`)
+            spawnedPlayers.delete(playerId)
           }
         })
 
         // despawn dead players
         spawnedPlayers.forEach((playerId) => {
-          if (!world.entities[`skelly-${playerId}`]) spawnedPlayers.delete(playerId);
+          if (!world.entities[`skelly-${playerId}`]) spawnedPlayers.delete(playerId)
         })
 
         players.forEach((player) => {
 
-          const { team, controlling } = player.components;
+          const { team, controlling } = player.components
 
-          if (spawnedPlayers.has(player.id)) return;
+          if (spawnedPlayers.has(player.id)) return
 
           // player not controlling a character
           if (!controlling.data.entityId) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
-            spawnedPlayers.add(player.id);
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]))
+            spawnedPlayers.add(player.id)
           }
 
           // new player
           if (!spawnedPlayers.has(player.id)) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]));
-            spawnedPlayers.add(player.id);
+            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]))
+            spawnedPlayers.add(player.id)
           }
-        });
+        })
       }
     }
   }
@@ -66,42 +66,42 @@ type Hooks = {
 const GameStateHooks: Record<GameStates, Hooks> = {
   "warmup": {
     onStart: (world) => {
-      // world.log("warmup started");
+      // world.log("warmup started")
     },
     onTick: (world) => { },
     timer: -1
   },
   "pre-round": {
     onStart: (world) => {
-      world.log("pre-round started");
+      world.log("pre-round started")
     },
     onTick: (world) => { },
     timer: 10
   },
   "round": {
     onStart: (world) => {
-      world.log("round started");
+      world.log("round started")
     },
     onTick: (world) => { },
     timer: 120
   },
   "planted": {
     onStart: (world) => {
-      world.log("bomb planted");
+      world.log("bomb planted")
     },
     onTick: (world) => { },
     timer: 40
   },
   "post-round": {
     onStart: (world) => {
-      world.log("post-round started");
+      world.log("post-round started")
     },
     onTick: (world) => { },
     timer: 10
   },
   "game-over": {
     onStart: (world) => {
-      world.log("game over");
+      world.log("game over")
     },
     onTick: (world) => { },
     timer: 10

@@ -1,4 +1,4 @@
-import { Entity, NPC, Position, SystemBuilder } from "@piggo-gg/core";
+import { Entity, NPC, Position, SystemBuilder } from "@piggo-gg/core"
 
 // NPCSystem invokes ai logic for NPCs
 export const NPCSystem: SystemBuilder<"NPCSystem"> = {
@@ -8,11 +8,11 @@ export const NPCSystem: SystemBuilder<"NPCSystem"> = {
     query: ["npc", "position"],
     onTick: (entities: Entity<NPC | Position>[]) => {
       entities.forEach((entity) => {
-        const action = entity.components.npc.behavior(entity, world);
+        const action = entity.components.npc.behavior(entity, world)
         if (action) {
-          world.actionBuffer.push(world.tick, entity.id, action);
+          world.actionBuffer.push(world.tick, entity.id, action)
         }
-      });
+      })
     }
   })
 }

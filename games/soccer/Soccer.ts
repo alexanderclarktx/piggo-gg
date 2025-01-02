@@ -1,5 +1,5 @@
-import { Background, Ball, Goal, HomeButton, DefaultGame, SkellySpawnSystem, Zomi } from "@piggo-gg/core";
-import { FieldGrass, FieldWall } from "@piggo-gg/games";
+import { Background, Ball, Goal, HomeButton, DefaultGame, SkellySpawnSystem, Zomi } from "@piggo-gg/core"
+import { FieldGrass, FieldWall } from "@piggo-gg/games"
 
 export const Soccer = DefaultGame({
   id: "soccer",
@@ -15,4 +15,4 @@ export const Soccer = DefaultGame({
     ],
     systems: [ SkellySpawnSystem ]
   })
-});
+})

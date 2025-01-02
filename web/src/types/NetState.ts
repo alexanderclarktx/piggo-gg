@@ -1,1 +1,1 @@
-export type NetState = "disconnected" | "offering" | "answering" | "connected";
+export type NetState = "disconnected" | "offering" | "answering" | "connected"

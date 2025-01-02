@@ -1,5 +1,5 @@
-import { Actions, Collider, Debug, Entity, Networked, Position, Renderable, XY, loadTexture, pixiText } from "@piggo-gg/core";
-import { Matrix, Sprite } from "pixi.js";
+import { Actions, Collider, Debug, Entity, Networked, Position, Renderable, XY, loadTexture, pixiText } from "@piggo-gg/core"
+import { Matrix, Sprite } from "pixi.js"
 
 export type PortalProps = {
   pos: XY
@@ -18,7 +18,7 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
         sensor: (e2, world) => {
           if (e2.id.startsWith("skelly")) {
             // todo actionBuffer push should be handled by PhysicsSystem
-            world.actionBuffer.push(world.tick + 1, portal.id, {playerId: world.client?.playerId(), action: "teleport", params: { game }});
+            world.actionBuffer.push(world.tick + 1, portal.id, {playerId: world.client?.playerId(), action: "teleport", params: { game }})
             return true
           }
           return false
@@ -27,7 +27,7 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
       actions: Actions<{ game: string }>({
         teleport: {
           invoke: ({ world, params }) => {
-            world.setGame(params.game);
+            world.setGame(params.game)
           }
         }
       }),
@@ -37,23 +37,23 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
         color: tint ?? 0xffffff,
         anchor: { x: 0.5, y: 0.5 },
         setup: async (r) => {
-          const textures = await loadTexture("portal.json");
-          const sprite = new Sprite({ texture: textures["portal"] });
-          sprite.setFromMatrix(new Matrix(2, 0, 0, 1, 0, 0));
+          const textures = await loadTexture("portal.json")
+          const sprite = new Sprite({ texture: textures["portal"] })
+          sprite.setFromMatrix(new Matrix(2, 0, 0, 1, 0, 0))
 
-          sprite.anchor.set(0.5, 0.5);
+          sprite.anchor.set(0.5, 0.5)
 
           const text = pixiText({
             text: game,
             anchor: { x: 0.5, y: 0.5 },
             style: { fill: 0xffffff, fontSize: 14 }
-          });
-          sprite.addChild(text);
+          })
+          sprite.addChild(text)
 
-          r.c.addChild(sprite);
+          r.c.addChild(sprite)
         }
       })
     }
-  });
-  return portal;
+  })
+  return portal
 }

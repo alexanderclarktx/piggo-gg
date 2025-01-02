@@ -12,44 +12,44 @@ export type StateBuffer<T extends ({} | string)> = {
 
 export const StateBuffer = <T extends ({} | string)>(): StateBuffer<T> => {
 
-  const buffer: Record<number, Record<string, T[]>> = {};
+  const buffer: Record<number, Record<string, T[]>> = {}
 
   const StateBuffer: StateBuffer<T> = {
     at: (tick, entityId) => {
       return buffer[tick] ? buffer[tick][entityId] : undefined
     },
     atTick: (tick) => {
-      return buffer[tick];
+      return buffer[tick]
     },
     clearTick: (tick) => {
-      delete buffer[tick];
+      delete buffer[tick]
     },
     clearBeforeTick: (tick) => {
       keys(buffer).map(Number).forEach((t) => {
-        if (t < tick) delete buffer[t];
-      });
+        if (t < tick) delete buffer[t]
+      })
     },
     keys: () => {
-      return keys(buffer).map(Number).reverse();
+      return keys(buffer).map(Number).reverse()
     },
     set: (tick, entityId, state) => {
       // empty buffer for tick if it doesn't exist
-      if (!buffer[tick]) buffer[tick] = {};
+      if (!buffer[tick]) buffer[tick] = {}
 
       // set state for entity
-      buffer[tick][entityId] = state;
+      buffer[tick][entityId] = state
     },
     push: (tick, entityId, state) => {
       // empty buffer for tick if it doesn't exist
-      if (!buffer[tick]) buffer[tick] = {};
+      if (!buffer[tick]) buffer[tick] = {}
 
       // empty buffer for entity if it doesn't exist
-      if (!buffer[tick][entityId]) buffer[tick][entityId] = [];
+      if (!buffer[tick][entityId]) buffer[tick][entityId] = []
 
       // push state
-      buffer[tick][entityId].push(state);
-      return true;
+      buffer[tick][entityId].push(state)
+      return true
     }
   }
-  return StateBuffer;
+  return StateBuffer
 }

@@ -1,4 +1,4 @@
-import { Component } from "@piggo-gg/core";
+import { Component } from "@piggo-gg/core"
 
 export type Player = Component<"player"> & {
   data: { name: string }

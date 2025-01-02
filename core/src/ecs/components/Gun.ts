@@ -2,10 +2,10 @@ import {
   Actions, Clickable, Component, Effects, Item, ItemBuilder, ItemEntity, Position,
   Reload, Renderable, Shoot, SpawnHitbox, World,
   abs, hypot, loadTexture, min, randomInt
-} from "@piggo-gg/core";
-import { AnimatedSprite } from "pixi.js";
+} from "@piggo-gg/core"
+import { AnimatedSprite } from "pixi.js"
 
-export type GunNames = "deagle" | "ak" | "awp";
+export type GunNames = "deagle" | "ak" | "awp"
 
 export type Gun = Component<"gun", { id: number, clip: number, ammo: number }> & {
   automatic: boolean
@@ -61,29 +61,29 @@ export const Gun = (props: GunProps): Gun => {
 
       if (hold) {
         // only hold automatic
-        if (!props.automatic) return false;
+        if (!props.automatic) return false
 
         // firing rate
-        if ((gun.lastShot + gun.fireRate) > world.tick) return false;
+        if ((gun.lastShot + gun.fireRate) > world.tick) return false
       }
 
       // auto/semi
-      if (!props.automatic && gun.lastShot >= tick) return false;
+      if (!props.automatic && gun.lastShot >= tick) return false
 
       // has clip
-      if (gun.data.clip <= 0) return false;
+      if (gun.data.clip <= 0) return false
 
       // if it's reloading
-      if (gun.reloading) return false;
+      if (gun.reloading) return false
 
-      return true;
+      return true
     },
     didShoot: (world: World) => {
-      gun.lastShot = world.tick;
-      gun.data.clip -= 1;
+      gun.lastShot = world.tick
+      gun.data.clip -= 1
     }
   }
-  return gun;
+  return gun
 }
 
 const DeagleBuilder = GunBuilder({
@@ -96,7 +96,7 @@ const DeagleBuilder = GunBuilder({
   reloadTime: 40,
   bulletSize: 3,
   speed: 400
-});
+})
 
 const AKBuilder = GunBuilder({
   name: "ak",
@@ -108,7 +108,7 @@ const AKBuilder = GunBuilder({
   reloadTime: 50,
   bulletSize: 3,
   speed: 500
-});
+})
 
 const AWPBuilder = GunBuilder({
   name: "awp",
@@ -120,7 +120,7 @@ const AWPBuilder = GunBuilder({
   reloadTime: 40,
   bulletSize: 5,
   speed: 600
-});
+})
 
 export const WeaponTable: Record<GunNames, () => Gun> = {
   "deagle": DeagleBuilder,
@@ -184,6 +184,6 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
   }
 })
 
-export const Deagle = GunItem("deagle", WeaponTable["deagle"]);
-export const AK = GunItem("ak", WeaponTable["ak"]);
-export const AWP = GunItem("awp", WeaponTable["awp"]);
+export const Deagle = GunItem("deagle", WeaponTable["deagle"])
+export const AK = GunItem("ak", WeaponTable["ak"])
+export const AWP = GunItem("awp", WeaponTable["awp"])

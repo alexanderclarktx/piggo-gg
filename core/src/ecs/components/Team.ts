@@ -1,6 +1,6 @@
-import { Component, SystemBuilder } from "@piggo-gg/core";
+import { Component, SystemBuilder } from "@piggo-gg/core"
 
-export type TeamNumber = 1 | 2;
+export type TeamNumber = 1 | 2
 
 export const TeamColors: Record<TeamNumber, number> = {
   1: 0xff7777,
@@ -17,11 +17,11 @@ export const Team = (teamNumber: TeamNumber): Team => {
     type: "team",
     data: { team: teamNumber },
     switchTeam: () => {
-      team.data.team = team.data.team === 1 ? 2 : 1;
+      team.data.team = team.data.team === 1 ? 2 : 1
     },
     visible: false
   }
-  return team;
+  return team
 }
 
 export const TeamSystem: SystemBuilder<"TeamSystem"> = {
@@ -32,9 +32,9 @@ export const TeamSystem: SystemBuilder<"TeamSystem"> = {
       query: ["team"],
       onTick: (entities) => {
         entities.forEach((entity) => {
-          const { team } = entity.components;
-          console.log("Team", team);
-        });
+          const { team } = entity.components
+          console.log("Team", team)
+        })
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Data, Entity, Networked, NetworkedComponentData } from "@piggo-gg/core";
+import { Data, Entity, Networked, NetworkedComponentData } from "@piggo-gg/core"
 
 export type SystemEntityProps = {
   systemId: string
@@ -13,4 +13,4 @@ export const SystemEntity = ({ systemId, data }: SystemEntityProps) => Entity({
     networked: Networked({ isNetworked: true }),
     data: Data({ data }),
   }
-});
+})

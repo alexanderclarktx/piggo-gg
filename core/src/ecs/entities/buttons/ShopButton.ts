@@ -1,4 +1,4 @@
-import { Actions, Button, Clickable, Entity, Position, PositionProps, pixiText } from "@piggo-gg/core";
+import { Actions, Button, Clickable, Entity, Position, PositionProps, pixiText } from "@piggo-gg/core"
 
 export const ShopButton = (pos: PositionProps = { x: -55, y: 5, screenFixed: true }) => Entity({
   id: "shopButton",
@@ -10,7 +10,7 @@ export const ShopButton = (pos: PositionProps = { x: -55, y: 5, screenFixed: tru
         invoke: ({ world }) => {
           world.actionBuffer.push(world.tick + 1, "shop",
             { action: "toggleVisible", playerId: world.client?.playerEntity.id }
-          );
+          )
         }
       }
     }),
