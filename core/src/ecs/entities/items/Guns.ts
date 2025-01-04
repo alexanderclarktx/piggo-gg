@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Effects, Gun, GunBuilder, GunNames, Item, ItemBuilder,
+  Actions, Clickable, Effects, Entity, Gun, GunBuilder, GunNames, Item, ItemBuilder,
   ItemEntity, Position, Reload, Renderable, Shoot, SpawnHitbox,
   abs, hypot, loadTexture, min
 } from "@piggo-gg/core"
@@ -26,18 +26,10 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
       interpolate: true,
       visible: false,
       outline: { color: 0x000000, thickness: 1 },
-      dynamic: (_, r) => {
+      dynamic: (_, r, gun: Entity<Item>) => {
+        if (gun.components.item.dropped) return
+
         const { pointing, pointingDelta } = character.components.position.data
-
-        const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
-
-        const hyp_x = pointingDelta.x / hypotenuse
-        const hyp_y = pointingDelta.y / hypotenuse
-
-        r.position = {
-          x: hyp_x * min(20, abs(pointingDelta.x)),
-          y: hyp_y * min(20, abs(pointingDelta.y)) - 5
-        }
 
         r.zIndex = (pointingDelta.y > 0) ? 3 : 2
 

@@ -24,7 +24,7 @@ export const Tool = ({ name, sound, damage }: ToolProps) => (character: Characte
       })),
       spawnHitbox: SpawnHitbox
     }),
-    item: Item({ name }),
+    item: Item({ name, flips: true }),
     effects: Effects(),
     clickable: Clickable({
       width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 }

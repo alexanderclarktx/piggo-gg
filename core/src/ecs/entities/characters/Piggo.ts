@@ -56,6 +56,8 @@ const log = (message: string, world: World) => {
   }
 }
 
+// const hungry = 
+
 const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position, renderable } = entity.components
 

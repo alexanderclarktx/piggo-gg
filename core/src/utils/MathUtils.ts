@@ -5,10 +5,10 @@ export type XY = { x: number, y: number }
 
 export type TwoPoints = [number, number, number, number]
 
-export const { random, max, min, sign, abs, hypot } = Math
+export const { abs, floor, hypot, max, min, pow, random, sign, sqrt } = Math
 
 export const round = (n: number, places = 0) => {
-  const factor = Math.pow(10, places)
+  const factor = pow(10, places)
   return Math.round(n * factor) / factor
 }
 
@@ -19,10 +19,10 @@ export const randomInt = (n: number, s: number = 0) => {
 export const { isArray } = Array
 
 export const randomChoice = <T>(xs: T[]): T => {
-  return xs[Math.floor(random() * xs.length)]
+  return xs[floor(random() * xs.length)]
 }
 
-export const XYdifferent = (a: XY, b: XY, threshold: number = 0) => {
+export const XYdiff = (a: XY, b: XY, threshold: number = 0) => {
   return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold
 }
 
@@ -103,13 +103,13 @@ export const closestEntity = (entities: Entity<Position>[], pos: XY, maxDistance
 export const normalize = ({ x, y, entity }: { x: number, y: number, entity: Entity<Position> }): XY => {
   const { speed } = entity.components.position.data
 
-  if (x === 0) return { x, y: Math.sign(y) * speed }
-  if (y === 0) return { x: Math.sign(x) * speed, y }
+  if (x === 0) return { x, y: sign(y) * speed }
+  if (y === 0) return { x: sign(x) * speed, y }
 
   const ratio = x * x / (y * y)
 
-  const newX = Math.sqrt(speed * speed / (1 + ratio)) * Math.sign(x)
-  const newY = Math.sqrt(speed * speed / (1 + 1 / ratio)) * Math.sign(y)
+  const newX = sqrt(speed * speed / (1 + ratio)) * sign(x)
+  const newY = sqrt(speed * speed / (1 + 1 / ratio)) * sign(y)
 
   return { x: newX, y: newY }
 }

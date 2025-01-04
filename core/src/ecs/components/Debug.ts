@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Component,
-  Position, Renderable, TextBox, entries, physics, values
+  Position, Renderable, TextBox, physics, values, keys
 } from "@piggo-gg/core"
 import { Graphics, Text } from "pixi.js"
 
@@ -17,7 +17,16 @@ export const DebugSystem = ClientSystemBuilder({
     let debugRenderables: Renderable[] = []
     let debugEntitiesPerEntity: Record<string, Entity<Renderable | Position>[]> = {}
 
-    const addEntityForRenderable = (entity: Entity<Renderable | Position>) => {
+
+    const rmDebug = (id: string) => {
+      const debugEntities = debugEntitiesPerEntity[id]
+      debugEntities?.forEach((debugEntity) => {
+        world.removeEntity(debugEntity.id)
+        delete debugEntitiesPerEntity[id]
+      })
+    }
+
+    const addDebug = (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
 
       // text box
@@ -119,13 +128,14 @@ export const DebugSystem = ClientSystemBuilder({
       skipOnRollback: true,
       onTick: (entities: Entity<Position>[]) => {
         if (world.debug) {
+
           // handle new entities
           entities.forEach((entity) => {
             const { renderable } = entity.components
 
             if (!debugEntitiesPerEntity[entity.id] || !debugEntitiesPerEntity[entity.id].length) {
               debugEntitiesPerEntity[entity.id] = []
-              if (renderable?.visible) addEntityForRenderable(entity as Entity<Renderable | Position>)
+              if (renderable?.visible) addDebug(entity as Entity<Renderable | Position>)
             }
           })
 
@@ -136,19 +146,11 @@ export const DebugSystem = ClientSystemBuilder({
           if (!world.entities["fpsText"]) drawFpsText()
 
           // clean up old entities
-          entries(debugEntitiesPerEntity).forEach(([id, debugEntities]) => {
-            const entity = world.entities[id] as Entity<Position>
-            if (!entity) {
-              debugEntities.forEach((debugEntity) => {
-                world.removeEntity(debugEntity.id)
-                delete debugEntitiesPerEntity[id]
-              })
-            } else if (entity.components.renderable?.visible === false) {
-              debugEntities.forEach((debugEntity) => world.removeEntity(debugEntity.id))
-              delete debugEntitiesPerEntity[id]
-            }
-          })
+          for (const id of keys(debugEntitiesPerEntity)) {
+            if (!world.entities[id]) rmDebug(id)
+          }
         } else {
+
           // remove all debug entities
           values(debugEntitiesPerEntity).forEach((debugEntities) => {
             debugEntities.forEach((debugEntity) => world.removeEntity(debugEntity.id))

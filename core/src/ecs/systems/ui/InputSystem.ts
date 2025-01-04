@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity,
-  Input, InvokedAction, World, XY, XYdifferent, clickableClickedThisFrame, round
+  Input, InvokedAction, World, XY, XYdiff, clickableClickedThisFrame, round
 } from "@piggo-gg/core"
 
 export type Mouse = XY & { hold: boolean }
@@ -43,7 +43,7 @@ export const InputSystem = ClientSystemBuilder({
     let mouseEvent: XY = { x: 0, y: 0 }
 
     renderer?.app.canvas.addEventListener("pointermove", (event) => {
-      if (CurrentJoystickPosition.active && XYdifferent(mouseEvent, { x: event.offsetX, y: event.offsetY }, 100)) return
+      if (CurrentJoystickPosition.active && XYdiff(mouseEvent, { x: event.offsetX, y: event.offsetY }, 100)) return
 
       mouseEvent = { x: event.offsetX, y: event.offsetY }
       mouse = { hold: mouse.hold, ...renderer.camera.toWorldCoords(mouseEvent) }
