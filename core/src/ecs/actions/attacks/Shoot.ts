@@ -12,7 +12,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
     gun.didShoot(world)
 
     const { x, y } = position.data
-    const { speed } = gun
+    const { speed } = gun.data
 
     // distance to mouse
     let dx = params.mouse.x - x
@@ -31,8 +31,8 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
     const bulletParams: SpawnHitboxProps = {
       pos: { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } },
       team,
-      radius: gun.bulletSize,
-      damage: () => gun.damage,
+      radius: gun.data.bulletSize,
+      damage: () => gun.data.damage,
       id: randomInt(1000),
       visible: true,
       expireTicks: 35
@@ -40,7 +40,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
 
     world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnHitbox", params: bulletParams })
 
-    world.client?.soundManager.play(gun.name)
+    world.client?.soundManager.play(gun.data.name)
 
     // auto reload
     if (gun.data.clip === 0) {

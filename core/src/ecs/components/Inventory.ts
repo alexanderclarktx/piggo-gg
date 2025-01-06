@@ -16,7 +16,7 @@ export type Inventory = Component<"inventory"> & {
   includes: (item: ItemEntity) => boolean
 }
 
-export const Inventory = (items: ((character: Character) => ItemEntity)[]): Inventory => {
+export const Inventory = (items: ((character: Character) => ItemEntity)[] = []): Inventory => {
   const inventory: Inventory = {
     type: "inventory",
     items: { 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined },

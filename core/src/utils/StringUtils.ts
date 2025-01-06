@@ -8,5 +8,6 @@ export const genHash = (length: number = 7) => {
 }
 
 export const genPlayerId = () => {
-  return `noob${randomInt(100)}`
+  return `noob`
+  // return `noob${randomInt(100)}`
 }
