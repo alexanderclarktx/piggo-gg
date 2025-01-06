@@ -1,5 +1,5 @@
 import {
-  Actions, Component, Effects, Entity, Renderable, Position, ProtoEntity, XY,
+  Actions, Component, Effects, Entity, Renderable, Position, ProtoEntity,
   XYdiff, abs, hypot, min, mouseScreen, Clickable, PickupItem, Debug, ClientSystemBuilder
 } from "@piggo-gg/core"
 
