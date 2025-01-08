@@ -1,33 +1,52 @@
-import { Component, Entity, Noob, World } from "@piggo-gg/core"
+import { Component, Entity, entries, Noob, World } from "@piggo-gg/core"
 
 export type Action<T extends {} = {}> = {
-  cooldown?: number
+  id: string
+  cooldown: number | undefined
   cdLeft?: number
+  prepare: (_: { params?: T, entity?: Entity, player?: Noob }) => InvokedAction
   invoke: (_: { params: T, world: World, entity?: Entity, player?: Noob | undefined }) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
-export const Action = <T extends {} = {}>(invoke: Action<T>["invoke"], cooldown?: number): Action<T> => {
+export const Action = <T extends {} = {}>(id: string, invoke: Action<T>["invoke"], cooldown?: number): Action<T> => {
   return {
+    id,
+    prepare: ({ params, entity, player }) => (
+      { actionId: id, params: params ?? {}, entityId: entity?.id, playerId: player?.id }
+    ),
     invoke,
-    ...cooldown ? { cooldown } : {}
+    cooldown
   }
 }
 
 export type InvokedAction<A extends string = string, P extends {} = {}> = {
-  action: A,
+  actionId: A,
   playerId?: string | undefined,
   entityId?: string | undefined
   params?: P
 }
 
-export type ActionMap<P extends {} = {}> = Record<string, Action<P>>
+export type ActionMap<P extends {} = {}> = Record<string, Action<P> | Action<P>["invoke"]>
 
 export type Actions = Component<"actions"> & {
-  actionMap: ActionMap
+  actionMap: Record<string, Action>
 }
 
-export const Actions = <P extends {} = {}>(actionMap: ActionMap<P> = {}): Actions => ({
-  type: "actions",
-  actionMap
-})
+export const Actions = <P extends {} = {}>(actionMap: ActionMap<P> = {}): Actions => {
+
+  const newActions: Record<string, Action> = {}
+  
+  entries(actionMap).forEach(([id, action]) => {
+    if (typeof action === "function") {
+      newActions[id] = Action(id, action)
+    } else {
+      newActions[id] = action
+    }
+  })
+
+  return {
+    type: "actions",
+    actionMap: newActions
+  }
+}

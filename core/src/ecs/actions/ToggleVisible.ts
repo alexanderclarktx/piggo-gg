@@ -1,6 +1,6 @@
 import { Action } from "@piggo-gg/core"
 
-export const ToggleVisible = Action(({ entity }) => {
+export const ToggleVisible = Action("ToggleVisible", ({ entity }) => {
   if (!entity) return
 
   const { renderable } = entity.components
@@ -9,7 +9,7 @@ export const ToggleVisible = Action(({ entity }) => {
   renderable.visible = true
 })
 
-export const ToggleHidden = Action(({ entity }) => {
+export const ToggleHidden = Action("ToggleHidden", ({ entity }) => {
   if (!entity) return
 
   const { renderable } = entity.components

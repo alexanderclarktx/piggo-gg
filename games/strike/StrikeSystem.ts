@@ -1,4 +1,4 @@
-import { Noob, SystemBuilder, TeamColors, TeamNumber, World, XY, invokeSpawnSkelly } from "@piggo-gg/core"
+import { Noob, spawnSkelly, SystemBuilder, TeamColors, TeamNumber, World, XY } from "@piggo-gg/core"
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over"
 
@@ -42,13 +42,14 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
           // player not controlling a character
           if (!controlling.data.entityId) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]))
+            world.actionBuffer.push(world.tick + 1, player.id,
+              spawnSkelly.prepare({player, params: { color: TeamColors[team.data.team], pos: TeamSpawns[team.data.team]}}))
             spawnedPlayers.add(player.id)
           }
 
           // new player
           if (!spawnedPlayers.has(player.id)) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team]))
+            world.actionBuffer.push(world.tick + 1, player.id, spawnSkelly.prepare({player}))
             spawnedPlayers.add(player.id)
           }
         })
@@ -87,7 +88,7 @@ const GameStateHooks: Record<GameStates, Hooks> = {
   },
   "planted": {
     onStart: (world) => {
-      world.log("bomb planted")
+      world.log("spike planted")
     },
     onTick: (world) => { },
     timer: 40

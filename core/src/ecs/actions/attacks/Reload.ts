@@ -1,6 +1,6 @@
 import { Action, Effect, Gun, max, min } from "@piggo-gg/core"
 
-export const Reload = Action(({ entity }) => {
+export const Reload = Action("reload", ({ entity }) => {
   if (!entity) return
 
   const { gun, effects } = entity.components

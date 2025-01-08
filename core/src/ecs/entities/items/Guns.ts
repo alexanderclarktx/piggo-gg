@@ -1,7 +1,6 @@
 import {
   Actions, Clickable, Effects, Entity, Gun, GunBuilder, GunNames, Item, ItemBuilder,
-  ItemEntity, Position, Reload, Renderable, Shoot, SpawnHitbox,
-  abs, hypot, loadTexture, min
+  ItemEntity, Position, Reload, Renderable, Shoot, SpawnHitbox, loadTexture
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 

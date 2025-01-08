@@ -71,19 +71,19 @@ const behavior = (entity: Entity<Position>, world: World): void | InvokedAction 
   if (!closest) return
 
   const distance = positionDelta(position, closest.components.position)
-  if (distance < 30) return { action: "attack", params: { target: closest } }
+  if (distance < 30) return { actionId: "attack", params: { target: closest } }
 
-  return { action: "chase", params: { target: closest } }
+  return { actionId: "chase", params: { target: closest } }
 }
 
-export const ZomiAttack = (damage: number, cooldown: number) => Action<{ target: Entity }>(({ entity, params, world }) => {
+export const ZomiAttack = (damage: number, cooldown: number) => Action<{ target: Entity }>("ZomiAttack", ({ entity, params, world }) => {
   const { target } = params
   const { health } = target.components
 
   if (health) health.data.health -= damage
 
   entity?.components.position?.clearHeading()
-  
+
   target.components.health?.onDamage?.(damage, world)
 
   world.client?.soundManager.play(["attack1", "attack2", "attack3", "attack4"], 0, target.components.position?.data)

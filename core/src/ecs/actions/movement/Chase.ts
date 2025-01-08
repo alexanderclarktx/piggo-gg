@@ -1,6 +1,6 @@
 import { Action, Entity, Position } from "@piggo-gg/core"
 
-export const Chase = Action<{ target: Entity<Position> }>(({ entity, params }) => {
+export const Chase = Action<{ target: Entity<Position> }>("chase", ({ entity, params }) => {
   if (!entity) return
 
   const { position } = entity.components

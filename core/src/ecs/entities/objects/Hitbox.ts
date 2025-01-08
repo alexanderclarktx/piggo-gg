@@ -77,7 +77,7 @@ export type SpawnHitboxProps = {
   onExpire?: () => void
 }
 
-export const SpawnHitbox = Action<SpawnHitboxProps>(({ world, params }) => {
+export const SpawnHitbox = Action<SpawnHitboxProps>("spawnHitbox", ({ world, params }) => {
 
   const { team, pos, radius, damage, visible, expireTicks, onHit, onExpire } = params
 

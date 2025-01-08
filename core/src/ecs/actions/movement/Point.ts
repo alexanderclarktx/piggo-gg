@@ -1,6 +1,6 @@
 import { Action, Oct, XY } from "@piggo-gg/core"
 
-export const Point = Action<{ pointing: Oct, pointingDelta: XY }>(({ params, entity }) => {
+export const Point = Action<{ pointing: Oct, pointingDelta: XY }>("point", ({ params, entity }) => {
   if (!entity) return
 
   const { position } = entity.components

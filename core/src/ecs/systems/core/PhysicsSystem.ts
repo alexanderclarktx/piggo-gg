@@ -1,5 +1,5 @@
-import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
-import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, entries, keys, round, values } from "@piggo-gg/core"
+import { init as RapierInit, World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat"
+import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round } from "@piggo-gg/core"
 
 export let physics: RapierWorld
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
@@ -19,6 +19,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
       })
       colliders.clear()
       physics.free()
+      // physics = new RapierWorld({ x: 0, y: 4000 })
       physics = new RapierWorld({ x: 0, y: 0 })
       physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
       physics.timestep = 0.025

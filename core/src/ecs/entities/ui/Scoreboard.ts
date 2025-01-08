@@ -13,8 +13,8 @@ export const Scoreboard = (): Entity => {
     components: {
       position: Position({ x: 200, y: 200, screenFixed: true }),
       input: Input({
-        press: { "shift": ({ world }) => ({ action: "ToggleVisible", playerId: world.client?.playerId() }) },
-        release: { "shift": ({ world }) => ({ action: "ToggleHidden", playerId: world.client?.playerId() }) }
+        press: { "shift": ({ world }) => ({ actionId: "ToggleVisible", playerId: world.client?.playerId() }) },
+        release: { "shift": ({ world }) => ({ actionId: "ToggleHidden", playerId: world.client?.playerId() }) }
       }),
       actions: Actions({ ToggleVisible, ToggleHidden }),
       renderable: Renderable({
@@ -97,7 +97,7 @@ const playerRow = (entity: Noob, width: number, world: World): Container => {
 
   c.onpointerdown = () => {
     clickableClickedThisFrame.set(world.tick + 1)
-    world.actionBuffer.push(world.tick + 2, player.data.name, { action: "switchTeam", playerId: world.client?.playerId() })
+    world.actionBuffer.push(world.tick + 2, player.data.name, { actionId: "switchTeam", playerId: world.client?.playerId() })
   }
 
   return c

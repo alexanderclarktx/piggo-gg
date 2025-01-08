@@ -1,6 +1,6 @@
 import { Action, LineWall, XY, abs, min, round, sign } from "@piggo-gg/core"
 
-export const IceWall = Action<XY>(({ world, params, entity }) => {
+export const IceWall = Action<XY>("iceWall", ({ world, params, entity }) => {
   if (!entity || !entity.components.position) return
 
   const width = 50

@@ -25,10 +25,10 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
       position: Position({ x: -125, y: 125, screenFixed: true }),
       debug: Debug(),
       input: Input({
-        press: { "capslock": ({ world }) => ({ action: "toggleFS", playerId: world.client?.playerId() }) }
+        press: { "capslock": ({ world }) => ({ actionId: "toggleFS", playerId: world.client?.playerId() }) }
       }),
       actions: Actions({
-        toggleFS: Action(({ world }) => {
+        toggleFS: ({ world }) => {
           fullscreen = !fullscreen
           if (fullscreen) {
             tileGraphics.mask = null
@@ -58,7 +58,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             background.circle(0, 0, 100).fill({ color: 0x000000, alpha: 0.4 })
             outline.circle(0, 0, 100).stroke({ color: 0xffffff, width: 2, alpha: 0.9 })
           }
-        }),
+        },
       }),
       renderable: Renderable({
         zIndex: 10,

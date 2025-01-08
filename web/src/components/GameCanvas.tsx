@@ -1,5 +1,5 @@
 import { DefaultWorld, Renderer, World, isMobile } from "@piggo-gg/core"
-import { ARAM, Dungeon, Home, Legends, Sandbox, Soccer, Strike } from "@piggo-gg/games"
+import { ARAM, Dungeon, Flappy, Home, Legends, Sandbox, Soccer, Strike } from "@piggo-gg/games"
 import React, { useEffect } from "react"
 
 export type GameCanvasProps = {
@@ -22,7 +22,10 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
     const renderer = Renderer({ canvas, width, height })
 
     renderer.init().then(() => {
-      const world = DefaultWorld({ renderer, runtimeMode: "client", games: [Sandbox, Dungeon, Home, Strike, ARAM, Soccer, Legends] })
+      const world = DefaultWorld({
+        renderer,
+        games: [Sandbox, Flappy, Dungeon, Home, Strike, ARAM, Soccer, Legends]
+      })
       setWorld(world)
       renderer.handleResize()
     })

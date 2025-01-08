@@ -1,6 +1,6 @@
 import { Action, Entity, Position } from "@piggo-gg/core"
 
-export const Eat = Action<{ target: Entity<Position> }>(({ entity, params, world }) => {
+export const Eat = Action<{ target: Entity<Position> }>("eat", ({ entity, params, world }) => {
   if (!entity) return
 
   const { target } = params

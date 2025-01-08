@@ -1,4 +1,7 @@
-import { Actions, Clickable, Collider, Debug, Entity, Input, Networked, Position, Renderable, VehicleMovement, XY, controlEntity, loadTexture, random, randomInt } from "@piggo-gg/core"
+import {
+  Actions, Clickable, Collider, Debug, Entity, Input, Networked, Position,
+  Renderable, VehicleMovement, XY, controlEntity, loadTexture, random, randomInt
+} from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
 export type SpaceshipProps = {
@@ -20,12 +23,12 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
     input: Input({
       press: {
         "a,d": () => null, "w,s": () => null,
-        "shift,a": ({ world }) => ({ action: "skidleft", playerId: world.client?.playerId() }),
-        "shift,d": ({ world }) => ({ action: "skidright", playerId: world.client?.playerId() }),
-        "w": ({ world }) => ({ action: "up", playerId: world.client?.playerId() }),
-        "s": ({ world }) => ({ action: "down", playerId: world.client?.playerId() }),
-        "a": ({ world }) => ({ action: "left", playerId: world.client?.playerId() }),
-        "d": ({ world }) => ({ action: "right", playerId: world.client?.playerId() })
+        "shift,a": ({ world }) => ({ actionId: "skidleft", playerId: world.client?.playerId() }),
+        "shift,d": ({ world }) => ({ actionId: "skidright", playerId: world.client?.playerId() }),
+        "w": ({ world }) => ({ actionId: "up", playerId: world.client?.playerId() }),
+        "s": ({ world }) => ({ actionId: "down", playerId: world.client?.playerId() }),
+        "a": ({ world }) => ({ actionId: "left", playerId: world.client?.playerId() }),
+        "d": ({ world }) => ({ actionId: "right", playerId: world.client?.playerId() })
       }
     }),
     debug: Debug(),

@@ -6,12 +6,10 @@ export const ShopButton = (pos: PositionProps = { x: -55, y: 5, screenFixed: tru
     position: Position(pos),
     clickable: Clickable({ width: 45, height: 32, active: true }),
     actions: Actions({
-      click: {
-        invoke: ({ world }) => {
-          world.actionBuffer.push(world.tick + 1, "shop",
-            { action: "toggleVisible", playerId: world.client?.playerEntity.id }
-          )
-        }
+      click: ({ world }) => {
+        world.actionBuffer.push(world.tick + 1, "shop",
+          { actionId: "toggleVisible", playerId: world.client?.playerEntity.id }
+        )
       }
     }),
     renderable: Button({

@@ -1,6 +1,6 @@
-import { Noob, SystemBuilder, invokeSpawnSkelly } from "@piggo-gg/core"
+import { Noob, spawnSkelly, SystemBuilder } from "@piggo-gg/core"
 
-// SkellySpawnSystem handles spawning characters for players
+// spawn characters for players
 export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
   id: "SkellySpawnSystem",
   init: (world) => {
@@ -25,13 +25,13 @@ export const SkellySpawnSystem: SystemBuilder<"SkellySpawnSystem"> = {
 
           // if player is not controlling a character
           if (!player.components.controlling.data.entityId) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player))
+            world.actionBuffer.push(world.tick + 1, player.id, spawnSkelly.prepare({ player }))
             spawnedPlayers.add(player.id)
           }
 
           // if it's a new player
           if (!spawnedPlayers.has(player.id)) {
-            world.actionBuffer.push(world.tick + 1, player.id, invokeSpawnSkelly(player))
+            world.actionBuffer.push(world.tick + 1, player.id, spawnSkelly.prepare({ player }))
             spawnedPlayers.add(player.id)
           }
         })

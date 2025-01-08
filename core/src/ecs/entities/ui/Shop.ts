@@ -1,4 +1,7 @@
-import { Action, Actions, Entity, GunNames, Input, Position, Renderable, TwoPoints, WeaponTable, World, clickableClickedThisFrame, isMobile, loadTexture, pixiGraphics, pixiText } from "@piggo-gg/core"
+import {
+  Actions, Entity, GunNames, Input, Position, Renderable, TwoPoints, WeaponTable, World,
+  clickableClickedThisFrame, isMobile, loadTexture, pixiGraphics, pixiText
+} from "@piggo-gg/core"
 import { ScrollBox } from "@pixi/ui"
 import { OutlineFilter } from "pixi-filters"
 import { Container, Sprite } from "pixi.js"
@@ -13,13 +16,13 @@ export const Shop = (): Entity => {
     components: {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       input: Input({
-        press: { "b": ({ world }) => ({ action: "toggleVisible", playerId: world.client?.playerId() }) }
+        press: { "b": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId() }) }
       }),
       actions: Actions({
-        toggleVisible: Action(() => {
+        toggleVisible: () => {
           visible = !visible
           shop.components.renderable.visible = visible
-        })
+        }
       }),
       renderable: Renderable({
         zIndex: 11,
@@ -99,7 +102,7 @@ const cell = async (text: string, width: number, height: number, world: World, m
 
     clickableClickedThisFrame.set(world.tick + 1)
 
-    world.actionBuffer.push(world.tick + 1, "shop", { action: "toggleVisible", playerId: world.client?.playerId() })
+    world.actionBuffer.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() })
   }
   c.onmouseenter = () => dark.visible = true
   c.onmouseleave = () => dark.visible = false

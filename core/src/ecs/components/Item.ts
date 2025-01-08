@@ -1,6 +1,6 @@
 import {
   Actions, Component, Effects, Entity, Renderable, Position, ProtoEntity,
-  XYdiff, abs, hypot, min, mouseScreen, Clickable, PickupItem, Debug, ClientSystemBuilder
+  XYdiff, abs, hypot, min, mouseScreen, Clickable, pickupItem, Debug, ClientSystemBuilder
 } from "@piggo-gg/core"
 
 export type Item = Component<"item"> & {
@@ -44,12 +44,12 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>, props?: ItemEnti
 
   entity.components.clickable = {
     ...clickable,
-    click: () => ({ action: "pickup" }),
+    click: () => ({ actionId: "pickupItem" }),
     hoverOver: () => renderable.setOutline({ color: 0xffffff, thickness: 2 }),
     hoverOut: () => renderable.setOutline()
   }
 
-  actions.actionMap.pickup = PickupItem
+  actions.actionMap.pickupItem = pickupItem
 
   return Entity(entity)
 }

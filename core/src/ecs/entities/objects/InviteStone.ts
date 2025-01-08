@@ -23,22 +23,20 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
         ]
       }),
       actions: Actions({
-        click: {
-          invoke: ({ world }) => {
-            if (!world.client) return
+        click: ({ world }) => {
+          if (!world.client) return
 
-            let url = ""
-            if (world.client.lobbyId) {
-              url = `https://piggo.gg/?join=${world.client.lobbyId}`
+          let url = ""
+          if (world.client.lobbyId) {
+            url = `https://piggo.gg/?join=${world.client.lobbyId}`
+            navigator.clipboard.writeText(url)
+            toast.success(`Copied Invite URL`)
+          } else {
+            world.client.createLobby((response) => {
+              url = `https://piggo.gg/?join=${response.lobbyId}`
               navigator.clipboard.writeText(url)
               toast.success(`Copied Invite URL`)
-            } else {
-              world.client.createLobby((response) => {
-                url = `https://piggo.gg/?join=${response.lobbyId}`
-                navigator.clipboard.writeText(url)
-                toast.success(`Copied Invite URL`)
-              })
-            }
+            })
           }
         }
       }),
