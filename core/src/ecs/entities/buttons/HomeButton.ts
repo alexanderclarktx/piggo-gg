@@ -6,12 +6,10 @@ export const HomeButton = () => Entity({
     position: Position({ x: 5, y: 5, screenFixed: true }),
     clickable: Clickable({ width: 80, height: 32, active: true }),
     actions: Actions({
-      click: {
-        invoke: ({ world }) => {
-          world.actionBuffer.push(world.tick + 1, "world",
-            { action: "game", playerId: world.client?.playerEntity.id, params: { game: "home" } }
-          )
-        }
+      click: ({ world }) => {
+        world.actionBuffer.push(world.tick + 1, "world",
+          { actionId: "game", playerId: world.client?.playerEntity.id, params: { game: "home" } }
+        )
       }
     }),
     renderable: Button({

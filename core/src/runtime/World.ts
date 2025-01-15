@@ -44,7 +44,7 @@ export type WorldProps = {
   games?: GameBuilder[]
   systems?: SystemBuilder[]
   renderer?: Renderer | undefined
-  runtimeMode: "client" | "server"
+  runtimeMode?: "client" | "server"
 }
 
 // World manages all runtime state
@@ -75,7 +75,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     isConnected: false,
     lastTick: 0,
     renderer,
-    runtimeMode,
+    runtimeMode: runtimeMode ?? "client",
     systems: {},
     tick: 0,
     tickFaster: false,
@@ -217,7 +217,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
   }
 
   // set up client
-  if (runtimeMode === "client") world.client = Client({ world })
+  if (world.runtimeMode === "client") world.client = Client({ world })
 
   // schedule onTick
   scheduleOnTick()

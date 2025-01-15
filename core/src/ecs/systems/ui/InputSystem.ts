@@ -154,7 +154,7 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       world.actionBuffer.push(world.tick, character.id,
-        { action: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+        { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
       )
 
       // handle joystick input
@@ -176,7 +176,7 @@ export const InputSystem = ClientSystemBuilder({
             const controllerInput = input.inputMap.press[keyPress]
             if (controllerInput != null) {
               const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world })
-              if (invocation && actions.actionMap[invocation.action]) {
+              if (invocation && actions.actionMap[invocation.actionId]) {
                 invocation.playerId = world.client?.playerId()
                 world.actionBuffer.push(world.tick + 1, character.id, invocation)
               }
@@ -191,7 +191,7 @@ export const InputSystem = ClientSystemBuilder({
           const controllerInput = input.inputMap.press[keyPress]
           if (controllerInput) {
             const invocation = controllerInput({ mouse: { ...mouse }, entity: character, world, tick: keyMouse.tick })
-            if (invocation && actions.actionMap[invocation.action]) {
+            if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
               world.actionBuffer.push(world.tick + 1, character.id, invocation)
             }
@@ -211,7 +211,7 @@ export const InputSystem = ClientSystemBuilder({
 
           if (keyMouse && activeItem.components.actions.actionMap[keyPress]) {
             const invocation: InvokedAction = {
-              action: keyPress,
+              actionId: keyPress,
               playerId: world.client?.playerId(),
               entityId: activeItem.id,
               params: {
@@ -222,7 +222,7 @@ export const InputSystem = ClientSystemBuilder({
                 character
               }
             }
-            if (invocation && activeItem.components.actions.actionMap[invocation.action]) {
+            if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
               world.actionBuffer.push(world.tick + 1, activeItem.id, invocation)
             }
           }
@@ -249,7 +249,7 @@ export const InputSystem = ClientSystemBuilder({
           const controllerInput = input.inputMap.press[inputKey]
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world, tick: keyMouse.tick })
-            if (invocation && actions.actionMap[invocation.action]) {
+            if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
               world.actionBuffer.push(world.tick, entity.id, invocation)
             }
@@ -265,7 +265,7 @@ export const InputSystem = ClientSystemBuilder({
           const controllerInput = input.inputMap.release[keyUp]
           if (controllerInput != null) {
             const invocation = controllerInput({ mouse, entity, world })
-            if (invocation && actions.actionMap[invocation.action]) {
+            if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
               world.actionBuffer.push(world.tick, entity.id, invocation)
             }

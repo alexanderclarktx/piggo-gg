@@ -1,7 +1,6 @@
 import { World, InvokedAction, Action, ClientSystemBuilder, values } from "@piggo-gg/core"
 
 export type Command<T extends {} = {}> = Action<T> & {
-  id: string
   regex: RegExp
   parse: (_: { world: World, match: RegExpMatchArray }) => InvokedAction | undefined
 }

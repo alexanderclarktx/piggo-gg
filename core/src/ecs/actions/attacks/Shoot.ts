@@ -1,6 +1,6 @@
 import { Action, Character, KeyMouse, SpawnHitboxProps, randomInt } from "@piggo-gg/core"
 
-export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ world, params, entity }) => {
+export const Shoot = Action<KeyMouse & { id: number, character: Character }>("shoot", ({ world, params, entity }) => {
 
   if (!entity) return
 
@@ -38,14 +38,14 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>(({ 
       expireTicks: 35
     }
 
-    world.actionBuffer.push(world.tick + 3, entity.id, { action: "spawnHitbox", params: bulletParams })
+    world.actionBuffer.push(world.tick + 3, entity.id, { actionId: "spawnHitbox", params: bulletParams })
 
     world.client?.soundManager.play(gun.data.name)
 
     // auto reload
     if (gun.data.clip === 0) {
       const reload = entity.components.actions?.actionMap["reload"]
-      if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { action: "reload" })
+      if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { actionId: "reload" })
     }
   }
 })

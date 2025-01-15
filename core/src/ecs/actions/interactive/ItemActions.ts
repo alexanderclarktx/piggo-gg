@@ -1,6 +1,6 @@
 import { Action, ItemEntity } from "@piggo-gg/core"
 
-export const setActiveItemIndex = Action<{ index: number }>(({ params, entity }) => {
+export const setActiveItemIndex = Action<{ index: number }>("setActiveItemIndex", ({ params, entity }) => {
   if (params.index === null || params.index === undefined) return
 
   const inventory = entity?.components.inventory
@@ -9,7 +9,7 @@ export const setActiveItemIndex = Action<{ index: number }>(({ params, entity })
   inventory.setActiveItemIndex(params.index)
 })
 
-export const PickupItem = Action(({player, entity, world}) => {
+export const pickupItem = Action("pickupItem", ({player, entity, world}) => {
   if (!entity) return
 
   const character = player?.components.controlling.getControlledEntity(world)
@@ -34,7 +34,7 @@ export const PickupItem = Action(({player, entity, world}) => {
   inventory.addItem(entity as ItemEntity)
 })
 
-export const DropItem = Action(({player, world}) => {
+export const dropItem = Action("dropItem", ({player, world}) => {
   const character = player?.components.controlling.getControlledEntity(world)
   if (!character) return
 

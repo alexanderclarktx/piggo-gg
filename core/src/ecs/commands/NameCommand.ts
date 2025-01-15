@@ -6,10 +6,11 @@ type NameCommandAction = InvokedAction<"name", NameCommandParams>
 export const NameCommand: Command<NameCommandParams> = {
   id: "name",
   regex: /\/name (\w+)/,
+  prepare: ({ params }) => ({ actionId: "name" }),
   parse: ({ match, world }): NameCommandAction | undefined => {
     if (!world.client) return undefined
     return {
-      action: "name",
+      actionId: "name",
       playerId: world.client?.playerId(),
       params: { newName: match[1] }
     }
@@ -17,5 +18,6 @@ export const NameCommand: Command<NameCommandParams> = {
   invoke: ({ params, player }) => {
     if (!player) return undefined
     player.components.player.data.name = params.newName
-  }
+  },
+  cooldown: 0
 }

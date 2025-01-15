@@ -14,7 +14,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
         // handle commands
         if (entityId === "world") {
           actions.forEach((invokedAction) => {
-            const command = world.commands[invokedAction.action]
+            const command = world.commands[invokedAction.actionId]
 
             const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Noob : undefined
             if (command) command.invoke({ params: invokedAction.params ?? {}, world, player })
@@ -36,7 +36,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           }
 
           // find the action
-          const action = actions.actionMap[invokedAction.action]
+          const action = actions.actionMap[invokedAction.actionId]
 
           // action not found
           if (!action) {

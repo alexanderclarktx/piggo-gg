@@ -1,7 +1,6 @@
 import {
-  AK,
   Actions, Axe, Character, Collider, Deagle, Debug,
-  DefaultJoystickHandler, DropItem, Effects, Element, Entity, Health, Input,
+  DefaultJoystickHandler, dropItem, Effects, Element, Entity, Health, Input,
   Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
   Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
@@ -22,20 +21,20 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       input: Input({
         press: {
           ...WASDInputMap.press,
-          "g": () => ({ action: "drop"}),
-          "1": () => ({ action: "setActiveItemIndex", params: { index: 0 } }),
-          "2": () => ({ action: "setActiveItemIndex", params: { index: 1 } }),
-          "3": () => ({ action: "setActiveItemIndex", params: { index: 2 } }),
-          "4": () => ({ action: "setActiveItemIndex", params: { index: 3 } }),
-          "5": () => ({ action: "setActiveItemIndex", params: { index: 4 } })
+          "g": () => ({ actionId: "dropItem"}),
+          "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
+          "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
+          "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
+          "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
+          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } })
         },
         joystick: DefaultJoystickHandler
       }),
-      actions: Actions<{}>({
+      actions: Actions({
         move: Move,
         point: Point,
         setActiveItemIndex,
-        drop: DropItem
+        dropItem
       }),
       effects: Effects(),
       renderable: Renderable({
