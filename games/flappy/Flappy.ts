@@ -7,6 +7,7 @@ export const Flappy = DefaultGame({
   id: "flappy",
   init: () => ({
     id: "flappy",
+    bgColor: 0x000000,
     systems: [],
     entities: [
       isMobile() ? MobilePvEHUD() : PvEHUD(),

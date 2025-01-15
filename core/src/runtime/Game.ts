@@ -7,6 +7,7 @@ export type Game<T extends string = string> = {
   systems: SystemBuilder[]
   commands?: Command[]
   tileMap?: number[]
+  bgColor?: number
 }
 
 export type GameBuilder<T extends string = string> = {
