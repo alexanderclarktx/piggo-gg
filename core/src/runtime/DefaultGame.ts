@@ -5,9 +5,11 @@ export const DefaultGame = <T extends string>(gameBuilder: GameBuilder<T>): Game
   init: (world) => {
     const game = gameBuilder.init(world)
 
-    if (world.runtimeMode === "client") isMobile() ?
-      game.entities.push(Joystick()) :
-      game.entities.push(FullscreenButton(), Cursor(), Chat())
+    if (world.runtimeMode === "client") {
+      isMobile() ?
+        game.entities.push(Joystick()) :
+        game.entities.push(FullscreenButton(), Cursor(), Chat())
+    }
 
     return game
   }

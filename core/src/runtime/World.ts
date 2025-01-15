@@ -206,13 +206,17 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
       // set new game
       world.currentGame = game.init(world)
 
+      const { tileMap, bgColor, entities, systems } = world.currentGame
+
       // set tileMap
-      world.tileMap = world.currentGame.tileMap
+      world.tileMap = tileMap
+
+      if (bgColor !== undefined) world.renderer?.setBgColor(bgColor)
 
       // initialize new game
-      world.addEntities(world.currentGame.entities)
-      world.addSystemBuilders(world.currentGame.systems)
-      world.currentGame.commands?.forEach((command) => world.commands[command.id] = command)
+      world.addEntities(entities)
+      world.addSystemBuilders(systems)
+      commands?.forEach((command) => world.commands[command.id] = command)
     }
   }
 

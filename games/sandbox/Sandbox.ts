@@ -8,6 +8,7 @@ export const Sandbox = DefaultGame({
   init: () => ({
     id: "sandbox",
     systems: [SkellySpawnSystem],
+    bgColor: 0x006633,
     entities: [
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       Zomi(),

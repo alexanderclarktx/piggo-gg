@@ -13,6 +13,7 @@ export type Renderer = {
   camera: Camera
   guiRenderables: Renderable[]
   resizedFlag: boolean
+  setBgColor: (color: number) => void
   init: () => Promise<void>
   handleResize: () => void
   addGui: (renderable: Renderable) => void
@@ -30,6 +31,9 @@ export const Renderer = (props: RendererProps): Renderer => {
     camera: Camera(app),
     guiRenderables: [],
     resizedFlag: false,
+    setBgColor: (color: number) => {
+      renderer.app.renderer.background.color = color
+    },
     init: async () => {
       const { canvas } = props
 
@@ -39,9 +43,7 @@ export const Renderer = (props: RendererProps): Renderer => {
         resolution: 1,
         antialias: true,
         autoDensity: true,
-        backgroundColor: 0x006633,
-        // backgroundColor: 0x003311,
-        // backgroundColor: 0x000000,
+        backgroundColor: 0x000000,
         width: renderer.props.width ?? 800,
         height: renderer.props.height ?? 600
       })
