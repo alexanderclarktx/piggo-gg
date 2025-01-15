@@ -34,7 +34,6 @@ export const Shop = (): Entity => {
           const background = pixiGraphics()
           const outline = pixiGraphics()
 
-          // const coords: TwoPoints = [width / 6, height / 6, width / 1.5, height / 1.5]
           const coords: TwoPoints = [width / 6, height / 4, width / 1.5, height / 2]
 
           background.rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0.5 })

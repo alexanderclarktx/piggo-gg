@@ -19,7 +19,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
       })
       colliders.clear()
       physics.free()
-      // physics = new RapierWorld({ x: 0, y: 4000 })
       physics = new RapierWorld({ x: 0, y: 0 })
       physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
       physics.timestep = 0.025

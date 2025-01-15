@@ -8,7 +8,7 @@ export const Flappy = DefaultGame({
   init: () => ({
     id: "flappy",
     bgColor: 0x000000,
-    systems: [],
+    systems: [SkellySpawnSystem],
     entities: [
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       // Zomi(),
