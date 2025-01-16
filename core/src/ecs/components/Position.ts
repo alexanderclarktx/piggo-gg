@@ -1,6 +1,4 @@
-import { Component, Entity, SystemBuilder, XY, orthoToDirection, round } from "@piggo-gg/core"
-
-export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+import { Component, Entity, Oct, OctString, SystemBuilder, XY, min, round, toOctString } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
   x: number
@@ -15,12 +13,14 @@ export type Position = Component<"position", {
   follows: string | undefined
   offset: XY
 }> & {
+  gravity: number
   lastCollided: number
   screenFixed: boolean
-  orientation: "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
+  orientation: OctString
   orientationRads: number
   setPosition: (_: XY) => Position
   setVelocity: (_?: XY) => Position
+  impulse: (_: XY) => Position
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
@@ -33,6 +33,7 @@ export type PositionProps = {
   x?: number
   y?: number
   velocity?: XY
+  gravity?: number
   speed?: number
   velocityResets?: number
   screenFixed?: boolean
@@ -41,7 +42,6 @@ export type PositionProps = {
 
 // the entity's position in the world
 export const Position = (props: PositionProps = {}): Position => {
-
   const position: Position = {
     type: "position",
     data: {
@@ -57,25 +57,35 @@ export const Position = (props: PositionProps = {}): Position => {
       follows: props.follows ?? undefined,
       offset: { x: 0, y: 0 }
     },
-    orientation: "r",
-    orientationRads: 0,
+    gravity: props.gravity ?? 0,
     lastCollided: 0,
     screenFixed: props.screenFixed ?? false,
+    orientation: "r",
+    orientationRads: 0,
     setPosition: ({ x, y }: XY) => {
       position.data.x = x
       position.data.y = y
       return position
     },
     setVelocity: ({ x, y }: XY = { x: 0, y: 0 }) => {
+      if (!x) x = position.data.velocity.x
+      if (!y) y = position.data.velocity.y
+
       position.data.velocity.x = round(x * 100) / 100
       position.data.velocity.y = round(y * 100) / 100
 
       const rads = (Math.atan2(y, x) / Math.PI) * 4 + 4
       position.orientationRads = round(rads, 2)
 
-      if (x || y) position.orientation = orthoToDirection(round(rads) % 8)
+      if (x || y) position.orientation = toOctString(round(rads) % 8 as Oct)
 
       return position
+    },
+    impulse: ({ x, y }: XY) => {
+      return position.setVelocity({
+        x: position.data.velocity.x + x,
+        y: position.data.velocity.y + y
+      })
     },
     setSpeed: (speed: number) => {
       position.data.speed = speed
@@ -136,6 +146,10 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
       entities.forEach(entity => {
 
         const { position } = entity.components
+
+        if (position.gravity && world.currentGame.view === "side") {
+          position.data.velocity.y = min(position.data.velocity.y + position.gravity, position.gravity * 50)
+        }
 
         if (position.data.follows) {
           const following = world.entities[position.data.follows]

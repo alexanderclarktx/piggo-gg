@@ -2,8 +2,9 @@ import { Clickable, Entity, Position, Renderer } from "@piggo-gg/core"
 import { Container } from "pixi.js"
 
 export type XY = { x: number, y: number }
-
 export type TwoPoints = [number, number, number, number]
+export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
 export const { abs, floor, hypot, max, min, pow, random, sign, sqrt } = Math
 
@@ -36,16 +37,9 @@ export const XYdelta = (a: XY, b: XY): number => {
 
 export const XYequal = (a: XY, b: XY) => a.x === b.x && a.y === b.y
 
-export const orthoToDirection = (o: number) => {
-  if (o === 0) return "l"
-  if (o === 1) return "ul"
-  if (o === 2) return "u"
-  if (o === 3) return "ur"
-  if (o === 4) return "r"
-  if (o === 5) return "dr"
-  if (o === 6) return "d"
-  if (o === 7) return "dl"
-  return "d"
+export const toOctString = (o: Oct): OctString => {
+  const directions: OctString[] = ["l", "ul", "u", "ur", "r", "dr", "d", "dl"]
+  return directions[o] || "d"
 }
 
 export const setsEqual = <T>(xs: Set<T>, ys: Set<T>) => {

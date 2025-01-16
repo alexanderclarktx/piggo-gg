@@ -24,7 +24,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
     renderer.init().then(() => {
       const world = DefaultWorld({
         renderer,
-        games: [Sandbox, Flappy, Dungeon, Home, Strike, ARAM, Soccer, Legends]
+        games: [Flappy, Sandbox, Dungeon, Home, Strike, ARAM, Soccer, Legends]
       })
       setWorld(world)
       renderer.handleResize()
