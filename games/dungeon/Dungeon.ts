@@ -1,8 +1,6 @@
 import {
-  ZomiSpawnSystem, DefaultGame,
-  LineWall, SpawnSystem, Shop, LineFloor,
-  HomeButton, Background, ShopButton, HealthBarSystem,
-  Skelly
+  Background, DefaultGame, HealthBarSystem, HomeButton, LineFloor,
+  LineWall, Shop, ShopButton, Skelly, SpawnSystem, ZomiSpawnSystem
 } from "@piggo-gg/core"
 
 const width = 72
