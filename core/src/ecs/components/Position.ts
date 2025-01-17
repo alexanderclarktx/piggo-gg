@@ -19,11 +19,12 @@ export type Position = Component<"position", {
   orientation: OctString
   orientationRads: number
   setPosition: (_: XY) => Position
-  setVelocity: (_?: XY) => Position
+  setVelocity: (_: { x?: number, y?: number }) => Position
   impulse: (_: XY) => Position
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
+  updateOrientation: () => Position
   updateVelocity: () => Position
   rotateUp: (_: number, stopAtZero?: boolean) => Position
   rotateDown: (_: number, stopAtZero?: boolean) => Position
@@ -67,19 +68,11 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.y = y
       return position
     },
-    setVelocity: ({ x, y }: XY = { x: 0, y: 0 }) => {
-      if (!x) x = position.data.velocity.x
-      if (!y) y = position.data.velocity.y
+    setVelocity: ({ x, y }) => {
+      if (x !== undefined) position.data.velocity.x = round(x * 100) / 100
+      if (y !== undefined) position.data.velocity.y = round(y * 100) / 100
 
-      position.data.velocity.x = round(x * 100) / 100
-      position.data.velocity.y = round(y * 100) / 100
-
-      const rads = (Math.atan2(y, x) / Math.PI) * 4 + 4
-      position.orientationRads = round(rads, 2)
-
-      if (x || y) position.orientation = toOctString(round(rads) % 8 as Oct)
-
-      return position
+      return position.updateOrientation()
     },
     impulse: ({ x, y }: XY) => {
       return position.setVelocity({
@@ -96,6 +89,16 @@ export const Position = (props: PositionProps = {}): Position => {
     },
     clearHeading: () => {
       position.data.heading = { x: NaN, y: NaN }
+      return position
+    },
+    updateOrientation: () => {
+      const { x, y } = position.data.velocity
+
+      const rads = (Math.atan2(y, x) / Math.PI) * 4 + 4
+      position.orientationRads = round(rads, 2)
+
+      if (x || y) position.orientation = toOctString(round(rads) % 8 as Oct)
+
       return position
     },
     updateVelocity: () => {
@@ -148,7 +151,8 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         const { position } = entity.components
 
         if (position.gravity && world.currentGame.view === "side") {
-          position.data.velocity.y = min(position.data.velocity.y + position.gravity, position.gravity * 50)
+          position.data.velocity.y = min(position.data.velocity.y + position.gravity, position.gravity * 40)
+          position.updateOrientation()
         }
 
         if (position.data.follows) {

@@ -1,4 +1,4 @@
-import { Action, Effect, Gun, max, min } from "@piggo-gg/core"
+import { Action, Effect, Entity, Gun, max, min } from "@piggo-gg/core"
 
 export const Reload = Action("reload", ({ entity }) => {
   if (!entity) return
@@ -13,16 +13,18 @@ export const Reload = Action("reload", ({ entity }) => {
   // TODO infinite ammo
   // if (gun.data.ammo <= 0) return
 
-  effects.addEffect("reload", ReloadEffect(gun))
+  effects.addEffect("reload", ReloadEffect(gun, entity))
 })
 
-const ReloadEffect = (gun: Gun): Effect => ({
+const ReloadEffect = (gun: Gun, entity: Entity): Effect => ({
   duration: gun.data.reloadTime,
   onStart: () => {
     gun.data.reloading = true
+    entity.components.renderable?.setOutline({ color: 0xff0000, thickness: 2 })
   },
   onEnd: () => {
     gun.data.reloading = false
+    entity.components.renderable?.setOutline()
 
     const clip = min(gun.data.clip + gun.data.ammo, gun.data.clipSize)
     const ammo = max(gun.data.ammo - gun.data.clipSize + gun.data.clip, 0)

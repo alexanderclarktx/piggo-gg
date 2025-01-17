@@ -2,8 +2,7 @@ import {
   Actions, Axe, Character, Collider, Deagle, Debug,
   DefaultJoystickHandler, dropItem, Effects, Element, Entity, Health, Input,
   Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
-  Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex,
-  Jump
+  Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -27,8 +26,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
           "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
           "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
-          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
-          " ": () => ({ actionId: "jump" })
+          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } })
         },
         joystick: DefaultJoystickHandler
       }),
@@ -36,8 +34,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
         move: Move,
         point: Point,
         setActiveItemIndex,
-        dropItem,
-        jump: Jump
+        dropItem
       }),
       effects: Effects(),
       renderable: Renderable({

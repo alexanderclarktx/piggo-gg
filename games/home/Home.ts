@@ -1,13 +1,13 @@
 import {
   Background, ZomiSpawnSystem, FloorTiles, InviteStone,
-  DefaultGame, LineWall, Portal, SkellySpawnSystem, Shop
+  DefaultGame, LineWall, Portal, SpawnSystem, Shop, Skelly
 } from "@piggo-gg/core"
 
 export const Home = DefaultGame({
   id: "home",
   init: () => ({
     id: "home",
-    systems: [SkellySpawnSystem, ZomiSpawnSystem],
+    systems: [SpawnSystem(Skelly), ZomiSpawnSystem],
     entities: [
       Background({ img: "stars.png" }),
 

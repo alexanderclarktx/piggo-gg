@@ -1,9 +1,11 @@
-import { Action } from "@piggo-gg/core"
+import { Action, KeyMouse } from "@piggo-gg/core"
 
-export const Jump = Action("jump", ({ entity }) => {
+export const Jump = Action<KeyMouse>("jump", ({ entity, params }) => {
   if (!entity) return
+
+  if (params.hold) return
 
   const { position } = entity.components
 
-  position?.setVelocity({ x: 0, y: -200 })
-}, 20)
+  position?.setVelocity({ y: -220 })
+}, 10)

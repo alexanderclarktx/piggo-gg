@@ -36,9 +36,9 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
   const hitbox = Entity({
     id,
     components: {
-      position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 }}),
+      position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 } }),
       networked: Networked({ isNetworked: true }),
-      expires: Expires({ ticksLeft: expireTicks ?? 35, onExpire: onExpire ?? (() => {}) }),
+      expires: Expires({ ticksLeft: expireTicks ?? 35, onExpire: onExpire ?? (() => { }) }),
       collider: Collider({
         shape: "cuboid",
         length: radius ?? 8,
@@ -55,7 +55,10 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
         interpolate: true,
         visible: visible ?? true,
         setContainer: async () => {
-          return pixiCircle({ x: 0, y: 0, r: radius ?? 8, style: { color, alpha: 1, strokeColor: 0x000000, strokeWidth: 1, strokeAlpha: 0.5 } })
+          return pixiCircle({
+            x: 0, y: 0, r: radius ?? 8,
+            style: { color: 0x222222, alpha: 1, strokeColor: color, strokeWidth: 1, strokeAlpha: 1 }
+          })
         }
       })
     }
@@ -93,6 +96,6 @@ export const SpawnHitbox = Action<SpawnHitboxProps>("spawnHitbox", ({ world, par
       if (hit && onHit) onHit()
       return hit
     },
-    onExpire: onExpire ?? (() => {})
+    onExpire: onExpire ?? (() => { })
   }))
 })
