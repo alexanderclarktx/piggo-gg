@@ -45,7 +45,7 @@ export const Tool = ({ name, sound, damage }: ToolProps) => (character: Characte
       }
     })
   }
-}, { flip: true })
+})
 
 export const Axe = Tool({ name: "axe", sound: "thud", damage: { flesh: 15, wood: 25, rock: 10 } })
 export const Sword = Tool({ name: "sword", sound: "slash", damage: { flesh: 25, wood: 10, rock: 10 } })

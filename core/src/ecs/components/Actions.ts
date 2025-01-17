@@ -4,21 +4,17 @@ export type Action<T extends {} = {}> = {
   id: string
   cooldown: number | undefined
   cdLeft?: number
-  prepare: (_: { params?: T, entity?: Entity, player?: Noob }) => InvokedAction
+  prepare: (_: { params: T, entity?: Entity, player?: Noob }) => InvokedAction
   invoke: (_: { params: T, world: World, entity?: Entity, player?: Noob | undefined }) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 
-export const Action = <T extends {} = {}>(id: string, invoke: Action<T>["invoke"], cooldown?: number): Action<T> => {
-  return {
-    id,
-    prepare: ({ params, entity, player }) => (
-      { actionId: id, params: params ?? {}, entityId: entity?.id, playerId: player?.id }
-    ),
-    invoke,
-    cooldown
-  }
-}
+export const Action = <T extends {} = {}>(id: string, invoke: Action<T>["invoke"], cooldown?: number): Action<T> => ({
+  id, cooldown, invoke,
+  prepare: ({ params, entity, player }) => (
+    { actionId: id, params: params ?? {}, entityId: entity?.id, playerId: player?.id }
+  )
+})
 
 export type InvokedAction<A extends string = string, P extends {} = {}> = {
   actionId: A,
@@ -36,7 +32,7 @@ export type Actions = Component<"actions"> & {
 export const Actions = <P extends {} = {}>(actionMap: ActionMap<P> = {}): Actions => {
 
   const newActions: Record<string, Action> = {}
-  
+
   entries(actionMap).forEach(([id, action]) => {
     if (typeof action === "function") {
       newActions[id] = Action(id, action)

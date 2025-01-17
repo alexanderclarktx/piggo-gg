@@ -1,4 +1,4 @@
-import { Background, HomeButton, DefaultGame, LineWall, SkellySpawnSystem, pointsIsometric } from "@piggo-gg/core"
+import { Background, HomeButton, DefaultGame, LineWall, SpawnSystem, pointsIsometric, Skelly } from "@piggo-gg/core"
 import { Rift } from "@piggo-gg/games"
 
 const wallPoints: number[][] = [
@@ -23,6 +23,6 @@ export const Legends = DefaultGame({
       Rift(wallPointsIso),
       LineWall({ points: wallPointsIso, hittable: false })
     ],
-    systems: [SkellySpawnSystem]
+    systems: [SpawnSystem(Skelly)]
   })
 })

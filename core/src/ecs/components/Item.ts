@@ -31,12 +31,8 @@ export const Item = ({ name, flips, dropped, equipped, stackable }: ItemProps): 
 export type ItemComponents = Position | Actions | Effects | Renderable | Item | Clickable
 export type ItemEntity = Entity<ItemComponents>
 
-export type ItemEntityProps = {
-  flip: boolean
-}
-
 // override some components
-export const ItemEntity = (entity: ProtoEntity<ItemComponents>, props?: ItemEntityProps): ItemEntity => {
+export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
 
   const { renderable, actions, clickable } = entity.components
 

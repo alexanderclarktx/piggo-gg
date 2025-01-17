@@ -1,4 +1,4 @@
-import { Background, FloorTiles, HomeButton, DefaultGame, LineWall, SkellySpawnSystem } from "@piggo-gg/core"
+import { Background, FloorTiles, HomeButton, DefaultGame, LineWall, SpawnSystem, Skelly } from "@piggo-gg/core"
 
 export const ARAM = DefaultGame({
   id: "aram",
@@ -16,6 +16,6 @@ export const ARAM = DefaultGame({
         32, 0
       ], hittable: false })
     ],
-    systems: [SkellySpawnSystem],
+    systems: [SpawnSystem(Skelly)],
   })
 })

@@ -1,7 +1,6 @@
 import {
-  ZomiSpawnSystem, DefaultGame,
-  LineWall, SkellySpawnSystem, Shop, LineFloor,
-  HomeButton, Background, ShopButton, HealthBarSystem
+  Background, DefaultGame, HealthBarSystem, HomeButton, LineFloor,
+  LineWall, Shop, ShopButton, Skelly, SpawnSystem, ZomiSpawnSystem
 } from "@piggo-gg/core"
 
 const width = 72
@@ -15,7 +14,7 @@ export const Dungeon = DefaultGame({
   id: "dungeon",
   init: () => ({
     id: "dungeon",
-    systems: [SkellySpawnSystem, ZomiSpawnSystem, HealthBarSystem],
+    systems: [SpawnSystem(Skelly), ZomiSpawnSystem, HealthBarSystem],
     entities: [
       Background({ img: "space.png" }),
       HomeButton(),

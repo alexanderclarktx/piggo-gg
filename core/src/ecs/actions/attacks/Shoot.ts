@@ -8,7 +8,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: Character }>("sh
   const { gun } = entity.components
   if (!gun || !position || !team) return
 
-  if (gun.canShoot(world, params.tick, params.mouse.hold)) {
+  if (gun.canShoot(world, params.tick, params.hold)) {
     gun.didShoot(world)
 
     const { x, y } = position.data

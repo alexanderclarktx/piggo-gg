@@ -6,6 +6,7 @@ export type InputState = {
   entity: Entity
   world: World
   character?: Character
+  hold: boolean
 }
 
 export type KeyHandler = (_: InputState) => null | InvokedAction<string, {}>

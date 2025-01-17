@@ -144,7 +144,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           const { position } = entity.components
           if (position.data.velocityResets && !position.data.heading.x && !position.data.heading.y) {
             position.data.velocity.x = 0
-            position.data.velocity.y = 0
+
+            if (world.currentGame.view !== "side") position.data.velocity.y = 0
           }
 
           position.updateVelocity()
