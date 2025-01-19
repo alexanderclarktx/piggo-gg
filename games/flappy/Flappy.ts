@@ -1,19 +1,20 @@
 import {
-  Actions, Character, Collider, Debug, DefaultGame, Effects,
-  Element, Entity, Health, Input, isMobile, Jump, loadTexture,
+  Actions, Character, Collider, Debug,  DefaultUI,  Effects,
+  Element, Entity, GameBuilder, Health, Input, isMobile, Jump, loadTexture,
   MobilePvEHUD, Move, Networked, Noob, Point, Position,
   PvEHUD, Renderable, Rock, SpawnSystem, Tree, XY
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export const Flappy = DefaultGame({
+export const Flappy: GameBuilder = {
   id: "flappy",
-  init: () => ({
+  init: (world) => ({
     id: "flappy",
     bgColor: 0x000000,
     view: "side",
     systems: [SpawnSystem(FlappyCharacter)],
     entities: [
+      ...DefaultUI(world),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
@@ -22,7 +23,7 @@ export const Flappy = DefaultGame({
       Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock()
     ]
   })
-})
+}
 
 export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
   const flappy: Character = Entity({

@@ -1,15 +1,17 @@
 import {
-  DefaultGame, Piggo, SpawnSystem, Tree, isMobile,
-  MobilePvEHUD, PvEHUD, Rock, Zomi, Chicko, Skelly
+  Piggo, SpawnSystem, Tree, isMobile, MobilePvEHUD,
+  PvEHUD, Rock, Zomi, Chicko, Skelly, GameBuilder,
+  DefaultUI
 } from "@piggo-gg/core"
 
-export const Sandbox = DefaultGame({
+export const Sandbox: GameBuilder = {
   id: "sandbox",
-  init: () => ({
+  init: (world) => ({
     id: "sandbox",
     systems: [SpawnSystem(Skelly)],
     bgColor: 0x006633,
     entities: [
+      ...DefaultUI(world),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       Zomi(),
       // Chicko(), Chicko(),
@@ -21,4 +23,4 @@ export const Sandbox = DefaultGame({
       Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock()
     ]
   })
-})
+}
