@@ -1,4 +1,4 @@
-import { Clickable, ClientSystemBuilder, Entity, InvokedAction, Position, Renderable, XY, checkBounds, mouse, stringify } from "@piggo-gg/core"
+import { Clickable, ClientSystemBuilder, Entity, InvokedAction, Position, Renderable, XY, checkBounds, mouse } from "@piggo-gg/core"
 import { FederatedPointerEvent } from "pixi.js"
 
 export const clickableClickedThisFrame = {

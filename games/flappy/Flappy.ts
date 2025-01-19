@@ -29,7 +29,7 @@ export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
     id: `flappy-${player.id}`,
     components: {
       debug: Debug(),
-      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 120, gravity: 5 }),
+      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocityResets: 1, speed: 120, gravity: 5 }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),

@@ -49,7 +49,7 @@ export const Renderer = (props: RendererProps): Renderer => {
       })
 
       // set up the camera
-      renderer.app.stage.addChild(renderer.camera.c)
+      renderer.app.stage.addChild(renderer.camera.root)
 
       // hide the cursor
       renderer.app.renderer.events.cursorStyles.default = "none"
@@ -68,7 +68,7 @@ export const Renderer = (props: RendererProps): Renderer => {
 
       // handle zoom
       canvas.addEventListener("wheel", (event) => {
-        renderer.camera?.rescaleDelta(-event.deltaY / 1000)
+        renderer.camera?.scaleBy(-event.deltaY / 1000)
       })
     },
     handleResize: () => {

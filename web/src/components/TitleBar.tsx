@@ -2,9 +2,9 @@ import { WsNetConnector, WsNetConnectorProps } from "@piggo-gg/web"
 import { FaDiscord, FaGithub } from "react-icons/fa"
 import React from "react"
 
-export type HeaderProps = WsNetConnectorProps & {}
+export type TitleBarProps = WsNetConnectorProps & {}
 
-export const Header = ({ world, netState, setNetState }: HeaderProps) => (
+export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
   <div style={{
     position: "relative",
     display: "flex",
@@ -38,7 +38,7 @@ export const Header = ({ world, netState, setNetState }: HeaderProps) => (
 
     <div style={{ position: 'absolute', right: 0, bottom: 0 }}>
       <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
-        v<b>0.9.4</b>
+        v<b>0.9.5</b>
       </span>
       <a style={{ margin: 0, color: "inherit", textDecoration: "none" }} target="_blank" href="https://discord.gg/VfFG9XqDpJ">
         <FaDiscord size={20} style={{ color: "white", verticalAlign: "-80%" }}></FaDiscord>

@@ -30,7 +30,7 @@ export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSyst
             world.addEntity(character)
             spawnedPlayers.add(player.id)
 
-            console.log(`spawned ${character.id}`)
+            console.log(`spawned ${character.id}`, character.components)
           }
         })
       }
