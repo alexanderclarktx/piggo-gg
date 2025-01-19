@@ -1,8 +1,7 @@
 import {
-  Actions, Character, Collider, Debug,  DefaultUI,  Effects,
-  Element, Entity, GameBuilder, Health, Input, isMobile, Jump, loadTexture,
-  MobilePvEHUD, Move, Networked, Noob, Point, Position,
-  PvEHUD, Renderable, Rock, SpawnSystem, Tree, XY
+  Actions, Character, Collider, Debug, DefaultUI, Effects, Element,
+  Entity, GameBuilder, Health, Input, Jump, LineWall, loadTexture,
+  Networked, Noob, Point, Position, Renderable, SpawnSystem, XY
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -15,22 +14,47 @@ export const Flappy: GameBuilder = {
     systems: [SpawnSystem(FlappyCharacter)],
     entities: [
       ...DefaultUI(world),
-      isMobile() ? MobilePvEHUD() : PvEHUD(),
-      Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
-      Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
-      Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
-      Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(),
-      Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock()
+      Floor(),
+      Pipe(1000),
+      Pipe(1500),
+      Pipe(2000),
+      Pipe(500),
+      Pipe(100),
     ]
   })
 }
+
+const Pipe = (x: number) => LineWall({
+  points: [
+    x, -200,
+    x, -100,
+    x + 100, -100,
+    x + 100, -200
+  ],
+  visible: true,
+  sensor: (e) => {
+    if (e.components.health) {
+      e.components.health.data.health = 0
+      return true
+    }
+    return false
+  }
+})
+
+const Floor = () => LineWall({
+  points: [-1000, 200, 10000, 200], sensor:
+    ({ components }) => {
+      if (components.health) components.health.data.health = 0
+      return true
+    }
+})
 
 export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
   const flappy: Character = Entity({
     id: `flappy-${player.id}`,
     components: {
       debug: Debug(),
-      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocityResets: 1, speed: 120, gravity: 5 }),
+      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocity: { x: 100, y: 0 }, gravity: 5 }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
@@ -38,14 +62,10 @@ export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
       element: Element("flesh"),
       input: Input({
         press: {
-          "a,d": () => null,
-          "a": () => ({ actionId: "move", params: { x: -100 } }),
-          "d": () => ({ actionId: "move", params: { x: 100 } }),
           " ": (params) => ({ actionId: "jump", params })
         }
       }),
       actions: Actions<any>({
-        move: Move,
         point: Point,
         jump: Jump
       }),

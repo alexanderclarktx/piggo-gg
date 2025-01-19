@@ -1,8 +1,7 @@
 import {
   Background, Shop, FloorCollidersArray, FloorTilesArray,
   HealthBarSystem, HomeButton,  Minimap, ScorePanel,
-  Scoreboard, SightSystem, isMobile, GameBuilder,
-  DefaultUI
+  Scoreboard, SightSystem, isMobile, GameBuilder, DefaultUI
 } from "@piggo-gg/core"
 import { StrikeSystem } from "@piggo-gg/games"
 

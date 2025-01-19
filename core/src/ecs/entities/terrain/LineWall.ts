@@ -1,4 +1,4 @@
-import { Collider, Entity, Health, Networked, Position, Renderable, XY } from "@piggo-gg/core"
+import { Collider, Entity, Health, Networked, Position, Renderable, SensorCallback, XY } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
 export type LineWallProps = {
@@ -7,10 +7,11 @@ export type LineWallProps = {
   visible?: boolean
   health?: number
   hittable?: boolean
+  sensor?: SensorCallback
   id?: string
 }
 
-export const LineWall = ({ points, position, visible, health, id, hittable }: LineWallProps) => {
+export const LineWall = ({ points, position, visible, health, id, hittable, sensor }: LineWallProps) => {
 
   let newPoints: number[] = []
 
@@ -37,7 +38,8 @@ export const LineWall = ({ points, position, visible, health, id, hittable }: Li
         isStatic: true,
         points: newPoints,
         priority: 1,
-        hittable: hittable ?? true
+        hittable: hittable ?? true,
+        ...(sensor ? { sensor } : {})
       }),
       renderable: Renderable({
         visible: visible ?? false,
