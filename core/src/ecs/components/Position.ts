@@ -151,7 +151,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         const { position } = entity.components
 
         if (position.gravity && world.currentGame.view === "side") {
-          position.data.velocity.y = min(position.data.velocity.y + position.gravity, position.gravity * 40)
+          position.data.velocity.y = min(position.data.velocity.y + position.gravity, position.gravity * 45)
           position.updateOrientation()
         }
 

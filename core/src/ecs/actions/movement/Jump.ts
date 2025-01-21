@@ -7,5 +7,5 @@ export const Jump = Action<KeyMouse>("jump", ({ entity, params }) => {
 
   const { position } = entity.components
 
-  position?.setVelocity({ y: -220 })
-}, 10)
+  position?.setVelocity({ y: -200 })
+}, 5)

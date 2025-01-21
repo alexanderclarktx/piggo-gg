@@ -11,7 +11,9 @@ export type LineWallProps = {
   id?: string
 }
 
-export const LineWall = ({ points, position, visible, health, id, hittable, sensor }: LineWallProps) => {
+export const LineWall = (
+  { points, position, visible, health, id, hittable, sensor }: LineWallProps
+): Entity<Position | Renderable | Collider> => {
 
   let newPoints: number[] = []
 
@@ -27,7 +29,7 @@ export const LineWall = ({ points, position, visible, health, id, hittable, sens
     })
   }
 
-  const wall = Entity({
+  const wall = Entity<Position | Renderable | Collider>({
     id: id ?? `linewall-${points.join("-")}`,
     components: {
       position: Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
