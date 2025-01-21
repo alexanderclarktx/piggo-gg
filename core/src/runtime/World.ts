@@ -25,7 +25,7 @@ export type World = {
   tickrate: number
   tileMap: number[] | undefined
   addEntities: (entities: Entity[]) => void
-  addEntity: (entity: Entity, timeout?: number) => string | undefined
+  addEntity: (entity: Entity, timeout?: number) => string
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void

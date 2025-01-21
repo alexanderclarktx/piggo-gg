@@ -5,7 +5,6 @@ export type XY = { x: number, y: number }
 export type TwoPoints = [number, number, number, number]
 export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
-export type Sign = -1 | 1
 
 export const { abs, floor, hypot, max, min, pow, random, sign, sqrt } = Math
 
