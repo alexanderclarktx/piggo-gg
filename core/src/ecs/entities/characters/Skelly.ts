@@ -11,7 +11,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
     id: `skelly-${player.id}`,
     components: {
       debug: Debug(),
-      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 400, velocityResets: 1, speed: 120 }),
+      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 100, velocityResets: 1, speed: 120 }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),

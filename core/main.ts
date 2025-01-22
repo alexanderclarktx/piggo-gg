@@ -1,5 +1,5 @@
 export * from "./src/runtime/Game"
-export * from "./src/runtime/DefaultGame"
+export * from "./src/runtime/DefaultUI"
 export * from "./src/runtime/DefaultWorld"
 export * from "./src/runtime/StateBuffer"
 export * from "./src/runtime/World"

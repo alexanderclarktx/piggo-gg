@@ -1,10 +1,11 @@
-import { Background, FloorTiles, HomeButton, DefaultGame, LineWall, SpawnSystem, Skelly } from "@piggo-gg/core"
+import { Background, FloorTiles, HomeButton, LineWall, SpawnSystem, Skelly, GameBuilder, DefaultUI } from "@piggo-gg/core"
 
-export const ARAM = DefaultGame({
+export const ARAM: GameBuilder = {
   id: "aram",
-  init: () => ({
+  init: (world) => ({
     id: "aram",
     entities: [
+      ...DefaultUI(world),
       HomeButton(),
       Background(),
       FloorTiles({ rows: 60, cols: 15 }),
@@ -18,4 +19,4 @@ export const ARAM = DefaultGame({
     ],
     systems: [SpawnSystem(Skelly)],
   })
-})
+}

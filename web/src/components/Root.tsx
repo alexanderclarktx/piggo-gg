@@ -1,5 +1,5 @@
 import { World, isMobile } from "@piggo-gg/core"
-import { GameCanvas, Header, NetState } from "@piggo-gg/web"
+import { GameCanvas, TitleBar, NetState } from "@piggo-gg/web"
 import React, { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
 
@@ -21,7 +21,7 @@ export const Root = () => {
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
-          {mobile ? null : <Header netState={netState} setNetState={setNetState} world={world} />}
+          {mobile ? null : <TitleBar netState={netState} setNetState={setNetState} world={world} />}
           <GameCanvas setWorld={setWorld} />
         </div>
       </div>

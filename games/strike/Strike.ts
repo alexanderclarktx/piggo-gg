@@ -1,17 +1,18 @@
 import {
   Background, Shop, FloorCollidersArray, FloorTilesArray,
-  HealthBarSystem, HomeButton, DefaultGame, Minimap,
-  ScorePanel, Scoreboard, SightSystem, isMobile
+  HealthBarSystem, HomeButton,  Minimap, ScorePanel,
+  Scoreboard, SightSystem, isMobile, GameBuilder, DefaultUI
 } from "@piggo-gg/core"
 import { StrikeSystem } from "@piggo-gg/games"
 
-export const Strike = DefaultGame({
+export const Strike: GameBuilder = {
   id: "strike",
-  init: () => ({
+  init: (world) => ({
     id: "strike",
     systems: [StrikeSystem, SightSystem, HealthBarSystem],
     tileMap: StrikeTileMap,
     entities: [
+      ...DefaultUI(world),
       HomeButton(),
       Background(),
       ScorePanel(),
@@ -22,7 +23,7 @@ export const Strike = DefaultGame({
       ... (isMobile() ? [] : [Minimap(80, StrikeTileMap)])
     ]
   })
-})
+}
 
 const StrikeTileMap = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

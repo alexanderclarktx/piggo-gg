@@ -1,4 +1,4 @@
-import { Clickable, ClientSystemBuilder, Entity, InvokedAction, Position, Renderable, XY, checkBounds, mouse, stringify } from "@piggo-gg/core"
+import { Clickable, ClientSystemBuilder, Entity, InvokedAction, Position, Renderable, XY, checkBounds, mouse, mouseScreen } from "@piggo-gg/core"
 import { FederatedPointerEvent } from "pixi.js"
 
 export const clickableClickedThisFrame = {
@@ -39,7 +39,7 @@ export const ClickableSystem = ClientSystemBuilder({
 
       const clickWorld = renderer.camera.toWorldCoords(click)
 
-      clickables.forEach((entity) => {
+      for (const entity of clickables) {
         const { clickable, position } = entity.components
         if (!clickable.active || !clickable.click) return
 
@@ -48,7 +48,7 @@ export const ClickableSystem = ClientSystemBuilder({
           clickableClickedThisFrame.set(world.tick)
           return
         }
-      })
+      }
     })
 
     return {
@@ -76,16 +76,17 @@ export const ClickableSystem = ClientSystemBuilder({
           }
         }
 
-        // check each entity for hovering (sorted by zIndex) (max 1 hovered)
-        for (const entity of entities.sort((a, b) => b.components.renderable.c.zIndex - a.components.renderable.c.zIndex)) {
+        // find the current hovered entity
+        const sortedEntities = entities.sort((a, b) => b.components.renderable.c.zIndex - a.components.renderable.c.zIndex)
+        for (const entity of sortedEntities) {
           const { clickable, position, renderable } = entity.components
 
           if (hoveredEntityId && hoveredEntityId?.zIndex > renderable.c.zIndex) break
 
-          if (clickable.active && clickable.hoverOver && hoveredEntityId?.id !== entity.id) {
-            const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
+          if (clickable.active && hoveredEntityId?.id !== entity.id) {
+            const hovering = checkBounds(renderer, position, clickable, mouseScreen, mouse)
             if (hovering) {
-              clickable.hoverOver(world)
+              clickable.hoverOver?.(world)
 
               if (hoveredEntity) {
                 const { clickable: hoveredClickable } = hoveredEntity.components
@@ -97,7 +98,6 @@ export const ClickableSystem = ClientSystemBuilder({
           }
         }
 
-        // TODO does this make sense? just using hovered entity
         if (bufferClick.length) {
           const clicked = getHoveredEntity()
 

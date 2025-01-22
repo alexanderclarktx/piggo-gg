@@ -134,7 +134,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     cleanup: () => {
       // remove from the renderer
       renderable.renderer?.app.stage.removeChild(renderable.c)
-      renderable.renderer?.camera.c.removeChild(renderable.c)
+      renderable.renderer?.camera.remove(renderable)
 
       // remove all event listeners
       renderable.c.removeAllListeners()

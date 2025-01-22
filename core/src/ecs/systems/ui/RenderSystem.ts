@@ -54,7 +54,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 }
         const { width, height } = renderer.app.screen
-        const cameraScale = renderer.camera.c.scale.x - 0.9
+        const cameraScale = renderer.camera.root.scale.x - 0.9
 
         // todo this is calculating difference from centered entity, not the camera
         const isFarFromCamera = ({ x, y }: XY) => {
@@ -194,7 +194,8 @@ export const RenderSystem = ClientSystemBuilder({
           const { x, y, velocity } = position.data
 
           if (centeredEntity && entity.id === centeredEntity.id) {
-            renderer.camera.moveTo({ x, y })
+            // renderer.camera.moveTo({ x, y })
+            renderer.camera.moveTo({ x, y: 0 })
           }
 
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
@@ -208,7 +209,8 @@ export const RenderSystem = ClientSystemBuilder({
             )
 
             if (centeredEntity && entity.id === centeredEntity.id) {
-              renderer.camera.moveTo({ x: x + dx, y: y + dy })
+              // renderer.camera.moveTo({ x: x + dx, y: y + dy })
+              renderer.camera.moveTo({ x: x + dx, y: 0 })
             }
           }
         })

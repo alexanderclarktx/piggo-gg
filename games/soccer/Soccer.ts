@@ -1,11 +1,12 @@
-import { Background, Ball, Goal, HomeButton, DefaultGame, SpawnSystem, Zomi, Skelly } from "@piggo-gg/core"
+import { Background, Ball, Goal, HomeButton, SpawnSystem, Skelly, GameBuilder, DefaultUI } from "@piggo-gg/core"
 import { FieldGrass, FieldWall } from "@piggo-gg/games"
 
-export const Soccer = DefaultGame({
+export const Soccer: GameBuilder = {
   id: "soccer",
-  init: () => ({
+  init: (world) => ({
     id: "soccer",
     entities: [
+      ...DefaultUI(world),
       HomeButton(),
       Background(), FieldGrass(), FieldWall(),
       Ball({ id: "ball", position: { x: 50, y: 350 } }),
@@ -14,4 +15,4 @@ export const Soccer = DefaultGame({
     ],
     systems: [SpawnSystem(Skelly)]
   })
-})
+}

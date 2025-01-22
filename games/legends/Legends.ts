@@ -1,4 +1,4 @@
-import { Background, HomeButton, DefaultGame, LineWall, SpawnSystem, pointsIsometric, Skelly } from "@piggo-gg/core"
+import { Background, HomeButton,  LineWall, SpawnSystem, pointsIsometric, Skelly, GameBuilder, DefaultUI } from "@piggo-gg/core"
 import { Rift } from "@piggo-gg/games"
 
 const wallPoints: number[][] = [
@@ -13,11 +13,12 @@ const wallPoints: number[][] = [
 
 const wallPointsIso = pointsIsometric(wallPoints)
 
-export const Legends = DefaultGame({
+export const Legends: GameBuilder = {
   id: "legends",
-  init: () => ({
+  init: (world) => ({
     id: "legends",
     entities: [
+      ...DefaultUI(world),
       HomeButton(),
       Background(),
       Rift(wallPointsIso),
@@ -25,4 +26,4 @@ export const Legends = DefaultGame({
     ],
     systems: [SpawnSystem(Skelly)]
   })
-})
+}
