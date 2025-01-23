@@ -40,7 +40,7 @@ export const NametagSystem = ClientSystemBuilder({
       const nametag = Entity<Position | Renderable>({
         id: `${player.id}-nametag`,
         components: {
-          position: position,
+          position: position, // TODO should not directly use the character position component (gravity bug)
           renderable: Nametag(player)
         }
       })

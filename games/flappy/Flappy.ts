@@ -90,7 +90,7 @@ export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
     id: `flappy-${player.id}`,
     components: {
       debug: Debug(),
-      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocity: { x: 100, y: 0 }, gravity: 5 }),
+      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocity: { x: 100, y: 0 }, gravity: 10 }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
@@ -140,6 +140,10 @@ const FlappySystem: SystemBuilder<"FlappySystem"> = {
     let furthest = 0
 
     const pipes: Set<Entity<Position | Renderable | Collider>> = new Set()
+
+    if (isMobile()) world.renderer?.camera.scaleBy(-5)
+
+    world.removeSystem("NametagSystem")
 
     return {
       id: "FlappySystem",
