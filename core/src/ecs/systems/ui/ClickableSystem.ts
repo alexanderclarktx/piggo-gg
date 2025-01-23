@@ -13,11 +13,11 @@ export const ClickableSystem = ClientSystemBuilder({
   init: (world) => {
     if (!world.renderer) return undefined
 
-    let clickables: Entity<Clickable | Position>[] = []
+    let clickables: Entity<Clickable | Position | Renderable>[] = []
 
     const renderer = world.renderer
 
-    let bufferClick: XY[] = []
+    let bufferClick: { xy: XY, clickable?: Entity<Clickable | Position | Renderable> } | undefined = undefined
 
     let hoveredEntityId: { id: string, zIndex: number } | undefined = undefined
 
@@ -35,7 +35,6 @@ export const ClickableSystem = ClientSystemBuilder({
 
     renderer.app.canvas.addEventListener("pointerdown", (event: FederatedPointerEvent) => {
       const click = { x: event.offsetX, y: event.offsetY }
-      bufferClick.push(click)
 
       const clickWorld = renderer.camera.toWorldCoords(click)
 
@@ -46,9 +45,12 @@ export const ClickableSystem = ClientSystemBuilder({
         const clicked = checkBounds(renderer, position, clickable, click, clickWorld)
         if (clicked) {
           clickableClickedThisFrame.set(world.tick)
+          bufferClick = { xy: click, clickable: entity }
           return
         }
       }
+
+      bufferClick = { xy: click }
     })
 
     return {
@@ -98,8 +100,12 @@ export const ClickableSystem = ClientSystemBuilder({
           }
         }
 
-        if (bufferClick.length) {
-          const clicked = getHoveredEntity()
+        if (bufferClick) {
+          let clicked = getHoveredEntity()
+
+          if (!clicked && bufferClick.clickable) {
+            clicked = bufferClick.clickable
+          }
 
           if (clicked) {
             const { clickable, networked } = clicked.components
@@ -111,14 +117,14 @@ export const ClickableSystem = ClientSystemBuilder({
               }
 
               if (networked && networked.isNetworked) {
-                world.actionBuffer.push(world.tick + 1, clicked.id, invocation)
+                world.actionBuffer.push(world.tick + 1, invocation.entityId ?? clicked.id, invocation)
               } else {
-                world.actionBuffer.push(world.tick, clicked.id, invocation)
+                world.actionBuffer.push(world.tick, invocation.entityId ?? clicked.id, invocation)
               }
             }
           }
         }
-        bufferClick = []
+        bufferClick = undefined
       }
     }
   }

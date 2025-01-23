@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, XY, values, Character } from "@piggo-gg/core"
+import { Entity, Position, Renderable, ClientSystemBuilder, XY, values, Character, isMobile } from "@piggo-gg/core"
 
 // RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
@@ -195,7 +195,11 @@ export const RenderSystem = ClientSystemBuilder({
 
           if (centeredEntity && entity.id === centeredEntity.id) {
             // renderer.camera.moveTo({ x, y })
-            renderer.camera.moveTo({ x, y: 0 })
+            if (isMobile()) {
+              renderer.camera.moveTo({ x: x + 100, y: 0 })
+            } else {
+              renderer.camera.moveTo({ x, y: 0 })
+            }
           }
 
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
@@ -210,7 +214,11 @@ export const RenderSystem = ClientSystemBuilder({
 
             if (centeredEntity && entity.id === centeredEntity.id) {
               // renderer.camera.moveTo({ x: x + dx, y: y + dy })
-              renderer.camera.moveTo({ x: x + dx, y: 0 })
+              if (isMobile()) {
+                renderer.camera.moveTo({ x: x + dx + 100, y: 0 })
+              } else {
+                renderer.camera.moveTo({ x: x + dx, y: 0 })
+              }
             }
           }
         })

@@ -1,22 +1,47 @@
 import {
-  Actions, Character, Collider, Debug, DefaultUI, Effects, Element, Entity,
-  GameBuilder, Health, Input, Jump, LineWall, loadTexture, max, Networked,
-  Noob, Player, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY
+  Actions, Character, Clickable, Collider, Debug, DefaultDesktopUI, Effects, Element, Entity,
+  GameBuilder, Health, Input, isMobile, Jump, LineWall, loadTexture, max, Networked, Noob,
+  Player, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY
 } from "@piggo-gg/core"
-import { AnimatedSprite } from "pixi.js"
+import { AnimatedSprite, Sprite, Texture } from "pixi.js"
 
 export const Flappy: GameBuilder = {
   id: "flappy",
-  init: (world) => ({
+  init: () => ({
     id: "flappy",
     bgColor: 0x000000,
     view: "side",
     systems: [SpawnSystem(FlappyCharacter), FlappySystem],
-    entities: [
-      ...DefaultUI(world),
+    entities: (
+      isMobile() ? [JumpButton()] : DefaultDesktopUI()
+    ).concat([
       Floor(), Ceiling()
-    ]
+    ])
   })
+}
+
+const JumpButton = (): Entity<Renderable> => {
+  const jumpButton = Entity<Renderable>({
+    id: "jump-button",
+    components: {
+      position: Position({ x: -(window.innerWidth / 2), y: -85, screenFixed: true }),
+      clickable: Clickable({
+        width: 60, height: 60, active: true, anchor: { x: 0.5, y: 0.5 },
+        click: () => ({ actionId: "jump", entityId: "flappy-noob" })
+      }),
+      debug: Debug(),
+      renderable: Renderable({
+        zIndex: 10,
+        setup: async (r) => {
+          const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"]
+          const sprite = new Sprite({ texture: logo, anchor: 0.5 })
+
+          r.c.addChild(sprite)
+        }
+      })
+    }
+  })
+  return jumpButton
 }
 
 const sensor: SensorCallback = ({ components }) => {
@@ -62,7 +87,7 @@ export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
     id: `flappy-${player.id}`,
     components: {
       debug: Debug(),
-      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocity: { x: 100, y: 0 }, gravity: 5 }),
+      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocity: { x: 100, y: 0 }, gravity: 10 }),
       networked: Networked({ isNetworked: true }),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
@@ -112,6 +137,10 @@ const FlappySystem: SystemBuilder<"FlappySystem"> = {
     let furthest = 0
 
     const pipes: Set<Entity<Position | Renderable | Collider>> = new Set()
+
+    if (isMobile()) world.renderer?.camera.scaleBy(-5)
+
+    world.removeSystem("NametagSystem")
 
     return {
       id: "FlappySystem",

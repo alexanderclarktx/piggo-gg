@@ -235,6 +235,8 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     })
   }
 
+  if (systems) world.addSystemBuilders(systems)
+
   // setup games
   if (games) {
     games.forEach((game) => world.games[game.id] = game)
@@ -245,8 +247,6 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
   if (commands) {
     commands.forEach((command) => world.commands[command.id] = command)
   }
-
-  if (systems) world.addSystemBuilders(systems)
 
   return world
 }
