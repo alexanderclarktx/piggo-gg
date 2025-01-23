@@ -33,11 +33,8 @@ const JumpButton = (): Entity<Renderable> => {
       renderable: Renderable({
         zIndex: 10,
         setup: async (r) => {
-
-          const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"] as Texture
+          const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"]
           const sprite = new Sprite({ texture: logo, anchor: 0.5 })
-
-          console.log(sprite)
 
           r.c.addChild(sprite)
         }
