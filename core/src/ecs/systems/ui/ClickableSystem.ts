@@ -13,11 +13,11 @@ export const ClickableSystem = ClientSystemBuilder({
   init: (world) => {
     if (!world.renderer) return undefined
 
-    let clickables: Entity<Clickable | Position>[] = []
+    let clickables: Entity<Clickable | Position | Renderable>[] = []
 
     const renderer = world.renderer
 
-    let bufferClick: XY[] = []
+    let bufferClick: { xy: XY, clickable?: Entity<Clickable | Position | Renderable> } | undefined = undefined
 
     let hoveredEntityId: { id: string, zIndex: number } | undefined = undefined
 
@@ -35,7 +35,6 @@ export const ClickableSystem = ClientSystemBuilder({
 
     renderer.app.canvas.addEventListener("pointerdown", (event: FederatedPointerEvent) => {
       const click = { x: event.offsetX, y: event.offsetY }
-      bufferClick.push(click)
 
       const clickWorld = renderer.camera.toWorldCoords(click)
 
@@ -46,9 +45,12 @@ export const ClickableSystem = ClientSystemBuilder({
         const clicked = checkBounds(renderer, position, clickable, click, clickWorld)
         if (clicked) {
           clickableClickedThisFrame.set(world.tick)
+          bufferClick = { xy: click, clickable: entity }
           return
         }
       }
+
+      bufferClick = { xy: click }
     })
 
     return {
@@ -61,45 +63,49 @@ export const ClickableSystem = ClientSystemBuilder({
 
         const hoveredEntity = getHoveredEntity()
 
-        if (hoveredEntity) {
-          const { clickable, position } = hoveredEntity.components
+        // if (hoveredEntity) {
+        //   const { clickable, position } = hoveredEntity.components
 
-          if (entities.find(e => e.id === hoveredEntity.id)) {
-            const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
-            if (!hovering) {
-              if (clickable.hoverOut) clickable.hoverOut(world)
-              hoveredEntityId = undefined
-            }
-          } else {
-            if (clickable.hoverOut) clickable.hoverOut(world)
-            hoveredEntityId = undefined
-          }
-        }
+        //   if (entities.find(e => e.id === hoveredEntity.id)) {
+        //     const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
+        //     if (!hovering) {
+        //       if (clickable.hoverOut) clickable.hoverOut(world)
+        //       hoveredEntityId = undefined
+        //     }
+        //   } else {
+        //     if (clickable.hoverOut) clickable.hoverOut(world)
+        //     hoveredEntityId = undefined
+        //   }
+        // }
 
         // find the current hovered entity
-        const sortedEntities = entities.sort((a, b) => b.components.renderable.c.zIndex - a.components.renderable.c.zIndex)
-        for (const entity of sortedEntities) {
-          const { clickable, position, renderable } = entity.components
+        // const sortedEntities = entities.sort((a, b) => b.components.renderable.c.zIndex - a.components.renderable.c.zIndex)
+        // for (const entity of sortedEntities) {
+        //   const { clickable, position, renderable } = entity.components
 
-          if (hoveredEntityId && hoveredEntityId?.zIndex > renderable.c.zIndex) break
+        //   if (hoveredEntityId && hoveredEntityId?.zIndex > renderable.c.zIndex) break
 
-          if (clickable.active && hoveredEntityId?.id !== entity.id) {
-            const hovering = checkBounds(renderer, position, clickable, mouseScreen, mouse)
-            if (hovering) {
-              clickable.hoverOver?.(world)
+        //   if (clickable.active && hoveredEntityId?.id !== entity.id) {
+        //     const hovering = checkBounds(renderer, position, clickable, mouseScreen, mouse)
+        //     if (hovering) {
+        //       clickable.hoverOver?.(world)
 
-              if (hoveredEntity) {
-                const { clickable: hoveredClickable } = hoveredEntity.components
-                if (hoveredClickable.hoverOut) hoveredClickable.hoverOut(world)
-              }
-              hoveredEntityId = { id: entity.id, zIndex: renderable.c.zIndex }
-              break
-            }
+        //       if (hoveredEntity) {
+        //         const { clickable: hoveredClickable } = hoveredEntity.components
+        //         if (hoveredClickable.hoverOut) hoveredClickable.hoverOut(world)
+        //       }
+        //       hoveredEntityId = { id: entity.id, zIndex: renderable.c.zIndex }
+        //       break
+        //     }
+        //   }
+        // }
+
+        if (bufferClick) {
+          let clicked = getHoveredEntity()
+
+          if (!clicked && bufferClick.clickable) {
+            clicked = bufferClick.clickable
           }
-        }
-
-        if (bufferClick.length) {
-          const clicked = getHoveredEntity()
 
           if (clicked) {
             const { clickable, networked } = clicked.components
@@ -111,14 +117,14 @@ export const ClickableSystem = ClientSystemBuilder({
               }
 
               if (networked && networked.isNetworked) {
-                world.actionBuffer.push(world.tick + 1, clicked.id, invocation)
+                world.actionBuffer.push(world.tick + 1, invocation.entityId ?? clicked.id, invocation)
               } else {
-                world.actionBuffer.push(world.tick, clicked.id, invocation)
+                world.actionBuffer.push(world.tick, invocation.entityId ?? clicked.id, invocation)
               }
             }
           }
         }
-        bufferClick = []
+        bufferClick = undefined
       }
     }
   }
