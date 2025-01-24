@@ -164,7 +164,7 @@ export const InputSystem = ClientSystemBuilder({
         y: round(mouse.y - position.data.y, 2)
       }
 
-      world.actionBuffer.push(world.tick, character.id,
+      world.actionBuffer.push(world.tick + 1, character.id,
         { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
       )
 
@@ -279,7 +279,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actionBuffer.push(world.tick, entity.id, invocation)
+              world.actionBuffer.push(world.tick + 1, entity.id, invocation)
             }
           }
 
@@ -300,7 +300,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actionBuffer.push(world.tick, entity.id, invocation)
+              world.actionBuffer.push(world.tick + 1, entity.id, invocation)
             }
           }
 

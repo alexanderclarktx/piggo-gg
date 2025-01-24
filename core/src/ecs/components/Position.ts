@@ -6,7 +6,7 @@ export type Position = Component<"position", {
   velocity: XY
   speed: number
   rotation: number
-  pointing: Oct
+  pointing: Oct // TODO pointing breaks netcode ?
   pointingDelta: XY
   heading: XY
   velocityResets: number

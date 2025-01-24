@@ -1,4 +1,4 @@
-import { Entity, GameData, Syncer, SystemBuilder, stringify } from "@piggo-gg/core"
+import { Entity, GameData, Syncer, SystemBuilder, keys, stringify } from "@piggo-gg/core"
 
 // netcode client system
 export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem"> = (syncer) => ({
@@ -40,7 +40,13 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
       skipOnRollback: true,
       onTick: (_: Entity[]) => {
         const message = syncer.writeMessage(world)
-        if (client.ws.readyState === WebSocket.OPEN) client.ws.send(stringify(message))
+
+        try {
+          if (client.ws.readyState === WebSocket.OPEN) client.ws.send(stringify(message))
+          if (keys(message.actions).length > 1) console.log("sent actions", message.actions)
+        } catch (e) {
+          console.error("NetcodeSystem: error sending message", message)
+        }
   
         // hard reset if very behind
         if (serverMessageBuffer.length > 10) {

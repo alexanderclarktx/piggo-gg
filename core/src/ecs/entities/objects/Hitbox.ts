@@ -37,7 +37,7 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
     id,
     components: {
       position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 } }),
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       expires: Expires({ ticksLeft: expireTicks ?? 35, onExpire: onExpire ?? (() => { }) }),
       collider: Collider({
         shape: "cuboid",

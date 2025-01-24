@@ -13,7 +13,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
   id: id ?? `spaceship${randomInt(1000)}`,
   components: {
     position: Position(position ?? { x: random() * 600, y: random() * 600 }),
-    networked: Networked({ isNetworked: true }),
+    networked: Networked(),
     actions: Actions({
       ...VehicleMovement,
       click: controlEntity

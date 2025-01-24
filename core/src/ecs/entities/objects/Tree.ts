@@ -14,7 +14,7 @@ export const Tree = ({ position, id }: TreeProps = {}) => {
     id: id ?? `tree-${randomInt(1000)}`,
     components: {
       position: Position(position ?? { x: randomInt(1000, 500), y: randomInt(1000, 500) }),
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       collider: Collider({
         shape: "ball",
         isStatic: true,

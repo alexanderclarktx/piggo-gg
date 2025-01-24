@@ -3,6 +3,7 @@ import { Action, Character, DamageCalculation, KeyMouse, randomInt, SpawnHitboxP
 export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: string }>(
   "whack",
   ({ world, params, entity }) => {
+    console.log("whack")
     if (!entity) return
 
     const { mouse, character } = params

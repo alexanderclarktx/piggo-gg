@@ -3,7 +3,7 @@ import {
   GameBuilder, Health, Input, isMobile, Jump, LineWall, loadTexture, max, Networked, Noob,
   Player, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY
 } from "@piggo-gg/core"
-import { AnimatedSprite, Sprite, Texture } from "pixi.js"
+import { AnimatedSprite, Sprite } from "pixi.js"
 
 export const Flappy: GameBuilder = {
   id: "flappy",
@@ -88,14 +88,14 @@ export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
     components: {
       debug: Debug(),
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocity: { x: 100, y: 0 }, gravity: 10 }),
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
       element: Element("flesh"),
       input: Input({
         press: {
-          " ": (params) => ({ actionId: "jump", params })
+          " ": ({hold}) => ({ actionId: "jump", params: { hold } }),
         }
       }),
       actions: Actions<any>({

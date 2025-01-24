@@ -12,7 +12,7 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
     id: `portal-${game}`,
     components: {
       position: Position(pos),
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       collider: Collider({
         shape: "ball", radius: 32,
         sensor: (e2, world) => {

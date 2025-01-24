@@ -18,7 +18,7 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
     id: id ?? `zomi-${randomInt(1000)}`,
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       health: Health({ health: 60, deathSounds: ["zombieDeath1", "zombieDeath2", "zombieDeath3", "zombieDeath4"] }),
       npc: NPC({ behavior }),
       actions: Actions({

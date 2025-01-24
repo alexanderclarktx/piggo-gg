@@ -14,7 +14,7 @@ export const Apple = ({ position, id }: AppleProps = {}) => ItemEntity({
   id: id ?? `apple-${randomInt(1000)}`,
   components: {
     position: Position(position ?? { x: randomInt(1000, 500), y: randomInt(1000, 500) }),
-    networked: Networked({ isNetworked: true }),
+    networked: Networked(),
     collider: Collider({
       shape: "ball",
       frictionAir: 0.6,

@@ -34,7 +34,7 @@ export const LineWall = (
     components: {
       position: Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
       ...health ? { health: Health({ health, showHealthBar: false }) } : {},
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       collider: Collider({
         shape: "line",
         isStatic: true,

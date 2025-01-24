@@ -1,6 +1,6 @@
 import {
   Actions, Character, Clickable, Effects, ElementKinds, Item,
-  ItemEntity, Position, Renderable, SpawnHitbox,
+  ItemEntity, Networked, Position, Renderable, SpawnHitbox,
   ValidSounds, Whack, loadTexture, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
@@ -17,6 +17,7 @@ export const Tool = ({ name, sound, damage }: ToolProps) => (character: Characte
   id: `${name}-${randomInt(1000)}`,
   components: {
     position: Position({ follows: character.id }),
+    networked: Networked(),
     actions: Actions<any>({
       mb1: Whack(sound, (e => {
         const { element } = e.components

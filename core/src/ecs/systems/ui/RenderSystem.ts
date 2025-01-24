@@ -1,6 +1,5 @@
 import { Entity, Position, Renderable, ClientSystemBuilder, XY, values, Character, isMobile } from "@piggo-gg/core"
 
-// RenderSystem handles rendering entities to the screen
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
@@ -222,7 +221,7 @@ export const RenderSystem = ClientSystemBuilder({
             }
           }
         })
-      },
+      }
     }
   }
 })
