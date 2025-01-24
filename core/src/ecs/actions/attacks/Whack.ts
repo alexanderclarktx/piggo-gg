@@ -1,6 +1,6 @@
 import { Action, Character, DamageCalculation, KeyMouse, randomInt, SpawnHitboxProps, ValidSounds } from "@piggo-gg/core"
 
-export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: Character }>(
+export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: string }>(
   "whack",
   ({ world, params, entity }) => {
     if (!entity) return
@@ -8,6 +8,9 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
     const { mouse, character } = params
 
     if (!mouse || !character) return
+
+    const characterEntity = world.entities[character] as Character
+    if (!characterEntity || !characterEntity.components.team) return
 
     const { position } = entity.components
     if (!position) return
@@ -25,7 +28,7 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
         x: position.data.x + Math.cos(angle) * 10,
         y: position.data.y + Math.sin(angle) * 10,
       },
-      team: character.components.team,
+      team: characterEntity.components.team,
       radius: 20,
       damage,
       id: randomInt(1000),

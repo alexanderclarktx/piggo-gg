@@ -6,6 +6,8 @@ export type InputState = {
   entity: Entity
   world: World
   character?: Character
+  // entity: string
+  // character?: string
   hold: boolean
 }
 

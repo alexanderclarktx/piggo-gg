@@ -238,10 +238,9 @@ export const InputSystem = ClientSystemBuilder({
               entityId: activeItem.id,
               params: {
                 mouse: { ...mouse },
-                entity: activeItem,
-                world,
+                entity: activeItem.id,
                 tick: keyMouse.tick,
-                character,
+                character: character.id,
                 hold: keyMouse.hold
               }
             }
