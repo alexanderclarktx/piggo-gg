@@ -1,17 +1,14 @@
 import { World, isMobile } from "@piggo-gg/core"
-import { GameCanvas, TitleBar, NetState } from "@piggo-gg/web"
+import { Canvas, TitleBar, NetState } from "@piggo-gg/web"
 import React, { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
 
-// Piggo webapp root component
 export const Root = () => {
-
-  const mobile = isMobile()
 
   const [world, setWorld] = useState<World | undefined>()
   const [netState, setNetState] = useState<NetState>("disconnected")
 
-  // expose the game client to the console
+  // expose World to the console
   useEffect(() => {
     (window as any).world = world
   }, [world])
@@ -21,8 +18,8 @@ export const Root = () => {
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
-          {mobile ? null : <TitleBar netState={netState} setNetState={setNetState} world={world} />}
-          <GameCanvas setWorld={setWorld} />
+          {isMobile() ? null : <TitleBar netState={netState} setNetState={setNetState} world={world} />}
+          <Canvas setWorld={setWorld} />
         </div>
       </div>
     </div>

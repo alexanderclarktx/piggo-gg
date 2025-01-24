@@ -1,15 +1,16 @@
-import { DefaultWorld, Renderer, World, isMobile } from "@piggo-gg/core"
-import { ARAM, Dungeon, Flappy, Home, Legends, Menu, Sandbox, Soccer, Strike } from "@piggo-gg/games"
+import { DefaultWorld, isMobile, Renderer, World } from "@piggo-gg/core"
+import { games } from "@piggo-gg/games"
 import React, { useEffect } from "react"
 
-export type GameCanvasProps = {
+export type CanvasProps = {
   setWorld: (_: World) => void
 }
 
-export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
+export const Canvas = ({ setWorld }: CanvasProps) => {
+
+  let playedAudio = false
 
   useEffect(() => {
-
     const mobile = isMobile()
     const canvas = document.getElementById("canvas") as HTMLCanvasElement
 
@@ -22,10 +23,7 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
     const renderer = Renderer({ canvas, width, height })
 
     renderer.init().then(() => {
-      const world = DefaultWorld({
-        renderer,
-        games: [Flappy, Menu, Sandbox, Dungeon, Home, Strike, ARAM, Soccer, Legends]
-      })
+      const world = DefaultWorld({ renderer, games })
       setWorld(world)
       renderer.handleResize()
     })
@@ -38,14 +36,12 @@ export const GameCanvas = ({ setWorld }: GameCanvasProps) => {
       </audio>
       <canvas id="canvas" onPointerDown={
         () => {
-          // @ts-expect-error
-          if (globalThis.playedAudio) return
+          if (playedAudio) return
 
           const audioElement = document.querySelector("audio") as HTMLAudioElement
           audioElement.play()
 
-          // @ts-expect-error
-          globalThis.playedAudio = true
+          playedAudio = true
         }
       }>
       </canvas>

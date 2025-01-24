@@ -50,7 +50,7 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       onTick: (entities: Entity<Renderable | Position>[]) => {
 
-        lastOntick = Date.now()
+        lastOntick = performance.now()
 
         const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 }
         const { width, height } = renderer.app.screen
@@ -180,7 +180,7 @@ export const RenderSystem = ClientSystemBuilder({
         })
       },
       onRender(entities: Entity<Renderable | Position>[]) {
-        const elapsedTime = Date.now() - lastOntick
+        const elapsedTime = performance.now() - lastOntick
 
         // interpolate entity positions
         entities.forEach((entity) => {
