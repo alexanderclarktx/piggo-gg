@@ -1,4 +1,4 @@
-import { Renderable, round, XY } from "@piggo-gg/core"
+import { Renderable, XY } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
