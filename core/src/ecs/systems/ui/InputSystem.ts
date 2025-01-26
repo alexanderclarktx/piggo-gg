@@ -325,16 +325,16 @@ export const InputSystem = ClientSystemBuilder({
           return
         }
 
+        // handle character input
         const character = world.client?.playerEntity.components.controlling.getControlledEntity(world)
-        if (!character) return
-
-        if (world.tick > clickableClickedThisFrame.value) {
+        if (character && world.tick > clickableClickedThisFrame.value) {
           handleInputForCharacter(character, world)
         }
 
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop()
 
+        // handle UI input
         enitities.forEach((entity) => {
           const { networked } = entity.components
           if (!networked) handleInputForUIEntity(entity, world)
