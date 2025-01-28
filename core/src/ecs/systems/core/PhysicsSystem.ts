@@ -103,9 +103,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
         // sensor callbacks
         for (const [entity, collider] of colliders.entries()) {
 
-          // handle standing checks
-          if (entity.id.startsWith("animal") && collider.rapierCollider) { // TODO generic
-
+          // check if standing
+          if (entity.components.position.data.friction && collider.rapierCollider) {
             let standing = false
 
             physics.contactPairsWith(collider.rapierCollider, (collider2) => {
@@ -117,7 +116,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
                 }
               }
             })
-
             entity.components.position.data.standing = standing
           }
 
