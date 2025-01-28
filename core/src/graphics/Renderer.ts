@@ -1,4 +1,4 @@
-import { Camera, Renderable, isMobile, max } from "@piggo-gg/core"
+import { Camera, Renderable, isMobile } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
 export type RendererProps = {

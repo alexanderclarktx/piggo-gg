@@ -10,7 +10,7 @@ export const Noob = ({ id }: NoobProps): Noob => Entity({
   id: id,
   persists: true,
   components: {
-    networked: Networked({ isNetworked: true }),
+    networked: Networked(),
     player: Player({ name: id }),
     controlling: Controlling({ entityId: "" }),
     actions: Actions({ switchTeam }),

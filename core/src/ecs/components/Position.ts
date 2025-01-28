@@ -1,4 +1,4 @@
-import { Component, Entity, Oct, OctString, SystemBuilder, XY, min, round, toOctString } from "@piggo-gg/core"
+import { Component, Entity, Oct, OctString, SystemBuilder, XY, min, reduce, round, toOctString } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
   x: number
@@ -12,8 +12,10 @@ export type Position = Component<"position", {
   velocityResets: number
   follows: string | undefined
   offset: XY
-}> & {
+  standing: boolean
   gravity: number
+  friction: number
+}> & {
   lastCollided: number
   screenFixed: boolean
   orientation: OctString
@@ -35,6 +37,7 @@ export type PositionProps = {
   y?: number
   velocity?: XY
   gravity?: number
+  friction?: number
   speed?: number
   velocityResets?: number
   screenFixed?: boolean
@@ -56,9 +59,11 @@ export const Position = (props: PositionProps = {}): Position => {
       heading: { x: NaN, y: NaN },
       velocityResets: props.velocityResets ?? 0,
       follows: props.follows ?? undefined,
-      offset: { x: 0, y: 0 }
+      offset: { x: 0, y: 0 },
+      standing: false,
+      friction: props.friction ?? 0,
+      gravity: props.gravity ?? 0
     },
-    gravity: props.gravity ?? 0,
     lastCollided: 0,
     screenFixed: props.screenFixed ?? false,
     orientation: "r",
@@ -150,9 +155,13 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         const { position } = entity.components
 
-        if (position.gravity && world.currentGame.view === "side") {
-          position.data.velocity.y = min(position.data.velocity.y + position.gravity, position.gravity * 45)
+        if (position.data.gravity && world.currentGame.view === "side") {
+          position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
           position.updateOrientation()
+        }
+
+        if (position.data.friction && world.currentGame.view === "side") {
+          position.data.velocity.x = reduce(position.data.velocity.x, position.data.friction)
         }
 
         if (position.data.follows) {

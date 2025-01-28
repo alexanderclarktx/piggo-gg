@@ -1,10 +1,13 @@
 import { Action, Character, KeyMouse, SpawnHitboxProps, randomInt } from "@piggo-gg/core"
 
-export const Shoot = Action<KeyMouse & { id: number, character: Character }>("shoot", ({ world, params, entity }) => {
+export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot", ({ world, params, entity }) => {
 
   if (!entity) return
 
-  const { position, team } = params.character.components
+  const characterEntity = world.entities[params.character] as Character
+  if (!characterEntity || !characterEntity.components.team) return
+
+  const { position, team } = characterEntity.components
   const { gun } = entity.components
   if (!gun || !position || !team) return
 

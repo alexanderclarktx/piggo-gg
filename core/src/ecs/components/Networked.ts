@@ -8,7 +8,7 @@ export type NetworkedProps = {
   isNetworked: boolean
 }
 
-export const Networked = ({ isNetworked }: NetworkedProps): Networked => ({
+export const Networked = ({ isNetworked }: NetworkedProps = { isNetworked: true }): Networked => ({
   type: "networked",
   isNetworked
 })

@@ -1,5 +1,5 @@
-import { NetServerSystem, NetMessageTypes, DefaultWorld, Noob, World, keys } from "@piggo-gg/core"
-import { ARAM, Home, Legends, Soccer, Strike } from "@piggo-gg/games"
+import { DefaultWorld, keys, NetMessageTypes, NetServerSystem, Noob, World } from "@piggo-gg/core"
+import { games } from "@piggo-gg/games"
 import { PerClientData } from "@piggo-gg/server"
 import { ServerWebSocket } from "bun"
 
@@ -19,7 +19,7 @@ export type WorldManagerProps = {
 
 export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
 
-  const world = DefaultWorld({ runtimeMode: "server", games: [Home, Strike, ARAM, Soccer, Legends] })
+  const world = DefaultWorld({ runtimeMode: "server", games })
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {}
 
   world.systems = {

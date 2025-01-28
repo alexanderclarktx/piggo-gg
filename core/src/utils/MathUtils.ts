@@ -17,6 +17,13 @@ export const randomInt = (n: number, s: number = 0) => {
   return round(random() * n - s)
 }
 
+// reduces toward zero
+export const reduce = (n: number, by: number): number => {
+  if (n > 0) return max(0, n - by)
+  if (n < 0) return min(0, n + by)
+  return 0
+}
+
 export const { isArray } = Array
 
 export const randomChoice = <T>(xs: T[]): T => {

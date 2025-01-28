@@ -73,6 +73,8 @@ export const Collider = (props: ColliderProps): Collider => {
 
   bodyDesc.setLinearDamping(frictionAir ?? 0)
 
+  colliderDesc.setFriction(0)
+
   const collider: Collider = {
     type: "collider",
     colliderDesc: colliderDesc,

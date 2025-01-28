@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "./main.ts",
   "dependencies": {
-    "@dimforge/rapier2d-compat": "0.13.1",
+    "@dimforge/rapier2d-compat": "0.14.0",
     "@pixi/ui": "2.0.1",
     "pixi-filters": "6.0.3",
-    "pixi.js": "8.5.1",
+    "pixi.js": "8.6.6",
     "react-hot-toast": "2.4.1",
     "tone": "15.0.4"
   }

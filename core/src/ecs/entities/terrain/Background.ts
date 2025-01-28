@@ -9,7 +9,7 @@ export type BackgroundProps = {
 export const Background = ({ img = "space.png", json }: BackgroundProps = {}) => Entity({
   id: "background",
   components: {
-    position: Position({ x: -8000, y: -2000 }),
+    position: Position({ x: -2000, y: -2000 }),
     renderable: Renderable({
       zIndex: -2,
       setup: async (container) => {

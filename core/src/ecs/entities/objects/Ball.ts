@@ -10,7 +10,7 @@ export const Ball = ({ position, id }: BallProps) => Entity({
   id: id,
   components: {
     position: Position(position ?? { x: 50, y: 250 }),
-    networked: Networked({ isNetworked: true }),
+    networked: Networked(),
     collider: Collider({
       shape: "ball",
       radius: 7,

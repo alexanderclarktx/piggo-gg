@@ -1,5 +1,4 @@
-import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, loadTexture } from "@piggo-gg/core"
-import { Sprite } from "pixi.js"
+import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, pixiCircle } from "@piggo-gg/core"
 import toast from "react-hot-toast"
 
 export type InviteStoneProps = {
@@ -56,10 +55,8 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
         zIndex: 3,
         color: tint ?? 0xffffff,
         setContainer: async () => {
-          const textures = await loadTexture("dungeon-objects.json")
-          const sprite = new Sprite({ texture: textures["invite-stone"] })
-          sprite.anchor.set(0.5, 0.5)
-          return sprite
+          const circle = pixiCircle({ r: 32, style: { color: 0xff00ff } })
+          return circle
         }
       })
     }

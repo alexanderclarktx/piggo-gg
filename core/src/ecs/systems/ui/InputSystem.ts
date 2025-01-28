@@ -164,7 +164,7 @@ export const InputSystem = ClientSystemBuilder({
         y: round(mouse.y - position.data.y, 2)
       }
 
-      world.actionBuffer.push(world.tick, character.id,
+      world.actionBuffer.push(world.tick + 1, character.id,
         { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
       )
 
@@ -238,10 +238,9 @@ export const InputSystem = ClientSystemBuilder({
               entityId: activeItem.id,
               params: {
                 mouse: { ...mouse },
-                entity: activeItem,
-                world,
+                entity: activeItem.id,
                 tick: keyMouse.tick,
-                character,
+                character: character.id,
                 hold: keyMouse.hold
               }
             }
@@ -280,7 +279,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actionBuffer.push(world.tick, entity.id, invocation)
+              world.actionBuffer.push(world.tick + 1, entity.id, invocation)
             }
           }
 
@@ -301,7 +300,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actionBuffer.push(world.tick, entity.id, invocation)
+              world.actionBuffer.push(world.tick + 1, entity.id, invocation)
             }
           }
 
@@ -326,16 +325,16 @@ export const InputSystem = ClientSystemBuilder({
           return
         }
 
+        // handle character input
         const character = world.client?.playerEntity.components.controlling.getControlledEntity(world)
-        if (!character) return
-
-        if (world.tick > clickableClickedThisFrame.value) {
+        if (character && world.tick > clickableClickedThisFrame.value) {
           handleInputForCharacter(character, world)
         }
 
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop()
 
+        // handle UI input
         enitities.forEach((entity) => {
           const { networked } = entity.components
           if (!networked) handleInputForUIEntity(entity, world)

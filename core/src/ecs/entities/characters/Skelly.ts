@@ -12,7 +12,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
     components: {
       debug: Debug(),
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 100, velocityResets: 1, speed: 120 }),
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
@@ -21,7 +21,7 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       input: Input({
         press: {
           ...WASDInputMap.press,
-          "g": () => ({ actionId: "dropItem"}),
+          "g": () => ({ actionId: "dropItem" }),
           "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
           "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),

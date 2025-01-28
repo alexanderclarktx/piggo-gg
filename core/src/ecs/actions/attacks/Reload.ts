@@ -1,6 +1,6 @@
 import { Action, Effect, Entity, Gun, max, min } from "@piggo-gg/core"
 
-export const Reload = Action("reload", ({ entity }) => {
+export const Reload = Action("reload", ({ entity, world }) => {
   if (!entity) return
 
   const { gun, effects } = entity.components
@@ -13,7 +13,7 @@ export const Reload = Action("reload", ({ entity }) => {
   // TODO infinite ammo
   // if (gun.data.ammo <= 0) return
 
-  effects.addEffect("reload", ReloadEffect(gun, entity))
+  if (world.client) effects.addEffect("reload", ReloadEffect(gun, entity))
 })
 
 const ReloadEffect = (gun: Gun, entity: Entity): Effect => ({

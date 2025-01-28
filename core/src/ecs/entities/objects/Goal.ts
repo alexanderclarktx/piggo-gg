@@ -53,7 +53,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
   return Entity({
     id: id ?? `goal1`,
     components: {
-      networked: Networked({ isNetworked: true }),
+      networked: Networked(),
       data: Data({ data: data }),
       position: Position(position),
       collider: Collider({

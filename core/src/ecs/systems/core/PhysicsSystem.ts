@@ -4,7 +4,6 @@ import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round
 export let physics: RapierWorld
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
 
-// PhysicsSystem calculates the physics of entities
 export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
   id: "PhysicsSystem",
   init: (world) => {
@@ -12,7 +11,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
     let bodies: Record<string, RigidBody> = {}
     let colliders: Map<Entity<Collider | Position>, Collider> = new Map()
 
-    // reset the world state
     const resetPhysics = () => {
       keys(bodies).forEach((id) => {
         delete bodies[id]
@@ -20,7 +18,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
       colliders.clear()
       physics.free()
       physics = new RapierWorld({ x: 0, y: 0 })
-      physics.switchToSmallStepsPgsSolver(); // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
+      physics.switchToSmallStepsPgsSolver() // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
       physics.timestep = 0.025
     }
 
@@ -82,12 +80,11 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
         // run physics
         physics.step()
 
-        // update the entity positions
+        // update entity positions
         keys(bodies).forEach((id) => {
           const body = bodies[id]
-          const entity = world.entities[id] as Entity<Position>
-
-          const { position } = entity.components
+          const { position } = world.entities[id].components
+          if (!position) return
 
           // check if the entity has collided
           const diffX = position.data.velocity.x - Math.floor(body.linvel().x * 100) / 100
@@ -96,7 +93,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
             position.lastCollided = world.tick
           }
 
-          // update the entity position/velocity
+          // update position/velocity
           position.data.x = round(body.translation().x * 100) / 100
           position.data.y = round(body.translation().y * 100) / 100
           position.data.velocity.x = Math.floor(body.linvel().x * 100) / 100
@@ -105,6 +102,24 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
 
         // sensor callbacks
         for (const [entity, collider] of colliders.entries()) {
+
+          // check if standing
+          if (entity.components.position.data.friction && collider.rapierCollider) {
+            let standing = false
+
+            physics.contactPairsWith(collider.rapierCollider, (collider2) => {
+              const collided = colliders.entries().find(([_, c]) => c.rapierCollider === collider2)
+              if (collided && world.entities[collided[0].id]) {
+                const { position } = world.entities[collided[0].id].components
+                if (position!.data.y > entity.components.position.data.y) {
+                  standing = true
+                }
+              }
+            })
+            entity.components.position.data.standing = standing
+          }
+
+          // sensor callbacks
           if (collider.sensor && collider.rapierCollider) {
             
             const collidedWith: Entity<Collider | Position>[] = []
@@ -139,7 +154,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           }
         })
 
-        // reset velocities where needed
+        // reset velocities
         entities.forEach((entity) => {
           const { position } = entity.components
           if (position.data.velocityResets && !position.data.heading.x && !position.data.heading.y) {
