@@ -17,7 +17,6 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
         shape: "ball", radius: 32,
         sensor: (e2, world) => {
           if (e2.id.startsWith("skelly")) {
-            // todo actionBuffer push should be handled by PhysicsSystem
             world.actionBuffer.push(world.tick + 1, portal.id, { playerId: world.client?.playerId(), actionId: "teleport", params: { game } })
             return true
           }

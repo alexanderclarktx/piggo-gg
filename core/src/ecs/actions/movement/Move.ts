@@ -6,5 +6,8 @@ export const Move = Action<XY>("move", ({ params, entity }) => {
   const { position } = entity.components
 
   position?.setHeading({ x: NaN, y: NaN })
-  position?.setVelocity({ x: params.x, y: params.y })
+  position?.setVelocity({
+    ...((params.x !== undefined) ? { x: params.x } : {}),
+    ...((params.y !== undefined) ? { y: params.y } : {})
+  })
 })

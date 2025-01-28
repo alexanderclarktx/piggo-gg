@@ -1,44 +1,42 @@
 import {
-  Actions, Axe, Character, Collider, Deagle, Debug,
-  DefaultJoystickHandler, dropItem, Effects, Element, Entity, Health, Input,
-  Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
-  Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
+  Actions, Character, Collider, Debug, Effects, Element, Entity, Health, Input,
+  JumpPlatform, loadTexture, Move, Networked, Noob, Point, Position, Renderable, XY
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export const Skelly = (player: Noob, color?: number, pos?: XY) => {
-  const skelly: Character = Entity({
-    id: `skelly-${player.id}`,
+export const Animal = (player: Noob, color?: number, pos?: XY) => {
+  const animal: Character = Entity({
+    id: `animal-${player.id}`,
     components: {
       debug: Debug(),
-      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 100, velocityResets: 1, speed: 120 }),
+      position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 100, gravity: 15, friction: 10 }),
       networked: Networked(),
-      collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
+      collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true, ccd: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
-      inventory: Inventory([Axe, Pickaxe, Sword, Deagle]),
       element: Element("flesh"),
       input: Input({
         press: {
-          ...WASDInputMap.press,
-          "g": () => ({ actionId: "dropItem" }),
+          "a,d": () => null,
+          "a": () => ({ actionId: "move", params: { x: -100 } }),
+          "d": () => ({ actionId: "move", params: { x: 100 } }),
+          "g": () => ({ actionId: "dropItem" }),  
           "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
           "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
           "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
-          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } })
-        },
-        joystick: DefaultJoystickHandler
+          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
+          " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
+        }
       }),
-      actions: Actions({
+      actions: Actions<any>({
         move: Move,
-        point: Point,
-        setActiveItemIndex,
-        dropItem
+        jump: JumpPlatform,
+        point: Point
       }),
       effects: Effects(),
       renderable: Renderable({
-        anchor: { x: 0.5, y: 0.7 },
+        anchor: { x: 0.5, y: 0.75 },
         scale: 2,
         zIndex: 3,
         interpolate: true,
@@ -61,5 +59,5 @@ export const Skelly = (player: Noob, color?: number, pos?: XY) => {
       })
     }
   })
-  return skelly
+  return animal
 }

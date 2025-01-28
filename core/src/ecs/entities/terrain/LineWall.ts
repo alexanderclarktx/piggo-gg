@@ -30,7 +30,7 @@ export const LineWall = (
   }
 
   const wall = Entity<Position | Renderable | Collider>({
-    id: id ?? `linewall-${points.join("-")}`,
+    id: id ?? `linewall-${points.join("-")}-${position?.x}-${position?.y}`,
     components: {
       position: Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
       ...health ? { health: Health({ health, showHealthBar: false }) } : {},

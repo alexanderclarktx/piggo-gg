@@ -1,4 +1,7 @@
-import { Action, Actions, Debug, Entity, Input, Position, Renderable, TeamColors, keys, max, pixiCircle, pixiGraphics, values } from "@piggo-gg/core"
+import {
+  Actions, Debug, Entity, Input, Position, Renderable, TeamColors,
+  keys, max, pixiCircle, pixiGraphics, values
+} from "@piggo-gg/core"
 import { Container, Graphics } from "pixi.js"
 
 export const Minimap = (dim: number, tileMap: number[]): Entity => {

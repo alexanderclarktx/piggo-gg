@@ -1,6 +1,6 @@
 import { Lobby, Flappy, Sandbox, Dungeon, Home, Strike, ARAM, Soccer, Legends } from "@piggo-gg/games"
 
-export const games = [Lobby, Flappy, Sandbox, Dungeon, Home, Strike, ARAM, Soccer, Legends]
+export const games = [Flappy, Lobby, Sandbox, Dungeon, Home, Strike, ARAM, Soccer, Legends]
 
 export * from "./aram/ARAM"
 export * from "./dungeon/Dungeon"
