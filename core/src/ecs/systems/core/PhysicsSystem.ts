@@ -100,7 +100,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           position.data.velocity.y = Math.floor(body.linvel().y * 100) / 100
         })
 
-        // sensor callbacks
         for (const [entity, collider] of colliders.entries()) {
 
           // check if standing

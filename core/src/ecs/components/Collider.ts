@@ -18,15 +18,13 @@ export type Collider = Component<"collider"> & {
 
 export type ColliderProps = {
   shape: ColliderShapes
-
   hittable?: boolean
   points?: number[]
   radius?: number
   length?: number
-  ccd?: boolean
   width?: number
   isStatic?: boolean
-  frictionAir?: number
+  frictionAir?: number // TODO deprecated
   mass?: number
   restitution?: number
   rotation?: number
@@ -34,10 +32,10 @@ export type ColliderProps = {
   sensor?: SensorCallback
 }
 
-// TODO Collider.frictionAir deprecated
-export const Collider = (props: ColliderProps): Collider => {
-
-  const { shape, ccd, hittable, points, radius, length, width, isStatic, frictionAir, mass, restitution, sensor, rotation, priority } = props
+export const Collider = ({
+  shape, hittable, points, radius, length, width, isStatic,
+  frictionAir, mass, restitution, sensor, rotation, priority
+}: ColliderProps): Collider => {
 
   let colliderDesc: ColliderDesc
 
@@ -59,16 +57,9 @@ export const Collider = (props: ColliderProps): Collider => {
     bodyDesc = RigidBodyDesc.dynamic()
   }
 
-  if (ccd) bodyDesc.setCcdEnabled(true)
-
-  if (sensor) {
-    colliderDesc.setSensor(true)
-  }
-
+  if (sensor) colliderDesc.setSensor(true)
   if (mass) colliderDesc.setMass(mass)
-
   if (restitution) colliderDesc.setRestitution(restitution)
-
   if (rotation) colliderDesc.setRotation(rotation)
 
   bodyDesc.setLinearDamping(frictionAir ?? 0)
