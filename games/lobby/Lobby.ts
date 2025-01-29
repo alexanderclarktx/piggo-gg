@@ -1,65 +1,24 @@
 import {
-  Background, SpawnSystem, GameBuilder, DefaultUI, InviteStone,
-  Entity, Position, pixiText, Renderable, pixiGraphics, World,
-  Animal, LineWall
+  GameBuilder, DefaultUI, InviteStone, Entity,
+  Position, pixiText, Renderable, pixiGraphics, World
 } from "@piggo-gg/core"
 
 export const Lobby: GameBuilder = {
   id: "lobby",
   init: (world) => ({
     id: "lobby",
-    systems: [SpawnSystem(Animal)],
+    systems: [],
     view: "side",
     entities: [
       ...DefaultUI(world),
-      Background({ img: "stars.png" }),
 
-      Letterbox(),
-      Letterbox(-220),
       Friends(world),
       Profile(),
 
-      Platform(-250, 50),
-      Platform(-300, 150),
-      Platform(-400, 100),
-      Platform(-100, 50),
-      Platform(0, 0),
-      Platform(100, -50),
-      Platform(200, -100),
-      Platform(300, -150),
-
-      Floor(),
-
-      InviteStone({ pos: { x: 0, y: -50 }, tint: 0xddddff })
+      InviteStone({ pos: { x: 300, y: 50 }, tint: 0xddddff })
     ]
   })
 }
-
-const Platform = (x: number, y: number) => {
-  return LineWall({
-    position: { x, y },
-    points: [0, 0, 0, 20, 100, 20, 100, 0, 0, 0],
-    visible: true
-  })
-}
-
-const Floor = () => LineWall({ points: [-1000, 200, 10000, 200], visible: true })
-
-// covers the screen with black
-const Letterbox = (x: number = 0, width: number = 220) => Entity({
-  id: `letterbox-${x}-${width}`,
-  components: {
-    position: Position({ x, y: 0, screenFixed: true }),
-    renderable: Renderable({
-      zIndex: 9,
-      setup: async (r) => {
-        const g = pixiGraphics()
-        g.rect(0, 0, width, 3000).fill({ color: 0x000000, alpha: 1 })
-        r.c.addChild(g)
-      }
-    })
-  }
-})
 
 const Profile = (): Entity => {
   const outline = pixiGraphics()
