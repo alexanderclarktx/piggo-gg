@@ -32,7 +32,7 @@ const GameLobby = (): Entity => {
       position: Position({ x: 10, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: ({world}) => {
+        dynamic: ({ world }) => {
           if (height !== world.renderer!.app.screen.height) {
             height = world.renderer!.app.screen.height
           }
@@ -89,7 +89,7 @@ const Friends = (): Entity => {
       position: Position({ x: 10, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: ({world}) => {
+        dynamic: ({ world }) => {
           if (height !== world.renderer!.app.screen.height) {
             height = world.renderer!.app.screen.height
             drawOutline()
