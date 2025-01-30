@@ -120,7 +120,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
 
           // sensor callbacks
           if (collider.sensor && collider.rapierCollider) {
-            
+
             const collidedWith: Entity<Collider | Position>[] = []
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
@@ -138,7 +138,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
             }).forEach((entity) => {
               if (!collided) collided = collider.sensor(entity, world)
             })
-          } 
+          }
         }
 
         // clear heading if arrived

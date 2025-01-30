@@ -5,9 +5,9 @@ import {
 import { AnimatedSprite } from "pixi.js"
 
 export const Animals: GameBuilder = {
-  id: "lobby",
+  id: "animals",
   init: (world) => ({
-    id: "lobby",
+    id: "animals",
     systems: [SpawnSystem(Animal)],
     view: "side",
     entities: [

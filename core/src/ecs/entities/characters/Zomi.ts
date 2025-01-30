@@ -35,11 +35,11 @@ export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProp
         color: color ?? 0x00ff00,
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
-        dynamic: (_, r, z) => {
-          const { health, maxHealth } = z.components.health!.data
+        dynamic: ({ renderable, entity }) => {
+          const { health, maxHealth } = entity.components.health!.data
 
           const ratio = round(health / maxHealth * 4)
-          r.color = colors[max(ratio - 1, 0)]
+          renderable.color = colors[max(ratio - 1, 0)]
         },
         setup: async (r: Renderable) => {
           const t = await loadTexture("chars.json")

@@ -7,17 +7,18 @@ export const Chat = (): Entity => {
     padding: 3,
     fontSize: 16,
     color: 0x55FFFF,
-    dynamic: (t: Text, r: Renderable, _, w: World) => {
+    dynamic: ({ container, renderable, world }) => {
+      const t = container as Text
 
       // hide chat if no recent messages
-      if ((w.tick - w.chatHistory.keys()[0]) > 125) {
+      if ((world.tick - world.chatHistory.keys()[0]) > 125) {
         t.text = ""
       } else {
         let lastMessages: string[] = []
 
         // get last 4 messages
-        w.chatHistory.keys().slice(0, 4).forEach((tick) => {
-          const messagesForEntity = w.chatHistory.atTick(tick)
+        world.chatHistory.keys().slice(0, 4).forEach((tick) => {
+          const messagesForEntity = world.chatHistory.atTick(tick)
           if (messagesForEntity) entries(messagesForEntity).forEach(([player, messages]) => {
             messages.forEach((message) => {
               if (messages.length < 4) lastMessages.push(`${player}: ${message}`)
@@ -29,7 +30,7 @@ export const Chat = (): Entity => {
       }
 
       // offset from bottom
-      r.c.position.set(0, -1 * t.height + 20)
+      renderable.c.position.set(0, -1 * t.height + 20)
     }
   })
 
@@ -39,7 +40,8 @@ export const Chat = (): Entity => {
     color: 0xFFFF33,
     // boxOutline: true,
     // visible: false,
-    dynamic: (t: Text) => {
+    dynamic: ({ container }) => {
+      const t = container as Text
       const textToRender = chatBuffer.join("")
       chatIsOpen ? t.text = `${textToRender}|` : t.text = ""
     }

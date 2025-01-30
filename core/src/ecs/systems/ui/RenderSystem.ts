@@ -138,7 +138,9 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // run the dynamic callback
-          if (renderable.dynamic && renderable.initialized) renderable.dynamic(renderable.c, renderable, entity, world)
+          if (renderable.dynamic && renderable.initialized) renderable.dynamic({
+            container: renderable.c, entity, world, renderable
+          })
 
           // set visible
           if (renderable.c.renderable !== renderable.visible) renderable.c.renderable = renderable.visible
@@ -146,7 +148,7 @@ export const RenderSystem = ClientSystemBuilder({
           // run dynamic on children
           if (renderable.children && renderable.initialized) {
             renderable.children.forEach((child) => {
-              if (child.dynamic) child.dynamic(child.c, child, entity, world)
+              if (child.dynamic) child.dynamic({ container: child.c, entity, world, renderable: child })
             })
           }
         })

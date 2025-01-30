@@ -12,12 +12,38 @@ export const Lobby: GameBuilder = {
     entities: [
       ...DefaultUI(world),
 
-      Friends(world),
+      Friends(),
       Profile(),
+      GameLobby(),
 
       InviteStone({ pos: { x: 300, y: 50 }, tint: 0xddddff })
     ]
   })
+}
+
+const GameLobby = (): Entity => {
+  const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 10, y: 10 }, anchor: { x: 0, y: 0 } })
+
+  let height = 0
+
+  const gameLobby = Entity<Position | Renderable>({
+    id: "gameLobby",
+    components: {
+      position: Position({ x: 10, y: 10, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        dynamic: ({world}) => {
+          if (height !== world.renderer!.app.screen.height) {
+            height = world.renderer!.app.screen.height
+          }
+        },
+        setup: async (r) => {
+          r.c.addChild(title)
+        }
+      })
+    }
+  })
+  return gameLobby
 }
 
 const Profile = (): Entity => {
@@ -45,7 +71,7 @@ const Profile = (): Entity => {
   return profile
 }
 
-const Friends = (world: World): Entity => {
+const Friends = (): Entity => {
 
   const outline = pixiGraphics()
   const title = pixiText({ text: "Friends", style: { fontSize: 32 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
@@ -63,7 +89,7 @@ const Friends = (world: World): Entity => {
       position: Position({ x: 10, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: () => {
+        dynamic: ({world}) => {
           if (height !== world.renderer!.app.screen.height) {
             height = world.renderer!.app.screen.height
             drawOutline()

@@ -25,14 +25,14 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
       interpolate: true,
       visible: false,
       outline: { color: 0x000000, thickness: 1 },
-      dynamic: (_, r, gun: Entity<Item>) => {
-        if (gun.components.item.dropped) return
+      dynamic: ({ renderable, entity }) => {
+        if (entity.components.item!.dropped) return
 
         const { pointing, pointingDelta } = character.components.position.data
 
-        r.zIndex = (pointingDelta.y > 0) ? 3 : 2
+        renderable.zIndex = (pointingDelta.y > 0) ? 3 : 2
 
-        r.bufferedAnimation = pointing.toString()
+        renderable.bufferedAnimation = pointing.toString()
       },
       setup: async (r: Renderable) => {
         const textures = await loadTexture(`${name}.json`)
