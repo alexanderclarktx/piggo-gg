@@ -2,6 +2,7 @@ node_modules
 dist
 .DS_STORE
 out/
+generated/
 bun.lockb
 todo.md
 .vscode
