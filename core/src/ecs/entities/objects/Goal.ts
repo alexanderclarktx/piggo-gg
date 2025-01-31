@@ -42,8 +42,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     const t = pixiText({
       text: "0",
       style: { fill: 0xffff00 }
-    }
-    ).updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 })
+    }).updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 })
 
     // goal area
     c.addChild(g, t)
