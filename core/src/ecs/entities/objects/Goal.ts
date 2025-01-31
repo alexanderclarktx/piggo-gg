@@ -41,8 +41,8 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
     // goal count
     const t = pixiText({
       text: "0",
-      style: { fill: 0xffff00 } }
-    ).updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 })
+      style: { fill: 0xffff00 }
+    }).updateTransform({ x: color % 2 === 0 ? -50 : 40, y: -10 })
 
     // goal area
     c.addChild(g, t)
@@ -63,8 +63,8 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
         sensor: sensor
       }),
       renderable: Renderable({
-        dynamic: (c) => {
-          const t = c.children[1] as Text
+        dynamic: ({ container }) => {
+          const t = container.children[1] as Text
           if (t) t.text = `${data.goals}`
         },
         zIndex: 3,

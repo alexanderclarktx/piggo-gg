@@ -32,11 +32,11 @@ export const Piggo = ({ id, positionProps = { x: randomInt(500), y: randomInt(50
         color: 0xffffff,
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
-        dynamic: (_, r) => {
+        dynamic: ({ renderable }) => {
           const { orientationRads } = piggo.components.position
 
           const x = (orientationRads > 2 && orientationRads < 6) ? 1 : -1
-          r.setScale({ x, y: 1 })
+          renderable.setScale({ x, y: 1 })
         },
         setup: async (r: Renderable) => {
           const t = await loadTexture("piggo.json")

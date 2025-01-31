@@ -100,7 +100,6 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           position.data.velocity.y = Math.floor(body.linvel().y * 100) / 100
         })
 
-        // sensor callbacks
         for (const [entity, collider] of colliders.entries()) {
 
           // check if standing
@@ -121,7 +120,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
 
           // sensor callbacks
           if (collider.sensor && collider.rapierCollider) {
-            
+
             const collidedWith: Entity<Collider | Position>[] = []
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
@@ -139,7 +138,7 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
             }).forEach((entity) => {
               if (!collided) collided = collider.sensor(entity, world)
             })
-          } 
+          }
         }
 
         // clear heading if arrived

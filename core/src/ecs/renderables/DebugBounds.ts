@@ -10,8 +10,8 @@ export const DebugBounds = (props: DebugBoundsProps): Renderable => {
 
   const renderable = Renderable({
     ...props,
-    dynamic: (container, renderable) => {
-      container.position = { ... debugRenderable.position }
+    dynamic: ({ container, renderable }) => {
+      container.position = { ...debugRenderable.position }
       renderable.visible = debugRenderable.visible
     },
     setup: async (r: Renderable, _, world) => {

@@ -31,12 +31,13 @@ export const DebugSystem = ClientSystemBuilder({
 
       // text box
       const textBox = TextBox({
-        dynamic: (c: Text, textRenderable) => {
+        dynamic: ({ container, renderable }) => {
+          const c = container as Text
           if (renderable && position) {
             const bounds = renderable.c.getLocalBounds()
             c.position.set(bounds.x, bounds.top - 25)
             c.text = debugText(position)
-            textRenderable.visible = renderable.visible
+            renderable.visible = renderable.visible
           }
         },
         fontSize: 8, color: 0x00ff00
@@ -46,7 +47,8 @@ export const DebugSystem = ClientSystemBuilder({
       const debugBounds = DebugBounds({ debugRenderable: renderable })
 
       const lineToHeading = Renderable({
-        dynamic: (c: Graphics) => {
+        dynamic: ({ container }) => {
+          const c = container as Graphics
           if (position.data.heading.x || position.data.heading.y) {
             c.clear().setStrokeStyle({ width: 1, color: 0x00ffff })
             c.moveTo(0, 0).lineTo(position.data.heading.x - position.data.x, position.data.heading.y - position.data.y)
@@ -89,19 +91,18 @@ export const DebugSystem = ClientSystemBuilder({
     const drawAllColliders = () => {
 
       const r = Renderable({
-        dynamic: (c: Graphics) => {
-          if (c.clear) {
-            c.clear().setStrokeStyle({ width: 1, color: 0xffff00 })
-            const { vertices } = physics.debugRender()
+        dynamic: ({ container }) => {
+          const g = container as Graphics
+          g.clear().setStrokeStyle({ width: 1, color: 0xffff00 })
+          const { vertices } = physics.debugRender()
 
-            for (let i = 0; i < vertices.length; i += 4) {
-              const one = { x: vertices[i], y: vertices[i + 1] }
-              const two = { x: vertices[i + 2], y: vertices[i + 3] }
-              c.moveTo(one.x, one.y)
-              c.lineTo(two.x, two.y)
-            }
-            c.stroke()
+          for (let i = 0; i < vertices.length; i += 4) {
+            const one = { x: vertices[i], y: vertices[i + 1] }
+            const two = { x: vertices[i + 2], y: vertices[i + 3] }
+            g.moveTo(one.x, one.y)
+            g.lineTo(two.x, two.y)
           }
+          g.stroke()
         },
         zIndex: 5,
         setContainer: async () => new Graphics()

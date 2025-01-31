@@ -1,65 +1,50 @@
 import {
-  Background, SpawnSystem, GameBuilder, DefaultUI, InviteStone,
-  Entity, Position, pixiText, Renderable, pixiGraphics, World,
-  Animal, LineWall
+  GameBuilder, DefaultUI, InviteStone, Entity,
+  Position, pixiText, Renderable, pixiGraphics, World
 } from "@piggo-gg/core"
 
 export const Lobby: GameBuilder = {
   id: "lobby",
   init: (world) => ({
     id: "lobby",
-    systems: [SpawnSystem(Animal)],
+    systems: [],
     view: "side",
     entities: [
       ...DefaultUI(world),
-      Background({ img: "stars.png" }),
 
-      Letterbox(),
-      Letterbox(-220),
-      Friends(world),
+      Friends(),
       Profile(),
+      GameLobby(),
 
-      Platform(-250, 50),
-      Platform(-300, 150),
-      Platform(-400, 100),
-      Platform(-100, 50),
-      Platform(0, 0),
-      Platform(100, -50),
-      Platform(200, -100),
-      Platform(300, -150),
-
-      Floor(),
-
-      InviteStone({ pos: { x: 0, y: -50 }, tint: 0xddddff })
+      InviteStone({ pos: { x: 300, y: 50 }, tint: 0xddddff })
     ]
   })
 }
 
-const Platform = (x: number, y: number) => {
-  return LineWall({
-    position: { x, y },
-    points: [0, 0, 0, 20, 100, 20, 100, 0, 0, 0],
-    visible: true
+const GameLobby = (): Entity => {
+  const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 10, y: 10 }, anchor: { x: 0, y: 0 } })
+
+  let height = 0
+
+  const gameLobby = Entity<Position | Renderable>({
+    id: "gameLobby",
+    components: {
+      position: Position({ x: 10, y: 10, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        dynamic: ({ world }) => {
+          if (height !== world.renderer!.app.screen.height) {
+            height = world.renderer!.app.screen.height
+          }
+        },
+        setup: async (r) => {
+          r.c.addChild(title)
+        }
+      })
+    }
   })
+  return gameLobby
 }
-
-const Floor = () => LineWall({ points: [-1000, 200, 10000, 200], visible: true })
-
-// covers the screen with black
-const Letterbox = (x: number = 0, width: number = 220) => Entity({
-  id: `letterbox-${x}-${width}`,
-  components: {
-    position: Position({ x, y: 0, screenFixed: true }),
-    renderable: Renderable({
-      zIndex: 9,
-      setup: async (r) => {
-        const g = pixiGraphics()
-        g.rect(0, 0, width, 3000).fill({ color: 0x000000, alpha: 1 })
-        r.c.addChild(g)
-      }
-    })
-  }
-})
 
 const Profile = (): Entity => {
   const outline = pixiGraphics()
@@ -86,7 +71,7 @@ const Profile = (): Entity => {
   return profile
 }
 
-const Friends = (world: World): Entity => {
+const Friends = (): Entity => {
 
   const outline = pixiGraphics()
   const title = pixiText({ text: "Friends", style: { fontSize: 32 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
@@ -104,7 +89,7 @@ const Friends = (world: World): Entity => {
       position: Position({ x: 10, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: () => {
+        dynamic: ({ world }) => {
           if (height !== world.renderer!.app.screen.height) {
             height = world.renderer!.app.screen.height
             drawOutline()

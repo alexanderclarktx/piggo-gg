@@ -30,7 +30,7 @@ export type Renderable = Component<"renderable"> & {
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
-  dynamic: ((c: Container, r: Renderable, e: Entity, w: World) => void) | undefined
+  dynamic: ((_: { container: Container, renderable: Renderable, entity: Entity, world: World }) => void) | undefined
 
   prepareAnimations: (color?: number) => void
   setScale: (xy: XY) => void
@@ -56,7 +56,7 @@ export type RenderableProps = {
   scaleMode?: "nearest" | "linear"
   visible?: boolean
   zIndex?: number
-  dynamic?: (c: Container, r: Renderable, e: Entity, w: World) => void
+  dynamic?: (_: { container: Container, renderable: Renderable, entity: Entity, world: World }) => void
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
   setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void>

@@ -1,8 +1,42 @@
 import {
-  Actions, Character, Collider, Debug, Effects, Element, Entity, Health, Input,
-  JumpPlatform, loadTexture, Move, Networked, Noob, Point, Position, Renderable, XY
+  Actions, Background, Character, Collider, Debug, DefaultUI, Effects, Element, Entity, GameBuilder, Health, Input,
+  JumpPlatform, LineWall, loadTexture, Move, Networked, Noob, Point, Position, Renderable, SpawnSystem, XY
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
+
+export const Animals: GameBuilder = {
+  id: "animals",
+  init: (world) => ({
+    id: "animals",
+    systems: [SpawnSystem(Animal)],
+    view: "side",
+    entities: [
+      ...DefaultUI(world),
+      Background({ img: "stars.png" }),
+
+      Platform(-250, 50),
+      Platform(-300, 150),
+      Platform(-400, 100),
+      Platform(-100, 50),
+      Platform(0, 0),
+      Platform(100, -50),
+      Platform(200, -100),
+      Platform(300, -150),
+
+      Floor()
+    ]
+  })
+}
+
+const Floor = () => LineWall({ points: [-1000, 200, 10000, 200], visible: true })
+
+const Platform = (x: number, y: number) => {
+  return LineWall({
+    position: { x, y },
+    points: [0, 0, 0, 20, 100, 20, 100, 0, 0, 0],
+    visible: true
+  })
+}
 
 export const Animal = (player: Noob, color?: number, pos?: XY) => {
   const animal: Character = Entity({
@@ -11,7 +45,7 @@ export const Animal = (player: Noob, color?: number, pos?: XY) => {
       debug: Debug(),
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 100, gravity: 15, friction: 10 }),
       networked: Networked(),
-      collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true, ccd: true }),
+      collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
       health: Health({ health: 100 }),
       team: player.components.team,
       element: Element("flesh"),

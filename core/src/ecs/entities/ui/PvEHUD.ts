@@ -33,8 +33,8 @@ export const PvEHUD = (): Entity => {
           renderable.c.removeChildren()
           renderable.c.addChild(...squares)
         },
-        dynamic: async (c, __, ___, w) => {
-          const playerCharacter = w.client?.playerCharacter()
+        dynamic: async ({ container, world }) => {
+          const playerCharacter = world.client?.playerCharacter()
           if (!playerCharacter) return
 
           const { inventory } = playerCharacter.components
@@ -52,7 +52,7 @@ export const PvEHUD = (): Entity => {
           for (let i = 0; i < squares.length; i++) {
             const slot = inventory.items[i]
             if (!slot && icons[i]) {
-              c.removeChild(icons[i]!.icon)
+              container.removeChild(icons[i]!.icon)
               icons[i] = undefined
             }
             if (!slot) continue
@@ -75,7 +75,7 @@ export const PvEHUD = (): Entity => {
 
               icons[i] = { icon: slotSprite, count }
 
-              c.addChild(slotSprite)
+              container.addChild(slotSprite)
               if (count) slotSprite.addChild(count)
             } else {
               const { count } = icons[i] || {}
@@ -99,8 +99,6 @@ export const MobilePvEHUD = (): Entity => {
         setup: async (_, renderer) => {
           const canvasWidth = renderer.props.canvas.width
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -90 })
-        },
-        dynamic: (_, __, ___, w) => {
         }
       })
     }

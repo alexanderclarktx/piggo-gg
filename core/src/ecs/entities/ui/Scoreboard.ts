@@ -21,8 +21,8 @@ export const Scoreboard = (): Entity => {
         visible: false,
         interactiveChildren: true,
         zIndex: 10,
-        dynamic: (_, __, ___, w) => {
-          const currentPlayerEntities = w.queryEntities(["player"]) as Noob[]
+        dynamic: ({ world }) => {
+          const currentPlayerEntities = world.queryEntities(["player"]) as Noob[]
           const currentPlayers = new Set(currentPlayerEntities.map((p) => ({ name: p.id, entity: p })))
 
           // update player table
@@ -34,9 +34,9 @@ export const Scoreboard = (): Entity => {
 
             players.forEach((player) => {
               if (player.entity.components.team.data.team === 1) {
-                team1.addItem(playerRow(player.entity, width, w))
+                team1.addItem(playerRow(player.entity, width, world))
               } else {
-                team2.addItem(playerRow(player.entity, width, w))
+                team2.addItem(playerRow(player.entity, width, world))
               }
             })
           }

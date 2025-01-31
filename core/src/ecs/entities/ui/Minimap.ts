@@ -65,11 +65,11 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
       }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: (_, __, ___, w) => {
+        dynamic: ({ world }) => {
 
           // remove dots that are no longer in the world
           keys(dots).forEach((id) => {
-            if (!w.entities[id]) {
+            if (!world.entities[id]) {
               container.removeChild(dots[id])
               delete dots[id]
             }
@@ -79,31 +79,31 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
           keys(dots).forEach((id) => {
             dots[id].visible = true
 
-            if (id === w.client?.playerId()) return
+            if (id === world.client?.playerId()) return
 
-            const character = w.entities[id]?.components.controlling?.getControlledEntity(w)
+            const character = world.entities[id]?.components.controlling?.getControlledEntity(world)
             if (!character) return
 
             const { team } = character.components
-            if (!team || team.data.team === w.client?.playerCharacter()?.components.team?.data.team) return
+            if (!team || team.data.team === world.client?.playerCharacter()?.components.team?.data.team) return
             dots[id].visible = team.visible
           })
 
-          const playerCharacter = w.client?.playerCharacter()
+          const playerCharacter = world.client?.playerCharacter()
           if (!playerCharacter) return
           const playerPosition = playerCharacter.components.position
 
           // update player dots
-          w.queryEntities(["player"]).forEach((entity) => {
+          world.queryEntities(["player"]).forEach((entity) => {
 
             if (!dots[entity.id]) {
-              const color = (entity.id === w.client?.playerId()) ? 0x00ff00 : 0xff0000
+              const color = (entity.id === world.client?.playerId()) ? 0x00ff00 : 0xff0000
               dots[entity.id] = pixiCircle({ r: 3 }).fill({ color })
               dots[entity.id].mask = mask
               container.addChild(dots[entity.id])
             }
 
-            const character = entity.components.controlling?.getControlledEntity(w)
+            const character = entity.components.controlling?.getControlledEntity(world)
             if (!character) return
 
             const { position } = character.components
@@ -111,7 +111,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
             if (fullscreen) dots[entity.id].position.set(position.data.x / 7.6 - 4, position.data.y / 3.8 + 2)
 
             if (!fullscreen) {
-              if (entity.id === w.client?.playerId()) {
+              if (entity.id === world.client?.playerId()) {
                 dots[entity.id].position.set(0, 0)
               } else {
                 dots[entity.id].position.set((position.data.x - playerPosition.data.x) * scale / 5.6, (position.data.y - playerPosition.data.y) * scale / 2.8)

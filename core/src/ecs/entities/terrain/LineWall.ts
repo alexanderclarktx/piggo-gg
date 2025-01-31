@@ -46,12 +46,15 @@ export const LineWall = (
       renderable: Renderable({
         visible: visible ?? false,
         zIndex: 3,
-        dynamic: (g: Graphics) => {
+        dynamic: ({ container }) => {
           if (!wall.components.health) return
+
           const { health, maxHealth } = wall.components.health.data
           if (health <= 0) return
 
           const white = 255 * health / maxHealth
+
+          const g = container as Graphics
           g.tint = (white << 16) + (255 << 8) + 255
         },
         setContainer: async () => {
