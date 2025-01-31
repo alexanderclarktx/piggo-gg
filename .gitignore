@@ -1,9 +1,16 @@
+todo.md
+
+# dependencies
 node_modules
-dist
-.DS_STORE
+
+# generated files
+dist/
 out/
 generated/
+
+# bun
 bun.lockb
-todo.md
+
+# misc
+.DS_STORE
 .vscode
-migration_lock.toml
