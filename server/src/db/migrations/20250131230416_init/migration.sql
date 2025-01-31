@@ -5,7 +5,7 @@ CREATE TYPE "FriendshipStatus" AS ENUM ('PENDING', 'ACCEPTED', 'BLOCKED');
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "walletAddress" TEXT NOT NULL,
+    "walletAddress" TEXT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
