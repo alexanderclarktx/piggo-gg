@@ -5,3 +5,4 @@ out/
 bun.lockb
 todo.md
 .vscode
+migration_lock.toml
