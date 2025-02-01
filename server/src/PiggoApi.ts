@@ -13,7 +13,9 @@ export type PiggoApi = {
   clientIncr: number
   clients: Record<string, ServerWebSocket<PerClientData>>
   worlds: Record<string, WorldManager>
-  handlers: { [R in RequestTypes["route"]]: (ws: ServerWebSocket<PerClientData>, msg: ExtractedRequestTypes<R>) => Promise<ExtractedRequestTypes<R>['response']> }
+  handlers: {
+    [R in RequestTypes["route"]]: (ws: ServerWebSocket<PerClientData>, msg: ExtractedRequestTypes<R>) => Promise<ExtractedRequestTypes<R>['response']>
+  }
   init: () => PiggoApi
   handleClose: (ws: ServerWebSocket<PerClientData>) => void
   handleOpen: (ws: ServerWebSocket<PerClientData>) => void

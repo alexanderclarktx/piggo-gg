@@ -1,15 +1,46 @@
 import { InvokedAction, SerializedEntity, World, genHash } from "@piggo-gg/core"
 
+// netcode
+
 export type Syncer = {
   handleMessage: (world: World, gameData: GameData) => void
   writeMessage: (world: World) => GameData
 }
 
+export type NetMessageTypes = GameData | RequestData | ResponseData
+
+export type GameData = {
+  type: "game"
+  actions: Record<string, InvokedAction[]>
+  chats: Record<string, string[]>
+  game: string
+  latency?: number
+  player: string
+  serializedEntities: Record<string, SerializedEntity>
+  tick: number
+  timestamp: number
+}
+
+export type RollbackTickData = {
+  type: "game"
+
+  actions: Record<number, Record<string, InvokedAction[]>>
+
+  chats: Record<number, Record<string, string[]>>
+  latency?: number
+  player: string
+  serializedEntities: Record<string, SerializedEntity>
+  tick: number
+  timestamp: number
+}
+
+// request/response
+
 export type Request<Route extends string, Response extends {} = {}> = {
   type: "request"
   id: string
   route: Route
-  response: Response & { id: string, error?: string }
+  response: { id: string, error?: string } & Response
 }
 
 export type LobbyList = Request<"lobby/list">
@@ -41,30 +72,3 @@ export type ResponseData = {
 
 export type RequestTypes = LobbyList | LobbyCreate | LobbyJoin | LobbyExit
 export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
-
-export type NetMessageTypes = GameData | RequestData | ResponseData
-
-export type GameData = {
-  type: "game"
-  actions: Record<string, InvokedAction[]>
-  chats: Record<string, string[]>
-  game: string
-  latency?: number
-  player: string
-  serializedEntities: Record<string, SerializedEntity>
-  tick: number
-  timestamp: number
-}
-
-export type RollbackTickData = {
-  type: "game"
-
-  actions: Record<number, Record<string, InvokedAction[]>>
-
-  chats: Record<number, Record<string, string[]>>
-  latency?: number
-  player: string
-  serializedEntities: Record<string, SerializedEntity>
-  tick: number
-  timestamp: number
-}
