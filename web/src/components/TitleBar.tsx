@@ -1,8 +1,8 @@
-import { WsNetConnector, WsNetConnectorProps } from "@piggo-gg/web"
+import { Login, LoginProps } from "@piggo-gg/web"
 import { FaDiscord, FaGithub } from "react-icons/fa"
 import React from "react"
 
-export type TitleBarProps = WsNetConnectorProps & {}
+export type TitleBarProps = LoginProps & {}
 
 export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
   <div style={{
@@ -15,7 +15,7 @@ export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
     marginBottom: 5
   }}>
     <div style={{ position: 'absolute', left: 0, bottom: 0 }}>
-      <WsNetConnector netState={netState} setNetState={setNetState} world={world} />
+      <Login netState={netState} setNetState={setNetState} world={world} />
     </div>
     <h1 style={{ textAlign: "center", fontFamily: "Courier New", fontSize: 38, margin: "0 10px" }}>
       Piggo

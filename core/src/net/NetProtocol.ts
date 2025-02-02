@@ -34,7 +34,7 @@ export type RollbackTickData = {
   timestamp: number
 }
 
-// request/response
+// API
 
 export type Request<Route extends string, Response extends {} = {}> = {
   type: "request"
@@ -43,6 +43,21 @@ export type Request<Route extends string, Response extends {} = {}> = {
   response: { id: string, error?: string } & Response
 }
 
+export type RequestTypes =
+  LobbyList | LobbyCreate | LobbyJoin | LobbyExit |
+  FriendsList | FriendsAdd | FriendsRemove
+export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
+
+export type RequestData = {
+  type: "request"
+  request: Omit<RequestTypes, "response">
+}
+export type ResponseData = {
+  type: "response"
+  response: RequestTypes["response"]
+}
+
+// lobby endpoints
 export type LobbyList = Request<"lobby/list">
 export type LobbyCreate = Request<"lobby/create", { lobbyId: string }>
 export type LobbyJoin = Request<"lobby/join"> & { join: string }
@@ -61,14 +76,8 @@ export const LobbyCreateRequest = (): LobbyCreateRequest => ({
   type: "request", id: genHash(), route: "lobby/create"
 })
 
-export type RequestData = {
-  type: "request"
-  request: Omit<RequestTypes, "response">
-}
-export type ResponseData = {
-  type: "response"
-  response: RequestTypes["response"]
-}
-
-export type RequestTypes = LobbyList | LobbyCreate | LobbyJoin | LobbyExit
-export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
+// friends endpoints
+export type FriendsList = Request<"friends/list">
+export type FriendsAdd = Request<"friends/add"> & { addUserId: string }
+export type FriendsRemove = Request<"friends/remove"> & { removeUserId: string }
+// todo sign in?

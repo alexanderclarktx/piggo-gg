@@ -56,6 +56,15 @@ export const PiggoApi = (): PiggoApi => {
       "lobby/exit": async (ws, msg) => {
         return { id: msg.id }
       },
+      "friends/list": async (ws, msg) => {
+        return { id: msg.id }
+      },
+      "friends/add": async (ws, msg) => {
+        return { id: msg.id }
+      },
+      "friends/remove": async (ws, msg) => {
+        return { id: msg.id }
+      }
     },
     init: () => {
       piggoApi.bun = Bun.serve({
