@@ -43,6 +43,8 @@ export const PiggoApi = (): PiggoApi => {
         // set world id for this client
         ws.data.worldId = lobbyId
 
+        console.log(`lobby created: ${lobbyId} msg ${msg}`)
+
         return { id: msg.id, lobbyId }
       },
       "lobby/join": async (ws, msg) => {
@@ -63,6 +65,10 @@ export const PiggoApi = (): PiggoApi => {
         return { id: msg.id }
       },
       "friends/remove": async (ws, msg) => {
+        return { id: msg.id }
+      },
+      "auth/login": async (ws, msg) => {
+        console.log("auth/login", msg)
         return { id: msg.id }
       }
     },
@@ -101,13 +107,13 @@ export const PiggoApi = (): PiggoApi => {
       if (!wsData.type) return
 
       if (wsData.type === "request") {
-        const handler = piggoApi.handlers[wsData.request.route]
+        const handler = piggoApi.handlers[wsData.data.route]
 
         if (handler) {
           // @ts-expect-error
-          const result = handler(ws, wsData.request)
+          const result = handler(ws, wsData.data) // TODO fix type casting
           result.then((data) => {
-            const responseData: ResponseData = { type: "response", response: data }
+            const responseData: ResponseData = { type: "response", data }
             ws.send(stringify(responseData))
           })
         }

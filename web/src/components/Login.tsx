@@ -18,7 +18,7 @@ export type LoginProps = {
 export const Login = ({ world, setNetState, netState }: LoginProps) => {
 
   setInterval(() => {
-    world?.isConnected ? setNetState("connected") : setNetState("disconnected")
+    world?.client?.connected ? setNetState("connected") : setNetState("disconnected")
   }, 200)
 
   const onClick = async () => {

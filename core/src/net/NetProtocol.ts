@@ -1,4 +1,4 @@
-import { InvokedAction, SerializedEntity, World, genHash } from "@piggo-gg/core"
+import { InvokedAction, SerializedEntity, World } from "@piggo-gg/core"
 
 // netcode
 
@@ -23,9 +23,7 @@ export type GameData = {
 
 export type RollbackTickData = {
   type: "game"
-
   actions: Record<number, Record<string, InvokedAction[]>>
-
   chats: Record<number, Record<string, string[]>>
   latency?: number
   player: string
@@ -45,16 +43,19 @@ export type Request<Route extends string, Response extends {} = {}> = {
 
 export type RequestTypes =
   LobbyList | LobbyCreate | LobbyJoin | LobbyExit |
-  FriendsList | FriendsAdd | FriendsRemove
+  FriendsList | FriendsAdd | FriendsRemove |
+  AuthLogin
+
 export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
 
 export type RequestData = {
   type: "request"
-  request: Omit<RequestTypes, "response">
+  data: Omit<RequestTypes, "response">
 }
+
 export type ResponseData = {
   type: "response"
-  response: RequestTypes["response"]
+  data: RequestTypes["response"]
 }
 
 // lobby endpoints
@@ -68,16 +69,10 @@ export type LobbyCreateRequest = Omit<LobbyCreate, "response">
 export type LobbyJoinRequest = Omit<LobbyJoin, "response">
 export type LobbyExitRequest = Omit<LobbyExit, "response">
 
-export const LobbyJoinRequest = (join: string): LobbyJoinRequest => ({
-  type: "request", id: genHash(), route: "lobby/join", join
-})
-
-export const LobbyCreateRequest = (): LobbyCreateRequest => ({
-  type: "request", id: genHash(), route: "lobby/create"
-})
-
 // friends endpoints
 export type FriendsList = Request<"friends/list">
 export type FriendsAdd = Request<"friends/add"> & { addUserId: string }
 export type FriendsRemove = Request<"friends/remove"> & { removeUserId: string }
-// todo sign in?
+
+// auth endpoints
+export type AuthLogin = Request<"auth/login"> & { address: string, message: string, signature: string }
