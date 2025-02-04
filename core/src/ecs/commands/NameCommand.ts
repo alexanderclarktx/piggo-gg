@@ -6,7 +6,7 @@ type NameCommandAction = InvokedAction<"name", NameCommandParams>
 export const NameCommand: Command<NameCommandParams> = {
   id: "name",
   regex: /\/name (\w+)/,
-  prepare: ({ params }) => ({ actionId: "name" }),
+  prepare: () => ({ actionId: "name" }),
   parse: ({ match, world }): NameCommandAction | undefined => {
     if (!world.client) return undefined
     return {

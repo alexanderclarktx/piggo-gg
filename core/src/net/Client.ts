@@ -24,6 +24,7 @@ export type Client = {
   token: string | undefined
   ws: WebSocket
   playerId: () => string
+  playerName: () => string
   playerCharacter: () => Character | undefined
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
@@ -62,6 +63,9 @@ export const Client = ({ world }: ClientProps): Client => {
     playerId: () => {
       return client.player.id
     },
+    playerName: () => {
+      return client.player.components.pc.data.name
+    },
     playerCharacter: () => {
       return client.player.components.controlling.getControlledEntity(world)
     },
@@ -93,6 +97,7 @@ export const Client = ({ world }: ClientProps): Client => {
         if ("error" in response) {
           console.error("Client: failed to login", response.error)
         } else {
+          client.player.components.pc.data.name = response.name
           client.token = response.token
         }
       })

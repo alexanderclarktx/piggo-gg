@@ -61,6 +61,12 @@ const Profile = (): Entity => {
       position: Position({ x: 10, y: -180, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
+        dynamic: ({world}) => {
+          const name = world.client?.playerName()
+          if (name && title.text !== name) {
+            title.text = name
+          }
+        },
         setup: async (r) => {
           drawOutline()
           r.c.addChild(outline, title)

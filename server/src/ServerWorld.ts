@@ -5,7 +5,7 @@ import { ServerWebSocket } from "bun"
 
 export type WS = ServerWebSocket<PerClientData>
 
-export type WorldManager = {
+export type ServerWorld = {
   world: World
   clients: Record<string, WS>
   getNumClients: () => number
@@ -13,11 +13,11 @@ export type WorldManager = {
   handleClose: (ws: WS) => void
 }
 
-export type WorldManagerProps = {
+export type ServerWorldProps = {
   clients?: Record<string, WS>
 }
 
-export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldManager => {
+export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorld => {
 
   const world = DefaultWorld({ runtimeMode: "server", games })
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {}

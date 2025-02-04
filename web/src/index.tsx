@@ -6,7 +6,7 @@ export default function App() {
     <div className="App">
       <Root/>
     </div>
-  );
+  )
 }
 
 const domContainer = document.querySelector("#root")
