@@ -1,7 +1,7 @@
 import {
   Character, DelaySyncer, LobbyCreate, LobbyJoin, NetClientSystem,
   NetMessageTypes, Noob, stringify, RequestData, RequestTypes,
-  Syncer, World, genPlayerId, SoundManager, genHash
+  Syncer, World, genPlayerId, SoundManager, genHash, AuthLogin
 } from "@piggo-gg/core"
 
 const servers = {
@@ -14,18 +14,20 @@ const env = location.hostname === "localhost" ? "dev" : "production"
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
 
 export type Client = {
-  playerEntity: Noob
-  ms: number
-  ws: WebSocket
   connected: boolean
-  lobbyId: string | undefined
   lastLatency: number
   lastMessageTick: number
+  lobbyId: string | undefined
+  ms: number
+  player: Noob
   soundManager: SoundManager
+  token: string | undefined
+  ws: WebSocket
   playerId: () => string
   playerCharacter: () => Character | undefined
-  createLobby: (callback: Callback<LobbyCreate>) => void
-  joinLobby: (lobbyId: string, callback: Callback<LobbyJoin>) => void
+  lobbyCreate: (callback: Callback<LobbyCreate>) => void
+  lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
+  authLogin: (address: string, message: string, signature: string) => void
 }
 
 export type ClientProps = {
@@ -48,35 +50,50 @@ export const Client = ({ world }: ClientProps): Client => {
   }
 
   const client: Client = {
-    ws: new WebSocket(servers[env]),
     connected: false,
-    playerEntity: noob,
-    ms: 0,
     lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
+    ms: 0,
+    player: noob,
     soundManager: SoundManager(world),
+    token: undefined,
+    ws: new WebSocket(servers[env]),
     playerId: () => {
-      return client.playerEntity.id
+      return client.player.id
     },
     playerCharacter: () => {
-      return client.playerEntity.components.controlling.getControlledEntity(world)
+      return client.player.components.controlling.getControlledEntity(world)
     },
-    createLobby: (callback) => {
+    lobbyCreate: (callback) => {
       request<LobbyCreate>({ route: "lobby/create", type: "request", id: genHash() }, (response) => {
-        client.lobbyId = response.lobbyId
+        if ("error" in response) {
+          console.error("Client: failed to create lobby", response.error)
+        } else {
+          client.lobbyId = response.lobbyId
+          world.addSystemBuilders([NetClientSystem(syncer)])
+        }
         callback(response)
-        world.addSystemBuilders([NetClientSystem(syncer)])
       })
     },
-    joinLobby: (lobbyId, callback) => {
+    lobbyJoin: (lobbyId, callback) => {
       request<LobbyJoin>({ route: "lobby/join", type: "request", id: genHash(), join: lobbyId }, (response) => {
-        if (response.error) {
+        if ("error" in response) {
           console.error("Client: failed to join lobby", response.error)
         } else {
           client.lobbyId = lobbyId
           callback(response)
           world.addSystemBuilders([NetClientSystem(syncer)])
+        }
+      })
+    },
+    authLogin: (address: string, message: string, signature: string) => {
+      request<AuthLogin>({ route: "auth/login", type: "request", id: genHash(), message, signature, address }, (response) => {
+        console.log("authLogin response", response)
+        if ("error" in response) {
+          console.error("Client: failed to login", response.error)
+        } else {
+          client.token = response.token
         }
       })
     }
@@ -113,7 +130,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
     // const joinString: string = new URLSearchParams(window.location.search).get("join") ?? "hub"
     const joinString: string | null = new URLSearchParams(window.location.search).get("join")
-    if (joinString) client.joinLobby(joinString, () => { })
+    if (joinString) client.lobbyJoin(joinString, () => { })
   }
 
   client.ws.onclose = () => {

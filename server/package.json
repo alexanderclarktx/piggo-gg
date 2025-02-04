@@ -3,7 +3,7 @@
   "main": "./main.ts",
   "scripts": {
     "start": "bun prisma:deploy && bun src/PiggoApi.ts",
-    "dev": "bun --watch src/PiggoApi.ts",
+    "dev": "DATABASE_URL='postgresql://postgres@localhost:5432/piggo' bun --watch src/PiggoApi.ts",
     "prisma:generate": "bun x prisma generate --schema=src/db/schema.prisma",
     "prisma:local": "DATABASE_URL='postgresql://postgres@localhost:5432/piggo' bun x prisma migrate dev --schema=src/db/schema.prisma",
     "prisma:deploy": "bun x prisma migrate deploy --schema=src/db/schema.prisma"
@@ -12,10 +12,12 @@
     "@happy-dom/global-registrator": "14.7.1",
     "@piggo-gg/games": "1.0.0",
     "@prisma/client": "6.3.0",
-    "ethers": "^6.13.5"
+    "ethers": "^6.13.5",
+    "jsonwebtoken": "9.0.2"
   },
   "devDependencies": {
-    "bun-types": "latest",
+    "@types/jsonwebtoken": "^9.0.8",
+    "bun-types": "1.2.2",
     "prisma": "6.3.0"
   }
 }

@@ -31,7 +31,9 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
             navigator.clipboard.writeText(url)
             toast.success(`Copied Invite URL`)
           } else {
-            world.client.createLobby((response) => {
+            world.client.lobbyCreate((response) => {
+              if ("error" in response) return
+
               url = `https://piggo.gg/?join=${response.lobbyId}`
               navigator.clipboard.writeText(url)
               toast.success(`Copied Invite URL`)

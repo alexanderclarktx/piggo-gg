@@ -38,7 +38,7 @@ export type Request<Route extends string, Response extends {} = {}> = {
   type: "request"
   id: string
   route: Route
-  response: { id: string, error?: string } & Response
+  response: { id: string, error: string } | { id: string } & Response
 }
 
 export type RequestTypes =
@@ -75,4 +75,6 @@ export type FriendsAdd = Request<"friends/add"> & { addUserId: string }
 export type FriendsRemove = Request<"friends/remove"> & { removeUserId: string }
 
 // auth endpoints
-export type AuthLogin = Request<"auth/login"> & { address: string, message: string, signature: string }
+export type AuthLogin = Request<"auth/login", { token: string, name: string }> & {
+  address: string, message: string, signature: string
+}

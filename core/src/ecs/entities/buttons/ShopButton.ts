@@ -8,7 +8,7 @@ export const ShopButton = (pos: PositionProps = { x: -55, y: 5, screenFixed: tru
     actions: Actions({
       click: ({ world }) => {
         world.actionBuffer.push(world.tick + 1, "shop",
-          { actionId: "toggleVisible", playerId: world.client?.playerEntity.id }
+          { actionId: "toggleVisible", playerId: world.client?.player.id }
         )
       }
     }),

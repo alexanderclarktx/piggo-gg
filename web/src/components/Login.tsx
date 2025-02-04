@@ -44,6 +44,8 @@ export const Login = ({ world, setNetState, netState }: LoginProps) => {
     console.log(`address: ${address} signature: ${signature}`)
 
     // Send to backend for verification
+    world?.client?.authLogin(address, message, signature)
+
     // const response = await fetch("/api/auth", {
     //   method: "POST",
     //   headers: { "Content-Type": "application/json" },

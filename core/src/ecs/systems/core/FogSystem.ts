@@ -19,8 +19,8 @@ export const FogSystem: SystemBuilder<"FogSystem"> = {
         const floorTilesArray = entities["floorTilesArray"]
         if (!floorTilesArray) return
 
-        const { playerEntity } = client
-        const character = playerEntity.components.controlling.getControlledEntity(world)
+        const { player } = client
+        const character = player.components.controlling.getControlledEntity(world)
         if (!character) return
 
         const { x, y } = isometricToWorld(character.components.position.data)
