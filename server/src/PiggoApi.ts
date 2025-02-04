@@ -1,6 +1,8 @@
 import { ExtractedRequestTypes, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
-import { WorldManager } from "@piggo-gg/server"
+import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
+import { ethers } from "ethers"
+import jwt from "jsonwebtoken"
 
 export type PerClientData = {
   id: number
@@ -12,48 +14,100 @@ export type PiggoApi = {
   bun: Server | undefined
   clientIncr: number
   clients: Record<string, ServerWebSocket<PerClientData>>
-  worlds: Record<string, WorldManager>
-  handlers: { [R in RequestTypes["route"]]: (ws: ServerWebSocket<PerClientData>, msg: ExtractedRequestTypes<R>) => Promise<ExtractedRequestTypes<R>['response']> }
+  worlds: Record<string, ServerWorld>
+  handlers: {
+    [R in RequestTypes["route"]]: (_: { ws: ServerWebSocket<PerClientData>, data: ExtractedRequestTypes<R> }) =>
+      Promise<ExtractedRequestTypes<R>['response']>
+  }
   init: () => PiggoApi
   handleClose: (ws: ServerWebSocket<PerClientData>) => void
   handleOpen: (ws: ServerWebSocket<PerClientData>) => void
-  handleMessage: (ws: ServerWebSocket<PerClientData>, msg: string) => void
+  handleMessage: (ws: ServerWebSocket<PerClientData>, data: string) => void
 }
 
 export const PiggoApi = (): PiggoApi => {
+
+  const prisma = new PrismaClient()
+
+  const JWT_SECRET = process.env["JWT_SECRET"] ?? "piggo"
+
   const piggoApi: PiggoApi = {
     bun: undefined,
     clientIncr: 1,
     clients: {},
     worlds: {
-      "hub": WorldManager(),
+      "hub": ServerWorld(),
     },
     handlers: {
-      "lobby/list": async (ws, msg) => {
-        return { id: msg.id }
+      "lobby/list": async ({ data }) => {
+        return { id: data.id }
       },
-      "lobby/create": async (ws, msg) => {
+      "lobby/create": async ({ ws, data }) => {
         const lobbyId = genHash()
 
         // create world
-        piggoApi.worlds[lobbyId] = WorldManager()
+        piggoApi.worlds[lobbyId] = ServerWorld()
 
         // set world id for this client
         ws.data.worldId = lobbyId
 
-        return { id: msg.id, lobbyId }
+        console.log(`lobby created: ${lobbyId}`)
+
+        return { id: data.id, lobbyId }
       },
-      "lobby/join": async (ws, msg) => {
-        if (!piggoApi.worlds[msg.join]) {
-          piggoApi.worlds[msg.join] = WorldManager()
+      "lobby/join": async ({ ws, data }) => {
+        if (!piggoApi.worlds[data.join]) {
+          piggoApi.worlds[data.join] = ServerWorld()
         }
 
-        ws.data.worldId = msg.join
-        return { id: msg.id }
+        ws.data.worldId = data.join
+        return { id: data.id }
       },
-      "lobby/exit": async (ws, msg) => {
-        return { id: msg.id }
+      "lobby/exit": async ({ data }) => {
+        return { id: data.id }
       },
+      "friends/list": async ({ data }) => {
+        return { id: data.id }
+      },
+      "friends/add": async ({ data }) => {
+        return { id: data.id }
+      },
+      "friends/remove": async ({ data }) => {
+        return { id: data.id }
+      },
+      "auth/login": async ({ data }) => {
+
+        // 1. verify signature
+        const recoveredAddress = ethers.verifyMessage(data.message, data.signature)
+        const verified = recoveredAddress.toLowerCase() === data.address.toLowerCase()
+
+        if (!verified) {
+          console.error("Signature verification failed")
+          return { id: data.id, error: "Signature verification failed" }
+        }
+
+        // 2. login or create account
+        let user = undefined
+        user = await prisma.users.findUnique({ where: { walletAddress: data.address } })
+        if (!user) {
+          user = await prisma.users.create({
+            data: {
+              name: data.address,
+              walletAddress: data.address
+            }
+          })
+          console.log(`User Created: ${data.address}`)
+        } else {
+          console.log(`User Found: ${data.address}`)
+        }
+
+        if (!user) return { id: data.id, error: "User not found" }
+
+        // 3. create session token
+        const token = jwt.sign({ address: user.name, name: user.name }, JWT_SECRET, { expiresIn: "8h" })
+
+        return { id: data.id, token, name: user.name }
+      }
     },
     init: () => {
       piggoApi.bun = Bun.serve({
@@ -83,20 +137,23 @@ export const PiggoApi = (): PiggoApi => {
       // increment id
       piggoApi.clientIncr += 1
     },
-    handleMessage: (ws: ServerWebSocket<PerClientData>, msg: string) => {
-      if (typeof msg != "string") return
+    handleMessage: (ws: ServerWebSocket<PerClientData>, data: string) => {
+      if (typeof data != "string") return
 
-      const wsData = JSON.parse(msg) as NetMessageTypes
+      const wsData = JSON.parse(data) as NetMessageTypes
       if (!wsData.type) return
 
       if (wsData.type === "request") {
-        const handler = piggoApi.handlers[wsData.request.route]
+        const handler = piggoApi.handlers[wsData.data.route]
 
         if (handler) {
+          console.log("request", wsData.data)
+
           // @ts-expect-error
-          const result = handler(ws, wsData.request)
+          const result = handler({ ws, data: wsData.data }) // TODO fix type casting
           result.then((data) => {
-            const responseData: ResponseData = { type: "response", response: data }
+            console.log("response", data)
+            const responseData: ResponseData = { type: "response", data }
             ws.send(stringify(responseData))
           })
         }
@@ -109,6 +166,7 @@ export const PiggoApi = (): PiggoApi => {
   }
 
   setInterval(() => {
+    // cleanup empty worlds
     entries(piggoApi.worlds).forEach(([id, world]) => {
       if (keys(world.clients).length === 0) delete piggoApi.worlds[id]
     })

@@ -1,6 +1,6 @@
 import { DefaultWorld, isMobile, Renderer, World } from "@piggo-gg/core"
 import { games } from "@piggo-gg/games"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 
 export type CanvasProps = {
   setWorld: (_: World) => void

@@ -1,7 +1,16 @@
-node_modules
-dist
-.DS_STORE
-out/
-bun.lockb
 todo.md
+
+# dependencies
+node_modules
+
+# generated files
+dist/
+out/
+generated/
+
+# bun
+bun.lockb
+
+# misc
+.DS_STORE
 .vscode

@@ -1,0 +1,36 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "generated"
+  previewFeatures = ["views", "relationJoins"]
+}
+
+model users {
+  id                     String    @id @default(uuid())
+  name                   String    @unique
+  walletAddress          String    @unique
+  sentFriendRequests     friends[] @relation("Friendship1")
+  receivedFriendRequests friends[] @relation("Friendship2")
+}
+
+model friends {
+  id        String           @id @default(uuid())
+  user1     users            @relation("Friendship1", fields: [user1Id], references: [id])
+  user1Id   String
+  user2     users            @relation("Friendship2", fields: [user2Id], references: [id])
+  user2Id   String
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+
+  @@unique([user1Id, user2Id])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}

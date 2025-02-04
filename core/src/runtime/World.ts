@@ -14,7 +14,6 @@ export type World = {
   entities: Record<string, Entity>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   games: Record<string, GameBuilder>
-  isConnected: boolean
   lastTick: DOMHighResTimeStamp
   renderer: Renderer | undefined
   runtimeMode: "client" | "server"
@@ -72,7 +71,6 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     entities: {},
     entitiesAtTick: {},
     games: {},
-    isConnected: false,
     lastTick: 0,
     renderer,
     runtimeMode: runtimeMode ?? "client",

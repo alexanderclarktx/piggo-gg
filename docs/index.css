@@ -10,6 +10,7 @@ html {
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
+  color: white;
 }
 
 body, html {
@@ -17,19 +18,6 @@ body, html {
   margin: 0;
   padding: 0;
   overflow: visible;
-}
-
-h1 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: white;
-}
-
-p {
-  color: white;
-}
-
-button {
-  margin: 5px;
 }
 
 canvas {

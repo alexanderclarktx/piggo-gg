@@ -154,9 +154,9 @@ export const RenderSystem = ClientSystemBuilder({
         })
 
         // center camera on player's controlled entity
-        const playerEntity = world.client?.playerEntity
-        if (playerEntity) {
-          const character = playerEntity.components.controlling.getControlledEntity(world)
+        const player = world.client?.player
+        if (player) {
+          const character = player.components.controlling.getControlledEntity(world)
           if (character) centeredEntity = character
         }
 
