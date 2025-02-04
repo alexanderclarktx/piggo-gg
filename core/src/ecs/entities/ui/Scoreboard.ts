@@ -88,7 +88,7 @@ const playerRow = (entity: Player, width: number, world: World): Container => {
   })
 
   const moneyText = pixiText({
-    text: `$${entity.components.money?.data.balance}`,
+    text: `$${entity.components.money?.data.balance ?? 0}`,
     style: { fill: 0xffffff, fontSize: 24 },
     pos: { x: width / 1.2, y: 10 },
     anchor: { x: 1, y: 0 }
