@@ -1,5 +1,5 @@
-import { Root } from "./components/Root";
-import { createRoot } from "react-dom/client";
+import { Root } from "./components/Root"
+import { createRoot } from "react-dom/client"
 
 export default function App() {
   return (
@@ -9,6 +9,6 @@ export default function App() {
   );
 }
 
-const domContainer = document.querySelector("#root");
-const root = createRoot(domContainer!);
+const domContainer = document.querySelector("#root")
+const root = createRoot(domContainer!)
 root.render(<App />)

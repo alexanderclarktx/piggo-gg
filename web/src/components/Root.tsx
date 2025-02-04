@@ -1,7 +1,9 @@
 import { World, isMobile } from "@piggo-gg/core"
-import { Canvas, TitleBar, NetState } from "@piggo-gg/web"
+import { Canvas, TitleBar } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
+
+export type NetState = "disconnected" | "offering" | "answering" | "connected"
 
 export const Root = () => {
 
