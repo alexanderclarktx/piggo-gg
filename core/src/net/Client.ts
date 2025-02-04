@@ -39,8 +39,8 @@ export const Client = ({ world }: ClientProps): Client => {
   let syncer: Syncer = DelaySyncer
   let requestBuffer: Record<string, Callback> = {}
 
-  const noob = Player({ id: genPlayerId() })
-  world.addEntity(noob)
+  const player = Player({ id: genPlayerId() })
+  world.addEntity(player)
 
   const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {
     const requestData: RequestData = { type: "request", data }
@@ -55,7 +55,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lastMessageTick: 0,
     lobbyId: undefined,
     ms: 0,
-    player: noob,
+    player,
     soundManager: SoundManager(world),
     token: undefined,
     ws: new WebSocket(servers[env]),
