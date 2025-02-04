@@ -1,6 +1,6 @@
-import { Character, Controlling, Noob, SystemBuilder } from "@piggo-gg/core"
+import { Character, Controlling, Player, SystemBuilder } from "@piggo-gg/core"
 
-type CharacterSpawner = (player: Noob) => Character
+type CharacterSpawner = (player: Player) => Character
 
 // spawn characters for players
 export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSystem"> => ({
@@ -11,8 +11,8 @@ export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSyst
 
     return {
       id: "SpawnSystem",
-      query: ["player"],
-      onTick: (players: Noob[]) => {
+      query: ["pc"],
+      onTick: (players: Player[]) => {
 
         // cleanup
         spawnedPlayers.forEach((playerId) => {

@@ -1,6 +1,6 @@
 import {
   Character, DelaySyncer, LobbyCreate, LobbyJoin, NetClientSystem,
-  NetMessageTypes, Noob, stringify, RequestData, RequestTypes,
+  NetMessageTypes, Player, stringify, RequestData, RequestTypes,
   Syncer, World, genPlayerId, SoundManager, genHash, AuthLogin
 } from "@piggo-gg/core"
 
@@ -19,7 +19,7 @@ export type Client = {
   lastMessageTick: number
   lobbyId: string | undefined
   ms: number
-  player: Noob
+  player: Player
   soundManager: SoundManager
   token: string | undefined
   ws: WebSocket
@@ -39,7 +39,7 @@ export const Client = ({ world }: ClientProps): Client => {
   let syncer: Syncer = DelaySyncer
   let requestBuffer: Record<string, Callback> = {}
 
-  const noob = Noob({ id: genPlayerId() })
+  const noob = Player({ id: genPlayerId() })
   world.addEntity(noob)
 
   const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {

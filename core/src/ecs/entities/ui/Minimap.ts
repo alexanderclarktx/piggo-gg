@@ -94,7 +94,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
           const playerPosition = playerCharacter.components.position
 
           // update player dots
-          world.queryEntities(["player"]).forEach((entity) => {
+          world.queryEntities(["pc"]).forEach((entity) => {
 
             if (!dots[entity.id]) {
               const color = (entity.id === world.client?.playerId()) ? 0x00ff00 : 0xff0000

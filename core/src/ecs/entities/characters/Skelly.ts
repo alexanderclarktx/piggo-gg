@@ -1,12 +1,12 @@
 import {
   Actions, Axe, Character, Collider, Deagle, Debug,
   DefaultJoystickHandler, dropItem, Effects, Element, Entity, Health, Input,
-  Inventory, Move, Networked, Noob, Pickaxe, Point, Position,
+  Inventory, Move, Networked, Player, Pickaxe, Point, Position,
   Renderable, Sword, WASDInputMap, XY, loadTexture, setActiveItemIndex
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export const Skelly = (player: Noob, color?: number, pos?: XY) => {
+export const Skelly = (player: Player, color?: number, pos?: XY) => {
   const skelly: Character = Entity({
     id: `skelly-${player.id}`,
     components: {

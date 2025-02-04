@@ -1,7 +1,7 @@
 import {
   Actions, Character, Clickable, Collider, Debug, DefaultDesktopUI, Effects, Element, Entity,
-  GameBuilder, Health, Input, isMobile, Jump, LineWall, loadTexture, max, Networked, Noob,
-  Player, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY
+  GameBuilder, Health, Input, isMobile, Jump, LineWall, loadTexture, max, Networked, Player,
+  PC, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -82,7 +82,7 @@ const PipeBottom = (x: number, h: number) => LineWall({
 const Floor = () => LineWall({ points: [-1000, 200, 10000, 200], sensor, visible: true })
 const Ceiling = () => LineWall({ points: [-1000, -200, 10000, -200], sensor, visible: true })
 
-export const FlappyCharacter = (player: Noob, color?: number, pos?: XY) => {
+export const FlappyCharacter = (player: Player, color?: number, pos?: XY) => {
   const flappy: Character = Entity({
     id: `flappy-${player.id}`,
     components: {
@@ -144,8 +144,8 @@ const FlappySystem: SystemBuilder<"FlappySystem"> = {
 
     return {
       id: "FlappySystem",
-      query: ["player"],
-      onTick: (players: Entity<Player>[]) => {
+      query: ["pc"],
+      onTick: (players: Entity<PC>[]) => {
         let pc = undefined
         for (const player of players) {
           const character = player.components.controlling?.getControlledEntity(world)

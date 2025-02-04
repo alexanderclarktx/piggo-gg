@@ -1,6 +1,6 @@
 import {
   Actions, Background, Character, Collider, Debug, DefaultUI, Effects, Element, Entity, GameBuilder, Health, Input,
-  JumpPlatform, LineWall, loadTexture, Move, Networked, Noob, Point, Position, Renderable, SpawnSystem, XY
+  JumpPlatform, LineWall, loadTexture, Move, Networked, Player, Point, Position, Renderable, SpawnSystem, XY
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -38,7 +38,7 @@ const Platform = (x: number, y: number) => {
   })
 }
 
-export const Animal = (player: Noob, color?: number, pos?: XY) => {
+export const Animal = (player: Player, color?: number, pos?: XY) => {
   const animal: Character = Entity({
     id: `animal-${player.id}`,
     components: {

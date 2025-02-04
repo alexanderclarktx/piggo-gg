@@ -1,4 +1,4 @@
-import { DefaultWorld, keys, NetMessageTypes, NetServerSystem, Noob, World } from "@piggo-gg/core"
+import { DefaultWorld, keys, NetMessageTypes, NetServerSystem, Player, World } from "@piggo-gg/core"
 import { games } from "@piggo-gg/games"
 import { PerClientData } from "@piggo-gg/server"
 import { ServerWebSocket } from "bun"
@@ -46,7 +46,7 @@ export const WorldManager = ({ clients = {} }: WorldManagerProps = {}): WorldMan
       if (!world.entities[msg.player]) {
         ws.data.playerName = msg.player
 
-        world.addEntity(Noob({ id: msg.player }))
+        world.addEntity(Player({ id: msg.player }))
 
         clients[msg.player] = ws
         latestClientMessages[msg.player] = []

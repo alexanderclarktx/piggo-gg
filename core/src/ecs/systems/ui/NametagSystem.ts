@@ -1,7 +1,7 @@
-import { ClientSystemBuilder, Entity, Noob, Position, Renderable, entries, pixiText } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, Player, Position, Renderable, entries, pixiText } from "@piggo-gg/core"
 
-const Nametag = (entity: Noob): Renderable => {
-  let name = entity.components.player.data.name
+const Nametag = (entity: Player): Renderable => {
+  let name = entity.components.pc.data.name
 
   const nametag = pixiText({
     text: name,
@@ -14,8 +14,8 @@ const Nametag = (entity: Noob): Renderable => {
     zIndex: 10,
     interpolate: true,
     dynamic: async () => {
-      if (entity.components.player.data.name !== name) {
-        name = entity.components.player.data.name
+      if (entity.components.pc.data.name !== name) {
+        name = entity.components.pc.data.name
         nametag.text = name
       }
     },
@@ -33,7 +33,7 @@ export const NametagSystem = ClientSystemBuilder({
 
     const characterNametags: Record<string, Entity<Renderable | Position>> = {}
 
-    const nametagForEntity = (player: Noob, character: Entity) => {
+    const nametagForEntity = (player: Player, character: Entity) => {
       const { position } = character.components
       if (!position) return
 
@@ -51,9 +51,9 @@ export const NametagSystem = ClientSystemBuilder({
 
     return {
       id: "NametagSystem",
-      query: ["player"],
+      query: ["pc"],
       skipOnRollback: true,
-      onTick: (entities: Noob[]) => {
+      onTick: (entities: Player[]) => {
 
         // handle old entities
         entries(characterNametags).forEach(([entityId, nametag]) => {

@@ -1,4 +1,4 @@
-import { Controlling, Noob, Skelly, SystemBuilder, TeamColors, TeamNumber, World, XY } from "@piggo-gg/core"
+import { Controlling, Player, Skelly, SystemBuilder, TeamColors, TeamNumber, World, XY } from "@piggo-gg/core"
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over"
 
@@ -18,8 +18,8 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
     return {
       id: "StrikeSystem",
-      query: ["player"],
-      onTick: (players: Noob[]) => {
+      query: ["pc"],
+      onTick: (players: Player[]) => {
 
         // despawn disconnected players
         spawnedPlayers.forEach((playerId) => {

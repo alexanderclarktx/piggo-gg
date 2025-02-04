@@ -1,9 +1,12 @@
-import { Actions, Entity, Input, Noob, Player, Position, Renderable, Team, TeamColors, ToggleHidden, ToggleVisible, World, clickableClickedThisFrame, pixiRect, pixiText, setsEqual } from "@piggo-gg/core"
+import {
+  Actions, Entity, Input, Player, Position, Renderable, TeamColors, ToggleHidden,
+  ToggleVisible, World, clickableClickedThisFrame, pixiRect, pixiText, setsEqual
+} from "@piggo-gg/core"
 import { ScrollBox } from "@pixi/ui"
 import { Container, Graphics } from "pixi.js"
 
 export const Scoreboard = (): Entity => {
-  let players: Set<{ name: string, entity: Noob }> = new Set()
+  let players: Set<{ name: string, entity: Player }> = new Set()
   let team1: ScrollBox
   let team2: ScrollBox
   let width: number
@@ -22,7 +25,7 @@ export const Scoreboard = (): Entity => {
         interactiveChildren: true,
         zIndex: 10,
         dynamic: ({ world }) => {
-          const currentPlayerEntities = world.queryEntities(["player"]) as Noob[]
+          const currentPlayerEntities = world.queryEntities(["pc"]) as Player[]
           const currentPlayers = new Set(currentPlayerEntities.map((p) => ({ name: p.id, entity: p })))
 
           // update player table
@@ -61,8 +64,8 @@ export const Scoreboard = (): Entity => {
   return scoreboard
 }
 
-const playerRow = (entity: Noob, width: number, world: World): Container => {
-  const { team, player } = entity.components
+const playerRow = (entity: Player, width: number, world: World): Container => {
+  const { team, pc } = entity.components
 
   const box = (g: Graphics): Graphics => {
     return g.clear().roundRect(2, 2, width - 4, 46, 0).fill({ color: team.data.team === 1 ? TeamColors[1] : TeamColors[2], alpha: 0.7 })
@@ -71,7 +74,7 @@ const playerRow = (entity: Noob, width: number, world: World): Container => {
   const c = new Container()
 
   const titleText = pixiText({
-    text: player.data.name,
+    text: pc.data.name,
     style: { fill: 0xffffff, fontSize: 24 },
     pos: { x: 20, y: 10 },
     anchor: { x: 0, y: 0 }
@@ -97,7 +100,7 @@ const playerRow = (entity: Noob, width: number, world: World): Container => {
 
   c.onpointerdown = () => {
     clickableClickedThisFrame.set(world.tick + 1)
-    world.actionBuffer.push(world.tick + 2, player.data.name, { actionId: "switchTeam", playerId: world.client?.playerId() })
+    world.actionBuffer.push(world.tick + 2, pc.data.name, { actionId: "switchTeam", playerId: world.client?.playerId() })
   }
 
   return c

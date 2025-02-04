@@ -17,7 +17,7 @@ export const NameCommand: Command<NameCommandParams> = {
   },
   invoke: ({ params, player }) => {
     if (!player) return undefined
-    player.components.player.data.name = params.newName
+    player.components.pc.data.name = params.newName
   },
   cooldown: 0
 }
