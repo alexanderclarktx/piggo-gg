@@ -10,7 +10,7 @@ export type ControllingProps = {
   entityId?: string
 }
 
-export const Controlling = (props: ControllingProps): Controlling => {
+export const Controlling = (props: ControllingProps = {}): Controlling => {
   const controlling: Controlling = {
     type: "controlling",
     data: {

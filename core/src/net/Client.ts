@@ -140,7 +140,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   client.ws.onclose = () => {
     // client.connected = false
-    console.error("Client: disconnected from server")
+    console.error("Client: disconnected from server") // TODO reconnect
   }
 
   return client

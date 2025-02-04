@@ -4,7 +4,7 @@ export type PlayerProps = {
   id: string
 }
 
-export type Player = Entity<PC | Controlling | Actions | Team | Money>
+export type Player = Entity<PC | Controlling | Actions | Team>
 
 export const Player = ({ id }: PlayerProps): Player => Entity({
   id: id,
@@ -12,9 +12,8 @@ export const Player = ({ id }: PlayerProps): Player => Entity({
   components: {
     networked: Networked(),
     pc: PC({ name: id }),
-    controlling: Controlling({ entityId: "" }),
+    controlling: Controlling(),
     actions: Actions({ switchTeam }),
-    team: Team(1),
-    money: Money(1000)
+    team: Team(1)
   }
 })
