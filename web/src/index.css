@@ -19,19 +19,6 @@ body, html {
   overflow: visible;
 }
 
-h1 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: white;
-}
-
-p {
-  color: white;
-}
-
-button {
-  margin: 5px;
-}
-
 canvas {
   margin: 0px;
   border-width: 2px;

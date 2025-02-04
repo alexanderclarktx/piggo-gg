@@ -1,6 +1,5 @@
 import { Login, LoginProps } from "@piggo-gg/web"
 import { FaDiscord, FaGithub } from "react-icons/fa"
-import React from "react"
 
 export type TitleBarProps = LoginProps & {}
 

@@ -1,6 +1,5 @@
 import { World } from "@piggo-gg/core"
 import { NetState } from "@piggo-gg/web"
-import React from "react"
 import { MetaMaskInpageProvider } from '@metamask/providers'
 
 declare global {
@@ -62,7 +61,13 @@ export const Login = ({ world, setNetState, netState }: LoginProps) => {
     <div style={{ "paddingTop": 0 }}>
       <div style={{ width: "100%" }}>
         <div style={{ float: "left", marginLeft: 0, paddingLeft: 0, marginTop: 1 }}>
-          <button disabled={!Boolean(provider)} style={{ fontSize: 12, marginLeft: 0 }} onClick={onClick}>Login with MetaMask</button>
+          {/* <Button disabled={!Boolean(provider)} onClick={onClick} size="sm" colorScheme="blue">Login</Button> */}
+          <button
+            disabled={!Boolean(provider)}
+            style={{ fontSize: 14, marginLeft: 0, marginRight: 5 }}
+            onClick={onClick}>
+            Login
+          </button>
           <span style={{ color: colors[netState], fontSize: 14, fontFamily: "sans-serif", paddingTop: 2 }}>{netState}</span>
         </div>
       </div>

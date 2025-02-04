@@ -1,6 +1,6 @@
 import { World, isMobile } from "@piggo-gg/core"
 import { Canvas, TitleBar, NetState } from "@piggo-gg/web"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
 
 export const Root = () => {
