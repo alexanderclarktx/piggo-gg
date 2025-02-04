@@ -6,6 +6,7 @@
     "dev": "bun x webpack serve --port 8000"
   },
   "dependencies": {
+    "@metamask/providers": "^20.0.0",
     "@piggo-gg/games": "1.0.0",
     "lz-string": "^1.5.0",
     "react": "^18.2.0",

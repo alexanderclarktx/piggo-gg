@@ -1,6 +1,13 @@
 import { World } from "@piggo-gg/core"
 import { NetState } from "@piggo-gg/web"
 import React from "react"
+import { MetaMaskInpageProvider } from '@metamask/providers'
+
+declare global {
+  interface Window {
+    ethereum?: MetaMaskInpageProvider
+  }
+}
 
 const colors: Record<NetState, string> = {
   "disconnected": "red",
@@ -18,49 +25,44 @@ export type LoginProps = {
 export const Login = ({ world, setNetState, netState }: LoginProps) => {
 
   setInterval(() => {
+    provider = window.ethereum
     world?.client?.connected ? setNetState("connected") : setNetState("disconnected")
   }, 200)
 
-  const onClick = async () => {
-    // if (world && world.client) world.client.joinLobby("hub", () => { })
+  let provider = window.ethereum
 
-    // @ts-expect-error
-    if (!window.ethereum) {
-      alert("MetaMask is not installed!")
+  const onClick = async () => {
+    if (!provider) return
+
+    // get first account in metamask
+    const accounts = await provider.request<string[]>({ method: "eth_requestAccounts" })
+    if (!accounts || accounts.length === 0 || !accounts[0]) {
+      alert("failed to find metamask wallet")
       return
     }
 
-    // @ts-expect-error
-    const provider = window.ethereum
-    const accounts = await provider.request({ method: "eth_requestAccounts" })
+    // sign message
     const address = accounts[0]
-
     const message = `Login to Piggo\n\nWallet: ${address}\n\nTimestamp: ${Date.now()}`
-    const signature = await provider.request({
+    const signature = await provider.request<string>({
       method: "personal_sign",
-      params: [message, address],
+      params: [message, address]
     })
 
-    console.log(`address: ${address} signature: ${signature}`)
+    if (!signature) {
+      alert("failed to sign message")
+      return
+    }
 
-    // Send to backend for verification
+    // login
     world?.client?.authLogin(address, message, signature)
-
-    // const response = await fetch("/api/auth", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ address, message, signature }),
-    // })
-
-    // const result = await response.json()
-    // console.log("Server response:", result)
   }
 
   return (
     <div style={{ "paddingTop": 0 }}>
       <div style={{ width: "100%" }}>
         <div style={{ float: "left", marginLeft: 0, paddingLeft: 0, marginTop: 1 }}>
-          <button style={{ fontSize: 12, marginLeft: 0 }} onClick={onClick}>Login</button>
+          <button disabled={!Boolean(provider)} style={{ fontSize: 12, marginLeft: 0 }} onClick={onClick}>Login with MetaMask</button>
           <span style={{ color: colors[netState], fontSize: 14, fontFamily: "sans-serif", paddingTop: 2 }}>{netState}</span>
         </div>
       </div>
