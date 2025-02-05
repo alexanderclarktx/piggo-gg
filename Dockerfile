@@ -13,4 +13,4 @@ add server server
 run bun install
 
 # run the server
-cmd [ "bun", "server" ]
+cmd [ "bun", "prod" ]
