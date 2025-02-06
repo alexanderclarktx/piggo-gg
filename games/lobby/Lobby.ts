@@ -1,7 +1,9 @@
 import {
   GameBuilder, DefaultUI, InviteStone, Entity,
-  Position, pixiText, Renderable, pixiGraphics, World
+  Position, pixiText, Renderable, pixiGraphics, World,
+  loadTexture
 } from "@piggo-gg/core"
+import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
   id: "lobby",
@@ -22,7 +24,7 @@ export const Lobby: GameBuilder = {
 }
 
 const GameLobby = (): Entity => {
-  const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 10, y: 10 }, anchor: { x: 0, y: 0 } })
+  const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 500, y: 10 }, anchor: { x: 0, y: 0 } })
 
   let height = 0
 
@@ -48,7 +50,8 @@ const GameLobby = (): Entity => {
 
 const Profile = (): Entity => {
   const outline = pixiGraphics()
-  const title = pixiText({ text: "Profile", style: { fontSize: 32 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
+
+  const playerName = pixiText({ text: "Profile", style: { fontSize: 32 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
 
   const drawOutline = () => {
     outline.clear()
@@ -58,18 +61,22 @@ const Profile = (): Entity => {
   const profile = Entity<Position | Renderable>({
     id: "profile",
     components: {
-      position: Position({ x: 10, y: -180, screenFixed: true }),
+      position: Position({ x: 10, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: ({world}) => {
+        dynamic: ({ world }) => {
           const name = world.client?.playerName()
-          if (name && title.text !== name) {
-            title.text = name
+          if (name && playerName.text !== name) {
+            playerName.text = name
           }
         },
         setup: async (r) => {
           drawOutline()
-          r.c.addChild(outline, title)
+
+          const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
+          const pfp = new Sprite({ texture, scale: 2, anchor: 0.5, position: { x: 100, y: 100 } })
+
+          r.c.addChild(outline, playerName, pfp)
         }
       })
     }
@@ -80,7 +87,7 @@ const Profile = (): Entity => {
 const Friends = (): Entity => {
 
   const outline = pixiGraphics()
-  const title = pixiText({ text: "Friends", style: { fontSize: 32 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
+  const title = pixiText({ text: "add friend", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
 
   let height = 0
 
@@ -92,7 +99,7 @@ const Friends = (): Entity => {
   const friends = Entity<Position | Renderable>({
     id: "friends",
     components: {
-      position: Position({ x: 10, y: 10, screenFixed: true }),
+      position: Position({ x: 10, y: 190, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         dynamic: ({ world }) => {
