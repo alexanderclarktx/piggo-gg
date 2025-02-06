@@ -1,7 +1,6 @@
 import {
-  GameBuilder, DefaultUI, InviteStone, Entity,
-  Position, pixiText, Renderable, pixiGraphics, World,
-  loadTexture
+  GameBuilder, DefaultUI, InviteStone, Entity, Position,
+  pixiText, Renderable, pixiGraphics, loadTexture
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
