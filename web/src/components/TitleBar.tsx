@@ -19,7 +19,7 @@ export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
     <h1 style={{ textAlign: "center", fontFamily: "Courier New", fontSize: 38, margin: "0 10px" }}>
       Piggo
     </h1>
-    <svg height="30" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
+    <svg height="30" viewBox="0 0 170 170" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <mask id="mask1">
           <rect width="200" height="200" fill="white" />

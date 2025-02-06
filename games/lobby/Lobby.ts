@@ -1,6 +1,6 @@
 import {
   GameBuilder, DefaultUI, InviteStone, Entity, Position,
-  pixiText, Renderable, pixiGraphics, loadTexture
+  pixiText, Renderable, pixiGraphics, loadTexture, colors
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
@@ -17,29 +17,39 @@ export const Lobby: GameBuilder = {
       Profile(),
       GameLobby(),
 
-      InviteStone({ pos: { x: 300, y: 50 }, tint: 0xddddff })
+      // InviteStone({ pos: { x: 300, y: 50 }, tint: 0xddddff })
     ]
   })
 }
 
 const GameLobby = (): Entity => {
-  const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 500, y: 10 }, anchor: { x: 0, y: 0 } })
+  const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 0, y: 10 }, anchor: { x: 0, y: 0 } })
 
   let height = 0
+  let width = 0
+
+  const outline = pixiGraphics()
+  const drawOutline = () => {
+    outline.clear()
+    outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
+  }
 
   const gameLobby = Entity<Position | Renderable>({
     id: "gameLobby",
     components: {
-      position: Position({ x: 10, y: 10, screenFixed: true }),
+      position: Position({ x: 220, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         dynamic: ({ world }) => {
-          if (height !== world.renderer!.app.screen.height) {
+          if (height !== world.renderer!.app.screen.height || width !== world.renderer!.app.screen.width) {
             height = world.renderer!.app.screen.height
+            width = world.renderer!.app.screen.width
+            drawOutline()
           }
         },
         setup: async (r) => {
-          r.c.addChild(title)
+          drawOutline()
+          r.c.addChild(title, outline)
         }
       })
     }
@@ -48,13 +58,13 @@ const GameLobby = (): Entity => {
 }
 
 const Profile = (): Entity => {
+
+  const playerName = pixiText({ text: "Profile", style: { fontSize: 32 }, pos: { x: 100, y: 120 }, anchor: { x: 0.5, y: 0 } })
+
   const outline = pixiGraphics()
-
-  const playerName = pixiText({ text: "Profile", style: { fontSize: 32 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
-
   const drawOutline = () => {
     outline.clear()
-    outline.rect(0, 0, 200, 170).stroke({ color: 0xffffff, alpha: 0.5, width: 2, miterLimit: 1 })
+    outline.roundRect(0, 0, 200, 170, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2 })
   }
 
   const profile = Entity<Position | Renderable>({
@@ -73,7 +83,7 @@ const Profile = (): Entity => {
           drawOutline()
 
           const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
-          const pfp = new Sprite({ texture, scale: 2, anchor: 0.5, position: { x: 100, y: 100 } })
+          const pfp = new Sprite({ texture, scale: 1.5, anchor: 0.5, position: { x: 100, y: 70 } })
 
           r.c.addChild(outline, playerName, pfp)
         }
@@ -85,14 +95,14 @@ const Profile = (): Entity => {
 
 const Friends = (): Entity => {
 
-  const outline = pixiGraphics()
   const title = pixiText({ text: "add friend", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
 
   let height = 0
 
+  const outline = pixiGraphics()
   const drawOutline = () => {
     outline.clear()
-    outline.rect(0, 0, 200, height - 200).stroke({ color: 0xffffff, alpha: 0.5, width: 2, miterLimit: 1 })
+    outline.roundRect(0, 0, 200, height - 200, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
   }
 
   const friends = Entity<Position | Renderable>({
