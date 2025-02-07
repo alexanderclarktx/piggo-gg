@@ -3,7 +3,7 @@ import { FaDiscord, FaGithub } from "react-icons/fa"
 
 export type TitleBarProps = LoginProps & {}
 
-export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
+export const TitleBar = ({ world, loginState, setLoginState }: TitleBarProps) => (
   <div style={{
     position: "relative",
     display: "flex",
@@ -14,12 +14,12 @@ export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
     marginBottom: 5
   }}>
     <div style={{ position: 'absolute', left: 0, bottom: 0 }}>
-      <Login netState={netState} setNetState={setNetState} world={world} />
+      <Login loginState={loginState} setLoginState={setLoginState} world={world} />
     </div>
     <h1 style={{ textAlign: "center", fontFamily: "Courier New", fontSize: 38, margin: "0 10px" }}>
       Piggo
     </h1>
-    <svg height="30" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
+    <svg height="30" viewBox="0 0 170 170" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <mask id="mask1">
           <rect width="200" height="200" fill="white" />
@@ -37,7 +37,7 @@ export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
 
     <div style={{ position: 'absolute', right: 0, bottom: 0 }}>
       <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
-        v<b>0.9.9</b>
+        v<b>0.10.1</b>
       </span>
       <a style={{ margin: 0, color: "inherit", textDecoration: "none" }} target="_blank" href="https://discord.gg/VfFG9XqDpJ">
         <FaDiscord size={20} style={{ color: "white", verticalAlign: "-80%" }}></FaDiscord>

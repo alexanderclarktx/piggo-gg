@@ -1,5 +1,5 @@
 import { World } from "@piggo-gg/core"
-import { NetState } from "@piggo-gg/web"
+import { LoginState } from "@piggo-gg/web"
 import { MetaMaskInpageProvider } from '@metamask/providers'
 
 declare global {
@@ -8,24 +8,22 @@ declare global {
   }
 }
 
-const colors: Record<NetState, string> = {
-  "disconnected": "red",
-  "offering": "yellow",
-  "answering": "orange",
-  "connected": "lightgreen"
+const loginStateColors: Record<LoginState, string> = {
+  "not logged in": "red",
+  "🟢 Logged In": "lightgreen"
 }
 
 export type LoginProps = {
   world: World | undefined
-  setNetState: (state: NetState) => void
-  netState: NetState
+  setLoginState: (state: LoginState) => void
+  loginState: LoginState
 }
 
-export const Login = ({ world, setNetState, netState }: LoginProps) => {
+export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
 
   setInterval(() => {
     provider = window.ethereum
-    world?.client?.connected ? setNetState("connected") : setNetState("disconnected")
+    world?.client?.token ? setLoginState("🟢 Logged In") : setLoginState("not logged in")
   }, 200)
 
   let provider = window.ethereum
@@ -61,14 +59,18 @@ export const Login = ({ world, setNetState, netState }: LoginProps) => {
     <div style={{ "paddingTop": 0 }}>
       <div style={{ width: "100%" }}>
         <div style={{ float: "left", marginLeft: 0, paddingLeft: 0, marginTop: 1 }}>
-          {/* <Button disabled={!Boolean(provider)} onClick={onClick} size="sm" colorScheme="blue">Login</Button> */}
-          <button
-            disabled={!Boolean(provider)}
-            style={{ fontSize: 14, marginLeft: 0, marginRight: 5 }}
-            onClick={onClick}>
-            Login
-          </button>
-          <span style={{ color: colors[netState], fontSize: 14, fontFamily: "sans-serif", paddingTop: 2 }}>{netState}</span>
+          {loginState === "not logged in" &&
+            <button
+              disabled={!Boolean(provider)}
+              style={{ fontSize: 14, marginLeft: 0, marginRight: 5 }}
+              onClick={onClick}
+            >
+              Login
+            </button>
+          }
+          <span style={{ color: loginStateColors[loginState], fontSize: 15, fontFamily: "sans-serif", paddingTop: 2 }}>
+            {loginState}
+          </span>
         </div>
       </div>
     </div>

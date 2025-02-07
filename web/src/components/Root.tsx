@@ -3,12 +3,12 @@ import { Canvas, TitleBar } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
 
-export type NetState = "disconnected" | "offering" | "answering" | "connected"
+export type LoginState = "not logged in" | "🟢 Logged In"
 
 export const Root = () => {
 
   const [world, setWorld] = useState<World | undefined>()
-  const [netState, setNetState] = useState<NetState>("disconnected")
+  const [loginState, setLoginState] = useState<LoginState>("not logged in")
 
   // expose World to the console
   useEffect(() => {
@@ -20,7 +20,7 @@ export const Root = () => {
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
-          {isMobile() ? null : <TitleBar netState={netState} setNetState={setNetState} world={world} />}
+          {isMobile() ? null : <TitleBar loginState={loginState} setLoginState={setLoginState} world={world} />}
           <Canvas setWorld={setWorld} />
         </div>
       </div>
