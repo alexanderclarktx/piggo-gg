@@ -45,22 +45,50 @@ const GameLobby = (): Entity => {
           if (height !== world.renderer!.app.screen.height || width !== world.renderer!.app.screen.width) {
             height = world.renderer!.app.screen.height
             width = world.renderer!.app.screen.width
-            drawOutline()
-            gameButton?.redraw()
+            // drawOutline()
+            // gameButton?.redraw()
           }
         },
         interactiveChildren: true,
-        setup: async (r) => {
+        setup: async (r, _, world) => {
+
+          height = world.renderer!.app.screen.height
+          width = world.renderer!.app.screen.width
+
           gameButton = PixiButton({
             content: () => ({
-              text: list[index].id, pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 }
+              text: list[index].id,
+              pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 },
+              anchor: { x: 0.5, y: 0 },
+              style: { fontSize: 20, fill: 0xffffff }
             }),
             onClick: () => {
               index = (index + 1) % list.length
               gameButton?.redraw()
             }
           })
-          r.c.addChild(outline, gameButton.c)
+
+          const selectGame = pixiText({
+            text: "select game:",
+            style: { fontSize: 20 },
+            pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 80 },
+            anchor: { x: 0.5, y: 0 }
+          })
+
+          const playGame = PixiButton({
+            content: () => ({
+              text: "play",
+              pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 40 },
+              anchor: { x: 0.5, y: 0 },
+              style: { fontSize: 60, fill: 0xffccff },
+              strokeAlpha: 0
+            }),
+            onClick: () => {
+              world.setGame(list[index].id)
+            }
+          })
+
+          r.c.addChild(outline, gameButton.c, playGame.c, selectGame)
           drawOutline()
         }
       })

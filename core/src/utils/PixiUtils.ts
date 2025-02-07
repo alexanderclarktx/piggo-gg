@@ -46,20 +46,19 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
   })
 }
 
-export type PixiButtonProps = { content: () => { text: string, pos: XY }, onClick: () => void }
+export type PixiButtonProps = { content: () => { text: string, pos: XY, anchor: XY, style: pixiTextStyle }, onClick: () => void }
 export type PixiButton = { c: Container, onClick: () => void, redraw: () => void }
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
-  const anchor = { x: 0, y: 0 }
 
-  const draw = ({ text, pos }: { text: string, pos: XY }) => {
-    const t = pixiText({ text, pos, anchor, style: { fill: 0xffffff, fontSize: 24 } })
+  const draw = ({ text, pos, anchor, style, strokeAlpha }: { text: string, pos: XY, anchor: XY, style: pixiTextStyle, strokeAlpha?: number }) => {
+    const t = pixiText({ text, pos, anchor, style })
 
     const b = pixiRect({
       x: pos.x - anchor.x * t.width - 3, y: pos.y - anchor.y * t.height - 3,
       w: t.width + 6, h: t.height + 6,
       rounded: 5,
-      style: { alpha: 0 }
+      style: { alpha: 0, strokeAlpha: strokeAlpha ?? 1 }
     })
 
     return [b, t]
@@ -71,6 +70,7 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     c,
     onClick: props.onClick,
     redraw: () => {
+      console.log("redraw", props.content().text)
       c.removeChildren()
       c.addChild(...draw(props.content()))
     }
