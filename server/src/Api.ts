@@ -1,4 +1,4 @@
-import { ExtractedRequestTypes, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
+import { ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import { ethers } from "ethers"
@@ -9,6 +9,8 @@ export type PerClientData = {
   playerName?: string
   worldId: string
 }
+
+type SessionToken = { address: string, name: string }
 
 export type Api = {
   bun: Server | undefined
@@ -67,7 +69,29 @@ export const Api = (): Api => {
         return { id: data.id }
       },
       "friends/list": async ({ data }) => {
-        return { id: data.id }
+        let result: { id: string, friends: Friend[] } = { friends: [], id: data.id }
+
+        let token: SessionToken | undefined = undefined
+
+        try {
+          token = jwt.verify(data.token, JWT_SECRET) as SessionToken
+        } catch (e) {
+          return { id: data.id, error: "JWT verification failed" }
+        }
+
+        const user = await prisma.users.findUnique({ where: { name: token.name } })
+        if (!user) return { id: data.id, error: "User not found" }
+
+        const friends = await prisma.friends.findMany({
+          where: { user1: user, status: "ACCEPTED" },
+          include: { user2: true }
+        })
+
+        result.friends = friends.map(({ user2 }) => {
+          return { address: user2.walletAddress, name: user2.name, online: false }
+        })
+
+        return result
       },
       "friends/add": async ({ data }) => {
         return { id: data.id }
@@ -82,7 +106,6 @@ export const Api = (): Api => {
         const verified = recoveredAddress.toLowerCase() === data.address.toLowerCase()
 
         if (!verified) {
-          console.error("Signature verification failed")
           return { id: data.id, error: "Signature verification failed" }
         }
 

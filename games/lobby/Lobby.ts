@@ -1,29 +1,24 @@
 import {
-  GameBuilder, DefaultUI, InviteStone, Entity, Position,
-  pixiText, Renderable, pixiGraphics, loadTexture, colors
+  GameBuilder, Entity, Position, pixiText, Renderable,
+  pixiGraphics, loadTexture, colors, Friend, Cursor, Chat
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
   id: "lobby",
-  init: (world) => ({
+  init: () => ({
     id: "lobby",
     systems: [],
     view: "side",
     entities: [
-      ...DefaultUI(world),
-
-      Friends(),
-      Profile(),
-      GameLobby(),
-
-      // InviteStone({ pos: { x: 300, y: 50 }, tint: 0xddddff })
+      Cursor(), Chat(),
+      Friends(), Profile(), GameLobby()
     ]
   })
 }
 
 const GameLobby = (): Entity => {
-  const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 0, y: 10 }, anchor: { x: 0, y: 0 } })
+  // const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 0, y: 10 }, anchor: { x: 0, y: 0 } })
 
   let height = 0
   let width = 0
@@ -49,7 +44,7 @@ const GameLobby = (): Entity => {
         },
         setup: async (r) => {
           drawOutline()
-          r.c.addChild(title, outline)
+          r.c.addChild(outline)
         }
       })
     }
@@ -105,6 +100,8 @@ const Friends = (): Entity => {
     outline.roundRect(0, 0, 200, height - 200, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
   }
 
+  // let friendList: Friend[] | undefined = undefined
+
   const friends = Entity<Position | Renderable>({
     id: "friends",
     components: {
@@ -116,6 +113,17 @@ const Friends = (): Entity => {
             height = world.renderer!.app.screen.height
             drawOutline()
           }
+
+          // if (friendList === undefined) {
+          //   friendList = []
+          //   world.client?.friendsList((response) => {
+          //     if ("error" in response) {
+          //       friendList = []
+          //     } else {
+          //       friendList = response.friends
+          //     }
+          //   })
+          // }
         },
         setup: async (r) => {
           drawOutline()
