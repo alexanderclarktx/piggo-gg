@@ -1,10 +1,7 @@
 import {
   Character, DelaySyncer, LobbyCreate, LobbyJoin, NetClientSystem,
   NetMessageTypes, Player, stringify, RequestData, RequestTypes,
-  Syncer, World, genPlayerId, SoundManager, genHash, AuthLogin,
-  FriendsList,
-  Friend,
-  Safe
+  Syncer, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList
 } from "@piggo-gg/core"
 
 const servers = {
