@@ -2,7 +2,7 @@ import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
   loadTexture, colors, Cursor, Chat, Debug, PixiButton
 } from "@piggo-gg/core"
-import { Animals, Flappy, Sandbox, Soccer } from "@piggo-gg/games"
+import { Animals, Flappy, Craft } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -23,7 +23,7 @@ const GameLobby = (): Entity => {
   let height = 0
   let width = 0
 
-  const list: GameBuilder[] = [Flappy, Soccer, Sandbox, Animals]
+  const list: GameBuilder[] = [Flappy, Animals, Craft]
   let index = 0
 
   let gameButton: PixiButton | undefined = undefined
@@ -135,7 +135,7 @@ const Profile = (): Entity => {
 
 const Friends = (): Entity => {
 
-  const title = pixiText({ text: "add friend", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
+  const title = pixiText({ text: "friends", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
 
   let height = 0
 
@@ -172,7 +172,7 @@ const Friends = (): Entity => {
         },
         setup: async (r) => {
           drawOutline()
-          r.c.addChild(outline, title)
+          r.c.addChild(outline)
         }
       })
     }
