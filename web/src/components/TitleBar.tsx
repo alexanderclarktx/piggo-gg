@@ -3,7 +3,7 @@ import { FaDiscord, FaGithub } from "react-icons/fa"
 
 export type TitleBarProps = LoginProps & {}
 
-export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
+export const TitleBar = ({ world, loginState, setLoginState }: TitleBarProps) => (
   <div style={{
     position: "relative",
     display: "flex",
@@ -14,7 +14,7 @@ export const TitleBar = ({ world, netState, setNetState }: TitleBarProps) => (
     marginBottom: 5
   }}>
     <div style={{ position: 'absolute', left: 0, bottom: 0 }}>
-      <Login netState={netState} setNetState={setNetState} world={world} />
+      <Login loginState={loginState} setLoginState={setLoginState} world={world} />
     </div>
     <h1 style={{ textAlign: "center", fontFamily: "Courier New", fontSize: 38, margin: "0 10px" }}>
       Piggo

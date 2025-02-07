@@ -1,8 +1,10 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable,
-  pixiGraphics, loadTexture, colors, Friend, Cursor, Chat
+  pixiGraphics, loadTexture, colors, Cursor, Chat,
+  Debug
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
+import { Select } from "@pixi/ui"
 
 export const Lobby: GameBuilder = {
   id: "lobby",
@@ -20,6 +22,17 @@ export const Lobby: GameBuilder = {
 const GameLobby = (): Entity => {
   // const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 0, y: 10 }, anchor: { x: 0, y: 0 } })
 
+  // const gameSelector = new Select({
+  //   closedBG: `select_closed.png`,
+  //   openBG: `select_open.png`,
+  //   items: {
+  //     items: ["Game 1", "Game 2", "Game 3"],
+  //     backgroundColor: 0x000000,
+  //     width: 200,
+  //     height: 30
+  //   }
+  // })
+
   let height = 0
   let width = 0
 
@@ -32,6 +45,7 @@ const GameLobby = (): Entity => {
   const gameLobby = Entity<Position | Renderable>({
     id: "gameLobby",
     components: {
+      debug: Debug(),
       position: Position({ x: 220, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
