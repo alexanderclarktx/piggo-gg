@@ -1,5 +1,5 @@
 import { XY } from "@piggo-gg/core"
-import { Assets, Graphics, GraphicsContext, GraphicsOptions, Text } from "pixi.js"
+import { Assets, Container, ContainerChild, Graphics, GraphicsContext, GraphicsOptions, Text } from "pixi.js"
 
 export type pixiRectProps = { x: number, y: number, w: number, h: number, rounded?: number, style?: Omit<pixiStyleProps, "g"> }
 export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<pixiStyleProps, "g"> }
@@ -44,6 +44,37 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
       fontSize: style?.fontSize ?? 14
     }
   })
+}
+
+export type PixiButtonProps = { content: () => { text: string, pos: XY }, onClick: () => void }
+export type PixiButton = { c: Container, onClick: () => void, redraw: () => void }
+
+export const PixiButton = (props: PixiButtonProps): PixiButton => {
+  const anchor = { x: 0, y: 0 }
+
+  const draw = ({ text, pos }: { text: string, pos: XY }) => {
+    const t = pixiText({ text, pos, anchor, style: { fill: 0xffffff, fontSize: 24 } })
+
+    const b = pixiRect({
+      x: pos.x - anchor.x * t.width - 3, y: pos.y - anchor.y * t.height - 3,
+      w: t.width + 6, h: t.height + 6,
+      rounded: 5,
+      style: { alpha: 0 }
+    })
+
+    return [b, t]
+  }
+
+  const c = new Container({ onpointerdown: props.onClick, children: draw(props.content()), interactive: true })
+
+  return {
+    c,
+    onClick: props.onClick,
+    redraw: () => {
+      c.removeChildren()
+      c.addChild(...draw(props.content()))
+    }
+  }
 }
 
 const textureCache: Record<string, Record<string, any>> = {}

@@ -1,6 +1,7 @@
 import { Clickable, ClientSystemBuilder, Entity, InvokedAction, Position, Renderable, XY, checkBounds, mouse, mouseScreen } from "@piggo-gg/core"
 import { FederatedPointerEvent } from "pixi.js"
 
+// todo move to World
 export const clickableClickedThisFrame = {
   value: 0,
   set: (value: number) => clickableClickedThisFrame.value = value,

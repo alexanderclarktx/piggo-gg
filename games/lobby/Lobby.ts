@@ -1,10 +1,9 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable,
-  pixiGraphics, loadTexture, colors, Cursor, Chat,
-  Debug
+  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton
 } from "@piggo-gg/core"
+import { Animals, Flappy, Sandbox, Soccer } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
-import { Select } from "@pixi/ui"
 
 export const Lobby: GameBuilder = {
   id: "lobby",
@@ -20,21 +19,14 @@ export const Lobby: GameBuilder = {
 }
 
 const GameLobby = (): Entity => {
-  // const title = pixiText({ text: "Game Lobby", style: { fontSize: 38 }, pos: { x: 0, y: 10 }, anchor: { x: 0, y: 0 } })
-
-  // const gameSelector = new Select({
-  //   closedBG: `select_closed.png`,
-  //   openBG: `select_open.png`,
-  //   items: {
-  //     items: ["Game 1", "Game 2", "Game 3"],
-  //     backgroundColor: 0x000000,
-  //     width: 200,
-  //     height: 30
-  //   }
-  // })
 
   let height = 0
   let width = 0
+
+  const list: GameBuilder[] = [Flappy, Soccer, Sandbox, Animals]
+  let index = 0
+
+  let gameButton: PixiButton | undefined = undefined
 
   const outline = pixiGraphics()
   const drawOutline = () => {
@@ -54,11 +46,22 @@ const GameLobby = (): Entity => {
             height = world.renderer!.app.screen.height
             width = world.renderer!.app.screen.width
             drawOutline()
+            gameButton?.redraw()
           }
         },
+        interactiveChildren: true,
         setup: async (r) => {
+          gameButton = PixiButton({
+            content: () => ({
+              text: list[index].id, pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 }
+            }),
+            onClick: () => {
+              index = (index + 1) % list.length
+              gameButton?.redraw()
+            }
+          })
+          r.c.addChild(outline, gameButton.c)
           drawOutline()
-          r.c.addChild(outline)
         }
       })
     }
