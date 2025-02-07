@@ -45,8 +45,6 @@ const GameLobby = (): Entity => {
           if (height !== world.renderer!.app.screen.height || width !== world.renderer!.app.screen.width) {
             height = world.renderer!.app.screen.height
             width = world.renderer!.app.screen.width
-            // drawOutline()
-            // gameButton?.redraw()
           }
         },
         interactiveChildren: true,

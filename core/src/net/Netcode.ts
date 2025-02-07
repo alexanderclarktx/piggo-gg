@@ -34,8 +34,6 @@ export type RollbackTickData = {
 
 // API
 
-export type Safe<T extends Request<string>> = Omit<T, "response"> & { response: Exclude<T["response"], { error: string, id: string }> }
-
 export type Request<Route extends string, Response extends {} = {}> = {
   type: "request"
   id: string
