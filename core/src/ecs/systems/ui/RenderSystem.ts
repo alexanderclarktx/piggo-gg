@@ -5,9 +5,8 @@ export const RenderSystem = ClientSystemBuilder({
   init: (world) => {
     if (!world.renderer) return undefined
 
-    const renderer = world.renderer
+    const { renderer } = world
     let lastOntick = Date.now()
-    let centeredEntity: Character | undefined = undefined
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
@@ -51,15 +50,6 @@ export const RenderSystem = ClientSystemBuilder({
 
         lastOntick = performance.now()
 
-        const { x: cameraX, y: cameraY } = centeredEntity?.components.position.data ?? { x: 0, y: 0 }
-        const { width, height } = renderer.app.screen
-        const cameraScale = renderer.camera.root.scale.x - 0.9
-
-        // todo this is calculating difference from centered entity, not the camera
-        const isFarFromCamera = ({ x, y }: XY) => {
-          return Math.abs(x - cameraX) > (width / cameraScale / 2) || Math.abs(y - cameraY) > (height / cameraScale / 2)
-        }
-
         if (renderer.resizedFlag) {
           renderer.guiRenderables.forEach((renderable) => {
             renderer.app.stage.removeChild(renderable.c)
@@ -69,22 +59,8 @@ export const RenderSystem = ClientSystemBuilder({
           renderer.resizedFlag = false
         }
 
-        let numHidden = 0
-
         entities.forEach((entity) => {
           const { position, renderable } = entity.components
-
-          // cull if far from camera
-          if (renderable.cullable && !position.screenFixed && renderable.c.children) {
-            renderable.c.children.forEach((child) => {
-              child.visible = !isFarFromCamera({
-                x: position.data.x + child.position.x,
-                y: position.data.y + child.position.y
-              })
-
-              if (!child.visible) numHidden++
-            })
-          }
 
           // render if new entity
           if (!renderable.rendered) {
@@ -153,13 +129,6 @@ export const RenderSystem = ClientSystemBuilder({
           }
         })
 
-        // center camera on player's controlled entity
-        const player = world.client?.player
-        if (player) {
-          const character = player.components.controlling.getControlledEntity(world)
-          if (character) centeredEntity = character
-        }
-
         // sort cache by position (closeness to camera)
         const sortedEntityPositions = values(entities).sort((a, b) => {
           return a.components.renderable.c.position.y - b.components.renderable.c.position.y
@@ -194,15 +163,6 @@ export const RenderSystem = ClientSystemBuilder({
 
           const { x, y, velocity } = position.data
 
-          if (centeredEntity && entity.id === centeredEntity.id) {
-            // renderer.camera.moveTo({ x, y })
-            if (isMobile()) {
-              renderer.camera.moveTo({ x: x + 100, y: 0 })
-            } else {
-              renderer.camera.moveTo({ x, y: 0 })
-            }
-          }
-
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
 
             const dx = velocity.x * elapsedTime / 1000
@@ -212,15 +172,6 @@ export const RenderSystem = ClientSystemBuilder({
               x + dx + renderable.position.x,
               y + dy + renderable.position.y
             )
-
-            if (centeredEntity && entity.id === centeredEntity.id) {
-              // renderer.camera.moveTo({ x: x + dx, y: y + dy })
-              if (isMobile()) {
-                renderer.camera.moveTo({ x: x + dx + 100, y: 0 })
-              } else {
-                renderer.camera.moveTo({ x: x + dx, y: 0 })
-              }
-            }
           }
         })
       }
