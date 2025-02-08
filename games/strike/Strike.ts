@@ -13,13 +13,13 @@ export const Strike: GameBuilder = {
     tileMap: StrikeTileMap,
     entities: [
       ...DefaultUI(world),
-      HomeButton(),
+      // HomeButton(),
       Background(),
       ScorePanel(),
       Scoreboard(),
       Shop(),
       FloorTilesArray(80, StrikeTileMap),
-      ...FloorCollidersArray(80, StrikeTileMap),
+      // ...FloorCollidersArray(80, StrikeTileMap),
       ... (isMobile() ? [] : [Minimap(80, StrikeTileMap)])
     ]
   })

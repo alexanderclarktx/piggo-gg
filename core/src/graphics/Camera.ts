@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Entity, Renderable, XY, Position, Character, isMobile } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, Renderable, XY, Position, Character, isMobile, abs } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
@@ -6,7 +6,7 @@ export type Camera = {
   add: (r: Renderable) => void
   remove: (r: Renderable) => void
   scaleBy: (delta: number) => void
-  shouldCull: (_: XY) => boolean
+  inFrame: (_: XY) => boolean
   moveBy: (_: XY) => void
   moveTo: (_: XY) => void
   toWorldCoords: (_: XY) => XY
@@ -46,10 +46,12 @@ export const Camera = (app: Application): Camera => {
       scale += delta
       rescale()
     },
-    shouldCull: ({ x, y }: XY) => {
+    inFrame: ({ x, y }: XY) => { // TODO broken
       const { width, height } = app.screen
-      const s = scale - 0.9
-      return Math.abs(x - root.x) > width / s / 2 || Math.abs(y - root.y) > height / s / 2
+
+      const result = abs(x - root.x) < width / 2 / scale && abs(y - root.y) < height / 2 / scale
+
+      return result
     },
     moveBy: ({ x, y }: XY) => {
       root.x += x
@@ -86,17 +88,14 @@ export const CameraSystem = ClientSystemBuilder({
           // cull if far from camera
           if (renderable.cullable && !position.screenFixed && renderable.c.children) {
             renderable.c.children.forEach((child) => {
-              child.visible = !renderer.camera.shouldCull({
+              child.visible = !renderer.camera.inFrame({
                 x: position.data.x + child.position.x,
                 y: position.data.y + child.position.y
               })
 
               if (!child.visible) numHidden++
-
-              console.log(renderer.camera.root.x, renderer.camera.root.y)
             })
           }
-
 
           // center camera on player's controlled entity
           const player = world.client?.player
@@ -108,7 +107,7 @@ export const CameraSystem = ClientSystemBuilder({
 
         console.log("numHidden", numHidden)
       },
-      onRender: (entities: Entity<Renderable | Position>[]) => {
+      onRender: () => {
         if (!centeredEntity) return
 
         const { x, y } = centeredEntity.components.renderable.c.position
