@@ -32,7 +32,7 @@ export const Camera = (app: Application): Camera => {
 
   rescale()
 
-  return {
+  const camera = {
     root,
     add: (r: Renderable) => {
       renderables.add(r)
@@ -49,7 +49,12 @@ export const Camera = (app: Application): Camera => {
     inFrame: ({ x, y }: XY) => { // TODO broken
       const { width, height } = app.screen
 
-      const result = abs(x - root.x) < width / 2 / scale && abs(y - root.y) < height / 2 / scale
+      const camX = ((width / 2) - root.x) / scale
+      const camY = ((height / 2) - root.y) / scale
+
+      const s = scale + 2
+
+      const result = abs(camX - x) < width / s && abs(camY - y) < height / s
 
       return result
     },
@@ -64,8 +69,10 @@ export const Camera = (app: Application): Camera => {
     toWorldCoords: ({ x, y }: XY) => ({
       x: (x - root.x) / scale,
       y: (y - root.y) / scale
-    }),
+    })
   }
+
+  return camera
 }
 
 export const CameraSystem = ClientSystemBuilder({
@@ -88,7 +95,7 @@ export const CameraSystem = ClientSystemBuilder({
           // cull if far from camera
           if (renderable.cullable && !position.screenFixed && renderable.c.children) {
             renderable.c.children.forEach((child) => {
-              child.visible = !renderer.camera.inFrame({
+              child.visible = renderer.camera.inFrame({
                 x: position.data.x + child.position.x,
                 y: position.data.y + child.position.y
               })
@@ -96,16 +103,11 @@ export const CameraSystem = ClientSystemBuilder({
               if (!child.visible) numHidden++
             })
           }
-
-          // center camera on player's controlled entity
-          const player = world.client?.player
-          if (player) {
-            const character = player.components.controlling.getControlledEntity(world)
-            if (character) centeredEntity = character
-          }
         }
 
-        console.log("numHidden", numHidden)
+        // center camera on player's character
+        const character = world.client?.playerCharacter()
+        if (character) centeredEntity = character
       },
       onRender: () => {
         if (!centeredEntity) return

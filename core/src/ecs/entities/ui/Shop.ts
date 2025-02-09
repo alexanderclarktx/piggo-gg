@@ -1,5 +1,5 @@
 import {
-  Actions, Entity, GunNames, Input, Position, Renderable, TwoPoints, WeaponTable, World,
+  Actions, Entity, GunNames, GunsTable, Input, Position, Renderable, TwoPoints, World,
   clickableClickedThisFrame, isMobile, loadTexture, pixiGraphics, pixiText
 } from "@piggo-gg/core"
 import { ScrollBox } from "@pixi/ui"
@@ -94,10 +94,12 @@ const cell = async (text: string, width: number, height: number, world: World, m
     const playerCharacter = world.client?.playerCharacter()
     if (!playerCharacter) return
 
-    const newGun = WeaponTable[text.toLowerCase() as GunNames]
+    const newGun = GunsTable[text.toLowerCase() as GunNames]
     if (!newGun) return
 
-    playerCharacter.components.gun = newGun()
+    playerCharacter.components
+    // playerCharacter.components.gun = newGun()
+    playerCharacter.components.inventory?.addItem(newGun(playerCharacter))
 
     clickableClickedThisFrame.set(world.tick + 1)
 

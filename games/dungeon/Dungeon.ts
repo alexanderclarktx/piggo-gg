@@ -1,6 +1,6 @@
 import {
-  Background,  DefaultUI,  GameBuilder,  HealthBarSystem, HomeButton, LineFloor,
-  LineWall, Shop, ShopButton, Skelly, SpawnSystem, ZomiSpawnSystem
+  Background,  DefaultUI,  GameBuilder,  HealthBarSystem, LineFloor,
+  LineWall, PvEHUD, Shop, ShopButton, Skelly, SpawnSystem, ZomiSpawnSystem
 } from "@piggo-gg/core"
 
 const width = 72
@@ -8,7 +8,7 @@ const height = 36
 const dim = 16
 
 const x = -700
-const y = 500
+const y = 100
 
 export const Dungeon: GameBuilder = {
   id: "dungeon",
@@ -18,9 +18,9 @@ export const Dungeon: GameBuilder = {
     entities: [
       ...DefaultUI(world),
       Background({ img: "space.png" }),
-      HomeButton(),
       ShopButton({ screenFixed: true, x: -95, y: 5 }),
       Shop(),
+      PvEHUD(),
       LineFloor(dim, { x, y }, 0x0066bb, width, height),
       LineWall({
         hittable: false,

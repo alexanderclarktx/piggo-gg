@@ -9,7 +9,7 @@ export const setActiveItemIndex = Action<{ index: number }>("setActiveItemIndex"
   inventory.setActiveItemIndex(params.index)
 })
 
-export const pickupItem = Action("pickupItem", ({player, entity, world}) => {
+export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   if (!entity) return
 
   const character = player?.components.controlling.getControlledEntity(world)
@@ -34,8 +34,8 @@ export const pickupItem = Action("pickupItem", ({player, entity, world}) => {
   inventory.addItem(entity as ItemEntity)
 })
 
-export const dropItem = Action("dropItem", ({player, world}) => {
-  const character = player?.components.controlling.getControlledEntity(world)
+export const dropItem = Action("dropItem", ({ world }) => {
+  const character = world.client?.playerCharacter()
   if (!character) return
 
   const { inventory } = character.components

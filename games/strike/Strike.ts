@@ -19,7 +19,7 @@ export const Strike: GameBuilder = {
       Scoreboard(),
       Shop(),
       FloorTilesArray(80, StrikeTileMap),
-      // ...FloorCollidersArray(80, StrikeTileMap),
+      ...FloorCollidersArray(80, StrikeTileMap),
       ... (isMobile() ? [] : [Minimap(80, StrikeTileMap)])
     ]
   })

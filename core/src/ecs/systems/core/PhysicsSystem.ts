@@ -12,14 +12,12 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
     let colliders: Map<Entity<Collider | Position>, Collider> = new Map()
 
     const resetPhysics = () => {
-      keys(bodies).forEach((id) => {
-        delete bodies[id]
-      })
+      for (const id of keys(bodies)) delete bodies[id]
       colliders.clear()
       physics.free()
+
       physics = new RapierWorld({ x: 0, y: 0 })
-      physics.switchToSmallStepsPgsSolver() // https://github.com/dimforge/rapier.js/blob/master/src.ts/pipeline/world.ts#L400
-      physics.timestep = 0.025
+      physics.timestep = 0.025 / 4
     }
 
     return {
@@ -79,9 +77,9 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
 
         // run physics
         physics.step()
-        // physics.step()
-        // physics.step()
-        // physics.step()
+        physics.step()
+        physics.step()
+        physics.step()
 
         // update entity positions
         keys(bodies).forEach((id) => {

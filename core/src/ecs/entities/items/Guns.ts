@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Effects, Entity, Gun, GunBuilder, GunNames, Item, ItemBuilder,
+  Actions, Clickable, Effects, Gun, GunBuilder, GunNames, Item, ItemBuilder,
   ItemEntity, Position, Reload, Renderable, Shoot, SpawnHitbox, loadTexture
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
@@ -88,12 +88,12 @@ const AWPBuilder = GunBuilder({
   speed: 600
 })
 
-export const WeaponTable: Record<GunNames, () => Gun> = {
-  "deagle": DeagleBuilder,
-  "ak": AKBuilder,
-  "awp": AWPBuilder
-}
+export const Deagle = GunItem("deagle", DeagleBuilder)
+export const AK = GunItem("ak", AKBuilder)
+export const AWP = GunItem("awp", AWPBuilder)
 
-export const Deagle = GunItem("deagle", WeaponTable["deagle"])
-export const AK = GunItem("ak", WeaponTable["ak"])
-export const AWP = GunItem("awp", WeaponTable["awp"])
+export const GunsTable: Record<GunNames, ItemBuilder> = {
+  "deagle": Deagle,
+  "ak": AK,
+  "awp": AWP
+}
