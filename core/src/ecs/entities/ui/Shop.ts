@@ -98,7 +98,6 @@ const cell = async (text: string, width: number, height: number, world: World, m
     if (!newGun) return
 
     playerCharacter.components
-    // playerCharacter.components.gun = newGun()
     playerCharacter.components.inventory?.addItem(newGun(playerCharacter))
 
     clickableClickedThisFrame.set(world.tick + 1)
