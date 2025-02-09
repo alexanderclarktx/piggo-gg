@@ -2,7 +2,7 @@ import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
   loadTexture, colors, Cursor, Chat, Debug, PixiButton
 } from "@piggo-gg/core"
-import { Animals, Flappy, Craft } from "@piggo-gg/games"
+import { Animals, Flappy, Craft, Dungeon, Soccer } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -23,10 +23,10 @@ const GameLobby = (): Entity => {
   let height = 0
   let width = 0
 
-  const list: GameBuilder[] = [Flappy, Animals, Craft]
+  const list: GameBuilder[] = [Flappy, Craft, Dungeon, Soccer, Animals,]
   let index = 0
 
-  let gameButton: PixiButton | undefined = undefined
+  let game: PixiButton | undefined = undefined
 
   const outline = pixiGraphics()
   const drawOutline = () => {
@@ -53,7 +53,7 @@ const GameLobby = (): Entity => {
           height = world.renderer!.app.screen.height
           width = world.renderer!.app.screen.width
 
-          gameButton = PixiButton({
+          game = PixiButton({
             content: () => ({
               text: list[index].id,
               pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 },
@@ -62,18 +62,18 @@ const GameLobby = (): Entity => {
             }),
             onClick: () => {
               index = (index + 1) % list.length
-              gameButton?.redraw()
+              game?.redraw()
             }
           })
 
-          const selectGame = pixiText({
+          const select = pixiText({
             text: "select game:",
             style: { fontSize: 20 },
             pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 80 },
             anchor: { x: 0.5, y: 0 }
           })
 
-          const playGame = PixiButton({
+          const play = PixiButton({
             content: () => ({
               text: "play",
               pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 40 },
@@ -86,7 +86,7 @@ const GameLobby = (): Entity => {
             }
           })
 
-          r.c.addChild(outline, gameButton.c, playGame.c, selectGame)
+          r.c.addChild(outline, game.c, play.c, select)
           drawOutline()
         }
       })

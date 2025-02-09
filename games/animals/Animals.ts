@@ -1,5 +1,5 @@
 import {
-  Actions, Background, Character, Collider, Debug, DefaultUI, Effects, Element, Entity, GameBuilder, Health, Input,
+  Actions, Background, CameraSystem, Character, Collider, Debug, DefaultUI, Effects, Element, Entity, GameBuilder, Health, Input,
   JumpPlatform, LineWall, loadTexture, Move, Networked, Player, Point, Position, Renderable, SpawnSystem, XY
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
@@ -8,7 +8,7 @@ export const Animals: GameBuilder = {
   id: "animals",
   init: (world) => ({
     id: "animals",
-    systems: [SpawnSystem(Animal)],
+    systems: [CameraSystem(), SpawnSystem(Animal)],
     view: "side",
     entities: [
       ...DefaultUI(world),

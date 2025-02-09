@@ -3,12 +3,12 @@ import { Entity, NetworkedComponentData, ValidComponents, World } from "@piggo-g
 // a System is a function that runs on every tick
 export interface System<T extends string = string> {
   id: T,
-  data?: NetworkedComponentData
   query: ValidComponents[]
+  data?: NetworkedComponentData
   skipOnRollback?: boolean
   onTick?: (entities: Entity[], isRollback: boolean) => void
-  onRollback?: () => void
   onRender?: (entities: Entity[], deltaMS: number) => void
+  onRollback?: () => void
 }
 
 export type SystemBuilder<T extends string = string> = {
@@ -19,7 +19,6 @@ export type SystemBuilder<T extends string = string> = {
 export const ClientSystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => ({
   ...builder,
   init: (world: World) => {
-    if (world.runtimeMode !== "client") return undefined
-    return builder.init(world)
+    return (world.runtimeMode === "client") ? builder.init(world) : undefined
   }
 })

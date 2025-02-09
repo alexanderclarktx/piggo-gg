@@ -1,13 +1,13 @@
 import {
-  Piggo, SpawnSystem, Tree, isMobile, MobilePvEHUD,
-  PvEHUD, Rock, Zomi, Skelly, GameBuilder, DefaultUI
+  Piggo, SpawnSystem, Tree, isMobile, MobilePvEHUD, PvEHUD,
+  Rock, Zomi, Skelly, GameBuilder, DefaultUI, CameraSystem
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
   id: "craft",
   init: (world) => ({
     id: "craft",
-    systems: [SpawnSystem(Skelly)],
+    systems: [CameraSystem(), SpawnSystem(Skelly)],
     bgColor: 0x006633,
     entities: [
       ...DefaultUI(world),
