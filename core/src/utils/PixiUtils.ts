@@ -1,5 +1,5 @@
 import { XY } from "@piggo-gg/core"
-import { Assets, Container, ContainerChild, Graphics, GraphicsContext, GraphicsOptions, Text } from "pixi.js"
+import { Assets, Container, Graphics, GraphicsContext, GraphicsOptions, Text } from "pixi.js"
 
 export type pixiRectProps = { x: number, y: number, w: number, h: number, rounded?: number, style?: Omit<pixiStyleProps, "g"> }
 export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<pixiStyleProps, "g"> }

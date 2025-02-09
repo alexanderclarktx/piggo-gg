@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, XY, values, Character, isMobile } from "@piggo-gg/core"
+import { Entity, Position, Renderable, ClientSystemBuilder, values } from "@piggo-gg/core"
 
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",

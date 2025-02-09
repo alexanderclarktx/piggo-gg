@@ -1,7 +1,7 @@
 import {
   Actions, Character, Clickable, Collider, Debug, DefaultDesktopUI, Effects, Element, Entity,
   GameBuilder, Health, Input, isMobile, Jump, LineWall, loadTexture, max, Networked, Player,
-  PC, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY
+  PC, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY, CameraSystem
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -11,7 +11,11 @@ export const Flappy: GameBuilder = {
     id: "flappy",
     bgColor: 0x000000,
     view: "side",
-    systems: [SpawnSystem(FlappyCharacter), FlappySystem],
+    systems: [
+      CameraSystem({ follow: ({ x }) => ({ x, y: 0 }) }),
+      SpawnSystem(FlappyCharacter),
+      FlappySystem
+    ],
     entities: (
       isMobile() ? [JumpButton()] : DefaultDesktopUI()
     ).concat([
@@ -95,7 +99,7 @@ export const FlappyCharacter = (player: Player, color?: number, pos?: XY) => {
       element: Element("flesh"),
       input: Input({
         press: {
-          " ": ({hold}) => ({ actionId: "jump", params: { hold } }),
+          " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
         }
       }),
       actions: Actions<any>({

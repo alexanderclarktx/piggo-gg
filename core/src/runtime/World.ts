@@ -206,10 +206,9 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
 
       const { tileMap, bgColor, entities, systems } = world.currentGame
 
-      // set tileMap
       world.tileMap = tileMap
 
-      world.renderer?.setBgColor(world.currentGame.bgColor || 0x000000)
+      world.renderer?.setBgColor(bgColor || 0x000000)
 
       // initialize new game
       world.addEntities(entities)

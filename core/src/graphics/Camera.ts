@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Entity, Renderable, XY, Position, Character, isMobile, abs } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, Renderable, XY, Position, Character, abs, System } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
@@ -75,7 +75,11 @@ export const Camera = (app: Application): Camera => {
   return camera
 }
 
-export const CameraSystem = ClientSystemBuilder({
+export type CameraSystemProps = {
+  follow?: (_: XY) => XY
+}
+
+export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystemProps = {}) => ClientSystemBuilder({
   id: "CameraSystem",
   init: (world) => {
     if (!world.renderer) return undefined
@@ -83,7 +87,7 @@ export const CameraSystem = ClientSystemBuilder({
     const { renderer } = world
     let centeredEntity: Character | undefined = undefined
 
-    return {
+    const cameraSystem: System = {
       id: "CameraSystem",
       query: ["renderable", "position"],
       onTick: (entities: Entity<Renderable | Position>[]) => {
@@ -112,15 +116,11 @@ export const CameraSystem = ClientSystemBuilder({
       onRender: () => {
         if (!centeredEntity) return
 
-        const { x, y } = centeredEntity.components.renderable.c.position
-
-        if (isMobile()) {
-          // renderer.camera.moveTo({ x: x + 100, y: 0 })
-          renderer.camera.moveTo({ x, y })
-        } else {
-          renderer.camera.moveTo({ x, y })
-        }
+        const { x, y } = follow(centeredEntity.components.renderable.c.position)
+        renderer.camera.moveTo({ x, y })
       }
     }
+
+    return cameraSystem
   }
 })

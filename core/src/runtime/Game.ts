@@ -4,6 +4,7 @@ export type Game<T extends string = string> = {
   id: T
   entities: Entity[]
   systems: SystemBuilder[]
+  params?: Record<string, any>
   commands?: Command[]
   tileMap?: number[]
   bgColor?: number
