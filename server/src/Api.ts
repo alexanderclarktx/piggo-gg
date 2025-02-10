@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"
 
 export type PerClientData = {
   id: number
+  playerId: string
   playerName?: string
   worldId: string
 }
@@ -99,7 +100,7 @@ export const Api = (): Api => {
       "friends/remove": async ({ data }) => {
         return { id: data.id }
       },
-      "auth/login": async ({ data }) => {
+      "auth/login": async ({ ws, data }) => {
 
         // 1. verify signature
         const recoveredAddress = ethers.verifyMessage(data.message, data.signature)
@@ -129,6 +130,16 @@ export const Api = (): Api => {
         // 3. create session token
         const token = jwt.sign({ address: user.name, name: user.name }, JWT_SECRET, { expiresIn: "8h" })
 
+        // 4. set client data
+        ws.data.playerName = user.name
+        const pc = api.worlds[ws.data.worldId]?.world.entities[ws.data.playerId]?.components.pc
+        if (pc) {
+          console.log("auth'd", ws.data.playerName)
+          pc.data.name = user.name
+        } else {
+          console.warn("no pc found")
+        }
+
         return { id: data.id, token, name: user.name }
       }
     },
@@ -155,7 +166,7 @@ export const Api = (): Api => {
     },
     handleOpen: (ws: ServerWebSocket<PerClientData>) => {
       // set data for this client
-      ws.data = { id: api.clientIncr, worldId: "", playerName: "UNKNOWN" }
+      ws.data = { id: api.clientIncr, worldId: "", playerName: "noob", playerId: "" }
 
       // increment id
       api.clientIncr += 1
@@ -191,7 +202,10 @@ export const Api = (): Api => {
   setInterval(() => {
     // cleanup empty worlds
     entries(api.worlds).forEach(([id, world]) => {
-      if (keys(world.clients).length === 0) delete api.worlds[id]
+      if (keys(world.clients).length === 0 && id !== "hub") {
+        delete api.worlds[id]
+        console.log(`world deleted: ${id}`)
+      }
     })
   }, 10000)
 

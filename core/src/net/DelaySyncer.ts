@@ -7,7 +7,7 @@ export const DelaySyncer: Syncer = {
       actions: world.actionBuffer.atTick(world.tick + 1) ?? {},
       chats: world.chatHistory.atTick(world.tick) ?? {},
       game: world.currentGame.id,
-      player: world.client?.playerId() ?? "",
+      playerId: world.client?.playerId() ?? "",
       serializedEntities: {},
       tick: world.tick,
       timestamp: Date.now(),

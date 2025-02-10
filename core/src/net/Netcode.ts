@@ -15,7 +15,7 @@ export type GameData = {
   chats: Record<string, string[]>
   game: string
   latency?: number
-  player: string
+  playerId: string
   serializedEntities: Record<string, SerializedEntity>
   tick: number
   timestamp: number

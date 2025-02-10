@@ -43,24 +43,24 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
       if (msg.type !== "game") return
 
       // add player entity if it doesn't exist
-      if (!world.entities[msg.player]) {
-        ws.data.playerName = msg.player
+      if (!world.entities[msg.playerId]) {
+        ws.data.playerId = msg.playerId
 
-        world.addEntity(Player({ id: msg.player }))
+        world.addEntity(Player({ id: msg.playerId, name: ws.data.playerName }))
 
-        clients[msg.player] = ws
-        latestClientMessages[msg.player] = []
+        clients[msg.playerId] = ws
+        latestClientMessages[msg.playerId] = []
 
         console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`)
       }
 
       // store last message for client
-      latestClientMessages[msg.player].push({
+      latestClientMessages[msg.playerId].push({
         td: msg,
         latency: Date.now() - msg.timestamp
       })
 
-      if (world.tick % 100 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${world.tick - msg.tick}`)
+      if (world.tick % 400 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${world.tick - msg.tick}`)
     }
   }
 }

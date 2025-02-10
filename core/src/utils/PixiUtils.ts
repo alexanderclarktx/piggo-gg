@@ -54,7 +54,6 @@ export type PixiButtonProps = {
 export type PixiButton = { c: Container, onClick: () => void, redraw: () => void }
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
-  console.log("PixiButton", props)
 
   const draw = ({ text, pos, anchor = { x: 0.5, y: 0 }, style, strokeAlpha }:
     { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number }

@@ -1,8 +1,9 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton,
+  InviteStone
 } from "@piggo-gg/core"
-import { Animals, Flappy, Craft, Dungeon, Soccer } from "@piggo-gg/games"
+import { Flappy, Craft, Dungeon, Soccer } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -13,7 +14,8 @@ export const Lobby: GameBuilder = {
     view: "side",
     entities: [
       Cursor(), Chat(),
-      Friends(), Profile(), GameLobby()
+      Friends(), Profile(), GameLobby(),
+      InviteStone({pos: {x: 100, y: 100}})
     ]
   })
 }
@@ -95,7 +97,8 @@ const GameLobby = (): Entity => {
               style: { fontSize: 60, fill: 0xffccff }
             }),
             onClick: () => {
-              world.setGame(list[index].id)
+              world.actionBuffer.push(world.tick + 2, "world", { actionId: "game", params: { game: list[index].id } })
+              // world.setGame(list[index].id)
             }
           })
 
