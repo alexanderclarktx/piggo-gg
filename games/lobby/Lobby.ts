@@ -23,10 +23,9 @@ const GameLobby = (): Entity => {
   let height = 0
   let width = 0
 
-  const list: GameBuilder[] = [Flappy, Craft, Dungeon, Soccer, Animals,]
+  const list: GameBuilder[] = [Flappy, Craft, Dungeon, Soccer]
+  let gameButtons: PixiButton[] = []
   let index = 0
-
-  let game: PixiButton | undefined = undefined
 
   const outline = pixiGraphics()
   const drawOutline = () => {
@@ -46,26 +45,40 @@ const GameLobby = (): Entity => {
             height = world.renderer!.app.screen.height
             width = world.renderer!.app.screen.width
           }
+
+          gameButtons.forEach((b, i) => {
+            b.c.alpha = (i === index) ? 1 : 0.6
+          })
         },
         interactiveChildren: true,
         setup: async (r, _, world) => {
-
           height = world.renderer!.app.screen.height
           width = world.renderer!.app.screen.width
 
-          game = PixiButton({
-            content: () => ({
-              text: list[index].id,
-              pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 },
-              anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 20, fill: 0xffffff },
-              strokeAlpha: 1
-            }),
-            onClick: () => {
-              index = (index + 1) % list.length
-              game?.redraw()
-            }
+          gameButtons = []
+
+          list.forEach((g, i) => {
+            gameButtons.push(PixiButton({
+              content: () => ({
+                text: g.id,
+                pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 },
+                anchor: { x: 0, y: 0 },
+                style: { fontSize: 20, fill: 0xffffff },
+                strokeAlpha: 1
+              }),
+              onClick: () => {
+                index = i
+              }
+            }))
           })
+
+          // align the game buttons
+          const totalWidth = gameButtons.reduce((acc, b) => acc + b.c.width, 0) + 20 * (gameButtons.length - 1)
+          let x = -totalWidth / 2
+          for (const gb of gameButtons) {
+            gb.c.position.x = x
+            x += gb.c.width + 20
+          }
 
           const select = pixiText({
             text: "select game:",
@@ -86,7 +99,7 @@ const GameLobby = (): Entity => {
             }
           })
 
-          r.c.addChild(outline, game.c, play.c, select)
+          r.c.addChild(outline, ...gameButtons.map(b => b.c), play.c, select)
           drawOutline()
         }
       })

@@ -1,5 +1,5 @@
 import {
-  Background,  CameraSystem,  DefaultUI,  GameBuilder,  HealthBarSystem, LineFloor,
+  Background,  CameraSystem,  DefaultUI,  GameBuilder,  HealthBarSystem, InventorySystem, LineFloor,
   LineWall, PvEHUD, Shop, ShopButton, Skelly, SpawnSystem, ZomiSpawnSystem
 } from "@piggo-gg/core"
 
@@ -14,7 +14,7 @@ export const Dungeon: GameBuilder = {
   id: "dungeon",
   init: (world) => ({
     id: "dungeon",
-    systems: [CameraSystem(), SpawnSystem(Skelly), ZomiSpawnSystem, HealthBarSystem],
+    systems: [InventorySystem, CameraSystem(), SpawnSystem(Skelly), ZomiSpawnSystem, HealthBarSystem],
     entities: [
       ...DefaultUI(world),
       Background({ img: "space.png" }),
