@@ -93,21 +93,22 @@ export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystem
       onTick: (entities: Entity<Renderable | Position>[]) => {
         let numHidden = 0
 
-        for (const entity of entities) {
-          const { position, renderable } = entity.components
+        // cull far away entities
+        // for (const entity of entities) {
+        //   const { position, renderable } = entity.components
 
-          // cull if far from camera
-          if (renderable.cullable && !position.screenFixed && renderable.c.children) {
-            renderable.c.children.forEach((child) => {
-              child.visible = renderer.camera.inFrame({
-                x: position.data.x + child.position.x,
-                y: position.data.y + child.position.y
-              })
+        //   // cull if far from camera
+        //   if (renderable.cullable && !position.screenFixed && renderable.c.children) {
+        //     renderable.c.children.forEach((child) => {
+        //       child.visible = renderer.camera.inFrame({
+        //         x: position.data.x + child.position.x,
+        //         y: position.data.y + child.position.y
+        //       })
 
-              if (!child.visible) numHidden++
-            })
-          }
-        }
+        //       if (!child.visible) numHidden++
+        //     })
+        //   }
+        // }
 
         // center camera on player's character
         const character = world.client?.playerCharacter()

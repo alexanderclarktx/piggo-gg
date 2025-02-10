@@ -58,7 +58,8 @@ const GameLobby = (): Entity => {
               text: list[index].id,
               pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 },
               anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 20, fill: 0xffffff }
+              style: { fontSize: 20, fill: 0xffffff },
+              strokeAlpha: 1
             }),
             onClick: () => {
               index = (index + 1) % list.length
@@ -78,8 +79,7 @@ const GameLobby = (): Entity => {
               text: "play",
               pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 40 },
               anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 60, fill: 0xffccff },
-              strokeAlpha: 0
+              style: { fontSize: 60, fill: 0xffccff }
             }),
             onClick: () => {
               world.setGame(list[index].id)
