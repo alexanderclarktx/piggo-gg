@@ -15,6 +15,7 @@ export const CommandSystem = ClientSystemBuilder({
         if (match) {
           const action = parse({ world, match })
           if (action) {
+            // TODO can this be more first-class
             world.actionBuffer.push(world.tick + 1, "world", action)
           }
         }
