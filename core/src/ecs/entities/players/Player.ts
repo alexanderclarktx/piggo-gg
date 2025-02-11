@@ -2,16 +2,17 @@ import { Actions, Controlling, Entity, Networked, PC, Team, switchTeam, Money } 
 
 export type PlayerProps = {
   id: string
+  name?: string
 }
 
 export type Player = Entity<PC | Controlling | Actions | Team>
 
-export const Player = ({ id }: PlayerProps): Player => Entity({
+export const Player = ({ id, name }: PlayerProps): Player => Entity({
   id: id,
   persists: true,
   components: {
     networked: Networked(),
-    pc: PC({ name: id }),
+    pc: PC({ name: name ?? "noob" }),
     controlling: Controlling(),
     actions: Actions({ switchTeam }),
     team: Team(1)

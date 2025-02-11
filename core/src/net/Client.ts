@@ -9,7 +9,7 @@ const servers = {
   // dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
-const env = location.hostname === "localhost" ? "dev" : "production"
+export const env = location.hostname === "localhost" ? "dev" : "production"
 
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
 

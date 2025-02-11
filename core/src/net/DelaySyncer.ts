@@ -7,7 +7,7 @@ export const DelaySyncer: Syncer = {
       actions: world.actionBuffer.atTick(world.tick + 1) ?? {},
       chats: world.chatHistory.atTick(world.tick) ?? {},
       game: world.currentGame.id,
-      player: world.client?.playerId() ?? "",
+      playerId: world.client?.playerId() ?? "",
       serializedEntities: {},
       tick: world.tick,
       timestamp: Date.now(),
@@ -38,7 +38,7 @@ export const DelaySyncer: Syncer = {
           world.addEntity(Zomi({ id: entityId }))
         } else if (entityId.startsWith("ball")) {
           world.addEntity(Ball({ id: entityId }))
-        } else if (entityId.startsWith("noob")) {
+        } else if (entityId.startsWith("player")) {
           world.addEntity(Player({ id: entityId }))
         } else if (entityId.startsWith("hitbox")) {
           world.addEntity(Hitbox({ id: entityId, radius: 3, color: 0xffff00 }))

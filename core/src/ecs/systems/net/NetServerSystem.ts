@@ -16,7 +16,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
       actions: world.actionBuffer.atTick(world.tick) ?? {},
       chats: world.chatHistory.atTick(world.tick) ?? {},
       game: world.currentGame.id,
-      player: "server",
+      playerId: "server",
       serializedEntities: world.entitiesAtTick[world.tick] ?? {},
       tick: world.tick,
       timestamp: Date.now(),

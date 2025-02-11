@@ -2,6 +2,7 @@ import { Chat, Cursor, Entity, EscapeMenu, FullscreenButton, isMobile, Joystick,
 
 export const DefaultUI = (world: World): Entity[] => {
   if (world.runtimeMode !== "client") return []
+
   return isMobile() ? DefaultMobileUI() : DefaultDesktopUI()
 }
 

@@ -1,3 +1,4 @@
 export const colors = {
-  piggo: "0xffc0cb"
+  piggo: "0xffc0cb",
+  gold: "0xffee55"
 }

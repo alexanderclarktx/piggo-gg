@@ -1,9 +1,14 @@
-import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, pixiCircle } from "@piggo-gg/core"
+import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, env, pixiCircle } from "@piggo-gg/core"
 import toast from "react-hot-toast"
 
 export type InviteStoneProps = {
   pos: XY
   tint?: number
+}
+
+const hosts = {
+  dev: "http://localhost:8000",
+  production: "https://piggo.gg"
 }
 
 export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
@@ -27,14 +32,14 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
 
           let url = ""
           if (world.client.lobbyId) {
-            url = `https://piggo.gg/?join=${world.client.lobbyId}`
+            url = `${hosts[env]}/?join=${world.client.lobbyId}`
             navigator.clipboard.writeText(url)
             toast.success(`Copied Invite URL`)
           } else {
             world.client.lobbyCreate((response) => {
               if ("error" in response) return
 
-              url = `https://piggo.gg/?join=${response.lobbyId}`
+              url = `${hosts[env]}/?join=${response.lobbyId}`
               navigator.clipboard.writeText(url)
               toast.success(`Copied Invite URL`)
             })

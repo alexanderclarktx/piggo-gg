@@ -12,7 +12,6 @@ export const EscapeMenu = (): Entity => {
       }),
       actions: Actions({
         toggleVisible: () => {
-          console.log("toggleVisible")
           visible = !visible
           escapeMenu.components.renderable.visible = visible
         }
@@ -36,7 +35,7 @@ export const EscapeMenu = (): Entity => {
               style: { fill: 0xffffff, fontSize }
             }),
             onClick: () => {
-              world.actionBuffer.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
+              world.actionBuffer.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
             }
           })
 

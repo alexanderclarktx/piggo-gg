@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, TextBox, World, chatBuffer, chatIsOpen, entries } from "@piggo-gg/core"
+import { Entity, Position, Renderable, TextBox, chatBuffer, chatIsOpen, entries } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
 export const Chat = (): Entity => {
@@ -20,8 +20,9 @@ export const Chat = (): Entity => {
         world.chatHistory.keys().slice(0, 4).forEach((tick) => {
           const messagesForEntity = world.chatHistory.atTick(tick)
           if (messagesForEntity) entries(messagesForEntity).forEach(([player, messages]) => {
+            const playerName = world.entities[player]?.components.pc?.data.name ?? player
             messages.forEach((message) => {
-              if (messages.length < 4) lastMessages.push(`${player}: ${message}`)
+              if (messages.length < 4) lastMessages.push(`${playerName}: ${message}`)
             })
           })
         })
