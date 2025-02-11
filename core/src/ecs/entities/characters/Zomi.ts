@@ -13,7 +13,7 @@ export type ZomiProps = {
 
 const colors = [0xff3300, 0xff7700, 0xccee00, 0x00ff00]
 
-export const Zomi = ({ id, color, positionProps = { x: 100, y: 100 } }: ZomiProps = {}) => {
+export const Zomi = ({ id, color, positionProps = { x: randomInt(200, 100), y: randomInt(200, 100) } }: ZomiProps = {}) => {
   const zomi = Entity<Health | Actions>({
     id: id ?? `zomi-${randomInt(1000)}`,
     components: {

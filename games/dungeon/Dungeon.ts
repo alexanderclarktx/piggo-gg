@@ -7,7 +7,7 @@ const width = 72
 const height = 36
 const dim = 16
 
-const x = -700
+const x = -580
 const y = 100
 
 export const Dungeon: GameBuilder = {

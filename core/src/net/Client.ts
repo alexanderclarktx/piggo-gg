@@ -1,7 +1,7 @@
 import {
-  Character, DelaySyncer, LobbyCreate, LobbyJoin, NetClientSystem,
-  NetMessageTypes, Player, stringify, RequestData, RequestTypes,
-  Syncer, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList
+  Character, DelaySyncer, LobbyCreate, LobbyJoin, NetClientSystem, NetMessageTypes,
+  Player, stringify, RequestData, RequestTypes, Syncer, World, genPlayerId,
+  SoundManager, genHash, AuthLogin, FriendsList, Pls
 } from "@piggo-gg/core"
 import toast from "react-hot-toast"
 
@@ -37,6 +37,7 @@ export type Client = {
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   authLogin: (address: string, message: string, signature: string) => void
+  aiPls: (prompt: string, callback: Callback<Pls>) => void
   friendsList: (callback: Callback<FriendsList>) => void
 }
 
@@ -125,6 +126,11 @@ export const Client = ({ world }: ClientProps): Client => {
           client.player.components.pc.data.name = response.name
           client.token = response.token
         }
+      })
+    },
+    aiPls: (prompt, callback) => {
+      request<Pls>({ route: "ai/pls", type: "request", id: genHash(), prompt }, (response) => {
+        callback(response)
       })
     },
     friendsList: (callback) => {

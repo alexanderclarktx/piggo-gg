@@ -44,7 +44,8 @@ export type Request<Route extends string, Response extends {} = {}> = {
 export type RequestTypes =
   LobbyList | LobbyCreate | LobbyJoin | LobbyExit |
   FriendsList | FriendsAdd | FriendsRemove |
-  AuthLogin
+  AuthLogin |
+  Pls
 
 export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
 
@@ -79,3 +80,6 @@ export type FriendsRemove = Request<"friends/remove"> & { removeUserId: string }
 export type AuthLogin = Request<"auth/login", { token: string, name: string }> & {
   address: string, message: string, signature: string
 }
+
+// ai endpoints
+export type Pls = Request<"ai/pls", { response: string[] }> & { prompt: string }

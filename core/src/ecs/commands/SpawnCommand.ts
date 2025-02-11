@@ -63,8 +63,15 @@ export const PlsCommand: Command<PlsCommandParams> = {
     return { actionId: "pls", playerId: world.client?.playerId(), params: { prompt: match[1] } }
   },
   invoke: ({ params, world }) => {
-    fetch
-
+    world.client?.aiPls(params.prompt, (response) => {
+      if ("error" in response) {
+        console.error(response.error)
+      } else {
+        response.response.forEach((command) => {
+          world.chatHistory.push(world.tick + 2, world.client?.playerId() ?? "", command)
+        })
+      }
+    })
   },
   cooldown: 0
 }
