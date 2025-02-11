@@ -98,9 +98,20 @@ const GameLobby = (): Entity => {
             }),
             onClick: () => {
               world.actionBuffer.push(world.tick + 2, "world", { actionId: "game", params: { game: list[index].id } })
-              // world.setGame(list[index].id)
             }
           })
+
+          // const invite = PixiButton({
+          //   content: () => ({
+          //     text: "invite",
+          //     pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 120 },
+          //     anchor: { x: 0.5, y: 0 },
+          //     style: { fontSize: 20, fill: 0xffccff }
+          //   }),
+          //   onClick: () => {
+          //     world.actionBuffer.push(world.tick + 2, "world", { actionId: "invite", params: { game: list[index].id } })
+          //   }
+          // })
 
           r.c.addChild(outline, ...gameButtons.map(b => b.c), play.c, select)
           drawOutline()
