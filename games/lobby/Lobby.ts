@@ -1,6 +1,6 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton, hosts, env
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC
 } from "@piggo-gg/core"
 import { Flappy, Craft, Dungeon, Soccer } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -13,9 +13,82 @@ export const Lobby: GameBuilder = {
     view: "side",
     entities: [
       Cursor(), Chat(),
-      Friends(), Profile(), GameLobby(),
+      Friends(), Profile(), GameLobby(), Players()
     ]
   })
+}
+
+// all the players in the lobby
+const Players = (): Entity => {
+
+  let lastSeenPcs: Record<string, string> = {}
+
+  const nameText = (playerName: string) => pixiText({
+    text: playerName, pos: { x: 0, y: 0 }, anchor: { x: 0, y: 0.5 }, style: { fontSize: 20 }
+  })
+
+  let texture: any = undefined
+
+  const players = Entity<Position | Renderable>({
+    id: "players",
+    components: {
+      position: Position({ x: 300, y: 100, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        dynamic: ({ renderable, world }) => {
+          if (world.client?.connected === false) {
+            renderable.c.removeChildren()
+            lastSeenPcs = {}
+            return
+          }
+
+          const pcs = world.queryEntities(["pc"]) as Entity<PC>[]
+
+          let shouldRedraw = false
+          pcs.forEach(p => {
+            if (lastSeenPcs[p.id] !== p.components.pc.data.name) {
+              shouldRedraw = true
+            }
+          })
+
+          if (!shouldRedraw) return
+
+          renderable.c.removeChildren()
+
+          const names = pcs.map(p => nameText(p.components.pc.data.name))
+          const totalWidth = names.reduce((acc, c) => acc + c.width, 0) + 20 * (names.length - 1)
+          let x = -totalWidth / 2
+          for (const name of names) {
+            name.position.x = x
+            x += name.width + 20
+          }
+
+          renderable.c.addChild(...names)
+
+          names.forEach((name, i) => {
+            const pfp = new Sprite({ texture, scale: 0.9, anchor: 0.5, position: { x: name.x + name.width / 2, y: -40 } })
+            renderable.c.addChild(pfp)
+          })
+
+          lastSeenPcs = {}
+          pcs.forEach(p => {
+            lastSeenPcs[p.id] = p.components.pc.data.name
+          })
+        },
+        setup: async (r, renderer) => {
+          const { height, width } = renderer.app.screen
+
+          players.components.position.data.x = 220 + ((width - 230) / 2)
+          players.components.position.data.y = (height / 2) - 40
+          
+          lastSeenPcs = {}
+
+          texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
+        }
+      })
+    }
+  })
+  return players
 }
 
 const GameLobby = (): Entity => {
@@ -37,9 +110,8 @@ const GameLobby = (): Entity => {
           })
         },
         interactiveChildren: true,
-        setup: async (r, _, world) => {
-          const height = world.renderer!.app.screen.height
-          const width = world.renderer!.app.screen.width
+        setup: async (r, renderer, world) => {
+          const { height, width } = renderer.app.screen
 
           const outline = pixiGraphics()
           outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
@@ -81,7 +153,7 @@ const GameLobby = (): Entity => {
               text: "play",
               pos: { x: (width - 230) / 2, y: 100 },
               anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 60, fill: 0xffccff }
+              style: { fontSize: 50, fill: 0xffccff, fontFamily: "Tahoma" }
             }),
             onClick: () => {
               world.actionBuffer.push(world.tick + 2, "world", { actionId: "game", params: { game: list[index].id } })
