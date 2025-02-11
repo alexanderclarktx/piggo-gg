@@ -1,14 +1,9 @@
-import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, env, pixiCircle } from "@piggo-gg/core"
+import { Actions, Clickable, Collider, Debug, Entity, Position, Renderable, XY, env, hosts, pixiCircle } from "@piggo-gg/core"
 import toast from "react-hot-toast"
 
 export type InviteStoneProps = {
   pos: XY
   tint?: number
-}
-
-const hosts = {
-  dev: "http://localhost:8000",
-  production: "https://piggo.gg"
 }
 
 export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {

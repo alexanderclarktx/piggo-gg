@@ -1,8 +1,5 @@
 import { Ball, Command, Entity, InvokedAction, Piggo, Rock, Spaceship, Tree, Zomi, genHash, keys } from "@piggo-gg/core"
 
-type SpawnCommandParams = { entity: string, id: string }
-type SpawnCommandAction = InvokedAction<"spawn", SpawnCommandParams>
-
 const entityBuilders: Record<string, (_?: { id: string }) => Entity> = {
   // "ball": Ball,
   // "spaceship": Spaceship,
@@ -13,12 +10,14 @@ const entityBuilders: Record<string, (_?: { id: string }) => Entity> = {
   "rock": Rock
 }
 
+type SpawnCommandParams = { entity: string, id: string }
+
 export const SpawnCommand: Command<SpawnCommandParams> = {
   id: "spawn",
-  regex: /\/spawn (\w+)/,
+  regex: /^\/spawn (\w+)/,
   prepare: () => ({ actionId: "spawn" }),
-  parse: ({ match, world }): SpawnCommandAction | undefined => {
-    let response: SpawnCommandAction | undefined = undefined
+  parse: ({ match, world }): InvokedAction<"spawn", SpawnCommandParams> | undefined => {
+    let response: InvokedAction<"spawn", SpawnCommandParams> | undefined = undefined
 
     keys(entityBuilders).forEach((id) => {
       if (id === match[1]) response = {
@@ -39,18 +38,40 @@ export const SpawnCommand: Command<SpawnCommandParams> = {
   cooldown: 0
 }
 
-export type RemoveCommandParams = { entityId: string }
-export type RemoveCommandAction = InvokedAction<"rm", RemoveCommandParams>
+type RemoveCommandParams = { entityId: string }
 
 export const RemoveCommand: Command<RemoveCommandParams> = {
   id: "rm",
-  regex: /\/rm ([^\s]+)/,
+  regex: /^\/rm ([^\s]+)/,
   prepare: () => ({ actionId: "rm" }),
-  parse: ({ match, world }): RemoveCommandAction | undefined => {
+  parse: ({ match, world }): InvokedAction<"rm", RemoveCommandParams> | undefined => {
     return { actionId: "rm", playerId: world.client?.playerId(), params: { entityId: match[1] } }
   },
   invoke: ({ params, world }) => {
     world.removeEntity(params.entityId)
+  },
+  cooldown: 0
+}
+
+export type PlsCommandParams = { prompt: string }
+
+export const PlsCommand: Command<PlsCommandParams> = {
+  id: "pls",
+  regex: /^pls (.+)/,
+  prepare: () => ({ actionId: "pls" }),
+  parse: ({ match, world }): InvokedAction<"pls", PlsCommandParams> | undefined => {
+    return { actionId: "pls", playerId: world.client?.playerId(), params: { prompt: match[1] } }
+  },
+  invoke: ({ params, world }) => {
+    world.client?.aiPls(params.prompt, (response) => {
+      if ("error" in response) {
+        console.error(response.error)
+      } else {
+        response.response.forEach((command) => {
+          world.chatHistory.push(world.tick + 2, world.client?.playerId() ?? "", command)
+        })
+      }
+    })
   },
   cooldown: 0
 }

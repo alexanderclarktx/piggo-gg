@@ -5,7 +5,7 @@ export type pixiRectProps = { x: number, y: number, w: number, h: number, rounde
 export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<pixiStyleProps, "g"> }
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, strokeColor?: number, strokeAlpha?: number, strokeWidth?: number }
 
-export type pixiTextStyle = { fill?: number, fontSize?: number }
+export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: string }
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
 export const pixiGraphics = (opts: GraphicsOptions | GraphicsContext = {}): Graphics => new Graphics(opts)
@@ -41,7 +41,8 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     resolution: 2,
     style: {
       fill: style?.fill ?? 0xffffff,
-      fontSize: style?.fontSize ?? 14
+      fontSize: style?.fontSize ?? 14,
+      fontFamily: style?.fontFamily ?? "Helvetica"
     }
   })
 }
