@@ -1,5 +1,5 @@
 import { ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
-import { ServerWorld, PrismaClient } from "@piggo-gg/server"
+import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import { ethers } from "ethers"
 import jwt from "jsonwebtoken"
@@ -140,6 +140,10 @@ export const Api = (): Api => {
         }
 
         return { id: data.id, token, name: user.name }
+      },
+      "ai/pls": async ({ data }) => {
+        const response = await gptPrompt(data.prompt)
+        return { id: data.id, response }
       }
     },
     init: () => {
