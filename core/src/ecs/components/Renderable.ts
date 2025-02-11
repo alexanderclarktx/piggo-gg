@@ -59,7 +59,7 @@ export type RenderableProps = {
   dynamic?: (_: { container: Container, renderable: Renderable, entity: Entity, world: World }) => void
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
-  setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void>
+  setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void> // todo single arg
 }
 
 export const Renderable = (props: RenderableProps): Renderable => {

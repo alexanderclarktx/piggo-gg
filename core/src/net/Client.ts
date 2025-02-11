@@ -3,12 +3,19 @@ import {
   NetMessageTypes, Player, stringify, RequestData, RequestTypes,
   Syncer, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList
 } from "@piggo-gg/core"
+import toast from "react-hot-toast"
 
 const servers = {
   dev: "ws://localhost:3000",
   // dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
+
+export const hosts = {
+  dev: "http://localhost:8000",
+  production: "https://piggo.gg"
+}
+
 export const env = location.hostname === "localhost" ? "dev" : "production"
 
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
@@ -26,6 +33,7 @@ export type Client = {
   playerId: () => string
   playerName: () => string
   playerCharacter: () => Character | undefined
+  copyInviteLink: () => void
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   authLogin: (address: string, message: string, signature: string) => void
@@ -69,6 +77,22 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     playerCharacter: () => {
       return client.player.components.controlling.getControlledEntity(world)
+    },
+    copyInviteLink: () => {
+      let url = ""
+      if (client.lobbyId) {
+        url = `${hosts[env]}/?join=${client.lobbyId}`
+        navigator.clipboard.writeText(url)
+        toast.success(`Copied Invite URL`)
+      } else {
+        client.lobbyCreate((response) => {
+          if ("error" in response) return
+
+          url = `${hosts[env]}/?join=${response.lobbyId}`
+          navigator.clipboard.writeText(url)
+          toast.success(`Copied Invite URL`)
+        })
+      }
     },
     lobbyCreate: (callback) => {
       request<LobbyCreate>({ route: "lobby/create", type: "request", id: genHash() }, (response) => {

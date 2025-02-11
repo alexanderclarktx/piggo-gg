@@ -1,6 +1,6 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton, hosts, env
 } from "@piggo-gg/core"
 import { Flappy, Craft, Dungeon, Soccer } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -20,18 +20,9 @@ export const Lobby: GameBuilder = {
 
 const GameLobby = (): Entity => {
 
-  let height = 0
-  let width = 0
-
   const list: GameBuilder[] = [Flappy, Craft, Dungeon, Soccer]
   let gameButtons: PixiButton[] = []
   let index = 0
-
-  const outline = pixiGraphics()
-  const drawOutline = () => {
-    outline.clear()
-    outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
-  }
 
   const gameLobby = Entity<Position | Renderable>({
     id: "gameLobby",
@@ -40,20 +31,18 @@ const GameLobby = (): Entity => {
       position: Position({ x: 220, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: ({ world }) => {
-          if (height !== world.renderer!.app.screen.height || width !== world.renderer!.app.screen.width) {
-            height = world.renderer!.app.screen.height
-            width = world.renderer!.app.screen.width
-          }
-
+        dynamic: () => {
           gameButtons.forEach((b, i) => {
             b.c.alpha = (i === index) ? 1 : 0.6
           })
         },
         interactiveChildren: true,
         setup: async (r, _, world) => {
-          height = world.renderer!.app.screen.height
-          width = world.renderer!.app.screen.width
+          const height = world.renderer!.app.screen.height
+          const width = world.renderer!.app.screen.width
+
+          const outline = pixiGraphics()
+          outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
 
           gameButtons = []
 
@@ -61,7 +50,7 @@ const GameLobby = (): Entity => {
             gameButtons.push(PixiButton({
               content: () => ({
                 text: g.id,
-                pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 40 },
+                pos: { x: (width - 230) / 2, y: 60 },
                 anchor: { x: 0, y: 0 },
                 style: { fontSize: 20, fill: 0xffffff },
                 strokeAlpha: 1
@@ -83,14 +72,14 @@ const GameLobby = (): Entity => {
           const select = pixiText({
             text: "select game:",
             style: { fontSize: 20 },
-            pos: { x: (width - 230) / 2, y: (height - 20) / 2 - 80 },
+            pos: { x: (width - 230) / 2, y: 20 },
             anchor: { x: 0.5, y: 0 }
           })
 
           const play = PixiButton({
             content: () => ({
               text: "play",
-              pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 40 },
+              pos: { x: (width - 230) / 2, y: 100 },
               anchor: { x: 0.5, y: 0 },
               style: { fontSize: 60, fill: 0xffccff }
             }),
@@ -99,20 +88,18 @@ const GameLobby = (): Entity => {
             }
           })
 
-          // const invite = PixiButton({
-          //   content: () => ({
-          //     text: "invite",
-          //     pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 120 },
-          //     anchor: { x: 0.5, y: 0 },
-          //     style: { fontSize: 20, fill: 0xffccff }
-          //   }),
-          //   onClick: () => {
-          //     world.actionBuffer.push(world.tick + 2, "world", { actionId: "invite", params: { game: list[index].id } })
-          //   }
-          // })
+          const invite = PixiButton({
+            content: () => ({
+              text: "Copy Invite Link",
+              pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 20 },
+              anchor: { x: 0.5, y: 0 },
+              style: { fontSize: 20, fill: 0xffffff },
+              strokeAlpha: 1
+            }),
+            onClick: () => world.client?.copyInviteLink()
+          })
 
-          r.c.addChild(outline, ...gameButtons.map(b => b.c), play.c, select)
-          drawOutline()
+          r.c.addChild(outline, ...gameButtons.map(b => b.c), play.c, select, invite.c)
         }
       })
     }
