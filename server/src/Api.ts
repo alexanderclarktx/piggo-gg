@@ -130,11 +130,10 @@ export const Api = (): Api => {
         // 3. create session token
         const token = jwt.sign({ address: user.name, name: user.name }, JWT_SECRET, { expiresIn: "8h" })
 
-        // 4. set client data
+        // 4. update player entity name
         ws.data.playerName = user.name
         const pc = api.worlds[ws.data.worldId]?.world.entities[ws.data.playerId]?.components.pc
         if (pc) {
-          console.log("auth'd", ws.data.playerName)
           pc.data.name = user.name
         } else {
           console.warn("no pc found")

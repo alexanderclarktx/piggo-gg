@@ -1,7 +1,6 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton,
-  InviteStone
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton
 } from "@piggo-gg/core"
 import { Flappy, Craft, Dungeon, Soccer } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -15,7 +14,6 @@ export const Lobby: GameBuilder = {
     entities: [
       Cursor(), Chat(),
       Friends(), Profile(), GameLobby(),
-      InviteStone({pos: {x: 100, y: 100}})
     ]
   })
 }
