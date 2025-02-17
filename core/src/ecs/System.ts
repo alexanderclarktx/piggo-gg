@@ -16,6 +16,8 @@ export type SystemBuilder<T extends string = string> = {
   init: (world: World) => System<T> | undefined
 }
 
+export const SystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => builder
+
 export const ClientSystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => ({
   ...builder,
   init: (world: World) => {

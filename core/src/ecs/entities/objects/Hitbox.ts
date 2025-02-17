@@ -84,7 +84,7 @@ export const SpawnHitbox = Action<SpawnHitboxProps>("spawnHitbox", ({ world, par
   const { team, pos, radius, damage, visible, expireTicks, onHit, onExpire } = params
 
   world.addEntity(Hitbox({
-    id: `hitbox-${randomInt(1000)}`,
+    id: `hitbox-${randomInt(1000)}`, // todo not random
     pos,
     radius,
     visible,
