@@ -12,7 +12,7 @@ export const Craft: GameBuilder = {
     entities: [
       ...DefaultUI(world),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
-      Zomi(),
+      // Zomi(),
       // Chicko(), Chicko(),
       Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),

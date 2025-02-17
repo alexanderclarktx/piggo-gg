@@ -225,7 +225,7 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       // handle character inventory
-      const activeItem = inventory?.activeItem()
+      const activeItem = inventory?.activeItem(world)
       if (activeItem) {
         ["mb1", "mb2"].forEach((keyPress) => {
 

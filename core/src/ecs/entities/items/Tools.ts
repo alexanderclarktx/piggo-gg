@@ -19,7 +19,6 @@ export const Tool = (
   id: id ?? `${name}-${randomInt(1000)}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
-    networked: Networked(),
     actions: Actions<any>({
       mb1: Whack(sound, (e => {
         const { element } = e.components

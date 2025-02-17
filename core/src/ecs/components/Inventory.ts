@@ -1,20 +1,21 @@
 import {
   Actions, Character, Component, Entity, Input, Position,
-  Renderable, SystemBuilder, Team, ItemEntity
+  Renderable, SystemBuilder, Team, ItemEntity,
+  World
 } from "@piggo-gg/core"
 
 export type ItemBuilder = (_: { id?: string, character?: Character }) => ItemEntity
 
 export type Inventory = Component<"inventory", {
-  items: (string | undefined)[]
+  items: (string[] | undefined)[]
   activeItemIndex: number
 }> & {
-  items: (ItemEntity[] | undefined)[]
+  // items: (ItemEntity[] | undefined)[]
   itemBuilders: ItemBuilder[]
-  activeItem: () => ItemEntity | null
-  addItem: (item: ItemEntity) => void
+  activeItem: (world: World) => ItemEntity | null
+  // addItem: (item: ItemEntity) => void
   includes: (item: ItemEntity) => boolean
-  dropActiveItem: () => void
+  // dropActiveItem: () => void
   setActiveItemIndex: (index: number) => void
 }
 
@@ -25,48 +26,54 @@ export const Inventory = (items: ItemBuilder[] = []): Inventory => {
       items: [undefined, undefined, undefined, undefined, undefined]
     },
     type: "inventory",
-    items: [undefined, undefined, undefined, undefined, undefined],
+    // items: [undefined, undefined, undefined, undefined, undefined],
     itemBuilders: items,
 
-    activeItem: () => {
-      return inventory.items[inventory.data.activeItemIndex]?.[0] ?? null
-    },
-    addItem: (item: ItemEntity) => {
-      if (inventory.includes(item)) return
+    activeItem: (world: World) => {
+      const item = inventory.data.items[inventory.data.activeItemIndex]
+      if (!item) return null
 
-      if (item.components.item.stackable) {
-        // check if we already have this item
-        for (const slot of inventory.items) {
-          if (slot && slot[0].components.item.name === item.components.item.name) {
-            slot.push(item)
-            return
-          }
-        }
-      }
+      const itemEntity = world.entities[item[0]]
+      if (!itemEntity) return null
 
-      for (let i = 0; i < inventory.items.length; i++) {
-        const slot = inventory.items[i]
-        if (slot === undefined) {
-          inventory.items[i] = [item]
-          return
-        }
-      }
+      return itemEntity as ItemEntity
     },
-    dropActiveItem: () => {
-      const slot = inventory.items[inventory.data.activeItemIndex]
-      if (!slot) return
-      if (slot.length > 1) {
-        slot.shift()
-        return
-      }
-      inventory.items[inventory.data.activeItemIndex] = undefined
-    },
+    // addItem: (item: ItemEntity) => {
+    //   if (inventory.includes(item)) return
+
+    //   if (item.components.item.stackable) {
+    //     // check if we already have this item
+    //     for (const slot of inventory.items) {
+    //       if (slot && slot[0].components.item.name === item.components.item.name) {
+    //         slot.push(item)
+    //         return
+    //       }
+    //     }
+    //   }
+
+    //   for (let i = 0; i < inventory.items.length; i++) {
+    //     const slot = inventory.items[i]
+    //     if (slot === undefined) {
+    //       inventory.items[i] = [item]
+    //       return
+    //     }
+    //   }
+    // },
+    // dropActiveItem: () => {
+    //   const slot = inventory.items[inventory.data.activeItemIndex]
+    //   if (!slot) return
+    //   if (slot.length > 1) {
+    //     slot.shift()
+    //     return
+    //   }
+    //   inventory.items[inventory.data.activeItemIndex] = undefined
+    // },
     setActiveItemIndex: (index: number) => {
       inventory.data.activeItemIndex = index
     },
     includes: (item: ItemEntity) => { // TODO handle stackable items
-      for (const slot of inventory.items) {
-        if (slot && slot[0].id === item.id) return true
+      for (const ids of inventory.data.items) {
+        if (ids && ids[0] === item.id) return true
       }
       return false
     }
@@ -90,50 +97,57 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           if (inventory.itemBuilders.length) {
             inventory.itemBuilders.forEach((builder, index) => {
               const item = builder({ character: entity })
-              inventory.items[index] = [item]
+
+              inventory.data.items[index] = [item.id]
+              world.addEntity(item)              
+              knownItems.add(item.id)
             })
             inventory.itemBuilders = []
           }
 
           // update networked items
-          inventory.data.items = inventory.items.map(slot => {
-            if (!slot) return undefined
-            return slot[0].id
-          })
+          // inventory.data.items = inventory.items.map(slot => {
+          //   if (!slot) return undefined
+          //   return slot[0].id
+          // })
 
           // remove stale items
-          for (let index = 0; index < inventory.items.length; index++) {
-            const slot = inventory.items[index]
-            if (!slot) continue
+          for (let index = 0; index < inventory.data.items.length; index++) {
+            const itemIds = inventory.data.items[index]
+            if (!itemIds) continue
 
-            const item = slot[0]
+            const item = itemIds[0]
+            const itemEntity = world.entities[item] as ItemEntity
 
-            if (knownItems.has(item.id) && !world.entities[item.id]) {
-              if (item.components.item.stackable) {
-                slot.shift()
-                if (slot.length === 0) inventory.items[index] = undefined
-                continue
-              } else {
-                inventory.items[index] = undefined
-                knownItems.delete(item.id)
-                continue
+            if (!itemEntity) {
+              if (knownItems.has(item)) {
+                inventory.data.items[index] = undefined
+                knownItems.delete(item)
               }
+              continue
             }
 
-            if (item.components.input) {
-              throw new Error("Item cannot have input component (it breaks InputSystem)")
+            // if (knownItems.has(item) && !itemEntity) {
+            //   if (itemIds.length > 1) {
+            //     itemIds.shift()
+            //     continue
+            //   } else {
+            //     inventory.data.items[index] = undefined
+            //     knownItems.delete(item)
+            //     continue
+            //   }
+            // }
+
+            if (itemEntity.components.input) {
+              throw new Error("Item cannot have input component (breaks InputSystem)")
             }
 
-            if (!world.entities[item.id]) world.addEntity(item)
-
-            knownItems.add(item.id)
-
-            item.components.renderable.visible = false
-            item.components.item.equipped = false
+            itemEntity.components.renderable.visible = false
+            itemEntity.components.item.equipped = false
           }
 
           // update active item
-          const activeItem = inventory.activeItem()
+          const activeItem = inventory.activeItem(world)
           if (activeItem) {
             activeItem.components.renderable.visible = true
             activeItem.components.item.equipped = true

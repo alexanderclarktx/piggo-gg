@@ -1,6 +1,7 @@
 import {
   Actions, Component, Effects, Entity, Renderable, Position, ProtoEntity,
-  XYdiff, abs, hypot, min, mouseScreen, Clickable, pickupItem, Debug, ClientSystemBuilder
+  XYdiff, abs, hypot, min, mouseScreen, Clickable, pickupItem, Debug, ClientSystemBuilder,
+  Networked
 } from "@piggo-gg/core"
 
 export type Item = Component<"item"> & {
@@ -35,6 +36,8 @@ export type ItemEntity = Entity<ItemComponents>
 export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
 
   const { renderable, actions, clickable } = entity.components
+
+  entity.components.networked = Networked()
 
   entity.components.debug = Debug()
 

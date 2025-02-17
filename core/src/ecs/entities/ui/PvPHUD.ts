@@ -35,7 +35,7 @@ export const MobilePvPHUD = (): Entity => {
           if (!playerCharacter) return
 
           const { health } = playerCharacter.components
-          const gun = playerCharacter.components.inventory?.activeItem()?.components?.gun
+          const gun = playerCharacter.components.inventory?.activeItem(world)?.components?.gun
 
           console.log("z", gun)
 
@@ -101,7 +101,7 @@ export const PvPHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => 
           if (!playerCharacter) return
 
           const { actions, health } = playerCharacter.components
-          const gun = playerCharacter.components.inventory?.activeItem()?.components?.gun
+          const gun = playerCharacter.components.inventory?.activeItem(world)?.components?.gun
 
           if (gun) ammo.text = `${gun.data.clip} ‖` // TODO infinite ammo ${gun.data.ammo}`
           if (health) hp.text = `${health.data.health} ⛨`
