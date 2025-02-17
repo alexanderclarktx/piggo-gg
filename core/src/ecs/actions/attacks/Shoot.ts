@@ -1,4 +1,4 @@
-import { Action, Character, KeyMouse, SpawnHitboxProps, randomInt } from "@piggo-gg/core"
+import { Action, Character, KeyMouse, SpawnHitboxProps } from "@piggo-gg/core"
 
 export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot", ({ world, params, entity }) => {
 
@@ -36,7 +36,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
       team,
       radius: gun.data.bulletSize,
       damage: () => gun.data.damage,
-      id: randomInt(1000),
+      id: world.random.int(1000),
       visible: true,
       expireTicks: 35
     }

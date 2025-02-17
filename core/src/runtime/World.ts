@@ -1,7 +1,7 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction,
   Renderer, SerializedEntity, values, StateBuffer, System,
-  SystemBuilder, SystemEntity, keys, ValidComponents
+  SystemBuilder, SystemEntity, keys, ValidComponents, Random
 } from "@piggo-gg/core"
 
 export type World = {
@@ -15,6 +15,7 @@ export type World = {
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   games: Record<string, GameBuilder>
   lastTick: DOMHighResTimeStamp
+  random: Random,
   renderer: Renderer | undefined
   runtimeMode: "client" | "server"
   systems: Record<string, System>
@@ -93,6 +94,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     addEntityBuilders: (entityBuilders: (() => Entity)[]) => {
       entityBuilders.forEach((entityBuilder) => world.addEntity(entityBuilder()))
     },
+    random: Random(123456789),
     removeEntity: (id: string) => {
       const entity = world.entities[id]
       if (entity) {

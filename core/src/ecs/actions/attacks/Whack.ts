@@ -31,7 +31,7 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
       team: characterEntity.components.team,
       radius: 20,
       damage,
-      id: randomInt(1000),
+      id: world.random.int(1000),
       visible: false,
       expireTicks: 2,
       onHit: () => {
