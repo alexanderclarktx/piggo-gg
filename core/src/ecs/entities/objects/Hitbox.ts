@@ -19,7 +19,7 @@ const onHitDefault = (e2: Entity<Position | Collider>) => {
     return true
   }
   return false
-}
+} 
 
 export type HitboxProps = {
   id: string

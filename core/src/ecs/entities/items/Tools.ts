@@ -1,5 +1,5 @@
 import {
-  Actions, Character, Clickable, Effects, ElementKinds, Item,
+  Actions, Clickable, Effects, ElementKinds, Item, ItemBuilder,
   ItemEntity, Networked, Position, Renderable, SpawnHitbox,
   ValidSounds, Whack, loadTexture, randomInt
 } from "@piggo-gg/core"
@@ -13,10 +13,12 @@ export type ToolProps = {
   damage: ElementToDamage
 }
 
-export const Tool = ({ name, sound, damage }: ToolProps) => (character: Character): ItemEntity => ItemEntity({
-  id: `${name}-${randomInt(1000)}`,
+export const Tool = (
+  { name, sound, damage }: ToolProps
+): ItemBuilder => ({ character, id }): ItemEntity => ItemEntity({
+  id: id ?? `${name}-${randomInt(1000)}`,
   components: {
-    position: Position({ follows: character.id }),
+    position: Position({ follows: character?.id ?? "" }),
     networked: Networked(),
     actions: Actions<any>({
       mb1: Whack(sound, (e => {
@@ -32,7 +34,7 @@ export const Tool = ({ name, sound, damage }: ToolProps) => (character: Characte
     }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: character.components.renderable.zIndex,
+      zIndex: 3,
       scale: 2.5,
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,

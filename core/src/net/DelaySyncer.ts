@@ -1,4 +1,22 @@
-import { Ball, GameData, Hitbox, LineWall, Player, SerializedEntity, Syncer, World, Zomi, entries, keys, stringify } from "@piggo-gg/core"
+import {
+  Axe, Ball, Entity, GameData, Hitbox, LineWall, Pickaxe, Piggo, Player,
+  Rock, SerializedEntity, Sword, Syncer, Tree, World, Zomi,
+  entries, keys, stringify
+} from "@piggo-gg/core"
+
+const tableOfEntities: Record<string, (_: { id?: string }) => Entity> = {
+  "zomi": Zomi,
+  "ball": Ball,
+  "player": Player,
+  "hitbox": Hitbox,
+  "linewall": LineWall,
+  "rock": Rock,
+  "tree": Tree,
+  "piggo": Piggo,
+  "axe": Axe,
+  "pickaxe": Pickaxe,
+  "sword": Sword
+}
 
 export const DelaySyncer: Syncer = {
   writeMessage: (world: World) => {
@@ -34,22 +52,33 @@ export const DelaySyncer: Syncer = {
     // add new entities if not present locally
     keys(message.serializedEntities).forEach((entityId) => {
       if (!world.entities[entityId]) {
-        if (entityId.startsWith("zombie")) {
-          world.addEntity(Zomi({ id: entityId }))
-        } else if (entityId.startsWith("ball")) {
-          world.addEntity(Ball({ id: entityId }))
-        } else if (entityId.startsWith("player")) {
-          world.addEntity(Player({ id: entityId }))
-        } else if (entityId.startsWith("hitbox")) {
-          world.addEntity(Hitbox({ id: entityId, radius: 3, color: 0xffff00 }))
-        } else if (entityId.startsWith("linewall")) {
-          const points = entityId.split("-").slice(1).map((p) => parseInt(p)).filter(Number)
-          world.addEntity(LineWall({ id: entityId, points, visible: true }))
+        const entityKind = entityId.split("-")[0]
+        const constructor = tableOfEntities[entityKind]
+        if (constructor !== undefined) {
+          console.log("ADD ENTITY", entityId)
+          world.addEntity(constructor({ id: entityId }))
         } else {
           console.error("UNKNOWN ENTITY ON SERVER", entityId)
         }
       }
     })
+          // if (!world.entities[entityId]) {
+          //   if (entityId.startsWith("zombie")) {
+          //     world.addEntity(Zomi({ id: entityId }))
+          //   } else if (entityId.startsWith("ball")) {
+          //     world.addEntity(Ball({ id: entityId }))
+          //   } else if (entityId.startsWith("player")) {
+          //     world.addEntity(Player({ id: entityId }))
+          //   } else if (entityId.startsWith("hitbox")) {
+          //     world.addEntity(Hitbox({ id: entityId, radius: 3, color: 0xffff00 }))
+          //   } else if (entityId.startsWith("linewall")) {
+          //     const points = entityId.split("-").slice(1).map((p) => parseInt(p)).filter(Number)
+          //     world.addEntity(LineWall({ id: entityId, points, visible: true }))
+          //   } else {
+          //     console.error("UNKNOWN ENTITY ON SERVER", entityId)
+          //   }
+          // }
+        // })
 
     let rollback = false
 
@@ -69,9 +98,9 @@ export const DelaySyncer: Syncer = {
 
     // compare entity counts
     if (!rollback) {
-      if (keys(localEntities).length !== keys(message.serializedEntities).length) {
-        mustRollback(`entity count local:${keys(localEntities).length} remote:${keys(message.serializedEntities).length}`)
-      }
+      const numLocal = keys(localEntities).length
+      const numRemote = keys(message.serializedEntities).length
+      if (numLocal !== numRemote) mustRollback(`entity count local:${numLocal} remote:${numRemote}`)
     }
 
     // compare entity states

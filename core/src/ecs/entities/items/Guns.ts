@@ -4,10 +4,10 @@ import {
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character) => ItemEntity({
+export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ character }) => ItemEntity({
   id: name,
   components: {
-    position: Position({ follows: character.id }),
+    position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
       spawnHitbox: SpawnHitbox,
       mb1: Shoot,
@@ -25,10 +25,14 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
       interpolate: true,
       visible: false,
       outline: { color: 0x000000, thickness: 1 },
-      dynamic: ({ renderable, entity }) => {
+      dynamic: ({ renderable, entity, world }) => {
         if (entity.components.item!.dropped) return
 
-        const { pointing, pointingDelta } = character.components.position.data
+        const playerCharacter = world.client?.playerCharacter()
+
+        if (!playerCharacter) return
+
+        const { pointing, pointingDelta } = playerCharacter.components.position.data
 
         renderable.zIndex = (pointingDelta.y > 0) ? 3 : 2
 

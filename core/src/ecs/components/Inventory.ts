@@ -3,7 +3,7 @@ import {
   SystemBuilder, Team, keys, values, entries, ItemEntity
 } from "@piggo-gg/core"
 
-export type ItemBuilder = (character: Character) => ItemEntity
+export type ItemBuilder = (_: { id?: string, character?: Character }) => ItemEntity
 
 export type Inventory = Component<"inventory"> & {
   items: Record<string, ItemEntity[] | undefined>
@@ -16,7 +16,7 @@ export type Inventory = Component<"inventory"> & {
   includes: (item: ItemEntity) => boolean
 }
 
-export const Inventory = (items: ((character: Character) => ItemEntity)[] = []): Inventory => {
+export const Inventory = (items: ((_: { id?: string, character: Character }) => ItemEntity)[] = []): Inventory => {
   const inventory: Inventory = {
     type: "inventory",
     items: { 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined },
@@ -40,7 +40,7 @@ export const Inventory = (items: ((character: Character) => ItemEntity)[] = []):
 
         for (let index of keys(inventory.items)) {
           if (!inventory.items[index]) {
-            inventory.items[index] = [ item ]
+            inventory.items[index] = [item]
             return
           }
         }
@@ -80,7 +80,7 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
           // build items
           if (inventory.itemBuilders.length) {
             inventory.itemBuilders.forEach((builder, index) => {
-              const item = builder(entity)
+              const item = builder({ character: entity })
               inventory.items[index] = [item]
             })
             inventory.itemBuilders = []

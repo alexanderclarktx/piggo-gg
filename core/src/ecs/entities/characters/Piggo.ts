@@ -68,14 +68,14 @@ const hungry = (entity: Entity<Position>, world: World): void | InvokedAction =>
 
   if (!position.data.heading.x && !position.data.heading.y) {
 
-    if (random() * 100 > 96) {
-      const randomHeading: XY = {
-        x: position.data.x + round(random() * 200 - 100),
-        y: position.data.y + round(random() * 200 - 100)
-      }
+    // if (random() * 100 > 96) {
+    //   const randomHeading: XY = {
+    //     x: position.data.x + round(random() * 200 - 100),
+    //     y: position.data.y + round(random() * 200 - 100)
+    //   }
 
-      position.setHeading(randomHeading)
-    }
+    //   position.setHeading(randomHeading)
+    // }
   }
 
   if (position.lastCollided - world.tick > -2) position.clearHeading()

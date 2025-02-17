@@ -12,9 +12,9 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: "ts-loader",
-        exclude: /node_modules/,
+        exclude: /node_modules/
       }
-    ],
+    ]
   },
   optimization: {
     minimize: process.env.ENV === "production",
@@ -22,10 +22,10 @@ module.exports = {
       new TerserPlugin({
         extractComments: false,
         terserOptions: {
-          format: { comments: false },
-        },
-      }),
-    ],
+          format: { comments: false }
+        }
+      })
+    ]
   },
   plugins: [
     new CopyWebpackPlugin({
@@ -37,18 +37,18 @@ module.exports = {
         { from: "./res/*.png", to: () => "[name].png" },
         { from: "./res/*.json", to: () => "[name].json" },
         { from: "./res/*.mp3", to: () => "[name].mp3" },
-        { from: "./res/*.wav", to: () => "[name].wav" },
-      ],
+        { from: "./res/*.wav", to: () => "[name].wav" }
+      ]
     }),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     })
   ],
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js"]
   },
   output: {
     filename: "piggo-gg-min.js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist")
   }
 }
