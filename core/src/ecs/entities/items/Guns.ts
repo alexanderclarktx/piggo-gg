@@ -19,7 +19,7 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ charact
     clickable: Clickable({ width: 0, height: 0, active: false }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: 2,
+      zIndex: 3,
       scale: 2,
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,
@@ -29,13 +29,9 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ charact
         if (entity.components.item!.dropped) return
 
         const playerCharacter = world.client?.playerCharacter()
-
         if (!playerCharacter) return
 
-        const { pointing, pointingDelta } = playerCharacter.components.position.data
-
-        renderable.zIndex = (pointingDelta.y > 0) ? 3 : 2
-
+        const { pointing } = playerCharacter.components.position.data
         renderable.bufferedAnimation = pointing.toString()
       },
       setup: async (r: Renderable) => {

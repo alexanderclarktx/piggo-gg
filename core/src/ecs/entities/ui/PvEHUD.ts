@@ -42,7 +42,7 @@ export const PvEHUD = (): Entity => {
           if (!inventory) return
 
           // highlight the active item slot
-          const { activeItemIndex } = inventory
+          const { activeItemIndex } = inventory.data
           squares.forEach((s, i) => {
             s.tint = activeItemIndex === i ? 0xffff00 : 0xcccccc
             s.alpha = activeItemIndex === i ? 1 : 0.8

@@ -13,7 +13,7 @@ export const Ball = ({ position, id }: BallProps) => Entity({
     networked: Networked(),
     collider: Collider({
       shape: "ball",
-      radius: 7,
+      radius: 6,
       frictionAir: 0.4,
       mass: 20,
       restitution: 0.9
@@ -29,6 +29,7 @@ export const Ball = ({ position, id }: BallProps) => Entity({
       zIndex: 3,
       rotates: true,
       interpolate: true,
+      scale: 0.7,
       setup: async (r: Renderable) => {
 
         const texture = (await loadTexture("ball.json"))["ball"]

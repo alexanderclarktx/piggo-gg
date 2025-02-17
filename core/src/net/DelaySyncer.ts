@@ -4,7 +4,7 @@ import {
   entries, keys, stringify
 } from "@piggo-gg/core"
 
-const tableOfEntities: Record<string, (_: { id?: string }) => Entity> = {
+const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "zomi": Zomi,
   "ball": Ball,
   "player": Player,
@@ -48,12 +48,11 @@ export const DelaySyncer: Syncer = {
       }
     })
 
-    // TODO refactor use a table of entities
-    // add new entities if not present locally
+    // add new entities from remote
     keys(message.serializedEntities).forEach((entityId) => {
       if (!world.entities[entityId]) {
         const entityKind = entityId.split("-")[0]
-        const constructor = tableOfEntities[entityKind]
+        const constructor = entityConstructors[entityKind]
         if (constructor !== undefined) {
           console.log("ADD ENTITY", entityId)
           world.addEntity(constructor({ id: entityId }))
@@ -62,23 +61,6 @@ export const DelaySyncer: Syncer = {
         }
       }
     })
-          // if (!world.entities[entityId]) {
-          //   if (entityId.startsWith("zombie")) {
-          //     world.addEntity(Zomi({ id: entityId }))
-          //   } else if (entityId.startsWith("ball")) {
-          //     world.addEntity(Ball({ id: entityId }))
-          //   } else if (entityId.startsWith("player")) {
-          //     world.addEntity(Player({ id: entityId }))
-          //   } else if (entityId.startsWith("hitbox")) {
-          //     world.addEntity(Hitbox({ id: entityId, radius: 3, color: 0xffff00 }))
-          //   } else if (entityId.startsWith("linewall")) {
-          //     const points = entityId.split("-").slice(1).map((p) => parseInt(p)).filter(Number)
-          //     world.addEntity(LineWall({ id: entityId, points, visible: true }))
-          //   } else {
-          //     console.error("UNKNOWN ENTITY ON SERVER", entityId)
-          //   }
-          // }
-        // })
 
     let rollback = false
 
