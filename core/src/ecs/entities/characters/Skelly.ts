@@ -21,7 +21,7 @@ export const Skelly = (player: Player, color?: number, pos?: XY) => {
       input: Input({
         press: {
           ...WASDInputMap.press,
-          "g": () => ({ actionId: "dropItem" }), // TODO bugfix
+          "g": () => ({ actionId: "dropItem" }),
           "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
           "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),

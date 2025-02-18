@@ -12,7 +12,6 @@ export type Inventory = Component<"inventory", {
   itemBuilders: ItemBuilder[]
   activeItem: (world: World) => ItemEntity | null
   addItem: (item: ItemEntity, world: World) => void
-  includes: (item: ItemEntity) => boolean
   dropActiveItem: () => void
   setActiveItemIndex: (index: number) => void
 }
@@ -42,7 +41,6 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
       if (item.components.item.stackable) {
         for (const slot of items) {
           if (slot && slot.length && slot[0].includes(item.components.item.name)) {
-            console.log("push stackable")
             slot.push(item.id)
             added = true
             break
@@ -69,19 +67,12 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
       if (!slot) return
       if (slot.length > 1) {
         slot.shift()
-        console.log("shift stackable")
         return
       }
       items[activeItemIndex] = undefined
     },
     setActiveItemIndex: (index: number) => {
       inventory.data.activeItemIndex = index
-    },
-    includes: (item: ItemEntity) => { // TODO handle stackable items
-      for (const ids of inventory.data.items) {
-        if (ids && ids[0] === item.id) return true
-      }
-      return false
     }
   }
   return inventory
