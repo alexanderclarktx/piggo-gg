@@ -1,6 +1,7 @@
-import { Action, Character, Entity, Hitbox, HitboxProps, KeyMouse, Position, ValidSounds } from "@piggo-gg/core"
-
-type DamageCalculation = (entity: Entity<Position>) => number
+import {
+  Action, Character, DamageCalculation, Hitbox, HitboxProps,
+  KeyMouse, onHitCalculate, ValidSounds
+} from "@piggo-gg/core"
 
 export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: string }>(
   "whack",
@@ -35,6 +36,7 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
       id: `hitbox-whack-${world.random.int(1000)}`,
       visible: false,
       expireTicks: 2,
+      onHit: onHitCalculate(characterEntity.components.team.data.team, damage),
       // onHit: () => {
       //   world.client?.soundManager.play(sound)
       // },
