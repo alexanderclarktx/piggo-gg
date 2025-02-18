@@ -73,19 +73,6 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
       }
       items[activeItemIndex] = undefined
     },
-    // dropActiveItem: (world: World) => {
-    //   const slot = inventory.data.items[inventory.data.activeItemIndex]
-    //   if (!slot) return
-
-    //   const item = slot.shift()
-    //   if (item) {
-    //     const itemEntity = world.entities[item] as ItemEntity
-    //     if (itemEntity) {
-    //       itemEntity.components.position.setPosition({ x: 0, y: 0 })
-    //       itemEntity.components.renderable.visible = true
-    //     }
-    //   }
-    // },
     setActiveItemIndex: (index: number) => {
       inventory.data.activeItemIndex = index
     },
@@ -138,17 +125,6 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
               }
               continue
             }
-
-            // if (knownItems.has(item) && !itemEntity) {
-            //   if (itemIds.length > 1) {
-            //     itemIds.shift()
-            //     continue
-            //   } else {
-            //     inventory.data.items[index] = undefined
-            //     knownItems.delete(item)
-            //     continue
-            //   }
-            // }
 
             if (itemEntity.components.input) {
               throw new Error("Item cannot have input component (breaks InputSystem)")

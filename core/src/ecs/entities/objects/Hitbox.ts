@@ -3,14 +3,12 @@ import {
   Renderable, SensorCallback, TeamNumber, World, pixiCircle
 } from "@piggo-gg/core"
 
-export type DamageCalculation = (entity: Entity<Position>) => number
+export type DamageCalculation = (entity: Entity<Position | Collider>) => number
 
-export const onHitCalculate = (allyTeam: TeamNumber, damageCalc: DamageCalculation): SensorCallback => (
-  e2: Entity<Position | Collider>, world: World
-) => {
+export const onHitCalculate = (ally: TeamNumber, damageCalc: DamageCalculation): SensorCallback => (e2, world) => {
   const { collider, health, team } = e2.components
   if (health && collider.hittable) {
-    if (!team || (team.data.team !== allyTeam)) {
+    if (!team || (team.data.team !== ally)) {
       health.damage(damageCalc(e2), world)
       return true
     }
@@ -18,10 +16,10 @@ export const onHitCalculate = (allyTeam: TeamNumber, damageCalc: DamageCalculati
   return false
 }
 
-export const onHitFlat = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>, world) => {
+export const onHitFlat = (ally: TeamNumber, damage: number): SensorCallback => (e2, world) => {
   const { collider, health, team } = e2.components
   if (health && collider.hittable) {
-    if (!team || (team.data.team !== allyTeam)) {
+    if (!team || (team.data.team !== ally)) {
       health.damage(damage, world)
       return true
     }

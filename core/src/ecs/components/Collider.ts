@@ -3,7 +3,7 @@ import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } fr
 
 export type ColliderShapes = "ball" | "cuboid" | "line"
 
-export type SensorCallback = (e2: Entity<Position>, world: World) => boolean
+export type SensorCallback = (e2: Entity<Position | Collider>, world: World) => boolean
 
 export type Collider = Component<"collider"> & {
   type: "collider"
