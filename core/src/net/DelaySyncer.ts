@@ -1,6 +1,6 @@
 import {
-  Axe, Ball, Entity, GameData, Hitbox, LineWall, Pickaxe, Piggo, Player,
-  Rock, SerializedEntity, Sword, Syncer, Tree, World, Zomi,
+  Apple, Axe, Ball, Entity, GameData, Hitbox, LineWall, Pickaxe, Piggo,
+  Player, Rock, SerializedEntity, Sword, Syncer, Tree, World, Zomi,
   entries, keys, stringify
 } from "@piggo-gg/core"
 
@@ -15,7 +15,8 @@ const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "piggo": Piggo,
   "axe": Axe,
   "pickaxe": Pickaxe,
-  "sword": Sword
+  "sword": Sword,
+  "apple": Apple
 }
 
 export const DelaySyncer: Syncer = {

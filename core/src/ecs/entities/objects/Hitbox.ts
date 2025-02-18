@@ -1,4 +1,7 @@
-import { Action, Collider, Entity, Expires, Networked, Position, PositionProps, Renderable, SensorCallback, Team, TeamColors, TeamNumber, World, pixiCircle, randomInt } from "@piggo-gg/core"
+import {
+  Action, Collider, Entity, Expires, Networked, Position, PositionProps,
+  Renderable, SensorCallback, Team, TeamColors, TeamNumber, World, pixiCircle
+} from "@piggo-gg/core"
 
 export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>, world) => {
   const { collider, health, team } = e2.components
@@ -71,7 +74,7 @@ export type SpawnHitboxProps = {
   pos: PositionProps,
   team: Team
   radius: number
-  damage: DamageCalculation
+  damage?: DamageCalculation
   id: number
   visible: boolean
   expireTicks: number
@@ -83,6 +86,8 @@ export const SpawnHitbox = Action<SpawnHitboxProps>("spawnHitbox", ({ world, par
 
   const { team, pos, radius, damage, visible, expireTicks, onHit, onExpire } = params
 
+  console.log("spawn hitbox", params)
+
   world.addEntity(Hitbox({
     id: `hitbox-${world.random.int(1000)}`,
     pos,
@@ -91,7 +96,7 @@ export const SpawnHitbox = Action<SpawnHitboxProps>("spawnHitbox", ({ world, par
     expireTicks,
     color: TeamColors[team.data.team],
     onHit: (entity, world) => {
-      const hit = onHitTeam(team.data.team, damage(entity))(entity, world)
+      const hit = onHitTeam(team.data.team, damage?.(entity) ?? 25)(entity, world)
       if (hit && onHit) onHit()
       return hit
     },
