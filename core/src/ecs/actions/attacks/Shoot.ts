@@ -1,5 +1,5 @@
 import {
-  Action, Character, Hitbox, HitboxProps, KeyMouse, onHitTeam, TeamColors
+  Action, Character, Hitbox, HitboxProps, KeyMouse, onHitFlat, TeamColors
 } from "@piggo-gg/core"
 
 export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot", ({ world, params, entity }) => {
@@ -36,7 +36,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
     const bulletParams: HitboxProps = {
       pos: { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } },
       radius: gun.data.bulletSize,
-      onHit: onHitTeam(team.data.team, gun.data.damage),
+      onHit: onHitFlat(team.data.team, gun.data.damage),
       id: `bullet-${world.random.int(1000)}`,
       visible: true,
       expireTicks: 35,

@@ -5,20 +5,20 @@ import {
 
 export type DamageCalculation = (entity: Entity<Position>) => number
 
-export const onHitCalculate = (allyTeam: TeamNumber, damage: DamageCalculation): SensorCallback => (
+export const onHitCalculate = (allyTeam: TeamNumber, damageCalc: DamageCalculation): SensorCallback => (
   e2: Entity<Position | Collider>, world: World
 ) => {
   const { collider, health, team } = e2.components
   if (health && collider.hittable) {
     if (!team || (team.data.team !== allyTeam)) {
-      health.damage(damage(e2), world)
+      health.damage(damageCalc(e2), world)
       return true
     }
   }
   return false
 }
 
-export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>, world) => {
+export const onHitFlat = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>, world) => {
   const { collider, health, team } = e2.components
   if (health && collider.hittable) {
     if (!team || (team.data.team !== allyTeam)) {
@@ -29,27 +29,18 @@ export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback 
   return false
 }
 
-const onHitDefault = (e2: Entity<Position | Collider>, world: World) => {
-  const { collider, health } = e2.components
-  if (collider.hittable && health) {
-    health.damage(25, world)
-    return true
-  }
-  return false
-}
-
 export type HitboxProps = {
   id: string
   radius: number
+  onHit: SensorCallback
   color?: number
   pos?: PositionProps
-  onHit?: SensorCallback
   visible?: boolean
   expireTicks?: number
   onExpire?: () => void
 }
 
-export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire, onHit = onHitDefault }: HitboxProps) => {
+export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire, onHit }: HitboxProps) => {
   const hitbox = Entity({
     id,
     components: {

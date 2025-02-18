@@ -31,18 +31,18 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
         x: position.data.x + Math.cos(angle) * 10,
         y: position.data.y + Math.sin(angle) * 10,
       },
-      // team: characterEntity.components.team,
       radius: 20,
       id: `hitbox-whack-${world.random.int(1000)}`,
       visible: false,
       expireTicks: 2,
-      onHit: onHitCalculate(characterEntity.components.team.data.team, damage),
-      // onHit: () => {
-      //   world.client?.soundManager.play(sound)
-      // },
-      // onExpire: () => {
-      //   world.client?.soundManager.play("whiff")
-      // }
+      onHit: (e2, world) => {
+        const hit = onHitCalculate(characterEntity.components.team.data.team, damage)(e2, world)
+        if (hit) world.client?.soundManager.play(sound)
+        return hit
+      },
+      onExpire: () => {
+        world.client?.soundManager.play("whiff")
+      }
     }
 
     world.addEntity(Hitbox(hitboxParams))
