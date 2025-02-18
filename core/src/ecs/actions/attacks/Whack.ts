@@ -1,4 +1,6 @@
-import { Action, Character, DamageCalculation, KeyMouse, randomInt, SpawnHitboxProps, ValidSounds } from "@piggo-gg/core"
+import { Action, Character, Entity, Hitbox, HitboxProps, KeyMouse, Position, ValidSounds } from "@piggo-gg/core"
+
+type DamageCalculation = (entity: Entity<Position>) => number
 
 export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: string }>(
   "whack",
@@ -23,26 +25,25 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
 
     const angle = Math.atan2(position.data.pointingDelta.y, position.data.pointingDelta.x)
 
-    const hurtboxParams: SpawnHitboxProps = {
+    const hitboxParams: HitboxProps = {
       pos: {
         x: position.data.x + Math.cos(angle) * 10,
         y: position.data.y + Math.sin(angle) * 10,
       },
-      team: characterEntity.components.team,
+      // team: characterEntity.components.team,
       radius: 20,
-      damage,
-      id: world.random.int(1000),
+      id: `hitbox-whack-${world.random.int(1000)}`,
       visible: false,
       expireTicks: 2,
-      onHit: () => {
-        world.client?.soundManager.play(sound)
-      },
-      onExpire: () => {
-        world.client?.soundManager.play("whiff")
-      }
+      // onHit: () => {
+      //   world.client?.soundManager.play(sound)
+      // },
+      // onExpire: () => {
+      //   world.client?.soundManager.play("whiff")
+      // }
     }
 
-    world.actionBuffer.push(world.tick + 1, entity.id, { actionId: "spawnHitbox", params: hurtboxParams })
+    world.addEntity(Hitbox(hitboxParams))
   },
   15
 )

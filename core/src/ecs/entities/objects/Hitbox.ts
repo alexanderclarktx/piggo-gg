@@ -1,6 +1,6 @@
 import {
-  Action, Collider, Entity, Expires, Networked, Position, PositionProps,
-  Renderable, SensorCallback, Team, TeamColors, TeamNumber, World, pixiCircle
+  Collider, Entity, Expires, Networked, Position, PositionProps,
+  Renderable, SensorCallback, TeamNumber, World, pixiCircle
 } from "@piggo-gg/core"
 
 export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback => (e2: Entity<Position | Collider>, world) => {
@@ -27,7 +27,7 @@ const onHitDefault = (e2: Entity<Position | Collider>) => {
 export type HitboxProps = {
   id: string
   radius: number
-  color: number
+  color?: number
   pos?: PositionProps
   onHit?: SensorCallback
   visible?: boolean
@@ -59,7 +59,7 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
         setContainer: async () => {
           return pixiCircle({
             x: 0, y: 0, r: radius ?? 8,
-            style: { color: 0x222222, alpha: 1, strokeColor: color, strokeWidth: 1 }
+            style: { color: 0x222222, alpha: 1, strokeColor: color ?? 0xffffff, strokeWidth: 1 }
           })
         }
       })
@@ -67,39 +67,3 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
   })
   return hitbox
 }
-
-export type DamageCalculation = (entity: Entity<Position>) => number
-
-export type SpawnHitboxProps = {
-  pos: PositionProps,
-  team: Team
-  radius: number
-  damage?: DamageCalculation
-  id: number
-  visible: boolean
-  expireTicks: number
-  onHit?: () => void
-  onExpire?: () => void
-}
-
-export const SpawnHitbox = Action<SpawnHitboxProps>("spawnHitbox", ({ world, params }) => {
-
-  const { team, pos, radius, damage, visible, expireTicks, onHit, onExpire } = params
-
-  console.log("spawn hitbox", params)
-
-  world.addEntity(Hitbox({
-    id: `hitbox-${world.random.int(1000)}`,
-    pos,
-    radius,
-    visible,
-    expireTicks,
-    color: TeamColors[team.data.team],
-    onHit: (entity, world) => {
-      const hit = onHitTeam(team.data.team, damage?.(entity) ?? 25)(entity, world)
-      if (hit && onHit) onHit()
-      return hit
-    },
-    onExpire: onExpire ?? (() => { })
-  }))
-})

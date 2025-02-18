@@ -1,6 +1,6 @@
 import {
   Actions, Clickable, Effects, Gun, GunBuilder, GunNames, Item, ItemBuilder,
-  ItemEntity, Position, Reload, Renderable, Shoot, SpawnHitbox, loadTexture
+  ItemEntity, Position, Reload, Renderable, Shoot, loadTexture
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -9,7 +9,6 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ charact
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
-      spawnHitbox: SpawnHitbox,
       mb1: Shoot,
       reload: Reload
     }),

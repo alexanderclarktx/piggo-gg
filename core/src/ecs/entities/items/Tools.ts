@@ -1,7 +1,6 @@
 import {
-  Actions, Clickable, Effects, ElementKinds, Item, ItemBuilder,
-  ItemEntity, Position, Renderable, SpawnHitbox, ValidSounds,
-  Whack, loadTexture, randomInt
+  Actions, Clickable, Effects, ElementKinds, Item, ItemBuilder, ItemEntity,
+  Position, Renderable, ValidSounds, Whack, loadTexture, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
@@ -23,8 +22,7 @@ export const Tool = (
       mb1: Whack(sound, (e => {
         const { element } = e.components
         return damage[element?.data.kind ?? "flesh"]
-      })),
-      spawnHitbox: SpawnHitbox
+      }))
     }),
     item: Item({ name, flips: true }),
     effects: Effects(),
