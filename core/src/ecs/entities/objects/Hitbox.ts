@@ -7,18 +7,17 @@ export const onHitTeam = (allyTeam: TeamNumber, damage: number): SensorCallback 
   const { collider, health, team } = e2.components
   if (health && collider.hittable) {
     if (!team || (team.data.team !== allyTeam)) {
-      health.data.health -= damage
-      health.onDamage?.(damage, world)
+      health.damage(damage, world)
       return true
     }
   }
   return false
 }
 
-const onHitDefault = (e2: Entity<Position | Collider>) => {
+const onHitDefault = (e2: Entity<Position | Collider>, world: World) => {
   const { collider, health } = e2.components
   if (collider.hittable && health) {
-    health.data.health -= 25
+    health.damage(25, world)
     return true
   }
   return false

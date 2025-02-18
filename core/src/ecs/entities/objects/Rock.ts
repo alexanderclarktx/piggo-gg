@@ -21,7 +21,7 @@ export const Rock = ({ position, id }: RockProps = {}) => Entity<Renderable>({
       hittable: true
     }),
     element: Element("rock"),
-    health: Health({ health: 100 }),
+    health: Health({ hp: 100 }),
     debug: Debug(),
     npc: NPC({
       behavior: (e: Entity<Position>) => {

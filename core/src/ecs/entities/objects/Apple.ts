@@ -37,7 +37,7 @@ export const Apple = ({ position, id }: AppleProps = {}) => ItemEntity({
     }),
     element: Element("wood"),
     food: Food({ hunger: 3 }),
-    health: Health({ health: 100 }),
+    health: Health({ hp: 100 }),
     renderable: Renderable({
       zIndex: 3,
       scale: 1,

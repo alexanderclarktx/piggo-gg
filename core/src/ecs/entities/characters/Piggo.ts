@@ -16,7 +16,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(400, 200), y: randomI
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked(),
-      health: Health({ health: 75 }),
+      health: Health({ hp: 75 }),
       npc: NPC({ behavior: hungry }),
       actions: Actions({
         "chase": Chase,

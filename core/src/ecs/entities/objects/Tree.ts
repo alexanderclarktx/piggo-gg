@@ -23,7 +23,7 @@ export const Tree = ({ position, id }: TreeProps = {}) => {
       }),
       element: Element("wood"),
       health: Health({
-        health: 100,
+        hp: 100,
         onDamage: (damage, world) => {
           if (damage > 20 && world.random.int(10) < 9) world.addEntity(
             Apple({

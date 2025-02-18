@@ -15,7 +15,9 @@ export const DamageSystem = ClientSystemBuilder({
           const { health, renderable, element } = entity.components
           if (!renderable.initialized) return
 
+
           if (!filterMap[entity.id]) {
+            console.log(`adding filter for entity ${entity.id}`)
             const filter = new ColorMatrixFilter()
             filterMap[entity.id] = [1, filter]
             renderable.c.filters = filter
@@ -28,6 +30,8 @@ export const DamageSystem = ClientSystemBuilder({
               const newBrightness = 1 + (damage / 25)
               filter.brightness(newBrightness, false)
 
+              console.log("on damage brightness", newBrightness)
+
               if (element?.data.kind === "flesh") filter.tint(0xff9999, true)
 
               filterMap[entity.id] = [newBrightness, filter]
@@ -38,6 +42,7 @@ export const DamageSystem = ClientSystemBuilder({
           const [brightness, filter] = filterMap[entity.id]
           if (brightness > 1) {
             filter.brightness(brightness - 0.1, false)
+            console.log("brightness", brightness - 0.1)
             if (element?.data.kind === "flesh") filter.tint(0xff9999, true)
             filterMap[entity.id] = [brightness - 0.1, filter]
           } else {

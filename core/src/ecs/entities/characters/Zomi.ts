@@ -19,7 +19,7 @@ export const Zomi = ({ id, color, positionProps = { x: randomInt(200, 100), y: r
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 30 }),
       networked: Networked(),
-      health: Health({ health: 60, deathSounds: ["zombieDeath1", "zombieDeath2", "zombieDeath3", "zombieDeath4"] }),
+      health: Health({ hp: 60, deathSounds: ["zombieDeath1", "zombieDeath2", "zombieDeath3", "zombieDeath4"] }),
       npc: NPC({ behavior }),
       actions: Actions({
         "chase": Chase,
@@ -36,9 +36,9 @@ export const Zomi = ({ id, color, positionProps = { x: randomInt(200, 100), y: r
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
         dynamic: ({ renderable, entity }) => {
-          const { health, maxHealth } = entity.components.health!.data
+          const { hp, maxHp } = entity.components.health!.data
 
-          const ratio = round(health / maxHealth * 4)
+          const ratio = round(hp / maxHp * 4)
           renderable.color = colors[max(ratio - 1, 0)]
         },
         setup: async (r: Renderable) => {
@@ -80,7 +80,7 @@ export const ZomiAttack = (damage: number, cooldown: number) => Action<{ target:
   const { target } = params
   const { health } = target.components
 
-  if (health) health.data.health -= damage
+  if (health) health.data.hp -= damage
 
   entity?.components.position?.clearHeading()
 

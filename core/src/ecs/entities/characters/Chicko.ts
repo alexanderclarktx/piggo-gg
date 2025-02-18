@@ -16,7 +16,7 @@ export const Chicko = ({ id, positionProps = { x: randomInt(500), y: randomInt(5
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked(),
-      health: Health({ health: 75 }),
+      health: Health({ hp: 75 }),
       npc: NPC({ behavior }),
       actions: Actions({
         "chase": Chase,

@@ -5,14 +5,14 @@ export type LineWallProps = {
   points: number[]
   position?: XY
   visible?: boolean
-  health?: number
+  hp?: number
   hittable?: boolean
   sensor?: SensorCallback
   id?: string
 }
 
 export const LineWall = (
-  { points, position, visible, health, id, hittable, sensor }: LineWallProps
+  { points, position, visible, hp, id, hittable, sensor }: LineWallProps
 ): Entity<Position | Renderable | Collider> => {
 
   let newPoints: number[] = []
@@ -33,7 +33,7 @@ export const LineWall = (
     id: id ?? `linewall-${points.join("-")}-${position?.x}-${position?.y}`,
     components: {
       position: Position({ x: position?.x ?? points[0], y: position?.y ?? points[1] }),
-      ...health ? { health: Health({ health, showHealthBar: false }) } : {},
+      ...hp ? { health: Health({ hp, showHealthBar: false }) } : {},
       networked: Networked(),
       collider: Collider({
         shape: "line",
@@ -49,10 +49,10 @@ export const LineWall = (
         dynamic: ({ container }) => {
           if (!wall.components.health) return
 
-          const { health, maxHealth } = wall.components.health.data
-          if (health <= 0) return
+          const { hp, maxHp } = wall.components.health.data
+          if (hp <= 0) return
 
-          const white = 255 * health / maxHealth
+          const white = 255 * hp / maxHp
 
           const g = container as Graphics
           g.tint = (white << 16) + (255 << 8) + 255

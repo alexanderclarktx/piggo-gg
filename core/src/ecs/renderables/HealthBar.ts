@@ -5,10 +5,11 @@ export type HealthBarProps = RenderableProps & {
   health: Health
 }
 
+// todo sometimes disappears
 export const HealthBar = ({ health }: HealthBarProps): Renderable => {
 
   const g = new Graphics()
-  let cachedHealthPercent = 0
+  let cachedHealthPercent = 1
 
   const draw = (g: Graphics) => {
     // gold outline
@@ -17,7 +18,7 @@ export const HealthBar = ({ health }: HealthBarProps): Renderable => {
     g.stroke()
 
     // red length proportional to percent health
-    const length = 28 * (health.data.health / health.data.maxHealth)
+    const length = 28 * cachedHealthPercent
     g.rect(-14, -29, length, 2)
     g.fill({ color: 0xff0000, alpha: 1 })
   }
@@ -26,8 +27,11 @@ export const HealthBar = ({ health }: HealthBarProps): Renderable => {
     zIndex: 10,
     interpolate: true,
     dynamic: () => {
-      const healthPercent = health.data.health / health.data.maxHealth
-      if (healthPercent !== cachedHealthPercent) {
+      const { hp, maxHp } = health.data
+
+      const healthPercent = hp / maxHp
+      if (hp / maxHp !== cachedHealthPercent) {
+        cachedHealthPercent = healthPercent
         draw(g.clear())
       }
     },

@@ -46,7 +46,7 @@ export const Animal = (player: Player, color?: number, pos?: XY) => {
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 100, gravity: 15, friction: 10 }),
       networked: Networked(),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
-      health: Health({ health: 100 }),
+      health: Health({ hp: 100 }),
       team: player.components.team,
       element: Element("flesh"),
       input: Input({

@@ -14,14 +14,14 @@ export const Skelly = (player: Player, color?: number, pos?: XY) => {
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 100, velocityResets: 1, speed: 120 }),
       networked: Networked(),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
-      health: Health({ health: 100 }),
+      health: Health({ hp: 100 }),
       team: player.components.team,
       inventory: Inventory([Axe, Pickaxe, Sword, Deagle]),
       element: Element("flesh"),
       input: Input({
         press: {
           ...WASDInputMap.press,
-          // "g": () => ({ actionId: "dropItem" }), // TODO bugfix
+          "g": () => ({ actionId: "dropItem" }), // TODO bugfix
           "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
           "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
           "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),

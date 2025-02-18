@@ -49,7 +49,7 @@ const JumpButton = (): Entity<Renderable> => {
 }
 
 const sensor: SensorCallback = ({ components }) => {
-  if (components.health) components.health.data.health = 0
+  if (components.health) components.health.data.hp = 0
   return true
 }
 
@@ -94,7 +94,7 @@ export const FlappyCharacter = (player: Player, color?: number, pos?: XY) => {
       position: Position({ x: pos?.x ?? 32, y: pos?.y ?? 0, velocity: { x: 100, y: 0 }, gravity: 10 }),
       networked: Networked(),
       collider: Collider({ shape: "ball", radius: 8, mass: 600, hittable: true }),
-      health: Health({ health: 100 }),
+      health: Health({ hp: 100 }),
       team: player.components.team,
       element: Element("flesh"),
       input: Input({

@@ -31,7 +31,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   if (clickable) clickable.active = false
   if (collider) collider.active = false
 
-  // inventory.addItem(entity as ItemEntity)
+  inventory.addItem(entity as ItemEntity, world)
 })
 
 export const dropItem = Action("dropItem", ({ world }) => {
@@ -53,5 +53,5 @@ export const dropItem = Action("dropItem", ({ world }) => {
   if (clickable) clickable.active = true
   if (collider) collider.active = true
 
-  // inventory.dropActiveItem()
+  inventory.dropActiveItem()
 }, 10)

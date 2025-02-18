@@ -28,7 +28,7 @@ export const IceWall = Action<XY>("iceWall", ({ world, params, entity }) => {
     mouseX + flip * min(width, (width * ry)), mouseY + min(width, (width * rx))
   ].map(round)
 
-  world.addEntity(LineWall({ points: coords, visible: true, health: 30, hittable: false }))
+  world.addEntity(LineWall({ points: coords, visible: true, hp: 30, hittable: false }))
 
   world.client?.soundManager.play(["wallPlace1", "wallPlace2"])
 

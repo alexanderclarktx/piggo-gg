@@ -97,8 +97,8 @@ const cell = async (text: string, width: number, height: number, world: World, m
     const newGun = GunsTable[text.toLowerCase() as GunNames]
     if (!newGun) return
 
-    character.components
-    // character.components.inventory?.addItem(newGun({ character }))
+    character.components.inventory?.addItem(newGun({ character }), world)
+    console.log("bought", text)
 
     clickableClickedThisFrame.set(world.tick + 1)
 

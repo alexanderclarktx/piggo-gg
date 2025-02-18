@@ -36,18 +36,16 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
 
   const { renderable, actions, clickable } = entity.components
 
+  actions.actionMap.pickupItem = pickupItem
+
   entity.components.networked = Networked()
-
   entity.components.debug = Debug()
-
   entity.components.clickable = {
     ...clickable,
     click: () => ({ actionId: "pickupItem" }),
     hoverOver: () => renderable.setOutline({ color: 0xffffff, thickness: 2 }),
     hoverOut: () => renderable.setOutline()
   }
-
-  actions.actionMap.pickupItem = pickupItem
 
   return Entity(entity)
 }
@@ -62,7 +60,7 @@ export const ItemSystem = SystemBuilder({
         const { position, renderable, item } = entity.components
         const { pointingDelta, rotation, follows } = position.data
 
-        if (!follows) return
+        if (!follows) continue
 
         if (rotation) position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
 
@@ -77,9 +75,9 @@ export const ItemSystem = SystemBuilder({
             y: round(hyp_y * min(20, abs(pointingDelta.y)) - 5, 2)
           }
 
-          const xScale = item.flips ?
+          const xScale = !item.flips ? 1 :
             pointingDelta.x > 0 ? 1 : -1
-            : 1
+
           renderable.setScale({ x: xScale, y: 1 })
         }
       }
