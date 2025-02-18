@@ -41,19 +41,20 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
 
       if (item.components.item.stackable) {
         for (const slot of items) {
-          if (slot && slot[0] === item.id) {
+          if (slot && slot.length && slot[0].includes(item.components.item.name)) {
+            console.log("push stackable")
             slot.push(item.id)
             added = true
             break
           }
         }
-      } else {
-        for (let i = 0; i < inventory.data.items.length; i++) {
-          if (items[i] === undefined) {
-            inventory.data.items[i] = [item.id]
-            added = true
-            break
-          }
+      }
+
+      if (!added) for (let i = 0; i < inventory.data.items.length; i++) {
+        if (items[i] === undefined) {
+          inventory.data.items[i] = [item.id]
+          added = true
+          break
         }
       }
 
@@ -62,13 +63,13 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
       }
     },
     dropActiveItem: () => {
-
       const { items, activeItemIndex } = inventory.data
 
       const slot = items[activeItemIndex]
       if (!slot) return
       if (slot.length > 1) {
         slot.shift()
+        console.log("shift stackable")
         return
       }
       items[activeItemIndex] = undefined
@@ -88,60 +89,50 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
 
 export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
-  init: (world) => {
-    const knownItems: Set<string> = new Set()
+  init: (world) => ({
+    id: "InventorySystem",
+    query: ["position", "input", "actions", "renderable", "inventory", "team"],
+    onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory | Team>[]) => {
+      entities.forEach(entity => {
+        const { inventory } = entity.components
 
-    return {
-      id: "InventorySystem",
-      query: ["position", "input", "actions", "renderable", "inventory", "team"],
-      onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory | Team>[]) => {
-        entities.forEach(entity => {
-          const { inventory } = entity.components
+        // build items
+        if (inventory.itemBuilders.length) {
+          inventory.itemBuilders.forEach((builder, index) => {
+            const item = builder({ character: entity })
 
-          // build items
-          if (inventory.itemBuilders.length) {
-            inventory.itemBuilders.forEach((builder, index) => {
-              const item = builder({ character: entity })
+            inventory.data.items[index] = [item.id]
+            world.addEntity(item)
+          })
+          inventory.itemBuilders = []
+        }
 
-              inventory.data.items[index] = [item.id]
-              world.addEntity(item)
-              knownItems.add(item.id)
-            })
-            inventory.itemBuilders = []
-          }
+        for (let index = 0; index < inventory.data.items.length; index++) {
+          const itemIds = inventory.data.items[index]
+          if (!itemIds) continue
 
-          // remove stale items
-          for (let index = 0; index < inventory.data.items.length; index++) {
-            const itemIds = inventory.data.items[index]
-            if (!itemIds) continue
-
-            const item = itemIds[0]
-            const itemEntity = world.entities[item] as ItemEntity
+          for (const itemId of itemIds) {
+            const itemEntity = world.entities[itemId] as ItemEntity
 
             if (!itemEntity) {
-              if (knownItems.has(item)) {
+              inventory.data.items[index] = itemIds.filter(id => id !== itemId)
+              if (inventory.data.items[index]?.length === 0) {
                 inventory.data.items[index] = undefined
-                knownItems.delete(item)
               }
-              continue
+            } else {
+              itemEntity.components.renderable.visible = false
+              itemEntity.components.item.equipped = false
             }
-
-            if (itemEntity.components.input) {
-              throw new Error("Item cannot have input component (breaks InputSystem)")
-            }
-
-            itemEntity.components.renderable.visible = false
-            itemEntity.components.item.equipped = false
           }
+        }
 
-          // update active item
-          const activeItem = inventory.activeItem(world)
-          if (activeItem) {
-            activeItem.components.renderable.visible = true
-            activeItem.components.item.equipped = true
-          }
-        })
-      }
+        // update active item
+        const activeItem = inventory.activeItem(world)
+        if (activeItem) {
+          activeItem.components.renderable.visible = true
+          activeItem.components.item.equipped = true
+        }
+      })
     }
-  }
+  })
 }
