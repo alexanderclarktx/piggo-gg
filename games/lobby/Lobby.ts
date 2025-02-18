@@ -80,7 +80,7 @@ const Players = (): Entity => {
 
           players.components.position.data.x = 220 + ((width - 230) / 2)
           players.components.position.data.y = (height / 2) - 40
-          
+
           lastSeenPcs = {}
 
           texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]

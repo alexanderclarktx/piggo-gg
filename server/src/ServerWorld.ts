@@ -19,7 +19,7 @@ export type ServerWorldProps = {
 
 export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorld => {
 
-  const world = DefaultWorld({ runtimeMode: "server", games })
+  const world = DefaultWorld({ mode: "server", games })
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {}
 
   world.systems = {

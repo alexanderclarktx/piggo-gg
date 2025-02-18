@@ -1,15 +1,14 @@
 import {
   Actions, Clickable, Effects, Gun, GunBuilder, GunNames, Item, ItemBuilder,
-  ItemEntity, Position, Reload, Renderable, Shoot, SpawnHitbox, loadTexture
+  ItemEntity, Position, Reload, Renderable, Shoot, loadTexture
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character) => ItemEntity({
+export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ character }) => ItemEntity({
   id: name,
   components: {
-    position: Position({ follows: character.id }),
+    position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
-      spawnHitbox: SpawnHitbox,
       mb1: Shoot,
       reload: Reload
     }),
@@ -19,19 +18,19 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => (character
     clickable: Clickable({ width: 0, height: 0, active: false }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: 2,
+      zIndex: 3,
       scale: 2,
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,
       visible: false,
       outline: { color: 0x000000, thickness: 1 },
-      dynamic: ({ renderable, entity }) => {
+      dynamic: ({ renderable, entity, world }) => {
         if (entity.components.item!.dropped) return
 
-        const { pointing, pointingDelta } = character.components.position.data
+        const playerCharacter = world.client?.playerCharacter()
+        if (!playerCharacter) return
 
-        renderable.zIndex = (pointingDelta.y > 0) ? 3 : 2
-
+        const { pointing } = playerCharacter.components.position.data
         renderable.bufferedAnimation = pointing.toString()
       },
       setup: async (r: Renderable) => {

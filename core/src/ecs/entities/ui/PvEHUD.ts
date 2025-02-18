@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, loadTextureCached, pixiRect, pixiText } from "@piggo-gg/core"
+import { Entity, ItemEntity, Position, Renderable, loadTextureCached, pixiRect, pixiText } from "@piggo-gg/core"
 import { AnimatedSprite, Graphics, Sprite, Text } from "pixi.js"
 
 type SlotVisuals = {
@@ -42,7 +42,7 @@ export const PvEHUD = (): Entity => {
           if (!inventory) return
 
           // highlight the active item slot
-          const { activeItemIndex } = inventory
+          const { activeItemIndex } = inventory.data
           squares.forEach((s, i) => {
             s.tint = activeItemIndex === i ? 0xffff00 : 0xcccccc
             s.alpha = activeItemIndex === i ? 1 : 0.8
@@ -50,13 +50,14 @@ export const PvEHUD = (): Entity => {
 
           // update icons
           for (let i = 0; i < squares.length; i++) {
-            const slot = inventory.items[i]
+            const slot = inventory.data.items[i]
             if (!slot && icons[i]) {
               container.removeChild(icons[i]!.icon)
               icons[i] = undefined
             }
             if (!slot) continue
-            const item = slot[0]
+            const item = world.entities[slot[0]] as ItemEntity
+            if (!item) continue
 
             // set up new icon
             if (item && !icons[i]) {

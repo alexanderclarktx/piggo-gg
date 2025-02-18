@@ -1,7 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Food, Element, Entity, Health, InvokedAction,
-  NPC, Networked, Position, PositionProps, Renderable, World, XY,
-  closestEntity, loadTexture, random, randomInt, round, XYdelta, Eat
+  NPC, Networked, Position, PositionProps, Renderable, World,
+  closestEntity, loadTexture, randomInt, XYdelta, Eat
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -16,7 +16,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(400, 200), y: randomI
     components: {
       position: Position({ ...positionProps, velocityResets: 1, speed: positionProps.speed ?? 50 }),
       networked: Networked(),
-      health: Health({ health: 75 }),
+      health: Health({ hp: 75 }),
       npc: NPC({ behavior: hungry }),
       actions: Actions({
         "chase": Chase,
@@ -67,14 +67,11 @@ const hungry = (entity: Entity<Position>, world: World): void | InvokedAction =>
   }
 
   if (!position.data.heading.x && !position.data.heading.y) {
-
-    if (random() * 100 > 96) {
-      const randomHeading: XY = {
-        x: position.data.x + round(random() * 200 - 100),
-        y: position.data.y + round(random() * 200 - 100)
-      }
-
-      position.setHeading(randomHeading)
+    if (world.random.int(100) > 96) {
+      position.setHeading({
+        x: position.data.x + world.random.int(200, 100),
+        y: position.data.y + world.random.int(200, 100)
+      })
     }
   }
 

@@ -1,7 +1,7 @@
-import { Entity, Health, Position, Renderable, SystemBuilder } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, Health, Position, Renderable } from "@piggo-gg/core"
 import { ColorMatrixFilter } from "pixi.js"
 
-export const DamageSystem: SystemBuilder<"DamageSystem"> = {
+export const DamageSystem = ClientSystemBuilder({
   id: "DamageSystem",
   init: (world) => {
 
@@ -14,6 +14,7 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
         entities.forEach((entity) => {
           const { health, renderable, element } = entity.components
           if (!renderable.initialized) return
+
 
           if (!filterMap[entity.id]) {
             const filter = new ColorMatrixFilter()
@@ -44,22 +45,12 @@ export const DamageSystem: SystemBuilder<"DamageSystem"> = {
             filter.tint(0xffffff, false)
           }
 
-          // handle death
-          if (health.data.health <= 0) {
-
-            // play death sound
-            if (health.deathSounds.length > 0) {
-              world.client?.soundManager.play(health.deathSounds, 0.1)
-            }
-
-            // remove entity
-            world.removeEntity(entity.id)
-
-            // clean up filterMap
-            delete filterMap[entity.id]
+          // clean up old entities
+          for (const e in filterMap) {
+            if (!world.entities[e]) delete filterMap[e]
           }
         })
       }
     }
   }
-}
+})

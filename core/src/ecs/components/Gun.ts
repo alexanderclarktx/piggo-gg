@@ -30,7 +30,7 @@ export const Gun = (props: GunProps): Gun => {
   const gun: Gun = {
     type: "gun",
     data: {
-      id: randomInt(100000),
+      id: randomInt(100000), // todo
       clip: props.clipSize,
       ammo: props.ammo,
       automatic: props.automatic,

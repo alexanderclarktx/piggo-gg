@@ -16,9 +16,11 @@ export type SystemBuilder<T extends string = string> = {
   init: (world: World) => System<T> | undefined
 }
 
+export const SystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => builder
+
 export const ClientSystemBuilder = <T extends string = string>(builder: SystemBuilder<T>): SystemBuilder<T> => ({
   ...builder,
   init: (world: World) => {
-    return (world.runtimeMode === "client") ? builder.init(world) : undefined
+    return (world.mode === "client") ? builder.init(world) : undefined
   }
 })

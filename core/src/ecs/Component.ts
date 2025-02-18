@@ -13,7 +13,15 @@ export type ComponentTypes =
 
 export type ValidComponents = ComponentTypes["type"]
 
-export type NetworkedComponentData = Record<string, undefined | boolean | string | number | string[] | number[] | XY>
+export type NetworkedComponentData = Record<string,
+  undefined |
+  boolean |
+  string |
+  number |
+  string[] |
+  number[] |
+  (string[] | undefined)[] | XY
+>
 
 // a Component is an atomic unit of data that is attached to an entity
 export type Component<type extends string = string, D extends NetworkedComponentData | undefined = undefined> = {

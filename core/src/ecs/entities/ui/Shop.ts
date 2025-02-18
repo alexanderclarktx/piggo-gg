@@ -91,14 +91,14 @@ const cell = async (text: string, width: number, height: number, world: World, m
   c.addChild(light, dark, outline, name, decal)
 
   c.onpointerdown = () => {
-    const playerCharacter = world.client?.playerCharacter()
-    if (!playerCharacter) return
+    const character = world.client?.playerCharacter()
+    if (!character) return
 
     const newGun = GunsTable[text.toLowerCase() as GunNames]
     if (!newGun) return
 
-    playerCharacter.components
-    playerCharacter.components.inventory?.addItem(newGun(playerCharacter))
+    character.components.inventory?.addItem(newGun({ character }), world)
+    console.log("bought", text)
 
     clickableClickedThisFrame.set(world.tick + 1)
 

@@ -1,4 +1,6 @@
-import { Action, Character, KeyMouse, SpawnHitboxProps, randomInt } from "@piggo-gg/core"
+import {
+  Action, Character, Hitbox, HitboxProps, KeyMouse, onHitFlat, TeamColors
+} from "@piggo-gg/core"
 
 export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot", ({ world, params, entity }) => {
 
@@ -31,17 +33,17 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
     const Xoffset = offset * (vx / Math.sqrt(vx * vx + vy * vy))
     const Yoffset = offset * (vy / Math.sqrt(vx * vx + vy * vy))
 
-    const bulletParams: SpawnHitboxProps = {
+    const bulletParams: HitboxProps = {
       pos: { x: x + Xoffset, y: y + Yoffset, velocity: { x: vx, y: vy } },
-      team,
       radius: gun.data.bulletSize,
-      damage: () => gun.data.damage,
-      id: randomInt(1000),
+      onHit: onHitFlat(team.data.team, gun.data.damage),
+      id: `bullet-${world.random.int(1000)}`,
       visible: true,
-      expireTicks: 35
+      expireTicks: 35,
+      color: TeamColors[team.data.team]
     }
 
-    world.actionBuffer.push(world.tick + 3, entity.id, { actionId: "spawnHitbox", params: bulletParams })
+    world.addEntity(Hitbox(bulletParams))
 
     world.client?.soundManager.play(gun.data.name)
 

@@ -1,65 +1,78 @@
 import {
-  Actions, Character, Component, Entity, Input, Position, Renderable,
-  SystemBuilder, Team, keys, values, entries, ItemEntity
+  Actions, Character, Component, Entity, Input, Position,
+  Renderable, SystemBuilder, Team, ItemEntity, World
 } from "@piggo-gg/core"
 
-export type ItemBuilder = (character: Character) => ItemEntity
+export type ItemBuilder = (_: { id?: string, character?: Character }) => ItemEntity
 
-export type Inventory = Component<"inventory"> & {
-  items: Record<string, ItemEntity[] | undefined>
-  itemBuilders: ItemBuilder[]
+export type Inventory = Component<"inventory", {
+  items: (string[] | undefined)[]
   activeItemIndex: number
-  activeItem: () => ItemEntity | null
-  addItem: (item: ItemEntity) => void
+}> & {
+  itemBuilders: ItemBuilder[]
+  activeItem: (world: World) => ItemEntity | null
+  addItem: (item: ItemEntity, world: World) => void
   dropActiveItem: () => void
   setActiveItemIndex: (index: number) => void
-  includes: (item: ItemEntity) => boolean
 }
 
-export const Inventory = (items: ((character: Character) => ItemEntity)[] = []): Inventory => {
+export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
   const inventory: Inventory = {
-    type: "inventory",
-    items: { 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined },
-    itemBuilders: items,
-    activeItemIndex: 0,
-    activeItem: () => {
-      return inventory.items[inventory.activeItemIndex]?.[0] ?? null
+    data: {
+      activeItemIndex: 0,
+      items: [undefined, undefined, undefined, undefined, undefined]
     },
-    addItem: (item: ItemEntity) => {
+    type: "inventory",
+    itemBuilders,
+    activeItem: (world: World) => {
+      const item = inventory.data.items[inventory.data.activeItemIndex]
+      if (!item) return null
 
-      if (!inventory.includes(item)) {
+      const itemEntity = world.entities[item[0]]
+      if (!itemEntity) return null
 
-        if (item.components.item.stackable) {
-          for (let index of keys(inventory.items)) {
-            if (inventory.items[index]?.[0].components.item.name === item.components.item.name) {
-              inventory.items[index].push(item)
-              return
-            }
-          }
-        }
+      return itemEntity as ItemEntity
+    },
+    addItem: (item: ItemEntity, world: World) => {
 
-        for (let index of keys(inventory.items)) {
-          if (!inventory.items[index]) {
-            inventory.items[index] = [ item ]
-            return
+      let added = false
+      const { items } = inventory.data
+
+      if (item.components.item.stackable) {
+        for (const slot of items) {
+          if (slot && slot.length && slot[0].includes(item.components.item.name)) {
+            slot.push(item.id)
+            added = true
+            break
           }
         }
       }
+
+      if (!added) for (let i = 0; i < inventory.data.items.length; i++) {
+        if (items[i] === undefined) {
+          inventory.data.items[i] = [item.id]
+          added = true
+          break
+        }
+      }
+
+      if (added && !world.entities[item.id]) {
+        world.addEntity(item)
+      }
     },
     dropActiveItem: () => {
-      const slot = inventory.items[inventory.activeItemIndex]
+      const { items, activeItemIndex } = inventory.data
+
+      const slot = items[activeItemIndex]
       if (!slot) return
       if (slot.length > 1) {
         slot.shift()
         return
       }
-      inventory.items[inventory.activeItemIndex] = undefined
+      items[activeItemIndex] = undefined
     },
     setActiveItemIndex: (index: number) => {
-      inventory.activeItemIndex = index
-    },
-    includes: (item: ItemEntity) => {
-      return values(inventory.items).map(x => x?.[0]).includes(item)
+      inventory.data.activeItemIndex = index
     }
   }
   return inventory
@@ -67,62 +80,50 @@ export const Inventory = (items: ((character: Character) => ItemEntity)[] = []):
 
 export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
-  init: (world) => {
-    const knownItems: Set<string> = new Set()
+  init: (world) => ({
+    id: "InventorySystem",
+    query: ["position", "input", "actions", "renderable", "inventory", "team"],
+    onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory | Team>[]) => {
+      entities.forEach(entity => {
+        const { inventory } = entity.components
 
-    return {
-      id: "InventorySystem",
-      query: ["position", "input", "actions", "renderable", "inventory", "team"],
-      onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory | Team>[]) => {
-        entities.forEach(entity => {
-          const { inventory } = entity.components
+        // build items
+        if (inventory.itemBuilders.length) {
+          inventory.itemBuilders.forEach((builder, index) => {
+            const item = builder({ character: entity })
 
-          // build items
-          if (inventory.itemBuilders.length) {
-            inventory.itemBuilders.forEach((builder, index) => {
-              const item = builder(entity)
-              inventory.items[index] = [item]
-            })
-            inventory.itemBuilders = []
-          }
-
-          // reset state for all items
-          entries(inventory.items).forEach(([index, slot]) => {
-            if (!slot) return
-            const item = slot[0]
-
-            if (knownItems.has(item.id) && !world.entities[item.id]) {
-              if (item.components.item.stackable) {
-                slot.shift()
-                if (slot.length === 0) inventory.items[index] = undefined
-                return
-              } else {
-                inventory.items[index] = undefined
-                knownItems.delete(item.id)
-                return
-              }
-            }
-
-            if (item.components.input) {
-              throw new Error("Item cannot have input component (it breaks InputSystem)")
-            }
-
-            if (!world.entities[item.id]) world.addEntity(item)
-
-            knownItems.add(item.id)
-
-            item.components.renderable.visible = false
-            item.components.item.equipped = false
+            inventory.data.items[index] = [item.id]
+            world.addEntity(item)
           })
+          inventory.itemBuilders = []
+        }
 
-          // set state for active item
-          const activeItem = inventory.activeItem()
-          if (activeItem) {
-            activeItem.components.renderable.visible = true
-            activeItem.components.item.equipped = true
+        for (let index = 0; index < inventory.data.items.length; index++) {
+          const itemIds = inventory.data.items[index]
+          if (!itemIds) continue
+
+          for (const itemId of itemIds) {
+            const itemEntity = world.entities[itemId] as ItemEntity
+
+            if (!itemEntity) {
+              inventory.data.items[index] = itemIds.filter(id => id !== itemId)
+              if (inventory.data.items[index]?.length === 0) {
+                inventory.data.items[index] = undefined
+              }
+            } else {
+              itemEntity.components.renderable.visible = false
+              itemEntity.components.item.equipped = false
+            }
           }
-        })
-      }
+        }
+
+        // update active item
+        const activeItem = inventory.activeItem(world)
+        if (activeItem) {
+          activeItem.components.renderable.visible = true
+          activeItem.components.item.equipped = true
+        }
+      })
     }
-  }
+  })
 }

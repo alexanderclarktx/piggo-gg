@@ -1,6 +1,6 @@
 import {
-  Actions, Component, Effects, Entity, Renderable, Position, ProtoEntity,
-  XYdiff, abs, hypot, min, mouseScreen, Clickable, pickupItem, Debug, ClientSystemBuilder
+  Actions, Clickable, Component, Debug, Effects, Entity, Networked, Position,
+  ProtoEntity, Renderable, SystemBuilder, abs, hypot, min, pickupItem, round
 } from "@piggo-gg/core"
 
 export type Item = Component<"item"> & {
@@ -36,8 +36,10 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
 
   const { renderable, actions, clickable } = entity.components
 
-  entity.components.debug = Debug()
+  actions.actionMap.pickupItem = pickupItem
 
+  entity.components.networked = Networked()
+  entity.components.debug = Debug()
   entity.components.clickable = {
     ...clickable,
     click: () => ({ actionId: "pickupItem" }),
@@ -45,49 +47,40 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
     hoverOut: () => renderable.setOutline()
   }
 
-  actions.actionMap.pickupItem = pickupItem
-
   return Entity(entity)
 }
 
-export const ItemSystem = ClientSystemBuilder({
+export const ItemSystem = SystemBuilder({
   id: "ItemSystem",
-  init: () => {
-    let mouseLast = { x: 0, y: 0 }
+  init: () => ({
+    id: "ItemSystem",
+    query: ["item", "renderable", "position"],
+    onTick: (entities: Entity<Item | Renderable | Position>[]) => {
+      for (const entity of entities) {
+        const { position, renderable, item } = entity.components
+        const { pointingDelta, rotation, follows } = position.data
 
-    return {
-      id: "ItemSystem",
-      query: ["item", "renderable", "position"],
-      onTick: (entities: Entity<Item | Renderable | Position>[]) => {
-        for (const entity of entities) {
-          const { position, renderable, item } = entity.components
-          const { pointingDelta, rotation, follows } = position.data
+        if (!follows) continue
 
-          if (!follows) return
+        if (rotation) position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
 
-          if (rotation) position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
+        if (!item.dropped) {
+          const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
 
-          if (!item.dropped) {
-            if (XYdiff(mouseScreen, mouseLast)) {
-              const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
+          const hyp_x = pointingDelta.x / hypotenuse
+          const hyp_y = pointingDelta.y / hypotenuse
 
-              const hyp_x = pointingDelta.x / hypotenuse
-              const hyp_y = pointingDelta.y / hypotenuse
-
-              position.data.offset = {
-                x: hyp_x * min(20, abs(pointingDelta.x)),
-                y: hyp_y * min(20, abs(pointingDelta.y)) - 5
-              }
-
-              const xScale = item.flips ?
-                pointingDelta.x > 0 ? 1 : -1
-                : 1
-              renderable.setScale({ x: xScale, y: 1 })
-            }
+          position.data.offset = {
+            x: round(hyp_x * min(20, abs(pointingDelta.x)), 2),
+            y: round(hyp_y * min(20, abs(pointingDelta.y)) - 5, 2)
           }
+
+          const xScale = !item.flips ? 1 :
+            pointingDelta.x > 0 ? 1 : -1
+
+          renderable.setScale({ x: xScale, y: 1 })
         }
-        mouseLast = mouseScreen
       }
     }
-  }
+  })
 })

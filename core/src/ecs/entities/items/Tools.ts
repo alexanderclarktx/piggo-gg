@@ -1,7 +1,6 @@
 import {
-  Actions, Character, Clickable, Effects, ElementKinds, Item,
-  ItemEntity, Networked, Position, Renderable, SpawnHitbox,
-  ValidSounds, Whack, loadTexture, randomInt
+  Actions, Clickable, Effects, ElementKinds, Item, ItemBuilder, ItemEntity,
+  Position, Renderable, ValidSounds, Whack, loadTexture, randomInt
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
@@ -13,17 +12,17 @@ export type ToolProps = {
   damage: ElementToDamage
 }
 
-export const Tool = ({ name, sound, damage }: ToolProps) => (character: Character): ItemEntity => ItemEntity({
-  id: `${name}-${randomInt(1000)}`,
+export const Tool = (
+  { name, sound, damage }: ToolProps
+): ItemBuilder => ({ character, id }): ItemEntity => ItemEntity({
+  id: id ?? `${name}-${randomInt(1000)}`,
   components: {
-    position: Position({ follows: character.id }),
-    networked: Networked(),
+    position: Position({ follows: character?.id ?? "" }),
     actions: Actions<any>({
       mb1: Whack(sound, (e => {
         const { element } = e.components
         return damage[element?.data.kind ?? "flesh"]
-      })),
-      spawnHitbox: SpawnHitbox
+      }))
     }),
     item: Item({ name, flips: true }),
     effects: Effects(),
@@ -32,7 +31,7 @@ export const Tool = ({ name, sound, damage }: ToolProps) => (character: Characte
     }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: character.components.renderable.zIndex,
+      zIndex: 3,
       scale: 2.5,
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,

@@ -1,7 +1,7 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction,
   Renderer, SerializedEntity, values, StateBuffer, System,
-  SystemBuilder, SystemEntity, keys, ValidComponents
+  SystemBuilder, SystemEntity, keys, ValidComponents, Random
 } from "@piggo-gg/core"
 
 export type World = {
@@ -15,8 +15,9 @@ export type World = {
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   games: Record<string, GameBuilder>
   lastTick: DOMHighResTimeStamp
+  mode: "client" | "server"
+  random: Random,
   renderer: Renderer | undefined
-  runtimeMode: "client" | "server"
   systems: Record<string, System>
   tick: number
   tickFaster: boolean
@@ -43,11 +44,11 @@ export type WorldProps = {
   games?: GameBuilder[]
   systems?: SystemBuilder[]
   renderer?: Renderer | undefined
-  runtimeMode?: "client" | "server"
+  mode?: "client" | "server"
 }
 
 // World manages all runtime state
-export const World = ({ commands, games, systems, renderer, runtimeMode }: WorldProps): World => {
+export const World = ({ commands, games, systems, renderer, mode }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
 
@@ -72,8 +73,8 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     entitiesAtTick: {},
     games: {},
     lastTick: 0,
+    mode: mode ?? "client",
     renderer,
-    runtimeMode: runtimeMode ?? "client",
     systems: {},
     tick: 0,
     tickFaster: false,
@@ -93,6 +94,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     addEntityBuilders: (entityBuilders: (() => Entity)[]) => {
       entityBuilders.forEach((entityBuilder) => world.addEntity(entityBuilder()))
     },
+    random: Random(123456789),
     removeEntity: (id: string) => {
       const entity = world.entities[id]
       if (entity) {
@@ -218,7 +220,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
   }
 
   // set up client
-  if (world.runtimeMode === "client") world.client = Client({ world })
+  if (world.mode === "client") world.client = Client({ world })
 
   // schedule onTick
   scheduleOnTick()
