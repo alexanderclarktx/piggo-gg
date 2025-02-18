@@ -15,9 +15,9 @@ export type World = {
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   games: Record<string, GameBuilder>
   lastTick: DOMHighResTimeStamp
+  mode: "client" | "server"
   random: Random,
   renderer: Renderer | undefined
-  mode: "client" | "server"
   systems: Record<string, System>
   tick: number
   tickFaster: boolean
@@ -73,8 +73,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     entitiesAtTick: {},
     games: {},
     lastTick: 0,
-    renderer,
     mode: mode ?? "client",
+    renderer,
     systems: {},
     tick: 0,
     tickFaster: false,
