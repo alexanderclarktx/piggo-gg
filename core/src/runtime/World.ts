@@ -17,7 +17,7 @@ export type World = {
   lastTick: DOMHighResTimeStamp
   random: Random,
   renderer: Renderer | undefined
-  runtimeMode: "client" | "server"
+  mode: "client" | "server"
   systems: Record<string, System>
   tick: number
   tickFaster: boolean
@@ -44,11 +44,11 @@ export type WorldProps = {
   games?: GameBuilder[]
   systems?: SystemBuilder[]
   renderer?: Renderer | undefined
-  runtimeMode?: "client" | "server"
+  mode?: "client" | "server"
 }
 
 // World manages all runtime state
-export const World = ({ commands, games, systems, renderer, runtimeMode }: WorldProps): World => {
+export const World = ({ commands, games, systems, renderer, mode }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
 
@@ -74,7 +74,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
     games: {},
     lastTick: 0,
     renderer,
-    runtimeMode: runtimeMode ?? "client",
+    mode: mode ?? "client",
     systems: {},
     tick: 0,
     tickFaster: false,
@@ -220,7 +220,7 @@ export const World = ({ commands, games, systems, renderer, runtimeMode }: World
   }
 
   // set up client
-  if (world.runtimeMode === "client") world.client = Client({ world })
+  if (world.mode === "client") world.client = Client({ world })
 
   // schedule onTick
   scheduleOnTick()

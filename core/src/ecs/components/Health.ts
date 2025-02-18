@@ -46,12 +46,8 @@ export const HealthSystem = SystemBuilder({
         if (health.data.hp <= 0) {
           world.removeEntity(entity.id)
 
-          if (world.runtimeMode === "client") {
-            if (health.deathSounds.length > 0) {
-              world.client?.soundManager.play(health.deathSounds, 0.1)
-            }
-
-            // console.log(`${entity.id} died with ${health.data.hp} health`)
+          if (world.client && health.deathSounds.length > 0) {
+            world.client?.soundManager.play(health.deathSounds, 0.1)
           }
         }
       }
