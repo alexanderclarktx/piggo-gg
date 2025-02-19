@@ -4,7 +4,7 @@ import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round
 export let physics: RapierWorld
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
 
-export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
+export const PhysicsSystem = SystemBuilder({
   id: "PhysicsSystem",
   init: (world) => {
 
@@ -122,6 +122,8 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
           // sensor callbacks
           if (collider.sensor && collider.rapierCollider) {
 
+            if (world.tick % 80 === 0) console.log("checking sensors")
+
             const collidedWith: Entity<Collider | Position>[] = []
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
@@ -168,4 +170,4 @@ export const PhysicsSystem: SystemBuilder<"PhysicsSystem"> = {
       }
     }
   }
-}
+})
