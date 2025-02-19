@@ -89,7 +89,10 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.speed = speed
     },
     setHeading: (xy: XY) => {
-      position.data.heading = xy
+      position.data.heading = {
+        x: round(xy.x, 2),
+        y: round(xy.y, 2)
+      }
       return position
     },
     clearHeading: () => {

@@ -14,7 +14,7 @@ export const Craft: GameBuilder = {
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       Zomi(),
       // Chicko(), Chicko(),
-      Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(),
+      Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), // TODO these should get spawned by a system
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
       Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),

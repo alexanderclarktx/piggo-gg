@@ -62,42 +62,42 @@ type Hooks = {
 const GameStateHooks: Record<GameStates, Hooks> = {
   "warmup": {
     onStart: (world) => {
-      // world.log("warmup started")
+      // world.message("warmup started")
     },
     onTick: (world) => { },
     timer: -1
   },
   "pre-round": {
     onStart: (world) => {
-      world.log("pre-round started")
+      world.message("pre-round started")
     },
     onTick: (world) => { },
     timer: 10
   },
   "round": {
     onStart: (world) => {
-      world.log("round started")
+      world.message("round started")
     },
     onTick: (world) => { },
     timer: 120
   },
   "planted": {
     onStart: (world) => {
-      world.log("spike planted")
+      world.message("spike planted")
     },
     onTick: (world) => { },
     timer: 40
   },
   "post-round": {
     onStart: (world) => {
-      world.log("post-round started")
+      world.message("post-round started")
     },
     onTick: (world) => { },
     timer: 10
   },
   "game-over": {
     onStart: (world) => {
-      world.log("game over")
+      world.message("game over")
     },
     onTick: (world) => { },
     timer: 10

@@ -30,7 +30,7 @@ export type World = {
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
   queryEntities: (query: ValidComponents[]) => Entity[]
-  log: (message: string) => void
+  message: (message: string) => void
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -130,8 +130,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     queryEntities: (query: ValidComponents[]) => {
       return filterEntities(query, values(world.entities))
     },
-    // TODO rename
-    log: (message: string) => {
+    message: (message: string) => {
       world.chatHistory.push(world.tick + 1, "game", message)
     },
     onTick: ({ isRollback }) => {
