@@ -46,7 +46,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
     const bullet = Hitbox(bulletParams)
     world.addEntity(bullet)
 
-    console.log("spawned bullet", gun.data.name)
+    console.log("spawned bullet", gun.data.name, bullet.id, bulletParams)
 
     world.client?.soundManager.play(gun.data.name)
 
@@ -56,6 +56,6 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
       if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { actionId: "reload" })
     }
   } else {
-    console.log("can't shoot", gun.data.name)
+    console.log("can't shoot", gun.data)
   }
 })
