@@ -1,5 +1,5 @@
 import {
-  Action, Character, Hitbox, HitboxProps, KeyMouse, onHitFlat, stringify, TeamColors
+  Action, Character, Hitbox, HitboxProps, KeyMouse, onHitFlat, TeamColors
 } from "@piggo-gg/core"
 
 export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot", ({ world, params, entity }) => {

@@ -122,8 +122,6 @@ export const PhysicsSystem = SystemBuilder({
           // sensor callbacks
           if (collider.sensor && collider.rapierCollider) {
 
-            if (world.tick % 80 === 0) console.log("checking sensors")
-
             const collidedWith: Entity<Collider | Position>[] = []
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {

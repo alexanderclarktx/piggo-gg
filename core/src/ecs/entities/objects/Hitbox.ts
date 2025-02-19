@@ -20,7 +20,6 @@ export const onHitFlat = (ally: TeamNumber, damage: number): SensorCallback => (
   const { collider, health, team } = e2.components
   if (health && collider.hittable) {
     if (!team || (team.data.team !== ally)) {
-      console.log("HIT", e2.id, damage)
       health.damage(damage, world)
       return true
     }
@@ -51,7 +50,6 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
         length: radius ?? 8,
         width: radius ?? 8,
         sensor: (e2: Entity<Position | Collider>, world: World) => {
-          console.log("sensor hit check", id, e2.id)
           const hit = onHit(e2, world)
           if (hit) world.removeEntity(hitbox.id)
           return hit

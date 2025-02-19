@@ -14,8 +14,6 @@ export const ExpiresSystem: SystemBuilder<"ExpiresSystem"> = {
         if (expires.data.ticksLeft <= 0) {
           expires.onExpire()
           world.removeEntity(entity.id)
-
-          console.log(`${entity.id} expired`)
         }
       })
     }
