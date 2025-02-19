@@ -46,7 +46,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
     const bullet = Hitbox(bulletParams)
     world.addEntity(bullet)
 
-    console.log("spawned bullet", gun.data.name, bullet.id, bulletParams)
+    console.log("spawned bullet", gun.data.name, bullet.id)
 
     world.client?.soundManager.play(gun.data.name)
 

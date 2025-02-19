@@ -1,4 +1,4 @@
-from oven/bun:1.0.30-slim
+from oven/bun:1.2.2-slim
 
 # add package.json
 add package.json package.json
