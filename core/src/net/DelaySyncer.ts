@@ -65,8 +65,8 @@ export const DelaySyncer: Syncer = {
 
     let rollback = false
 
-    const mustRollback = (reason: string) => {
-      console.log("MUST ROLLBACK", reason)
+    const mustRollback = (reason: string, additional?: object, additional2?: object) => {
+      console.log("MUST ROLLBACK", reason, additional, additional2)
       rollback = true
     }
 
@@ -93,7 +93,8 @@ export const DelaySyncer: Syncer = {
         if (localEntity) {
           if (entityId.startsWith("skelly") && entityId !== `skelly-${world.client?.playerId}`) return
           if (stringify(localEntity) !== stringify(msgEntity)) {
-            mustRollback(`entity state ${entityId} local:${stringify(localEntity)}\nremote:${stringify(msgEntity)}`)
+            // mustRollback(`entity state ${entityId} local:${stringify(localEntity)}\nremote:${stringify(msgEntity)}`)
+            mustRollback(`entity state ${entityId}`, localEntity, msgEntity)
           }
         } else {
           mustRollback(`no buffered message ${localEntities.serializedEntities}`)
