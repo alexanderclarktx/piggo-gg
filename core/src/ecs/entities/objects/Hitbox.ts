@@ -32,8 +32,8 @@ export type HitboxProps = {
   id: string
   radius: number
   onHit: SensorCallback
+  pos: PositionProps
   color?: number
-  pos?: PositionProps
   visible?: boolean
   expireTicks?: number
   onExpire?: () => void
@@ -43,7 +43,7 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
   const hitbox = Entity({
     id,
     components: {
-      position: Position(pos ? pos : { x: 200, y: 200, velocity: { x: 50, y: 0 } }),
+      position: Position(pos),
       networked: Networked(),
       expires: Expires({ ticksLeft: expireTicks ?? 35, onExpire: onExpire ?? (() => { }) }),
       collider: Collider({
