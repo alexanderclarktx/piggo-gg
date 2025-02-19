@@ -2,12 +2,11 @@ import { Character, Controlling, Player, SystemBuilder } from "@piggo-gg/core"
 
 type CharacterSpawner = (player: Player) => Character
 
-// spawn characters for players
 export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSystem"> => ({
   id: "SpawnSystem",
   init: (world) => {
 
-    const spawnedPlayers: Set<string> = new Set()
+    const spawned: Record<string, string> = {}
 
     return {
       id: "SpawnSystem",
@@ -15,22 +14,23 @@ export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSyst
       onTick: (players: Player[]) => {
 
         // cleanup
-        spawnedPlayers.forEach((playerId) => {
+        for (const playerId in spawned) {
           if (!world.entities[playerId]) {
-            world.removeEntity(`character-${playerId}`)
-            spawnedPlayers.delete(playerId)
+            world.removeEntity(spawned[playerId])
+            delete spawned[playerId]
           }
-        })
+        }
 
-        // spawn a new character
+        // spawn character
         players.forEach((player) => {
-          if (!player.components.controlling.data.entityId || !spawnedPlayers.has(player.id)) {
+          const character = player.components.controlling.getControlledEntity(world)
+
+          if (!character) {
             const character = spawner(player)
             player.components.controlling = Controlling({ entityId: character.id })
-            world.addEntity(character)
-            spawnedPlayers.add(player.id)
 
-            // console.log(`spawned ${character.id}`, character.components)
+            world.addEntity(character)
+            spawned[player.id] = character.id
           }
         })
       }

@@ -41,10 +41,9 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
       onTick: (_: Entity[]) => {
         const message = syncer.writeMessage(world)
 
-        // TODO rm debugging logs
         try {
           if (client.ws.readyState === WebSocket.OPEN) client.ws.send(stringify(message))
-          if (keys(message.actions).length > 1) console.log("sent actions", message.actions)
+          if (keys(message.actions).length > 1) console.debug("sent actions", message.actions)
         } catch (e) {
           console.error("NetcodeSystem: error sending message", message)
         }

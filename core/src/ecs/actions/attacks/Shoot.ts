@@ -43,7 +43,10 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
       color: TeamColors[team.data.team]
     }
 
-    world.addEntity(Hitbox(bulletParams))
+    const bullet = Hitbox(bulletParams)
+    world.addEntity(bullet)
+
+    console.log("spawned bullet", gun.data.name, bullet.id)
 
     world.client?.soundManager.play(gun.data.name)
 
@@ -52,5 +55,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
       const reload = entity.components.actions?.actionMap["reload"]
       if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { actionId: "reload" })
     }
+  } else {
+    console.log("can't shoot", gun.data)
   }
 })

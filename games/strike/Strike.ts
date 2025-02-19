@@ -1,7 +1,7 @@
 import {
-  Background, Shop, FloorCollidersArray, FloorTilesArray,
-  HealthBarSystem,  Minimap, ScorePanel, Scoreboard, SightSystem,
-  isMobile, GameBuilder, DefaultUI, CameraSystem, InventorySystem
+  Background, Shop, FloorCollidersArray, FloorTilesArray, HealthBarSystem,
+  Minimap, ScorePanel, Scoreboard, SightSystem, isMobile, GameBuilder,
+  DefaultUI, CameraSystem, InventorySystem, PvPHUD
 } from "@piggo-gg/core"
 import { StrikeSystem } from "@piggo-gg/games"
 
@@ -13,6 +13,7 @@ export const Strike: GameBuilder = {
     tileMap: StrikeTileMap,
     entities: [
       ...DefaultUI(world),
+      PvPHUD(["q", "e", "z", "x"],["i", "o", "p", "l"]),
       Background(),
       ScorePanel(),
       Scoreboard(),
