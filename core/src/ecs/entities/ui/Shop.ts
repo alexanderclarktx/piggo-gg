@@ -94,15 +94,15 @@ const cell = async (text: string, width: number, height: number, world: World, m
     const character = world.client?.playerCharacter()
     if (!character) return
 
-    const newGun = GunsTable[text.toLowerCase() as GunNames]
-    if (!newGun) return
+    const builder = GunsTable[text.toLowerCase() as GunNames]
+    if (!builder) return
 
-    character.components.inventory?.addItem(newGun({ character }), world)
+    character.components.inventory?.addItem(builder({ character }), world) // TODO this is local
     console.log("bought", text)
 
     clickableClickedThisFrame.set(world.tick + 1)
 
-    world.actionBuffer.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() })
+    world.actionBuffer.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() }) // TODO this is global
   }
   c.onmouseenter = () => dark.visible = true
   c.onmouseleave = () => dark.visible = false

@@ -5,7 +5,7 @@ import {
 import { AnimatedSprite } from "pixi.js"
 
 export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ character }) => ItemEntity({
-  id: name,
+  id: `${name}-${character.id}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
