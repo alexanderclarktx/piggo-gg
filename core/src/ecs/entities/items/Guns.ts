@@ -55,7 +55,7 @@ const DeagleBuilder = GunBuilder({
   name: "deagle",
   automatic: false,
   ammo: 60,
-  clipSize: 2,
+  clipSize: 15,
   damage: 15,
   fireRate: 3,
   reloadTime: 40,
