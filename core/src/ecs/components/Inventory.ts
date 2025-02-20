@@ -3,7 +3,7 @@ import {
   Renderable, SystemBuilder, Team, ItemEntity, World
 } from "@piggo-gg/core"
 
-export type ItemBuilder = (_: { id?: string, character?: Character }) => ItemEntity
+export type ItemBuilder = (_: { id?: string, character: Character }) => ItemEntity
 
 export type Inventory = Component<"inventory", {
   items: (string[] | undefined)[]
@@ -38,6 +38,7 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
       let added = false
       const { items } = inventory.data
 
+      // stackable items
       if (item.components.item.stackable) {
         for (const slot of items) {
           if (slot && slot.length && slot[0].includes(item.components.item.name)) {
@@ -48,6 +49,7 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
         }
       }
 
+      // non-stackable items
       if (!added) for (let i = 0; i < inventory.data.items.length; i++) {
         if (items[i] === undefined) {
           inventory.data.items[i] = [item.id]
@@ -56,6 +58,7 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
         }
       }
 
+      // add to world
       if (added && !world.entities[item.id]) {
         world.addEntity(item)
       }
