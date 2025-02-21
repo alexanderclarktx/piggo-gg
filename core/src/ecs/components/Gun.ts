@@ -16,7 +16,6 @@ export type GunProps = {
 
 // TODO some properties don't need to be networked
 export type Gun = Component<"gun", GunProps & {
-  id: number
   clip: number
   lastShot: number
   reloading: boolean
@@ -30,7 +29,6 @@ export const Gun = (props: GunProps): Gun => {
   const gun: Gun = {
     type: "gun",
     data: {
-      id: randomInt(100000), // todo
       clip: props.clipSize,
       ammo: props.ammo,
       automatic: props.automatic,

@@ -4,8 +4,8 @@ import {
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
-export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ character }) => ItemEntity({
-  id: `${name}-${character.id}`,
+export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, character }) => ItemEntity({
+  id: id ?? `${name}-${character.id}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
