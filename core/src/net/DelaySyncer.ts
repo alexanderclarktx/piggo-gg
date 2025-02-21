@@ -74,7 +74,7 @@ export const DelaySyncer: Syncer = {
     }
 
     if ((message.tick - 1) !== world.tick) {
-      mustRollback(`old tick world:${world.tick} msg:${message.tick}`)
+      mustRollback(`old tick msg:${message.tick}`)
     }
 
     const localEntities: Record<string, SerializedEntity> = {}
@@ -88,13 +88,12 @@ export const DelaySyncer: Syncer = {
     if (!rollback) {
       const numLocal = keys(localEntities).length
       const numRemote = keys(message.serializedEntities).length
-      if (numLocal !== numRemote) mustRollback(`entity count local:${numLocal} remote:${numRemote} local:${world.tick} remote:${message.tick}`)
+      if (numLocal !== numRemote) mustRollback(`entity count local:${numLocal} remote:${numRemote} remote:${message.tick}`)
     }
 
     // compare entity states
     if (!rollback) {
       for (const [entityId, msgEntity] of entries(message.serializedEntities)) {
-      // entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
         const localEntity = localEntities[entityId]
         if (localEntity) {
           // if (entityId.startsWith("skelly") && entityId !== `skelly-${world.client?.playerId}`) return

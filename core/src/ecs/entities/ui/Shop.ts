@@ -104,19 +104,17 @@ const cell = async (text: string, width: number, height: number, world: World, m
 
   c.onpointerdown = () => {
     const character = world.client?.playerCharacter()
-    if (!character) return
-
     const builder = GunsTable[text.toLowerCase() as GunNames]
-    if (!builder) return
+    if (!builder || !character) return
 
-    // TODO this is local
+    clickableClickedThisFrame.set(world.tick + 1)
+
     world.actionBuffer.push(world.tick + 2, "shop", {
       actionId: "buyItem", params: { itemBuilder: text.toLowerCase() }, playerId: world.client?.playerId()
     })
 
-    clickableClickedThisFrame.set(world.tick + 1)
-
-    world.actionBuffer.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() }) // TODO this is global
+    // TODO this is global
+    world.actionBuffer.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() })
   }
   c.onmouseenter = () => dark.visible = true
   c.onmouseleave = () => dark.visible = false
