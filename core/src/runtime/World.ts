@@ -143,9 +143,9 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       }
 
       if (world.tickFlag === "red") {
-        console.log("defer tick")
-        scheduleOnTick()
-        return
+        console.error("defer tick")
+        // scheduleOnTick()
+        // return
       }
 
       // update lastTick

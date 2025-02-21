@@ -1,7 +1,7 @@
 import {
-  Apple, Axe, Ball, Entity, GameData, Hitbox, LineWall, Pickaxe, Piggo,
-  Player, Rock, SerializedEntity, Sword, Syncer, Tree, World, Zomi,
-  entries, keys, stringify
+  AK, AWP, Apple, Axe, Ball, Deagle, Entity, GameData, Hitbox, LineWall,
+  Pickaxe, Piggo, Player, Rock, SerializedEntity, Sword, Syncer, Tree,
+  World, Zomi, entries, keys, stringify
 } from "@piggo-gg/core"
 
 const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
@@ -16,7 +16,10 @@ const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "axe": Axe,
   "pickaxe": Pickaxe,
   "sword": Sword,
-  "apple": Apple
+  "apple": Apple,
+  "ak": AK,
+  "deagle": Deagle,
+  "awp": AWP
 }
 
 export const DelaySyncer: Syncer = {
@@ -66,11 +69,13 @@ export const DelaySyncer: Syncer = {
     let rollback = false
 
     const mustRollback = (reason: string, additional?: object, additional2?: object) => {
-      console.log("MUST ROLLBACK", reason, additional, additional2)
+      console.log(`MUST ROLLBACK tick:${world.tick}`, reason, additional, additional2)
       rollback = true
     }
 
-    if ((message.tick - 1) !== world.tick) mustRollback(`old tick world=${world.tick} msg=${message.tick}`)
+    if ((message.tick - 1) !== world.tick) {
+      mustRollback(`old tick world:${world.tick} msg:${message.tick}`)
+    }
 
     const localEntities: Record<string, SerializedEntity> = {}
     for (const entityId in world.entities) {
@@ -83,22 +88,24 @@ export const DelaySyncer: Syncer = {
     if (!rollback) {
       const numLocal = keys(localEntities).length
       const numRemote = keys(message.serializedEntities).length
-      if (numLocal !== numRemote) mustRollback(`entity count local:${numLocal} remote:${numRemote}`)
+      if (numLocal !== numRemote) mustRollback(`entity count local:${numLocal} remote:${numRemote} local:${world.tick} remote:${message.tick}`)
     }
 
     // compare entity states
     if (!rollback) {
-      entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
+      for (const [entityId, msgEntity] of entries(message.serializedEntities)) {
+      // entries(message.serializedEntities).forEach(([entityId, msgEntity]) => {
         const localEntity = localEntities[entityId]
         if (localEntity) {
-          if (entityId.startsWith("skelly") && entityId !== `skelly-${world.client?.playerId}`) return
+          // if (entityId.startsWith("skelly") && entityId !== `skelly-${world.client?.playerId}`) return
           if (stringify(localEntity) !== stringify(msgEntity)) {
             mustRollback(`entity state ${entityId}`, localEntity, msgEntity)
+            break
           }
         } else {
           mustRollback(`no buffered message ${localEntities.serializedEntities}`)
         }
-      })
+      }
     }
 
     if (rollback) {

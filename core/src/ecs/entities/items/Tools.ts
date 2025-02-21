@@ -15,7 +15,7 @@ export type ToolProps = {
 export const Tool = (
   { name, sound, damage }: ToolProps
 ): ItemBuilder => ({ character, id }): ItemEntity => ItemEntity({
-  id: id ?? `${name}-${randomInt(1000)}`,
+  id: id ?? `${name}-${character.id}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions<any>({
