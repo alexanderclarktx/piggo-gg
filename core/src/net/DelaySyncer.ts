@@ -96,7 +96,6 @@ export const DelaySyncer: Syncer = {
       for (const [entityId, msgEntity] of entries(message.serializedEntities)) {
         const localEntity = localEntities[entityId]
         if (localEntity) {
-          // if (entityId.startsWith("skelly") && entityId !== `skelly-${world.client?.playerId}`) return
           if (stringify(localEntity) !== stringify(msgEntity)) {
             mustRollback(`entity state ${entityId}`, localEntity, msgEntity)
             break
