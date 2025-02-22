@@ -1,7 +1,8 @@
 import {
   Actions, Clickable, Collider, Item, Effects, Element,
   Food, Health, ItemEntity, Networked, Position,
-  Renderable, XY, loadTexture, randomInt, NPC
+  Renderable, XY, loadTexture, randomInt, NPC,
+  Input
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 

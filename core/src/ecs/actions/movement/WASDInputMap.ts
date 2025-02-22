@@ -1,6 +1,6 @@
 import { Entity, InputMap, InvokedAction, Position, World, XY, normalize } from "@piggo-gg/core"
 
-export const WASDInputMap: InputMap = {
+export const WASDInputMap: Partial<InputMap> = {
   press: {
     "a,d": () => null, "w,s": () => null,
     "w,a": ({ entity, world }) => move(entity, world, -1, -2),

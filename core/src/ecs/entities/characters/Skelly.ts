@@ -30,7 +30,7 @@ export const Skelly = (player: Player, color?: number, pos?: XY) => {
         },
         joystick: DefaultJoystickHandler
       }),
-      actions: Actions({
+      actions: Actions<any>({
         move: Move,
         point: Point,
         setActiveItemIndex,

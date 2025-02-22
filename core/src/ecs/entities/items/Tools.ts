@@ -1,6 +1,6 @@
 import {
   Actions, Clickable, Effects, ElementKinds, Item, ItemBuilder, ItemEntity,
-  Position, Renderable, ValidSounds, Whack, loadTexture, randomInt
+  Position, Renderable, ValidSounds, Whack, loadTexture
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
