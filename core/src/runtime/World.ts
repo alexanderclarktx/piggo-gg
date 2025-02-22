@@ -83,9 +83,11 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     tileMap: undefined,
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
-      if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup()
-      world.entities[entity.id] = entity
+      if (oldEntity?.components.renderable) {
+        oldEntity.components.renderable.cleanup()
+      }
 
+      world.entities[entity.id] = entity
       return entity.id
     },
     addEntities: (entities: Entity[]) => {

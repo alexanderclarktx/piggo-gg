@@ -33,6 +33,7 @@ export const Shop = (): Entity => {
           if (!builder || !character) return
 
           const item = builder({ character })
+          world.addEntity(item)
           character.components.inventory?.addItem(item, world)
         }
       }),
