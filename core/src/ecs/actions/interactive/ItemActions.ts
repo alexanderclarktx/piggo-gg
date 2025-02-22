@@ -34,7 +34,6 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   inventory.addItem(entity as ItemEntity, world)
 })
 
-// attach to item - not the player ?
 export const dropItem = Action("dropItem", ({ world, entity }) => {
   if (!entity) return
 
