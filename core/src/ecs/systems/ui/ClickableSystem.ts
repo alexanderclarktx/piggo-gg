@@ -118,9 +118,9 @@ export const ClickableSystem = ClientSystemBuilder({
               }
 
               if (networked && networked.isNetworked) {
-                world.actionBuffer.push(world.tick + 1, invocation.entityId ?? clicked.id, invocation)
+                world.actions.push(world.tick + 1, invocation.entityId ?? clicked.id, invocation)
               } else {
-                world.actionBuffer.push(world.tick, invocation.entityId ?? clicked.id, invocation)
+                world.actions.push(world.tick, invocation.entityId ?? clicked.id, invocation)
               }
             }
           }

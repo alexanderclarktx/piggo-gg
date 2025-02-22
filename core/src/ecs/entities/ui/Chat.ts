@@ -3,7 +3,7 @@ import { Text } from "pixi.js"
 
 export const Chat = (): Entity => {
 
-  const chatHistoryText = () => TextBox({
+  const messagesText = () => TextBox({
     padding: 3,
     fontSize: 16,
     color: 0x55FFFF,
@@ -11,14 +11,14 @@ export const Chat = (): Entity => {
       const t = container as Text
 
       // hide chat if no recent messages
-      if ((world.tick - world.chatHistory.keys()[0]) > 125) {
+      if ((world.tick - world.messages.keys()[0]) > 125) {
         t.text = ""
       } else {
         let lastMessages: string[] = []
 
         // get last 4 messages
-        world.chatHistory.keys().slice(0, 4).forEach((tick) => {
-          const messagesForEntity = world.chatHistory.atTick(tick)
+        world.messages.keys().slice(0, 4).forEach((tick) => {
+          const messagesForEntity = world.messages.atTick(tick)
           if (messagesForEntity) entries(messagesForEntity).forEach(([player, messages]) => {
             const playerName = world.entities[player]?.components.pc?.data.name ?? player
             messages.forEach((message) => {
@@ -55,7 +55,7 @@ export const Chat = (): Entity => {
       position: Position({ x: -400, y: -200, screenFixed: true }),
       renderable: Renderable({
         zIndex: 4,
-        setChildren: async () => [chatHistoryText(), chatBufferText()]
+        setChildren: async () => [messagesText(), chatBufferText()]
       })
     }
   })

@@ -125,10 +125,10 @@ export const InputSystem = ClientSystemBuilder({
           if (keyName === "enter" && !chatIsOpen) chatIsOpen = true
           else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
 
-            // push the message to chatHistory
+            // push the message to messages
             if (chatBuffer.length > 0) {
               const message = chatBuffer.join("")
-              world.chatHistory.push(world.tick + 1, world.client?.playerId() ?? "", message)
+              world.messages.push(world.tick + 1, world.client?.playerId() ?? "", message)
             }
 
             chatBuffer = []
@@ -164,14 +164,14 @@ export const InputSystem = ClientSystemBuilder({
         y: round(mouse.y - position.data.y, 2)
       }
 
-      world.actionBuffer.push(world.tick + 1, character.id,
+      world.actions.push(world.tick + 1, character.id,
         { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
       )
 
       // handle joystick input
       if (CurrentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
         const joystickAction = input.inputMap.joystick({ character, world })
-        if (joystickAction) world.actionBuffer.push(world.tick + 1, character.id, joystickAction)
+        if (joystickAction) world.actions.push(world.tick + 1, character.id, joystickAction)
       }
 
       // handle standalone and composite (a,b) input controls
@@ -194,7 +194,7 @@ export const InputSystem = ClientSystemBuilder({
               })
               if (invocation && actions.actionMap[invocation.actionId]) {
                 invocation.playerId = world.client?.playerId()
-                world.actionBuffer.push(world.tick + 1, character.id, invocation)
+                world.actions.push(world.tick + 1, character.id, invocation)
               }
             }
 
@@ -215,7 +215,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actionBuffer.push(world.tick + 1, character.id, invocation)
+              world.actions.push(world.tick + 1, character.id, invocation)
             }
           }
 
@@ -245,7 +245,7 @@ export const InputSystem = ClientSystemBuilder({
               }
             }
             if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
-              world.actionBuffer.push(world.tick + 1, activeItem.id, invocation)
+              world.actions.push(world.tick + 1, activeItem.id, invocation)
             }
           }
         })
@@ -279,7 +279,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actionBuffer.push(world.tick + 1, entity.id, invocation)
+              world.actions.push(world.tick + 1, entity.id, invocation)
             }
           }
 
@@ -300,7 +300,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actionBuffer.push(world.tick + 1, entity.id, invocation)
+              world.actions.push(world.tick + 1, entity.id, invocation)
             }
           }
 

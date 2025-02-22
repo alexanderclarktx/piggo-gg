@@ -7,7 +7,7 @@ export const HomeButton = () => Entity({
     clickable: Clickable({ width: 80, height: 32, active: true }),
     actions: Actions({
       click: ({ world }) => {
-        world.actionBuffer.push(world.tick + 1, "world",
+        world.actions.push(world.tick + 1, "world",
           { actionId: "game", playerId: world.client?.player.id, params: { game: "home" } }
         )
       }

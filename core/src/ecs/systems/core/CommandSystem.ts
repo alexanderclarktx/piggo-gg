@@ -16,7 +16,7 @@ export const CommandSystem = ClientSystemBuilder({
           const action = parse({ world, match })
           if (action) {
             // TODO can this be more first-class
-            world.actionBuffer.push(world.tick + 1, "world", action)
+            world.actions.push(world.tick + 1, "world", action)
           }
         }
       })
@@ -26,7 +26,7 @@ export const CommandSystem = ClientSystemBuilder({
       id: "CommandSystem",
       query: [],
       onTick: () => {
-        const messagesFromPlayer = world.chatHistory.atTick(world.tick)
+        const messagesFromPlayer = world.messages.atTick(world.tick)
 
         if (messagesFromPlayer) {
           values(messagesFromPlayer).forEach((messages) => messages.forEach((message) => {

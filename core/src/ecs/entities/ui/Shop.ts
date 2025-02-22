@@ -110,12 +110,12 @@ const cell = async (text: string, width: number, height: number, world: World, m
 
     clickableClickedThisFrame.set(world.tick + 1)
 
-    world.actionBuffer.push(world.tick + 2, "shop", {
+    world.actions.push(world.tick + 2, "shop", {
       actionId: "buyItem", params: { itemBuilder: text.toLowerCase() }, playerId: world.client?.playerId()
     })
 
     // TODO this is global
-    world.actionBuffer.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() })
+    world.actions.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() })
   }
   c.onmouseenter = () => dark.visible = true
   c.onmouseleave = () => dark.visible = false

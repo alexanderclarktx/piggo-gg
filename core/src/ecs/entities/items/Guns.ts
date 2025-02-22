@@ -85,7 +85,7 @@ const AWPBuilder = GunBuilder({
   damage: 200,
   fireRate: 40,
   reloadTime: 40,
-  bulletSize: 5,
+  bulletSize: 4,
   speed: 600
 })
 

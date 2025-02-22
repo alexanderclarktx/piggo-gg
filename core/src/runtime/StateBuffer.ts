@@ -25,9 +25,9 @@ export const StateBuffer = <T extends ({} | string)>(): StateBuffer<T> => {
       delete buffer[tick]
     },
     clearBeforeTick: (tick) => {
-      keys(buffer).map(Number).forEach((t) => {
-        if (t < tick) delete buffer[t]
-      })
+      for (let i = 0; i < tick; i++) {
+        delete buffer[i]
+      }
     },
     keys: () => {
       return keys(buffer).map(Number).reverse()

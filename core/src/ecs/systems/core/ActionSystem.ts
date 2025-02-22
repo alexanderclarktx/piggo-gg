@@ -6,7 +6,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
     id: "ActionSystem",
     query: [],
     onTick: () => {
-      const actionsAtTick = world.actionBuffer.atTick(world.tick)
+      const actionsAtTick = world.actions.atTick(world.tick)
       if (!actionsAtTick) return
 
       entries(actionsAtTick).forEach(([entityId, actions]) => {
