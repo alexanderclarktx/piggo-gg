@@ -14,16 +14,21 @@ export type JoystickHandler = (_: { character: Character, world: World }) => nul
 
 // "" is always allowed to clear the input buffer
 export type InputMap = {
-  press?: Record<string, KeyHandler>
-  release?: Record<string, KeyHandler>
-  joystick?: JoystickHandler
+  press: Record<string, KeyHandler>
+  release: Record<string, KeyHandler>
+  joystick: JoystickHandler
 }
 
 export type Input = Component<"input"> & {
   inputMap: InputMap
 }
 
-export const Input = (inputMap: InputMap): Input => ({
+export const Input = (inputMap: Partial<InputMap> = {}): Input => ({
   type: "input",
-  inputMap
+  inputMap: {
+    press: {},
+    release: {},
+    joystick: () => null,
+    ...inputMap
+  }
 })

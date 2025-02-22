@@ -34,17 +34,16 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   inventory.addItem(entity as ItemEntity, world)
 })
 
-export const dropItem = Action("dropItem", ({ world }) => {
-  const character = world.client?.playerCharacter()
-  if (!character) return
+export const dropItem = Action("dropItem", ({ world, entity }) => {
+  if (!entity) return
 
-  const { inventory } = character.components
+  const { inventory } = entity.components
   if (!inventory) return
 
   const activeItem = inventory.activeItem(world)
   if (!activeItem) return
 
-  const { item, position, collider, clickable } = activeItem.components
+  const { item, position, clickable, collider } = activeItem.components
 
   item.dropped = true
   position.data.follows = undefined

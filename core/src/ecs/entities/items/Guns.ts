@@ -15,7 +15,9 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, cha
     gun: gun(),
     effects: Effects(),
     item: Item({ name }),
-    clickable: Clickable({ width: 0, height: 0, active: false }),
+    clickable: Clickable({
+      width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 }
+    }),
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
