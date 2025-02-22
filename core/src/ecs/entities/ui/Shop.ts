@@ -17,7 +17,7 @@ export const Shop = (): Entity => {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       input: Input({
         press: {
-          "b": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId() })
+          "b": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId(), offline: true })
         }
       }),
       actions: Actions<any>({
@@ -27,6 +27,7 @@ export const Shop = (): Entity => {
         },
         buyItem: ({ world, params, player }) => {
           if (!params.itemBuilder) return
+          console.log("buyItem", player)
 
           const builder = GunsTable[params.itemBuilder as GunNames]
           const character = player?.components.controlling.getControlledEntity(world) as Character

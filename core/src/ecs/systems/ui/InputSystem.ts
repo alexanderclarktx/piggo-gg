@@ -279,7 +279,11 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
-              world.actions.push(world.tick + 1, entity.id, invocation)
+              if (invocation.offline) {
+                world.actions.push(world.tick, entity.id, invocation)  
+              } else {
+                world.actions.push(world.tick + 1, entity.id, invocation)
+              }
             }
           }
 

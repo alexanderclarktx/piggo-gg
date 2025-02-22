@@ -8,7 +8,7 @@ export const EscapeMenu = (): Entity => {
     components: {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       input: Input({
-        press: { "escape": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId() }) }
+        press: { "escape": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId(), offline: true }) }
       }),
       actions: Actions({
         toggleVisible: () => {
@@ -35,7 +35,7 @@ export const EscapeMenu = (): Entity => {
               style: { fill: 0xffffff, fontSize }
             }),
             onClick: () => {
-              world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
+              world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
             }
           })
 

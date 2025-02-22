@@ -47,7 +47,7 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
             break
           }
         }
-      } else if (items.map(x=>x?.[0]).includes(item.id)) {
+      } else if (items.map(x => x?.[0]).includes(item.id)) {
         return
       }
 
