@@ -9,7 +9,7 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
     const client = world.client
     let serverMessageBuffer: GameData[] = []
 
-    world.actionBuffer.clearBeforeTick(world.tick + 2)
+    world.actions.clearBeforeTick(world.tick + 2)
 
     client.ws.onmessage = (event) => {
       try {

@@ -1,10 +1,27 @@
 import {
-  Actions, Character, Entity, GunNames, GunsTable, Input, Position, Renderable, TwoPoints, World,
+  Actions, Button, Character, Clickable, Entity, GunNames, GunsTable, Input,
+  Position, PositionProps, Renderable, TwoPoints, World,
   clickableClickedThisFrame, isMobile, loadTexture, pixiGraphics, pixiText
 } from "@piggo-gg/core"
 import { ScrollBox } from "@pixi/ui"
 import { OutlineFilter } from "pixi-filters"
 import { Container, Sprite } from "pixi.js"
+
+export const ShopButton = (pos: PositionProps = { x: -55, y: 5, screenFixed: true }) => Entity({
+  id: "shopButton",
+  components: {
+    position: Position(pos),
+    clickable: Clickable({
+      width: 45, height: 32,
+      click: () => ({ actionId: "toggleVisible", entityId: "shop", offline: true })
+    }),
+    renderable: Button({
+      dims: { w: 50, textX: 8, textY: 5 },
+      zIndex: 10,
+      text: pixiText({ text: "shop", style: { fill: 0xffffff, fontSize: 16 } })
+    })
+  }
+})
 
 export const Shop = (): Entity => {
 
@@ -17,7 +34,7 @@ export const Shop = (): Entity => {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       input: Input({
         press: {
-          "b": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId() })
+          "b": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId(), offline: true })
         }
       }),
       actions: Actions<any>({
@@ -33,6 +50,7 @@ export const Shop = (): Entity => {
           if (!builder || !character) return
 
           const item = builder({ character })
+          world.addEntity(item)
           character.components.inventory?.addItem(item, world)
         }
       }),
@@ -109,12 +127,12 @@ const cell = async (text: string, width: number, height: number, world: World, m
 
     clickableClickedThisFrame.set(world.tick + 1)
 
-    world.actionBuffer.push(world.tick + 2, "shop", {
+    world.actions.push(world.tick + 2, "shop", {
       actionId: "buyItem", params: { itemBuilder: text.toLowerCase() }, playerId: world.client?.playerId()
     })
 
     // TODO this is global
-    world.actionBuffer.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() })
+    world.actions.push(world.tick + 1, "shop", { actionId: "toggleVisible", playerId: world.client?.playerId() })
   }
   c.onmouseenter = () => dark.visible = true
   c.onmouseleave = () => dark.visible = false

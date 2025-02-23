@@ -5,8 +5,7 @@ import {
 } from "@piggo-gg/core"
 
 export type World = {
-  actionBuffer: StateBuffer<InvokedAction>
-  chatHistory: StateBuffer<string>
+  actions: StateBuffer<InvokedAction>
   client: Client | undefined
   commands: Record<string, Command>
   currentGame: Game
@@ -15,6 +14,7 @@ export type World = {
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
   games: Record<string, GameBuilder>
   lastTick: DOMHighResTimeStamp
+  messages: StateBuffer<string>
   mode: "client" | "server"
   random: Random,
   renderer: Renderer | undefined
@@ -29,8 +29,8 @@ export type World = {
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
+  announce: (message: string) => void
   queryEntities: (query: ValidComponents[]) => Entity[]
-  message: (message: string) => void
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -63,8 +63,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
   }
 
   const world: World = {
-    actionBuffer: StateBuffer(),
-    chatHistory: StateBuffer(),
+    actions: StateBuffer(),
+    messages: StateBuffer(),
     client: undefined,
     commands: {},
     currentGame: { id: "", entities: [], systems: [] },
@@ -83,9 +83,11 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     tileMap: undefined,
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
-      if (oldEntity?.components.renderable) oldEntity.components.renderable.cleanup()
-      world.entities[entity.id] = entity
+      if (oldEntity?.components.renderable) {
+        oldEntity.components.renderable.cleanup()
+      }
 
+      world.entities[entity.id] = entity
       return entity.id
     },
     addEntities: (entities: Entity[]) => {
@@ -127,11 +129,11 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
         }
       })
     },
+    announce: (message: string) => {
+      world.messages.push(world.tick + 1, "game", message)
+    },
     queryEntities: (query: ValidComponents[]) => {
       return filterEntities(query, values(world.entities))
-    },
-    message: (message: string) => {
-      world.chatHistory.push(world.tick + 1, "game", message)
     },
     onTick: ({ isRollback }) => {
       const now = performance.now()
@@ -183,7 +185,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       if (!isRollback) scheduleOnTick()
 
       // clear old buffered data
-      world.actionBuffer.clearBeforeTick(world.tick - 5)
+      world.actions.clearBeforeTick(world.tick - 5)
       keys(world.entitiesAtTick).map(Number).forEach((tick) => {
         if ((world.tick - tick) > 5) {
           delete world.entitiesAtTick[tick]

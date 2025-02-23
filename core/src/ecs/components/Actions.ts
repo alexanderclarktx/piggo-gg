@@ -21,6 +21,7 @@ export type InvokedAction<A extends string = string, P extends {} = {}> = {
   playerId?: string | undefined,
   entityId?: string | undefined
   params?: P
+  offline?: boolean
 }
 
 export type ActionMap<P extends {} = {}> = Record<string, Action<P> | Action<P>["invoke"]>

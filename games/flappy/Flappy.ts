@@ -30,7 +30,7 @@ const JumpButton = (): Entity<Renderable> => {
     components: {
       position: Position({ x: -(window.innerWidth / 2), y: -85, screenFixed: true }),
       clickable: Clickable({
-        width: 60, height: 60, active: true, anchor: { x: 0.5, y: 0.5 },
+        width: 60, height: 60, anchor: { x: 0.5, y: 0.5 },
         click: () => ({ actionId: "jump", entityId: "flappy-noob" })
       }),
       debug: Debug(),

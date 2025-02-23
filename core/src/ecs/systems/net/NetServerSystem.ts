@@ -13,8 +13,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
     // build tick data
     const tickData: NetMessageTypes = {
-      actions: world.actionBuffer.atTick(world.tick) ?? {},
-      chats: world.chatHistory.atTick(world.tick) ?? {},
+      actions: world.actions.atTick(world.tick) ?? {},
+      chats: world.messages.atTick(world.tick) ?? {},
       game: world.currentGame.id,
       playerId: "server",
       serializedEntities: world.entitiesAtTick[world.tick] ?? {},
@@ -63,7 +63,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
           keys(tickData.actions).forEach((entityId) => {
             // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
               tickData.actions[entityId].forEach((action) => {
-                world.actionBuffer.push(world.tick, entityId, action)
+                world.actions.push(world.tick, entityId, action)
               })
             // }
           })
@@ -71,7 +71,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
         // process message chats
         if (tickData.chats[client]) {
-          world.chatHistory.set(world.tick, client, tickData.chats[client])
+          world.messages.set(world.tick, client, tickData.chats[client])
         }
       })
     })

@@ -26,14 +26,11 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, cha
       interpolate: true,
       visible: false,
       outline: { color: 0x000000, thickness: 1 },
-      dynamic: ({ renderable, entity, world }) => {
+      dynamic: ({ renderable, entity }) => {
         if (entity.components.item!.dropped) return
 
-        const playerCharacter = world.client?.playerCharacter()
-        if (!playerCharacter) return
-
-        const { pointing } = playerCharacter.components.position.data
-        renderable.bufferedAnimation = pointing.toString()
+        const { pointing } = entity.components.position?.data ?? {}
+        if (pointing !== undefined) renderable.bufferedAnimation = pointing.toString()
       },
       setup: async (r: Renderable) => {
         const textures = await loadTexture(`${name}.json`)
@@ -85,7 +82,7 @@ const AWPBuilder = GunBuilder({
   damage: 200,
   fireRate: 40,
   reloadTime: 40,
-  bulletSize: 5,
+  bulletSize: 4,
   speed: 600
 })
 

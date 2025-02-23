@@ -100,7 +100,7 @@ const playerRow = (entity: Player, width: number, world: World): Container => {
 
   c.onpointerdown = () => {
     clickableClickedThisFrame.set(world.tick + 1)
-    world.actionBuffer.push(world.tick + 2, pc.data.name, { actionId: "switchTeam", playerId: world.client?.playerId() })
+    world.actions.push(world.tick + 2, pc.data.name, { actionId: "switchTeam", playerId: world.client?.playerId() })
   }
 
   return c

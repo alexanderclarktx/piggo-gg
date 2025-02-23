@@ -17,7 +17,7 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
         shape: "ball", radius: 32,
         sensor: (e2, world) => {
           if (e2.id.startsWith("skelly")) {
-            world.actionBuffer.push(world.tick + 1, portal.id, { playerId: world.client?.playerId(), actionId: "teleport", params: { game } })
+            world.actions.push(world.tick + 1, portal.id, { playerId: world.client?.playerId(), actionId: "teleport", params: { game } })
             return true
           }
           return false

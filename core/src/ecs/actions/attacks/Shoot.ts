@@ -51,7 +51,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
     // auto reload
     if (gun.data.clip === 0) {
       const reload = entity.components.actions?.actionMap["reload"]
-      if (reload) world.actionBuffer.push(world.tick + 1, entity.id, { actionId: "reload" })
+      if (reload) world.actions.push(world.tick + 1, entity.id, { actionId: "reload" })
     }
   }
 })

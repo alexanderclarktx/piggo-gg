@@ -34,11 +34,11 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
           action.cdLeft = cooldowns[key] ?? undefined
         })
 
-        const actions = world.actionBuffer.atTick(world.tick)
+        const actions = world.actions.atTick(world.tick)
         if (!actions) return
 
         entries(actions).forEach(([entityId, invokedActions]) => {
-          world.actionBuffer.set(world.tick, entityId, invokedActions.filter(offCooldown(entityId)))
+          world.actions.set(world.tick, entityId, invokedActions.filter(offCooldown(entityId)))
         })
       }
     }

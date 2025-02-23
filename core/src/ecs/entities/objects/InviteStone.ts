@@ -42,7 +42,6 @@ export const InviteStone = ({ pos, tint }: InviteStoneProps): Entity => {
         }
       }),
       clickable: Clickable({
-        active: true,
         anchor: { x: 0.5, y: 0.5 },
         width: 64,
         height: 48,

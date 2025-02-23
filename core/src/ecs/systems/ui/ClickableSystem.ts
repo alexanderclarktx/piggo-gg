@@ -117,10 +117,11 @@ export const ClickableSystem = ClientSystemBuilder({
                 playerId: world.client?.playerId()
               }
 
+              // TODO might need refactor (explicit InvokedAction.offline handling)
               if (networked && networked.isNetworked) {
-                world.actionBuffer.push(world.tick + 1, invocation.entityId ?? clicked.id, invocation)
+                world.actions.push(world.tick + 1, invocation.entityId ?? clicked.id, invocation)
               } else {
-                world.actionBuffer.push(world.tick, invocation.entityId ?? clicked.id, invocation)
+                world.actions.push(world.tick, invocation.entityId ?? clicked.id, invocation)
               }
             }
           }

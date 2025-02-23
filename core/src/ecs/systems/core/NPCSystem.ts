@@ -10,7 +10,7 @@ export const NPCSystem: SystemBuilder<"NPCSystem"> = {
       entities.forEach((entity) => {
         const action = entity.components.npc.behavior(entity, world)
         if (action) {
-          world.actionBuffer.push(world.tick, entity.id, action)
+          world.actions.push(world.tick, entity.id, action)
         }
       })
     }

@@ -68,7 +68,7 @@ export const PlsCommand: Command<PlsCommandParams> = {
         console.error(response.error)
       } else {
         response.response.forEach((command) => {
-          world.chatHistory.push(world.tick + 2, world.client?.playerId() ?? "", command)
+          world.messages.push(world.tick + 2, world.client?.playerId() ?? "", command)
         })
       }
     })

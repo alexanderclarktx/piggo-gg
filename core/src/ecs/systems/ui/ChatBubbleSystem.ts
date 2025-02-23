@@ -19,7 +19,7 @@ export const ChatBubbleSystem = ClientSystemBuilder({
   
           const { renderable } = entity.components
   
-          // const textForEntity = world.chatHistory.at(world.tick - 1, controlled.data.entityId)
+          // const textForEntity = world.messages.at(world.tick - 1, controlled.data.entityId)
           // if (textForEntity?.length) {
   
           //   const textBox = TextBox({
