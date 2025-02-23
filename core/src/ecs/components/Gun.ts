@@ -1,4 +1,4 @@
-import { Component, World, randomInt } from "@piggo-gg/core"
+import { Component, World } from "@piggo-gg/core"
 
 export type GunNames = "deagle" | "ak" | "awp"
 

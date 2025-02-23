@@ -30,7 +30,7 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, cha
         if (entity.components.item!.dropped) return
 
         const { pointing } = entity.components.position?.data ?? {}
-        if (pointing) renderable.bufferedAnimation = pointing.toString()
+        if (pointing !== undefined) renderable.bufferedAnimation = pointing.toString()
       },
       setup: async (r: Renderable) => {
         const textures = await loadTexture(`${name}.json`)

@@ -1,10 +1,27 @@
 import {
-  Actions, Character, Entity, GunNames, GunsTable, Input, Position, Renderable, TwoPoints, World,
+  Actions, Button, Character, Clickable, Entity, GunNames, GunsTable, Input,
+  Position, PositionProps, Renderable, TwoPoints, World,
   clickableClickedThisFrame, isMobile, loadTexture, pixiGraphics, pixiText
 } from "@piggo-gg/core"
 import { ScrollBox } from "@pixi/ui"
 import { OutlineFilter } from "pixi-filters"
 import { Container, Sprite } from "pixi.js"
+
+export const ShopButton = (pos: PositionProps = { x: -55, y: 5, screenFixed: true }) => Entity({
+  id: "shopButton",
+  components: {
+    position: Position(pos),
+    clickable: Clickable({
+      width: 45, height: 32,
+      click: () => ({ actionId: "toggleVisible", entityId: "shop", offline: true })
+    }),
+    renderable: Button({
+      dims: { w: 50, textX: 8, textY: 5 },
+      zIndex: 10,
+      text: pixiText({ text: "shop", style: { fill: 0xffffff, fontSize: 16 } })
+    })
+  }
+})
 
 export const Shop = (): Entity => {
 

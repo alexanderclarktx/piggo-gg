@@ -18,7 +18,7 @@ export const Spaceship = ({ id, position }: SpaceshipProps = {}) => Entity({
       ...VehicleMovement,
       click: controlEntity
     }),
-    clickable: Clickable({ width: 100, height: 120, active: true }),
+    clickable: Clickable({ width: 100, height: 120 }),
     collider: Collider({ shape: "ball", radius: 20 }),
     input: Input({
       press: {

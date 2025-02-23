@@ -4,7 +4,7 @@ export const HomeButton = () => Entity({
   id: "homeButton",
   components: {
     position: Position({ x: 5, y: 5, screenFixed: true }),
-    clickable: Clickable({ width: 80, height: 32, active: true }),
+    clickable: Clickable({ width: 80, height: 32 }),
     actions: Actions({
       click: ({ world }) => {
         world.actions.push(world.tick + 1, "world",

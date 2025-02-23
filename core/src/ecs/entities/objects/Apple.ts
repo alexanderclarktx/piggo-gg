@@ -33,7 +33,7 @@ export const Apple = ({ position, id }: AppleProps = {}) => ItemEntity({
     actions: Actions(),
     effects: Effects(),
     clickable: Clickable({
-      width: 16, height: 16, active: true, anchor: { x: 0.5, y: 0.5 }
+      width: 16, height: 16, anchor: { x: 0.5, y: 0.5 }
     }),
     element: Element("wood"),
     food: Food({ hunger: 3 }),

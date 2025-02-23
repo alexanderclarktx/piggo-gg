@@ -5,7 +5,7 @@ export const ConnectButton = () => Entity({
   persists: true,
   components: {
     position: Position({ x: -75, y: 5, screenFixed: true }),
-    clickable: Clickable({ width: 80, height: 32, active: true }),
+    clickable: Clickable({ width: 80, height: 32 }),
     actions: Actions({
       click: ({ world }) => world.client?.lobbyJoin("hub", () => { })
     }),

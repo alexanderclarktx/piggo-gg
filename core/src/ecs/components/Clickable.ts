@@ -16,7 +16,7 @@ export type Clickable = Component<"clickable"> & {
 export type ClickableProps = {
   width: number
   height: number
-  active: boolean
+  active?: boolean
   anchor?: XY
   click?: (_: { world: World }) => InvokedAction
   hoverOver?: (world: World) => void
@@ -28,7 +28,7 @@ export const Clickable = (props: ClickableProps): Clickable => {
     type: "clickable",
     width: props.width,
     height: props.height,
-    active: props.active,
+    active: props.active ?? true,
     anchor: props.anchor ?? { x: 0, y: 0 },
     click: props.click ?? (({ world }) => ({ actionId: "click", playerId: world.client?.playerId() })),
     hoverOver: props.hoverOver,
