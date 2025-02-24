@@ -9,14 +9,14 @@ export const Volley: GameBuilder = {
   id: "volley",
   init: () => ({
     id: "volley",
-    systems: [SpawnSystem(Mouse), GravitySystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
+    systems: [SpawnSystem(Dude), GravitySystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
     entities: [Court(), Net(), Background({ img: "space.png" })]
   })
 }
 
-const Mouse = (player: Player) => Character({
-  id: `mouse-${player.id}`,
+const Dude = (player: Player) => Character({
+  id: `dude-${player.id}`,
   components: {
     debug: Debug(),
     position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120 }),
@@ -86,7 +86,7 @@ const Court = () => LineWall({
     0, 0
   ],
   visible: true,
-  fill: 0xE2CA76
+  fill: 0x0066aa
 })
 
 const GravitySystem = SystemBuilder({
