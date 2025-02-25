@@ -1,7 +1,7 @@
 import {
-  Action, Actions, Background, CameraSystem, Character, Collider, Cursor, Debug, EscapeMenu,
-  GameBuilder, Input, LineWall, loadTexture, Move, Networked, Player,
-  Point, Position, Renderable, SpawnSystem, WASDInputMap
+  Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor,
+  Debug, Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked,
+  pixiGraphics, Player, Point, Position, Renderable, SpawnSystem, WASDInputMap
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -9,7 +9,7 @@ export const Volley: GameBuilder = {
   id: "volley",
   init: () => ({
     id: "volley",
-    systems: [SpawnSystem(Dude), CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
+    systems: [SpawnSystem(Dude), ShadowSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
     entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
   })
@@ -21,7 +21,7 @@ const Dude = (player: Player) => Character({
     debug: Debug(),
     position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.5 }),
     networked: Networked(),
-    collider: Collider({ shape: "ball", radius: 8, hittable: true }),
+    collider: Collider({ shape: "ball", radius: 4 }),
     team: player.components.team,
     input: Input({
       press: {
@@ -45,9 +45,9 @@ const Dude = (player: Player) => Character({
       }, 10)
     }),
     renderable: Renderable({
-      anchor: { x: 0.5, y: 0.7 },
+      anchor: { x: 0.5, y: 0.8 },
       scale: 2,
-      zIndex: 3,
+      zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
       setup: async (r) => {
@@ -77,7 +77,6 @@ const Net = () => LineWall({
   visible: true
 })
 
-// court (trapezoid)
 const Court = () => LineWall({
   position: { x: 0, y: -75 },
   points: [
@@ -89,4 +88,61 @@ const Court = () => LineWall({
   ],
   visible: true,
   fill: 0x0066aa
+})
+
+const Shadow = (character: Entity<Position>) => Entity<Renderable>({
+  id: `shadow-${character.id}`,
+  components: {
+    position: Position(),
+    renderable: Renderable({
+      zIndex: 3.9,
+      interpolate: true,
+      dynamic: ({ entity }) => {
+        const { position } = entity.components
+        if (!position) return
+
+        position.data.x = character.components.position.data.x
+        position.data.y = character.components.position.data.y
+        position.setVelocity({ x: character.components.position.data.velocity.x, y: character.components.position.data.velocity.y })
+
+        position.lastCollided = character.components.position.lastCollided
+      },
+      setContainer: async () => {
+        const g = pixiGraphics()
+        g.ellipse(0, 1, 10, 5)
+        g.fill({color: 0x000000, alpha: 0.3})
+        return g
+      }
+    })
+  }
+})
+
+const ShadowSystem = ClientSystemBuilder({
+  id: "ShadowSystem",
+  init: (world) => {
+
+    const shadows: Record<string, Entity<Renderable>> = {}
+
+    return {
+      id: "ShadowSystem",
+      query: ["pc"],
+      onTick: (entities: Player[]) => {
+        entities.forEach((entity) => {
+          const { controlling } = entity.components
+
+          const character = controlling.getControlledEntity(world)
+          if (!character) return
+
+          if (!shadows[character.id]) {
+            console.log("adding shadow")
+          
+            // add a shadow
+            const shadow = Shadow(character)
+            shadows[character.id] = shadow
+            world.addEntity(shadow)
+          }
+        })
+      }
+    }
+  }
 })
