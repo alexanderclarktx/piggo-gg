@@ -1,7 +1,7 @@
 import {
-  Action, Actions, Background, CameraSystem, Character, Collider, Debug, Entity,
-  GameBuilder, Input, LineWall, loadTexture, min, Move, Networked, Player,
-  Point, Position, Renderable, SpawnSystem, SystemBuilder, WASDInputMap
+  Action, Actions, Background, CameraSystem, Character, Collider, Cursor, Debug, EscapeMenu,
+  GameBuilder, Input, LineWall, loadTexture, Move, Networked, Player,
+  Point, Position, Renderable, SpawnSystem, WASDInputMap
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -9,9 +9,9 @@ export const Volley: GameBuilder = {
   id: "volley",
   init: () => ({
     id: "volley",
-    systems: [SpawnSystem(Dude), GravitySystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
+    systems: [SpawnSystem(Dude), CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
-    entities: [Court(), Net(), Background({ img: "space.png" })]
+    entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
   })
 }
 
@@ -19,7 +19,7 @@ const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
   components: {
     debug: Debug(),
-    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120 }),
+    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.5 }),
     networked: Networked(),
     collider: Collider({ shape: "ball", radius: 8, hittable: true }),
     team: player.components.team,
@@ -36,10 +36,12 @@ const Dude = (player: Player) => Character({
         console.log("jump")
         if (!entity) return
 
-        const { renderable } = entity.components
-        if (!renderable) return
+        const { position } = entity.components
+        if (!position) return
 
-        renderable.position.y -= 20
+        if (!position.data.standing) return
+
+        position.setVelocity({ z: 8 })
       }, 10)
     }),
     renderable: Renderable({
@@ -87,21 +89,4 @@ const Court = () => LineWall({
   ],
   visible: true,
   fill: 0x0066aa
-})
-
-const GravitySystem = SystemBuilder({
-  id: "GravitySystem",
-  init: () => ({
-    id: "GravitySystem",
-    query: ["position", "collider", "renderable"],
-    onTick: (entities: Entity<Position | Collider | Renderable>[]) => {
-      entities.forEach((entity) => {
-        const { renderable } = entity.components
-
-        if (renderable.position.y < 0) {
-          renderable.position.y = min(0, renderable.position.y + 1)
-        }
-      })
-    }
-  })
 })

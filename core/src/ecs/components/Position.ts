@@ -1,9 +1,10 @@
-import { Component, Entity, Oct, OctString, SystemBuilder, XY, min, reduce, round, toOctString } from "@piggo-gg/core"
+import { Component, Entity, Oct, OctString, SystemBuilder, XY, XYZ, max, min, reduce, round, toOctString } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
   x: number
   y: number
-  velocity: XY
+  z: number
+  velocity: XYZ
   speed: number
   rotation: number
   pointing: Oct
@@ -21,7 +22,7 @@ export type Position = Component<"position", {
   orientation: OctString
   orientationRads: number
   setPosition: (_: XY) => Position
-  setVelocity: (_: { x?: number, y?: number }) => Position
+  setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
   impulse: (_: XY) => Position
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
@@ -35,13 +36,14 @@ export type Position = Component<"position", {
 export type PositionProps = {
   x?: number
   y?: number
-  velocity?: XY
+  velocity?: { x: number, y: number }
   gravity?: number
   friction?: number
   speed?: number
   velocityResets?: number
   screenFixed?: boolean
   follows?: string
+  offset?: XY
 }
 
 // the entity's position in the world
@@ -51,7 +53,8 @@ export const Position = (props: PositionProps = {}): Position => {
     data: {
       x: props.x ?? 0,
       y: props.y ?? 0,
-      velocity: props.velocity ?? { x: 0, y: 0 },
+      z: 0,
+      velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       speed: props.speed ?? 0,
       rotation: 0,
       pointing: 0,
@@ -59,8 +62,8 @@ export const Position = (props: PositionProps = {}): Position => {
       heading: { x: NaN, y: NaN },
       velocityResets: props.velocityResets ?? 0,
       follows: props.follows ?? undefined,
-      offset: { x: 0, y: 0 },
-      standing: false,
+      offset: props.offset ?? { x: 0, y: 0 },
+      standing: true,
       friction: props.friction ?? 0,
       gravity: props.gravity ?? 0
     },
@@ -73,9 +76,10 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.y = y
       return position
     },
-    setVelocity: ({ x, y }) => {
+    setVelocity: ({ x, y, z }) => {
       if (x !== undefined) position.data.velocity.x = round(x * 100) / 100
       if (y !== undefined) position.data.velocity.y = round(y * 100) / 100
+      if (z !== undefined) position.data.velocity.z = round(z * 100) / 100
 
       return position.updateOrientation()
     },
@@ -152,38 +156,55 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   id: "PositionSystem",
   init: (world) => ({
     id: "PositionSystem",
-    query: ["position", "actions"],
+    query: ["position"],
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
         const { position } = entity.components
 
+        // height
+        if (position.data.velocity.z || position.data.z) {
+          position.data.z = max(position.data.z + position.data.velocity.z, 0)
+
+          if (position.data.z > 0) {
+            position.data.velocity.z -= position.data.gravity
+          } else {
+            position.data.velocity.z = 0
+          }
+
+          position.data.standing = (position.data.z === 0)
+        }
+
+        // gravity
         if (position.data.gravity && world.currentGame.view === "side") {
           position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
           position.updateOrientation()
         }
 
+        // friction
         if (position.data.friction && world.currentGame.view === "side") {
           position.data.velocity.x = reduce(position.data.velocity.x, position.data.friction)
         }
 
+        // follows
         if (position.data.follows) {
-          const following = world.entities[position.data.follows]
+          const target = world.entities[position.data.follows]
 
-          if (following && following.components.position) {
-            const { x, y, velocity, pointing, pointingDelta, speed } = following.components.position.data
+          if (target && target.components.position) {
+            const { x, y, z, velocity, pointing, pointingDelta, speed } = target.components.position.data
 
             position.data = {
               ...position.data,
               x: x + position.data.offset.x,
               y: y + position.data.offset.y,
+              z: z,
               pointing,
               speed,
               velocity: { ...velocity },
               pointingDelta: { ...pointingDelta },
             }
 
-            position.lastCollided = following.components.position.lastCollided
+            position.lastCollided = target.components.position.lastCollided
           }
         }
       })

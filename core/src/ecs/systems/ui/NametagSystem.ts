@@ -1,31 +1,8 @@
-import { ClientSystemBuilder, Entity, Player, Position, Renderable, entries, pixiText } from "@piggo-gg/core"
+import {
+  Character, ClientSystemBuilder, Entity, Player,
+  Position, Renderable, entries, pixiText
+} from "@piggo-gg/core"
 
-const Nametag = (entity: Player): Renderable => {
-  let name = entity.components.pc.data.name
-
-  const nametag = pixiText({
-    text: name,
-    style: { fill: 0xffff00, fontSize: 13 },
-    anchor: { x: 0.48, y: 0 },
-    pos: { x: 0, y: -45 }
-  })
-
-  return Renderable({
-    zIndex: 10,
-    interpolate: true,
-    dynamic: async () => {
-      if (entity.components.pc.data.name !== name) {
-        name = entity.components.pc.data.name
-        nametag.text = name
-      }
-    },
-    setup: async (r) => {
-      r.c.addChild(nametag)
-    }
-  })
-}
-
-// NameTagSystem displays character nametags
 export const NametagSystem = ClientSystemBuilder({
   id: "NametagSystem",
   init: (world) => {
@@ -33,29 +10,13 @@ export const NametagSystem = ClientSystemBuilder({
 
     const characterNametags: Record<string, Entity<Renderable | Position>> = {}
 
-    const nametagForEntity = (player: Player, character: Entity) => {
-      const { position } = character.components
-      if (!position) return
-
-      const nametag = Entity<Position | Renderable>({
-        id: `${player.id}-nametag`,
-        components: {
-          position: position, // TODO should not directly use the character position component (gravity bug)
-          renderable: Nametag(player)
-        }
-      })
-
-      characterNametags[player.id] = nametag
-      world.addEntity(nametag)
-    }
-
     return {
       id: "NametagSystem",
       query: ["pc"],
       skipOnRollback: true,
       onTick: (entities: Player[]) => {
 
-        // handle old entities
+        // clean up
         entries(characterNametags).forEach(([entityId, nametag]) => {
           if (!world.entities[entityId]) {
             world.removeEntity(nametag.id)
@@ -64,23 +25,57 @@ export const NametagSystem = ClientSystemBuilder({
         })
 
         // handle new entities
-        entities.forEach((entity) => {
-          const character = entity.components.controlling.getControlledEntity(world)
+        entities.forEach((player) => {
+          const character = player.components.controlling.getControlledEntity(world)
           if (!character) return
 
-          const { position, renderable } = character.components
+          const { renderable } = character.components
 
-          // new nametag
-          if (!characterNametags[entity.id] || position !== characterNametags[entity.id].components.position) {
-            nametagForEntity(entity, character)
+          // add nametag
+          if (!characterNametags[player.id]) {
+            const nametag = Nametag(player, character)
+            characterNametags[player.id] = nametag
+            world.addEntity(nametag)
           }
 
           // update visibility
-          if (characterNametags[entity.id] && renderable) {
-            characterNametags[entity.id].components.renderable.visible = renderable.visible
+          if (characterNametags[player.id] && renderable) {
+            characterNametags[player.id].components.renderable.visible = renderable.visible
           }
         })
       }
     }
   }
 })
+
+const Nametag = (player: Player, character: Character) => {
+
+  let { name } = player.components.pc.data
+
+  const nametag = pixiText({
+    text: name,
+    style: { fill: 0xffff00, fontSize: 13 },
+    anchor: { x: 0.48, y: 0 },
+    pos: { x: 0, y: -45 }
+  })
+
+  return Entity<Position | Renderable>({
+    id: `${player.id}-nametag`,
+    components: {
+      position: Position({ follows: character.id }),
+      renderable: Renderable({
+        zIndex: 10,
+        interpolate: true,
+        dynamic: async () => {
+          if (player.components.pc.data.name !== name) {
+            name = player.components.pc.data.name
+            nametag.text = name
+          }
+        },
+        setup: async (r) => {
+          r.c.addChild(nametag)
+        }
+      })
+    }
+  })
+}

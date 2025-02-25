@@ -75,8 +75,8 @@ export const RenderSystem = ClientSystemBuilder({
 
           // update position
           renderable.c.position.set(
-            position.data.x + renderable.position.x,
-            position.data.y + renderable.position.y
+            renderable.position.x + position.data.x,
+            renderable.position.y + position.data.y - position.data.z
           )
 
           renderable.c.tint = renderable.color
@@ -161,16 +161,17 @@ export const RenderSystem = ClientSystemBuilder({
             } else return
           }
 
-          const { x, y, velocity } = position.data
+          const { x, y, z, velocity } = position.data
 
           if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
 
             const dx = velocity.x * elapsedTime / 1000
             const dy = velocity.y * elapsedTime / 1000
+            const dz = velocity.z * elapsedTime / world.tickrate
 
             renderable.c.position.set(
               x + dx + renderable.position.x,
-              y + dy + renderable.position.y
+              y + dy + renderable.position.y - z - dz
             )
           }
         })

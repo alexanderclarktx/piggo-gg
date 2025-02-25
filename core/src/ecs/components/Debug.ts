@@ -17,7 +17,6 @@ export const DebugSystem = ClientSystemBuilder({
     let debugRenderables: Renderable[] = []
     let debugEntitiesPerEntity: Record<string, Entity<Renderable | Position>[]> = {}
 
-
     const rmDebug = (id: string) => {
       const debugEntities = debugEntitiesPerEntity[id]
       debugEntities?.forEach((debugEntity) => {
@@ -64,7 +63,8 @@ export const DebugSystem = ClientSystemBuilder({
       const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
-          position,
+          // position,
+          position: Position({ follows: entity.id, offset: { x: 0, y: 0 } }),
           renderable: Renderable({
             zIndex: 4,
             interpolate: true,
