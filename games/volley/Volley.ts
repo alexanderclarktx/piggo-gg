@@ -29,7 +29,7 @@ const Dude = (player: Player) => Character({
         " ": () => ({ actionId: "jump" })
       }
     }),
-    actions: Actions<any>({
+    actions: Actions({
       move: Move,
       point: Point,
       jump: Action("jump", ({ entity }) => {

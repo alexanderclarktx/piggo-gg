@@ -18,7 +18,7 @@ export const Tool = (
   id: id ?? `${name}-${character.id}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
-    actions: Actions<any>({
+    actions: Actions({
       mb1: Whack(sound, (e => {
         const { element } = e.components
         return damage[element?.data.kind ?? "flesh"]

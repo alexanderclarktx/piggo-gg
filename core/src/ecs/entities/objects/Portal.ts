@@ -23,7 +23,7 @@ export const Portal = ({ pos, game, tint }: PortalProps): Entity => {
           return false
         }
       }),
-      actions: Actions<{ game: string }>({
+      actions: Actions({
         teleport: ({ world, params }) => world.setGame(params.game)
       }),
       debug: Debug(),

@@ -102,7 +102,7 @@ export const FlappyCharacter = (player: Player, color?: number, pos?: XY) => {
           " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
         }
       }),
-      actions: Actions<any>({
+      actions: Actions({
         point: Point,
         jump: Jump
       }),
