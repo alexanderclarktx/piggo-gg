@@ -1,5 +1,5 @@
 import { World, isMobile } from "@piggo-gg/core"
-import { Canvas, TitleBar } from "@piggo-gg/web"
+import { Canvas, Title } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
 
@@ -20,7 +20,7 @@ export const Root = () => {
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
-          {isMobile() ? null : <TitleBar loginState={loginState} setLoginState={setLoginState} world={world} />}
+          {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
           <Canvas setWorld={setWorld} />
         </div>
       </div>
