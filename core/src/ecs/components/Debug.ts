@@ -63,7 +63,6 @@ export const DebugSystem = ClientSystemBuilder({
       const debugEntity = Entity<Position | Renderable>({
         id: `${entity.id}-renderable-debug`,
         components: {
-          // position,
           position: Position({ follows: entity.id, offset: { x: 0, y: 0 } }),
           renderable: Renderable({
             zIndex: 4,

@@ -1,4 +1,6 @@
-import { Component, Entity, Oct, OctString, SystemBuilder, XY, XYZ, max, min, reduce, round, toOctString } from "@piggo-gg/core"
+import {
+  Component, Entity, Oct, OctString, SystemBuilder, XY, XYZ, max, min, reduce, round, toOctString
+} from "@piggo-gg/core"
 
 export type Position = Component<"position", {
   x: number
