@@ -11,7 +11,7 @@ export const Volley: GameBuilder = {
     id: "volley",
     systems: [SpawnSystem(Dude), ShadowSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
-    entities: [Ball(), Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
+    entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
   })
 }
 
@@ -114,7 +114,6 @@ const Ball = () => Entity({
   id: "ball",
   components: {
     position: Position({ x: 225, y: 0, gravity: 0.5 }),
-    collider: Collider({ shape: "ball", radius: 6 }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.5 },
       scale: 0.7,
