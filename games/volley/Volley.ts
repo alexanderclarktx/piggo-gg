@@ -3,7 +3,7 @@ import {
   Debug, Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked,
   pixiGraphics, Player, Point, Position, Renderable, SpawnSystem, WASDInputMap
 } from "@piggo-gg/core"
-import { AnimatedSprite } from "pixi.js"
+import { AnimatedSprite, Sprite } from "pixi.js"
 
 export const Volley: GameBuilder = {
   id: "volley",
@@ -11,7 +11,7 @@ export const Volley: GameBuilder = {
     id: "volley",
     systems: [SpawnSystem(Dude), ShadowSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
-    entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
+    entities: [Ball(), Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
   })
 }
 
@@ -33,15 +33,8 @@ const Dude = (player: Player) => Character({
       move: Move,
       point: Point,
       jump: Action("jump", ({ entity }) => {
-        console.log("jump")
-        if (!entity) return
-
-        const { position } = entity.components
-        if (!position) return
-
-        if (!position.data.standing) return
-
-        position.setVelocity({ z: 8 })
+        if (!entity?.components?.position?.data.standing) return
+        entity.components.position.setVelocity({ z: 8 })
       }, 10)
     }),
     renderable: Renderable({
@@ -110,8 +103,39 @@ const Shadow = (character: Entity<Position>) => Entity<Renderable>({
       setContainer: async () => {
         const g = pixiGraphics()
         g.ellipse(0, 1, 10, 5)
-        g.fill({color: 0x000000, alpha: 0.3})
+        g.fill({ color: 0x000000, alpha: 0.3 })
         return g
+      }
+    })
+  }
+})
+
+const Ball = () => Entity({
+  id: "ball",
+  components: {
+    position: Position({ x: 225, y: 0, gravity: 0.5 }),
+    collider: Collider({ shape: "ball", radius: 6 }),
+    renderable: Renderable({
+      anchor: { x: 0.5, y: 0.5 },
+      scale: 0.7,
+      zIndex: 4,
+      interpolate: true,
+      scaleMode: "nearest",
+      dynamic: ({ entity }) => {
+        const { position } = entity.components
+        if (!position) return
+
+        if (position.data.standing) {
+          position.setVelocity({ z: 10 })
+        }
+      },
+      setup: async (r) => {
+        const texture = (await loadTexture("ball.json"))["ball"]
+        const sprite = new Sprite(texture)
+
+        sprite.anchor.set(0.5, 0.5)
+
+        r.c = sprite
       }
     })
   }
@@ -134,9 +158,6 @@ const ShadowSystem = ClientSystemBuilder({
           if (!character) return
 
           if (!shadows[character.id]) {
-            console.log("adding shadow")
-          
-            // add a shadow
             const shadow = Shadow(character)
             shadows[character.id] = shadow
             world.addEntity(shadow)
