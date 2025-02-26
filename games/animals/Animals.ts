@@ -63,7 +63,7 @@ export const Animal = (player: Player, color?: number, pos?: XY) => {
           " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
         }
       }),
-      actions: Actions<any>({
+      actions: Actions({
         move: Move,
         jump: JumpPlatform,
         point: Point

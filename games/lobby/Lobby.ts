@@ -2,7 +2,7 @@ import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
   loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC
 } from "@piggo-gg/core"
-import { Flappy, Craft, Dungeon, Soccer } from "@piggo-gg/games"
+import { Flappy, Craft, Dungeon, Soccer, Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -93,7 +93,7 @@ const Players = (): Entity => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Flappy, Craft, Dungeon, Soccer]
+  const list: GameBuilder[] = [Flappy, Craft, Dungeon, Volley, Soccer]
   let gameButtons: PixiButton[] = []
   let index = 0
 

@@ -9,10 +9,11 @@ export type LineWallProps = {
   hittable?: boolean
   sensor?: SensorCallback
   id?: string
+  fill?: number
 }
 
 export const LineWall = (
-  { points, position, visible, hp, id, hittable, sensor }: LineWallProps
+  { points, position, visible, hp, id, hittable, sensor, fill }: LineWallProps
 ): Entity<Position | Renderable | Collider> => {
 
   let newPoints: number[] = []
@@ -63,6 +64,7 @@ export const LineWall = (
             g.lineTo(newPoints[i], newPoints[i + 1])
           }
           g.stroke({ width: 2, color: 0xffffff })
+          if (fill) g.fill({ color: fill })
           return g
         }
       })

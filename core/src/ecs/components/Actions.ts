@@ -30,7 +30,7 @@ export type Actions = Component<"actions"> & {
   actionMap: Record<string, Action>
 }
 
-export const Actions = <P extends {} = {}>(actionMap: ActionMap<P> = {}): Actions => {
+export const Actions = (actionMap: ActionMap<any> = {}): Actions => {
 
   const newActions: Record<string, Action> = {}
 

@@ -37,7 +37,7 @@ export const Shop = (): Entity => {
           "b": ({ world }) => ({ actionId: "toggleVisible", playerId: world.client?.playerId(), offline: true })
         }
       }),
-      actions: Actions<any>({
+      actions: Actions({
         toggleVisible: () => {
           visible = !visible
           shop.components.renderable.visible = visible

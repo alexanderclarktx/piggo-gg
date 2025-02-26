@@ -1,6 +1,7 @@
 import { Actions, Component, Entity, Input, Position, Renderable, Team, World } from "@piggo-gg/core"
 
 export type Character = Entity<Position | Input | Actions | Renderable | Team>
+export const Character = Entity<Position | Input | Actions | Renderable | Team>
 
 export type Controlling = Component<"controlling", { entityId: string }> & {
   getControlledEntity: (world: World) => Character | undefined
