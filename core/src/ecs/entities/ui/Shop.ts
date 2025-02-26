@@ -46,7 +46,7 @@ export const Shop = (): Entity => {
           if (!params.itemBuilder) return
 
           const builder = GunsTable[params.itemBuilder as GunNames]
-          const character = player?.components.controlling.getControlledEntity(world) as Character
+          const character = player?.components.controlling.getCharacter(world) as Character
           if (!builder || !character) return
 
           const item = builder({ character })

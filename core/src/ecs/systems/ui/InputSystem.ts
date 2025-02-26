@@ -330,7 +330,7 @@ export const InputSystem = ClientSystemBuilder({
         }
 
         // handle character input
-        const character = world.client?.player.components.controlling.getControlledEntity(world)
+        const character = world.client?.player.components.controlling.getCharacter(world)
         if (character && world.tick > clickableClickedThisFrame.value) {
           handleInputForCharacter(character, world)
         }

@@ -26,7 +26,7 @@ export const NametagSystem = ClientSystemBuilder({
 
         // handle new entities
         entities.forEach((player) => {
-          const character = player.components.controlling.getControlledEntity(world)
+          const character = player.components.controlling.getCharacter(world)
           if (!character) return
 
           const { renderable } = character.components

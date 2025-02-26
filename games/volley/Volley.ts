@@ -35,7 +35,7 @@ const Dude = (player: Player) => Character({
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 8 })
-      }, 10)
+      }, 0)
     }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.8 },
@@ -96,9 +96,11 @@ const Shadow = (character: Entity<Position>) => Entity<Renderable>({
 
         position.data.x = character.components.position.data.x
         position.data.y = character.components.position.data.y
-        position.setVelocity({ x: character.components.position.data.velocity.x, y: character.components.position.data.velocity.y })
 
         position.lastCollided = character.components.position.lastCollided
+
+        const { x, y } = character.components.position.data.velocity
+        position.setVelocity({ x, y })
       },
       setContainer: async () => {
         const g = pixiGraphics()
@@ -153,7 +155,7 @@ const ShadowSystem = ClientSystemBuilder({
         entities.forEach((entity) => {
           const { controlling } = entity.components
 
-          const character = controlling.getControlledEntity(world)
+          const character = controlling.getCharacter(world)
           if (!character) return
 
           if (!shadows[character.id]) {

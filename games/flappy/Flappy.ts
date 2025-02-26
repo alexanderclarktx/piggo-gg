@@ -152,7 +152,7 @@ const FlappySystem: SystemBuilder<"FlappySystem"> = {
       onTick: (players: Entity<PC>[]) => {
         let pc = undefined
         for (const player of players) {
-          const character = player.components.controlling?.getControlledEntity(world)
+          const character = player.components.controlling?.getCharacter(world)
           if (character?.components.position) pc = character.components.position
         }
 

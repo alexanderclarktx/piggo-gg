@@ -23,7 +23,7 @@ export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSyst
 
         // spawn character
         players.forEach((player) => {
-          const character = player.components.controlling.getControlledEntity(world)
+          const character = player.components.controlling.getCharacter(world)
 
           if (!character) {
             const character = spawner(player)

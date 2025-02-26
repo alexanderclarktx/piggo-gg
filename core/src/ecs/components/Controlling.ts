@@ -4,7 +4,7 @@ export type Character = Entity<Position | Input | Actions | Renderable | Team>
 export const Character = Entity<Position | Input | Actions | Renderable | Team>
 
 export type Controlling = Component<"controlling", { entityId: string }> & {
-  getControlledEntity: (world: World) => Character | undefined
+  getCharacter: (world: World) => Character | undefined
 }
 
 export type ControllingProps = {
@@ -17,7 +17,7 @@ export const Controlling = (props: ControllingProps = {}): Controlling => {
     data: {
       entityId: props.entityId ?? ""
     },
-    getControlledEntity: (world: World) => {
+    getCharacter: (world: World) => {
       const character = world.entities[controlling.data.entityId]
       if (!character) return undefined
 

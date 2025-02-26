@@ -77,7 +77,7 @@ export const Client = ({ world }: ClientProps): Client => {
       return client.player.components.pc.data.name
     },
     playerCharacter: () => {
-      return client.player.components.controlling.getControlledEntity(world)
+      return client.player.components.controlling.getCharacter(world)
     },
     copyInviteLink: () => {
       let url = ""
