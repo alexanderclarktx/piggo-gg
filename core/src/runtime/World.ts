@@ -185,12 +185,12 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       if (!isRollback) scheduleOnTick()
 
       // clear old buffered data
-      world.actions.clearBeforeTick(world.tick - 5)
-      keys(world.entitiesAtTick).map(Number).forEach((tick) => {
-        if ((world.tick - tick) > 5) {
-          delete world.entitiesAtTick[tick]
-        }
-      })
+      // world.actions.clearBeforeTick(world.tick - 5)
+      // keys(world.entitiesAtTick).map(Number).forEach((tick) => {
+      //   if ((world.tick - tick) > 20) {
+      //     delete world.entitiesAtTick[tick]
+      //   }
+      // })
     },
     setGame: (game: GameBuilder | string) => {
       if (typeof game === "string") game = world.games[game]

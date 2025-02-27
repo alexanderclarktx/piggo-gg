@@ -4,7 +4,7 @@ import {
   World, Zomi, entries, keys, stringify
 } from "@piggo-gg/core"
 
-const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
+export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "zomi": Zomi,
   "ball": Ball,
   "player": Player,
@@ -23,7 +23,7 @@ const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
 }
 
 export const DelaySyncer: Syncer = {
-  writeMessage: (world: World) => {
+  writeMessage: (world) => {
 
     const message: GameData = {
       actions: world.actions.atTick(world.tick + 1) ?? {},
@@ -39,7 +39,7 @@ export const DelaySyncer: Syncer = {
     world.actions.clearTick(world.tick + 1)
     return message
   },
-  handleMessage: (world: World, message: GameData) => {
+  handleMessage: (world, message) => {
 
     // remove old local entities
     keys(world.entities).forEach((entityId) => {
@@ -124,14 +124,5 @@ export const DelaySyncer: Syncer = {
     entries(message.actions).forEach(([entityId, actions]) => {
       world.actions.set(message.tick, entityId, actions)
     })
-
-    // handle new chat messages
-    const numChats = keys(message.chats).length
-    if (numChats) {
-      entries(message.chats).forEach(([playerId, messages]) => {
-        if (playerId === world.client?.playerId()) return
-        world.messages.set(world.tick, playerId, messages)
-      })
-    }
   }
 }

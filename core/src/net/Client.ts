@@ -4,6 +4,7 @@ import {
   SoundManager, genHash, AuthLogin, FriendsList, Pls
 } from "@piggo-gg/core"
 import toast from "react-hot-toast"
+import { RollbackSyncer } from "./RollbackSyncer"
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -47,7 +48,8 @@ export type ClientProps = {
 
 export const Client = ({ world }: ClientProps): Client => {
 
-  let syncer: Syncer = DelaySyncer
+  // let syncer: Syncer = DelaySyncer
+  let syncer: Syncer = RollbackSyncer
   let requestBuffer: Record<string, Callback> = {}
 
   const player = Player({ id: genPlayerId() })
