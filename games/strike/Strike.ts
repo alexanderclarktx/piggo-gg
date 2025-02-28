@@ -21,7 +21,8 @@ export const Strike: GameBuilder = {
       FloorTilesArray(80, StrikeTileMap),
       ...FloorCollidersArray(80, StrikeTileMap),
       ... (isMobile() ? [] : [Minimap(80, StrikeTileMap)])
-    ]
+    ],
+    netcode: "delay"
   })
 }
 

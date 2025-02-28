@@ -20,7 +20,8 @@ export const Flappy: GameBuilder = {
       isMobile() ? [JumpButton()] : DefaultDesktopUI()
     ).concat([
       Floor(), Ceiling()
-    ])
+    ]),
+    netcode: "rollback"
   })
 }
 
@@ -53,9 +54,7 @@ const sensor: SensorCallback = ({ components }) => {
   return true
 }
 
-const PipePair = (x: number) => {
-  const h = randomInt(300)
-
+const PipePair = (x: number, h: number) => {
   const top = PipeTop(x, h)
   const bottom = PipeBottom(x, 300 - h)
   return [top, bottom]
@@ -177,10 +176,12 @@ const FlappySystem: SystemBuilder<"FlappySystem"> = {
           }
 
           while (pipes.size < 8) {
-            const x = furthest + randomInt(200) + 200
+            const x = furthest + world.random.int(200) + 200
             furthest = max(furthest, x)
 
-            const pipePair = PipePair(x)
+            const h = world.random.int(300)
+
+            const pipePair = PipePair(x, h)
             pipes.add(pipePair[0]).add(pipePair[1])
             world.addEntities(pipePair)
           }

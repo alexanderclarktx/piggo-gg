@@ -14,7 +14,8 @@ export const Lobby: GameBuilder = {
     entities: [
       Cursor(), Chat(),
       Friends(), Profile(), GameLobby(), Players()
-    ]
+    ],
+    netcode: "delay"
   })
 }
 

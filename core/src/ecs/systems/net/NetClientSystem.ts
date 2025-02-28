@@ -53,7 +53,7 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
           if (client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(stringify(message))
           }
-          // if (keys(message.actions).length > 1) console.debug("sent actions", message.actions)
+          // if (keys(message.actions).length > 1) console.log("sent actions", message.actions)
         } catch (e) {
           console.error("NetcodeSystem: error sending message", message)
         }
@@ -73,11 +73,11 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
 
         // handle oldest message in buffer
         if (serverMessageBuffer.length > 0) {
-          syncer.handleMessage(world, serverMessageBuffer.shift() as GameData)
-        }
-
-        // set flag to red if no messages
-        if (serverMessageBuffer.length === 0) {
+          syncer.handleMessages(world, serverMessageBuffer)
+          if (world.currentGame.netcode === "rollback") {
+            serverMessageBuffer = []
+          }
+        } else {
           world.tickFlag = "red"
         }
       }

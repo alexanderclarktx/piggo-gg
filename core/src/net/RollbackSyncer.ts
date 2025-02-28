@@ -1,9 +1,11 @@
-import { entityConstructors, entries, keys, Syncer } from "@piggo-gg/core"
+import {
+  ceil, entityConstructors, entries, GameData, keys, stringify, Syncer
+} from "@piggo-gg/core"
 
 export const RollbackSyncer: Syncer = {
   writeMessage: (world) => {
     return {
-      actions: world.actions.atTick(world.tick + 1) ?? {},
+      actions: world.actions.atTick(world.tick) ?? {},
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.currentGame.id,
       playerId: world.client?.playerId() ?? "",
@@ -13,7 +15,8 @@ export const RollbackSyncer: Syncer = {
       type: "game"
     }
   },
-  handleMessage: (world, message) => {
+  handleMessages: (world, messages) => {
+    const message = messages.pop() as GameData
 
     let rollback = false
 
@@ -25,52 +28,49 @@ export const RollbackSyncer: Syncer = {
     // check if actions and entities match what we had at that tick
     const actions = world.actions.atTick(message.tick) ?? {}
 
-    // TODO should filter out other character's actions
-    if (JSON.stringify(actions) !== JSON.stringify(message.actions)) {
-      console.log("actions mismatch", actions, message.actions)
-      rollback = true
-      // mustRollback("actions mismatch")
+    // TODO filter out other character's actions
+    for (const [entityId, action] of entries(message.actions)) {
+      if (!actions[entityId]) {
+        mustRollback("action not found locally")
+        break
+      }
+      if (JSON.stringify(actions[entityId]) !== JSON.stringify(action)) {
+        mustRollback(`action mismatch ${message.tick} ${entityId} ${stringify(actions[entityId])} ${stringify(action)}`)
+        break
+      }
     }
 
     // compare entity states
-    const entities = world.entitiesAtTick[message.tick]
-    const serializedEntities = message.serializedEntities
+    const local = world.entitiesAtTick[message.tick]
+    const remote = message.serializedEntities
 
-    if (!entities) {
+    if (!local) {
       mustRollback("no entities locally")
-    } else if (keys(entities).length !== keys(serializedEntities).length) {
-      mustRollback(`entity count mismatch ${keys(entities).length} ${keys(serializedEntities).length}`)
+    } else if (keys(local).length !== keys(remote).length) {
+      mustRollback(`entity count mismatch ${keys(local).length} ${keys(remote).length}`)
       rollback = true
     }
 
     if (!rollback) {
-      entries(serializedEntities).forEach(([entityId, serializedEntity]) => {
-        if (entities[entityId]) {
-          if (JSON.stringify(entities[entityId]) !== JSON.stringify(serializedEntity)) {
-            console.log("entity mismatch", entities[entityId], serializedEntity)
-            rollback = true
+      entries(remote).forEach(([entityId, serializedEntity]) => {
+        if (local[entityId]) {
+          if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
+            mustRollback(`entity mismatch ${message.tick} ${stringify(local[entityId])} ${stringify(serializedEntity)}`)
             return
           }
         }
       })
     }
 
-    // if (JSON.stringify(entities) !== JSON.stringify(serializedEntities)) {
-    //   console.log("entities mismatch", JSON.stringify(entities), JSON.stringify(serializedEntities))
-    //   rollback = true
-    // mustRollback("entities mismatch")
-    // }
-
     if (rollback) {
 
       if (message.game !== world.currentGame.id) {
-        console.log("game mismatch")
         world.setGame(world.games[message.game])
       }
 
       world.tick = message.tick - 1
 
-      // add new entities from remote
+      // sync entities
       keys(message.serializedEntities).forEach((entityId) => {
         if (!world.entities[entityId]) {
           const entityKind = entityId.split("-")[0]
@@ -81,12 +81,7 @@ export const RollbackSyncer: Syncer = {
           } else {
             console.error("UNKNOWN ENTITY ON SERVER", entityId)
           }
-        }
-      })
-
-      // set entity states
-      keys(message.serializedEntities).forEach((entityId) => {
-        if (world.entities[entityId]) {
+        } else {
           world.entities[entityId].deserialize(message.serializedEntities[entityId])
         }
       })
@@ -97,9 +92,8 @@ export const RollbackSyncer: Syncer = {
       })
 
       // roll forward
-      console.log("ROLLING BACK", world.client!.lastLatency)
-      const framesToRoll = world.client!.lastLatency / world.tickrate + 1
-      for (let i = 0; i < framesToRoll; i++) {
+      const frames = ceil(world.client!.lastLatency / world.tickrate + 4)
+      for (let i = 0; i < frames; i++) {
         world.onTick({ isRollback: true })
       }
     }

@@ -7,6 +7,7 @@ export const Craft: GameBuilder = {
   id: "craft",
   init: (world) => ({
     id: "craft",
+    netcode: "delay",
     systems: [InventorySystem, CameraSystem(), SpawnSystem(Skelly)],
     bgColor: 0x006633,
     entities: [

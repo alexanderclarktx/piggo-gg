@@ -46,6 +46,11 @@ export const StateBuffer = <T extends ({} | string)>(): StateBuffer<T> => {
       // empty buffer for entity if it doesn't exist
       if (!buffer[tick][entityId]) buffer[tick][entityId] = []
 
+      // check if state already exists
+      for (const s of buffer[tick][entityId]) {
+        if (JSON.stringify(s) === JSON.stringify(state)) return false
+      }
+
       // push state
       buffer[tick][entityId].push(state)
       return true

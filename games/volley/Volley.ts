@@ -9,6 +9,7 @@ export const Volley: GameBuilder = {
   id: "volley",
   init: () => ({
     id: "volley",
+    netcode: "rollback",
     systems: [SpawnSystem(Dude), ShadowSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
     entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]

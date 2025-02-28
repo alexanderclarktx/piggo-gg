@@ -30,51 +30,89 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }))
 
-      if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
-        latestClientMessages[id].shift()
-        latestClientMessages[id].shift()
-      } else {
-        latestClientMessages[id]?.shift()
+      if (world.currentGame.netcode === "delay") {
+        if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
+          latestClientMessages[id].shift()
+          latestClientMessages[id].shift()
+        } else {
+          latestClientMessages[id]?.shift()
+        }
       }
     })
   }
 
+  // process everything
   const handleMessage = () => {
-    keys(latestClientMessages).forEach((client) => {
-      // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
+    for (const clientId of keys(latestClientMessages)) {
+      const messages = latestClientMessages[clientId]
 
-      let messages: ({ td: NetMessageTypes, latency: number } | undefined)[]
+      for (const message of messages) {
+        if (message.td.type !== "game") continue
 
-      if (latestClientMessages[client].length > 2) {
-        messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
-      } else {
-        messages = [latestClientMessages[client][0]]
-      }
-      if (messages.length === 0) return
-
-      messages.forEach((message) => {
-        if (!message) return
-
-        const tickData = message.td
-        if (tickData.type !== "game") return
+        const { td } = message
 
         // process message actions
-        if (tickData.actions) {
-          keys(tickData.actions).forEach((entityId) => {
-            // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-            tickData.actions[entityId].forEach((action) => {
-              world.actions.push(world.tick, entityId, action)
+        if (td.actions) {
+          entries(message.td.actions).forEach(([entityId, actions]) => {
+            actions.forEach((action) => {
+              world.actions.push(td.tick, entityId, action)
             })
           })
         }
 
         // process message chats
-        if (tickData.chats[client]) {
-          world.messages.set(world.tick, client, tickData.chats[client])
+        if (message.td.chats[clientId]) {
+          world.messages.set(world.tick, clientId, message.td.chats[clientId])
         }
-      })
-    })
+      }
+
+      latestClientMessages[clientId] = []
+    }
   }
+
+  // const handleMessage = () => {
+  //   keys(latestClientMessages).forEach((client) => {
+  //     // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
+
+  //     let messages: ({ td: NetMessageTypes, latency: number } | undefined)[]
+
+  //     // if (latestClientMessages[client].length > 2) {
+  //     //   messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
+  //     // } else {
+  //     messages = [latestClientMessages[client][0]]
+  //     // }
+  //     if (messages.length === 0) return
+
+  //     messages.forEach((message) => {
+  //       if (!message) return
+
+  //       const tickData = message.td
+  //       if (tickData.type !== "game") return
+
+  //       // process message actions
+  //       if (tickData.actions) {
+  //         entries(tickData.actions).forEach(([entityId, actions]) => {
+  //           actions.forEach((action) => {
+  //             world.actions.push(tickData.tick, entityId, action)
+  //             console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
+  //           })
+  //           // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
+  //           // tickData.actions[entityId].forEach((action) => {
+  //             // world.actions.push(world.tick, entityId, action)
+  //           //   world.actions.push(tickData.tick, entityId, action)
+  //           // })
+  //         })
+  //       }
+
+  //       console.log(`client is ${tickData.tick - world.tick} ticks ahead`)
+
+  //       // process message chats
+  //       if (tickData.chats[client]) {
+  //         world.messages.set(world.tick, client, tickData.chats[client])
+  //       }
+  //     })
+  //   })
+  // }
 
   return {
     id: "NetServerSystem",

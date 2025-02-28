@@ -1,7 +1,7 @@
 import {
   AK, AWP, Apple, Axe, Ball, Deagle, Entity, GameData, Hitbox, LineWall,
   Pickaxe, Piggo, Player, Rock, SerializedEntity, Sword, Syncer, Tree,
-  World, Zomi, entries, keys, stringify
+  Zomi, entries, keys, stringify
 } from "@piggo-gg/core"
 
 export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
@@ -39,7 +39,9 @@ export const DelaySyncer: Syncer = {
     world.actions.clearTick(world.tick + 1)
     return message
   },
-  handleMessage: (world, message) => {
+  handleMessages: (world, messages) => {
+
+    const message = messages.shift() as GameData
 
     // remove old local entities
     keys(world.entities).forEach((entityId) => {
