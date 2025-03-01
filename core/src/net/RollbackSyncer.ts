@@ -31,7 +31,7 @@ export const RollbackSyncer = (): Syncer => {
         return
       }
 
-      // console.log(`${world.tick - message.tick} ticks ahead`)
+      console.log(`${world.tick - message.tick} ticks ahead`)
 
       const framesForward = ceil(world.client!.lastLatency / world.tickrate + 2)
       world.tickFaster = (world.tick - message.tick) < framesForward
