@@ -77,8 +77,6 @@ export const DelaySyncer = (): Syncer => ({
 
     if ((message.tick - 1) !== world.tick) {
       mustRollback(`old tick msg:${message.tick}`)
-      // console.error("old tick", message.tick, world.tick)
-      // return
     }
 
     const localEntities: Record<string, SerializedEntity> = {}

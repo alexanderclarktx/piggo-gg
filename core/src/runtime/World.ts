@@ -172,10 +172,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
         }
       }
 
-      // run system onTick
-
-      values(world.systems).sort((a, b)=> a.priority - b.priority).forEach((system) => {
-        // console.log(`running system ${system.id} prio ${system.priority}`)
+      // run system onTick (sorted by priority)
+      values(world.systems).sort((a, b) => a.priority - b.priority).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
           if (!world.systems[system.id]) return
           system.onTick?.(filterEntities(system.query, values(world.entities)), isRollback)
