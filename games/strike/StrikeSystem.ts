@@ -19,6 +19,7 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
     return {
       id: "StrikeSystem",
       query: ["pc"],
+      priority: 5, // todo
       onTick: (players: Player[]) => {
 
         // despawn disconnected players

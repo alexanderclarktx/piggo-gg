@@ -12,7 +12,7 @@ export const setActiveItemIndex = Action<{ index: number }>("setActiveItemIndex"
 export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   if (!entity) return
 
-  const character = player?.components.controlling.getControlledEntity(world)
+  const character = player?.components.controlling.getCharacter(world)
   if (!character) return
 
   const { inventory } = character.components

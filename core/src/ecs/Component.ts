@@ -33,7 +33,15 @@ export const serializeComponent = (c: Component<string, NetworkedComponentData>)
   let data: NetworkedComponentData = {}
   if (!c.data) return data
 
-  keys(c.data).forEach((key) => data[key] = c.data![key])
+  for (const [key, value] of entries(c.data)) {
+    if (value === undefined) continue
+    if (typeof value === "object" ) {
+      data[key] = {...value}
+    } else {
+      data[key] = value
+    }
+  }
+
   return data
 }
 

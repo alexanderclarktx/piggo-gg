@@ -8,6 +8,7 @@ export const Home: GameBuilder = {
   init: (world) => ({
     id: "home",
     systems: [SpawnSystem(Skelly), ZomiSpawnSystem],
+    netcode: "delay",
     entities: [
       ...DefaultUI(world),
       Background({ img: "stars.png" }),

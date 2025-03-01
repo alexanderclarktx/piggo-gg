@@ -14,7 +14,7 @@ export const switchTeam = Action("switchTeam", ({ entity, world }) => {
 
   team.switchTeam()
 
-  const character = controlling?.getControlledEntity(world)
+  const character = controlling?.getCharacter(world)
   if (character) {
     const { team, renderable } = character.components
 

@@ -30,11 +30,12 @@ export type ColliderProps = {
   rotation?: number
   priority?: number
   sensor?: SensorCallback
+  group?: string // 32 bits
 }
 
 export const Collider = ({
   shape, hittable, points, radius, length, width, isStatic,
-  frictionAir, mass, restitution, sensor, rotation, priority
+  frictionAir, mass, restitution, sensor, rotation, priority, group
 }: ColliderProps): Collider => {
 
   let colliderDesc: ColliderDesc
@@ -65,6 +66,13 @@ export const Collider = ({
   bodyDesc.setLinearDamping(frictionAir ?? 0)
 
   colliderDesc.setFriction(0)
+
+  if (group) {
+    const n = Number.parseInt(group, 2)
+    if (n >= 0 && n <= 4294967295) {
+      colliderDesc.setCollisionGroups(n)
+    }
+  }
 
   const collider: Collider = {
     type: "collider",

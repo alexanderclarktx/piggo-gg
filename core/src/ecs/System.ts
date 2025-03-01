@@ -4,6 +4,7 @@ import { Entity, NetworkedComponentData, ValidComponents, World } from "@piggo-g
 export interface System<T extends string = string> {
   id: T,
   query: ValidComponents[]
+  priority: number
   data?: NetworkedComponentData
   skipOnRollback?: boolean
   onTick?: (entities: Entity[], isRollback: boolean) => void

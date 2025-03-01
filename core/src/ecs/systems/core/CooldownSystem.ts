@@ -1,5 +1,6 @@
 import { Entity, InvokedAction, SystemBuilder, entries, keys } from "@piggo-gg/core"
 
+// TODO actions go on cooldown even if they "dont happen"
 export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
   id: "CooldownSystem",
   init: (world) => {
@@ -20,6 +21,7 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
     return {
       id: "CooldownSystem",
       query: [],
+      priority: 6,
       data: cooldowns,
       onTick: (_: Entity[]) => {
 
@@ -31,6 +33,7 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
           const [entityId, actionId] = key.split("|")
           const action = world.entities[entityId]?.components.actions?.actionMap[actionId]
           if (!action) return
+
           action.cdLeft = cooldowns[key] ?? undefined
         })
 

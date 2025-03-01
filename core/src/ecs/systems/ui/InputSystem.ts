@@ -164,9 +164,11 @@ export const InputSystem = ClientSystemBuilder({
         y: round(mouse.y - position.data.y, 2)
       }
 
-      world.actions.push(world.tick + 1, character.id,
-        { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
-      )
+      if (actions.actionMap["point"]) {
+        world.actions.push(world.tick + 1, character.id,
+          { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+        )
+      }
 
       // handle joystick input
       if (CurrentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
@@ -280,7 +282,7 @@ export const InputSystem = ClientSystemBuilder({
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
               if (invocation.offline) {
-                world.actions.push(world.tick, entity.id, invocation)  
+                world.actions.push(world.tick, entity.id, invocation)
               } else {
                 world.actions.push(world.tick + 1, entity.id, invocation)
               }
@@ -317,6 +319,7 @@ export const InputSystem = ClientSystemBuilder({
     return {
       id: "InputSystem",
       query: ["input", "actions", "position"],
+      priority: 4,
       skipOnRollback: true,
       onTick: (enitities: Entity<Input | Actions>[]) => {
         // update mouse position, the camera might have moved
@@ -330,7 +333,7 @@ export const InputSystem = ClientSystemBuilder({
         }
 
         // handle character input
-        const character = world.client?.player.components.controlling.getControlledEntity(world)
+        const character = world.client?.player.components.controlling.getCharacter(world)
         if (character && world.tick > clickableClickedThisFrame.value) {
           handleInputForCharacter(character, world)
         }

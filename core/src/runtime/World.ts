@@ -67,7 +67,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     messages: StateBuffer(),
     client: undefined,
     commands: {},
-    currentGame: { id: "", entities: [], systems: [] },
+    currentGame: { id: "", entities: [], systems: [], netcode: "delay" },
     debug: false,
     entities: {},
     entitiesAtTick: {},
@@ -145,7 +145,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       }
 
       if (world.tickFlag === "red") {
-        console.error("defer tick")
+        console.log("defer tick")
         // scheduleOnTick()
         // return
       }
@@ -164,17 +164,16 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       // increment tick
       world.tick += 1
 
-      // store serialized entities before systems run
-      const serializedEntities: Record<string, SerializedEntity> = {}
+      // store serialized entities
+      world.entitiesAtTick[world.tick] = {}
       for (const entityId in world.entities) {
         if (world.entities[entityId].components.networked) {
-          serializedEntities[entityId] = world.entities[entityId].serialize()
+          world.entitiesAtTick[world.tick][entityId] = world.entities[entityId].serialize()
         }
       }
-      world.entitiesAtTick[world.tick] = serializedEntities
 
-      // run system onTick
-      values(world.systems).forEach((system) => {
+      // run system onTick (sorted by priority)
+      values(world.systems).sort((a, b) => a.priority - b.priority).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
           if (!world.systems[system.id]) return
           system.onTick?.(filterEntities(system.query, values(world.entities)), isRollback)
@@ -185,9 +184,9 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       if (!isRollback) scheduleOnTick()
 
       // clear old buffered data
-      world.actions.clearBeforeTick(world.tick - 5)
+      world.actions.clearBeforeTick(world.tick - 20)
       keys(world.entitiesAtTick).map(Number).forEach((tick) => {
-        if ((world.tick - tick) > 5) {
+        if ((world.tick - tick) > 20) {
           delete world.entitiesAtTick[tick]
         }
       })
@@ -195,6 +194,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     setGame: (game: GameBuilder | string) => {
       if (typeof game === "string") game = world.games[game]
       if (!game) return
+
+      console.log(`set game ${game.id}`)
 
       // remove old entities
       values(world.entities).forEach((entity) => {

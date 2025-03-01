@@ -9,6 +9,7 @@ export const Volley: GameBuilder = {
   id: "volley",
   init: () => ({
     id: "volley",
+    netcode: "rollback",
     systems: [SpawnSystem(Dude), ShadowSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
     entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
@@ -21,7 +22,7 @@ const Dude = (player: Player) => Character({
     debug: Debug(),
     position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.5 }),
     networked: Networked(),
-    collider: Collider({ shape: "ball", radius: 4 }),
+    collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
     team: player.components.team,
     input: Input({
       press: {
@@ -31,11 +32,10 @@ const Dude = (player: Player) => Character({
     }),
     actions: Actions({
       move: Move,
-      point: Point,
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 8 })
-      }, 10)
+      }, 0)
     }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.8 },
@@ -96,9 +96,11 @@ const Shadow = (character: Entity<Position>) => Entity<Renderable>({
 
         position.data.x = character.components.position.data.x
         position.data.y = character.components.position.data.y
-        position.setVelocity({ x: character.components.position.data.velocity.x, y: character.components.position.data.velocity.y })
 
         position.lastCollided = character.components.position.lastCollided
+
+        const { x, y } = character.components.position.data.velocity
+        position.setVelocity({ x, y })
       },
       setContainer: async () => {
         const g = pixiGraphics()
@@ -149,11 +151,12 @@ const ShadowSystem = ClientSystemBuilder({
     return {
       id: "ShadowSystem",
       query: ["pc"],
+      priority: 5, // todo
       onTick: (entities: Player[]) => {
         entities.forEach((entity) => {
           const { controlling } = entity.components
 
-          const character = controlling.getControlledEntity(world)
+          const character = controlling.getCharacter(world)
           if (!character) return
 
           if (!shadows[character.id]) {

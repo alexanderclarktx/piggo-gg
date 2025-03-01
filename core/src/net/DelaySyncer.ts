@@ -1,15 +1,15 @@
 import {
   AK, AWP, Apple, Axe, Ball, Deagle, Entity, GameData, Hitbox, LineWall,
   Pickaxe, Piggo, Player, Rock, SerializedEntity, Sword, Syncer, Tree,
-  World, Zomi, entries, keys, stringify
+  Zomi, entries, keys, stringify
 } from "@piggo-gg/core"
 
-const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
+export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "zomi": Zomi,
   "ball": Ball,
   "player": Player,
   "hitbox": Hitbox,
-  "linewall": LineWall,
+  // "linewall": LineWall, // todo broken
   "rock": Rock,
   "tree": Tree,
   "piggo": Piggo,
@@ -22,8 +22,8 @@ const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "awp": AWP
 }
 
-export const DelaySyncer: Syncer = {
-  writeMessage: (world: World) => {
+export const DelaySyncer = (): Syncer => ({
+  writeMessage: (world) => {
 
     const message: GameData = {
       actions: world.actions.atTick(world.tick + 1) ?? {},
@@ -39,7 +39,9 @@ export const DelaySyncer: Syncer = {
     world.actions.clearTick(world.tick + 1)
     return message
   },
-  handleMessage: (world: World, message: GameData) => {
+  handleMessages: ({ world, buffer }) => {
+
+    const message = buffer.shift() as GameData
 
     // remove old local entities
     keys(world.entities).forEach((entityId) => {
@@ -68,8 +70,8 @@ export const DelaySyncer: Syncer = {
 
     let rollback = false
 
-    const mustRollback = (reason: string, additional?: object, additional2?: object) => {
-      console.log(`MUST ROLLBACK tick:${world.tick}`, reason, additional, additional2)
+    const mustRollback = (reason: string) => {
+      console.log(`MUST ROLLBACK tick:${world.tick}`, reason)
       rollback = true
     }
 
@@ -97,7 +99,7 @@ export const DelaySyncer: Syncer = {
         const localEntity = localEntities[entityId]
         if (localEntity) {
           if (stringify(localEntity) !== stringify(msgEntity)) {
-            mustRollback(`entity state ${entityId}`, localEntity, msgEntity)
+            mustRollback(`entity state ${entityId} ${localEntity} ${msgEntity}`)
             break
           }
         } else {
@@ -124,14 +126,5 @@ export const DelaySyncer: Syncer = {
     entries(message.actions).forEach(([entityId, actions]) => {
       world.actions.set(message.tick, entityId, actions)
     })
-
-    // handle new chat messages
-    const numChats = keys(message.chats).length
-    if (numChats) {
-      entries(message.chats).forEach(([playerId, messages]) => {
-        if (playerId === world.client?.playerId()) return
-        world.messages.set(world.tick, playerId, messages)
-      })
-    }
   }
-}
+})

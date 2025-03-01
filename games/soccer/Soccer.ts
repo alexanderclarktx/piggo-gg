@@ -15,7 +15,8 @@ export const Soccer: GameBuilder = {
       Goal({ id: "goal1", color: 0xff0000, position: { x: -402, y: 150 }, width: 49, length: 2 }),
       Goal({ id: "goal2", color: 0x0000ff, position: { x: 502, y: 150 }, width: 49, length: 2 }),
     ],
-    systems: [CameraSystem(), SpawnSystem(Skelly)]
+    systems: [CameraSystem(), SpawnSystem(Skelly)],
+    netcode: "delay"
   })
 }
 

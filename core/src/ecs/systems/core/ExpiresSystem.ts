@@ -5,6 +5,7 @@ export const ExpiresSystem: SystemBuilder<"ExpiresSystem"> = {
   init: (world) => ({
     id: "ExpiresSystem",
     query: ["expires"],
+    priority: 2,
     onTick: (entities: Entity<Expires>[]) => {
       entities.forEach((entity) => {
         const { expires } = entity.components

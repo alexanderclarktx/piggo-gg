@@ -23,6 +23,7 @@ export const Legends: GameBuilder = {
       Rift(wallPointsIso),
       LineWall({ points: wallPointsIso, hittable: false })
     ],
-    systems: [SpawnSystem(Skelly)]
+    systems: [SpawnSystem(Skelly)],
+    netcode: "delay"
   })
 }

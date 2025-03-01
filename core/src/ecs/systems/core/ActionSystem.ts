@@ -5,6 +5,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   init: (world) => ({
     id: "ActionSystem",
     query: [],
+    priority: 8,
     onTick: () => {
       const actionsAtTick = world.actions.atTick(world.tick)
       if (!actionsAtTick) return

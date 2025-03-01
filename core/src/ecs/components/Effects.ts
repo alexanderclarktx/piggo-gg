@@ -33,6 +33,7 @@ export const EffectsSystem = SystemBuilder({
   init: (world) => ({
     id: "EffectsSystem",
     query: ["effects"],
+    priority: 8,
     onTick: (entities: Entity<Effects>[]) => {
 
       entities.forEach(entity => {

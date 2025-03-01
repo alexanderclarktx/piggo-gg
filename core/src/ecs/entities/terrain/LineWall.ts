@@ -27,7 +27,7 @@ export const LineWall = (
       } else {
         return point - points[1]
       }
-    })
+    }).filter((x) => x !== undefined)
   }
 
   const wall = Entity<Position | Renderable | Collider>({

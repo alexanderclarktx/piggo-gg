@@ -1,4 +1,4 @@
-import { Component, Entity, InvokedAction, Position, World } from "@piggo-gg/core"
+import { Component, Entity, InvokedAction, Position, SystemBuilder, World } from "@piggo-gg/core"
 
 export type NPC = Component<"npc"> & {
   behavior: (entity: Entity<NPC | Position>, world: World) => InvokedAction | null | void
@@ -12,3 +12,20 @@ export const NPC = <T extends string>(props: NPCProps<T>): NPC => ({
   type: "npc",
   behavior: props.behavior
 })
+
+export const NPCSystem: SystemBuilder<"NPCSystem"> = {
+  id: "NPCSystem",
+  init: (world) => ({
+    id: "NPCSystem",
+    query: ["npc", "position"],
+    priority: 6,
+    onTick: (entities: Entity<NPC | Position>[]) => {
+      entities.forEach((entity) => {
+        const action = entity.components.npc.behavior(entity, world)
+        if (action) {
+          world.actions.push(world.tick, entity.id, action)
+        }
+      })
+    }
+  })
+}

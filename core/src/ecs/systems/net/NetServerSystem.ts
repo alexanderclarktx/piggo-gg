@@ -2,7 +2,7 @@ import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo
 
 export type DelayServerSystemProps = {
   world: World
-  clients: Record<string, { send: (_: string) => number }>
+  clients: Record<string, { send: (_: string, compress?: boolean) => number }>
   latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
 }
 
@@ -30,16 +30,50 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }))
 
-      if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
-        latestClientMessages[id].shift()
-        latestClientMessages[id].shift()
-      } else {
-        latestClientMessages[id]?.shift()
+      if (world.currentGame.netcode === "delay") {
+        if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
+          latestClientMessages[id].shift()
+          latestClientMessages[id].shift()
+        } else {
+          latestClientMessages[id]?.shift()
+        }
       }
     })
   }
 
   const handleMessage = () => {
+    (world.currentGame.netcode === "delay") ? delay() : rollback()
+  }
+
+  const rollback = () => {
+    for (const clientId of keys(latestClientMessages)) {
+      const messages = latestClientMessages[clientId]
+
+      for (const message of messages) {
+        if (message.td.type !== "game") continue
+
+        const { td } = message
+
+        // process message actions
+        if (td.actions) {
+          entries(message.td.actions).forEach(([entityId, actions]) => {
+            actions.forEach((action) => {
+              world.actions.push(td.tick, entityId, action)
+            })
+          })
+        }
+
+        // process message chats
+        if (message.td.chats[clientId]) {
+          world.messages.set(world.tick, clientId, message.td.chats[clientId])
+        }
+      }
+
+      latestClientMessages[clientId] = []
+    }
+  }
+
+  const delay = () => {
     keys(latestClientMessages).forEach((client) => {
       // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
 
@@ -60,12 +94,16 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
         // process message actions
         if (tickData.actions) {
-          keys(tickData.actions).forEach((entityId) => {
+          entries(tickData.actions).forEach(([entityId, actions]) => {
+            actions.forEach((action) => {
+              world.actions.push(tickData.tick, entityId, action)
+              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
+            })
             // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-              tickData.actions[entityId].forEach((action) => {
-                world.actions.push(world.tick, entityId, action)
-              })
-            // }
+            tickData.actions[entityId].forEach((action) => {
+              world.actions.push(world.tick, entityId, action)
+              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
+            })
           })
         }
 
@@ -80,6 +118,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
   return {
     id: "NetServerSystem",
     query: [],
+    priority: 1,
     onTick: () => {
       handleMessage()
       sendMessage()

@@ -81,7 +81,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
 
             if (id === world.client?.playerId()) return
 
-            const character = world.entities[id]?.components.controlling?.getControlledEntity(world)
+            const character = world.entities[id]?.components.controlling?.getCharacter(world)
             if (!character) return
 
             const { team } = character.components
@@ -103,7 +103,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
               container.addChild(dots[entity.id])
             }
 
-            const character = entity.components.controlling?.getControlledEntity(world)
+            const character = entity.components.controlling?.getCharacter(world)
             if (!character) return
 
             const { position } = character.components

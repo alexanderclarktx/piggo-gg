@@ -30,6 +30,7 @@ export const TeamSystem: SystemBuilder<"TeamSystem"> = {
     return {
       id: "TeamSystem",
       query: ["team"],
+      priority: 5, // todo
       onTick: (entities) => {
         entities.forEach((entity) => {
           const { team } = entity.components

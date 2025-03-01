@@ -88,6 +88,7 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   init: (world) => ({
     id: "InventorySystem",
     query: ["position", "input", "actions", "renderable", "inventory", "team"],
+    priority: 5, // todo
     onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory | Team>[]) => {
       entities.forEach(entity => {
         const { inventory } = entity.components

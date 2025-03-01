@@ -40,6 +40,7 @@ export const HealthSystem = SystemBuilder({
   init: (world) => ({
     id: "HealthSystem",
     query: ["health"],
+    priority: 5,
     onTick: (entities: Entity<Health>[]) => {
       for (const entity of entities) {
         const { health } = entity.components

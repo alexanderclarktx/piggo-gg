@@ -8,6 +8,7 @@ export type Game<T extends string = string> = {
   tileMap?: number[]
   bgColor?: number
   view?: "top" | "side"
+  netcode: "rollback" | "delay"
 }
 
 export type GameBuilder<T extends string = string> = {

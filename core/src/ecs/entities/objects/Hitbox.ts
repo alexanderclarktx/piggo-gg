@@ -62,7 +62,7 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
         setContainer: async () => {
           return pixiCircle({
             x: 0, y: 0, r: radius ?? 8,
-            style: { color: color ?? 0xffffffff, alpha: 1, strokeColor: 0x000000, strokeWidth: 1 }
+            style: { color: color ?? 0xffffff, alpha: 1, strokeColor: 0x000000, strokeWidth: 1 }
           })
         }
       })
