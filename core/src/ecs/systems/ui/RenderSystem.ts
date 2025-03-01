@@ -46,6 +46,7 @@ export const RenderSystem = ClientSystemBuilder({
     return {
       id: "RenderSystem",
       query: ["renderable", "position"],
+      priority: 9,
       onTick: (entities: Entity<Renderable | Position>[]) => {
 
         lastOntick = performance.now()

@@ -25,6 +25,7 @@ export const CommandSystem = ClientSystemBuilder({
     return {
       id: "CommandSystem",
       query: [],
+      priority: 6,
       onTick: () => {
         const messagesFromPlayer = world.messages.atTick(world.tick)
 

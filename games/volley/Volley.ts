@@ -152,6 +152,7 @@ const ShadowSystem = ClientSystemBuilder({
     return {
       id: "ShadowSystem",
       query: ["pc"],
+      priority: 5, // todo
       onTick: (entities: Player[]) => {
         entities.forEach((entity) => {
           const { controlling } = entity.components

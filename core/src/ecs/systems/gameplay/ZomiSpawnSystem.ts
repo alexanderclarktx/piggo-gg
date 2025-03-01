@@ -40,6 +40,7 @@ export const ZomiSpawnSystem: SystemBuilder<"ZomiSpawnSystem"> = ({
       id: "ZomiSpawnSystem",
       data,
       query: [],
+      priority: 5, // todo
       onTick: () => {
 
         // handle old entities

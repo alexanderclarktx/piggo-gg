@@ -118,6 +118,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
   return {
     id: "NetServerSystem",
     query: [],
+    priority: 1,
     onTick: () => {
       handleMessage()
       sendMessage()

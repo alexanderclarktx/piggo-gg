@@ -23,6 +23,7 @@ export const PhysicsSystem = SystemBuilder({
     return {
       id: "PhysicsSystem",
       query: ["position", "collider"],
+      priority: 7,
       onRollback: resetPhysics,
       onTick: (entities: Entity<Collider | Position>[], isRollback: false) => {
 

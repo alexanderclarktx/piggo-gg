@@ -125,6 +125,7 @@ export const DebugSystem = ClientSystemBuilder({
     return {
       id: "DebugSystem",
       query: ["debug", "position"],
+      priority: 5,
       skipOnRollback: true,
       onTick: (entities: Entity<Position>[]) => {
         if (world.debug) {

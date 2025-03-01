@@ -11,6 +11,7 @@ export const ChatBubbleSystem = ClientSystemBuilder({
     return {
       id: "ChatBubbleSystem",
       query: ["position", "renderable"],
+      priority: 5, // todo
       onTick: (entities: Entity<Position | Renderable>[]) => {
 
         // todo clean up old chat bubbles

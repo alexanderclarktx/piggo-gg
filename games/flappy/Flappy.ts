@@ -148,6 +148,7 @@ const FlappySystem: SystemBuilder<"FlappySystem"> = {
     return {
       id: "FlappySystem",
       query: ["pc"],
+      priority: 5, // todo
       onTick: (players: Entity<PC>[]) => {
         let pc = undefined
         for (const player of players) {

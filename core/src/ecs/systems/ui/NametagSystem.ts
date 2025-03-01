@@ -13,6 +13,7 @@ export const NametagSystem = ClientSystemBuilder({
     return {
       id: "NametagSystem",
       query: ["pc"],
+      priority: 6,
       skipOnRollback: true,
       onTick: (entities: Player[]) => {
 

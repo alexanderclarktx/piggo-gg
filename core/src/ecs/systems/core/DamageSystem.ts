@@ -10,11 +10,11 @@ export const DamageSystem = ClientSystemBuilder({
     return {
       id: "DamageSystem",
       query: ["health", "position", "renderable"],
+      priority: 5,
       onTick: (entities: Entity<Health | Position | Renderable>[]) => {
         entities.forEach((entity) => {
           const { health, renderable, element } = entity.components
           if (!renderable.initialized) return
-
 
           if (!filterMap[entity.id]) {
             const filter = new ColorMatrixFilter()

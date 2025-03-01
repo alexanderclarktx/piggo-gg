@@ -48,6 +48,15 @@ export const RollbackSyncer = (): Syncer => {
       // TODO filter out other character's actions
       const actions = world.actions.atTick(message.tick) ?? {}
       for (const [entityId, action] of entries(message.actions)) {
+
+        if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+          console.log("action for other dude")
+
+          world.actions.set(world.tick + 1, entityId, action)
+
+          return
+        }
+
         if (!actions[entityId]) {
           mustRollback("action not found locally")
           break

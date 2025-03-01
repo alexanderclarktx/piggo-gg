@@ -53,6 +53,7 @@ export const NetClientSystem = SystemBuilder({
     return {
       id: "NetClientSystem",
       query: ["networked"],
+      priority: 1,
       skipOnRollback: true,
       onTick: (_: Entity[]) => {
         const message = syncer().writeMessage(world)

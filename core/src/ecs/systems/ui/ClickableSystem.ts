@@ -57,6 +57,7 @@ export const ClickableSystem = ClientSystemBuilder({
     return {
       id: "ClickableSystem",
       query: ["clickable", "position", "renderable"],
+      priority: 3,
       skipOnRollback: true,
       onTick: (entities: Entity<Clickable | Position | Renderable>[]) => {
 

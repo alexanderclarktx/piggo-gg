@@ -13,6 +13,7 @@ export const FogSystem: SystemBuilder<"FogSystem"> = {
     return {
       id: "FogSystem",
       query: [],
+      priority: 4, // todo not sure
       onTick: () => {
         if (!client) return
 

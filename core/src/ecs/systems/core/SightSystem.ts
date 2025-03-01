@@ -5,6 +5,7 @@ export const SightSystem = ClientSystemBuilder({
   init: (world) => ({
     id: "SightSystem",
     query: ["team", "renderable", "position", "collider"],
+    priority: 5, // todo
     onTick: (entities: Entity<Team | Renderable | Position | Collider>[]) => {
 
       const playerCharacter = world.client?.playerCharacter()

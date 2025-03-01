@@ -21,6 +21,7 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
     return {
       id: "CooldownSystem",
       query: [],
+      priority: 6,
       data: cooldowns,
       onTick: (_: Entity[]) => {
 

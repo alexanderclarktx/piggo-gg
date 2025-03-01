@@ -90,6 +90,7 @@ export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystem
     const cameraSystem: System = {
       id: "CameraSystem",
       query: ["renderable", "position"],
+      priority: 10,
       onTick: (entities: Entity<Renderable | Position>[]) => {
         let numHidden = 0
 

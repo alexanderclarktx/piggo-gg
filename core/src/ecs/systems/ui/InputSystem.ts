@@ -317,6 +317,7 @@ export const InputSystem = ClientSystemBuilder({
     return {
       id: "InputSystem",
       query: ["input", "actions", "position"],
+      priority: 4,
       skipOnRollback: true,
       onTick: (enitities: Entity<Input | Actions>[]) => {
         // update mouse position, the camera might have moved

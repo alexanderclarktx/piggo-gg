@@ -11,6 +11,7 @@ export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSyst
     return {
       id: "SpawnSystem",
       query: ["pc"],
+      priority: 5, // todo
       onTick: (players: Player[]) => {
 
         // cleanup
