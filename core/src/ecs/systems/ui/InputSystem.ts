@@ -164,9 +164,11 @@ export const InputSystem = ClientSystemBuilder({
         y: round(mouse.y - position.data.y, 2)
       }
 
-      world.actions.push(world.tick + 1, character.id,
-        { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
-      )
+      if (actions.actionMap["point"]) {
+        world.actions.push(world.tick + 1, character.id,
+          { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+        )
+      }
 
       // handle joystick input
       if (CurrentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
@@ -280,7 +282,7 @@ export const InputSystem = ClientSystemBuilder({
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
               if (invocation.offline) {
-                world.actions.push(world.tick, entity.id, invocation)  
+                world.actions.push(world.tick, entity.id, invocation)
               } else {
                 world.actions.push(world.tick + 1, entity.id, invocation)
               }

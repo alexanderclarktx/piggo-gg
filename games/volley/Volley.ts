@@ -22,7 +22,7 @@ const Dude = (player: Player) => Character({
     debug: Debug(),
     position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.5 }),
     networked: Networked(),
-    collider: Collider({ shape: "ball", radius: 4 }),
+    collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
     team: player.components.team,
     input: Input({
       press: {
@@ -32,7 +32,6 @@ const Dude = (player: Player) => Character({
     }),
     actions: Actions({
       move: Move,
-      point: Point,
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 8 })

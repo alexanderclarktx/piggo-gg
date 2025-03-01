@@ -50,11 +50,9 @@ export const RollbackSyncer = (): Syncer => {
       for (const [entityId, action] of entries(message.actions)) {
 
         if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-          console.log("action for other dude")
-
-          world.actions.set(world.tick + 1, entityId, action)
-
-          return
+          // console.log("action for other dude")
+          world.actions.set(world.tick, entityId, action)
+          continue
         }
 
         if (!actions[entityId]) {
@@ -80,6 +78,11 @@ export const RollbackSyncer = (): Syncer => {
 
       if (!rollback) {
         entries(remote).forEach(([entityId, serializedEntity]) => {
+
+          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+            return
+          }
+
           if (local[entityId]) {
             if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
               mustRollback(`entity mismatch ${message.tick} ${stringify(local[entityId])} ${stringify(serializedEntity)}`)
