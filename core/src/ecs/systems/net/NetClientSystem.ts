@@ -74,7 +74,7 @@ export const NetClientSystem = SystemBuilder({
         }
 
         // tick faster if slightly behind
-        if (buffer.length > 2) {
+        if (buffer.length > 2 && world.currentGame.netcode === "delay") {
           world.tickFaster = true
         } else {
           world.tickFaster = false

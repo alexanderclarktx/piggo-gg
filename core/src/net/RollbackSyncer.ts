@@ -27,7 +27,7 @@ export const RollbackSyncer = (): Syncer => {
       }
 
       if (message.tick <= lastSeenTick) {
-        console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
+        // console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
         return
       }
 
