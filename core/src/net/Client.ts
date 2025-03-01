@@ -1,10 +1,9 @@
 import {
   Character, DelaySyncer, LobbyCreate, LobbyJoin, NetClientSystem, NetMessageTypes,
   Player, stringify, RequestData, RequestTypes, Syncer, World, genPlayerId,
-  SoundManager, genHash, AuthLogin, FriendsList, Pls
+  SoundManager, genHash, AuthLogin, FriendsList, Pls, RollbackSyncer
 } from "@piggo-gg/core"
 import toast from "react-hot-toast"
-import { RollbackSyncer } from "./RollbackSyncer"
 
 const servers = {
   dev: "ws://localhost:3000",

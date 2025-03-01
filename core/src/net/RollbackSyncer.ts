@@ -1,6 +1,4 @@
-import {
-  ceil, entityConstructors, entries, GameData, keys, stringify, Syncer
-} from "@piggo-gg/core"
+import { ceil, entityConstructors, entries, keys, stringify, Syncer } from "@piggo-gg/core"
 
 export const RollbackSyncer = (): Syncer => {
 
@@ -20,7 +18,7 @@ export const RollbackSyncer = (): Syncer => {
       }
     },
     handleMessages: ({ world, buffer }) => {
-      const message = buffer.sort((a, b) => b.tick - a.tick).shift()
+      const message = buffer.pop()
       buffer = []
 
       if (!message) {
@@ -29,15 +27,16 @@ export const RollbackSyncer = (): Syncer => {
       }
 
       if (message.tick <= lastSeenTick) {
-        console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
+        // console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
         return
       }
 
-      world.tickFaster = (world.tick - message.tick) < ceil(world.client!.lastLatency / world.tickrate + 2)
+      // console.log(`${world.tick - message.tick} ticks ahead`)
+
+      const framesForward = ceil(world.client!.lastLatency / world.tickrate + 2)
+      world.tickFaster = (world.tick - message.tick) < framesForward
 
       lastSeenTick = message.tick
-
-      console.log(`${world.tick - message.tick} ticks ahead`)
 
       let rollback = false
 
@@ -46,10 +45,8 @@ export const RollbackSyncer = (): Syncer => {
         rollback = true
       }
 
-      // check if actions and entities match what we had at that tick
-      const actions = world.actions.atTick(message.tick) ?? {}
-
       // TODO filter out other character's actions
+      const actions = world.actions.atTick(message.tick) ?? {}
       for (const [entityId, action] of entries(message.actions)) {
         if (!actions[entityId]) {
           mustRollback("action not found locally")
@@ -113,8 +110,7 @@ export const RollbackSyncer = (): Syncer => {
         })
 
         // roll forward
-        const frames = ceil(world.client!.lastLatency / world.tickrate + 2)
-        for (let i = 0; i < frames; i++) {
+        for (let i = 0; i < framesForward; i++) {
           world.onTick({ isRollback: true })
         }
       }
