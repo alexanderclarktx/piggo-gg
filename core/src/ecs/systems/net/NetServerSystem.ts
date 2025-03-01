@@ -41,8 +41,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     })
   }
 
-  // process everything
   const handleMessage = () => {
+    (world.currentGame.netcode === "delay") ? delay() : rollback()
+  }
+
+  const rollback = () => {
     for (const clientId of keys(latestClientMessages)) {
       const messages = latestClientMessages[clientId]
 
@@ -70,49 +73,47 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     }
   }
 
-  // const handleMessage = () => {
-  //   keys(latestClientMessages).forEach((client) => {
-  //     // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
+  const delay = () => {
+    keys(latestClientMessages).forEach((client) => {
+      // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
 
-  //     let messages: ({ td: NetMessageTypes, latency: number } | undefined)[]
+      let messages: ({ td: NetMessageTypes, latency: number } | undefined)[]
 
-  //     // if (latestClientMessages[client].length > 2) {
-  //     //   messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
-  //     // } else {
-  //     messages = [latestClientMessages[client][0]]
-  //     // }
-  //     if (messages.length === 0) return
+      if (latestClientMessages[client].length > 2) {
+        messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
+      } else {
+        messages = [latestClientMessages[client][0]]
+      }
+      if (messages.length === 0) return
 
-  //     messages.forEach((message) => {
-  //       if (!message) return
+      messages.forEach((message) => {
+        if (!message) return
 
-  //       const tickData = message.td
-  //       if (tickData.type !== "game") return
+        const tickData = message.td
+        if (tickData.type !== "game") return
 
-  //       // process message actions
-  //       if (tickData.actions) {
-  //         entries(tickData.actions).forEach(([entityId, actions]) => {
-  //           actions.forEach((action) => {
-  //             world.actions.push(tickData.tick, entityId, action)
-  //             console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
-  //           })
-  //           // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-  //           // tickData.actions[entityId].forEach((action) => {
-  //             // world.actions.push(world.tick, entityId, action)
-  //           //   world.actions.push(tickData.tick, entityId, action)
-  //           // })
-  //         })
-  //       }
+        // process message actions
+        if (tickData.actions) {
+          entries(tickData.actions).forEach(([entityId, actions]) => {
+            actions.forEach((action) => {
+              world.actions.push(tickData.tick, entityId, action)
+              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
+            })
+            // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
+            tickData.actions[entityId].forEach((action) => {
+              world.actions.push(world.tick, entityId, action)
+              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
+            })
+          })
+        }
 
-  //       console.log(`client is ${tickData.tick - world.tick} ticks ahead`)
-
-  //       // process message chats
-  //       if (tickData.chats[client]) {
-  //         world.messages.set(world.tick, client, tickData.chats[client])
-  //       }
-  //     })
-  //   })
-  // }
+        // process message chats
+        if (tickData.chats[client]) {
+          world.messages.set(world.tick, client, tickData.chats[client])
+        }
+      })
+    })
+  }
 
   return {
     id: "NetServerSystem",

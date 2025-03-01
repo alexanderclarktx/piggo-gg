@@ -1,13 +1,21 @@
-import { Entity, GameData, Syncer, SystemBuilder, entries, keys, stringify } from "@piggo-gg/core"
+import {
+  DelaySyncer, Entity, Game, GameData, RollbackSyncer, Syncer, SystemBuilder, entries, keys, stringify
+} from "@piggo-gg/core"
 
-export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem"> = (syncer) => ({
+export const NetClientSystem = SystemBuilder({
   id: "NetClientSystem",
   init: (world) => {
     if (!world.client) return undefined
 
+    const { client, tick } = world
+
     let buffer: GameData[] = []
 
-    const { client, tick } = world
+    const syncers: Record<Game["netcode"], Syncer> = {
+      delay: DelaySyncer(),
+      rollback: RollbackSyncer()
+    }
+    const syncer = () => syncers[world.currentGame.netcode]
 
     world.actions.clearBeforeTick(tick + 2)
 
@@ -47,13 +55,13 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
       query: ["networked"],
       skipOnRollback: true,
       onTick: (_: Entity[]) => {
-        const message = syncer.writeMessage(world)
+        const message = syncer().writeMessage(world)
 
         try {
           if (client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(stringify(message))
           }
-          // if (keys(message.actions).length > 1) console.log("sent actions", message.actions)
+          // if (keys(message.actions).length > 0) console.log("sent actions", message.actions)
         } catch (e) {
           console.error("NetcodeSystem: error sending message", message)
         }
@@ -73,7 +81,7 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
 
         // handle oldest message in buffer
         if (buffer.length > 0) {
-          syncer.handleMessages({ world, buffer })
+          syncer().handleMessages({ world, buffer })
         } else {
           world.tickFlag = "red"
         }

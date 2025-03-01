@@ -1,7 +1,7 @@
 import {
-  Character, DelaySyncer, LobbyCreate, LobbyJoin, NetClientSystem, NetMessageTypes,
-  Player, stringify, RequestData, RequestTypes, Syncer, World, genPlayerId,
-  SoundManager, genHash, AuthLogin, FriendsList, Pls, RollbackSyncer
+  Character, LobbyCreate, LobbyJoin, NetClientSystem, NetMessageTypes,
+  Player, stringify, RequestData, RequestTypes, World, genPlayerId,
+  SoundManager, genHash, AuthLogin, FriendsList, Pls
 } from "@piggo-gg/core"
 import toast from "react-hot-toast"
 
@@ -47,8 +47,6 @@ export type ClientProps = {
 
 export const Client = ({ world }: ClientProps): Client => {
 
-  // let syncer: Syncer = DelaySyncer
-  let syncer: Syncer = RollbackSyncer()
   let requestBuffer: Record<string, Callback> = {}
 
   const player = Player({ id: genPlayerId() })
@@ -102,7 +100,7 @@ export const Client = ({ world }: ClientProps): Client => {
           console.error("Client: failed to create lobby", response.error)
         } else {
           client.lobbyId = response.lobbyId
-          world.addSystemBuilders([NetClientSystem(syncer)])
+          world.addSystemBuilders([NetClientSystem])
         }
         callback(response)
       })
@@ -114,7 +112,7 @@ export const Client = ({ world }: ClientProps): Client => {
         } else {
           client.lobbyId = lobbyId
           callback(response)
-          world.addSystemBuilders([NetClientSystem(syncer)])
+          world.addSystemBuilders([NetClientSystem])
         }
       })
     },
@@ -149,7 +147,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   client.ws.addEventListener("close", () => {
     console.error("websocket closed")
-    world.removeSystem(NetClientSystem(syncer).id)
+    world.removeSystem(NetClientSystem.id)
   })
 
   client.ws.addEventListener("message", (event) => {

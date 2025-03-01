@@ -9,7 +9,7 @@ export const entityConstructors: Record<string, (_: { id?: string }) => Entity> 
   "ball": Ball,
   "player": Player,
   "hitbox": Hitbox,
-  "linewall": LineWall,
+  // "linewall": LineWall, // todo broken
   "rock": Rock,
   "tree": Tree,
   "piggo": Piggo,
@@ -22,7 +22,7 @@ export const entityConstructors: Record<string, (_: { id?: string }) => Entity> 
   "awp": AWP
 }
 
-export const DelaySyncer: Syncer = {
+export const DelaySyncer = (): Syncer => ({
   writeMessage: (world) => {
 
     const message: GameData = {
@@ -39,7 +39,7 @@ export const DelaySyncer: Syncer = {
     world.actions.clearTick(world.tick + 1)
     return message
   },
-  handleMessages: ({world, buffer}) => {
+  handleMessages: ({ world, buffer }) => {
 
     const message = buffer.shift() as GameData
 
@@ -70,13 +70,15 @@ export const DelaySyncer: Syncer = {
 
     let rollback = false
 
-    const mustRollback = (reason: string, additional?: object, additional2?: object) => {
-      console.log(`MUST ROLLBACK tick:${world.tick}`, reason, additional, additional2)
+    const mustRollback = (reason: string) => {
+      console.log(`MUST ROLLBACK tick:${world.tick}`, reason)
       rollback = true
     }
 
     if ((message.tick - 1) !== world.tick) {
       mustRollback(`old tick msg:${message.tick}`)
+      // console.error("old tick", message.tick, world.tick)
+      // return
     }
 
     const localEntities: Record<string, SerializedEntity> = {}
@@ -99,7 +101,7 @@ export const DelaySyncer: Syncer = {
         const localEntity = localEntities[entityId]
         if (localEntity) {
           if (stringify(localEntity) !== stringify(msgEntity)) {
-            mustRollback(`entity state ${entityId}`, localEntity, msgEntity)
+            mustRollback(`entity state ${entityId} ${localEntity} ${msgEntity}`)
             break
           }
         } else {
@@ -127,4 +129,4 @@ export const DelaySyncer: Syncer = {
       world.actions.set(message.tick, entityId, actions)
     })
   }
-}
+})
