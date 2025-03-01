@@ -80,6 +80,7 @@ export const RollbackSyncer = (): Syncer => {
         entries(remote).forEach(([entityId, serializedEntity]) => {
 
           if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+            world.entities[entityId].deserialize(serializedEntity)
             return
           }
 
