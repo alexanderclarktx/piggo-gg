@@ -2,7 +2,7 @@ import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo
 
 export type DelayServerSystemProps = {
   world: World
-  clients: Record<string, { send: (_: string) => number }>
+  clients: Record<string, { send: (_: string, compress?: boolean) => number }>
   latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
 }
 

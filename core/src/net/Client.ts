@@ -49,7 +49,7 @@ export type ClientProps = {
 export const Client = ({ world }: ClientProps): Client => {
 
   // let syncer: Syncer = DelaySyncer
-  let syncer: Syncer = RollbackSyncer
+  let syncer: Syncer = RollbackSyncer()
   let requestBuffer: Record<string, Callback> = {}
 
   const player = Player({ id: genPlayerId() })

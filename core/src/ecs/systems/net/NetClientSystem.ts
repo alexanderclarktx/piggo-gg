@@ -5,7 +5,7 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
   init: (world) => {
     if (!world.client) return undefined
 
-    let serverMessageBuffer: GameData[] = []
+    let buffer: GameData[] = []
 
     const { client, tick } = world
 
@@ -20,7 +20,7 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
         if (message.tick < client.lastMessageTick) return
 
         // store latest message
-        serverMessageBuffer.push(message)
+        buffer.push(message)
         client.lastMessageTick = message.tick
 
         // record latency
@@ -59,24 +59,21 @@ export const NetClientSystem: (syncer: Syncer) => SystemBuilder<"NetClientSystem
         }
 
         // hard reset if very behind
-        if (serverMessageBuffer.length > 10) {
-          serverMessageBuffer = []
+        if (buffer.length > 10) {
+          buffer = []
           return
         }
 
         // tick faster if slightly behind
-        if (serverMessageBuffer.length > 2) {
+        if (buffer.length > 2) {
           world.tickFaster = true
         } else {
           world.tickFaster = false
         }
 
         // handle oldest message in buffer
-        if (serverMessageBuffer.length > 0) {
-          syncer.handleMessages(world, serverMessageBuffer)
-          if (world.currentGame.netcode === "rollback") {
-            serverMessageBuffer = []
-          }
+        if (buffer.length > 0) {
+          syncer.handleMessages({ world, buffer })
         } else {
           world.tickFlag = "red"
         }

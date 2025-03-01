@@ -39,9 +39,9 @@ export const DelaySyncer: Syncer = {
     world.actions.clearTick(world.tick + 1)
     return message
   },
-  handleMessages: (world, messages) => {
+  handleMessages: ({world, buffer}) => {
 
-    const message = messages.shift() as GameData
+    const message = buffer.shift() as GameData
 
     // remove old local entities
     keys(world.entities).forEach((entityId) => {
