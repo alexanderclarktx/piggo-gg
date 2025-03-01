@@ -27,14 +27,13 @@ export const RollbackSyncer = (): Syncer => {
       }
 
       if (message.tick <= lastSeenTick) {
-        // console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
+        console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
         return
       }
 
-      console.log(`${world.tick - message.tick} ticks ahead`)
+      const framesForward = ceil(world.client!.ms * 2 / world.tickrate) + 3
 
-      const framesForward = ceil(world.client!.lastLatency / world.tickrate + 2)
-      world.tickFaster = (world.tick - message.tick) < framesForward
+      console.log(`${world.tick - message.tick} ticks ahead - forward: ${framesForward}`)
 
       lastSeenTick = message.tick
 
