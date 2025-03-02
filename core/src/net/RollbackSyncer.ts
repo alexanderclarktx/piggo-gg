@@ -31,7 +31,10 @@ export const RollbackSyncer = (): Syncer => {
         return
       }
 
-      const framesForward = ceil(world.client!.ms * 2 / world.tickrate) + 3
+      const gap = world.tick - message.tick
+      const framesForward = (gap >= 3 && gap <= 8) ?
+        gap :
+        ceil(world.client!.ms * 2 / world.tickrate) + 3
 
       console.log(`${world.tick - message.tick} ticks ahead - forward: ${framesForward}`)
 

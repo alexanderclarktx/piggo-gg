@@ -6,8 +6,8 @@ import {
 import toast from "react-hot-toast"
 
 const servers = {
-  dev: "ws://localhost:3000",
-  // dev: "wss://piggo-api-staging.up.railway.app",
+  // dev: "ws://localhost:3000",
+  dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 

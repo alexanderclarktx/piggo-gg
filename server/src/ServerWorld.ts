@@ -57,7 +57,7 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
       }
 
       if (msg.tick - lastTickMsg !== 1) {
-        console.error(`OUT OF ORDER TICK world:${world.tick} msg:${msg.tick} diff:${world.tick - msg.tick}`)
+        console.error(`OUT OF ORDER TICK world:${world.tick} msg:${msg.tick} last:${lastTickMsg}`)
       }
       lastTickMsg = msg.tick
 
