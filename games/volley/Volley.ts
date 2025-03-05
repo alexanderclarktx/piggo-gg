@@ -1,7 +1,7 @@
 import {
   Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor,
   Debug, Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked,
-  pixiGraphics, Player, Point, Position, Renderable, SpawnSystem, WASDInputMap
+  pixiGraphics, Player, Position, randomInt, Renderable, SpawnSystem, WASDInputMap
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -12,7 +12,7 @@ export const Volley: GameBuilder = {
     netcode: "rollback",
     systems: [SpawnSystem(Dude), ShadowSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
-    entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
+    entities: [Ball(), Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
   })
 }
 
@@ -83,7 +83,7 @@ const Court = () => LineWall({
   fill: 0x0066aa
 })
 
-const Shadow = (character: Entity<Position>) => Entity<Renderable>({
+const Shadow = (character: Entity<Position>, size: number = 5) => Entity<Renderable>({
   id: `shadow-${character.id}`,
   components: {
     position: Position(),
@@ -104,7 +104,7 @@ const Shadow = (character: Entity<Position>) => Entity<Renderable>({
       },
       setContainer: async () => {
         const g = pixiGraphics()
-        g.ellipse(0, 1, 10, 5)
+        g.ellipse(0, 1, size * 2, size)
         g.fill({ color: 0x000000, alpha: 0.3 })
         return g
       }
@@ -115,7 +115,9 @@ const Shadow = (character: Entity<Position>) => Entity<Renderable>({
 const Ball = () => Entity({
   id: "ball",
   components: {
-    position: Position({ x: 225, y: 0, gravity: 0.5 }),
+    debug: Debug(),
+    position: Position({ x: 225, y: 0, gravity: 0.5, velocity: { x: randomInt(100, 200), y: randomInt(100, 200) } }),
+    collider: Collider({ shape: "ball", radius: 4, restitution: 1, group: "11111111111111100000000000000001" }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.5 },
       scale: 0.7,
@@ -147,6 +149,12 @@ const ShadowSystem = ClientSystemBuilder({
   init: (world) => {
 
     const shadows: Record<string, Entity<Renderable>> = {}
+
+    const ballShadow = Shadow(world.entities["ball"] as Entity<Position>, 3)
+    if (ballShadow) {
+      world.addEntity(ballShadow)
+      shadows["ball"] = ballShadow
+    }
 
     return {
       id: "ShadowSystem",
