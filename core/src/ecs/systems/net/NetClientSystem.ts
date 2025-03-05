@@ -1,5 +1,5 @@
 import {
-  DelaySyncer, Entity, Game, GameData, RollbackSyncer, Syncer, SystemBuilder, entries, keys, stringify
+  DelaySyncer, Game, GameData, RollbackSyncer, Syncer, SystemBuilder, entries, keys, stringify
 } from "@piggo-gg/core"
 
 export const NetClientSystem = SystemBuilder({
@@ -52,20 +52,10 @@ export const NetClientSystem = SystemBuilder({
 
     return {
       id: "NetClientSystem",
-      query: ["networked"],
+      query: [],
       priority: 1,
       skipOnRollback: true,
-      onTick: (_: Entity[]) => {
-        const message = syncer().writeMessage(world)
-
-        try {
-          if (client.ws.readyState === WebSocket.OPEN) {
-            client.ws.send(stringify(message))
-          }
-          // if (keys(message.actions).length > 0) console.log("sent actions", message.actions)
-        } catch (e) {
-          console.error("NetcodeSystem: error sending message", message)
-        }
+      onTick: () => {
 
         // hard reset if very behind
         if (buffer.length > 10) {
@@ -85,6 +75,16 @@ export const NetClientSystem = SystemBuilder({
           syncer().handleMessages({ world, buffer })
         } else {
           world.tickFlag = "red"
+        }
+
+        const message = syncer().writeMessage(world)
+        try {
+          if (client.ws.readyState === WebSocket.OPEN) {
+            client.ws.send(stringify(message))
+          }
+          // if (keys(message.actions).length > 0) console.log("sent actions", message.actions)
+        } catch (e) {
+          console.error("NetcodeSystem: error sending message", message)
         }
       }
     }
