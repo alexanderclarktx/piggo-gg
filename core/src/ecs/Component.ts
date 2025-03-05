@@ -1,8 +1,7 @@
 import {
-  Actions, Clickable, Collider, Controlling, Data, Debug,
-  Effects, Expires, Gun, Health, Input, NPC, Networked, PC,
-  Position, Renderable, Team, Money, XY, entries, keys, Inventory,
-  Food, Element, Item
+  Actions, Clickable, Collider, Controlling, Data, Debug, Effects,
+  Expires, Gun, Health, Input, NPC, Networked, PC, Position,
+  Renderable, Team, Money, XY, entries, Inventory, Food, Element, Item
 } from "@piggo-gg/core"
 
 export type ComponentTypes =
@@ -35,8 +34,8 @@ export const serializeComponent = (c: Component<string, NetworkedComponentData>)
 
   for (const [key, value] of entries(c.data)) {
     if (value === undefined) continue
-    if (typeof value === "object" ) {
-      data[key] = {...value}
+    if (typeof value === "object") {
+      data[key] = { ...value }
     } else {
       data[key] = value
     }
@@ -47,6 +46,10 @@ export const serializeComponent = (c: Component<string, NetworkedComponentData>)
 
 export const deserializeComponent = (c: Component<string, NetworkedComponentData>, data: NetworkedComponentData): void => {
   for (const [key, value] of entries(data)) {
-    c.data[key] = value
+    if (typeof value === "object") {
+      c.data[key] = { ...value }
+    } else {
+      c.data[key] = value
+    }
   }
 }

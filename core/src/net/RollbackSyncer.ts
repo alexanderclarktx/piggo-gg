@@ -1,4 +1,4 @@
-import { ceil, entityConstructors, entries, keys, stringify, Syncer } from "@piggo-gg/core"
+import { ceil, entityConstructors, entries, keys, stringify, Syncer, values } from "@piggo-gg/core"
 
 export const RollbackSyncer = (): Syncer => {
 
@@ -21,6 +21,8 @@ export const RollbackSyncer = (): Syncer => {
       const message = buffer.pop()
       buffer = []
 
+      const start = world.tick
+
       if (!message) {
         console.error("NO MESSAGE")
         return
@@ -31,10 +33,12 @@ export const RollbackSyncer = (): Syncer => {
         return
       }
 
-      // console.log(`${world.tick - message.tick} ticks ahead`)
+      const gap = world.tick - message.tick
+      const framesForward = (gap >= 3 && gap <= 8) ?
+        gap :
+        ceil(world.client!.ms * 2 / world.tickrate) + 3
 
-      const framesForward = ceil(world.client!.lastLatency / world.tickrate + 2)
-      world.tickFaster = (world.tick - message.tick) < framesForward
+      // console.log(`${world.tick} ${world.tick - message.tick} ticks ahead - forward: ${framesForward}`)
 
       lastSeenTick = message.tick
 
@@ -122,10 +126,23 @@ export const RollbackSyncer = (): Syncer => {
           world.actions.set(message.tick, entityId, actions)
         })
 
+        values(world.systems).forEach((system) => {
+          system.onRollback?.()
+        })
+
         // roll forward
         for (let i = 0; i < framesForward; i++) {
           world.onTick({ isRollback: true })
         }
+
+        world.tick += 1
+
+        // set serialized entities
+        world.entitiesAtTick[message.tick] = {
+          ...message.serializedEntities
+        }
+
+        // console.log(`start:${start} end:${world.tick}`)
       }
     }
   }
