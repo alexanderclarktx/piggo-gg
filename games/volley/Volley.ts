@@ -1,7 +1,7 @@
 import {
   Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor, Debug,
-  Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked, pixiGraphics,
-  Player, Position, randomInt, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap, XY, XYdiff
+  Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics,
+  Player, Position, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap, XY, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -26,7 +26,7 @@ const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
   components: {
     debug: Debug(),
-    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.5 }),
+    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.3 }),
     networked: Networked(),
     collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
     team: player.components.team,
@@ -36,7 +36,7 @@ const Dude = (player: Player) => Character({
         " ": () => ({ actionId: "jump" }),
         "mb1": ({ hold }) => {
           if (hold) return null
-          return { actionId: "hit", params: { hold } }
+          return { actionId: "hit" }
         }
       }
     }),
@@ -50,12 +50,23 @@ const Dude = (player: Player) => Character({
         const { position: ballPosition } = ball.components
         if (!ballPosition) return
 
-        const diff = XYdiff(position.data, ballPosition.data, 10)
-        console.log("diff", diff)
+        const distance = position.data.standing ? 15 : 30
+
+        const far = XYZdiff(position.data, ballPosition.data, distance)
+
+        if (!far) {
+          const ball = world.entities["ball"]
+          if (!ball) return
+          const { position: ballPosition } = ball.components
+          if (!ballPosition) return
+
+          ballPosition.setVelocity({ z: 2.5 })
+          ballPosition.setVelocity({ x: world.random.int(20, 40), y: world.random.int(20, 40) })
+        }
       }, 20),
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 8 })
+        entity.components.position.setVelocity({ z: 6 })
       }, 0)
     }),
     shadow: Shadow(5),
@@ -109,25 +120,23 @@ const Ball = () => Entity({
   id: "ball",
   components: {
     debug: Debug(),
-    position: Position({ x: 225, y: 0, gravity: 0.5 }),
+    position: Position({ x: 225, y: 0, gravity: 0.05 }),
     collider: Collider({ shape: "ball", radius: 4, restitution: 1, group: "11111111111111100000000000000001" }),
     shadow: Shadow(3),
+    networked: Networked(),
+    npc: NPC({
+      behavior: (ball) => {
+        const { x, y } = ball.components.position.data.velocity
+        ball.components.position.data.rotation += 0.003 * Math.sqrt((x * x) + (y * y))
+      }
+    }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.5 },
       scale: 0.7,
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
-      dynamic: ({ entity }) => {
-        const { position } = entity.components
-        if (!position) return
-
-        if (position.data.standing) {
-          // console.log("boing")
-          position.setVelocity({ z: 10 })
-          position.setVelocity({ x: randomInt(50, 100), y: randomInt(50, 100) })
-        }
-      },
+      rotates: true,
       setup: async (r) => {
         const texture = (await loadTexture("ball.json"))["ball"]
         const sprite = new Sprite(texture)
@@ -152,7 +161,9 @@ const BallTarget = (ball: Entity<Position | Renderable>) => {
         zIndex: 3.8,
         visible: true,
         dynamic: ({ world }) => {
-          const { z, x, y, velocity: v, gravity } = ball.components.position.data
+          const { z, x, y, velocity: v, gravity, standing } = ball.components.position.data
+
+          ballTarget.components.renderable.visible = !standing
 
           if (v.x === last.x && v.y === last.y) return
           last = { x: v.x, y: v.y }
