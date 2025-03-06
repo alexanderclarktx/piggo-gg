@@ -176,13 +176,9 @@ const BallTarget = (ball: Entity<Position | Renderable>) => {
           ballTarget.components.position.data.y = y + v.y * t / 1000 * world.tickrate
         },
         setContainer: async () => {
-          // const g = pixiCircle({ r: 5, style: { color: 0xff0000 } })
-          // ellipse
           const g = pixiGraphics()
-          g.ellipse(0, 0, 8, 5)
-          g.stroke({ color: 0xffaa00, alpha: 0.5, width: 3 })
           g.ellipse(0, 0, 6, 3)
-          g.stroke({ color: 0xff0000, alpha: 0.6, width: 2 })
+          g.stroke({ color: 0xff2200, alpha: 0.7, width: 2 })
 
           return g
         }
