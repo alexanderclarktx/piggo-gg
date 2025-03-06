@@ -131,9 +131,10 @@ export const RenderSystem = ClientSystemBuilder({
         })
 
         // sort cache by position (closeness to camera)
-        const sortedEntityPositions = values(entities).sort((a, b) => {
-          return a.components.renderable.c.position.y - b.components.renderable.c.position.y
-        })
+        const sortedEntityPositions = values(entities).sort((a, b) => (
+          (a.components.renderable.c.position.y + a.components.position.data.z) -
+          (b.components.renderable.c.position.y + b.components.position.data.z)
+        ))
 
         // sort entities by zIndex
         sortedEntityPositions.forEach((entity, index) => {
