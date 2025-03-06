@@ -1,4 +1,4 @@
-import { Component, Entity, Renderer, World, XY, keys, values } from "@piggo-gg/core"
+import { Component, Entity, Renderer, World, XY, keys, values, Position } from "@piggo-gg/core"
 import { OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js"
 
@@ -30,7 +30,7 @@ export type Renderable = Component<"renderable"> & {
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
-  dynamic: ((_: { container: Container, renderable: Renderable, entity: Entity, world: World }) => void) | undefined
+  dynamic: ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void) | undefined
 
   prepareAnimations: (color?: number) => void
   setScale: (xy: XY) => void
@@ -56,7 +56,7 @@ export type RenderableProps = {
   scaleMode?: "nearest" | "linear"
   visible?: boolean
   zIndex?: number
-  dynamic?: (_: { container: Container, renderable: Renderable, entity: Entity, world: World }) => void
+  dynamic?: (_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
   setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void> // todo single arg

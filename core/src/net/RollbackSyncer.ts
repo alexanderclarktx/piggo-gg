@@ -60,7 +60,7 @@ export const RollbackSyncer = (): Syncer => {
         }
 
         if (!actions[entityId]) {
-          mustRollback("action not found locally")
+          mustRollback(`action not found locally ${action[0].actionId}`)
           break
         }
         if (JSON.stringify(actions[entityId]) !== JSON.stringify(action)) {

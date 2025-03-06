@@ -1,8 +1,7 @@
 import {
   Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor, Debug,
-  Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked, pixiCircle,
-  Player, Position, randomInt, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap,
-  XYdiff
+  Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked, pixiGraphics,
+  Player, Position, randomInt, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap, XY, XYdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -16,7 +15,9 @@ export const Volley: GameBuilder = {
     entities: [
       Background({ img: "space.png" }),
       EscapeMenu(), Cursor(),
-      Ball(), Court(), //Net()
+      Ball(),
+      Court(),
+      //Net()
     ]
   })
 }
@@ -124,6 +125,7 @@ const Ball = () => Entity({
         if (position.data.standing) {
           // console.log("boing")
           position.setVelocity({ z: 10 })
+          position.setVelocity({ x: randomInt(50, 100), y: randomInt(50, 100) })
         }
       },
       setup: async (r) => {
@@ -138,35 +140,46 @@ const Ball = () => Entity({
   }
 })
 
-const BallTarget = (ball: Entity<Position | Renderable>) => Entity<Renderable>({
-  id: "BallTarget",
-  components: {
-    position: Position(),
-    renderable: Renderable({
-      zIndex: 3.8,
-      visible: true,
-      dynamic: ({ entity }) => {
-        const { position } = entity.components
-        if (!position) return
+const BallTarget = (ball: Entity<Position | Renderable>) => {
 
-        const { z, x, y, velocity, gravity } = ball.components.position.data
+  let last: XY = { x: 0, y: 0 }
 
-        const gapX = (z + velocity.z + 1)
-        const gapY = (z + velocity.z + 1)
+  const ballTarget = Entity<Renderable | Position>({
+    id: "BallTarget",
+    components: {
+      position: Position(),
+      renderable: Renderable({
+        zIndex: 3.8,
+        visible: true,
+        dynamic: ({ world }) => {
+          const { z, x, y, velocity: v, gravity } = ball.components.position.data
 
-        position.data.x = x + gapX * velocity.x / 1000 * 4
-        position.data.y = y + gapY * velocity.y / 1000 * 4
+          if (v.x === last.x && v.y === last.y) return
+          last = { x: v.x, y: v.y }
 
-        // console.log(position.data.x, position.data.y)
-      },
-      setContainer: async () => {
-        const g = pixiCircle({ r: 5, style: { color: 0xff0000 } })
+          const a = -0.5 * gravity
+          const discriminant = v.z * v.z - 4 * a * z
+          const t = (-v.z - Math.sqrt(discriminant)) / (2 * a)
 
-        return g
-      }
-    })
-  }
-})
+          ballTarget.components.position.data.x = x + v.x * t / 1000 * world.tickrate
+          ballTarget.components.position.data.y = y + v.y * t / 1000 * world.tickrate
+        },
+        setContainer: async () => {
+          // const g = pixiCircle({ r: 5, style: { color: 0xff0000 } })
+          // ellipse
+          const g = pixiGraphics()
+          g.ellipse(0, 0, 8, 5)
+          g.stroke({ color: 0xffaa00, alpha: 0.5, width: 3 })
+          g.ellipse(0, 0, 6, 3)
+          g.stroke({ color: 0xff0000, alpha: 0.6, width: 2 })
+
+          return g
+        }
+      })
+    }
+  })
+  return ballTarget
+}
 
 const BallTargetSystem = ClientSystemBuilder({
   id: "BallTargetSystem",
