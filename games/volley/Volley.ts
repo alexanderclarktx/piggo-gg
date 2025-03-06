@@ -1,7 +1,7 @@
 import {
-  Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor,
-  Debug, Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked,
-  pixiGraphics, Player, Position, randomInt, Renderable, SpawnSystem, WASDInputMap
+  Action, Actions, Background, CameraSystem, Character, Collider, Cursor, Debug,
+  Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked,
+  Player, Position, randomInt, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -41,6 +41,7 @@ const Dude = (player: Player) => Character({
         entity.components.position.setVelocity({ z: 8 })
       }, 0)
     }),
+    shadow: Shadow(5),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.8 },
       scale: 2,
@@ -87,41 +88,13 @@ const Court = () => LineWall({
   fill: 0x0066aa
 })
 
-const Shadow = (character: Entity<Position>, size: number = 5) => Entity<Renderable>({
-  id: `shadow-${character.id}`,
-  components: {
-    position: Position(),
-    renderable: Renderable({
-      zIndex: 3.9,
-      interpolate: true,
-      dynamic: ({ entity }) => {
-        const { position } = entity.components
-        if (!position) return
-
-        position.data.x = character.components.position.data.x
-        position.data.y = character.components.position.data.y
-
-        position.lastCollided = character.components.position.lastCollided
-
-        const { x, y } = character.components.position.data.velocity
-        position.setVelocity({ x, y })
-      },
-      setContainer: async () => {
-        const g = pixiGraphics()
-        g.ellipse(0, 1, size * 2, size)
-        g.fill({ color: 0x000000, alpha: 0.3 })
-        return g
-      }
-    })
-  }
-})
-
 const Ball = () => Entity({
   id: "ball",
   components: {
     debug: Debug(),
     position: Position({ x: 225, y: 0, gravity: 0.5, velocity: { x: randomInt(100, 200), y: randomInt(100, 200) } }),
     collider: Collider({ shape: "ball", radius: 4, restitution: 1, group: "11111111111111100000000000000001" }),
+    shadow: Shadow(3),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.5 },
       scale: 0.7,
@@ -145,39 +118,5 @@ const Ball = () => Entity({
         r.c = sprite
       }
     })
-  }
-})
-
-const ShadowSystem = ClientSystemBuilder({
-  id: "ShadowSystem",
-  init: (world) => {
-
-    const shadows: Record<string, Entity<Renderable>> = {}
-
-    const ballShadow = Shadow(world.entities["ball"] as Entity<Position>, 3)
-    if (ballShadow) {
-      world.addEntity(ballShadow)
-      shadows["ball"] = ballShadow
-    }
-
-    return {
-      id: "ShadowSystem",
-      query: ["pc"],
-      priority: 5, // todo
-      onTick: (entities: Player[]) => {
-        entities.forEach((entity) => {
-          const { controlling } = entity.components
-
-          const character = controlling.getCharacter(world)
-          if (!character) return
-
-          if (!shadows[character.id]) {
-            const shadow = Shadow(character)
-            shadows[character.id] = shadow
-            world.addEntity(shadow)
-          }
-        })
-      }
-    }
   }
 })
