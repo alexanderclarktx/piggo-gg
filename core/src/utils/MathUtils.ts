@@ -39,8 +39,6 @@ export const XYZdiff = (a: XYZ, b: XYZ, threshold: number = 0) => {
   return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold || abs(a.z - b.z) > threshold
 }
 
-// export const XYZdiff = ()
-
 export const XYdistance = (a: XY, b: XY): number => {
   return hypot(a.x - b.x, a.y - b.y)
 }
