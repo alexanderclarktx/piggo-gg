@@ -17,7 +17,7 @@ export const Volley: GameBuilder = {
       EscapeMenu(), Cursor(),
       Ball(),
       Court(),
-      //Net()
+      Net()
     ]
   })
 }
@@ -42,7 +42,11 @@ const Dude = (player: Player) => Character({
     }),
     actions: Actions({
       move: Move,
-      hit: Action("hit", ({ entity, world }) => {
+      jump: Action(`jump-${player.id}`, ({ entity }) => {
+        if (!entity?.components?.position?.data.standing) return
+        entity.components.position.setVelocity({ z: 6 })
+      }),
+      hit: Action(`hit-${player.id}`, ({ entity, world }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
@@ -60,14 +64,17 @@ const Dude = (player: Player) => Character({
           const { position: ballPosition } = ball.components
           if (!ballPosition) return
 
-          ballPosition.setVelocity({ z: 2.5 })
-          ballPosition.setVelocity({ x: world.random.int(20, 40), y: world.random.int(20, 40) })
+          if (position.data.standing) {
+            ballPosition.setVelocity({ z: 2.5 })
+            ballPosition.data.gravity = 0.05
+            ballPosition.setVelocity({ x: world.random.int(40, 20), y: world.random.int(40, 20) })
+          } else {
+            ballPosition.setVelocity({ z: 0 })
+            ballPosition.data.gravity = 0.1
+            ballPosition.setVelocity({ x: world.random.int(200, 100), y: world.random.int(200, 100) })
+          }
         }
-      }, 20),
-      jump: Action("jump", ({ entity }) => {
-        if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 6 })
-      }, 0)
+      }, 20)
     }),
     shadow: Shadow(5),
     renderable: Renderable({
@@ -100,7 +107,10 @@ const Net = () => LineWall({
     0, 0,
     0, 150
   ],
-  visible: true
+  visible: true,
+  sensor: () => {
+    return false
+  }
 })
 
 const Court = () => LineWall({
@@ -128,6 +138,10 @@ const Ball = () => Entity({
       behavior: (ball) => {
         const { x, y } = ball.components.position.data.velocity
         ball.components.position.data.rotation += 0.003 * Math.sqrt((x * x) + (y * y))
+
+        if (ball.components.position.data.standing) {
+          // ball.decelerate(0.1)
+        }
       }
     }),
     renderable: Renderable({

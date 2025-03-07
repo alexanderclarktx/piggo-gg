@@ -27,7 +27,15 @@ export const CooldownSystem = SystemBuilder({
       query: [],
       priority: 6,
       data: cooldowns,
-      onTick: () => {
+      // onRollback: () => {
+      //   keys(cooldowns).forEach((key) => {
+      //     cooldowns[key]--
+
+      //     if (cooldowns[key] <= 0) delete cooldowns[key]
+      //   })
+      // },
+      onTick: (_, isRollback) => {
+        // if (isRollback) return
 
         keys(cooldowns).forEach((key) => {
           cooldowns[key]--

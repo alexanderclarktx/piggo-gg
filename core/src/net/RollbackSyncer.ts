@@ -107,6 +107,10 @@ export const RollbackSyncer = (): Syncer => {
 
         // sync entities
         keys(message.serializedEntities).forEach((entityId) => {
+          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+            // todo still stutters when other dude hits ball
+            return
+          }
           if (!world.entities[entityId]) {
             const entityKind = entityId.split("-")[0]
             const constructor = entityConstructors[entityKind]
@@ -136,6 +140,8 @@ export const RollbackSyncer = (): Syncer => {
         }
 
         world.tick += 1
+
+
 
         // set serialized entities
         world.entitiesAtTick[message.tick] = {
