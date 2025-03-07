@@ -56,13 +56,13 @@ export const timeToLand = (g: number, z: number, v: number): number => {
 }
 
 export const velocityToPoint = (from: XYZ, to: XY, g: number, v: number): XY => {
-  const dx = to.x - from.x
-  const dy = to.y - from.y
+  // const dx = 
+  // const dy = 
 
   const t = timeToLand(g, from.z, v)
 
-  const vx = dx / t
-  const vy = dy / t
+  const vx = (to.x - from.x) / t
+  const vy = (to.y - from.y) / t
 
   return { x: vx, y: vy }
 }
