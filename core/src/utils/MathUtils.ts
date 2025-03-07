@@ -49,6 +49,24 @@ export const XYdelta = (a: XY, b: XY): number => {
 
 export const XYequal = (a: XY, b: XY) => a.x === b.x && a.y === b.y
 
+export const timeToLand = (g: number, z: number, v: number): number => {
+  const a = -0.5 * g
+  const discriminant = v * v - 4 * a * z
+  return (-v - sqrt(discriminant)) / (2 * a)
+}
+
+export const velocityToPoint = (from: XYZ, to: XY, g: number, v: number): XY => {
+  const dx = to.x - from.x
+  const dy = to.y - from.y
+
+  const t = timeToLand(g, from.z, v)
+
+  const vx = dx / t
+  const vy = dy / t
+
+  return { x: vx, y: vy }
+}
+
 export const toOctString = (o: Oct): OctString => {
   const directions: OctString[] = ["l", "ul", "u", "ur", "r", "dr", "d", "dl"]
   return directions[o] || "d"

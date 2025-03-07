@@ -1,10 +1,10 @@
 import {
   Action, Actions, Background, CameraSystem, Character, Collider, Cursor, Debug,
-  EscapeMenu, GameBuilder, Input, loadTexture, Move, Networked, Player,
-  Position, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap, XYZdiff
+  EscapeMenu, GameBuilder, Input, loadTexture, mouse, Move, Networked, Player, Point,
+  Position, Renderable, Shadow, ShadowSystem, SpawnSystem, velocityToPoint, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
-import { AnimatedSprite } from "pixi.js"
 import { BallTargetSystem, Court, Net, Ball } from "./entities"
+import { AnimatedSprite } from "pixi.js"
 
 export const Volley: GameBuilder = {
   id: "volley",
@@ -42,13 +42,21 @@ const Slap = Action("hit", ({ entity, world }) => {
     if (!ballPosition) return
 
     if (position.data.standing) {
-      ballPosition.setVelocity({ z: 2.5 })
-      ballPosition.data.gravity = 0.05
-      ballPosition.setVelocity({ x: world.random.int(40, 20), y: world.random.int(40, 20) })
+      ballPosition.setVelocity({ z: 4 })
+      ballPosition.data.gravity = 0.1
+
+      const { x, y } = mouse
+      const v = velocityToPoint(ballPosition.data, { x, y }, 0.1, 4)
+
+      ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       ballPosition.setVelocity({ z: 0 })
       ballPosition.data.gravity = 0.1
-      ballPosition.setVelocity({ x: world.random.int(200, 100), y: world.random.int(200, 100) })
+
+      const { x, y } = mouse
+      const v = velocityToPoint(ballPosition.data, { x, y }, 0.1, 0)
+
+      ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
 }, 20)
@@ -77,7 +85,8 @@ const Dude = (player: Player) => Character({
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 6 })
       }),
-      slap: Slap
+      slap: Slap,
+      point: Point
     }),
     shadow: Shadow(5),
     renderable: Renderable({
