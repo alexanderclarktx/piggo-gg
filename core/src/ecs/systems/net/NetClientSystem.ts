@@ -57,6 +57,16 @@ export const NetClientSystem = SystemBuilder({
       skipOnRollback: true,
       onTick: () => {
 
+        const message = syncer().writeMessage(world)
+        try {
+          if (client.ws.readyState === WebSocket.OPEN) {
+            client.ws.send(stringify(message))
+          }
+          // if (keys(message.actions).length > 0) console.log("sent actions", message.actions)
+        } catch (e) {
+          console.error("NetcodeSystem: error sending message", message)
+        }
+
         // hard reset if very behind
         if (buffer.length > 10) {
           buffer = []
@@ -75,16 +85,6 @@ export const NetClientSystem = SystemBuilder({
           syncer().handleMessages({ world, buffer })
         } else {
           world.tickFlag = "red"
-        }
-
-        const message = syncer().writeMessage(world)
-        try {
-          if (client.ws.readyState === WebSocket.OPEN) {
-            client.ws.send(stringify(message))
-          }
-          // if (keys(message.actions).length > 0) console.log("sent actions", message.actions)
-        } catch (e) {
-          console.error("NetcodeSystem: error sending message", message)
         }
       }
     }

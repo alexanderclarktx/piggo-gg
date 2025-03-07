@@ -195,8 +195,6 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       if (typeof game === "string") game = world.games[game]
       if (!game) return
 
-      console.log(`set game ${game.id}`)
-
       // remove old entities
       values(world.entities).forEach((entity) => {
         if (!entity.persists) world.removeEntity(entity.id)

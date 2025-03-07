@@ -1,7 +1,7 @@
 import {
-  Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor,
-  Debug, Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked,
-  pixiGraphics, Player, Point, Position, Renderable, SpawnSystem, WASDInputMap
+  Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor, Debug,
+  Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics,
+  Player, Position, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap, XY, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -10,9 +10,15 @@ export const Volley: GameBuilder = {
   init: () => ({
     id: "volley",
     netcode: "rollback",
-    systems: [SpawnSystem(Dude), ShadowSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
+    systems: [SpawnSystem(Dude), ShadowSystem, BallTargetSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
     bgColor: 0x006633,
-    entities: [Court(), Net(), Background({ img: "space.png" }), EscapeMenu(), Cursor()]
+    entities: [
+      Background({ img: "space.png" }),
+      EscapeMenu(), Cursor(),
+      Ball(),
+      Court(),
+      Net()
+    ]
   })
 }
 
@@ -20,23 +26,57 @@ const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
   components: {
     debug: Debug(),
-    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.5 }),
+    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.3 }),
     networked: Networked(),
     collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
     team: player.components.team,
     input: Input({
       press: {
         ...WASDInputMap.press,
-        " ": () => ({ actionId: "jump" })
+        " ": () => ({ actionId: "jump" }),
+        "mb1": ({ hold }) => {
+          if (hold) return null
+          return { actionId: "hit" }
+        }
       }
     }),
     actions: Actions({
       move: Move,
-      jump: Action("jump", ({ entity }) => {
+      jump: Action(`jump-${player.id}`, ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 8 })
-      }, 0)
+        entity.components.position.setVelocity({ z: 6 })
+      }),
+      hit: Action(`hit-${player.id}`, ({ entity, world }) => {
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        const ball = world.entities["ball"]
+        const { position: ballPosition } = ball.components
+        if (!ballPosition) return
+
+        const distance = position.data.standing ? 15 : 30
+
+        const far = XYZdiff(position.data, ballPosition.data, distance)
+
+        if (!far) {
+          const ball = world.entities["ball"]
+          if (!ball) return
+          const { position: ballPosition } = ball.components
+          if (!ballPosition) return
+
+          if (position.data.standing) {
+            ballPosition.setVelocity({ z: 2.5 })
+            ballPosition.data.gravity = 0.05
+            ballPosition.setVelocity({ x: world.random.int(40, 20), y: world.random.int(40, 20) })
+          } else {
+            ballPosition.setVelocity({ z: 0 })
+            ballPosition.data.gravity = 0.1
+            ballPosition.setVelocity({ x: world.random.int(200, 100), y: world.random.int(200, 100) })
+          }
+        }
+      }, 20)
     }),
+    shadow: Shadow(5),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.8 },
       scale: 2,
@@ -67,7 +107,10 @@ const Net = () => LineWall({
     0, 0,
     0, 150
   ],
-  visible: true
+  visible: true,
+  sensor: () => {
+    return false
+  }
 })
 
 const Court = () => LineWall({
@@ -83,53 +126,31 @@ const Court = () => LineWall({
   fill: 0x0066aa
 })
 
-const Shadow = (character: Entity<Position>) => Entity<Renderable>({
-  id: `shadow-${character.id}`,
-  components: {
-    position: Position(),
-    renderable: Renderable({
-      zIndex: 3.9,
-      interpolate: true,
-      dynamic: ({ entity }) => {
-        const { position } = entity.components
-        if (!position) return
-
-        position.data.x = character.components.position.data.x
-        position.data.y = character.components.position.data.y
-
-        position.lastCollided = character.components.position.lastCollided
-
-        const { x, y } = character.components.position.data.velocity
-        position.setVelocity({ x, y })
-      },
-      setContainer: async () => {
-        const g = pixiGraphics()
-        g.ellipse(0, 1, 10, 5)
-        g.fill({ color: 0x000000, alpha: 0.3 })
-        return g
-      }
-    })
-  }
-})
-
 const Ball = () => Entity({
   id: "ball",
   components: {
-    position: Position({ x: 225, y: 0, gravity: 0.5 }),
+    debug: Debug(),
+    position: Position({ x: 225, y: 0, gravity: 0.05 }),
+    collider: Collider({ shape: "ball", radius: 4, restitution: 1, group: "11111111111111100000000000000001" }),
+    shadow: Shadow(3),
+    networked: Networked(),
+    npc: NPC({
+      behavior: (ball) => {
+        const { x, y } = ball.components.position.data.velocity
+        ball.components.position.data.rotation += 0.003 * Math.sqrt((x * x) + (y * y))
+
+        if (ball.components.position.data.standing) {
+          // ball.decelerate(0.1)
+        }
+      }
+    }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.5 },
       scale: 0.7,
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
-      dynamic: ({ entity }) => {
-        const { position } = entity.components
-        if (!position) return
-
-        if (position.data.standing) {
-          position.setVelocity({ z: 10 })
-        }
-      },
+      rotates: true,
       setup: async (r) => {
         const texture = (await loadTexture("ball.json"))["ball"]
         const sprite = new Sprite(texture)
@@ -142,30 +163,61 @@ const Ball = () => Entity({
   }
 })
 
-const ShadowSystem = ClientSystemBuilder({
-  id: "ShadowSystem",
-  init: (world) => {
+const BallTarget = (ball: Entity<Position | Renderable>) => {
 
-    const shadows: Record<string, Entity<Renderable>> = {}
+  let last: XY = { x: 0, y: 0 }
+
+  const ballTarget = Entity<Renderable | Position>({
+    id: "BallTarget",
+    components: {
+      position: Position(),
+      renderable: Renderable({
+        zIndex: 3.8,
+        visible: true,
+        dynamic: ({ world }) => {
+          const { z, x, y, velocity: v, gravity, standing } = ball.components.position.data
+
+          ballTarget.components.renderable.visible = !standing
+
+          if (v.x === last.x && v.y === last.y) return
+          last = { x: v.x, y: v.y }
+
+          const a = -0.5 * gravity
+          const discriminant = v.z * v.z - 4 * a * z
+          const t = (-v.z - Math.sqrt(discriminant)) / (2 * a)
+
+          ballTarget.components.position.data.x = x + v.x * t / 1000 * world.tickrate
+          ballTarget.components.position.data.y = y + v.y * t / 1000 * world.tickrate
+        },
+        setContainer: async () => {
+          const g = pixiGraphics()
+          g.ellipse(0, 0, 6, 3)
+          g.stroke({ color: 0xff2200, alpha: 0.7, width: 2 })
+
+          return g
+        }
+      })
+    }
+  })
+  return ballTarget
+}
+
+const BallTargetSystem = ClientSystemBuilder({
+  id: "BallTargetSystem",
+  init: ((world) => {
+
+    let ballTarget: Entity<Renderable> | undefined = undefined
 
     return {
-      id: "ShadowSystem",
-      query: ["pc"],
-      priority: 5, // todo
-      onTick: (entities: Player[]) => {
-        entities.forEach((entity) => {
-          const { controlling } = entity.components
-
-          const character = controlling.getCharacter(world)
-          if (!character) return
-
-          if (!shadows[character.id]) {
-            const shadow = Shadow(character)
-            shadows[character.id] = shadow
-            world.addEntity(shadow)
-          }
-        })
+      id: "BallTargetSystem",
+      query: [],
+      priority: 5,
+      onTick: () => {
+        if (!ballTarget && world.entities["ball"]) {
+          ballTarget = BallTarget(world.entities["ball"] as Entity<Position | Renderable>)
+          world.addEntity(ballTarget)
+        }
       }
     }
-  }
+  })
 })

@@ -60,7 +60,7 @@ export const RollbackSyncer = (): Syncer => {
         }
 
         if (!actions[entityId]) {
-          mustRollback("action not found locally")
+          mustRollback(`action not found locally ${action[0].actionId}`)
           break
         }
         if (JSON.stringify(actions[entityId]) !== JSON.stringify(action)) {
@@ -90,7 +90,7 @@ export const RollbackSyncer = (): Syncer => {
 
           if (local[entityId]) {
             if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
-              mustRollback(`entity mismatch ${message.tick} ${stringify(local[entityId])} ${stringify(serializedEntity)}`)
+              mustRollback(`entity: ${entityId} mismatch ${message.tick} ${stringify(local[entityId])} ${stringify(serializedEntity)}`)
               return
             }
           }
@@ -107,6 +107,10 @@ export const RollbackSyncer = (): Syncer => {
 
         // sync entities
         keys(message.serializedEntities).forEach((entityId) => {
+          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+            // todo still stutters when other dude hits ball
+            return
+          }
           if (!world.entities[entityId]) {
             const entityKind = entityId.split("-")[0]
             const constructor = entityConstructors[entityKind]

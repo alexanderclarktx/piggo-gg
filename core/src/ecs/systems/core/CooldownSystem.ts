@@ -1,7 +1,11 @@
-import { Entity, InvokedAction, SystemBuilder, entries, keys } from "@piggo-gg/core"
+import { InvokedAction, SystemBuilder, entries, keys } from "@piggo-gg/core"
+
+// MUST ROLLBACK tick:1305 entity: SystemEntity-CooldownSystem
+// mismatch 1302
+// {"data":{"dude-player-yc9fxyj9|hit":8}} {}
 
 // TODO actions go on cooldown even if they "dont happen"
-export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
+export const CooldownSystem = SystemBuilder({
   id: "CooldownSystem",
   init: (world) => {
 
@@ -23,7 +27,15 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
       query: [],
       priority: 6,
       data: cooldowns,
-      onTick: (_: Entity[]) => {
+      // onRollback: () => {
+      //   keys(cooldowns).forEach((key) => {
+      //     cooldowns[key]--
+
+      //     if (cooldowns[key] <= 0) delete cooldowns[key]
+      //   })
+      // },
+      onTick: (_, isRollback) => {
+        // if (isRollback) return
 
         keys(cooldowns).forEach((key) => {
           cooldowns[key]--
@@ -46,4 +58,4 @@ export const CooldownSystem: SystemBuilder<"CooldownSystem"> = {
       }
     }
   }
-}
+})
