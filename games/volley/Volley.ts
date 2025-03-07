@@ -1,9 +1,10 @@
 import {
-  Action, Actions, Background, CameraSystem, Character, ClientSystemBuilder, Collider, Cursor, Debug,
-  Entity, EscapeMenu, GameBuilder, Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics,
-  Player, Position, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap, XY, XYZdiff
+  Action, Actions, Background, CameraSystem, Character, Collider, Cursor, Debug,
+  EscapeMenu, GameBuilder, Input, loadTexture, Move, Networked, Player,
+  Position, Renderable, Shadow, ShadowSystem, SpawnSystem, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
-import { AnimatedSprite, Sprite } from "pixi.js"
+import { AnimatedSprite } from "pixi.js"
+import { BallTargetSystem, Court, Net, Ball } from "./entities"
 
 export const Volley: GameBuilder = {
   id: "volley",
@@ -22,6 +23,36 @@ export const Volley: GameBuilder = {
   })
 }
 
+const Slap = Action("hit", ({ entity, world }) => {
+  const { position } = entity?.components ?? {}
+  if (!position) return
+
+  const ball = world.entities["ball"]
+  const { position: ballPosition } = ball.components
+  if (!ballPosition) return
+
+  const distance = position.data.standing ? 15 : 30
+
+  const far = XYZdiff(position.data, ballPosition.data, distance)
+
+  if (!far) {
+    const ball = world.entities["ball"]
+    if (!ball) return
+    const { position: ballPosition } = ball.components
+    if (!ballPosition) return
+
+    if (position.data.standing) {
+      ballPosition.setVelocity({ z: 2.5 })
+      ballPosition.data.gravity = 0.05
+      ballPosition.setVelocity({ x: world.random.int(40, 20), y: world.random.int(40, 20) })
+    } else {
+      ballPosition.setVelocity({ z: 0 })
+      ballPosition.data.gravity = 0.1
+      ballPosition.setVelocity({ x: world.random.int(200, 100), y: world.random.int(200, 100) })
+    }
+  }
+}, 20)
+
 const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
   components: {
@@ -36,45 +67,17 @@ const Dude = (player: Player) => Character({
         " ": () => ({ actionId: "jump" }),
         "mb1": ({ hold }) => {
           if (hold) return null
-          return { actionId: "hit" }
+          return { actionId: "slap" }
         }
       }
     }),
     actions: Actions({
       move: Move,
-      jump: Action(`jump-${player.id}`, ({ entity }) => {
+      jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 6 })
       }),
-      hit: Action(`hit-${player.id}`, ({ entity, world }) => {
-        const { position } = entity?.components ?? {}
-        if (!position) return
-
-        const ball = world.entities["ball"]
-        const { position: ballPosition } = ball.components
-        if (!ballPosition) return
-
-        const distance = position.data.standing ? 15 : 30
-
-        const far = XYZdiff(position.data, ballPosition.data, distance)
-
-        if (!far) {
-          const ball = world.entities["ball"]
-          if (!ball) return
-          const { position: ballPosition } = ball.components
-          if (!ballPosition) return
-
-          if (position.data.standing) {
-            ballPosition.setVelocity({ z: 2.5 })
-            ballPosition.data.gravity = 0.05
-            ballPosition.setVelocity({ x: world.random.int(40, 20), y: world.random.int(40, 20) })
-          } else {
-            ballPosition.setVelocity({ z: 0 })
-            ballPosition.data.gravity = 0.1
-            ballPosition.setVelocity({ x: world.random.int(200, 100), y: world.random.int(200, 100) })
-          }
-        }
-      }, 20)
+      slap: Slap
     }),
     shadow: Shadow(5),
     renderable: Renderable({
@@ -99,125 +102,4 @@ const Dude = (player: Player) => Character({
       }
     })
   }
-})
-
-const Net = () => LineWall({
-  position: { x: 225, y: -75 },
-  points: [
-    0, 0,
-    0, 150
-  ],
-  visible: true,
-  sensor: () => {
-    return false
-  }
-})
-
-const Court = () => LineWall({
-  position: { x: 0, y: -75 },
-  points: [
-    0, 0,
-    450, 0,
-    500, 150,
-    -50, 150,
-    0, 0
-  ],
-  visible: true,
-  fill: 0x0066aa
-})
-
-const Ball = () => Entity({
-  id: "ball",
-  components: {
-    debug: Debug(),
-    position: Position({ x: 225, y: 0, gravity: 0.05 }),
-    collider: Collider({ shape: "ball", radius: 4, restitution: 1, group: "11111111111111100000000000000001" }),
-    shadow: Shadow(3),
-    networked: Networked(),
-    npc: NPC({
-      behavior: (ball) => {
-        const { x, y } = ball.components.position.data.velocity
-        ball.components.position.data.rotation += 0.003 * Math.sqrt((x * x) + (y * y))
-
-        if (ball.components.position.data.standing) {
-          // ball.decelerate(0.1)
-        }
-      }
-    }),
-    renderable: Renderable({
-      anchor: { x: 0.5, y: 0.5 },
-      scale: 0.7,
-      zIndex: 4,
-      interpolate: true,
-      scaleMode: "nearest",
-      rotates: true,
-      setup: async (r) => {
-        const texture = (await loadTexture("ball.json"))["ball"]
-        const sprite = new Sprite(texture)
-
-        sprite.anchor.set(0.5, 0.5)
-
-        r.c = sprite
-      }
-    })
-  }
-})
-
-const BallTarget = (ball: Entity<Position | Renderable>) => {
-
-  let last: XY = { x: 0, y: 0 }
-
-  const ballTarget = Entity<Renderable | Position>({
-    id: "BallTarget",
-    components: {
-      position: Position(),
-      renderable: Renderable({
-        zIndex: 3.8,
-        visible: true,
-        dynamic: ({ world }) => {
-          const { z, x, y, velocity: v, gravity, standing } = ball.components.position.data
-
-          ballTarget.components.renderable.visible = !standing
-
-          if (v.x === last.x && v.y === last.y) return
-          last = { x: v.x, y: v.y }
-
-          const a = -0.5 * gravity
-          const discriminant = v.z * v.z - 4 * a * z
-          const t = (-v.z - Math.sqrt(discriminant)) / (2 * a)
-
-          ballTarget.components.position.data.x = x + v.x * t / 1000 * world.tickrate
-          ballTarget.components.position.data.y = y + v.y * t / 1000 * world.tickrate
-        },
-        setContainer: async () => {
-          const g = pixiGraphics()
-          g.ellipse(0, 0, 6, 3)
-          g.stroke({ color: 0xff2200, alpha: 0.7, width: 2 })
-
-          return g
-        }
-      })
-    }
-  })
-  return ballTarget
-}
-
-const BallTargetSystem = ClientSystemBuilder({
-  id: "BallTargetSystem",
-  init: ((world) => {
-
-    let ballTarget: Entity<Renderable> | undefined = undefined
-
-    return {
-      id: "BallTargetSystem",
-      query: [],
-      priority: 5,
-      onTick: () => {
-        if (!ballTarget && world.entities["ball"]) {
-          ballTarget = BallTarget(world.entities["ball"] as Entity<Position | Renderable>)
-          world.addEntity(ballTarget)
-        }
-      }
-    }
-  })
 })

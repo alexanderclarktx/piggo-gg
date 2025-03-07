@@ -1,8 +1,6 @@
-import { Ball, Command, Entity, InvokedAction, Piggo, Rock, Spaceship, Tree, Zomi, genHash, keys } from "@piggo-gg/core"
+import { Command, Entity, InvokedAction, Piggo, Rock, Tree, Zomi, genHash, keys } from "@piggo-gg/core"
 
 const entityBuilders: Record<string, (_?: { id: string }) => Entity> = {
-  // "ball": Ball,
-  // "spaceship": Spaceship,
   "zombie": Zomi,
   "zomi": Zomi,
   "piggo": Piggo,
