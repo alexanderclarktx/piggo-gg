@@ -141,8 +141,6 @@ export const RollbackSyncer = (): Syncer => {
 
         world.tick += 1
 
-
-
         // set serialized entities
         world.entitiesAtTick[message.tick] = {
           ...message.serializedEntities
