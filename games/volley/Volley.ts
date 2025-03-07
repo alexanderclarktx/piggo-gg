@@ -23,7 +23,7 @@ export const Volley: GameBuilder = {
   })
 }
 
-const Slap = Action("hit", ({ entity, world }) => {
+const Spike = Action("spike", ({ entity, world }) => {
   const { position } = entity?.components ?? {}
   if (!position) return
 
@@ -75,7 +75,7 @@ const Dude = (player: Player) => Character({
         " ": () => ({ actionId: "jump" }),
         "mb1": ({ hold }) => {
           if (hold) return null
-          return { actionId: "slap" }
+          return { actionId: "spike" }
         }
       }
     }),
@@ -85,7 +85,7 @@ const Dude = (player: Player) => Character({
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 6 })
       }),
-      slap: Slap,
+      spike: Spike,
       point: Point
     }),
     shadow: Shadow(5),
