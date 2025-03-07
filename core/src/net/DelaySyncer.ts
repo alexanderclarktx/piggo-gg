@@ -1,12 +1,11 @@
 import {
-  AK, AWP, Apple, Axe, Ball, Deagle, Entity, GameData, Hitbox, LineWall,
+  AK, AWP, Apple, Axe, Deagle, Entity, GameData, Hitbox,
   Pickaxe, Piggo, Player, Rock, SerializedEntity, Sword, Syncer, Tree,
   Zomi, entries, keys, stringify
 } from "@piggo-gg/core"
 
 export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "zomi": Zomi,
-  "ball": Ball,
   "player": Player,
   "hitbox": Hitbox,
   // "linewall": LineWall, // todo broken

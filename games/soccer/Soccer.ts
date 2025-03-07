@@ -1,8 +1,9 @@
 import {
-  Background, Ball, Goal, SpawnSystem, Skelly, GameBuilder,
-  DefaultUI, CameraSystem, Entity, LineWall, Position, Renderable
+  Background, Goal, SpawnSystem, Skelly, GameBuilder, DefaultUI,
+  CameraSystem, Entity, LineWall, Position, Renderable, Collider,
+  Debug, loadTexture, Networked, NPC, XY
 } from "@piggo-gg/core"
-import { Graphics } from "pixi.js"
+import { Graphics, Sprite } from "pixi.js"
 
 export const Soccer: GameBuilder = {
   id: "soccer",
@@ -109,3 +110,46 @@ export const FieldGrass = (wallPoints: number[] = defaultPoints) => Entity({
     })
   }
 })
+
+export type BallProps = {
+  id: string
+  position?: XY
+}
+
+const Ball = ({ position, id }: BallProps) => Entity({
+  id: id,
+  components: {
+    position: Position(position ?? { x: 50, y: 250 }),
+    networked: Networked(),
+    collider: Collider({
+      shape: "ball",
+      radius: 6,
+      frictionAir: 0.4,
+      mass: 20,
+      restitution: 0.9
+    }),
+    debug: Debug(),
+    npc: NPC({
+      behavior: (e: Entity<Position>) => {
+        const { x, y } = e.components.position.data.velocity
+        e.components.position.data.rotation += 0.001 * Math.sqrt((x * x) + (y * y))
+      }
+    }),
+    renderable: Renderable({
+      zIndex: 3,
+      rotates: true,
+      interpolate: true,
+      scale: 0.7,
+      setup: async (r: Renderable) => {
+
+        const texture = (await loadTexture("ball.json"))["ball"]
+        const sprite = new Sprite(texture)
+
+        sprite.anchor.set(0.5, 0.5)
+
+        r.c = sprite
+      }
+    })
+  }
+})
+
