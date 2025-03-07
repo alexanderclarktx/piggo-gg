@@ -42,11 +42,11 @@ const Spike = Action("spike", ({ entity, world }) => {
     if (!ballPosition) return
 
     if (position.data.standing) {
-      ballPosition.setVelocity({ z: 4 })
-      ballPosition.data.gravity = 0.1
+      ballPosition.setVelocity({ z: 3 })
+      ballPosition.data.gravity = 0.07
 
       const { x, y } = mouse
-      const v = velocityToPoint(ballPosition.data, { x, y }, 0.1, 4)
+      const v = velocityToPoint(ballPosition.data, { x, y }, 0.07, 3)
 
       ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
