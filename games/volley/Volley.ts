@@ -1,7 +1,7 @@
 import {
   Action, Actions, Background, CameraSystem, Character, Collider, Cursor, Debug,
   EscapeMenu, GameBuilder, Input, loadTexture, mouse, Move, Networked, Player, Point,
-  Position, Renderable, Shadow, ShadowSystem, SpawnSystem, velocityToPoint, WASDInputMap, XYZdiff
+  Position, Renderable, Shadow, ShadowSystem, SpawnSystem, velocityToDirection, velocityToPoint, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
 import { BallTargetSystem, Court, Net, Ball } from "./entities"
 import { AnimatedSprite } from "pixi.js"
@@ -45,17 +45,13 @@ const Spike = Action("spike", ({ entity, world }) => {
       ballPosition.setVelocity({ z: 3 })
       ballPosition.data.gravity = 0.07
 
-      const { x, y } = mouse
-      const v = velocityToPoint(ballPosition.data, { x, y }, 0.07, 3)
-
+      const v = velocityToDirection(ballPosition.data, mouse, 50, 0.07, 3)
       ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       ballPosition.setVelocity({ z: 0 })
       ballPosition.data.gravity = 0.1
 
-      const { x, y } = mouse
-      const v = velocityToPoint(ballPosition.data, { x, y }, 0.1, 0)
-
+      const v = velocityToPoint(ballPosition.data, mouse, 0.1, 0)
       ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
