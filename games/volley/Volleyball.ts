@@ -1,17 +1,23 @@
 import {
   Action, Actions, Background, CameraSystem, Character, Collider, Cursor, Debug,
   EscapeMenu, GameBuilder, Input, loadTexture, mouse, Move, Networked, Player, Point,
-  Position, Renderable, Shadow, ShadowSystem, SpawnSystem, velocityToDirection, velocityToPoint, WASDInputMap, XYZdiff
+  Position, Renderable, Shadow, ShadowSystem, SpawnSystem, SystemBuilder, velocityToDirection, velocityToPoint, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
 import { BallTargetSystem, Court, Net, Ball } from "./entities"
 import { AnimatedSprite } from "pixi.js"
 
-export const Volley: GameBuilder = {
-  id: "volley",
+export const Volleyball: GameBuilder = {
+  id: "volleyball",
   init: () => ({
-    id: "volley",
+    id: "volleyball",
     netcode: "rollback",
-    systems: [SpawnSystem(Dude), ShadowSystem, BallTargetSystem, CameraSystem({ follow: () => ({ x: 225, y: 0 }) })],
+    systems: [
+      SpawnSystem(Dude),
+      VolleyballSystem,
+      ShadowSystem,
+      BallTargetSystem,
+      CameraSystem({ follow: () => ({ x: 225, y: 0 }) })
+    ],
     bgColor: 0x006633,
     entities: [
       Background({ img: "space.png" }),
@@ -22,6 +28,29 @@ export const Volley: GameBuilder = {
     ]
   })
 }
+
+const VolleyballSystem = SystemBuilder({
+  id: "VolleyballSystem",
+  init: (world) => {
+    return {
+      id: "VolleyballSystem",
+      query: [],
+      priority: 5,
+      onTick: () => {
+        const ball = world.entities["ball"]
+        if (!ball) return
+
+
+        const { x, y, z, velocity } = ball.components.position!.data
+
+        if (x < -100 || x > 600) {
+          ball.components.position!.setPosition({ x: 225, y: 0 }).setVelocity({ x: 0, y: 0 })
+          // ball.components.position!.data.velocity.x = -velocity.x
+        }
+      }
+    }
+  }
+})
 
 const Spike = Action("spike", ({ entity, world }) => {
   const { position } = entity?.components ?? {}
@@ -46,12 +75,14 @@ const Spike = Action("spike", ({ entity, world }) => {
       ballPosition.data.gravity = 0.07
 
       const v = velocityToDirection(ballPosition.data, mouse, 50, 0.07, 3)
+      console.log(v)
       ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       ballPosition.setVelocity({ z: 0 })
       ballPosition.data.gravity = 0.1
 
       const v = velocityToPoint(ballPosition.data, mouse, 0.1, 0)
+      console.log(v)
       ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
@@ -77,12 +108,12 @@ const Dude = (player: Player) => Character({
     }),
     actions: Actions({
       move: Move,
+      spike: Spike,
+      point: Point,
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 6 })
-      }),
-      spike: Spike,
-      point: Point
+        entity.components.position.setVelocity({ z: 5.5 })
+      })
     }),
     shadow: Shadow(5),
     renderable: Renderable({

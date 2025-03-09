@@ -34,17 +34,13 @@ export const Ball = () => Entity({
   components: {
     debug: Debug(),
     position: Position({ x: 225, y: 0, gravity: 0.05 }),
-    collider: Collider({ shape: "ball", radius: 4, restitution: 1, group: "11111111111111100000000000000001" }),
+    collider: Collider({ shape: "ball", radius: 4, restitution: 0.8, group: "11111111111111100000000000000001" }),
     shadow: Shadow(3),
     networked: Networked(),
     npc: NPC({
       behavior: (ball) => {
         const { x, y } = ball.components.position.data.velocity
         ball.components.position.data.rotation += 0.003 * Math.sqrt((x * x) + (y * y))
-
-        if (ball.components.position.data.standing) {
-          // ball.decelerate(0.1)
-        }
       }
     }),
     renderable: Renderable({
