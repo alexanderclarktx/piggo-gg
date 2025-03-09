@@ -4,31 +4,6 @@ import {
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
-export const Net = () => LineWall({
-  position: { x: 225, y: -75 },
-  points: [
-    0, 0,
-    0, 150
-  ],
-  visible: true,
-  sensor: () => {
-    return false
-  }
-})
-
-export const Court = () => LineWall({
-  position: { x: 0, y: -75 },
-  points: [
-    0, 0,
-    450, 0,
-    500, 150,
-    -50, 150,
-    0, 0
-  ],
-  visible: true,
-  fill: 0x0066aa
-})
-
 export const Ball = () => Entity({
   id: "ball",
   components: {
@@ -62,12 +37,12 @@ export const Ball = () => Entity({
   }
 })
 
-export const BallTarget = (ball: Entity<Position | Renderable>) => {
+export const Target = (ball: Entity<Position | Renderable>) => {
 
   let last: XY = { x: 0, y: 0 }
 
-  const ballTarget = Entity<Renderable | Position>({
-    id: "BallTarget",
+  const target = Entity<Renderable | Position>({
+    id: "target",
     components: {
       position: Position(),
       renderable: Renderable({
@@ -76,15 +51,15 @@ export const BallTarget = (ball: Entity<Position | Renderable>) => {
         dynamic: ({ world }) => {
           const { z, x, y, velocity: v, gravity, standing } = ball.components.position.data
 
-          ballTarget.components.renderable.visible = !standing
+          target.components.renderable.visible = !standing
 
           if (v.x === last.x && v.y === last.y) return
           last = { x: v.x, y: v.y }
 
           const t = timeToLand(gravity, z, v.z)
 
-          ballTarget.components.position.data.x = x + v.x * t / 1000 * world.tickrate
-          ballTarget.components.position.data.y = y + v.y * t / 1000 * world.tickrate
+          target.components.position.data.x = x + v.x * t / 1000 * world.tickrate
+          target.components.position.data.y = y + v.y * t / 1000 * world.tickrate
         },
         setContainer: async () => {
           const g = pixiGraphics()
@@ -96,25 +71,51 @@ export const BallTarget = (ball: Entity<Position | Renderable>) => {
       })
     }
   })
-  return ballTarget
+  return target
 }
 
-export const BallTargetSystem = ClientSystemBuilder({
-  id: "BallTargetSystem",
+export const TargetSystem = ClientSystemBuilder({
+  id: "TargetSystem",
   init: ((world) => {
 
-    let ballTarget: Entity<Renderable> | undefined = undefined
+    let target: Entity<Renderable> | undefined = undefined
 
     return {
       id: "BallTargetSystem",
       query: [],
       priority: 5,
       onTick: () => {
-        if (!ballTarget && world.entities["ball"]) {
-          ballTarget = BallTarget(world.entities["ball"] as Entity<Position | Renderable>)
-          world.addEntity(ballTarget)
+        const ball = world.entity<Position | Renderable>("ball")
+        if (!target && ball) {
+          target = Target(ball)
+          world.addEntity(target)
         }
       }
     }
   })
+})
+
+export const Net = () => LineWall({
+  position: { x: 225, y: -75 },
+  points: [
+    0, 0,
+    0, 150
+  ],
+  visible: true,
+  sensor: () => {
+    return false
+  }
+})
+
+export const Court = () => LineWall({
+  position: { x: 0, y: -75 },
+  points: [
+    0, 0,
+    450, 0,
+    500, 150,
+    -50, 150,
+    0, 0
+  ],
+  visible: true,
+  fill: 0x0066aa
 })

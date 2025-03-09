@@ -1,7 +1,7 @@
 import {
-  Client, Command, Entity, Game, GameBuilder, InvokedAction,
-  Renderer, SerializedEntity, values, StateBuffer, System,
-  SystemBuilder, SystemEntity, keys, ValidComponents, Random
+  Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer,
+  SerializedEntity, values, StateBuffer, System, SystemBuilder,
+  SystemEntity, keys, ValidComponents, Random, ComponentTypes
 } from "@piggo-gg/core"
 
 export type World = {
@@ -30,6 +30,7 @@ export type World = {
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
+  entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
   queryEntities: (query: ValidComponents[]) => Entity[]
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
@@ -131,6 +132,9 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     },
     announce: (message: string) => {
       world.messages.push(world.tick + 1, "game", message)
+    },
+    entity: <T extends ComponentTypes>(id: string) => {
+      return world.entities[id] as Entity<T>
     },
     queryEntities: (query: ValidComponents[]) => {
       return filterEntities(query, values(world.entities))

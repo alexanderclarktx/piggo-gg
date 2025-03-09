@@ -3,7 +3,7 @@ import {
   EscapeMenu, GameBuilder, Input, loadTexture, mouse, Move, Networked, Player, Point,
   Position, Renderable, Shadow, ShadowSystem, SpawnSystem, SystemBuilder, velocityToDirection, velocityToPoint, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
-import { BallTargetSystem, Court, Net, Ball } from "./entities"
+import { TargetSystem, Court, Net, Ball } from "./entities"
 import { AnimatedSprite } from "pixi.js"
 
 export const Volleyball: GameBuilder = {
@@ -15,7 +15,7 @@ export const Volleyball: GameBuilder = {
       SpawnSystem(Dude),
       VolleyballSystem,
       ShadowSystem,
-      BallTargetSystem,
+      TargetSystem,
       CameraSystem({ follow: () => ({ x: 225, y: 0 }) })
     ],
     bgColor: 0x006633,
@@ -37,11 +37,10 @@ const VolleyballSystem = SystemBuilder({
       query: [],
       priority: 5,
       onTick: () => {
-        const ball = world.entities["ball"]
+        const ball = world.entity<Position>("ball")
         if (!ball) return
 
-
-        const { x, y, z, velocity } = ball.components.position!.data
+        const { x, y, z, velocity } = ball.components.position.data
 
         if (x < -100 || x > 600) {
           ball.components.position!.setPosition({ x: 225, y: 0 }).setVelocity({ x: 0, y: 0 })
@@ -56,34 +55,29 @@ const Spike = Action("spike", ({ entity, world }) => {
   const { position } = entity?.components ?? {}
   if (!position) return
 
-  const ball = world.entities["ball"]
-  const { position: ballPosition } = ball.components
-  if (!ballPosition) return
+  const ball = world.entity<Position>("ball")
+  if (!ball) return
 
-  const distance = position.data.standing ? 15 : 30
+  const { position: ballPos } = ball.components
 
-  const far = XYZdiff(position.data, ballPosition.data, distance)
+  const range = position.data.standing ? 15 : 30
+  const far = XYZdiff(position.data, ballPos.data, range)
 
   if (!far) {
-    const ball = world.entities["ball"]
-    if (!ball) return
-    const { position: ballPosition } = ball.components
-    if (!ballPosition) return
-
     if (position.data.standing) {
-      ballPosition.setVelocity({ z: 3 })
-      ballPosition.data.gravity = 0.07
+      ballPos.setVelocity({ z: 3 })
+      ballPos.data.gravity = 0.07
 
-      const v = velocityToDirection(ballPosition.data, mouse, 50, 0.07, 3)
+      const v = velocityToDirection(ballPos.data, mouse, 50, 0.07, 3)
       console.log(v)
-      ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
+      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
-      ballPosition.setVelocity({ z: 0 })
-      ballPosition.data.gravity = 0.1
+      ballPos.setVelocity({ z: 0 })
+      ballPos.data.gravity = 0.1
 
-      const v = velocityToPoint(ballPosition.data, mouse, 0.1, 0)
+      const v = velocityToPoint(ballPos.data, mouse, 0.1, 0)
       console.log(v)
-      ballPosition.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
+      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
 }, 20)

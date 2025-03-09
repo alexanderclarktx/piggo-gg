@@ -42,7 +42,7 @@ export const RandomSystem = SystemBuilder({
       query: [],
       priority: 1,
       onTick: () => {
-        if (!world.entities["random"]) {
+        if (!world.entity("random")) {
           world.addEntity(world.random.seed)
         }
       }
