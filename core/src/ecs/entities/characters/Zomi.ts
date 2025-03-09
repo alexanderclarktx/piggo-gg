@@ -35,8 +35,8 @@ export const Zomi = ({ id, color, positionProps = { x: randomInt(200, 100), y: r
         color: color ?? 0x00ff00,
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
-        dynamic: ({ renderable, entity }) => {
-          const { hp, maxHp } = entity.components.health!.data
+        dynamic: ({ renderable }) => {
+          const { hp, maxHp } = zomi.components.health.data
 
           const ratio = round(hp / maxHp * 4)
           renderable.color = colors[max(ratio - 1, 0)]

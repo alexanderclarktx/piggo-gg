@@ -43,8 +43,8 @@ const VolleyballSystem = SystemBuilder({
         const { x, y, z, velocity } = ball.components.position.data
 
         if (x < -100 || x > 600) {
-          ball.components.position!.setPosition({ x: 225, y: 0 }).setVelocity({ x: 0, y: 0 })
-          // ball.components.position!.data.velocity.x = -velocity.x
+          ball.components.position.setPosition({ x: 225, y: 0 }).setVelocity({ x: 0, y: 0 })
+          // ball.components.position.data.velocity.x = -velocity.x
         }
       }
     }
