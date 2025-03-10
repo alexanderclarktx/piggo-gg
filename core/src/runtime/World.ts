@@ -1,20 +1,20 @@
 import {
-  Client, Command, Entity, Game, GameBuilder, InvokedAction,
-  Renderer, SerializedEntity, values, StateBuffer, System,
-  SystemBuilder, SystemEntity, keys, ValidComponents, Random
+  Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer,
+  SerializedEntity, values, TickBuffer, System, SystemBuilder,
+  SystemEntity, keys, ValidComponents, Random, ComponentTypes
 } from "@piggo-gg/core"
 
 export type World = {
-  actions: StateBuffer<InvokedAction>
+  actions: TickBuffer<InvokedAction>
   client: Client | undefined
   commands: Record<string, Command>
-  currentGame: Game
   debug: boolean
   entities: Record<string, Entity>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
+  game: Game
   games: Record<string, GameBuilder>
   lastTick: DOMHighResTimeStamp
-  messages: StateBuffer<string>
+  messages: TickBuffer<string>
   mode: "client" | "server"
   random: Random,
   renderer: Renderer | undefined
@@ -30,7 +30,8 @@ export type World = {
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
-  queryEntities: (query: ValidComponents[]) => Entity[]
+  entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
+  queryEntities: <T extends ComponentTypes>(query: ValidComponents[]) => Entity<T>[]
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -63,14 +64,14 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
   }
 
   const world: World = {
-    actions: StateBuffer(),
-    messages: StateBuffer(),
+    actions: TickBuffer(),
+    messages: TickBuffer(),
     client: undefined,
     commands: {},
-    currentGame: { id: "", entities: [], systems: [], netcode: "delay" },
     debug: false,
     entities: {},
     entitiesAtTick: {},
+    game: { id: "", entities: [], systems: [], netcode: "delay", state: {} },
     games: {},
     lastTick: 0,
     mode: mode ?? "client",
@@ -132,8 +133,11 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     announce: (message: string) => {
       world.messages.push(world.tick + 1, "game", message)
     },
-    queryEntities: (query: ValidComponents[]) => {
-      return filterEntities(query, values(world.entities))
+    entity: <T extends ComponentTypes>(id: string) => {
+      return world.entities[id] as Entity<T>
+    },
+    queryEntities: <T extends ComponentTypes>(query: ValidComponents[]) => {
+      return filterEntities(query, values(world.entities)) as Entity<T>[]
     },
     onTick: ({ isRollback }) => {
       const now = performance.now()
@@ -201,12 +205,12 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       })
 
       // remove old systems
-      world.currentGame.systems.forEach((system) => world.removeSystem(system.id))
+      world.game.systems.forEach((system) => world.removeSystem(system.id))
 
       // set new game
-      world.currentGame = game.init(world)
+      world.game = game.init(world)
 
-      const { tileMap, bgColor, entities, systems } = world.currentGame
+      const { tileMap, bgColor, entities, systems } = world.game
 
       world.tileMap = tileMap
 

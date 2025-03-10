@@ -141,10 +141,10 @@ export const DebugSystem = ClientSystemBuilder({
           })
 
           // draw all colliders
-          if (!world.entities["collider-debug"]) drawAllColliders()
+          if (!world.entity("collider-debug")) drawAllColliders()
 
           // draw the fps text
-          if (!world.entities["fpsText"]) drawFpsText()
+          if (!world.entity("fpsText")) drawFpsText()
 
           // clean up old entities
           for (const id of keys(debugEntitiesPerEntity)) {

@@ -11,6 +11,7 @@ export const Flappy: GameBuilder = {
     id: "flappy",
     bgColor: 0x000000,
     view: "side",
+    state: {},
     systems: [
       CameraSystem({ follow: ({ x }) => ({ x, y: 0 }) }),
       SpawnSystem(FlappyCharacter),

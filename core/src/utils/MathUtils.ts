@@ -70,7 +70,7 @@ export const velocityToDirection = (from: XYZ, to: XY, distance: number, g: numb
   
   const dx = to.x - from.x
   const dy = to.y - from.y
-  const totalDistance = Math.sqrt(dx * dx + dy * dy)
+  const totalDistance = sqrt(dx * dx + dy * dy)
 
   if (totalDistance === 0) return { x: 0, y: 0 }
 

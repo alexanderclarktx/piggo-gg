@@ -9,7 +9,7 @@ export const RollbackSyncer = (): Syncer => {
       return {
         actions: world.actions.atTick(world.tick) ?? {},
         chats: world.messages.atTick(world.tick) ?? {},
-        game: world.currentGame.id,
+        game: world.game.id,
         playerId: world.client?.playerId() ?? "",
         serializedEntities: {},
         tick: world.tick,
@@ -99,7 +99,7 @@ export const RollbackSyncer = (): Syncer => {
 
       if (rollback) {
 
-        if (message.game !== world.currentGame.id) {
+        if (message.game !== world.game.id) {
           world.setGame(world.games[message.game])
         }
 

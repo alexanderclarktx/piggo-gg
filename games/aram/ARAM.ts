@@ -5,6 +5,7 @@ export const ARAM: GameBuilder = {
   init: (world) => ({
     id: "aram",
     netcode: "delay",
+    state: {},
     entities: [
       ...DefaultUI(world),
       Background(),

@@ -53,9 +53,9 @@ export const Piggo = ({ id, positionProps = { x: randomInt(400, 200), y: randomI
 const hungry = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position, renderable } = entity.components
 
-  const edibles = world.queryEntities(["food"])
+  const edibles = world.queryEntities<Food | Position>(["food"])
     .filter((e) => !(e.id.includes("piggo")))
-    .filter(e => (e.components.item?.equipped || e.components.item?.dropped)) as Entity<Food | Position>[]
+    .filter(e => (e.components.item?.equipped || e.components.item?.dropped))
 
   const closest = closestEntity(edibles, position.data, 200)
 
@@ -82,7 +82,7 @@ const hungry = (entity: Entity<Position>, world: World): void | InvokedAction =>
 const clingy = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components
 
-  const edibles = world.queryEntities(["inventory"]) as Entity<Position>[]
+  const edibles = world.queryEntities<Position>(["inventory", "position"])
 
   if (!edibles.length) return
 

@@ -9,6 +9,7 @@ export const Strike: GameBuilder = {
   id: "strike",
   init: (world) => ({
     id: "strike",
+    state: {},
     systems: [CameraSystem(), InventorySystem, StrikeSystem, SightSystem, HealthBarSystem],
     tileMap: StrikeTileMap,
     entities: [

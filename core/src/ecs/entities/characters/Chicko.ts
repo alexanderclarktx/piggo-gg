@@ -53,9 +53,9 @@ export const Chicko = ({ id, positionProps = { x: randomInt(500), y: randomInt(5
 const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position, renderable } = entity.components
 
-  const edibles = world.queryEntities(["food", "position"])
+  const edibles = world.queryEntities<Food | Position>(["food", "position"])
     .filter((e) => !(e.id.includes("chicko")))
-    .filter(e => (e.components.item?.equipped || e.components.item?.dropped)) as Entity<Food | Position>[]
+    .filter(e => (e.components.item?.equipped || e.components.item?.dropped))
 
   const closest = closestEntity(edibles, position.data, 200)
 

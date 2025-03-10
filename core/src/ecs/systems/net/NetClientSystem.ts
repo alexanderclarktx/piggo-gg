@@ -15,7 +15,7 @@ export const NetClientSystem = SystemBuilder({
       delay: DelaySyncer(),
       rollback: RollbackSyncer()
     }
-    const syncer = () => syncers[world.currentGame.netcode]
+    const syncer = () => syncers[world.game.netcode]
 
     world.actions.clearBeforeTick(tick + 2)
 
@@ -74,7 +74,7 @@ export const NetClientSystem = SystemBuilder({
         }
 
         // tick faster if slightly behind
-        if (buffer.length > 2 && world.currentGame.netcode === "delay") {
+        if (buffer.length > 2 && world.game.netcode === "delay") {
           world.tickFaster = true
         } else {
           world.tickFaster = false

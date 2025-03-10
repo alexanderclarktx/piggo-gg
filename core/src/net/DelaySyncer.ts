@@ -27,7 +27,7 @@ export const DelaySyncer = (): Syncer => ({
     const message: GameData = {
       actions: world.actions.atTick(world.tick + 1) ?? {},
       chats: world.messages.atTick(world.tick) ?? {},
-      game: world.currentGame.id,
+      game: world.game.id,
       playerId: world.client?.playerId() ?? "",
       serializedEntities: {},
       tick: world.tick,
@@ -110,7 +110,7 @@ export const DelaySyncer = (): Syncer => ({
     if (rollback) {
       world.tick = message.tick - 1
 
-      if (message.game && message.game !== world.currentGame.id) {
+      if (message.game && message.game !== world.game.id) {
         world.setGame(world.games[message.game])
       }
 

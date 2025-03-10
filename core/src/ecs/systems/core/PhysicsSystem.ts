@@ -127,7 +127,7 @@ export const PhysicsSystem = SystemBuilder({
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
               const collided = colliders.entries().find(([_, c]) => c.rapierCollider === collider2)
-              if (collided && world.entities[collided[0].id]) collidedWith.push(world.entities[collided[0].id] as Entity<Collider | Position>)
+              if (collided && world.entities[collided[0].id]) collidedWith.push(world.entity<Collider | Position>(collided[0].id)!)
             })
 
             // collide only once
@@ -161,7 +161,7 @@ export const PhysicsSystem = SystemBuilder({
           if (position.data.velocityResets && !position.data.heading.x && !position.data.heading.y) {
             position.data.velocity.x = 0
 
-            if (world.currentGame.view !== "side") position.data.velocity.y = 0
+            if (world.game.view !== "side") position.data.velocity.y = 0
           }
 
           position.updateVelocity()
