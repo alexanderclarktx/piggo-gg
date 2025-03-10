@@ -21,7 +21,7 @@ export const switchTeam = Action("switchTeam", ({ entity, world }) => {
     if (team) team.switchTeam()
 
     if (team && renderable) {
-      renderable.prepareAnimations(TeamColors[team.data.team][0])
+      renderable.prepareAnimations(TeamColors[team.data.team])
     }
   }
 })

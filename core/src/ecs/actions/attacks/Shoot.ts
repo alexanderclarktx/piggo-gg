@@ -40,7 +40,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
       id: `bullet-${world.random.int(1000)}`,
       visible: true,
       expireTicks: 35,
-      color: TeamColors[team.data.team][0]
+      color: TeamColors[team.data.team]
     }
 
     const bullet = Hitbox(bulletParams)

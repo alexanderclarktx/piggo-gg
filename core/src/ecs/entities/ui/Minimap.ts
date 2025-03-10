@@ -17,8 +17,8 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
   const mask = background.clone()
 
   const tileColors: Record<number, number> = {
-    37: TeamColors[1][0],
-    64: TeamColors[2][0],
+    37: TeamColors[1],
+    64: TeamColors[2],
     19: 0xffccaa
   }
 

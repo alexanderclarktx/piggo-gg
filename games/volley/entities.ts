@@ -94,7 +94,7 @@ export const Bot = (team: TeamNumber, pos: XY) => Entity({
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
-      color: TeamColors[team][0],
+      color: TeamColors[team],
       setup: async (r) => {
         const t = await loadTexture("chars.json")
 

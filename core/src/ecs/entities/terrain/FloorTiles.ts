@@ -50,8 +50,8 @@ export const FloorTilesArray = (dim: number, tileMap: number[]): Entity => Entit
 
             if (value === 0 || value === 10) continue
 
-            if (value === 37) tint = TeamColors[1][0]
-            if (value === 64) tint = TeamColors[2][0]
+            if (value === 37) tint = TeamColors[1]
+            if (value === 64) tint = TeamColors[2]
             if (value === 19) tint = 0xccaa99
 
             const child = new Sprite({ texture, tint })
