@@ -8,13 +8,13 @@ export const GameCommand: Command<GameCommandParams> = {
   regex: /^\/game (\w+)/,
   prepare: () => ({ actionId: "game" }),
   parse: ({ world, match }): GameCommandAction | undefined => {
-    if (world.games[match[1]] && world.currentGame.id !== match[1]) return {
+    if (world.games[match[1]] && world.game.id !== match[1]) return {
       actionId: "game",
       params: { game: match[1] }
     }
   },
   invoke: ({ params, world }) => {
-    if (world.games[params.game] && world.currentGame.id !== params.game) {
+    if (world.games[params.game] && world.game.id !== params.game) {
       world.setGame(world.games[params.game])
     }
   },

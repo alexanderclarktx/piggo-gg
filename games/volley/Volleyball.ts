@@ -9,6 +9,7 @@ export const Volleyball: GameBuilder = {
   init: () => ({
     id: "volleyball",
     netcode: "rollback",
+    state: {},
     systems: [
       SpawnSystem(Dude),
       VolleyballSystem,

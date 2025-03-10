@@ -9,6 +9,7 @@ export const Animals: GameBuilder = {
   init: (world) => ({
     id: "animals",
     netcode: "rollback",
+    state: {},
     systems: [CameraSystem(), SpawnSystem(Animal)],
     view: "side",
     entities: [

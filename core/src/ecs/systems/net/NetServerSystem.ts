@@ -15,7 +15,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     const tickData: NetMessageTypes = {
       actions: world.actions.atTick(world.tick) ?? {},
       chats: world.messages.atTick(world.tick) ?? {},
-      game: world.currentGame.id,
+      game: world.game.id,
       playerId: "server",
       serializedEntities: world.entitiesAtTick[world.tick] ?? {},
       tick: world.tick,
@@ -30,7 +30,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }))
 
-      if (world.currentGame.netcode === "delay") {
+      if (world.game.netcode === "delay") {
         if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
           latestClientMessages[id].shift()
           latestClientMessages[id].shift()
@@ -42,7 +42,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
   }
 
   const handleMessage = () => {
-    (world.currentGame.netcode === "delay") ? delay() : rollback()
+    (world.game.netcode === "delay") ? delay() : rollback()
   }
 
   const rollback = () => {

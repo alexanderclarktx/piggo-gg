@@ -17,6 +17,7 @@ export const Legends: GameBuilder = {
   id: "legends",
   init: (world) => ({
     id: "legends",
+    state: {},
     entities: [
       ...DefaultUI(world),
       Background(),

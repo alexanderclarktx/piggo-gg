@@ -179,13 +179,13 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         }
 
         // gravity
-        if (position.data.gravity && world.currentGame.view === "side") {
+        if (position.data.gravity && world.game.view === "side") {
           position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
           position.updateOrientation()
         }
 
         // friction
-        if (position.data.friction && world.currentGame.view === "side") {
+        if (position.data.friction && world.game.view === "side") {
           position.data.velocity.x = reduce(position.data.velocity.x, position.data.friction)
         }
 

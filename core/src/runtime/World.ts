@@ -8,10 +8,10 @@ export type World = {
   actions: StateBuffer<InvokedAction>
   client: Client | undefined
   commands: Record<string, Command>
-  currentGame: Game
   debug: boolean
   entities: Record<string, Entity>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
+  game: Game
   games: Record<string, GameBuilder>
   lastTick: DOMHighResTimeStamp
   messages: StateBuffer<string>
@@ -68,10 +68,10 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     messages: StateBuffer(),
     client: undefined,
     commands: {},
-    currentGame: { id: "", entities: [], systems: [], netcode: "delay" },
     debug: false,
     entities: {},
     entitiesAtTick: {},
+    game: { id: "", entities: [], systems: [], netcode: "delay", state: {} },
     games: {},
     lastTick: 0,
     mode: mode ?? "client",
@@ -205,12 +205,12 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       })
 
       // remove old systems
-      world.currentGame.systems.forEach((system) => world.removeSystem(system.id))
+      world.game.systems.forEach((system) => world.removeSystem(system.id))
 
       // set new game
-      world.currentGame = game.init(world)
+      world.game = game.init(world)
 
-      const { tileMap, bgColor, entities, systems } = world.currentGame
+      const { tileMap, bgColor, entities, systems } = world.game
 
       world.tileMap = tileMap
 

@@ -9,6 +9,7 @@ export const Lobby: GameBuilder = {
   id: "lobby",
   init: () => ({
     id: "lobby",
+    state: {},
     systems: [],
     view: "side",
     entities: [
