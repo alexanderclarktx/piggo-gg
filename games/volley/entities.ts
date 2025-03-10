@@ -4,7 +4,10 @@ import {
   Networked, NPC, pixiGraphics, Player, Position, Renderable,
   Shadow, timeToLand, velocityToDirection, velocityToPoint,
   WASDInputMap, XY, XYZdiff, Point, Chase,
-  closestEntity
+  closestEntity,
+  sqrt,
+  abs,
+  sign
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -175,8 +178,9 @@ export const Ball = () => Entity({
     networked: Networked(),
     npc: NPC({
       behavior: (ball) => {
-        const { x, y } = ball.components.position.data.velocity
-        ball.components.position.data.rotation += 0.003 * Math.sqrt((x * x) + (y * y))
+        const { x, y, z } = ball.components.position.data.velocity
+        ball.components.position.data.rotation += 0.01 * sqrt(abs((x + y + z))) * sign(x)
+        console.log(ball.components.position.data.rotation)
       }
     }),
     renderable: Renderable({

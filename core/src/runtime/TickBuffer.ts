@@ -1,6 +1,6 @@
 import { keys } from "@piggo-gg/core"
 
-export type StateBuffer<T extends ({} | string)> = {
+export type TickBuffer<T extends ({} | string)> = {
   at: (tick: number, entityId: string) => T[] | undefined
   atTick: (tick: number) => Record<string, T[]> | undefined
   clearTick: (tick: number) => void
@@ -10,11 +10,11 @@ export type StateBuffer<T extends ({} | string)> = {
   push: (tick: number, entityId: string, state: T) => boolean
 }
 
-export const StateBuffer = <T extends ({} | string)>(): StateBuffer<T> => {
+export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
 
   const buffer: Record<number, Record<string, T[]>> = {}
 
-  const StateBuffer: StateBuffer<T> = {
+  const TickBuffer: TickBuffer<T> = {
     at: (tick, entityId) => {
       return buffer[tick] ? buffer[tick][entityId] : undefined
     },
@@ -56,5 +56,5 @@ export const StateBuffer = <T extends ({} | string)>(): StateBuffer<T> => {
       return true
     }
   }
-  return StateBuffer
+  return TickBuffer
 }

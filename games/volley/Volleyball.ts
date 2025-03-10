@@ -4,12 +4,26 @@ import {
 } from "@piggo-gg/core"
 import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
 
-export const Volleyball: GameBuilder = {
+type VolleyballState = {
+  scoreLeft: number
+  scoreRight: number
+  phase: "serve" | "play" | "win"
+  teamServing: "left" | "right"
+  lastHit: string
+}
+
+export const Volleyball: GameBuilder<VolleyballState> = {
   id: "volleyball",
   init: () => ({
     id: "volleyball",
     netcode: "rollback",
-    state: {},
+    state: {
+      scoreLeft: 0,
+      scoreRight: 0,
+      phase: "serve",
+      teamServing: "left",
+      lastHit: ""
+    },
     systems: [
       SpawnSystem(Dude),
       VolleyballSystem,
@@ -29,50 +43,40 @@ export const Volleyball: GameBuilder = {
   })
 }
 
-type VolleyballData = {
-  scoreLeft: number
-  scoreRight: number
-  phase: "serve" | "play" | "win"
-  teamServing: "left" | "right"
-  lastHit: string
-}
-
 const VolleyballSystem = SystemBuilder({
   id: "VolleyballSystem",
   init: (world) => {
 
-    const data: VolleyballData = {
-      scoreLeft: 0,
-      scoreRight: 0,
-      phase: "serve",
-      teamServing: "left",
-      lastHit: ""
-    }
-
     return {
       id: "VolleyballSystem",
       query: [],
-      data,
       priority: 5,
       onTick: () => {
-        const ball = world.entity<Position>("ball")
-        if (!ball) return
+        const ballPos = world.entity<Position>("ball")?.components.position
+        if (!ballPos) return
 
-        const { x, y, z, velocity, standing } = ball.components.position.data
+        const state = world.game.state as VolleyballState
 
-        if (data.phase === "serve") {
-          if (z > 0) {
-            data.phase = "play"
+        if (state.phase === "serve") {
+          if (ballPos.data.z > 0) {
+            state.phase = "play"
           } else {
-            const x = data.teamServing === "left" ? 50 : 400
-            ball.components.position.setPosition({ x, y: 0 }).setVelocity({ x: 0, y: 0 })
+            const x = state.teamServing === "left" ? 0 : 400
+            ballPos.setPosition({ x, y: 0 }).setVelocity({ x: 0, y: 0 })
           }
         }
 
-        if (x < -100 || x > 600) {
-          ball.components.position.setPosition({ x: 225, y: 0 }).setVelocity({ x: 0, y: 0 })
-          // ball.components.position.data.velocity.x = -velocity.x
+        if (state.phase === "play") {
+          if (ballPos.data.z === 0) {
+            const x = state.teamServing === "left" ? 0 : 400
+            ballPos.setPosition({ x, y: 0 }).setVelocity({ x: 0, y: 0 })
+          }
         }
+
+        // if (x < -100 || x > 600) {
+          // ball.components.position.setPosition({ x: 225, y: 0 }).setVelocity({ x: 0, y: 0 })
+          // ball.components.position.data.velocity.x = -velocity.x
+        // }
       }
     }
   }

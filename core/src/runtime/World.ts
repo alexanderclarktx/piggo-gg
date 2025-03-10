@@ -1,11 +1,11 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer,
-  SerializedEntity, values, StateBuffer, System, SystemBuilder,
+  SerializedEntity, values, TickBuffer, System, SystemBuilder,
   SystemEntity, keys, ValidComponents, Random, ComponentTypes
 } from "@piggo-gg/core"
 
 export type World = {
-  actions: StateBuffer<InvokedAction>
+  actions: TickBuffer<InvokedAction>
   client: Client | undefined
   commands: Record<string, Command>
   debug: boolean
@@ -14,7 +14,7 @@ export type World = {
   game: Game
   games: Record<string, GameBuilder>
   lastTick: DOMHighResTimeStamp
-  messages: StateBuffer<string>
+  messages: TickBuffer<string>
   mode: "client" | "server"
   random: Random,
   renderer: Renderer | undefined
@@ -64,8 +64,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
   }
 
   const world: World = {
-    actions: StateBuffer(),
-    messages: StateBuffer(),
+    actions: TickBuffer(),
+    messages: TickBuffer(),
     client: undefined,
     commands: {},
     debug: false,
