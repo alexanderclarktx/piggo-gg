@@ -43,7 +43,7 @@ const Players = (): Entity => {
             return
           }
 
-          const pcs = world.queryEntities(["pc"]) as Entity<PC>[]
+          const pcs = world.queryEntities<PC>(["pc"])
 
           let shouldRedraw = false
           pcs.forEach(p => {

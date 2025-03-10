@@ -63,9 +63,9 @@ export const Zomi = ({ id, color, positionProps = { x: randomInt(200, 100), y: r
 const behavior = (entity: Entity<Position>, world: World): void | InvokedAction => {
   const { position } = entity.components
 
-  const targets = world.queryEntities(["health", "position", "element"])
+  const targets = world.queryEntities<Health | Position | Element>(["health", "position", "element"])
     .filter((e) => !(e.id.includes("zomi")))
-    .filter((e) => e.components.element!.data.kind === "flesh") as Entity<Health | Position | Element>[]
+    .filter((e) => e.components.element!.data.kind === "flesh")
 
   const closest = closestEntity(targets, position.data)
   if (!closest) return

@@ -3,17 +3,19 @@ import {
   Debug, Entity, Input, LineWall, loadTexture, mouse, Move,
   Networked, NPC, pixiGraphics, Player, Position, Renderable,
   Shadow, timeToLand, velocityToDirection, velocityToPoint,
-  WASDInputMap, XY, XYZdiff, Point,
-  Chase
+  WASDInputMap, XY, XYZdiff, Point, Chase,
+  closestEntity
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
-export const Spike = Action("spike", ({ entity, world }) => {
+export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params }) => {
   const { position } = entity?.components ?? {}
   if (!position) return
 
   const ball = world.entity<Position>("ball")
   if (!ball) return
+
+  if (!params.target) return
 
   const { position: ballPos } = ball.components
 
@@ -25,14 +27,14 @@ export const Spike = Action("spike", ({ entity, world }) => {
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
 
-      const v = velocityToDirection(ballPos.data, mouse, 50, 0.07, 3)
+      const v = velocityToDirection(ballPos.data, params.target, 50, 0.07, 3)
       console.log(v)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       ballPos.setVelocity({ z: 0 })
       ballPos.data.gravity = 0.1
 
-      const v = velocityToPoint(ballPos.data, mouse, 0.1, 0)
+      const v = velocityToPoint(ballPos.data, params.target, 0.1, 0)
       console.log(v)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
@@ -69,7 +71,16 @@ export const Bot = () => Entity({
         const far = XYZdiff(position.data, ballPos.data, range)
 
         if (!far) {
-          return { actionId: "spike", entityId: entity.id }
+          // todo filter on team
+          const closestPlayer = closestEntity(
+            world.queryEntities<Position>(["position", "team"])
+              .filter(e => e.id.includes("dude")),
+            ballPos.data
+          )
+
+          const target = closestPlayer ? closestPlayer.components.position.data : { x: 0, y: 0 }
+
+          return { actionId: "spike", entityId: entity.id, params: { target } }
         } else {
           const target = world.entity<Position>("target")
           if (!target) return
@@ -114,9 +125,9 @@ export const Dude = (player: Player) => Character({
       press: {
         ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),
-        "mb1": ({ hold }) => {
+        "mb1": ({ hold, mouse }) => {
           if (hold) return null
-          return { actionId: "spike" }
+          return { actionId: "spike", params: { target: mouse } }
         }
       }
     }),
