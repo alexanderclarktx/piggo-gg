@@ -1,13 +1,10 @@
 import {
   Action, Actions, Character, ClientSystemBuilder, Collider,
-  Debug, Entity, Input, LineWall, loadTexture, mouse, Move,
+  Debug, Entity, Input, LineWall, loadTexture, Move,
   Networked, NPC, pixiGraphics, Player, Position, Renderable,
   Shadow, timeToLand, velocityToDirection, velocityToPoint,
-  WASDInputMap, XY, XYZdiff, Point, Chase,
-  closestEntity,
-  sqrt,
-  abs,
-  sign
+  WASDInputMap, XY, XYZdiff, Point, Chase, closestEntity,
+  sqrt, abs, sign, TeamNumber, Team, TeamColors
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 
@@ -44,21 +41,21 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
   }
 }, 20)
 
-export const Bot = () => Entity({
-  id: "bot",
+export const Bot = (team: TeamNumber, pos: XY) => Entity({
+  id: `bot-${team}-${pos.x}-${pos.y}`,
   components: {
     debug: Debug(),
-    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.3 }),
+    position: Position({ ...pos, velocityResets: 1, speed: 120, gravity: 0.3 }),
     networked: Networked(),
     collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
-    // team: { id: "bot", name: "bot" },
+    team: Team(team),
     actions: Actions({
       move: Move,
       spike: Spike,
       chase: Chase,
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 5.5 })
+        entity.components.position.setVelocity({ z: 6 })
       })
     }),
     shadow: Shadow(5),
@@ -97,7 +94,7 @@ export const Bot = () => Entity({
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
-      color: 0xffff00,
+      color: TeamColors[team][0],
       setup: async (r) => {
         const t = await loadTexture("chars.json")
 
@@ -140,7 +137,7 @@ export const Dude = (player: Player) => Character({
       point: Point,
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 5.5 })
+        entity.components.position.setVelocity({ z: 6 })
       })
     }),
     shadow: Shadow(5),
@@ -173,14 +170,13 @@ export const Ball = () => Entity({
   components: {
     debug: Debug(),
     position: Position({ x: 225, y: 0, gravity: 0.05 }),
-    collider: Collider({ shape: "ball", radius: 4, restitution: 0.8, group: "11111111111111100000000000000001" }),
+    collider: Collider({ shape: "ball", radius: 4, restitution: 0.8, group: "11111111111111100000000000000000" }),
     shadow: Shadow(3),
     networked: Networked(),
     npc: NPC({
       behavior: (ball) => {
         const { x, y, z } = ball.components.position.data.velocity
         ball.components.position.data.rotation += 0.01 * sqrt(abs((x + y + z))) * sign(x)
-        console.log(ball.components.position.data.rotation)
       }
     }),
     renderable: Renderable({
@@ -191,7 +187,7 @@ export const Ball = () => Entity({
       scaleMode: "nearest",
       rotates: true,
       setup: async (r) => {
-        const texture = (await loadTexture("ball.json"))["ball"]
+        const texture = (await loadTexture("vball.json"))["ball"]
         const sprite = new Sprite(texture)
 
         sprite.anchor.set(0.5, 0.5)
@@ -229,7 +225,7 @@ export const Target = (ball: Entity<Position | Renderable>) => {
         setContainer: async () => {
           const g = pixiGraphics()
           g.ellipse(0, 0, 6, 3)
-          g.stroke({ color: 0xff2200, alpha: 0.7, width: 2 })
+          g.stroke({ color: 0x55ff00, alpha: 0.8, width: 1.5 })
 
           return g
         }
@@ -266,10 +262,7 @@ export const Net = () => LineWall({
     0, 0,
     0, 150
   ],
-  visible: true,
-  sensor: () => {
-    return false
-  }
+  visible: true
 })
 
 export const Court = () => LineWall({

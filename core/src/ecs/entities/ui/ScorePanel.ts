@@ -13,10 +13,10 @@ export const ScorePanel = (): Entity => {
         setup: async (r, renderer) => {
           const g = new Graphics()
           g.roundRect(-55, 5, 50, 50, 10)
-            .fill({ color: TeamColors[1], alpha: 0.7 })
+            .fill({ color: TeamColors[1][0], alpha: 0.7 })
             .stroke({ color: 0xffffff, width: 2, alpha: 0.9 })
             .roundRect(5, 5, 50, 50, 10)
-            .fill({ color: TeamColors[2], alpha: 0.7 })
+            .fill({ color: TeamColors[2][0], alpha: 0.7 })
             .stroke({ color: 0xffffff, width: 2, alpha: 0.9 })
 
           const text1 = pixiText({ text: "0", pos: { x: -30, y: 16 }, anchor: { x: 0.5, y: 0 }, style: { fill: 0xffffff, fontSize: 24 } })

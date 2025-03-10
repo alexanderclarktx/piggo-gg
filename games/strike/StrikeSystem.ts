@@ -43,7 +43,7 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
           // player not controlling a character
           if (!controlling.data.entityId || !spawnedPlayers.has(player.id)) {
-            const character = Skelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team])
+            const character = Skelly(player, TeamColors[team.data.team][0], TeamSpawns[team.data.team])
             player.components.controlling = Controlling({ entityId: character.id })
             world.addEntity(character)
             spawnedPlayers.add(player.id)

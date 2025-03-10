@@ -2,9 +2,9 @@ import { Component, SystemBuilder } from "@piggo-gg/core"
 
 export type TeamNumber = 1 | 2
 
-export const TeamColors: Record<TeamNumber, number> = {
-  1: 0xff7777,
-  2: 0x00ccff
+export const TeamColors: Record<TeamNumber, [number, number, number]> = {
+  1: [0xffaacc, 0xffccaa, 0xffaaaa],
+  2: [0x00ccff, 0x00ffcc, 0x00ffaa]
 }
 
 export type Team = Component<"team", { team: TeamNumber }> & {
