@@ -2,7 +2,7 @@ import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder,
   Position, ShadowSystem, SpawnSystem, SystemBuilder
 } from "@piggo-gg/core"
-import { Ball, Court, Dude, Net, TargetSystem } from "./entities"
+import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
 
 export const Volleyball: GameBuilder = {
   id: "volleyball",
@@ -22,7 +22,8 @@ export const Volleyball: GameBuilder = {
       EscapeMenu(), Cursor(),
       Ball(),
       Court(),
-      Net()
+      Net(),
+      Bot()
     ]
   })
 }
