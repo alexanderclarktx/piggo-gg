@@ -146,9 +146,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         // update screenFixed entities
         world.queryEntities<Renderable | Position>(["renderable", "position"]).forEach((entity) => {
-          if (entity.components.renderable && entity.components.position) {
-            updateScreenFixed(entity)
-          }
+          updateScreenFixed(entity)
         })
       },
       onRender(entities: Entity<Renderable | Position>[]) {
