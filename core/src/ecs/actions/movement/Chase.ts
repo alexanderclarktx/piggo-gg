@@ -1,6 +1,6 @@
 import { Action, Entity, Position } from "@piggo-gg/core"
 
-export const Chase = Action<{ target: Entity<Position> }>("chase", ({ entity, params }) => {
+export const Chase = Action<{ target: string }>("chase", ({ entity, params, world }) => {
   if (!entity) return
 
   const { position } = entity.components
@@ -8,5 +8,8 @@ export const Chase = Action<{ target: Entity<Position> }>("chase", ({ entity, pa
 
   const { target } = params
 
-  position.setHeading(target.components.position.data)
+  const targetEntity = world.entity<Position>(target)
+  if (!targetEntity) return
+
+  position.setHeading(targetEntity.components.position.data)
 })

@@ -158,6 +158,7 @@ const GameLobby = (): Entity => {
               style: { fontSize: 72, fill: 0xffccff, fontFamily: "Courier New", fontWeight: "bold" }
             }),
             onClick: () => {
+              world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: list[index].id } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: list[index].id } })
             }
           })

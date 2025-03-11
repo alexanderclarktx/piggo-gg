@@ -74,8 +74,8 @@ export const Position = (props: PositionProps = {}): Position => {
     orientation: "r",
     orientationRads: 0,
     setPosition: ({ x, y }: XY) => {
-      position.data.x = x
-      position.data.y = y
+      position.data.x = round(x, 3)
+      position.data.y = round(y, 3)
       return position
     },
     setVelocity: ({ x, y, z }) => {
