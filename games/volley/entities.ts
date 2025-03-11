@@ -36,7 +36,7 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
       ballPos.data.gravity = 0.07
 
       const v = velocityToDirection(ballPos.data, params.target, 70, 0.07, 3)
-      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 100 })
+      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       const distance = XYdistance(position.data, params.target)
       const z = -5 + distance / 80
@@ -185,7 +185,7 @@ export const Ball = () => Entity({
     npc: NPC({
       behavior: (ball) => {
         const { x, y, z } = ball.components.position.data.velocity
-        ball.components.position.data.rotation += 0.01 * sqrt(abs((x + y + z))) * sign(x)
+        ball.components.position.data.rotation += 0.015 * sqrt(abs((x + y + z))) * sign(x)
       }
     }),
     renderable: Renderable({
