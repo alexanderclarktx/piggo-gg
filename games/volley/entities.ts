@@ -37,14 +37,14 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
       ballPos.data.gravity = 0.07
 
       const v = velocityToDirection(ballPos.data, params.target, 70, 0.07, 3)
-      console.log(v)
+      console.log(`x: ${v.x}, y: ${v.y}`)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       ballPos.setVelocity({ z: 0 })
       ballPos.data.gravity = 0.1
 
       const v = velocityToPoint(ballPos.data, params.target, 0.1, 0)
-      console.log(v)
+      console.log(`x: ${v.x}, y: ${v.y}`)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
