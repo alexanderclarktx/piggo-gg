@@ -2,7 +2,7 @@ import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
   loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC
 } from "@piggo-gg/core"
-import { Flappy, Craft, Dungeon, Soccer, Volleyball } from "@piggo-gg/games"
+import { Flappy, Craft, Dungeon, Volleyball } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -95,7 +95,7 @@ const Players = (): Entity => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Volleyball, Flappy, Craft, Dungeon, Soccer]
+  const list: GameBuilder[] = [Volleyball, Flappy, Craft, Dungeon]
   let gameButtons: PixiButton[] = []
   let index = 0
 
@@ -126,7 +126,7 @@ const GameLobby = (): Entity => {
                 text: g.id,
                 pos: { x: (width - 230) / 2, y: 60 },
                 anchor: { x: 0, y: 0 },
-                style: { fontSize: 20, fill: 0xffffff },
+                style: { fontSize: 28, fill: 0xffffff },
                 strokeAlpha: 1
               }),
               onClick: () => {
@@ -145,17 +145,17 @@ const GameLobby = (): Entity => {
 
           const select = pixiText({
             text: "select game:",
-            style: { fontSize: 20 },
-            pos: { x: (width - 230) / 2, y: 20 },
+            style: { fontSize: 24 },
+            pos: { x: (width - 230) / 2, y: 15 },
             anchor: { x: 0.5, y: 0 }
           })
 
           const play = PixiButton({
             content: () => ({
               text: "play",
-              pos: { x: (width - 230) / 2, y: 100 },
+              pos: { x: (width - 230) / 2, y: 110 },
               anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 50, fill: 0xffccff, fontFamily: "Tahoma" }
+              style: { fontSize: 72, fill: 0xffccff, fontFamily: "Courier New", fontWeight: "bold" }
             }),
             onClick: () => {
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: list[index].id } })

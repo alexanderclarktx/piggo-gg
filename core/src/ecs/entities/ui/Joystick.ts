@@ -82,7 +82,7 @@ export const JoystickContainer = async ({ onChange, onStart, onEnd }: JoystickSe
   const outer = new Graphics({ alpha: 0.9 })
   outer.circle(0, 0, outerRadius).fill({ color: 0x000022, alpha: 0.8 })
 
-  const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"] as Texture
+  const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"]
   const inner = new Sprite({ texture: logo, alpha: 0.7, anchor: 0.5 })
 
   c.addChild(outer, inner)

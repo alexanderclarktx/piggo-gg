@@ -1,11 +1,13 @@
+import {
+  Assets, Container, Graphics, GraphicsContext, GraphicsOptions, Text, TextStyleFontWeight
+} from "pixi.js"
 import { XY } from "@piggo-gg/core"
-import { Assets, Container, Graphics, GraphicsContext, GraphicsOptions, Text } from "pixi.js"
 
 export type pixiRectProps = { x: number, y: number, w: number, h: number, rounded?: number, style?: Omit<pixiStyleProps, "g"> }
 export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<pixiStyleProps, "g"> }
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, strokeColor?: number, strokeAlpha?: number, strokeWidth?: number }
 
-export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: string }
+export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: string, fontWeight?: TextStyleFontWeight }
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
 export const pixiGraphics = (opts: GraphicsOptions | GraphicsContext = {}): Graphics => new Graphics(opts)
@@ -42,7 +44,8 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     style: {
       fill: style?.fill ?? 0xffffff,
       fontSize: style?.fontSize ?? 14,
-      fontFamily: style?.fontFamily ?? "Helvetica"
+      fontFamily: style?.fontFamily ?? "Helvetica",
+      fontWeight: style?.fontWeight ?? "normal"
     }
   })
 }

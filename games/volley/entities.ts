@@ -7,6 +7,7 @@ import {
   sqrt, abs, sign, TeamNumber, Team, TeamColors
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
+import { VolleyballState } from "./Volleyball"
 
 export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params }) => {
   const { position } = entity?.components ?? {}
@@ -24,10 +25,18 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
 
   if (!far) {
     if (position.data.standing) {
+
+      const state = world.game.state as VolleyballState
+      if (state.phase === "serve") {
+        ballPos.setVelocity({ z: 3 })
+        ballPos.data.gravity = 0.07
+        return
+      }
+
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
 
-      const v = velocityToDirection(ballPos.data, params.target, 50, 0.07, 3)
+      const v = velocityToDirection(ballPos.data, params.target, 70, 0.07, 3)
       console.log(v)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
@@ -171,7 +180,7 @@ export const Ball = () => Entity({
     debug: Debug(),
     position: Position({ x: 225, y: 0, gravity: 0.05 }),
     collider: Collider({ shape: "ball", radius: 4, restitution: 0.8, group: "11111111111111100000000000000000" }),
-    shadow: Shadow(3),
+    shadow: Shadow(3, 3),
     networked: Networked(),
     npc: NPC({
       behavior: (ball) => {
@@ -181,18 +190,17 @@ export const Ball = () => Entity({
     }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.5 },
-      scale: 0.7,
+      scale: 0.6,
+      // scale: 0.22,
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
+      // outline: { color: 0x222222, thickness: 1 },
       setup: async (r) => {
+        // const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
         const texture = (await loadTexture("vball.json"))["ball"]
-        const sprite = new Sprite(texture)
-
-        sprite.anchor.set(0.5, 0.5)
-
-        r.c = sprite
+        r.c = new Sprite(texture)
       }
     })
   }
