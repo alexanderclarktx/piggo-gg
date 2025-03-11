@@ -32,7 +32,7 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       CameraSystem({ follow: () => ({ x: 225, y: 0 }) })
     ],
     entities: [
-      // Background({ img: "space.png" }),
+      Background({ img: "space.png" }),
       EscapeMenu(), Cursor(),
       Ball(),
       Court(),
@@ -69,7 +69,7 @@ const VolleyballSystem = SystemBuilder({
           } else {
             ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
               y: 0,
-              x: state.teamServing === "left" ? 150 : 400
+              x: state.teamServing === "left" ? 0 : 400
             })
 
             ballPos.data.rotation = 0

@@ -74,7 +74,7 @@ export const velocityToDirection = (from: XYZ, to: XY, distance: number, g: numb
 
   if (totalDistance === 0) return { x: 0, y: 0 }
 
-  const scale = distance / totalDistance
+  const scale = min(distance / totalDistance, 1)
   const targetX = dx * scale
   const targetY = dy * scale
 
