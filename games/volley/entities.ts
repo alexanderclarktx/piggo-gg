@@ -1,10 +1,8 @@
 import {
-  Action, Actions, Character, ClientSystemBuilder, Collider,
-  Debug, Entity, Input, LineWall, loadTexture, Move,
-  Networked, NPC, pixiGraphics, Player, Position, Renderable,
-  Shadow, timeToLand, velocityToDirection, velocityToPoint,
-  WASDInputMap, XY, XYZdiff, Point, Chase, closestEntity,
-  sqrt, abs, sign, TeamNumber, Team, TeamColors
+  abs, Action, Actions, Character, Chase, ClientSystemBuilder, closestEntity, Collider,
+  Debug, Entity, Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics, Player,
+  Point, Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors, TeamNumber,
+  timeToLand, velocityToDirection, velocityToPoint, WASDInputMap, XY, XYdistance, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
@@ -24,27 +22,29 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
   const far = XYZdiff(position.data, ballPos.data, range)
 
   if (!far) {
+    world.client?.soundManager.play("spike")
+
+    const state = world.game.state as VolleyballState
+    if (state.phase === "serve") {
+      ballPos.setVelocity({ z: 3 })
+      ballPos.data.gravity = 0.07
+      return
+    }
+
     if (position.data.standing) {
-
-      const state = world.game.state as VolleyballState
-      if (state.phase === "serve") {
-        ballPos.setVelocity({ z: 3 })
-        ballPos.data.gravity = 0.07
-        return
-      }
-
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
 
       const v = velocityToDirection(ballPos.data, params.target, 70, 0.07, 3)
-      console.log(v)
-      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
+      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 100 })
     } else {
-      ballPos.setVelocity({ z: 0 })
+      const distance = XYdistance(position.data, params.target)
+      const z = -5 + distance / 80
+
+      ballPos.setVelocity({ z })
       ballPos.data.gravity = 0.1
 
-      const v = velocityToPoint(ballPos.data, params.target, 0.1, 0)
-      console.log(v)
+      const v = velocityToPoint(ballPos.data, params.target, 0.1, z)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
@@ -93,7 +93,7 @@ export const Bot = (team: TeamNumber, pos: XY) => Entity({
         } else {
           const target = world.entity<Position>("target")
           if (!target) return
-          return { actionId: "chase", entityId: entity.id, params: { target } }
+          return { actionId: "chase", entityId: entity.id, params: { target: target.id } }
         }
       },
     }),
@@ -214,21 +214,28 @@ export const Target = (ball: Entity<Position | Renderable>) => {
     id: "target",
     components: {
       position: Position(),
-      renderable: Renderable({
-        zIndex: 3.8,
-        visible: true,
-        dynamic: ({ world }) => {
-          const { z, x, y, velocity: v, gravity, standing } = ball.components.position.data
-
-          target.components.renderable.visible = !standing
+      networked: Networked(),
+      npc: NPC({
+        behavior: (_, world) => {
+          const { z, x, y, velocity: v, gravity } = ball.components.position.data
 
           if (v.x === last.x && v.y === last.y) return
           last = { x: v.x, y: v.y }
 
           const t = timeToLand(gravity, z, v.z)
 
-          target.components.position.data.x = x + v.x * t / 1000 * world.tickrate
-          target.components.position.data.y = y + v.y * t / 1000 * world.tickrate
+          target.components.position.setPosition({
+            x: x + v.x * t / 1000 * world.tickrate,
+            y: y + v.y * t / 1000 * world.tickrate
+          })
+        }
+      }),
+      renderable: Renderable({
+        zIndex: 3.8,
+        visible: true,
+        dynamic: () => {
+          const { standing } = ball.components.position.data
+          target.components.renderable.visible = !standing
         },
         setContainer: async () => {
           const g = pixiGraphics()
@@ -243,7 +250,7 @@ export const Target = (ball: Entity<Position | Renderable>) => {
   return target
 }
 
-export const TargetSystem = ClientSystemBuilder({
+export const TargetSystem = SystemBuilder({
   id: "TargetSystem",
   init: ((world) => {
 

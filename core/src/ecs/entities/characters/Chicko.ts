@@ -63,7 +63,7 @@ const behavior = (entity: Entity<Position>, world: World): void | InvokedAction 
     if (XYdelta(position.data, closest.components.position.data) < 20 + (0.5 * renderable!.scale * renderable!.scale)) {
       return { actionId: "eat", params: { target: closest } }
     }
-    return { actionId: "chase", params: { target: closest } }
+    return { actionId: "chase", params: { target: closest.id } }
   }
 
   if (!position.data.heading.x && !position.data.heading.y) {
