@@ -7,6 +7,7 @@ import {
   sqrt, abs, sign, TeamNumber, Team, TeamColors
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
+import { VolleyballState } from "./Volleyball"
 
 export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params }) => {
   const { position } = entity?.components ?? {}
@@ -24,6 +25,14 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
 
   if (!far) {
     if (position.data.standing) {
+
+      const state = world.game.state as VolleyballState
+      if (state.phase === "serve") {
+        ballPos.setVelocity({ z: 3 })
+        ballPos.data.gravity = 0.07
+        return
+      }
+
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
 
@@ -181,15 +190,17 @@ export const Ball = () => Entity({
     }),
     renderable: Renderable({
       anchor: { x: 0.5, y: 0.5 },
-      scale: 0.2,
+      scale: 0.6,
+      // scale: 0.22,
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
-      outline: { color: 0x222222, thickness: 1 },
+      // outline: { color: 0x222222, thickness: 1 },
       setup: async (r) => {
-        const logo = (await loadTexture("piggo-logo.json"))["piggo-logo"]
-        r.c = new Sprite(logo)
+        // const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
+        const texture = (await loadTexture("vball.json"))["ball"]
+        r.c = new Sprite(texture)
       }
     })
   }

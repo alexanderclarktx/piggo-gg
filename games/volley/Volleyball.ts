@@ -4,7 +4,7 @@ import {
 } from "@piggo-gg/core"
 import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
 
-type VolleyballState = {
+export type VolleyballState = {
   scoreLeft: number
   scoreRight: number
   phase: "serve" | "play" | "win"
@@ -38,8 +38,8 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       Court(),
       Net(),
       Bot(1, { x: 100, y: 0 }),
-      Bot(2, { x: 350, y: -50 }),
-      Bot(2, { x: 350, y: 50 }),
+      Bot(2, { x: 350, y: 0 }),
+      // Bot(2, { x: 350, y: 50 }),
     ]
   })
 }
@@ -68,8 +68,8 @@ const VolleyballSystem = SystemBuilder({
             state.phase = "play"
           } else {
             ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
-              y: 0,
-              x: state.teamServing === "left" ? 0 : 400
+              y: 1,
+              x: state.teamServing === "left" ? 5 : 400
             })
 
             ballPos.data.rotation = 0
@@ -90,7 +90,7 @@ const VolleyballSystem = SystemBuilder({
               state.teamServing = "left"
             }
 
-            world.announce(`${state.teamServing} team won the point!`)
+            // world.announce(`${state.teamServing} team won the point!`)
           }
         }
       }
