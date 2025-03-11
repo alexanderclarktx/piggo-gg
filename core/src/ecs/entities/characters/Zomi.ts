@@ -73,7 +73,7 @@ const behavior = (entity: Entity<Position>, world: World): void | InvokedAction 
   const distance = positionDelta(position, closest.components.position)
   if (distance < 30) return { actionId: "attack", params: { target: closest } }
 
-  return { actionId: "chase", params: { target: closest } }
+  return { actionId: "chase", params: { target: closest.id } }
 }
 
 export const ZomiAttack = (damage: number, cooldown: number) => Action<{ target: Entity }>("ZomiAttack", ({ entity, params, world }) => {
