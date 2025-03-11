@@ -126,7 +126,7 @@ const GameLobby = (): Entity => {
                 text: g.id,
                 pos: { x: (width - 230) / 2, y: 60 },
                 anchor: { x: 0, y: 0 },
-                style: { fontSize: 20, fill: 0xffffff },
+                style: { fontSize: 28, fill: 0xffffff },
                 strokeAlpha: 1
               }),
               onClick: () => {
@@ -145,8 +145,8 @@ const GameLobby = (): Entity => {
 
           const select = pixiText({
             text: "select game:",
-            style: { fontSize: 20 },
-            pos: { x: (width - 230) / 2, y: 20 },
+            style: { fontSize: 24 },
+            pos: { x: (width - 230) / 2, y: 15 },
             anchor: { x: 0.5, y: 0 }
           })
 
