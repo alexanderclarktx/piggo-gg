@@ -69,7 +69,7 @@ const VolleyballSystem = SystemBuilder({
           } else {
             ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
               y: 1,
-              x: state.teamServing === "left" ? 5 : 400
+              x: state.teamServing === "left" ? 5 : 5
             })
 
             ballPos.data.rotation = 0

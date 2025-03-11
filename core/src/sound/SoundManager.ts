@@ -6,8 +6,9 @@ export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
 export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4"
 export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
+export type VolleyballSounds = "spike"
 
-export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds
+export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleyballSounds
 
 const load = (url: string, volume: number): Sound => {
   const player = new Sound({ url, volume: volume - 10 })
@@ -54,7 +55,8 @@ export const SoundManager = (world: World): SoundManager => {
       whiff: load("whiff.wav", -15),
       slash: load("slash.mp3", -20),
       eat: load("eat.mp3", -20),
-      eat2: load("eat2.mp3", -20)
+      eat2: load("eat2.mp3", -20),
+      spike: load("spike.mp3", 5),
     },
     play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0, pos: XY | undefined = undefined) => {
       if (soundManager.muted) return

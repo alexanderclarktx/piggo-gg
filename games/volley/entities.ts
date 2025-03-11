@@ -1,10 +1,8 @@
 import {
-  Action, Actions, Character, ClientSystemBuilder, Collider,
-  Debug, Entity, Input, LineWall, loadTexture, Move,
-  Networked, NPC, pixiGraphics, Player, Position, Renderable,
-  Shadow, timeToLand, velocityToDirection, velocityToPoint,
-  WASDInputMap, XY, XYZdiff, Point, Chase, closestEntity,
-  sqrt, abs, sign, TeamNumber, Team, TeamColors
+  abs, Action, Actions, Character, Chase, ClientSystemBuilder, closestEntity, Collider,
+  Debug, Entity, Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics, Player,
+  Point, Position, Renderable, Shadow, sign, sqrt, Team, TeamColors, TeamNumber,
+  timeToLand, velocityToDirection, velocityToPoint, WASDInputMap, XY, XYdistance, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
@@ -24,27 +22,31 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
   const far = XYZdiff(position.data, ballPos.data, range)
 
   if (!far) {
-    if (position.data.standing) {
+    world.client?.soundManager.play("spike")
 
-      const state = world.game.state as VolleyballState
-      if (state.phase === "serve") {
-        ballPos.setVelocity({ z: 3 })
-        ballPos.data.gravity = 0.07
-        return
-      }
-
+    const state = world.game.state as VolleyballState
+    if (state.phase === "serve") {
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
+      return
+    }
 
-      const v = velocityToDirection(ballPos.data, params.target, 70, 0.07, 3)
-      console.log(`x: ${v.x}, y: ${v.y}`)
-      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
+    if (position.data.standing) {
+      ballPos.setVelocity({ z: 3.5 })
+      ballPos.data.gravity = 0.07
+
+      const v = velocityToDirection(ballPos.data, params.target, 70, 0.07, 3.5)
+      console.log(`velocityToDirection x: ${v.x}, y: ${v.y}`)
+      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 100 })
     } else {
-      ballPos.setVelocity({ z: 0 })
+      const distance = XYdistance(position.data, params.target)
+      const z = 5 + distance / 80
+
+      ballPos.setVelocity({ z })
       ballPos.data.gravity = 0.1
 
-      const v = velocityToPoint(ballPos.data, params.target, 0.1, 0)
-      console.log(`x: ${v.x}, y: ${v.y}`)
+      const v = velocityToPoint(ballPos.data, params.target, 0.1, z)
+      console.log(`velocityToPoint x: ${v.x}, y: ${v.y}`)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
