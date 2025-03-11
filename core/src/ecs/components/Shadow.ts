@@ -2,10 +2,10 @@ import {
   ClientSystemBuilder, Entity, pixiGraphics, Position, Renderable, Component
 } from "@piggo-gg/core"
 
-export type Shadow = Component<"shadow"> & { size: number }
+export type Shadow = Component<"shadow"> & { size: number, yOffset: number }
 
-export const Shadow = (size: number): Shadow => ({
-  type: "shadow", size
+export const Shadow = (size: number, yOffset: number = 0): Shadow => ({
+  type: "shadow", size, yOffset
 })
 
 type Target = Entity<Position | Renderable | Shadow>
@@ -22,9 +22,10 @@ export const ShadowSystem = ClientSystemBuilder({
       priority: 5,
       onTick: (entities: Target[]) => {
         for (const target of entities) {
-
           if (!table[target.id]) {
-            const shadowEntity = ShadowEntity(target, target.components.shadow.size)
+            const { size, yOffset } = target.components.shadow
+            const shadowEntity = ShadowEntity(target, size, yOffset)
+
             table[target.id] = shadowEntity
             world.addEntity(shadowEntity)
           }
@@ -34,7 +35,7 @@ export const ShadowSystem = ClientSystemBuilder({
   }
 })
 
-const ShadowEntity = (target: Target, size: number = 5) => Entity<Renderable>({
+const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<Renderable>({
   id: `shadow-${target.id}`,
   components: {
     position: Position(),
@@ -42,23 +43,22 @@ const ShadowEntity = (target: Target, size: number = 5) => Entity<Renderable>({
       zIndex: target.components.renderable.zIndex - 0.1,
       interpolate: true,
       dynamic: ({ entity }) => {
-        const { position } = entity.components
+        const { position, renderable } = entity.components
         if (!position) return
 
+        renderable.c.alpha = 0.4 - target.components.position.data.z / 300
+
         position.data.x = target.components.position.data.x
-        position.data.y = target.components.position.data.y
+        position.data.y = target.components.position.data.y + yOffset
 
         position.lastCollided = target.components.position.lastCollided
 
         const { x, y } = target.components.position.data.velocity
         position.setVelocity({ x, y })
       },
-      setContainer: async () => {
-        const g = pixiGraphics()
-        g.ellipse(0, 1, size * 2, size)
-        g.fill({ color: 0x000000, alpha: 0.3 })
-        return g
-      }
+      setContainer: async () => pixiGraphics()
+        .ellipse(0, 1, size * 2, size)
+        .fill({ color: 0x000000, alpha: 1 })
     })
   }
 })

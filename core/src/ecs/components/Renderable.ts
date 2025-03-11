@@ -32,7 +32,7 @@ export type Renderable = Component<"renderable"> & {
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
   dynamic: ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void) | undefined
 
-  prepareAnimations: (color?: number) => void
+  prepareAnimations: (color?: number, alpha?: number) => void
   setScale: (xy: XY) => void
   _init: (renderer: Renderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
@@ -41,6 +41,7 @@ export type Renderable = Component<"renderable"> & {
 }
 
 export type RenderableProps = {
+  alpha?: number
   anchor?: XY
   animations?: Record<string, AnimatedSprite>
   cacheAsBitmap?: boolean
@@ -93,14 +94,14 @@ export const Renderable = (props: RenderableProps): Renderable => {
     zIndex: props.zIndex ?? 0,
     rendered: false,
     renderer: undefined as unknown as Renderer,
-
-    prepareAnimations: (color: number = 0xffffff) => {
+    prepareAnimations: (color: number = 0xffffff, alpha: number = 1) => {
       values(renderable.animations).forEach((animation: AnimatedSprite) => {
         animation.animationSpeed = 0.1
         animation.scale.set(renderable.scale)
         animation.anchor.set(renderable.anchor.x, renderable.anchor.y)
         animation.texture.source.scaleMode = renderable.scaleMode
         animation.tint = color
+        animation.alpha = alpha
       })
       renderable.bufferedAnimation = keys(renderable.animations)[0]
     },
@@ -125,10 +126,10 @@ export const Renderable = (props: RenderableProps): Renderable => {
       const { thickness, color } = props ?? renderable.outline
       if (keys(renderable.animations).length) {
         values(renderable.animations).forEach((animation) => {
-          animation.filters = [new OutlineFilter({ thickness, color })]
+          animation.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
         })
       } else {
-        renderable.c.filters = [new OutlineFilter({ thickness, color })]
+        renderable.c.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
       }
     },
     cleanup: () => {
@@ -185,7 +186,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       if (renderable.outline) renderable.setOutline()
 
       if (keys(renderable.animations).length) {
-        renderable.prepareAnimations(renderable.animationColor)
+        renderable.prepareAnimations(renderable.animationColor, props.alpha ?? 1)
       } else {
         const c = renderable.c as Sprite | Graphics
         if (c.texture) {

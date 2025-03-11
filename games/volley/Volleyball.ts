@@ -31,9 +31,8 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       TargetSystem,
       CameraSystem({ follow: () => ({ x: 225, y: 0 }) })
     ],
-    bgColor: 0x006633,
     entities: [
-      Background({ img: "space.png" }),
+      // Background({ img: "space.png" }),
       EscapeMenu(), Cursor(),
       Ball(),
       Court(),
@@ -49,6 +48,11 @@ const VolleyballSystem = SystemBuilder({
   id: "VolleyballSystem",
   init: (world) => {
 
+    // scale camera to fit the court
+    const desiredScale = world.renderer?.app.screen.width! / 500
+    const scaleBy = desiredScale - world.renderer?.camera.root.scale.x! - desiredScale * 0.1
+    world.renderer?.camera.scaleBy(scaleBy)
+
     return {
       id: "VolleyballSystem",
       query: [],
@@ -63,22 +67,32 @@ const VolleyballSystem = SystemBuilder({
           if (ballPos.data.z > 0) {
             state.phase = "play"
           } else {
-            const x = state.teamServing === "left" ? 0 : 400
-            ballPos.setPosition({ x, y: 0 }).setVelocity({ x: 0, y: 0 })
+            ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
+              y: 0,
+              x: state.teamServing === "left" ? 150 : 400
+            })
+
+            ballPos.data.rotation = 0
           }
         }
 
         if (state.phase === "play") {
           if (ballPos.data.z === 0) {
-            const x = state.teamServing === "left" ? 0 : 400
-            ballPos.setPosition({ x, y: 0 }).setVelocity({ x: 0, y: 0 })
+
+            state.phase = "serve"
+
+            // who won the point
+            if (ballPos.data.x < 225) {
+              state.scoreRight++
+              state.teamServing = "right"
+            } else {
+              state.scoreLeft++
+              state.teamServing = "left"
+            }
+
+            world.announce(`${state.teamServing} team won the point!`)
           }
         }
-
-        // if (x < -100 || x > 600) {
-          // ball.components.position.setPosition({ x: 225, y: 0 }).setVelocity({ x: 0, y: 0 })
-          // ball.components.position.data.velocity.x = -velocity.x
-        // }
       }
     }
   }
