@@ -38,7 +38,7 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       Court(),
       Net(),
       Bot(1, { x: 100, y: 0 }),
-      // Bot(2, { x: 350, y: 0 }),
+      Bot(2, { x: 350, y: 0 }),
       // Bot(2, { x: 350, y: 50 }),
     ]
   })
@@ -69,7 +69,7 @@ const VolleyballSystem = SystemBuilder({
           } else {
             ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
               y: 1,
-              x: state.teamServing === "left" ? 5 : 5
+              x: state.teamServing === "left" ? 5 : 400
             })
 
             ballPos.data.rotation = 0

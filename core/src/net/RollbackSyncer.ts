@@ -33,10 +33,6 @@ export const RollbackSyncer = (): Syncer => {
         return
       }
 
-      // if (message.game !== world.game.id) {
-      //   return
-      // }
-
       const gap = world.tick - message.tick
       const framesForward = (gap >= 3 && gap <= 8) ?
         gap :
