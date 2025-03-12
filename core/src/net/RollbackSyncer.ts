@@ -6,8 +6,11 @@ export const RollbackSyncer = (): Syncer => {
 
   return {
     writeMessage: (world) => {
+
+      const actions = { [world.tick]: world.actions.atTick(world.tick) ?? {} }
+
       return {
-        actions: world.actions.atTick(world.tick) ?? {},
+        actions,
         chats: world.messages.atTick(world.tick) ?? {},
         game: world.game.id,
         playerId: world.client?.playerId() ?? "",
@@ -49,21 +52,30 @@ export const RollbackSyncer = (): Syncer => {
 
       // TODO filter out other character's actions
       const localActions = world.actions.atTick(message.tick) ?? {}
-      for (const [entityId, actions] of entries(message.actions)) {
 
-        if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-          // console.log("action for other dude")
-          world.actions.set(world.tick, entityId, actions)
-          continue
-        }
+      if (message.actions[message.tick]) {
 
-        if (!localActions[entityId]) {
-          mustRollback(`action not found locally ${actions[0].actionId}`)
-          break
-        }
-        if (JSON.stringify(localActions[entityId]) !== JSON.stringify(actions)) {
-          mustRollback(`action mismatch ${message.tick} ${entityId} ${stringify(localActions[entityId])} ${stringify(actions)}`)
-          break
+      // for (const [tick, actionsForTick] of entries(message.actions)) {
+
+        
+        // for (const [entityId, actions] of entries(actionsForTick)) {
+
+          for (const [entityId, actions] of entries(message.actions[message.tick])) {
+
+          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+            // console.log("action for other dude")
+            world.actions.set(world.tick, entityId, actions)
+            continue
+          }
+
+          if (!localActions[entityId]) {
+            mustRollback(`action not found locally ${actions[0].actionId}`)
+            break
+          }
+          if (JSON.stringify(localActions[entityId]) !== JSON.stringify(actions)) {
+            mustRollback(`action mismatch ${message.tick} ${entityId} ${stringify(localActions[entityId])} ${stringify(actions)}`)
+            break
+          }
         }
       }
 
@@ -124,7 +136,7 @@ export const RollbackSyncer = (): Syncer => {
         })
 
         // set actions
-        entries(message.actions).forEach(([entityId, actions]) => {
+        entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
           if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
             world.actions.set(world.tick, entityId, actions)
             return

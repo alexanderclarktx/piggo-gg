@@ -1,4 +1,4 @@
-import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo-gg/core"
+import { System, NetMessageTypes, World, entries, keys, stringify, InvokedAction } from "@piggo-gg/core"
 
 export type DelayServerSystemProps = {
   world: World
@@ -11,9 +11,16 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
   const sendMessage = () => {
 
+    const actions: Record<number, Record<string, InvokedAction[]>> = {}
+    let i = 0
+    while (world.actions.atTick(world.tick + i)) {
+      actions[world.tick + i] = world.actions.atTick(world.tick + i)!
+      i++
+    }
+
     // build tick data
     const tickData: NetMessageTypes = {
-      actions: world.actions.atTick(world.tick) ?? {},
+      actions,
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: "server",
@@ -56,7 +63,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
         // process message actions
         if (td.actions) {
-          entries(message.td.actions).forEach(([entityId, actions]) => {
+          entries(message.td.actions[message.td.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
               world.actions.push(td.tick, entityId, action)
             })
@@ -94,13 +101,13 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
         // process message actions
         if (tickData.actions) {
-          entries(tickData.actions).forEach(([entityId, actions]) => {
+          entries(tickData.actions[tickData.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
               world.actions.push(tickData.tick, entityId, action)
               console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
             })
             // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-            tickData.actions[entityId].forEach((action) => {
+            tickData.actions[tickData.tick][entityId].forEach((action) => {
               world.actions.push(world.tick, entityId, action)
               console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
             })

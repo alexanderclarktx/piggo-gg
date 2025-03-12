@@ -1,8 +1,9 @@
 import {
-  abs, Action, Actions, Character, Chase, ClientSystemBuilder, closestEntity, Collider,
-  Debug, Entity, Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics, Player,
-  Point, Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors, TeamNumber,
-  timeToLand, velocityToDirection, velocityToPoint, WASDInputMap, XY, XYdistance, XYZdiff
+  Action, Actions, Character, Chase, closestEntity, Collider, Debug, Entity,
+  Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics, Player,
+  Point, Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team,
+  TeamColors, TeamNumber, timeToLand, velocityToDirection, velocityToPoint,
+  WASDInputMap, XY, XYdistance, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
@@ -184,8 +185,8 @@ export const Ball = () => Entity({
     networked: Networked(),
     npc: NPC({
       behavior: (ball) => {
-        const { x, y, z } = ball.components.position.data.velocity
-        ball.components.position.data.rotation += 0.015 * sqrt(abs((x + y))) * sign(x)
+        const { x, y } = ball.components.position.data.velocity
+        ball.components.position.data.rotation += 0.001 * sqrt((x * x + y * y)) * sign(x)
       }
     }),
     renderable: Renderable({
