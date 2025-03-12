@@ -33,9 +33,9 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
     fromTick: (tick) => {
       const data: Record<number, Record<string, T[]>> = {}
 
-      for (const [x, y] of entries(buffer)) {
-        if (Number(x) >= tick) {
-          data[Number(x)] = y
+      for (const [index, value] of entries(buffer)) {
+        if (Number(index) >= tick) {
+          data[Number(index)] = value
         }
       }
 

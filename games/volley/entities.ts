@@ -9,16 +9,15 @@ import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
 
 export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params }) => {
-  const ball = world.entity<Position>("ball")
-  if (!ball) return
   if (!params.target || !params.from) return
 
-  const { target, from } = params
+  const ball = world.entity<Position>("ball")
+  if (!ball) return
 
+  const { target, from } = params
   const { position: ballPos } = ball.components
 
   const standing = from.z === 0
-
   const range = standing ? 20 : 30
   const far = XYZdiff(from, ballPos.data, range)
 
