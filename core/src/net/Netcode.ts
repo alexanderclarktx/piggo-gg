@@ -21,17 +21,6 @@ export type GameData = {
   timestamp: number
 }
 
-// export type RollbackTickData = {
-//   type: "game"
-//   actions: Record<number, Record<string, InvokedAction[]>>
-//   chats: Record<number, Record<string, string[]>>
-//   latency?: number
-//   player: string
-//   serializedEntities: Record<string, SerializedEntity>
-//   tick: number
-//   timestamp: number
-// }
-
 // API
 
 export type Request<Route extends string, Response extends {} = {}> = {
