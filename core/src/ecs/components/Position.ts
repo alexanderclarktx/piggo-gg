@@ -38,6 +38,7 @@ export type Position = Component<"position", {
 export type PositionProps = {
   x?: number
   y?: number
+  z?: number
   velocity?: { x: number, y: number }
   gravity?: number
   friction?: number
@@ -55,7 +56,7 @@ export const Position = (props: PositionProps = {}): Position => {
     data: {
       x: props.x ?? 0,
       y: props.y ?? 0,
-      z: 0,
+      z: props.z ?? 0,
       velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       speed: props.speed ?? 0,
       rotation: 0,
