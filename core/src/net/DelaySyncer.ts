@@ -132,9 +132,4 @@ export const DelaySyncer = (): Syncer => ({
       })
     })
   }
-    // console.log("actions", message.actions)
-    // entries(message.actions[message.tick])?.forEach(([entityId, actions]) => {
-      // world.actions.set(message.tick, entityId, actions)
-    // })
-  // }
 })

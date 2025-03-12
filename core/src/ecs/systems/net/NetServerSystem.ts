@@ -11,16 +11,9 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
   const sendMessage = () => {
 
-    const actions: Record<number, Record<string, InvokedAction[]>> = {}
-    let i = 0
-    while (world.actions.atTick(world.tick + i)) {
-      actions[world.tick + i] = world.actions.atTick(world.tick + i)!
-      i++
-    }
-
     // build tick data
     const tickData: NetMessageTypes = {
-      actions,
+      actions: world.actions.fromTick(world.tick),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: "server",
@@ -62,8 +55,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         const { td } = message
 
         // process message actions
-        if (td.actions) {
-          entries(message.td.actions[message.td.tick]).forEach(([entityId, actions]) => {
+        if (td.actions[td.tick]) {
+          entries(td.actions[td.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
               world.actions.push(td.tick, entityId, action)
             })

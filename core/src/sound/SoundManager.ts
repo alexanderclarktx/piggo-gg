@@ -87,7 +87,7 @@ export const SoundManager = (world: World): SoundManager => {
           if (sound) sound.start(0, startTime)
         }
       } catch (e) {
-        console.error("error while playing a sound", e)
+        console.error(`error while playing sound ${soundName}`)
       }
     }
   }
