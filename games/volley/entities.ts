@@ -1,25 +1,25 @@
 import {
-  abs, Action, Actions, Character, Chase, ClientSystemBuilder, closestEntity, Collider,
-  Debug, Entity, Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics, Player,
-  Point, Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors, TeamNumber,
-  timeToLand, velocityToDirection, velocityToPoint, WASDInputMap, XY, XYdistance, XYZdiff
+  Action, Actions, Character, Chase, closestEntity, Collider, Debug, Entity,
+  Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics, Player,
+  Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors,
+  TeamNumber, timeToLand, velocityToDirection, velocityToPoint, WASDInputMap,
+  XY, XYdistance, XYZ, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
 
-export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params }) => {
-  const { position } = entity?.components ?? {}
-  if (!position) return
+export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params }) => {
+  if (!params.target || !params.from) return
 
   const ball = world.entity<Position>("ball")
   if (!ball) return
 
-  if (!params.target) return
-
+  const { target, from } = params
   const { position: ballPos } = ball.components
 
-  const range = position.data.standing ? 20 : 30
-  const far = XYZdiff(position.data, ballPos.data, range)
+  const standing = from.z === 0
+  const range = standing ? 20 : 30
+  const far = XYZdiff(from, ballPos.data, range)
 
   if (!far) {
     world.client?.soundManager.play("spike")
@@ -31,14 +31,14 @@ export const Spike = Action<{ target: XY }>("spike", ({ entity, world, params })
       return
     }
 
-    if (position.data.standing) {
+    if (standing) {
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
 
-      const v = velocityToDirection(ballPos.data, params.target, 70, 0.07, 3)
-      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 100 })
+      const v = velocityToDirection(ballPos.data, target, 70, 0.07, 3)
+      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
-      const distance = XYdistance(position.data, params.target)
+      const distance = XYdistance(from, target)
       const z = -5 + distance / 80
 
       ballPos.setVelocity({ z })
@@ -88,8 +88,9 @@ export const Bot = (team: TeamNumber, pos: XY) => Entity({
           )
 
           const target = closestPlayer ? closestPlayer.components.position.data : { x: 0, y: 0 }
+          const from = { x: position.data.x, y: position.data.y, z: position.data.z }
 
-          return { actionId: "spike", entityId: entity.id, params: { target } }
+          return { actionId: "spike", entityId: entity.id, params: { target, from } }
         } else {
           const target = world.entity<Position>("target")
           if (!target) return
@@ -134,16 +135,22 @@ export const Dude = (player: Player) => Character({
       press: {
         ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),
-        "mb1": ({ hold, mouse }) => {
+        "mb1": ({ hold, mouse, world, entity }) => {
           if (hold) return null
-          return { actionId: "spike", params: { target: mouse } }
+          const { position } = entity.components
+          if (!position) return null
+
+          const from = { x: position.data.x, y: position.data.y, z: position.data.z }
+          const target = { x: mouse.x, y: mouse.y }
+          world.actions.push(world.tick + 3, entity.id, { actionId: "spike", params: { from, target } })
+
+          return null
         }
       }
     }),
     actions: Actions({
       move: Move,
       spike: Spike,
-      point: Point,
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 6 })
@@ -184,8 +191,8 @@ export const Ball = () => Entity({
     networked: Networked(),
     npc: NPC({
       behavior: (ball) => {
-        const { x, y, z } = ball.components.position.data.velocity
-        ball.components.position.data.rotation += 0.01 * sqrt(abs((x + y + z))) * sign(x)
+        const { x, y } = ball.components.position.data.velocity
+        ball.components.position.data.rotation += 0.001 * sqrt((x * x + y * y)) * sign(x)
       }
     }),
     renderable: Renderable({

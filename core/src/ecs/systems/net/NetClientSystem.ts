@@ -13,7 +13,7 @@ export const NetClientSystem = SystemBuilder({
 
     const syncers: Record<Game["netcode"], Syncer> = {
       delay: DelaySyncer(),
-      rollback: RollbackSyncer()
+      rollback: RollbackSyncer(world)
     }
     const syncer = () => syncers[world.game.netcode]
 

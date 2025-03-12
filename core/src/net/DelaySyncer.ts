@@ -25,7 +25,7 @@ export const DelaySyncer = (): Syncer => ({
   writeMessage: (world) => {
 
     const message: GameData = {
-      actions: world.actions.atTick(world.tick + 1) ?? {},
+      actions: { [world.tick]: world.actions.atTick(world.tick) ?? {} },
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
@@ -122,8 +122,12 @@ export const DelaySyncer = (): Syncer => ({
     }
 
     // set actions
-    entries(message.actions).forEach(([entityId, actions]) => {
-      world.actions.set(message.tick, entityId, actions)
+    entries(message.actions).forEach(([tick, actions]) => {
+      entries(actions).forEach(([entityId, actions]) => {
+        actions.forEach((action) => {
+          world.actions.push(Number(tick), entityId, action)
+        })
+      })
     })
   }
 })

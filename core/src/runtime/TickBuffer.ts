@@ -1,10 +1,11 @@
-import { keys } from "@piggo-gg/core"
+import { entries, keys } from "@piggo-gg/core"
 
 export type TickBuffer<T extends ({} | string)> = {
   at: (tick: number, entityId: string) => T[] | undefined
   atTick: (tick: number) => Record<string, T[]> | undefined
   clearTick: (tick: number) => void
   clearBeforeTick: (tick: number) => void
+  fromTick: (tick: number) => Record<number, Record<string, T[]>>
   keys: () => number[]
   set: (tick: number, entityId: string, state: T[]) => void
   push: (tick: number, entityId: string, state: T) => boolean
@@ -28,6 +29,17 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
       for (let i = 0; i < tick; i++) {
         delete buffer[i]
       }
+    },
+    fromTick: (tick) => {
+      const data: Record<number, Record<string, T[]>> = {}
+
+      for (const [index, value] of entries(buffer)) {
+        if (Number(index) >= tick) {
+          data[Number(index)] = value
+        }
+      }
+
+      return data
     },
     keys: () => {
       return keys(buffer).map(Number).reverse()

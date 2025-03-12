@@ -13,7 +13,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
     // build tick data
     const tickData: NetMessageTypes = {
-      actions: world.actions.atTick(world.tick) ?? {},
+      actions: world.actions.fromTick(world.tick),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: "server",
@@ -55,8 +55,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         const { td } = message
 
         // process message actions
-        if (td.actions) {
-          entries(message.td.actions).forEach(([entityId, actions]) => {
+        if (td.actions[td.tick]) {
+          entries(td.actions[td.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
               world.actions.push(td.tick, entityId, action)
             })
@@ -94,13 +94,13 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
         // process message actions
         if (tickData.actions) {
-          entries(tickData.actions).forEach(([entityId, actions]) => {
+          entries(tickData.actions[tickData.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
               world.actions.push(tickData.tick, entityId, action)
               console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
             })
             // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-            tickData.actions[entityId].forEach((action) => {
+            tickData.actions[tickData.tick][entityId].forEach((action) => {
               world.actions.push(world.tick, entityId, action)
               console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
             })
