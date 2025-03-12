@@ -38,8 +38,6 @@ export const RollbackSyncer = (): Syncer => {
         gap :
         ceil(world.client!.ms * 2 / world.tickrate) + 3
 
-      // console.log(`${world.tick} ${world.tick - message.tick} ticks ahead - forward: ${framesForward}`)
-
       lastSeenTick = message.tick
 
       let rollback = false
@@ -50,21 +48,21 @@ export const RollbackSyncer = (): Syncer => {
       }
 
       // TODO filter out other character's actions
-      const actions = world.actions.atTick(message.tick) ?? {}
-      for (const [entityId, action] of entries(message.actions)) {
+      const localActions = world.actions.atTick(message.tick) ?? {}
+      for (const [entityId, actions] of entries(message.actions)) {
 
         if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
           // console.log("action for other dude")
-          world.actions.set(world.tick, entityId, action)
+          world.actions.set(world.tick, entityId, actions)
           continue
         }
 
-        if (!actions[entityId]) {
-          mustRollback(`action not found locally ${action[0].actionId}`)
+        if (!localActions[entityId]) {
+          mustRollback(`action not found locally ${actions[0].actionId}`)
           break
         }
-        if (JSON.stringify(actions[entityId]) !== JSON.stringify(action)) {
-          mustRollback(`action mismatch ${message.tick} ${entityId} ${stringify(actions[entityId])} ${stringify(action)}`)
+        if (JSON.stringify(localActions[entityId]) !== JSON.stringify(actions)) {
+          mustRollback(`action mismatch ${message.tick} ${entityId} ${stringify(localActions[entityId])} ${stringify(actions)}`)
           break
         }
       }
@@ -127,6 +125,10 @@ export const RollbackSyncer = (): Syncer => {
 
         // set actions
         entries(message.actions).forEach(([entityId, actions]) => {
+          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+            world.actions.set(world.tick, entityId, actions)
+            return
+          }
           world.actions.set(message.tick, entityId, actions)
         })
 
@@ -141,10 +143,19 @@ export const RollbackSyncer = (): Syncer => {
 
         world.tick += 1
 
+        world.entitiesAtTick[world.tick] = {}
+        for (const entityId in world.entities) {
+          if (world.entities[entityId].components.networked) {
+            world.entitiesAtTick[world.tick][entityId] = world.entities[entityId].serialize()
+          }
+        }
+
         // set serialized entities
         world.entitiesAtTick[message.tick] = {
           ...message.serializedEntities
         }
+
+        console.log(`rolling from:${message.tick} forward:${framesForward} end:${world.tick}`)
 
         // console.log(`start:${start} end:${world.tick}`)
       }

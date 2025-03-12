@@ -185,7 +185,7 @@ export const Ball = () => Entity({
     npc: NPC({
       behavior: (ball) => {
         const { x, y, z } = ball.components.position.data.velocity
-        ball.components.position.data.rotation += 0.015 * sqrt(abs((x + y + z))) * sign(x)
+        ball.components.position.data.rotation += 0.015 * sqrt(abs((x + y))) * sign(x)
       }
     }),
     renderable: Renderable({
