@@ -71,6 +71,8 @@ export const RollbackSyncer = (world: World): Syncer => {
       type: "game"
     }),
     handleMessages: ({ world, buffer }) => {
+      rollback = false
+
       const message = buffer.pop()
       buffer = []
 
@@ -212,8 +214,6 @@ export const RollbackSyncer = (world: World): Syncer => {
 
         console.log(`rollback msg:${message.tick} forward:${framesForward} end:${world.tick}`)
       }
-
-      rollback = false
     }
   }
 }
