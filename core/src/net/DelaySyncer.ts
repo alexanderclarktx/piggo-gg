@@ -24,10 +24,8 @@ export const entityConstructors: Record<string, (_: { id?: string }) => Entity> 
 export const DelaySyncer = (): Syncer => ({
   writeMessage: (world) => {
 
-    const actions = { [world.tick]: world.actions.atTick(world.tick) ?? {} }
-
     const message: GameData = {
-      actions,
+      actions: { [world.tick]: world.actions.atTick(world.tick) ?? {} },
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",

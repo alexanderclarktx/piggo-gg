@@ -1,12 +1,20 @@
-import { ceil, entityConstructors, entries, GameData, InvokedAction, keys, stringify, Syncer, values, World } from "@piggo-gg/core"
+import {
+  ceil, entityConstructors, entries, GameData, keys, stringify, Syncer, values, World
+} from "@piggo-gg/core"
 
-export const RollbackSyncer = (): Syncer => {
+// TODO not generic across games (dude/spike)
+export const RollbackSyncer = (world: World): Syncer => {
 
   let lastSeenTick = 0
   let rollback = false
 
-  // find latest actions for other dudes
-  const handleDude = (message: GameData, world: World) => {
+  const mustRollback = (reason: string) => {
+    console.log(`MUST ROLLBACK tick:${world.tick}`, reason)
+    rollback = true
+  }
+
+  // find latest actions for other players' characters
+  const handleOtherPlayers = (message: GameData) => {
 
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
@@ -42,13 +50,9 @@ export const RollbackSyncer = (): Syncer => {
               const pushed = world.actions.push(latest, entityId, { ...action, offline: true })
 
               if (pushed) {
-                console.log(`PUSHED ACTION world:${world.tick} tick:${latest}`, action)
-                rollback = true
+                mustRollback(`spike world:${world.tick} tick:${latest}`)
               }
             }
-            // else {
-            //   world.actions.push(world.tick, entityId, { ...action, offline: true })
-            // }
           }
         }
       }
@@ -56,18 +60,16 @@ export const RollbackSyncer = (): Syncer => {
   }
 
   return {
-    writeMessage: (world) => {
-      return {
-        actions: world.actions.fromTick(world.tick),
-        chats: world.messages.atTick(world.tick) ?? {},
-        game: world.game.id,
-        playerId: world.client?.playerId() ?? "",
-        serializedEntities: {},
-        tick: world.tick,
-        timestamp: Date.now(),
-        type: "game"
-      }
-    },
+    writeMessage: (world) => ({
+      actions: world.actions.fromTick(world.tick),
+      chats: world.messages.atTick(world.tick) ?? {},
+      game: world.game.id,
+      playerId: world.client?.playerId() ?? "",
+      serializedEntities: {},
+      tick: world.tick,
+      timestamp: Date.now(),
+      type: "game"
+    }),
     handleMessages: ({ world, buffer }) => {
       const message = buffer.pop()
       buffer = []
@@ -89,20 +91,14 @@ export const RollbackSyncer = (): Syncer => {
 
       lastSeenTick = message.tick
 
-      const mustRollback = (reason: string) => {
-        console.log(`MUST ROLLBACK tick:${world.tick}`, reason)
-        rollback = true
-      }
-
       const localActions = world.actions.atTick(message.tick) ?? {}
 
-      handleDude(message, world)
+      handleOtherPlayers(message)
 
       if (message.actions[message.tick]) {
         for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
           if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-            // world.actions.set(world.tick, entityId, actions)
             continue
           }
 
@@ -130,20 +126,18 @@ export const RollbackSyncer = (): Syncer => {
       }
 
       if (!rollback) {
-        entries(remote).forEach(([entityId, serializedEntity]) => {
-
+        for (const [entityId, serializedEntity] of entries(remote)) {
           if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-            // world.entities[entityId].deserialize(serializedEntity)
-            return
+            continue
           }
 
           if (local[entityId]) {
             if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
               mustRollback(`entity: ${entityId} mismatch ${message.tick} ${stringify(local[entityId])} ${stringify(serializedEntity)}`)
-              return
+              continue
             }
           }
-        })
+        }
       }
 
       if (rollback) {
@@ -175,7 +169,7 @@ export const RollbackSyncer = (): Syncer => {
         })
 
         // find latest actions for other dudes
-        handleDude(message, world)
+        handleOtherPlayers(message)
 
         // set actions
         if (message.actions[message.tick]) {
@@ -206,7 +200,6 @@ export const RollbackSyncer = (): Syncer => {
         }
 
         keys(message.serializedEntities).forEach((entityId) => {
-          // todo still stutters when other dude hits ball
           if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
             world.entities[entityId].deserialize(message.serializedEntities[entityId])
           }

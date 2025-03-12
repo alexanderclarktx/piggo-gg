@@ -1,4 +1,4 @@
-import { System, NetMessageTypes, World, entries, keys, stringify, InvokedAction } from "@piggo-gg/core"
+import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo-gg/core"
 
 export type DelayServerSystemProps = {
   world: World
