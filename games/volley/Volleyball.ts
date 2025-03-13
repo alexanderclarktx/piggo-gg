@@ -1,7 +1,6 @@
 import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, Position,
-  Scoreboard,
-  ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
+  Scoreboard, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
 } from "@piggo-gg/core"
 import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
 
