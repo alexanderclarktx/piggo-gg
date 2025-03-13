@@ -8,8 +8,8 @@ import {
 import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
 
-export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params }) => {
-  if (!params.target || !params.from) return
+export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params, entity }) => {
+  if (!params.target || !params.from || !entity) return
 
   const ball = world.entity<Position>("ball")
   if (!ball) return
@@ -25,6 +25,21 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     world.client?.soundManager.play("spike")
 
     const state = world.game.state as VolleyballState
+
+    if (world.tick - state.lastHitTick < 20) return
+
+    state.lastHit = entity.id
+    if (state.lastHitTeam != entity.components.team!.data.team) {
+      state.lastHitTeam = entity.components.team!.data.team
+      state.hit = 1
+    } else {
+      state.hit += 1
+    }
+
+    state.lastHitTick = world.tick
+
+    console.log("hit", state.hit, world.tick)
+
     if (state.phase === "serve") {
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
@@ -42,9 +57,9 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
       const z = -5 + distance / 80
 
       ballPos.setVelocity({ z })
-      ballPos.data.gravity = 0.1
+      ballPos.data.gravity = 0.05
 
-      const v = velocityToPoint(ballPos.data, params.target, 0.1, z)
+      const v = velocityToPoint(ballPos.data, params.target, 0.05, z)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
   }
@@ -82,6 +97,21 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
           if ((team.data.team === 1 && targetPos.data.x > 225) || (team.data.team === 2 && targetPos.data.x < 225)) {
             position.clearHeading()
             return
+          }
+
+          const state = world.game.state as VolleyballState
+          if (state.phase === "serve" || state.lastHit === bot.id) {
+            position.clearHeading()
+            return
+          }
+
+          if (
+            state.hit === 2 &&
+            state.lastHitTeam === team.data.team &&
+            position.data.standing &&
+            world.tick - state.lastHitTick > 20
+          ) {
+            return { actionId: "jump", entityId: bot.id }
           }
 
           const range = position.data.standing ? 20 : 30

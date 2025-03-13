@@ -10,6 +10,9 @@ export type VolleyballState = {
   phase: "serve" | "play" | "win"
   teamServing: "left" | "right"
   lastHit: string
+  lastHitTeam: number
+  lastHitTick: number
+  hit: 0 | 1 | 2 | 3
 }
 
 export const Volleyball: GameBuilder<VolleyballState> = {
@@ -22,7 +25,10 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       scoreRight: 0,
       phase: "serve",
       teamServing: "left",
-      lastHit: ""
+      lastHit: "",
+      lastHitTeam: 1,
+      lastHitTick: 0,
+      hit: 0
     },
     systems: [
       SpawnSystem(Dude),
@@ -39,7 +45,7 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       Net(),
       Bot(1, { x: 100, y: 0 }),
       Bot(2, { x: 350, y: 0 }),
-      // Bot(2, { x: 350, y: 50 }),
+      Bot(2, { x: 350, y: 50 }),
     ]
   })
 }
