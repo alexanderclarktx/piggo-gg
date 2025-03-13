@@ -1,6 +1,6 @@
 import {
-  Background, CameraSystem, Cursor, EscapeMenu, GameBuilder,
-  Position, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder
+  Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, PC, Position,
+  ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
 } from "@piggo-gg/core"
 import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
 
@@ -43,10 +43,7 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       Ball(),
       Court(),
       Net(),
-      ScorePanel(),
-      Bot(1, { x: 100, y: 0 }),
-      Bot(2, { x: 350, y: 0 }),
-      Bot(2, { x: 350, y: 50 }),
+      ScorePanel()
     ]
   })
 }
@@ -54,6 +51,35 @@ export const Volleyball: GameBuilder<VolleyballState> = {
 const VolleyballSystem = SystemBuilder({
   id: "VolleyballSystem",
   init: (world) => {
+
+    const bots = []
+
+    // spawn a bot til there's 2 players on each team
+    const players = world.queryEntities<PC | Team>(["pc", "team"])
+    if (players.length < 4) {
+
+      let team1 = 0
+      let team2 = 0
+
+      for (const player of players) {
+        if (player.components.team.data.team === 1) team1++
+        if (player.components.team.data.team === 2) team2++
+      }
+
+      while (team1 < 2) {
+        bots.push(Bot(1, { x: 100, y: -30 + 30 * team1 }))
+        team1++
+      }
+
+      while (team2 < 2) {
+        bots.push(Bot(2, { x: 350, y: -30 + 30 * team2 }))
+        team2++
+      }
+
+      for (const bot of bots) {
+        world.addEntity(bot)
+      }
+    }
 
     // scale camera to fit the court
     const desiredScale = world.renderer?.app.screen.width! / 500
@@ -96,8 +122,6 @@ const VolleyballSystem = SystemBuilder({
               state.scoreLeft++
               state.teamServing = 1
             }
-
-            // world.announce(`${state.teamServing} team won the point!`)
           }
         }
       }

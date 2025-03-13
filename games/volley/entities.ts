@@ -135,10 +135,11 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
               return { actionId: "spike", entityId: bot.id, params: { target, from: position.data } }
             }
 
-            const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)![0]
+            const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)[0]
+            if (!closestTeammate) return
             const hit = middle(
-              closestTeammate!.components.position.data,
-              { y: closestTeammate!.components.position.data.y, x: 225 }
+              closestTeammate.components.position.data,
+              { y: closestTeammate.components.position.data.y, x: 225 }
             )
 
             return { actionId: "spike", entityId: bot.id, params: { target: hit, from } }
@@ -326,6 +327,7 @@ export const TargetSystem = SystemBuilder({
       priority: 5,
       onTick: () => {
         const ball = world.entity<Position | Renderable>("ball")
+
         if (!target && ball) {
           target = Target(ball)
           world.addEntity(target)
