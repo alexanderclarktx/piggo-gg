@@ -48,8 +48,10 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
 
         renderable.c.alpha = 0.3 - target.components.position.data.z / 400
 
-        position.data.x = target.components.position.data.x
-        position.data.y = target.components.position.data.y + yOffset
+        position.setPosition({
+          x: target.components.position.data.x,
+          y: target.components.position.data.y + yOffset,
+        })
 
         position.lastCollided = target.components.position.lastCollided
 

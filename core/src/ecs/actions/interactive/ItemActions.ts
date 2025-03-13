@@ -24,7 +24,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   item.dropped = false
 
   position.data.follows = character.id
-  position.data.rotation = 0
+  position.setRotation(0)
 
   renderable.visible = false
 

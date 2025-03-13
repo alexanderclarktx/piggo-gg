@@ -49,6 +49,10 @@ export const XYdelta = (a: XY, b: XY): number => {
 
 export const XYequal = (a: XY, b: XY) => a.x === b.x && a.y === b.y
 
+export const middle = (a: XY, b: XY): XY => {
+  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
+}
+
 export const timeToLand = (g: number, z: number, v: number): number => {
   const a = -0.5 * g
   const discriminant = v * v - 4 * a * z
@@ -121,7 +125,7 @@ export const positionDelta = (a: Position, b: Position): number => {
   return hypot(a.data.x - b.data.x, a.data.y - b.data.y)
 }
 
-export const closestEntity = (entities: Entity<Position>[], pos: XY, maxDistance?: number): Entity<Position> | undefined => {
+export const closestEntity = (pos: XY, entities: Entity<Position>[], maxDistance?: number): Entity<Position> | undefined => {
   if (entities.length > 1) {
     entities.sort((a: Entity<Position>, b: Entity<Position>) => {
       const aPosition = a.components.position

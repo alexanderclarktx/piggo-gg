@@ -1,6 +1,6 @@
 import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder,
-  Position, ShadowSystem, SpawnSystem, SystemBuilder
+  Position, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder
 } from "@piggo-gg/core"
 import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
 
@@ -8,8 +8,11 @@ export type VolleyballState = {
   scoreLeft: number
   scoreRight: number
   phase: "serve" | "play" | "win"
-  teamServing: "left" | "right"
+  teamServing: 1 | 2
   lastHit: string
+  lastHitTeam: 0 | 1 | 2
+  lastHitTick: number
+  hit: 0 | 1 | 2 | 3
 }
 
 export const Volleyball: GameBuilder<VolleyballState> = {
@@ -21,8 +24,11 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       scoreLeft: 0,
       scoreRight: 0,
       phase: "serve",
-      teamServing: "left",
-      lastHit: ""
+      teamServing: 1,
+      lastHit: "",
+      lastHitTeam: 1,
+      lastHitTick: 0,
+      hit: 0
     },
     systems: [
       SpawnSystem(Dude),
@@ -37,9 +43,10 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       Ball(),
       Court(),
       Net(),
+      ScorePanel(),
       Bot(1, { x: 100, y: 0 }),
       Bot(2, { x: 350, y: 0 }),
-      // Bot(2, { x: 350, y: 50 }),
+      Bot(2, { x: 350, y: 50 }),
     ]
   })
 }
@@ -64,30 +71,30 @@ const VolleyballSystem = SystemBuilder({
         const state = world.game.state as VolleyballState
 
         if (state.phase === "serve") {
-          if (ballPos.data.z > 0) {
-            state.phase = "play"
-          } else {
-            ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
-              y: 1,
-              x: state.teamServing === "left" ? 5 : 400
-            })
+          ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
+            x: state.teamServing === 1 ? 10 : 400,
+            y: 1, z: 50
+          }).setRotation(0).setGravity(0)
 
-            ballPos.data.rotation = 0
-          }
+          state.lastHit = ""
+          state.lastHitTeam = 0
         }
 
         if (state.phase === "play") {
           if (ballPos.data.z === 0) {
 
             state.phase = "serve"
+            state.hit = 0
+            state.lastHit = ""
+            state.lastHitTeam = 0
 
             // who won the point
             if (ballPos.data.x < 225) {
               state.scoreRight++
-              state.teamServing = "right"
+              state.teamServing = 2
             } else {
               state.scoreLeft++
-              state.teamServing = "left"
+              state.teamServing = 1
             }
 
             // world.announce(`${state.teamServing} team won the point!`)

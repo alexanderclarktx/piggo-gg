@@ -23,7 +23,9 @@ export type Position = Component<"position", {
   screenFixed: boolean
   orientation: OctString
   orientationRads: number
-  setPosition: (_: XY) => Position
+  setGravity: (_: number) => Position
+  setPosition: (_: { x?: number, y?: number, z?: number }) => Position
+  setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
   impulse: (_: XY) => Position
   setSpeed: (_: number) => void
@@ -74,9 +76,19 @@ export const Position = (props: PositionProps = {}): Position => {
     screenFixed: props.screenFixed ?? false,
     orientation: "r",
     orientationRads: 0,
-    setPosition: ({ x, y }: XY) => {
-      position.data.x = round(x, 3)
-      position.data.y = round(y, 3)
+    setGravity: (gravity: number) => {
+      position.data.gravity = round(gravity, 3)
+      return position
+    },
+    setPosition: ({ x, y, z }: XYZ) => {
+      if (x !== undefined) position.data.x = round(x, 3)
+      if (y !== undefined) position.data.y = round(y, 3)
+      if (z !== undefined) position.data.z = round(z, 3)
+
+      return position
+    },
+    setRotation: (rotation: number) => {
+      position.data.rotation = round(rotation, 3)
       return position
     },
     setVelocity: ({ x, y, z }) => {
@@ -134,7 +146,7 @@ export const Position = (props: PositionProps = {}): Position => {
 
       if (stopAtZero) {
         if (position.data.rotation > 0 && position.data.rotation - amount < 0) {
-          position.data.rotation = 0
+          position.setRotation(0)
         }
       }
 
@@ -145,7 +157,7 @@ export const Position = (props: PositionProps = {}): Position => {
 
       if (stopAtZero) {
         if (position.data.rotation < 0 && position.data.rotation + amount > 0) {
-          position.data.rotation = 0
+          position.setRotation(0)
         }
       }
 
