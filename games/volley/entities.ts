@@ -3,7 +3,7 @@ import {
   Input, LineWall, loadTexture, middle, Move, Networked, NPC, pixiGraphics, Player,
   Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors,
   teammates, TeamNumber, timeToLand, velocityToDirection, velocityToPoint,
-  WASDInputMap, XY, XYdistance, XYZ, XYZdiff
+  WASDInputMap, XY, XYdiff, XYdistance, XYZ, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
@@ -37,10 +37,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
 
     state.lastHitTick = world.tick
 
-    console.log("hit", state.hit, world.tick)
-
     if (standing && state.phase !== "serve") {
-      console.log("WEAK", state.hit, state.phase)
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
 
@@ -48,7 +45,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       const distance = XYdistance(from, target)
-      const vz = -3 + distance / 150
+      const vz = -2 + distance / 200
 
       ballPos.setVelocity({ z: vz })
       ballPos.data.gravity = 0.05
@@ -90,37 +87,37 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
           const { position, team } = bot.components
           const { position: targetPos } = target.components
 
-          // idle if ball going to the other side
-          if ((team.data.team === 1 && targetPos.data.x > 225) || (team.data.team === 2 && targetPos.data.x < 225)) {
+          const state = world.game.state as VolleyballState
+
+          // if ball is going to the other side
+          if (state.phase !== "serve" && (team.data.team === 1 && targetPos.data.x > 225) || (team.data.team === 2 && targetPos.data.x < 225)) {
             position.clearHeading()
             return
           }
 
-          // idle if we just hit the ball
-          const state = world.game.state as VolleyballState
+          // if we just hit the ball
           if (state.lastHit === bot.id) {
             position.clearHeading()
             return
           }
 
-          // idle if we are not serving
-          if (state.phase === "serve" && ballPos.data.z === 0 && state.teamServing !== team.data.team) {
+          // if we are not serving
+          if (state.phase === "serve" && state.teamServing !== team.data.team) {
             position.clearHeading()
             return
           }
 
-          // idle if we are not the closest to the target
+          // if we are not the closest to the target
           const closest = closestEntity(targetPos.data, teammates(world, bot))
           if (closest?.id !== state.lastHit && closest?.id !== bot.id) {
+            console.log("not closest")
             position.clearHeading()
             return
           }
 
-          if (
-            state.hit === 2 &&
-            state.lastHitTeam === team.data.team &&
-            position.data.standing &&
-            world.tick - state.lastHitTick > 20
+          // jump for the 3rd hit
+          if (state.hit === 2 && state.lastHitTeam === team.data.team &&
+            position.data.standing && world.tick - state.lastHitTick > 20
           ) {
             return { actionId: "jump", entityId: bot.id }
           }
@@ -131,11 +128,12 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
           if (!far) {
             const from = { x: position.data.x, y: position.data.y, z: position.data.z }
 
-            if (state.hit === 2) {
+            if (state.hit === 2 || state.phase === "serve") {
               const target = {
                 x: 225 + (team.data.team === 1 ? 1 : -1) * world.random.int(225),
                 y: world.random.int(150, 75)
               }
+              console.log("spike", target)
               return { actionId: "spike", entityId: bot.id, params: { target, from: position.data } }
             }
 
@@ -147,7 +145,13 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
 
             return { actionId: "spike", entityId: bot.id, params: { target: hit, from } }
           } else {
-            return { actionId: "chase", entityId: bot.id, params: { target: target.id } }
+            // jump for the serve
+            if (state.phase === "serve" && position.data.standing && !XYdiff(position.data, ballPos.data, 20)) {
+              return { actionId: "jump", entityId: bot.id }
+            }
+
+            const ballOrTarget = state.phase === "serve" ? ball.id : target.id
+            return { actionId: "chase", entityId: bot.id, params: { target: ballOrTarget } }
           }
         },
       }),
@@ -294,10 +298,10 @@ export const Target = (ball: Entity<Position | Renderable>) => {
       }),
       renderable: Renderable({
         zIndex: 3.8,
-        visible: true,
+        visible: false,
         dynamic: () => {
-          const { standing } = ball.components.position.data
-          target.components.renderable.visible = !standing
+          const { standing, gravity } = ball.components.position.data
+          target.components.renderable.visible = (!standing && gravity > 0)
         },
         setContainer: async () => {
           const g = pixiGraphics()

@@ -72,8 +72,8 @@ const VolleyballSystem = SystemBuilder({
 
         if (state.phase === "serve") {
           ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
-            x: state.teamServing === 1 ? 5 : 400,
-            y: 1, z: 15
+            x: state.teamServing === 1 ? 10 : 400,
+            y: 1, z: 50
           }).setRotation(0).setGravity(0)
 
           state.lastHit = ""
@@ -84,6 +84,9 @@ const VolleyballSystem = SystemBuilder({
           if (ballPos.data.z === 0) {
 
             state.phase = "serve"
+            state.hit = 0
+            state.lastHit = ""
+            state.lastHitTeam = 0
 
             // who won the point
             if (ballPos.data.x < 225) {
