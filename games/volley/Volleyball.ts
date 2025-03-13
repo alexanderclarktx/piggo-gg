@@ -1,6 +1,6 @@
 import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder,
-  Position, ShadowSystem, SpawnSystem, SystemBuilder
+  Position, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder
 } from "@piggo-gg/core"
 import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
 
@@ -43,6 +43,7 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       Ball(),
       Court(),
       Net(),
+      ScorePanel(),
       Bot(1, { x: 100, y: 0 }),
       Bot(2, { x: 350, y: 0 }),
       Bot(2, { x: 350, y: 50 }),
