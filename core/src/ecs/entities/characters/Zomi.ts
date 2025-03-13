@@ -67,7 +67,7 @@ const behavior = (entity: Entity<Position>, world: World): void | InvokedAction 
     .filter((e) => !(e.id.includes("zomi")))
     .filter((e) => e.components.element!.data.kind === "flesh")
 
-  const closest = closestEntity(targets, position.data)
+  const closest = closestEntity(position.data, targets)
   if (!closest) return
 
   const distance = positionDelta(position, closest.components.position)

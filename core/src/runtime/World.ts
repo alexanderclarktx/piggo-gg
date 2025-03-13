@@ -31,7 +31,7 @@ export type World = {
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
   entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
-  queryEntities: <T extends ComponentTypes>(query: ValidComponents[]) => Entity<T>[]
+  queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter?: (entity: Entity<T>) => boolean) => Entity<T>[]
   onTick: (_: { isRollback: boolean }) => void
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -136,8 +136,9 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     entity: <T extends ComponentTypes>(id: string) => {
       return world.entities[id] as Entity<T>
     },
-    queryEntities: <T extends ComponentTypes>(query: ValidComponents[]) => {
-      return filterEntities(query, values(world.entities)) as Entity<T>[]
+    queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter: (entity: Entity<T>) => boolean = () => true) => {
+      const entities = filterEntities(query, values(world.entities)) as Entity<T>[]
+      return entities.filter(filter)
     },
     onTick: ({ isRollback }) => {
       const now = performance.now()

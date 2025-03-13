@@ -1,9 +1,9 @@
 import {
   Action, Actions, Character, Chase, closestEntity, Collider, Debug, Entity,
-  Input, LineWall, loadTexture, Move, Networked, NPC, pixiGraphics, Player,
+  Input, LineWall, loadTexture, middle, Move, Networked, NPC, pixiGraphics, Player,
   Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors,
-  TeamNumber, timeToLand, velocityToDirection, velocityToPoint, WASDInputMap,
-  XY, XYdistance, XYZ, XYZdiff
+  teammates, TeamNumber, timeToLand, velocityToDirection, velocityToPoint,
+  WASDInputMap, XY, XYdistance, XYZ, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
@@ -22,11 +22,10 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
   const far = XYZdiff(from, ballPos.data, range)
 
   if (!far) {
-    world.client?.soundManager.play("spike")
-
     const state = world.game.state as VolleyballState
-
     if (world.tick - state.lastHitTick < 20) return
+
+    world.client?.soundManager.play("spike")
 
     state.lastHit = entity.id
     if (state.lastHitTeam != entity.components.team!.data.team) {
@@ -40,13 +39,8 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
 
     console.log("hit", state.hit, world.tick)
 
-    if (state.phase === "serve") {
-      ballPos.setVelocity({ z: 3 })
-      ballPos.data.gravity = 0.07
-      return
-    }
-
-    if (standing) {
+    if (standing && state.phase !== "serve") {
+      console.log("WEAK", state.hit, state.phase)
       ballPos.setVelocity({ z: 3 })
       ballPos.data.gravity = 0.07
 
@@ -62,6 +56,8 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
       const v = velocityToPoint(ballPos.data, params.target, 0.05, vz)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     }
+
+    state.phase = "play"
   }
 }, 20)
 
@@ -94,13 +90,28 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
           const { position, team } = bot.components
           const { position: targetPos } = target.components
 
+          // idle if ball going to the other side
           if ((team.data.team === 1 && targetPos.data.x > 225) || (team.data.team === 2 && targetPos.data.x < 225)) {
             position.clearHeading()
             return
           }
 
+          // idle if we just hit the ball
           const state = world.game.state as VolleyballState
-          if (state.phase === "serve" || state.lastHit === bot.id) {
+          if (state.lastHit === bot.id) {
+            position.clearHeading()
+            return
+          }
+
+          // idle if we are not serving
+          if (state.phase === "serve" && ballPos.data.z === 0 && state.teamServing !== team.data.team) {
+            position.clearHeading()
+            return
+          }
+
+          // idle if we are not the closest to the target
+          const closest = closestEntity(targetPos.data, teammates(world, bot))
+          if (closest?.id !== state.lastHit && closest?.id !== bot.id) {
             position.clearHeading()
             return
           }
@@ -118,19 +129,24 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
           const far = XYZdiff(position.data, ballPos.data, range)
 
           if (!far) {
-            // todo filter on team
-            const closestPlayer = closestEntity(
-              world.queryEntities<Position>(["position", "team"])
-                .filter(e => e.id.includes("dude")),
-              ballPos.data
-            )
-
-            const hit = closestPlayer ? closestPlayer.components.position.data : { x: 0, y: 0 }
             const from = { x: position.data.x, y: position.data.y, z: position.data.z }
+
+            if (state.hit === 2) {
+              const target = {
+                x: 225 + (team.data.team === 1 ? 1 : -1) * world.random.int(225),
+                y: world.random.int(150, 75)
+              }
+              return { actionId: "spike", entityId: bot.id, params: { target, from: position.data } }
+            }
+
+            const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)![0]
+            const hit = middle(
+              closestTeammate!.components.position.data,
+              { y: closestTeammate!.components.position.data.y, x: 225 }
+            )
 
             return { actionId: "spike", entityId: bot.id, params: { target: hit, from } }
           } else {
-            // if (!target) return
             return { actionId: "chase", entityId: bot.id, params: { target: target.id } }
           }
         },

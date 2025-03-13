@@ -57,7 +57,7 @@ const behavior = (entity: Entity<Position>, world: World): void | InvokedAction 
     .filter((e) => !(e.id.includes("chicko")))
     .filter(e => (e.components.item?.equipped || e.components.item?.dropped))
 
-  const closest = closestEntity(edibles, position.data, 200)
+  const closest = closestEntity(position.data, edibles, 200)
 
   if (closest) {
     if (XYdelta(position.data, closest.components.position.data) < 20 + (0.5 * renderable!.scale * renderable!.scale)) {
