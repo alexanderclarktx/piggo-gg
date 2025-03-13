@@ -50,78 +50,87 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
   }
 }, 20)
 
-export const Bot = (team: TeamNumber, pos: XY) => Entity({
-  id: `bot-${team}-${pos.x}-${pos.y}`,
-  components: {
-    debug: Debug(),
-    position: Position({ ...pos, velocityResets: 1, speed: 120, gravity: 0.3 }),
-    networked: Networked(),
-    collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
-    team: Team(team),
-    actions: Actions({
-      move: Move,
-      spike: Spike,
-      chase: Chase,
-      jump: Action("jump", ({ entity }) => {
-        if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 6 })
-      })
-    }),
-    shadow: Shadow(5),
-    npc: NPC({
-      behavior: (entity, world) => {
-        const ball = world.entity<Position>("ball")
-        if (!ball) return
-
-        const { position: ballPos } = ball.components
-        const { position } = entity.components
-
-        const range = position.data.standing ? 20 : 30
-        const far = XYZdiff(position.data, ballPos.data, range)
-
-        if (!far) {
-          // todo filter on team
-          const closestPlayer = closestEntity(
-            world.queryEntities<Position>(["position", "team"])
-              .filter(e => e.id.includes("dude")),
-            ballPos.data
-          )
-
-          const target = closestPlayer ? closestPlayer.components.position.data : { x: 0, y: 0 }
-          const from = { x: position.data.x, y: position.data.y, z: position.data.z }
-
-          return { actionId: "spike", entityId: entity.id, params: { target, from } }
-        } else {
+export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
+  const bot: Entity<Position | Team> = Entity({
+    id: `bot-${team}-${pos.x}-${pos.y}`,
+    components: {
+      debug: Debug(),
+      position: Position({ ...pos, velocityResets: 1, speed: 120, gravity: 0.3 }),
+      networked: Networked(),
+      collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
+      team: Team(team),
+      actions: Actions({
+        move: Move,
+        spike: Spike,
+        chase: Chase,
+        jump: Action("jump", ({ entity }) => {
+          if (!entity?.components?.position?.data.standing) return
+          entity.components.position.setVelocity({ z: 6 })
+        })
+      }),
+      shadow: Shadow(5),
+      npc: NPC({
+        behavior: (_, world) => {
+          const ball = world.entity<Position>("ball")
           const target = world.entity<Position>("target")
-          if (!target) return
-          return { actionId: "chase", entityId: entity.id, params: { target: target.id } }
-        }
-      },
-    }),
-    renderable: Renderable({
-      anchor: { x: 0.5, y: 0.8 },
-      scale: 2,
-      zIndex: 4,
-      interpolate: true,
-      scaleMode: "nearest",
-      color: TeamColors[team],
-      setup: async (r) => {
-        const t = await loadTexture("chars.json")
+          if (!ball || !target) return
 
-        r.animations = {
-          d: new AnimatedSprite([t["d1"], t["d2"], t["d3"]]),
-          u: new AnimatedSprite([t["u1"], t["u2"], t["u3"]]),
-          l: new AnimatedSprite([t["l1"], t["l2"], t["l3"]]),
-          r: new AnimatedSprite([t["r1"], t["r2"], t["r3"]]),
-          dl: new AnimatedSprite([t["dl1"], t["dl2"], t["dl3"]]),
-          dr: new AnimatedSprite([t["dr1"], t["dr2"], t["dr3"]]),
-          ul: new AnimatedSprite([t["ul1"], t["ul2"], t["ul3"]]),
-          ur: new AnimatedSprite([t["ur1"], t["ur2"], t["ur3"]])
+          const { position: ballPos } = ball.components
+          const { position, team } = bot.components
+          const { position: targetPos } = target.components
+
+          if ((team.data.team === 1 && targetPos.data.x > 225) || (team.data.team === 2 && targetPos.data.x < 225)) {
+            position.clearHeading()
+            return
+          }
+
+          const range = position.data.standing ? 20 : 30
+          const far = XYZdiff(position.data, ballPos.data, range)
+
+          if (!far) {
+            // todo filter on team
+            const closestPlayer = closestEntity(
+              world.queryEntities<Position>(["position", "team"])
+                .filter(e => e.id.includes("dude")),
+              ballPos.data
+            )
+
+            const hit = closestPlayer ? closestPlayer.components.position.data : { x: 0, y: 0 }
+            const from = { x: position.data.x, y: position.data.y, z: position.data.z }
+
+            return { actionId: "spike", entityId: bot.id, params: { target: hit, from } }
+          } else {
+            // if (!target) return
+            return { actionId: "chase", entityId: bot.id, params: { target: target.id } }
+          }
+        },
+      }),
+      renderable: Renderable({
+        anchor: { x: 0.5, y: 0.8 },
+        scale: 2,
+        zIndex: 4,
+        interpolate: true,
+        scaleMode: "nearest",
+        color: TeamColors[team],
+        setup: async (r) => {
+          const t = await loadTexture("chars.json")
+
+          r.animations = {
+            d: new AnimatedSprite([t["d1"], t["d2"], t["d3"]]),
+            u: new AnimatedSprite([t["u1"], t["u2"], t["u3"]]),
+            l: new AnimatedSprite([t["l1"], t["l2"], t["l3"]]),
+            r: new AnimatedSprite([t["r1"], t["r2"], t["r3"]]),
+            dl: new AnimatedSprite([t["dl1"], t["dl2"], t["dl3"]]),
+            dr: new AnimatedSprite([t["dr1"], t["dr2"], t["dr3"]]),
+            ul: new AnimatedSprite([t["ul1"], t["ul2"], t["ul3"]]),
+            ur: new AnimatedSprite([t["ur1"], t["ur2"], t["ur3"]])
+          }
         }
-      }
-    })
-  }
-})
+      })
+    }
+  })
+  return bot
+}
 
 export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
