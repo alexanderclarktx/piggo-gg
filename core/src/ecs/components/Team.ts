@@ -17,9 +17,8 @@ export const Team = (teamNumber: TeamNumber): Team => {
     type: "team",
     data: { team: teamNumber },
     switchTeam: () => {
-      console.log("switch", team.data.team)
-      team.data.team = team.data.team === 1 ? 2 : 1
-      console.log("switch", team.data.team)
+      team.data.team = 1 + team.data.team % 2 as TeamNumber
+      // team.data.team = team.data.team === 1 ? 2 : 1
     },
     visible: false
   }
