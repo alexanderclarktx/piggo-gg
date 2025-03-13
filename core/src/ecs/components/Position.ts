@@ -146,7 +146,7 @@ export const Position = (props: PositionProps = {}): Position => {
 
       if (stopAtZero) {
         if (position.data.rotation > 0 && position.data.rotation - amount < 0) {
-          position.data.rotation = 0
+          position.setRotation(0)
         }
       }
 
@@ -157,7 +157,7 @@ export const Position = (props: PositionProps = {}): Position => {
 
       if (stopAtZero) {
         if (position.data.rotation < 0 && position.data.rotation + amount > 0) {
-          position.data.rotation = 0
+          position.setRotation(0)
         }
       }
 

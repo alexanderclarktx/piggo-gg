@@ -38,8 +38,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     state.lastHitTick = world.tick
 
     if (standing && state.phase !== "serve") {
-      ballPos.setVelocity({ z: 3.5 })
-      ballPos.data.gravity = 0.1
+      ballPos.setVelocity({ z: 3.5 }).setGravity(0.1)
 
       const v = velocityToDirection(ballPos.data, target, 70, 0.07, 3)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
@@ -47,8 +46,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
       const distance = XYdistance(from, target)
       const vz = -2 + distance / 200
 
-      ballPos.setVelocity({ z: vz })
-      ballPos.data.gravity = 0.05
+      ballPos.setVelocity({ z: vz }).setGravity(0.05)
 
       const v = velocityToPoint(ballPos.data, params.target, 0.05, vz)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
