@@ -14,6 +14,8 @@ export const switchTeam = Action("switchTeam", ({ entity, world }) => {
 
   team.switchTeam()
 
+  console.log("switched team", team.data.team)
+
   const character = controlling?.getCharacter(world)
   if (character) {
     const { team, renderable } = character.components
@@ -24,4 +26,4 @@ export const switchTeam = Action("switchTeam", ({ entity, world }) => {
       renderable.prepareAnimations(TeamColors[team.data.team])
     }
   }
-})
+}, 20)

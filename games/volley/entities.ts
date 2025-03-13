@@ -36,6 +36,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     }
 
     state.lastHitTick = world.tick
+    ballPos.setPosition({z: ballPos.data.z + 0.1})
 
     if (standing && state.phase !== "serve") {
       ballPos.setVelocity({ z: 3.5 }).setGravity(0.1)
@@ -107,8 +108,13 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
 
           // if we are not the closest to the target
           const closest = closestEntity(targetPos.data, teammates(world, bot))
-          if (closest?.id !== state.lastHit && closest?.id !== bot.id) {
-            console.log("not closest")
+          if (state.phase !== "serve" && closest?.id !== state.lastHit && closest?.id !== bot.id) {
+            position.clearHeading()
+            return
+          }
+
+          // if we are not the closest to the ball while serving
+          if (state.phase === "serve" && closestEntity(ballPos.data, teammates(world, bot))?.id !== bot.id) {
             position.clearHeading()
             return
           }
@@ -131,7 +137,6 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
                 x: 225 + (team.data.team === 1 ? 1 : -1) * world.random.int(225),
                 y: world.random.int(150, 75)
               }
-              console.log("spike", target)
               return { actionId: "spike", entityId: bot.id, params: { target, from: position.data } }
             }
 
@@ -188,7 +193,7 @@ export const Dude = (player: Player) => Character({
     position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.3 }),
     networked: Networked(),
     collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
-    team: player.components.team,
+    team: Team(player.components.team.data.team),
     input: Input({
       press: {
         ...WASDInputMap.press,

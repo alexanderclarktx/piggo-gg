@@ -1,5 +1,6 @@
 import {
-  Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, PC, Position,
+  Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, Position,
+  Scoreboard,
   ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
 } from "@piggo-gg/core"
 import { Ball, Bot, Court, Dude, Net, TargetSystem } from "./entities"
@@ -43,7 +44,8 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       Ball(),
       Court(),
       Net(),
-      ScorePanel()
+      ScorePanel(),
+      Scoreboard()
     ]
   })
 }
@@ -54,8 +56,8 @@ const VolleyballSystem = SystemBuilder({
 
     const bots = []
 
-    // spawn a bot til there's 2 players on each team
-    const players = world.queryEntities<PC | Team>(["pc", "team"])
+    // spawn bots
+    const players = world.queryEntities<Team>(["pc", "team"])
     if (players.length < 4) {
 
       let team1 = 0
@@ -89,7 +91,7 @@ const VolleyballSystem = SystemBuilder({
     return {
       id: "VolleyballSystem",
       query: [],
-      priority: 5,
+      priority: 9,
       onTick: () => {
         const ballPos = world.entity<Position>("ball")?.components.position
         if (!ballPos) return

@@ -24,7 +24,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
 
         // handle actions
         if (actions) actions.forEach((invokedAction) => {
-          const entity = world.entities[entityId]
+          const entity = world.entity(entityId)
 
           // entity not found
           if (!entity) return
