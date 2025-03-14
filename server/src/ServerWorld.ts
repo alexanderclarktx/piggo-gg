@@ -27,8 +27,6 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
     ...world.systems
   }
 
-  let lastTickMsg = 0
-
   return {
     world,
     clients,
@@ -55,11 +53,6 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
 
         console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`)
       }
-
-      if (msg.tick - lastTickMsg !== 1) {
-        console.error(`OUT OF ORDER TICK world:${world.tick} msg:${msg.tick} last:${lastTickMsg}`)
-      }
-      lastTickMsg = msg.tick
 
       // store last message for client
       latestClientMessages[msg.playerId].push({

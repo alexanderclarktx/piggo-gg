@@ -333,9 +333,11 @@ export const TargetSystem = SystemBuilder({
       onTick: () => {
         const ball = world.entity<Position | Renderable>("ball")
 
-        if (!target && ball) {
-          target = Target(ball)
-          world.addEntity(target)
+        if (ball) {
+          if (!target || !world.entity("target")) {
+            target = Target(ball)
+            world.addEntity(target)
+          }
         }
       }
     }

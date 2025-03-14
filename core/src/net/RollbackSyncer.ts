@@ -9,7 +9,7 @@ export const RollbackSyncer = (world: World): Syncer => {
   let rollback = false
 
   const mustRollback = (reason: string) => {
-    console.log(`MUST ROLLBACK tick:${world.tick}`, reason)
+    console.log(`MUST ROLLBACK world:${world.tick}`, reason)
     rollback = true
   }
 
@@ -50,18 +50,29 @@ export const RollbackSyncer = (world: World): Syncer => {
               const pushed = world.actions.push(latest, entityId, { ...action, offline: true })
 
               if (pushed) {
-                mustRollback(`spike world:${world.tick} tick:${latest}`)
+                mustRollback(`spike latest:${latest}`)
               }
             }
           }
         }
       }
     }
+
+    keys(message.serializedEntities).forEach((entityId) => {
+      if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+        const before = world.entity(entityId)?.components.position?.data.x
+        world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
+        const after = world.entity(entityId)?.components.position?.data.x
+        if (before !== after) {
+          console.log("dude pos", before, after)
+        }
+      }
+    })
   }
 
   return {
     writeMessage: (world) => ({
-      actions: world.actions.fromTick(world.tick),
+      actions: world.actions.fromTick(world.tick, s => s.offline !== true),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
@@ -81,13 +92,14 @@ export const RollbackSyncer = (world: World): Syncer => {
         return
       }
 
-      if (message.tick <= lastSeenTick) {
-        // console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
+      if (message.tick <= lastSeenTick || message.tick !== lastSeenTick + 1) {
+        console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
+        lastSeenTick = message.tick
         return
       }
 
       const gap = world.tick - message.tick
-      const framesForward = (gap >= 2 && gap <= 8) ?
+      const framesForward = (gap >= 3 && gap <= 8) ?
         gap :
         ceil(world.client!.ms / world.tickrate) + 2
 
@@ -144,6 +156,8 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       if (rollback) {
 
+        const was = world.tick
+
         if (message.game !== world.game.id) {
           world.setGame(world.games[message.game])
         }
@@ -170,9 +184,6 @@ export const RollbackSyncer = (world: World): Syncer => {
           }
         })
 
-        // find latest actions for other dudes
-        handleOtherPlayers(message)
-
         // set actions
         if (message.actions[message.tick]) {
           entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
@@ -194,6 +205,9 @@ export const RollbackSyncer = (world: World): Syncer => {
 
         world.tick += 1
 
+        // find latest actions for other dudes
+        handleOtherPlayers(message)
+
         world.entitiesAtTick[world.tick] = {}
         for (const entityId in world.entities) {
           if (world.entities[entityId].components.networked) {
@@ -201,18 +215,20 @@ export const RollbackSyncer = (world: World): Syncer => {
           }
         }
 
-        keys(message.serializedEntities).forEach((entityId) => {
-          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-            world.entities[entityId].deserialize(message.serializedEntities[entityId])
-          }
-        })
+        // keys(message.serializedEntities).forEach((entityId) => {
+        //   if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+        //     console.log("ROLLBACK DUDE", world.entity(entityId)?.components.position?.data.x)
+        //     world.entities[entityId].deserialize(message.serializedEntities[entityId])
+        //     console.log("ROLLBACK DUDE", world.entity(entityId)?.components.position?.data.x)
+        //   }
+        // })
 
         // set serialized entities
         world.entitiesAtTick[message.tick] = {
           ...message.serializedEntities
         }
 
-        console.log(`rollback msg:${message.tick} forward:${framesForward} end:${world.tick}`)
+        console.log(`rollback was:${was} msg:${message.tick} forward:${framesForward} end:${world.tick}`)
       }
     }
   }
