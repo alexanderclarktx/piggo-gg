@@ -33,9 +33,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }))
       if (world.tick - 1 !== lastSent) {
-        console.log(`sent last:${lastSent} world:${world.tick} to ${id}`)
+        console.error(`sent last:${lastSent} world:${world.tick} to ${id}`)
       }
-      // console.log(`sent n:${n} world:${world.tick} to ${id}`)
 
       if (world.game.netcode === "delay") {
         if (latestClientMessages[id] && latestClientMessages[id].length > 2) {

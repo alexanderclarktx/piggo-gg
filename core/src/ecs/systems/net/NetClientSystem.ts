@@ -23,7 +23,7 @@ export const NetClientWriteSystem = SystemBuilder({
       query: [],
       skipOnRollback: true,
       onTick: () => {
-        const message = syncer().writeMessage(world)
+        const message = syncer().write(world)
         try {
           if (client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(stringify(message))
@@ -107,7 +107,7 @@ export const NetClientReadSystem = SystemBuilder({
 
         // handle oldest message in buffer
         if (buffer.length > 0) {
-          syncer().handleMessages({ world, buffer })
+          syncer().read({ world, buffer })
         } else {
           world.tickFlag = "red"
         }

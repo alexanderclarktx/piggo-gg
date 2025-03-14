@@ -71,7 +71,7 @@ export const RollbackSyncer = (world: World): Syncer => {
   }
 
   return {
-    writeMessage: (world) => ({
+    write: (world) => ({
       actions: world.actions.fromTick(world.tick, s => s.offline !== true),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
@@ -81,7 +81,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       timestamp: Date.now(),
       type: "game"
     }),
-    handleMessages: ({ world, buffer }) => {
+    read: ({ world, buffer }) => {
       rollback = false
 
       const message = buffer.pop()

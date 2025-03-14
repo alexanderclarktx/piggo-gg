@@ -22,7 +22,7 @@ export const entityConstructors: Record<string, (_: { id?: string }) => Entity> 
 }
 
 export const DelaySyncer = (): Syncer => ({
-  writeMessage: (world) => {
+  write: (world) => {
 
     const message: GameData = {
       actions: { [world.tick + 1]: world.actions.atTick(world.tick + 1) ?? {} },
@@ -38,7 +38,7 @@ export const DelaySyncer = (): Syncer => ({
     world.actions.clearTick(world.tick + 1)
     return message
   },
-  handleMessages: ({ world, buffer }) => {
+  read: ({ world, buffer }) => {
 
     const message = buffer.shift() as GameData
 

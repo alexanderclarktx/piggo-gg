@@ -3,8 +3,8 @@ import { InvokedAction, SerializedEntity, World } from "@piggo-gg/core"
 // netcode
 
 export type Syncer = {
-  handleMessages: (_: { world: World, buffer: GameData[] }) => void
-  writeMessage: (world: World) => GameData
+  read: (_: { world: World, buffer: GameData[] }) => void
+  write: (world: World) => GameData
 }
 
 export type NetMessageTypes = GameData | RequestData | ResponseData
