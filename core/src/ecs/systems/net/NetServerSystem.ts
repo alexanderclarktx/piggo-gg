@@ -3,15 +3,16 @@ import { encode } from "@msgpack/msgpack"
 
 export type DelayServerSystemProps = {
   world: World
-  clients: Record<string, { send: (_: string | object, compress?: boolean) => number }>
+  clients: Record<string, { send: (_: string | Uint8Array, compress?: boolean) => number }>
   latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
 }
 
 // delay netcode server
-export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System => {
+export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System<"NetServerSystem"> => {
+
+  let lastSent = 0
 
   const write = () => {
-    const n = world.tick
 
     // build tick data
     const tickData: NetMessageTypes = {
@@ -31,7 +32,10 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }))
-      console.log(`sent n:${n} world:${world.tick} to ${id}`)
+      if (world.tick - 1 !== lastSent) {
+        console.log(`sent last:${lastSent} world:${world.tick} to ${id}`)
+      }
+      // console.log(`sent n:${n} world:${world.tick} to ${id}`)
 
       if (world.game.netcode === "delay") {
         if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
@@ -42,6 +46,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         }
       }
     })
+
+    lastSent = world.tick
   }
 
   const read = () => {
@@ -117,7 +123,6 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     query: [],
     priority: 1,
     onTick: () => {
-      console.log(`NetServerSystem ${world.tick}`)
       read()
       write()
     }

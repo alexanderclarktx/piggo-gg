@@ -22,10 +22,7 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
   const world = DefaultWorld({ mode: "server", games })
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {}
 
-  world.systems = {
-    ...{ "NetServerSystem": NetServerSystem({ world, clients, latestClientMessages }) },
-    ...world.systems
-  }
+  world.addSystems([NetServerSystem({ world, clients, latestClientMessages })])
 
   return {
     world,

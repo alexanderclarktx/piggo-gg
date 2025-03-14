@@ -5,7 +5,7 @@ import {
 // TODO not generic across games (dude/spike)
 export const RollbackSyncer = (world: World): Syncer => {
 
-  let lastSeenTick = 0
+  let last = 0
   let rollback = false
 
   const mustRollback = (reason: string) => {
@@ -92,18 +92,18 @@ export const RollbackSyncer = (world: World): Syncer => {
         return
       }
 
-      if (message.tick <= lastSeenTick || message.tick !== lastSeenTick + 1) {
-        console.error("OUT OF ORDER MESSAGE", message.tick, lastSeenTick)
-        lastSeenTick = message.tick
+      if (message.tick <= last || message.tick !== last + 1) {
+        console.error(`OUT OF ORDER last:${last} msg:${message.tick}`)
+        last = message.tick
         return
       }
+
+      last = message.tick
 
       const gap = world.tick - message.tick
       const framesForward = (gap >= 3 && gap <= 8) ?
         gap :
         ceil(world.client!.ms / world.tickrate) + 2
-
-      lastSeenTick = message.tick
 
       const localActions = world.actions.atTick(message.tick) ?? {}
 

@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Entity, Renderable, XY, Position, Character, abs, System } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, Renderable, XY, Position, Character, abs, System, round } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
@@ -67,8 +67,8 @@ export const Camera = (app: Application): Camera => {
       root.y = app.screen.height / 2 - y * scale
     },
     toWorldCoords: ({ x, y }: XY) => ({
-      x: (x - root.x) / scale,
-      y: (y - root.y) / scale
+      x: round((x - root.x) / scale, 3),
+      y: round((y - root.y) / scale, 3)
     })
   }
 
