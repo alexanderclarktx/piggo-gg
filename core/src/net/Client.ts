@@ -3,11 +3,12 @@ import {
   RequestData, RequestTypes, World, genPlayerId, SoundManager, genHash,
   AuthLogin, FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem
 } from "@piggo-gg/core"
+import { decode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
 
 const servers = {
-  // dev: "ws://localhost:3000",
-  dev: "wss://piggo-api-staging.up.railway.app",
+  dev: "ws://localhost:3000",
+  // dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 
@@ -145,6 +146,8 @@ export const Client = ({ world }: ClientProps): Client => {
     client.connected = Boolean(client.lastMessageTick && ((world.tick - client.lastMessageTick) < 60))
   }, 200)
 
+  client.ws.binaryType = "arraybuffer"
+
   client.ws.addEventListener("close", () => {
     console.error("websocket closed")
     world.removeSystem(NetClientReadSystem.id)
@@ -153,7 +156,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   client.ws.addEventListener("message", (event) => {
     try {
-      const message = JSON.parse(event.data) as NetMessageTypes
+      const message = decode(new Uint8Array(event.data)) as NetMessageTypes
       if (message.type !== "response") return
 
       if (message.data.id in requestBuffer) {

@@ -1,8 +1,9 @@
-import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo-gg/core"
+import { System, NetMessageTypes, World, entries, keys } from "@piggo-gg/core"
+import { encode } from "@msgpack/msgpack"
 
 export type DelayServerSystemProps = {
   world: World
-  clients: Record<string, { send: (_: string, compress?: boolean) => number }>
+  clients: Record<string, { send: (_: string | object, compress?: boolean) => number }>
   latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
 }
 
@@ -25,11 +26,15 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
     // send tick data to all clients
     entries(clients).forEach(([id, client]) => {
-      client.send(stringify({
+      client.send(encode({
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }))
-      console.debug("sent", tickData.tick)
+      // console.log(stringify({
+      //   ...tickData,
+      //   latency: latestClientMessages[id]?.at(-1)?.latency,
+      // }))
+      // console.debug("sent", tickData.tick)
 
       if (world.game.netcode === "delay") {
         if (latestClientMessages[id] && latestClientMessages[id].length > 2) {

@@ -2,6 +2,7 @@ import {
   DelaySyncer, Game, GameData, RollbackSyncer, Syncer,
   SystemBuilder, entries, keys, stringify
 } from "@piggo-gg/core"
+import { decode } from "@msgpack/msgpack"
 
 export const NetClientWriteSystem = SystemBuilder({
   id: "NetClientWriteSystem",
@@ -55,7 +56,7 @@ export const NetClientReadSystem = SystemBuilder({
 
     client.ws.onmessage = (event) => {
       try {
-        const message = JSON.parse(event.data) as GameData
+        const message = decode(new Uint8Array(event.data)) as GameData
         if (!message.type || message.type !== "game") return
 
         // skip old messages
