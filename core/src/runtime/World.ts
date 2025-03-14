@@ -1,7 +1,9 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer,
   SerializedEntity, values, TickBuffer, System, SystemBuilder,
-  SystemEntity, keys, ValidComponents, Random, ComponentTypes
+  SystemEntity, keys, ValidComponents, Random, ComponentTypes,
+  Data,
+  Networked
 } from "@piggo-gg/core"
 
 export type World = {
@@ -210,6 +212,15 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
 
       // set new game
       world.game = game.init(world)
+
+      const gameStateEntity = Entity({
+        id: "gameState",
+        components: {
+          data: Data({ data: world.game.state }),
+          networked: Networked()
+        }
+      })
+      world.addEntity(gameStateEntity)
 
       const { tileMap, bgColor, entities, systems } = world.game
 
