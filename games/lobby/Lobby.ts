@@ -31,6 +31,8 @@ const Players = (): Entity => {
 
   let texture: any = undefined
 
+  const pfps: Record<string, Sprite> = {}
+
   const players = Entity<Position | Renderable>({
     id: "players",
     components: {
@@ -54,6 +56,14 @@ const Players = (): Entity => {
             }
           })
 
+          // team colors
+          for (const [id, pfp] of Object.entries(pfps)) {
+            const pc = pcs.find(p => p.id === id)
+            if (pc) {
+              pfp.tint = pc.components.team.data.team === 2 ? 0x9999ff : 0xffffff
+            }
+          }
+
           if (!shouldRedraw) return
 
           renderable.c.removeChildren()
@@ -75,10 +85,11 @@ const Players = (): Entity => {
             pfp.onpointerdown = () => {
               const pc = pcs[i]
               world.actions.push(world.tick + 2, pc.id, { actionId: "switchTeam" })
-              console.log("pointerdown", pc, pc.components.team.data.team)
             }
 
             renderable.c.addChild(pfp)
+
+            pfps[pcs[i].id] = pfp
           })
 
           lastSeenPcs = {}
