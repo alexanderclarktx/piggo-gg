@@ -30,28 +30,13 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
     }
 
-    let latest = 0
-
-    for (const [tick, actions] of entries(message.actions)) {
-      if (Number(tick) > latest) {
-        for (const entityId of keys(actions)) {
-          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-            latest = Number(tick)
-          }
-        }
-      }
-    }
-
-    if (latest) {
-      for (const [entityId, actions] of entries(message.actions[latest])) {
+    for (const [tick, actionSet] of entries(message.actions)) {
+      for (const [entityId, actions] of entries(actionSet)) {
         if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
           for (const action of actions) {
             if (action.actionId === "spike") {
-              const pushed = world.actions.push(latest, entityId, { ...action, offline: true })
-
-              if (pushed) {
-                mustRollback(`spike latest:${latest}`)
-              }
+              const pushed = world.actions.push(Number(tick), entityId, { ...action, offline: true })
+              if (pushed) mustRollback(`spike ${tick}`)
             }
           }
         }
@@ -86,6 +71,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       // get oldest message
       const message = buffer.sort((a, b) => a.tick - b.tick).shift()
+      if (buffer.length > 2) console.log(buffer.length)
 
       if (!message) {
         console.error("NO MESSAGE")
@@ -121,9 +107,20 @@ export const RollbackSyncer = (world: World): Syncer => {
             break
           }
 
-          if (JSON.stringify(localActions[entityId]) !== JSON.stringify(actions)) {
-            mustRollback(`action mismatch ${message.tick} ${entityId} ${stringify(localActions[entityId])} ${stringify(actions)}`)
-            break
+          // check local has each action
+          for (const action of actions) {
+            if (localActions[entityId].find((a) => a.actionId === action.actionId) === undefined) {
+              mustRollback(`action not found locally ${action.actionId}`)
+              break
+            }
+          }
+
+          // check remote has each action
+          for (const action of localActions[entityId]) {
+            if (actions.find((a) => a.actionId === action.actionId) === undefined) {
+              mustRollback(`action not found remotely ${action.actionId}`)
+              break
+            }
           }
         }
       }
@@ -205,7 +202,6 @@ export const RollbackSyncer = (world: World): Syncer => {
 
         world.tick += 1
 
-        // find latest actions for other dudes
         handleOtherPlayers(message)
 
         world.entitiesAtTick[world.tick] = {}
@@ -214,14 +210,6 @@ export const RollbackSyncer = (world: World): Syncer => {
             world.entitiesAtTick[world.tick][entityId] = world.entities[entityId].serialize()
           }
         }
-
-        // keys(message.serializedEntities).forEach((entityId) => {
-        //   if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-        //     console.log("ROLLBACK DUDE", world.entity(entityId)?.components.position?.data.x)
-        //     world.entities[entityId].deserialize(message.serializedEntities[entityId])
-        //     console.log("ROLLBACK DUDE", world.entity(entityId)?.components.position?.data.x)
-        //   }
-        // })
 
         // set serialized entities
         world.entitiesAtTick[message.tick] = {
