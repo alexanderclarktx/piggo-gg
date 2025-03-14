@@ -3,6 +3,7 @@ import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import { ethers } from "ethers"
 import jwt from "jsonwebtoken"
+import { encode } from "@msgpack/msgpack"
 
 export type PerClientData = {
   id: number
@@ -191,7 +192,7 @@ export const Api = (): Api => {
           result.then((data) => {
             console.log("response", stringify(data))
             const responseData: ResponseData = { type: "response", data }
-            ws.send(stringify(responseData))
+            ws.send(encode(responseData))
           })
         }
         return
