@@ -87,9 +87,9 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
 
       const gap = world.tick - message.tick
-      const framesForward = (gap >= 3 && gap <= 8) ?
+      const framesForward = (gap >= 2 && gap <= 8) ?
         gap :
-        ceil(world.client!.ms * 2 / world.tickrate) + 3
+        ceil(world.client!.ms / world.tickrate) + 2
 
       lastSeenTick = message.tick
 

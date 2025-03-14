@@ -67,7 +67,7 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
         latency: Date.now() - msg.timestamp
       })
 
-      if (world.tick % 400 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${world.tick - msg.tick}`)
+      if (world.tick % 400 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${msg.tick - world.tick}`)
     }
   }
 }
