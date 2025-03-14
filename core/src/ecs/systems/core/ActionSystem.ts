@@ -20,6 +20,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
             const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Player : undefined
             if (command) command.invoke({ params: invokedAction.params ?? {}, world, player })
           })
+          return
         }
 
         // handle actions
@@ -27,7 +28,10 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           const entity = world.entity(entityId)
 
           // entity not found
-          if (!entity) return
+          if (!entity) {
+            console.log(`entity ${entityId} not found for action ${invokedAction.actionId}`)
+            return
+          }
 
           // entity has no actions
           const actions = entity.components.actions

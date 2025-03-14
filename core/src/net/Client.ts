@@ -1,7 +1,7 @@
 import {
-  Character, LobbyCreate, LobbyJoin, NetClientSystem, NetMessageTypes,
-  Player, stringify, RequestData, RequestTypes, World, genPlayerId,
-  SoundManager, genHash, AuthLogin, FriendsList, Pls
+  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, stringify,
+  RequestData, RequestTypes, World, genPlayerId, SoundManager, genHash,
+  AuthLogin, FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem
 } from "@piggo-gg/core"
 import toast from "react-hot-toast"
 
@@ -100,7 +100,7 @@ export const Client = ({ world }: ClientProps): Client => {
           console.error("Client: failed to create lobby", response.error)
         } else {
           client.lobbyId = response.lobbyId
-          world.addSystemBuilders([NetClientSystem])
+          world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
         }
         callback(response)
       })
@@ -112,7 +112,7 @@ export const Client = ({ world }: ClientProps): Client => {
         } else {
           client.lobbyId = lobbyId
           callback(response)
-          world.addSystemBuilders([NetClientSystem])
+          world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
         }
       })
     },
@@ -147,7 +147,8 @@ export const Client = ({ world }: ClientProps): Client => {
 
   client.ws.addEventListener("close", () => {
     console.error("websocket closed")
-    world.removeSystem(NetClientSystem.id)
+    world.removeSystem(NetClientReadSystem.id)
+    world.removeSystem(NetClientWriteSystem.id)
   })
 
   client.ws.addEventListener("message", (event) => {

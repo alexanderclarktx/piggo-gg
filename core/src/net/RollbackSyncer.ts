@@ -66,7 +66,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
       serializedEntities: {},
-      tick: world.tick,
+      tick: world.tick + 1,
       timestamp: Date.now(),
       type: "game"
     }),

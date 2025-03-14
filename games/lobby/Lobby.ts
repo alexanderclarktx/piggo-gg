@@ -1,6 +1,6 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC, Team
 } from "@piggo-gg/core"
 import { Flappy, Craft, Dungeon, Volleyball } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -37,6 +37,7 @@ const Players = (): Entity => {
       position: Position({ x: 300, y: 100, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
+        interactiveChildren: true,
         dynamic: ({ renderable, world }) => {
           if (world.client?.connected === false) {
             renderable.c.removeChildren()
@@ -44,7 +45,7 @@ const Players = (): Entity => {
             return
           }
 
-          const pcs = world.queryEntities<PC>(["pc"])
+          const pcs = world.queryEntities<PC | Team>(["pc"])
 
           let shouldRedraw = false
           pcs.forEach(p => {
@@ -69,6 +70,14 @@ const Players = (): Entity => {
 
           names.forEach((name, i) => {
             const pfp = new Sprite({ texture, scale: 0.9, anchor: 0.5, position: { x: name.x + name.width / 2, y: -40 } })
+            pfp.interactive = true
+
+            pfp.onpointerdown = () => {
+              const pc = pcs[i]
+              world.actions.push(world.tick + 2, pc.id, { actionId: "switchTeam" })
+              console.log("pointerdown", pc, pc.components.team.data.team)
+            }
+
             renderable.c.addChild(pfp)
           })
 

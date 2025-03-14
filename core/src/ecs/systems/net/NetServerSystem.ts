@@ -96,13 +96,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         if (tickData.actions) {
           entries(tickData.actions[tickData.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
-              world.actions.push(tickData.tick, entityId, action)
-              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
-            })
-            // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-            tickData.actions[tickData.tick][entityId].forEach((action) => {
               world.actions.push(world.tick, entityId, action)
-              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
             })
           })
         }

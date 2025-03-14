@@ -69,9 +69,9 @@ export const Shop = (): Entity => {
           background.rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0.5 })
           outline.roundRect(...coords).stroke({ color: 0xffffff, alpha: 1, width: 2 })
 
-          const deagle = await cell("Deagle", width, height, world, mobile)
-          const ak = await cell("AK", width, height, world, mobile)
-          const awp = await cell("AWP", width, height, world, mobile)
+          const deagle = await Cell("Deagle", width, height, world, mobile)
+          const ak = await Cell("AK", width, height, world, mobile)
+          const awp = await Cell("AWP", width, height, world, mobile)
 
           const box = new ScrollBox({ width, height, type: mobile ? "vertical" : "horizontal", elementsMargin: 20 })
           box.addItem(deagle, ak, awp)
@@ -89,7 +89,7 @@ export const Shop = (): Entity => {
   return shop
 }
 
-const cell = async (text: string, width: number, height: number, world: World, mobile: boolean): Promise<Container> => {
+const Cell = async (text: string, width: number, height: number, world: World, mobile: boolean): Promise<Container> => {
   const c = new Container()
   c.interactiveChildren = true
 

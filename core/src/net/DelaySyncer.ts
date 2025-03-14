@@ -25,12 +25,12 @@ export const DelaySyncer = (): Syncer => ({
   writeMessage: (world) => {
 
     const message: GameData = {
-      actions: { [world.tick]: world.actions.atTick(world.tick) ?? {} },
+      actions: { [world.tick + 1]: world.actions.atTick(world.tick + 1) ?? {} },
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
       serializedEntities: {},
-      tick: world.tick,
+      tick: world.tick + 1,
       timestamp: Date.now(),
       type: "game"
     }
@@ -74,7 +74,7 @@ export const DelaySyncer = (): Syncer => ({
       rollback = true
     }
 
-    if ((message.tick - 1) !== world.tick) {
+    if (message.tick !== world.tick) {
       mustRollback(`old tick msg:${message.tick}`)
     }
 
@@ -98,7 +98,7 @@ export const DelaySyncer = (): Syncer => ({
         const localEntity = localEntities[entityId]
         if (localEntity) {
           if (stringify(localEntity) !== stringify(msgEntity)) {
-            mustRollback(`entity state ${entityId} ${localEntity} ${msgEntity}`)
+            mustRollback(`entity state ${entityId} ${stringify(localEntity)} ${stringify(msgEntity)}`)
             break
           }
         } else {
@@ -108,7 +108,7 @@ export const DelaySyncer = (): Syncer => ({
     }
 
     if (rollback) {
-      world.tick = message.tick - 1
+      world.tick = message.tick
 
       if (message.game && message.game !== world.game.id) {
         world.setGame(world.games[message.game])
