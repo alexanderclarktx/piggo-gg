@@ -60,7 +60,10 @@ export const NetClientReadSystem = SystemBuilder({
         if (!message.type || message.type !== "game") return
 
         // skip old messages
-        if (message.tick < client.lastMessageTick) return
+        if (message.tick < client.lastMessageTick) {
+          console.error("NetcodeSystem: skipping old message")
+          return
+        }
 
         // store latest message
         buffer.push(message)

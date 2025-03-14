@@ -84,16 +84,16 @@ export const RollbackSyncer = (world: World): Syncer => {
     read: ({ world, buffer }) => {
       rollback = false
 
-      const message = buffer.pop()
-      buffer = []
+      // get oldest message
+      const message = buffer.sort((a, b) => a.tick - b.tick).shift()
 
       if (!message) {
         console.error("NO MESSAGE")
         return
       }
 
-      if (message.tick <= last || message.tick !== last + 1) {
-        console.error(`OUT OF ORDER last:${last} msg:${message.tick}`)
+      if (message.tick <= last) {
+        console.error(`OUT OF ORDER last:${last} msg:${message.tick} client${world.client?.lastMessageTick}`)
         last = message.tick
         return
       }
@@ -101,7 +101,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       last = message.tick
 
       const gap = world.tick - message.tick
-      const framesForward = (gap >= 3 && gap <= 8) ?
+      const framesForward = (gap >= 2 && gap <= 5) ?
         gap :
         ceil(world.client!.ms / world.tickrate) + 2
 

@@ -35,7 +35,10 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
 
       for (const [index, value] of entries(buffer)) {
         if (Number(index) >= tick) {
-          data[Number(index)] = value
+          data[Number(index)] = {}
+          for (const [entityId, states] of entries(value)) {
+            data[Number(index)][entityId] = states.filter(filter)
+          }
         }
       }
 
