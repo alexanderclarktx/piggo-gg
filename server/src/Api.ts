@@ -3,6 +3,7 @@ import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import { ethers } from "ethers"
 import jwt from "jsonwebtoken"
+import { encode } from "@msgpack/msgpack"
 
 export type PerClientData = {
   id: number
@@ -38,9 +39,7 @@ export const Api = (): Api => {
     bun: undefined,
     clientIncr: 1,
     clients: {},
-    worlds: {
-      "hub": ServerWorld(),
-    },
+    worlds: {},
     handlers: {
       "lobby/list": async ({ data }) => {
         return { id: data.id }
@@ -191,13 +190,13 @@ export const Api = (): Api => {
           result.then((data) => {
             console.log("response", stringify(data))
             const responseData: ResponseData = { type: "response", data }
-            ws.send(stringify(responseData))
+            ws.send(encode(responseData))
           })
         }
         return
       }
 
-      const world = api.worlds[ws.data.worldId] ?? api.worlds["hub"]
+      const world = api.worlds[ws.data.worldId]
       if (world) world.handleMessage(ws, wsData)
     }
   }
@@ -205,7 +204,7 @@ export const Api = (): Api => {
   setInterval(() => {
     // cleanup empty worlds
     entries(api.worlds).forEach(([id, world]) => {
-      if (keys(world.clients).length === 0 && id !== "hub") {
+      if (keys(world.clients).length === 0) {
         delete api.worlds[id]
         console.log(`world deleted: ${id}`)
       }

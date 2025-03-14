@@ -5,7 +5,7 @@ export type TickBuffer<T extends ({} | string)> = {
   atTick: (tick: number) => Record<string, T[]> | undefined
   clearTick: (tick: number) => void
   clearBeforeTick: (tick: number) => void
-  fromTick: (tick: number) => Record<number, Record<string, T[]>>
+  fromTick: (tick: number, filter?: (state: T) => boolean) => Record<number, Record<string, T[]>>
   keys: () => number[]
   set: (tick: number, entityId: string, state: T[]) => void
   push: (tick: number, entityId: string, state: T) => boolean
@@ -30,12 +30,15 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
         delete buffer[i]
       }
     },
-    fromTick: (tick) => {
+    fromTick: (tick, filter: (state: T) => boolean = () => true) => {
       const data: Record<number, Record<string, T[]>> = {}
 
       for (const [index, value] of entries(buffer)) {
         if (Number(index) >= tick) {
-          data[Number(index)] = value
+          data[Number(index)] = {}
+          for (const [entityId, states] of entries(value)) {
+            data[Number(index)][entityId] = states.filter(filter)
+          }
         }
       }
 

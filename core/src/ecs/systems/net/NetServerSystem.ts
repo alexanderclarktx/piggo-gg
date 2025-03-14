@@ -1,15 +1,18 @@
-import { System, NetMessageTypes, World, entries, keys, stringify } from "@piggo-gg/core"
+import { System, NetMessageTypes, World, entries, keys } from "@piggo-gg/core"
+import { encode } from "@msgpack/msgpack"
 
 export type DelayServerSystemProps = {
   world: World
-  clients: Record<string, { send: (_: string, compress?: boolean) => number }>
+  clients: Record<string, { send: (_: string | Uint8Array, compress?: boolean) => number }>
   latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
 }
 
 // delay netcode server
-export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System => {
+export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System<"NetServerSystem"> => {
 
-  const sendMessage = () => {
+  let lastSent = 0
+
+  const write = () => {
 
     // build tick data
     const tickData: NetMessageTypes = {
@@ -25,10 +28,13 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
     // send tick data to all clients
     entries(clients).forEach(([id, client]) => {
-      client.send(stringify({
+      client.send(encode({
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
       }))
+      if (world.tick - 1 !== lastSent) {
+        console.error(`sent last:${lastSent} world:${world.tick} to ${id}`)
+      }
 
       if (world.game.netcode === "delay") {
         if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
@@ -39,9 +45,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         }
       }
     })
+
+    lastSent = world.tick
   }
 
-  const handleMessage = () => {
+  const read = () => {
     (world.game.netcode === "delay") ? delay() : rollback()
   }
 
@@ -96,13 +104,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         if (tickData.actions) {
           entries(tickData.actions[tickData.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
-              world.actions.push(tickData.tick, entityId, action)
-              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
-            })
-            // if (entityId === "world" || world.entities[entityId]?.components.controlled?.data.entityId === client) {
-            tickData.actions[tickData.tick][entityId].forEach((action) => {
               world.actions.push(world.tick, entityId, action)
-              console.log(`action ${action.actionId} for ${entityId} at tick ${tickData.tick}`)
             })
           })
         }
@@ -120,8 +122,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     query: [],
     priority: 1,
     onTick: () => {
-      handleMessage()
-      sendMessage()
+      read()
+      write()
     }
   }
 }

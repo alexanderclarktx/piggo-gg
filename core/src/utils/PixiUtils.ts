@@ -10,6 +10,8 @@ export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, stro
 export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: string, fontWeight?: TextStyleFontWeight }
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
+export const pixiContainer = (): Container => new Container()
+
 export const pixiGraphics = (opts: GraphicsOptions | GraphicsContext = {}): Graphics => new Graphics(opts)
 
 export const pixiRect = ({ x, y, w, h, rounded = 0, style }: pixiRectProps): Graphics => {

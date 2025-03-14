@@ -44,7 +44,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
       interpolate: true,
       dynamic: ({ entity }) => {
         const { position, renderable } = entity.components
-        if (!position) return
+        if (!position || !renderable) return
 
         renderable.c.alpha = 0.3 - target.components.position.data.z / 400
 

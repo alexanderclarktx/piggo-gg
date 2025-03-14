@@ -36,8 +36,13 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     }
 
     state.lastHitTick = world.tick
+    ballPos.setPosition({z: ballPos.data.z + 0.1})
 
-    if (standing && state.phase !== "serve") {
+    if (state.phase === "serve") {
+      ballPos.setVelocity({ z: 0.5 }).setGravity(0.05)
+      const v = velocityToPoint(ballPos.data, target, 0.05, 0.5)
+      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
+    } else if (standing) {
       ballPos.setVelocity({ z: 3.5 }).setGravity(0.1)
 
       const v = velocityToDirection(ballPos.data, target, 70, 0.07, 3)
@@ -107,8 +112,13 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
 
           // if we are not the closest to the target
           const closest = closestEntity(targetPos.data, teammates(world, bot))
-          if (closest?.id !== state.lastHit && closest?.id !== bot.id) {
-            console.log("not closest")
+          if (state.phase !== "serve" && closest?.id !== state.lastHit && closest?.id !== bot.id) {
+            position.clearHeading()
+            return
+          }
+
+          // if we are not the closest to the ball while serving
+          if (state.phase === "serve" && closestEntity(ballPos.data, teammates(world, bot))?.id !== bot.id) {
             position.clearHeading()
             return
           }
@@ -131,14 +141,14 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
                 x: 225 + (team.data.team === 1 ? 1 : -1) * world.random.int(225),
                 y: world.random.int(150, 75)
               }
-              console.log("spike", target)
               return { actionId: "spike", entityId: bot.id, params: { target, from: position.data } }
             }
 
-            const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)![0]
+            const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)[0]
+            if (!closestTeammate) return
             const hit = middle(
-              closestTeammate!.components.position.data,
-              { y: closestTeammate!.components.position.data.y, x: 225 }
+              closestTeammate.components.position.data,
+              { y: closestTeammate.components.position.data.y, x: 225 }
             )
 
             return { actionId: "spike", entityId: bot.id, params: { target: hit, from } }
@@ -184,10 +194,13 @@ export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
   components: {
     debug: Debug(),
-    position: Position({ x: 0, y: 0, velocityResets: 1, speed: 120, gravity: 0.3 }),
+    position: Position({
+      y: 0, x: player.components.team.data.team === 1 ? 0 : 400,
+      velocityResets: 1, speed: 120, gravity: 0.3
+    }),
     networked: Networked(),
     collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
-    team: player.components.team,
+    team: Team(player.components.team.data.team),
     input: Input({
       press: {
         ...WASDInputMap.press,
@@ -326,9 +339,12 @@ export const TargetSystem = SystemBuilder({
       priority: 5,
       onTick: () => {
         const ball = world.entity<Position | Renderable>("ball")
-        if (!target && ball) {
-          target = Target(ball)
-          world.addEntity(target)
+
+        if (ball) {
+          if (!target || !world.entity("target")) {
+            target = Target(ball)
+            world.addEntity(target)
+          }
         }
       }
     }

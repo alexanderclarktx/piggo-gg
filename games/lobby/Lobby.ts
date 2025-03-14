@@ -1,6 +1,6 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC, Team
 } from "@piggo-gg/core"
 import { Flappy, Craft, Dungeon, Volleyball } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -31,12 +31,15 @@ const Players = (): Entity => {
 
   let texture: any = undefined
 
+  const pfps: Record<string, Sprite> = {}
+
   const players = Entity<Position | Renderable>({
     id: "players",
     components: {
       position: Position({ x: 300, y: 100, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
+        interactiveChildren: true,
         dynamic: ({ renderable, world }) => {
           if (world.client?.connected === false) {
             renderable.c.removeChildren()
@@ -44,7 +47,7 @@ const Players = (): Entity => {
             return
           }
 
-          const pcs = world.queryEntities<PC>(["pc"])
+          const pcs = world.queryEntities<PC | Team>(["pc"])
 
           let shouldRedraw = false
           pcs.forEach(p => {
@@ -52,6 +55,14 @@ const Players = (): Entity => {
               shouldRedraw = true
             }
           })
+
+          // team colors
+          for (const [id, pfp] of Object.entries(pfps)) {
+            const pc = pcs.find(p => p.id === id)
+            if (pc) {
+              pfp.tint = pc.components.team.data.team === 2 ? 0x9999ff : 0xffffff
+            }
+          }
 
           if (!shouldRedraw) return
 
@@ -69,7 +80,16 @@ const Players = (): Entity => {
 
           names.forEach((name, i) => {
             const pfp = new Sprite({ texture, scale: 0.9, anchor: 0.5, position: { x: name.x + name.width / 2, y: -40 } })
+            pfp.interactive = true
+
+            pfp.onpointerdown = () => {
+              const pc = pcs[i]
+              world.actions.push(world.tick + 2, pc.id, { actionId: "switchTeam" })
+            }
+
             renderable.c.addChild(pfp)
+
+            pfps[pcs[i].id] = pfp
           })
 
           lastSeenPcs = {}

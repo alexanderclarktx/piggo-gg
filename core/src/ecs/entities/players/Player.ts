@@ -1,4 +1,4 @@
-import { Actions, Controlling, Entity, Networked, PC, Team, switchTeam, Money } from "@piggo-gg/core"
+import { Actions, Controlling, Entity, Networked, PC, Team, switchTeam } from "@piggo-gg/core"
 
 export type PlayerProps = {
   id: string
