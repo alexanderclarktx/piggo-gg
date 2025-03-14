@@ -10,7 +10,7 @@ export type DelayServerSystemProps = {
 // delay netcode server
 export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System => {
 
-  const sendMessage = () => {
+  const write = () => {
     const n = world.tick
 
     // build tick data
@@ -44,7 +44,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     })
   }
 
-  const handleMessage = () => {
+  const read = () => {
     (world.game.netcode === "delay") ? delay() : rollback()
   }
 
@@ -117,8 +117,9 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     query: [],
     priority: 1,
     onTick: () => {
-      handleMessage()
-      sendMessage()
+      console.log(`NetServerSystem ${world.tick}`)
+      read()
+      write()
     }
   }
 }
