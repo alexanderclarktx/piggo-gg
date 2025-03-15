@@ -6,7 +6,6 @@ import {
 export const NametagSystem = ClientSystemBuilder({
   id: "NametagSystem",
   init: (world) => {
-    if (!world.renderer) return undefined
 
     const characterNametags: Record<string, Entity<Renderable | Position>> = {}
 

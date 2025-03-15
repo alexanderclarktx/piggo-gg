@@ -4,8 +4,6 @@ import { Entity, Health, HealthBar, Position, Renderable, ClientSystemBuilder, e
 export const HealthBarSystem = ClientSystemBuilder({
   id: "HealthBarSystem",
   init: (world) => {
-    if (!world.renderer) return undefined
-
     const characterHealthBars: Record<string, Entity<Renderable | Position>> = {}
 
     const healthbarEntity = (entity: Entity<Health | Position | Renderable>) => {

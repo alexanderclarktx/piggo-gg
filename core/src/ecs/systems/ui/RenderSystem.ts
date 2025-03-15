@@ -3,8 +3,6 @@ import { Entity, Position, Renderable, ClientSystemBuilder, values } from "@pigg
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
-    if (!world.renderer) return undefined
-
     const { renderer } = world
     let lastOntick = Date.now()
 
@@ -19,9 +17,9 @@ export const RenderSystem = ClientSystemBuilder({
       )
 
       if (position.screenFixed) {
-        renderer.addGui(renderable)
+        renderer?.addGui(renderable)
       } else {
-        renderer.addWorld(renderable)
+        renderer?.addWorld(renderable)
       }
     }
 
@@ -31,13 +29,13 @@ export const RenderSystem = ClientSystemBuilder({
       if (!position.screenFixed) return
 
       if (position.data.x < 0) {
-        renderable.c.x = renderer.app.screen.width + position.data.x
+        renderable.c.x = renderer!.app.screen.width + position.data.x
       } else {
         renderable.c.x = position.data.x
       }
 
       if (position.data.y < 0) {
-        renderable.c.y = renderer.app.screen.height + position.data.y
+        renderable.c.y = renderer!.app.screen.height + position.data.y
       } else {
         renderable.c.y = position.data.y
       }
@@ -48,6 +46,8 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       priority: 9,
       onTick: (entities: Entity<Renderable | Position>[]) => {
+
+        if (!renderer) return
 
         lastOntick = performance.now()
 
