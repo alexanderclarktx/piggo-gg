@@ -118,6 +118,7 @@ const GameLobby = (): Entity => {
   const list: GameBuilder[] = [Volleyball, Flappy, Craft, Dungeon]
   let gameButtons: PixiButton[] = []
   let index = 0
+  let invite: undefined | PixiButton = undefined
 
   const gameLobby = Entity<Position | Renderable>({
     id: "gameLobby",
@@ -126,10 +127,12 @@ const GameLobby = (): Entity => {
       position: Position({ x: 220, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: () => {
+        dynamic: ({world}) => {
           gameButtons.forEach((b, i) => {
             b.c.alpha = (i === index) ? 1 : 0.6
           })
+
+          if (invite) invite.c.visible = (world.client?.ws.readyState ?? 0) === 1
         },
         interactiveChildren: true,
         setup: async (r, renderer, world) => {
@@ -183,9 +186,9 @@ const GameLobby = (): Entity => {
             }
           })
 
-          const invite = PixiButton({
+          invite = PixiButton({
             content: () => ({
-              text: "Copy Invite Link",
+              text: "Create Lobby",
               pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 20 },
               anchor: { x: 0.5, y: 0 },
               style: { fontSize: 20, fill: 0xffffff },
