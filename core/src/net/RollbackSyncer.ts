@@ -71,7 +71,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       // get oldest message
       const message = buffer.sort((a, b) => a.tick - b.tick).shift()
-      if (buffer.length > 2) console.log(buffer.length)
+      if (buffer.length > 2) console.log("large buffer", buffer.length)
 
       if (!message) {
         console.error("NO MESSAGE")
@@ -180,6 +180,16 @@ export const RollbackSyncer = (world: World): Syncer => {
             world.entities[entityId].deserialize(message.serializedEntities[entityId])
           }
         })
+
+        // rm dangling local entities
+        for (const [entityId, entity] of entries(world.entities)) {
+          if (entity.components.networked) {
+            if (!message.serializedEntities[entityId]) {
+              console.log("REMOVE ENTITY", entityId)
+              world.removeEntity(entityId)
+            }
+          }
+        }
 
         // set actions
         if (message.actions[message.tick]) {

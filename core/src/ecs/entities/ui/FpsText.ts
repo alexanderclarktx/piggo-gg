@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, World, pixiText, round } from "@piggo-gg/core"
+import { Entity, Position, Renderable, pixiText, round } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
 export type FpsTextProps = {
@@ -30,26 +30,39 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
   }
 })
 
-export const LagText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Renderable>({
-  id: "lagText",
-  persists: true,
-  components: {
-    position: Position({
-      x: x ?? 5, y: y ?? 30, screenFixed: true
-    }),
-    renderable: Renderable({
-      zIndex: 3,
-      setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0x00ff00 } }),
-      dynamic: ({ container, world }) => {
-        const lag = round(world.client?.ms ?? 0)
-        if (world.tick % 5 !== 0) return
+export const LagText = ({ x, y }: FpsTextProps = {}) => {
 
-        const t = container as Text
-        if (t) {
-          // t.style.fill = lag < 50 ? "#00ff00" : lag < 200 ? "yellow" : "red"
-          t.text = `ms: ${lag}`
+  let last = 0
+  let lastTick = 0
+
+  const lagText = Entity<Position | Renderable>({
+    id: "lagText",
+    persists: true,
+    components: {
+      position: Position({
+        x: x ?? 5, y: y ?? 30, screenFixed: true
+      }),
+      renderable: Renderable({
+        zIndex: 3,
+        setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0x00ff00 } }),
+        dynamic: ({ container, world }) => {
+          lagText.components.renderable.visible = world.client?.connected ?? false
+
+          const lag = round(world.client?.ms ?? 0)
+
+          if (last > lag || world.tick - lastTick > 80) {
+            last = lag
+            lastTick = world.tick
+
+            const t = container as Text
+            if (t) {
+              // t.style.fill = lag < 50 ? "#00ff00" : lag < 200 ? "yellow" : "red"
+              t.text = `ms: ${lag}`
+            }
+          }
         }
-      }
-    })
-  }
-})
+      })
+    }
+  })
+  return lagText
+}

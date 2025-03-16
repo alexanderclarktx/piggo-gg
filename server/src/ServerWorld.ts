@@ -29,7 +29,15 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
     clients,
     getNumClients: () => keys(clients).length,
     handleClose: (ws: WS) => {
-      world.removeEntity(ws.data.playerName!)
+      const player = world.entity(ws.data.playerId)
+      if (player) {
+        const character = player.components.controlling?.getCharacter(world)
+        if (character) {
+          console.log(`removing character ${character.id}`)
+          world.removeEntity(character.id)
+        }
+        world.removeEntity(player.id)
+      }
 
       delete clients[ws.remoteAddress]
       delete latestClientMessages[ws.data.playerName!]

@@ -82,8 +82,6 @@ export type CameraSystemProps = {
 export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystemProps = {}) => ClientSystemBuilder({
   id: "CameraSystem",
   init: (world) => {
-    if (!world.renderer) return undefined
-
     const { renderer } = world
     let centeredEntity: Character | undefined = undefined
 
@@ -119,7 +117,7 @@ export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystem
         if (!centeredEntity) return
 
         const { x, y } = follow(centeredEntity.components.renderable.c.position)
-        renderer.camera.moveTo({ x, y })
+        renderer?.camera.moveTo({ x, y })
       }
     }
 

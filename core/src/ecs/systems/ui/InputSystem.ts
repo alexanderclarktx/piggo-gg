@@ -39,8 +39,6 @@ const KeyBuffer = (b?: KeyMouse[]) => {
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: (world) => {
-    if (!world.renderer) return undefined
-
     const renderer = world.renderer
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")

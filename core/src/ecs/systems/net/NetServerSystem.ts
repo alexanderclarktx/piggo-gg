@@ -101,7 +101,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         if (tickData.type !== "game") return
 
         // process message actions
-        if (tickData.actions) {
+        if (tickData.actions && tickData.actions[tickData.tick]) {
           entries(tickData.actions[tickData.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
               world.actions.push(world.tick, entityId, action)

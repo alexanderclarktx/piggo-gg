@@ -171,7 +171,6 @@ export const Client = ({ world }: ClientProps): Client => {
   })
 
   client.ws.onopen = () => {
-    // client.connected = true
     console.log("Client: connected to server")
 
     // const joinString: string = new URLSearchParams(window.location.search).get("join") ?? "hub"

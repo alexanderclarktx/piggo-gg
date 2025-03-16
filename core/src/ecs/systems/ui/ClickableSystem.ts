@@ -12,8 +12,6 @@ export const clickableClickedThisFrame = {
 export const ClickableSystem = ClientSystemBuilder({
   id: "ClickableSystem",
   init: (world) => {
-    if (!world.renderer) return undefined
-
     let clickables: Entity<Clickable | Position | Renderable>[] = []
 
     const renderer = world.renderer
@@ -34,7 +32,7 @@ export const ClickableSystem = ClientSystemBuilder({
       return undefined
     }
 
-    renderer.app.canvas.addEventListener("pointerdown", (event: FederatedPointerEvent) => {
+    renderer?.app.canvas.addEventListener("pointerdown", (event: FederatedPointerEvent) => {
       const click = { x: event.offsetX, y: event.offsetY }
 
       const clickWorld = renderer.camera.toWorldCoords(click)
@@ -69,7 +67,7 @@ export const ClickableSystem = ClientSystemBuilder({
           const { clickable, position } = hoveredEntity.components
 
           if (entities.find(e => e.id === hoveredEntity.id)) {
-            const hovering = checkBounds(renderer, position, clickable, mouse, mouse)
+            const hovering = checkBounds(renderer!, position, clickable, mouse, mouse)
             if (!hovering) {
               if (clickable.hoverOut) clickable.hoverOut(world)
               hoveredEntityId = undefined
@@ -88,7 +86,7 @@ export const ClickableSystem = ClientSystemBuilder({
           if (hoveredEntityId && hoveredEntityId?.zIndex > renderable.c.zIndex) break
 
           if (clickable.active && hoveredEntityId?.id !== entity.id) {
-            const hovering = checkBounds(renderer, position, clickable, mouseScreen, mouse)
+            const hovering = checkBounds(renderer!, position, clickable, mouseScreen, mouse)
             if (hovering) {
               clickable.hoverOver?.(world)
 
