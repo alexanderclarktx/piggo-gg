@@ -71,7 +71,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       // get oldest message
       const message = buffer.sort((a, b) => a.tick - b.tick).shift()
-      if (buffer.length > 2) console.log(buffer.length)
+      if (buffer.length > 2) console.log("large buffer", buffer.length)
 
       if (!message) {
         console.error("NO MESSAGE")

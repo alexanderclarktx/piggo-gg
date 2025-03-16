@@ -1,5 +1,5 @@
 import {
-  Character, ClientSystemBuilder, Entity, Player,
+  Character, ClientSystemBuilder, Debug, Entity, Player,
   Position, Renderable, entries, pixiText
 } from "@piggo-gg/core"
 
@@ -7,7 +7,7 @@ export const NametagSystem = ClientSystemBuilder({
   id: "NametagSystem",
   init: (world) => {
 
-    const characterNametags: Record<string, Entity<Renderable | Position>> = {}
+    const nametags: Record<string, Entity<Renderable | Position>> = {}
 
     return {
       id: "NametagSystem",
@@ -17,32 +17,29 @@ export const NametagSystem = ClientSystemBuilder({
       onTick: (entities: Player[]) => {
 
         // clean up
-        entries(characterNametags).forEach(([entityId, nametag]) => {
-          if (!world.entities[entityId]) {
-            world.removeEntity(nametag.id)
-            delete characterNametags[entityId]
+        for (const [entityId, nametag] of entries(nametags)) {
+
+          if (!world.entity(nametag.id)) {
+            delete nametags[entityId]
           }
-        })
 
-        // handle new entities
-        entities.forEach((player) => {
+          if (!world.entity(entityId)) {
+            world.removeEntity(nametag.id)
+            delete nametags[entityId]
+          }
+        }
+
+        // new players
+        for (const player of entities) {
           const character = player.components.controlling.getCharacter(world)
-          if (!character) return
+          if (!character) continue
 
-          const { renderable } = character.components
-
-          // add nametag
-          if (!characterNametags[player.id]) {
+          if (!nametags[player.id]) {
             const nametag = Nametag(player, character)
-            characterNametags[player.id] = nametag
+            nametags[player.id] = nametag
             world.addEntity(nametag)
           }
-
-          // update visibility
-          if (characterNametags[player.id] && renderable) {
-            characterNametags[player.id].components.renderable.visible = renderable.visible
-          }
-        })
+        }
       }
     }
   }
@@ -60,21 +57,23 @@ const Nametag = (player: Player, character: Character) => {
   })
 
   return Entity<Position | Renderable>({
-    id: `${player.id}-nametag`,
+    id: `nametag-${player.id}`,
     components: {
       position: Position({ follows: character.id }),
+      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         interpolate: true,
-        dynamic: async () => {
+        dynamic: async ({ renderable }) => {
+          renderable.visible = character.components.renderable.visible
+
+          // update nametag text
           if (player.components.pc.data.name !== name) {
             name = player.components.pc.data.name
             nametag.text = name
           }
         },
-        setup: async (r) => {
-          r.c.addChild(nametag)
-        }
+        setContainer: async () => nametag
       })
     }
   })
