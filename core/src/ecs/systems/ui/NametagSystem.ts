@@ -72,7 +72,9 @@ const Nametag = (player: Player, character: Character) => {
             nametag.text = name
           }
         },
-        setContainer: async () => nametag
+        setup: async (renderable) => {
+          renderable.c.addChild(nametag)
+        }
       })
     }
   })
