@@ -1,4 +1,4 @@
-import { Actions, Component, Entity, Input, Position, Renderable, Team, World } from "@piggo-gg/core"
+import { Actions, Component, Entity, Input, Position, Renderable, SystemBuilder, Team, World } from "@piggo-gg/core"
 
 export type Character = Entity<Position | Input | Actions | Renderable | Team>
 export const Character = Entity<Position | Input | Actions | Renderable | Team>
@@ -29,3 +29,21 @@ export const Controlling = (props: ControllingProps = {}): Controlling => {
   }
   return controlling
 }
+
+export const ControlSystem = SystemBuilder({
+  id: "ControlSystem",
+  init: (world) => ({
+    id: "ControlSystem",
+    query: ["controlling"],
+    priority: 2,
+    onTick: (entities: Entity<Controlling>[]) => {
+      entities.forEach((entity) => {
+        const character = entity.components.controlling.getCharacter(world)
+
+        if (!character) {
+          entity.components.controlling.data.entityId = ""
+        }
+      })
+    }
+  })
+})

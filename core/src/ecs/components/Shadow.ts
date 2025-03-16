@@ -1,5 +1,6 @@
 import {
-  ClientSystemBuilder, Entity, pixiGraphics, Position, Renderable, Component
+  ClientSystemBuilder, Entity, pixiGraphics, Position,
+  Renderable, Component, entries
 } from "@piggo-gg/core"
 
 export type Shadow = Component<"shadow"> & { size: number, yOffset: number }
@@ -21,6 +22,16 @@ export const ShadowSystem = ClientSystemBuilder({
       query: ["shadow", "position", "renderable"],
       priority: 5,
       onTick: (entities: Target[]) => {
+
+        // clean up
+        for (const [id, entity] of entries(table)) {
+          if (!entities.find(e => e.id === id)) {
+            world.removeEntity(entity.id)
+            delete table[id]
+          }
+        }
+
+        // create shadows
         for (const target of entities) {
           if (!table[target.id]) {
             const { size, yOffset } = target.components.shadow

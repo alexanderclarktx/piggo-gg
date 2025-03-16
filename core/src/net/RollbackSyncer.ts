@@ -181,6 +181,16 @@ export const RollbackSyncer = (world: World): Syncer => {
           }
         })
 
+        // rm dangling local entities
+        for (const [entityId, entity] of entries(world.entities)) {
+          if (entity.components.networked) {
+            if (!message.serializedEntities[entityId]) {
+              console.log("REMOVE ENTITY", entityId)
+              world.removeEntity(entityId)
+            }
+          }
+        }
+
         // set actions
         if (message.actions[message.tick]) {
           entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
