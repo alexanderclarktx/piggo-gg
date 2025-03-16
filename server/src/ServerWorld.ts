@@ -1,6 +1,6 @@
 import { DefaultWorld, keys, NetMessageTypes, NetServerSystem, Player, World } from "@piggo-gg/core"
 import { games } from "@piggo-gg/games"
-import { PerClientData } from "@piggo-gg/server"
+import { PerClientData, NoobSystem } from "@piggo-gg/server"
 import { ServerWebSocket } from "bun"
 
 export type WS = ServerWebSocket<PerClientData>
@@ -23,6 +23,7 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {}
 
   world.addSystems([NetServerSystem({ world, clients, latestClientMessages })])
+  world.addSystemBuilders([NoobSystem])
 
   return {
     world,

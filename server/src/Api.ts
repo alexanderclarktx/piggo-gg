@@ -110,8 +110,7 @@ export const Api = (): Api => {
         }
 
         // 2. login or create account
-        let user = undefined
-        user = await prisma.users.findUnique({ where: { walletAddress: data.address } })
+        let user = await prisma.users.findUnique({ where: { walletAddress: data.address } })
         if (!user) {
           user = await prisma.users.create({
             data: {
