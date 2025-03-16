@@ -52,28 +52,15 @@ export const Collider = ({
     throw new Error("Invalid collider shape")
   }
 
-  let bodyDesc: RigidBodyDesc
-  if (isStatic) {
-    bodyDesc = RigidBodyDesc.fixed()
-  } else {
-    bodyDesc = RigidBodyDesc.dynamic()
-  }
+  colliderDesc.setFriction(0)
 
   if (sensor) colliderDesc.setSensor(true)
   if (mass) colliderDesc.setMass(mass)
   if (restitution) colliderDesc.setRestitution(restitution)
   if (rotation) colliderDesc.setRotation(rotation)
 
+  const bodyDesc = (isStatic) ? RigidBodyDesc.fixed() : RigidBodyDesc.dynamic()
   bodyDesc.setLinearDamping(frictionAir ?? 0)
-
-  colliderDesc.setFriction(0)
-
-  if (group) {
-    const n = Number.parseInt(group, 2)
-    if (n >= 0 && n <= 4294967295) {
-      colliderDesc.setCollisionGroups(n)
-    }
-  }
 
   const collider: Collider = {
     type: "collider",
@@ -91,6 +78,8 @@ export const Collider = ({
       }
     }
   }
+
+  if (group) collider.setGroup(group)
 
   return collider
 }
