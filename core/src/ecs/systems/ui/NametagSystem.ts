@@ -1,5 +1,5 @@
 import {
-  Character, ClientSystemBuilder, Debug, Entity, Player,
+  Character, ClientSystemBuilder, Entity, Player,
   Position, Renderable, entries, pixiText
 } from "@piggo-gg/core"
 
@@ -60,7 +60,6 @@ const Nametag = (player: Player, character: Character) => {
     id: `nametag-${player.id}`,
     components: {
       position: Position({ follows: character.id }),
-      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         interpolate: true,
