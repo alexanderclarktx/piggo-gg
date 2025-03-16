@@ -359,6 +359,7 @@ export const TargetSystem = SystemBuilder({
   })
 })
 
+// todo need a wider hitbox for the players
 export const Centerline = () => LineWall({
   position: { x: 225, y: -75 },
   points: [
@@ -388,11 +389,11 @@ export const PostTop = () => Entity({
   components: {
     position: Position({ x: 225, y: 0, z: 25 }),
     renderable: Renderable({
-      zIndex: 2.9,
+      zIndex: 3.1,
       setContainer: async () => {
         const g = pixiGraphics()
 
-        g.roundRect(-3, -76, 6, 28, 2)
+        g.roundRect(-3, -76, 6, 27, 2)
         g.fill({ color: 0x943126, alpha: 1 })
 
         return g
