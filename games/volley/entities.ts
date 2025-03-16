@@ -266,7 +266,7 @@ export const Ball = () => Entity({
         const { x, y } = position.data.velocity
         position.data.rotation += 0.001 * sqrt((x * x + y * y)) * sign(x)
 
-        if (position.data.z < 30) {
+        if (position.data.z < 25) {
           collider.setGroup("11111111111111100000000000000001")
         } else {
           collider.setGroup("11111111111111100000000000000000")
@@ -274,13 +274,13 @@ export const Ball = () => Entity({
       }
     }),
     renderable: Renderable({
-      anchor: { x: 0.5, y: 0.5 },
-      scale: 0.6,
-      // scale: 0.22,
       zIndex: 4,
+      anchor: { x: 0.5, y: 0.5 },
+      scale: 0.55,
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
+      // scale: 0.22,
       // outline: { color: 0x222222, thickness: 1 },
       setup: async (r) => {
         // const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
@@ -375,8 +375,64 @@ export const Court = () => LineWall({
     450, 0,
     500, 150,
     -50, 150,
-    0, 0
+    0, 0,
+    5, 0
   ],
   visible: true,
-  fill: 0x0066aa
+  fill: 0x0066aa,
+  strokeAlpha: 0.95
+})
+
+export const PostTop = () => Entity({
+  id: "post-top",
+  components: {
+    position: Position({ x: 225, y: 0, z: 25 }),
+    renderable: Renderable({
+      zIndex: 2.9,
+      setContainer: async () => {
+        const g = pixiGraphics()
+
+        g.roundRect(-3, -76, 6, 28, 2)
+        g.fill({ color: 0x943126, alpha: 1 })
+
+        return g
+      }
+    })
+  }
+})
+
+export const PostBottom = () => Entity({
+  id: "post-bottom",
+  components: {
+    position: Position({ x: 225, y: 0, z: 25 }),
+    renderable: Renderable({
+      zIndex: 3.9,
+      setContainer: async () => {
+        const g = pixiGraphics()
+
+        g.roundRect(-3, 74, 6, 28, 2)
+        g.fill({ color: 0x943126, alpha: 1 })
+
+        return g
+      }
+    })
+  }
+})
+
+export const Net = () => Entity({
+  id: "net",
+  components: {
+    position: Position({ x: 225, y: 0, z: 25 }),
+    renderable: Renderable({
+      zIndex: 3.8,
+      setContainer: async () => {
+        const g = pixiGraphics()
+
+        // net
+        g.roundRect(-1, -75, 2, 150, 1)
+        g.fill({ color: 0xffe47a, alpha: 1 })
+        return g
+      }
+    })
+  }
 })
