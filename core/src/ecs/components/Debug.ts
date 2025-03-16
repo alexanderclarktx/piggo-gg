@@ -120,7 +120,9 @@ export const DebugSystem = ClientSystemBuilder({
       debugEntitiesPerEntity["collider-debug"] = [debugEntity]
     }
 
-    const debugText = (p: Position) => `${p.data.x.toFixed(0)} | ${p.data.y.toFixed(0)} | ${p.data.velocity.x.toFixed(0)} | ${p.data.velocity.y.toFixed(0)}`
+    const debugText = (p: Position) => {
+      return `x:${p.data.x.toFixed(0)} y:${p.data.y.toFixed(0)} z:${p.data.z.toFixed(0)} | vx:${p.data.velocity.x.toFixed(0)} vy:${p.data.velocity.y.toFixed(0)}`
+    }
 
     return {
       id: "DebugSystem",

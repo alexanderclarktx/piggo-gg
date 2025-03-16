@@ -14,6 +14,7 @@ export type Collider = Component<"collider"> & {
   priority: number
   hittable: boolean
   sensor: SensorCallback
+  setGroup: (group: string) => void
 }
 
 export type ColliderProps = {
@@ -82,7 +83,13 @@ export const Collider = ({
     bodyDesc,
     sensor: sensor ?? (() => false),
     priority: priority ?? 0,
-    hittable: hittable ?? false
+    hittable: hittable ?? false,
+    setGroup: (group: string) => {
+      const n = Number.parseInt(group, 2)
+      if (n >= 0 && n <= 4294967295) {
+        colliderDesc.setCollisionGroups(n)
+      }
+    }
   }
 
   return collider

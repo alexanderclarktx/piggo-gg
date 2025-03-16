@@ -36,7 +36,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     }
 
     state.lastHitTick = world.tick
-    ballPos.setPosition({z: ballPos.data.z + 0.1})
+    ballPos.setPosition({ z: ballPos.data.z + 0.1 })
 
     if (state.phase === "serve") {
       ballPos.setVelocity({ z: 0.5 }).setGravity(0.05)
@@ -260,9 +260,17 @@ export const Ball = () => Entity({
     shadow: Shadow(3, 3),
     networked: Networked(),
     npc: NPC({
-      behavior: (ball) => {
-        const { x, y } = ball.components.position.data.velocity
-        ball.components.position.data.rotation += 0.001 * sqrt((x * x + y * y)) * sign(x)
+      behavior: (ball: Entity<Position | NPC | Collider>) => {
+        const { position, collider } = ball.components
+
+        const { x, y } = position.data.velocity
+        position.data.rotation += 0.001 * sqrt((x * x + y * y)) * sign(x)
+
+        if (position.data.z < 30) {
+          collider.setGroup("11111111111111100000000000000001")
+        } else {
+          collider.setGroup("11111111111111100000000000000000")
+        }
       }
     }),
     renderable: Renderable({
@@ -351,7 +359,7 @@ export const TargetSystem = SystemBuilder({
   })
 })
 
-export const Net = () => LineWall({
+export const Centerline = () => LineWall({
   position: { x: 225, y: -75 },
   points: [
     0, 0,
