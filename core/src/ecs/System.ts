@@ -1,4 +1,4 @@
-import { ComponentTypes, Entity, NetworkedComponentData, ValidComponents, World } from "@piggo-gg/core"
+import { Entity, NetworkedComponentData, ValidComponents, World } from "@piggo-gg/core"
 
 // a System is a function that runs on every tick
 export interface System<T extends string = string> {
