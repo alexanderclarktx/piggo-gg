@@ -132,7 +132,10 @@ const GameLobby = (): Entity => {
             b.c.alpha = (i === index) ? 1 : 0.6
           })
 
-          if (invite) invite.c.visible = (world.client?.ws.readyState ?? 0) === 1
+          if (invite) {
+            invite.c.alpha = (world.client?.ws.readyState ?? 0) === 1 ? 1 : 0.6
+            invite.c.interactive = (world.client?.ws.readyState ?? 0) === 1
+          }
         },
         interactiveChildren: true,
         setup: async (r, renderer, world) => {
