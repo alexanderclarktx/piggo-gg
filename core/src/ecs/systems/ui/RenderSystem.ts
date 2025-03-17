@@ -163,16 +163,23 @@ export const RenderSystem = ClientSystemBuilder({
 
           const { x, y, z, velocity } = position.data
 
-          if (((world.tick - position.lastCollided) > 4) && (velocity.x || velocity.y) && renderable.interpolate) {
+          if ((velocity.x || velocity.y || velocity.z) && renderable.interpolate) {
 
             const dx = velocity.x * elapsedTime / 1000
             const dy = velocity.y * elapsedTime / 1000
             const dz = velocity.z * elapsedTime / world.tickrate
 
-            renderable.c.position.set(
-              x + dx + renderable.position.x,
-              y + dy + renderable.position.y - z - dz
-            )
+            if ((world.tick - position.lastCollided) <= 4) {
+              renderable.c.position.set(
+                x + renderable.position.x,
+                y + renderable.position.y - z - dz
+              )
+            } else {
+              renderable.c.position.set(
+                x + dx + renderable.position.x,
+                y + dy + renderable.position.y - z - dz
+              )
+            }
           }
         })
       }
