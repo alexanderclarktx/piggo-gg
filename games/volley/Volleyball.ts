@@ -90,7 +90,7 @@ const VolleyballSystem = SystemBuilder({
 
     // scale camera to fit the court
     const desiredScale = world.renderer?.app.screen.width! / 500
-    const scaleBy = desiredScale - world.renderer?.camera.root.scale.x! - desiredScale * 0.1 - 0.3
+    const scaleBy = desiredScale - world.renderer?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
     world.renderer?.camera.scaleBy(scaleBy)
 
     return {
