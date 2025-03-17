@@ -3,7 +3,7 @@ import {
   middle, Move, Networked, NPC, Position, Renderable, Shadow, Team,
   TeamColors, teammates, TeamNumber, XY, XYdiff, XYZdiff
 } from "@piggo-gg/core"
-import { Spike } from "./entities"
+import { Spike } from "./Spike"
 import { range, VolleyballState } from "./Volleyball"
 import { AnimatedSprite } from "pixi.js"
 
