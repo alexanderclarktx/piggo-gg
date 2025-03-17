@@ -1,5 +1,5 @@
 import {
-  ClientSystemBuilder, DebugBounds, Entity, FpsText, LagText, Component,
+  ClientSystemBuilder, DebugBounds, Entity, FpsText, Component,
   Position, Renderable, TextBox, physics, values, keys
 } from "@piggo-gg/core"
 import { Graphics, Text } from "pixi.js"
@@ -79,12 +79,10 @@ export const DebugSystem = ClientSystemBuilder({
 
     const drawFpsText = () => {
       const fpsText = FpsText()
-      const lagText = LagText()
 
-      world.addEntities([fpsText, lagText])
+      world.addEntities([fpsText])
 
       debugEntitiesPerEntity["fpsText"] = [fpsText]
-      debugEntitiesPerEntity["lagText"] = [lagText]
     }
 
     const drawAllColliders = () => {
