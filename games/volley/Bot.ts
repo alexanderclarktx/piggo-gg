@@ -14,7 +14,7 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
       debug: Debug(),
       position: Position({ ...pos, velocityResets: 1, speed: 120, gravity: 0.3 }),
       networked: Networked(),
-      collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
+      collider: Collider({ shape: "ball", radius: 4, group: "notself" }),
       team: Team(team),
       actions: Actions({
         move: Move,
