@@ -49,6 +49,7 @@ export type PositionProps = {
   screenFixed?: boolean
   follows?: string
   offset?: XY
+  rotation?: number
 }
 
 // the entity's position in the world
@@ -61,7 +62,7 @@ export const Position = (props: PositionProps = {}): Position => {
       z: props.z ?? 0,
       velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       speed: props.speed ?? 0,
-      rotation: 0,
+      rotation: props.rotation ?? 0,
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
       heading: { x: NaN, y: NaN },

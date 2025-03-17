@@ -127,7 +127,7 @@ export const Centerline = () => Entity({
   id: "centerline",
   components: {
     position: Position({ x: 225, y: 0, z: 0 }),
-    collider: Collider({ shape: "cuboid", length: 14, width: 75, isStatic: true })
+    collider: Collider({ shape: "cuboid", length: 12, width: 75, isStatic: true })
   }
 })
 
@@ -149,13 +149,13 @@ export const Court = () => LineWall({
 export const PostTop = () => Entity({
   id: "post-top",
   components: {
-    position: Position({ x: 225, y: 0, z: 25 }),
+    position: Position({ x: 225, y: -76, z: 25 }),
     renderable: Renderable({
-      zIndex: 3.1,
+      zIndex: 3.2,
       setContainer: async () => {
         const g = pixiGraphics()
 
-        g.roundRect(-3, -76, 6, 27, 2)
+        g.roundRect(-3, 0, 6, 27, 2)
         g.fill({ color: 0x943126, alpha: 1 })
 
         return g
@@ -167,13 +167,13 @@ export const PostTop = () => Entity({
 export const PostBottom = () => Entity({
   id: "post-bottom",
   components: {
-    position: Position({ x: 225, y: 0, z: 25 }),
+    position: Position({ x: 225, y: 74, z: 25 }),
     renderable: Renderable({
       zIndex: 3.9,
       setContainer: async () => {
         const g = pixiGraphics()
 
-        g.roundRect(-3, 74, 6, 28, 2)
+        g.roundRect(-3, 0, 6, 28, 2)
         g.fill({ color: 0x943126, alpha: 1 })
 
         return g
@@ -195,6 +195,29 @@ export const Net = () => Entity({
         // net
         g.roundRect(-1, -75, 2, 150, 1)
         g.fill({ color: 0xffe47a, alpha: 1 })
+        return g
+      }
+    })
+  }
+})
+
+export const NetShadow = () => Entity({
+  id: "net-shadow",
+  components: {
+    position: Position({ x: 225, y: -76, z: 0, rotation: -0.8 }),
+    debug: Debug(),
+    renderable: Renderable({
+      zIndex: 3.1,
+      rotates: true,
+      setContainer: async () => {
+        const g = pixiGraphics()
+
+        g.roundRect(-3, 0, 6, 27, 2)
+        g.fill({ color: 0x000000, alpha: 0.2 })
+
+        g.lineTo(-3, 25).lineTo(-100, 120).lineTo(-120, 120).lineTo(3, -3)
+        g.fill({ color: 0x000000, alpha: 0.2 })
+
         return g
       }
     })
