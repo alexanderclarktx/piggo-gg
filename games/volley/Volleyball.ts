@@ -114,6 +114,11 @@ const VolleyballSystem = SystemBuilder({
           if (state.lastWin === 2) state.scoreRight++
           state.teamServing = state.lastWin === 2 ? 2 : 1
 
+          if (state.scoreLeft >= 7 || state.scoreRight >= 7) {
+            state.scoreLeft = 0
+            state.scoreRight = 0
+          }
+
           // reset state
           state.phase = "serve"
           state.lastHit = ""
