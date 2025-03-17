@@ -22,9 +22,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     if (state.phase === "point") return
 
     // no 4th hits
-    if (state.hit === 4) {
-      state.phase = "point"
-      state.lastWin = state.lastHitTeam === 1 ? 2 : 1
+    if (state.hit === 3 && state.lastHitTeam === team) {
       return
     }
 
