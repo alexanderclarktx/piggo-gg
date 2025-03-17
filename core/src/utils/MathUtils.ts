@@ -32,15 +32,21 @@ export const randomChoice = <T>(xs: T[]): T => {
 }
 
 export const XYdiff = (a: XY, b: XY, threshold: number = 0) => {
-  return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold
+  const distance = XYdistance(a, b)
+  return distance > threshold
 }
 
 export const XYZdiff = (a: XYZ, b: XYZ, threshold: number = 0) => {
-  return abs(a.x - b.x) > threshold || abs(a.y - b.y) > threshold || abs(a.z - b.z) > threshold
+  const distance = XYZdistance(a, b)
+  return distance > threshold
 }
 
 export const XYdistance = (a: XY, b: XY): number => {
   return hypot(a.x - b.x, a.y - b.y)
+}
+
+export const XYZdistance = (a: XYZ, b: XYZ): number => {
+  return hypot(a.x - b.x, a.y - b.y, a.z - b.z)
 }
 
 export const XYdelta = (a: XY, b: XY): number => {

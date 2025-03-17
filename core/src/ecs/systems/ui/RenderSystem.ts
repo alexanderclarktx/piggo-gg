@@ -152,17 +152,19 @@ export const RenderSystem = ClientSystemBuilder({
       onRender(entities: Entity<Renderable | Position>[]) {
         const elapsedTime = performance.now() - lastOntick
 
-        // interpolate entity positions
-        entities.forEach((entity) => {
+        for (const entity of entities) {
+
           const { position, renderable } = entity.components
+
+          // ui renderables
           if (position.screenFixed) {
-            if (renderable.interpolate) {
-              updateScreenFixed(entity)
-            } else return
+            if (!renderable.interpolate) continue
+            updateScreenFixed(entity)
           }
 
           const { x, y, z, velocity } = position.data
 
+          // scene renderables
           if ((velocity.x || velocity.y || velocity.z) && renderable.interpolate) {
 
             const dx = velocity.x * elapsedTime / 1000
@@ -181,7 +183,7 @@ export const RenderSystem = ClientSystemBuilder({
               )
             }
           }
-        })
+        }
       }
     }
   }

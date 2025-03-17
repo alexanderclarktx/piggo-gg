@@ -116,7 +116,7 @@ const VolleyballSystem = SystemBuilder({
           state.hit = 0
 
           // reset ball
-          ballPos.setVelocity({ x: 0, y: 0 }).setRotation(0).setGravity(0)
+          ballPos.setVelocity({ x: 0, y: 0, z: 0 }).setRotation(0).setGravity(0)
           ballPos.setPosition({
             x: state.teamServing === 1 ? 10 : 400,
             y: 1, z: 50

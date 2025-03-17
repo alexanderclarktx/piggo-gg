@@ -3,10 +3,12 @@ import {
   Input, LineWall, loadTexture, middle, Move, Networked, NPC, pixiGraphics, Player,
   Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors,
   teammates, TeamNumber, timeToLand, velocityToDirection, velocityToPoint,
-  WASDInputMap, XY, XYdiff, XYdistance, XYZ, XYZdiff
+  WASDInputMap, XY, XYdiff, XYdistance, XYZ, XYZdiff, XYZdistance
 } from "@piggo-gg/core"
-import { AnimatedSprite, Sprite, Texture } from "pixi.js"
+import { AnimatedSprite, Texture } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
+
+const range = 30
 
 export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params, entity }) => {
   if (!params.target || !params.from || !entity) return
@@ -18,7 +20,6 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
   const { position: ballPos } = ball.components
 
   const standing = from.z === 0
-  const range = standing ? 20 : 30
   const far = XYZdiff(from, ballPos.data, range)
 
   if (!far) {
@@ -38,7 +39,7 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     state.lastHitTick = world.tick
     ballPos.setPosition({ z: ballPos.data.z + 0.1 })
 
-    if (state.phase === "serve") {
+    if (state.phase === "serve" && state.hit === 1) {
       ballPos.setVelocity({ z: 0.5 }).setGravity(0.05)
       const v = velocityToPoint(ballPos.data, target, 0.05, 0.5)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
@@ -58,6 +59,8 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     }
 
     state.phase = "play"
+  } else {
+    console.log(`too far range:${range}`, XYZdistance(from, ballPos.data))
   }
 }, 20)
 
@@ -130,18 +133,17 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
             return { actionId: "jump", entityId: bot.id }
           }
 
-          const range = position.data.standing ? 20 : 30
           const far = XYZdiff(position.data, ballPos.data, range)
 
           if (!far) {
             const from = { x: position.data.x, y: position.data.y, z: position.data.z }
 
-            if (state.hit === 2 || state.phase === "serve") {
+            if (state.hit === 2 || (state.phase === "serve" && state.hit === 0)) {
               const target = {
                 x: 225 + (team.data.team === 1 ? 1 : -1) * world.random.int(225),
                 y: world.random.int(150, 75)
               }
-              return { actionId: "spike", entityId: bot.id, params: { target, from: position.data } }
+              return { actionId: "spike", entityId: bot.id, params: { target, from } }
             }
 
             const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)[0]
@@ -286,7 +288,6 @@ export const Ball = () => Entity({
         const { position, actions } = world.client?.playerCharacter()?.components ?? {}
         if (!position || !actions) return
 
-        const range = position.data.standing ? 20 : 30
         const far = XYZdiff(position.data, ballPos.data, range)
 
         if (!far) {
@@ -317,7 +318,7 @@ export const Target = (ball: Entity<Position | Renderable>) => {
       networked: Networked(),
       npc: NPC({
         behavior: (_, world) => {
-          const { z, x, y, velocity: v, gravity } = ball.components.position.data
+          const { z, x, y, velocity: v, gravity, standing } = ball.components.position.data
 
           if (v.x === last.x && v.y === last.y) return
           last = { x: v.x, y: v.y }
@@ -328,19 +329,17 @@ export const Target = (ball: Entity<Position | Renderable>) => {
             x: x + v.x * t / 1000 * world.tickrate,
             y: y + v.y * t / 1000 * world.tickrate
           })
+
+          target.components.renderable.visible = (!standing && gravity > 0)
         }
       }),
       renderable: Renderable({
         zIndex: 3.8,
         visible: false,
-        dynamic: () => {
-          const { standing, gravity } = ball.components.position.data
-          target.components.renderable.visible = (!standing && gravity > 0)
-        },
         setContainer: async () => {
           const g = pixiGraphics()
           g.ellipse(0, 0, 6, 3)
-          g.stroke({ color: 0x55ff00, alpha: 0.8, width: 1.5 })
+          g.stroke({ color: 0x00ffff, alpha: 0.9, width: 1.5 })
 
           return g
         }
