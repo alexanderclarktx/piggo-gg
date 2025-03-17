@@ -4,7 +4,7 @@ import {
   Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Texture } from "pixi.js"
-import { range } from "./Volleyball"
+import { range, VolleyballState } from "./Volleyball"
 import { Spike } from "./Spike"
 
 export const Dude = (player: Player) => Character({
@@ -86,7 +86,7 @@ export const Ball = () => Entity({
         if (position.data.z < 25) {
           collider.setGroup("two")
         } else {
-          collider.setGroup("none")
+          collider.setGroup("three")
         }
       }
     }),
@@ -146,6 +146,29 @@ export const Court = () => LineWall({
   strokeAlpha: 0.95
 })
 
+export const Bounds = (group: "two" | "three") => LineWall({
+  id: `bounds-${group}`,
+  position: { x: 225, y: -80 },
+  group,
+  points: [
+    0, 0,
+    -230, 0,
+    -285, 160,
+    285, 160,
+    230, 0,
+    0, 0
+  ],
+  sensor: (e2, world) => {
+    if (e2.id !== "ball") return false
+
+    const state = world.game.state as VolleyballState
+    state.phase = "point"
+    state.lastWin = state.lastHitTeam === 1 ? 2 : 1
+
+    return true
+  }
+})
+
 export const PostTop = () => Entity({
   id: "post-top",
   components: {
@@ -181,29 +204,6 @@ export const Net = () => Entity({
       zIndex: 3.8,
       setContainer: async () => {
         return pixiGraphics().roundRect(-1, -75, 2, 150, 1).fill({ color: 0xffe47a, alpha: 1 })
-      }
-    })
-  }
-})
-
-export const NetShadow = () => Entity({
-  id: "net-shadow",
-  components: {
-    position: Position({ x: 225, y: -76, z: 0, rotation: -0.8 }),
-    debug: Debug(),
-    renderable: Renderable({
-      zIndex: 3.1,
-      rotates: true,
-      setContainer: async () => {
-        const g = pixiGraphics()
-
-        g.roundRect(-3, 0, 6, 27, 2)
-        g.fill({ color: 0x000000, alpha: 0.2 })
-
-        g.lineTo(-3, 25).lineTo(-100, 120).lineTo(-120, 120).lineTo(3, -3)
-        g.fill({ color: 0x000000, alpha: 0.2 })
-
-        return g
       }
     })
   }
