@@ -29,7 +29,11 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     if (state.phase === "serve" && state.lastHitTeam === team) {
       return
     }
-    console.log("spike", team, state)
+
+    // no spike on serve
+    if (state.phase === "serve" && state.hit === 1 && from.z > 0) {
+      return
+    }
 
     world.client?.soundManager.play("spike")
 
