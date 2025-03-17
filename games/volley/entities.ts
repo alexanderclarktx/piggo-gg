@@ -5,7 +5,7 @@ import {
   teammates, TeamNumber, timeToLand, velocityToDirection, velocityToPoint,
   WASDInputMap, XY, XYdiff, XYdistance, XYZ, XYZdiff
 } from "@piggo-gg/core"
-import { AnimatedSprite, Sprite } from "pixi.js"
+import { AnimatedSprite, Sprite, Texture } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
 
 export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params, entity }) => {
@@ -276,16 +276,31 @@ export const Ball = () => Entity({
     renderable: Renderable({
       zIndex: 4,
       anchor: { x: 0.5, y: 0.5 },
-      scale: 0.55,
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
       // scale: 0.22,
       // outline: { color: 0x222222, thickness: 1 },
+      dynamic: ({ entity: ball, world }) => {
+        const { position: ballPos } = ball.components
+        const { position, actions } = world.client?.playerCharacter()?.components ?? {}
+        if (!position || !actions) return
+
+        const range = position.data.standing ? 20 : 30
+        const far = XYZdiff(position.data, ballPos.data, range)
+
+        if (!far) {
+          ball.components.renderable.setOutline({ color: 0x55ff00, thickness: 2 })
+        } else {
+          ball.components.renderable.setOutline({ color: 0x000000, thickness: 0 })
+        }
+      },
       setup: async (r) => {
         // const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
-        const texture = (await loadTexture("vball.json"))["ball"]
-        r.c = new Sprite(texture)
+        const texture = (await loadTexture("vball.json"))["ball"] as Texture
+        texture.source.scaleMode = "nearest"
+
+        r.c = pixiGraphics().circle(0, 0, 5).fill({ texture })
       }
     })
   }
