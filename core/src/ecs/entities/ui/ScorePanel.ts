@@ -18,7 +18,6 @@ export const ScorePanel = (): Entity => {
     id: "scorepanel",
     components: {
       position: Position({ screenFixed: true }),
-      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         anchor: { x: 0.5, y: 0 },

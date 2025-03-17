@@ -114,6 +114,11 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
               return { actionId: "spike", entityId: bot.id, params: { target, from } }
             }
 
+            // don't bump if ball on other side
+            if ((team === 2 && ballPos.data.x < 225) || (team === 1 && ballPos.data.x > 225)) {
+              return
+            }
+
             const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)[0]
             if (!closestTeammate) return
 

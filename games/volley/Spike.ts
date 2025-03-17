@@ -18,6 +18,9 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
   if (!far) {
     const state = world.game.state as VolleyballState
 
+    // can't hit if point is over
+    if (state.phase === "point") return
+
     // no 4th hits
     if (state.hit === 4) {
       state.phase = "point"

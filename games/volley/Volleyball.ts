@@ -2,7 +2,7 @@ import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, LagText, Position,
   Scoreboard, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
 } from "@piggo-gg/core"
-import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, NetShadow } from "./entities"
+import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
 import { Bot } from "./Bot"
 import { TargetSystem } from "./Target"
 
@@ -52,6 +52,8 @@ export const Volleyball: GameBuilder<VolleyballState> = {
       PostTop(),
       PostBottom(),
       Net(),
+      Bounds("two"),
+      Bounds("three"),
       // NetShadow(),
       ScorePanel(),
       // Scoreboard(),
@@ -109,10 +111,19 @@ const VolleyballSystem = SystemBuilder({
         const state = world.game.state as VolleyballState
 
         if (state.phase === "point") {
+
+          // wait for ball to land
+          if (ballPos.data.z > 0) return
+
           // set score
           if (state.lastWin === 1) state.scoreLeft++
           if (state.lastWin === 2) state.scoreRight++
           state.teamServing = state.lastWin === 2 ? 2 : 1
+
+          if (state.scoreLeft >= 7 || state.scoreRight >= 7) {
+            state.scoreLeft = 0
+            state.scoreRight = 0
+          }
 
           // reset state
           state.phase = "serve"
