@@ -31,6 +31,14 @@ export const randomChoice = <T>(xs: T[]): T => {
   return xs[floor(random() * xs.length)]
 }
 
+export const XYdistance = (a: XY, b: XY): number => {
+  return hypot(a.x - b.x, a.y - b.y)
+}
+
+export const XYZdistance = (a: XYZ, b: XYZ): number => {
+  return hypot(a.x - b.x, a.y - b.y, a.z - b.z)
+}
+
 export const XYdiff = (a: XY, b: XY, threshold: number = 0) => {
   const distance = XYdistance(a, b)
   return distance > threshold
@@ -41,19 +49,9 @@ export const XYZdiff = (a: XYZ, b: XYZ, threshold: number = 0) => {
   return distance > threshold
 }
 
-export const XYdistance = (a: XY, b: XY): number => {
-  return hypot(a.x - b.x, a.y - b.y)
+export const XYequal = (a: XY, b: XY) => {
+  return a.x === b.x && a.y === b.y
 }
-
-export const XYZdistance = (a: XYZ, b: XYZ): number => {
-  return hypot(a.x - b.x, a.y - b.y, a.z - b.z)
-}
-
-export const XYdelta = (a: XY, b: XY): number => {
-  return hypot(a.x - b.x, a.y - b.y)
-}
-
-export const XYequal = (a: XY, b: XY) => a.x === b.x && a.y === b.y
 
 export const middle = (a: XY, b: XY): XY => {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
