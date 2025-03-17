@@ -5,6 +5,13 @@ export type ColliderShapes = "ball" | "cuboid" | "line"
 
 export type SensorCallback = (e2: Entity<Position | Collider>, world: World) => boolean
 
+export const ColliderGroups = {
+  default: "11111111000000001111111100000000",
+  none:    "00000000000000000000000000000000",
+  notself: "01000000000000001000000000000000",
+  two:     "00000000000000100000000000000010"
+} as const;
+
 export type Collider = Component<"collider"> & {
   type: "collider"
   bodyDesc: RigidBodyDesc
@@ -14,7 +21,7 @@ export type Collider = Component<"collider"> & {
   priority: number
   hittable: boolean
   sensor: SensorCallback
-  setGroup: (group: string) => void
+  setGroup: (group: keyof typeof ColliderGroups) => void
 }
 
 export type ColliderProps = {
@@ -31,7 +38,7 @@ export type ColliderProps = {
   rotation?: number
   priority?: number
   sensor?: SensorCallback
-  group?: string // 32 bits
+  group?: keyof typeof ColliderGroups
 }
 
 export const Collider = ({
@@ -71,15 +78,15 @@ export const Collider = ({
     sensor: sensor ?? (() => false),
     priority: priority ?? 0,
     hittable: hittable ?? false,
-    setGroup: (group: string) => {
-      const n = Number.parseInt(group, 2)
+    setGroup: (group) => {
+      const n = Number.parseInt(ColliderGroups[group], 2)
       if (n >= 0 && n <= 4294967295) {
         colliderDesc.setCollisionGroups(n)
       }
     }
   }
 
-  if (group) collider.setGroup(group)
+  collider.setGroup(group ? group : "default")
 
   return collider
 }

@@ -16,7 +16,7 @@ export const Dude = (player: Player) => Character({
       velocityResets: 1, speed: 120, gravity: 0.3
     }),
     networked: Networked(),
-    collider: Collider({ shape: "ball", radius: 4, group: "11111111111111100000000000000001" }),
+    collider: Collider({ shape: "ball", radius: 4, group: "notself" }),
     team: Team(player.components.team.data.team),
     input: Input({
       press: {
@@ -73,7 +73,7 @@ export const Ball = () => Entity({
   components: {
     debug: Debug(),
     position: Position({ x: 225, y: 0, gravity: 0.05 }),
-    collider: Collider({ shape: "ball", radius: 4, restitution: 0.8, group: "11111111111111100000000000000000" }),
+    collider: Collider({ shape: "ball", radius: 4, restitution: 0.8 }),
     shadow: Shadow(3, 3),
     networked: Networked(),
     npc: NPC({
@@ -84,9 +84,9 @@ export const Ball = () => Entity({
         position.data.rotation += 0.001 * sqrt((x * x + y * y)) * sign(x)
 
         if (position.data.z < 25) {
-          collider.setGroup("11111111111111100000000000000001")
+          collider.setGroup("two")
         } else {
-          collider.setGroup("11111111111111100000000000000000")
+          collider.setGroup("none")
         }
       }
     }),
@@ -123,13 +123,12 @@ export const Ball = () => Entity({
 })
 
 // todo need a wider hitbox for the players
-export const Centerline = () => LineWall({
-  position: { x: 225, y: -75 },
-  points: [
-    0, 0,
-    0, 150
-  ],
-  visible: true
+export const Centerline = () => Entity({
+  id: "centerline",
+  components: {
+    position: Position({ x: 225, y: 0, z: 0 }),
+    collider: Collider({ shape: "cuboid", length: 14, width: 75, isStatic: true })
+  }
 })
 
 export const Court = () => LineWall({
@@ -187,6 +186,7 @@ export const Net = () => Entity({
   id: "net",
   components: {
     position: Position({ x: 225, y: 0, z: 25 }),
+    collider: Collider({ shape: "line", points: [0, -75, 0, 75], isStatic: true, group: "two" }),
     renderable: Renderable({
       zIndex: 3.8,
       setContainer: async () => {
