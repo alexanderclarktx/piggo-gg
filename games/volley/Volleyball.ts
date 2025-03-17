@@ -2,7 +2,10 @@ import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, LagText, Position,
   Scoreboard, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
 } from "@piggo-gg/core"
-import { Ball, Bot, Court, Dude, Centerline, TargetSystem, Net, PostTop, PostBottom } from "./entities"
+import { Ball, Court, Dude, Centerline, TargetSystem, Net, PostTop, PostBottom } from "./entities"
+import { Bot } from "./Bot"
+
+export const range = 30
 
 export type VolleyballState = {
   scoreLeft: number
@@ -125,8 +128,7 @@ const VolleyballSystem = SystemBuilder({
 
         if (state.phase === "serve") {}
 
-        if (state.phase === "play") {
-
+        if (state.phase === "play" || state.phase === "serve") {
           if (ballPos.data.z === 0) {
             state.phase = "point"
             state.lastWin = (ballPos.data.x < 225) ? 2 : 1
