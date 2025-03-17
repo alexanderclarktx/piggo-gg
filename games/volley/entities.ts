@@ -126,7 +126,7 @@ export const Ball = () => Entity({
 export const Centerline = () => Entity({
   id: "centerline",
   components: {
-    position: Position({ x: 225, y: 0, z: 0 }),
+    position: Position({ x: 225 }),
     collider: Collider({ shape: "cuboid", length: 12, width: 75, isStatic: true })
   }
 })
@@ -153,12 +153,7 @@ export const PostTop = () => Entity({
     renderable: Renderable({
       zIndex: 3.2,
       setContainer: async () => {
-        const g = pixiGraphics()
-
-        g.roundRect(-3, 0, 6, 27, 2)
-        g.fill({ color: 0x943126, alpha: 1 })
-
-        return g
+        return pixiGraphics().roundRect(-3, 0, 6, 28, 2).fill({ color: 0x943126, alpha: 1 })
       }
     })
   }
@@ -171,12 +166,7 @@ export const PostBottom = () => Entity({
     renderable: Renderable({
       zIndex: 3.9,
       setContainer: async () => {
-        const g = pixiGraphics()
-
-        g.roundRect(-3, 0, 6, 28, 2)
-        g.fill({ color: 0x943126, alpha: 1 })
-
-        return g
+        return pixiGraphics().roundRect(-3, 0, 6, 28, 2).fill({ color: 0x943126, alpha: 1 })
       }
     })
   }
@@ -185,17 +175,12 @@ export const PostBottom = () => Entity({
 export const Net = () => Entity({
   id: "net",
   components: {
-    position: Position({ x: 225, y: 0, z: 25 }),
+    position: Position({ x: 225, z: 25 }),
     collider: Collider({ shape: "line", points: [0, -75, 0, 75], isStatic: true, group: "two" }),
     renderable: Renderable({
       zIndex: 3.8,
       setContainer: async () => {
-        const g = pixiGraphics()
-
-        // net
-        g.roundRect(-1, -75, 2, 150, 1)
-        g.fill({ color: 0xffe47a, alpha: 1 })
-        return g
+        return pixiGraphics().roundRect(-1, -75, 2, 150, 1).fill({ color: 0xffe47a, alpha: 1 })
       }
     })
   }
