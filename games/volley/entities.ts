@@ -3,12 +3,12 @@ import {
   Input, LineWall, loadTexture, middle, Move, Networked, NPC, pixiGraphics, Player,
   Position, Renderable, Shadow, sign, sqrt, SystemBuilder, Team, TeamColors,
   teammates, TeamNumber, timeToLand, velocityToDirection, velocityToPoint,
-  WASDInputMap, XY, XYdiff, XYdistance, XYZ, XYZdiff, XYZdistance
+  WASDInputMap, XY, XYdiff, XYdistance, XYZ, XYZdiff
 } from "@piggo-gg/core"
 import { AnimatedSprite, Texture } from "pixi.js"
 import { VolleyballState } from "./Volleyball"
 
-const range = 30
+const range = 35
 
 export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params, entity }) => {
   if (!params.target || !params.from || !entity) return
@@ -59,8 +59,6 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
     }
 
     state.phase = "play"
-  } else {
-    console.log(`too far range:${range}`, XYZdistance(from, ballPos.data))
   }
 }, 20)
 
@@ -128,7 +126,7 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
 
           // jump for the 3rd hit
           if (state.hit === 2 && state.lastHitTeam === team.data.team &&
-            position.data.standing && world.tick - state.lastHitTick > 20
+            position.data.standing && world.tick - state.lastHitTick > 30
           ) {
             return { actionId: "jump", entityId: bot.id }
           }
