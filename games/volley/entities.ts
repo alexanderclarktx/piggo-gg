@@ -24,7 +24,12 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
 
   if (!far) {
     const state = world.game.state as VolleyballState
-    if (world.tick - state.lastHitTick < 20) return
+
+    if (state.hit === 4) {
+      state.phase = "point"
+      state.lastWin = state.lastHitTeam === 1 ? 2 : 1
+      return
+    }
 
     world.client?.soundManager.play("spike")
 
@@ -44,9 +49,9 @@ export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params
       const v = velocityToPoint(ballPos.data, target, 0.05, 0.5)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else if (standing) {
-      ballPos.setVelocity({ z: 3.5 }).setGravity(0.1)
+      ballPos.setVelocity({ z: 3.2 }).setGravity(0.1)
 
-      const v = velocityToDirection(ballPos.data, target, 70, 0.07, 3)
+      const v = velocityToDirection(ballPos.data, target, 70, 0.07, 3.2)
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       const distance = XYdistance(from, target)
@@ -126,7 +131,7 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
 
           // jump for the 3rd hit
           if (state.hit === 2 && state.lastHitTeam === team.data.team &&
-            position.data.standing && world.tick - state.lastHitTick > 30
+            position.data.standing && world.tick - state.lastHitTick > 20
           ) {
             return { actionId: "jump", entityId: bot.id }
           }
@@ -134,6 +139,8 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
           const far = XYZdiff(position.data, ballPos.data, range)
 
           if (!far) {
+            if (world.tick - state.lastHitTick < 20) return
+
             const from = { x: position.data.x, y: position.data.y, z: position.data.z }
 
             if (state.hit === 2 || (state.phase === "serve" && state.hit === 0)) {

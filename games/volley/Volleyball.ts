@@ -127,11 +127,6 @@ const VolleyballSystem = SystemBuilder({
 
         if (state.phase === "play") {
 
-          if (state.hit === 4) {
-            state.phase = "point"
-            state.lastWin = state.lastHitTeam === 1 ? 2 : 1
-          }
-
           if (ballPos.data.z === 0) {
             state.phase = "point"
             state.lastWin = (ballPos.data.x < 225) ? 2 : 1
