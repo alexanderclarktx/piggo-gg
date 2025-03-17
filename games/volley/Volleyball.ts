@@ -2,17 +2,22 @@ import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, LagText, Position,
   Scoreboard, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
 } from "@piggo-gg/core"
-import { Ball, Bot, Court, Dude, Centerline, TargetSystem, Net, PostTop, PostBottom } from "./entities"
+import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom } from "./entities"
+import { Bot } from "./Bot"
+import { TargetSystem } from "./Target"
+
+export const range = 30
 
 export type VolleyballState = {
   scoreLeft: number
   scoreRight: number
-  phase: "serve" | "play" | "win"
+  phase: "serve" | "play" | "point" | "game"
   teamServing: 1 | 2
   lastHit: string
   lastHitTeam: 0 | 1 | 2
   lastHitTick: number
-  hit: 0 | 1 | 2 | 3
+  lastWin: 0 | 1 | 2
+  hit: 0 | 1 | 2 | 3 | 4
 }
 
 export const Volleyball: GameBuilder<VolleyballState> = {
@@ -23,11 +28,12 @@ export const Volleyball: GameBuilder<VolleyballState> = {
     state: {
       scoreLeft: 0,
       scoreRight: 0,
-      phase: "serve",
+      phase: "point",
       teamServing: 1,
       lastHit: "",
-      lastHitTeam: 1,
+      lastHitTeam: 0,
       lastHitTick: 0,
+      lastWin: 0,
       hit: 0
     },
     systems: [
@@ -88,7 +94,7 @@ const VolleyballSystem = SystemBuilder({
 
     // scale camera to fit the court
     const desiredScale = world.renderer?.app.screen.width! / 500
-    const scaleBy = desiredScale - world.renderer?.camera.root.scale.x! - desiredScale * 0.1
+    const scaleBy = desiredScale - world.renderer?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
     world.renderer?.camera.scaleBy(scaleBy)
 
     return {
@@ -101,32 +107,32 @@ const VolleyballSystem = SystemBuilder({
 
         const state = world.game.state as VolleyballState
 
-        if (state.phase === "serve") {
-          ballPos.setVelocity({ x: 0, y: 0 }).setPosition({
-            x: state.teamServing === 1 ? 10 : 400,
-            y: 1, z: 50
-          }).setRotation(0).setGravity(0)
+        if (state.phase === "point") {
+          // set score
+          if (state.lastWin === 1) state.scoreLeft++
+          if (state.lastWin === 2) state.scoreRight++
+          state.teamServing = state.lastWin === 2 ? 2 : 1
 
+          // reset state
+          state.phase = "serve"
           state.lastHit = ""
           state.lastHitTeam = 0
+          state.hit = 0
+
+          // reset ball
+          ballPos.setVelocity({ x: 0, y: 0, z: 0 }).setRotation(0).setGravity(0)
+          ballPos.setPosition({
+            x: state.teamServing === 1 ? 10 : 400,
+            y: 1, z: 50
+          })
         }
 
-        if (state.phase === "play") {
+        if (state.phase === "serve") {}
+
+        if (state.phase === "play" || state.phase === "serve") {
           if (ballPos.data.z === 0) {
-
-            state.phase = "serve"
-            state.hit = 0
-            state.lastHit = ""
-            state.lastHitTeam = 0
-
-            // who won the point
-            if (ballPos.data.x < 225) {
-              state.scoreRight++
-              state.teamServing = 2
-            } else {
-              state.scoreLeft++
-              state.teamServing = 1
-            }
+            state.phase = "point"
+            state.lastWin = (ballPos.data.x < 225) ? 2 : 1
           }
         }
       }

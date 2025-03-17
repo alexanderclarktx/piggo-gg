@@ -1,7 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Food, Element, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World,
-  closestEntity, loadTexture, randomInt, XYdelta, Eat
+  closestEntity, loadTexture, randomInt, XYdistance, Eat
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -60,7 +60,7 @@ const hungry = (entity: Entity<Position>, world: World): void | InvokedAction =>
   const closest = closestEntity(position.data, edibles, 200)
 
   if (closest) {
-    if (XYdelta(position.data, closest.components.position.data) < 20 + (0.5 * renderable!.scale * renderable!.scale)) {
+    if (XYdistance(position.data, closest.components.position.data) < 20 + (0.5 * renderable!.scale * renderable!.scale)) {
       return { actionId: "eat", params: { target: closest } } // todo should be an ID
     }
     return { actionId: "chase", params: { target: closest.id } }
