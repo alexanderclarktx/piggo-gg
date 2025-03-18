@@ -1,7 +1,7 @@
 import {
   CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, LagText,
   Collider, Entity, Networked, pixiGraphics, Player, Position, Renderable,
-  SpawnSystem, SystemBuilder, Shadow, Action, Actions, NPC, Character, Team, pixiText
+  SpawnSystem, SystemBuilder, Shadow, Action, Actions, Character, Team, pixiText
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -15,9 +15,7 @@ export type DoodleState = {
 export const Jumper = (player: Player) => Character({
   id: `jumper-${player.id}`,
   components: {
-    position: Position({
-      x: 225, y: 0, z: 10, velocityResets: 1, speed: 150, gravity: 0.2
-    }),
+    position: Position({ x: 225, y: 10, velocityResets: 1, speed: 150 }),
     networked: Networked(),
     team: Team(1),
     collider: Collider({
@@ -29,12 +27,12 @@ export const Jumper = (player: Player) => Character({
         if (!jumper || !jumper.components.position) return false
 
         // Only bounce when falling down
-        if (jumper.components.position.data.velocity.z >= 0) return false
+        if (jumper.components.position.data.velocity.y >= 0) return false
 
         console.log("sensor", platform.id)
 
         // Set velocity to bounce up
-        // jumper.components.position.setVelocity({ z: 7 })
+        jumper.components.position.setVelocity({ y: 7 })
 
         // Increase score when bouncing
         const state = world.game.state as DoodleState
@@ -104,21 +102,19 @@ export const Jumper = (player: Player) => Character({
 })
 
 // Platform entity - static platforms the jumper bounces on
-export const Platform = (x: number, y: number, z: number = 0) => Entity({
+export const Platform = (x: number, y: number) => Entity({
   id: `platform-${x}-${y}`,
   components: {
-    position: Position({ x, y, z }),
+    position: Position({ x, y }),
     collider: Collider({
       shape: "cuboid",
-      width: 60,
-      length: 10,
-      // height: 5,
+      width: 5,
+      length: 30,
       isStatic: true
     }),
     renderable: Renderable({
       zIndex: 3,
       setup: async (r) => {
-        // Draw a green platform
         r.c = pixiGraphics()
           .roundRect(-30, -5, 60, 10, 5)
           .fill({ color: 0x22AA22 })
@@ -183,16 +179,16 @@ export const Doodle: GameBuilder<DoodleState> = {
       Cursor(),
       ScoreDisplay(),
       // Create initial platforms
-      Platform(225, 0, -10),
-      Platform(150, -50, 50),
-      Platform(300, 50, 100),
-      Platform(200, -70, 150),
-      Platform(250, 40, 200),
-      Platform(175, -30, 250),
-      Platform(275, -60, 300),
-      Platform(225, 20, 350),
-      Platform(300, -20, 400),
-      Platform(150, 60, 450),
+      Platform(225, 0),
+      Platform(150, -50),
+      Platform(300, 50),
+      Platform(200, -70),
+      Platform(250, 40),
+      Platform(175, -30),
+      Platform(275, -60),
+      Platform(225, 20),
+      Platform(300, -20),
+      Platform(150, 60),
       LagText({ y: 5 })
     ]
   })
@@ -239,8 +235,8 @@ const DoodleSystem = SystemBuilder({
         if (highestPlayerZ > highestPlatformZ - 300) {
           // Add new platforms with increasing height
           for (let i = 0; i < 5; i++) {
-            const platformZ = highestPlatformZ + 100 + i * 100
-            const platform = Platform(randomX(), randomY(), platformZ)
+            const platformY = highestPlatformZ + 100 + i * 100
+            const platform = Platform(randomX(), platformY)
             world.addEntity(platform)
           }
 
