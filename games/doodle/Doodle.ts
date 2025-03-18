@@ -1,12 +1,11 @@
 import {
   CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, LagText, Collider, Entity,
   Networked, pixiGraphics, Player, Position, Renderable, SpawnSystem, SystemBuilder,
-  Action, Actions, Character, Team, pixiText, NPC, reduce
+  Action, Actions, Character, Team, pixiText, NPC, reduce, ceil
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
 export type DoodleState = {
-  score: number
   highScore: number
   gameOver: boolean
 }
@@ -16,15 +15,24 @@ export const Jumper = (player: Player) => {
   const jumper = Character({
     id: `jumper-${player.id}`,
     components: {
-      position: Position({ x: 225, y: 10, velocityResets: 0 }),
+      position: Position({ x: 150, y: 0, velocityResets: 0 }),
       networked: Networked(),
       team: Team(1),
       npc: NPC({
         behavior: () => {
-          // Apply custom gravity - a constant acceleration downward
-          const { velocity } = jumper.components.position.data
-          velocity.y += 2
-          velocity.x = reduce(velocity.x, 0.9) // Apply air resistance
+          const { position } = jumper.components
+          position.data.velocity.y += 3
+          position.data.velocity.x = reduce(position.data.velocity.x, 2) // Apply air resistance
+
+          if (position.data.y > 100) {
+            position.setPosition({ x: 150, y: -50 }).setVelocity({ x: 0, y: 0 })
+          }
+
+          if (position.data.x > 300) {
+            position.setPosition({ x: 0 })
+          } else if (position.data.x < 0) {
+            position.setPosition({ x: 300 })
+          }
         }
       }),
       collider: Collider({
@@ -40,11 +48,7 @@ export const Jumper = (player: Player) => {
           console.log("bounce", platform.id)
 
           // Set velocity to bounce up
-          position.setVelocity({ y: -100 })
-
-          // Increase score when bouncing
-          const state = world.game.state as DoodleState
-          state.score += 1
+          position.setVelocity({ y: -200 })
 
           return true
         }
@@ -58,7 +62,7 @@ export const Jumper = (player: Player) => {
       actions: Actions({
         move: Action("move", ({ entity, params }) => {
           if (!entity?.components?.position) return
-          entity.components.position.setVelocity({ x: params.x * 50 })
+          entity.components.position.setVelocity({ x: params.x * 70 })
         })
       }),
       renderable: Renderable({
@@ -129,20 +133,27 @@ export const Platform = (x: number, y: number) => Entity({
 
 export const Score = () => {
 
-  const text = pixiText({ text: `Score: ${0}`, style: { fill: 0xFFFFFF, fontSize: 36, fontWeight: 'bold' } })
+  let highest = 0
+
+  const text = pixiText({ text: `Score: ${0}`, anchor: { x: 0.5, y: 0.5 }, style: { fill: 0xFFFFFF, fontSize: 36, fontWeight: 'bold' } })
 
   const score = Entity<Position>({
     id: "score-display",
     components: {
-      position: Position({ x: 225, y: 30, screenFixed: true }),
+      position: Position({ x: 150, y: 30, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        anchor: { x: 0.5, y: 0 },
         setContainer: async () => text,
         dynamic: ({ world }) => {
-          const state = world.game.state as DoodleState
+          const jumper = world.client?.playerCharacter()
+          if (!jumper) return
 
-          text.text = `Score: ${state.score}`
+          const height = ceil(-1 * jumper.components.position.data.y)
+
+          if (height > highest) {
+            highest = height
+            text.text = `Score: ${highest}`
+          }
 
           const screenWidth = world.renderer?.app.screen.width
           if (screenWidth) score.components.position.data.x = screenWidth / 2
@@ -155,38 +166,47 @@ export const Score = () => {
 
 export const Doodle: GameBuilder<DoodleState> = {
   id: "doodle",
-  init: () => ({
-    id: "doodle",
-    netcode: "rollback",
-    state: {
-      score: 0,
-      highScore: 0,
-      gameOver: false
-    },
-    systems: [
-      SpawnSystem(Jumper),
-      DoodleSystem,
-      CameraSystem({ follow: ({ y }) => ({ x: 225, y }) })
-    ],
-    bgColor: 0x87CEEB, // Sky blue background
-    entities: [
-      EscapeMenu(),
-      Cursor(),
-      Score(),
-      // Create initial platforms
-      Platform(225, 0),
-      Platform(150, -50),
-      Platform(300, 50),
-      Platform(200, -70),
-      Platform(250, 40),
-      Platform(175, -30),
-      Platform(275, -60),
-      Platform(225, 20),
-      Platform(300, -20),
-      Platform(150, 60),
-      LagText({ y: 5 })
-    ]
-  })
+  init: () => {
+    // Generate 100 platforms immediately
+    const platformEntities = []
+
+    // Function to generate random x position
+    const randomX = () => Math.floor(Math.random() * 400) + 25
+
+    // Generate platforms with increasing height
+    // First platform is directly under player spawn
+    platformEntities.push(Platform(150, 20))
+
+    // Generate remaining 99 platforms with increasing height
+    for (let i = 1; i < 100; i++) {
+      // Space platforms evenly, with some random offset
+      const y = -50 * i + Math.floor(Math.random() * 30) - 15
+      platformEntities.push(Platform(randomX(), y))
+    }
+
+    return {
+      id: "doodle",
+      netcode: "rollback",
+      state: {
+        score: 0,
+        highScore: 0,
+        gameOver: false
+      },
+      systems: [
+        SpawnSystem(Jumper),
+        DoodleSystem,
+        CameraSystem({ follow: ({ y }) => ({ x: 150, y }) })
+      ],
+      bgColor: 0x87CEEB, // Sky blue background
+      entities: [
+        EscapeMenu(),
+        Cursor(),
+        Score(),
+        ...platformEntities,
+        LagText({ y: 5 })
+      ]
+    }
+  }
 }
 
 const DoodleSystem = SystemBuilder({
@@ -197,15 +217,8 @@ const DoodleSystem = SystemBuilder({
     const scaleBy = desiredScale - world.renderer?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
     world.renderer?.camera.scaleBy(scaleBy)
 
-    // Track highest platform and highest player position for generating new platforms
-    let highestPlatformZ = 450 // Start with our initial platforms
+    // Track highest player position
     let highestPlayerZ = 0
-
-    // Generate a random x position for new platforms
-    const randomX = () => Math.floor(Math.random() * 400) + 25
-
-    // Generate a random y position for new platforms
-    const randomY = () => Math.floor(Math.random() * 120) - 60
 
     return {
       id: "DoodleSystem",
@@ -224,44 +237,20 @@ const DoodleSystem = SystemBuilder({
           highestPlayerZ = playerZ
         }
 
-        // Generate new platforms as player climbs higher
-        // Add platforms when player is within 300 units of the highest platform
-        if (highestPlayerZ > highestPlatformZ - 300) {
-          // Add new platforms with increasing height
-          for (let i = 0; i < 5; i++) {
-            const platformY = highestPlatformZ + 100 + i * 100
-            const platform = Platform(randomX(), platformY)
-            world.addEntity(platform)
-          }
-
-          // Update highest platform Z
-          highestPlatformZ += 500
-        }
-
         // Game over if player falls too far below their highest point
         if (playerZ < highestPlayerZ - 500) {
           // Reset player position
-          player.components.position.setPosition({ x: 225, y: 0, z: 10 })
+          player.components.position.setPosition({ x: 150, y: 0, z: 10 })
           player.components.position.setVelocity({ x: 0, y: 0, z: 0 })
 
-          // Update high score
-          if (state.score > state.highScore) {
-            state.highScore = state.score
-          }
+          // Update high scored
+          // if (state.score > state.highScore) {
+          //   state.highScore = state.score
+          // }
 
           // Reset score and tracking variables
-          state.score = 0
+          // state.score = 0
           highestPlayerZ = 0
-          highestPlatformZ = 450
-
-          // Remove all platforms except the initial ones
-          const platforms = world.queryEntities(["position"]).filter(e =>
-            e.id.startsWith('platform-') && e.components.position!.data.z > 450
-          )
-
-          for (const platform of platforms) {
-            world.removeEntity(platform.id)
-          }
         }
 
         // Allow horizontal movement that wraps around
