@@ -1,14 +1,15 @@
 import {
-  Animals, Volleyball, Lobby, Flappy, Craft, Dungeon, Home, Strike, ARAM, Soccer, Legends
+  Animals, Volleyball, Lobby, Flappy, Craft, Dungeon, Home, Strike, ARAM, Soccer, Legends, Jump
 } from "@piggo-gg/games"
 
-export const games = [Lobby, Volleyball, Flappy, Animals, Craft, Dungeon, Home, Strike, ARAM, Soccer, Legends]
+export const games = [Lobby, Volleyball, Flappy, Animals, Craft, Dungeon, Home, Strike, ARAM, Soccer, Legends, Jump]
 
 export * from "./animals/Animals"
 export * from "./aram/ARAM"
 export * from "./dungeon/Dungeon"
 export * from "./flappy/Flappy"
 export * from "./home/Home"
+export * from "./jump/Jump"
 export * from "./legends/entities"
 export * from "./legends/Legends"
 export * from "./lobby/Lobby"

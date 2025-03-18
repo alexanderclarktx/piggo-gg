@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "./main.ts",
   "dependencies": {
+    "@anthropic-ai/claude-code": "^0.2.48",
     "@piggo-gg/core": "1.0.0"
   }
 }
