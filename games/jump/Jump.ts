@@ -3,15 +3,13 @@ import {
   Networked, pixiGraphics, Player, Position, Renderable, SpawnSystem, SystemBuilder,
   Action, Actions, Character, Team, pixiText, NPC, reduce, ceil, Debug
 } from "@piggo-gg/core"
-import { Graphics } from "pixi.js"
 
-export type DoodleState = {
+export type JumpState = {
   highScore: number
   gameOver: boolean
 }
 
 export const Jumper = (player: Player) => {
-
   const jumper = Character({
     id: `jumper-${player.id}`,
     components: {
@@ -41,7 +39,6 @@ export const Jumper = (player: Player) => {
         radius: 5,
         group: "notself",
         sensor: (platform) => {
-
           const { position } = jumper.components
 
           if (position.data.y > platform.components.position.data.y) return false
@@ -72,7 +69,7 @@ export const Jumper = (player: Player) => {
         interpolate: true,
         setup: async (r) => {
           // Draw a small elephant using PIXI Graphics - more compact and cute
-          r.c = new Graphics()
+          r.c = pixiGraphics()
             // Body - smaller ellipse
             .beginFill(0x888888)
             .drawEllipse(0, 0, 10, 15)
@@ -130,7 +127,6 @@ export const Platform = (x: number, y: number) => Entity({
 })
 
 export const Score = () => {
-
   let highest = 0
 
   const text = pixiText({ text: `Score: ${0}`, anchor: { x: 0.5, y: 0.5 }, style: { fill: 0xFFFFFF, fontSize: 36, fontWeight: 'bold' } })
@@ -163,7 +159,6 @@ export const Score = () => {
 }
 
 const LeftBoundary = () => {
-
   const leftBoundary = Entity<Position>({
     id: "leftBoundary",
     components: {
@@ -185,7 +180,6 @@ const LeftBoundary = () => {
 }
 
 const RightBoundary = () => {
-
   const rightBoundary = Entity<Position>({
     id: "rightBoundary",
     components: {
@@ -206,14 +200,14 @@ const RightBoundary = () => {
   return rightBoundary
 }
 
-export const Doodle: GameBuilder<DoodleState> = {
-  id: "doodle",
+export const Jump: GameBuilder<JumpState> = {
+  id: "jump",
   init: () => {
     // Generate 100 platforms immediately
     const platformEntities = []
 
     // Function to generate random x position
-    const randomX = () => Math.floor(Math.random() * 400) + 25
+    const randomX = () => Math.floor(Math.random() * 250) + 25
 
     // Generate platforms with increasing height
     // First platform is directly under player spawn
@@ -227,7 +221,7 @@ export const Doodle: GameBuilder<DoodleState> = {
     }
 
     return {
-      id: "doodle",
+      id: "jump",
       netcode: "rollback",
       state: {
         score: 0,
@@ -236,7 +230,7 @@ export const Doodle: GameBuilder<DoodleState> = {
       },
       systems: [
         SpawnSystem(Jumper),
-        DoodleSystem,
+        JumpSystem,
         CameraSystem({ follow: ({ y }) => ({ x: 150, y }) })
       ],
       bgColor: 0x87CEEB, // Sky blue background
@@ -252,8 +246,8 @@ export const Doodle: GameBuilder<DoodleState> = {
   }
 }
 
-const DoodleSystem = SystemBuilder({
-  id: "DoodleSystem",
+const JumpSystem = SystemBuilder({
+  id: "JumpSystem",
   init: (world) => {
     // Scale camera to fit the game
     const desiredScale = world.renderer?.app.screen.width! / 450
@@ -264,11 +258,11 @@ const DoodleSystem = SystemBuilder({
     let highestPlayerZ = 0
 
     return {
-      id: "DoodleSystem",
+      id: "JumpSystem",
       query: [],
       priority: 9,
       onTick: () => {
-        const state = world.game.state as DoodleState
+        const state = world.game.state as JumpState
       }
     }
   }
