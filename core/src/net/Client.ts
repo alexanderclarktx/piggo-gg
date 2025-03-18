@@ -173,9 +173,16 @@ export const Client = ({ world }: ClientProps): Client => {
   client.ws.onopen = () => {
     console.log("Client: connected to server")
 
-    // const joinString: string = new URLSearchParams(window.location.search).get("join") ?? "hub"
     const joinString: string | null = new URLSearchParams(window.location.search).get("join")
-    if (joinString) client.lobbyJoin(joinString, () => { })
+    if (joinString) {
+      client.lobbyJoin(joinString, () => { })
+      return
+    }
+
+    const gameString: string | null = new URLSearchParams(window.location.search).get("game")
+    if (gameString && world.games[gameString]) {
+      world.setGame(gameString)
+    }
   }
 
   client.ws.onclose = () => {
