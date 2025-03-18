@@ -1,7 +1,9 @@
 import {
   CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, LagText,
   Collider, Entity, Networked, pixiGraphics, Player, Position, Renderable,
-  SpawnSystem, SystemBuilder, Shadow, Action, Actions, Character, Team, pixiText
+  SpawnSystem, SystemBuilder, Shadow, Action, Actions, Character, Team, pixiText,
+  NPC,
+  reduce
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -12,94 +14,101 @@ export type DoodleState = {
 }
 
 // The player character - a little elephant that jumps on platforms
-export const Jumper = (player: Player) => Character({
-  id: `jumper-${player.id}`,
-  components: {
-    position: Position({ x: 225, y: 10, velocityResets: 1, speed: 150 }),
-    networked: Networked(),
-    team: Team(1),
-    collider: Collider({
-      shape: "ball",
-      radius: 8, // Smaller collision radius
-      sensor: (platform, world) => {
-        // Only bounce when landing on top of platform
-        const jumper = world.entity("jumper-" + player.id)
-        if (!jumper || !jumper.components.position) return false
+export const Jumper = (player: Player) => {
 
-        // Only bounce when falling down
-        if (jumper.components.position.data.velocity.y >= 0) return false
-
-        console.log("sensor", platform.id)
-
-        // Set velocity to bounce up
-        jumper.components.position.setVelocity({ y: 7 })
-
-        // Increase score when bouncing
-        const state = world.game.state as DoodleState
-        state.score += 1
-
-        return true
-      }
-    }),
-    input: Input({
-      press: {
-        "a": () => ({ actionId: "move", params: { x: -1 } }),
-        "d": () => ({ actionId: "move", params: { x: 1 } })
-      }
-    }),
-    actions: Actions({
-      move: Action("move", ({ entity, params }) => {
-        if (!entity?.components?.position) return
-        entity.components.position.setVelocity({ x: params.x * 100 }) // Increased speed for better control
+  const jumper = Character({
+    id: `jumper-${player.id}`,
+    components: {
+      position: Position({ x: 225, y: 10, velocityResets: 0 }),
+      networked: Networked(),
+      team: Team(1),
+      npc: NPC({
+        behavior: () => {
+          // Apply custom gravity - a constant acceleration downward
+          const { velocity } = jumper.components.position.data
+          velocity.y += 2
+          velocity.x = reduce(velocity.x, 0.9) // Apply air resistance
+        }
       }),
-      jump: Action("jump", ({ entity }) => {
-        if (!entity?.components?.position) return
-        entity.components.position.setVelocity({ z: 7 })
+      collider: Collider({
+        shape: "ball",
+        radius: 5,
+        sensor: (platform, world) => {
+
+          const { position } = jumper.components
+
+          if (position.data.y > platform.components.position.data.y) return false
+          if (position.data.velocity.y <= 0) return false
+
+          console.log("bounce", platform.id)
+
+          // Set velocity to bounce up
+          position.setVelocity({ y: -100 })
+
+          // Increase score when bouncing
+          const state = world.game.state as DoodleState
+          state.score += 1
+
+          return true
+        }
+      }),
+      input: Input({
+        press: {
+          "a": () => ({ actionId: "move", params: { x: -1 } }),
+          "d": () => ({ actionId: "move", params: { x: 1 } })
+        }
+      }),
+      actions: Actions({
+        move: Action("move", ({ entity, params }) => {
+          if (!entity?.components?.position) return
+          entity.components.position.setVelocity({ x: params.x * 50 })
+        })
+      }),
+      shadow: Shadow(5),
+      renderable: Renderable({
+        position: { x: 0, y: -2 },
+        zIndex: 5,
+        scale: 0.5, // Smaller scale
+        interpolate: true,
+        setup: async (r) => {
+          // Draw a small elephant using PIXI Graphics - more compact and cute
+          r.c = new Graphics()
+            // Body - smaller ellipse
+            .beginFill(0x888888)
+            .drawEllipse(0, 0, 10, 15)
+            .endFill()
+
+            // Head - smaller circle positioned better
+            .beginFill(0x777777)
+            .drawCircle(0, -14, 8)
+            .endFill()
+
+            // Ears - smaller and positioned better
+            .beginFill(0x666666)
+            .drawEllipse(-8, -14, 5, 6)
+            .drawEllipse(8, -14, 5, 6)
+            .endFill()
+
+            // Trunk - smaller and cuter
+            .beginFill(0x777777)
+            .drawRoundedRect(-3, -12, 6, 10, 3)
+            .endFill()
+
+            // Eyes - smaller with black pupils
+            .beginFill(0xFFFFFF)
+            .drawCircle(-3, -16, 1.5)
+            .drawCircle(3, -16, 1.5)
+            .endFill()
+            .beginFill(0x000000)
+            .drawCircle(-3, -16, 0.8)
+            .drawCircle(3, -16, 0.8)
+            .endFill()
+        }
       })
-    }),
-    shadow: Shadow(5),
-    renderable: Renderable({
-      anchor: { x: 0.5, y: 1.0 }, // Anchor at bottom center for better alignment
-      zIndex: 5,
-      scale: 0.5, // Smaller scale
-      interpolate: true,
-      setup: async (r) => {
-        // Draw a small elephant using PIXI Graphics - more compact and cute
-        r.c = new Graphics()
-          // Body - smaller ellipse
-          .beginFill(0x888888)
-          .drawEllipse(0, 0, 10, 15)
-          .endFill()
-
-          // Head - smaller circle positioned better
-          .beginFill(0x777777)
-          .drawCircle(0, -14, 8)
-          .endFill()
-
-          // Ears - smaller and positioned better
-          .beginFill(0x666666)
-          .drawEllipse(-8, -14, 5, 6)
-          .drawEllipse(8, -14, 5, 6)
-          .endFill()
-
-          // Trunk - smaller and cuter
-          .beginFill(0x777777)
-          .drawRoundedRect(-3, -12, 6, 10, 3)
-          .endFill()
-
-          // Eyes - smaller with black pupils
-          .beginFill(0xFFFFFF)
-          .drawCircle(-3, -16, 1.5)
-          .drawCircle(3, -16, 1.5)
-          .endFill()
-          .beginFill(0x000000)
-          .drawCircle(-3, -16, 0.8)
-          .drawCircle(3, -16, 0.8)
-          .endFill()
-      }
-    })
-  }
-})
+    }
+  })
+  return jumper
+}
 
 // Platform entity - static platforms the jumper bounces on
 export const Platform = (x: number, y: number) => Entity({
