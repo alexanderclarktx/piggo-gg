@@ -10,6 +10,7 @@ export type Camera = {
   moveBy: (_: XY) => void
   moveTo: (_: XY) => void
   toWorldCoords: (_: XY) => XY
+  toCameraCoords: (_: XY) => XY
 }
 
 // Camera handles the viewport of the game
@@ -69,6 +70,10 @@ export const Camera = (app: Application): Camera => {
     toWorldCoords: ({ x, y }: XY) => ({
       x: round((x - root.x) / scale, 3),
       y: round((y - root.y) / scale, 3)
+    }),
+    toCameraCoords: ({ x, y }: XY) => ({
+      x: round(x * scale + root.x, 3),
+      y: round(y * scale + root.y, 3)
     })
   }
 
