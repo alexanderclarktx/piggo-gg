@@ -1,7 +1,7 @@
 import {
   CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, LagText, Collider, Entity,
   Networked, pixiGraphics, Player, Position, Renderable, SpawnSystem, SystemBuilder,
-  Action, Actions, Character, Team, pixiText, NPC, reduce, ceil
+  Action, Actions, Character, Team, pixiText, NPC, reduce, ceil, LineWall
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
