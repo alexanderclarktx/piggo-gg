@@ -1,7 +1,7 @@
 import {
-  CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, LagText, Collider, Entity,
+  CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, Collider, Entity,
   Networked, pixiGraphics, Player, Position, Renderable, SpawnSystem, SystemBuilder,
-  Action, Actions, Character, Team, pixiText, NPC, reduce, ceil, LineWall
+  Action, Actions, Character, Team, pixiText, NPC, reduce, ceil, Debug
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -16,12 +16,13 @@ export const Jumper = (player: Player) => {
     id: `jumper-${player.id}`,
     components: {
       position: Position({ x: 150, y: 0, velocityResets: 0 }),
+      debug: Debug(),
       networked: Networked(),
       team: Team(1),
       npc: NPC({
         behavior: () => {
           const { position } = jumper.components
-          position.data.velocity.y += 3
+          position.data.velocity.y += 4
           position.data.velocity.x = reduce(position.data.velocity.x, 2) // Apply air resistance
 
           if (position.data.y > 100) {
@@ -38,17 +39,16 @@ export const Jumper = (player: Player) => {
       collider: Collider({
         shape: "ball",
         radius: 5,
-        sensor: (platform, world) => {
+        group: "notself",
+        sensor: (platform) => {
 
           const { position } = jumper.components
 
           if (position.data.y > platform.components.position.data.y) return false
           if (position.data.velocity.y <= 0) return false
 
-          console.log("bounce", platform.id)
-
           // Set velocity to bounce up
-          position.setVelocity({ y: -200 })
+          position.setVelocity({ y: -250 })
 
           return true
         }
@@ -122,10 +122,8 @@ export const Platform = (x: number, y: number) => Entity({
     }),
     renderable: Renderable({
       zIndex: 3,
-      setup: async (r) => {
-        r.c = pixiGraphics()
-          .roundRect(-30, -5, 60, 10, 5)
-          .fill({ color: 0x22AA22 })
+      setContainer: async () => {
+        return pixiGraphics().roundRect(-30, -5, 60, 10, 5).fill({ color: 0x22AA22 })
       }
     })
   }
@@ -162,6 +160,50 @@ export const Score = () => {
     }
   })
   return score
+}
+
+const LeftBoundary = () => {
+
+  const leftBoundary = Entity<Position>({
+    id: "leftBoundary",
+    components: {
+      position: Position({ screenFixed: true }),
+      debug: Debug(),
+      renderable: Renderable({
+        zIndex: 1,
+        dynamic: ({ world }) => {
+          const { x } = world.renderer!.camera.toCameraCoords({ x: 0, y: 0 })
+          leftBoundary.components.position.setPosition({ x })
+        },
+        setContainer: async (r) => {
+          return pixiGraphics().lineTo(0, 5000).stroke({ color: 0xffffff, width: 2, alpha: 0.5 })
+        }
+      })
+    }
+  })
+  return leftBoundary
+}
+
+const RightBoundary = () => {
+
+  const rightBoundary = Entity<Position>({
+    id: "rightBoundary",
+    components: {
+      position: Position({ screenFixed: true }),
+      debug: Debug(),
+      renderable: Renderable({
+        zIndex: 1,
+        dynamic: ({ world }) => {
+          const { x } = world.renderer!.camera.toCameraCoords({ x: 300, y: 0 })
+          rightBoundary.components.position.setPosition({ x })
+        },
+        setContainer: async () => {
+          return pixiGraphics().lineTo(0, 5000).stroke({ color: 0xffffff, width: 2, alpha: 0.5 })
+        }
+      })
+    }
+  })
+  return rightBoundary
 }
 
 export const Doodle: GameBuilder<DoodleState> = {
@@ -202,8 +244,9 @@ export const Doodle: GameBuilder<DoodleState> = {
         EscapeMenu(),
         Cursor(),
         Score(),
+        LeftBoundary(),
+        RightBoundary(),
         ...platformEntities,
-        LagText({ y: 5 })
       ]
     }
   }
@@ -226,39 +269,6 @@ const DoodleSystem = SystemBuilder({
       priority: 9,
       onTick: () => {
         const state = world.game.state as DoodleState
-        const player = world.queryEntities(["pc"])[0]
-
-        if (!player || !player.components.position) return
-
-        const playerZ = player.components.position.data.z
-
-        // Track highest player position
-        if (playerZ > highestPlayerZ) {
-          highestPlayerZ = playerZ
-        }
-
-        // Game over if player falls too far below their highest point
-        if (playerZ < highestPlayerZ - 500) {
-          // Reset player position
-          player.components.position.setPosition({ x: 150, y: 0, z: 10 })
-          player.components.position.setVelocity({ x: 0, y: 0, z: 0 })
-
-          // Update high scored
-          // if (state.score > state.highScore) {
-          //   state.highScore = state.score
-          // }
-
-          // Reset score and tracking variables
-          // state.score = 0
-          highestPlayerZ = 0
-        }
-
-        // Allow horizontal movement that wraps around
-        if (player.components.position.data.x < 0) {
-          player.components.position.setPosition({ x: 450 })
-        } else if (player.components.position.data.x > 450) {
-          player.components.position.setPosition({ x: 0 })
-        }
       }
     }
   }
