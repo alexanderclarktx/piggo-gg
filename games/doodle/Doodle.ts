@@ -1,9 +1,7 @@
 import {
-  CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, LagText,
-  Collider, Entity, Networked, pixiGraphics, Player, Position, Renderable,
-  SpawnSystem, SystemBuilder, Shadow, Action, Actions, Character, Team, pixiText,
-  NPC,
-  reduce
+  CameraSystem, Cursor, EscapeMenu, GameBuilder, Input, LagText, Collider, Entity,
+  Networked, pixiGraphics, Player, Position, Renderable, SpawnSystem, SystemBuilder,
+  Action, Actions, Character, Team, pixiText, NPC, reduce
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -13,7 +11,6 @@ export type DoodleState = {
   gameOver: boolean
 }
 
-// The player character - a little elephant that jumps on platforms
 export const Jumper = (player: Player) => {
 
   const jumper = Character({
@@ -64,7 +61,6 @@ export const Jumper = (player: Player) => {
           entity.components.position.setVelocity({ x: params.x * 50 })
         })
       }),
-      shadow: Shadow(5),
       renderable: Renderable({
         position: { x: 0, y: -2 },
         zIndex: 5,
@@ -110,7 +106,6 @@ export const Jumper = (player: Player) => {
   return jumper
 }
 
-// Platform entity - static platforms the jumper bounces on
 export const Platform = (x: number, y: number) => Entity({
   id: `platform-${x}-${y}`,
   components: {
@@ -132,41 +127,32 @@ export const Platform = (x: number, y: number) => Entity({
   }
 })
 
-// Score display
-export const ScoreDisplay = () => Entity({
-  id: "score-display",
-  components: {
-    position: Position({ x: 50, y: 30, screenFixed: true }),
-    renderable: Renderable({
-      zIndex: 10,
-      setup: async (r) => {
-        r.c = pixiText({ text: `score: 0`, style: { fill: 0xFFFFFF } })
-      },
-      dynamic: ({ entity, world }) => {
-        const state = world.game.state as DoodleState
-        const { renderable } = entity.components
+export const Score = () => {
 
-        // Update score text
-        if (renderable.c) {
-          // renderable.c.clear()
-          // renderable.c.text({
-          //   text: `Score: ${state.score}   High Score: ${state.highScore}`,
-          //   style: { 
-          //     fill: 0xFFFFFF,
-          //     fontFamily: 'Arial',
-          //     fontSize: 14,
-          //     stroke: 0x000000,
-          //     strokeThickness: 3,
-          //     align: 'left'
-          //   }
-          // })
+  const text = pixiText({ text: `Score: ${0}`, style: { fill: 0xFFFFFF, fontSize: 36, fontWeight: 'bold' } })
+
+  const score = Entity<Position>({
+    id: "score-display",
+    components: {
+      position: Position({ x: 225, y: 30, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        anchor: { x: 0.5, y: 0 },
+        setContainer: async () => text,
+        dynamic: ({ world }) => {
+          const state = world.game.state as DoodleState
+
+          text.text = `Score: ${state.score}`
+
+          const screenWidth = world.renderer?.app.screen.width
+          if (screenWidth) score.components.position.data.x = screenWidth / 2
         }
-      }
-    })
-  }
-})
+      })
+    }
+  })
+  return score
+}
 
-// Main game definition
 export const Doodle: GameBuilder<DoodleState> = {
   id: "doodle",
   init: () => ({
@@ -186,7 +172,7 @@ export const Doodle: GameBuilder<DoodleState> = {
     entities: [
       EscapeMenu(),
       Cursor(),
-      ScoreDisplay(),
+      Score(),
       // Create initial platforms
       Platform(225, 0),
       Platform(150, -50),
@@ -203,7 +189,6 @@ export const Doodle: GameBuilder<DoodleState> = {
   })
 }
 
-// Game logic system
 const DoodleSystem = SystemBuilder({
   id: "DoodleSystem",
   init: (world) => {
