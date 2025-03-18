@@ -115,7 +115,7 @@ const Players = (): Entity => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Jump, Volleyball, Flappy, Craft, Dungeon]
+  const list: GameBuilder[] = [Volleyball, Flappy, Craft, Jump]
   let gameButtons: PixiButton[] = []
   let index = 0
   let invite: undefined | PixiButton = undefined
