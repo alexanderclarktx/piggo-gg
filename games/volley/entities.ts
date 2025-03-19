@@ -85,7 +85,7 @@ export const Dude = (player: Player) => Character({
         }
       },
       setup: async (r) => {
-        const t = await loadTexture("owl.json")
+        const t = await loadTexture("ghost.json")
 
         r.animations = {
           run: new AnimatedSprite([t["run1"], t["run2"], t["run4"], t["run5"]]),
