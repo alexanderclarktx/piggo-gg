@@ -1,5 +1,5 @@
 import {
-  Action, Actions, Character, Collider, Debug, Entity, Input, LineWall,
+  Action, Actions, Character, Collider, Debug, Entity, Input, keys, LineWall,
   loadTexture, Move, Networked, NPC, pixiGraphics, Player, Position,
   Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
@@ -37,7 +37,7 @@ export const Dude = (player: Player) => Character({
     }),
     actions: Actions({
       move: Move,
-      spike: Spike,
+      spike: Spike(),
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 6 })
@@ -45,23 +45,53 @@ export const Dude = (player: Player) => Character({
     }),
     shadow: Shadow(5),
     renderable: Renderable({
-      anchor: { x: 0.5, y: 0.8 },
-      scale: 2,
+      anchor: { x: 0.55, y: 0.9 },
+      animationSelect: (dude, world) => {
+        const { position, renderable } = dude.components
+        const actions = world.actions.atTick(world.tick)?.[dude.id]
+
+        if (renderable.activeAnimation === "spike" && renderable.animation &&
+          (renderable.animation.currentFrame + 1 !== renderable.animation.totalFrames)) {
+          console.log("CONTINUE spike")
+          return "spike"
+        }
+
+        if (actions?.find(a => a.actionId === "spike")) {
+          console.log("spike", world.actions.atTick(world.tick)?.[dude.id])
+          return "spike"
+        }
+
+        // if (position.data.velocity.z) {
+        //   return "jump"
+        // }
+
+        if (position.data.velocity.x || position.data.velocity.y) {
+          return "run"
+        }
+
+        return "idle"
+      },
+      scale: 1.2,
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
+      dynamic: ({entity}) => {
+        const { position, renderable } = entity.components
+
+        if (position.data.velocity.x > 0) {
+          renderable.setScale({ x: 1, y: 1 })
+        } else if (position.data.velocity.x < 0) {
+          renderable.setScale({ x: -1, y: 1 })
+        }
+      },
       setup: async (r) => {
-        const t = await loadTexture("chars.json")
+        const t = await loadTexture("ghost.json")
 
         r.animations = {
-          d: new AnimatedSprite([t["d1"], t["d2"], t["d3"]]),
-          u: new AnimatedSprite([t["u1"], t["u2"], t["u3"]]),
-          l: new AnimatedSprite([t["l1"], t["l2"], t["l3"]]),
-          r: new AnimatedSprite([t["r1"], t["r2"], t["r3"]]),
-          dl: new AnimatedSprite([t["dl1"], t["dl2"], t["dl3"]]),
-          dr: new AnimatedSprite([t["dr1"], t["dr2"], t["dr3"]]),
-          ul: new AnimatedSprite([t["ul1"], t["ul2"], t["ul3"]]),
-          ur: new AnimatedSprite([t["ur1"], t["ur2"], t["ur3"]])
+          run: new AnimatedSprite([t["run1"], t["run2"], t["run4"], t["run5"]]),
+          jump: new AnimatedSprite([t["jump3"], t["jump1"]]),
+          idle: new AnimatedSprite([t["idle1"], t["idle2"], t["idle3"], t["idle4"]]),
+          spike: new AnimatedSprite([t["spike3"], t["spike3"]])
         }
       }
     })

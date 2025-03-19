@@ -18,7 +18,7 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
       team: Team(team),
       actions: Actions({
         move: Move,
-        spike: Spike,
+        spike: Spike(),
         chase: Chase,
         jump: Action("jump", ({ entity }) => {
           if (!entity?.components?.position?.data.standing) return

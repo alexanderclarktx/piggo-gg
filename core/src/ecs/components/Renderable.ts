@@ -4,9 +4,10 @@ import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js"
 
 export type Renderable = Component<"renderable"> & {
   activeAnimation: string
-  anchor: { x: number, y: number }
+  anchor: XY
   animation: AnimatedSprite | undefined
   animations: Record<string, AnimatedSprite>
+  animationSelect: null | ((entity: Entity<Position | Renderable>, world: World) => string)
   bufferedAnimation: string
   c: Container
   children: Renderable[] | undefined
@@ -16,7 +17,7 @@ export type Renderable = Component<"renderable"> & {
   interactiveChildren: boolean
   interpolate: boolean
   initialized: boolean
-  position: { x: number, y: number }
+  position: XY
   r: Renderable | undefined
   rendered: boolean
   renderer: Renderer
@@ -44,13 +45,14 @@ export type RenderableProps = {
   alpha?: number
   anchor?: XY
   animations?: Record<string, AnimatedSprite>
+  animationSelect?: (entity: Entity<Position | Renderable>, world: World) => string
   cacheAsBitmap?: boolean
   color?: number
   cullable?: boolean
   animationColor?: number
   interactiveChildren?: boolean
   interpolate?: boolean
-  position?: { x: number, y: number }
+  position?: XY
   rotates?: boolean
   outline?: { color: number, thickness: number }
   scale?: number
@@ -72,6 +74,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     animation: undefined,
     animations: props.animations ?? {},
     animationColor: props.animationColor ?? 0xffffff,
+    animationSelect: props.animationSelect ?? null,
     bufferedAnimation: "",
     c: new Container(),
     r: undefined,
