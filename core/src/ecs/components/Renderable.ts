@@ -2,6 +2,8 @@ import { Component, Entity, Renderer, World, XY, keys, values, Position } from "
 import { OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js"
 
+export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void)
+
 export type Renderable = Component<"renderable"> & {
   activeAnimation: string
   anchor: XY
@@ -31,7 +33,7 @@ export type Renderable = Component<"renderable"> & {
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
-  dynamic: ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void) | undefined
+  dynamic: Dynamic | undefined
 
   prepareAnimations: (color?: number, alpha?: number) => void
   setScale: (xy: XY) => void
@@ -59,7 +61,7 @@ export type RenderableProps = {
   scaleMode?: "nearest" | "linear"
   visible?: boolean
   zIndex?: number
-  dynamic?: (_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void
+  dynamic?: Dynamic
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
   setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void> // todo single arg

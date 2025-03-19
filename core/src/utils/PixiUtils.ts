@@ -1,5 +1,6 @@
 import {
-  Assets, Container, Graphics, GraphicsContext, GraphicsOptions, Text, TextStyleFontWeight
+  AnimatedSprite, AnimatedSpriteFrames, Assets, Container, Graphics,
+  GraphicsContext, GraphicsOptions, Text, TextStyleFontWeight
 } from "pixi.js"
 import { XY } from "@piggo-gg/core"
 
@@ -11,6 +12,8 @@ export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: str
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
 export const pixiContainer = (): Container => new Container()
+
+export const pixiAnimation = (frames: AnimatedSpriteFrames) => new AnimatedSprite(frames)
 
 export const pixiGraphics = (opts: GraphicsOptions | GraphicsContext = {}): Graphics => new Graphics(opts)
 
