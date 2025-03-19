@@ -1,5 +1,5 @@
 import {
-  Action, Actions, Character, Collider, Debug, Entity, Input, keys, LineWall,
+  Action, Actions, Character, Collider, Debug, Entity, Input, LineWall,
   loadTexture, Move, Networked, NPC, pixiGraphics, Player, Position,
   Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
