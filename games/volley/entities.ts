@@ -138,18 +138,22 @@ export const Court = () => LineWall({
 
 export const Bounds = (group: "two" | "three") => LineWall({
   id: `bounds-${group}`,
-  position: { x: 225, y: -82 },
+  position: { x: 225, y: -84 },
   group,
   points: [
     0, 0,
-    -232, 0,
-    -287, 164,
-    287, 164,
-    232, 0,
+    -234, 0,
+    -289, 168,
+    289, 168,
+    234, 0,
     0, 0
   ],
   sensor: (e2, world) => {
     if (e2.id !== "ball") return false
+
+    if (e2.components.position.data.z === 0) return false
+
+    console.log("OOB")
 
     const state = world.game.state as VolleyState
     state.phase = "point"

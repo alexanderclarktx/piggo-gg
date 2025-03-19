@@ -54,26 +54,29 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
     state.lastHitTick = world.tick
     ballPos.setPosition({ z: ballPos.data.z + 0.1 })
 
-    if (state.phase === "serve" && state.hit === 1 && state.teamServing === team) {
-      ballPos.setVelocity({ z: 0.5 }).setGravity(0.05)
-      const v = velocityToPoint(ballPos.data, target, 0.05, 0.5)
-      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
-      return // don't set phase to play
-    } else if (standing) {
-      ballPos.setVelocity({ z: 3.2 }).setGravity(0.1)
+    let g = 1
+    let vz = 100
+    let v = { x: 0, y: 0 }
 
-      const v = velocityToDirection(ballPos.data, target, 70, 0.07, 3.2)
-      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
+    if (state.phase === "serve" && state.hit === 1 && state.teamServing === team) {
+      g = 0.1
+      vz = 1.5
+      v = velocityToPoint(ballPos.data, target, g, vz)
+    } else if (standing) {
+      g = 0.1
+      vz = 3.2
+      v = velocityToDirection(ballPos.data, target, 70, g, vz)
+
+      state.phase = "play"
     } else {
       const distance = XYdistance(from, target)
-      const vz = -2.5 + distance / 170
+      vz = -2.5 + distance / 170
+      g = 0.05
+      v = velocityToPoint(ballPos.data, target, g, vz)
 
-      ballPos.setVelocity({ z: vz }).setGravity(0.05)
-
-      const v = velocityToPoint(ballPos.data, params.target, 0.05, vz)
-      ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
+      state.phase = "play"
     }
 
-    state.phase = "play"
+    ballPos.setGravity(g).setVelocity({ z: vz, x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
   }
 }, 20)
