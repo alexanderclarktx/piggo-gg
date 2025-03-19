@@ -46,7 +46,7 @@ export const Dude = (player: Player) => Character({
     shadow: Shadow(5),
     renderable: Renderable({
       anchor: { x: 0.55, y: 0.9 },
-      animationSelector: (dude, world) => {
+      animationSelect: (dude, world) => {
         const { position, renderable } = dude.components
         const actions = world.actions.atTick(world.tick)?.[dude.id]
 

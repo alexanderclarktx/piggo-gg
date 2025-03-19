@@ -84,7 +84,7 @@ export const RenderSystem = ClientSystemBuilder({
 
           // set buffered ortho animation
           if (!renderable.bufferedAnimation) {
-            renderable.bufferedAnimation = renderable.animationSelector ? renderable.animationSelector(entity, world) : position.orientation
+            renderable.bufferedAnimation = renderable.animationSelect ? renderable.animationSelect(entity, world) : position.orientation
           }
 
           // handle buffered animations

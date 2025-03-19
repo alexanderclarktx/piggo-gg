@@ -7,7 +7,7 @@ export type Renderable = Component<"renderable"> & {
   anchor: XY
   animation: AnimatedSprite | undefined
   animations: Record<string, AnimatedSprite>
-  animationSelector: null | ((entity: Entity<Position | Renderable>, world: World) => string)
+  animationSelect: null | ((entity: Entity<Position | Renderable>, world: World) => string)
   bufferedAnimation: string
   c: Container
   children: Renderable[] | undefined
@@ -45,7 +45,7 @@ export type RenderableProps = {
   alpha?: number
   anchor?: XY
   animations?: Record<string, AnimatedSprite>
-  animationSelector?: (entity: Entity<Position | Renderable>, world: World) => string
+  animationSelect?: (entity: Entity<Position | Renderable>, world: World) => string
   cacheAsBitmap?: boolean
   color?: number
   cullable?: boolean
@@ -74,7 +74,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     animation: undefined,
     animations: props.animations ?? {},
     animationColor: props.animationColor ?? 0xffffff,
-    animationSelector: props.animationSelector ?? null,
+    animationSelect: props.animationSelect ?? null,
     bufferedAnimation: "",
     c: new Container(),
     r: undefined,
