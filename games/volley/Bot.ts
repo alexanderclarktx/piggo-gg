@@ -1,11 +1,11 @@
 import {
-  Action, Actions, Chase, closestEntity, Collider, Debug, Entity, loadTexture,
-  middle, Move, Networked, NPC, Position, Renderable, Shadow, Team,
-  TeamColors, teammates, TeamNumber, XY, XYdiff, XYZdiff
+  Action, Actions, Chase, closestEntity, Collider, Debug, Entity,
+  middle, Move, Networked, NPC, Position, Renderable, Shadow,
+  Team, teammates, TeamNumber, XY, XYdiff, XYZdiff
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
 import { range, VolleyballState } from "./Volleyball"
-import { AnimatedSprite } from "pixi.js"
+import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./skins"
 
 export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
   const bot: Entity<Position | Team> = Entity({
@@ -132,26 +132,14 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
         },
       }),
       renderable: Renderable({
-        anchor: { x: 0.5, y: 0.8 },
-        scale: 2,
+        anchor: { x: 0.55, y: 0.9 },
+        scale: 1.2,
         zIndex: 4,
         interpolate: true,
         scaleMode: "nearest",
-        color: TeamColors[team],
-        setup: async (r) => {
-          const t = await loadTexture("chars.json")
-
-          r.animations = {
-            d: new AnimatedSprite([t["d1"], t["d2"], t["d3"]]),
-            u: new AnimatedSprite([t["u1"], t["u2"], t["u3"]]),
-            l: new AnimatedSprite([t["l1"], t["l2"], t["l3"]]),
-            r: new AnimatedSprite([t["r1"], t["r2"], t["r3"]]),
-            dl: new AnimatedSprite([t["dl1"], t["dl2"], t["dl3"]]),
-            dr: new AnimatedSprite([t["dr1"], t["dr2"], t["dr3"]]),
-            ul: new AnimatedSprite([t["ul1"], t["ul2"], t["ul3"]]),
-            ur: new AnimatedSprite([t["ur1"], t["ur2"], t["ur3"]])
-          }
-        }
+        setup: team === 1 ? DudeSkin("red") : DudeSkin("blue"),
+        animationSelect: VolleyCharacterAnimations,
+        dynamic: VolleyCharacterDynamic
       })
     }
   })

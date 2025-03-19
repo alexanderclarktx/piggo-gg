@@ -1,11 +1,12 @@
 import {
-  Action, Actions, Character, Collider, Debug, Entity, Input, keys, LineWall,
+  Action, Actions, Character, Collider, Debug, Entity, Input, LineWall,
   loadTexture, Move, Networked, NPC, pixiGraphics, Player, Position,
   Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
-import { AnimatedSprite, Texture } from "pixi.js"
+import { Texture } from "pixi.js"
 import { range, VolleyballState } from "./Volleyball"
 import { Spike } from "./Spike"
+import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./skins"
 
 export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
@@ -46,54 +47,13 @@ export const Dude = (player: Player) => Character({
     shadow: Shadow(5),
     renderable: Renderable({
       anchor: { x: 0.55, y: 0.9 },
-      animationSelect: (dude, world) => {
-        const { position, renderable } = dude.components
-        const actions = world.actions.atTick(world.tick)?.[dude.id]
-
-        if (renderable.activeAnimation === "spike" && renderable.animation &&
-          (renderable.animation.currentFrame + 1 !== renderable.animation.totalFrames)) {
-          console.log("CONTINUE spike")
-          return "spike"
-        }
-
-        if (actions?.find(a => a.actionId === "spike")) {
-          console.log("spike", world.actions.atTick(world.tick)?.[dude.id])
-          return "spike"
-        }
-
-        // if (position.data.velocity.z) {
-        //   return "jump"
-        // }
-
-        if (position.data.velocity.x || position.data.velocity.y) {
-          return "run"
-        }
-
-        return "idle"
-      },
       scale: 1.2,
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
-      dynamic: ({entity}) => {
-        const { position, renderable } = entity.components
-
-        if (position.data.velocity.x > 0) {
-          renderable.setScale({ x: 1, y: 1 })
-        } else if (position.data.velocity.x < 0) {
-          renderable.setScale({ x: -1, y: 1 })
-        }
-      },
-      setup: async (r) => {
-        const t = await loadTexture("ghost.json")
-
-        r.animations = {
-          run: new AnimatedSprite([t["run1"], t["run2"], t["run4"], t["run5"]]),
-          jump: new AnimatedSprite([t["jump3"], t["jump1"]]),
-          idle: new AnimatedSprite([t["idle1"], t["idle2"], t["idle3"], t["idle4"]]),
-          spike: new AnimatedSprite([t["spike3"], t["spike3"]])
-        }
-      }
+      setup: player.components.pc.data.name.startsWith("noob") ? DudeSkin("white") : Ghost,
+      animationSelect: VolleyCharacterAnimations,
+      dynamic: VolleyCharacterDynamic
     })
   }
 })
