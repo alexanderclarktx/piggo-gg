@@ -61,10 +61,6 @@ export const Dude = (player: Player) => Character({
           return "spike"
         }
 
-        // if (actions?.find(a => a.actionId === "jump")) {
-        //   return "jump"
-        // }
-
         // if (position.data.velocity.z) {
         //   return "jump"
         // }
@@ -79,22 +75,23 @@ export const Dude = (player: Player) => Character({
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
+      dynamic: ({entity}) => {
+        const { position, renderable } = entity.components
+
+        if (position.data.velocity.x > 0) {
+          renderable.setScale({ x: 1, y: 1 })
+        } else if (position.data.velocity.x < 0) {
+          renderable.setScale({ x: -1, y: 1 })
+        }
+      },
       setup: async (r) => {
         const t = await loadTexture("owl.json")
 
         r.animations = {
-          run: new AnimatedSprite([t["run1"], t["run2"], t["run3"], t["run4"], t["run5"], t["run6"]]),
+          run: new AnimatedSprite([t["run1"], t["run2"], t["run4"], t["run5"]]),
           jump: new AnimatedSprite([t["jump3"], t["jump1"]]),
           idle: new AnimatedSprite([t["idle1"], t["idle2"], t["idle3"], t["idle4"]]),
-          spike: new AnimatedSprite([t["spike3"], t["spike3"]]),
-          // d: new AnimatedSprite([t["idle1"]]),
-          // u: new AnimatedSprite([t["idle1"]]),
-          // l: new AnimatedSprite([t["idle1"], t["idle2"], t["idle3"], t["idle4"]]),
-          // r: new AnimatedSprite([t["run1"], t["run2"], t["run3"], t["run4"], t["run5"], t["run6"]]),
-          // dl: new AnimatedSprite([t["idle1"]]),
-          // dr: new AnimatedSprite([t["idle1"]]),
-          // ul: new AnimatedSprite([t["idle1"]]),
-          // ur: new AnimatedSprite([t["idle1"]]),
+          spike: new AnimatedSprite([t["spike3"], t["spike3"]])
         }
       }
     })

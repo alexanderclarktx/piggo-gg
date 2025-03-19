@@ -26,6 +26,11 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
       return
     }
 
+    // no double hits
+    if (state.lastHit === entity.id) {
+      return
+    }
+
     // no hit from same team on serve
     if (state.phase === "serve" && state.lastHitTeam === team) {
       return
