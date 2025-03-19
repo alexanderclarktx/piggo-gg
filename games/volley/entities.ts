@@ -4,7 +4,7 @@ import {
   Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
 import { Texture } from "pixi.js"
-import { range, VolleyballState } from "./Volleyball"
+import { range, VolleyState } from "./Volley"
 import { Spike } from "./Spike"
 import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
 
@@ -151,7 +151,7 @@ export const Bounds = (group: "two" | "three") => LineWall({
   sensor: (e2, world) => {
     if (e2.id !== "ball") return false
 
-    const state = world.game.state as VolleyballState
+    const state = world.game.state as VolleyState
     state.phase = "point"
     state.lastWin = state.lastHitTeam === 1 ? 2 : 1
 

@@ -4,7 +4,7 @@ import {
   Team, teammates, TeamNumber, XY, XYdiff, XYZdiff
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
-import { range, VolleyballState } from "./Volleyball"
+import { range, VolleyState } from "./Volley"
 import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
 
 export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
@@ -37,7 +37,7 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
           const { position: targetPos } = target.components
           const team = bot.components.team.data.team
 
-          const state = world.game.state as VolleyballState
+          const state = world.game.state as VolleyState
 
           if (state.phase === "serve") {
             // if our team not serving

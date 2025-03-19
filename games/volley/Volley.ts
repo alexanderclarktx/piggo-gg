@@ -8,7 +8,7 @@ import { TargetSystem } from "./Target"
 
 export const range = 30
 
-export type VolleyballState = {
+export type VolleyState = {
   scoreLeft: number
   scoreRight: number
   phase: "serve" | "play" | "point" | "game"
@@ -20,10 +20,10 @@ export type VolleyballState = {
   hit: 0 | 1 | 2 | 3 | 4
 }
 
-export const Volleyball: GameBuilder<VolleyballState> = {
-  id: "volleyball",
+export const Volley: GameBuilder<VolleyState> = {
+  id: "volley",
   init: () => ({
-    id: "volleyball",
+    id: "volley",
     netcode: "rollback",
     state: {
       scoreLeft: 0,
@@ -38,7 +38,7 @@ export const Volleyball: GameBuilder<VolleyballState> = {
     },
     systems: [
       SpawnSystem(Dude),
-      VolleyballSystem,
+      VolleySystem,
       ShadowSystem,
       TargetSystem,
       CameraSystem({ follow: () => ({ x: 225, y: 0 }) })
@@ -62,8 +62,8 @@ export const Volleyball: GameBuilder<VolleyballState> = {
   })
 }
 
-const VolleyballSystem = SystemBuilder({
-  id: "VolleyballSystem",
+const VolleySystem = SystemBuilder({
+  id: "VolleySystem",
   init: (world) => {
 
     const bots = []
@@ -101,14 +101,14 @@ const VolleyballSystem = SystemBuilder({
     world.renderer?.camera.scaleBy(scaleBy)
 
     return {
-      id: "VolleyballSystem",
+      id: "VolleySystem",
       query: [],
       priority: 9,
       onTick: () => {
         const ballPos = world.entity<Position>("ball")?.components.position
         if (!ballPos) return
 
-        const state = world.game.state as VolleyballState
+        const state = world.game.state as VolleyState
 
         if (state.phase === "point") {
 

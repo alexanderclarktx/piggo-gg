@@ -1,5 +1,5 @@
 import { Action, velocityToDirection, velocityToPoint, XY, XYdistance, XYZ, XYZdiff, Position } from "@piggo-gg/core"
-import { range, VolleyballState } from "./Volleyball"
+import { range, VolleyState } from "./Volley"
 
 export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, params, entity }) => {
   if (!params.target || !params.from || !entity) return
@@ -16,7 +16,7 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
   const team = entity.components.team!.data.team
 
   if (!far) {
-    const state = world.game.state as VolleyballState
+    const state = world.game.state as VolleyState
 
     // can't hit if point is over
     if (state.phase === "point") return
