@@ -1,7 +1,7 @@
 import { Action, velocityToDirection, velocityToPoint, XY, XYdistance, XYZ, XYZdiff, Position } from "@piggo-gg/core"
 import { range, VolleyballState } from "./Volleyball"
 
-export const Spike = Action<{ target: XY, from: XYZ }>("spike", ({ world, params, entity }) => {
+export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, params, entity }) => {
   if (!params.target || !params.from || !entity) return
 
   const ball = world.entity<Position>("ball")
