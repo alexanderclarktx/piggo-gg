@@ -5,7 +5,7 @@ import {
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
 import { range, VolleyballState } from "./Volleyball"
-import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./skins"
+import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
 
 export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
   const bot: Entity<Position | Team> = Entity({
@@ -108,7 +108,7 @@ export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
             // spike
             if (state.hit === 2 || (state.phase === "serve" && state.hit === 0)) {
               const target = {
-                x: 225 + (team === 1 ? 1 : -1) * world.random.int(225),
+                x: 225 + (team === 1 ? 1 : -1) * (world.random.int(225) + 40),
                 y: world.random.int(150, 75)
               }
               return { actionId: "spike", entityId: bot.id, params: { target, from } }

@@ -6,7 +6,7 @@ import {
 import { Texture } from "pixi.js"
 import { range, VolleyballState } from "./Volleyball"
 import { Spike } from "./Spike"
-import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./skins"
+import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
 
 export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
@@ -138,14 +138,14 @@ export const Court = () => LineWall({
 
 export const Bounds = (group: "two" | "three") => LineWall({
   id: `bounds-${group}`,
-  position: { x: 225, y: -80 },
+  position: { x: 225, y: -82 },
   group,
   points: [
     0, 0,
-    -230, 0,
-    -285, 160,
-    285, 160,
-    230, 0,
+    -232, 0,
+    -287, 164,
+    287, 164,
+    232, 0,
     0, 0
   ],
   sensor: (e2, world) => {

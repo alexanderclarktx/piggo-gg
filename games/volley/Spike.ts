@@ -66,7 +66,7 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
       ballPos.setVelocity({ x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
     } else {
       const distance = XYdistance(from, target)
-      const vz = -2 + distance / 200
+      const vz = -2.5 + distance / 170
 
       ballPos.setVelocity({ z: vz }).setGravity(0.05)
 
