@@ -44,7 +44,7 @@ export const Volley: GameBuilder<VolleyState> = {
       CameraSystem({ follow: () => ({ x: 225, y: 0 }) })
     ],
     entities: [
-      Background({ img: "night.png" }),
+      Background({ img: "night.png", rays: true, moving: false }),
       EscapeMenu(), Cursor(),
       Ball(),
       Court(),

@@ -1,6 +1,6 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture,
-  colors, Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual
+  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture, colors,
+  Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual, Background
 } from "@piggo-gg/core"
 import { Flappy, Craft, Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -13,6 +13,7 @@ export const Lobby: GameBuilder = {
     systems: [],
     view: "side",
     entities: [
+      Background({ img: "night.png", moving: true }),
       Cursor(),
       Chat(),
       Friends(),
@@ -35,7 +36,7 @@ const Icon = (player: Entity<PC | Team>) => {
 
   const text = () => pixiText({
     text: pc.data.name,
-    resolution: 2,
+    resolution: 4,
     pos: { x: 0, y: 40 },
     anchor: { x: 0.5, y: 0.5 },
     style: { fontSize: 24, fill: TeamColors[team.data.team] }
@@ -150,7 +151,7 @@ const GameLobby = (): Entity => {
           const { height, width } = renderer.app.screen
 
           const outline = pixiGraphics()
-          outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
+          outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
 
           gameButtons = []
 
@@ -223,7 +224,7 @@ const Profile = (): Entity => {
   const outline = pixiGraphics()
   const drawOutline = () => {
     outline.clear()
-    outline.roundRect(0, 0, 200, 170, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2 })
+    outline.roundRect(0, 0, 200, 170, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2 })
   }
 
   const profile = Entity<Position | Renderable>({
@@ -261,7 +262,7 @@ const Friends = (): Entity => {
   const outline = pixiGraphics()
   const drawOutline = () => {
     outline.clear()
-    outline.roundRect(0, 0, 200, height - 200, 3).stroke({ color: colors.piggo, alpha: 0.9, width: 2, miterLimit: 0 })
+    outline.roundRect(0, 0, 200, height - 200, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
   }
 
   // let friendList: Friend[] | undefined = undefined

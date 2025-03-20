@@ -45,7 +45,7 @@ export const pixiText = ({ text, pos, style, anchor, dropShadow, resolution }: p
     text,
     anchor: anchor ?? 0,
     position: pos ?? { x: 0, y: 0 },
-    resolution: resolution ?? 4,
+    resolution: resolution ?? 2,
     style: {
       fill: style?.fill ?? 0xffffff,
       fontSize: style?.fontSize ?? 14,
