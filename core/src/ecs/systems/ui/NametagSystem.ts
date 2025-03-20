@@ -1,6 +1,6 @@
 import {
   Character, ClientSystemBuilder, Entity, Player,
-  Position, Renderable, entries, pixiText
+  Position, Renderable, TeamColors, entries, pixiText
 } from "@piggo-gg/core"
 
 export const NametagSystem = ClientSystemBuilder({
@@ -51,9 +51,10 @@ const Nametag = (player: Player, character: Character) => {
 
   const nametag = pixiText({
     text: name,
-    style: { fill: 0xffff00, fontSize: 13 },
-    anchor: { x: 0.48, y: 0 },
-    pos: { x: 0, y: -45 }
+    style: { fill: TeamColors[player.components.team.data.team], fontSize: 12, fontFamily: "Courier New", fontWeight: "bold" },
+    anchor: { x: 0.45, y: 0 },
+    pos: { x: 0, y: -44 },
+    dropShadow: true
   })
 
   return Entity<Position | Renderable>({
