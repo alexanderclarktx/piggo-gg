@@ -1,9 +1,7 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC, Team, TeamColors,
-  PositionProps,
-  World,
-  NPC,
+  loadTexture, colors, Cursor, Chat, PixiButton, PC, Team, TeamColors,
+  PositionProps, World, NPC,
 } from "@piggo-gg/core"
 import { Flappy, Craft, Volley, Jump } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -53,7 +51,6 @@ const Icon = (player: Entity<PC | Team>, pos: PositionProps) => {
     id: `icon-${player.id}`,
     components: {
       position: Position(pos),
-      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -136,7 +133,6 @@ const GameLobby = (): Entity => {
   const gameLobby = Entity<Position | Renderable>({
     id: "gameLobby",
     components: {
-      debug: Debug(),
       position: Position({ x: 220, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
