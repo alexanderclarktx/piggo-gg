@@ -30,9 +30,7 @@ export const { isArray } = Array
 export const arrayEqual = <T>(a: T[], b: T[]): boolean => {
   if (a.length !== b.length) return false
   for (let i = 0; i < a.length; i++) {
-    
     if (a[i] !== b[i]) {
-      console.log("NOT EQUAL", a[i], b[i])
       return false
     }
   }
@@ -87,7 +85,7 @@ export const velocityToPoint = (from: XYZ, to: XY, g: number, v: number): XY => 
 // returns velocity to reach a point at a certain distance toward the "to" point
 export const velocityToDirection = (from: XYZ, to: XY, distance: number, g: number, v: number): XY => {
   const t = timeToLand(g, from.z, v)
-  
+
   const dx = to.x - from.x
   const dy = to.y - from.y
   const totalDistance = sqrt(dx * dx + dy * dy)
@@ -266,9 +264,9 @@ export const searchVisibleTiles = (start: XY, floorTilesArray: Entity, tileMap: 
     for (let i = 0; i < maxDistance; i++) {
       const x = round(start.x + direction.x * i)
       const y = round(start.y + direction.y * i)
-  
+
       if (tileMap[x + (y * 80)] === 0) break
-  
+
       const index = tileIndex(x + (y * 80), tileMap)
       const tile = floorTilesArray.components.renderable?.c.children[index]
       if (!tile) continue
