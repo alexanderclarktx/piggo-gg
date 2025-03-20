@@ -27,6 +27,18 @@ export const reduce = (n: number, by: number): number => {
 
 export const { isArray } = Array
 
+export const arrayEqual = <T>(a: T[], b: T[]): boolean => {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    
+    if (a[i] !== b[i]) {
+      console.log("NOT EQUAL", a[i], b[i])
+      return false
+    }
+  }
+  return true
+}
+
 export const randomChoice = <T>(xs: T[]): T => {
   return xs[floor(random() * xs.length)]
 }

@@ -1,10 +1,8 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, PixiButton, PC, Team, TeamColors,
-  PositionProps, World, NPC,
-  Debug,
+  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture,
+  colors, Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual
 } from "@piggo-gg/core"
-import { Flappy, Craft, Volley, Jump } from "@piggo-gg/games"
+import { Flappy, Craft, Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -16,9 +14,9 @@ export const Lobby: GameBuilder = {
     view: "side",
     entities: [
       Cursor(),
-      // Chat(),
-      // Friends(),
-      // Profile(),
+      Chat(),
+      Friends(),
+      Profile(),
       GameLobby(),
       Players()
     ],
@@ -56,13 +54,11 @@ const Icon = (player: Entity<PC | Team>) => {
     id: `icon-${player.id}`,
     components: {
       position: Position({ screenFixed: true }),
-      debug: Debug(),
       renderable: Renderable({
-        zIndex: 10,
+        zIndex: 12,
         interactiveChildren: true,
         visible: false,
         dynamic: async ({ renderable, world }) => {
-          console.log("icon dynamic", renderable.visible)
           if (pc.data.name !== lastName || team.data.team !== lastTeam) {
             renderable.c.removeChildren()
             renderable.c.addChild(text(), await pfp(world))
@@ -73,8 +69,10 @@ const Icon = (player: Entity<PC | Team>) => {
 
           renderable.visible = world.client?.connected === true
         },
-        setup: async () => {
+        setup: async (renderable, _, world) => {
           texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
+
+          renderable.c.addChild(text(), await pfp(world))
         }
       })
     }
@@ -84,12 +82,12 @@ const Icon = (player: Entity<PC | Team>) => {
 // aligns all the player icons in the center of the screen
 const Players = (): Entity => {
 
-  let pcs: (Entity<PC | Team>)[] = []
+  let playerNames: string[] = []
   let icons: Entity<Position | Renderable>[] = []
 
   let offset = { x: 0, y: 0 }
 
-  const players = Entity({
+  return Entity({
     id: "players",
     components: {
       position: Position({ x: 300, y: 100, screenFixed: true }),
@@ -99,18 +97,16 @@ const Players = (): Entity => {
           const { height, width } = world.renderer.app.screen
           offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
 
-          if (icons.length === 0) {
-            pcs = world.queryEntities<PC | Team>(["pc"])
-            icons = pcs.map(p => Icon(p))
-            world.addEntities(icons)
-          }
+          const players = world.queryEntities<PC | Team>(["pc"]).sort((a, b) => a.components.pc.data.name > b.components.pc.data.name ? 1 : -1)
 
-          const players = world.queryEntities<PC | Team>(["pc"])
-          if (players.length !== pcs.length) {
-            pcs = players
+          // recreate the icons if the player names have changed
+          if (icons.length === 0 || !arrayEqual(players.map(p => p.components.pc.data.name), playerNames)) {
             icons.forEach(i => world.removeEntity(i.id))
-            icons = pcs.map(p => Icon(p))
+
+            icons = players.map(p => Icon(p))
             world.addEntities(icons)
+
+            playerNames = players.map(p => p.components.pc.data.name)
           }
 
           // align the icons
@@ -124,7 +120,6 @@ const Players = (): Entity => {
       })
     }
   })
-  return players
 }
 
 const GameLobby = (): Entity => {
