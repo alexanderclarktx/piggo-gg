@@ -246,9 +246,6 @@ const GameLobby = (): Entity => {
             onClick: () => world.client?.copyInviteLink()
           })
 
-          // const botx = 
-          // const xy = world.renderer?.camera.toWorldCoords(gameButtons[0].c) ?? { x: 0, y: 0 }
-          // console.log(xy)
           const bot = Bot(2, { x: 220, y: 100, gravity: 0 })
           world.addEntity(bot)
 
