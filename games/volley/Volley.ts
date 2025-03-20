@@ -54,7 +54,6 @@ export const Volley: GameBuilder<VolleyState> = {
       Net(),
       Bounds("two"),
       Bounds("three"),
-      // NetShadow(),
       ScorePanel(),
       // Scoreboard(),
       LagText({ y: 5 })
