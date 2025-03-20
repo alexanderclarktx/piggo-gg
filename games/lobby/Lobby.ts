@@ -2,6 +2,7 @@ import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
   loadTexture, colors, Cursor, Chat, PixiButton, PC, Team, TeamColors,
   PositionProps, World, NPC,
+  Debug,
 } from "@piggo-gg/core"
 import { Flappy, Craft, Volley, Jump } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -14,14 +15,18 @@ export const Lobby: GameBuilder = {
     systems: [],
     view: "side",
     entities: [
-      Cursor(), Chat(),
-      Friends(), Profile(), GameLobby(), Players()
+      Cursor(),
+      // Chat(),
+      // Friends(),
+      // Profile(),
+      GameLobby(),
+      Players()
     ],
     netcode: "delay"
   })
 }
 
-const Icon = (player: Entity<PC | Team>, pos: PositionProps) => {
+const Icon = (player: Entity<PC | Team>) => {
 
   const { pc, team } = player.components
 
@@ -50,12 +55,14 @@ const Icon = (player: Entity<PC | Team>, pos: PositionProps) => {
   return Entity<Position | Renderable>({
     id: `icon-${player.id}`,
     components: {
-      position: Position(pos),
+      position: Position({ screenFixed: true }),
+      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
         visible: false,
         dynamic: async ({ renderable, world }) => {
+          console.log("icon dynamic", renderable.visible)
           if (pc.data.name !== lastName || team.data.team !== lastTeam) {
             renderable.c.removeChildren()
             renderable.c.addChild(text(), await pfp(world))
@@ -89,15 +96,12 @@ const Players = (): Entity => {
       npc: NPC({
         behavior: (_, world) => {
           if (!world.renderer) return
+          const { height, width } = world.renderer.app.screen
+          offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
 
           if (icons.length === 0) {
-            const { height, width } = world.renderer.app.screen
-
-            offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
-
-            // create icons
             pcs = world.queryEntities<PC | Team>(["pc"])
-            icons = pcs.map(p => Icon(p, { x: offset.x, y: offset.y, screenFixed: true }))
+            icons = pcs.map(p => Icon(p))
             world.addEntities(icons)
           }
 
@@ -105,7 +109,7 @@ const Players = (): Entity => {
           if (players.length !== pcs.length) {
             pcs = players
             icons.forEach(i => world.removeEntity(i.id))
-            icons = pcs.map(p => Icon(p, { x: offset.x, y: offset.y, screenFixed: true }))
+            icons = pcs.map(p => Icon(p))
             world.addEntities(icons)
           }
 
@@ -113,7 +117,7 @@ const Players = (): Entity => {
           const totalWidth = icons.reduce((acc, icon) => acc + icon.components.renderable.c.width, 0) + 20 * (icons.length - 1)
           let x = -totalWidth / 2
           for (const icon of icons) {
-            icon.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
+            icon.components.position.setPosition({ y: offset.y, x: offset.x + x + icon.components.renderable.c.width / 2 })
             x += icon.components.renderable.c.width + 20
           }
         }
@@ -125,7 +129,7 @@ const Players = (): Entity => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Volley, Flappy, Craft, Jump]
+  const list: GameBuilder[] = [Volley, Flappy, Craft]
   let gameButtons: PixiButton[] = []
   let index = 0
   let invite: undefined | PixiButton = undefined
@@ -135,7 +139,7 @@ const GameLobby = (): Entity => {
     components: {
       position: Position({ x: 220, y: 10, screenFixed: true }),
       renderable: Renderable({
-        zIndex: 10,
+        zIndex: 9,
         dynamic: ({ world }) => {
           gameButtons.forEach((b, i) => {
             b.c.alpha = (i === index) ? 1 : 0.6
