@@ -99,6 +99,20 @@ export const Api = (): Api => {
       "friends/remove": async ({ data }) => {
         return { id: data.id }
       },
+      "profile/get": async ({ data }) => {
+        let token: SessionToken | undefined = undefined
+
+        try {
+          token = jwt.verify(data.token, JWT_SECRET) as SessionToken
+        } catch (e) {
+          return { id: data.id, error: "JWT verification failed" }
+        }
+
+        const user = await prisma.users.findUnique({ where: { name: token.name } })
+        if (!user) return { id: data.id, error: "User not found" }
+
+        return { id: data.id, name: user.name }
+      },
       "auth/login": async ({ ws, data }) => {
 
         // 1. verify signature
@@ -148,7 +162,13 @@ export const Api = (): Api => {
       api.bun = Bun.serve({
         hostname: "0.0.0.0",
         port: env.PORT ?? 3000,
-        fetch: (r: Request, server: Server) => server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 }),
+        fetch: (r: Request, server: Server) => {
+          const origin = r.headers.get("origin")
+          if (!origin || !["https://piggo.gg", "http://localhost:8000"].includes(origin)) {
+            return new Response("invalid origin", { status: 403 })
+          }
+          return server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 })
+        },
         websocket: {
           perMessageDeflate: false,
           close: api.handleClose,

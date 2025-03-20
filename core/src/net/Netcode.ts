@@ -33,6 +33,7 @@ export type Request<Route extends string, Response extends {} = {}> = {
 export type RequestTypes =
   LobbyList | LobbyCreate | LobbyJoin | LobbyExit |
   FriendsList | FriendsAdd | FriendsRemove |
+  ProfileGet |
   AuthLogin |
   Pls
 
@@ -65,8 +66,11 @@ export type FriendsList = Request<"friends/list", { friends: Friend[] }> & { tok
 export type FriendsAdd = Request<"friends/add"> & { addUserId: string }
 export type FriendsRemove = Request<"friends/remove"> & { removeUserId: string }
 
+// profile endpoint
+export type ProfileGet = Request<"profile/get", { name: string }> & { token: string }
+
 // auth endpoints
-export type AuthLogin = Request<"auth/login", { token: string, name: string }> & {
+export type AuthLogin = Request<"auth/login", { token: string }> & {
   address: string, message: string, signature: string
 }
 
