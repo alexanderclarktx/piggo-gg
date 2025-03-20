@@ -4,9 +4,9 @@ import {
   Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff
 } from "@piggo-gg/core"
 import { Texture } from "pixi.js"
-import { range, VolleyballState } from "./Volleyball"
+import { range, VolleyState } from "./Volley"
 import { Spike } from "./Spike"
-import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./skins"
+import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
 
 export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
@@ -138,20 +138,21 @@ export const Court = () => LineWall({
 
 export const Bounds = (group: "two" | "three") => LineWall({
   id: `bounds-${group}`,
-  position: { x: 225, y: -80 },
+  position: { x: 225, y: -84 },
   group,
   points: [
     0, 0,
-    -230, 0,
-    -285, 160,
-    285, 160,
-    230, 0,
+    -234, 0,
+    -289, 168,
+    289, 168,
+    234, 0,
     0, 0
   ],
   sensor: (e2, world) => {
     if (e2.id !== "ball") return false
+    if (e2.components.position.data.z === 0) return false
 
-    const state = world.game.state as VolleyballState
+    const state = world.game.state as VolleyState
     state.phase = "point"
     state.lastWin = state.lastHitTeam === 1 ? 2 : 1
 

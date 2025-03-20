@@ -6,9 +6,9 @@ export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
 export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4"
 export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
-export type VolleyballSounds = "spike"
+export type VolleySounds = "spike"
 
-export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleyballSounds
+export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
 
 const load = (url: string, volume: number): Sound => {
   const player = new Sound({ url, volume: volume - 10 })
