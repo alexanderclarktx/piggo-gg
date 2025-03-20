@@ -1,8 +1,11 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics,
-  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC, Team
+  loadTexture, colors, Cursor, Chat, Debug, PixiButton, PC, Team, TeamColors,
+  PositionProps,
+  World,
+  NPC,
 } from "@piggo-gg/core"
-import { Flappy, Craft, Dungeon, Volley, Jump } from "@piggo-gg/games"
+import { Flappy, Craft, Volley, Jump } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -20,92 +23,102 @@ export const Lobby: GameBuilder = {
   })
 }
 
-// all the players in the lobby
-const Players = (): Entity => {
+const Icon = (player: Entity<PC | Team>, pos: PositionProps) => {
 
-  let lastSeenPcs: Record<string, string> = {}
+  const { pc, team } = player.components
 
-  const nameText = (playerName: string) => pixiText({
-    text: playerName, pos: { x: 0, y: 0 }, anchor: { x: 0, y: 0.5 }, style: { fontSize: 20 }
-  })
+  let lastName = ""
+  let lastTeam = 0
 
   let texture: any = undefined
 
-  const pfps: Record<string, Sprite> = {}
+  const text = () => pixiText({
+    text: pc.data.name,
+    resolution: 2,
+    pos: { x: 0, y: 40 },
+    anchor: { x: 0.5, y: 0.5 },
+    style: { fontSize: 24, fill: TeamColors[team.data.team] }
+  })
 
-  const players = Entity<Position | Renderable>({
-    id: "players",
+  const pfp = async (world: World) => {
+    const sprite = new Sprite({ texture, scale: 0.9, anchor: 0.5, position: { x: 0, y: 0 } })
+    sprite.interactive = true
+    sprite.onpointerdown = () => {
+      world.actions.push(world.tick + 2, player.id, { actionId: "switchTeam" })
+    }
+    return sprite
+  }
+
+  return Entity<Position | Renderable>({
+    id: `icon-${player.id}`,
     components: {
-      position: Position({ x: 300, y: 100, screenFixed: true }),
+      position: Position(pos),
+      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        dynamic: ({ renderable, world }) => {
-          if (world.client?.connected === false) {
+        visible: false,
+        dynamic: async ({ renderable, world }) => {
+          if (pc.data.name !== lastName || team.data.team !== lastTeam) {
             renderable.c.removeChildren()
-            lastSeenPcs = {}
-            return
+            renderable.c.addChild(text(), await pfp(world))
+
+            lastName = pc.data.name
+            lastTeam = team.data.team
           }
 
-          const pcs = world.queryEntities<PC | Team>(["pc"])
-
-          let shouldRedraw = false
-          pcs.forEach(p => {
-            if (lastSeenPcs[p.id] !== p.components.pc.data.name) {
-              shouldRedraw = true
-            }
-          })
-
-          // team colors
-          for (const [id, pfp] of Object.entries(pfps)) {
-            const pc = pcs.find(p => p.id === id)
-            if (pc) {
-              pfp.tint = pc.components.team.data.team === 2 ? 0x9999ff : 0xffffff
-            }
-          }
-
-          if (!shouldRedraw) return
-
-          renderable.c.removeChildren()
-
-          const names = pcs.map(p => nameText(p.components.pc.data.name))
-          const totalWidth = names.reduce((acc, c) => acc + c.width, 0) + 20 * (names.length - 1)
-          let x = -totalWidth / 2
-          for (const name of names) {
-            name.position.x = x
-            x += name.width + 20
-          }
-
-          renderable.c.addChild(...names)
-
-          names.forEach((name, i) => {
-            const pfp = new Sprite({ texture, scale: 0.9, anchor: 0.5, position: { x: name.x + name.width / 2, y: -40 } })
-            pfp.interactive = true
-
-            pfp.onpointerdown = () => {
-              const pc = pcs[i]
-              world.actions.push(world.tick + 2, pc.id, { actionId: "switchTeam" })
-            }
-
-            renderable.c.addChild(pfp)
-
-            pfps[pcs[i].id] = pfp
-          })
-
-          lastSeenPcs = {}
-          pcs.forEach(p => {
-            lastSeenPcs[p.id] = p.components.pc.data.name
-          })
+          renderable.visible = world.client?.connected === true
         },
-        setup: async (r, renderer) => {
-          const { height, width } = renderer.app.screen
-
-          players.components.position.data.x = 220 + ((width - 230) / 2)
-          players.components.position.data.y = (height / 2) - 40
-
-          lastSeenPcs = {}
-
+        setup: async () => {
           texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
+        }
+      })
+    }
+  })
+}
+
+// aligns all the player icons in the center of the screen
+const Players = (): Entity => {
+
+  let pcs: (Entity<PC | Team>)[] = []
+  let icons: Entity<Position | Renderable>[] = []
+
+  let offset = { x: 0, y: 0 }
+
+  const players = Entity({
+    id: "players",
+    components: {
+      position: Position({ x: 300, y: 100, screenFixed: true }),
+      npc: NPC({
+        behavior: (_, world) => {
+          if (!world.renderer) return
+
+          if (icons.length === 0) {
+            const { height, width } = world.renderer.app.screen
+
+            offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
+
+            // create icons
+            pcs = world.queryEntities<PC | Team>(["pc"])
+            icons = pcs.map(p => Icon(p, { x: offset.x, y: offset.y, screenFixed: true }))
+            world.addEntities(icons)
+          }
+
+          const players = world.queryEntities<PC | Team>(["pc"])
+          if (players.length !== pcs.length) {
+            pcs = players
+            icons.forEach(i => world.removeEntity(i.id))
+            icons = pcs.map(p => Icon(p, { x: offset.x, y: offset.y, screenFixed: true }))
+            world.addEntities(icons)
+          }
+
+          // align the icons
+          const totalWidth = icons.reduce((acc, icon) => acc + icon.components.renderable.c.width, 0) + 20 * (icons.length - 1)
+          let x = -totalWidth / 2
+          for (const icon of icons) {
+            icon.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
+            x += icon.components.renderable.c.width + 20
+          }
         }
       })
     }
@@ -127,7 +140,7 @@ const GameLobby = (): Entity => {
       position: Position({ x: 220, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: ({world}) => {
+        dynamic: ({ world }) => {
           gameButtons.forEach((b, i) => {
             b.c.alpha = (i === index) ? 1 : 0.6
           })
@@ -181,7 +194,7 @@ const GameLobby = (): Entity => {
               text: "play",
               pos: { x: (width - 230) / 2, y: 110 },
               anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 72, fill: 0xffccff, fontFamily: "Courier New", fontWeight: "bold" }
+              style: { fontSize: 72, fill: 0xffccff }
             }),
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: list[index].id } })
@@ -265,8 +278,10 @@ const Friends = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         dynamic: ({ world }) => {
-          if (height !== world.renderer!.app.screen.height) {
-            height = world.renderer!.app.screen.height
+          if (!world.renderer) return
+
+          if (height !== world.renderer.app.screen.height) {
+            height = world.renderer.app.screen.height
             drawOutline()
           }
 

@@ -48,10 +48,11 @@ export const NametagSystem = ClientSystemBuilder({
 const Nametag = (player: Player, character: Character) => {
 
   let { name } = player.components.pc.data
+  let { team } = player.components.team.data
 
-  const nametag = pixiText({
+  const render = () => pixiText({
     text: name,
-    style: { fill: TeamColors[player.components.team.data.team], fontSize: 12, fontFamily: "Courier New", fontWeight: "bold" },
+    style: { fill: TeamColors[team], fontSize: 12 },
     anchor: { x: 0.45, y: 0 },
     pos: { x: 0, y: -44 },
     dropShadow: true
@@ -67,14 +68,16 @@ const Nametag = (player: Player, character: Character) => {
         dynamic: async ({ renderable }) => {
           renderable.visible = character.components.renderable.visible
 
-          // update nametag text
-          if (player.components.pc.data.name !== name) {
+          if (player.components.pc.data.name !== name || player.components.team.data.team !== team) {
+            team = player.components.team.data.team
             name = player.components.pc.data.name
-            nametag.text = name
+
+            renderable.c.removeChildren()
+            renderable.c.addChild(render())
           }
         },
         setup: async (renderable) => {
-          renderable.c.addChild(nametag)
+          renderable.c.addChild(render())
         }
       })
     }
