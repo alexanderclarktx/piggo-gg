@@ -3,6 +3,7 @@ import {
   Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual, Background
 } from "@piggo-gg/core"
 import { Flappy, Craft, Volley } from "@piggo-gg/games"
+import { Bot } from "../volley/Bot"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -123,10 +124,44 @@ const Players = (): Entity => {
   })
 }
 
+const GameButton = (game: GameBuilder) => {
+
+  return Entity<Position | Renderable>({
+    id: `gamebutton-${game.id}`,
+    components: {
+      position: Position({ x: 0, y: 85, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        interactiveChildren: true,
+        setup: async (r, _, world) => {
+          //     pos: { x: (width - 230) / 2, y: 60 },
+          //     anchor: { x: 0, y: 0 },
+          //     style: { fontSize: 28, fill: 0xffffff },
+
+          const button = PixiButton({
+            content: () => ({
+              text: game.id,
+              pos: { x: 0, y: 0 },
+              anchor: { x: 0.5, y: 0.5 },
+              style: { fontSize: 28, fill: 0xffffff },
+              strokeAlpha: 1
+            }),
+            onClick: () => {
+              world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: game.id } })
+            }
+          })
+
+          r.c.addChild(button.c)
+        }
+      })
+    }
+  })
+}
+
 const GameLobby = (): Entity => {
 
   const list: GameBuilder[] = [Volley, Flappy, Craft]
-  let gameButtons: PixiButton[] = []
+  let gameButtons: Entity<Position | Renderable>[] = []
   let index = 0
   let invite: undefined | PixiButton = undefined
 
@@ -134,11 +169,38 @@ const GameLobby = (): Entity => {
     id: "gameLobby",
     components: {
       position: Position({ x: 220, y: 10, screenFixed: true }),
+      npc: NPC({
+        behavior: (_, world) => {
+          if (!world.renderer) return
+          const { height, width } = world.renderer.app.screen
+
+          if (gameButtons.length === 0) {
+
+            for (const g of list) {
+              const gameButton = GameButton(g)
+              world.addEntity(gameButton)
+              gameButtons.push(gameButton)
+            }
+          }
+
+          const offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
+
+          // align the game buttons
+          const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
+          let x = -totalWidth / 2
+          for (const gb of gameButtons) {
+            const { width } = gb.components.renderable.c
+
+            gb.components.position.data.x = offset.x + x + width / 2
+            x += width + 20
+          }
+        }
+      }),
       renderable: Renderable({
         zIndex: 9,
         dynamic: ({ world }) => {
-          gameButtons.forEach((b, i) => {
-            b.c.alpha = (i === index) ? 1 : 0.6
+          gameButtons.forEach((button, i) => {
+            button.components.renderable.c.alpha = (i === index) ? 1 : 0.6
           })
 
           if (invite) {
@@ -152,31 +214,6 @@ const GameLobby = (): Entity => {
 
           const outline = pixiGraphics()
           outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
-
-          gameButtons = []
-
-          list.forEach((g, i) => {
-            gameButtons.push(PixiButton({
-              content: () => ({
-                text: g.id,
-                pos: { x: (width - 230) / 2, y: 60 },
-                anchor: { x: 0, y: 0 },
-                style: { fontSize: 28, fill: 0xffffff },
-                strokeAlpha: 1
-              }),
-              onClick: () => {
-                index = i
-              }
-            }))
-          })
-
-          // align the game buttons
-          const totalWidth = gameButtons.reduce((acc, b) => acc + b.c.width, 0) + 20 * (gameButtons.length - 1)
-          let x = -totalWidth / 2
-          for (const gb of gameButtons) {
-            gb.c.position.x = x
-            x += gb.c.width + 20
-          }
 
           const select = pixiText({
             text: "select game:",
@@ -209,7 +246,13 @@ const GameLobby = (): Entity => {
             onClick: () => world.client?.copyInviteLink()
           })
 
-          r.c.addChild(outline, ...gameButtons.map(b => b.c), play.c, select, invite.c)
+          // const botx = 
+          // const xy = world.renderer?.camera.toWorldCoords(gameButtons[0].c) ?? { x: 0, y: 0 }
+          // console.log(xy)
+          const bot = Bot(2, { x: 220, y: 100, gravity: 0 })
+          world.addEntity(bot)
+
+          r.c.addChild(outline, play.c, select, invite.c)
         }
       })
     }
