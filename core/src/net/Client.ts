@@ -1,8 +1,7 @@
 import {
-  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, stringify,
-  RequestData, RequestTypes, World, genPlayerId, SoundManager, genHash,
-  AuthLogin, FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem,
-  ProfileGet
+  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, stringify, RequestData,
+  RequestTypes, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList,
+  Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet
 } from "@piggo-gg/core"
 import { decode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -121,16 +120,12 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     authLogin: async (address, message, signature) => {
       request<AuthLogin>({ route: "auth/login", type: "request", id: genHash(), message, signature, address }, (response) => {
-        console.log("authLogin response", response)
         if ("error" in response) {
           console.error("Client: failed to login", response.error)
         } else {
-          // client.player.components.pc.data.name = response.name
           client.token = response.token
 
-          if (localStorage) {
-            localStorage.setItem("token", response.token)
-          }
+          if (localStorage) localStorage.setItem("token", response.token)
         }
       })
     },
@@ -142,7 +137,6 @@ export const Client = ({ world }: ClientProps): Client => {
     profileGet: (callback) => {
       if (!client.token) return
       request<ProfileGet>({ route: "profile/get", type: "request", id: genHash(), token: client.token }, (response) => {
-        console.log("profileGet response", response)
         if ("error" in response) {
           console.error("Client: failed to get profile", response.error)
         } else {
@@ -155,7 +149,6 @@ export const Client = ({ world }: ClientProps): Client => {
     friendsList: (callback) => {
       if (!client.token) return
       request<FriendsList>({ route: "friends/list", type: "request", id: genHash(), token: client.token }, (response) => {
-        console.log("friendsList response", response)
         callback(response)
       })
     }
