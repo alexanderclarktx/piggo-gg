@@ -12,14 +12,13 @@ export type BackgroundProps = {
 export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) => Entity({
   id: "background",
   components: {
-    position: Position({ x: -2000, y: -2000, velocity: { x: moving ? 20: 0, y: 0} }),
+    position: Position({ x: -2000, y: -2000, velocity: { x: moving ? 15: 0, y: 0} }),
     collider: Collider({ sensor: () => false, shape: "ball", radius: 1 }),
     renderable: Renderable({
       zIndex: -2,
-      dynamic: ({ entity, renderable }) => {
+      dynamic: ({ renderable }) => {
         // @ts-expect-error
         if (rays) renderable.filters[0].time += 0.008
-        // if (moving) entity.components.position.data.x += 0.4
       },
       interpolate: true,
       setup: async (renderable) => {
