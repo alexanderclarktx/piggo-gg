@@ -7,11 +7,19 @@ export const ScorePanel = (): Entity => {
   let right = 0
 
   const textLeft = pixiText({
-    text: "0", pos: { x: -30, y: 16 }, anchor: { x: 0.5, y: 0 }, style: { fill: 0xffffff, fontSize: 24 }
+    text: "0",
+    pos: { x: -30, y: 30 },
+    anchor: { x: 0.5, y: 0.5 },
+    style: { fill: 0xffffff, fontSize: 32 },
+    dropShadow: true
   })
 
   const textRight = pixiText({
-    text: "0", pos: { x: 30, y: 16 }, anchor: { x: 0.5, y: 0 }, style: { fill: 0xffffff, fontSize: 24 }
+    text: "0",
+    pos: { x: 30, y: 30 },
+    anchor: { x: 0.5, y: 0.5 },
+    style: { fill: 0xffffff, fontSize: 32 },
+    dropShadow: true
   })
 
   const scorePanel = Entity<Position>({

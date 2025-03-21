@@ -3,7 +3,6 @@ import {
   Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual, Background
 } from "@piggo-gg/core"
 import { Flappy, Craft, Volley } from "@piggo-gg/games"
-import { Bot } from "../volley/Bot"
 import { Sprite } from "pixi.js"
 
 export const Lobby: GameBuilder = {
@@ -14,7 +13,7 @@ export const Lobby: GameBuilder = {
     systems: [],
     view: "side",
     entities: [
-      Background({ img: "night.png", moving: true }),
+      Background({ moving: true }),
       Cursor(),
       Chat(),
       Friends(),
@@ -134,10 +133,6 @@ const GameButton = (game: GameBuilder) => {
         zIndex: 10,
         interactiveChildren: true,
         setup: async (r, _, world) => {
-          //     pos: { x: (width - 230) / 2, y: 60 },
-          //     anchor: { x: 0, y: 0 },
-          //     style: { fontSize: 28, fill: 0xffffff },
-
           const button = PixiButton({
             content: () => ({
               text: game.id,
@@ -150,7 +145,6 @@ const GameButton = (game: GameBuilder) => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: game.id } })
             }
           })
-
           r.c.addChild(button.c)
         }
       })
@@ -240,14 +234,11 @@ const GameLobby = (): Entity => {
               text: "Create Lobby",
               pos: { x: (width - 230) / 2, y: (height - 20) / 2 + 20 },
               anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 20, fill: 0xffffff },
+              style: { fontSize: 26, fill: 0xffffff },
               strokeAlpha: 1
             }),
             onClick: () => world.client?.copyInviteLink()
           })
-
-          const bot = Bot(2, { x: 220, y: 100, gravity: 0 })
-          world.addEntity(bot)
 
           r.c.addChild(outline, play.c, select, invite.c)
         }
