@@ -45,14 +45,23 @@ export const RollbackSyncer = (world: World): Syncer => {
 
     keys(message.serializedEntities).forEach((entityId) => {
       if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
-        const before = world.entity(entityId)?.components.position?.data.x
         world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
-        const after = world.entity(entityId)?.components.position?.data.x
-        if (before !== after) {
-          console.log("dude pos", before, after)
-        }
       }
     })
+  }
+
+  // pre-read message to consume buffer faster
+  const preRead = (message: GameData) => {
+    handleOtherPlayers(message)
+
+    if (message.actions[message.tick]) {
+      for (const [entityId, actions] of entries(message.actions[message.tick])) {
+        if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+          continue
+        }
+        world.actions.set(message.tick, entityId, actions)
+      }
+    }
   }
 
   return {
@@ -70,12 +79,18 @@ export const RollbackSyncer = (world: World): Syncer => {
       rollback = false
 
       // get oldest message
-      const message = buffer.sort((a, b) => a.tick - b.tick).shift()
-      if (buffer.length > 2) console.log("large buffer", buffer.length)
+      let message = buffer.sort((a, b) => a.tick - b.tick).shift()
 
       if (!message) {
         console.error("NO MESSAGE")
         return
+      }
+
+      // consume buffer
+      if (buffer.length > 2) {
+        preRead(message)
+        message = buffer.shift() as GameData
+        console.log("large buffer", buffer.length)
       }
 
       if (message.tick <= last) {
@@ -95,6 +110,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       handleOtherPlayers(message)
 
+      // check actions
       if (message.actions[message.tick]) {
         for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
@@ -125,7 +141,7 @@ export const RollbackSyncer = (world: World): Syncer => {
         }
       }
 
-      // compare entity states
+      // check entity states
       const local = world.entitiesAtTick[message.tick]
       const remote = message.serializedEntities
 
@@ -151,8 +167,8 @@ export const RollbackSyncer = (world: World): Syncer => {
         }
       }
 
+      // rollback
       if (rollback) {
-
         const was = world.tick
 
         if (message.game !== world.game.id) {
