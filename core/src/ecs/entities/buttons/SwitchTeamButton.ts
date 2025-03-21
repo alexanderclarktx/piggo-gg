@@ -7,9 +7,9 @@ export const switchTeamButton = () => Entity({
     renderable: Renderable({
       zIndex: 1,
       interactiveChildren: true,
-      // visible: false,
+      visible: false,
       dynamic: ({ renderable, world }) => {
-        // renderable.visible = world.client?.connected ?? false
+        renderable.visible = world.client?.connected ?? false
       },
       setup: async (renderable, renderer, world) => {
         const width = renderer.app.screen.width
