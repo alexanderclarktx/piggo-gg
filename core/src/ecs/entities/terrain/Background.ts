@@ -20,9 +20,10 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
         if (rays) renderable.filters[0].time += 0.008
         if (moving) entity.components.position.data.x += 0.5
       },
-      filters: rays ? [new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })] : [],
       interpolate: true,
-      setContainer: async () => {
+      setup: async (renderable) => {
+        if (rays) renderable.filters = [new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })]
+
         let texture: Texture
 
         if (json) {
@@ -32,7 +33,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
           texture = Sprite.from(await Assets.load(img ?? "night.png")).texture
         }
 
-        return new TilingSprite({ texture: texture, width: 12000, height: 12000 })
+        renderable.c = new TilingSprite({ texture: texture, width: 12000, height: 12000 })
       }
     })
   }

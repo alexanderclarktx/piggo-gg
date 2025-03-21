@@ -1,15 +1,22 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture, colors,
-  Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual, Background
+  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture,
+  colors, Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual,
+  Background, entries, Actions, Networked
 } from "@piggo-gg/core"
 import { Flappy, Craft, Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
+
+type LobbyState = {
+  gameIndex: number
+}
 
 export const Lobby: GameBuilder = {
   id: "lobby",
   init: () => ({
     id: "lobby",
-    state: {},
+    state: {
+      gameIndex: 0
+    },
     systems: [],
     view: "side",
     entities: [
@@ -123,7 +130,7 @@ const Players = (): Entity => {
   })
 }
 
-const GameButton = (game: GameBuilder) => {
+const GameButton = (game: GameBuilder, i: number) => {
 
   return Entity<Position | Renderable>({
     id: `gamebutton-${game.id}`,
@@ -133,6 +140,8 @@ const GameButton = (game: GameBuilder) => {
         zIndex: 10,
         interactiveChildren: true,
         setup: async (r, _, world) => {
+          const state = world.game.state as LobbyState
+
           const button = PixiButton({
             content: () => ({
               text: game.id,
@@ -142,7 +151,9 @@ const GameButton = (game: GameBuilder) => {
               strokeAlpha: 1
             }),
             onClick: () => {
-              world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: game.id } })
+              world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { i } })
+              console.log("selected game", game.id)
+              // state.gameIndex = i
             }
           })
           r.c.addChild(button.c)
@@ -156,13 +167,20 @@ const GameLobby = (): Entity => {
 
   const list: GameBuilder[] = [Volley, Flappy, Craft]
   let gameButtons: Entity<Position | Renderable>[] = []
-  let index = 0
   let invite: undefined | PixiButton = undefined
 
   const gameLobby = Entity<Position | Renderable>({
     id: "gameLobby",
     components: {
       position: Position({ x: 220, y: 10, screenFixed: true }),
+      networked: Networked(),
+      actions: Actions({
+        "selectGame": ({ world, params }) => {
+          if (!params) return
+          const state = world.game.state as LobbyState
+          state.gameIndex = params.i
+        }
+      }),
       npc: NPC({
         behavior: (_, world) => {
           if (!world.renderer) return
@@ -170,8 +188,8 @@ const GameLobby = (): Entity => {
 
           if (gameButtons.length === 0) {
 
-            for (const g of list) {
-              const gameButton = GameButton(g)
+            for (const [i, g] of entries(list)) {
+              const gameButton = GameButton(g, Number(i))
               world.addEntity(gameButton)
               gameButtons.push(gameButton)
             }
@@ -193,8 +211,9 @@ const GameLobby = (): Entity => {
       renderable: Renderable({
         zIndex: 9,
         dynamic: ({ world }) => {
+          const state = world.game.state as LobbyState
           gameButtons.forEach((button, i) => {
-            button.components.renderable.c.alpha = (i === index) ? 1 : 0.6
+            button.components.renderable.c.alpha = (i === state.gameIndex) ? 1 : 0.6
           })
 
           if (invite) {
@@ -205,6 +224,7 @@ const GameLobby = (): Entity => {
         interactiveChildren: true,
         setup: async (r, renderer, world) => {
           const { height, width } = renderer.app.screen
+          const state = world.game.state as LobbyState
 
           const outline = pixiGraphics()
           outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
@@ -224,8 +244,8 @@ const GameLobby = (): Entity => {
               style: { fontSize: 72, fill: 0xffccff }
             }),
             onClick: () => {
-              world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: list[index].id } })
-              world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: list[index].id } })
+              world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: list[state.gameIndex].id } })
+              world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: list[state.gameIndex].id } })
             }
           })
 
