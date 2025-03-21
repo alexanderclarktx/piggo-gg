@@ -31,7 +31,7 @@ export type Renderable = Component<"renderable"> & {
   visible: boolean
   zIndex: number
 
-  setContainer: ((r: Renderer) => Promise<Container>) | undefined
+  setContainer: ((r: Renderer, world: World) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
   dynamic: Dynamic | undefined
@@ -65,7 +65,7 @@ export type RenderableProps = {
   zIndex?: number
   dynamic?: Dynamic
   setChildren?: (r: Renderer) => Promise<Renderable[]>
-  setContainer?: (r: Renderer) => Promise<Container>
+  setContainer?: (r: Renderer, world: World) => Promise<Container>
   setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void> // todo single arg
 }
 
@@ -161,7 +161,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.c = new Container()
 
       // add child container
-      if (renderable.setContainer && renderer) renderable.c = await renderable.setContainer(renderer)
+      if (renderable.setContainer && renderer) renderable.c = await renderable.setContainer(renderer, world)
 
       // add children
       if (renderable.setChildren && renderer) {

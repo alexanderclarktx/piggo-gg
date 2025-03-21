@@ -14,7 +14,7 @@ export const switchTeamButton = () => Entity({
       setup: async (renderable, renderer, world) => {
         const width = renderer.app.screen.width
 
-        const b = PixiButton({
+        const button = PixiButton({
           content: () => ({
             text: "change team",
             pos: { y: 20, x: width / 2 - 140 },
@@ -22,12 +22,11 @@ export const switchTeamButton = () => Entity({
             strokeAlpha: 0.5
           }),
           onClick: () => {
-            console.log("change team")
             world.actions.push(world.tick + 2, world.client!.playerId(), { actionId: "switchTeam" })
           }
         })
 
-        renderable.c.addChild(b.c)
+        renderable.c.addChild(button.c)
       }
     })
   }

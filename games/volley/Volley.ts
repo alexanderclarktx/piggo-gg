@@ -136,7 +136,6 @@ const VolleySystem = SystemBuilder({
             const { team } = bot.components
             if (team.data.team === 1) {
               if (team1 >= 2) {
-                console.log("removing bot 1")
                 world.removeEntity(bot.id)
                 delete bots[bot.id]
               } else {
@@ -144,7 +143,6 @@ const VolleySystem = SystemBuilder({
               }
             } else {
               if (team2 >= 2) {
-                console.log("removing bot 2")
                 world.removeEntity(bot.id)
                 delete bots[bot.id]
               } else {
@@ -156,7 +154,6 @@ const VolleySystem = SystemBuilder({
           // spawn new bots
           while (team1 < 2) {
             team1++
-            console.log("spawning bot 1")
             const bot = Bot(1, { x: 100, y: -30 + 30 * team1 })
             bots[bot.id] = bot
             world.addEntity(bot)
@@ -164,7 +161,6 @@ const VolleySystem = SystemBuilder({
 
           while (team2 < 2) {
             team2++
-            console.log("spawning bot 2")
             const bot = Bot(2, { x: 350, y: -30 + 30 * team2 })
             bots[bot.id] = bot
             world.addEntity(bot)
