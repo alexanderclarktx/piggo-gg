@@ -99,7 +99,7 @@ export const Api = (): Api => {
       "friends/remove": async ({ data }) => {
         return { id: data.id }
       },
-      "profile/get": async ({ data }) => {
+      "profile/get": async ({ ws, data }) => {
         let token: SessionToken | undefined = undefined
 
         try {
@@ -110,6 +110,13 @@ export const Api = (): Api => {
 
         const user = await prisma.users.findUnique({ where: { name: token.name } })
         if (!user) return { id: data.id, error: "User not found" }
+
+        // 4. update websocket playerName
+        ws.data.playerName = user.name
+
+        // 5. update player entity name
+        const pc = api.worlds[ws.data.worldId]?.world.entity(ws.data.playerId)?.components.pc
+        if (pc) pc.data.name = user.name
 
         return { id: data.id, name: user.name }
       },
@@ -142,14 +149,12 @@ export const Api = (): Api => {
         // 3. create session token
         const token = jwt.sign({ address: user.name, name: user.name }, JWT_SECRET, { expiresIn: "8h" })
 
-        // 4. update player entity name
+        // 4. update websocket playerName
         ws.data.playerName = user.name
-        const pc = api.worlds[ws.data.worldId]?.world.entities[ws.data.playerId]?.components.pc
-        if (pc) {
-          pc.data.name = user.name
-        } else {
-          console.warn("no pc found")
-        }
+
+        // 5. update player entity name
+        const pc = api.worlds[ws.data.worldId]?.world.entity(ws.data.playerId)?.components.pc
+        if (pc) pc.data.name = user.name
 
         return { id: data.id, token, name: user.name }
       },
