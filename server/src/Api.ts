@@ -102,19 +102,21 @@ export const Api = (): Api => {
       "profile/get": async ({ ws, data }) => {
         let token: SessionToken | undefined = undefined
 
+        // 1. verify jwt
         try {
           token = jwt.verify(data.token, JWT_SECRET) as SessionToken
         } catch (e) {
           return { id: data.id, error: "JWT verification failed" }
         }
 
+        // 2. find user
         const user = await prisma.users.findUnique({ where: { name: token.name } })
         if (!user) return { id: data.id, error: "User not found" }
 
-        // 4. update websocket playerName
+        // 3. update websocket playerName
         ws.data.playerName = user.name
 
-        // 5. update player entity name
+        // 4. update player entity name
         const pc = api.worlds[ws.data.worldId]?.world.entity(ws.data.playerId)?.components.pc
         if (pc) pc.data.name = user.name
 
