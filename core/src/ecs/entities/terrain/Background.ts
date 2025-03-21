@@ -20,7 +20,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
         if (rays) renderable.filters[0].time += 0.008
         if (moving) entity.components.position.data.x += 0.5
       },
-      filters: rays ? [new GodrayFilter({ gain: 0.4, alpha: 0.6, lacunarity: 2.5 })] : [],
+      filters: rays ? [new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })] : [],
       interpolate: true,
       setContainer: async () => {
         let texture: Texture
