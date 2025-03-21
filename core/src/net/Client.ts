@@ -39,7 +39,7 @@ export type Client = {
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   authLogin: (address: string, message: string, signature: string) => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
-  profileGet: (callback: Callback) => void
+  profileGet: (callback?: Callback) => void
   friendsList: (callback: Callback<FriendsList>) => void
 }
 
@@ -126,6 +126,7 @@ export const Client = ({ world }: ClientProps): Client => {
           client.token = response.token
 
           if (localStorage) localStorage.setItem("token", response.token)
+          client.profileGet()
         }
       })
     },
@@ -139,10 +140,12 @@ export const Client = ({ world }: ClientProps): Client => {
       request<ProfileGet>({ route: "profile/get", type: "request", id: genHash(), token: client.token }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to get profile", response.error)
+          client.token = undefined
+          if (localStorage) localStorage.removeItem("token")
         } else {
           client.player.components.pc.data.name = response.name
 
-          callback(response)
+          if (callback) callback(response)
         }
       })
     },
@@ -200,7 +203,7 @@ export const Client = ({ world }: ClientProps): Client => {
       const token = localStorage.getItem("token")
       if (token) {
         client.token = token
-        client.profileGet(() => { })
+        client.profileGet()
       }
     }
   }
