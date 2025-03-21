@@ -57,7 +57,7 @@ export const pixiText = ({ text, pos, style, anchor, dropShadow, resolution }: p
 }
 
 export type PixiButtonProps = {
-  content: () => { text: string, pos: XY, anchor?: XY, style: pixiTextStyle }
+  content: () => { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number },
   onClick: () => void
 }
 

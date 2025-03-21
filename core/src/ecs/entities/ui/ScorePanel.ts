@@ -1,4 +1,4 @@
-import { Debug, Entity, Position, Renderable, TeamColors, pixiText } from "@piggo-gg/core"
+import { Entity, Position, Renderable, TeamColors, pixiText } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
 export const ScorePanel = (): Entity => {

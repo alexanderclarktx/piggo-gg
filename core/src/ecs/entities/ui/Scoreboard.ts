@@ -1,6 +1,6 @@
 import {
-  Actions, Entity, Input, Player, Position, Renderable, TeamColors, ToggleHidden,
-  ToggleVisible, World, clickableClickedThisFrame, pixiRect, pixiText, setsEqual
+  Actions, Entity, Input, Player, Position, Renderable, TeamColors,
+  ToggleHidden, ToggleVisible, World, pixiRect, pixiText, setsEqual
 } from "@piggo-gg/core"
 import { ScrollBox } from "@pixi/ui"
 import { Container, Graphics } from "pixi.js"
@@ -99,7 +99,7 @@ const playerRow = (entity: Player, width: number, world: World): Container => {
   c.addChild(outline, titleText, scorelineText, moneyText)
 
   c.onpointerdown = () => {
-    clickableClickedThisFrame.set(world.tick + 1)
+    world.client?.clickThisFrame.set(world.tick + 1)
     world.actions.push(world.tick + 2, world.client?.playerId() ?? "", { actionId: "switchTeam" })
   }
 

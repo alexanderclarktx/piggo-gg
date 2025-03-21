@@ -7,7 +7,7 @@ import { Spike } from "./Spike"
 import { range, VolleyState } from "./Volley"
 import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
 
-export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position> => {
+export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Team> => {
   const bot: Entity<Position | Team> = Entity({
     id: `bot-${team}-${pos.x}-${pos.y}`,
     components: {

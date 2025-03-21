@@ -1,4 +1,4 @@
-import { Action, Controlling, TeamColors } from "@piggo-gg/core"
+import { Action, Controlling } from "@piggo-gg/core"
 
 export const controlEntity: Action = Action("controlEntity", ({ entity, player }) => {
   if (!entity || !player) return
@@ -14,14 +14,6 @@ export const switchTeam = Action("switchTeam", ({ entity, world }) => {
 
   team.switchTeam()
 
-  const character = controlling?.getCharacter(world)
-  if (character) {
-    const { team, renderable } = character.components
-
-    if (team) team.switchTeam()
-
-    if (team && renderable) {
-      renderable.prepareAnimations(TeamColors[team.data.team])
-    }
-  }
+  const characterTeam = controlling?.getCharacter(world)?.components.team
+  if (characterTeam) characterTeam.switchTeam()
 }, 10)

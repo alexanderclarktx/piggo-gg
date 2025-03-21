@@ -35,7 +35,6 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => {
 
   const lagText = Entity<Position | Renderable>({
     id: "lagText",
-    persists: true,
     components: {
       position: Position({ x: x ?? 5, y: y ?? 30, screenFixed: true }),
       renderable: Renderable({
