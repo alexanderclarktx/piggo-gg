@@ -22,6 +22,7 @@ export const switchTeamButton = () => Entity({
             strokeAlpha: 0.5
           }),
           onClick: () => {
+            world.client?.clickThisFrame.set(world.tick + 1)
             world.actions.push(world.tick + 2, world.client!.playerId(), { actionId: "switchTeam" })
           }
         })

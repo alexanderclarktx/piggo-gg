@@ -1,7 +1,6 @@
 import {
-  Actions, Button, Character, Clickable, Entity, GunNames, GunsTable, Input,
-  Position, PositionProps, Renderable, TwoPoints, World,
-  clickableClickedThisFrame, isMobile, loadTexture, pixiGraphics, pixiText
+  Actions, Button, Character, Clickable, Entity, GunNames, GunsTable, Input, Position,
+  PositionProps, Renderable, TwoPoints, World, isMobile, loadTexture, pixiGraphics, pixiText
 } from "@piggo-gg/core"
 import { ScrollBox } from "@pixi/ui"
 import { OutlineFilter } from "pixi-filters"
@@ -125,7 +124,7 @@ const Cell = async (text: string, width: number, height: number, world: World, m
     const builder = GunsTable[text.toLowerCase() as GunNames]
     if (!builder || !character) return
 
-    clickableClickedThisFrame.set(world.tick + 1)
+    world.client?.clickThisFrame.set(world.tick + 1)
 
     world.actions.push(world.tick + 2, "shop", {
       actionId: "buyItem", params: { itemBuilder: text.toLowerCase() }, playerId: world.client?.playerId()

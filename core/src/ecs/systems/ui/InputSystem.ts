@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity,
-  Input, InvokedAction, World, XY, XYdiff, clickableClickedThisFrame, round
+  Input, InvokedAction, World, XY, XYdiff, round
 } from "@piggo-gg/core"
 
 export type Mouse = XY
@@ -61,7 +61,7 @@ export const InputSystem = ClientSystemBuilder({
 
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {
       if (!joystickOn && CurrentJoystickPosition.active) return
-      if (world.tick <= clickableClickedThisFrame.value) return
+      if (world.tick <= world.client!.clickThisFrame.value) return
 
       mouseEvent = { x: event.offsetX, y: event.offsetY }
       mouse = renderer.camera.toWorldCoords(mouseEvent)
@@ -332,7 +332,7 @@ export const InputSystem = ClientSystemBuilder({
 
         // handle character input
         const character = world.client?.player.components.controlling.getCharacter(world)
-        if (character && world.tick > clickableClickedThisFrame.value) {
+        if (character && world.tick > world.client!.clickThisFrame.value) {
           handleInputForCharacter(character, world)
         }
 

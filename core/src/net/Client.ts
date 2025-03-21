@@ -23,6 +23,11 @@ type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"])
 
 export type Client = {
   connected: boolean
+  clickThisFrame: {
+    value: number
+    set: (value: number) => void
+    reset: () => void
+  }
   lastLatency: number
   lastMessageTick: number
   lobbyId: string | undefined
@@ -63,6 +68,11 @@ export const Client = ({ world }: ClientProps): Client => {
 
   const client: Client = {
     connected: false,
+    clickThisFrame: {
+      value: 0,
+      set: (value: number) => client.clickThisFrame.value = value,
+      reset: () => client.clickThisFrame.value = 0
+    },
     lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,

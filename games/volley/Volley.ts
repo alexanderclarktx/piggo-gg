@@ -114,6 +114,31 @@ const VolleySystem = SystemBuilder({
           // wait for ball to land
           if (ballPos.data.z > 0) return
 
+          // set score
+          if (state.lastWin === 1) state.scoreLeft++
+          if (state.lastWin === 2) state.scoreRight++
+          state.teamServing = state.lastWin === 2 ? 2 : 1
+
+          if (state.scoreLeft >= 7 || state.scoreRight >= 7) {
+            state.scoreLeft = 0
+            state.scoreRight = 0
+          }
+
+          // reset state
+          state.phase = "serve"
+          state.lastHit = ""
+          state.lastHitTeam = 0
+          state.hit = 0
+
+          // reset ball
+          ballPos.setVelocity({ x: 0, y: 0, z: 0 }).setRotation(0).setGravity(0)
+          ballPos.setPosition({
+            x: state.teamServing === 1 ? 10 : 400,
+            y: 1, z: 50
+          })
+        }
+
+        if (state.phase === "serve") {
           let team1 = 0
           let team2 = 0
 
@@ -165,32 +190,7 @@ const VolleySystem = SystemBuilder({
             bots[bot.id] = bot
             world.addEntity(bot)
           }
-
-          // set score
-          if (state.lastWin === 1) state.scoreLeft++
-          if (state.lastWin === 2) state.scoreRight++
-          state.teamServing = state.lastWin === 2 ? 2 : 1
-
-          if (state.scoreLeft >= 7 || state.scoreRight >= 7) {
-            state.scoreLeft = 0
-            state.scoreRight = 0
-          }
-
-          // reset state
-          state.phase = "serve"
-          state.lastHit = ""
-          state.lastHitTeam = 0
-          state.hit = 0
-
-          // reset ball
-          ballPos.setVelocity({ x: 0, y: 0, z: 0 }).setRotation(0).setGravity(0)
-          ballPos.setPosition({
-            x: state.teamServing === 1 ? 10 : 400,
-            y: 1, z: 50
-          })
         }
-
-        if (state.phase === "serve") { }
 
         if (state.phase === "play" || state.phase === "serve") {
           if (ballPos.data.z === 0) {
