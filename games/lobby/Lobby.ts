@@ -140,8 +140,6 @@ const GameButton = (game: GameBuilder, i: number) => {
         zIndex: 10,
         interactiveChildren: true,
         setup: async (r, _, world) => {
-          const state = world.game.state as LobbyState
-
           const button = PixiButton({
             content: () => ({
               text: game.id,
@@ -153,7 +151,6 @@ const GameButton = (game: GameBuilder, i: number) => {
             onClick: () => {
               world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { i } })
               console.log("selected game", game.id)
-              // state.gameIndex = i
             }
           })
           r.c.addChild(button.c)
