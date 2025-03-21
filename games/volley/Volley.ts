@@ -1,6 +1,6 @@
 import {
   Background, CameraSystem, Cursor, EscapeMenu, GameBuilder, LagText, Position,
-  Scoreboard, ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team
+  ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team, switchTeamButton
 } from "@piggo-gg/core"
 import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
 import { Bot } from "./Bot"
@@ -55,8 +55,8 @@ export const Volley: GameBuilder<VolleyState> = {
       Bounds("two"),
       Bounds("three"),
       ScorePanel(),
-      // Scoreboard(),
-      LagText({ y: 5 })
+      LagText({ y: 5 }),
+      switchTeamButton()
     ]
   })
 }
