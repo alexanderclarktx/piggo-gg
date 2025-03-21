@@ -45,7 +45,7 @@ export const pixiText = ({ text, pos, style, anchor, dropShadow, resolution }: p
     text,
     anchor: anchor ?? 0,
     position: pos ?? { x: 0, y: 0 },
-    resolution: resolution ?? 4,
+    resolution: resolution ?? 2,
     style: {
       fill: style?.fill ?? 0xffffff,
       fontSize: style?.fontSize ?? 14,
@@ -71,8 +71,9 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     const t = pixiText({ text, pos, anchor, style })
 
     const b = pixiRect({
-      x: pos.x - anchor.x * t.width - 5, y: pos.y - anchor.y * t.height - 3,
-      w: t.width + 10, h: t.height + 6,
+      x: pos.x - anchor.x * t.width - 7,
+      y: pos.y - anchor.y * t.height - 5,
+      w: t.width + 14, h: t.height + 10,
       rounded: 5,
       style: { alpha: 0, strokeAlpha: strokeAlpha ?? 0 }
     })

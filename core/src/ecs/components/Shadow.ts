@@ -2,6 +2,7 @@ import {
   ClientSystemBuilder, Entity, pixiGraphics, Position,
   Renderable, Component, entries
 } from "@piggo-gg/core"
+import { BlurFilter } from "pixi.js"
 
 export type Shadow = Component<"shadow"> & { size: number, yOffset: number }
 
@@ -53,11 +54,12 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
     renderable: Renderable({
       zIndex: target.components.renderable.zIndex - 0.1,
       interpolate: true,
+      filters: [new BlurFilter({ strength: 2 })],
       dynamic: ({ entity }) => {
         const { position, renderable } = entity.components
         if (!position || !renderable) return
 
-        renderable.c.alpha = 0.3 - target.components.position.data.z / 400
+        renderable.c.alpha = 0.25 - target.components.position.data.z / 400
 
         position.setPosition({
           x: target.components.position.data.x,

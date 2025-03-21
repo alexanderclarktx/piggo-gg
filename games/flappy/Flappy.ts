@@ -1,7 +1,7 @@
 import {
   Actions, Character, Clickable, Collider, Debug, DefaultDesktopUI, Effects, Element, Entity,
   GameBuilder, Health, Input, isMobile, Jump, LineWall, loadTexture, max, Networked, Player,
-  PC, Point, Position, randomInt, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY, CameraSystem
+  PC, Point, Position, Renderable, SensorCallback, SpawnSystem, SystemBuilder, XY, CameraSystem
 } from "@piggo-gg/core"
 import { AnimatedSprite, Sprite } from "pixi.js"
 

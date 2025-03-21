@@ -65,11 +65,6 @@ export const Renderer = (props: RendererProps): Renderer => {
 
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
-
-      // handle zoom
-      canvas.addEventListener("wheel", (event) => {
-        renderer.camera?.scaleBy(-event.deltaY / 1000)
-      })
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {

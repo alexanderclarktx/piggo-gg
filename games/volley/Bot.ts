@@ -1,18 +1,18 @@
 import {
-  Action, Actions, Chase, closestEntity, Collider, Debug, Entity,
-  middle, Move, Networked, NPC, Position, Renderable, Shadow,
-  Team, teammates, TeamNumber, XY, XYdiff, XYZdiff
+  Action, Actions, Chase, closestEntity, Collider, Debug, Entity, middle,
+  Move, Networked, NPC, Position, PositionProps, Renderable, Shadow,
+  Team, teammates, TeamNumber, XYdiff, XYZdiff
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
 import { range, VolleyState } from "./Volley"
 import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
 
-export const Bot = (team: TeamNumber, pos: XY): Entity<Position> => {
+export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position> => {
   const bot: Entity<Position | Team> = Entity({
     id: `bot-${team}-${pos.x}-${pos.y}`,
     components: {
       debug: Debug(),
-      position: Position({ ...pos, velocityResets: 1, speed: 120, gravity: 0.3 }),
+      position: Position({ velocityResets: 1, speed: 120, gravity: 0.3, ...pos }),
       networked: Networked(),
       collider: Collider({ shape: "ball", radius: 4, group: "notself" }),
       team: Team(team),

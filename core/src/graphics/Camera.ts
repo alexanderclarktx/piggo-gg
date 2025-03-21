@@ -1,4 +1,7 @@
-import { ClientSystemBuilder, Entity, Renderable, XY, Position, Character, abs, System, round } from "@piggo-gg/core"
+import {
+  ClientSystemBuilder, Entity, Renderable, XY,
+  Position, Character, abs, System, round
+} from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
@@ -88,7 +91,13 @@ export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystem
   id: "CameraSystem",
   init: (world) => {
     const { renderer } = world
+    if (!renderer) return
     let centeredEntity: Character | undefined = undefined
+
+    // handle zoom
+    renderer.app.canvas.addEventListener("wheel", (event) => {
+      renderer.camera?.scaleBy(-event.deltaY / 1000)
+    })
 
     const cameraSystem: System = {
       id: "CameraSystem",

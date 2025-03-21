@@ -1,6 +1,6 @@
 import { Component, Entity, Renderer, World, XY, keys, values, Position } from "@piggo-gg/core"
 import { OutlineFilter } from "pixi-filters"
-import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js"
+import { AnimatedSprite, Container, Filter, Graphics, Sprite } from "pixi.js"
 
 export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void)
 
@@ -10,12 +10,13 @@ export type Renderable = Component<"renderable"> & {
   animation: AnimatedSprite | undefined
   animations: Record<string, AnimatedSprite>
   animationSelect: null | ((entity: Entity<Position | Renderable>, world: World) => string)
+  animationColor: number
   bufferedAnimation: string
   c: Container
   children: Renderable[] | undefined
   cullable: boolean
-  animationColor: number
   color: number
+  filters: Filter[]
   interactiveChildren: boolean
   interpolate: boolean
   initialized: boolean
@@ -48,10 +49,11 @@ export type RenderableProps = {
   anchor?: XY
   animations?: Record<string, AnimatedSprite>
   animationSelect?: (entity: Entity<Position | Renderable>, world: World) => string
+  animationColor?: number
   cacheAsBitmap?: boolean
   color?: number
   cullable?: boolean
-  animationColor?: number
+  filters?: Filter[]
   interactiveChildren?: boolean
   interpolate?: boolean
   position?: XY
@@ -84,6 +86,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     children: undefined,
     cullable: props.cullable ?? false,
     dynamic: props.dynamic,
+    filters: props.filters ?? [],
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,
     initialized: false,
@@ -134,7 +137,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
         })
       } else {
-        renderable.c.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
+        renderable.c.filters = [...renderable.filters, new OutlineFilter({ thickness, color, quality: 1 })]
       }
     },
     cleanup: () => {
@@ -181,6 +184,8 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
       // set visible
       renderable.c.renderable = renderable.visible ?? true
+
+      if (renderable.filters.length) renderable.c.filters = renderable.filters
 
       // set container properties
       renderable.c.zIndex = renderable.zIndex || 0
