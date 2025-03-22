@@ -12,7 +12,7 @@ export type BackgroundProps = {
 export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) => Entity({
   id: "background",
   components: {
-    position: Position({ x: -2000, y: -2000, velocity: { x: moving ? 15 : 0, y: 0 } }),
+    position: Position({ x: -3000, y: -2000, velocity: { x: moving ? 15 : 0, y: 0 } }),
     collider: Collider({ sensor: () => false, shape: "ball", radius: 1 }),
     renderable: Renderable({
       zIndex: -2,
@@ -42,7 +42,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
           texture = Sprite.from(await Assets.load(img ?? "night.png")).texture
         }
 
-        renderable.c = new TilingSprite({ texture: texture, width: 12000, height: 12000 })
+        renderable.c = new TilingSprite({ texture: texture, width: 12000, height: 8000 })
       }
     })
   }

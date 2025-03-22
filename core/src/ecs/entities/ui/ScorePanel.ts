@@ -1,5 +1,4 @@
 import { Entity, Position, Renderable, TeamColors, pixiText } from "@piggo-gg/core"
-import { DropShadowFilter, GlowFilter } from "pixi-filters"
 import { Graphics } from "pixi.js"
 
 export const ScorePanel = (): Entity => {

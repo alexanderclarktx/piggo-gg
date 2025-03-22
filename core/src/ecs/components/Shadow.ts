@@ -54,7 +54,6 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
     renderable: Renderable({
       zIndex: target.components.renderable.zIndex - 0.1,
       interpolate: true,
-      filters: [],
       dynamic: ({ entity }) => {
         const { position, renderable } = entity.components
         if (!position || !renderable) return
