@@ -2,6 +2,7 @@ import {
   Character, ClientSystemBuilder, Entity, Player,
   Position, Renderable, TeamColors, entries, pixiText
 } from "@piggo-gg/core"
+import { GlowFilter } from "pixi-filters"
 
 export const NametagSystem = ClientSystemBuilder({
   id: "NametagSystem",
@@ -54,7 +55,8 @@ const Nametag = (player: Player, character: Character) => {
     text: name,
     style: { fill: TeamColors[team], fontSize: 12, dropShadow: true },
     anchor: { x: 0.45, y: 0 },
-    pos: { x: 0, y: -44 }
+    pos: { x: 0, y: -44 },
+    resolution: 4
   })
 
   return Entity<Position | Renderable>({

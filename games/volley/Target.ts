@@ -1,7 +1,7 @@
 import {
   Entity, Networked, NPC, pixiGraphics, Position, Renderable, SystemBuilder, timeToLand, XY
 } from "@piggo-gg/core"
-import { BevelFilter } from "pixi-filters"
+import { BevelFilter, DropShadowFilter, GlowFilter } from "pixi-filters"
 
 const Target = (ball: Entity<Position | Renderable>) => {
 
@@ -30,15 +30,11 @@ const Target = (ball: Entity<Position | Renderable>) => {
         }
       }),
       renderable: Renderable({
-        filters: [new BevelFilter({ rotation: 135, thickness: 1 })],
+        filters: [new GlowFilter({ outerStrength: 0, innerStrength: 1 })],
         zIndex: 3.8,
         visible: false,
         setContainer: async () => {
-          const g = pixiGraphics()
-          g.ellipse(0, 0, 6, 3)
-          g.stroke({ color: 0x00ffff, alpha: 1, width: 1.5 })
-
-          return g
+          return pixiGraphics().ellipse(0, 0, 6, 3).stroke({ color: 0x00ffff, alpha: 0.9, width: 1.5 })
         }
       })
     }

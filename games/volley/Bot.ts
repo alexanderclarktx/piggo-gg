@@ -6,6 +6,7 @@ import {
 import { Spike } from "./Spike"
 import { range, VolleyState } from "./Volley"
 import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
+import { DropShadowFilter, GlowFilter } from "pixi-filters"
 
 export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Team> => {
   const bot: Entity<Position | Team> = Entity({

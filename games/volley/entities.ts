@@ -7,7 +7,7 @@ import { Texture } from "pixi.js"
 import { range, VolleyState } from "./Volley"
 import { Spike } from "./Spike"
 import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
-import { AdvancedBloomFilter, BevelFilter } from "pixi-filters"
+import { BevelFilter } from "pixi-filters"
 
 export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,

@@ -6,7 +6,7 @@ import {
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
-import { CRTFilter } from "pixi-filters"
+import { AdvancedBloomFilter, CRTFilter, GlowFilter, PixelateFilter } from "pixi-filters"
 
 type LobbyState = {
   gameId: "volley"
@@ -169,6 +169,7 @@ const PlayButton = () => {
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
+        // outline: {color: 0x000000, thickness: 2},
         setup: async (r, renderer, world) => {
           const state = world.game.state as LobbyState
 
