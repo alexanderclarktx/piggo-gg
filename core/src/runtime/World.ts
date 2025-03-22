@@ -149,20 +149,24 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
         return
       }
 
-      if (world.tickFlag === "red") {
-        console.log("defer tick")
-        // scheduleOnTick()
-        // return
-      }
+      // if (world.tickFlag === "red") {
+      //   console.log("defer tick")
+      //   scheduleOnTick()
+      //   return
+      // }
+
+      if (world.tick % 100 === 0) console.log(`tick ${now - world.lastTick}ms behind`)
 
       // update lastTick
       if (!isRollback && !world.tickFaster) {
         if ((now - world.tickrate - world.tickrate) > world.lastTick) {
           // catch up (browser was delayed)
           world.lastTick = now
+          if (world.tick % 100 === 0) console.log("now")
         } else {
           // move forward at fixed timestep
           world.lastTick += world.tickrate
+          if (world.tick % 100 === 0) console.log("tickrate")
         }
       }
 

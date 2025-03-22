@@ -74,7 +74,7 @@ export const NetClientReadSystem = SystemBuilder({
         if (message.latency) client.ms = (client.lastLatency + message.latency) / 2
 
         // set flag to green
-        world.tickFlag = "green"
+        // world.tickFlag = "green"
 
         // handle new chat messages
         if (keys(message.chats).length) {
@@ -112,7 +112,7 @@ export const NetClientReadSystem = SystemBuilder({
         if (buffer.length > 0) {
           syncer().read({ world, buffer })
         } else {
-          world.tickFlag = "red"
+          // world.tickFlag = "red"
         }
       }
     }

@@ -91,7 +91,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       // consume buffer
       if (buffer.length > 2) {
-        // preRead(message)
+        preRead(message)
         message = buffer.shift() as GameData
         console.log("large buffer", buffer.length)
       }
@@ -104,18 +104,29 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       last = message.tick
 
-      const gap = world.tick - message.tick
-      let framesForward = (gap >= 2 && gap <= 5) ?
-        gap :
-        ceil(world.client!.ms / world.tickrate) + 2
+      const theory = ceil(world.client!.ms / world.tickrate) + 2
+      // const gap = world.tick - message.tick
+      const gap = (message.diff ?? 0) * -1
+
+      // let framesForward = theory
+
+      let framesForward = (gap >= 2 && gap <= 4) ? gap : theory
 
       const localActions = world.actions.atTick(message.tick) ?? {}
 
       handleOtherPlayers(message)
 
+      console.log(message.diff)
       if (message.diff !== undefined && message.diff < 1) {
-        mustRollback("diff <1")
-        framesForward -= message.diff + 2
+        // console.log("<1")
+        // mustRollback("diff <1")
+        framesForward = theory + 2 - message.diff
+      } else if (message.diff !== undefined && message.diff > 4) {
+        // console.log(">4")
+        // mustRollback("diff >2")
+        framesForward = theory + 2 - message.diff
+      } else {
+        world.tickFlag = "green"
       }
 
       // check actions

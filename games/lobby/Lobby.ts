@@ -162,7 +162,7 @@ const GameButton = (game: GameBuilder, i: number) => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Volley, Flappy, Craft]
+  const list: GameBuilder[] = [Volley]
   let gameButtons: Entity<Position | Renderable>[] = []
   let invite: undefined | PixiButton = undefined
 
