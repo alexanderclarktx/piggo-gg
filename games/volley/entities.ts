@@ -7,7 +7,7 @@ import { Texture } from "pixi.js"
 import { range, VolleyState } from "./Volley"
 import { Spike } from "./Spike"
 import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
-import { BevelFilter } from "pixi-filters"
+import { AdvancedBloomFilter, BevelFilter } from "pixi-filters"
 
 export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
@@ -87,7 +87,7 @@ export const Ball = () => Entity({
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
-      filters: [new BevelFilter({rotation: 135, lightAlpha: 0.5})],
+      filters: [new BevelFilter({ rotation: 135, lightAlpha: 0.5 })],
       dynamic: ({ entity: ball, world }) => {
         const { position: ballPos } = ball.components
         const { position, actions } = world.client?.playerCharacter()?.components ?? {}

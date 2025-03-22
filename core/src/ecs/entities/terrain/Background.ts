@@ -1,6 +1,6 @@
 import { Collider, Entity, Position, Renderable } from "@piggo-gg/core"
 import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
-import { GodrayFilter } from "pixi-filters"
+import { AdvancedBloomFilter, AsciiFilter, BloomFilter, GodrayFilter } from "pixi-filters"
 
 export type BackgroundProps = {
   img?: string
@@ -22,9 +22,11 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
       },
       interpolate: true,
       setup: async (renderable) => {
-        if (rays) renderable.filters = [
+        if (rays) renderable.filters.push(
           new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })
-        ]
+        )
+
+        renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 0.8 }))
 
         let texture: Texture
 
