@@ -1,12 +1,10 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture,
   colors, Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual,
-  Background, Actions, Networked,
-  Debug,
+  Background, Actions, Networked
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
-import { AdvancedBloomFilter, CRTFilter, GlowFilter, PixelateFilter } from "pixi-filters"
 
 type LobbyState = {
   gameId: "volley"
@@ -47,7 +45,6 @@ const Icon = (player: Entity<PC | Team>) => {
 
   const text = () => pixiText({
     text: pc.data.name,
-    resolution: 4,
     pos: { x: 0, y: 40 },
     anchor: { x: 0.5, y: 0.5 },
     style: { fontSize: 24, fill: TeamColors[team.data.team] }
@@ -65,7 +62,7 @@ const Icon = (player: Entity<PC | Team>) => {
   return Entity<Position | Renderable>({
     id: `icon-${player.id}`,
     components: {
-      position: Position({ screenFixed: true }),
+      position: Position({ screenFixed: true, y: 350 }),
       renderable: Renderable({
         zIndex: 12,
         interactiveChildren: true,
@@ -125,7 +122,7 @@ const Players = (): Entity => {
           const totalWidth = icons.reduce((acc, icon) => acc + icon.components.renderable.c.width, 0) + 20 * (icons.length - 1)
           let x = -totalWidth / 2
           for (const icon of icons) {
-            icon.components.position.setPosition({ y: offset.y, x: offset.x + x + icon.components.renderable.c.width / 2 })
+            icon.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
             x += icon.components.renderable.c.width + 20
           }
         }
@@ -165,11 +162,10 @@ const PlayButton = () => {
   const playButton = Entity<Position>({
     id: "playButton",
     components: {
-      position: Position({ x: 300, y: 150, screenFixed: true }),
+      position: Position({ x: 300, y: 120, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        // outline: {color: 0x000000, thickness: 2},
         setup: async (r, renderer, world) => {
           const state = world.game.state as LobbyState
 
@@ -203,14 +199,13 @@ const CreateLobbyButton = () => {
   const createLobbyButton = Entity<Position | Renderable>({
     id: "createLobbyButton",
     components: {
-      position: Position({ x: 300, y: 300, screenFixed: true }),
-      debug: Debug(),
+      position: Position({ x: 300, y: 450, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
         anchor: { x: 0.5, y: 0.5 },
         alpha: 0.6,
-        dynamic: ({world}) => {
+        dynamic: ({ world }) => {
           const ready = (world.client?.ws.readyState ?? 0) === 1
           createLobbyButton.components.renderable.c.alpha = ready ? 1 : 0.6
           createLobbyButton.components.renderable.c.interactiveChildren = ready

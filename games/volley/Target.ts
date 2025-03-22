@@ -1,7 +1,7 @@
 import {
   Entity, Networked, NPC, pixiGraphics, Position, Renderable, SystemBuilder, timeToLand, XY
 } from "@piggo-gg/core"
-import { BevelFilter, DropShadowFilter, GlowFilter } from "pixi-filters"
+import { GlowFilter } from "pixi-filters"
 
 const Target = (ball: Entity<Position | Renderable>) => {
 
