@@ -14,11 +14,12 @@ export type GameData = {
   actions: Record<number, Record<string, InvokedAction[]>>
   chats: Record<string, string[]>
   game: string
-  latency?: number
   playerId: string
   serializedEntities: Record<string, SerializedEntity>
   tick: number
   timestamp: number
+  latency?: number
+  diff?: number
 }
 
 // API

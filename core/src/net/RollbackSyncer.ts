@@ -79,7 +79,10 @@ export const RollbackSyncer = (world: World): Syncer => {
       rollback = false
 
       // get oldest message
+      buffer.sort((a, b) => a.tick - b.tick)
+      // console.log("buffer", buffer.map((m) => m.tick))
       let message = buffer.sort((a, b) => a.tick - b.tick).shift()
+      // console.log("buffer", buffer.map((m) => m.tick))
 
       if (!message) {
         console.error("NO MESSAGE")
@@ -88,7 +91,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       // consume buffer
       if (buffer.length > 2) {
-        preRead(message)
+        // preRead(message)
         message = buffer.shift() as GameData
         console.log("large buffer", buffer.length)
       }
@@ -102,13 +105,18 @@ export const RollbackSyncer = (world: World): Syncer => {
       last = message.tick
 
       const gap = world.tick - message.tick
-      const framesForward = (gap >= 2 && gap <= 5) ?
+      let framesForward = (gap >= 2 && gap <= 5) ?
         gap :
         ceil(world.client!.ms / world.tickrate) + 2
 
       const localActions = world.actions.atTick(message.tick) ?? {}
 
       handleOtherPlayers(message)
+
+      if (message.diff !== undefined && message.diff < 1) {
+        mustRollback("diff <1")
+        framesForward -= message.diff + 2
+      }
 
       // check actions
       if (message.actions[message.tick]) {
