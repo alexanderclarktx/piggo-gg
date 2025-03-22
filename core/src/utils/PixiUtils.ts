@@ -89,13 +89,6 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     interactive: true,
     ...props.onEnter && { onpointerenter: props.onEnter },
     ...props.onLeave && { onpointerleave: props.onLeave }
-    // onpointerenter: () => {
-    //   c.alpha = 0.2
-    // },
-    // onpointerleave: () => {
-    //   c.alpha = 1
-    // }
-    // onpointerleave: () => c.alpha = 1
   })
 
   return {

@@ -292,18 +292,6 @@ const GameLobby = (): Entity => {
             anchor: { x: 0.5, y: 0 }
           })
 
-          // const play = PixiButton({
-          //   content: () => ({
-          // text: "play",
-          // pos: { x: (width - 230) / 2, y: 110 },
-          // anchor: { x: 0.5, y: 0 },
-          // style: { fontSize: 72, fill: 0xffccff }
-          //   }),
-          //   onClick: () => {
-          //     world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: list[state.gameIndex].id } })
-          //     world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: list[state.gameIndex].id } })
-          //   }
-          // })
           r.c.addChild(outline, select)
         }
       })
