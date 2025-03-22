@@ -6,6 +6,7 @@ import {
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
+import { CRTFilter } from "pixi-filters"
 
 type LobbyState = {
   gameId: "volley"
@@ -198,7 +199,7 @@ const PlayButton = () => {
 }
 
 const CreateLobbyButton = () => {
-  const createLobbyButton = Entity<Position>({
+  const createLobbyButton = Entity<Position | Renderable>({
     id: "createLobbyButton",
     components: {
       position: Position({ x: 300, y: 300, screenFixed: true }),
@@ -207,6 +208,12 @@ const CreateLobbyButton = () => {
         zIndex: 10,
         interactiveChildren: true,
         anchor: { x: 0.5, y: 0.5 },
+        alpha: 0.6,
+        dynamic: ({world}) => {
+          const ready = (world.client?.ws.readyState ?? 0) === 1
+          createLobbyButton.components.renderable.c.alpha = ready ? 1 : 0.6
+          createLobbyButton.components.renderable.c.interactiveChildren = ready
+        },
         setup: async (r, renderer, world) => {
           const { width } = renderer.app.screen
 
@@ -217,7 +224,7 @@ const CreateLobbyButton = () => {
               text: "Create Lobby",
               pos: { x: 0, y: 0 },
               anchor: { x: 0.5, y: 0.5 },
-              style: { fontSize: 28, fill: 0xffffff },
+              style: { fontSize: 26, fill: 0xffffff },
               strokeAlpha: 1
             }),
             onClick: () => world.client?.copyInviteLink(),

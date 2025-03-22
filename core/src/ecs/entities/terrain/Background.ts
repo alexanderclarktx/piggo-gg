@@ -22,7 +22,9 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
       },
       interpolate: true,
       setup: async (renderable) => {
-        if (rays) renderable.filters = [new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })]
+        if (rays) renderable.filters = [
+          new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })
+        ]
 
         let texture: Texture
 
