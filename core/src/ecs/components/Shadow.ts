@@ -54,7 +54,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
     renderable: Renderable({
       zIndex: target.components.renderable.zIndex - 0.1,
       interpolate: true,
-      filters: [new BlurFilter({ strength: 2 })],
+      filters: [],
       dynamic: ({ entity }) => {
         const { position, renderable } = entity.components
         if (!position || !renderable) return
@@ -71,9 +71,12 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
         const { x, y } = target.components.position.data.velocity
         position.setVelocity({ x, y })
       },
-      setContainer: async () => pixiGraphics()
-        .ellipse(0, 1, size * 2, size)
-        .fill({ color: 0x000000, alpha: 1 })
+      setup: async (renderable) => {
+        renderable.filters.push(new BlurFilter({ strength: 2 }))
+
+        const g = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
+        renderable.c = g
+      }
     })
   }
 })

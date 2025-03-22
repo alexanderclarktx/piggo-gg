@@ -30,11 +30,11 @@ const Target = (ball: Entity<Position | Renderable>) => {
         }
       }),
       renderable: Renderable({
-        filters: [new GlowFilter({ outerStrength: 0, innerStrength: 1 })],
         zIndex: 3.8,
         visible: false,
-        setContainer: async () => {
-          return pixiGraphics().ellipse(0, 0, 6, 3).stroke({ color: 0x00ffff, alpha: 0.9, width: 1.5 })
+        setup: async (renderable) => {
+          renderable.filters.push(new GlowFilter({ outerStrength: 0, innerStrength: 1 }))
+          renderable.c = pixiGraphics().ellipse(0, 0, 6, 3).stroke({ color: 0x00ffff, alpha: 0.9, width: 1.5 })
         }
       })
     }

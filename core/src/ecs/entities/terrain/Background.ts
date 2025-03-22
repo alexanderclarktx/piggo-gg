@@ -28,7 +28,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
 
         renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 0.7 }))
 
-        const cmFilter = new ColorMatrixFilter({})
+        const cmFilter = new ColorMatrixFilter()
         renderable.filters.push(cmFilter)
         cmFilter.saturate(0.7)
         cmFilter.contrast(0.1, false)
