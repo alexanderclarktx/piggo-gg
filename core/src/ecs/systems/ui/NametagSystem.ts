@@ -52,10 +52,9 @@ const Nametag = (player: Player, character: Character) => {
 
   const render = () => pixiText({
     text: name,
-    style: { fill: TeamColors[team], fontSize: 12, dropShadow: true },
+    style: { fill: TeamColors[team], fontSize: 12, dropShadow: true, resolution: 4 },
     anchor: { x: 0.45, y: 0 },
     pos: { x: 0, y: -44 },
-    resolution: 4
   })
 
   return Entity<Position | Renderable>({
