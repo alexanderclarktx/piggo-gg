@@ -4,7 +4,7 @@ export const Tooltip = (id: string, text: string) => {
 
   let explainer = pixiText({
     text,
-    style: { fill: 0xffffff, fontSize: 20, dropShadow: true, align: "center" },
+    style: { fill: 0xffffff, fontSize: 20, dropShadow: true, align: "center", resolution: 4 },
     pos: { x: 30, y: -20 },
     anchor: { x: 0, y: 0 },
   })
@@ -45,11 +45,14 @@ export const Tooltip = (id: string, text: string) => {
         zIndex: 100,
         dynamic: () => {
           if (sinceShown > 300) return
+
           if (sinceShown >= 1) sinceShown += 1
+
           if (sinceShown > 180) {
             explainer.alpha = 1 - (sinceShown - 180) / 60
             explainerBg.alpha = 1 - (sinceShown - 180) / 60
           }
+
           if (sinceShown === 0) {
             explainer.alpha = 1
             explainerBg.alpha = 1
