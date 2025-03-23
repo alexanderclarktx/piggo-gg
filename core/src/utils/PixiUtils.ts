@@ -15,6 +15,7 @@ export type pixiTextStyle = {
   fontWeight?: TextStyleFontWeight
   dropShadow?: boolean
   resolution?: number
+  align?: "left" | "center" | "right"
 }
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
@@ -54,7 +55,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     position: pos ?? { x: 0, y: 0 },
     resolution: style?.resolution ?? 2,
     style: {
-      align: "center",
+      align: style?.align ?? "left",
       fill: style?.fill ?? 0xffffff,
       fontSize: style?.fontSize ?? 14,
       fontFamily: style?.fontFamily ?? "Courier New",

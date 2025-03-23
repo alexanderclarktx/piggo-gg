@@ -4,18 +4,17 @@ export const Tooltip = (id: string, text: string) => {
 
   let explainer = pixiText({
     text,
-    style: { fill: 0xffffff, fontSize: 20, dropShadow: true },
+    style: { fill: 0xffffff, fontSize: 20, dropShadow: true, align: "center" },
     pos: { x: 30, y: -20 },
     anchor: { x: 0, y: 0 },
   })
 
   let explainerBg = pixiGraphics()
     .roundRect(25, -25, explainer.width + 10, explainer.height + 10, 5)
-    .fill({ color: 0x000000, alpha: 0.8 })
+    .fill({ color: 0x000000, alpha: 0.7 })
     .stroke({ color: 0xffffff, width: 2 })
 
-  explainer.visible = false
-  explainerBg.visible = false
+  let sinceShown = 1
 
   let icon = PixiButton({
     content: () => ({
@@ -26,12 +25,10 @@ export const Tooltip = (id: string, text: string) => {
     }),
     onClick: () => { },
     onEnter: () => {
-      explainer.visible = true
-      explainerBg.visible = true
+      sinceShown = 0
     },
     onLeave: () => {
-      explainer.visible = false
-      explainerBg.visible = false
+      sinceShown = 1
     }
   })
 
@@ -46,6 +43,18 @@ export const Tooltip = (id: string, text: string) => {
         visible: true,
         interactiveChildren: true,
         zIndex: 100,
+        dynamic: () => {
+          if (sinceShown > 300) return
+          if (sinceShown >= 1) sinceShown += 1
+          if (sinceShown > 180) {
+            explainer.alpha = 1 - (sinceShown - 180) / 60
+            explainerBg.alpha = 1 - (sinceShown - 180) / 60
+          }
+          if (sinceShown === 0) {
+            explainer.alpha = 1
+            explainerBg.alpha = 1
+          }
+        },
         setup: async (renderable, renderer) => {
           const { width } = renderer.app.screen
           tooltip.components.position.setPosition({ x: width / 2 + 85 })
