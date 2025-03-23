@@ -10,7 +10,7 @@ export const Tooltip = (id: string, text: string) => {
   })
 
   let explainerBg = pixiGraphics()
-    .roundRect(25, -25, explainer.width + 20, explainer.height + 10, 5)
+    .roundRect(25, -25, explainer.width + 10, explainer.height + 10, 5)
     .fill({ color: 0x000000, alpha: 0.8 })
     .stroke({ color: 0xffffff, width: 2 })
 

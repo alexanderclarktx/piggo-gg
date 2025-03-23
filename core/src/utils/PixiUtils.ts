@@ -54,6 +54,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     position: pos ?? { x: 0, y: 0 },
     resolution: style?.resolution ?? 2,
     style: {
+      align: "center",
       fill: style?.fill ?? 0xffffff,
       fontSize: style?.fontSize ?? 14,
       fontFamily: style?.fontFamily ?? "Courier New",
