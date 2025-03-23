@@ -25,7 +25,7 @@ export type World = {
   tickrate: number
   tileMap: number[] | undefined
   addEntities: (entities: Entity[]) => void
-  addEntity: (entity: Entity, timeout?: number) => string
+  addEntity: (entity: Entity, timeout?: number) => string | undefined
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
@@ -83,6 +83,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     tickrate: 25,
     tileMap: undefined,
     addEntity: (entity: Entity) => {
+      if (world.mode === "server" && !entity.components.networked) return undefined
+
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable) {
         oldEntity.components.renderable.cleanup()

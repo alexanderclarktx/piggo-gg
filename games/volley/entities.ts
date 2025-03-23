@@ -7,6 +7,7 @@ import { Texture } from "pixi.js"
 import { range, VolleyState } from "./Volley"
 import { Spike } from "./Spike"
 import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
+import { BevelFilter } from "pixi-filters"
 
 export const Dude = (player: Player) => Character({
   id: `dude-${player.id}`,
@@ -86,8 +87,6 @@ export const Ball = () => Entity({
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
-      // scale: 0.22,
-      // outline: { color: 0x222222, thickness: 1 },
       dynamic: ({ entity: ball, world }) => {
         const { position: ballPos } = ball.components
         const { position, actions } = world.client?.playerCharacter()?.components ?? {}
@@ -102,7 +101,8 @@ export const Ball = () => Entity({
         }
       },
       setup: async (r) => {
-        // const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
+        r.filters.push(new BevelFilter({ rotation: 135, lightAlpha: 0.5 }))
+
         const texture = (await loadTexture("vball.json"))["ball"] as Texture
         texture.source.scaleMode = "nearest"
 
@@ -166,8 +166,9 @@ export const PostTop = () => Entity({
     position: Position({ x: 225, y: -76, z: 25 }),
     renderable: Renderable({
       zIndex: 3.2,
-      setContainer: async () => {
-        return pixiGraphics().roundRect(-3, 0, 6, 28, 2).fill({ color: 0x943126, alpha: 1 })
+      setup: async (renderable) => {
+        renderable.filters.push(new BevelFilter({ rotation: 135 }))
+        renderable.c = pixiGraphics().roundRect(-3, 0, 6, 28, 2).fill({ color: 0x943126, alpha: 1 })
       }
     })
   }
@@ -179,8 +180,9 @@ export const PostBottom = () => Entity({
     position: Position({ x: 225, y: 74, z: 25 }),
     renderable: Renderable({
       zIndex: 3.9,
-      setContainer: async () => {
-        return pixiGraphics().roundRect(-3, 0, 6, 28, 2).fill({ color: 0x943126, alpha: 1 })
+      setup: async (renderable) => {
+        renderable.filters.push(new BevelFilter({ rotation: 135 }))
+        renderable.c = pixiGraphics().roundRect(-3, 0, 6, 28, 2).fill({ color: 0x943126, alpha: 1 })
       }
     })
   }
@@ -193,8 +195,9 @@ export const Net = () => Entity({
     collider: Collider({ shape: "line", points: [0, -75, 0, 75], isStatic: true, group: "two" }),
     renderable: Renderable({
       zIndex: 3.8,
-      setContainer: async () => {
-        return pixiGraphics().roundRect(-1, -75, 2, 150, 1).fill({ color: 0xffe47a, alpha: 1 })
+      setup: async (renderable) => {
+        renderable.filters.push(new BevelFilter({ rotation: 135 }))
+        renderable.c = pixiGraphics().roundRect(-1, -75, 2, 150, 1).fill({ color: 0xffe47a, alpha: 1 })
       }
     })
   }

@@ -8,8 +8,8 @@ export type pixiRectProps = { x: number, y: number, w: number, h: number, rounde
 export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<pixiStyleProps, "g"> }
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, strokeColor?: number, strokeAlpha?: number, strokeWidth?: number }
 
-export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: string, fontWeight?: TextStyleFontWeight }
-export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle, dropShadow?: boolean, resolution?: number }
+export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: string, fontWeight?: TextStyleFontWeight, dropShadow?: boolean }
+export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle, resolution?: number }
 
 export const pixiContainer = (): Container => new Container()
 
@@ -40,7 +40,7 @@ export const pixiStyle = ({ g, color, alpha, strokeColor, strokeAlpha, strokeWid
   return g
 }
 
-export const pixiText = ({ text, pos, style, anchor, dropShadow, resolution }: pixiTextProps): Text => {
+export const pixiText = ({ text, pos, style, anchor, resolution }: pixiTextProps): Text => {
   return new Text({
     text,
     anchor: anchor ?? 0,
@@ -51,7 +51,7 @@ export const pixiText = ({ text, pos, style, anchor, dropShadow, resolution }: p
       fontSize: style?.fontSize ?? 14,
       fontFamily: style?.fontFamily ?? "Courier New",
       fontWeight: style?.fontWeight ?? "bold",
-      dropShadow: dropShadow ? { distance: 0.5 } : false
+      dropShadow: style?.dropShadow ? { distance: 0.5 } : false
     }
   })
 }
@@ -59,6 +59,8 @@ export const pixiText = ({ text, pos, style, anchor, dropShadow, resolution }: p
 export type PixiButtonProps = {
   content: () => { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number },
   onClick: () => void
+  onEnter?: () => void
+  onLeave?: () => void
 }
 
 export type PixiButton = { c: Container, onClick: () => void, redraw: () => void }
@@ -81,7 +83,13 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     return [b, t]
   }
 
-  const c = new Container({ onpointerdown: props.onClick, children: draw(props.content()), interactive: true })
+  const c = new Container({
+    onpointerdown: props.onClick,
+    children: draw(props.content()),
+    interactive: true,
+    ...props.onEnter && { onpointerenter: props.onEnter },
+    ...props.onLeave && { onpointerleave: props.onLeave }
+  })
 
   return {
     c,
