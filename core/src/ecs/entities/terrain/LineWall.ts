@@ -1,6 +1,5 @@
 import { Collider, ColliderGroups, Entity, Health, Networked, Position, Renderable, SensorCallback, XY } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
-import { GlowFilter } from "pixi-filters"
 
 export type LineWallProps = {
   points: number[]

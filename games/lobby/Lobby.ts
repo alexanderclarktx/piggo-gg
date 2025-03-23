@@ -149,7 +149,6 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-            console.log("selected game", game.id)
           }
         })
         r.c.addChild(button.c)
@@ -182,7 +181,6 @@ const PlayButton = () => {
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
-              console.log("play")
             },
             onEnter: () => r.color = 0xffcccc,
             onLeave: () => r.color = 0xffffff
