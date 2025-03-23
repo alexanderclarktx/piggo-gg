@@ -8,8 +8,15 @@ export type pixiRectProps = { x: number, y: number, w: number, h: number, rounde
 export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<pixiStyleProps, "g"> }
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, strokeColor?: number, strokeAlpha?: number, strokeWidth?: number }
 
-export type pixiTextStyle = { fill?: number, fontSize?: number, fontFamily?: string, fontWeight?: TextStyleFontWeight, dropShadow?: boolean }
-export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle, resolution?: number }
+export type pixiTextStyle = {
+  fill?: number
+  fontSize?: number
+  fontFamily?: string
+  fontWeight?: TextStyleFontWeight
+  dropShadow?: boolean
+  resolution?: number
+}
+export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
 export const pixiContainer = (): Container => new Container()
 
@@ -40,12 +47,12 @@ export const pixiStyle = ({ g, color, alpha, strokeColor, strokeAlpha, strokeWid
   return g
 }
 
-export const pixiText = ({ text, pos, style, anchor, resolution }: pixiTextProps): Text => {
+export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
   return new Text({
     text,
     anchor: anchor ?? 0,
     position: pos ?? { x: 0, y: 0 },
-    resolution: resolution ?? 2,
+    resolution: style?.resolution ?? 2,
     style: {
       fill: style?.fill ?? 0xffffff,
       fontSize: style?.fontSize ?? 14,
