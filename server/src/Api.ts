@@ -12,7 +12,7 @@ export type PerClientData = {
   worldId: string
 }
 
-type SessionToken = { address: string, name: string }
+type SessionToken = { googleId: string }
 
 export type Api = {
   bun: Server | undefined
@@ -79,7 +79,7 @@ export const Api = (): Api => {
           return { id: data.id, error: "JWT verification failed" }
         }
 
-        const user = await prisma.users.findUnique({ where: { name: token.name } })
+        const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
         if (!user) return { id: data.id, error: "User not found" }
 
         const friends = await prisma.friends.findMany({
@@ -110,7 +110,7 @@ export const Api = (): Api => {
         }
 
         // 2. find user
-        const user = await prisma.users.findUnique({ where: { name: token.name } })
+        const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
         if (!user) return { id: data.id, error: "User not found" }
 
         // 3. update websocket playerName
@@ -121,6 +121,27 @@ export const Api = (): Api => {
         if (pc) pc.data.name = user.name
 
         return { id: data.id, name: user.name }
+      },
+      "profile/create" : async ({ data }) => {
+        let token: SessionToken | undefined = undefined
+
+        // 1. verify jwt
+        try {
+          token = jwt.verify(data.token, JWT_SECRET) as SessionToken
+        } catch (e) {
+          return { id: data.id, error: "JWT verification failed" }
+        }
+
+        // 2. check if username is taken
+        const oldUser = await prisma.users.findUnique({ where: { name: data.name } })
+        if (oldUser) return { id: data.id, error: "Username already taken" }
+
+        // 3. create user
+        const newUser = await prisma.users.create({
+          data: { name: data.name, googleId: token.googleId }
+        })
+
+        return { id: data.id, name: newUser.name }
       },
       "auth/login": async ({ ws, data }) => {
 
@@ -149,7 +170,7 @@ export const Api = (): Api => {
         }
 
         // 3. create session token
-        const token = jwt.sign({ sub }, JWT_SECRET, { expiresIn: "8h" })
+        const token = jwt.sign({ googleId: sub }, JWT_SECRET, { expiresIn: "8h" })
 
         return { id: data.id, token, newUser }
       },

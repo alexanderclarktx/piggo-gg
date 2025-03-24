@@ -1,7 +1,7 @@
 import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, stringify, RequestData,
   RequestTypes, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList,
-  Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet
+  Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate
 } from "@piggo-gg/core"
 import { decode } from "@msgpack/msgpack"
 
@@ -42,6 +42,7 @@ export type Client = {
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   authLogin: (jwt: string) => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
+  profileCreate: (name: string, callback: Callback) => void
   profileGet: (callback?: Callback) => void
   friendsList: (callback: Callback<FriendsList>) => void
 }
@@ -137,12 +138,27 @@ export const Client = ({ world }: ClientProps): Client => {
           client.token = response.token
 
           if (localStorage) localStorage.setItem("token", response.token)
-          client.profileGet()
+
+          console.log(response.newUser)
+          if (!response.newUser) {
+            client.profileGet()
+          }
         }
       })
     },
     aiPls: (prompt, callback) => {
       request<Pls>({ route: "ai/pls", type: "request", id: genHash(), prompt }, (response) => {
+        callback(response)
+      })
+    },
+    profileCreate: (name, callback) => {
+      if (!client.token) return
+      request<ProfileCreate>({ route: "profile/create", type: "request", id: genHash(), token: client.token, name }, (response) => {
+        if ("error" in response) {
+          console.error("Client: failed to create profile", response.error)
+        } else {
+          client.profileGet()
+        }
         callback(response)
       })
     },
@@ -214,7 +230,7 @@ export const Client = ({ world }: ClientProps): Client => {
       const token = localStorage.getItem("token")
       if (token) {
         client.token = token
-        client.profileGet()
+        // client.profileGet()
       }
     }
   }
