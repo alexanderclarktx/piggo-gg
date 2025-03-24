@@ -1,5 +1,5 @@
 import {
-  Background, ZomiSpawnSystem, FloorTiles, InviteStone, LineWall,
+  Background, ZomiSpawnSystem, FloorTiles, LineWall,
   Portal, SpawnSystem, Shop, Skelly, GameBuilder, DefaultUI
 } from "@piggo-gg/core"
 

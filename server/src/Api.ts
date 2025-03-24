@@ -1,9 +1,9 @@
 import { ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
-import { ethers } from "ethers"
 import jwt from "jsonwebtoken"
 import { encode } from "@msgpack/msgpack"
+import { OAuth2Client } from "google-auth-library"
 
 export type PerClientData = {
   id: number
@@ -12,7 +12,7 @@ export type PerClientData = {
   worldId: string
 }
 
-type SessionToken = { address: string, name: string }
+type SessionToken = { googleId: string }
 
 export type Api = {
   bun: Server | undefined
@@ -32,8 +32,8 @@ export type Api = {
 export const Api = (): Api => {
 
   const prisma = new PrismaClient()
-
   const JWT_SECRET = process.env["JWT_SECRET"] ?? "piggo"
+  const client = new OAuth2Client("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com")
 
   const api: Api = {
     bun: undefined,
@@ -79,7 +79,7 @@ export const Api = (): Api => {
           return { id: data.id, error: "JWT verification failed" }
         }
 
-        const user = await prisma.users.findUnique({ where: { name: token.name } })
+        const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
         if (!user) return { id: data.id, error: "User not found" }
 
         const friends = await prisma.friends.findMany({
@@ -87,9 +87,9 @@ export const Api = (): Api => {
           include: { user2: true }
         })
 
-        result.friends = friends.map(({ user2 }) => {
-          return { address: user2.walletAddress, name: user2.name, online: false }
-        })
+        // result.friends = friends.map(({ user2 }) => {
+        //   return { address: user2.walletAddress, name: user2.name, online: false }
+        // })
 
         return result
       },
@@ -110,7 +110,7 @@ export const Api = (): Api => {
         }
 
         // 2. find user
-        const user = await prisma.users.findUnique({ where: { name: token.name } })
+        const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
         if (!user) return { id: data.id, error: "User not found" }
 
         // 3. update websocket playerName
@@ -122,43 +122,57 @@ export const Api = (): Api => {
 
         return { id: data.id, name: user.name }
       },
+      "profile/create" : async ({ data }) => {
+        let token: SessionToken | undefined = undefined
+
+        // 1. verify jwt
+        try {
+          token = jwt.verify(data.token, JWT_SECRET) as SessionToken
+        } catch (e) {
+          return { id: data.id, error: "JWT verification failed" }
+        }
+
+        // 2. check if username is taken
+        const oldUser = await prisma.users.findUnique({ where: { name: data.name } })
+        if (oldUser) return { id: data.id, error: "Username already taken" }
+
+        // 3. create user
+        const newUser = await prisma.users.create({
+          data: { name: data.name, googleId: token.googleId }
+        })
+
+        return { id: data.id, name: newUser.name }
+      },
       "auth/login": async ({ ws, data }) => {
 
-        // 1. verify signature
-        const recoveredAddress = ethers.verifyMessage(data.message, data.signature)
-        const verified = recoveredAddress.toLowerCase() === data.address.toLowerCase()
+        // 1. verify google jwt
+        const ticket = await client.verifyIdToken({
+          idToken: data.jwt,
+          audience: "1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com"
+        })
 
-        if (!verified) {
-          return { id: data.id, error: "Signature verification failed" }
+        const { sub } = ticket.getPayload() ?? {}
+
+        if (!sub) {
+          return { id: data.id, error: "Google JWT verification failed" }
         }
 
-        // 2. login or create account
-        let user = await prisma.users.findUnique({ where: { walletAddress: data.address } })
-        if (!user) {
-          user = await prisma.users.create({
-            data: {
-              name: data.address,
-              walletAddress: data.address
-            }
-          })
-          console.log(`User Created: ${data.address}`)
+        let newUser = false
+
+        // 2. set state if user exists
+        let user = await prisma.users.findUnique({ where: { googleId: sub } })
+        if (user) {
+          ws.data.playerName = user.name
+          const pc = api.worlds[ws.data.worldId]?.world.entity(ws.data.playerId)?.components.pc
+          if (pc) pc.data.name = user.name
         } else {
-          console.log(`User Found: ${data.address}`)
+          newUser = true
         }
-
-        if (!user) return { id: data.id, error: "User not found" }
 
         // 3. create session token
-        const token = jwt.sign({ address: user.name, name: user.name }, JWT_SECRET, { expiresIn: "8h" })
+        const token = jwt.sign({ googleId: sub }, JWT_SECRET, { expiresIn: "8h" })
 
-        // 4. update websocket playerName
-        ws.data.playerName = user.name
-
-        // 5. update player entity name
-        const pc = api.worlds[ws.data.worldId]?.world.entity(ws.data.playerId)?.components.pc
-        if (pc) pc.data.name = user.name
-
-        return { id: data.id, token, name: user.name }
+        return { id: data.id, token, newUser }
       },
       "ai/pls": async ({ data }) => {
         const response = await gptPrompt(data.prompt)
