@@ -71,7 +71,7 @@ export type ProfileGet = Request<"profile/get", { name: string }> & { token: str
 
 // auth endpoints
 export type AuthLogin = Request<"auth/login", { token: string }> & {
-  address: string, message: string, signature: string
+  jwt: string
 }
 
 // ai endpoints

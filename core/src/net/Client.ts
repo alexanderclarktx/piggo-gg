@@ -4,7 +4,6 @@ import {
   Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet
 } from "@piggo-gg/core"
 import { decode } from "@msgpack/msgpack"
-import toast from "react-hot-toast"
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -17,7 +16,7 @@ export const hosts = {
   production: "https://piggo.gg"
 }
 
-export const env = location.hostname === "localhost" ? "dev" : "production"
+// export const env = location?.hostname === "localhost" ? "dev" : "production"
 
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
 
@@ -28,6 +27,7 @@ export type Client = {
     set: (value: number) => void
     reset: () => void
   }
+  env: "dev" | "production"
   lastLatency: number
   lastMessageTick: number
   lobbyId: string | undefined
@@ -42,7 +42,7 @@ export type Client = {
   copyInviteLink: () => void
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
-  authLogin: (address: string, message: string, signature: string) => void
+  authLogin: (jwt: string) => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
   profileGet: (callback?: Callback) => void
   friendsList: (callback: Callback<FriendsList>) => void
@@ -66,6 +66,8 @@ export const Client = ({ world }: ClientProps): Client => {
     // TODO handle timeout
   }
 
+  const env = location ? (location.hostname === "localhost" ? "dev" : "production") : "dev"
+
   const client: Client = {
     connected: false,
     clickThisFrame: {
@@ -73,6 +75,7 @@ export const Client = ({ world }: ClientProps): Client => {
       set: (value: number) => client.clickThisFrame.value = value,
       reset: () => client.clickThisFrame.value = 0
     },
+    env,
     lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
@@ -95,14 +98,14 @@ export const Client = ({ world }: ClientProps): Client => {
       if (client.lobbyId) {
         url = `${hosts[env]}/?join=${client.lobbyId}`
         navigator.clipboard.writeText(url)
-        toast.success(`Copied Invite URL`)
+        // toast.success(`Copied Invite URL`)
       } else {
         client.lobbyCreate((response) => {
           if ("error" in response) return
 
           url = `${hosts[env]}/?join=${response.lobbyId}`
           navigator.clipboard.writeText(url)
-          toast.success(`Copied Invite URL`)
+          // toast.success(`Copied Invite URL`)
         })
       }
     },
@@ -128,8 +131,8 @@ export const Client = ({ world }: ClientProps): Client => {
         }
       })
     },
-    authLogin: async (address, message, signature) => {
-      request<AuthLogin>({ route: "auth/login", type: "request", id: genHash(), message, signature, address }, (response) => {
+    authLogin: async (jwt) => {
+      request<AuthLogin>({ route: "auth/login", type: "request", id: genHash(), jwt }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to login", response.error)
         } else {

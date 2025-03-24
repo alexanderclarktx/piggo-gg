@@ -3,6 +3,7 @@ import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import jwt from "jsonwebtoken"
 import { encode } from "@msgpack/msgpack"
+import { OAuth2Client } from "google-auth-library"
 
 export type PerClientData = {
   id: number
@@ -123,41 +124,52 @@ export const Api = (): Api => {
       },
       "auth/login": async ({ ws, data }) => {
 
-        // 1. verify signature
-        const recoveredAddress = ethers.verifyMessage(data.message, data.signature)
-        const verified = recoveredAddress.toLowerCase() === data.address.toLowerCase()
+        // 1. verify google jwt
+        const client = new OAuth2Client("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com")
 
-        if (!verified) {
-          return { id: data.id, error: "Signature verification failed" }
-        }
+        const ticket = await client.verifyIdToken({
+          idToken: data.jwt,
+          audience: "1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com"
+        })
+        console.log(ticket.getPayload())
+
+        return { id: data.id, token: "" }
+
+        // 1. verify signature
+        // const recoveredAddress = ethers.verifyMessage(data.message, data.signature)
+        // const verified = recoveredAddress.toLowerCase() === data.address.toLowerCase()
+
+        // if (!verified) {
+        //   return { id: data.id, error: "Signature verification failed" }
+        // }
 
         // 2. login or create account
-        let user = await prisma.users.findUnique({ where: { walletAddress: data.address } })
-        if (!user) {
-          user = await prisma.users.create({
-            data: {
-              name: data.address,
-              walletAddress: data.address
-            }
-          })
-          console.log(`User Created: ${data.address}`)
-        } else {
-          console.log(`User Found: ${data.address}`)
-        }
+        // let user = await prisma.users.findUnique({ where: { walletAddress: data.address } })
+        // if (!user) {
+        //   user = await prisma.users.create({
+        //     data: {
+        //       name: data.address,
+        //       walletAddress: data.address
+        //     }
+        //   })
+        //   console.log(`User Created: ${data.address}`)
+        // } else {
+        //   console.log(`User Found: ${data.address}`)
+        // }
 
-        if (!user) return { id: data.id, error: "User not found" }
+        // if (!user) return { id: data.id, error: "User not found" }
 
-        // 3. create session token
-        const token = jwt.sign({ address: user.name, name: user.name }, JWT_SECRET, { expiresIn: "8h" })
+        // // 3. create session token
+        // const token = jwt.sign({ address: user.name, name: user.name }, JWT_SECRET, { expiresIn: "8h" })
 
-        // 4. update websocket playerName
-        ws.data.playerName = user.name
+        // // 4. update websocket playerName
+        // ws.data.playerName = user.name
 
-        // 5. update player entity name
-        const pc = api.worlds[ws.data.worldId]?.world.entity(ws.data.playerId)?.components.pc
-        if (pc) pc.data.name = user.name
+        // // 5. update player entity name
+        // const pc = api.worlds[ws.data.worldId]?.world.entity(ws.data.playerId)?.components.pc
+        // if (pc) pc.data.name = user.name
 
-        return { id: data.id, token, name: user.name }
+        // return { id: data.id, token, name: user.name }
       },
       "ai/pls": async ({ data }) => {
         const response = await gptPrompt(data.prompt)

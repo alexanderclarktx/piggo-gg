@@ -31,8 +31,9 @@ export type LoginProps = {
 
 export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
 
-  initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (token) => {
-    console.log(token)
+  initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (jwt) => {
+    console.log(jwt)
+    world?.client!.authLogin(jwt)
   })
 
   // setInterval(() => {
