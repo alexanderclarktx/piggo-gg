@@ -138,11 +138,7 @@ export const Client = ({ world }: ClientProps): Client => {
           client.token = response.token
 
           if (localStorage) localStorage.setItem("token", response.token)
-
-          console.log(response.newUser)
-          if (!response.newUser) {
-            client.profileGet()
-          }
+          if (!response.newUser) client.profileGet()
           if (callback) callback(response)
         }
       })

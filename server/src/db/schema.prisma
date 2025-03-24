@@ -11,7 +11,7 @@ generator client {
 
 model users {
   id                     String    @id @default(uuid())
-  name                   String    @unique
+  name                   String    @unique @db.Citext
   googleId               String    @unique
   sentFriendRequests     friends[] @relation("Friendship1")
   receivedFriendRequests friends[] @relation("Friendship2")

@@ -29,35 +29,32 @@ export type LoginProps = {
 
 export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
 
-  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
-  const [usernameInput, setUsernameInput] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [usernameInput, setUsernameInput] = useState("")
+  const [error, setError] = useState("")
 
   const handleUsernameSubmit = () => {
     if (usernameInput.trim()) {
-      // Assuming world.client has a method to set username
-      // Replace with your actual API call (e.g., world.client.setUsername(usernameInput))
-      console.log("Setting username:", usernameInput); // Placeholder
-      setIsUsernameModalOpen(false); // Close modal
-      setUsernameInput(""); // Reset input
       world?.client?.profileCreate(usernameInput, (response) => {
         if ("error" in response) {
-          alert("username taken");
+          setError(`username taken: ${usernameInput}`)
+          setUsernameInput("")
         } else {
-          setIsUsernameModalOpen(false);
-          console.log("username set successfully");
+          setIsModalOpen(false)
+          setUsernameInput("")
         }
-      });
+      })
     } else {
-      alert("please enter a valid username");
+      alert("please enter a valid username")
     }
-  };
+  }
 
   useEffect(() => {
     initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (jwt) => {
       world?.client?.authLogin(jwt, (response) => {
         if (!("error" in response)) {
           if (response.newUser) {
-            setIsUsernameModalOpen(true)
+            setIsModalOpen(true)
           }
         }
       })
@@ -85,7 +82,7 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
         </div>
       </div>
       {
-        isUsernameModalOpen && <div
+        isModalOpen && <div
           style={{
             fontFamily: "Courier New",
             position: "fixed",
@@ -93,17 +90,17 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
             left: 0,
             width: "100vw",
             height: "100vh",
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 1000, // Ensure it’s on top
+            zIndex: 1000
           }}
         >
           <div
             style={{
               border: "1px solid white",
-              // backgroundColor: "white",
+              backgroundColor: "black",
               padding: 20,
               borderRadius: 8,
               width: "300px",
@@ -115,12 +112,15 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
               type="text"
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
-              placeholder="Enter username"
+              placeholder="noob"
               style={{ width: "80%", padding: 8, marginBottom: 10 }}
             />
+            <h3 style={{ color: "red", fontSize: 16 }}>
+              {error}
+            </h3>
             <button
               onClick={handleUsernameSubmit}
-              style={{ padding: "16px 16px", backgroundColor: "#00aaff", color: "white", border: "none", borderRadius: 4 }}
+              style={{ padding: "8px 16px", marginTop: "8px", backgroundColor: "#cc00cc", color: "white", border: "none", borderRadius: 4 }}
             >
               Submit
             </button>
