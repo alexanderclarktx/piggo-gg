@@ -12,7 +12,7 @@ generator client {
 model users {
   id                     String    @id @default(uuid())
   name                   String    @unique
-  walletAddress          String    @unique
+  googleId               String    @unique
   sentFriendRequests     friends[] @relation("Friendship1")
   receivedFriendRequests friends[] @relation("Friendship2")
 }

@@ -70,7 +70,7 @@ export type FriendsRemove = Request<"friends/remove"> & { removeUserId: string }
 export type ProfileGet = Request<"profile/get", { name: string }> & { token: string }
 
 // auth endpoints
-export type AuthLogin = Request<"auth/login", { token: string }> & {
+export type AuthLogin = Request<"auth/login", { token: string, newUser: boolean }> & {
   jwt: string
 }
 
