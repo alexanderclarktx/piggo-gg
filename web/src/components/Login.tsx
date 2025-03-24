@@ -31,7 +31,7 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
 
   useEffect(() => {
     initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (jwt) => {
-      world?.client!.authLogin(jwt)
+      world?.client?.authLogin(jwt)
     })
   }, [loginState])
 
