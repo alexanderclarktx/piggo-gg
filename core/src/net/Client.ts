@@ -16,8 +16,6 @@ export const hosts = {
   production: "https://piggo.gg"
 }
 
-// export const env = location?.hostname === "localhost" ? "dev" : "production"
-
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
 
 export type Client = {
