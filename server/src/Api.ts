@@ -1,7 +1,6 @@
 import { ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
-import { ethers } from "ethers"
 import jwt from "jsonwebtoken"
 import { encode } from "@msgpack/msgpack"
 

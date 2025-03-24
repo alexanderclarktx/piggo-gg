@@ -1,11 +1,21 @@
 import { World } from "@piggo-gg/core"
 import { LoginState } from "@piggo-gg/web"
-import { MetaMaskInpageProvider } from '@metamask/providers'
 
-declare global {
-  interface Window {
-    ethereum?: MetaMaskInpageProvider
-  }
+const initGoogleSignIn = (clientId: string, onSuccess: (token: string) => void) => {
+  window.google.accounts.id.initialize({
+    client_id: clientId,
+    callback: (response: { credential: string }) => {
+      onSuccess(response.credential)
+    }
+  })
+
+  window.google.accounts.id.renderButton(document.getElementById("google-signin")!, {
+    theme: "filled_black",
+    text: "signin_with",
+    size: "medium",
+    type: "standard",
+    shape: "pill"
+  })
 }
 
 const loginStateColors: Record<LoginState, string> = {
@@ -21,47 +31,32 @@ export type LoginProps = {
 
 export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
 
-  setInterval(() => {
-    provider = window.ethereum
-    world?.client?.token ? setLoginState("🟢 Logged In") : setLoginState("not logged in")
-  }, 200)
+  initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (token) => {
+    console.log(token)
+  })
 
-  let provider = window.ethereum
+  // setInterval(() => {
+  //   provider = window.ethereum
+  //   world?.client?.token ? setLoginState("🟢 Logged In") : setLoginState("not logged in")
+  // }, 200)
 
-  const onClick = async () => {
-    if (!provider) return
+  // let provider = window.ethereum
 
-    // get first account in metamask
-    const accounts = await provider.request<string[]>({ method: "eth_requestAccounts" })
-    if (!accounts || accounts.length === 0 || !accounts[0]) {
-      alert("failed to find metamask wallet")
-      return
-    }
+  // const onClick = async () => {
 
-    // sign message
-    const address = accounts[0]
-    const message = `Login to Piggo\n\nWallet: ${address}\n\nTimestamp: ${Date.now()}`
-    const signature = await provider.request<string>({
-      method: "personal_sign",
-      params: [message, address]
-    })
 
-    if (!signature) {
-      alert("failed to sign message")
-      return
-    }
-
-    // login
-    world?.client?.authLogin(address, message, signature)
-  }
+  // // login
+  // world?.client?.authLogin(address, message, signature)
+  // }
 
   return (
     <div style={{ "paddingTop": 0 }}>
-      <div style={{ width: "100%" }}>
+      <div id="google-signin"></div>
+      {/* <div style={{ width: "100%" }}>
         <div style={{ float: "left", marginLeft: 0, paddingLeft: 0, marginTop: 1 }}>
           {loginState === "not logged in" &&
             <button
-              disabled={!Boolean(provider)}
+              // disabled={!Boolean(provider)}
               style={{ fontSize: 14, marginLeft: 0, marginRight: 5 }}
               onClick={onClick}
             >
@@ -72,7 +67,7 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
             {loginState}
           </span>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
