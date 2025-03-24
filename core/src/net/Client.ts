@@ -4,6 +4,7 @@ import {
   Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate
 } from "@piggo-gg/core"
 import { decode } from "@msgpack/msgpack"
+import toast from "react-hot-toast"
 
 const servers = {
   dev: "ws://localhost:3000",
@@ -97,14 +98,14 @@ export const Client = ({ world }: ClientProps): Client => {
       if (client.lobbyId) {
         url = `${hosts[env]}/?join=${client.lobbyId}`
         navigator.clipboard.writeText(url)
-        // toast.success(`Copied Invite URL`)
+        toast.success(`Copied Invite URL`)
       } else {
         client.lobbyCreate((response) => {
           if ("error" in response) return
 
           url = `${hosts[env]}/?join=${response.lobbyId}`
           navigator.clipboard.writeText(url)
-          // toast.success(`Copied Invite URL`)
+          toast.success(`Copied Invite URL`)
         })
       }
     },
