@@ -40,7 +40,7 @@ export type Client = {
   copyInviteLink: () => void
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
-  authLogin: (jwt: string) => void
+  authLogin: (jwt: string, callback?: Callback<AuthLogin>) => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
   profileCreate: (name: string, callback: Callback) => void
   profileGet: (callback?: Callback) => void
@@ -130,7 +130,7 @@ export const Client = ({ world }: ClientProps): Client => {
         }
       })
     },
-    authLogin: async (jwt) => {
+    authLogin: async (jwt, callback) => {
       request<AuthLogin>({ route: "auth/login", type: "request", id: genHash(), jwt }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to login", response.error)
@@ -143,6 +143,7 @@ export const Client = ({ world }: ClientProps): Client => {
           if (!response.newUser) {
             client.profileGet()
           }
+          if (callback) callback(response)
         }
       })
     },
@@ -230,7 +231,7 @@ export const Client = ({ world }: ClientProps): Client => {
       const token = localStorage.getItem("token")
       if (token) {
         client.token = token
-        // client.profileGet()
+        client.profileGet()
       }
     }
   }

@@ -1,6 +1,6 @@
 import { World } from "@piggo-gg/core"
 import { LoginState } from "@piggo-gg/web"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 const initGoogleSignIn = (clientId: string, onSuccess: (token: string) => void) => {
   window.google.accounts.id.initialize({
@@ -29,9 +29,38 @@ export type LoginProps = {
 
 export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
 
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
+  const [usernameInput, setUsernameInput] = useState("");
+
+  const handleUsernameSubmit = () => {
+    if (usernameInput.trim()) {
+      // Assuming world.client has a method to set username
+      // Replace with your actual API call (e.g., world.client.setUsername(usernameInput))
+      console.log("Setting username:", usernameInput); // Placeholder
+      setIsUsernameModalOpen(false); // Close modal
+      setUsernameInput(""); // Reset input
+      world?.client?.profileCreate(usernameInput, (response) => {
+        if ("error" in response) {
+          alert("username taken");
+        } else {
+          setIsUsernameModalOpen(false);
+          console.log("username set successfully");
+        }
+      });
+    } else {
+      alert("please enter a valid username");
+    }
+  };
+
   useEffect(() => {
     initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (jwt) => {
-      world?.client?.authLogin(jwt)
+      world?.client?.authLogin(jwt, (response) => {
+        if (!("error" in response)) {
+          if (response.newUser) {
+            setIsUsernameModalOpen(true)
+          }
+        }
+      })
     })
   }, [loginState])
 
@@ -55,6 +84,49 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
           </span>
         </div>
       </div>
+      {
+        isUsernameModalOpen && <div
+          style={{
+            fontFamily: "Courier New",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000, // Ensure it’s on top
+          }}
+        >
+          <div
+            style={{
+              border: "1px solid white",
+              // backgroundColor: "white",
+              padding: 20,
+              borderRadius: 8,
+              width: "300px",
+              textAlign: "center",
+            }}
+          >
+            <h2>Set Your Username</h2>
+            <input
+              type="text"
+              value={usernameInput}
+              onChange={(e) => setUsernameInput(e.target.value)}
+              placeholder="Enter username"
+              style={{ width: "80%", padding: 8, marginBottom: 10 }}
+            />
+            <button
+              onClick={handleUsernameSubmit}
+              style={{ padding: "16px 16px", backgroundColor: "#00aaff", color: "white", border: "none", borderRadius: 4 }}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      }
     </div>
   )
 }
