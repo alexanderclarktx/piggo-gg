@@ -197,6 +197,7 @@ export const Client = ({ world }: ClientProps): Client => {
   client.ws.addEventListener("message", (event) => {
     try {
       const message = decode(new Uint8Array(event.data)) as NetMessageTypes
+
       if (message.type !== "response") return
 
       if (message.data.id in requestBuffer) {
