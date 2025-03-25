@@ -1,14 +1,14 @@
 import {
-  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, stringify, RequestData,
+  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData,
   RequestTypes, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList,
   Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate
 } from "@piggo-gg/core"
-import { decode } from "@msgpack/msgpack"
+import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
 
 const servers = {
-  // dev: "ws://localhost:3000",
-  dev: "wss://piggo-api-staging.up.railway.app",
+  dev: "ws://localhost:3000",
+  // dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 
@@ -60,7 +60,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {
     const requestData: RequestData = { type: "request", data }
-    client.ws.send(stringify(requestData))
+    client.ws.send(encode(requestData))
     requestBuffer[requestData.data.id] = callback
     // TODO handle timeout
   }

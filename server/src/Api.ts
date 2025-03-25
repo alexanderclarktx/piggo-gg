@@ -2,7 +2,7 @@ import { ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseD
 import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import jwt from "jsonwebtoken"
-import { encode } from "@msgpack/msgpack"
+import { decode, encode } from "@msgpack/msgpack"
 import { OAuth2Client } from "google-auth-library"
 
 export type PerClientData = {
@@ -26,7 +26,7 @@ export type Api = {
   init: () => Api
   handleClose: (ws: ServerWebSocket<PerClientData>) => void
   handleOpen: (ws: ServerWebSocket<PerClientData>) => void
-  handleMessage: (ws: ServerWebSocket<PerClientData>, data: string) => void
+  handleMessage: (ws: ServerWebSocket<PerClientData>, data: Buffer) => void
 }
 
 export const Api = (): Api => {
@@ -213,10 +213,8 @@ export const Api = (): Api => {
       // increment id
       api.clientIncr += 1
     },
-    handleMessage: (ws: ServerWebSocket<PerClientData>, data: string) => {
-      if (typeof data != "string") return
-
-      const wsData = JSON.parse(data) as NetMessageTypes
+    handleMessage: (ws: ServerWebSocket<PerClientData>, data: Buffer) => {
+      const wsData = decode(data) as NetMessageTypes
       if (!wsData.type) return
 
       if (wsData.type === "request") {

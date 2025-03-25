@@ -90,21 +90,24 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
 
       // consume buffer
-      // if (buffer.length > 2) {
-      //   // preRead(message)
-      //   // message = buffer.shift() as GameData
+      if (buffer.length > 1) {
+        preRead(message)
+        message = buffer.shift() as GameData
+      }
       //   console.log(`large buffer: ${buffer.length} diff:${message.diff}`)
       //   // world.tickrate = 30
       // } else {
       //   // world.tickrate = 25
       // }
 
-      // if (message.diff ?? 0 > 2) {
-      //   console.log("LARGE DIFF", message.diff)
-      //   // world.tickrate = 20
-      // } else {
-      //   // world.tickrate = 25
-      // }
+      if ((message.diff ?? 1) > 2) {
+        console.log("LARGE DIFF", message.diff)
+        world.tickrate = 30
+      } else if ((message.diff ?? 1) <= 0) {
+        world.tickrate = 20
+      } else {
+        world.tickrate = 25
+      }
 
       if (message.tick <= last) {
         console.error(`OUT OF ORDER last:${last} msg:${message.tick} client${world.client?.lastMessageTick}`)
@@ -257,6 +260,8 @@ export const RollbackSyncer = (world: World): Syncer => {
         world.entitiesAtTick[message.tick] = {
           ...message.serializedEntities
         }
+
+        buffer = []
 
         console.log(`rollback was:${was} msg:${message.tick} forward:${framesForward} end:${world.tick}`)
       }
