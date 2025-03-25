@@ -50,7 +50,7 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
   }
 
   useEffect(() => {
-    try {
+    if (window.google) {
       initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (jwt) => {
         world?.client?.authLogin(jwt, (response) => {
           if (!("error" in response)) {
@@ -60,8 +60,6 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
           }
         })
       })
-    } catch (e) {
-      console.error("error initializing google sign in", e)
     }
   }, [loginState])
 
