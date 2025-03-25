@@ -67,12 +67,12 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
 
 export type PixiButtonProps = {
   content: () => { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number },
-  onClick: () => void
+  onClick?: () => void
   onEnter?: () => void
   onLeave?: () => void
 }
 
-export type PixiButton = { c: Container, onClick: () => void, redraw: () => void }
+export type PixiButton = { c: Container, onClick: undefined | (() => void), redraw: () => void }
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
@@ -93,9 +93,9 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
   }
 
   const c = new Container({
-    onpointerdown: props.onClick,
     children: draw(props.content()),
     interactive: true,
+    ...props.onClick && { onpointerdown: props.onClick },
     ...props.onEnter && { onpointerenter: props.onEnter },
     ...props.onLeave && { onpointerleave: props.onLeave }
   })

@@ -19,7 +19,6 @@ export const Tooltip = (id: string, text: string) => {
         zIndex: 100,
         dynamic: () => {
           if (sinceShown > 300) return
-
           if (sinceShown >= 1) sinceShown += 1
 
           if (!explainer || !explainerBg) return
@@ -57,13 +56,8 @@ export const Tooltip = (id: string, text: string) => {
               anchor: { x: 0.45, y: 0.5 },
               style: { fontSize: 26, fill: 0xffffff, dropShadow: true, resolution: 4, fontFamily: "Times New Roman" }
             }),
-            onClick: () => { },
-            onEnter: () => {
-              sinceShown = 0
-            },
-            onLeave: () => {
-              sinceShown = 1
-            }
+            onEnter: () => sinceShown = 0,
+            onLeave: () => sinceShown = 1
           })
 
           const circle = pixiGraphics().circle(0, 0, 16).stroke({ color: 0xffffff, width: 2 })
