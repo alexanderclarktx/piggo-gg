@@ -11,11 +11,10 @@ export const NetClientWriteSystem = SystemBuilder({
     const { client } = world
     if (!client) return undefined
 
-    const syncers: Record<Game["netcode"], Syncer> = {
+    const syncer = () => ({
       delay: DelaySyncer(),
       rollback: RollbackSyncer(world)
-    }
-    const syncer = () => syncers[world.game.netcode]
+    }[world.game.netcode])
 
     return {
       id: "NetClientWriteSystem",
@@ -46,11 +45,10 @@ export const NetClientReadSystem = SystemBuilder({
 
     let buffer: GameData[] = []
 
-    const syncers: Record<Game["netcode"], Syncer> = {
+    const syncer = () => ({
       delay: DelaySyncer(),
       rollback: RollbackSyncer(world)
-    }
-    const syncer = () => syncers[world.game.netcode]
+    }[world.game.netcode])
 
     world.actions.clearBeforeTick(tick + 2)
 
@@ -74,7 +72,7 @@ export const NetClientReadSystem = SystemBuilder({
         if (message.latency) client.ms = skew + message.latency
 
         if (world.tick % 100 === 0) {
-          console.log(`skew:${skew} ms:${client.ms} diff:${message.diff}`)
+          console.log(`skew:${skew} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
         }
 
         // set flag to green
