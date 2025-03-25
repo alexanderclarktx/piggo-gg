@@ -195,7 +195,7 @@ export const Api = (): Api => {
           close: api.handleClose,
           open: api.handleOpen,
           message: api.handleMessage,
-        },
+        }
       })
 
       return api
