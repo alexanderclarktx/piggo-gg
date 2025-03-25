@@ -5,10 +5,11 @@ export type DelayServerSystemProps = {
   world: World
   clients: Record<string, { send: (_: string | Uint8Array, compress?: boolean) => number }>
   latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
+  latestClientDiff: Record<string, number>
 }
 
 // delay netcode server
-export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System<"NetServerSystem"> => {
+export const NetServerSystem = ({ world, clients, latestClientMessages, latestClientDiff }: DelayServerSystemProps): System<"NetServerSystem"> => {
 
   let lastSent = 0
 
@@ -31,6 +32,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
       client.send(encode({
         ...tickData,
         latency: latestClientMessages[id]?.at(-1)?.latency,
+        diff: latestClientDiff[id]
       }))
       if (world.tick - 1 !== lastSent) {
         console.error(`sent last:${lastSent} world:${world.tick} to ${id}`)

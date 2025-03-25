@@ -21,8 +21,9 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
 
   const world = DefaultWorld({ mode: "server", games })
   const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {}
+  const latestClientDiff: Record<string, number> = {}
 
-  world.addSystems([NetServerSystem({ world, clients, latestClientMessages })])
+  world.addSystems([NetServerSystem({ world, clients, latestClientMessages, latestClientDiff })])
   world.addSystemBuilders([NoobSystem])
 
   return {
@@ -66,7 +67,10 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
         latency: Date.now() - msg.timestamp
       })
 
-      if (world.tick % 400 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${msg.tick - world.tick}`)
+      const diff = msg.tick - world.tick
+      latestClientDiff[msg.playerId] = diff
+
+      if (world.tick % 400 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${diff}`)
     }
   }
 }

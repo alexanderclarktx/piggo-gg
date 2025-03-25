@@ -88,10 +88,13 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       // consume buffer
       if (buffer.length > 2) {
-        preRead(message)
-        message = buffer.shift() as GameData
-        console.log("large buffer", buffer.length)
+        // preRead(message)
+        // message = buffer.shift() as GameData
+        console.log(`large buffer: ${buffer.length} diff:${message.diff}`)
+        world.tickrate = 30
       }
+
+
 
       if (message.tick <= last) {
         console.error(`OUT OF ORDER last:${last} msg:${message.tick} client${world.client?.lastMessageTick}`)
