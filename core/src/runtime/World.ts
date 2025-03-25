@@ -83,7 +83,6 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     tickrate: 25,
     tileMap: undefined,
     addEntity: (entity: Entity) => {
-      if (world.mode === "server" && !entity.components.networked) return undefined
 
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable) {

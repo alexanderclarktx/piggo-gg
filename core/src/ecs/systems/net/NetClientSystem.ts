@@ -70,8 +70,12 @@ export const NetClientReadSystem = SystemBuilder({
         client.lastMessageTick = message.tick
 
         // record latency
-        client.lastLatency = Date.now() - message.timestamp
-        if (message.latency) client.ms = (client.lastLatency + message.latency) / 2
+        const skew = Date.now() - message.timestamp
+        if (message.latency) client.ms = skew + message.latency
+
+        if (world.tick % 100 === 0) {
+          console.log(`skew:${skew} ms:${client.ms} diff:${message.diff}`)
+        }
 
         // set flag to green
         world.tickFlag = "green"

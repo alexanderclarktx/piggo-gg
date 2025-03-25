@@ -40,7 +40,7 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
       sortedComponents.forEach((component: Component<string, NetworkedComponentData>) => {
         const serializedComponent = serializeComponent(component)
         if (keys(serializedComponent).length) {
-          serializedEntity[component.type] = serializedComponent
+          serializedEntity[component.type] = { ...serializedComponent }
         }
       })
       return serializedEntity

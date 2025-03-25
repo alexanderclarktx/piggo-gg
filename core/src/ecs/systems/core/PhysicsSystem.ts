@@ -17,7 +17,7 @@ export const PhysicsSystem = SystemBuilder({
       physics.free()
 
       physics = new RapierWorld({ x: 0, y: 0 })
-      physics.timestep = world.tickrate / 1000 / 4
+      physics.timestep = 0.00625 // 25 / 1000 / 4
     }
 
     return {

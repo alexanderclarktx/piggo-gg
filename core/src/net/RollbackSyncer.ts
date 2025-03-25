@@ -66,7 +66,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
   return {
     write: (world) => ({
-      actions: world.actions.fromTick(world.tick, s => s.offline !== true),
+      actions: world.actions.fromTick(world.tick + 1, s => s.offline !== true),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
@@ -92,6 +92,8 @@ export const RollbackSyncer = (world: World): Syncer => {
         // message = buffer.shift() as GameData
         console.log(`large buffer: ${buffer.length} diff:${message.diff}`)
         world.tickrate = 30
+      } else {
+        world.tickrate = 25
       }
 
 

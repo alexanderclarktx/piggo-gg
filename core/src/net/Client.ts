@@ -27,7 +27,6 @@ export type Client = {
     reset: () => void
   }
   env: "dev" | "production"
-  lastLatency: number
   lastMessageTick: number
   lobbyId: string | undefined
   ms: number
@@ -76,7 +75,6 @@ export const Client = ({ world }: ClientProps): Client => {
       reset: () => client.clickThisFrame.value = 0
     },
     env,
-    lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
     ms: 0,
