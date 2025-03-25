@@ -192,21 +192,24 @@ export const RollbackSyncer = (world: World): Syncer => {
 
         // sync entities
         keys(message.serializedEntities).forEach((entityId) => {
-          // todo still stutters when other dude hits ball
+
+          // ignore other players' characters
           if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
             return
           }
+
           if (!world.entities[entityId]) {
             const entityKind = entityId.split("-")[0]
             const constructor = entityConstructors[entityKind]
             if (constructor !== undefined) {
               console.log("ADD ENTITY", entityId)
               world.addEntity(constructor({ id: entityId }))
+              world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
             } else {
               console.error("UNKNOWN ENTITY ON SERVER", entityId)
             }
           } else {
-            world.entities[entityId].deserialize(message.serializedEntities[entityId])
+            world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
           }
         })
 
