@@ -16,6 +16,7 @@ export const RollbackSyncer = (world: World): Syncer => {
   // find latest actions for other players' characters
   const handleOtherPlayers = (message: GameData) => {
 
+    // movement
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
@@ -30,6 +31,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
     }
 
+    // spike
     for (const [tick, actionSet] of entries(message.actions)) {
       for (const [entityId, actions] of entries(actionSet)) {
         if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
@@ -43,6 +45,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
     }
 
+    // deserialize
     keys(message.serializedEntities).forEach((entityId) => {
       if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
         world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
@@ -87,16 +90,21 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
 
       // consume buffer
-      if (buffer.length > 2) {
-        // preRead(message)
-        // message = buffer.shift() as GameData
-        console.log(`large buffer: ${buffer.length} diff:${message.diff}`)
-        world.tickrate = 30
-      } else {
-        world.tickrate = 25
-      }
+      // if (buffer.length > 2) {
+      //   // preRead(message)
+      //   // message = buffer.shift() as GameData
+      //   console.log(`large buffer: ${buffer.length} diff:${message.diff}`)
+      //   // world.tickrate = 30
+      // } else {
+      //   // world.tickrate = 25
+      // }
 
-
+      // if (message.diff ?? 0 > 2) {
+      //   console.log("LARGE DIFF", message.diff)
+      //   // world.tickrate = 20
+      // } else {
+      //   // world.tickrate = 25
+      // }
 
       if (message.tick <= last) {
         console.error(`OUT OF ORDER last:${last} msg:${message.tick} client${world.client?.lastMessageTick}`)

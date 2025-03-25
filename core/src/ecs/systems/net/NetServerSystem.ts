@@ -66,7 +66,6 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
 
         const { td } = message
 
-        // console.log(`reading ${td.tick}`)
         if (td.tick - 1 !== latestClientMSG[clientId]) {
           console.error(`out of order message ${td.tick} ${latestClientMSG[clientId]}`)
         }

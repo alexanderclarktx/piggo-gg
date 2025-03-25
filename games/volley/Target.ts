@@ -13,7 +13,7 @@ const Target = (ball: Entity<Position | Renderable>) => {
       position: Position(),
       networked: Networked(),
       npc: NPC({
-        behavior: (_, world) => {
+        behavior: () => {
           const { z, x, y, velocity: v, gravity, standing } = ball.components.position.data
 
           if (v.x === last.x && v.y === last.y) return
@@ -22,8 +22,8 @@ const Target = (ball: Entity<Position | Renderable>) => {
           const t = timeToLand(gravity, z, v.z)
 
           target.components.position.setPosition({
-            x: x + v.x * t / 1000 * world.tickrate,
-            y: y + v.y * t / 1000 * world.tickrate
+            x: x + v.x * t / 1000 * 25,
+            y: y + v.y * t / 1000 * 25
           })
 
           target.components.renderable.visible = (!standing && gravity > 0)

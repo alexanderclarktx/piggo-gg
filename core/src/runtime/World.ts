@@ -83,7 +83,6 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     tickrate: 25,
     tileMap: undefined,
     addEntity: (entity: Entity) => {
-
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable) {
         oldEntity.components.renderable.cleanup()
