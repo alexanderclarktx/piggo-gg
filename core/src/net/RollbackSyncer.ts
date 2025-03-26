@@ -94,16 +94,12 @@ export const RollbackSyncer = (world: World): Syncer => {
         preRead(message)
         message = buffer.shift() as GameData
       }
-      //   console.log(`large buffer: ${buffer.length} diff:${message.diff}`)
-      //   // world.tickrate = 30
-      // } else {
-      //   // world.tickrate = 25
-      // }
 
       if ((message.diff ?? 1) > 2) {
         console.log("LARGE DIFF", message.diff)
         world.tickrate = 30
       } else if ((message.diff ?? 1) <= 0) {
+        console.log("NEGATIVE DIFF", message.diff)
         world.tickrate = 20
       } else {
         world.tickrate = 25
