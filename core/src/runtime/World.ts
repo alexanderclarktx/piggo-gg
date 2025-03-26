@@ -20,7 +20,6 @@ export type World = {
   renderer: Renderer | undefined
   systems: Record<string, System>
   tick: number
-  tickFaster: boolean
   tickFlag: "green" | "red"
   tickrate: number
   tileMap: number[] | undefined
@@ -78,7 +77,6 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     renderer,
     systems: {},
     tick: 0,
-    tickFaster: false,
     tickFlag: "green",
     tickrate: 25,
     tileMap: undefined,
@@ -144,7 +142,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       const now = performance.now()
 
       // check whether it's time to calculate the next tick
-      if (!world.tickFaster && !isRollback && ((world.lastTick + world.tickrate) > now)) {
+      if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
         scheduleOnTick()
         return
       }
@@ -156,7 +154,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       }
 
       // update lastTick
-      if (!isRollback && !world.tickFaster) {
+      if (!isRollback) {
         if ((now - world.tickrate - world.tickrate) > world.lastTick) {
           // catch up (browser was delayed)
           world.lastTick = now
