@@ -31,20 +31,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
     entries(clients).forEach(([id, client]) => {
       client.send(encode({
         ...tickData,
-        latency: latestClientMessages[id]?.at(-1)?.latency,
+        latency: latestClientMessages[id]?.at(0)?.latency,
         diff: latestClientDiff[id]
       }))
       if (world.tick - 1 !== lastSent) {
         console.error(`sent last:${lastSent} world:${world.tick} to ${id}`)
-      }
-
-      if (world.game.netcode === "delay") {
-        if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
-          latestClientMessages[id].shift()
-          latestClientMessages[id].shift()
-        } else {
-          latestClientMessages[id]?.shift()
-        }
       }
     })
 
@@ -103,8 +94,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
 
       if (latestClientMessages[client].length > 2) {
         messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
+        latestClientMessages[client].shift()
+        latestClientMessages[client].shift()
       } else {
         messages = [latestClientMessages[client][0]]
+        latestClientMessages[client].shift()
       }
       if (messages.length === 0) return
 
