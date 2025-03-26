@@ -46,8 +46,6 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
     (world.game.netcode === "delay") ? delay() : rollback()
   }
 
-  const latestClientMSG: Record<string, number> = {}
-
   const rollback = () => {
     for (const clientId of keys(latestClientMessages)) {
       const messages = latestClientMessages[clientId]
@@ -57,19 +55,10 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
 
         const { td } = message
 
-        if (td.tick - 1 !== latestClientMSG[clientId]) {
-          console.error(`out of order message ${td.tick} ${latestClientMSG[clientId]}`)
-        }
-        latestClientMSG[clientId] = td.tick
-
         // process message actions
         if (td.actions[td.tick]) {
-          // const playerEntity = world.entity(td.playerId)
-          // const playerCharacter = playerEntity?.components.controlling?.getCharacter(world)
-
           entries(td.actions[td.tick]).forEach(([entityId, actions]) => {
 
-            // if (entityId !== td.playerId && entityId != playerCharacter?.id) return
             actions.forEach((action) => {
               world.actions.push(td.tick, entityId, action)
             })
