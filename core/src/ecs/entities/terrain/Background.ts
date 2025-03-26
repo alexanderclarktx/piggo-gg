@@ -1,5 +1,5 @@
 import { Collider, Entity, Position, Renderable } from "@piggo-gg/core"
-import { Assets, ColorMatrixFilter, Sprite, Texture, TilingSprite } from "pixi.js"
+import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
 import { AdvancedBloomFilter, GodrayFilter } from "pixi-filters"
 
 export type BackgroundProps = {
@@ -26,12 +26,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
           new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })
         )
 
-        renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 0.7 }))
-
-        const cmFilter = new ColorMatrixFilter()
-        renderable.filters.push(cmFilter)
-        cmFilter.saturate(0.7)
-        cmFilter.contrast(0.1, false)
+        renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 1 }))
 
         let texture: Texture
 
