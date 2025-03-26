@@ -11,7 +11,7 @@
   <path d="M100 75 Q115 45 130 75" fill="none" stroke="black" stroke-width="9"/>
 
   <!-- nose -->
+  <ellipse cx="80" cy="115" rx="30" ry="20" fill="#FFA0AB" stroke="black" stroke-width="4"/> 
   <circle cx="70" cy="115" r="7" fill="black"/>
   <circle cx="90" cy="115" r="7" fill="black"/>
-  <ellipse cx="80" cy="115" rx="30" ry="20" fill="none" stroke="black" stroke-width="6"/> 
 </svg>

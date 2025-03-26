@@ -5,10 +5,11 @@ export type DelayServerSystemProps = {
   world: World
   clients: Record<string, { send: (_: string | Uint8Array, compress?: boolean) => number }>
   latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
+  latestClientDiff: Record<string, number>
 }
 
 // delay netcode server
-export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayServerSystemProps): System<"NetServerSystem"> => {
+export const NetServerSystem = ({ world, clients, latestClientMessages, latestClientDiff }: DelayServerSystemProps): System<"NetServerSystem"> => {
 
   let lastSent = 0
 
@@ -30,19 +31,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
     entries(clients).forEach(([id, client]) => {
       client.send(encode({
         ...tickData,
-        latency: latestClientMessages[id]?.at(-1)?.latency,
+        latency: latestClientMessages[id]?.at(0)?.latency,
+        diff: latestClientDiff[id]
       }))
       if (world.tick - 1 !== lastSent) {
         console.error(`sent last:${lastSent} world:${world.tick} to ${id}`)
-      }
-
-      if (world.game.netcode === "delay") {
-        if (latestClientMessages[id] && latestClientMessages[id].length > 2) {
-          latestClientMessages[id].shift()
-          latestClientMessages[id].shift()
-        } else {
-          latestClientMessages[id]?.shift()
-        }
       }
     })
 
@@ -65,6 +58,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
         // process message actions
         if (td.actions[td.tick]) {
           entries(td.actions[td.tick]).forEach(([entityId, actions]) => {
+
             actions.forEach((action) => {
               world.actions.push(td.tick, entityId, action)
             })
@@ -89,8 +83,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages }: DelayS
 
       if (latestClientMessages[client].length > 2) {
         messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
+        latestClientMessages[client].shift()
+        latestClientMessages[client].shift()
       } else {
         messages = [latestClientMessages[client][0]]
+        latestClientMessages[client].shift()
       }
       if (messages.length === 0) return
 

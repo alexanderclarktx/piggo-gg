@@ -327,7 +327,7 @@ const Profile = (): Entity => {
           drawOutline()
 
           const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
-          const pfp = new Sprite({ texture, scale: 1.5, anchor: 0.5, position: { x: 100, y: 70 } })
+          const pfp = new Sprite({ texture, scale: 1.6, anchor: {x: 0.5, y: 0}, position: { x: 100, y: 25 } })
 
           r.c.addChild(outline, playerName, pfp)
         }

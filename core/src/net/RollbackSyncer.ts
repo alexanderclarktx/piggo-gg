@@ -16,6 +16,7 @@ export const RollbackSyncer = (world: World): Syncer => {
   // find latest actions for other players' characters
   const handleOtherPlayers = (message: GameData) => {
 
+    // movement
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
@@ -30,6 +31,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
     }
 
+    // spike
     for (const [tick, actionSet] of entries(message.actions)) {
       for (const [entityId, actions] of entries(actionSet)) {
         if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
@@ -43,6 +45,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
     }
 
+    // deserialize
     keys(message.serializedEntities).forEach((entityId) => {
       if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
         world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
@@ -66,7 +69,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
   return {
     write: (world) => ({
-      actions: world.actions.fromTick(world.tick, s => s.offline !== true),
+      actions: world.actions.fromTick(world.tick + 1, s => s.offline !== true),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
@@ -87,10 +90,19 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
 
       // consume buffer
-      if (buffer.length > 2) {
+      if (buffer.length > 1) {
         preRead(message)
         message = buffer.shift() as GameData
-        console.log("large buffer", buffer.length)
+      }
+
+      if ((message.diff ?? 1) > 2) {
+        console.log("LARGE DIFF", message.diff)
+        world.tickrate = 30
+      } else if ((message.diff ?? 1) <= 0) {
+        console.log("NEGATIVE DIFF", message.diff)
+        world.tickrate = 20
+      } else {
+        world.tickrate = 25
       }
 
       if (message.tick <= last) {
@@ -179,21 +191,24 @@ export const RollbackSyncer = (world: World): Syncer => {
 
         // sync entities
         keys(message.serializedEntities).forEach((entityId) => {
-          // todo still stutters when other dude hits ball
+
+          // ignore other players' characters
           if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
             return
           }
+
           if (!world.entities[entityId]) {
             const entityKind = entityId.split("-")[0]
             const constructor = entityConstructors[entityKind]
             if (constructor !== undefined) {
               console.log("ADD ENTITY", entityId)
               world.addEntity(constructor({ id: entityId }))
+              world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
             } else {
               console.error("UNKNOWN ENTITY ON SERVER", entityId)
             }
           } else {
-            world.entities[entityId].deserialize(message.serializedEntities[entityId])
+            world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
           }
         })
 
@@ -241,6 +256,8 @@ export const RollbackSyncer = (world: World): Syncer => {
         world.entitiesAtTick[message.tick] = {
           ...message.serializedEntities
         }
+
+        buffer = []
 
         console.log(`rollback was:${was} msg:${message.tick} forward:${framesForward} end:${world.tick}`)
       }

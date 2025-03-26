@@ -1,4 +1,4 @@
-import { DefaultWorld, keys, NetMessageTypes, NetServerSystem, Player, World } from "@piggo-gg/core"
+import { DefaultWorld, GameData, keys, NetMessageTypes, NetServerSystem, Player, World } from "@piggo-gg/core"
 import { games } from "@piggo-gg/games"
 import { PerClientData, NoobSystem } from "@piggo-gg/server"
 import { ServerWebSocket } from "bun"
@@ -20,9 +20,10 @@ export type ServerWorldProps = {
 export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorld => {
 
   const world = DefaultWorld({ mode: "server", games })
-  const latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]> = {}
+  const latestClientMessages: Record<string, { td: GameData, latency: number }[]> = {}
+  const latestClientDiff: Record<string, number> = {}
 
-  world.addSystems([NetServerSystem({ world, clients, latestClientMessages })])
+  world.addSystems([NetServerSystem({ world, clients, latestClientMessages, latestClientDiff })])
   world.addSystemBuilders([NoobSystem])
 
   return {
@@ -66,7 +67,10 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
         latency: Date.now() - msg.timestamp
       })
 
-      if (world.tick % 400 === 0) console.log(`world:${world.tick} msg:${msg.tick} diff:${msg.tick - world.tick}`)
+      const diff = msg.tick - world.tick
+      latestClientDiff[msg.playerId] = diff
+
+      if (world.tick % 400 === 0) console.log(`player:${ws.data.playerName} diff:${diff}`)
     }
   }
 }

@@ -1,9 +1,9 @@
 import {
-  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, stringify, RequestData,
+  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData,
   RequestTypes, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList,
   Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate
 } from "@piggo-gg/core"
-import { decode } from "@msgpack/msgpack"
+import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
 
 const servers = {
@@ -27,7 +27,6 @@ export type Client = {
     reset: () => void
   }
   env: "dev" | "production"
-  lastLatency: number
   lastMessageTick: number
   lobbyId: string | undefined
   ms: number
@@ -61,7 +60,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {
     const requestData: RequestData = { type: "request", data }
-    client.ws.send(stringify(requestData))
+    client.ws.send(encode(requestData))
     requestBuffer[requestData.data.id] = callback
     // TODO handle timeout
   }
@@ -76,7 +75,6 @@ export const Client = ({ world }: ClientProps): Client => {
       reset: () => client.clickThisFrame.value = 0
     },
     env,
-    lastLatency: 0,
     lastMessageTick: 0,
     lobbyId: undefined,
     ms: 0,
@@ -197,6 +195,7 @@ export const Client = ({ world }: ClientProps): Client => {
   client.ws.addEventListener("message", (event) => {
     try {
       const message = decode(new Uint8Array(event.data)) as NetMessageTypes
+
       if (message.type !== "response") return
 
       if (message.data.id in requestBuffer) {

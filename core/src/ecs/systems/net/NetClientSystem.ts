@@ -1,8 +1,7 @@
 import {
-  DelaySyncer, Game, GameData, RollbackSyncer, Syncer,
-  SystemBuilder, entries, keys, stringify
+  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys, stringify
 } from "@piggo-gg/core"
-import { decode } from "@msgpack/msgpack"
+import { decode, encode } from "@msgpack/msgpack"
 
 export const NetClientWriteSystem = SystemBuilder({
   id: "NetClientWriteSystem",
@@ -11,11 +10,10 @@ export const NetClientWriteSystem = SystemBuilder({
     const { client } = world
     if (!client) return undefined
 
-    const syncers: Record<Game["netcode"], Syncer> = {
+    const syncer = () => ({
       delay: DelaySyncer(),
       rollback: RollbackSyncer(world)
-    }
-    const syncer = () => syncers[world.game.netcode]
+    }[world.game.netcode])
 
     return {
       id: "NetClientWriteSystem",
@@ -23,14 +21,15 @@ export const NetClientWriteSystem = SystemBuilder({
       query: [],
       skipOnRollback: true,
       onTick: () => {
-        const message = syncer().write(world)
-        try {
-          if (client.ws.readyState === WebSocket.OPEN) {
-            client.ws.send(stringify(message))
+        if (client.ws.readyState === WebSocket.OPEN) {
+          try {
+            const message = syncer().write(world)
+            client.ws.send(encode(message))
+            // if (keys(message.actions[world.tick + 1]).length > 0) console.log("sent actions", message.actions)
           }
-          // if (keys(message.actions[world.tick + 1]).length > 0) console.log("sent actions", message.actions)
-        } catch (e) {
-          console.error("NetcodeSystem: error sending message", message)
+          catch (e) {
+            console.error("NetcodeSystem: error sending message")
+          }
         }
       }
     }
@@ -46,11 +45,10 @@ export const NetClientReadSystem = SystemBuilder({
 
     let buffer: GameData[] = []
 
-    const syncers: Record<Game["netcode"], Syncer> = {
+    const syncer = () => ({
       delay: DelaySyncer(),
       rollback: RollbackSyncer(world)
-    }
-    const syncer = () => syncers[world.game.netcode]
+    }[world.game.netcode])
 
     world.actions.clearBeforeTick(tick + 2)
 
@@ -70,8 +68,12 @@ export const NetClientReadSystem = SystemBuilder({
         client.lastMessageTick = message.tick
 
         // record latency
-        client.lastLatency = Date.now() - message.timestamp
-        if (message.latency) client.ms = (client.lastLatency + message.latency) / 2
+        const skew = Date.now() - message.timestamp
+        if (message.latency) client.ms = skew + message.latency
+
+        if (world.tick % 100 === 0) {
+          // console.log(`skew:${skew} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
+        }
 
         // set flag to green
         world.tickFlag = "green"
@@ -99,13 +101,6 @@ export const NetClientReadSystem = SystemBuilder({
         if (buffer.length > 10) {
           buffer = []
           return
-        }
-
-        // tick faster if slightly behind
-        if (buffer.length > 2 && world.game.netcode === "delay") {
-          world.tickFaster = true
-        } else {
-          world.tickFaster = false
         }
 
         // handle oldest message in buffer

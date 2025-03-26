@@ -1,9 +1,6 @@
 import OpenAI from "openai"
 
-const client = new OpenAI({
-  dangerouslyAllowBrowser: true,
-  fetch: Bun.fetch
-})
+const client = new OpenAI()
 
 export const gptPrompt = async (content: string): Promise<string[]> => {
   try {

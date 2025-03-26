@@ -4,11 +4,10 @@ import {
   ItemSystem, NPCSystem, NametagSystem, PhysicsSystem, PlsCommand, PositionSystem, RandomSystem,
   RemoveCommand, RenderSystem, SpawnCommand, World, WorldBuilder, WorldProps
 } from "@piggo-gg/core"
-import { NameCommand } from "../ecs/commands/NameCommand"
 
 export const DefaultWorld: WorldBuilder = (props: WorldProps) => World({
   ...props,
-  commands: [GameCommand, SpawnCommand, NameCommand, DebugCommand, RemoveCommand, PlsCommand],
+  commands: [GameCommand, SpawnCommand, DebugCommand, RemoveCommand, PlsCommand],
   systems: [
     RandomSystem, ExpiresSystem, ControlSystem, ClickableSystem, InputSystem, DebugSystem, ItemSystem,
     HealthSystem, DamageSystem, CommandSystem, NPCSystem, NametagSystem, CooldownSystem,
