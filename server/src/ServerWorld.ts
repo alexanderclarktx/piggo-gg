@@ -22,7 +22,6 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
   const world = DefaultWorld({ mode: "server", games })
   const latestClientMessages: Record<string, { td: GameData, latency: number }[]> = {}
   const latestClientDiff: Record<string, number> = {}
-  const latestClientTick: Record<string, number> = {}
 
   world.addSystems([NetServerSystem({ world, clients, latestClientMessages, latestClientDiff })])
   world.addSystemBuilders([NoobSystem])
@@ -62,19 +61,11 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
         console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`)
       }
 
-      // const lastMessageTick = latestClientMessages[msg.playerId].at(-1)?.td.tick
-      // console.log(`lastMessageTick:${lastMessageTick} msg.tick:${msg.tick}`)
-      if (msg.tick !== latestClientTick[msg.playerId] + 1) {
-        console.error(`out of order message ${msg.tick} ${latestClientTick[msg.playerId]}`)
-      }
-
       // store last message for client
       latestClientMessages[msg.playerId].push({
         td: msg,
         latency: Date.now() - msg.timestamp
       })
-
-      latestClientTick[msg.playerId] = msg.tick
 
       const diff = msg.tick - world.tick
       latestClientDiff[msg.playerId] = diff
