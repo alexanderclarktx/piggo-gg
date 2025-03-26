@@ -25,19 +25,17 @@ export const Title = ({ world, loginState, setLoginState }: TitleProps) => {
           Piggo
         </h1>
         <svg height="30" viewBox="0 0 170 170" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <mask id="mask1">
-              <rect width="200" height="200" fill="white" />
-              <path d="M30 75 Q45 45 60 75" fill="none" stroke="black" strokeWidth="9" />
-              <path d="M100 75 Q115 45 130 75" fill="none" stroke="black" strokeWidth="9" />
-              <circle cx="70" cy="115" r="7" fill="black" />
-              <circle cx="90" cy="115" r="7" fill="black" />
-              <ellipse cx="80" cy="115" rx="30" ry="20" fill="none" stroke="black" strokeWidth="6" />
-            </mask>
-          </defs>
-          <circle cx="80" cy="90" r="80" fill="#FFC0CB" mask="url(#mask1)" />
-          <path d="M10 52 C10 -10, 20 0, 60 12" fill="#FFC0CB" mask="url(#mask1)" />
-          <path d="M150 52 C150 -10, 140 0, 100 12" fill="#FFC0CB" mask="url(#mask1)" />
+          <circle cx="80" cy="90" r="80" fill="#FFC0CB" />
+
+          <path d="M10 52 C10 -10, 20 0, 60 12" fill="#FFC0CB" />
+          <path d="M150 52 C150 -10, 140 0, 100 12" fill="#FFC0CB" />
+
+          <path d="M30 75 Q45 45 60 75" fill="none" stroke="black" stroke-width="9" />
+          <path d="M100 75 Q115 45 130 75" fill="none" stroke="black" stroke-width="9" />
+
+          <ellipse cx="80" cy="115" rx="30" ry="20" fill="#FFA0AB" stroke="black" stroke-width="4" />
+          <circle cx="70" cy="115" r="7" fill="black" />
+          <circle cx="90" cy="115" r="7" fill="black" />
         </svg>
       </div>
 
