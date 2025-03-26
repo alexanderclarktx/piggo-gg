@@ -2,9 +2,9 @@ import { World } from "@piggo-gg/core"
 import { LoginState } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 
-const initGoogleSignIn = (clientId: string, onSuccess: (token: string) => void) => {
+const initGoogleSignIn = (onSuccess: (token: string) => void) => {
   window.google.accounts.id.initialize({
-    client_id: clientId,
+    client_id: "1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com",
     callback: (response: { credential: string }) => {
       onSuccess(response.credential)
     }
@@ -50,17 +50,11 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
   }
 
   useEffect(() => {
-    if (window.google) {
-      initGoogleSignIn("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com", (jwt) => {
-        world?.client?.authLogin(jwt, (response) => {
-          if (!("error" in response)) {
-            if (response.newUser) {
-              setIsModalOpen(true)
-            }
-          }
-        })
+    if (window.google) initGoogleSignIn((jwt) => {
+      world?.client?.authLogin(jwt, (response) => {
+        if ((!("error" !in response)) && response.newUser) setIsModalOpen(true)
       })
-    }
+    })
   }, [loginState])
 
   setInterval(() => {
