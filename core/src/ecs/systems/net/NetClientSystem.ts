@@ -69,7 +69,10 @@ export const NetClientReadSystem = SystemBuilder({
 
         // record latency
         const skew = Date.now() - message.timestamp
-        if (message.latency) client.ms = skew + message.latency
+        if (message.latency !== undefined) {
+          client.ms = skew + message.latency
+          console.log("latency", client.ms, skew, message.latency)
+        }
 
         if (world.tick % 100 === 0) {
           // console.log(`skew:${skew} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
