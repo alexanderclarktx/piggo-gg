@@ -1,5 +1,5 @@
 import {
-  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys, stringify
+  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 
