@@ -74,7 +74,7 @@ export const NetClientReadSystem = SystemBuilder({
         }
 
         if (world.tick % 100 === 0) {
-          console.log(`skew:${skew} msg:${message.latency} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
+          // console.log(`skew:${skew} msg:${message.latency} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
         }
 
         // set flag to green

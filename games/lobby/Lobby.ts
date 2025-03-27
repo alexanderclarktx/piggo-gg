@@ -301,8 +301,6 @@ const GameLobby = (): Entity => {
 }
 
 const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
-  console.log("creating avatar", player.id, player.components.pc.data.name, pos)
-
   const { pc } = player.components
 
   let skin: "dude" | "ghost" = pc.data.name.startsWith("noob") ? "dude" : "ghost"
@@ -320,14 +318,9 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
         animationSelect: () => "idle",
         interactiveChildren: true,
         dynamic: ({ world }) => {
-
-          if (!player.components.pc.data.name.startsWith("noob")) {
-            if (skin !== "ghost") {
-              console.log("switching to ghost", player.components.pc.data.name, skin)
-
-              skin = "ghost"
-              if (world.renderer) world.renderer.resizedFlag = true
-            }
+          if (!player.components.pc.data.name.startsWith("noob") && skin !== "ghost") {
+            skin = "ghost"
+            if (world.renderer) world.renderer.resizedFlag = true
           }
         },
         setup: async (r) => {
