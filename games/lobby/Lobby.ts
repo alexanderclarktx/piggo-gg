@@ -3,7 +3,12 @@ import {
   colors, Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual,
   Background, Actions, Networked, DudeSkin,
   Ghost,
-  Skin
+  Skin,
+  Player,
+  XY,
+  Debug,
+  randomInt,
+  entries
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -14,7 +19,7 @@ type LobbyState = {
 
 export const Lobby: GameBuilder = {
   id: "lobby",
-  init: () => ({
+  init: (world) => ({
     id: "lobby",
     state: {
       gameId: "volley"
@@ -27,7 +32,7 @@ export const Lobby: GameBuilder = {
       Chat(),
       Friends(),
       Profile(),
-      Avatar(),
+      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 85 })] : []].flat(),
       GameLobby(),
       Players(),
       PlayButton(),
@@ -44,8 +49,6 @@ const Icon = (player: Entity<PC | Team>) => {
   let lastName = ""
   let lastTeam = 0
 
-  let texture: any = undefined
-
   const text = () => pixiText({
     text: pc.data.name,
     pos: { x: 0, y: 40 },
@@ -53,16 +56,7 @@ const Icon = (player: Entity<PC | Team>) => {
     style: { fontSize: 24, fill: TeamColors[team.data.team] }
   })
 
-  const pfp = async (world: World) => {
-    const sprite = new Sprite({ texture, scale: 0.9, anchor: 0.5, position: { x: 0, y: 0 } })
-    sprite.interactive = true
-    sprite.onpointerdown = () => {
-      world.actions.push(world.tick + 2, player.id, { actionId: "switchTeam" })
-    }
-    return sprite
-  }
-
-  return Entity<Position | Renderable>({
+  const icon = Entity<Position | Renderable>({
     id: `icon-${player.id}`,
     components: {
       position: Position({ screenFixed: true, y: 350 }),
@@ -73,7 +67,7 @@ const Icon = (player: Entity<PC | Team>) => {
         dynamic: async ({ renderable, world }) => {
           if (pc.data.name !== lastName || team.data.team !== lastTeam) {
             renderable.c.removeChildren()
-            renderable.c.addChild(text(), await pfp(world))
+            renderable.c.addChild(text())
 
             lastName = pc.data.name
             lastTeam = team.data.team
@@ -81,14 +75,13 @@ const Icon = (player: Entity<PC | Team>) => {
 
           renderable.visible = world.client?.connected === true
         },
-        setup: async (renderable, _, world) => {
-          texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
-
-          renderable.c.addChild(text(), await pfp(world))
+        setup: async (renderable) => {
+          renderable.c.addChild(text())
         }
       })
     }
   })
+  return icon
 }
 
 // aligns all the player icons in the center of the screen
@@ -96,6 +89,7 @@ const Players = (): Entity => {
 
   let playerNames: string[] = []
   let icons: Entity<Position | Renderable>[] = []
+  let avatars: Entity<Position | Renderable>[] = []
 
   let offset = { x: 0, y: 0 }
 
@@ -114,9 +108,15 @@ const Players = (): Entity => {
           // recreate the icons if the player names have changed
           if (icons.length === 0 || !arrayEqual(players.map(p => p.components.pc.data.name), playerNames)) {
             icons.forEach(i => world.removeEntity(i.id))
+            avatars.forEach(a => world.removeEntity(a.id))
 
             icons = players.map(p => Icon(p))
+            avatars = players.map(p => Avatar(p, { x: 0, y: 330 }, () => {
+              world.actions.push(world.tick + 2, p.id, { actionId: "switchTeam" })
+            }))
+            console.log("adding icons", icons.map(i => i.id))
             world.addEntities(icons)
+            world.addEntities(avatars)
 
             playerNames = players.map(p => p.components.pc.data.name)
           }
@@ -124,8 +124,13 @@ const Players = (): Entity => {
           // align the icons
           const totalWidth = icons.reduce((acc, icon) => acc + icon.components.renderable.c.width, 0) + 20 * (icons.length - 1)
           let x = -totalWidth / 2
-          for (const icon of icons) {
+          for (const [index, icon] of icons.entries()) {
             icon.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
+
+            const avatar = avatars[index]
+            avatar.components.renderable.visible = world.client?.connected === true
+            avatar.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
+
             x += icon.components.renderable.c.width + 20
           }
         }
@@ -304,30 +309,43 @@ const GameLobby = (): Entity => {
   return gameLobby
 }
 
-const Avatar = () => {
+const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
+  console.log("creating avatar", player.id, player.components.pc.data.name, pos)
 
-  let skin: Skin = DudeSkin("white")
+  const { pc } = player.components
 
-  return Entity({
-    id: "avatar",
+  let skin: "dude" | "ghost" = pc.data.name.startsWith("noob") ? "dude" : "ghost"
+
+  return Entity<Position | Renderable>({
+    id: `avatar-${randomInt(1000)}`,
     components: {
-      position: Position({ x: 110, y: 85, screenFixed: true }),
+      position: Position({ ...pos, screenFixed: true }),
+      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         anchor: { x: 0.55, y: 0.5 },
         scale: 3.5,
         scaleMode: "nearest",
         animationSelect: () => "idle",
+        interactiveChildren: true,
         dynamic: ({ world }) => {
-          if (world.client?.token) {
-            if (skin !== Ghost) {
-              skin = Ghost
+
+          if (!player.components.pc.data.name.startsWith("noob")) {
+            if (skin !== "ghost") {
+              console.log("switching to ghost", player.components.pc.data.name, skin)
+
+              skin = "ghost"
               if (world.renderer) world.renderer.resizedFlag = true
             }
           }
         },
         setup: async (r) => {
-            await skin(r)
+          await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
+
+          if (callback) {
+            r.c.interactive = true
+            r.c.onpointerdown = callback
+          }
         }
       })
     }
