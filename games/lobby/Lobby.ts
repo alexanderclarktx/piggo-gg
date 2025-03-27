@@ -1,7 +1,9 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture,
   colors, Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual,
-  Background, Actions, Networked
+  Background, Actions, Networked, DudeSkin,
+  Ghost,
+  Skin
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Sprite } from "pixi.js"
@@ -25,6 +27,7 @@ export const Lobby: GameBuilder = {
       Chat(),
       Friends(),
       Profile(),
+      Avatar(),
       GameLobby(),
       Players(),
       PlayButton(),
@@ -301,20 +304,55 @@ const GameLobby = (): Entity => {
   return gameLobby
 }
 
+const Avatar = () => {
+
+  let skin: Skin = DudeSkin("white")
+
+  return Entity({
+    id: "avatar",
+    components: {
+      position: Position({ x: 110, y: 85, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        anchor: { x: 0.55, y: 0.5 },
+        scale: 3.5,
+        scaleMode: "nearest",
+        animationSelect: () => "idle",
+        dynamic: ({ world }) => {
+          if (world.client?.token) {
+            if (skin !== Ghost) {
+              skin = Ghost
+              if (world.renderer) world.renderer.resizedFlag = true
+            }
+          }
+        },
+        setup: async (r) => {
+            await skin(r)
+        }
+      })
+    }
+  })
+}
+
 const Profile = (): Entity => {
 
-  const playerName = pixiText({ text: "Profile", style: { fontSize: 32 }, pos: { x: 100, y: 120 }, anchor: { x: 0.5, y: 0 } })
+  const playerName = pixiText({
+    text: "Profile",
+    style: { fontSize: 32 },
+    pos: { x: 0, y: 50 },
+    anchor: { x: 0.5, y: 0 }
+  })
 
   const outline = pixiGraphics()
   const drawOutline = () => {
     outline.clear()
-    outline.roundRect(0, 0, 200, 170, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2 })
+    outline.roundRect(-100, -75, 200, 170, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2 })
   }
 
   const profile = Entity<Position | Renderable>({
     id: "profile",
     components: {
-      position: Position({ x: 10, y: 10, screenFixed: true }),
+      position: Position({ x: 110, y: 85, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         dynamic: ({ world }) => {
@@ -325,11 +363,7 @@ const Profile = (): Entity => {
         },
         setup: async (r) => {
           drawOutline()
-
-          const texture = (await loadTexture("piggo-logo.json"))["piggo-logo"]
-          const pfp = new Sprite({ texture, scale: 1.6, anchor: {x: 0.5, y: 0}, position: { x: 100, y: 25 } })
-
-          r.c.addChild(outline, playerName, pfp)
+          r.c.addChild(outline, playerName)
         }
       })
     }

@@ -5,7 +5,7 @@ import {
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
 import { range, VolleyState } from "./Volley"
-import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "./Skins"
+import { DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic } from "@piggo-gg/core/src/ecs/entities/characters/Skins"
 
 export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Team> => {
   const bot: Entity<Position | Team> = Entity({

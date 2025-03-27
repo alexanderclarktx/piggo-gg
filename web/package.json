@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@piggo-gg/games": "1.0.0",
-    "lz-string": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.4.0",
@@ -18,6 +17,7 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-modal": "^3.13.1",
+    "compression-webpack-plugin": "^11.1.0",
     "webpack": "^5.75.0"
   }
 }
