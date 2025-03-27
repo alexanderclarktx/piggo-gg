@@ -1,17 +1,9 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, loadTexture,
-  colors, Cursor, Chat, PixiButton, PC, Team, TeamColors, World, NPC, arrayEqual,
-  Background, Actions, Networked, DudeSkin,
-  Ghost,
-  Skin,
-  Player,
-  XY,
-  Debug,
-  randomInt,
-  entries
+  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
+  Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
+  Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
-import { Sprite } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley"
@@ -114,7 +106,6 @@ const Players = (): Entity => {
             avatars = players.map(p => Avatar(p, { x: 0, y: 330 }, () => {
               world.actions.push(world.tick + 2, p.id, { actionId: "switchTeam" })
             }))
-            console.log("adding icons", icons.map(i => i.id))
             world.addEntities(icons)
             world.addEntities(avatars)
 
