@@ -95,7 +95,6 @@ export const Ball = () => Entity({
         const far = XYZdiff(position.data, ballPos.data, range)
 
         if (!far) {
-          console.log("far")
           ball.components.renderable.setOutline({ color: 0x55ff00, thickness: 2 })
         } else {
           ball.components.renderable.setOutline({ color: 0x000000, thickness: 0 })
