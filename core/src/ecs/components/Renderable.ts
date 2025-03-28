@@ -166,7 +166,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
         renderable.filters.push(new OutlineFilter({ thickness, color, quality: 1 }))
       }
     },
-
     cleanup: () => {
       // remove from the renderer
       renderable.renderer?.app.stage.removeChild(renderable.c)
