@@ -105,4 +105,4 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
 
     ballPos.setGravity(g).setVelocity({ z: vz, x: v.x / 25 * 1000, y: v.y / 25 * 1000 })
   }
-}, 20)
+}, 10)
