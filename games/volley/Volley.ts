@@ -203,9 +203,9 @@ const VolleySystem = SystemBuilder({
           for (const character of characters) {
             const { renderable } = character.components
             if (character.id === state.lastHit && state.phase === "play") {
-              renderable.c.alpha = 0.7
+              renderable.setGlow({ color: 0xffffff, outerStrength: 3 })
             } else {
-              renderable.c.alpha = 1
+              renderable.setGlow()
             }
           }
         }
