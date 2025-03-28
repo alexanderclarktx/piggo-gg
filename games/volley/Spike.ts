@@ -41,6 +41,11 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
       return
     }
 
+    // no back-to-back quick hits (double receive)
+    if (state.phase === "play" && (world.tick - state.lastHitTick < 10)) {
+      return
+    }
+
     world.client?.soundManager.play("spike")
 
     state.lastHit = entity.id
@@ -58,19 +63,39 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
     let vz = 100
     let v = { x: 0, y: 0 }
 
+    const targetOnOtherSide = team === 1 ? target.x > 225 : target.x < 225
+
     if (state.phase === "serve" && state.hit === 1 && state.teamServing === team) {
-      g = 0.1
+      g = 0.08
       vz = 1.5
       v = velocityToPoint(ballPos.data, target, g, vz)
-    } else if (standing) {
+    } else if (standing && state.hit === 3) {
       g = 0.1
       vz = 3.2
-      v = velocityToDirection(ballPos.data, target, 70, g, vz)
+      v = velocityToPoint(ballPos.data, target, g, vz)
+
+      state.phase = "play"
+
+    } else if (standing) {
+      g = 0.1
+      vz = standing ? 3.2 : 2.5
+      v = velocityToDirection(ballPos.data, target, 80, g, vz)
+
+      state.phase = "play"
+    } else if (!targetOnOtherSide && state.hit === 2) {
+      g = 0.1
+      vz = 2
+      v = velocityToPoint(ballPos.data, target, g, vz)
 
       state.phase = "play"
     } else {
       const distance = XYdistance(from, target)
-      vz = -2.5 + distance / 170
+      vz = -3 + distance / 140
+
+      if (ballPos.data.z < 70) {
+        vz -= (ballPos.data.z - 70) / 15
+      }
+
       g = 0.05
       v = velocityToPoint(ballPos.data, target, g, vz)
 

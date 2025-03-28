@@ -1,15 +1,16 @@
-import { System, NetMessageTypes, World, entries, keys } from "@piggo-gg/core"
+import { System, NetMessageTypes, World, entries, keys, GameData } from "@piggo-gg/core"
 import { encode } from "@msgpack/msgpack"
 
 export type DelayServerSystemProps = {
   world: World
   clients: Record<string, { send: (_: string | Uint8Array, compress?: boolean) => number }>
-  latestClientMessages: Record<string, { td: NetMessageTypes, latency: number }[]>
+  latestClientMessages: Record<string, GameData[]>
+  latestClientLag: Record<string, number>
   latestClientDiff: Record<string, number>
 }
 
 // delay netcode server
-export const NetServerSystem = ({ world, clients, latestClientMessages, latestClientDiff }: DelayServerSystemProps): System<"NetServerSystem"> => {
+export const NetServerSystem = ({ world, clients, latestClientMessages, latestClientLag, latestClientDiff }: DelayServerSystemProps): System<"NetServerSystem"> => {
 
   let lastSent = 0
 
@@ -31,7 +32,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
     entries(clients).forEach(([id, client]) => {
       client.send(encode({
         ...tickData,
-        latency: latestClientMessages[id]?.at(0)?.latency,
+        latency: latestClientLag[id],
         diff: latestClientDiff[id]
       }))
       if (world.tick - 1 !== lastSent) {
@@ -51,23 +52,21 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
       const messages = latestClientMessages[clientId]
 
       for (const message of messages) {
-        if (message.td.type !== "game") continue
-
-        const { td } = message
+        if (message.type !== "game") continue
 
         // process message actions
-        if (td.actions[td.tick]) {
-          entries(td.actions[td.tick]).forEach(([entityId, actions]) => {
+        if (message.actions[message.tick]) {
+          entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
 
             actions.forEach((action) => {
-              world.actions.push(td.tick, entityId, action)
+              world.actions.push(message.tick, entityId, action)
             })
           })
         }
 
         // process message chats
-        if (message.td.chats[clientId]) {
-          world.messages.set(world.tick, clientId, message.td.chats[clientId])
+        if (message.chats[clientId]) {
+          world.messages.set(world.tick, clientId, message.chats[clientId])
         }
       }
 
@@ -79,7 +78,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
     keys(latestClientMessages).forEach((client) => {
       // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
 
-      let messages: ({ td: NetMessageTypes, latency: number } | undefined)[]
+      let messages: (GameData | undefined)[]
 
       if (latestClientMessages[client].length > 2) {
         messages = [latestClientMessages[client][0], latestClientMessages[client][1]]
@@ -94,12 +93,11 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
       messages.forEach((message) => {
         if (!message) return
 
-        const tickData = message.td
-        if (tickData.type !== "game") return
+        if (message.type !== "game") return
 
         // process message actions
-        if (tickData.actions && tickData.actions[tickData.tick]) {
-          entries(tickData.actions[tickData.tick]).forEach(([entityId, actions]) => {
+        if (message.actions && message.actions[message.tick]) {
+          entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
             actions.forEach((action) => {
               world.actions.push(world.tick, entityId, action)
             })
@@ -107,8 +105,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
         }
 
         // process message chats
-        if (tickData.chats[client]) {
-          world.messages.set(world.tick, client, tickData.chats[client])
+        if (message.chats[client]) {
+          world.messages.set(world.tick, client, message.chats[client])
         }
       })
     })

@@ -1,5 +1,5 @@
 import {
-  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys, stringify
+  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 
@@ -69,10 +69,12 @@ export const NetClientReadSystem = SystemBuilder({
 
         // record latency
         const skew = Date.now() - message.timestamp
-        if (message.latency) client.ms = skew + message.latency
+        if (message.latency !== undefined) {
+          client.ms = skew + message.latency
+        }
 
         if (world.tick % 100 === 0) {
-          // console.log(`skew:${skew} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
+          // console.log(`skew:${skew} msg:${message.latency} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
         }
 
         // set flag to green

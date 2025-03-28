@@ -1,6 +1,6 @@
 import { Entity, loadTexture, pixiAnimation, Renderable, World, Position, Dynamic } from "@piggo-gg/core";
 
-type Skin = (r: Renderable) => Promise<void>
+export type Skin = (r: Renderable) => Promise<void>
 type AnimationSelect = (entity: Entity<Position | Renderable>, world: World) => string
 
 export const DudeSkin = (color: "red" | "blue" | "white"): Skin => async (r) => {

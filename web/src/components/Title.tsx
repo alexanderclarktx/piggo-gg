@@ -30,21 +30,21 @@ export const Title = ({ world, loginState, setLoginState }: TitleProps) => {
           <path d="m10,53c0,-61.32 10.11,-51.43 50.54,-39.56" fill="#FFC0CB" transform="matrix(1, 0, 0, 1, 0, 0)" />
           <path d="m150,53c0,-61.32 -10.16,-51.43 -50.81,-39.56" fill="#FFC0CB" />
 
-          <path d="m33.33,68.61q13.33,-22.22 26.67,0" fill="none" stroke="black" stroke-linecap="round" stroke-width="10" />
-          <path d="m99.17,68.96q13.75,-22.92 27.5,0" fill="none" stroke="black" stroke-linecap="round" stroke-width="10" transform="matrix(1, 0, 0, 1, 0, 0)" />
+          <path d="m33.33,68.61q13.33,-22.22 26.67,0" fill="none" stroke="black" strokeLinecap="round" strokeWidth="10" />
+          <path d="m99.17,68.96q13.75,-22.92 27.5,0" fill="none" stroke="black" strokeLinecap="round" strokeWidth="10" transform="matrix(1, 0, 0, 1, 0, 0)" />
 
-          <ellipse cx="81.25" cy="106.25" fill="#FFA0AB" rx="30" ry="20" stroke="black" stroke-width="4" />
+          <ellipse cx="81.25" cy="106.25" fill="#FFA0AB" rx="30" ry="20" stroke="black" strokeWidth="4" />
           <circle cx="71" cy="106" fill="#000000" r="5" />
           <circle cx="91" cy="106" fill="#000000" r="5" />
 
-          <path d="m58.18,121.77c0,-6.8 5.27,10.09 28.19,5.66c22.9,-4.44 29.46,-14 29.73,-6.99c0.26,7.03 -12.2,28.05 -29.46,28.05c-17.27,0 -28.45,-19.92 -28.45,-26.72z" fill="#000000" stroke="#000000" stroke-width="3" />
-          <path d="m77.19,140.15c0,-3.08 10.3,-7.4 15.97,-7.4c5.68,0 7.44,0.71 7.44,3.79c0,3.08 -6.91,8.98 -12.59,8.98c-5.68,0 -10.82,-2.29 -10.82,-5.36z" fill="#ff909b" stroke="null" stroke-dasharray="null" stroke-width="null" />
+          <path d="m107.6,117.17c6.98,-10.28 -4.43,31.08 -21.41,31.08c-17,0 -33.16,-30.69 -24.33,-25.04c8.83,5.64 38.77,4.25 45.74,-6.03z" fill="#000000" stroke="#000000" strokeWidth="3" />
+          <path d="m76.82,141.95c0,-2.54 9.32,-6.11 14.45,-6.11c5.14,0 6.73,0.59 6.73,3.13c0,2.54 -6.25,7.42 -11.39,7.42c-5.14,0 -9.79,-1.89 -9.79,-4.43l0,-0.01z" fill="#ff909b" stroke="null" transform="matrix(1, 0, 0, 1, 0, 0)" />
         </svg>
       </div>
 
       <div style={{ position: 'absolute', right: 0, bottom: 0 }}>
         <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
-          v<b>0.13.2</b>
+          v<b>0.13.3</b>
         </span>
         <a style={{ margin: 0, color: "inherit", textDecoration: "none" }} target="_blank" href="https://discord.gg/VfFG9XqDpJ">
           <FaDiscord size={20} style={{ color: "white", verticalAlign: "-80%" }}></FaDiscord>

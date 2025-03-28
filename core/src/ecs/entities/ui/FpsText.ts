@@ -45,7 +45,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => {
 
           const lag = round(world.client?.ms ?? 0)
 
-          if (last > lag || world.tick - lastTick > 80) {
+          if (lag > last || world.tick - lastTick > 60) {
             last = lag
             lastTick = world.tick
 
