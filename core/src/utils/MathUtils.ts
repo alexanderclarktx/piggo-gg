@@ -183,10 +183,10 @@ export const checkBounds = (renderer: Renderer, position: Position, clickable: C
   let bounds = { x, y, w: clickable.width, h: clickable.height }
 
   if (position.screenFixed && position.data.x < 0) {
-    bounds.x += renderer.props.canvas.width
+    bounds.x += renderer.app.screen.width
   }
   if (position.screenFixed && position.data.y < 0) {
-    bounds.y += renderer.props.canvas.height
+    bounds.y += renderer.app.screen.height
   }
 
   let clicked = false

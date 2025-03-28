@@ -45,7 +45,7 @@ export const Scoreboard = (): Entity => {
           }
         },
         setup: async (r, renderer) => {
-          const canvasWidth = renderer.props.canvas.width
+          const canvasWidth = renderer.app.screen.width
           width = canvasWidth * 0.7
 
           scoreboard.components.position.setPosition({ x: canvasWidth * 0.15, y: 100 })

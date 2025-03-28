@@ -13,19 +13,12 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
   useEffect(() => {
     const mobile = isMobile()
     const canvas = document.getElementById("canvas") as HTMLCanvasElement
-
-    const [width, height] = mobile ?
-      [window.innerWidth, window.innerHeight] :
-      [window.innerWidth * 0.98, window.innerHeight * 0.90]
-
     if (mobile) canvas.style.border = "none"
 
-    const renderer = Renderer({ canvas, width, height })
+    const renderer = Renderer(canvas)
 
     renderer.init().then(() => {
-      const world = DefaultWorld({ renderer, games })
-      setWorld(world)
-      renderer.handleResize()
+      setWorld(DefaultWorld({ renderer, games }))
     })
   }, [])
 

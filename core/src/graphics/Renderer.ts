@@ -1,14 +1,7 @@
 import { Camera, Renderable, isMobile } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
-export type RendererProps = {
-  canvas: HTMLCanvasElement
-  width?: number
-  height?: number
-}
-
 export type Renderer = {
-  props: RendererProps
   app: Application
   camera: Camera
   guiRenderables: Renderable[]
@@ -21,12 +14,11 @@ export type Renderer = {
 }
 
 // Renderer draws the game to a canvas
-export const Renderer = (props: RendererProps): Renderer => {
+export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
 
   const app = new Application()
 
   const renderer: Renderer = {
-    props: props,
     app,
     camera: Camera(app),
     guiRenderables: [],
@@ -35,7 +27,6 @@ export const Renderer = (props: RendererProps): Renderer => {
       renderer.app.renderer.background.color = color
     },
     init: async () => {
-      const { canvas } = props
 
       // create the pixi.js application
       await renderer.app.init({
@@ -43,10 +34,10 @@ export const Renderer = (props: RendererProps): Renderer => {
         resolution: 1,
         antialias: true,
         autoDensity: true,
-        backgroundColor: 0x000000,
-        width: renderer.props.width ?? 800,
-        height: renderer.props.height ?? 600
+        backgroundColor: 0x000000
       })
+
+      renderer.handleResize()
 
       // set up the camera
       renderer.app.stage.addChild(renderer.camera.root)
@@ -70,7 +61,7 @@ export const Renderer = (props: RendererProps): Renderer => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
         renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
       } else {
-        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.90)
+        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
       }
       renderer.resizedFlag = true
     },

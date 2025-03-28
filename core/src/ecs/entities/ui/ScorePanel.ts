@@ -48,7 +48,7 @@ export const ScorePanel = (): Entity => {
 
           r.c.addChild(g, textLeft, textRight)
 
-          const { width } = renderer.props.canvas
+          const width = renderer.app.screen.width
           scorePanel.components.position.setPosition({ x: width / 2, y: 0 })
         }
       })
