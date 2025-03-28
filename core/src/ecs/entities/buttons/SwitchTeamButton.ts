@@ -12,7 +12,7 @@ export const switchTeamButton = () => Entity({
         renderable.visible = world.client?.connected ?? false
       },
       setup: async (renderable, renderer, world) => {
-        const width = renderer.app.screen.width
+        const { width } = renderer.wh()
 
         const button = PixiButton({
           content: () => ({

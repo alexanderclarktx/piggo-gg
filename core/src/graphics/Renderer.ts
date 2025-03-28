@@ -6,11 +6,12 @@ export type Renderer = {
   camera: Camera
   guiRenderables: Renderable[]
   resizedFlag: boolean
-  setBgColor: (color: number) => void
-  init: () => Promise<void>
-  handleResize: () => void
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
+  handleResize: () => void
+  init: () => Promise<void>
+  setBgColor: (color: number) => void
+  wh: () => { width: number, height: number }
 }
 
 // Renderer draws the game to a canvas
@@ -23,8 +24,22 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
     camera: Camera(app),
     guiRenderables: [],
     resizedFlag: false,
-    setBgColor: (color: number) => {
-      renderer.app.renderer.background.color = color
+    addGui: (renderable: Renderable) => {
+      if (renderable) {
+        renderer.app.stage.addChild(renderable.c)
+        renderer.guiRenderables.push(renderable)
+      }
+    },
+    addWorld: (renderable: Renderable) => {
+      if (renderable) renderer.camera?.add(renderable)
+    },
+    handleResize: () => {
+      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
+        renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
+      } else {
+        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+      }
+      renderer.resizedFlag = true
     },
     init: async () => {
 
@@ -57,23 +72,13 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
     },
-    handleResize: () => {
-      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
-        renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
-      } else {
-        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
-      }
-      renderer.resizedFlag = true
+    setBgColor: (color: number) => {
+      renderer.app.renderer.background.color = color
     },
-    addGui: (renderable: Renderable) => {
-      if (renderable) {
-        renderer.app.stage.addChild(renderable.c)
-        renderer.guiRenderables.push(renderable)
-      }
-    },
-    addWorld: (renderable: Renderable) => {
-      if (renderable) renderer.camera?.add(renderable)
-    }
+    wh: () => ({
+      width: renderer.app.screen.width,
+      height: renderer.app.screen.height
+    })
   }
   return renderer
 }

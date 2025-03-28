@@ -42,7 +42,7 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
     }
 
     // no back-to-back quick hits (double receive)
-    if (state.phase === "play" && (world.tick - state.lastHitTick < 10)) {
+    if (10 > world.tick - state.lastHitTick) {
       return
     }
 
