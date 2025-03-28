@@ -10,8 +10,8 @@ export const Cursor = (): Entity => {
       renderable: Renderable({
         interpolate: true,
         setContainer: async (r: Renderer) => {
-          r.props.canvas.addEventListener("mousemove", (event) => {
-            const rect = r.props.canvas.getBoundingClientRect()
+          r.app.canvas.addEventListener("mousemove", (event) => {
+            const rect = r.app.canvas.getBoundingClientRect()
 
             cursor.components.position.data.x = round(event.clientX - rect.left - 2)
             cursor.components.position.data.y = round(event.clientY - rect.top - 2)

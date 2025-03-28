@@ -1,5 +1,5 @@
 import {
-  Background, CameraSystem, Cursor, Entity, EscapeMenu, GameBuilder, LagText, Position,
+  Background, CameraSystem, Cursor, Entity, EscapeMenu, GameBuilder, LagText, Position, Renderable,
   ScorePanel, ShadowSystem, SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
 } from "@piggo-gg/core"
 import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
@@ -109,6 +109,8 @@ const VolleySystem = SystemBuilder({
         if (!ballPos) return
 
         const state = world.game.state as VolleyState
+        const playerCharacters = world.queryEntities<Position | Team | Renderable>(["position", "team", "input"])
+        const characters = world.queryEntities<Position | Team | Renderable>(["position", "team", "actions"])
 
         if (state.phase === "point") {
 
@@ -143,9 +145,8 @@ const VolleySystem = SystemBuilder({
           let team1 = 0
           let team2 = 0
 
-          const characters = world.queryEntities<Position | Team>(["position", "team", "input"])
-          for (const character of characters) {
-            const { position, team } = character.components
+          for (const playerCharacter of playerCharacters) {
+            const { position, team } = playerCharacter.components
 
             // move any characters if they're on the wrong side
             if (position.data.x < 225 && team.data.team === 2) {
@@ -197,6 +198,15 @@ const VolleySystem = SystemBuilder({
           if (ballPos.data.z === 0) {
             state.phase = "point"
             state.lastWin = (ballPos.data.x < 225) ? 2 : 1
+          }
+
+          for (const character of characters) {
+            const { renderable } = character.components
+            if (character.id === state.lastHit && state.phase === "play") {
+              renderable.setGlow({ color: 0xffffff, outerStrength: 3 })
+            } else {
+              renderable.setGlow()
+            }
           }
         }
       }

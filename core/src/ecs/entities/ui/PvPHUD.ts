@@ -15,7 +15,7 @@ export const MobilePvPHUD = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable, renderer) => {
-          const canvasWidth = renderer.props.canvas.width
+          const canvasWidth = renderer.app.screen.width
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -90 })
 
           // outline
@@ -69,7 +69,7 @@ export const PvPHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => 
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable, renderer) => {
-          const canvasWidth = renderer.props.canvas.width
+          const canvasWidth = renderer.app.screen.width
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
 
           // hotkey text

@@ -1,41 +1,47 @@
 import { Camera, Renderable, isMobile } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
-export type RendererProps = {
-  canvas: HTMLCanvasElement
-  width?: number
-  height?: number
-}
-
 export type Renderer = {
-  props: RendererProps
   app: Application
   camera: Camera
   guiRenderables: Renderable[]
   resizedFlag: boolean
-  setBgColor: (color: number) => void
-  init: () => Promise<void>
-  handleResize: () => void
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
+  handleResize: () => void
+  init: () => Promise<void>
+  setBgColor: (color: number) => void
+  wh: () => { width: number, height: number }
 }
 
 // Renderer draws the game to a canvas
-export const Renderer = (props: RendererProps): Renderer => {
+export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
 
   const app = new Application()
 
   const renderer: Renderer = {
-    props: props,
     app,
     camera: Camera(app),
     guiRenderables: [],
     resizedFlag: false,
-    setBgColor: (color: number) => {
-      renderer.app.renderer.background.color = color
+    addGui: (renderable: Renderable) => {
+      if (renderable) {
+        renderer.app.stage.addChild(renderable.c)
+        renderer.guiRenderables.push(renderable)
+      }
+    },
+    addWorld: (renderable: Renderable) => {
+      if (renderable) renderer.camera?.add(renderable)
+    },
+    handleResize: () => {
+      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
+        renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
+      } else {
+        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+      }
+      renderer.resizedFlag = true
     },
     init: async () => {
-      const { canvas } = props
 
       // create the pixi.js application
       await renderer.app.init({
@@ -43,10 +49,10 @@ export const Renderer = (props: RendererProps): Renderer => {
         resolution: 1,
         antialias: true,
         autoDensity: true,
-        backgroundColor: 0x000000,
-        width: renderer.props.width ?? 800,
-        height: renderer.props.height ?? 600
+        backgroundColor: 0x000000
       })
+
+      renderer.handleResize()
 
       // set up the camera
       renderer.app.stage.addChild(renderer.camera.root)
@@ -66,23 +72,13 @@ export const Renderer = (props: RendererProps): Renderer => {
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
     },
-    handleResize: () => {
-      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
-        renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
-      } else {
-        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.90)
-      }
-      renderer.resizedFlag = true
+    setBgColor: (color: number) => {
+      renderer.app.renderer.background.color = color
     },
-    addGui: (renderable: Renderable) => {
-      if (renderable) {
-        renderer.app.stage.addChild(renderable.c)
-        renderer.guiRenderables.push(renderable)
-      }
-    },
-    addWorld: (renderable: Renderable) => {
-      if (renderable) renderer.camera?.add(renderable)
-    }
+    wh: () => ({
+      width: renderer.app.screen.width,
+      height: renderer.app.screen.height
+    })
   }
   return renderer
 }

@@ -1,5 +1,5 @@
 import { Component, Entity, Renderer, World, XY, keys, values, Position } from "@piggo-gg/core"
-import { OutlineFilter } from "pixi-filters"
+import { AdvancedBloomFilter, GlowFilter, OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, Container, Filter, Graphics, Sprite } from "pixi.js"
 
 export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void)
@@ -40,6 +40,8 @@ export type Renderable = Component<"renderable"> & {
   setScale: (xy: XY) => void
   _init: (renderer: Renderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
+  setBloom: (_?: { threshold?: number, bloomScale?: number }) => void
+  setGlow: (_?: { color?: number, quality?: number, innerStrength?: number, outerStrength?: number }) => void
   setOutline: (_?: { color: number, thickness: number }) => void
   cleanup: () => void
 }
@@ -130,6 +132,30 @@ export const Renderable = (props: RenderableProps): Renderable => {
         renderable.bufferedAnimation = animationKey
       }
     },
+    setBloom: (props: { threshold?: number, bloomScale?: number } = {}) => {
+      const threshold = props.threshold ?? 0.5
+      const bloomScale = props.bloomScale ?? 1
+      if (keys(renderable.animations).length) {
+        values(renderable.animations).forEach((animation) => {
+          animation.filters = [new AdvancedBloomFilter({ threshold, bloomScale })]
+        })
+      } else {
+        renderable.filters.push(new AdvancedBloomFilter({ threshold, bloomScale }))
+      }
+    },
+    setGlow: (props: { color?: number, quality?: number, innerStrength?: number, outerStrength?: number } = {}) => {
+      const color = props.color ?? 0xffffff
+      const quality = props.quality ?? 1
+      const innerStrength = props.innerStrength ?? 0
+      const outerStrength = props.outerStrength ?? 0
+      if (keys(renderable.animations).length) {
+        values(renderable.animations).forEach((animation) => {
+          animation.filters = [new GlowFilter({ color, quality, innerStrength, outerStrength })]
+        })
+      } else {
+        renderable.filters.push(new GlowFilter({ color, quality, innerStrength, outerStrength }))
+      }
+    },
     setOutline: (props?: { color: number, thickness: number }) => {
       const { thickness, color } = props ?? renderable.outline
       if (keys(renderable.animations).length) {
@@ -137,7 +163,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
         })
       } else {
-        renderable.c.filters = [...renderable.filters, new OutlineFilter({ thickness, color, quality: 1 })]
+        renderable.filters.push(new OutlineFilter({ thickness, color, quality: 1 }))
       }
     },
     cleanup: () => {

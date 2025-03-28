@@ -22,7 +22,7 @@ export const PvEHUD = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable, renderer) => {
-          const canvasWidth = renderer.props.canvas.width
+          const canvasWidth = renderer.app.screen.width
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
 
           squares = Array.from({ length: 5 }, (_, i) => pixiRect(
@@ -98,7 +98,7 @@ export const MobilePvEHUD = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         setup: async (_, renderer) => {
-          const canvasWidth = renderer.props.canvas.width
+          const canvasWidth = renderer.app.screen.width
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -90 })
         }
       })
