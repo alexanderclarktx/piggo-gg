@@ -23,7 +23,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
       interpolate: true,
       setup: async (renderable) => {
         if (rays) renderable.filters.push(
-          new GodrayFilter({ gain: 0.4, alpha: 0.4, lacunarity: 2.5 })
+          new GodrayFilter({ gain: 0.5, alpha: 0.4, lacunarity: 2 })
         )
 
         renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 1 }))

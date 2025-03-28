@@ -140,7 +140,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new AdvancedBloomFilter({ threshold, bloomScale })]
         })
       } else {
-        renderable.filters.push(new AdvancedBloomFilter({ threshold, bloomScale }))
+        renderable.c.filters = [...renderable.filters, new AdvancedBloomFilter({ threshold, bloomScale })]
       }
     },
     setGlow: (props: { color?: number, quality?: number, innerStrength?: number, outerStrength?: number } = {}) => {
@@ -153,7 +153,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new GlowFilter({ color, quality, innerStrength, outerStrength })]
         })
       } else {
-        renderable.filters.push(new GlowFilter({ color, quality, innerStrength, outerStrength }))
+        renderable.c.filters = [...renderable.filters, new GlowFilter({ color, quality, innerStrength, outerStrength })]
       }
     },
     setOutline: (props?: { color: number, thickness: number }) => {
@@ -163,7 +163,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
         })
       } else {
-        renderable.filters.push(new OutlineFilter({ thickness, color, quality: 1 }))
+        renderable.c.filters = [...renderable.filters, new OutlineFilter({ thickness, color, quality: 1 })]
       }
     },
     cleanup: () => {
