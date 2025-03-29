@@ -434,6 +434,8 @@ const Friends = (): Entity => {
 
   const title = pixiText({ text: "friends", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
 
+  const friendsOnline = pixiText({ text: "friends online: 0/0", style: { fontSize: 16 }, pos: { x: 100, y: 10 }, anchor: { x: 0.5, y: 0 } })
+
   let screenHeight = 0
   let outlineHeight = 0
 
@@ -443,7 +445,7 @@ const Friends = (): Entity => {
     outline.roundRect(0, 0, 200, screenHeight - outlineHeight, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
   }
 
-  // let friendList: Friend[] | undefined = undefined
+  // let friendList: number[] | undefined = undefined
 
   const friends = Entity<Position | Renderable>({
     id: "friends",
@@ -472,18 +474,18 @@ const Friends = (): Entity => {
 
           // if (friendList === undefined) {
           //   friendList = []
-          //   world.client?.friendsList((response) => {
-          //     if ("error" in response) {
-          //       friendList = []
-          //     } else {
-          //       friendList = response.friends
-          //     }
-          //   })
+            // world.client?.friendsList((response) => {
+            //   if ("error" in response) {
+            //     friendList = []
+            //   } else {
+            //     friendList = response.friends
+            //   }
+            // })
           // }
         },
         setup: async (renderable, _, world) => {
           drawOutline()
-          renderable.c.addChild(outline)
+          renderable.c.addChild(outline, friendsOnline)
 
           if (!world.client?.token) {
             friends.components.position.setPosition({ x: 10, y: 280 })
