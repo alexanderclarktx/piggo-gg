@@ -4,7 +4,6 @@ export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
     const { renderer } = world
-    let lastOntick = Date.now()
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
@@ -46,10 +45,7 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       priority: 9,
       onTick: (entities: Entity<Renderable | Position>[]) => {
-
         if (!renderer) return
-
-        lastOntick = performance.now()
 
         if (renderer.resizedFlag) {
           renderer.guiRenderables.forEach((renderable) => {
@@ -149,9 +145,7 @@ export const RenderSystem = ClientSystemBuilder({
           updateScreenFixed(entity)
         })
       },
-      onRender(entities: Entity<Renderable | Position>[]) {
-        const elapsedTime = performance.now() - lastOntick
-
+      onRender(entities: Entity<Renderable | Position>[], delta) {
         for (const entity of entities) {
 
           const { position, renderable } = entity.components
@@ -167,9 +161,9 @@ export const RenderSystem = ClientSystemBuilder({
           // scene renderables
           if ((velocity.x || velocity.y || velocity.z) && renderable.interpolate) {
 
-            const dx = velocity.x * elapsedTime / 1000
-            const dy = velocity.y * elapsedTime / 1000
-            const dz = velocity.z * elapsedTime / world.tickrate
+            const dx = velocity.x * delta / 1000
+            const dy = velocity.y * delta / 1000
+            const dz = velocity.z * delta / world.tickrate
 
             if ((world.tick - position.lastCollided) <= 4) {
               renderable.c.position.set(

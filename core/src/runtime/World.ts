@@ -23,6 +23,7 @@ export type World = {
   tickFlag: "green" | "red"
   tickrate: number
   tileMap: number[] | undefined
+  time: DOMHighResTimeStamp
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string | undefined
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
@@ -80,6 +81,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     tickFlag: "green",
     tickrate: 25,
     tileMap: undefined,
+    time: performance.now(),
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable) {
@@ -166,6 +168,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
 
       // increment tick
       world.tick += 1
+      world.time = now
 
       // store serialized entities
       world.entitiesAtTick[world.tick] = {}
@@ -239,9 +242,10 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
 
   // schedule onRender
   if (renderer) {
-    renderer.app.ticker.add((ticker) => {
+    renderer.app.ticker.add(() => {
+      const now = performance.now()
       values(world.systems).forEach((system) => {
-        if (system.onRender) system.onRender(filterEntities(system.query, values(world.entities)), ticker.deltaMS)
+        system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
       })
     })
   }

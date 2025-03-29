@@ -1,4 +1,4 @@
-import { Controlling, Player, Skelly, SystemBuilder, TeamColors, TeamNumber, World, XY } from "@piggo-gg/core"
+import { Controlling, Player, Skelly, SystemBuilder, TeamNumber, World, XY } from "@piggo-gg/core"
 
 type GameStates = "warmup" | "pre-round" | "round" | "planted" | "post-round" | "game-over"
 
@@ -43,7 +43,7 @@ export const StrikeSystem: SystemBuilder<"StrikeSystem"> = {
 
           // player not controlling a character
           if (!controlling.data.entityId || !spawnedPlayers.has(player.id)) {
-            const character = Skelly(player, TeamColors[team.data.team], TeamSpawns[team.data.team])
+            const character = Skelly(player, TeamSpawns[team.data.team])
             player.components.controlling = Controlling({ entityId: character.id })
             world.addEntity(character)
             spawnedPlayers.add(player.id)

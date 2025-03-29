@@ -3,11 +3,11 @@ import {
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
   Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt, World
 } from "@piggo-gg/core"
-import { Volley } from "@piggo-gg/games"
+import { Craft, Volley } from "@piggo-gg/games"
 import { Text } from "pixi.js"
 
 type LobbyState = {
-  gameId: "volley"
+  gameId: "volley" | "craft"
 }
 
 export const Lobby: GameBuilder = {
@@ -140,6 +140,12 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
     renderable: Renderable({
       zIndex: 10,
       interactiveChildren: true,
+      dynamic: ({ world, entity }) => {
+        const state = world.game.state as LobbyState
+        const alpha = state.gameId === game.id ? 1 : 0.6
+        // const color = state.gameId === game.id ? 0xffcccc : 0xffffff
+        entity.components.renderable.c.children[0].alpha = alpha
+      },
       setup: async (r, _, world) => {
         const button = PixiButton({
           content: () => ({
@@ -237,7 +243,7 @@ const CreateLobbyButton = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Volley]
+  const list: GameBuilder[] = [Volley, Craft]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position | Renderable>({
@@ -474,13 +480,13 @@ const Friends = (): Entity => {
 
           // if (friendList === undefined) {
           //   friendList = []
-            // world.client?.friendsList((response) => {
-            //   if ("error" in response) {
-            //     friendList = []
-            //   } else {
-            //     friendList = response.friends
-            //   }
-            // })
+          // world.client?.friendsList((response) => {
+          //   if ("error" in response) {
+          //     friendList = []
+          //   } else {
+          //     friendList = response.friends
+          //   }
+          // })
           // }
         },
         setup: async (renderable, _, world) => {
