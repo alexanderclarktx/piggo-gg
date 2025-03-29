@@ -60,9 +60,12 @@ export const Client = ({ world }: ClientProps): Client => {
   world.addEntity(player)
 
   const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {
+    if (client.ws.readyState !== WebSocket.OPEN) return
+
     const requestData: RequestData = { type: "request", data }
     client.ws.send(encode(requestData))
     requestBuffer[requestData.data.id] = callback
+
     // TODO handle timeout
   }
 

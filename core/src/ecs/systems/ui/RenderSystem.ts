@@ -156,26 +156,16 @@ export const RenderSystem = ClientSystemBuilder({
             updateScreenFixed(entity)
           }
 
+          // world renderables
           const { x, y, z, velocity } = position.data
-
-          // scene renderables
           if ((velocity.x || velocity.y || velocity.z) && renderable.interpolate) {
 
-            const dx = velocity.x * delta / 1000
-            const dy = velocity.y * delta / 1000
-            const dz = velocity.z * delta / world.tickrate
+            const interpolated = position.interpolate(delta, world)
 
-            if ((world.tick - position.lastCollided) <= 4) {
-              renderable.c.position.set(
-                x + renderable.position.x,
-                y + renderable.position.y - z - dz
-              )
-            } else {
-              renderable.c.position.set(
-                x + dx + renderable.position.x,
-                y + dy + renderable.position.y - z - dz
-              )
-            }
+            renderable.c.position.set(
+              x + renderable.position.x + interpolated.x,
+              y + renderable.position.y + interpolated.y - z - interpolated.z
+            )
           }
         }
       }

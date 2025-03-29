@@ -3,11 +3,11 @@ import {
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
   Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt, World
 } from "@piggo-gg/core"
-import { Craft, Volley } from "@piggo-gg/games"
+import { Volley } from "@piggo-gg/games"
 import { Text } from "pixi.js"
 
 type LobbyState = {
-  gameId: "volley" | "craft"
+  gameId: "volley"
 }
 
 export const Lobby: GameBuilder = {
@@ -243,7 +243,7 @@ const CreateLobbyButton = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Volley, Craft]
+  const list: GameBuilder[] = [Volley]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position | Renderable>({
@@ -520,11 +520,9 @@ const PlayersOnline = () => {
       position: Position({ x: -20, y: 20, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        setup: async (renderable, _, world) => {
+        setup: async (renderable) => {
           text = pixiText({ text: "", style: { fontSize: 16, fill: 0x00ffff }, anchor: { x: 1, y: 0 } })
           renderable.c.addChild(text)
-
-          refresh(world)
         },
         dynamic: ({ world }) => {
           if (world.tick % 200 === 0) refresh(world)
