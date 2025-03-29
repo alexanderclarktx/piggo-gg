@@ -1,8 +1,7 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt,
-  World
+  Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt, World
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Text } from "pixi.js"
@@ -26,6 +25,7 @@ export const Lobby: GameBuilder = {
       Chat(),
       Friends(),
       Profile(),
+      SignupCTA(),
       ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 85 })] : []].flat(),
       GameLobby(),
       Players(),
@@ -308,7 +308,7 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
 
   let skin: "dude" | "ghost" = pc.data.name.startsWith("noob") ? "dude" : "ghost"
 
-  return Entity<Position | Renderable>({
+  const avatar = Entity<Position | Renderable>({
     id: `avatar-${randomInt(1000)}`,
     components: {
       position: Position({ ...pos, screenFixed: true }),
@@ -325,18 +325,27 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
             skin = "ghost"
             if (world.renderer) world.renderer.resizedFlag = true
           }
+
+          if (world.client?.token && avatar.components.position.data.y !== 85 && pos.y === 85) {
+            avatar.components.position.setPosition({ x: 110, y: 85 })
+          }
         },
-        setup: async (r) => {
+        setup: async (r, _, world) => {
           await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
 
           if (callback) {
             r.c.interactive = true
             r.c.onpointerdown = callback
           }
+
+          if (!world.client?.token && pos.y === 85) {
+            avatar.components.position.setPosition({ x: 110, y: 175 })
+          }
         }
       })
     }
   })
+  return avatar
 }
 
 const Profile = (): Entity => {
@@ -365,15 +374,125 @@ const Profile = (): Entity => {
           if (name && playerName.text !== name) {
             playerName.text = name
           }
+
+          if (world.client?.token && profile.components.position.data.y !== 85) {
+            profile.components.position.setPosition({ x: 110, y: 85 })
+          }
         },
-        setup: async (r) => {
+        setup: async (renderable, _, world) => {
           drawOutline()
-          r.c.addChild(outline, playerName)
+          renderable.c.addChild(outline, playerName)
+
+          if (!world.client?.token) {
+            profile.components.position.setPosition({ x: 110, y: 175 })
+          }
         }
       })
     }
   })
   return profile
+}
+
+const SignupCTA = () => {
+
+  const outline = pixiGraphics()
+  const drawOutline = () => {
+    outline.clear()
+    outline.roundRect(10, 10, 200, 80, 3).stroke({ color: 0x00ffff, alpha: 1, width: 2 }).fill({ color: 0x000000, alpha: 0.9 })
+  }
+
+  return Entity<Position | Renderable>({
+    id: "signupCTA",
+    components: {
+      position: Position({ x: 0, y: 0, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        interactiveChildren: true,
+        visible: false,
+        dynamic: ({ world, renderable }) => {
+          if (!world.client) return
+          renderable.visible = !world.client.token
+        },
+        setup: async (r) => {
+
+          const text = pixiText({
+            text: "^\nSign In\nfor a free skin!",
+            anchor: { x: 0.5, y: 0.9 },
+            style: { align: "center", fontSize: 18, fontWeight: "bold" },
+            pos: { x: 110, y: 70 }
+          })
+
+          drawOutline()
+          r.c.addChild(outline, text)
+        }
+      })
+    }
+  })
+}
+
+const Friends = (): Entity => {
+
+  const title = pixiText({ text: "friends", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
+
+  let screenHeight = 0
+  let outlineHeight = 0
+
+  const outline = pixiGraphics()
+  const drawOutline = () => {
+    outline.clear()
+    outline.roundRect(0, 0, 200, screenHeight - outlineHeight, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
+  }
+
+  // let friendList: Friend[] | undefined = undefined
+
+  const friends = Entity<Position | Renderable>({
+    id: "friends",
+    components: {
+      position: Position({ x: 10, y: 190, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        dynamic: ({ world }) => {
+          if (!world.renderer) return
+
+          if (world.client?.token && outlineHeight === 290) {
+            friends.components.position.setPosition({ x: 10, y: 190 })
+          }
+
+          const h = world.client?.token ? 200 : 290
+
+          if (outlineHeight !== h) {
+            outlineHeight = h
+            drawOutline()
+          }
+
+          if (screenHeight !== world.renderer.app.screen.height) {
+            screenHeight = world.renderer.app.screen.height
+            drawOutline()
+          }
+
+          // if (friendList === undefined) {
+          //   friendList = []
+          //   world.client?.friendsList((response) => {
+          //     if ("error" in response) {
+          //       friendList = []
+          //     } else {
+          //       friendList = response.friends
+          //     }
+          //   })
+          // }
+        },
+        setup: async (renderable, _, world) => {
+          drawOutline()
+          renderable.c.addChild(outline)
+
+          if (!world.client?.token) {
+            friends.components.position.setPosition({ x: 10, y: 280 })
+          }
+        }
+      })
+    }
+  })
+  return friends
 }
 
 const PlayersOnline = () => {
@@ -405,53 +524,4 @@ const PlayersOnline = () => {
       })
     }
   })
-}
-
-const Friends = (): Entity => {
-
-  const title = pixiText({ text: "friends", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
-
-  let height = 0
-
-  const outline = pixiGraphics()
-  const drawOutline = () => {
-    outline.clear()
-    outline.roundRect(0, 0, 200, height - 200, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
-  }
-
-  // let friendList: Friend[] | undefined = undefined
-
-  const friends = Entity<Position | Renderable>({
-    id: "friends",
-    components: {
-      position: Position({ x: 10, y: 190, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        dynamic: ({ world }) => {
-          if (!world.renderer) return
-
-          if (height !== world.renderer.app.screen.height) {
-            height = world.renderer.app.screen.height
-            drawOutline()
-          }
-
-          // if (friendList === undefined) {
-          //   friendList = []
-          //   world.client?.friendsList((response) => {
-          //     if ("error" in response) {
-          //       friendList = []
-          //     } else {
-          //       friendList = response.friends
-          //     }
-          //   })
-          // }
-        },
-        setup: async (r) => {
-          drawOutline()
-          r.c.addChild(outline)
-        }
-      })
-    }
-  })
-  return friends
 }

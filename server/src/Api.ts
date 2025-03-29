@@ -14,7 +14,7 @@ export type PerClientData = {
 
 type SessionToken = { googleId: string }
 
-const skiplog: RequestTypes["route"][] = ["meta/players"]
+const skiplog: RequestTypes["route"][] = ["meta/players", "auth/login"]
 
 export type Api = {
   bun: Server | undefined
