@@ -1,5 +1,5 @@
 import { ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
-import { ServerWorld, PrismaClient, gptPrompt } from "@piggo-gg/server"
+import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import jwt from "jsonwebtoken"
 import { decode, encode } from "@msgpack/msgpack"
@@ -13,6 +13,8 @@ export type PerClientData = {
 }
 
 type SessionToken = { googleId: string }
+
+const skiplog: RequestTypes["route"][] = ["meta/players"]
 
 export type Api = {
   bun: Server | undefined
@@ -68,6 +70,9 @@ export const Api = (): Api => {
       "lobby/exit": async ({ data }) => {
         return { id: data.id }
       },
+      "meta/players": async ({ data }) => {
+        return { id: data.id, online: keys(api.clients).length }
+      },
       "friends/list": async ({ data }) => {
         let result: { id: string, friends: Friend[] } = { friends: [], id: data.id }
 
@@ -122,7 +127,7 @@ export const Api = (): Api => {
 
         return { id: data.id, name: user.name }
       },
-      "profile/create" : async ({ data }) => {
+      "profile/create": async ({ data }) => {
         let token: SessionToken | undefined = undefined
 
         // 1. verify jwt
@@ -175,8 +180,8 @@ export const Api = (): Api => {
         return { id: data.id, token, newUser }
       },
       "ai/pls": async ({ data }) => {
-        const response = await gptPrompt(data.prompt)
-        return { id: data.id, response }
+        // const response = await gptPrompt(data.prompt)
+        return { id: data.id, response: [] }
       }
     },
     init: () => {
@@ -210,6 +215,9 @@ export const Api = (): Api => {
       // set data for this client
       ws.data = { id: api.clientIncr, worldId: "", playerName: "noob", playerId: "" }
 
+      // add client to clients
+      api.clients[ws.data.id] = ws
+
       // increment id
       api.clientIncr += 1
     },
@@ -221,12 +229,12 @@ export const Api = (): Api => {
         const handler = api.handlers[wsData.data.route]
 
         if (handler) {
-          console.log("request", stringify(wsData.data))
+          if (!skiplog.includes(wsData.data.route)) console.log("request", stringify(wsData.data))
 
           // @ts-expect-error
           const result = handler({ ws, data: wsData.data }) // TODO fix type casting
           result.then((data) => {
-            console.log("response", stringify(data))
+            if (!skiplog.includes(wsData.data.route)) console.log("response", stringify(data))
             const responseData: ResponseData = { type: "response", data }
             ws.send(encode(responseData))
           })

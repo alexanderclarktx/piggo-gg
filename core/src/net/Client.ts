@@ -1,7 +1,7 @@
 import {
-  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData,
-  RequestTypes, World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList,
-  Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate
+  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
+  World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList, Pls, NetClientReadSystem,
+  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -40,6 +40,7 @@ export type Client = {
   copyInviteLink: () => void
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
+  metaPlayers: (callback: Callback<MetaPlayers>) => void
   authLogin: (jwt: string, callback?: Callback<AuthLogin>) => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
   profileCreate: (name: string, callback: Callback) => void
@@ -127,6 +128,11 @@ export const Client = ({ world }: ClientProps): Client => {
           callback(response)
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
         }
+      })
+    },
+    metaPlayers: (callback) => {
+      request<MetaPlayers>({ route: "meta/players", type: "request", id: genHash() }, (response) => {
+        callback(response)
       })
     },
     authLogin: async (jwt, callback) => {

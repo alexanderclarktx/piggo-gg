@@ -12,15 +12,21 @@ export type BackgroundProps = {
 export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) => Entity({
   id: "background",
   components: {
-    position: Position({ x: -2000, y: -2000, velocity: { x: moving ? 15 : 0, y: 0 } }),
+    position: Position({ x: 207, y: 117, velocity: { x: moving ? 8 : 0, y: 0 } }),
     collider: Collider({ sensor: () => false, shape: "ball", radius: 1 }),
     renderable: Renderable({
       zIndex: -2,
-      dynamic: ({ renderable }) => {
+      interpolate: true,
+      dynamic: ({ renderable, entity }) => {
         // @ts-expect-error
         if (rays) renderable.filters[0].time += 0.008
+
+        // sync tilePosition with Position
+        const { position } = entity.components
+        const tile = renderable.c as TilingSprite
+        tile.tilePosition.x = position.data.x
+        tile.tilePosition.y = position.data.y
       },
-      interpolate: true,
       setup: async (renderable) => {
         if (rays) renderable.filters.push(
           new GodrayFilter({ gain: 0.5, alpha: 0.4, lacunarity: 2 })
@@ -37,7 +43,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
           texture = Sprite.from(await Assets.load(img ?? "night.png")).texture
         }
 
-        renderable.c = new TilingSprite({ texture: texture, width: 12000, height: 12000 })
+        renderable.c = new TilingSprite({ texture: texture, width: 6000, height: 6000 })
       }
     })
   }

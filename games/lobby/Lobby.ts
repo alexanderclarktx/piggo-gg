@@ -1,9 +1,11 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt
+  Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt,
+  World
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
+import { Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley"
@@ -28,7 +30,8 @@ export const Lobby: GameBuilder = {
       GameLobby(),
       Players(),
       PlayButton(),
-      CreateLobbyButton()
+      CreateLobbyButton(),
+      PlayersOnline()
     ],
     netcode: "delay"
   })
@@ -371,6 +374,37 @@ const Profile = (): Entity => {
     }
   })
   return profile
+}
+
+const PlayersOnline = () => {
+
+  let text: Text | undefined = undefined
+
+  const refresh = (world: World) => {
+    world.client?.metaPlayers((response) => {
+      if ("error" in response) return
+      if (text) text.text = `players online: ${response.online}`
+    })
+  }
+
+  return Entity({
+    id: "playersOnline",
+    components: {
+      position: Position({ x: -20, y: 20, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        setup: async (renderable, _, world) => {
+          text = pixiText({ text: "", style: { fontSize: 16, fill: 0x00ffff }, anchor: { x: 1, y: 0 } })
+          renderable.c.addChild(text)
+
+          refresh(world)
+        },
+        dynamic: ({ world }) => {
+          if (world.tick % 200 === 0) refresh(world)
+        }
+      })
+    }
+  })
 }
 
 const Friends = (): Entity => {
