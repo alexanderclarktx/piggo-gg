@@ -36,7 +36,8 @@ export type RequestTypes =
   FriendsList | FriendsAdd | FriendsRemove |
   ProfileCreate | ProfileGet |
   AuthLogin |
-  Pls
+  Pls |
+  MetaPlayers
 
 export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
 
@@ -78,3 +79,6 @@ export type AuthLogin = Request<"auth/login", { token: string, newUser: boolean 
 
 // ai endpoints
 export type Pls = Request<"ai/pls", { response: string[] }> & { prompt: string }
+
+// meta endpoints
+export type MetaPlayers = Request<"meta/players", { online: number }>
