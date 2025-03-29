@@ -18,8 +18,8 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
       zIndex: -2,
       interpolate: true,
       dynamic: ({ renderable, entity }) => {
-        // @ts-expect-error
-        if (rays) renderable.filters[0].time += 0.008
+        const godRayFilter = renderable.filters[0] as GodrayFilter
+        if (rays) godRayFilter.time += 0.008
 
         // sync tilePosition with Position
         const { position } = entity.components
@@ -29,7 +29,7 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
       },
       setup: async (renderable) => {
         if (rays) renderable.filters.push(
-          new GodrayFilter({ gain: 0.5, alpha: 0.4, lacunarity: 2 })
+          new GodrayFilter({ gain: 0.5, alpha: 0.45, lacunarity: 2 })
         )
 
         renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 1 }))
