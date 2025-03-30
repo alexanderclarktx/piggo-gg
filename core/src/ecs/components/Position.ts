@@ -108,11 +108,7 @@ export const Position = (props: PositionProps = {}): Position => {
     },
     interpolate: (delta: number, world: World) => {
       if (world.tick - position.lastCollided <= 4) {
-        return {
-          x: 0,
-          y: 0,
-          z: position.data.velocity.z * delta / world.tickrate
-        }
+        return { x: 0, y: 0, z: position.data.velocity.z * delta / world.tickrate }
       }
       return {
         x: position.data.velocity.x * delta / 1000,

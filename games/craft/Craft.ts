@@ -1,7 +1,6 @@
 import {
-  Piggo, SpawnSystem, Tree, isMobile, MobilePvEHUD, PvEHUD, Rock,
-  Zomi, Skelly, GameBuilder, DefaultUI, CameraSystem, InventorySystem,
-  ShadowSystem
+  Piggo, SpawnSystem, Tree, isMobile, MobilePvEHUD, PvEHUD, Rock, Zomi,
+  Skelly, GameBuilder, DefaultUI, CameraSystem, InventorySystem, ShadowSystem
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {

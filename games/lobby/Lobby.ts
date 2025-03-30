@@ -429,7 +429,7 @@ const SignupCTA = () => {
           const text = pixiText({
             text: "^\nSign In\nfor a free skin!",
             anchor: { x: 0.5, y: 0.9 },
-            style: { align: "center", fontSize: 18, fontWeight: "bold" },
+            style: { align: "center", fontSize: 18, fontWeight: "bold", resolution: 4 },
             pos: { x: 110, y: 70 }
           })
 
@@ -541,7 +541,7 @@ const PlayersOnline = () => {
           renderable.c.addChild(text)
         },
         dynamic: ({ world }) => {
-          if (world.tick === 20 || world.tick % 200 === 0) refresh(world)
+          if (world.tick === 40 || world.tick % 200 === 0) refresh(world)
         }
       })
     }
