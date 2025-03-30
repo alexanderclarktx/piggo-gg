@@ -53,7 +53,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     text,
     anchor: anchor ?? 0,
     position: pos ?? { x: 0, y: 0 },
-    resolution: style?.resolution ?? 2,
+    resolution: style?.resolution ?? 4,
     style: {
       align: style?.align ?? "left",
       fill: style?.fill ?? 0xffffff,
