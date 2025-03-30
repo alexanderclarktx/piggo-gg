@@ -429,7 +429,7 @@ const SignupCTA = () => {
           const text = pixiText({
             text: "^\nSign In\nfor a free skin!",
             anchor: { x: 0.5, y: 0.9 },
-            style: { align: "center", fontSize: 18, fontWeight: "bold", resolution: 4 },
+            style: { align: "center", fontSize: 18, fontWeight: "bold" },
             pos: { x: 110, y: 70 }
           })
 
