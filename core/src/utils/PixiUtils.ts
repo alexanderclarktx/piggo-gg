@@ -15,7 +15,7 @@ export type pixiTextStyle = {
   fontWeight?: TextStyleFontWeight
   dropShadow?: boolean
   resolution?: number
-  align?: "left" | "center" | "right" | "justify"
+  align?: "left" | "center" | "right"
 }
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
