@@ -41,8 +41,6 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
   const setupGoogle = () => {
     if (!window.google) return
 
-    console.log("setting up google")
-
     window.google.accounts.id.initialize({
       client_id: "1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com",
       callback: (response: { credential: string }) => {
