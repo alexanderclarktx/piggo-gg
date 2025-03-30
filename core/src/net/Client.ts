@@ -7,8 +7,8 @@ import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
 
 const servers = {
-  dev: "ws://localhost:3000",
-  // dev: "wss://piggo-api-staging.up.railway.app",
+  // dev: "ws://localhost:3000",
+  dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 
@@ -60,9 +60,12 @@ export const Client = ({ world }: ClientProps): Client => {
   world.addEntity(player)
 
   const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {
+    if (client.ws.readyState !== WebSocket.OPEN) return
+
     const requestData: RequestData = { type: "request", data }
     client.ws.send(encode(requestData))
     requestBuffer[requestData.data.id] = callback
+
     // TODO handle timeout
   }
 

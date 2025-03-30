@@ -140,6 +140,12 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
     renderable: Renderable({
       zIndex: 10,
       interactiveChildren: true,
+      dynamic: ({ world, entity }) => {
+        const state = world.game.state as LobbyState
+        const alpha = state.gameId === game.id ? 1 : 0.6
+        // const color = state.gameId === game.id ? 0xffcccc : 0xffffff
+        entity.components.renderable.c.children[0].alpha = alpha
+      },
       setup: async (r, _, world) => {
         const button = PixiButton({
           content: () => ({
@@ -286,11 +292,12 @@ const GameLobby = (): Entity => {
           const { height, width } = renderer.app.screen
 
           const outline = pixiGraphics()
-          outline.roundRect(0, 0, width - 230, height - 20, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
+          outline.roundRect(0, 0, width - 230, height - 20, 3)
+            .stroke({ color: colors.piggo, alpha: 0.8, width: 2, miterLimit: 0 })
 
           const select = pixiText({
             text: "select game:",
-            style: { fontSize: 24 },
+            style: { fontSize: 24, dropShadow: true },
             pos: { x: (width - 230) / 2, y: 15 },
             anchor: { x: 0.5, y: 0 }
           })
@@ -360,7 +367,9 @@ const Profile = (): Entity => {
   const outline = pixiGraphics()
   const drawOutline = () => {
     outline.clear()
-    outline.roundRect(-100, -75, 200, 170, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2 })
+    outline.roundRect(-100, -75, 200, 170, 3)
+      .fill({ color: 0x000000, alpha: 0.5 })
+      .stroke({ color: colors.piggo, alpha: 0.8, width: 2 })
   }
 
   const profile = Entity<Position | Renderable>({
@@ -398,7 +407,9 @@ const SignupCTA = () => {
   const outline = pixiGraphics()
   const drawOutline = () => {
     outline.clear()
-    outline.roundRect(10, 10, 200, 80, 3).stroke({ color: 0x00ffff, alpha: 1, width: 2 }).fill({ color: 0x000000, alpha: 0.9 })
+    outline.roundRect(10, 10, 200, 80, 3)
+      .fill({ color: 0x000000, alpha: 0.9 })
+      .stroke({ color: 0x00ffff, alpha: 1, width: 2 })
   }
 
   return Entity<Position | Renderable>({
@@ -432,9 +443,14 @@ const SignupCTA = () => {
 
 const Friends = (): Entity => {
 
-  const title = pixiText({ text: "friends", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
+  const title = pixiText({ text: "", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
 
-  const friendsOnline = pixiText({ text: "friends online: 0/0", style: { fontSize: 16 }, pos: { x: 100, y: 10 }, anchor: { x: 0.5, y: 0 } })
+  const friendsOnline = pixiText({
+    text: "friends: 0/0",
+    style: { fontSize: 20, dropShadow: true },
+    pos: { x: 100, y: 10 },
+    anchor: { x: 0.5, y: 0 }
+  })
 
   let screenHeight = 0
   let outlineHeight = 0
@@ -442,7 +458,9 @@ const Friends = (): Entity => {
   const outline = pixiGraphics()
   const drawOutline = () => {
     outline.clear()
-    outline.roundRect(0, 0, 200, screenHeight - outlineHeight, 3).stroke({ color: colors.piggo, alpha: 0.7, width: 2, miterLimit: 0 })
+    outline.roundRect(0, 0, 200, screenHeight - outlineHeight, 3)
+      .fill({ color: 0x000000, alpha: 0.5 })
+      .stroke({ color: colors.piggo, alpha: 0.8, width: 2, miterLimit: 0 })
   }
 
   // let friendList: number[] | undefined = undefined
@@ -474,13 +492,13 @@ const Friends = (): Entity => {
 
           // if (friendList === undefined) {
           //   friendList = []
-            // world.client?.friendsList((response) => {
-            //   if ("error" in response) {
-            //     friendList = []
-            //   } else {
-            //     friendList = response.friends
-            //   }
-            // })
+          // world.client?.friendsList((response) => {
+          //   if ("error" in response) {
+          //     friendList = []
+          //   } else {
+          //     friendList = response.friends
+          //   }
+          // })
           // }
         },
         setup: async (renderable, _, world) => {
@@ -514,14 +532,16 @@ const PlayersOnline = () => {
       position: Position({ x: -20, y: 20, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        setup: async (renderable, _, world) => {
-          text = pixiText({ text: "", style: { fontSize: 16, fill: 0x00ffff }, anchor: { x: 1, y: 0 } })
+        setup: async (renderable) => {
+          text = pixiText({
+            text: "",
+            style: { fontSize: 18, fill: 0x00ffff },
+            anchor: { x: 1, y: 0 }
+          })
           renderable.c.addChild(text)
-
-          refresh(world)
         },
         dynamic: ({ world }) => {
-          if (world.tick % 200 === 0) refresh(world)
+          if (world.tick === 40 || world.tick % 200 === 0) refresh(world)
         }
       })
     }

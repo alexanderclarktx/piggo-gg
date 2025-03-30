@@ -39,7 +39,7 @@ export const Tooltip = (id: string, text: string) => {
 
           explainer = pixiText({
             text,
-            style: { fill: 0xffffff, fontSize: 20, dropShadow: true, align: "center", resolution: 4 },
+            style: { fill: 0xffffff, fontSize: 20, dropShadow: true, align: "center" },
             pos: { x: 30, y: -20 },
             anchor: { x: 0, y: 0 },
           })
@@ -54,7 +54,7 @@ export const Tooltip = (id: string, text: string) => {
               text: "i",
               pos: { x: 0, y: 0 },
               anchor: { x: 0.45, y: 0.5 },
-              style: { fontSize: 26, fill: 0xffffff, dropShadow: true, resolution: 4, fontFamily: "Times New Roman" }
+              style: { fontSize: 26, fill: 0xffffff, dropShadow: true, fontFamily: "Times New Roman" }
             }),
             onEnter: () => sinceShown = 0,
             onLeave: () => sinceShown = 1

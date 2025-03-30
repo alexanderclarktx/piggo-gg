@@ -4,7 +4,6 @@ export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
     const { renderer } = world
-    let lastOntick = Date.now()
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
@@ -46,10 +45,7 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       priority: 9,
       onTick: (entities: Entity<Renderable | Position>[]) => {
-
         if (!renderer) return
-
-        lastOntick = performance.now()
 
         if (renderer.resizedFlag) {
           renderer.guiRenderables.forEach((renderable) => {
@@ -149,9 +145,7 @@ export const RenderSystem = ClientSystemBuilder({
           updateScreenFixed(entity)
         })
       },
-      onRender(entities: Entity<Renderable | Position>[]) {
-        const elapsedTime = performance.now() - lastOntick
-
+      onRender(entities: Entity<Renderable | Position>[], delta) {
         for (const entity of entities) {
 
           const { position, renderable } = entity.components
@@ -162,26 +156,16 @@ export const RenderSystem = ClientSystemBuilder({
             updateScreenFixed(entity)
           }
 
+          // world renderables
           const { x, y, z, velocity } = position.data
-
-          // scene renderables
           if ((velocity.x || velocity.y || velocity.z) && renderable.interpolate) {
 
-            const dx = velocity.x * elapsedTime / 1000
-            const dy = velocity.y * elapsedTime / 1000
-            const dz = velocity.z * elapsedTime / world.tickrate
+            const interpolated = position.interpolate(delta, world)
 
-            if ((world.tick - position.lastCollided) <= 4) {
-              renderable.c.position.set(
-                x + renderable.position.x,
-                y + renderable.position.y - z - dz
-              )
-            } else {
-              renderable.c.position.set(
-                x + dx + renderable.position.x,
-                y + dy + renderable.position.y - z - dz
-              )
-            }
+            renderable.c.position.set(
+              x + renderable.position.x + interpolated.x,
+              y + renderable.position.y + interpolated.y - z - interpolated.z
+            )
           }
         }
       }

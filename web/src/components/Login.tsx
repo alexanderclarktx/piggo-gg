@@ -1,19 +1,6 @@
 import { World } from "@piggo-gg/core"
 import { LoginState } from "@piggo-gg/web"
-import { useEffect, useState } from "react"
-
-const initGoogleSignIn = (onSuccess: (token: string) => void) => {
-  window.google.accounts.id.initialize({
-    client_id: "1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com",
-    callback: (response: { credential: string }) => {
-      onSuccess(response.credential)
-    }
-  })
-
-  window.google.accounts.id.renderButton(document.getElementById("google-signin")!, {
-    theme: "filled_black", text: "signin_with", size: "medium", type: "standard", shape: "pill"
-  })
-}
+import { useState } from "react"
 
 const loginStateColors: Record<LoginState, string> = {
   "not logged in": "red",
@@ -33,6 +20,8 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
   const [usernameInput, setUsernameInput] = useState("")
   const [error, setError] = useState("")
 
+  let googleSetUp = false
+
   const handleUsernameSubmit = () => {
     if (usernameInput.trim()) {
       world?.client?.profileCreate(usernameInput, (response) => {
@@ -49,15 +38,29 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
     }
   }
 
-  useEffect(() => {
-    if (window.google) initGoogleSignIn((jwt) => {
-      world?.client?.authLogin(jwt, (response) => {
-        if ((!("error" !in response)) && response.newUser) setIsModalOpen(true)
-      })
+  const setupGoogle = () => {
+    if (!window.google) return
+
+    window.google.accounts.id.initialize({
+      client_id: "1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com",
+      callback: (response: { credential: string }) => {
+        const jwt = response.credential
+        world?.client?.authLogin(jwt, (response) => {
+          if ((!("error"! in response)) && response.newUser) setIsModalOpen(true)
+        })
+      }
     })
-  }, [loginState])
+
+    window.google.accounts.id.renderButton(document.getElementById("google-signin")!, {
+      theme: "filled_black", text: "signin_with", size: "medium", type: "standard", shape: "pill"
+    })
+
+    googleSetUp = true
+  }
 
   setInterval(() => {
+    if (!googleSetUp) setupGoogle()
+
     if (!world?.client) return
 
     if (loginState !== "🟢 Logged In" && world.client.token) {

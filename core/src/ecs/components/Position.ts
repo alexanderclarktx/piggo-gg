@@ -1,5 +1,5 @@
 import {
-  Component, Entity, Oct, OctString, SystemBuilder, XY, XYZ, max, min, reduce, round, toOctString
+  Component, Entity, Oct, OctString, SystemBuilder, World, XY, XYZ, max, min, reduce, round, toOctString
 } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
@@ -28,6 +28,7 @@ export type Position = Component<"position", {
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
   impulse: (_: XY) => Position
+  interpolate: (_: number, __: World) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
@@ -104,6 +105,16 @@ export const Position = (props: PositionProps = {}): Position => {
         x: position.data.velocity.x + x,
         y: position.data.velocity.y + y
       })
+    },
+    interpolate: (delta: number, world: World) => {
+      if (world.tick - position.lastCollided <= 4) {
+        return { x: 0, y: 0, z: position.data.velocity.z * delta / world.tickrate }
+      }
+      return {
+        x: position.data.velocity.x * delta / 1000,
+        y: position.data.velocity.y * delta / 1000,
+        z: position.data.velocity.z * delta / world.tickrate
+      }
     },
     setSpeed: (speed: number) => {
       position.data.speed = speed

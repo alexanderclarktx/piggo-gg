@@ -127,10 +127,15 @@ export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystem
         const character = world.client?.playerCharacter()
         if (character) centeredEntity = character
       },
-      onRender: () => {
+      onRender: (_, delta) => {
         if (!centeredEntity) return
 
-        const { x, y } = follow(centeredEntity.components.renderable.c.position)
+        const interpolated = centeredEntity.components.position.interpolate(delta, world)
+
+        const { x, y } = follow({
+          x: centeredEntity.components.position.data.x + interpolated.x,
+          y: centeredEntity.components.position.data.y + interpolated.y
+        })
         renderer?.camera.moveTo({ x, y })
       }
     }
