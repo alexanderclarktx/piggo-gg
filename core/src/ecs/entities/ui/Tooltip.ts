@@ -6,7 +6,7 @@ export const Tooltip = (id: string, text: string) => {
   let explainer: Text | undefined = undefined
   let explainerBg: Graphics | undefined = undefined
 
-  let sinceShown = 1
+  let show = 320
 
   const tooltip = Entity<Position>({
     id: `tooltip-${id}`,
@@ -18,20 +18,21 @@ export const Tooltip = (id: string, text: string) => {
         interactiveChildren: true,
         zIndex: 100,
         dynamic: () => {
-          if (sinceShown > 300) return
-          if (sinceShown >= 1) sinceShown += 1
-
           if (!explainer || !explainerBg) return
 
-          if (sinceShown > 180) {
-            explainer.alpha = 1 - (sinceShown - 180) / 60
-            explainerBg.alpha = 1 - (sinceShown - 180) / 60
-          }
-
-          if (sinceShown === 0) {
+          if (show <= 0) {
+            explainer.alpha = 0
+            explainerBg.alpha = 0
+            return
+          } else if (show < 40) {
+            explainer.alpha = show / 40
+            explainerBg.alpha = show / 40
+          } else {
             explainer.alpha = 1
             explainerBg.alpha = 1
           }
+
+          show -= 1
         },
         setup: async (renderable, renderer) => {
           const { width } = renderer.app.screen
@@ -39,7 +40,7 @@ export const Tooltip = (id: string, text: string) => {
 
           explainer = pixiText({
             text,
-            style: { fill: 0xffffff, fontSize: 20, dropShadow: true, align: "center" },
+            style: { fill: 0xffffff, fontSize: 20 },
             pos: { x: 30, y: -20 },
             anchor: { x: 0, y: 0 },
           })
@@ -56,8 +57,8 @@ export const Tooltip = (id: string, text: string) => {
               anchor: { x: 0.45, y: 0.5 },
               style: { fontSize: 26, fill: 0xffffff, dropShadow: true, fontFamily: "Times New Roman" }
             }),
-            onEnter: () => sinceShown = 0,
-            onLeave: () => sinceShown = 1
+            onEnter: () => show = 900,
+            onLeave: () => show = 200
           })
 
           const circle = pixiGraphics().circle(0, 0, 16).stroke({ color: 0xffffff, width: 2 })

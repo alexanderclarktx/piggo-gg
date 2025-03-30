@@ -57,7 +57,7 @@ export const Volley: GameBuilder<VolleyState> = {
       ScorePanel(),
       LagText({ y: 5 }),
       switchTeamButton(),
-      Tooltip("controls", "WASD — move\nSPACE — jump\nMOUSE — aim\nLEFT CLICK — hit"),
+      Tooltip("controls", " move: WASD\n jump: SPACE\n  aim: MOUSE\n  hit: LEFT CLICK"),
     ]
   })
 }
