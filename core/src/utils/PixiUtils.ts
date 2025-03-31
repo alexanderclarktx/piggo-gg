@@ -9,13 +9,14 @@ export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, strokeColor?: number, strokeAlpha?: number, strokeWidth?: number }
 
 export type pixiTextStyle = {
-  fill?: number
-  fontSize?: number
-  fontFamily?: string
-  fontWeight?: TextStyleFontWeight
-  dropShadow?: boolean
-  resolution?: number
   align?: "left" | "center" | "right"
+  alpha?: number
+  dropShadow?: boolean
+  fill?: number
+  fontFamily?: string
+  fontSize?: number
+  fontWeight?: TextStyleFontWeight
+  resolution?: number
 }
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
@@ -33,19 +34,19 @@ export const pixiRect = ({ x, y, w, h, rounded = 0, style }: pixiRectProps): Gra
 }
 
 export const pixiCircle = ({ x = 0, y = 0, r, style }: pixiCircleProps): Graphics => {
-  const g = new Graphics()
-  g.circle(x, y, r)
-
+  const g = pixiGraphics().circle(x, y, r)
   return pixiStyle({ g, strokeWidth: 0, ...style })
 }
 
 export const pixiStyle = ({ g, color, alpha, strokeColor, strokeAlpha, strokeWidth }: pixiStyleProps): Graphics => {
-  g.fill(
-    { color: color ?? 0x000000, alpha: alpha ?? 0.4 }
-  ).stroke(
-    { width: strokeWidth ?? 2, color: strokeColor ?? color ?? 0xffffff, alpha: strokeAlpha ?? 0.9 }
-  )
-  return g
+  return g.fill({
+    color: color ?? 0x000000,
+    alpha: alpha ?? 0.4
+  }).stroke({
+    width: strokeWidth ?? 2,
+    color: strokeColor ?? 0xffffff,
+    alpha: strokeAlpha ?? 0.9
+  })
 }
 
 export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
@@ -54,6 +55,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     anchor: anchor ?? 0,
     position: pos ?? { x: 0, y: 0 },
     resolution: style?.resolution ?? 4,
+    alpha: style?.alpha ?? 1,
     style: {
       align: style?.align ?? "left",
       fill: style?.fill ?? 0xffffff,
@@ -66,7 +68,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
 }
 
 export type PixiButtonProps = {
-  content: () => { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number },
+  content: () => { text: string, pos: XY, width?: number, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number },
   onClick?: () => void
   onEnter?: () => void
   onLeave?: () => void
@@ -76,17 +78,23 @@ export type PixiButton = { c: Container, onClick: undefined | (() => void), redr
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
-  const draw = ({ text, pos, anchor = { x: 0.5, y: 0 }, style, strokeAlpha }:
-    { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number }
-  ) => {
-    const t = pixiText({ text, pos, anchor, style })
+  const draw = (props: { text: string, pos: XY, width?: number, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number }) => {
+
+    props.anchor = props.anchor ?? { x: 0.5, y: 0 }
+
+    const t = pixiText({
+      text: props.text,
+      pos: props.pos,
+      anchor: props.anchor,
+      style: props.style
+    })
 
     const b = pixiRect({
-      x: pos.x - anchor.x * t.width - 7,
-      y: pos.y - anchor.y * t.height - 5,
-      w: t.width + 14, h: t.height + 10,
+      x: props.width ? props.pos.x - props.width / 2 : props.pos.x - props.anchor.x * t.width - 7,
+      y: props.pos.y - props.anchor.y * t.height - 5,
+      w: props.width ?? t.width + 14, h: t.height + 10,
       rounded: 5,
-      style: { alpha: 0, strokeAlpha: strokeAlpha ?? 0 }
+      style: { alpha: props.alpha ?? 0, strokeAlpha: props.strokeAlpha ?? 0, color: props.fillColor ?? 0x000000 }
     })
 
     return [b, t]

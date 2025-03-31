@@ -29,10 +29,10 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
       },
       setup: async (renderable) => {
         if (rays) renderable.filters.push(
-          new GodrayFilter({ gain: 0.5, alpha: 0.45, lacunarity: 2 })
+          new GodrayFilter({ gain: 0.45, alpha: 0.45, lacunarity: 2 })
         )
 
-        renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 1 }))
+        renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 0.95 }))
 
         let texture: Texture
 

@@ -65,8 +65,9 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
 
     const targetOnOtherSide = team === 1 ? target.x > 225 : target.x < 225
 
+    const distance = XYdistance(from, target)
+
     if (state.phase === "serve" && state.hit === 1 && state.teamServing === team) {
-      const distance = XYdistance(from, target)
       g = 0.08
       vz = 1 + distance / 600
       v = velocityToPoint(ballPos.data, target, g, vz)
@@ -79,7 +80,7 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
 
     } else if (standing) {
       g = 0.1
-      vz = standing ? 3.2 : 2.5
+      vz = 3.2
       v = velocityToDirection(ballPos.data, target, 80, g, vz)
 
       state.phase = "play"
@@ -90,7 +91,6 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
 
       state.phase = "play"
     } else {
-      const distance = XYdistance(from, target)
       vz = -3 + distance / 140
 
       if (ballPos.data.z < 70) {

@@ -58,7 +58,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
         const { position, renderable } = entity.components
         if (!position || !renderable) return
 
-        renderable.c.alpha = 0.25 - target.components.position.data.z / 400
+        renderable.c.alpha = 0.25 - target.components.position.data.z / 500
 
         position.setPosition({
           x: target.components.position.data.x,
