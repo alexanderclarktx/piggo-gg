@@ -153,7 +153,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new GlowFilter({ color, quality, innerStrength, outerStrength })]
         })
       } else {
-        // renderable.c.filters.push(new GlowFilter({ color, quality, innerStrength, outerStrength }))
         renderable.c.filters = [...renderable.filters, new GlowFilter({ color, quality, innerStrength, outerStrength })]
       }
     },
