@@ -68,7 +68,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
 }
 
 export type PixiButtonProps = {
-  content: () => { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number },
+  content: () => { text: string, pos: XY, width?: number, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number },
   onClick?: () => void
   onEnter?: () => void
   onLeave?: () => void
@@ -78,7 +78,7 @@ export type PixiButton = { c: Container, onClick: undefined | (() => void), redr
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
-  const draw = (props: { text: string, pos: XY, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number }) => {
+  const draw = (props: { text: string, pos: XY, width?: number, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number }) => {
 
     props.anchor = props.anchor ?? { x: 0.5, y: 0 }
 
@@ -90,9 +90,9 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     })
 
     const b = pixiRect({
-      x: props.pos.x - props.anchor.x * t.width - 7,
+      x: props.width ? props.pos.x - props.width / 2 : props.pos.x - props.anchor.x * t.width - 7,
       y: props.pos.y - props.anchor.y * t.height - 5,
-      w: t.width + 14, h: t.height + 10,
+      w: props.width ?? t.width + 14, h: t.height + 10,
       rounded: 5,
       style: { alpha: props.alpha ?? 0, strokeAlpha: props.strokeAlpha ?? 0, color: props.fillColor ?? 0x000000 }
     })
