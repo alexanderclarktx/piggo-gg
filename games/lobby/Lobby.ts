@@ -5,6 +5,7 @@ import {
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Text } from "pixi.js"
+import { BevelFilter } from "pixi-filters"
 
 type LobbyState = {
   gameId: "volley"
@@ -37,7 +38,7 @@ export const Lobby: GameBuilder = {
   })
 }
 
-const Icon = (player: Entity<PC | Team>) => {
+const PlayerName = (player: Entity<PC | Team>, y: number) => {
 
   const { pc, team } = player.components
 
@@ -46,7 +47,7 @@ const Icon = (player: Entity<PC | Team>) => {
 
   const text = () => pixiText({
     text: pc.data.name,
-    pos: { x: 0, y: 40 },
+    pos: { x: 0, y: 60 },
     anchor: { x: 0.5, y: 0.5 },
     style: { fontSize: 24, fill: TeamColors[team.data.team] }
   })
@@ -54,7 +55,7 @@ const Icon = (player: Entity<PC | Team>) => {
   const icon = Entity<Position | Renderable>({
     id: `icon-${player.id}`,
     components: {
-      position: Position({ screenFixed: true, y: 350 }),
+      position: Position({ screenFixed: true, y }),
       renderable: Renderable({
         zIndex: 12,
         interactiveChildren: true,
@@ -86,8 +87,6 @@ const Players = (): Entity => {
   let icons: Entity<Position | Renderable>[] = []
   let avatars: Entity<Position | Renderable>[] = []
 
-  let offset = { x: 0, y: 0 }
-
   return Entity({
     id: "players",
     components: {
@@ -95,8 +94,8 @@ const Players = (): Entity => {
       npc: NPC({
         behavior: (_, world) => {
           if (!world.renderer) return
-          const { height, width } = world.renderer.app.screen
-          offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
+          const { width } = world.renderer.wh()
+          const offset = { x: 220 + ((width - 230) / 2), y: 250 }
 
           const players = world.queryEntities<PC | Team>(["pc"]).sort((a, b) => a.components.pc.data.name > b.components.pc.data.name ? 1 : -1)
 
@@ -105,8 +104,8 @@ const Players = (): Entity => {
             icons.forEach(i => world.removeEntity(i.id))
             avatars.forEach(a => world.removeEntity(a.id))
 
-            icons = players.map(p => Icon(p))
-            avatars = players.map(p => Avatar(p, { x: 0, y: 330 }, () => {
+            icons = players.map(p => PlayerName(p, offset.y))
+            avatars = players.map(p => Avatar(p, { x: 0, y: offset.y }, () => {
               world.actions.push(world.tick + 2, p.id, { actionId: "switchTeam" })
             }))
             world.addEntities(icons)
@@ -147,13 +146,16 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
         entity.components.renderable.c.children[0].alpha = alpha
       },
       setup: async (r, _, world) => {
+        r.filters.push(new BevelFilter({ rotation: 135, lightAlpha: 0.5, shadowAlpha: 0.2 }))
+
         const button = PixiButton({
           content: () => ({
             text: game.id,
             pos: { x: 0, y: 0 },
             anchor: { x: 0.5, y: 0.5 },
             style: { fontSize: 28, fill: 0xffffff },
-            strokeAlpha: 1
+            strokeAlpha: 1,
+            alpha: 1
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -169,7 +171,7 @@ const PlayButton = () => {
   const playButton = Entity<Position>({
     id: "playButton",
     components: {
-      position: Position({ x: 300, y: 120, screenFixed: true }),
+      position: Position({ x: 300, y: 350, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -184,7 +186,7 @@ const PlayButton = () => {
               text: "play",
               pos: { x: 0, y: 0 },
               anchor: { x: 0.5, y: 0 },
-              style: { fontSize: 72, fill: 0xffccff, dropShadow: true }
+              style: { fontSize: 72, fill: 0xff99aa, dropShadow: true }
             }),
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
@@ -205,12 +207,11 @@ const CreateLobbyButton = () => {
   const createLobbyButton = Entity<Position | Renderable>({
     id: "createLobbyButton",
     components: {
-      position: Position({ x: 300, y: 450, screenFixed: true }),
+      position: Position({ x: 300, y: 150, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
         anchor: { x: 0.5, y: 0.5 },
-        alpha: 0.6,
         dynamic: ({ world }) => {
           const ready = (world.client?.ws.readyState ?? 0) === 1
           createLobbyButton.components.renderable.c.alpha = ready ? 1 : 0.6
@@ -221,18 +222,23 @@ const CreateLobbyButton = () => {
 
           createLobbyButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
+          r.filters.push(new BevelFilter({ rotation: 135, lightAlpha: 0.5, shadowAlpha: 0.2 }))
+
           const button = PixiButton({
             content: () => ({
               text: "Create Lobby",
               pos: { x: 0, y: 0 },
               anchor: { x: 0.5, y: 0.5 },
               style: { fontSize: 26, fill: 0xffffff },
-              strokeAlpha: 1
+              strokeAlpha: 1,
+              alpha: 1,
             }),
             onClick: () => world.client?.copyInviteLink(),
-            onEnter: () => r.color = 0xddffff,
-            onLeave: () => r.color = 0xffffff
+            onEnter: () => button.c.alpha = 1,
+            onLeave: () => button.c.alpha = 0.95
           })
+          button.c.alpha = 0.95
+
           r.c.addChild(button.c)
         }
       })
@@ -258,33 +264,33 @@ const GameLobby = (): Entity => {
           state.gameId = params.gameId
         }
       }),
-      npc: NPC({
-        behavior: (_, world) => {
-          if (!world.renderer) return
-          const { height, width } = world.renderer.app.screen
+      // npc: NPC({
+      //   behavior: (_, world) => {
+      //     if (!world.renderer) return
+      //     const { height, width } = world.renderer.app.screen
 
-          if (gameButtons.length === 0) {
+      //     // if (gameButtons.length === 0) {
 
-            for (const g of list) {
-              const gameButton = GameButton(g)
-              world.addEntity(gameButton)
-              gameButtons.push(gameButton)
-            }
-          }
+      //     //   for (const g of list) {
+      //     //     const gameButton = GameButton(g)
+      //     //     world.addEntity(gameButton)
+      //     //     gameButtons.push(gameButton)
+      //     //   }
+      //     // }
 
-          const offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
+      //     const offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
 
-          // align the game buttons
-          const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
-          let x = -totalWidth / 2
-          for (const gb of gameButtons) {
-            const { width } = gb.components.renderable.c
+      //     // align the game buttons
+      //     const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
+      //     let x = -totalWidth / 2
+      //     for (const gb of gameButtons) {
+      //       const { width } = gb.components.renderable.c
 
-            gb.components.position.data.x = offset.x + x + width / 2
-            x += width + 20
-          }
-        }
-      }),
+      //       gb.components.position.data.x = offset.x + x + width / 2
+      //       x += width + 20
+      //     }
+      //   }
+      // }),
       renderable: Renderable({
         zIndex: 9,
         interactiveChildren: true,
@@ -295,14 +301,14 @@ const GameLobby = (): Entity => {
           outline.roundRect(0, 0, width - 230, height - 20, 3)
             .stroke({ color: colors.piggo, alpha: 0.8, width: 2, miterLimit: 0 })
 
-          const select = pixiText({
-            text: "select game:",
-            style: { fontSize: 24, dropShadow: true },
-            pos: { x: (width - 230) / 2, y: 15 },
-            anchor: { x: 0.5, y: 0 }
-          })
+          // const select = pixiText({
+          //   text: "select game:",
+          //   style: { fontSize: 24, dropShadow: true },
+          //   pos: { x: (width - 230) / 2, y: 15 },
+          //   anchor: { x: 0.5, y: 0 }
+          // })
 
-          r.c.addChild(outline, select)
+          r.c.addChild(outline)
         }
       })
     }

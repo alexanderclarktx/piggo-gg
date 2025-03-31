@@ -107,7 +107,7 @@ export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Tea
             const from = { x: position.data.x, y: position.data.y, z: position.data.z }
 
             // spike
-            if (state.hit === 2 || (state.phase === "serve" && state.hit === 0)) {
+            if ((team === state.lastHitTeam && state.hit === 2) || (state.phase === "serve" && state.hit === 0)) {
               const target = {
                 x: 225 + (team === 1 ? 1 : -1) * (world.random.int(225) + 40),
                 y: world.random.int(150, 75)
@@ -123,12 +123,12 @@ export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Tea
             const closestTeammate = teammates(world, bot).filter((x) => x.id !== bot.id)[0]
             if (!closestTeammate) return
 
-            // bump
-            const hit = middle(
+            // bump toward the net
+            const target = middle(
               closestTeammate.components.position.data,
               { y: closestTeammate.components.position.data.y, x: 225 }
             )
-            return { actionId: "spike", entityId: bot.id, params: { target: hit, from } }
+            return { actionId: "spike", entityId: bot.id, params: { target, from } }
           }
         },
       }),
