@@ -443,15 +443,6 @@ const SignupCTA = () => {
 
 const Friends = (): Entity => {
 
-  const title = pixiText({ text: "", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
-
-  // const friendsOnline = pixiText({
-  //   text: "friends: 0/0",
-  //   style: { fontSize: 20, dropShadow: true },
-  //   pos: { x: 100, y: 10 },
-  //   anchor: { x: 0.5, y: 0 }
-  // })
-
   let addFriend: PixiButton | undefined = undefined
 
   let screenHeight = 0
