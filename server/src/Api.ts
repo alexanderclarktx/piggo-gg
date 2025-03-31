@@ -1,4 +1,4 @@
-import { ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify } from "@piggo-gg/core"
+import { ExtractedRequestTypes, Friend, LobbyCreate, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify, values } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import jwt from "jsonwebtoken"
@@ -37,6 +37,17 @@ export const Api = (): Api => {
   const JWT_SECRET = process.env["JWT_SECRET"] ?? "piggo"
   const client = new OAuth2Client("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com")
 
+  const verifyJWT = (data: { token: string }): SessionToken | false => {
+    let token: SessionToken | undefined = undefined
+    try {
+      token = jwt.verify(data.token, JWT_SECRET) as SessionToken
+      if (token) return token
+    } catch (e) {
+      console.error("JWT verification failed", e)
+    }
+    return false
+  }
+
   const api: Api = {
     bun: undefined,
     clientIncr: 1,
@@ -73,6 +84,42 @@ export const Api = (): Api => {
       "meta/players": async ({ data }) => {
         return { id: data.id, online: keys(api.clients).length }
       },
+      "friends/add": async ({ data }) => {
+        const token = verifyJWT(data)
+        if (!token) return { id: data.id, error: "Auth failed" }
+
+        const user = await prisma.users.findUnique({ where: { name: data.name } })
+        if (!user) return { id: data.id, error: "User not found" }
+
+        const friend = await prisma.friends.findFirst({
+          where: {
+            user1Id: data.name,
+            user2: { googleId: token.googleId }
+          }
+        })
+
+        if (friend) {
+          if (friend.status === "ACCEPTED") {
+            return { id: data.id, error: "Already friends" }
+          }
+          if (friend.status === "PENDING") {
+            return { id: data.id, error: "Friend request already sent" }
+          }
+          if (friend.status === "BLOCKED") {
+            return { id: data.id, error: "User blocked" }
+          }
+        } else {
+          await prisma.friends.create({
+            data: {
+              user1: { connect: { googleId: token.googleId } },
+              user2: { connect: { name: data.name } },
+              status: "PENDING"
+            }
+          })
+        }
+
+        return { id: data.id }
+      },
       "friends/list": async ({ data }) => {
         let result: { id: string, friends: Friend[] } = { friends: [], id: data.id }
 
@@ -81,7 +128,7 @@ export const Api = (): Api => {
         try {
           token = jwt.verify(data.token, JWT_SECRET) as SessionToken
         } catch (e) {
-          return { id: data.id, error: "JWT verification failed" }
+          return { id: data.id, error: "Auth failed" }
         }
 
         const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
@@ -92,27 +139,21 @@ export const Api = (): Api => {
           include: { user2: true }
         })
 
-        // result.friends = friends.map(({ user2 }) => {
-        //   return { address: user2.walletAddress, name: user2.name, online: false }
-        // })
+        result.friends = friends.map(({ user2 }) => {
+          const online = Boolean(values(api.clients).find((client) => {
+            return client.data.playerName === user2.name
+          }))
+          return { name: user2.name, online }
+        })
 
         return result
-      },
-      "friends/add": async ({ data }) => {
-        return { id: data.id }
       },
       "friends/remove": async ({ data }) => {
         return { id: data.id }
       },
       "profile/get": async ({ ws, data }) => {
-        let token: SessionToken | undefined = undefined
-
-        // 1. verify jwt
-        try {
-          token = jwt.verify(data.token, JWT_SECRET) as SessionToken
-        } catch (e) {
-          return { id: data.id, error: "JWT verification failed" }
-        }
+        const token = verifyJWT(data)
+        if (!token) return { id: data.id, error: "Auth failed" }
 
         // 2. find user
         const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
@@ -134,7 +175,7 @@ export const Api = (): Api => {
         try {
           token = jwt.verify(data.token, JWT_SECRET) as SessionToken
         } catch (e) {
-          return { id: data.id, error: "JWT verification failed" }
+          return { id: data.id, error: "Auth failed" }
         }
 
         // 2. check if username is taken
@@ -159,7 +200,7 @@ export const Api = (): Api => {
         const { sub } = ticket.getPayload() ?? {}
 
         if (!sub) {
-          return { id: data.id, error: "Google JWT verification failed" }
+          return { id: data.id, error: "Google Auth failed" }
         }
 
         let newUser = false

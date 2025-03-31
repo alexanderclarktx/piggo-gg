@@ -1,11 +1,12 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, Debug, randomInt, World
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Text } from "pixi.js"
 import { BevelFilter } from "pixi-filters"
+import toast from "react-hot-toast"
 
 type LobbyState = {
   gameId: "volley"
@@ -257,7 +258,6 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
     id: `avatar-${randomInt(1000)}`,
     components: {
       position: Position({ ...pos, screenFixed: true }),
-      debug: Debug(),
       renderable: Renderable({
         zIndex: 10,
         anchor: { x: 0.55, y: 0.5 },
@@ -371,6 +371,21 @@ const Friends = (): Entity => {
 
   let addFriend: PixiButton | undefined = undefined
 
+  let addFriendInput = PixiButton({
+    content: () => ({
+      text: "",
+      pos: { x: 100, y: 70 },
+      anchor: { x: 0.5, y: 0.5 },
+      style: { fontSize: 18, fill: 0xffffff },
+      textPos: { x: 20, y: 70 },
+      textAnchor: { x: 0, y: 0.5 },
+      width: 180,
+      strokeAlpha: 1
+    })
+  })
+
+  let addFriendInputText = ""
+
   let screenHeight = 0
   let outlineHeight = 0
 
@@ -390,6 +405,7 @@ const Friends = (): Entity => {
       position: Position({ x: 10, y: 190, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
+        interactiveChildren: true,
         dynamic: ({ world }) => {
           if (!world.renderer) return
 
@@ -409,6 +425,27 @@ const Friends = (): Entity => {
             drawOutline()
           }
 
+          if (addFriendInput.c.visible) {
+            const all = world.client!.bufferDown.all()
+
+            for (const down of all) {
+              if (down.key === "backspace") {
+                addFriendInputText = addFriendInputText.slice(0, -1)
+                continue
+              }
+              if (down.hold) {
+                continue
+              }
+              const key = down.key.toLowerCase()
+              if (key.length === 1) {
+                addFriendInputText += key
+              }
+            }
+
+            // @ts-expect-error
+            addFriendInput.c.children[1].text = addFriendInputText
+          }
+
           // if (friendList === undefined) {
           //   friendList = []
           // world.client?.friendsList((response) => {
@@ -423,22 +460,33 @@ const Friends = (): Entity => {
         setup: async (renderable, _, world) => {
           drawOutline()
 
+          renderable.filters.push(new BevelFilter({ rotation: 135, lightAlpha: 0.5, shadowAlpha: 0.2 }))
+
           addFriend = PixiButton({
             content: () => ({
               text: "add friend",
               pos: { x: 100, y: 30 },
               style: { fontSize: 18, fill: 0xffffff },
-              strokeAlpha: 1
+              strokeAlpha: 1,
+              alpha: 1
             }),
             onClick: () => {
-              // world.client?.addFriend("noob")
-            }
+              addFriendInput.c.visible = true
+              // world.client?.friendsAdd("noob", (response) => {
+              //   if ("error" in response) {
+              //     toast.error(response.error)
+              //   } else {
+              //     toast.success("friend request sent")
+              //   }
+              // })
+            },
+            onEnter: () => addFriend!.c.alpha = 1,
+            onLeave: () => addFriend!.c.alpha = 0.95
           })
+          addFriend.c.alpha = world.client?.token ? 0.95 : 0.6
+          addFriendInput.c.visible = false
 
-          addFriend.c.alpha = world.client?.token ? 1 : 0.6
-
-
-          renderable.c.addChild(outline, addFriend.c)
+          renderable.c.addChild(outline, addFriend.c, addFriendInput.c)
 
           if (!world.client?.token) {
             friends.components.position.setPosition({ x: 10, y: 280 })

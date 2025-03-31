@@ -1,7 +1,8 @@
 import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
   World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList, Pls, NetClientReadSystem,
-  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers
+  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers, FriendsAdd,
+  KeyBuffer
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -20,6 +21,8 @@ export const hosts = {
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
 
 export type Client = {
+  bufferDown: KeyBuffer,
+  bufferUp: KeyBuffer,
   connected: boolean
   clickThisFrame: {
     value: number
@@ -45,6 +48,7 @@ export type Client = {
   aiPls: (prompt: string, callback: Callback<Pls>) => void
   profileCreate: (name: string, callback: Callback) => void
   profileGet: (callback?: Callback) => void
+  friendsAdd: (name: string, callback: Callback) => void
   friendsList: (callback: Callback<FriendsList>) => void
 }
 
@@ -72,6 +76,8 @@ export const Client = ({ world }: ClientProps): Client => {
   const env = location ? (location.hostname === "localhost" ? "dev" : "production") : "dev"
 
   const client: Client = {
+    bufferDown: KeyBuffer(),
+    bufferUp: KeyBuffer(),
     connected: false,
     clickThisFrame: {
       value: 0,
@@ -181,6 +187,12 @@ export const Client = ({ world }: ClientProps): Client => {
         }
       })
     },
+    friendsAdd: (name, callback) => {
+      if (!client.token) return
+      request<FriendsAdd>({ route: "friends/add", type: "request", id: genHash(), token: client.token, name }, (response) => {
+        callback(response)
+      })
+    },
     friendsList: (callback) => {
       if (!client.token) return
       request<FriendsList>({ route: "friends/list", type: "request", id: genHash(), token: client.token }, (response) => {
@@ -193,58 +205,69 @@ export const Client = ({ world }: ClientProps): Client => {
     client.connected = Boolean(client.lastMessageTick && ((world.tick - client.lastMessageTick) < 60))
   }, 200)
 
-  client.ws.binaryType = "arraybuffer"
+  const setupWs = () => {
+    client.ws.binaryType = "arraybuffer"
 
-  client.ws.addEventListener("close", () => {
-    console.error("websocket closed")
-    world.removeSystem(NetClientReadSystem.id)
-    world.removeSystem(NetClientWriteSystem.id)
-  })
+    client.ws.addEventListener("close", () => {
+      console.error("websocket closed")
+      world.removeSystem(NetClientReadSystem.id)
+      world.removeSystem(NetClientWriteSystem.id)
+    })
 
-  client.ws.addEventListener("message", (event) => {
-    try {
-      const message = decode(new Uint8Array(event.data)) as NetMessageTypes
+    client.ws.addEventListener("message", (event) => {
+      try {
+        const message = decode(new Uint8Array(event.data)) as NetMessageTypes
 
-      if (message.type !== "response") return
+        if (message.type !== "response") return
 
-      if (message.data.id in requestBuffer) {
-        const callback = requestBuffer[message.data.id]
+        if (message.data.id in requestBuffer) {
+          const callback = requestBuffer[message.data.id]
 
-        callback(message.data)
-        delete requestBuffer[message.data.id]
+          callback(message.data)
+          delete requestBuffer[message.data.id]
+        }
+      } catch (error) {
+        console.error("Client: failed to parse message", error)
       }
-    } catch (error) {
-      console.error("Client: failed to parse message", error)
-    }
-  })
+    })
 
-  client.ws.onopen = () => {
-    console.log("Client: connected to server")
+    client.ws.onopen = () => {
+      console.log("Client: connected to server")
 
-    const joinString: string | null = new URLSearchParams(window.location.search).get("join")
-    if (joinString) {
-      client.lobbyJoin(joinString, () => { })
-      return
-    }
-
-    const gameString: string | null = new URLSearchParams(window.location.search).get("game")
-    if (gameString && world.games[gameString]) {
-      world.setGame(gameString)
-    }
-
-    if (localStorage) {
-      const token = localStorage.getItem("token")
-      if (token) {
-        client.token = token
-        client.profileGet()
+      const joinString: string | null = new URLSearchParams(window.location.search).get("join")
+      if (joinString) {
+        client.lobbyJoin(joinString, () => { })
+        return
       }
+
+      const gameString: string | null = new URLSearchParams(window.location.search).get("game")
+      if (gameString && world.games[gameString]) {
+        world.setGame(gameString)
+      }
+
+      if (localStorage) {
+        const token = localStorage.getItem("token")
+        if (token) {
+          client.token = token
+          client.profileGet()
+        }
+      }
+    }
+
+
+    client.ws.onclose = () => {
+      // client.connected = false
+      console.error("Client: disconnected from server")
+
+      // schedule reconnect
+      setTimeout(() => {
+        console.log("Client: reconnecting to server")
+        setupWs()
+      }, 2000)
     }
   }
 
-  client.ws.onclose = () => {
-    // client.connected = false
-    console.error("Client: disconnected from server") // TODO reconnect
-  }
+  setupWs()
 
   return client
 }

@@ -1,39 +1,12 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity,
-  Input, InvokedAction, World, XY, XYdiff, round
+  Input, InvokedAction, World, XY, XYdiff, round, KeyBuffer
 } from "@piggo-gg/core"
-
-export type Mouse = XY
 
 export var chatBuffer: string[] = []
 export var chatIsOpen = false
-export var mouse: Mouse = { x: 0, y: 0 }
+export var mouse: XY = { x: 0, y: 0 }
 export var mouseScreen: XY = { x: 0, y: 0 }
-
-export type KeyMouse = { key: string, mouse: Mouse, tick: number, hold: boolean }
-
-const KeyBuffer = (b?: KeyMouse[]) => {
-  let buffer: KeyMouse[] = b ? [...b] : []
-
-  return {
-    get: (key: string) => {
-      return buffer.find((b) => b.key === key)
-    },
-    copy: () => KeyBuffer(buffer),
-    clear: () => {
-      buffer = []
-    },
-    push: (km: KeyMouse) => {
-      if (!buffer.find((b) => b.key === km.key)) return buffer.push(km)
-    },
-    remove: (key: string) => {
-      buffer = buffer.filter((b) => b.key !== key)
-    },
-    setHold: () => {
-      buffer.forEach((b) => b.hold = true)
-    }
-  }
-}
 
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
@@ -43,9 +16,6 @@ export const InputSystem = ClientSystemBuilder({
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])
-
-    const bufferedDown = KeyBuffer()
-    const bufferedUp = KeyBuffer()
 
     let backspaceOn = false
     let joystickOn = false
@@ -74,7 +44,7 @@ export const InputSystem = ClientSystemBuilder({
 
       const key = event.button === 0 ? "mb1" : "mb2"
 
-      bufferedDown.push({ key, mouse, tick: world.tick, hold: false })
+      world.client!.bufferDown.push({ key, mouse, tick: world.tick, hold: false })
     })
 
     document.addEventListener("pointerup", (event) => {
@@ -82,7 +52,7 @@ export const InputSystem = ClientSystemBuilder({
 
       if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
-      bufferedDown.remove(key)
+      world.client!.bufferDown.remove(key)
     })
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
@@ -95,8 +65,8 @@ export const InputSystem = ClientSystemBuilder({
         if (chatIsOpen && keyName === "backspace") backspaceOn = false
 
         // remove from bufferedDown and add to bufferedUp
-        bufferedDown.remove(keyName)
-        bufferedUp.push({ key: keyName, mouse, tick: world.tick, hold: false })
+        world.client!.bufferDown.remove(keyName)
+        world.client!.bufferUp.push({ key: keyName, mouse, tick: world.tick, hold: false })
       }
     })
 
@@ -117,7 +87,7 @@ export const InputSystem = ClientSystemBuilder({
         if (charactersPreventDefault.has(keyName)) event.preventDefault()
 
         // add to buffer
-        if (!bufferedDown.get(keyName)) {
+        if (!world.client!.bufferDown.get(keyName)) {
 
           // toggle chat
           if (keyName === "enter" && !chatIsOpen) chatIsOpen = true
@@ -140,7 +110,7 @@ export const InputSystem = ClientSystemBuilder({
           if (chatIsOpen && validChatCharacters.has(keyName)) {
             chatBuffer.push(keyName)
           } else {
-            bufferedDown.push({ key: keyName, mouse, tick: world.tick, hold: false })
+            world.client!.bufferDown.push({ key: keyName, mouse, tick: world.tick, hold: false })
           }
         }
       }
@@ -148,7 +118,7 @@ export const InputSystem = ClientSystemBuilder({
 
     const handleInputForCharacter = (character: Character, world: World) => {
       // copy the input buffer
-      let buffer = bufferedDown.copy()
+      let buffer = world.client!.bufferDown.copy()
 
       // check for actions
       const { input, actions, position, inventory } = character.components
@@ -254,8 +224,8 @@ export const InputSystem = ClientSystemBuilder({
 
     const handleInputForUIEntity = (entity: Entity<Input | Actions>, world: World) => {
       // copy the input buffer
-      let bufferDown = bufferedDown.copy()
-      let bufferUp = bufferedUp.copy()
+      let bufferDown = world.client!.bufferDown.copy()
+      let bufferUp = world.client!.bufferUp.copy()
 
       // check for actions
       const { input, actions } = entity.components
@@ -325,8 +295,8 @@ export const InputSystem = ClientSystemBuilder({
 
         // clear buffer if the window is not focused
         if (!document.hasFocus()) {
-          bufferedDown.clear()
-          bufferedUp.clear()
+          world.client!.bufferDown.clear()
+          world.client!.bufferUp.clear()
           return
         }
 
@@ -345,10 +315,10 @@ export const InputSystem = ClientSystemBuilder({
           if (!networked) handleInputForUIEntity(entity, world)
         })
 
-        bufferedUp.clear()
-        bufferedDown.remove("capslock") // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
+        world.client!.bufferUp.clear()
+        world.client!.bufferDown.remove("capslock") // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
 
-        bufferedDown.setHold()
+        world.client!.bufferDown.updateHold(world.tick)
 
         joystickOn = CurrentJoystickPosition.active
       }

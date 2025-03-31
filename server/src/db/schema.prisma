@@ -10,8 +10,7 @@ generator client {
 }
 
 model users {
-  id                     String    @id @default(uuid())
-  name                   String    @unique @db.Citext
+  name                   String    @id @unique @db.Citext
   googleId               String    @unique
   sentFriendRequests     friends[] @relation("Friendship1")
   receivedFriendRequests friends[] @relation("Friendship2")
@@ -19,10 +18,10 @@ model users {
 
 model friends {
   id        String           @id @default(uuid())
-  user1     users            @relation("Friendship1", fields: [user1Id], references: [id])
-  user1Id   String
-  user2     users            @relation("Friendship2", fields: [user2Id], references: [id])
-  user2Id   String
+  user1     users            @relation("Friendship1", fields: [user1Id], references: [name])
+  user1Id   String           @db.Citext
+  user2     users            @relation("Friendship2", fields: [user2Id], references: [name])
+  user2Id   String           @db.Citext
   status    FriendshipStatus @default(PENDING)
   createdAt DateTime         @default(now())
 
