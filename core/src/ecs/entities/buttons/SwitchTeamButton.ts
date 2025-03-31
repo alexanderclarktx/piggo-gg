@@ -16,7 +16,7 @@ export const switchTeamButton = () => Entity({
 
         const button = PixiButton({
           content: () => ({
-            text: "change team",
+            text: "switch team",
             pos: { y: 30, x: width / 2 - 140 },
             style: { fontSize: 18, fill: 0xffffff },
             strokeAlpha: 1
