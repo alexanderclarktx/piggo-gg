@@ -1,0 +1,11 @@
+{
+  "frames": {
+    "hat": { "frame": { "x": 3, "y": 1, "w": 12, "h": 9 } }
+  },
+  "meta": {
+    "image": "hat-propellor.png",
+    "format": "RGBA8888",
+    "size": { "w": 16, "h": 16 },
+    "scale": "1"
+  }
+}

@@ -426,7 +426,7 @@ const Friends = (): Entity => {
           addFriend = PixiButton({
             content: () => ({
               text: "add friend",
-              pos: { x: 100, y: 25 },
+              pos: { x: 100, y: 30 },
               style: { fontSize: 18, fill: 0xffffff },
               strokeAlpha: 1
             }),
