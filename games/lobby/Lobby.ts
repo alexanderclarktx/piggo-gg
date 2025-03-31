@@ -150,8 +150,6 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
         const button = PixiButton({
           content: () => ({
             text: game.id,
-            pos: { x: 0, y: 0 },
-            anchor: { x: 0.5, y: 0.5 },
             style: { fontSize: 28, fill: 0xffffff },
             strokeAlpha: 1,
             alpha: 1
@@ -170,7 +168,7 @@ const PlayButton = () => {
   const playButton = Entity<Position>({
     id: "playButton",
     components: {
-      position: Position({ x: 300, y: 350, screenFixed: true }),
+      position: Position({ x: 300, y: 360, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -185,9 +183,8 @@ const PlayButton = () => {
           const button = PixiButton({
             content: () => ({
               text: "Play",
-              pos: { x: 0, y: 0 },
               width: 250,
-              anchor: { x: 0.5, y: 0 },
+              height: 40,
               style: { fontSize: 26, fill: 0xffffff },
               strokeAlpha: 1,
               alpha: 1
@@ -231,9 +228,8 @@ const CreateLobbyButton = () => {
           const button = PixiButton({
             content: () => ({
               text: "Invite Friends",
-              pos: { x: 0, y: 0 },
               width: 250,
-              anchor: { x: 0.5, y: 0.5 },
+              height: 40,
               style: { fontSize: 26, fill: 0xffffff },
               strokeAlpha: 1,
               alpha: 1,
@@ -430,8 +426,7 @@ const Friends = (): Entity => {
           addFriend = PixiButton({
             content: () => ({
               text: "add friend",
-              pos: { x: 100, y: 20 },
-              anchor: { x: 0.5, y: 0 },
+              pos: { x: 100, y: 25 },
               style: { fontSize: 18, fill: 0xffffff },
               strokeAlpha: 1
             }),

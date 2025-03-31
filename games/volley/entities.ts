@@ -15,7 +15,7 @@ export const Dude = (player: Player) => Character({
     debug: Debug(),
     position: Position({
       y: 0, x: player.components.team.data.team === 1 ? 0 : 400,
-      velocityResets: 1, speed: 120, gravity: 0.3
+      velocityResets: 1, speed: 125, gravity: 0.3
     }),
     networked: Networked(),
     collider: Collider({ shape: "ball", radius: 4, group: "notself" }),

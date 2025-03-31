@@ -17,15 +17,18 @@ export const switchTeamButton = () => Entity({
         const button = PixiButton({
           content: () => ({
             text: "change team",
-            pos: { y: 20, x: width / 2 - 140 },
+            pos: { y: 30, x: width / 2 - 140 },
             style: { fontSize: 18, fill: 0xffffff },
-            strokeAlpha: 0.5
+            strokeAlpha: 1
           }),
           onClick: () => {
             world.client?.clickThisFrame.set(world.tick + 1)
             world.actions.push(world.tick + 2, world.client!.playerId(), { actionId: "switchTeam" })
-          }
+          },
+          onEnter: () => button.c.alpha = 1,
+          onLeave: () => button.c.alpha = 0.95
         })
+        button.c.alpha = 0.95
 
         renderable.c.addChild(button.c)
       }

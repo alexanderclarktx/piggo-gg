@@ -85,6 +85,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable) {
+        oldEntity.removed = true
         oldEntity.components.renderable.cleanup()
       }
 
@@ -102,6 +103,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       const entity = world.entities[id]
       if (entity) {
         delete world.entities[id]
+        entity.removed = true
         entity.components.renderable?.cleanup()
       }
     },

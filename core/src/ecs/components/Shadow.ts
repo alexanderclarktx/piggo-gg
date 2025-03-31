@@ -16,7 +16,8 @@ export const ShadowSystem = ClientSystemBuilder({
   id: "ShadowSystem",
   init: (world) => {
 
-    const table: Record<string, Entity<Renderable>> = {}
+    const shadows: Record<string, Entity<Renderable>> = {}
+    const targets: Record<string, Target> = {}
 
     return {
       id: "ShadowSystem",
@@ -25,20 +26,31 @@ export const ShadowSystem = ClientSystemBuilder({
       onTick: (entities: Target[]) => {
 
         // clean up
-        for (const [id, entity] of entries(table)) {
+        for (const [id, shadow] of entries(shadows)) {
           if (!entities.find(e => e.id === id)) {
-            world.removeEntity(entity.id)
-            delete table[id]
+            world.removeEntity(shadow.id)
+            delete shadows[id]
+            delete targets[id]
+          }
+        }
+
+        for (const [id, target] of entries(targets)) {
+          if (target.removed) {
+            world.removeEntity(shadows[id].id)
+            delete targets[id]
+            delete shadows[id]
           }
         }
 
         // create shadows
         for (const target of entities) {
-          if (!table[target.id]) {
+          if (!shadows[target.id]) {
             const { size, yOffset } = target.components.shadow
             const shadowEntity = ShadowEntity(target, size, yOffset)
 
-            table[target.id] = shadowEntity
+            shadows[target.id] = shadowEntity
+            targets[target.id] = target
+
             world.addEntity(shadowEntity)
           }
         }
