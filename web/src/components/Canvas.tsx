@@ -11,8 +11,9 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
   let playedAudio = false
 
   useEffect(() => {
-    const mobile = isMobile()
     const canvas = document.getElementById("canvas") as HTMLCanvasElement
+
+    const mobile = isMobile()
     if (mobile) canvas.style.border = "none"
 
     const renderer = Renderer(canvas)
@@ -25,19 +26,16 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
   return (
     <div>
       <audio>
-        <source src="/silent.mp3" type="audio/mp3"></source>
+        <source src="/silent.mp3" type="audio/mp3"/>
       </audio>
-      <canvas id="canvas" onPointerDown={
-        () => {
-          if (playedAudio) return
+      <canvas id="canvas" onPointerDown={() => {
+        if (playedAudio) return
 
-          const audioElement = document.querySelector("audio") as HTMLAudioElement
-          audioElement.play()
+        const audioElement = document.querySelector("audio") as HTMLAudioElement
+        audioElement.play()
 
-          playedAudio = true
-        }
-      }>
-      </canvas>
+        playedAudio = true
+      }}/>
     </div>
   )
 }
