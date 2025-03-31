@@ -9,13 +9,14 @@ export type pixiCircleProps = { x?: number, y?: number, r: number, style?: Omit<
 export type pixiStyleProps = { g: Graphics, color?: number, alpha?: number, strokeColor?: number, strokeAlpha?: number, strokeWidth?: number }
 
 export type pixiTextStyle = {
-  fill?: number
-  fontSize?: number
-  fontFamily?: string
-  fontWeight?: TextStyleFontWeight
-  dropShadow?: boolean
-  resolution?: number
   align?: "left" | "center" | "right"
+  alpha?: number
+  dropShadow?: boolean
+  fill?: number
+  fontFamily?: string
+  fontSize?: number
+  fontWeight?: TextStyleFontWeight
+  resolution?: number
 }
 export type pixiTextProps = { text: string, anchor?: XY, pos?: XY, style?: pixiTextStyle }
 
@@ -54,6 +55,7 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
     anchor: anchor ?? 0,
     position: pos ?? { x: 0, y: 0 },
     resolution: style?.resolution ?? 4,
+    alpha: style?.alpha ?? 1,
     style: {
       align: style?.align ?? "left",
       fill: style?.fill ?? 0xffffff,

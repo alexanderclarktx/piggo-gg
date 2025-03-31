@@ -445,12 +445,14 @@ const Friends = (): Entity => {
 
   const title = pixiText({ text: "", style: { fontSize: 20 }, pos: { x: 100, y: 5 }, anchor: { x: 0.5, y: 0 } })
 
-  const friendsOnline = pixiText({
-    text: "friends: 0/0",
-    style: { fontSize: 20, dropShadow: true },
-    pos: { x: 100, y: 10 },
-    anchor: { x: 0.5, y: 0 }
-  })
+  // const friendsOnline = pixiText({
+  //   text: "friends: 0/0",
+  //   style: { fontSize: 20, dropShadow: true },
+  //   pos: { x: 100, y: 10 },
+  //   anchor: { x: 0.5, y: 0 }
+  // })
+
+  let addFriend: PixiButton | undefined = undefined
 
   let screenHeight = 0
   let outlineHeight = 0
@@ -503,7 +505,24 @@ const Friends = (): Entity => {
         },
         setup: async (renderable, _, world) => {
           drawOutline()
-          renderable.c.addChild(outline, friendsOnline)
+
+          addFriend = PixiButton({
+            content: () => ({
+              text: "add friend",
+              pos: { x: 100, y: 20 },
+              anchor: { x: 0.5, y: 0 },
+              style: { fontSize: 18, fill: 0xffffff },
+              strokeAlpha: 1
+            }),
+            onClick: () => {
+              // world.client?.addFriend("noob")
+            }
+          })
+
+          addFriend.c.alpha = world.client?.token ? 1 : 0.6
+
+
+          renderable.c.addChild(outline, addFriend.c)
 
           if (!world.client?.token) {
             friends.components.position.setPosition({ x: 10, y: 280 })
@@ -535,7 +554,7 @@ const PlayersOnline = () => {
         setup: async (renderable) => {
           text = pixiText({
             text: "",
-            style: { fontSize: 18, fill: 0x00ffff },
+            style: { fontSize: 18, fill: 0xffffff, alpha: 0.7 },
             anchor: { x: 1, y: 0 }
           })
           renderable.c.addChild(text)
