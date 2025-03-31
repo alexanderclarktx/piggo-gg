@@ -1,12 +1,12 @@
 import {
   Action, Actions, Character, Collider, Debug, Entity, Input, LineWall,
   loadTexture, Move, Networked, NPC, pixiGraphics, Player, Position,
-  Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff
+  Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff,
+  DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic
 } from "@piggo-gg/core"
 import { Texture } from "pixi.js"
 import { range, VolleyState } from "./Volley"
 import { Spike } from "./Spike"
-import { DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic } from "@piggo-gg/core/src/ecs/entities/characters/Skins"
 import { BevelFilter } from "pixi-filters"
 
 export const Dude = (player: Player) => Character({
