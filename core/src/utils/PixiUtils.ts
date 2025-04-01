@@ -67,8 +67,22 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
   })
 }
 
+type PixiButtonContent = {
+  alpha?: number,
+  anchor?: XY,
+  fillColor?: number
+  height?: number,
+  pos?: XY,
+  strokeAlpha?: number,
+  style: pixiTextStyle,
+  text: string,
+  textAnchor?: XY,
+  textPos?: XY,
+  width?: number,
+}
+
 export type PixiButtonProps = {
-  content: () => { text: string, pos: XY, width?: number, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number },
+  content: () => PixiButtonContent
   onClick?: () => void
   onEnter?: () => void
   onLeave?: () => void
@@ -78,23 +92,27 @@ export type PixiButton = { c: Container, onClick: undefined | (() => void), redr
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
-  const draw = (props: { text: string, pos: XY, width?: number, anchor?: XY, style: pixiTextStyle, strokeAlpha?: number, alpha?: number, fillColor?: number }) => {
+  const draw = ({ alpha, anchor = { x: 0.5, y: 0.5 }, fillColor, height, pos = { x: 0, y: 0 }, strokeAlpha, style, text, textAnchor, textPos, width }: PixiButtonContent) => {
 
-    props.anchor = props.anchor ?? { x: 0.5, y: 0 }
-
-    const t = pixiText({
-      text: props.text,
-      pos: props.pos,
-      anchor: props.anchor,
-      style: props.style
-    })
+    const t = pixiText({ text, pos: textPos ?? pos, anchor: textAnchor ?? anchor, style })
 
     const b = pixiRect({
-      x: props.width ? props.pos.x - props.width / 2 : props.pos.x - props.anchor.x * t.width - 7,
-      y: props.pos.y - props.anchor.y * t.height - 5,
-      w: props.width ?? t.width + 14, h: t.height + 10,
+      // x: width ? pos.x - width / 2 : pos.x - anchor.x * t.width - 7,
+      x: width ? pos.x - (1 - anchor.x) * width : pos.x - (1 - anchor.x) * t.width - 7,
+      y: height ? pos.y - (1 - anchor.y) * height : pos.y - (1 - anchor.y) * t.height - 5,
+      w: width ?? t.width + 14,
+      h: height ?? t.height + 10,
       rounded: 5,
-      style: { alpha: props.alpha ?? 0, strokeAlpha: props.strokeAlpha ?? 0, color: props.fillColor ?? 0x000000 }
+      style: { alpha: alpha ?? 0, strokeAlpha: strokeAlpha ?? 0, color: fillColor ?? 0x000000 }
+    })
+
+    const mask = pixiRect({
+      x: width ? pos.x - (1 - anchor.x) * width : pos.x - (1 - anchor.x) * t.width - 7,
+      y: height ? pos.y - (1 - anchor.y) * height : pos.y - (1 - anchor.y) * t.height - 5,
+      w: width ?? t.width + 14,
+      h: height ?? t.height + 10,
+      rounded: 5,
+      style: { alpha: alpha ?? 0, strokeAlpha: strokeAlpha ?? 0, color: fillColor ?? 0x000000 }
     })
 
     return [b, t]

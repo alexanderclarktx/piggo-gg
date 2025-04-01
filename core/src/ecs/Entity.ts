@@ -6,6 +6,7 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
   extend: (_: ComponentTypes[]) => Entity<T>
   serialize: () => SerializedEntity
   deserialize: (serializedEntity: SerializedEntity) => void
+  removed: boolean
   persists?: boolean
   components: ComponentTypes extends T ?
   {
@@ -20,12 +21,13 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
 
 export type SerializedEntity = Record<string, NetworkedComponentData>
 
-export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "extend">
+export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "extend" | "removed">
 
 export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): Entity<T> => {
 
-  const entity = {
+  const entity: Entity<T> = {
     ...protoEntity,
+    removed: false,
     extend: (components: ComponentTypes[]) => {
       components.forEach(component => {
         // @ts-expect-error

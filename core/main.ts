@@ -1,6 +1,7 @@
 export * from "./src/runtime/Game"
 export * from "./src/runtime/DefaultUI"
 export * from "./src/runtime/DefaultWorld"
+export * from "./src/runtime/KeyBuffer"
 export * from "./src/runtime/TickBuffer"
 export * from "./src/runtime/World"
 export * from "./src/ecs/Component"

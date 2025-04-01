@@ -8,6 +8,7 @@ export const NametagSystem = ClientSystemBuilder({
   init: (world) => {
 
     const nametags: Record<string, Entity<Renderable | Position>> = {}
+    const characters: Record<string, Character> = {}
 
     return {
       id: "NametagSystem",
@@ -17,15 +18,25 @@ export const NametagSystem = ClientSystemBuilder({
       onTick: (entities: Player[]) => {
 
         // clean up
-        for (const [entityId, nametag] of entries(nametags)) {
+        for (const [characterId, nametag] of entries(nametags)) {
 
           if (!world.entity(nametag.id)) {
-            delete nametags[entityId]
+            delete nametags[characterId]
           }
 
-          if (!world.entity(entityId)) {
+          if (!world.entity(characterId)) {
             world.removeEntity(nametag.id)
-            delete nametags[entityId]
+            delete nametags[characterId]
+          }
+        }
+
+        // clean up
+        for (const [characterId, character] of entries(characters)) {
+          if (character.removed) {
+            world.removeEntity(nametags[characterId]?.id)
+
+            delete nametags[characterId]
+            delete characters[characterId]
           }
         }
 
@@ -34,10 +45,12 @@ export const NametagSystem = ClientSystemBuilder({
           const character = player.components.controlling.getCharacter(world)
           if (!character) continue
 
-          if (!nametags[player.id]) {
+          if (!nametags[character.id]) {
             const nametag = Nametag(player, character)
-            nametags[player.id] = nametag
             world.addEntity(nametag)
+
+            nametags[character.id] = nametag
+            characters[character.id] = character
           }
         }
       }

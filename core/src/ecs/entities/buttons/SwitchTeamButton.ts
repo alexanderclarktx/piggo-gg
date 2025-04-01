@@ -1,4 +1,5 @@
 import { Entity, PixiButton, Position, Renderable } from "@piggo-gg/core"
+import { BevelFilter } from "pixi-filters"
 
 export const switchTeamButton = () => Entity({
   id: "switchTeamButton",
@@ -14,18 +15,24 @@ export const switchTeamButton = () => Entity({
       setup: async (renderable, renderer, world) => {
         const { width } = renderer.wh()
 
+        renderable.filters.push(new BevelFilter({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 }))
+
         const button = PixiButton({
           content: () => ({
-            text: "change team",
-            pos: { y: 20, x: width / 2 - 140 },
+            text: "switch team",
+            pos: { y: 30, x: width / 2 - 140 },
             style: { fontSize: 18, fill: 0xffffff },
-            strokeAlpha: 0.5
+            strokeAlpha: 1,
+            alpha: 1
           }),
           onClick: () => {
             world.client?.clickThisFrame.set(world.tick + 1)
             world.actions.push(world.tick + 2, world.client!.playerId(), { actionId: "switchTeam" })
-          }
+          },
+          onEnter: () => button.c.alpha = 1,
+          onLeave: () => button.c.alpha = 0.95
         })
+        button.c.alpha = 0.95
 
         renderable.c.addChild(button.c)
       }

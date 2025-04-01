@@ -55,15 +55,17 @@ export const Tooltip = (id: string, text: string) => {
               text: "i",
               pos: { x: 0, y: 0 },
               anchor: { x: 0.45, y: 0.5 },
-              style: { fontSize: 26, fill: 0xffffff, dropShadow: true, fontFamily: "Times New Roman" }
+              style: { fontSize: 26, fill: 0xffffff, dropShadow: true, fontFamily: "Times New Roman" },
             }),
             onEnter: () => show = 900,
             onLeave: () => show = 200
           })
 
-          const circle = pixiGraphics().circle(0, 0, 16).stroke({ color: 0xffffff, width: 2 })
+          const circle = pixiGraphics().circle(0, 0, 16)
+            .fill({ color: 0x000000, alpha: 1 })
+            .stroke({ color: 0xffffff, width: 2 })
 
-          renderable.c.addChild(icon.c, circle, explainerBg, explainer)
+          renderable.c.addChild(circle, icon.c, explainerBg, explainer)
         }
       })
     }
