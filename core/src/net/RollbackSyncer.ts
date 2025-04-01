@@ -99,7 +99,7 @@ export const RollbackSyncer = (world: World): Syncer => {
         console.log("LARGE DIFF", message.diff)
         world.tickrate = 30
       } else if ((message.diff ?? 1) <= 0) {
-        console.log("NEGATIVE DIFF", message.diff)
+        console.log("SMALL DIFF", message.diff)
         world.tickrate = 20
       } else {
         world.tickrate = 25
@@ -116,7 +116,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       const gap = world.tick - message.tick
       const framesForward = (gap >= 2 && gap <= 5) ?
         gap :
-        ceil(world.client!.ms / world.tickrate) + 2
+        ceil(world.client!.ms * 2 / world.tickrate) + 2
 
       const localActions = world.actions.atTick(message.tick) ?? {}
 

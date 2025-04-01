@@ -235,7 +235,7 @@ export const InputSystem = ClientSystemBuilder({
         if (keyMouse) {
 
           // ignore stale inputs
-          if (keyMouse.tick + 1 != world.tick) continue
+          // if (keyMouse.tick + 1 != world.tick) continue
 
           // find the callback
           const controllerInput = input.inputMap.press[inputKey]

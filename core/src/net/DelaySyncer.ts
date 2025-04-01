@@ -25,7 +25,8 @@ export const DelaySyncer = (): Syncer => ({
   write: (world) => {
 
     const message: GameData = {
-      actions: { [world.tick + 1]: world.actions.atTick(world.tick + 1) ?? {} },
+      // actions: { [world.tick + 1]: world.actions.atTick(world.tick + 1) ?? {} },
+      actions: world.actions.fromTick(world.tick + 1),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
