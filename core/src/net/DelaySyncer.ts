@@ -1,7 +1,7 @@
 import {
   AK, AWP, Apple, Axe, Deagle, Entity, GameData, Hitbox,
-  Pickaxe, Piggo, Player, Rock, SerializedEntity, Sword, Syncer, Tree,
-  Zomi, entries, keys, stringify
+  Pickaxe, Piggo, Player, Rock, SerializedEntity, Sword,
+  Syncer, Tree, Zomi, entries, keys, stringify
 } from "@piggo-gg/core"
 
 export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
@@ -25,7 +25,6 @@ export const DelaySyncer = (): Syncer => ({
   write: (world) => {
 
     const message: GameData = {
-      // actions: { [world.tick + 1]: world.actions.atTick(world.tick + 1) ?? {} },
       actions: world.actions.fromTick(world.tick + 1),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
