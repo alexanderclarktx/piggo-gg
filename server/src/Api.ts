@@ -1,4 +1,7 @@
-import { ExtractedRequestTypes, Friend, LobbyCreate, NetMessageTypes, RequestTypes, ResponseData, entries, genHash, keys, stringify, values } from "@piggo-gg/core"
+import {
+  ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes,
+  ResponseData, entries, genHash, keys, round, stringify, values
+} from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
 import jwt from "jsonwebtoken"
@@ -272,10 +275,14 @@ export const Api = (): Api => {
         if (handler) {
           if (!skiplog.includes(wsData.data.route)) console.log("request", stringify(wsData.data))
 
+          const start = performance.now()
+
           // @ts-expect-error
           const result = handler({ ws, data: wsData.data }) // TODO fix type casting
           result.then((data) => {
-            if (!skiplog.includes(wsData.data.route)) console.log("response", stringify(data))
+            if (!skiplog.includes(wsData.data.route)) {
+              console.log(`response ms:${round(performance.now() - start)} `, stringify(data))
+            }
             const responseData: ResponseData = { type: "response", data }
             ws.send(encode(responseData))
           })

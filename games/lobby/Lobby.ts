@@ -370,19 +370,7 @@ const SignupCTA = () => Entity<Position | Renderable>({
 const Friends = (): Entity => {
 
   let addFriend: PixiButton | undefined = undefined
-
-  let addFriendInput = PixiButton({
-    content: () => ({
-      text: "",
-      pos: { x: 100, y: 70 },
-      anchor: { x: 0.5, y: 0.5 },
-      style: { fontSize: 18, fill: 0xffffff },
-      textPos: { x: 20, y: 70 },
-      textAnchor: { x: 0, y: 0.5 },
-      width: 180,
-      strokeAlpha: 1
-    })
-  })
+  let addFriendInput: PixiButton | undefined = undefined
 
   let addFriendInputText = ""
 
@@ -425,7 +413,7 @@ const Friends = (): Entity => {
             drawOutline()
           }
 
-          if (addFriendInput.c.visible) {
+          if (addFriendInput!.c.visible) {
             const all = world.client!.bufferDown.all()
 
             for (const down of all) {
@@ -462,6 +450,19 @@ const Friends = (): Entity => {
 
           renderable.filters.push(new BevelFilter({ rotation: 135, lightAlpha: 0.5, shadowAlpha: 0.2 }))
 
+          addFriendInput = PixiButton({
+            content: () => ({
+              text: "",
+              pos: { x: 100, y: 70 },
+              anchor: { x: 0.5, y: 0.5 },
+              style: { fontSize: 18, fill: 0xffffff },
+              textPos: { x: 20, y: 70 },
+              textAnchor: { x: 0, y: 0.5 },
+              width: 180,
+              strokeAlpha: 1
+            })
+          })
+
           addFriend = PixiButton({
             content: () => ({
               text: "add friend",
@@ -471,7 +472,7 @@ const Friends = (): Entity => {
               alpha: 1
             }),
             onClick: () => {
-              addFriendInput.c.visible = true
+              addFriendInput!.c.visible = true
               // world.client?.friendsAdd("noob", (response) => {
               //   if ("error" in response) {
               //     toast.error(response.error)

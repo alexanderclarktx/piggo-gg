@@ -115,8 +115,6 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
       style: { alpha: alpha ?? 0, strokeAlpha: strokeAlpha ?? 0, color: fillColor ?? 0x000000 }
     })
 
-    t.setMask({mask: mask, inverse: true})
-
     return [b, t]
   }
 
