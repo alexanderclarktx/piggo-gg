@@ -54,3 +54,12 @@ export const Ghost: Skin = async (r) => {
     spike: pixiAnimation([t["spike3"], t["spike3"]])
   }
 }
+
+export type Skins = "dude-white" | "dude-red" | "dude-blue" | "ghost"
+
+export const Skins: Record<Skins, Skin> = {
+  "dude-white": DudeSkin("white"),
+  "dude-red": DudeSkin("red"),
+  "dude-blue": DudeSkin("blue"),
+  "ghost": Ghost
+}

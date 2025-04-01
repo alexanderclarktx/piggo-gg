@@ -59,6 +59,12 @@ export const RenderSystem = ClientSystemBuilder({
         entities.forEach((entity) => {
           const { position, renderable } = entity.components
 
+          // render if skin changed
+          if (renderable.skin.current !== renderable.skin.desired) {
+            renderable.c.removeChildren()
+            renderable.rendered = false
+          }
+
           // render if new entity
           if (!renderable.rendered) {
             renderable.rendered = true

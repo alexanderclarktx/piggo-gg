@@ -2,7 +2,8 @@ import {
   Action, Actions, Character, Collider, Debug, Entity, Input, LineWall,
   loadTexture, Move, Networked, NPC, pixiGraphics, Player, Position,
   Renderable, Shadow, sign, sqrt, Team, WASDInputMap, XYZdiff,
-  DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic
+  DudeSkin, Ghost, VolleyCharacterAnimations, VolleyCharacterDynamic,
+  Skins
 } from "@piggo-gg/core"
 import { Texture } from "pixi.js"
 import { range, VolleyState } from "./Volley"
@@ -51,12 +52,9 @@ export const Dude = (player: Player) => Character({
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
+      skin: (player.components.pc.data.name.startsWith("noob")) ? "dude-white" : "ghost", 
       setup: async (r) => {
-        if (player.components.pc.data.name.startsWith("noob")) {
-          await DudeSkin("white")(r)
-        } else {
-          await Ghost(r)
-        }
+        await Skins[r.skin.desired ?? "dude-white"](r)
       },
       animationSelect: VolleyCharacterAnimations,
       dynamic: VolleyCharacterDynamic

@@ -1,4 +1,4 @@
-import { Component, Entity, Renderer, World, XY, keys, values, Position } from "@piggo-gg/core"
+import { Component, Entity, Renderer, World, XY, keys, values, Position, Skins } from "@piggo-gg/core"
 import { AdvancedBloomFilter, BevelFilter, GlowFilter, GodrayFilter, OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from "pixi.js"
 
@@ -28,6 +28,7 @@ export type Renderable = Component<"renderable"> & {
   outline: { color: number, thickness: number }
   scale: number
   scaleMode: "nearest" | "linear"
+  skin: { current: Skins | undefined, desired: Skins | undefined }
   visible: boolean
   zIndex: number
 
@@ -65,6 +66,7 @@ export type RenderableProps = {
   outline?: { color: number, thickness: number }
   scale?: number
   scaleMode?: "nearest" | "linear"
+  skin?: Skins
   visible?: boolean
   zIndex?: number
   dynamic?: Dynamic
@@ -102,6 +104,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     setChildren: props.setChildren ?? undefined,
     setContainer: props.setContainer ?? undefined,
     setup: props.setup ?? undefined,
+    skin: { current: undefined, desired: props.skin ?? undefined },
     visible: props.visible ?? true,
     zIndex: props.zIndex ?? 0,
     rendered: false,
@@ -275,6 +278,8 @@ export const Renderable = (props: RenderableProps): Renderable => {
           if (c.texture.source) c.texture.source.scaleMode = props.scaleMode ?? "nearest"
         }
       }
+      renderable.skin.current = renderable.skin.desired
+
       renderable.initialized = true
     }
   }
