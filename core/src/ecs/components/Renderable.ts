@@ -1,10 +1,12 @@
-import { Component, Entity, Renderer, World, XY, keys, values, Position } from "@piggo-gg/core"
+import { Component, Entity, Renderer, World, XY, keys, values, Position, Skins } from "@piggo-gg/core"
 import { AdvancedBloomFilter, BevelFilter, GlowFilter, GodrayFilter, OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from "pixi.js"
 
 export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void)
 
-export type Renderable = Component<"renderable"> & {
+export type Renderable = Component<"renderable", {
+  desiredSkin: Skins | undefined
+}> & {
   activeAnimation: string
   anchor: XY
   animation: AnimatedSprite | undefined
@@ -15,6 +17,7 @@ export type Renderable = Component<"renderable"> & {
   c: Container
   children: Renderable[] | undefined
   cullable: boolean
+  currentSkin: Skins | undefined
   color: number
   filters: Record<string, Filter>
   interactiveChildren: boolean
@@ -65,6 +68,7 @@ export type RenderableProps = {
   outline?: { color: number, thickness: number }
   scale?: number
   scaleMode?: "nearest" | "linear"
+  skin?: Skins
   visible?: boolean
   zIndex?: number
   dynamic?: Dynamic
@@ -77,6 +81,9 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
   const renderable: Renderable = {
     type: "renderable",
+    data: {
+      desiredSkin: props.skin ?? undefined
+    },
     activeAnimation: "",
     anchor: props.anchor ?? { x: 0.5, y: 0.5 },
     animation: undefined,
@@ -89,6 +96,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     color: props.color ?? 0xffffff,
     children: undefined,
     cullable: props.cullable ?? false,
+    currentSkin: undefined,
     dynamic: props.dynamic,
     filters: {},
     interactiveChildren: props.interactiveChildren ?? false,
@@ -275,6 +283,8 @@ export const Renderable = (props: RenderableProps): Renderable => {
           if (c.texture.source) c.texture.source.scaleMode = props.scaleMode ?? "nearest"
         }
       }
+      renderable.currentSkin = renderable.data.desiredSkin
+
       renderable.initialized = true
     }
   }

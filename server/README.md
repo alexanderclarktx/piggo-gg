@@ -1,5 +1,1 @@
-`@piggo-gg/server` is a bun websocket server that runs Piggo
-
-## resources
-
-https://bun.sh/docs/api/websockets
+`@piggo-gg/server` is the Piggo gameserver running on Bun

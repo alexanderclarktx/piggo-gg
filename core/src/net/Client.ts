@@ -7,8 +7,8 @@ import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
 
 const servers = {
-  // dev: "ws://localhost:3000",
-  dev: "wss://piggo-api-staging.up.railway.app",
+  dev: "ws://localhost:3000",
+  // dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 
@@ -182,6 +182,11 @@ export const Client = ({ world }: ClientProps): Client => {
         } else {
           client.player.components.pc.data.name = response.name
 
+          const character = client.player.components.controlling.getCharacter(world)
+          if (character) {
+            world.actions.push(world.tick + 2, character.id, { actionId: "changeSkin", params: { skin: "ghost" } })
+          }
+
           if (callback) callback(response)
         }
       })
@@ -252,7 +257,6 @@ export const Client = ({ world }: ClientProps): Client => {
         }
       }
     }
-
 
     client.ws.onclose = () => {
       // client.connected = false

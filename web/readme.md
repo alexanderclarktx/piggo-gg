@@ -1,1 +1,1 @@
-`web` is a React web client for Piggo
+`@piggo-gg/web` is a React web client for Piggo
