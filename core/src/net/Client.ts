@@ -1,8 +1,7 @@
 import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
   World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList, Pls, NetClientReadSystem,
-  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers, FriendsAdd,
-  KeyBuffer
+  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
