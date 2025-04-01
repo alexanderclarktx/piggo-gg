@@ -60,15 +60,15 @@ export const RenderSystem = ClientSystemBuilder({
           const { position, renderable } = entity.components
 
           // render if skin changed
-          if (renderable.skin.current !== renderable.skin.desired) {
+          if (renderable.currentSkin !== renderable.data.desiredSkin) {
             renderable.c.removeChildren()
             renderable.rendered = false
           }
 
           // render if new entity
           if (!renderable.rendered) {
-            renderable.rendered = true
             renderNewEntity(entity)
+            renderable.rendered = true
           }
 
           // update rotation

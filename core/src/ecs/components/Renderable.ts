@@ -4,7 +4,9 @@ import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from 
 
 export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void)
 
-export type Renderable = Component<"renderable"> & {
+export type Renderable = Component<"renderable", {
+  desiredSkin: Skins | undefined
+}> & {
   activeAnimation: string
   anchor: XY
   animation: AnimatedSprite | undefined
@@ -15,6 +17,7 @@ export type Renderable = Component<"renderable"> & {
   c: Container
   children: Renderable[] | undefined
   cullable: boolean
+  currentSkin: Skins | undefined
   color: number
   filters: Record<string, Filter>
   interactiveChildren: boolean
@@ -28,7 +31,6 @@ export type Renderable = Component<"renderable"> & {
   outline: { color: number, thickness: number }
   scale: number
   scaleMode: "nearest" | "linear"
-  skin: { current: Skins | undefined, desired: Skins | undefined }
   visible: boolean
   zIndex: number
 
@@ -79,6 +81,9 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
   const renderable: Renderable = {
     type: "renderable",
+    data: {
+      desiredSkin: props.skin ?? undefined
+    },
     activeAnimation: "",
     anchor: props.anchor ?? { x: 0.5, y: 0.5 },
     animation: undefined,
@@ -91,6 +96,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     color: props.color ?? 0xffffff,
     children: undefined,
     cullable: props.cullable ?? false,
+    currentSkin: undefined,
     dynamic: props.dynamic,
     filters: {},
     interactiveChildren: props.interactiveChildren ?? false,
@@ -104,7 +110,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
     setChildren: props.setChildren ?? undefined,
     setContainer: props.setContainer ?? undefined,
     setup: props.setup ?? undefined,
-    skin: { current: undefined, desired: props.skin ?? undefined },
     visible: props.visible ?? true,
     zIndex: props.zIndex ?? 0,
     rendered: false,
@@ -278,7 +283,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
           if (c.texture.source) c.texture.source.scaleMode = props.scaleMode ?? "nearest"
         }
       }
-      renderable.skin.current = renderable.skin.desired
+      renderable.currentSkin = renderable.data.desiredSkin
 
       renderable.initialized = true
     }
