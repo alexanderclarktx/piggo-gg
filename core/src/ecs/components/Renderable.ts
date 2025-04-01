@@ -1,6 +1,6 @@
 import { Component, Entity, Renderer, World, XY, keys, values, Position } from "@piggo-gg/core"
-import { AdvancedBloomFilter, GlowFilter, OutlineFilter } from "pixi-filters"
-import { AnimatedSprite, Container, Filter, Graphics, Sprite } from "pixi.js"
+import { AdvancedBloomFilter, BevelFilter, GlowFilter, GodrayFilter, OutlineFilter } from "pixi-filters"
+import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from "pixi.js"
 
 export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void)
 
@@ -16,7 +16,7 @@ export type Renderable = Component<"renderable"> & {
   children: Renderable[] | undefined
   cullable: boolean
   color: number
-  filters: Filter[]
+  filters: Record<string, Filter>
   interactiveChildren: boolean
   interpolate: boolean
   initialized: boolean
@@ -40,9 +40,12 @@ export type Renderable = Component<"renderable"> & {
   setScale: (xy: XY) => void
   _init: (renderer: Renderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
+  setBevel: (_?: { rotation?: number, lightAlpha?: number, shadowAlpha?: number }) => void
   setBloom: (_?: { threshold?: number, bloomScale?: number }) => void
+  setBlur: (_?: { strength?: number }) => void
   setGlow: (_?: { color?: number, quality?: number, innerStrength?: number, outerStrength?: number }) => void
   setOutline: (_?: { color: number, thickness: number }) => void
+  setRays: (_?: { gain?: number, alpha?: number, lacunarity?: number }) => void
   cleanup: () => void
 }
 
@@ -55,7 +58,6 @@ export type RenderableProps = {
   cacheAsBitmap?: boolean
   color?: number
   cullable?: boolean
-  filters?: Filter[]
   interactiveChildren?: boolean
   interpolate?: boolean
   position?: XY
@@ -88,7 +90,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     children: undefined,
     cullable: props.cullable ?? false,
     dynamic: props.dynamic,
-    filters: props.filters ?? [],
+    filters: {},
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,
     initialized: false,
@@ -132,6 +134,19 @@ export const Renderable = (props: RenderableProps): Renderable => {
         renderable.bufferedAnimation = animationKey
       }
     },
+    setBevel: (props: { rotation?: number, lightAlpha?: number, shadowAlpha?: number } = {}) => {
+      const rotation = props.rotation ?? 135
+      const lightAlpha = props.lightAlpha ?? 1
+      const shadowAlpha = props.shadowAlpha ?? 0.4
+      if (keys(renderable.animations).length) {
+        values(renderable.animations).forEach((animation) => {
+          animation.filters = [new BevelFilter({ rotation, lightAlpha, shadowAlpha })]
+        })
+      } else {
+        renderable.filters["bevel"] = new BevelFilter({ rotation, lightAlpha, shadowAlpha })
+        renderable.c.filters = values(renderable.filters)
+      }
+    },
     setBloom: (props: { threshold?: number, bloomScale?: number } = {}) => {
       const threshold = props.threshold ?? 0.5
       const bloomScale = props.bloomScale ?? 1
@@ -140,7 +155,19 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new AdvancedBloomFilter({ threshold, bloomScale })]
         })
       } else {
-        renderable.c.filters = [...renderable.filters, new AdvancedBloomFilter({ threshold, bloomScale })]
+        renderable.filters["bloom"] = new AdvancedBloomFilter({ threshold, bloomScale })
+        renderable.c.filters = values(renderable.filters)
+      }
+    },
+    setBlur: (props: { strength?: number } = {}) => {
+      const strength = props.strength ?? 0
+      if (keys(renderable.animations).length) {
+        values(renderable.animations).forEach((animation) => {
+          animation.filters = [new BlurFilter({ strength })]
+        })
+      } else {
+        renderable.filters["blur"] = new BlurFilter({ strength })
+        renderable.c.filters = values(renderable.filters)
       }
     },
     setGlow: (props: { color?: number, quality?: number, innerStrength?: number, outerStrength?: number } = {}) => {
@@ -153,7 +180,8 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new GlowFilter({ color, quality, innerStrength, outerStrength })]
         })
       } else {
-        renderable.c.filters = [...renderable.filters, new GlowFilter({ color, quality, innerStrength, outerStrength })]
+        renderable.filters["glow"] = new GlowFilter({ color, quality, innerStrength, outerStrength })
+        renderable.c.filters = values(renderable.filters)
       }
     },
     setOutline: (props?: { color: number, thickness: number }) => {
@@ -163,7 +191,21 @@ export const Renderable = (props: RenderableProps): Renderable => {
           animation.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
         })
       } else {
-        renderable.c.filters = [...renderable.filters, new OutlineFilter({ thickness, color, quality: 1 })]
+        renderable.filters["outline"] = new OutlineFilter({ thickness, color, quality: 1 })
+        renderable.c.filters = values(renderable.filters)
+      }
+    },
+    setRays: (props: { gain?: number, alpha?: number, lacunarity?: number } = {}) => {
+      const gain = props.gain ?? 0.5
+      const alpha = props.alpha ?? 0.5
+      const lacunarity = props.lacunarity ?? 2
+      if (keys(renderable.animations).length) {
+        values(renderable.animations).forEach((animation) => {
+          animation.filters = [new GodrayFilter({ gain, alpha, lacunarity })]
+        })
+      } else {
+        renderable.filters["rays"] = new GodrayFilter({ gain, alpha, lacunarity })
+        renderable.c.filters = values(renderable.filters)
       }
     },
     cleanup: () => {
@@ -210,8 +252,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
       // set visible
       renderable.c.renderable = renderable.visible ?? true
-
-      if (renderable.filters.length) renderable.c.filters = renderable.filters
 
       // set container properties
       renderable.c.zIndex = renderable.zIndex || 0

@@ -5,7 +5,6 @@ import {
 } from "@piggo-gg/core"
 import { Volley } from "@piggo-gg/games"
 import { Text } from "pixi.js"
-import { BevelFilter } from "pixi-filters"
 import toast from "react-hot-toast"
 
 type LobbyState = {
@@ -22,7 +21,7 @@ export const Lobby: GameBuilder = {
     systems: [],
     view: "side",
     entities: [
-      Background({ moving: true }),
+      Background({ moving: true, rays: true }),
       Cursor(),
       Chat(),
       Friends(),
@@ -142,11 +141,10 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
       dynamic: ({ world, entity }) => {
         const state = world.game.state as LobbyState
         const alpha = state.gameId === game.id ? 1 : 0.6
-        // const color = state.gameId === game.id ? 0xffcccc : 0xffffff
         entity.components.renderable.c.children[0].alpha = alpha
       },
       setup: async (r, _, world) => {
-        r.filters.push(new BevelFilter({ rotation: 135, lightAlpha: 0.5, shadowAlpha: 0.2 }))
+        r.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.2 })
 
         const button = PixiButton({
           content: () => ({
@@ -179,7 +177,7 @@ const PlayButton = () => {
           const { width } = renderer.wh()
           playButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
-          r.filters.push(new BevelFilter({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 }))
+          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 })
 
           const button = PixiButton({
             content: () => ({
@@ -224,7 +222,7 @@ const CreateLobbyButton = () => {
           const { width } = renderer.app.screen
           createLobbyButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
-          r.filters.push(new BevelFilter({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 }))
+          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 })
 
           const button = PixiButton({
             content: () => ({
@@ -448,7 +446,7 @@ const Friends = (): Entity => {
         setup: async (renderable, _, world) => {
           drawOutline()
 
-          renderable.filters.push(new BevelFilter({ rotation: 135, lightAlpha: 0.5, shadowAlpha: 0.2 }))
+          renderable.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.2 })
 
           addFriendInput = PixiButton({
             content: () => ({
