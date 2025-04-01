@@ -44,10 +44,10 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
   }
 
   const read = () => {
-    (world.game.netcode === "delay") ? delay() : rollback()
+    (world.game.netcode === "delay") ? readDelay() : readRollback()
   }
 
-  const rollback = () => {
+  const readRollback = () => {
     for (const clientId of keys(latestClientMessages)) {
       const messages = latestClientMessages[clientId]
 
@@ -74,7 +74,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
     }
   }
 
-  const delay = () => {
+  const readDelay = () => {
     keys(latestClientMessages).forEach((client) => {
       // if (world.tick % 100 === 0) console.log("messages", latestClientMessages[client].length)
 

@@ -25,7 +25,9 @@ export const NetClientWriteSystem = SystemBuilder({
           try {
             const message = syncer().write(world)
             client.ws.send(encode(message))
-            // if (keys(message.actions[world.tick + 1]).length > 0) console.log("sent actions", message.actions)
+            if (message.actions && keys(message.actions).length) {
+              // console.log("sent actions", message.actions)
+            }
           }
           catch (e) {
             console.error("NetcodeSystem: error sending message")
@@ -70,7 +72,7 @@ export const NetClientReadSystem = SystemBuilder({
         // record latency
         const skew = Date.now() - message.timestamp
         if (message.latency !== undefined) {
-          client.ms = skew + message.latency
+          client.ms = (skew + message.latency) / 2
         }
 
         if (world.tick % 100 === 0) {

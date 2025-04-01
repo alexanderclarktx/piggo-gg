@@ -1,6 +1,6 @@
 import {
-  Actions, Character, ClientSystemBuilder, CurrentJoystickPosition, Entity,
-  Input, InvokedAction, World, XY, XYdiff, round, KeyBuffer
+  Actions, Character, ClientSystemBuilder, CurrentJoystickPosition,
+  Entity, Input, InvokedAction, World, XY, XYdiff, round
 } from "@piggo-gg/core"
 
 export var chatBuffer: string[] = []
@@ -234,10 +234,7 @@ export const InputSystem = ClientSystemBuilder({
         const keyMouse = bufferDown.get(inputKey)
         if (keyMouse) {
 
-          // ignore stale inputs
-          if (keyMouse.tick + 1 != world.tick) continue
-
-          // find the callback
+          // invoke the callback
           const controllerInput = input.inputMap.press[inputKey]
           if (controllerInput != null) {
             const invocation = controllerInput({
@@ -257,12 +254,12 @@ export const InputSystem = ClientSystemBuilder({
             }
           }
 
-          // remove the key from the buffer
           bufferDown.remove(inputKey)
         }
       }
 
       for (const keyUp in input.inputMap.release) {
+
         if (bufferUp.get(keyUp)) {
           const controllerInput = input.inputMap.release[keyUp]
           if (controllerInput != null) {
@@ -278,7 +275,6 @@ export const InputSystem = ClientSystemBuilder({
             }
           }
 
-          // remove the key from the buffer
           bufferUp.remove(keyUp)
         }
       }
@@ -290,6 +286,8 @@ export const InputSystem = ClientSystemBuilder({
       priority: 4,
       skipOnRollback: true,
       onTick: (enitities: Entity<Input | Actions>[]) => {
+        world.client!.bufferDown.updateHold(world.tick)
+
         // update mouse position, the camera might have moved
         if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent)
 
@@ -317,8 +315,6 @@ export const InputSystem = ClientSystemBuilder({
 
         world.client!.bufferUp.clear()
         world.client!.bufferDown.remove("capslock") // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
-
-        world.client!.bufferDown.updateHold(world.tick)
 
         joystickOn = CurrentJoystickPosition.active
       }
