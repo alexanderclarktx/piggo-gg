@@ -25,10 +25,12 @@ export const NetClientWriteSystem = SystemBuilder({
           try {
             const message = syncer().write(world)
             client.ws.send(encode(message))
-            // if (keys(message.actions[world.tick + 1]).length > 0) console.log("sent actions", message.actions)
+            if (keys(message.actions[world.tick + 1]).length > 0) {
+              // console.log("sent actions", message.actions)
+            }
           }
           catch (e) {
-            console.error("NetcodeSystem: error sending message")
+            // console.error("NetcodeSystem: error sending message", e)
           }
         }
       }

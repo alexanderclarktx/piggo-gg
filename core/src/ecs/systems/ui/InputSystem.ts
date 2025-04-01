@@ -290,6 +290,8 @@ export const InputSystem = ClientSystemBuilder({
       priority: 4,
       skipOnRollback: true,
       onTick: (enitities: Entity<Input | Actions>[]) => {
+        world.client!.bufferDown.updateHold(world.tick)
+
         // update mouse position, the camera might have moved
         if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent)
 
@@ -317,8 +319,6 @@ export const InputSystem = ClientSystemBuilder({
 
         world.client!.bufferUp.clear()
         world.client!.bufferDown.remove("capslock") // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
-
-        world.client!.bufferDown.updateHold(world.tick)
 
         joystickOn = CurrentJoystickPosition.active
       }
