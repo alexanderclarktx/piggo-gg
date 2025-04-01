@@ -472,7 +472,7 @@ const Friends = (): Entity => {
               alpha: 1
             }),
             onClick: () => {
-              addFriendInput!.c.visible = true
+              // addFriendInput!.c.visible = true
               // world.client?.friendsAdd("noob", (response) => {
               //   if ("error" in response) {
               //     toast.error(response.error)
@@ -484,7 +484,8 @@ const Friends = (): Entity => {
             onEnter: () => addFriend!.c.alpha = 1,
             onLeave: () => addFriend!.c.alpha = 0.95
           })
-          addFriend.c.alpha = world.client?.token ? 0.95 : 0.6
+          // addFriend.c.alpha = world.client?.token ? 0.95 : 0.6
+          addFriend.c.alpha = 0.6
           addFriendInput.c.visible = false
 
           renderable.c.addChild(outline, addFriend.c, addFriendInput.c)
