@@ -1,6 +1,6 @@
 import { Collider, Entity, Position, Renderable } from "@piggo-gg/core"
 import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
-import { AdvancedBloomFilter, GodrayFilter } from "pixi-filters"
+import { GodrayFilter } from "pixi-filters"
 
 export type BackgroundProps = {
   img?: string
@@ -18,21 +18,17 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
       zIndex: -2,
       interpolate: true,
       dynamic: ({ renderable, entity }) => {
-        const godRayFilter = renderable.filters[0] as GodrayFilter
-        if (rays) godRayFilter.time += 0.008
+        const godRayFilter = renderable.filters["rays"] as GodrayFilter
+        if (rays && godRayFilter) godRayFilter.time += 0.008
 
         // sync tilePosition with Position
-        const { position } = entity.components
         const tile = renderable.c as TilingSprite
-        tile.tilePosition.x = position.data.x
-        tile.tilePosition.y = position.data.y
+        tile.tilePosition.x = entity.components.position.data.x
+        tile.tilePosition.y = entity.components.position.data.y
       },
       setup: async (renderable) => {
-        if (rays) renderable.filters.push(
-          new GodrayFilter({ gain: 0.45, alpha: 0.45, lacunarity: 2 })
-        )
-
-        renderable.filters.push(new AdvancedBloomFilter({ threshold: 0.5, bloomScale: 0.95 }))
+        renderable.setBloom({ threshold: 0.5, bloomScale: 0.95 })
+        if (rays) renderable.setRays({ gain: 0.45, alpha: 0.45, lacunarity: 2.1 })
 
         let texture: Texture
 

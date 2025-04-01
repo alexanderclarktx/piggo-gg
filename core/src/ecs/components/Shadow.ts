@@ -2,7 +2,6 @@ import {
   ClientSystemBuilder, Entity, pixiGraphics, Position,
   Renderable, Component, entries
 } from "@piggo-gg/core"
-import { BlurFilter } from "pixi.js"
 
 export type Shadow = Component<"shadow"> & { size: number, yOffset: number }
 
@@ -83,7 +82,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
         position.setVelocity({ x, y })
       },
       setup: async (renderable) => {
-        renderable.filters.push(new BlurFilter({ strength: 2 }))
+        renderable.setBlur({ strength: 2 })
 
         const g = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
         renderable.c = g
