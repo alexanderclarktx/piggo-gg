@@ -24,16 +24,11 @@ export const DudeSkin = (color: "red" | "blue" | "white"): Skin => async (r) => 
   }
 }
 
-export const VolleyCharacterAnimations: AnimationSelect = (entity, world) => {
+export const VolleyCharacterAnimations: AnimationSelect = (entity) => {
   const { position, renderable } = entity.components
-  const actions = world.actions.atTick(world.tick)?.[entity.id]
 
   if (renderable.activeAnimation === "spike" && renderable.animation &&
     (renderable.animation.currentFrame + 1 !== renderable.animation.totalFrames)) {
-    return "spike"
-  }
-
-  if (actions?.find(a => a.actionId === "spike")) {
     return "spike"
   }
 
