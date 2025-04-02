@@ -6,18 +6,19 @@ import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from 
 import { Bot } from "./Bot"
 import { TargetSystem } from "./Target"
 
-export const range = 30
+export const range = 32
 
 export type VolleyState = {
-  scoreLeft: number
-  scoreRight: number
-  phase: "serve" | "play" | "point" | "game"
-  teamServing: 1 | 2
+  hit: 0 | 1 | 2 | 3 | 4
+  jumpHits: string[]
   lastHit: string
   lastHitTeam: 0 | 1 | 2
   lastHitTick: number
   lastWin: 0 | 1 | 2
-  hit: 0 | 1 | 2 | 3 | 4
+  phase: "serve" | "play" | "point" | "game"
+  scoreLeft: number
+  scoreRight: number
+  teamServing: 1 | 2
 }
 
 export const Volley: GameBuilder<VolleyState> = {
@@ -26,15 +27,16 @@ export const Volley: GameBuilder<VolleyState> = {
     id: "volley",
     netcode: "rollback",
     state: {
-      scoreLeft: 0,
-      scoreRight: 0,
-      phase: "point",
-      teamServing: 1,
+      hit: 0,
+      jumpHits: [],
       lastHit: "",
       lastHitTeam: 0,
       lastHitTick: 0,
       lastWin: 0,
-      hit: 0
+      phase: "point",
+      scoreLeft: 0,
+      scoreRight: 0,
+      teamServing: 1
     },
     systems: [
       SpawnSystem(Dude),
@@ -111,6 +113,12 @@ const VolleySystem = SystemBuilder({
         const state = world.game.state as VolleyState
         const playerCharacters = world.queryEntities<Position | Team | Renderable>(["position", "team", "input"])
         const characters = world.queryEntities<Position | Team | Renderable>(["position", "team", "actions"])
+
+        for (const character of characters) {
+          if (character.components.position.data.standing) {
+            state.jumpHits = state.jumpHits.filter(id => id !== character.id)
+          }
+        }
 
         if (state.phase === "point") {
 

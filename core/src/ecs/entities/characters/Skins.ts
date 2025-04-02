@@ -33,9 +33,9 @@ export const VolleyCharacterAnimations: AnimationSelect = (entity, world) => {
     return "spike"
   }
 
-  if (actions?.find(a => a.actionId === "spike")) {
-    return "spike"
-  }
+  // if (actions?.find(a => a.actionId === "spike")) {
+  //   return "spike"
+  // }
 
   if (position.data.velocity.x || position.data.velocity.y) {
     return "run"
