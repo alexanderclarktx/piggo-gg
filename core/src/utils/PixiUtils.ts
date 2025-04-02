@@ -97,16 +97,6 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     const t = pixiText({ text, pos: textPos ?? pos, anchor: textAnchor ?? anchor, style })
 
     const b = pixiRect({
-      // x: width ? pos.x - width / 2 : pos.x - anchor.x * t.width - 7,
-      x: width ? pos.x - (1 - anchor.x) * width : pos.x - (1 - anchor.x) * t.width - 7,
-      y: height ? pos.y - (1 - anchor.y) * height : pos.y - (1 - anchor.y) * t.height - 5,
-      w: width ?? t.width + 14,
-      h: height ?? t.height + 10,
-      rounded: 5,
-      style: { alpha: alpha ?? 0, strokeAlpha: strokeAlpha ?? 0, color: fillColor ?? 0x000000 }
-    })
-
-    const mask = pixiRect({
       x: width ? pos.x - (1 - anchor.x) * width : pos.x - (1 - anchor.x) * t.width - 7,
       y: height ? pos.y - (1 - anchor.y) * height : pos.y - (1 - anchor.y) * t.height - 5,
       w: width ?? t.width + 14,

@@ -395,14 +395,11 @@ const Friends = (): Entity => {
         dynamic: ({ world }) => {
           if (!world.renderer) return
 
-          if (world.client?.token && outlineHeight === 290) {
-            friends.components.position.setPosition({ x: 10, y: 190 })
-          }
-
           const h = world.client?.token ? 200 : 290
 
           if (outlineHeight !== h) {
             outlineHeight = h
+            friends.components.position.setPosition({ y: outlineHeight - 10 })
             drawOutline()
           }
 
@@ -415,7 +412,7 @@ const Friends = (): Entity => {
             const all = world.client!.bufferDown.all()
 
             for (const down of all) {
-              if (down.key === "backspace") {
+              if (down.key === "backspace" && world.tick % 2 === 0) {
                 addFriendInputText = addFriendInputText.slice(0, -1)
                 continue
               }
@@ -423,7 +420,7 @@ const Friends = (): Entity => {
                 continue
               }
               const key = down.key.toLowerCase()
-              if (key.length === 1) {
+              if (key.length === 1 && addFriendInputText.length < 15) {
                 addFriendInputText += key
               }
             }
@@ -453,9 +450,9 @@ const Friends = (): Entity => {
               text: "",
               pos: { x: 100, y: 70 },
               anchor: { x: 0.5, y: 0.5 },
-              style: { fontSize: 18, fill: 0xffffff },
-              textPos: { x: 20, y: 70 },
-              textAnchor: { x: 0, y: 0.5 },
+              style: { fontSize: 18, fill: 0xffffff, align: "center" },
+              textPos: { x: 100, y: 70 },
+              textAnchor: { x: 0.5, y: 0.5 },
               width: 180,
               strokeAlpha: 1
             })
@@ -470,7 +467,7 @@ const Friends = (): Entity => {
               alpha: 1
             }),
             onClick: () => {
-              // addFriendInput!.c.visible = true
+              addFriendInput!.c.visible = true
               // world.client?.friendsAdd("noob", (response) => {
               //   if ("error" in response) {
               //     toast.error(response.error)
@@ -483,14 +480,10 @@ const Friends = (): Entity => {
             onLeave: () => addFriend!.c.alpha = 0.95
           })
           // addFriend.c.alpha = world.client?.token ? 0.95 : 0.6
-          addFriend.c.alpha = 0.6
+          addFriend.c.alpha = 0.95
           addFriendInput.c.visible = false
 
           renderable.c.addChild(outline, addFriend.c, addFriendInput.c)
-
-          if (!world.client?.token) {
-            friends.components.position.setPosition({ x: 10, y: 280 })
-          }
         }
       })
     }
