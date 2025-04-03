@@ -20,9 +20,7 @@ export const switchTeamButton = () => Entity({
           content: () => ({
             text: "switch team",
             pos: { y: 30, x: width / 2 - 140 },
-            style: { fontSize: 18, fill: 0xffffff },
-            strokeAlpha: 1,
-            alpha: 1
+            style: { fontSize: 18, fill: 0xffffff }
           }),
           onClick: () => {
             world.client?.clickThisFrame.set(world.tick + 1)

@@ -68,20 +68,22 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
 }
 
 type PixiButtonContent = {
-  alpha?: number,
-  anchor?: XY,
+  anchor?: XY
+  fillAlpha?: number
   fillColor?: number
-  height?: number,
-  pos?: XY,
-  strokeAlpha?: number,
-  style: pixiTextStyle,
-  text: string,
-  textAnchor?: XY,
-  textPos?: XY,
-  width?: number,
+  height?: number
+  pos?: XY
+  strokeAlpha?: number
+  strokeColor?: number
+  style: pixiTextStyle
+  text: string
+  textAnchor?: XY
+  textPos?: XY
+  width?: number
 }
 
 export type PixiButtonProps = {
+  alpha?: number
   visible?: boolean
   interactive?: boolean
   content: () => PixiButtonContent
@@ -99,7 +101,7 @@ export type PixiButton = {
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
-  const draw = ({ alpha, anchor = { x: 0.5, y: 0.5 }, fillColor, height, pos = { x: 0, y: 0 }, strokeAlpha, style, text, textAnchor, textPos, width }: PixiButtonContent) => {
+  const draw = ({ fillAlpha, anchor = { x: 0.5, y: 0.5 }, fillColor, height, pos = { x: 0, y: 0 }, strokeAlpha, strokeColor, style, text, textAnchor, textPos, width }: PixiButtonContent) => {
 
     const t = pixiText({ text, pos: textPos ?? pos, anchor: textAnchor ?? anchor, style })
 
@@ -109,13 +111,19 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
       w: width ?? t.width + 14,
       h: height ?? t.height + 10,
       rounded: 5,
-      style: { alpha: alpha ?? 0, strokeAlpha: strokeAlpha ?? 0, color: fillColor ?? 0x000000 }
+      style: {
+        alpha: fillAlpha ?? 1,
+        color: fillColor ?? 0x000000,
+        strokeAlpha: strokeAlpha ?? 1,
+        strokeColor: strokeColor ?? 0xffffff
+      }
     })
 
     return [b, t]
   }
 
   const c = new Container({
+    alpha: props.alpha ?? 1,
     children: draw(props.content()),
     interactive: props.interactive ?? true,
     visible: props.visible ?? true,

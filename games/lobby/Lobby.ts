@@ -149,9 +149,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
         const button = PixiButton({
           content: () => ({
             text: game.id,
-            style: { fontSize: 28, fill: 0xffffff },
-            strokeAlpha: 1,
-            alpha: 1
+            style: { fontSize: 28, fill: 0xffffff }
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -184,9 +182,7 @@ const PlayButton = () => {
               text: "Play",
               width: 250,
               height: 40,
-              style: { fontSize: 26, fill: 0xffffff },
-              strokeAlpha: 1,
-              alpha: 1
+              style: { fontSize: 26, fill: 0xffffff }
             }),
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
@@ -229,9 +225,7 @@ const CreateLobbyButton = () => {
               text: "Invite Friends",
               width: 250,
               height: 40,
-              style: { fontSize: 26, fill: 0xffffff },
-              strokeAlpha: 1,
-              alpha: 1,
+              style: { fontSize: 26, fill: 0xffffff }
             }),
             onClick: () => world.client?.copyInviteLink(),
             onEnter: () => button.c.alpha = 1,
@@ -386,6 +380,30 @@ const Friends = (): Entity => {
       .stroke({ color: colors.piggo, alpha: 0.8, width: 2, miterLimit: 0 })
   }
 
+  const close = () => {
+    addFriendInput.c.visible = false
+    send.c.visible = false
+    send.c.interactive = false
+    cancel.c.visible = false
+    cancel.c.interactive = false
+
+    addFriend.c.visible = true
+    addFriend.c.interactive = true
+
+    addFriendInputText = ""
+  }
+  
+  const open = () => {
+    addFriendInput.c.visible = true
+    send.c.visible = true
+    send.c.interactive = true
+    cancel.c.visible = true
+    cancel.c.interactive = true
+
+    addFriend.c.visible = false
+    addFriend.c.interactive = false
+  }
+
   // let friendList: number[] | undefined = undefined
 
   const friends = Entity<Position | Renderable>({
@@ -433,8 +451,10 @@ const Friends = (): Entity => {
             text.text = `${(padding && addFriendInputText.length) ? " " : ""}${addFriendInputText}${padding}`
           }
 
-          addFriend.c.interactive = client.token ? true : false
-          addFriend.c.alpha = client.token ? 0.95 : 0.6
+          if (!client.token) {
+            addFriend.c.interactive = false
+            addFriend.c.alpha = 0.6
+          }
 
           // if (friendList === undefined) {
           //   friendList = []
@@ -447,7 +467,7 @@ const Friends = (): Entity => {
           // })
           // }
         },
-        setup: async (renderable) => {
+        setup: async (renderable, _, world) => {
           drawOutline()
 
           renderable.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.2 })
@@ -461,34 +481,67 @@ const Friends = (): Entity => {
               style: { fontSize: 18, fill: 0xffffff },
               textPos: { x: 100, y: 70 },
               textAnchor: { x: 0.5, y: 0.5 },
-              width: 180,
-              strokeAlpha: 1
+              width: 180
             })
           })
 
           addFriend = PixiButton({
+            alpha: 0.95,
             content: () => ({
               text: "add friend",
               pos: { x: 100, y: 30 },
-              style: { fontSize: 18, fill: 0xffffff },
-              strokeAlpha: 1,
-              alpha: 1
+              style: { fontSize: 18, fill: 0xffffff }
             }),
-            onClick: () => {
-              addFriendInput!.c.visible = true
-              // world.client?.friendsAdd("noob", (response) => {
-              //   if ("error" in response) {
-              //     toast.error(response.error)
-              //   } else {
-              //     toast.success("friend request sent")
-              //   }
-              // })
-            },
+            onClick: open,
             onEnter: () => addFriend!.c.alpha = 1,
             onLeave: () => addFriend!.c.alpha = 0.95
           })
 
-          renderable.c.addChild(outline, addFriend.c, addFriendInput.c)
+          cancel = PixiButton({
+            alpha: 0.95,
+            visible: false,
+            interactive: false,
+            content: () => ({
+              text: "cancel",
+              pos: { x: 50, y: 30 },
+              width: 80,
+              style: { fontSize: 18, fill: 0xff0055 },
+              fillColor: 0x000000,
+              strokeColor: 0xff0055
+            }),
+            onClick: close,
+            onEnter: () => cancel.c.alpha = 1,
+            onLeave: () => cancel.c.alpha = 0.95
+          })
+
+          send = PixiButton({
+            alpha: 0.95,
+            visible: false,
+            interactive: false,
+            content: () => ({
+              text: "send",
+              pos: { x: 145, y: 30 },
+              width: 90,
+              style: { fontSize: 18, fill: 0x00ff55 },
+              fillColor: 0x000000,
+              strokeColor: 0x00ff55,
+            }),
+            onClick: () => {
+              const name = addFriendInputText.trim()
+              world.client?.friendsAdd(name, (response) => {
+                if ("error" in response) {
+                  toast.error(response.error)
+                } else {
+                  toast.success("Friend request sent")
+                  close()
+                }
+              })
+            },
+            onEnter: () => send.c.alpha = 1,
+            onLeave: () => send.c.alpha = 0.95
+          })
+
+          renderable.c.addChild(outline, addFriend.c, addFriendInput.c, send.c, cancel.c)
         }
       })
     }

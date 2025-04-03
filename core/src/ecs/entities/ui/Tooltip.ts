@@ -56,6 +56,8 @@ export const Tooltip = (id: string, text: string) => {
               pos: { x: 0, y: 0 },
               anchor: { x: 0.45, y: 0.5 },
               style: { fontSize: 26, fill: 0xffffff, dropShadow: true, fontFamily: "Times New Roman" },
+              strokeAlpha: 0,
+              fillAlpha: 0
             }),
             onEnter: () => show = 900,
             onLeave: () => show = 200
