@@ -1,4 +1,4 @@
-import { Collider, Entity, Position, Renderable } from "@piggo-gg/core"
+import { Entity, Position, Renderable } from "@piggo-gg/core"
 import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
 import { GodrayFilter } from "pixi-filters"
 
@@ -12,19 +12,16 @@ export type BackgroundProps = {
 export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) => Entity({
   id: "background",
   components: {
-    position: Position({ x: 207, y: 117, velocity: { x: moving ? 8 : 0, y: 0 } }),
-    collider: Collider({ sensor: () => false, shape: "ball", radius: 1 }),
+    position: Position(),
     renderable: Renderable({
       zIndex: -2,
       interpolate: true,
-      dynamic: ({ renderable, entity }) => {
+      dynamic: ({ renderable }) => {
         const godRayFilter = renderable.filters["rays"] as GodrayFilter
         if (rays && godRayFilter) godRayFilter.time += 0.008
 
-        // sync tilePosition with Position
         const tile = renderable.c as TilingSprite
-        tile.tilePosition.x = entity.components.position.data.x
-        tile.tilePosition.y = entity.components.position.data.y
+        if (moving) tile.tilePosition.x += 0.5
       },
       setup: async (renderable) => {
         renderable.setBloom({ threshold: 0.5, bloomScale: 0.95 })
@@ -39,7 +36,12 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
           texture = Sprite.from(await Assets.load(img ?? "night.png")).texture
         }
 
-        renderable.c = new TilingSprite({ texture: texture, width: 6000, height: 6000 })
+        renderable.c = new TilingSprite({
+          texture: texture,
+          tilePosition: { x: 207, y: 117 },
+          width: 6000,
+          height: 6000
+        })
       }
     })
   }

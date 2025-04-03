@@ -1,5 +1,38 @@
-import { colors, Entity, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { colors, Entity, Friend, keys, PixiButton, pixiContainer, pixiGraphics, pixiText, Position, Renderable, values } from "@piggo-gg/core"
 import toast from "react-hot-toast"
+import { Container, ContainerChild } from "pixi.js"
+
+type FriendCard = Container<ContainerChild>
+
+const FriendCard = (friend: Friend, y: number) => {
+
+  const color = friend.online ? 0x00ff55 : 0xff0055
+
+  const outline = pixiGraphics()
+    .roundRect(10, 0, 180, 50, 3)
+    .fill({ color: 0x000000, alpha: 1 })
+    .stroke({ color, alpha: 0.95, width: 2 })
+
+  const name = pixiText({
+    text: friend.name,
+    pos: { x: 100, y: 5 },
+    anchor: { x: 0.5, y: 0 },
+    style: { fontSize: 18, fill: 0xffffff }
+  })
+
+  const status = pixiText({
+    text: friend.status,
+    pos: { x: 100, y: 25 },
+    anchor: { x: 0.5, y: 0 },
+    style: { fontSize: 16, fill: 0xffffff }
+  })
+
+  const container = pixiContainer()
+  container.position.set(0, y)
+  container.addChild(outline, name, status)
+
+  return container
+}
 
 export const Friends = (): Entity => {
 
@@ -46,7 +79,8 @@ export const Friends = (): Entity => {
     addFriend.c.interactive = false
   }
 
-  // let friendList: number[] | undefined = undefined
+  let friendsList: Record<string, Friend> = {}
+  let cards: FriendCard[] = []
 
   const friends = Entity<Position | Renderable>({
     id: "friends",
@@ -98,16 +132,30 @@ export const Friends = (): Entity => {
             addFriend.c.alpha = 0.6
           }
 
-          // if (friendList === undefined) {
-          //   friendList = []
-          // world.client?.friendsList((response) => {
-          //   if ("error" in response) {
-          //     friendList = []
-          //   } else {
-          //     friendList = response.friends
-          //   }
-          // })
-          // }
+          if (keys(friendsList).length === 0 && world.tick % 80 === 0) {
+
+            // console.log("Fetching friends list")
+            world.client?.friendsList((response) => {
+              if ("error" in response) {
+                friendsList = {}
+              } else {
+                friendsList = response.friends
+
+                let i = 0
+                for (const friend of values(friendsList)) {
+                  i += 1
+
+                  const card = FriendCard(friend, 10 + i * 80)
+                  card.position.set(0, 0)
+                  card.position.y = 35 + (i * 60)
+
+                  cards.push(card)
+
+                  friends.components.renderable.c.addChild(card)
+                }
+              }
+            })
+          }
         },
         setup: async (renderable, _, world) => {
           drawOutline()
@@ -145,8 +193,8 @@ export const Friends = (): Entity => {
             interactive: false,
             content: () => ({
               text: "cancel",
-              pos: { x: 50, y: 30 },
-              width: 80,
+              pos: { x: 52, y: 30 },
+              width: 84,
               style: { fontSize: 18, fill: 0xff0055 },
               fillColor: 0x000000,
               strokeColor: 0xff0055
@@ -162,8 +210,8 @@ export const Friends = (): Entity => {
             interactive: false,
             content: () => ({
               text: "send",
-              pos: { x: 145, y: 30 },
-              width: 90,
+              pos: { x: 148, y: 30 },
+              width: 84,
               style: { fontSize: 18, fill: 0x00ff55 },
               fillColor: 0x000000,
               strokeColor: 0x00ff55,
@@ -184,6 +232,9 @@ export const Friends = (): Entity => {
           })
 
           renderable.c.addChild(outline, addFriend.c, addFriendInput.c, send.c, cancel.c)
+          for (const card of cards) {
+            renderable.c.addChild(card)
+          }
         }
       })
     }

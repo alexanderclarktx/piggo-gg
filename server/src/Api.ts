@@ -87,9 +87,13 @@ export const Api = (): Api => {
       "meta/players": async ({ data }) => {
         return { id: data.id, online: keys(api.clients).length }
       },
-      "friends/add": async ({ data }) => {
+      "friends/add": async ({ ws, data }) => {
         const token = verifyJWT(data)
         if (!token) return { id: data.id, error: "Auth failed" }
+
+        if (ws.data.playerName === data.name) {
+          return { id: data.id, error: "That's you, silly" }
+        }
 
         const user = await prisma.users.findUnique({ where: { name: data.name } })
         if (!user) return { id: data.id, error: "User not found" }
@@ -124,7 +128,7 @@ export const Api = (): Api => {
         return { id: data.id }
       },
       "friends/list": async ({ data }) => {
-        let result: { id: string, friends: Friend[] } = { friends: [], id: data.id }
+        let result: { id: string, friends: Record<string, Friend> } = { friends: {}, id: data.id }
 
         let token: SessionToken | undefined = undefined
 
@@ -138,16 +142,16 @@ export const Api = (): Api => {
         if (!user) return { id: data.id, error: "User not found" }
 
         const friends = await prisma.friends.findMany({
-          where: { user1: user, status: "ACCEPTED" },
+          where: { user1: user, NOT: { status: "BLOCKED" } },
           include: { user2: true }
         })
 
-        result.friends = friends.map(({ user2 }) => {
+        for (const { user2, status } of friends) {
           const online = Boolean(values(api.clients).find((client) => {
             return client.data.playerName === user2.name
           }))
-          return { name: user2.name, online }
-        })
+          result.friends[user2.name] = { name: user2.name, online, status }
+        }
 
         return result
       },
@@ -273,7 +277,11 @@ export const Api = (): Api => {
         const handler = api.handlers[wsData.data.route]
 
         if (handler) {
-          if (!skiplog.includes(wsData.data.route)) console.log("request", stringify(wsData.data))
+          if (!skiplog.includes(wsData.data.route)) {
+            // @ts-expect-error
+            const { token, ...loggable } = wsData.data
+            console.log("request", stringify(loggable))
+          }
 
           const start = performance.now()
 
@@ -281,7 +289,7 @@ export const Api = (): Api => {
           const result = handler({ ws, data: wsData.data }) // TODO fix type casting
           result.then((data) => {
             if (!skiplog.includes(wsData.data.route)) {
-              console.log(`response ms:${round(performance.now() - start)} `, stringify(data))
+              console.log(`response ms:${round(performance.now() - start)}`, stringify(data))
             }
             const responseData: ResponseData = { type: "response", data }
             ws.send(encode(responseData))
