@@ -273,7 +273,11 @@ export const Api = (): Api => {
         const handler = api.handlers[wsData.data.route]
 
         if (handler) {
-          if (!skiplog.includes(wsData.data.route)) console.log("request", stringify(wsData.data))
+          if (!skiplog.includes(wsData.data.route)) {
+            // @ts-expect-error
+            const { token, ...loggable } = wsData.data
+            console.log("request", stringify(loggable))
+          }
 
           const start = performance.now()
 
@@ -281,7 +285,7 @@ export const Api = (): Api => {
           const result = handler({ ws, data: wsData.data }) // TODO fix type casting
           result.then((data) => {
             if (!skiplog.includes(wsData.data.route)) {
-              console.log(`response ms:${round(performance.now() - start)} `, stringify(data))
+              console.log(`response ms:${round(performance.now() - start)}`, stringify(data))
             }
             const responseData: ResponseData = { type: "response", data }
             ws.send(encode(responseData))
