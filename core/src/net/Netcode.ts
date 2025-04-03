@@ -63,9 +63,9 @@ export type LobbyJoinRequest = Omit<LobbyJoin, "response">
 export type LobbyExitRequest = Omit<LobbyExit, "response">
 
 // friends endpoints
-export type Friend = { name: string, online: boolean }
+export type Friend = { name: string, online: boolean, status: "ACCEPTED" | "PENDING" | "BLOCKED" }
 export type FriendsAdd = Request<"friends/add"> & { name: string, token: string }
-export type FriendsList = Request<"friends/list", { friends: Friend[] }> & { token: string }
+export type FriendsList = Request<"friends/list", { friends: Record<string, Friend> }> & { token: string }
 export type FriendsRemove = Request<"friends/remove"> & { removeUserId: string }
 
 // profile endpoints

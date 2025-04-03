@@ -124,7 +124,7 @@ export const Api = (): Api => {
         return { id: data.id }
       },
       "friends/list": async ({ data }) => {
-        let result: { id: string, friends: Friend[] } = { friends: [], id: data.id }
+        let result: { id: string, friends: Record<string, Friend> } = { friends: {}, id: data.id }
 
         let token: SessionToken | undefined = undefined
 
@@ -138,16 +138,16 @@ export const Api = (): Api => {
         if (!user) return { id: data.id, error: "User not found" }
 
         const friends = await prisma.friends.findMany({
-          where: { user1: user, status: "ACCEPTED" },
+          where: { user1: user, NOT: { status: "BLOCKED" } },
           include: { user2: true }
         })
 
-        result.friends = friends.map(({ user2 }) => {
+        for (const { user2, status } of friends) {
           const online = Boolean(values(api.clients).find((client) => {
             return client.data.playerName === user2.name
           }))
-          return { name: user2.name, online }
-        })
+          result.friends[user2.name] = { name: user2.name, online, status }
+        }
 
         return result
       },
