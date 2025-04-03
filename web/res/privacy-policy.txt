@@ -1,0 +1,12 @@
+Privacy Policy
+Effective Date: April 3, 2025
+
+This site (piggo.gg) uses Google Sign-In to authenticate users.
+
+We do not collect, store, or share your name, email address, profile picture, or any other personal information provided by Google.
+
+When you sign in using your Google account, we access your unique Google user ID. This ID is used solely to identify your account within our system.
+
+The Google ID is not shared with third parties and is not used for analytics, advertising, or tracking. It is used only to recognize you when you return to the site.
+
+If you have any questions about this policy, please contact us at info@piggo.gg.
