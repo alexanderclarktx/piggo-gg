@@ -175,7 +175,7 @@ const PlayButton = () => {
           const { width } = renderer.wh()
           playButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
-          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 })
+          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
           const button = PixiButton({
             content: () => ({
@@ -218,7 +218,7 @@ const CreateLobbyButton = () => {
           const { width } = renderer.app.screen
           createLobbyButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
-          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 })
+          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
           const button = PixiButton({
             content: () => ({
@@ -470,7 +470,7 @@ const Friends = (): Entity => {
         setup: async (renderable, _, world) => {
           drawOutline()
 
-          renderable.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.2 })
+          renderable.setBevel({ rotation: 90, lightAlpha: 0.8, shadowAlpha: 0.4 })
 
           addFriendInput = PixiButton({
             visible: false,
