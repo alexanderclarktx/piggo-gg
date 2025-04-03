@@ -37,7 +37,9 @@ export const EscapeMenu = (): Entity => {
             content: () => ({
               text: "Return to Lobby",
               pos: { x: width / 2, y: (height / 2) - 100 },
-              style: { fill: 0xffffff, fontSize }
+              style: { fill: 0xffffff, fontSize },
+              strokeAlpha: 0,
+              fillAlpha: 0
             }),
             onClick: () => {
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
@@ -48,7 +50,9 @@ export const EscapeMenu = (): Entity => {
             content: () => ({
               text: "Settings",
               pos: { x: width / 2, y: (height / 2) },
-              style: { fill: 0xaaaaaa, fontSize }
+              style: { fill: 0xaaaaaa, fontSize },
+              strokeAlpha: 0,
+              fillAlpha: 0
             }),
             onClick: () => {
               console.log("Settings")
@@ -59,7 +63,9 @@ export const EscapeMenu = (): Entity => {
             content: () => ({
               text: "About",
               pos: { x: width / 2, y: (height / 2) + 100 },
-              style: { fill: 0xaaaaaa, fontSize }
+              style: { fill: 0xaaaaaa, fontSize },
+              strokeAlpha: 0,
+              fillAlpha: 0
             }),
             onClick: () => {
               console.log("About")
