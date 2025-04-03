@@ -14,8 +14,7 @@ const FriendCard = (friend: Friend, y: number) => {
     .stroke({ color, alpha: 0.95, width: 2 })
 
   const name = pixiText({
-    text: "aaadddaaadddaaa",
-    // text: friend.name,
+    text: friend.name,
     pos: { x: 100, y: 5 },
     anchor: { x: 0.5, y: 0 },
     style: { fontSize: 18, fill: 0xffffff }
@@ -133,9 +132,10 @@ export const Friends = (): Entity => {
             addFriend.c.alpha = 0.6
           }
 
-          if (keys(friendsList).length === 0) {
+          if (keys(friendsList).length === 0 && world.tick % 80 === 0) {
+
+            // console.log("Fetching friends list")
             world.client?.friendsList((response) => {
-              console.log("friends list", response)
               if ("error" in response) {
                 friendsList = {}
               } else {

@@ -87,9 +87,13 @@ export const Api = (): Api => {
       "meta/players": async ({ data }) => {
         return { id: data.id, online: keys(api.clients).length }
       },
-      "friends/add": async ({ data }) => {
+      "friends/add": async ({ ws, data }) => {
         const token = verifyJWT(data)
         if (!token) return { id: data.id, error: "Auth failed" }
+
+        if (ws.data.playerName === data.name) {
+          return { id: data.id, error: "That's you, silly" }
+        }
 
         const user = await prisma.users.findUnique({ where: { name: data.name } })
         if (!user) return { id: data.id, error: "User not found" }
