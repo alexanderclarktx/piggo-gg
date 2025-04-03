@@ -1,4 +1,4 @@
-import { Collider, Entity, Position, Renderable } from "@piggo-gg/core"
+import { Entity, Position, Renderable } from "@piggo-gg/core"
 import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
 import { GodrayFilter } from "pixi-filters"
 
@@ -13,7 +13,6 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
   id: "background",
   components: {
     position: Position(),
-    collider: Collider({ sensor: () => false, shape: "ball", radius: 1 }),
     renderable: Renderable({
       zIndex: -2,
       interpolate: true,
