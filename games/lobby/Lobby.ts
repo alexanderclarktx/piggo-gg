@@ -367,8 +367,8 @@ const SignupCTA = () => Entity<Position | Renderable>({
 
 const Friends = (): Entity => {
 
-  let addFriend: PixiButton | undefined = undefined
-  let addFriendInput: PixiButton | undefined = undefined
+  let addFriend: PixiButton
+  let addFriendInput: PixiButton
 
   let addFriendInputText = ""
 
@@ -392,7 +392,7 @@ const Friends = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        dynamic: ({ world }) => {
+        dynamic: ({ world, client }) => {
           if (!world.renderer) return
 
           const h = world.client?.token ? 200 : 290
@@ -408,26 +408,30 @@ const Friends = (): Entity => {
             drawOutline()
           }
 
-          if (addFriendInput!.c.visible) {
-            const all = world.client!.bufferDown.all()
+          if (addFriendInput.c.visible) {
+            const all = client.bufferDown.all()
 
             for (const down of all) {
-              if (down.key === "backspace" && world.tick % 2 === 0) {
-                addFriendInputText = addFriendInputText.slice(0, -1)
-                continue
-              }
               if (down.hold) {
                 continue
-              }
-              const key = down.key.toLowerCase()
-              if (key.length === 1 && addFriendInputText.length < 15) {
-                addFriendInputText += key
+              } else if (down.key === "backspace") {
+                addFriendInputText = addFriendInputText.slice(0, -1)
+              } else {
+                const key = down.key.toLowerCase()
+                if (key.length === 1 && addFriendInputText.length < 15) {
+                  addFriendInputText += key
+                }
               }
             }
 
-            // @ts-expect-error
-            addFriendInput.c.children[1].text = addFriendInputText
+            const padding = world.tick % 40 < 20 ? "|" : " "
+
+            const { text } = addFriendInput!.bt()
+            text.text = `${(padding && addFriendInputText.length) ? " " : ""}${addFriendInputText}${padding}`
           }
+
+          addFriend.c.interactive = client.token ? true : false
+          addFriend.c.alpha = client.token ? 0.95 : 0.6
 
           // if (friendList === undefined) {
           //   friendList = []
@@ -440,7 +444,7 @@ const Friends = (): Entity => {
           // })
           // }
         },
-        setup: async (renderable, _, world) => {
+        setup: async (renderable) => {
           drawOutline()
 
           renderable.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.2 })
@@ -479,8 +483,6 @@ const Friends = (): Entity => {
             onEnter: () => addFriend!.c.alpha = 1,
             onLeave: () => addFriend!.c.alpha = 0.95
           })
-          // addFriend.c.alpha = world.client?.token ? 0.95 : 0.6
-          addFriend.c.alpha = 0.95
           addFriendInput.c.visible = false
 
           renderable.c.addChild(outline, addFriend.c, addFriendInput.c)

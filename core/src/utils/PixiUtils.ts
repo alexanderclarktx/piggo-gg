@@ -88,7 +88,12 @@ export type PixiButtonProps = {
   onLeave?: () => void
 }
 
-export type PixiButton = { c: Container, onClick: undefined | (() => void), redraw: () => void }
+export type PixiButton = {
+  c: Container,
+  onClick: undefined | (() => void),
+  redraw: () => void
+  bt: () => { boundary: Graphics, text: Text }
+}
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
@@ -122,6 +127,11 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     redraw: () => {
       c.removeChildren()
       c.addChild(...draw(props.content()))
+    },
+    bt: () => {
+      const b = c.children[0] as Graphics
+      const t = c.children[1] as Text
+      return { boundary: b, text: t }
     }
   }
 }

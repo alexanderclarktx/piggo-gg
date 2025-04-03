@@ -1,8 +1,8 @@
-import { Component, Entity, Renderer, World, XY, keys, values, Position, Skins } from "@piggo-gg/core"
+import { Component, Entity, Renderer, World, XY, keys, values, Position, Skins, Client } from "@piggo-gg/core"
 import { AdvancedBloomFilter, BevelFilter, GlowFilter, GodrayFilter, OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from "pixi.js"
 
-export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World }) => void)
+export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World, client: Client }) => void)
 
 export type Renderable = Component<"renderable", {
   desiredSkin: Skins | undefined
