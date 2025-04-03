@@ -259,12 +259,11 @@ export const Client = ({ world }: ClientProps): Client => {
     }
 
     client.ws.onclose = () => {
-      // client.connected = false
       console.error("Client: disconnected from server")
 
-      // schedule reconnect
       setTimeout(() => {
         console.log("Client: reconnecting to server")
+        client.ws = new WebSocket(servers[env])
         setupWs()
       }, 2000)
     }
