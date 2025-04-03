@@ -112,6 +112,7 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
               placeholder="noob"
+              maxLength={15}
               style={{ width: "80%", padding: 8, marginBottom: 10 }}
             />
             <h3 style={{ color: "red", fontSize: 16 }}>

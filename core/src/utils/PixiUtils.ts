@@ -68,59 +68,65 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
 }
 
 type PixiButtonContent = {
-  alpha?: number,
-  anchor?: XY,
+  anchor?: XY
+  fillAlpha?: number
   fillColor?: number
-  height?: number,
-  pos?: XY,
-  strokeAlpha?: number,
-  style: pixiTextStyle,
-  text: string,
-  textAnchor?: XY,
-  textPos?: XY,
-  width?: number,
+  height?: number
+  pos?: XY
+  strokeAlpha?: number
+  strokeColor?: number
+  style: pixiTextStyle
+  text: string
+  textAnchor?: XY
+  textPos?: XY
+  width?: number
 }
 
 export type PixiButtonProps = {
+  alpha?: number
+  visible?: boolean
+  interactive?: boolean
   content: () => PixiButtonContent
   onClick?: () => void
   onEnter?: () => void
   onLeave?: () => void
 }
 
-export type PixiButton = { c: Container, onClick: undefined | (() => void), redraw: () => void }
+export type PixiButton = {
+  c: Container,
+  onClick: undefined | (() => void),
+  redraw: () => void
+  bt: () => { boundary: Graphics, text: Text }
+}
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
-  const draw = ({ alpha, anchor = { x: 0.5, y: 0.5 }, fillColor, height, pos = { x: 0, y: 0 }, strokeAlpha, style, text, textAnchor, textPos, width }: PixiButtonContent) => {
+  const draw = ({ fillAlpha, anchor = { x: 0.5, y: 0.5 }, fillColor, height, pos = { x: 0, y: 0 }, strokeAlpha, strokeColor, style, text, textAnchor, textPos, width }: PixiButtonContent) => {
 
     const t = pixiText({ text, pos: textPos ?? pos, anchor: textAnchor ?? anchor, style })
 
     const b = pixiRect({
-      // x: width ? pos.x - width / 2 : pos.x - anchor.x * t.width - 7,
       x: width ? pos.x - (1 - anchor.x) * width : pos.x - (1 - anchor.x) * t.width - 7,
       y: height ? pos.y - (1 - anchor.y) * height : pos.y - (1 - anchor.y) * t.height - 5,
       w: width ?? t.width + 14,
       h: height ?? t.height + 10,
       rounded: 5,
-      style: { alpha: alpha ?? 0, strokeAlpha: strokeAlpha ?? 0, color: fillColor ?? 0x000000 }
-    })
-
-    const mask = pixiRect({
-      x: width ? pos.x - (1 - anchor.x) * width : pos.x - (1 - anchor.x) * t.width - 7,
-      y: height ? pos.y - (1 - anchor.y) * height : pos.y - (1 - anchor.y) * t.height - 5,
-      w: width ?? t.width + 14,
-      h: height ?? t.height + 10,
-      rounded: 5,
-      style: { alpha: alpha ?? 0, strokeAlpha: strokeAlpha ?? 0, color: fillColor ?? 0x000000 }
+      style: {
+        alpha: fillAlpha ?? 1,
+        color: fillColor ?? 0x000000,
+        strokeAlpha: strokeAlpha ?? 1,
+        strokeColor: strokeColor ?? 0xffffff
+      }
     })
 
     return [b, t]
   }
 
   const c = new Container({
+    alpha: props.alpha ?? 1,
     children: draw(props.content()),
-    interactive: true,
+    interactive: props.interactive ?? true,
+    visible: props.visible ?? true,
     ...props.onClick && { onpointerdown: props.onClick },
     ...props.onEnter && { onpointerenter: props.onEnter },
     ...props.onLeave && { onpointerleave: props.onLeave }
@@ -132,6 +138,11 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
     redraw: () => {
       c.removeChildren()
       c.addChild(...draw(props.content()))
+    },
+    bt: () => {
+      const boundary = c.children[0] as Graphics
+      const text = c.children[1] as Text
+      return { boundary, text }
     }
   }
 }

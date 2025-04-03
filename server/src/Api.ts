@@ -96,8 +96,8 @@ export const Api = (): Api => {
 
         const friend = await prisma.friends.findFirst({
           where: {
-            user1Id: data.name,
-            user2: { googleId: token.googleId }
+            user1: { googleId: token.googleId },
+            user2Id: data.name
           }
         })
 
