@@ -370,6 +370,9 @@ const Friends = (): Entity => {
   let addFriend: PixiButton
   let addFriendInput: PixiButton
 
+  let send: PixiButton
+  let cancel: PixiButton
+
   let addFriendInputText = ""
 
   let screenHeight = 0
@@ -450,11 +453,12 @@ const Friends = (): Entity => {
           renderable.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.2 })
 
           addFriendInput = PixiButton({
+            visible: false,
             content: () => ({
               text: "",
               pos: { x: 100, y: 70 },
               anchor: { x: 0.5, y: 0.5 },
-              style: { fontSize: 18, fill: 0xffffff, align: "center" },
+              style: { fontSize: 18, fill: 0xffffff },
               textPos: { x: 100, y: 70 },
               textAnchor: { x: 0.5, y: 0.5 },
               width: 180,
@@ -483,7 +487,6 @@ const Friends = (): Entity => {
             onEnter: () => addFriend!.c.alpha = 1,
             onLeave: () => addFriend!.c.alpha = 0.95
           })
-          addFriendInput.c.visible = false
 
           renderable.c.addChild(outline, addFriend.c, addFriendInput.c)
         }

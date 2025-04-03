@@ -82,6 +82,8 @@ type PixiButtonContent = {
 }
 
 export type PixiButtonProps = {
+  visible?: boolean
+  interactive?: boolean
   content: () => PixiButtonContent
   onClick?: () => void
   onEnter?: () => void
@@ -115,7 +117,8 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
   const c = new Container({
     children: draw(props.content()),
-    interactive: true,
+    interactive: props.interactive ?? true,
+    visible: props.visible ?? true,
     ...props.onClick && { onpointerdown: props.onClick },
     ...props.onEnter && { onpointerenter: props.onEnter },
     ...props.onLeave && { onpointerleave: props.onLeave }
@@ -129,9 +132,9 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
       c.addChild(...draw(props.content()))
     },
     bt: () => {
-      const b = c.children[0] as Graphics
-      const t = c.children[1] as Text
-      return { boundary: b, text: t }
+      const boundary = c.children[0] as Graphics
+      const text = c.children[1] as Text
+      return { boundary, text }
     }
   }
 }
