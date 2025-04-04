@@ -116,10 +116,12 @@ const VolleySystem = SystemBuilder({
 
         // reset jump hits
         const newJumpHits = []
-        for (const jumpHitter of state.jumpHits) {
-          const character = world.entity<Position | Team | Renderable>(jumpHitter)
-          if (character && character.components.position.data.standing) {
-            newJumpHits.push(character.id)
+        if (state.jumpHits && state.jumpHits.length > 0) {
+          for (const jumpHitter of state.jumpHits) {
+            const character = world.entity<Position | Team | Renderable>(jumpHitter)
+            if (character && character.components.position.data.standing) {
+              newJumpHits.push(character.id)
+            }
           }
         }
         state.jumpHits = newJumpHits
