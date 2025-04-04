@@ -11,7 +11,7 @@ export const check = (entity: Entity | undefined, callback: (_: Entity<Position>
   callback(entity as Entity<Position>)
 }
 
-export const VehicleMovement: ActionMap<VehicleMovementActions> = {
+export const VehicleMovement: ActionMap = {
   up: ({entity}) => check(entity, ({components: {position} }) => {
     const x = Math.cos(position.data.rotation - Math.PI / 2) * SPEED
     const y = Math.sin(position.data.rotation - Math.PI / 2) * SPEED

@@ -114,11 +114,15 @@ const VolleySystem = SystemBuilder({
         const playerCharacters = world.queryEntities<Position | Team | Renderable>(["position", "team", "input"])
         const characters = world.queryEntities<Position | Team | Renderable>(["position", "team", "actions"])
 
-        for (const character of characters) {
-          if (character.components.position.data.standing) {
-            state.jumpHits = state.jumpHits.filter(id => id !== character.id)
+        // reset jump hits
+        const newJumpHits = []
+        for (const jumpHitter of state.jumpHits) {
+          const character = world.entity<Position | Team | Renderable>(jumpHitter)
+          if (character && character.components.position.data.standing) {
+            newJumpHits.push(character.id)
           }
         }
+        state.jumpHits = newJumpHits
 
         if (state.phase === "point") {
 

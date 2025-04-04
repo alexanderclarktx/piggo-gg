@@ -1,6 +1,6 @@
 import {
   Actions, Clickable, Component, Debug, Effects, Entity, Networked, Position,
-  ProtoEntity, Renderable, SystemBuilder, abs, hypot, min, pickupItem, round
+  ProtoEntity, Renderable, SystemBuilder, XY, abs, hypot, min, pickupItem, round
 } from "@piggo-gg/core"
 
 export type Item = Component<"item"> & {
@@ -9,6 +9,14 @@ export type Item = Component<"item"> & {
   dropped: boolean
   equipped: boolean
   stackable: boolean
+}
+
+export type ItemActionParams = {
+  mouse: XY
+  entity: string
+  tick: number
+  character: string
+  hold: boolean
 }
 
 export type ItemProps = {

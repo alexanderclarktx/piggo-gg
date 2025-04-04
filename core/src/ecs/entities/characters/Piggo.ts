@@ -1,7 +1,8 @@
 import {
   Actions, Chase, Collider, Debug, Food, Element, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World,
-  closestEntity, loadTexture, randomInt, XYdistance, Eat
+  closestEntity, loadTexture, randomInt, XYdistance, Eat,
+  Shadow
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
@@ -25,6 +26,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(400, 200), y: randomI
       element: Element("flesh"),
       collider: Collider({ shape: "ball", radius: 8, mass: 300, hittable: true }),
       debug: Debug(),
+      shadow: Shadow(5, 2),
       renderable: Renderable({
         scale: 1.5,
         zIndex: 3,
