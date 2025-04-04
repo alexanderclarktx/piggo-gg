@@ -19,11 +19,7 @@ export const Block = (pos: XY) => Entity({
         -width, height,
         0, 2,
         width, height,
-        0, height + width / 2,
-        // 0, height + width / 2,
-        // -width, height,
-        // 0, height + width / 2,
-        // 0, 0
+        0, height + width / 2
       ]
     }),
     renderable: Renderable({
@@ -32,8 +28,6 @@ export const Block = (pos: XY) => Entity({
       scale: 1,
       anchor: { x: 0.5, y: 0 },
       setup: async (r) => {
-
-        // isometric block
         const g = pixiGraphics()
           // hidden lines
           // .moveTo(-width, h)
@@ -144,7 +138,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .moveTo(0, 0)
           .lineTo(0, h + width / 2)
 
-          // .rect(0, 0, 16, 16)
           .stroke({ color: 0x00ff00, width: 0.5 })
 
         r.c.addChild(g)

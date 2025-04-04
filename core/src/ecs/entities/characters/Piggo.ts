@@ -1,8 +1,7 @@
 import {
   Actions, Chase, Collider, Debug, Food, Element, Entity, Health, InvokedAction,
   NPC, Networked, Position, PositionProps, Renderable, World,
-  closestEntity, loadTexture, randomInt, XYdistance, Eat,
-  Shadow
+  closestEntity, loadTexture, randomInt, XYdistance, Eat, Shadow
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
 
