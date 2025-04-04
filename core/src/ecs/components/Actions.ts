@@ -1,6 +1,6 @@
 import { Component, Entity, entries, Player, World } from "@piggo-gg/core"
 
-export type Action<T extends {} = {}> = {
+export type Action<T extends {} = any> = {
   id: string
   cooldown: number | undefined
   cdLeft?: number
@@ -24,13 +24,13 @@ export type InvokedAction<A extends string = string, P extends {} = {}> = {
   offline?: boolean
 }
 
-export type ActionMap<P extends {} = {}> = Record<string, Action<P> | Action<P>["invoke"]>
+export type ActionMap = Record<string, Action<any> | Action["invoke"]>
 
 export type Actions = Component<"actions"> & {
   actionMap: Record<string, Action>
 }
 
-export const Actions = (actionMap: ActionMap<any> = {}): Actions => {
+export const Actions = (actionMap: ActionMap = {}): Actions => {
 
   const newActions: Record<string, Action> = {}
 

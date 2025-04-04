@@ -1,6 +1,6 @@
 import {
-  Piggo, SpawnSystem, Tree, isMobile, MobilePvEHUD, PvEHUD, Rock, Zomi,
-  Skelly, GameBuilder, DefaultUI, CameraSystem, InventorySystem, ShadowSystem
+  Piggo, SpawnSystem, Tree, isMobile, MobilePvEHUD, PvEHUD, Rock, Skelly,
+  GameBuilder, DefaultUI, CameraSystem, InventorySystem, ShadowSystem, Background
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -10,18 +10,18 @@ export const Craft: GameBuilder = {
     netcode: "delay",
     state: {},
     systems: [InventorySystem, ShadowSystem, CameraSystem(), SpawnSystem(Skelly)],
-    bgColor: 0x006633,
     entities: [
+      Background({ rays: true }),
       ...DefaultUI(world),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
-      Zomi(),
+      // Zomi(),
       // Chicko(), Chicko(),
-      Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), // TODO these should get spawned by a system
-      Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
-      Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
-      Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
-      Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(),
-      Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock()
+      // Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), Piggo(), // TODO these should get spawned by a system
+      // Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
+      // Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
+      // Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(), Tree(),
+      // Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(),
+      // Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock(), Rock()
     ]
   })
 }

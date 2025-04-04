@@ -1,8 +1,8 @@
 import {
   Actions, Axe, Character, Collider, Deagle, Debug, DefaultJoystickHandler, dropItem,
   Effects, Element, Health, Input, Inventory, Move, Networked, Player, Pickaxe,
-  Point, Position, Renderable, Sword, WASDInputMap, XY, setActiveItemIndex,
-  DudeSkin, VolleyCharacterAnimations, VolleyCharacterDynamic, Action, Shadow
+  Point, Position, Renderable, Sword, WASDInputMap, XY, setActiveItemIndex, DudeSkin,
+  VolleyCharacterAnimations, VolleyCharacterDynamic, Action, Shadow, BlockItem
 } from "@piggo-gg/core"
 
 export const Skelly = (player: Player, pos?: XY) => Character({
@@ -19,7 +19,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     collider: Collider({ shape: "ball", radius: 4, hittable: true }),
     health: Health({ hp: 100 }),
     team: player.components.team,
-    inventory: Inventory([Axe, Pickaxe, Sword, Deagle]),
+    inventory: Inventory([BlockItem, Axe, Pickaxe, Sword, Deagle]),
     element: Element("flesh"),
     shadow: Shadow(5),
     input: Input({

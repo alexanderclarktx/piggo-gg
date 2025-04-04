@@ -3,12 +3,12 @@ import {
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
   Actions, Networked, DudeSkin, Ghost, XY, randomInt, World
 } from "@piggo-gg/core"
-import { Volley } from "@piggo-gg/games"
+import { Volley, Craft } from "@piggo-gg/games"
 import { Text } from "pixi.js"
 import { Friends } from "./Friends"
 
 type LobbyState = {
-  gameId: "volley"
+  gameId: "volley" | "craft"
 }
 
 export const Lobby: GameBuilder = {
@@ -394,7 +394,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Volley]
+  const list: GameBuilder[] = [Volley, Craft]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position | Renderable>({
