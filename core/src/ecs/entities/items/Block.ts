@@ -49,14 +49,14 @@ export const Block = (pos: XY) => Entity({
           .lineTo(-width, height)
           .lineTo(0, height + width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x7B3F00, alpha: 1 })
+          .fill({ color: 0x6E260E, alpha: 1 })
           // .stroke({ color: 0x000000, width: 0.5 })
 
           // bottom-right
           .lineTo(0, height + width / 2)
           .lineTo(width, height)
           .lineTo(width, -width / 2)
-          .fill({ color: 0x6E260E, alpha: 1 })
+          .fill({ color: 0x7B3F00, alpha: 1 })
         // .stroke({ color: 0x000000, width: 0.5 })
 
         r.c.addChild(g)
