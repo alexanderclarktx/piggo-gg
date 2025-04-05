@@ -44,11 +44,11 @@ const CraftSystem = SystemBuilder({
         const { position, collider, renderable } = character.components
         if (!collider) continue
 
-        const group = floor(position.data.z / 21) + 1 // 21?
-        collider.setGroup(group.toString() as "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9")
+        const level = floor(position.data.z / 21)
+        collider.setGroup((level + 1).toString() as "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9")
 
         // set zIndex
-        renderable.zIndex = 3 + (group - 1) / 10
+        renderable.zIndex = 3 + level / 10
 
 
         const { x, y, z, velocity } = position.data
@@ -60,7 +60,7 @@ const CraftSystem = SystemBuilder({
 
           if (y < blockY && y > blockY - 18) {
             if (x < blockX + 18 && x > blockX - 18) {
-              if (group === 2 && velocity.z < 0 && z < 30) {
+              if (level === 1 && velocity.z < 0 && z < 30) {
                 velocity.z = 0
                 position.data.standing = true
                 position.data.z = 21.1
