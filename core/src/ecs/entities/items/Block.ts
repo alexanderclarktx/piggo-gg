@@ -42,7 +42,7 @@ export const Block = (pos: XY) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08ed00, alpha: 1 })
+          .fill({ color: 0x08dd00, alpha: 1 })
 
           // bottom-left
           .moveTo(-width, -width / 2)

@@ -41,11 +41,15 @@ const CraftSystem = SystemBuilder({
         const character = player.components.controlling.getCharacter(world)
         if (!character) continue
 
-        const { position, collider } = character.components
+        const { position, collider, renderable } = character.components
         if (!collider) continue
 
         const group = floor(position.data.z / 21) + 1 // 21?
         collider.setGroup(group.toString() as "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9")
+
+        // set zIndex
+        renderable.zIndex = 3 + (group - 1) / 10
+
 
         const { x, y, z, velocity } = position.data
 

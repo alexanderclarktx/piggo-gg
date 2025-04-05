@@ -6,6 +6,7 @@ export type ColliderShapes = "ball" | "cuboid" | "line"
 export type SensorCallback = (e2: Entity<Position | Collider>, world: World) => boolean
 
 export const ColliderGroups = {
+  all:     "11111111111111111111111111111111",
   default: "11111111000000001111111100000000",
   none:    "00000000000000000000000000000000",
   notself: "01000000000000001000000000000000",
