@@ -24,8 +24,9 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
         if (moving) tile.tilePosition.x += 0.5
       },
       setup: async (renderable) => {
+        if (rays) renderable.setRays({ gain: 0.45, alpha: 0.45, lacunarity: 2 })
+
         renderable.setBloom({ threshold: 0.5, bloomScale: 0.95 })
-        if (rays) renderable.setRays({ gain: 0.45, alpha: 0.45, lacunarity: 2.1 })
 
         let texture: Texture
 

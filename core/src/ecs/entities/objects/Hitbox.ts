@@ -49,6 +49,7 @@ export const Hitbox = ({ radius, pos, id, color, visible, expireTicks, onExpire,
         shape: "cuboid",
         length: radius ?? 8,
         width: radius ?? 8,
+        group: "all",
         sensor: (e2: Entity<Position | Collider>, world: World) => {
           const hit = onHit(e2, world)
           if (hit) world.removeEntity(hitbox.id)

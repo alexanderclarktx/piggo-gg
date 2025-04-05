@@ -1,6 +1,7 @@
 import {
-  Actions, Clickable, Collider, Debug, Effects, Element, Entity, Health, Item, ItemActionParams,
-  ItemBuilder, ItemEntity, pixiGraphics, Position, Renderable, XY
+  Actions, Clickable, Collider, Debug, Effects, Element, Entity,
+  Health, Item, ItemActionParams, ItemBuilder, ItemEntity,
+  pixiGraphics, Position, Renderable, XY
 } from "@piggo-gg/core"
 
 const width = 18
@@ -14,7 +15,11 @@ export const Block = (pos: XY) => Entity({
     element: Element("rock"),
     health: Health({ hp: 50 }),
     collider: Collider({
-      shape: "line", isStatic: true, hittable: true, points: [
+      shape: "line",
+      isStatic: true,
+      hittable: true,
+      group: "1",
+      points: [
         0, height + width / 2,
         -width, height,
         0, 2,
@@ -27,13 +32,9 @@ export const Block = (pos: XY) => Entity({
       zIndex: 3,
       scale: 1,
       anchor: { x: 0.5, y: 0 },
+      position: { x: 0, y: height },
       setup: async (r) => {
         const g = pixiGraphics()
-          // hidden lines
-          // .moveTo(-width, h)
-          // .lineTo(0, 2)
-          // .lineTo(width, h)
-          // .stroke({ color: 0x00ffff, width: 0.5, alpha: 0.5 })
 
           // top
           .moveTo(0, 0)
@@ -41,23 +42,22 @@ export const Block = (pos: XY) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08ed00, alpha: 1 })
-          // .stroke({ color: 0x000000, width: 0.5 })
+          .fill({ color: 0x08dd00, alpha: 1 })
 
           // bottom-left
           .moveTo(-width, -width / 2)
           .lineTo(-width, height)
           .lineTo(0, height + width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x7B3F00, alpha: 1 })
-          // .stroke({ color: 0x000000, width: 0.5 })
+          .fill({ color: 0x6E260E, alpha: 1 })
 
           // bottom-right
           .lineTo(0, height + width / 2)
           .lineTo(width, height)
           .lineTo(width, -width / 2)
-          .fill({ color: 0x6E260E, alpha: 1 })
-        // .stroke({ color: 0x000000, width: 0.5 })
+          .fill({ color: 0x7B3F00, alpha: 1 })
+
+        g.position.y = -height
 
         r.c.addChild(g)
       }
@@ -67,6 +67,8 @@ export const Block = (pos: XY) => Entity({
 
 const snap = (pos: XY) => {
   const result = { ...pos }
+
+  pos.x += 9
 
   const xGap = pos.x % width
   result.x = pos.x - xGap

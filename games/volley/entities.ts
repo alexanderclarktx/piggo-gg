@@ -78,9 +78,9 @@ export const Ball = () => Entity({
         position.data.rotation += 0.001 * sqrt((x * x + y * y)) * sign(x)
 
         if (position.data.z < 25) {
-          collider.setGroup("two")
+          collider.setGroup("2")
         } else {
-          collider.setGroup("three")
+          collider.setGroup("3")
         }
       }
     }),
@@ -139,7 +139,7 @@ export const Court = () => LineWall({
   strokeAlpha: 0.95
 })
 
-export const Bounds = (group: "two" | "three") => LineWall({
+export const Bounds = (group: "2" | "3") => LineWall({
   id: `bounds-${group}`,
   position: { x: 225, y: -84 },
   group,
@@ -195,7 +195,7 @@ export const Net = () => Entity({
   id: "net",
   components: {
     position: Position({ x: 225, z: 25 }),
-    collider: Collider({ shape: "line", points: [0, -75, 0, 75], isStatic: true, group: "two" }),
+    collider: Collider({ shape: "line", points: [0, -75, 0, 75], isStatic: true, group: "2" }),
     renderable: Renderable({
       zIndex: 3.8,
       setup: async (renderable) => {

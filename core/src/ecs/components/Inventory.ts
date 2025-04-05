@@ -1,6 +1,6 @@
 import {
   Actions, Character, Component, Entity, Input, Position,
-  Renderable, SystemBuilder, Team, ItemEntity, World
+  Renderable, SystemBuilder, Team, ItemEntity, World, Collider
 } from "@piggo-gg/core"
 
 export type ItemBuilder = (_: { id?: string, character: Character }) => ItemEntity
@@ -87,9 +87,9 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
   init: (world) => ({
     id: "InventorySystem",
-    query: ["position", "input", "actions", "renderable", "inventory", "team"],
+    query: ["position", "input", "actions", "renderable", "inventory", "team", "collider"],
     priority: 5, // todo
-    onTick: (entities: Entity<Position | Input | Actions | Renderable | Inventory | Team>[]) => {
+    onTick: (entities: Entity<Position | Collider | Input | Actions | Renderable | Inventory | Team>[]) => {
       entities.forEach(entity => {
         const { inventory } = entity.components
 
