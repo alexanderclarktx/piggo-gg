@@ -50,7 +50,6 @@ const CraftSystem = SystemBuilder({
         // set zIndex
         renderable.zIndex = 3 + level / 10
 
-
         const { x, y, z, velocity } = position.data
 
         // if we're directly above a block, stop at the block height
