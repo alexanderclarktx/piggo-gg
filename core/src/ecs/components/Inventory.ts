@@ -1,7 +1,6 @@
 import {
   Actions, Character, Component, Entity, Input, Position,
-  Renderable, SystemBuilder, Team, ItemEntity, World,
-  Collider
+  Renderable, SystemBuilder, Team, ItemEntity, World, Collider
 } from "@piggo-gg/core"
 
 export type ItemBuilder = (_: { id?: string, character: Character }) => ItemEntity
