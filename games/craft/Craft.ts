@@ -30,21 +30,22 @@ const CraftSystem = SystemBuilder({
   init: (world) => ({
     id: "CraftSystem",
     query: [],
-    priority: 3, // todo
+    priority: 3,
     onTick: () => {
-      const players = world.queryEntities<Controlling>(["pc", "controlling"])
-
       const blocks = world.queryEntities<Element | Position>(["element", "health", "collider", "position"])
-        .filter(x => x.components.element.data.kind === "rock")
+        .filter(x => x.components.element.data.kind !== "flesh")
+
+      const players = world.queryEntities<Controlling>(["pc", "controlling"])
 
       for (const player of players) {
         const character = player.components.controlling.getCharacter(world)
         if (!character) continue
 
         const { position, collider, renderable } = character.components
-        if (!collider) continue
 
         const level = floor(position.data.z / 21)
+
+        // set collider group
         collider.setGroup((level + 1).toString() as "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9")
 
         // set zIndex
@@ -52,7 +53,7 @@ const CraftSystem = SystemBuilder({
 
         const { x, y, z, velocity } = position.data
 
-        // if we're directly above a block, stop at the block height
+        // stop falling if directly above a block
         for (const block of blocks) {
           let { x: blockX, y: blockY } = block.components.position.data
           blockY += 21
@@ -62,13 +63,12 @@ const CraftSystem = SystemBuilder({
               if (level === 1 && velocity.z < 0 && z < 30) {
                 velocity.z = 0
                 position.data.standing = true
-                position.data.z = 21.1
-                // console.log("stop", z)
+                position.data.z = 21
               }
             }
           }
         }
       }
     }
-  }),
+  })
 })
