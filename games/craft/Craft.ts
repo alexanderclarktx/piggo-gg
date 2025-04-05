@@ -10,7 +10,13 @@ export const Craft: GameBuilder = {
     id: "craft",
     netcode: "delay",
     state: {},
-    systems: [InventorySystem, ShadowSystem, CraftSystem, CameraSystem(), SpawnSystem(Skelly)],
+    systems: [
+      InventorySystem,
+      ShadowSystem,
+      CraftSystem,
+      CameraSystem({ follow: (xy) => xy }),
+      SpawnSystem(Skelly)
+    ],
     entities: [
       Background({ rays: true }),
       ...DefaultUI(world),
@@ -54,7 +60,7 @@ const CraftSystem = SystemBuilder({
                 velocity.z = 0
                 position.data.standing = true
                 position.data.z = 21.1
-                console.log("stop", z)
+                // console.log("stop", z)
               }
             }
           }

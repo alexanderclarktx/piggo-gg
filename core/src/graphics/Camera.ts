@@ -87,7 +87,7 @@ export type CameraSystemProps = {
   follow?: (_: XY) => XY
 }
 
-export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystemProps = {}) => ClientSystemBuilder({
+export const CameraSystem = ({ follow = ({ x, y }) => ({ x: 0, y: 0 }) }: CameraSystemProps = {}) => ClientSystemBuilder({
   id: "CameraSystem",
   init: (world) => {
     const { renderer } = world

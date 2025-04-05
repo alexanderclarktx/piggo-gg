@@ -68,6 +68,8 @@ export const Block = (pos: XY) => Entity({
 const snap = (pos: XY) => {
   const result = { ...pos }
 
+  pos.x += 9
+
   const xGap = pos.x % width
   result.x = pos.x - xGap
 
