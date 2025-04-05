@@ -1,6 +1,7 @@
 import {
-  Actions, Clickable, Collider, Debug, Effects, Element, Entity, Health, Item, ItemActionParams,
-  ItemBuilder, ItemEntity, pixiGraphics, Position, Renderable, XY
+  Actions, Clickable, Collider, Debug, Effects, Element, Entity,
+  Health, Item, ItemActionParams, ItemBuilder, ItemEntity,
+  pixiGraphics, Position, Renderable, XY
 } from "@piggo-gg/core"
 
 const width = 18
