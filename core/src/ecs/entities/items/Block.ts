@@ -1,7 +1,7 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
   Health, Item, ItemActionParams, ItemBuilder, ItemEntity,
-  pixiGraphics, Position, Renderable, XY
+  mouse, pixiGraphics, Position, Renderable, XY
 } from "@piggo-gg/core"
 
 const width = 18
@@ -30,7 +30,6 @@ export const Block = (pos: XY) => Entity({
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
-      scale: 1,
       anchor: { x: 0.5, y: 0 },
       position: { x: 0, y: height },
       setup: async (r) => {
@@ -68,8 +67,6 @@ export const Block = (pos: XY) => Entity({
 const snap = (pos: XY) => {
   const result = { ...pos }
 
-  pos.x += 9
-
   const xGap = pos.x % width
   result.x = pos.x - xGap
 
@@ -88,6 +85,57 @@ const snap = (pos: XY) => {
 
   return result
 }
+
+export const BlockPreview = () => Entity({
+  id: "block-preview",
+  components: {
+    position: Position(),
+    debug: Debug(),
+    renderable: Renderable({
+      zIndex: 3,
+      anchor: { x: 0.5, y: 0 },
+      position: { x: 0, y: height },
+      dynamic: ({ entity, world }) => {
+        let visible = false
+
+        const activeItem = world.client?.playerCharacter()?.components.inventory?.activeItem(world)
+        if (activeItem && activeItem.id.startsWith("block-")) {
+          visible = true
+        }
+        entity.components.renderable.visible = visible
+
+        if (!visible) return
+
+        entity.components.position.setPosition(snap(mouse))
+      },
+      setup: async (r) => {
+        const g = pixiGraphics()
+          // top
+          .moveTo(0, 0)
+          .lineTo(-width, -width / 2)
+          .lineTo(0, -width)
+          .lineTo(width, -width / 2)
+          .lineTo(0, 0)
+
+          // bottom-left
+          .moveTo(-width, -width / 2)
+          .lineTo(-width, height)
+          .lineTo(0, height + width / 2)
+          .lineTo(0, 0)
+
+          // bottom-right
+          .lineTo(0, height + width / 2)
+          .lineTo(width, height)
+          .lineTo(width, -width / 2)
+          .stroke()
+
+        g.position.y = -height
+
+        r.c.addChild(g)
+      }
+    })
+  }
+})
 
 export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
   id: id ?? `block-${character.id}`,

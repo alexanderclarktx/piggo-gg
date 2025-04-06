@@ -1,7 +1,7 @@
 import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   DefaultUI, CameraSystem, InventorySystem, ShadowSystem, Background,
-  SystemBuilder, Controlling, Position, floor, Element
+  SystemBuilder, Controlling, Position, floor, Element, BlockPreview
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -20,7 +20,8 @@ export const Craft: GameBuilder = {
     entities: [
       Background({ rays: true }),
       ...DefaultUI(world),
-      isMobile() ? MobilePvEHUD() : PvEHUD()
+      isMobile() ? MobilePvEHUD() : PvEHUD(),
+      BlockPreview()
     ]
   })
 }
@@ -50,6 +51,8 @@ const CraftSystem = SystemBuilder({
 
         // set zIndex
         renderable.zIndex = 3 + level / 10
+
+        // active item zIndex
         if (inventory) {
           const activeItem = inventory.activeItem(world)
           if (activeItem) activeItem.components.renderable.zIndex = 3 + level / 10
