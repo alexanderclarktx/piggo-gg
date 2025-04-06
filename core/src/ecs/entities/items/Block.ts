@@ -22,7 +22,7 @@ export const Block = (pos: XY) => Entity({
       points: [
         0, height + width / 2,
         -width, height,
-        0, 2,
+        0, 3,
         width, height,
         0, height + width / 2
       ]

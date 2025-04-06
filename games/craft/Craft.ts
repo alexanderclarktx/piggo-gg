@@ -41,7 +41,7 @@ const CraftSystem = SystemBuilder({
         const character = player.components.controlling.getCharacter(world)
         if (!character) continue
 
-        const { position, collider, renderable } = character.components
+        const { position, collider, renderable, inventory } = character.components
 
         const level = floor(position.data.z / 21)
 
@@ -50,6 +50,10 @@ const CraftSystem = SystemBuilder({
 
         // set zIndex
         renderable.zIndex = 3 + level / 10
+        if (inventory) {
+          const activeItem = inventory.activeItem(world)
+          if (activeItem) activeItem.components.renderable.zIndex = 3 + level / 10
+        }
 
         const { x, y, z, velocity } = position.data
 
