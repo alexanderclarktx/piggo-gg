@@ -1,6 +1,6 @@
 import {
-  ClientSystemBuilder, Entity, Renderable, XY,
-  Position, Character, abs, System, round
+  ClientSystemBuilder, Entity, Renderable, Position,
+  Character, abs, System, round, XY, XYZ, max
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -67,8 +67,8 @@ export const Camera = (app: Application): Camera => {
       root.y += y
     },
     moveTo: ({ x, y }: XY) => {
-      root.x = app.screen.width / 2 - x * scale
-      root.y = app.screen.height / 2 - y * scale
+      root.x = round(app.screen.width / 2 - x * scale, 3)
+      root.y = round(app.screen.height / 2 - y * scale, 3)
     },
     toWorldCoords: ({ x, y }: XY) => ({
       x: round((x - root.x) / scale, 3),
@@ -83,11 +83,9 @@ export const Camera = (app: Application): Camera => {
   return camera
 }
 
-export type CameraSystemProps = {
-  follow?: (_: XY) => XY
-}
+type Follow = (_: XYZ) => XYZ
 
-export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystemProps = {}) => ClientSystemBuilder({
+export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) => ClientSystemBuilder({
   id: "CameraSystem",
   init: (world) => {
     const { renderer } = world
@@ -132,11 +130,12 @@ export const CameraSystem = ({ follow = ({ x, y }) => ({ x, y }) }: CameraSystem
 
         const interpolated = centeredEntity.components.position.interpolate(delta, world)
 
-        const { x, y } = follow({
+        const { x, y, z } = follow({
           x: centeredEntity.components.position.data.x + interpolated.x,
-          y: centeredEntity.components.position.data.y + interpolated.y
+          y: centeredEntity.components.position.data.y + interpolated.y,
+          z: centeredEntity.components.position.data.z + interpolated.z
         })
-        renderer?.camera.moveTo({ x, y })
+        renderer?.camera.moveTo({ x, y: y - max(z, 0) })
       }
     }
 

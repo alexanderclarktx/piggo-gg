@@ -1,14 +1,14 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
-  Health, Item, ItemActionParams, ItemBuilder, ItemEntity,
-  pixiGraphics, Position, Renderable, XY
+  Health, Item, ItemActionParams, ItemBuilder, ItemEntity, mouse,
+  pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
 
 const width = 18
 const height = width / 3 * 2
 
-export const Block = (pos: XY) => Entity({
-  id: `block-${pos.x}-${pos.y}`,
+export const Block = (pos: XYZ) => Entity({
+  id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
     debug: Debug(),
@@ -18,22 +18,23 @@ export const Block = (pos: XY) => Entity({
       shape: "line",
       isStatic: true,
       hittable: true,
-      group: "1",
+      group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
       points: [
         0, height + width / 2,
         -width, height,
-        0, 2,
+        0, 3,
         width, height,
         0, height + width / 2
       ]
     }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: 3,
-      scale: 1,
+      zIndex: 3 + (pos.z / 21) / 10,
       anchor: { x: 0.5, y: 0 },
       position: { x: 0, y: height },
       setup: async (r) => {
+        // const alpha = pos.z > 0 ? 0.5 : 1
+        const alpha = 1
         const g = pixiGraphics()
 
           // top
@@ -42,20 +43,20 @@ export const Block = (pos: XY) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08dd00, alpha: 1 })
+          .fill({ color: 0x08dd00, alpha })
 
           // bottom-left
           .moveTo(-width, -width / 2)
           .lineTo(-width, height)
           .lineTo(0, height + width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x6E260E, alpha: 1 })
+          .fill({ color: 0x6E260E, alpha })
 
           // bottom-right
           .lineTo(0, height + width / 2)
           .lineTo(width, height)
           .lineTo(width, -width / 2)
-          .fill({ color: 0x7B3F00, alpha: 1 })
+          .fill({ color: 0x7B3F00, alpha })
 
         g.position.y = -height
 
@@ -65,32 +66,102 @@ export const Block = (pos: XY) => Entity({
   }
 })
 
-const snap = (pos: XY) => {
-  const result = { ...pos }
+export const snapXY = (pos: XY): XY => {
+  const half = width / 2
 
-  pos.x += 9
+  // Convert to isometric grid coords (skewed grid space)
+  const gridX = (pos.x / width + pos.y / half) / 2
+  const gridY = (pos.y / half - pos.x / width) / 2
 
-  const xGap = pos.x % width
-  result.x = pos.x - xGap
+  // Snap to nearest tile
+  const tileX = round(gridX)
+  const tileY = round(gridY)
 
-  const even = result.x % (width * 2) === 0
+  // Convert back to screen position (center of tile)
+  const snappedX = (tileX - tileY) * width
+  const snappedY = (tileX + tileY) * half - height
 
-  const yGap = pos.y % width
-  if (even) {
-    if (yGap > (width / 2)) {
-      result.y = pos.y - yGap + width
-    } else {
-      result.y = pos.y - yGap
-    }
-  } else {
-    result.y = pos.y - yGap + (width / 2)
-  }
-
-  return result
+  return { x: snappedX, y: snappedY }
 }
 
+export const snapXYZ = (pos: XY, world: World): XYZ => {
+  return { z: highestBlock(pos, world), ...snapXY(pos) }
+}
+
+export const highestBlock = (pos: XY, world: World): number => {
+  const snapped = snapXY(pos)
+
+  const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
+  let highest = 0
+
+  for (const block of blocks) {
+    const { x, y, z } = block.components.position!.data
+    if (x === snapped.x && y === snapped.y) {
+      highest = Math.max(highest, z + 21)
+    }
+  }
+  return highest
+}
+
+export const BlockPreview = () => Entity({
+  id: "item-block-preview",
+  components: {
+    position: Position(),
+    debug: Debug(),
+    renderable: Renderable({
+      zIndex: 3,
+      anchor: { x: 0.5, y: 0 },
+      position: { x: 0, y: height },
+      dynamic: ({ entity, world }) => {
+        let visible = false
+
+        const activeItem = world.client?.playerCharacter()?.components.inventory?.activeItem(world)
+        if (activeItem && activeItem.id.startsWith("item-block-")) {
+          visible = true
+        }
+        entity.components.renderable.visible = visible
+
+        if (!visible) return
+
+        const xyz = snapXYZ(mouse, world)
+
+        entity.components.position.setPosition(xyz)
+
+        entity.components.renderable.zIndex = 3 + (xyz.z / 21) / 10
+      },
+      setup: async (r) => {
+        const g = pixiGraphics()
+          // top
+          .moveTo(0, 0)
+          .lineTo(-width, -width / 2)
+          .lineTo(0, -width)
+          .lineTo(width, -width / 2)
+          .lineTo(0, 0)
+
+          // bottom-left
+          .moveTo(-width, -width / 2)
+          .lineTo(-width, height)
+          .lineTo(0, height + width / 2)
+          .lineTo(0, 0)
+
+          // bottom-right
+          .lineTo(0, height + width / 2)
+          .lineTo(width, height)
+          .lineTo(width, -width / 2)
+          .stroke()
+
+        g.position.y = -height
+
+        r.c.addChild(g)
+
+        r.setGlow({outerStrength: 1})
+      }
+    })
+  }
+})
+
 export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
-  id: id ?? `block-${character.id}`,
+  id: id ?? `item-block-${character.id}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
@@ -98,7 +169,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snap(mouse))
+        const block = Block(snapXYZ(mouse, world))
         world.addEntity(block)
       }
     }),

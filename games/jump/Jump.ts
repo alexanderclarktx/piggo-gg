@@ -231,7 +231,7 @@ export const Jump: GameBuilder<JumpState> = {
       systems: [
         SpawnSystem(Jumper),
         JumpSystem,
-        CameraSystem({ follow: ({ y }) => ({ x: 150, y }) })
+        CameraSystem(({ y }) => ({ x: 150, y, z: 0 }))
       ],
       bgColor: 0x87CEEB, // Sky blue background
       entities: [

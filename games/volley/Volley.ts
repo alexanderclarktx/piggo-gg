@@ -43,7 +43,7 @@ export const Volley: GameBuilder<VolleyState> = {
       VolleySystem,
       ShadowSystem,
       TargetSystem,
-      CameraSystem({ follow: () => ({ x: 225, y: 0 }) })
+      CameraSystem(() => ({ x: 225, y: 0, z: 0 }))
     ],
     entities: [
       Background({ rays: true }),

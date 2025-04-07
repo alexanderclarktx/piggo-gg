@@ -13,7 +13,7 @@ export const Flappy: GameBuilder = {
     view: "side",
     state: {},
     systems: [
-      CameraSystem({ follow: ({ x }) => ({ x, y: 0 }) }),
+      CameraSystem(({ x }) => ({ x, y: 0, z: 0 })),
       SpawnSystem(FlappyCharacter),
       FlappySystem
     ],
