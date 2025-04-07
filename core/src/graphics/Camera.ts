@@ -1,7 +1,6 @@
 import {
-  ClientSystemBuilder, Entity, Renderable, XY,
-  Position, Character, abs, System, round, XYZ,
-  max
+  ClientSystemBuilder, Entity, Renderable, Position,
+  Character, abs, System, round, XY, XYZ, max
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
