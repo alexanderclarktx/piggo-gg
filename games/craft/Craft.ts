@@ -14,7 +14,7 @@ export const Craft: GameBuilder = {
       InventorySystem,
       ShadowSystem,
       CraftSystem,
-      CameraSystem(),
+      CameraSystem((xyz) => xyz),
       SpawnSystem(Skelly)
     ],
     entities: [

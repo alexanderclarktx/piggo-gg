@@ -61,7 +61,7 @@ export const DebugSystem = ClientSystemBuilder({
 
       const debugPosition = Renderable({
         zIndex: 5,
-        setContainer: async () => pixiGraphics().circle(0, 0, 2).stroke({ color: 0x00ff00, width: 1 })
+        setContainer: async () => pixiGraphics().circle(0, 0, 2).stroke({ color: 0x00ff00 })
       })
 
       const debugEntity = Entity<Position | Renderable>({
@@ -70,7 +70,7 @@ export const DebugSystem = ClientSystemBuilder({
           position: Position({ follows: entity.id, offset: { x: 0, y: 0 } }),
           renderable: Renderable({
             zIndex: 4,
-            interpolate: false,
+            interpolate: true,
             setChildren: async () => [textBox, debugBounds, lineToHeading, debugPosition]
           })
         }

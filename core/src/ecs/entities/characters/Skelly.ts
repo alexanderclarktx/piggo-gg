@@ -42,7 +42,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       dropItem,
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
-        entity.components.position.setVelocity({ z: 6 })
+        entity.components.position.setVelocity({ z: 5 })
       })
     }),
     effects: Effects(),
