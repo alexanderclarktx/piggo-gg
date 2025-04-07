@@ -71,15 +71,15 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
 
         const { data, lastCollided } = target.components.position
 
-        renderable.c.alpha = 0.25 - target.components.position.data.z / 500
-
-        const snap = highestBlock(data, world)
+        const highest = highestBlock(data, world)
 
         position.setPosition({
           x: data.x,
           y: data.y + yOffset,
-          z: snap
+          z: highest
         })
+
+        renderable.c.alpha = 0.25 - (target.components.position.data.z - highest) / 500
 
         position.lastCollided = lastCollided
 
