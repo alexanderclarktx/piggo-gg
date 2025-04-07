@@ -1,7 +1,7 @@
 import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   DefaultUI, CameraSystem, InventorySystem, ShadowSystem, Background,
-  SystemBuilder, Controlling, Position, floor, Element, BlockPreview
+  SystemBuilder, Controlling, floor, BlockPreview, highestBlock, values
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -33,9 +33,6 @@ const CraftSystem = SystemBuilder({
     query: [],
     priority: 3,
     onTick: () => {
-      const blocks = world.queryEntities<Element | Position>(["element", "health", "collider", "position"])
-        .filter(x => x.components.element.data.kind !== "flesh")
-
       const players = world.queryEntities<Controlling>(["pc", "controlling"])
 
       for (const player of players) {
@@ -61,20 +58,18 @@ const CraftSystem = SystemBuilder({
         const { x, y, z, velocity } = position.data
 
         // stop falling if directly above a block
-        for (const block of blocks) {
-          let { x: blockX, y: blockY } = block.components.position.data
-          blockY += 21
-
-          if (y < blockY && y > blockY - 18) {
-            if (x < blockX + 18 && x > blockX - 18) {
-              if (level === 1 && velocity.z < 0 && z < 30) {
-                velocity.z = 0
-                position.data.standing = true
-                position.data.z = 21
-              }
-            }
-          }
+        const highest = highestBlock({ x, y }, world)
+        if (highest > 0 && z < (highest + 10) && velocity.z < 0) {
+          position.data.z = highest
+          position.data.standing = true
+          velocity.z = 0
         }
+      }
+
+      const shadows = values(world.entities).filter(e => e.id.startsWith("shadow-"))
+      for (const shadow of shadows) {
+        const { position, renderable } = shadow.components
+        renderable!.visible = position?.data.z !== 0
       }
     }
   })

@@ -1,14 +1,15 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
   Health, Item, ItemActionParams, ItemBuilder, ItemEntity,
-  mouse, pixiGraphics, Position, Renderable, XY
+  mouse, pixiGraphics, Position, Renderable, values, World, XY,
+  XYZ
 } from "@piggo-gg/core"
 
 const width = 18
 const height = width / 3 * 2
 
-export const Block = (pos: XY) => Entity({
-  id: `block-${pos.x}-${pos.y}`,
+export const Block = (pos: XYZ) => Entity({
+  id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
     debug: Debug(),
@@ -18,7 +19,7 @@ export const Block = (pos: XY) => Entity({
       shape: "line",
       isStatic: true,
       hittable: true,
-      group: "1",
+      group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
       points: [
         0, height + width / 2,
         -width, height,
@@ -29,7 +30,7 @@ export const Block = (pos: XY) => Entity({
     }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: 3,
+      zIndex: 3 + (pos.z / 21) / 10,
       anchor: { x: 0.5, y: 0 },
       position: { x: 0, y: height },
       setup: async (r) => {
@@ -64,30 +65,95 @@ export const Block = (pos: XY) => Entity({
   }
 })
 
-const snap = (pos: XY) => {
-  const result = { ...pos }
+// export const snapXY = (pos: XY): XY => {
+//   const result = { ...pos }
 
-  const xGap = pos.x % width
-  result.x = pos.x - xGap
+//   const xGap = pos.x % width
+//   result.x = pos.x - xGap
 
-  const even = result.x % (width * 2) === 0
+//   const 
+// }
 
-  const yGap = pos.y % width
-  if (even) {
-    if (yGap > (width / 2)) {
-      result.y = pos.y - yGap + width
-    } else {
-      result.y = pos.y - yGap
+// export const snapXY = (pos: XY): XY => {
+//   const result = { ...pos }
+
+//   const xGap = pos.x % (width * 2)
+
+//   if (xGap > width) {
+//     result.x += (width * 2) - xGap
+//   } else {
+//     result.x -= xGap
+//   }
+
+//   // const even = result.x % (width * 2) === 0
+
+//   const yGap = pos.y % width
+//     if (yGap > (width / 2)) {
+//       result.y = pos.y - yGap + width
+//     } else {
+//       result.y = pos.y - yGap
+//     }
+//   // } else {
+//   //   result.y = pos.y - yGap + (width / 2)
+//   // }
+
+//   result.y -= height
+
+//   return result
+// }
+
+export const snapXY = (pos: XY): XY => {
+  const half = width / 2
+
+  // Convert to isometric grid coords (skewed grid space)
+  const gridX = (pos.x / width + pos.y / half) / 2
+  const gridY = (pos.y / half - pos.x / width) / 2
+
+  // Snap to nearest tile
+  const tileX = Math.round(gridX)
+  const tileY = Math.round(gridY)
+
+  // Convert back to screen position (center of tile)
+  const snappedX = (tileX - tileY) * width
+  const snappedY = (tileX + tileY) * half - height
+
+  return { x: snappedX, y: snappedY }
+}
+
+export const snapXYZ = (pos: XY, world: World): XYZ => {
+  const result = { ...snapXY(pos), z: 0 }
+
+  const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
+
+  // if a block is already there, increment z
+  for (const block of blocks) {
+    const { x, y } = block.components.position!.data
+    if (x === result.x && y === result.y) {
+      result.z = 21
+      break
     }
-  } else {
-    result.y = pos.y - yGap + (width / 2)
   }
 
   return result
 }
 
+export const highestBlock = (pos: XY, world: World): number => {
+  const snapped = snapXY(pos)
+
+  const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
+  let highest = 0
+
+  for (const block of blocks) {
+    const { x, y, z } = block.components.position!.data
+    if (x === snapped.x && y === snapped.y) {
+      highest = Math.max(highest, z + 21)
+    }
+  }
+  return highest
+}
+
 export const BlockPreview = () => Entity({
-  id: "block-preview",
+  id: "item-block-preview",
   components: {
     position: Position(),
     debug: Debug(),
@@ -99,14 +165,18 @@ export const BlockPreview = () => Entity({
         let visible = false
 
         const activeItem = world.client?.playerCharacter()?.components.inventory?.activeItem(world)
-        if (activeItem && activeItem.id.startsWith("block-")) {
+        if (activeItem && activeItem.id.startsWith("item-block-")) {
           visible = true
         }
         entity.components.renderable.visible = visible
 
         if (!visible) return
 
-        entity.components.position.setPosition(snap(mouse))
+        const xyz = snapXYZ(mouse, world)
+
+        entity.components.position.setPosition(xyz)
+
+        entity.components.renderable.zIndex = 3 + (xyz.z / 21) / 10
       },
       setup: async (r) => {
         const g = pixiGraphics()
@@ -138,7 +208,7 @@ export const BlockPreview = () => Entity({
 })
 
 export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
-  id: id ?? `block-${character.id}`,
+  id: id ?? `item-block-${character.id}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
@@ -146,7 +216,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snap(mouse))
+        const block = Block(snapXYZ(mouse, world))
         world.addEntity(block)
       }
     }),

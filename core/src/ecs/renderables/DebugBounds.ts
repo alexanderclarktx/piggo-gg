@@ -1,15 +1,8 @@
-import { Graphics } from "pixi.js"
-import { Renderable, RenderableProps } from "@piggo-gg/core"
+import { Renderable, pixiGraphics } from "@piggo-gg/core"
 
-export type DebugBoundsProps = RenderableProps & {
-  debugRenderable: Renderable
-}
-
-export const DebugBounds = (props: DebugBoundsProps): Renderable => {
-  const { debugRenderable } = props
+export const DebugBounds = (debugRenderable: Renderable): Renderable => {
 
   const renderable = Renderable({
-    ...props,
     dynamic: ({ container, renderable }) => {
       container.position = { ...debugRenderable.position }
       renderable.visible = debugRenderable.visible
@@ -23,7 +16,7 @@ export const DebugBounds = (props: DebugBoundsProps): Renderable => {
         return
       }
 
-      const drawing = new Graphics()
+      const drawing = pixiGraphics()
 
       // center circle
       drawing.circle(0, 0, 2)

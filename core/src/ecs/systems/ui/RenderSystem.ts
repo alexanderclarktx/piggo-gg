@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, values } from "@piggo-gg/core"
+import { Entity, Position, Renderable, ClientSystemBuilder, values, max } from "@piggo-gg/core"
 
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
@@ -168,9 +168,11 @@ export const RenderSystem = ClientSystemBuilder({
 
             const interpolated = position.interpolate(delta, world)
 
+            const newZ = max(0, z + interpolated.z)
+
             renderable.c.position.set(
               x + renderable.position.x + interpolated.x,
-              y + renderable.position.y + interpolated.y - z - interpolated.z
+              y + renderable.position.y + interpolated.y - newZ
             )
           }
         }

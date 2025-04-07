@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, Entity, pixiGraphics, Position,
-  Renderable, Component, entries
+  Renderable, Component, entries, highestBlock
 } from "@piggo-gg/core"
 
 export type Shadow = Component<"shadow"> & { size: number, yOffset: number }
@@ -64,25 +64,28 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
     position: Position(),
     renderable: Renderable({
       zIndex: target.components.renderable.zIndex - 0.1,
-      interpolate: true,
-      dynamic: ({ entity }) => {
+      interpolate: false,
+      dynamic: ({ entity, world }) => {
         const { position, renderable } = entity.components
         if (!position || !renderable) return
 
+        const { data, lastCollided } = target.components.position
+
         renderable.c.alpha = 0.25 - target.components.position.data.z / 500
 
+        const snap = highestBlock(data, world)
+
         position.setPosition({
-          x: target.components.position.data.x,
-          y: target.components.position.data.y + yOffset,
-          z: target.components.position.data.z === 21 ? 21 : 0
+          x: data.x,
+          y: data.y + yOffset,
+          z: snap
         })
 
-        position.lastCollided = target.components.position.lastCollided
+        position.lastCollided = lastCollided
 
         renderable.zIndex = target.components.renderable.zIndex - 0.05
 
-        const { x, y } = target.components.position.data.velocity
-        position.setVelocity({ x, y })
+        position.setVelocity({ ...data.velocity, z: 0 })
       },
       setup: async (renderable) => {
         renderable.setBlur({ strength: 2 })
