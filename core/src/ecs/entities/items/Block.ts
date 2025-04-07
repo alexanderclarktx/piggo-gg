@@ -1,8 +1,7 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
-  Health, Item, ItemActionParams, ItemBuilder, ItemEntity,
-  mouse, pixiGraphics, Position, Renderable, values, World, XY,
-  XYZ
+  Health, Item, ItemActionParams, ItemBuilder, ItemEntity, mouse,
+  pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
 
 const width = 18
@@ -65,43 +64,6 @@ export const Block = (pos: XYZ) => Entity({
   }
 })
 
-// export const snapXY = (pos: XY): XY => {
-//   const result = { ...pos }
-
-//   const xGap = pos.x % width
-//   result.x = pos.x - xGap
-
-//   const 
-// }
-
-// export const snapXY = (pos: XY): XY => {
-//   const result = { ...pos }
-
-//   const xGap = pos.x % (width * 2)
-
-//   if (xGap > width) {
-//     result.x += (width * 2) - xGap
-//   } else {
-//     result.x -= xGap
-//   }
-
-//   // const even = result.x % (width * 2) === 0
-
-//   const yGap = pos.y % width
-//     if (yGap > (width / 2)) {
-//       result.y = pos.y - yGap + width
-//     } else {
-//       result.y = pos.y - yGap
-//     }
-//   // } else {
-//   //   result.y = pos.y - yGap + (width / 2)
-//   // }
-
-//   result.y -= height
-
-//   return result
-// }
-
 export const snapXY = (pos: XY): XY => {
   const half = width / 2
 
@@ -110,8 +72,8 @@ export const snapXY = (pos: XY): XY => {
   const gridY = (pos.y / half - pos.x / width) / 2
 
   // Snap to nearest tile
-  const tileX = Math.round(gridX)
-  const tileY = Math.round(gridY)
+  const tileX = round(gridX)
+  const tileY = round(gridY)
 
   // Convert back to screen position (center of tile)
   const snappedX = (tileX - tileY) * width
@@ -121,20 +83,7 @@ export const snapXY = (pos: XY): XY => {
 }
 
 export const snapXYZ = (pos: XY, world: World): XYZ => {
-  const result = { ...snapXY(pos), z: 0 }
-
-  const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
-
-  // if a block is already there, increment z
-  for (const block of blocks) {
-    const { x, y } = block.components.position!.data
-    if (x === result.x && y === result.y) {
-      result.z = 21
-      break
-    }
-  }
-
-  return result
+  return { z: highestBlock(pos, world), ...snapXY(pos) }
 }
 
 export const highestBlock = (pos: XY, world: World): number => {

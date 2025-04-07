@@ -1,8 +1,6 @@
 import {
   ClientSystemBuilder, DebugBounds, Entity, FpsText, Component,
-  Position, Renderable, TextBox, physics, values, keys,
-  pixiGraphics,
-  pixiCircle
+  Position, Renderable, TextBox, physics, values, keys, pixiGraphics
 } from "@piggo-gg/core"
 import { Graphics, Text } from "pixi.js"
 
@@ -44,14 +42,6 @@ export const DebugSystem = ClientSystemBuilder({
         fontSize: 8, color: 0x00ff00
       })
 
-      // debug bounds
-      const debugBounds = DebugBounds(renderable)
-
-      const debugPosition = Renderable({
-        zIndex: 5,
-        setContainer: async () => pixiGraphics().circle(0, 0, 2).stroke({ color: 0x00ff00, width: 1 })
-      })
-
       const lineToHeading = Renderable({
         dynamic: ({ container }) => {
           const c = container as Graphics
@@ -65,6 +55,13 @@ export const DebugSystem = ClientSystemBuilder({
         },
         zIndex: 5,
         setContainer: async () => new Graphics()
+      })
+
+      const debugBounds = DebugBounds(renderable)
+
+      const debugPosition = Renderable({
+        zIndex: 5,
+        setContainer: async () => pixiGraphics().circle(0, 0, 2).stroke({ color: 0x00ff00, width: 1 })
       })
 
       const debugEntity = Entity<Position | Renderable>({
