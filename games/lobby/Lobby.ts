@@ -6,6 +6,7 @@ import {
 import { Volley, Craft } from "@piggo-gg/games"
 import { Text } from "pixi.js"
 import { Friends } from "./Friends"
+import { GlowFilter } from "pixi-filters"
 
 type LobbyState = {
   gameId: "volley" | "craft"
@@ -134,26 +135,36 @@ const Players = (): Entity => {
 const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
   id: `gamebutton-${game.id}`,
   components: {
-    position: Position({ x: 0, y: 85, screenFixed: true }),
+    position: Position({ x: 0, y: 120, screenFixed: true }),
     renderable: Renderable({
       zIndex: 10,
       interactiveChildren: true,
-      dynamic: ({ world, entity }) => {
+      dynamic: ({ world, renderable }) => {
         const state = world.game.state as LobbyState
-        const alpha = state.gameId === game.id ? 1 : 0.6
-        entity.components.renderable.c.children[0].alpha = alpha
+        if (state.gameId === game.id) {
+          renderable.setOutline({ color: 0x00ffff, thickness: 2 })
+        } else {
+          renderable.setOutline()
+        }
       },
       setup: async (r, _, world) => {
-        r.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.2 })
+        r.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.3 })
 
         const button = PixiButton({
           content: () => ({
             text: game.id,
-            style: { fontSize: 28, fill: 0xffffff }
+            // anchor: { x: 0.5, y: 0.5 },
+            textAnchor: { x: 0.5, y: 0.5 },
+            textPos: { x: 0, y: -50 },
+            style: { fontSize: 28, fill: 0xffffff },
+            height: 150,
+            width: 200
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-          }
+          },
+          onEnter: () => r.setGlow({ outerStrength: 1 }),
+          onLeave: () => r.setGlow()
         })
         r.c.addChild(button.c)
       }
@@ -188,10 +199,9 @@ const PlayButton = () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
             },
-            onEnter: () => button.c.alpha = 1,
-            onLeave: () => button.c.alpha = 0.95
+            onEnter: () => r.setGlow({ outerStrength: 1 }),
+            onLeave: () => r.setGlow()
           })
-          button.c.alpha = 0.95
           r.c.addChild(button.c)
         }
       })
@@ -228,10 +238,9 @@ const CreateLobbyButton = () => {
               style: { fontSize: 26, fill: 0xffffff }
             }),
             onClick: () => world.client?.copyInviteLink(),
-            onEnter: () => button.c.alpha = 1,
-            onLeave: () => button.c.alpha = 0.95
+            onEnter: () => r.setGlow({ outerStrength: 1 }),
+            onLeave: () => r.setGlow()
           })
-          button.c.alpha = 0.95
 
           r.c.addChild(button.c)
         }
@@ -409,33 +418,32 @@ const GameLobby = (): Entity => {
           state.gameId = params.gameId
         }
       }),
-      // npc: NPC({
-      //   behavior: (_, world) => {
-      //     if (!world.renderer) return
-      //     const { height, width } = world.renderer.app.screen
+      npc: NPC({
+        behavior: (_, world) => {
+          if (!world.renderer) return
+          const { height, width } = world.renderer.app.screen
 
-      //     // if (gameButtons.length === 0) {
+          if (gameButtons.length === 0) {
+            for (const g of list) {
+              const gameButton = GameButton(g)
+              world.addEntity(gameButton)
+              gameButtons.push(gameButton)
+            }
+          }
 
-      //     //   for (const g of list) {
-      //     //     const gameButton = GameButton(g)
-      //     //     world.addEntity(gameButton)
-      //     //     gameButtons.push(gameButton)
-      //     //   }
-      //     // }
+          const offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
 
-      //     const offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
+          // align the game buttons
+          const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
+          let x = -totalWidth / 2
+          for (const gb of gameButtons) {
+            const { width } = gb.components.renderable.c
 
-      //     // align the game buttons
-      //     const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
-      //     let x = -totalWidth / 2
-      //     for (const gb of gameButtons) {
-      //       const { width } = gb.components.renderable.c
-
-      //       gb.components.position.data.x = offset.x + x + width / 2
-      //       x += width + 20
-      //     }
-      //   }
-      // }),
+            gb.components.position.data.x = offset.x + x + width / 2
+            x += width + 20
+          }
+        }
+      }),
       renderable: Renderable({
         zIndex: 9,
         interactiveChildren: true,
