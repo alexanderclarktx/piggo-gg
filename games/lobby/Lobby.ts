@@ -1,10 +1,11 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World,
+  loadTexture
 } from "@piggo-gg/core"
 import { Volley, Craft } from "@piggo-gg/games"
-import { Text } from "pixi.js"
+import { Sprite, Text } from "pixi.js"
 import { Friends } from "./Friends"
 import { GlowFilter } from "pixi-filters"
 
@@ -135,38 +136,49 @@ const Players = (): Entity => {
 const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
   id: `gamebutton-${game.id}`,
   components: {
-    position: Position({ x: 0, y: 120, screenFixed: true }),
+    position: Position({ x: 0, y: 110, screenFixed: true }),
     renderable: Renderable({
       zIndex: 10,
       interactiveChildren: true,
       dynamic: ({ world, renderable }) => {
         const state = world.game.state as LobbyState
         if (state.gameId === game.id) {
-          renderable.setOutline({ color: 0x00ffff, thickness: 2 })
+          renderable.setOutline({ color: 0xffff00, thickness: 2 })
         } else {
           renderable.setOutline()
         }
       },
       setup: async (r, _, world) => {
-        r.setBevel({ lightAlpha: 0.5, shadowAlpha: 0.3 })
+        r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
         const button = PixiButton({
           content: () => ({
             text: game.id,
-            // anchor: { x: 0.5, y: 0.5 },
             textAnchor: { x: 0.5, y: 0.5 },
             textPos: { x: 0, y: -50 },
             style: { fontSize: 28, fill: 0xffffff },
-            height: 150,
-            width: 200
+            height: 140,
+            width: 180
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
           },
-          onEnter: () => r.setGlow({ outerStrength: 1 }),
+          onEnter: () => r.setGlow({ outerStrength: 2 }),
           onLeave: () => r.setGlow()
         })
-        r.c.addChild(button.c)
+
+        let icon: Sprite
+
+        if (game.id === "craft") {
+          const textures = await loadTexture("pickaxe.json")
+          icon = new Sprite({ texture: textures["0"], scale: 8, anchor: { x: 0.5, y: 0.3 } })
+        } else {
+          const textures = await loadTexture("vball.json")
+          icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.3 } })
+        }
+        icon.texture.source.scaleMode = "nearest"
+
+        r.c.addChild(button.c, icon)
       }
     })
   }
@@ -199,7 +211,7 @@ const PlayButton = () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
             },
-            onEnter: () => r.setGlow({ outerStrength: 1 }),
+            onEnter: () => r.setGlow({ outerStrength: 2 }),
             onLeave: () => r.setGlow()
           })
           r.c.addChild(button.c)
@@ -238,7 +250,7 @@ const CreateLobbyButton = () => {
               style: { fontSize: 26, fill: 0xffffff }
             }),
             onClick: () => world.client?.copyInviteLink(),
-            onEnter: () => r.setGlow({ outerStrength: 1 }),
+            onEnter: () => r.setGlow({ outerStrength: 2 }),
             onLeave: () => r.setGlow()
           })
 

@@ -106,7 +106,7 @@ export const Ball = () => Entity({
       setup: async (r) => {
         r.setBevel({ lightAlpha: 0.5 })
 
-        const texture = (await loadTexture("vball.json"))["ball"] as Texture
+        const texture = (await loadTexture("vball.json"))["0"] as Texture
         texture.source.scaleMode = "nearest"
 
         r.c = pixiGraphics().circle(0, 0, 5).fill({ texture })
