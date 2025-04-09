@@ -1,13 +1,11 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World,
-  loadTexture
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture
 } from "@piggo-gg/core"
 import { Volley, Craft } from "@piggo-gg/games"
 import { Sprite, Text } from "pixi.js"
 import { Friends } from "./Friends"
-import { GlowFilter } from "pixi-filters"
 
 type LobbyState = {
   gameId: "volley" | "craft"
@@ -171,7 +169,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
 
         if (game.id === "craft") {
           const textures = await loadTexture("pickaxe.json")
-          icon = new Sprite({ texture: textures["0"], scale: 8, anchor: { x: 0.5, y: 0.3 } })
+          icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
         } else {
           const textures = await loadTexture("vball.json")
           icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.3 } })
