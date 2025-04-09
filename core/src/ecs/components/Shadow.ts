@@ -63,7 +63,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
   components: {
     position: Position(),
     renderable: Renderable({
-      zIndex: target.components.renderable.zIndex - 0.1,
+      zIndex: target.components.renderable.zIndex,
       interpolate: true,
       dynamic: ({ entity, world }) => {
         const { position, renderable } = entity.components
@@ -75,7 +75,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
 
         position.setPosition({
           x: data.x,
-          y: data.y + yOffset,
+          y: data.y - 0.1,
           z: highest
         })
 
@@ -83,7 +83,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
 
         position.lastCollided = lastCollided
 
-        renderable.zIndex = target.components.renderable.zIndex - 0.05
+        // renderable.zIndex = target.components.renderable.zIndex - 0.1 + (highest / 21) / 100
 
         position.setVelocity({ ...data.velocity, z: 0 })
       },

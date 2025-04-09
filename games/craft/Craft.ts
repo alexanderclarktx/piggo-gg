@@ -1,12 +1,12 @@
 import {
-  SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
-  DefaultUI, CameraSystem, InventorySystem, ShadowSystem, Background,
-  SystemBuilder, Controlling, floor, BlockPreview, highestBlock, values
+  SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder, CameraSystem,
+  InventorySystem, ShadowSystem, Background, SystemBuilder, Controlling,
+  floor, BlockPreview, highestBlock, values, Cursor, Chat, EscapeMenu
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
   id: "craft",
-  init: (world) => ({
+  init: () => ({
     id: "craft",
     netcode: "delay",
     state: {},
@@ -19,7 +19,7 @@ export const Craft: GameBuilder = {
     ],
     entities: [
       Background({ rays: true }),
-      ...DefaultUI(world),
+      Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview()
     ]
