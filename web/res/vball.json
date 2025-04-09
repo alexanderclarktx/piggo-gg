@@ -1,6 +1,6 @@
 {
   "frames": {
-    "ball": { "frame": { "x": 0, "y": 0, "w": 18, "h": 18 } }
+    "0": { "frame": { "x": 0, "y": 0, "w": 18, "h": 18 } }
   },
   "meta": {
     "image": "vball.png",
