@@ -47,7 +47,6 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
   actions.actionMap.pickupItem = pickupItem
 
   entity.components.networked = Networked()
-  entity.components.debug = Debug()
   entity.components.clickable = {
     ...clickable,
     click: () => ({ actionId: "pickupItem" }),

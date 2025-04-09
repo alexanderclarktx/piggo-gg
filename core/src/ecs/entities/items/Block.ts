@@ -20,18 +20,17 @@ export const Block = (pos: XYZ) => Entity({
       hittable: true,
       group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
       points: [
-        0, height + width / 2,
-        -width, height,
-        0, 3,
-        width, height,
-        0, height + width / 2
+        0, width / 2,
+        -width, 0,
+        0, 3 - height,
+        width, 0,
+        0, width / 2
       ]
     }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: 3 + (pos.z / 21) / 10,
+      zIndex: 3,
       anchor: { x: 0.5, y: 0 },
-      position: { x: 0, y: height },
       setup: async (r) => {
         // const alpha = pos.z > 0 ? 0.5 : 1
         const alpha = 1
@@ -79,7 +78,7 @@ export const snapXY = (pos: XY): XY => {
 
   // Convert back to screen position (center of tile)
   const snappedX = (tileX - tileY) * width
-  const snappedY = (tileX + tileY) * half - height
+  const snappedY = (tileX + tileY) * half
 
   return { x: snappedX, y: snappedY }
 }
@@ -107,11 +106,10 @@ export const BlockPreview = () => Entity({
   id: "item-block-preview",
   components: {
     position: Position(),
-    debug: Debug(),
     renderable: Renderable({
       zIndex: 3,
       anchor: { x: 0.5, y: 0 },
-      position: { x: 0, y: height },
+      position: { x: 0, y: 0 },
       dynamic: ({ entity, world }) => {
         let visible = false
 
@@ -126,8 +124,6 @@ export const BlockPreview = () => Entity({
         const xyz = snapXYZ(mouse, world)
 
         entity.components.position.setPosition(xyz)
-
-        entity.components.renderable.zIndex = 3 + (xyz.z / 21) / 10
       },
       setup: async (r) => {
         const g = pixiGraphics()
