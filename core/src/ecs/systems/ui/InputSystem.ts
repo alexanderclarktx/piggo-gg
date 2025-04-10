@@ -129,7 +129,7 @@ export const InputSystem = ClientSystemBuilder({
 
       const pointingDelta = {
         x: round(mouse.x - position.data.x, 2),
-        y: round(mouse.y - position.data.y, 2)
+        y: round(mouse.y - (position.data.y - position.data.z), 2)
       }
 
       if (actions.actionMap["point"]) {
