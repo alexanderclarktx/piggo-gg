@@ -24,7 +24,11 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     shadow: Shadow(5),
     input: Input({
       press: {
-        ...WASDInputMap.press,
+        // ...WASDInputMap.press,
+        "w": () => ({ actionId: "move", params: { y: -120 } }),
+        "s": () => ({ actionId: "move", params: { y: 120 } }),
+        "a": () => ({ actionId: "move", params: { x: -120 } }),
+        "d": () => ({ actionId: "move", params: { x: 120 } }),
         " ": () => ({ actionId: "jump" }),
         "g": () => ({ actionId: "dropItem" }),
         "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),

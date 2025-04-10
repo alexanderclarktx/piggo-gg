@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, values, max } from "@piggo-gg/core"
+import { Entity, Position, Renderable, ClientSystemBuilder, values, max, rotateGlobal } from "@piggo-gg/core"
 
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
@@ -77,10 +77,19 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // update position
-          renderable.c.position.set(
-            renderable.position.x + position.data.x,
-            renderable.position.y + position.data.y - position.data.z
-          )
+          const { centeredEntity } = renderer.camera
+          if (centeredEntity && centeredEntity.components.position.data.z > 0) {
+            // && centeredEntity.components.position.data.z > 0
+
+            const { x, y } = rotateGlobal(entity)
+
+            renderable.c.position.set(x, y - position.data.z);
+          } else {
+            renderable.c.position.set(
+              renderable.position.x + position.data.x,
+              renderable.position.y + position.data.y - position.data.z
+            )
+          }
 
           renderable.c.tint = renderable.color
 
@@ -178,10 +187,10 @@ export const RenderSystem = ClientSystemBuilder({
 
             const newZ = max(0, z + interpolated.z)
 
-            renderable.c.position.set(
-              x + renderable.position.x + interpolated.x,
-              y + renderable.position.y + interpolated.y - newZ
-            )
+            // renderable.c.position.set(
+            //   x + renderable.position.x + interpolated.x,
+            //   y + renderable.position.y + interpolated.y - newZ
+            // )
           }
         }
       }

@@ -1,4 +1,4 @@
-import { Clickable, Entity, Position, Renderer } from "@piggo-gg/core"
+import { Clickable, Entity, Position, Renderable, Renderer } from "@piggo-gg/core"
 import { Container } from "pixi.js"
 
 export type XY = { x: number, y: number }
@@ -7,7 +7,7 @@ export type TwoPoints = [number, number, number, number]
 export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
-export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt } = Math
+export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin } = Math
 
 export const round = (n: number, places = 0) => {
   const factor = pow(10, places)
@@ -126,6 +126,28 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
 })
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat()
+
+export const rotateGlobal = (e: Entity<Position | Renderable>, angle: number = Math.PI / 2): XY => {
+  const c = Math.cos(angle)
+  const s = Math.sin(angle)
+
+  const { position, renderable } = e.components
+
+  // Step 1: calculate world position of this block
+  const worldX = position.data.x + renderable.position.x;
+  const worldY = position.data.y + renderable.position.y;
+
+  // Step 2: translate point relative to center
+  const dx = worldX;
+  const dy = worldY;
+
+  // Step 3: rotate around origin
+  const factor = 1 + abs(sin(angle))
+  const rotatedX = (dx * c - dy * s) * factor;
+  const rotatedY = (dx * s + dy * c) / factor;
+
+  return { x: rotatedX, y: rotatedY }
+}
 
 export const colorAdd = (color: number, add: number): number => {
   const r = min(255, ((color >> 16) & 0xff) + ((add >> 16) & 0xff))
