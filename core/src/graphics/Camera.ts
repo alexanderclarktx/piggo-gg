@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position,
-  Character, abs, System, round, XY, XYZ, max
+  Character, abs, System, round, XY, XYZ, max, reduce
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -92,9 +92,11 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
     if (!renderer) return
     let centeredEntity: Character | undefined = undefined
 
+    let zoomLeft = 0
+
     // handle zoom
     renderer.app.canvas.addEventListener("wheel", (event) => {
-      renderer.camera?.scaleBy(-event.deltaY / 1000)
+      zoomLeft = event.deltaY * 0.01
     })
 
     const cameraSystem: System = {
@@ -127,6 +129,11 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
       },
       onRender: (_, delta) => {
         if (!centeredEntity) return
+
+        if (zoomLeft !== 0) {
+          renderer.camera?.scaleBy(-zoomLeft * 0.1)
+          zoomLeft = reduce(zoomLeft, 0.005)
+        }
 
         const interpolated = centeredEntity.components.position.interpolate(delta, world)
 
