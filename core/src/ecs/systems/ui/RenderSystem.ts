@@ -77,20 +77,14 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // update position
-          const { centeredEntity } = renderer.camera
-          if (centeredEntity && centeredEntity.components.position.data.z > 0) {
-            // && centeredEntity.components.position.data.z > 0
+          const { x, y } = rotateGlobal(
+            renderable.position.x + position.data.x,
+            renderable.position.y + position.data.y,
+            renderer.camera.angle
+          )
+          renderable.c.position.set(x, y - position.data.z)
 
-            const { x, y } = rotateGlobal(entity)
-
-            renderable.c.position.set(x, y - position.data.z);
-          } else {
-            renderable.c.position.set(
-              renderable.position.x + position.data.x,
-              renderable.position.y + position.data.y - position.data.z
-            )
-          }
-
+          // update tint
           renderable.c.tint = renderable.color
 
           // set buffered ortho animation
@@ -143,17 +137,11 @@ export const RenderSystem = ClientSystemBuilder({
 
         // sort cache by position (closeness to camera)
         const sortedEntityPositions = values(entities).sort((a, b) => (
-          (a.components.position.data.y + a.components.position.data.z) -
-          (b.components.position.data.y + b.components.position.data.z)
+          (a.components.renderable.c.position.y + a.components.position.data.z) -
+          (b.components.renderable.c.position.y + b.components.position.data.z)
+          // (a.components.position.data.y + a.components.position.data.z) -
+          // (b.components.position.data.y + b.components.position.data.z)
         ))
-
-        // for (const entity of sortedEntityPositions) {
-        //   if (entity.id.startsWith("skelly") || entity.id.startsWith("block-")) {
-        //     if (world.tick % 100 === 0) {
-        //       console.log(`entityId: ${entity.id} y: ${entity.components.renderable.c.position.y}, z: ${entity.components.position.data.z}`)
-        //     }
-        //   }
-        // }
 
         // sort entities by zIndex
         sortedEntityPositions.forEach((entity, index) => {
@@ -185,12 +173,14 @@ export const RenderSystem = ClientSystemBuilder({
 
             const interpolated = position.interpolate(delta, world)
 
-            const newZ = max(0, z + interpolated.z)
+            const rotated = rotateGlobal(
+              x + renderable.position.x + interpolated.x,
+              y + renderable.position.y + interpolated.y,
+              renderer!.camera.angle
+            )
 
-            // renderable.c.position.set(
-            //   x + renderable.position.x + interpolated.x,
-            //   y + renderable.position.y + interpolated.y - newZ
-            // )
+            const newZ = max(0, z + interpolated.z)
+            renderable.c.position.set(rotated.x, rotated.y - newZ)
           }
         }
       }

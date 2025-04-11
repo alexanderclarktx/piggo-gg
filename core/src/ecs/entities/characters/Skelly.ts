@@ -35,7 +35,11 @@ export const Skelly = (player: Player, pos?: XY) => Character({
         "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
         "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
         "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
-        "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } })
+        "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
+        "shift": ({hold}) => {
+          if (hold) return null
+          return { actionId: "changeAngle"}
+        }
       },
       joystick: DefaultJoystickHandler
     }),
@@ -47,6 +51,13 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 5 })
+      }),
+      changeAngle: Action("changeAngle", ({ world }) => {
+        if (!world.renderer) return
+        world.renderer.camera.angle += 1
+        if (world.renderer.camera.angle > 4) world.renderer.camera.angle = 1
+        // if (!entity?.components?.position?.data.standing) return
+        // entity.components.position.setVelocity({ angle: 0.5 })
       })
     }),
     effects: Effects(),

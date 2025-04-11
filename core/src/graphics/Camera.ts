@@ -1,10 +1,11 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position, Character,
-  abs, System, round, XY, XYZ, max, reduce, rotateGlobal
+  abs, round, XY, XYZ, max, reduce, rotateGlobal
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
+  angle: 0 | 1 | 2 | 3
   root: Container
   centeredEntity: Character | undefined
   add: (r: Renderable) => void
@@ -37,7 +38,8 @@ export const Camera = (app: Application): Camera => {
 
   rescale()
 
-  const camera = {
+  const camera: Camera = {
+    angle: 0,
     root,
     centeredEntity: undefined,
     add: (r: Renderable) => {
@@ -100,7 +102,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
       zoomLeft = event.deltaY * 0.01
     })
 
-    const cameraSystem: System = {
+    return {
       id: "CameraSystem",
       query: ["renderable", "position"],
       priority: 10,
@@ -136,28 +138,23 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
           zoomLeft = reduce(zoomLeft, 0.005)
         }
 
-        // const interpolated = renderer.camera.centeredEntity.components.position.interpolate(delta, world)
+        const { position, renderable } = renderer.camera.centeredEntity.components
 
-        // const { x, y, z } = follow({
-        //   x: renderer.camera.centeredEntity.components.position.data.x + interpolated.x,
-        //   y: renderer.camera.centeredEntity.components.position.data.y + interpolated.y,
-        //   z: renderer.camera.centeredEntity.components.position.data.z + interpolated.z
-        // })
+        const interpolated = position.interpolate(delta, world)
+
         const { x, y, z } = follow({
-          x: renderer.camera.centeredEntity.components.position.data.x,
-          y: renderer.camera.centeredEntity.components.position.data.y,
-          z: renderer.camera.centeredEntity.components.position.data.z
+          x: position.data.x + interpolated.x,
+          y: position.data.y + interpolated.y,
+          z: position.data.z + interpolated.z
         })
 
-        if (renderer.camera.centeredEntity.components.position.data.standing) {
-          renderer?.camera.moveTo({ x, y: y - max(z, 0) })
-        } else {
-          const rotated = rotateGlobal(renderer.camera.centeredEntity)
-          renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - max(z, 0) })
-        }
+        const rotated = rotateGlobal(
+          x + renderable.position.x,
+          y + renderable.position.y,
+          renderer.camera.angle
+        )
+        renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - max(z, 0) })
       }
     }
-
-    return cameraSystem
   }
 })

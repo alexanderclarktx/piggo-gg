@@ -75,15 +75,13 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
 
         position.setPosition({
           x: data.x,
-          y: data.y - 0.1,
+          y: data.y - 0.1 + yOffset,
           z: highest
         })
 
         renderable.c.alpha = 0.25 - (target.components.position.data.z - highest) / 500
 
         position.lastCollided = lastCollided
-
-        // renderable.zIndex = target.components.renderable.zIndex - 0.1 + (highest / 21) / 100
 
         position.setVelocity({ ...data.velocity, z: 0 })
       },
