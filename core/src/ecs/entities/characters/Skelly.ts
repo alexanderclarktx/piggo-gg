@@ -24,11 +24,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     shadow: Shadow(5),
     input: Input({
       press: {
-        // ...WASDInputMap.press,
-        "w": () => ({ actionId: "move", params: { y: -120 } }),
-        "s": () => ({ actionId: "move", params: { y: 120 } }),
-        "a": () => ({ actionId: "move", params: { x: -120 } }),
-        "d": () => ({ actionId: "move", params: { x: 120 } }),
+        ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),
         "g": () => ({ actionId: "dropItem" }),
         "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
@@ -54,10 +50,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       }),
       changeAngle: Action("changeAngle", ({ world }) => {
         if (!world.renderer) return
-        world.renderer.camera.angle += 1
-        if (world.renderer.camera.angle > 4) world.renderer.camera.angle = 1
-        // if (!entity?.components?.position?.data.standing) return
-        // entity.components.position.setVelocity({ angle: 0.5 })
+        world.renderer.camera.angle = (world.renderer.camera.angle % 4) + 1 as 0 | 1 | 2 | 3
       })
     }),
     effects: Effects(),
