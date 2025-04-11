@@ -16,7 +16,7 @@ export const Lobby: GameBuilder = {
   init: (world) => ({
     id: "lobby",
     state: {
-      gameId: "volley"
+      gameId: "craft"
     },
     systems: [],
     view: "side",
@@ -413,7 +413,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Volley, Craft]
+  const list: GameBuilder[] = [Craft, Volley]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position | Renderable>({

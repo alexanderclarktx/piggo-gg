@@ -10,9 +10,9 @@ export const Skelly = (player: Player, pos?: XY) => Character({
   components: {
     debug: Debug(),
     position: Position({
-      x: pos?.x ?? 32, y: pos?.y ?? 100,
+      x: pos?.x ?? 0, y: pos?.y ?? 0,
       velocityResets: 1,
-      speed: 120,
+      speed: 125,
       gravity: 0.3
     }),
     networked: Networked(),
@@ -31,7 +31,11 @@ export const Skelly = (player: Player, pos?: XY) => Character({
         "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
         "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
         "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
-        "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } })
+        "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
+        "shift": ({hold}) => {
+          if (hold) return null
+          return { actionId: "changeAngle"}
+        }
       },
       joystick: DefaultJoystickHandler
     }),
@@ -43,6 +47,11 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 5 })
+      }),
+      changeAngle: Action("changeAngle", ({ world }) => {
+        if (!world.renderer) return
+        world.renderer.camera.angle += 2
+        if (world.renderer.camera.angle >= 4) world.renderer.camera.angle = 0
       })
     }),
     effects: Effects(),
@@ -50,7 +59,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       anchor: { x: 0.55, y: 0.9 },
       scale: 1.2,
       zIndex: 3,
-
+      revolves: true,
       interpolate: true,
       scaleMode: "nearest",
       setup: DudeSkin("white"),
