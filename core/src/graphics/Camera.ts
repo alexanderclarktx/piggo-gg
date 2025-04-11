@@ -151,8 +151,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         const rotated = rotateGlobal(
           x + renderable.position.x,
           y + renderable.position.y,
-          renderer.camera.angle,
-          true
+          renderable.revolves ? renderer.camera.angle : 0
         )
         renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - max(z, 0) })
       }

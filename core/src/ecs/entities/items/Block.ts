@@ -30,6 +30,7 @@ export const Block = (pos: XYZ) => Entity({
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
+      revolves: true,
       setup: async (r) => {
         const g = pixiGraphics()
 

@@ -87,6 +87,7 @@ export const ItemSystem = SystemBuilder({
             pointingDelta.x > 0 ? 1 : -1
 
           renderable.setScale({ x: xScale, y: 1 })
+          renderable.revolves = true
         }
       }
     }

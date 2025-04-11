@@ -127,7 +127,7 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat()
 
-export const rotateGlobal = (x: number, y: number, angle: 0 | 1 | 2 | 3, skipFactor: boolean = false): XY => {
+export const rotateGlobal = (x: number, y: number, angle: 0 | 1 | 2 | 3): XY => {
   if (angle === 0) return { x, y }
 
   // translate relative to center
@@ -137,37 +137,6 @@ export const rotateGlobal = (x: number, y: number, angle: 0 | 1 | 2 | 3, skipFac
 
   let rx = (x * c - y * s)
   let ry = (x * s + y * c)
-
-  // if (skipFactor || angle % 2 === 0) {
-    return { x: rx, y: ry }
-  // }
-
-  const fx = 2
-  const fy = 0.5
-
-  rx *= fx
-  ry *= fy
-
-  return { x: rx, y: ry }
-
-  // if (!skipFactor && (angle === 1 || angle === 3)) {
-  //   // apply a constant translation for blocks
-  //   console.log("APPLYING TRANSLATION")
-
-  //   const offsetX = (1 - fx) * rx;
-  //   const offsetY = (1 - fy) * ry;
-
-  //   rx += offsetX
-  //   ry += offsetY
-  // }
-
-  // if (skipFactor === false && (angle === 1 || angle === 3)) {
-  //   const correctionX = 0.5 * rx // 0.5 * rx
-  //   const correctionY = -1 * ry // -1 * ry
-
-  //   rx -= correctionX
-  //   ry -= correctionY
-  // }
 
   return { x: rx, y: ry }
 }
