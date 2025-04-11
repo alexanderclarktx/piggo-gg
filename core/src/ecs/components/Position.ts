@@ -165,24 +165,10 @@ export const Position = (props: PositionProps = {}): Position => {
             position.setRotation(0)
           }
         }
-        // if (position.data.rotation > 0 && position.data.rotation - amount < 0) {
-        //   position.setRotation(0)
-        // }
       }
 
       return position
-    },
-    // rotateDown: (amount: number, stopAtZero: boolean = false) => {
-    //   position.data.rotation -= amount
-
-    //   if (stopAtZero) {
-    //     if (position.data.rotation < 0 && position.data.rotation + amount > 0) {
-    //       position.setRotation(0)
-    //     }
-    //   }
-
-    //   return position
-    // }
+    }
   }
   return position
 }
