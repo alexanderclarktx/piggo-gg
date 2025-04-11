@@ -128,27 +128,17 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat()
 
 export const rotateGlobal = (x: number, y: number, angle: 0 | 1 | 2 | 3): XY => {
-  // const { position, renderable } = e.components
-
-  // 1. calculate world position
-  // const worldX = position.data.x + renderable.position.x;
-  // const worldY = position.data.y + renderable.position.y;
-
   if (angle === 0) return { x: x, y: y }
 
-  // 2. translate point relative to center
+  // translate relative to center
   const a = angle * Math.PI / 2
-
   const c = Math.cos(a)
   const s = Math.sin(a)
 
-  // const dx = x;
-  // const dy = y;
-
   // 3. rotate around origin
-  const factor = 1 + abs(sin(a))
-  const rotatedX = (x * c - y * s) * factor;
-  const rotatedY = (x * s + y * c) / factor;
+  const factor = 1 // + abs(sin(a))
+  const rotatedX = (x * c - y * s) * factor
+  const rotatedY = (x * s + y * c) / factor
 
   return { x: rotatedX, y: rotatedY }
 }
