@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Component, Debug, Effects, Entity, Networked, Position,
+  Actions, Clickable, Component, Effects, Entity, Networked, Position,
   ProtoEntity, Renderable, SystemBuilder, XY, abs, hypot, min, pickupItem, round
 } from "@piggo-gg/core"
 
@@ -59,7 +59,7 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
 
 export const ItemSystem = SystemBuilder({
   id: "ItemSystem",
-  init: () => ({
+  init: (world) => ({
     id: "ItemSystem",
     query: ["item", "renderable", "position"],
     priority: 5,
@@ -70,7 +70,7 @@ export const ItemSystem = SystemBuilder({
 
         if (!follows) continue
 
-        if (rotation) position.rotateDown(rotation > 0 ? 0.1 : -0.1, true)
+        if (rotation) position.rotate(rotation > 0 ? -0.1 : 0.1, true)
 
         if (!item.dropped) {
           const hypotenuse = hypot(pointingDelta.x, pointingDelta.y)
@@ -78,13 +78,14 @@ export const ItemSystem = SystemBuilder({
           const hyp_x = pointingDelta.x / hypotenuse
           const hyp_y = pointingDelta.y / hypotenuse
 
+          const flip = world.flip()
+
           position.data.offset = {
             x: round(hyp_x * min(20, abs(pointingDelta.x)), 2),
-            y: round(hyp_y * min(20, abs(pointingDelta.y)) - 5, 2)
+            y: round(hyp_y * min(20, abs(pointingDelta.y)) - 7 * flip, 2)
           }
 
-          const xScale = !item.flips ? 1 :
-            pointingDelta.x > 0 ? 1 : -1
+          const xScale = flip * (!item.flips ? 1 : pointingDelta.x > 0 ? 1 : -1)
 
           renderable.setScale({ x: xScale, y: 1 })
           renderable.revolves = true

@@ -16,9 +16,9 @@ export const WASDInputMap: Partial<InputMap> = {
 
 const move = (entity: Entity, world: World, x: number, y: number): null | InvokedAction<"move", XY> => {
   if (!entity.components.position) return null
-  if (world.renderer?.camera.angle === 2) {
-    x = x * -1
-    y = y * -1
-  }
+
+  x *= world.flip()
+  y *= world.flip()
+
   return { actionId: "move", playerId: world.client?.playerId(), params: normalize({ x, y, entity: entity as Entity<Position> }) }
 }
