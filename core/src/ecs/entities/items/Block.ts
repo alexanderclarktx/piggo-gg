@@ -30,10 +30,7 @@ export const Block = (pos: XYZ) => Entity({
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
-      anchor: { x: 0.5, y: 0 },
       setup: async (r) => {
-        // const alpha = pos.z > 0 ? 0.5 : 1
-        const alpha = 1
         const g = pixiGraphics()
 
           // top
@@ -42,20 +39,20 @@ export const Block = (pos: XYZ) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08dd00, alpha })
+          .fill({ color: 0x08dd00 })
 
           // bottom-left
           .moveTo(-width, -width / 2)
           .lineTo(-width, height)
           .lineTo(0, height + width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x6E260E, alpha })
+          .fill({ color: 0x6E260E })
 
           // bottom-right
           .lineTo(0, height + width / 2)
           .lineTo(width, height)
           .lineTo(width, -width / 2)
-          .fill({ color: 0x7B3F00, alpha })
+          .fill({ color: 0x7B3F00 })
 
         g.position.y = -height
 
@@ -150,7 +147,7 @@ export const BlockPreview = () => Entity({
 
         r.c.addChild(g)
 
-        r.setGlow({outerStrength: 1})
+        r.setGlow({ outerStrength: 1 })
       }
     })
   }

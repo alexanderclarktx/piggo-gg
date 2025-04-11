@@ -77,10 +77,12 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // update position
+          const skipFactor = entity.id.startsWith("block") ? false : true
           const { x, y } = rotateGlobal(
             renderable.position.x + position.data.x,
             renderable.position.y + position.data.y,
-            renderer.camera.angle
+            renderer.camera.angle,
+            skipFactor
           )
           renderable.c.position.set(x, y - position.data.z)
 
@@ -173,10 +175,12 @@ export const RenderSystem = ClientSystemBuilder({
 
             const interpolated = position.interpolate(delta, world)
 
+            const skipFactor = entity.id.startsWith("block") ? false : true
             const rotated = rotateGlobal(
               x + renderable.position.x + interpolated.x,
               y + renderable.position.y + interpolated.y,
-              renderer!.camera.angle
+              renderer!.camera.angle,
+              skipFactor
             )
 
             const newZ = max(0, z + interpolated.z)

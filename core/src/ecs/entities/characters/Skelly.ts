@@ -10,9 +10,9 @@ export const Skelly = (player: Player, pos?: XY) => Character({
   components: {
     debug: Debug(),
     position: Position({
-      x: pos?.x ?? 32, y: pos?.y ?? 100,
+      x: pos?.x ?? 0, y: pos?.y ?? 0,
       velocityResets: 1,
-      speed: 120,
+      speed: 125,
       gravity: 0.3
     }),
     networked: Networked(),
@@ -50,7 +50,8 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       }),
       changeAngle: Action("changeAngle", ({ world }) => {
         if (!world.renderer) return
-        world.renderer.camera.angle = (world.renderer.camera.angle % 4) + 1 as 0 | 1 | 2 | 3
+        world.renderer.camera.angle += 2
+        if (world.renderer.camera.angle >= 4) world.renderer.camera.angle = 0
       })
     }),
     effects: Effects(),
