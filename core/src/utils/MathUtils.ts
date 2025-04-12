@@ -127,7 +127,7 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat()
 
-export const rotateGlobal = (x: number, y: number, angle: 0 | 1 | 2 | 3): XY => {
+export const revolve = (x: number, y: number, angle: 0 | 1 | 2 | 3): XY => {
   if (angle === 0) return { x, y }
 
   // translate relative to center

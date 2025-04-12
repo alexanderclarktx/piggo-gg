@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position, Character,
-  abs, round, XY, XYZ, max, reduce, rotateGlobal
+  abs, round, XY, XYZ, max, reduce, revolve
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -148,7 +148,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
           z: position.data.z + interpolated.z
         })
 
-        const rotated = rotateGlobal(
+        const rotated = revolve(
           x + renderable.position.x,
           y + renderable.position.y,
           renderable.revolves ? renderer.camera.angle : 0

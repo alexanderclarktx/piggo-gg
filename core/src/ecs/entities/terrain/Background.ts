@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable } from "@piggo-gg/core"
+import { Entity, Position, Renderable, revolve } from "@piggo-gg/core"
 import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
 import { GodrayFilter } from "pixi-filters"
 
@@ -16,12 +16,32 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
     renderable: Renderable({
       zIndex: -2,
       interpolate: true,
-      dynamic: ({ renderable }) => {
+      dynamic: ({ renderable, world, entity }) => {
         const godRayFilter = renderable.filters["rays"] as GodrayFilter
         if (rays && godRayFilter) godRayFilter.time += 0.008
 
         const tile = renderable.c as TilingSprite
         if (moving) tile.tilePosition.x += 0.5
+
+        const { centeredEntity } = world.renderer?.camera ?? {}
+        if (centeredEntity && world.renderer) {
+
+          const { x, y, z, velocity } = centeredEntity.components.position.data
+
+          const flip = world.flip()
+
+          const xy = revolve(x, y, world.renderer.camera.angle)
+          tile.tilePosition.x = 0.85 * xy.x
+          tile.tilePosition.y = 0.85 * xy.y
+
+          entity.components.position.setVelocity({
+            x: velocity.x * 0.85 * flip,
+            y: velocity.y * 0.85 * flip,
+            z: velocity.z
+          })
+          entity.components.position.setPosition({ z })
+          entity.components.position.lastCollided = centeredEntity.components.position.lastCollided
+        }
       },
       setup: async (renderable) => {
         if (rays) renderable.setRays({ gain: 0.45, alpha: 0.45, lacunarity: 2 })

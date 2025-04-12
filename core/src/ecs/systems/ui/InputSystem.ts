@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition,
-  Entity, Input, InvokedAction, World, XY, XYdiff, rotateGlobal, round
+  Entity, Input, InvokedAction, World, XY, XYdiff, revolve, round
 } from "@piggo-gg/core"
 
 export var chatBuffer: string[] = []
@@ -123,7 +123,7 @@ export const InputSystem = ClientSystemBuilder({
       // check for actions
       const { input, actions, position, inventory } = character.components
 
-      const rotated = rotateGlobal(position.data.x, position.data.y, renderer?.camera.angle ?? 0)
+      const rotated = revolve(position.data.x, position.data.y, renderer?.camera.angle ?? 0)
 
       // update Position.pointing based on mouse
       const angle = Math.atan2(mouse.y - rotated.y, mouse.x - rotated.x)

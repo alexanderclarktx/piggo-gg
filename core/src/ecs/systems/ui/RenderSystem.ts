@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, values, max, rotateGlobal } from "@piggo-gg/core"
+import { Entity, Position, Renderable, ClientSystemBuilder, values, max, revolve } from "@piggo-gg/core"
 
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
@@ -77,7 +77,7 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // update position
-          const { x, y } = rotateGlobal(
+          const { x, y } = revolve(
             renderable.position.x + position.data.x,
             renderable.position.y + position.data.y,
             renderable.revolves ? renderer.camera.angle : 0
@@ -173,7 +173,7 @@ export const RenderSystem = ClientSystemBuilder({
 
             const interpolated = position.interpolate(delta, world)
 
-            const rotated = rotateGlobal(
+            const rotated = revolve(
               x + renderable.position.x + interpolated.x,
               y + renderable.position.y + interpolated.y,
               renderable.revolves ? renderer!.camera.angle : 0
