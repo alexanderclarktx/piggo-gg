@@ -31,8 +31,9 @@ export type World = {
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
   entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
-  queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter?: (entity: Entity<T>) => boolean) => Entity<T>[]
+  flip: () => 1 | -1
   onTick: (_: { isRollback: boolean }) => void
+  queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter?: (entity: Entity<T>) => boolean) => Entity<T>[]
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
   setGame: (game: GameBuilder | string) => void
@@ -139,10 +140,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     entity: <T extends ComponentTypes>(id: string) => {
       return world.entities[id] as Entity<T>
     },
-    queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter: (entity: Entity<T>) => boolean = () => true) => {
-      const entities = filterEntities(query, values(world.entities)) as Entity<T>[]
-      return entities.filter(filter)
-    },
+    flip: () => (world.renderer?.camera.angle ?? 0) === 0 ? 1 : -1,
     onTick: ({ isRollback }) => {
       const now = performance.now()
 
@@ -199,6 +197,10 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
           delete world.entitiesAtTick[tick]
         }
       })
+    },
+    queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter: (entity: Entity<T>) => boolean = () => true) => {
+      const entities = filterEntities(query, values(world.entities)) as Entity<T>[]
+      return entities.filter(filter)
     },
     setGame: (game: GameBuilder | string) => {
       if (typeof game === "string") game = world.games[game]

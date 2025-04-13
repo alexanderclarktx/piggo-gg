@@ -18,8 +18,8 @@ export const VehicleMovement: ActionMap = {
     position.setVelocity({ x, y })
   }),
   down: ({entity}) => check(entity, ({components:{ position}}) => position.setVelocity({ x: 0, y: 0 })),
-  left: ({entity}) => check(entity, ({components: {position}}) => position.rotateDown(TURN_SPEED)),
-  right: ({entity}) => check(entity, ({components: {position}}) => position.rotateUp(TURN_SPEED)),
-  skidleft: ({entity}) => check(entity, ({components: {position}}) => position.rotateDown(TURN_SPEED * SLIDE_FACTOR)),
-  skidright: ({entity}) => check(entity, ({components: {position}}) => position.rotateUp(TURN_SPEED * SLIDE_FACTOR))
+  // left: ({entity}) => check(entity, ({components: {position}}) => position.rotateDown(TURN_SPEED)),
+  // right: ({entity}) => check(entity, ({components: {position}}) => position.rotateUp(TURN_SPEED)),
+  // skidleft: ({entity}) => check(entity, ({components: {position}}) => position.rotateDown(TURN_SPEED * SLIDE_FACTOR)),
+  // skidright: ({entity}) => check(entity, ({components: {position}}) => position.rotateUp(TURN_SPEED * SLIDE_FACTOR))
 }

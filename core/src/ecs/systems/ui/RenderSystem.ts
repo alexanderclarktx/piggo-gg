@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, values, max } from "@piggo-gg/core"
+import { Entity, Position, Renderable, ClientSystemBuilder, values, max, revolve } from "@piggo-gg/core"
 
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
@@ -77,11 +77,14 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // update position
-          renderable.c.position.set(
+          const { x, y } = revolve(
             renderable.position.x + position.data.x,
-            renderable.position.y + position.data.y - position.data.z
+            renderable.position.y + position.data.y,
+            renderable.revolves ? renderer.camera.angle : 0
           )
+          renderable.c.position.set(x, y - position.data.z)
 
+          // update tint
           renderable.c.tint = renderable.color
 
           // set buffered ortho animation
@@ -132,13 +135,15 @@ export const RenderSystem = ClientSystemBuilder({
           }
         })
 
-        // sort cache by position (closeness to camera)
+        // sort entities by position (closeness to camera)
         const sortedEntityPositions = values(entities).sort((a, b) => (
           (a.components.renderable.c.position.y + a.components.position.data.z) -
           (b.components.renderable.c.position.y + b.components.position.data.z)
+          // (a.components.position.data.y + a.components.position.data.z) -
+          // (b.components.position.data.y + b.components.position.data.z)
         ))
 
-        // sort entities by zIndex
+        // set zIndex
         sortedEntityPositions.forEach((entity, index) => {
           const renderable = entity.components.renderable
           if (renderable) {
@@ -168,12 +173,14 @@ export const RenderSystem = ClientSystemBuilder({
 
             const interpolated = position.interpolate(delta, world)
 
-            const newZ = max(0, z + interpolated.z)
-
-            renderable.c.position.set(
+            const rotated = revolve(
               x + renderable.position.x + interpolated.x,
-              y + renderable.position.y + interpolated.y - newZ
+              y + renderable.position.y + interpolated.y,
+              renderable.revolves ? renderer!.camera.angle : 0
             )
+
+            const newZ = max(0, z + interpolated.z)
+            renderable.c.position.set(rotated.x, rotated.y - newZ)
           }
         }
       }

@@ -20,21 +20,18 @@ export const Block = (pos: XYZ) => Entity({
       hittable: true,
       group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
       points: [
-        0, height + width / 2,
-        -width, height,
-        0, 3,
-        width, height,
-        0, height + width / 2
+        0, width / 2,
+        -width, 0,
+        0, 3 - height,
+        width, 0,
+        0, width / 2
       ]
     }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: 3 + (pos.z / 21) / 10,
-      anchor: { x: 0.5, y: 0 },
-      position: { x: 0, y: height },
+      zIndex: 3,
+      revolves: true,
       setup: async (r) => {
-        // const alpha = pos.z > 0 ? 0.5 : 1
-        const alpha = 1
         const g = pixiGraphics()
 
           // top
@@ -43,20 +40,20 @@ export const Block = (pos: XYZ) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08dd00, alpha })
+          .fill({ color: 0x08dd00 })
 
           // bottom-left
           .moveTo(-width, -width / 2)
           .lineTo(-width, height)
           .lineTo(0, height + width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x6E260E, alpha })
+          .fill({ color: 0x6E260E })
 
           // bottom-right
           .lineTo(0, height + width / 2)
           .lineTo(width, height)
           .lineTo(width, -width / 2)
-          .fill({ color: 0x7B3F00, alpha })
+          .fill({ color: 0x7B3F00 })
 
         g.position.y = -height
 
@@ -79,7 +76,7 @@ export const snapXY = (pos: XY): XY => {
 
   // Convert back to screen position (center of tile)
   const snappedX = (tileX - tileY) * width
-  const snappedY = (tileX + tileY) * half - height
+  const snappedY = (tileX + tileY) * half
 
   return { x: snappedX, y: snappedY }
 }
@@ -107,11 +104,10 @@ export const BlockPreview = () => Entity({
   id: "item-block-preview",
   components: {
     position: Position(),
-    debug: Debug(),
     renderable: Renderable({
       zIndex: 3,
       anchor: { x: 0.5, y: 0 },
-      position: { x: 0, y: height },
+      position: { x: 0, y: 0 },
       dynamic: ({ entity, world }) => {
         let visible = false
 
@@ -126,8 +122,6 @@ export const BlockPreview = () => Entity({
         const xyz = snapXYZ(mouse, world)
 
         entity.components.position.setPosition(xyz)
-
-        entity.components.renderable.zIndex = 3 + (xyz.z / 21) / 10
       },
       setup: async (r) => {
         const g = pixiGraphics()
@@ -154,7 +148,7 @@ export const BlockPreview = () => Entity({
 
         r.c.addChild(g)
 
-        r.setGlow({outerStrength: 1})
+        r.setGlow({ outerStrength: 1 })
       }
     })
   }
@@ -196,22 +190,22 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .stroke({ color: 0x00ffff, width: 0.5 })
+          .fill({ color: 0x08dd00 })
 
           .moveTo(-width, -width / 2)
 
           .lineTo(-width, h)
           .lineTo(0, h + width / 2)
-
-          .stroke({ color: 0xffff00, width: 0.5 })
+          .lineTo(0, 0)
+          .fill({ color: 0x6E260E })
 
           .lineTo(width, h)
           .lineTo(width, -width / 2)
 
           .moveTo(0, 0)
           .lineTo(0, h + width / 2)
-
-          .stroke({ color: 0x00ff00, width: 0.5 })
+          .lineTo(width, h)
+          .fill({ color: 0x7B3F00 })
 
         r.c.addChild(g)
       }

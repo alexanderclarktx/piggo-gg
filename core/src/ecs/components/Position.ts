@@ -34,8 +34,7 @@ export type Position = Component<"position", {
   clearHeading: () => Position
   updateOrientation: () => Position
   updateVelocity: () => Position
-  rotateUp: (_: number, stopAtZero?: boolean) => Position
-  rotateDown: (_: number, stopAtZero?: boolean) => Position
+  rotate: (_: number, stopAtZero?: boolean) => Position
 }
 
 export type PositionProps = {
@@ -153,23 +152,18 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position
     },
-    rotateUp: (amount: number, stopAtZero: boolean = false) => {
+    rotate: (amount: number, stopAtZero: boolean = false) => {
       position.data.rotation += amount
 
       if (stopAtZero) {
-        if (position.data.rotation > 0 && position.data.rotation - amount < 0) {
-          position.setRotation(0)
-        }
-      }
-
-      return position
-    },
-    rotateDown: (amount: number, stopAtZero: boolean = false) => {
-      position.data.rotation -= amount
-
-      if (stopAtZero) {
-        if (position.data.rotation < 0 && position.data.rotation + amount > 0) {
-          position.setRotation(0)
+        if (amount > 0) {
+          if (position.data.rotation > 0 && position.data.rotation - amount < 0) {
+            position.setRotation(0)
+          }
+        } else {
+          if (position.data.rotation < 0 && position.data.rotation + amount > 0) {
+            position.setRotation(0)
+          }
         }
       }
 

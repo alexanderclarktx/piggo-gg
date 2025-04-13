@@ -1,11 +1,13 @@
 import {
-  ClientSystemBuilder, Entity, Renderable, Position,
-  Character, abs, System, round, XY, XYZ, max
+  ClientSystemBuilder, Entity, Renderable, Position, Character,
+  abs, round, XY, XYZ, max, reduce, revolve
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
+  angle: 0 | 1 | 2 | 3
   root: Container
+  centeredEntity: Character | undefined
   add: (r: Renderable) => void
   remove: (r: Renderable) => void
   scaleBy: (delta: number) => void
@@ -36,8 +38,10 @@ export const Camera = (app: Application): Camera => {
 
   rescale()
 
-  const camera = {
+  const camera: Camera = {
+    angle: 0,
     root,
+    centeredEntity: undefined,
     add: (r: Renderable) => {
       renderables.add(r)
       root.addChild(r.c)
@@ -90,14 +94,15 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
   init: (world) => {
     const { renderer } = world
     if (!renderer) return
-    let centeredEntity: Character | undefined = undefined
+
+    let zoomLeft = 0
 
     // handle zoom
     renderer.app.canvas.addEventListener("wheel", (event) => {
-      renderer.camera?.scaleBy(-event.deltaY / 1000)
+      zoomLeft = event.deltaY * 0.01
     })
 
-    const cameraSystem: System = {
+    return {
       id: "CameraSystem",
       query: ["renderable", "position"],
       priority: 10,
@@ -123,22 +128,33 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
 
         // center camera on player's character
         const character = world.client?.playerCharacter()
-        if (character) centeredEntity = character
+        if (character) renderer.camera.centeredEntity = character
       },
       onRender: (_, delta) => {
-        if (!centeredEntity) return
+        if (!renderer.camera.centeredEntity) return
 
-        const interpolated = centeredEntity.components.position.interpolate(delta, world)
+        if (zoomLeft !== 0) {
+          renderer.camera?.scaleBy(-zoomLeft * 0.1)
+          zoomLeft = reduce(zoomLeft, 0.005)
+        }
+
+        const { position, renderable } = renderer.camera.centeredEntity.components
+
+        const interpolated = position.interpolate(delta, world)
 
         const { x, y, z } = follow({
-          x: centeredEntity.components.position.data.x + interpolated.x,
-          y: centeredEntity.components.position.data.y + interpolated.y,
-          z: centeredEntity.components.position.data.z + interpolated.z
+          x: position.data.x + interpolated.x,
+          y: position.data.y + interpolated.y,
+          z: position.data.z + interpolated.z
         })
-        renderer?.camera.moveTo({ x, y: y - max(z, 0) })
+
+        const rotated = revolve(
+          x + renderable.position.x,
+          y + renderable.position.y,
+          renderable.revolves ? renderer.camera.angle : 0
+        )
+        renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - max(z, 0) })
       }
     }
-
-    return cameraSystem
   }
 })

@@ -1,12 +1,12 @@
 import {
-  SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
-  DefaultUI, CameraSystem, InventorySystem, ShadowSystem, Background,
-  SystemBuilder, Controlling, floor, BlockPreview, highestBlock, values
+  SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder, CameraSystem,
+  InventorySystem, ShadowSystem, Background, SystemBuilder, Controlling,
+  floor, BlockPreview, highestBlock, values, Cursor, Chat, EscapeMenu
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
   id: "craft",
-  init: (world) => ({
+  init: () => ({
     id: "craft",
     netcode: "delay",
     state: {},
@@ -18,8 +18,8 @@ export const Craft: GameBuilder = {
       SpawnSystem(Skelly)
     ],
     entities: [
-      Background({ rays: true }),
-      ...DefaultUI(world),
+      Background({ rays: true, follow: true }),
+      Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview()
     ]
@@ -39,23 +39,11 @@ const CraftSystem = SystemBuilder({
         const character = player.components.controlling.getCharacter(world)
         if (!character) continue
 
-        const { position, collider, renderable, inventory } = character.components
-
-        const level = floor(position.data.z / 21)
+        const { position, collider } = character.components
+        const { x, y, z, velocity } = position.data
 
         // set collider group
-        collider.setGroup((level + 1).toString() as "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9")
-
-        // set zIndex
-        renderable.zIndex = 3 + level / 10
-
-        // active item zIndex
-        if (inventory) {
-          const activeItem = inventory.activeItem(world)
-          if (activeItem) activeItem.components.renderable.zIndex = 3 + level / 10
-        }
-
-        const { x, y, z, velocity } = position.data
+        collider.setGroup((floor(z / 21) + 1).toString() as "1" | "2" | "3")
 
         // stop falling if directly above a block
         const highest = highestBlock({ x, y }, world)

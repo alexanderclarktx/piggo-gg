@@ -27,6 +27,7 @@ export type Renderable = Component<"renderable", {
   r: Renderable | undefined
   rendered: boolean
   renderer: Renderer
+  revolves: boolean
   rotates: boolean
   outline: { color: number, thickness: number }
   scale: number
@@ -64,6 +65,7 @@ export type RenderableProps = {
   interactiveChildren?: boolean
   interpolate?: boolean
   position?: XY
+  revolves?: boolean
   rotates?: boolean
   outline?: { color: number, thickness: number }
   scale?: number
@@ -103,6 +105,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     interpolate: props.interpolate ?? false,
     initialized: false,
     position: props.position ?? { x: 0, y: 0 },
+    revolves: props.revolves ?? false,
     rotates: props.rotates ?? false,
     outline: props.outline ?? { color: 0x000000, thickness: 0 },
     scale: props.scale ?? 1,
