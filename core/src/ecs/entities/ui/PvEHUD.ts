@@ -26,7 +26,14 @@ export const PvEHUD = (): Entity => {
           hud.components.position.setPosition({ x: canvasWidth / 2, y: -100 })
 
           squares = Array.from({ length: 5 }, (_, i) => pixiRect(
-            { w: width, h: height, y: 0, x: start + i * (width + 10), rounded: 5 }
+            {
+              w: width,
+              h: height,
+              y: 0,
+              x: start + i * (width + 10),
+              rounded: 5,
+              style: { strokeAlpha: 1, strokeColor: 0xffffff, alpha: 1, strokeWidth: 2 }
+            }
           ))
           icons = {}
 

@@ -42,6 +42,8 @@ export const Tool = (
         const textures = await loadTexture(`${name}.json`)
 
         r.c = new Sprite(textures["0"])
+
+        r.setOutline({ color: 0x000000, thickness: 1 })
       }
     })
   }

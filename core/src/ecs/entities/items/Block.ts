@@ -11,13 +11,13 @@ export const Block = (pos: XYZ) => Entity({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
-    debug: Debug(),
+    // debug: Debug(),
     element: Element("rock"),
     health: Health({ hp: 50 }),
     collider: Collider({
       shape: "line",
       isStatic: true,
-      hittable: true,
+      hittable: pos.z > 0 ? true : false,
       group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
       points: [
         0, width / 2,
@@ -32,6 +32,7 @@ export const Block = (pos: XYZ) => Entity({
       zIndex: 3,
       revolves: true,
       setup: async (r) => {
+        console.log("block setup")
         const g = pixiGraphics()
 
           // top
@@ -58,6 +59,10 @@ export const Block = (pos: XYZ) => Entity({
         g.position.y = -height
 
         r.c.addChild(g)
+
+        if (pos.z > 0) {
+          r.setOutline({ color: 0x000000, thickness: 0.2 })
+        }
       }
     })
   }
@@ -217,6 +222,8 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .fill({ color: 0x7B3F00 })
 
         r.c.addChild(g)
+
+        r.setOutline({ color: 0x000000, thickness: 1 })
       }
     })
   }

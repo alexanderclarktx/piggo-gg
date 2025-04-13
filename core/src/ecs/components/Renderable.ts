@@ -270,7 +270,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.c.alpha = 1
 
       // outline
-      if (renderable.outline) renderable.setOutline()
+      // if (renderable.outline) renderable.setOutline()
 
       if (keys(renderable.animations).length) {
         renderable.prepareAnimations(renderable.animationColor, props.alpha ?? 1)

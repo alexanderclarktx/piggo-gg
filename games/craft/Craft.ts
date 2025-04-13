@@ -44,7 +44,7 @@ const spawnTerrain = (world: World) => {
       // const z = Math.floor(Math.random() * 3) * 21
       const snapped = intToBlock(i, j)
       const block = Block({ ...snapped, z: 0 })
-      console.log("spawning block at", snapped)
+      // console.log("spawning block at", snapped)
       world.addEntity(block)
     }
   }
