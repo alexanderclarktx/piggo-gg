@@ -18,7 +18,7 @@ export const Craft: GameBuilder = {
       SpawnSystem(Skelly)
     ],
     entities: [
-      Background({ rays: true }),
+      Background({ rays: true, follow: true }),
       Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview()

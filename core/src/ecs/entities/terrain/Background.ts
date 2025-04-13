@@ -7,9 +7,10 @@ export type BackgroundProps = {
   json?: { path: string, img: string }
   rays?: boolean
   moving?: boolean
+  follow?: boolean
 }
 
-export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) => Entity({
+export const Background = ({ img, json, rays, moving, follow }: BackgroundProps = {}) => Entity({
   id: "background",
   components: {
     position: Position(),
@@ -23,24 +24,26 @@ export const Background = ({ img, json, rays, moving }: BackgroundProps = {}) =>
         const tile = renderable.c as TilingSprite
         if (moving) tile.tilePosition.x += 0.5
 
-        const { centeredEntity } = world.renderer?.camera ?? {}
-        if (centeredEntity && world.renderer) {
+        if (follow) {
+          const { centeredEntity } = world.renderer?.camera ?? {}
+          if (centeredEntity && world.renderer) {
 
-          const { x, y, z, velocity } = centeredEntity.components.position.data
+            const { x, y, z, velocity } = centeredEntity.components.position.data
 
-          const flip = world.flip()
+            const flip = world.flip()
 
-          const xy = revolve(x, y, world.renderer.camera.angle)
-          tile.tilePosition.x = 0.85 * xy.x
-          tile.tilePosition.y = 0.85 * xy.y
+            const xy = revolve(x, y, world.renderer.camera.angle)
+            tile.tilePosition.x = 0.85 * xy.x
+            tile.tilePosition.y = 0.85 * xy.y
 
-          entity.components.position.setVelocity({
-            x: velocity.x * 0.85 * flip,
-            y: velocity.y * 0.85 * flip,
-            z: velocity.z
-          })
-          entity.components.position.setPosition({ z })
-          entity.components.position.lastCollided = centeredEntity.components.position.lastCollided
+            entity.components.position.setVelocity({
+              x: velocity.x * 0.85 * flip,
+              y: velocity.y * 0.85 * flip,
+              z: velocity.z
+            })
+            entity.components.position.setPosition({ z })
+            entity.components.position.lastCollided = centeredEntity.components.position.lastCollided
+          }
         }
       },
       setup: async (renderable) => {
