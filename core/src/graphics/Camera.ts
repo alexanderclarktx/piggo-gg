@@ -24,7 +24,7 @@ export const Camera = (app: Application): Camera => {
   const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 })
   const renderables: Set<Renderable> = new Set()
 
-  let scale = 2
+  let scale = 3
 
   const rescale = () => {
     const min = 1

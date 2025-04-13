@@ -1,7 +1,10 @@
 import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder, CameraSystem,
   InventorySystem, ShadowSystem, Background, SystemBuilder, Controlling,
-  floor, BlockPreview, highestBlock, values, Cursor, Chat, EscapeMenu
+  floor, BlockPreview, highestBlock, values, Cursor, Chat, EscapeMenu,
+  World,
+  snapXY,
+  Block
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -26,39 +29,67 @@ export const Craft: GameBuilder = {
   })
 }
 
+const spawnTerrain = (world: World) => {
+  // add a block
+  // const xy = snapXY({ x: 0, y: 0 })
+  // console.log("spawning block at", xy)
+  // const block = Block({ ...xy, z: 0 })
+  // world.addEntity(block)
+
+  // for (let i = -10; i < 10; i++) {
+  //   for (let j = -10; j < 10; j++) {
+  //     const x = i * 21
+  //     const y = j * 21
+  //     // const z = Math.floor(Math.random() * 3) * 21
+  //     const snapped = snapXY({ x, y })
+  //     const block = Block({ ...snapped, z: 0 })
+  //     console.log("spawning block at", snapped)
+  //     world.addEntity(block)
+  //   }
+  // }
+}
+
 const CraftSystem = SystemBuilder({
   id: "CraftSystem",
-  init: (world) => ({
-    id: "CraftSystem",
-    query: [],
-    priority: 3,
-    onTick: () => {
-      const players = world.queryEntities<Controlling>(["pc", "controlling"])
+  init: (world) => {
 
-      for (const player of players) {
-        const character = player.components.controlling.getCharacter(world)
-        if (!character) continue
+    spawnTerrain(world)
 
-        const { position, collider } = character.components
-        const { x, y, z, velocity } = position.data
+    return {
+      id: "CraftSystem",
+      query: [],
+      priority: 3,
+      onTick: () => {
+        const players = world.queryEntities<Controlling>(["pc", "controlling"])
 
-        // set collider group
-        collider.setGroup((floor(z / 21) + 1).toString() as "1" | "2" | "3")
+        for (const player of players) {
+          const character = player.components.controlling.getCharacter(world)
+          if (!character) continue
 
-        // stop falling if directly above a block
-        const highest = highestBlock({ x, y }, world)
-        if (highest > 0 && z < (highest + 10) && velocity.z < 0) {
-          position.data.z = highest
-          position.data.standing = true
-          velocity.z = 0
+          const { position, collider } = character.components
+          const { x, y, z, velocity } = position.data
+
+          // set collider group
+          collider.setGroup((floor(z / 21) + 1).toString() as "1" | "2" | "3")
+
+          // stop falling if directly above a block
+          const highest = highestBlock({ x, y }, world)
+          if (highest > 0 && z < (highest + 5) && velocity.z <= 0) {
+            position.data.z = highest
+            position.data.standing = true
+            velocity.z = 0
+            position.data.gravity = 0
+          } else {
+            position.data.gravity = 0.3
+          }
+        }
+
+        const shadows = values(world.entities).filter(e => e.id.startsWith("shadow-"))
+        for (const shadow of shadows) {
+          const { position, renderable } = shadow.components
+          renderable!.visible = position?.data.z !== 0
         }
       }
-
-      const shadows = values(world.entities).filter(e => e.id.startsWith("shadow-"))
-      for (const shadow of shadows) {
-        const { position, renderable } = shadow.components
-        renderable!.visible = position?.data.z !== 0
-      }
     }
-  })
+  }
 })
