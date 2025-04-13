@@ -4,7 +4,8 @@ import {
   floor, BlockPreview, highestBlock, values, Cursor, Chat, EscapeMenu,
   World,
   snapXY,
-  Block
+  Block,
+  intToBlock
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -36,17 +37,17 @@ const spawnTerrain = (world: World) => {
   // const block = Block({ ...xy, z: 0 })
   // world.addEntity(block)
 
-  // for (let i = -10; i < 10; i++) {
-  //   for (let j = -10; j < 10; j++) {
-  //     const x = i * 21
-  //     const y = j * 21
-  //     // const z = Math.floor(Math.random() * 3) * 21
-  //     const snapped = snapXY({ x, y })
-  //     const block = Block({ ...snapped, z: 0 })
-  //     console.log("spawning block at", snapped)
-  //     world.addEntity(block)
-  //   }
-  // }
+  for (let i = -10; i < 10; i++) {
+    for (let j = -10; j < 10; j++) {
+      // const x = i * 21
+      // const y = j * 21
+      // const z = Math.floor(Math.random() * 3) * 21
+      const snapped = intToBlock(i, j)
+      const block = Block({ ...snapped, z: 0 })
+      console.log("spawning block at", snapped)
+      world.addEntity(block)
+    }
+  }
 }
 
 const CraftSystem = SystemBuilder({

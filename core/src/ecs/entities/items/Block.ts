@@ -63,6 +63,15 @@ export const Block = (pos: XYZ) => Entity({
   }
 })
 
+
+// takes ij integer coordinates -> XY of that block from origin
+export const intToBlock = (i: number, j: number): XY => {
+  const x = (i - j) * width
+  const y = (i + j) * width / 2
+
+  return { x, y }
+}
+
 export const snapXY = (pos: XY): XY => {
   const half = width / 2
 
