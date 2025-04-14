@@ -16,7 +16,7 @@ export type Position = Component<"position", {
   rotation: number
   speed: number
   standing: boolean
-  stop: number | undefined
+  stop: number
   velocity: XYZ
   velocityResets: number
 }> & {
@@ -71,7 +71,7 @@ export const Position = (props: PositionProps = {}): Position => {
       rotation: props.rotation ?? 0,
       speed: props.speed ?? 0,
       standing: true,
-      stop: undefined,
+      stop: 0,
       velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       velocityResets: props.velocityResets ?? 0
     },
@@ -194,21 +194,17 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         // gravity & z
         if (position.data.velocity.z || position.data.z) {
-          position.data.z = max(position.data.z + position.data.velocity.z, position.data.stop ?? 0)
+          position.data.z = max(position.data.z + position.data.velocity.z, position.data.stop)
 
-          if (position.data.stop && position.data.z === position.data.stop) {
+          if (position.data.z === position.data.stop) {
             position.data.velocity.z = 0
-            position.data.gravity = 0
             position.data.standing = true
-
-            position.data.stop = undefined
           } else {
             position.data.standing = false
-          }
-
-          if (position.data.z > 0) {
             position.data.velocity.z -= position.data.gravity
           }
+        } else {
+          position.data.standing = true
         }
 
         // side-view gravity

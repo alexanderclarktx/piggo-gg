@@ -153,7 +153,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
           y + renderable.position.y,
           renderable.revolves ? renderer.camera.angle : 0
         )
-        renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - max(z, 0) })
+        renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - z })
       }
     }
   }

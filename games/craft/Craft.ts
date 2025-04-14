@@ -60,16 +60,18 @@ const CraftSystem = SystemBuilder({
           // set collider group
           collider.setGroup((floor(z / 21) + 1).toString() as "1" | "2" | "3")
 
-          if (position.data.z === 0) {
-            position.setPosition({ x: 0, y: 0, z: 128 })
-          }
-
           // stop falling if directly above a block
           const highest = highestBlock({ x, y }, world)
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             position.data.stop = highest
           } else {
             position.data.gravity = 0.3
+            position.data.stop = -600
+          }
+
+          if (position.data.z === -600) {
+            position.setPosition({ x: 0, y: 0, z: 128 })
+            position.setVelocity({ x: 0, y: 0, z: 0 })
           }
         }
 
