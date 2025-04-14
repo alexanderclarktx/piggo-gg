@@ -74,23 +74,15 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
 
         const highest = highestBlock(data, world)
 
-        position.setPosition({
-          x: data.x,
-          y: data.y - 0.1 + yOffset,
-          z: highest
-        })
-
-        renderable.c.alpha = 0.25 - (target.components.position.data.z - highest) / 500
-
+        position.setPosition({ x: data.x, y: data.y - 0.1 + yOffset, z: highest })
+        position.setVelocity({ ...data.velocity, z: 0 })
         position.lastCollided = lastCollided
 
-        position.setVelocity({ ...data.velocity, z: 0 })
+        renderable.c.alpha = 0.25 - (data.z - highest) / 500
       },
       setup: async (renderable) => {
-        const g = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
-        renderable.c = g
-
-        renderable.setBlur({ strength: 2 })
+        renderable.c = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
+        renderable.setBlur({ strength: 3 })
       }
     })
   }
