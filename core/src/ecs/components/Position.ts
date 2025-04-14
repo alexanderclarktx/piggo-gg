@@ -110,7 +110,6 @@ export const Position = (props: PositionProps = {}): Position => {
     interpolate: (delta: number, world: World) => {
       let z = position.data.velocity.z * delta / world.tickrate
       if (position.data.stop && position.data.z + z < position.data.stop) {
-        // z = max(z, position.data.stop)
         z = position.data.stop - position.data.z
       }
 
