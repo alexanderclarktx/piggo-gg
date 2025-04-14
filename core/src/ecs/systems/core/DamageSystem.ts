@@ -19,7 +19,7 @@ export const DamageSystem = ClientSystemBuilder({
           if (!filterMap[entity.id]) {
             const filter = new ColorMatrixFilter()
             filterMap[entity.id] = [1, filter]
-            renderable.c.filters = filter
+            // renderable.c.filters = filter
 
             // set default onDamage
             const originalOnDamage = health.onDamage

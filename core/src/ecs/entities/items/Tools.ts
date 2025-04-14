@@ -37,11 +37,11 @@ export const Tool = (
       interpolate: true,
       visible: false,
       rotates: true,
-      outline: { color: 0x000000, thickness: 1 },
       setup: async (r: Renderable) => {
         const textures = await loadTexture(`${name}.json`)
-
         r.c = new Sprite(textures["0"])
+
+        r.setOutline({ color: 0x000000, thickness: 1 })
       }
     })
   }

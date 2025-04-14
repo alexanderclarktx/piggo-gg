@@ -11,13 +11,13 @@ export const Block = (pos: XYZ) => Entity({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
-    debug: Debug(),
+    // debug: Debug(),
     element: Element("rock"),
     health: Health({ hp: 50 }),
     collider: Collider({
       shape: "line",
       isStatic: true,
-      hittable: true,
+      hittable: pos.z > 0 ? true : false,
       group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
       points: [
         0, width / 2,
@@ -40,7 +40,7 @@ export const Block = (pos: XYZ) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08dd00 })
+          .fill({ color: 0x08d000 })
 
           // bottom-left
           .moveTo(-width, -width / 2)
@@ -58,10 +58,23 @@ export const Block = (pos: XYZ) => Entity({
         g.position.y = -height
 
         r.c.addChild(g)
+
+        if (pos.z > 0) {
+          r.setOutline({ color: 0x000000, thickness: 0.2 })
+        }
       }
     })
   }
 })
+
+
+// takes ij integer coordinates -> XY of that block from origin
+export const intToBlock = (i: number, j: number): XY => {
+  const x = (i - j) * width
+  const y = (i + j) * width / 2
+
+  return { x, y }
+}
 
 export const snapXY = (pos: XY): XY => {
   const half = width / 2
@@ -178,7 +191,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
       interpolate: true,
       visible: false,
       rotates: false,
-      outline: { color: 0x000000, thickness: 1 },
       setup: async (r) => {
 
         const width = 6
@@ -208,6 +220,8 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .fill({ color: 0x7B3F00 })
 
         r.c.addChild(g)
+
+        r.setOutline({ color: 0x000000, thickness: 1 })
       }
     })
   }
