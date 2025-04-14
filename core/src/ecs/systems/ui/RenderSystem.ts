@@ -71,6 +71,18 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.rendered = true
           }
 
+          // run dynamic callback
+          if (renderable.dynamic && renderable.initialized) renderable.dynamic({
+            container: renderable.c, entity, world, renderable, client: world.client!
+          })
+
+          // run dynamic callback for children
+          if (renderable.children && renderable.initialized) {
+            renderable.children.forEach((child) => {
+              if (child.dynamic) child.dynamic({ container: child.c, entity, world, renderable: child, client: world.client! })
+            })
+          }
+
           // update rotation
           if (renderable.rotates) {
             renderable.c.rotation = position.data.rotation
@@ -119,20 +131,8 @@ export const RenderSystem = ClientSystemBuilder({
             renderable.bufferedAnimation = ""
           }
 
-          // run the dynamic callback
-          if (renderable.dynamic && renderable.initialized) renderable.dynamic({
-            container: renderable.c, entity, world, renderable, client: world.client!
-          })
-
           // set visible
           if (renderable.c.renderable !== renderable.visible) renderable.c.renderable = renderable.visible
-
-          // run dynamic on children
-          if (renderable.children && renderable.initialized) {
-            renderable.children.forEach((child) => {
-              if (child.dynamic) child.dynamic({ container: child.c, entity, world, renderable: child, client: world.client! })
-            })
-          }
         })
 
         // sort entities by position (closeness to camera)
@@ -179,7 +179,6 @@ export const RenderSystem = ClientSystemBuilder({
               renderable.revolves ? renderer!.camera.angle : 0
             )
 
-            // const newZ = z + interpolated.z
             renderable.c.position.set(rotated.x, rotated.y - z - interpolated.z)
           }
         }

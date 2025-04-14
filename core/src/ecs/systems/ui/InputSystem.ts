@@ -19,13 +19,13 @@ export const InputSystem = ClientSystemBuilder({
 
     let backspaceOn = false
     let joystickOn = false
-    let mouseEvent: XY = { x: 0, y: 0 }
+    let mouseScreen: XY = { x: 0, y: 0 }
 
     renderer?.app.canvas.addEventListener("pointermove", (event) => {
-      if (CurrentJoystickPosition.active && XYdiff(mouseEvent, { x: event.offsetX, y: event.offsetY }, 100)) return
+      if (CurrentJoystickPosition.active && XYdiff(mouseScreen, { x: event.offsetX, y: event.offsetY }, 100)) return
 
-      mouseEvent = { x: event.offsetX, y: event.offsetY }
-      mouse = renderer.camera.toWorldCoords(mouseEvent)
+      mouseScreen = { x: event.offsetX, y: event.offsetY }
+      mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
     })
 
@@ -33,8 +33,8 @@ export const InputSystem = ClientSystemBuilder({
       if (!joystickOn && CurrentJoystickPosition.active) return
       if (world.tick <= world.client!.clickThisFrame.value) return
 
-      mouseEvent = { x: event.offsetX, y: event.offsetY }
-      mouse = renderer.camera.toWorldCoords(mouseEvent)
+      mouseScreen = { x: event.offsetX, y: event.offsetY }
+      mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (CurrentJoystickPosition.active && !joystickOn) {
@@ -129,9 +129,19 @@ export const InputSystem = ClientSystemBuilder({
       const angle = Math.atan2(mouse.y - rotated.y, mouse.x - rotated.x)
       const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
-      const pointingDelta = {
-        x: round(mouse.x - rotated.x, 2) * world.flip(),
-        y: round(mouse.y - (rotated.y - position.data.z), 2) * world.flip()
+      let pointingDelta: XY
+
+      if (world.renderer?.camera.centeredEntity) {
+        const { width, height } = world.renderer.wh()
+        pointingDelta = {
+          x: round(mouseScreen.x - (width / 2), 2) * world.flip(),
+          y: round(mouseScreen.y - (height / 2), 2) * world.flip()
+        }
+      } else {
+        pointingDelta = {
+          x: round(mouse.x - rotated.x, 2) * world.flip(),
+          y: round(mouse.y - (rotated.y - position.data.z), 2) * world.flip()
+        }
       }
 
       if (actions.actionMap["point"]) {
@@ -291,7 +301,7 @@ export const InputSystem = ClientSystemBuilder({
         world.client!.bufferDown.updateHold(world.tick)
 
         // update mouse position, the camera might have moved
-        if (renderer) mouse = renderer.camera.toWorldCoords(mouseEvent)
+        if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus()) {
