@@ -62,13 +62,16 @@ const CraftSystem = SystemBuilder({
 
           // stop falling if directly above a block
           const highest = highestBlock({ x, y }, world)
-          if (highest > 0 && z < (highest + 5) && velocity.z <= 0) {
-            position.data.z = highest
-            position.data.standing = true
-            velocity.z = 0
-            position.data.gravity = 0
+          if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
+            position.data.stop = highest
           } else {
             position.data.gravity = 0.3
+            position.data.stop = -600
+          }
+
+          if (position.data.z === -600) {
+            position.setPosition({ x: 0, y: 0, z: 128 })
+            position.setVelocity({ x: 0, y: 0, z: 0 })
           }
         }
 
