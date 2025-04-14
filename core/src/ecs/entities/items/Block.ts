@@ -41,7 +41,7 @@ export const Block = (pos: XYZ) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08dd00 })
+          .fill({ color: 0x08d000 })
 
           // bottom-left
           .moveTo(-width, -width / 2)
