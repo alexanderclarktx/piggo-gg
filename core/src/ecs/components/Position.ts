@@ -6,18 +6,19 @@ export type Position = Component<"position", {
   x: number
   y: number
   z: number
-  velocity: XYZ
-  speed: number
-  rotation: number
+  follows: string | undefined
+  friction: number
+  gravity: number
+  heading: XY
+  offset: XY
   pointing: Oct
   pointingDelta: XY
-  heading: XY
-  velocityResets: number
-  follows: string | undefined
-  offset: XY
+  rotation: number
+  speed: number
   standing: boolean
-  gravity: number
-  friction: number
+  stop: number | undefined
+  velocity: XYZ
+  velocityResets: number
 }> & {
   lastCollided: number
   screenFixed: boolean
@@ -60,18 +61,19 @@ export const Position = (props: PositionProps = {}): Position => {
       x: props.x ?? 0,
       y: props.y ?? 0,
       z: props.z ?? 0,
-      velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
-      speed: props.speed ?? 0,
-      rotation: props.rotation ?? 0,
+      follows: props.follows ?? undefined,
+      friction: props.friction ?? 0,
+      gravity: props.gravity ?? 0,
+      heading: { x: NaN, y: NaN },
+      offset: props.offset ?? { x: 0, y: 0 },
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
-      heading: { x: NaN, y: NaN },
-      velocityResets: props.velocityResets ?? 0,
-      follows: props.follows ?? undefined,
-      offset: props.offset ?? { x: 0, y: 0 },
+      rotation: props.rotation ?? 0,
+      speed: props.speed ?? 0,
       standing: true,
-      friction: props.friction ?? 0,
-      gravity: props.gravity ?? 0
+      stop: undefined,
+      velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
+      velocityResets: props.velocityResets ?? 0
     },
     lastCollided: 0,
     screenFixed: props.screenFixed ?? false,
@@ -106,13 +108,20 @@ export const Position = (props: PositionProps = {}): Position => {
       })
     },
     interpolate: (delta: number, world: World) => {
-      if (world.tick - position.lastCollided <= 4) {
-        return { x: 0, y: 0, z: position.data.velocity.z * delta / world.tickrate }
+      let z = position.data.velocity.z * delta / world.tickrate
+      if (position.data.stop && position.data.z + z < position.data.stop) {
+        // z = max(z, position.data.stop)
+        z = position.data.stop - position.data.z
       }
+
+      if (world.tick - position.lastCollided <= 4) {
+        return { x: 0, y: 0, z }
+      }
+
       return {
         x: position.data.velocity.x * delta / 1000,
         y: position.data.velocity.y * delta / 1000,
-        z: position.data.velocity.z * delta / world.tickrate
+        z
       }
     },
     setSpeed: (speed: number) => {
@@ -186,15 +195,23 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         // height
         if (position.data.velocity.z || position.data.z) {
-          position.data.z = max(position.data.z + position.data.velocity.z, 0)
+          position.data.z = max(position.data.z + position.data.velocity.z, position.data.stop ?? 0)
+
+          if (position.data.stop && position.data.z === position.data.stop) {
+            position.data.velocity.z = 0
+            position.data.gravity = 0
+            position.data.standing = true
+
+            position.data.stop = undefined
+          } else {
+            position.data.standing = false
+          }
 
           if (position.data.z > 0) {
             position.data.velocity.z -= position.data.gravity
-          } else {
-            position.data.velocity.z = 0
           }
 
-          position.data.standing = (position.data.z === 0)
+          // position.data.standing = (position.data.z === 0)
         }
 
         // gravity
@@ -213,17 +230,18 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
           const target = world.entities[position.data.follows]
 
           if (target && target.components.position) {
-            const { x, y, z, velocity, pointing, pointingDelta, speed } = target.components.position.data
+            const { x, y, z, velocity, pointing, pointingDelta, speed, stop } = target.components.position.data
 
             position.data = {
               ...position.data,
+              pointing,
+              pointingDelta: { ...pointingDelta },
+              speed,
+              stop,
+              velocity: { ...velocity },
               x: x + position.data.offset.x,
               y: y + position.data.offset.y,
-              z: z,
-              pointing,
-              speed,
-              velocity: { ...velocity },
-              pointingDelta: { ...pointingDelta },
+              z: z
             }
 
             position.lastCollided = target.components.position.lastCollided
