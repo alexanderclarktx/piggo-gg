@@ -25,7 +25,6 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, cha
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,
       visible: false,
-      outline: { color: 0x000000, thickness: 1 },
       dynamic: ({ renderable, entity }) => {
         if (entity.components.item!.dropped) return
 
@@ -33,6 +32,8 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, cha
         if (pointing !== undefined) renderable.bufferedAnimation = pointing.toString()
       },
       setup: async (r: Renderable) => {
+        r.setOutline({ color: 0x000000, thickness: 1 })
+
         const textures = await loadTexture(`${name}.json`)
 
         r.animations = {

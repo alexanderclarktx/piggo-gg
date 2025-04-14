@@ -192,7 +192,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
       interpolate: true,
       visible: false,
       rotates: false,
-      outline: { color: 0x000000, thickness: 1 },
       setup: async (r) => {
 
         const width = 6

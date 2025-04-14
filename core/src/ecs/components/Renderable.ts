@@ -29,7 +29,6 @@ export type Renderable = Component<"renderable", {
   renderer: Renderer
   revolves: boolean
   rotates: boolean
-  outline: { color: number, thickness: number }
   scale: number
   scaleMode: "nearest" | "linear"
   visible: boolean
@@ -67,7 +66,6 @@ export type RenderableProps = {
   position?: XY
   revolves?: boolean
   rotates?: boolean
-  outline?: { color: number, thickness: number }
   scale?: number
   scaleMode?: "nearest" | "linear"
   skin?: Skins
@@ -107,7 +105,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
     position: props.position ?? { x: 0, y: 0 },
     revolves: props.revolves ?? false,
     rotates: props.rotates ?? false,
-    outline: props.outline ?? { color: 0x000000, thickness: 0 },
     scale: props.scale ?? 1,
     scaleMode: props.scaleMode ?? "linear",
     setChildren: props.setChildren ?? undefined,
@@ -196,7 +193,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       }
     },
     setOutline: (props?: { color: number, thickness: number }) => {
-      const { thickness, color } = props ?? renderable.outline
+      const { thickness, color } = props ?? { thickness: 0, color: 0x000000 }
       if (keys(renderable.animations).length) {
         values(renderable.animations).forEach((animation) => {
           animation.filters = [new OutlineFilter({ thickness, color, quality: 1 })]
@@ -268,9 +265,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.c.zIndex = renderable.zIndex || 0
       renderable.c.sortableChildren = true
       renderable.c.alpha = 1
-
-      // outline
-      // if (renderable.outline) renderable.setOutline()
 
       if (keys(renderable.animations).length) {
         renderable.prepareAnimations(renderable.animationColor, props.alpha ?? 1)
