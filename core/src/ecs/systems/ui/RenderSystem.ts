@@ -179,7 +179,6 @@ export const RenderSystem = ClientSystemBuilder({
               renderable.revolves ? renderer!.camera.angle : 0
             )
 
-            // const newZ = z + interpolated.z
             renderable.c.position.set(rotated.x, rotated.y - z - interpolated.z)
           }
         }

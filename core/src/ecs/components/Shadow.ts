@@ -87,10 +87,10 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
         position.setVelocity({ ...data.velocity, z: 0 })
       },
       setup: async (renderable) => {
-        renderable.setBlur({ strength: 2 })
-
         const g = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
         renderable.c = g
+
+        renderable.setBlur({ strength: 2 })
       }
     })
   }
