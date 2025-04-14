@@ -193,7 +193,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         const { position } = entity.components
 
-        // height
+        // gravity & z
         if (position.data.velocity.z || position.data.z) {
           position.data.z = max(position.data.z + position.data.velocity.z, position.data.stop ?? 0)
 
@@ -210,17 +210,15 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
           if (position.data.z > 0) {
             position.data.velocity.z -= position.data.gravity
           }
-
-          // position.data.standing = (position.data.z === 0)
         }
 
-        // gravity
+        // side-view gravity
         if (position.data.gravity && world.game.view === "side") {
           position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
           position.updateOrientation()
         }
 
-        // friction
+        // side-view air resistance
         if (position.data.friction && world.game.view === "side") {
           position.data.velocity.x = reduce(position.data.velocity.x, position.data.friction)
         }
