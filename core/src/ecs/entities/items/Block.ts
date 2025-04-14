@@ -32,7 +32,6 @@ export const Block = (pos: XYZ) => Entity({
       zIndex: 3,
       revolves: true,
       setup: async (r) => {
-        console.log("block setup")
         const g = pixiGraphics()
 
           // top

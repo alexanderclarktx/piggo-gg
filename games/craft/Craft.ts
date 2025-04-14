@@ -1,11 +1,8 @@
 import {
-  SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder, CameraSystem,
-  InventorySystem, ShadowSystem, Background, SystemBuilder, Controlling,
-  floor, BlockPreview, highestBlock, values, Cursor, Chat, EscapeMenu,
-  World,
-  snapXY,
-  Block,
-  intToBlock
+  SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
+  CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
+  Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
+  EscapeMenu, World, Block, intToBlock
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -31,20 +28,10 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = (world: World) => {
-  // add a block
-  // const xy = snapXY({ x: 0, y: 0 })
-  // console.log("spawning block at", xy)
-  // const block = Block({ ...xy, z: 0 })
-  // world.addEntity(block)
-
   for (let i = -10; i < 10; i++) {
     for (let j = -10; j < 10; j++) {
-      // const x = i * 21
-      // const y = j * 21
-      // const z = Math.floor(Math.random() * 3) * 21
-      const snapped = intToBlock(i, j)
-      const block = Block({ ...snapped, z: 0 })
-      // console.log("spawning block at", snapped)
+      const xy = intToBlock(i, j)
+      const block = Block({ ...xy, z: 0 })
       world.addEntity(block)
     }
   }
