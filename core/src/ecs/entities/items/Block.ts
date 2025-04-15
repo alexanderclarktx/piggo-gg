@@ -181,7 +181,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snapXYZ(mouse, world), moonrockColors)
+        const block = Block(snapXYZ(world.flip(mouse), world), moonrockColors)
         world.addEntity(block)
       }
     }),
