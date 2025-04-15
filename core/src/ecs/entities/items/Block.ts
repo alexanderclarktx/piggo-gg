@@ -180,7 +180,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         if (hold) return
 
         const block = Block(snapXYZ(world.flip(mouse), world), moonrock)
-        console.log("block", block.id, block.components.position?.data.x)
         world.addEntity(block)
       }
     }),

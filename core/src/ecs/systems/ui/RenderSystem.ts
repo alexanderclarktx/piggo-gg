@@ -10,11 +10,6 @@ export const RenderSystem = ClientSystemBuilder({
 
       await renderable._init(renderer, world)
 
-      if (position) renderable.c.position.set(
-        position.data.x + renderable.position.x,
-        position.data.y + renderable.position.y
-      )
-
       if (position.screenFixed) {
         renderer?.addGui(renderable)
       } else {
