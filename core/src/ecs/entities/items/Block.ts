@@ -181,6 +181,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
 
         const block = Block(snapXYZ(world.flip(mouse), world), moonrock)
         world.addEntity(block)
+        world.client?.soundManager.play("click2")
       }
     }),
     item: Item({ name: "block", flips: false }),

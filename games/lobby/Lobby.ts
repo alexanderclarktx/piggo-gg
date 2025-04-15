@@ -433,6 +433,8 @@ const GameLobby = (): Entity => {
   const list: GameBuilder[] = [Craft, Volley]
   let gameButtons: Entity<Position | Renderable>[] = []
 
+  // let musicPlaying = false
+
   const gameLobby = Entity<Position | Renderable>({
     id: "gameLobby",
     components: {
