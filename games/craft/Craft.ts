@@ -28,8 +28,8 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = (world: World) => {
-  for (let i = -10; i < 10; i++) {
-    for (let j = -10; j < 10; j++) {
+  for (let i = -12; i < 12; i++) {
+    for (let j = -12; j < 12; j++) {
       const xy = intToBlock(i, j)
       const block = Block({ ...xy, z: 0 })
       world.addEntity(block)
