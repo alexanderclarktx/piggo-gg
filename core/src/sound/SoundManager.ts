@@ -1,6 +1,7 @@
 import { GunNames, isArray, isMobile, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
+export type ClickSounds = "click1" | "click2" | "click3"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
@@ -8,7 +9,7 @@ export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" 
 export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
 export type VolleySounds = "spike"
 
-export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
+export type ValidSounds = ClickSounds | GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
 
 const load = (url: string, volume: number): Sound => {
   const player = new Sound({ url, volume: volume - 10 })
@@ -19,7 +20,7 @@ export type SoundManager = {
   muted: boolean
   state: "closed" | "running" | "suspended"
   sounds: Record<ValidSounds, Sound>
-  play: (sound: ValidSounds | ValidSounds[], startTime?: number, pos?: XY) => void
+  play: (sound: ValidSounds | ValidSounds[], startTime?: number, pos?: XY, force?: boolean) => void
 }
 
 export const SoundManager = (world: World): SoundManager => {
@@ -37,6 +38,9 @@ export const SoundManager = (world: World): SoundManager => {
     muted: false,
     state: "closed",
     sounds: {
+      click1: load("click1.mp3", -5),
+      click2: load("click2.mp3", -5),
+      click3: load("click3.mp3", -10),
       deagle: load("pistol.mp3", -30),
       ak: load("ak.mp3", -25),
       awp: load("awp.mp3", -30),
@@ -58,7 +62,7 @@ export const SoundManager = (world: World): SoundManager => {
       eat2: load("eat2.mp3", -20),
       spike: load("spike.mp3", 5),
     },
-    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0, pos: XY | undefined = undefined) => {
+    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0, pos: XY | undefined = undefined, force: boolean = false) => {
       if (soundManager.muted) return
 
       // if the sound is too far away, don't play it
@@ -73,10 +77,10 @@ export const SoundManager = (world: World): SoundManager => {
       try {
         if (soundManager.state !== "running") {
           soundManager.state = getContext().state
-          getTransport().start()
+          getTransport().cancel().start()
         }
 
-        if (soundManager.state !== "running" && isMobile()) return
+        if (soundManager.state !== "running" && !force) return
 
         if (isArray(soundName)) {
           const choice = randomChoice(soundName)

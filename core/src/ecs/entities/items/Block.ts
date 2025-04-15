@@ -63,7 +63,7 @@ export const Block = (pos: XYZ, colors: BlockColors = grass) => Entity({
         r.c.addChild(g)
 
         if (pos.z > 0) {
-          r.setOutline({ color: 0x000000, thickness: 0.2 })
+          // r.setOutline({ color: 0x000000, thickness: 0.2 })
         }
       }
     })
