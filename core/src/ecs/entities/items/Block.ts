@@ -208,7 +208,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .fill({ color: 0x08dd00 })
 
           .moveTo(-width, -width / 2)
-
           .lineTo(-width, h)
           .lineTo(0, h + width / 2)
           .lineTo(0, 0)
@@ -221,8 +220,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .lineTo(0, h + width / 2)
           .lineTo(width, h)
           .fill({ color: 0x7B3F00 })
-
-        // r.c.addChild(g)
 
         r.setOutline({ color: 0x000000, thickness: 1 })
       }
