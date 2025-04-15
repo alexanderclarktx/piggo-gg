@@ -27,7 +27,6 @@ export type Renderable = Component<"renderable", {
   r: Renderable | undefined
   rendered: boolean
   renderer: Renderer
-  revolves: boolean
   rotates: boolean
   scale: number
   scaleMode: "nearest" | "linear"
@@ -64,7 +63,6 @@ export type RenderableProps = {
   interactiveChildren?: boolean
   interpolate?: boolean
   position?: XY
-  revolves?: boolean
   rotates?: boolean
   scale?: number
   scaleMode?: "nearest" | "linear"
@@ -103,7 +101,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
     interpolate: props.interpolate ?? false,
     initialized: false,
     position: props.position ?? { x: 0, y: 0 },
-    revolves: props.revolves ?? false,
     rotates: props.rotates ?? false,
     scale: props.scale ?? 1,
     scaleMode: props.scaleMode ?? "linear",

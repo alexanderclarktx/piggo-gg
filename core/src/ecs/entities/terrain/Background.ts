@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, revolve } from "@piggo-gg/core"
+import { Entity, Position, Renderable } from "@piggo-gg/core"
 import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
 import { GodrayFilter } from "pixi-filters"
 
@@ -32,15 +32,15 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
 
             const { x, y, z, velocity } = centeredEntity.components.position.data
 
-            const flip = world.flip()
+            const flip = world.flipped()
 
-            const xy = revolve(x, y, world.renderer.camera.angle)
+            const xy = world.flip({ x, y })
             tile.tilePosition.x = 0.85 * xy.x
             tile.tilePosition.y = 0.85 * xy.y
 
             position.setVelocity({
-              x: velocity.x * 0.85 * flip,
-              y: velocity.y * 0.85 * flip,
+              x: velocity.x * 0.85,
+              y: velocity.y * 0.85,
               z: velocity.z
             })
             position.data.stop = centeredEntity.components.position.data.stop

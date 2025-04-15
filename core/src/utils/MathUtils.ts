@@ -127,20 +127,6 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat()
 
-export const revolve = (x: number, y: number, angle: 0 | 1 | 2 | 3): XY => {
-  if (angle === 0) return { x, y }
-
-  // translate relative to center
-  const a = angle * Math.PI / 2
-  const c = Math.cos(a)
-  const s = Math.sin(a)
-
-  let rx = (x * c - y * s)
-  let ry = (x * s + y * c)
-
-  return { x: rx, y: ry }
-}
-
 export const colorAdd = (color: number, add: number): number => {
   const r = min(255, ((color >> 16) & 0xff) + ((add >> 16) & 0xff))
   const g = min(255, ((color >> 8) & 0xff) + ((add >> 8) & 0xff))

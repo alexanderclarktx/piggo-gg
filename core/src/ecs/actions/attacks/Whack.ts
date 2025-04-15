@@ -18,7 +18,7 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
     const { position } = entity.components
     if (!position) return
 
-    const rotation = world.flip() * (position.data.pointingDelta.x > 0 ? 1 : -1)
+    const rotation = world.flipped() * (position.data.pointingDelta.x > 0 ? 1 : -1)
     position.rotate(rotation)
 
     const angle = Math.atan2(position.data.pointingDelta.y, position.data.pointingDelta.x)

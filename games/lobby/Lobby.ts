@@ -201,7 +201,7 @@ const PlayButton = () => {
           const button = PixiButton({
             content: () => ({
               text: "Play",
-              width: 250,
+              width: 260,
               height: 40,
               style: { fontSize: 26, fill: 0xffffff }
             }),
@@ -243,7 +243,7 @@ const CreateLobbyButton = () => {
           const button = PixiButton({
             content: () => ({
               text: "Invite Friends",
-              width: 250,
+              width: 260,
               height: 40,
               style: { fontSize: 26, fill: 0xffffff }
             }),

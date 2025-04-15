@@ -51,7 +51,7 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
     ...clickable,
     click: () => ({ actionId: "pickupItem" }),
     hoverOver: () => renderable.setOutline({ color: 0xffffff, thickness: 2 }),
-    hoverOut: () => renderable.setOutline()
+    hoverOut: () => renderable.setOutline({ color: 0x000000, thickness: 1 })
   }
 
   return Entity(entity)
@@ -78,7 +78,7 @@ export const ItemSystem = SystemBuilder({
           const hyp_x = pointingDelta.x / hypotenuse
           const hyp_y = pointingDelta.y / hypotenuse
 
-          const flip = world.flip()
+          const flip = world.flipped()
 
           position.data.offset = {
             x: round(hyp_x * min(20, abs(pointingDelta.x)), 2),
@@ -88,7 +88,6 @@ export const ItemSystem = SystemBuilder({
           const xScale = flip * (!item.flips ? 1 : pointingDelta.x > 0 ? 1 : -1)
 
           renderable.setScale({ x: xScale, y: 1 })
-          renderable.revolves = true
         }
       }
     }

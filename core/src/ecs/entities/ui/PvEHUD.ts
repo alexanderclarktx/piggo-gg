@@ -2,7 +2,7 @@ import { Entity, ItemEntity, Position, Renderable, loadTextureCached, pixiRect, 
 import { AnimatedSprite, Graphics, Sprite, Text } from "pixi.js"
 
 type SlotVisuals = {
-  icon: Sprite
+  icon: Sprite | Graphics
   count?: Text | undefined
 }
 
@@ -69,22 +69,36 @@ export const PvEHUD = (): Entity => {
             // set up new icon
             if (item && !icons[i]) {
               const textures = loadTextureCached(`${item.components.item.name}.json`)
-              if (!textures) continue
+              // if (!textures) continue
+              if (textures) {
+                const slotSprite = new AnimatedSprite([textures["0"]])
 
-              const slotSprite = new AnimatedSprite([textures["0"]])
+                slotSprite.position.set(start + (width / 2) + i * (width + 10), height / 2)
+                slotSprite.scale.set(2 * item.components.renderable.scale)
+                slotSprite.anchor.set(0.5)
 
-              slotSprite.position.set(start + (width / 2) + i * (width + 10), height / 2)
-              slotSprite.scale.set(2 * item.components.renderable.scale)
-              slotSprite.anchor.set(0.5)
+                container.addChild(slotSprite)
 
-              const count = item.components.item.stackable ?
-                pixiText({ text: `${slot!.length}`, pos: { x: 4, y: 0 }, style: { fontSize: 12, fill: 0xffffff } }) :
-                undefined
+                const count = item.components.item.stackable ?
+                  pixiText({ text: `${slot!.length}`, pos: { x: 4, y: 0 }, style: { fontSize: 12, fill: 0xffffff } }) :
+                  undefined
 
-              icons[i] = { icon: slotSprite, count }
+                icons[i] = { icon: slotSprite, count }
 
-              container.addChild(slotSprite)
-              if (count) slotSprite.addChild(count)
+
+                if (count) slotSprite.addChild(count)
+              } else {
+                const graphic = item.components.renderable.c as Graphics
+                if (!graphic.clone) return
+
+                const clone = graphic.clone()
+
+                clone.position.set(start + (width / 2) + i * (width + 10), height / 2)
+                clone.scale.set(3 * item.components.renderable.scale)
+
+                container.addChild(clone)
+                icons[i] = { icon: clone, count: undefined }
+              }
             } else {
               const { count } = icons[i] || {}
               if (count) count.text = `${slot!.length}`

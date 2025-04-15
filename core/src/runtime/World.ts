@@ -1,7 +1,7 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked
+  Random, ComponentTypes, Data, Networked, XY
 } from "@piggo-gg/core"
 
 export type World = {
@@ -31,7 +31,8 @@ export type World = {
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
   entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
-  flip: () => 1 | -1
+  flip: (xy: XY) => XY
+  flipped: () => 1 | -1
   onTick: (_: { isRollback: boolean }) => void
   queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter?: (entity: Entity<T>) => boolean) => Entity<T>[]
   removeEntity: (id: string) => void
@@ -140,7 +141,23 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     entity: <T extends ComponentTypes>(id: string) => {
       return world.entities[id] as Entity<T>
     },
-    flip: () => (world.renderer?.camera.angle ?? 0) === 0 ? 1 : -1,
+    flip: ({ x, y }: XY) => {
+      const angle = world.renderer?.camera.angle ?? 0
+      if (angle === 0) return { x, y }
+
+      // translate relative to center
+      const a = angle * Math.PI / 2
+      const c = Math.cos(a)
+      const s = Math.sin(a)
+
+      let rx = (x * c - y * s)
+      let ry = (x * s + y * c)
+
+      return { x: rx, y: ry }
+    },
+    flipped: () => {
+      return (world.renderer?.camera.angle ?? 0) === 0 ? 1 : -1
+    },
     onTick: ({ isRollback }) => {
       const now = performance.now()
 

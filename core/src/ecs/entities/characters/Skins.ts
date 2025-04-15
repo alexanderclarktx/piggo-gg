@@ -39,13 +39,12 @@ export const VolleyCharacterAnimations: AnimationSelect = (entity) => {
   return "idle"
 }
 
-export const VolleyCharacterDynamic: Dynamic = ({ entity }) => {
+export const VolleyCharacterDynamic: Dynamic = ({ entity, world }) => {
   const { position, renderable } = entity.components
 
-  if (position.data.velocity.x > 0) {
-    renderable.setScale({ x: 1, y: 1 })
-  } else if (position.data.velocity.x < 0) {
-    renderable.setScale({ x: -1, y: 1 })
+  if (position.data.velocity.x !== 0) {
+    const x = world.flipped() * ((position.data.velocity.x > 0) ? 1 : -1)
+    renderable.setScale({ x, y: 1 })
   }
 }
 

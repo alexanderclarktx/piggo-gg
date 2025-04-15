@@ -1,6 +1,6 @@
 import {
-  ClientSystemBuilder, Entity, Renderable, Position, Character,
-  abs, round, XY, XYZ, reduce, revolve
+  ClientSystemBuilder, Entity, Renderable, Position,
+  Character, abs, round, XY, XYZ, reduce
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -24,7 +24,7 @@ export const Camera = (app: Application): Camera => {
   const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 })
   const renderables: Set<Renderable> = new Set()
 
-  let scale = 3
+  let scale = 2.5
 
   const rescale = () => {
     const min = 1
@@ -148,11 +148,10 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
           z: position.data.z + interpolated.z
         })
 
-        const rotated = revolve(
-          x + renderable.position.x,
-          y + renderable.position.y,
-          renderable.revolves ? renderer.camera.angle : 0
-        )
+        const rotated = world.flip({
+          x: x + renderable.position.x,
+          y: y + renderable.position.y
+        })
         renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - z })
       }
     }

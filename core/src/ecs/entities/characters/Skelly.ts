@@ -59,7 +59,6 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       anchor: { x: 0.55, y: 0.9 },
       scale: 1.2,
       zIndex: 3,
-      revolves: true,
       interpolate: true,
       scaleMode: "nearest",
       setup: DudeSkin("white"),

@@ -7,7 +7,11 @@ import {
 const width = 18
 const height = width / 3 * 2
 
-export const Block = (pos: XYZ) => Entity({
+type BlockColors = [number, number, number]
+const grass: BlockColors = [0x08dd00, 0x6E260E, 0x7B3F00]
+const moonrock: BlockColors = [0xcbdaf2, 0x98b0d9, 0xb0ceff]
+
+export const Block = (pos: XYZ, colors: BlockColors = grass) => Entity({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
@@ -30,7 +34,6 @@ export const Block = (pos: XYZ) => Entity({
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
-      revolves: true,
       setup: async (r) => {
         const g = pixiGraphics()
 
@@ -40,20 +43,20 @@ export const Block = (pos: XYZ) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08d000 })
+          .fill({ color: colors[0] })
 
           // bottom-left
           .moveTo(-width, -width / 2)
           .lineTo(-width, height)
           .lineTo(0, height + width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x6E260E })
+          .fill({ color: colors[1] })
 
           // bottom-right
           .lineTo(0, height + width / 2)
           .lineTo(width, height)
           .lineTo(width, -width / 2)
-          .fill({ color: 0x7B3F00 })
+          .fill({ color: colors[2] })
 
         g.position.y = -height
 
@@ -132,7 +135,7 @@ export const BlockPreview = () => Entity({
 
         if (!visible) return
 
-        const xyz = snapXYZ(mouse, world)
+        const xyz = snapXYZ(world.flip(mouse), world)
 
         entity.components.position.setPosition(xyz)
       },
@@ -176,7 +179,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snapXYZ(mouse, world))
+        const block = Block(snapXYZ(world.flip(mouse), world), moonrock)
         world.addEntity(block)
       }
     }),
@@ -197,7 +200,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const h = 4
 
         // isometric block
-        const g = pixiGraphics()
+        r.c = pixiGraphics()
           .lineTo(-width, -width / 2)
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
@@ -205,7 +208,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .fill({ color: 0x08dd00 })
 
           .moveTo(-width, -width / 2)
-
           .lineTo(-width, h)
           .lineTo(0, h + width / 2)
           .lineTo(0, 0)
@@ -218,8 +220,6 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .lineTo(0, h + width / 2)
           .lineTo(width, h)
           .fill({ color: 0x7B3F00 })
-
-        r.c.addChild(g)
 
         r.setOutline({ color: 0x000000, thickness: 1 })
       }
