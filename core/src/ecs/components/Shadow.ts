@@ -73,7 +73,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<R
 
         const highest = highestBlock(data, world)
 
-        position.setPosition({ x: data.x, y: data.y - 0.1 + yOffset, z: highest })
+        position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest })
         position.setVelocity({ ...data.velocity, z: 0 })
         position.lastCollided = lastCollided
 
