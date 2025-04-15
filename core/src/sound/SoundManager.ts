@@ -77,7 +77,6 @@ export const SoundManager = (world: World): SoundManager => {
       spike: load("spike.mp3", 5),
     },
     stopAll: () => {
-      console.log("stopping all sounds")
       for (const sound of values(soundManager.sounds)) {
         if (sound.state === "started") {
           try {
