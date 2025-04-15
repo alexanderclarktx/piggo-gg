@@ -83,7 +83,7 @@ export const SoundManager = (world: World): SoundManager => {
           try {
             sound.stop()
           } catch (e) {
-            console.error(`error while stopping sound ${sound}`, e)
+            console.error(`error while stopping sound ${sound}`)
           }
         }
       }
@@ -123,7 +123,7 @@ export const SoundManager = (world: World): SoundManager => {
           }
         }
       } catch (e) {
-        console.error(`error while playing sound ${soundName}`, e)
+        console.error(`error while playing sound ${soundName}`)
         return false
       }
 
