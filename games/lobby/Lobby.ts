@@ -160,8 +160,12 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
+            world.client?.soundManager.play("click1", 0, undefined, true)
           },
-          onEnter: () => r.setGlow({ outerStrength: 2 }),
+          onEnter: () => {
+            r.setGlow({ outerStrength: 2 })
+            world.client?.soundManager.play("click3")
+          },
           onLeave: () => r.setGlow()
         })
 
@@ -208,9 +212,15 @@ const PlayButton = () => {
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
+              world.client?.soundManager.play("click1", 0, undefined, true)
             },
-            onEnter: () => r.setGlow({ outerStrength: 2 }),
-            onLeave: () => r.setGlow()
+            onEnter: () => {
+              r.setGlow({ outerStrength: 2 })
+              world.client?.soundManager.play("click3")
+            },
+            onLeave: () => {
+              r.setGlow()
+            }
           })
           r.c.addChild(button.c)
         }
@@ -247,8 +257,15 @@ const CreateLobbyButton = () => {
               height: 40,
               style: { fontSize: 26, fill: 0xffffff }
             }),
-            onClick: () => world.client?.copyInviteLink(),
-            onEnter: () => r.setGlow({ outerStrength: 2 }),
+            onClick: () => {
+              world.client?.copyInviteLink()
+
+              world.client?.soundManager.play("click1", 0, undefined, true)
+            },
+            onEnter: () => {
+              r.setGlow({ outerStrength: 2 })
+              world.client?.soundManager.play("click3")
+            },
             onLeave: () => r.setGlow()
           })
 

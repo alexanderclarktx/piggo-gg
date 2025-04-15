@@ -1,6 +1,8 @@
-import { GunNames, isArray, isMobile, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
+import { GunNames, isArray, randomChoice, values, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
+export type MusicSounds = "piano1" | "track1" | "track2" | "track3" | "track4" | "track5"
+export type ClickSounds = "click1" | "click2" | "click3"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
@@ -8,7 +10,7 @@ export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" 
 export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
 export type VolleySounds = "spike"
 
-export type ValidSounds = GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
+export type ValidSounds = MusicSounds | ClickSounds | GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
 
 const load = (url: string, volume: number): Sound => {
   const player = new Sound({ url, volume: volume - 10 })
@@ -19,16 +21,23 @@ export type SoundManager = {
   muted: boolean
   state: "closed" | "running" | "suspended"
   sounds: Record<ValidSounds, Sound>
-  play: (sound: ValidSounds | ValidSounds[], startTime?: number, pos?: XY) => void
+  stopAll: () => void
+  play: (sound: ValidSounds | ValidSounds[], startTime?: number, pos?: XY, force?: boolean) => boolean
 }
 
 export const SoundManager = (world: World): SoundManager => {
 
   // mute when tab is not visible
-  document.addEventListener("visibilitychange", () => soundManager.muted = document.hidden)
+  document.addEventListener("visibilitychange", () => {
+    soundManager.muted = document.hidden
+    if (document.hidden) soundManager.stopAll()
+  })
 
   // mute when window is not focused
-  window.addEventListener("blur", () => soundManager.muted = true)
+  window.addEventListener("blur", () => {
+    soundManager.muted = true
+    soundManager.stopAll()
+  })
 
   // unmute when window is focused
   window.addEventListener("focus", () => soundManager.muted = false)
@@ -37,6 +46,15 @@ export const SoundManager = (world: World): SoundManager => {
     muted: false,
     state: "closed",
     sounds: {
+      piano1: load("piano1.mp3", 5),
+      track1: load("track1.mp3", -10),
+      track2: load("track2.mp3", -10),
+      track3: load("track3.mp3", -10),
+      track4: load("track4.mp3", -10),
+      track5: load("track5.mp3", -10),
+      click1: load("click1.mp3", -5),
+      click2: load("click2.mp3", -5),
+      click3: load("click3.mp3", -10),
       deagle: load("pistol.mp3", -30),
       ak: load("ak.mp3", -25),
       awp: load("awp.mp3", -30),
@@ -58,37 +76,57 @@ export const SoundManager = (world: World): SoundManager => {
       eat2: load("eat2.mp3", -20),
       spike: load("spike.mp3", 5),
     },
-    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0, pos: XY | undefined = undefined) => {
-      if (soundManager.muted) return
+    stopAll: () => {
+      for (const sound of values(soundManager.sounds)) {
+        if (sound.state === "started") {
+          try {
+            sound.stop()
+          } catch (e) {
+            console.error(`error while stopping sound ${sound}`)
+          }
+        }
+      }
+    },
+    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0, pos: XY | undefined = undefined, force: boolean = false) => {
+      if (soundManager.muted) return false
 
       // if the sound is too far away, don't play it
       if (pos) {
         const character = world.client?.playerCharacter()
         if (character) {
           const distance = XYdistance(character.components.position.data, pos)
-          if (distance > 250) return
+          if (distance > 250) return false
         }
       }
 
       try {
         if (soundManager.state !== "running") {
           soundManager.state = getContext().state
-          getTransport().start()
+          getTransport().cancel().start()
         }
 
-        if (soundManager.state !== "running" && isMobile()) return
+        if (soundManager.state !== "running" && !force) return false
 
         if (isArray(soundName)) {
           const choice = randomChoice(soundName)
           const sound = soundManager.sounds[choice]
-          if (sound) sound.start(0, startTime)
+          if (sound && sound.loaded) {
+            sound.start(0, startTime)
+            return true
+          }
         } else {
           const sound = soundManager.sounds[soundName]
-          if (sound) sound.start(0, startTime)
+          if (sound && sound.loaded) {
+            sound.start(0, startTime)
+            return true
+          }
         }
       } catch (e) {
         console.error(`error while playing sound ${soundName}`)
+        return false
       }
+
+      return false
     }
   }
   return soundManager
