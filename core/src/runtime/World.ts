@@ -153,7 +153,6 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       let rx = (x * c - y * s)
       let ry = (x * s + y * c)
 
-      const oldResult = revolve(x, y, world.renderer?.camera.angle ?? 0)
       return { x: rx, y: ry }
     },
     flipped: () => {
