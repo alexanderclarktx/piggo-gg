@@ -200,7 +200,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const h = 4
 
         // isometric block
-        const g = pixiGraphics()
+        r.c = pixiGraphics()
           .lineTo(-width, -width / 2)
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
@@ -222,7 +222,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
           .lineTo(width, h)
           .fill({ color: 0x7B3F00 })
 
-        r.c.addChild(g)
+        // r.c.addChild(g)
 
         r.setOutline({ color: 0x000000, thickness: 1 })
       }

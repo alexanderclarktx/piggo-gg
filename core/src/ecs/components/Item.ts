@@ -51,7 +51,7 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
     ...clickable,
     click: () => ({ actionId: "pickupItem" }),
     hoverOver: () => renderable.setOutline({ color: 0xffffff, thickness: 2 }),
-    hoverOut: () => renderable.setOutline()
+    hoverOut: () => renderable.setOutline({ color: 0x000000, thickness: 1 })
   }
 
   return Entity(entity)
