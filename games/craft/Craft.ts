@@ -9,7 +9,7 @@ export const Craft: GameBuilder = {
   id: "craft",
   init: () => ({
     id: "craft",
-    netcode: "delay",
+    netcode: "rollback",
     state: {},
     systems: [
       InventorySystem,
