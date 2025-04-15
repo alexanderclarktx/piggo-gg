@@ -7,7 +7,12 @@ import {
 const width = 18
 const height = width / 3 * 2
 
-export const Block = (pos: XYZ) => Entity({
+type BlockColors = [number, number, number]
+const dirtColors: BlockColors = [0x08dd00, 0x6E260E, 0x7B3F00]
+// const grassColors: BlockColors = [0x8B8B00, 0xA0A000, 0xCDCD00]
+const moonrockColors: BlockColors = [0xcbdaf2, 0xb0ceff, 0x98b0d9]
+
+export const Block = (pos: XYZ, colors: BlockColors = dirtColors) => Entity({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
@@ -40,20 +45,20 @@ export const Block = (pos: XYZ) => Entity({
           .lineTo(0, -width)
           .lineTo(width, -width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x08d000 })
+          .fill({ color: colors[0] })
 
           // bottom-left
           .moveTo(-width, -width / 2)
           .lineTo(-width, height)
           .lineTo(0, height + width / 2)
           .lineTo(0, 0)
-          .fill({ color: 0x6E260E })
+          .fill({ color: colors[1] })
 
           // bottom-right
           .lineTo(0, height + width / 2)
           .lineTo(width, height)
           .lineTo(width, -width / 2)
-          .fill({ color: 0x7B3F00 })
+          .fill({ color: colors[2] })
 
         g.position.y = -height
 
@@ -132,7 +137,7 @@ export const BlockPreview = () => Entity({
 
         if (!visible) return
 
-        const xyz = snapXYZ(mouse, world)
+        const xyz = snapXYZ(world.flip(mouse), world)
 
         entity.components.position.setPosition(xyz)
       },
@@ -176,7 +181,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snapXYZ(mouse, world))
+        const block = Block(snapXYZ(mouse, world), moonrockColors)
         world.addEntity(block)
       }
     }),

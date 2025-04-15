@@ -78,7 +78,7 @@ export const ItemSystem = SystemBuilder({
           const hyp_x = pointingDelta.x / hypotenuse
           const hyp_y = pointingDelta.y / hypotenuse
 
-          const flip = world.flip()
+          const flip = world.flipped()
 
           position.data.offset = {
             x: round(hyp_x * min(20, abs(pointingDelta.x)), 2),
