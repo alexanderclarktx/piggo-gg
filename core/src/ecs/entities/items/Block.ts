@@ -8,11 +8,10 @@ const width = 18
 const height = width / 3 * 2
 
 type BlockColors = [number, number, number]
-const dirtColors: BlockColors = [0x08dd00, 0x6E260E, 0x7B3F00]
-// const grassColors: BlockColors = [0x8B8B00, 0xA0A000, 0xCDCD00]
-const moonrockColors: BlockColors = [0xcbdaf2, 0xb0ceff, 0x98b0d9]
+const grass: BlockColors = [0x08dd00, 0x6E260E, 0x7B3F00]
+const moonrock: BlockColors = [0xcbdaf2, 0x98b0d9, 0xb0ceff]
 
-export const Block = (pos: XYZ, colors: BlockColors = dirtColors) => Entity({
+export const Block = (pos: XYZ, colors: BlockColors = grass) => Entity({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
@@ -35,7 +34,6 @@ export const Block = (pos: XYZ, colors: BlockColors = dirtColors) => Entity({
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
-      revolves: true,
       setup: async (r) => {
         const g = pixiGraphics()
 
@@ -181,7 +179,8 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snapXYZ(world.flip(mouse), world), moonrockColors)
+        const block = Block(snapXYZ(world.flip(mouse), world), moonrock)
+        console.log("block", block.id, block.components.position?.data.x)
         world.addEntity(block)
       }
     }),

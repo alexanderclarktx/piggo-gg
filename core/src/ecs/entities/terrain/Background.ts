@@ -39,8 +39,8 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
             tile.tilePosition.y = 0.85 * xy.y
 
             position.setVelocity({
-              x: velocity.x * 0.85 * flip,
-              y: velocity.y * 0.85 * flip,
+              x: velocity.x * 0.85,
+              y: velocity.y * 0.85,
               z: velocity.z
             })
             position.data.stop = centeredEntity.components.position.data.stop

@@ -160,6 +160,8 @@ export const RenderSystem = ClientSystemBuilder({
 
           const { position, renderable } = entity.components
 
+          if (!renderable.rendered) continue
+
           // ui renderables
           if (position.screenFixed) {
             if (!renderable.interpolate) continue

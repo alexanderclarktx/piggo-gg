@@ -77,7 +77,6 @@ const Nametag = (player: Player, character: Character) => {
       renderable: Renderable({
         zIndex: 10,
         interpolate: true,
-        revolves: true,
         dynamic: async ({ renderable }) => {
           renderable.visible = character.components.renderable.visible
 

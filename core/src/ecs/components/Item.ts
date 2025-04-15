@@ -88,7 +88,6 @@ export const ItemSystem = SystemBuilder({
           const xScale = flip * (!item.flips ? 1 : pointingDelta.x > 0 ? 1 : -1)
 
           renderable.setScale({ x: xScale, y: 1 })
-          renderable.revolves = true
         }
       }
     }
