@@ -48,7 +48,7 @@ export const HealthSystem = SystemBuilder({
           world.removeEntity(entity.id)
 
           if (world.client && health.deathSounds.length > 0) {
-            world.client?.soundManager.play(health.deathSounds, 0.1)
+            // world.client?.soundManager.play(health.deathSounds, 0.1)
           }
         }
       }

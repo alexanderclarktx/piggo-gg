@@ -33,7 +33,7 @@ export const PhysicsSystem = SystemBuilder({
         // reset physics unless in rollback
         if (!isRollback) resetPhysics()
 
-        // remove old bodies
+        // remove old bodies (TODO does this matter)
         keys(bodies).forEach((id) => {
           if (!world.entities[id]) {
             physics.removeRigidBody(bodies[id])
@@ -41,9 +41,25 @@ export const PhysicsSystem = SystemBuilder({
           }
         })
 
+        // sort entities by id
+        entities.sort((a, b) => a.id > b.id ? 1 : -1)
+
+        const groups: Set<string> = new Set()
+
+        // find dynamic body groups
+        for (const entity of entities) {
+          const { collider } = entity.components
+          if (collider.isStatic === false) {
+            groups.add(collider.group)
+          }
+        }
+
         // prepare physics bodies for each entity
-        entities.sort((a, b) => a.id > b.id ? 1 : -1).forEach((entity) => {
+        for (const entity of entities) {
           const { position, collider } = entity.components
+
+          // cull static colliders
+          if (collider.cullable && collider.isStatic && !groups.has(collider.group)) continue
 
           // handle new physics bodies
           if (!bodies[entity.id]) {
@@ -74,7 +90,7 @@ export const PhysicsSystem = SystemBuilder({
             x: Math.floor(position.data.velocity.x * 100) / 100,
             y: Math.floor(position.data.velocity.y * 100) / 100
           }, true)
-        })
+        }
 
         // run physics
         physics.step()

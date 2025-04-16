@@ -98,8 +98,8 @@ export const DebugSystem = ClientSystemBuilder({
           const { vertices } = physics.debugRender()
 
           for (let i = 0; i < vertices.length; i += 4) {
-            const one = { x: vertices[i], y: vertices[i + 1] }
-            const two = { x: vertices[i + 2], y: vertices[i + 3] }
+            const one = world.flip({ x: vertices[i], y: vertices[i + 1] })
+            const two = world.flip({ x: vertices[i + 2], y: vertices[i + 3] })
             g.moveTo(one.x, one.y)
             g.lineTo(two.x, two.y)
           }

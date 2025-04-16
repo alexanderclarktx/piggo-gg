@@ -22,36 +22,40 @@ export const ColliderGroups = {
 } as const;
 
 export type Collider = Component<"collider"> & {
-  type: "collider"
+  body: RigidBody | undefined
   bodyDesc: RigidBodyDesc
   colliderDesc: ColliderDesc
-  rapierCollider: RapierCollider | undefined
-  body: RigidBody | undefined
-  priority: number
+  cullable: boolean
+  group: keyof typeof ColliderGroups
   hittable: boolean
+  isStatic: boolean
+  priority: number
+  rapierCollider: RapierCollider | undefined
   sensor: SensorCallback
+  type: "collider"
   setGroup: (group: keyof typeof ColliderGroups) => void
 }
 
 export type ColliderProps = {
-  shape: ColliderShapes
-  hittable?: boolean
-  points?: number[]
-  radius?: number
-  length?: number
-  width?: number
-  isStatic?: boolean
+  cullable?: boolean
   frictionAir?: number // TODO deprecated
+  group?: keyof typeof ColliderGroups
+  hittable?: boolean
+  isStatic?: boolean
+  length?: number
   mass?: number
+  points?: number[]
+  priority?: number
+  radius?: number
   restitution?: number
   rotation?: number
-  priority?: number
   sensor?: SensorCallback
-  group?: keyof typeof ColliderGroups
+  shape: ColliderShapes
+  width?: number
 }
 
 export const Collider = ({
-  shape, hittable, points, radius, length, width, isStatic,
+  cullable, shape, hittable, points, radius, length, width, isStatic,
   frictionAir, mass, restitution, sensor, rotation, priority, group
 }: ColliderProps): Collider => {
 
@@ -75,22 +79,26 @@ export const Collider = ({
   if (restitution) colliderDesc.setRestitution(restitution)
   if (rotation) colliderDesc.setRotation(rotation)
 
-  const bodyDesc = (isStatic) ? RigidBodyDesc.fixed() : RigidBodyDesc.dynamic()
+  const bodyDesc = isStatic ? RigidBodyDesc.fixed() : RigidBodyDesc.dynamic()
   bodyDesc.setLinearDamping(frictionAir ?? 0)
 
   const collider: Collider = {
-    type: "collider",
-    colliderDesc: colliderDesc,
-    rapierCollider: undefined,
     body: undefined,
     bodyDesc,
-    sensor: sensor ?? (() => false),
-    priority: priority ?? 0,
+    colliderDesc: colliderDesc,
+    cullable: cullable ?? false,
+    group: group ?? "default",
     hittable: hittable ?? false,
+    isStatic: isStatic ?? false,
+    priority: priority ?? 0,
+    rapierCollider: undefined,
+    sensor: sensor ?? (() => false),
+    type: "collider",
     setGroup: (group) => {
       const n = Number.parseInt(ColliderGroups[group], 2)
       if (n >= 0 && n <= 4294967295) {
         colliderDesc.setCollisionGroups(n)
+        collider.group = group
       }
     }
   }

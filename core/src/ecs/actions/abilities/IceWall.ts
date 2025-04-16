@@ -30,6 +30,6 @@ export const IceWall = Action<XY>("iceWall", ({ world, params, entity }) => {
 
   world.addEntity(LineWall({ points: coords, visible: true, hp: 30, hittable: false }))
 
-  world.client?.soundManager.play(["wallPlace1", "wallPlace2"])
+  // world.client?.soundManager.play(["wallPlace1", "wallPlace2"])
 
 }, 100)
