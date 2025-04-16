@@ -3,15 +3,23 @@ import {
   Health, Item, ItemActionParams, ItemBuilder, ItemEntity, mouse,
   pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
+import { Graphics } from "pixi.js"
 
 const width = 18
 const height = width / 3 * 2
 
-type BlockColors = [number, number, number]
-const grass: BlockColors = [0x08dd00, 0x6E260E, 0x7B3F00]
-const moonrock: BlockColors = [0xcbdaf2, 0x98b0d9, 0xb0ceff]
+type BlockType = "grass" | "moonrock"
+const BlockColors: Record<BlockType, [number, number, number]> = {
+  grass: [0x08dd00, 0x6E260E, 0x7B3F00],
+  moonrock: [0xcbdaf2, 0x98b0d9, 0xb0ceff]
+}
 
-export const Block = (pos: XYZ, colors: BlockColors = grass) => Entity({
+const graphics: Record<BlockType, Graphics | undefined> = {
+  grass: undefined,
+  moonrock: undefined
+}
+
+export const Block = (pos: XYZ, type: BlockType) => Entity({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
@@ -36,32 +44,35 @@ export const Block = (pos: XYZ, colors: BlockColors = grass) => Entity({
       scaleMode: "nearest",
       zIndex: 3,
       setup: async (r) => {
-        const g = pixiGraphics()
+        if (!graphics[type]) {
+          const colors = BlockColors[type]
 
-          // top
-          .moveTo(0, 0)
-          .lineTo(-width, -width / 2)
-          .lineTo(0, -width)
-          .lineTo(width, -width / 2)
-          .lineTo(0, 0)
-          .fill({ color: colors[0] })
+          graphics[type] = pixiGraphics()
+            // top
+            .moveTo(0, 0)
+            .lineTo(-width, -width / 2)
+            .lineTo(0, -width)
+            .lineTo(width, -width / 2)
+            .lineTo(0, 0)
+            .fill({ color: colors[0] })
 
-          // bottom-left
-          .moveTo(-width, -width / 2)
-          .lineTo(-width, height)
-          .lineTo(0, height + width / 2)
-          .lineTo(0, 0)
-          .fill({ color: colors[1] })
+            // bottom-left
+            .moveTo(-width, -width / 2)
+            .lineTo(-width, height)
+            .lineTo(0, height + width / 2)
+            .lineTo(0, 0)
+            .fill({ color: colors[1] })
 
-          // bottom-right
-          .lineTo(0, height + width / 2)
-          .lineTo(width, height)
-          .lineTo(width, -width / 2)
-          .fill({ color: colors[2] })
+            // bottom-right
+            .lineTo(0, height + width / 2)
+            .lineTo(width, height)
+            .lineTo(width, -width / 2)
+            .fill({ color: colors[2] })
+        }
 
-        g.position.y = -height
-
-        r.c.addChild(g)
+        const clone = graphics[type].clone()
+        clone.position.y = -height
+        r.c.addChild(clone)
 
         if (pos.z > 0) {
           // r.setOutline({ color: 0x000000, thickness: 0.2 })
@@ -99,22 +110,24 @@ export const snapXY = (pos: XY): XY => {
 }
 
 export const snapXYZ = (pos: XY, world: World): XYZ => {
-  return { z: highestBlock(pos, world), ...snapXY(pos) }
+  return { z: highestBlock(pos, world).z, ...snapXY(pos) }
 }
 
-export const highestBlock = (pos: XY, world: World): number => {
+export const highestBlock = (pos: XY, world: World): XYZ => {
   const snapped = snapXY(pos)
 
   const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
-  let highest = 0
+  let level = 0
 
+  // todo this is slow, should be a spatial hash ?
   for (const block of blocks) {
     const { x, y, z } = block.components.position!.data
     if (x === snapped.x && y === snapped.y) {
-      highest = Math.max(highest, z + 21)
+      level = Math.max(level, z + 21)
     }
   }
-  return highest
+
+  return { x: snapped.x, y: snapped.y, z: level }
 }
 
 export const BlockPreview = () => Entity({
@@ -180,7 +193,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snapXYZ(world.flip(mouse), world), moonrock)
+        const block = Block(snapXYZ(world.flip(mouse), world), "moonrock")
         world.addEntity(block)
         world.client?.soundManager.play("click2")
       }
