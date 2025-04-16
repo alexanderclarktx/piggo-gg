@@ -160,7 +160,8 @@ export const Friends = (): Entity => {
         setup: async (renderable, _, world) => {
           drawOutline()
 
-          renderable.setBevel({ rotation: 90, lightAlpha: 0.8, shadowAlpha: 0.4 })
+          // todo separate renderables for buttons
+          // renderable.setBevel({ rotation: 90, lightAlpha: 0.8, shadowAlpha: 0.4 })
 
           addFriendInput = PixiButton({
             visible: false,
