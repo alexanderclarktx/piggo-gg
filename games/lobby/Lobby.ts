@@ -434,7 +434,7 @@ const GameLobby = (): Entity => {
   const list: GameBuilder[] = [Craft, Volley]
   let gameButtons: Entity<Position | Renderable>[] = []
 
-  const gameLobby = Entity<Position | Renderable>({
+  const gameLobby = Entity<Position>({
     id: "gameLobby",
     components: {
       position: Position({ x: 220, y: 10, screenFixed: true }),
@@ -470,26 +470,6 @@ const GameLobby = (): Entity => {
             gb.components.position.data.x = offset.x + x + width / 2
             x += width + 20
           }
-        }
-      }),
-      renderable: Renderable({
-        zIndex: 9,
-        interactiveChildren: true,
-        setup: async (r, renderer) => {
-          const { height, width } = renderer.app.screen
-
-          // const outline = pixiGraphics()
-          // outline.roundRect(0, 0, width - 230, height - 20, 3)
-          //   .stroke({ color: colors.piggo, alpha: 0.8, width: 2, miterLimit: 0 })
-
-          // const select = pixiText({
-          //   text: "select game:",
-          //   style: { fontSize: 24, dropShadow: true },
-          //   pos: { x: (width - 230) / 2, y: 15 },
-          //   anchor: { x: 0.5, y: 0 }
-          // })
-
-          // r.c.addChild(outline)
         }
       })
     }
