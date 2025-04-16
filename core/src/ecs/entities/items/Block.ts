@@ -8,15 +8,54 @@ import { Graphics } from "pixi.js"
 const width = 18
 const height = width / 3 * 2
 
-type BlockType = "grass" | "moonrock"
+type BlockType = "grass" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+
 const BlockColors: Record<BlockType, [number, number, number]> = {
   grass: [0x08dd00, 0x6E260E, 0x7B3F00],
-  moonrock: [0xcbdaf2, 0x98b0d9, 0xb0ceff]
+  moonrock: [0xcbdaf2, 0x98b0d9, 0xdddddd],
+  asteroid: [0x8b8b8b, 0x6E6E6E, 0xECF0F1],
+  saphire: [0x00afff, 0x007fff, 0x00cfff],
+  obsidian: [0x330055, 0x550077, 0xaa00aa],
+  ruby: [0x660033, 0x880000, 0xff0000]
 }
 
 const graphics: Record<BlockType, Graphics | undefined> = {
   grass: undefined,
-  moonrock: undefined
+  moonrock: undefined,
+  asteroid: undefined,
+  saphire: undefined,
+  obsidian: undefined,
+  ruby: undefined
+}
+
+const blockGraphics = (type: BlockType) => {
+  if (graphics[type]) return graphics[type]
+
+  const colors = BlockColors[type]
+
+  graphics[type] = pixiGraphics()
+    // top
+    .moveTo(0, 0)
+    .lineTo(-width, -width / 2)
+    .lineTo(0, -width)
+    .lineTo(width, -width / 2)
+    .lineTo(0, 0)
+    .fill({ color: colors[0] })
+
+    // bottom-left
+    .moveTo(-width, -width / 2)
+    .lineTo(-width, height)
+    .lineTo(0, height + width / 2)
+    .lineTo(0, 0)
+    .fill({ color: colors[1] })
+
+    // bottom-right
+    .lineTo(0, height + width / 2)
+    .lineTo(width, height)
+    .lineTo(width, -width / 2)
+    .fill({ color: colors[2] })
+  
+    return graphics[type]
 }
 
 export const Block = (pos: XYZ, type: BlockType) => Entity({
@@ -44,33 +83,7 @@ export const Block = (pos: XYZ, type: BlockType) => Entity({
       scaleMode: "nearest",
       zIndex: 3,
       setup: async (r) => {
-        if (!graphics[type]) {
-          const colors = BlockColors[type]
-
-          graphics[type] = pixiGraphics()
-            // top
-            .moveTo(0, 0)
-            .lineTo(-width, -width / 2)
-            .lineTo(0, -width)
-            .lineTo(width, -width / 2)
-            .lineTo(0, 0)
-            .fill({ color: colors[0] })
-
-            // bottom-left
-            .moveTo(-width, -width / 2)
-            .lineTo(-width, height)
-            .lineTo(0, height + width / 2)
-            .lineTo(0, 0)
-            .fill({ color: colors[1] })
-
-            // bottom-right
-            .lineTo(0, height + width / 2)
-            .lineTo(width, height)
-            .lineTo(width, -width / 2)
-            .fill({ color: colors[2] })
-        }
-
-        const clone = graphics[type].clone()
+        const clone = blockGraphics(type).clone()
         clone.position.y = -height
         r.c.addChild(clone)
 
@@ -184,8 +197,8 @@ export const BlockPreview = () => Entity({
   }
 })
 
-export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
-  id: id ?? `item-block-${character.id}`,
+export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) => ItemEntity({
+  id: id ?? `item-block-${character.id}-${type}`,
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
@@ -193,7 +206,7 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
-        const block = Block(snapXYZ(world.flip(mouse), world), "moonrock")
+        const block = Block(snapXYZ(world.flip(mouse), world), type)
         world.addEntity(block)
         world.client?.soundManager.play("click2")
       }
@@ -204,37 +217,15 @@ export const BlockItem: ItemBuilder = ({ character, id }) => ItemEntity({
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
-      scale: 1,
+      scale: 0.3,
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,
       visible: false,
       rotates: false,
       setup: async (r) => {
-
-        const width = 6
-        const h = 4
-
-        // isometric block
-        r.c = pixiGraphics()
-          .lineTo(-width, -width / 2)
-          .lineTo(0, -width)
-          .lineTo(width, -width / 2)
-          .lineTo(0, 0)
-          .fill({ color: 0x08dd00 })
-
-          .moveTo(-width, -width / 2)
-          .lineTo(-width, h)
-          .lineTo(0, h + width / 2)
-          .lineTo(0, 0)
-          .fill({ color: 0x6E260E })
-
-          .lineTo(width, h)
-          .lineTo(width, -width / 2)
-
-          .moveTo(0, 0)
-          .lineTo(0, h + width / 2)
-          .lineTo(width, h)
-          .fill({ color: 0x7B3F00 })
+        const clone = blockGraphics(type).clone()
+        clone.position.y = -height
+        r.c = clone
 
         r.setOutline({ color: 0x000000, thickness: 1 })
       }
