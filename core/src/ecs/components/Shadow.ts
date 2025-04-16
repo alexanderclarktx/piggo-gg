@@ -2,6 +2,7 @@ import {
   ClientSystemBuilder, Entity, pixiGraphics, Position,
   Renderable, Component, entries, highestBlock
 } from "@piggo-gg/core"
+import { Graphics } from "pixi.js"
 
 export type Shadow = Component<"shadow"> & { size: number, yOffset: number }
 
@@ -58,31 +59,56 @@ export const ShadowSystem = ClientSystemBuilder({
   }
 })
 
-const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<Renderable>({
-  id: `shadow-${target.id}`,
-  components: {
-    position: Position(),
-    renderable: Renderable({
-      zIndex: target.components.renderable.zIndex,
-      interpolate: true,
-      dynamic: ({ entity, world }) => {
-        const { position, renderable } = entity.components
-        if (!position || !renderable) return
+const ShadowEntity = (target: Target, size: number, yOffset: number) => {
 
-        const { data, lastCollided } = target.components.position
+  let mask: Graphics
 
-        const highest = highestBlock(data, world)
+  return Entity<Renderable>({
+    id: `shadow-${target.id}`,
+    components: {
+      position: Position(),
+      renderable: Renderable({
+        zIndex: target.components.renderable.zIndex,
+        interpolate: true,
+        dynamic: ({ entity, world }) => {
+          const { position, renderable } = entity.components
+          if (!position || !renderable) return
 
-        position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest })
-        position.setVelocity({ ...data.velocity, z: 0 })
-        position.lastCollided = lastCollided
+          const { data, lastCollided } = target.components.position
 
-        renderable.c.alpha = 0.25 - (data.z - highest) / 500
-      },
-      setup: async (renderable) => {
-        renderable.c = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
-        renderable.setBlur({ strength: 3 })
-      }
-    })
-  }
-})
+          const highest = highestBlock(data, world)
+
+          position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest.z })
+          position.setVelocity({ ...data.velocity, z: 0 })
+          position.lastCollided = lastCollided
+
+          renderable.c.alpha = 0.25 - (data.z - highest.z) / 500
+
+          mask.position.x = highest.x - position.data.x
+          mask.position.y = 9 + (highest.y - position.data.y)
+
+          console.log(highest.z)
+          if (highest.z > 21) {
+            renderable.c.setMask({ mask })
+          } else {
+            console.log("removing mask")
+            renderable.c.mask = null
+          }
+        },
+        setup: async (renderable) => {
+          renderable.c = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
+          renderable.setBlur({ strength: 3 })
+
+          mask = pixiGraphics()
+            .lineTo(-18, -18 / 2)
+            .lineTo(0, -18)
+            .lineTo(18, -18 / 2)
+            .lineTo(0, 0)
+            .fill({ color: 0x000000, alpha: 0 })
+
+          renderable.c.addChild(mask)
+        }
+      })
+    }
+  })
+}

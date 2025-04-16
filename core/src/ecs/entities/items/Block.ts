@@ -99,22 +99,24 @@ export const snapXY = (pos: XY): XY => {
 }
 
 export const snapXYZ = (pos: XY, world: World): XYZ => {
-  return { z: highestBlock(pos, world), ...snapXY(pos) }
+  return { z: highestBlock(pos, world).z, ...snapXY(pos) }
 }
 
-export const highestBlock = (pos: XY, world: World): number => {
+export const highestBlock = (pos: XY, world: World): XYZ => {
   const snapped = snapXY(pos)
 
   const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
-  let highest = 0
+  let level = 0
 
+  // todo this is slow, should be a spatial hash ?
   for (const block of blocks) {
     const { x, y, z } = block.components.position!.data
     if (x === snapped.x && y === snapped.y) {
-      highest = Math.max(highest, z + 21)
+      level = Math.max(level, z + 21)
     }
   }
-  return highest
+
+  return { x: snapped.x, y: snapped.y, z: level }
 }
 
 export const BlockPreview = () => Entity({
