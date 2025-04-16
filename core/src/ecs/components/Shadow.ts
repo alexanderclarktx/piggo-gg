@@ -87,11 +87,10 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => {
           mask.position.x = highest.x - position.data.x
           mask.position.y = 9 + (highest.y - position.data.y)
 
-          console.log(highest.z)
           if (highest.z > 21) {
             renderable.c.setMask({ mask })
           } else {
-            console.log("removing mask")
+            // console.log("removing mask")
             renderable.c.mask = null
           }
         },
