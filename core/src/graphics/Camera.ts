@@ -99,7 +99,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
 
     // scroll to zoom
     renderer.app.canvas.addEventListener("wheel", (event) => {
-      targetScale += sign(event.deltaY) * -0.01 * sqrt(abs(event.deltaY))
+      targetScale += -0.01 * sign(event.deltaY) * sqrt(abs(event.deltaY))
     })
 
     return {
