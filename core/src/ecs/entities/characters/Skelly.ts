@@ -32,7 +32,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
         "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
         "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
         "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
-        "shift": ({hold}) => {
+        "q": ({hold}) => {
           if (hold) return null
           return { actionId: "changeAngle"}
         }
