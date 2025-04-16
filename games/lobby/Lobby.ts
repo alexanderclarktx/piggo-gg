@@ -153,10 +153,11 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           content: () => ({
             text: game.id,
             textAnchor: { x: 0.5, y: 0.5 },
-            textPos: { x: 0, y: -50 },
+            textPos: { x: 0, y: -45 },
             style: { fontSize: 28, fill: 0xffffff },
+            rounded: 14,
             height: 140,
-            width: 180
+            width: 170
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -176,7 +177,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
         } else {
           const textures = await loadTexture("vball.json")
-          icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.3 } })
+          icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
         }
         icon.texture.source.scaleMode = "nearest"
 
@@ -409,7 +410,7 @@ const PlayersOnline = () => {
   return Entity({
     id: "playersOnline",
     components: {
-      position: Position({ x: -20, y: 20, screenFixed: true }),
+      position: Position({ x: -10, y: 10, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable) => {
@@ -477,9 +478,9 @@ const GameLobby = (): Entity => {
         setup: async (r, renderer) => {
           const { height, width } = renderer.app.screen
 
-          const outline = pixiGraphics()
-          outline.roundRect(0, 0, width - 230, height - 20, 3)
-            .stroke({ color: colors.piggo, alpha: 0.8, width: 2, miterLimit: 0 })
+          // const outline = pixiGraphics()
+          // outline.roundRect(0, 0, width - 230, height - 20, 3)
+          //   .stroke({ color: colors.piggo, alpha: 0.8, width: 2, miterLimit: 0 })
 
           // const select = pixiText({
           //   text: "select game:",
@@ -488,7 +489,7 @@ const GameLobby = (): Entity => {
           //   anchor: { x: 0.5, y: 0 }
           // })
 
-          r.c.addChild(outline)
+          // r.c.addChild(outline)
         }
       })
     }

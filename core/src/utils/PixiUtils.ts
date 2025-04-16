@@ -73,6 +73,7 @@ type PixiButtonContent = {
   fillColor?: number
   height?: number
   pos?: XY
+  rounded?: number
   strokeAlpha?: number
   strokeColor?: number
   style: pixiTextStyle
@@ -101,7 +102,20 @@ export type PixiButton = {
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
 
-  const draw = ({ fillAlpha, anchor = { x: 0.5, y: 0.5 }, fillColor, height, pos = { x: 0, y: 0 }, strokeAlpha, strokeColor, style, text, textAnchor, textPos, width }: PixiButtonContent) => {
+  const draw = ({
+    anchor = { x: 0.5, y: 0.5 },
+    fillAlpha,
+    fillColor, height,
+    pos = { x: 0, y: 0 },
+    rounded = 5,
+    strokeAlpha,
+    strokeColor,
+    style,
+    text,
+    textAnchor,
+    textPos,
+    width
+  }: PixiButtonContent) => {
 
     const t = pixiText({ text, pos: textPos ?? pos, anchor: textAnchor ?? anchor, style })
 
@@ -110,7 +124,7 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
       y: height ? pos.y - (1 - anchor.y) * height : pos.y - (1 - anchor.y) * t.height - 5,
       w: width ?? t.width + 14,
       h: height ?? t.height + 10,
-      rounded: 5,
+      rounded,
       style: {
         alpha: fillAlpha ?? 1,
         color: fillColor ?? 0x000000,
