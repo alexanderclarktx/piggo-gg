@@ -1,4 +1,4 @@
-import { entries, GunNames, isArray, randomChoice, values, World, XY, XYdistance } from "@piggo-gg/core"
+import { entries, GunNames, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
 export type MusicSounds = "piano1" | "track1" | "track2" | "track3" | "track4" | "track5"
