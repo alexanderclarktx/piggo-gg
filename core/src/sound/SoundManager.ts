@@ -1,4 +1,4 @@
-import { GunNames, isArray, randomChoice, values, World, XY, XYdistance } from "@piggo-gg/core"
+import { entries, GunNames, isArray, randomChoice, values, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
 export type MusicSounds = "piano1" | "track1" | "track2" | "track3" | "track4" | "track5"
@@ -22,7 +22,7 @@ export type SoundManager = {
   state: "closed" | "running" | "suspended"
   sounds: Record<ValidSounds, Sound>
   stopAll: () => void
-  play: (sound: ValidSounds | ValidSounds[], startTime?: number, pos?: XY, force?: boolean) => boolean
+  play: (sound: ValidSounds, startTime?: number, pos?: XY, force?: boolean) => boolean
 }
 
 export const SoundManager = (world: World): SoundManager => {
@@ -77,18 +77,22 @@ export const SoundManager = (world: World): SoundManager => {
       spike: load("spike.mp3", 5),
     },
     stopAll: () => {
-      for (const sound of values(soundManager.sounds)) {
+      for (const [name, sound] of entries(soundManager.sounds)) {
         if (sound.state === "started") {
           try {
-            sound.stop()
+            if (name.startsWith("track")) {
+              // sound.mute = true
+            } else {
+              sound.stop()
+            }
           } catch (e) {
             console.error(`error while stopping sound ${sound}`)
           }
         }
       }
     },
-    play: (soundName: ValidSounds | ValidSounds[], startTime: number = 0, pos: XY | undefined = undefined, force: boolean = false) => {
-      if (soundManager.muted) return false
+    play: (soundName: ValidSounds, startTime: number = 0, pos: XY | undefined = undefined, force: boolean = false) => {
+      if (soundManager.muted && !soundName.startsWith("track")) return false
 
       // if the sound is too far away, don't play it
       if (pos) {
@@ -107,20 +111,20 @@ export const SoundManager = (world: World): SoundManager => {
 
         if (soundManager.state !== "running" && !force) return false
 
-        if (isArray(soundName)) {
-          const choice = randomChoice(soundName)
-          const sound = soundManager.sounds[choice]
-          if (sound && sound.loaded) {
-            sound.start(0, startTime)
-            return true
-          }
-        } else {
-          const sound = soundManager.sounds[soundName]
-          if (sound && sound.loaded) {
-            sound.start(0, startTime)
-            return true
-          }
+        // if (isArray(soundName)) {
+        //   const choice = randomChoice(soundName)
+        //   const sound = soundManager.sounds[choice]
+        //   if (sound && sound.loaded) {
+        //     sound.start(0, startTime)
+        //     return true
+        //   }
+        // } else {
+        const sound = soundManager.sounds[soundName]
+        if (sound && sound.loaded) {
+          sound.start(0, startTime)
+          return true
         }
+        // }
       } catch (e) {
         console.error(`error while playing sound ${soundName}`)
         return false

@@ -30,6 +30,8 @@ export type Collider = Component<"collider"> & {
   priority: number
   hittable: boolean
   sensor: SensorCallback
+  isStatic: boolean
+  group: keyof typeof ColliderGroups
   setGroup: (group: keyof typeof ColliderGroups) => void
 }
 
@@ -75,7 +77,7 @@ export const Collider = ({
   if (restitution) colliderDesc.setRestitution(restitution)
   if (rotation) colliderDesc.setRotation(rotation)
 
-  const bodyDesc = (isStatic) ? RigidBodyDesc.fixed() : RigidBodyDesc.dynamic()
+  const bodyDesc = isStatic ? RigidBodyDesc.fixed() : RigidBodyDesc.dynamic()
   bodyDesc.setLinearDamping(frictionAir ?? 0)
 
   const collider: Collider = {
@@ -84,13 +86,16 @@ export const Collider = ({
     rapierCollider: undefined,
     body: undefined,
     bodyDesc,
+    group: group ?? "default",
     sensor: sensor ?? (() => false),
     priority: priority ?? 0,
     hittable: hittable ?? false,
+    isStatic: isStatic ?? false,
     setGroup: (group) => {
       const n = Number.parseInt(ColliderGroups[group], 2)
       if (n >= 0 && n <= 4294967295) {
         colliderDesc.setCollisionGroups(n)
+        collider.group = group
       }
     }
   }
