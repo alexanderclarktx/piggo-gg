@@ -1,7 +1,7 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
   Health, Item, ItemActionParams, ItemBuilder, ItemEntity, mouse,
-  pixiGraphics, Position, Renderable, round, ShadeFilter, values, World, XY, XYZ
+  pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
