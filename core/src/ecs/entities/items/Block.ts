@@ -19,10 +19,11 @@ export const Block = (pos: XYZ, colors: BlockColors = grass) => Entity({
     element: Element("rock"),
     health: Health({ hp: 50 }),
     collider: Collider({
-      shape: "line",
-      isStatic: true,
-      hittable: pos.z > 0 ? true : false,
+      cullable: true,
       group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
+      hittable: pos.z > 0 ? true : false,
+      isStatic: true,
+      shape: "line",
       points: [
         0, width / 2,
         -width, 0,

@@ -41,25 +41,25 @@ export const PhysicsSystem = SystemBuilder({
           }
         })
 
+        // sort entities by id
         entities.sort((a, b) => a.id > b.id ? 1 : -1)
 
         const groups: Set<string> = new Set()
 
-        // find where dynamic bodies are
+        // find dynamic body groups
         for (const entity of entities) {
           const { collider } = entity.components
           if (collider.isStatic === false) {
             groups.add(collider.group)
-            console.log(`${world.tick} added group ${collider.group}`)
           }
         }
 
         // prepare physics bodies for each entity
         for (const entity of entities) {
-        // entities.sort((a, b) => a.id > b.id ? 1 : -1).forEach((entity) => {
           const { position, collider } = entity.components
 
-          if (collider.isStatic && !groups.has(collider.group)) continue
+          // cull static colliders
+          if (collider.cullable && collider.isStatic && !groups.has(collider.group)) continue
 
           // handle new physics bodies
           if (!bodies[entity.id]) {
