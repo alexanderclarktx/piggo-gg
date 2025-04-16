@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position,
-  Character, abs, round, XY, XYZ, reduce
+  Character, abs, round, XY, XYZ, sign
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -8,6 +8,7 @@ export type Camera = {
   angle: 0 | 1 | 2 | 3
   root: Container
   centeredEntity: Character | undefined
+  scale: number
   add: (r: Renderable) => void
   remove: (r: Renderable) => void
   scaleBy: (delta: number) => void
@@ -24,24 +25,11 @@ export const Camera = (app: Application): Camera => {
   const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 })
   const renderables: Set<Renderable> = new Set()
 
-  let scale = 2.5
-
-  const rescale = () => {
-    const min = 1
-    const max = 5
-
-    if (scale < min) scale = min
-    if (scale > max) scale = max
-
-    root.scale.set(scale, scale)
-  }
-
-  rescale()
-
   const camera: Camera = {
     angle: 0,
     root,
     centeredEntity: undefined,
+    scale: 2.5,
     add: (r: Renderable) => {
       renderables.add(r)
       root.addChild(r.c)
@@ -51,16 +39,16 @@ export const Camera = (app: Application): Camera => {
       root.removeChild(r.c)
     },
     scaleBy: (delta: number) => {
-      scale += delta
+      camera.scale += delta
       rescale()
     },
     inFrame: ({ x, y }: XY) => { // TODO broken
       const { width, height } = app.screen
 
-      const camX = ((width / 2) - root.x) / scale
-      const camY = ((height / 2) - root.y) / scale
+      const camX = ((width / 2) - root.x) / camera.scale
+      const camY = ((height / 2) - root.y) / camera.scale
 
-      const s = scale + 2
+      const s = camera.scale + 2
 
       const result = abs(camX - x) < width / s && abs(camY - y) < height / s
 
@@ -71,18 +59,30 @@ export const Camera = (app: Application): Camera => {
       root.y += y
     },
     moveTo: ({ x, y }: XY) => {
-      root.x = round(app.screen.width / 2 - x * scale, 3)
-      root.y = round(app.screen.height / 2 - y * scale, 3)
+      root.x = round(app.screen.width / 2 - x * camera.scale, 3)
+      root.y = round(app.screen.height / 2 - y * camera.scale, 3)
     },
     toWorldCoords: ({ x, y }: XY) => ({
-      x: round((x - root.x) / scale, 3),
-      y: round((y - root.y) / scale, 3)
+      x: round((x - root.x) / camera.scale, 3),
+      y: round((y - root.y) / camera.scale, 3)
     }),
     toCameraCoords: ({ x, y }: XY) => ({
-      x: round(x * scale + root.x, 3),
-      y: round(y * scale + root.y, 3)
+      x: round(x * camera.scale + root.x, 3),
+      y: round(y * camera.scale + root.y, 3)
     })
   }
+
+  const rescale = () => {
+    const min = 1
+    const max = 5
+
+    if (camera.scale < min) camera.scale = min
+    if (camera.scale > max) camera.scale = max
+
+    root.scale.set(camera.scale, camera.scale)
+  }
+
+  rescale()
 
   return camera
 }
@@ -95,11 +95,11 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
     const { renderer } = world
     if (!renderer) return
 
-    let zoomLeft = 0
+    let targetScale = renderer.camera.scale
 
-    // handle zoom
+    // scroll to zoom
     renderer.app.canvas.addEventListener("wheel", (event) => {
-      zoomLeft = event.deltaY * 0.01
+      targetScale += sign(event.deltaY) * -0.01
     })
 
     return {
@@ -133,9 +133,9 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
       onRender: (_, delta) => {
         if (!renderer.camera.centeredEntity) return
 
-        if (zoomLeft !== 0) {
-          renderer.camera?.scaleBy(-zoomLeft * 0.1)
-          zoomLeft = reduce(zoomLeft, 0.005)
+        if (targetScale !== renderer.camera.scale) {
+          const diff = targetScale - renderer.camera.scale
+          renderer.camera.scaleBy(diff * 0.1)
         }
 
         const { position, renderable } = renderer.camera.centeredEntity.components
