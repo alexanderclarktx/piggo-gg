@@ -19,7 +19,9 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     collider: Collider({ shape: "ball", radius: 4, hittable: true }),
     health: Health({ hp: 100 }),
     team: player.components.team,
-    inventory: Inventory([BlockItem, Axe, Pickaxe, Sword]),
+    inventory: Inventory([
+      BlockItem("moonrock"), BlockItem("saphire"), BlockItem("ruby"), BlockItem("obsidian"), Pickaxe
+    ]),
     element: Element("flesh"),
     shadow: Shadow(5),
     input: Input({
@@ -32,9 +34,9 @@ export const Skelly = (player: Player, pos?: XY) => Character({
         "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
         "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
         "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
-        "q": ({hold}) => {
+        "q": ({ hold }) => {
           if (hold) return null
-          return { actionId: "changeAngle"}
+          return { actionId: "changeAngle" }
         }
       },
       joystick: DefaultJoystickHandler
