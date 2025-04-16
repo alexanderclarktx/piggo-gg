@@ -1,6 +1,7 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position,
-  Character, abs, round, XY, XYZ, sign
+  Character, abs, round, XY, XYZ, sign,
+  sqrt
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -99,7 +100,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
 
     // scroll to zoom
     renderer.app.canvas.addEventListener("wheel", (event) => {
-      targetScale += sign(event.deltaY) * -0.01
+      targetScale += sign(event.deltaY) * -0.01 * sqrt(abs(event.deltaY))
     })
 
     return {
