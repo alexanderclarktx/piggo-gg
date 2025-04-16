@@ -95,13 +95,11 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
     const { renderer } = world
     if (!renderer) return
 
-    // let zoomLeft = 0
     let targetScale = renderer.camera.scale
 
-    // handle zoom
+    // scroll to zoom
     renderer.app.canvas.addEventListener("wheel", (event) => {
-      // zoomLeft = event.deltaY * 0.01
-      targetScale += sign(event.deltaY) * 0.01
+      targetScale += sign(event.deltaY) * -0.01
     })
 
     return {
