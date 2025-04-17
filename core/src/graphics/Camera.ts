@@ -1,13 +1,13 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position,
-  Character, abs, round, XY, XYZ, sign, sqrt
+  Character, abs, round, XY, XYZ, sign, sqrt, max, min
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
 export type Camera = {
   angle: 0 | 1 | 2 | 3
   root: Container
-  centeredEntity: Character | undefined
+  focus: Character | undefined
   scale: number
   add: (r: Renderable) => void
   remove: (r: Renderable) => void
@@ -28,7 +28,7 @@ export const Camera = (app: Application): Camera => {
   const camera: Camera = {
     angle: 0,
     root,
-    centeredEntity: undefined,
+    focus: undefined,
     scale: 2.5,
     add: (r: Renderable) => {
       renderables.add(r)
@@ -48,7 +48,7 @@ export const Camera = (app: Application): Camera => {
       const camX = ((width / 2) - root.x) / camera.scale
       const camY = ((height / 2) - root.y) / camera.scale
 
-      const s = camera.scale + 2
+      const s = camera.scale * 1.5
 
       const result = abs(camX - x) < width / s && abs(camY - y) < height / s
 
@@ -100,6 +100,8 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
     // scroll to zoom
     renderer.app.canvas.addEventListener("wheel", (event) => {
       targetScale += -0.01 * sign(event.deltaY) * sqrt(abs(event.deltaY))
+      targetScale = min(targetScale, 5)
+      targetScale = max(targetScale, 1)
     })
 
     return {
@@ -107,38 +109,37 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
       query: ["renderable", "position"],
       priority: 10,
       onTick: (entities: Entity<Renderable | Position>[]) => {
-        let numHidden = 0
+        // camera focus on player's character
+        const character = world.client?.playerCharacter()
+        if (character) renderer.camera.focus = character
 
         // cull far away entities
-        // for (const entity of entities) {
-        //   const { position, renderable } = entity.components
+        let numHidden = 0
+        for (const entity of entities) {
+          const { position, renderable } = entity.components
 
-        //   // cull if far from camera
-        //   if (renderable.cullable && !position.screenFixed && renderable.c.children) {
-        //     renderable.c.children.forEach((child) => {
-        //       child.visible = renderer.camera.inFrame({
-        //         x: position.data.x + child.position.x,
-        //         y: position.data.y + child.position.y
-        //       })
-
-        //       if (!child.visible) numHidden++
-        //     })
-        //   }
-        // }
-
-        // center camera on player's character
-        const character = world.client?.playerCharacter()
-        if (character) renderer.camera.centeredEntity = character
+          if (renderable.cullable) {
+            if (!renderer.camera.inFrame({
+              x: position.data.x + renderable.position.x,
+              y: position.data.y + renderable.position.y
+            })) {
+              renderable.visible = false
+              numHidden++
+            } else {
+              renderable.visible = true
+            }
+          }
+        }
       },
       onRender: (_, delta) => {
-        if (!renderer.camera.centeredEntity) return
+        if (!renderer.camera.focus) return
 
         if (targetScale !== renderer.camera.scale) {
           const diff = targetScale - renderer.camera.scale
           renderer.camera.scaleBy(diff * 0.1)
         }
 
-        const { position, renderable } = renderer.camera.centeredEntity.components
+        const { position, renderable } = renderer.camera.focus.components
 
         const interpolated = position.interpolate(delta, world)
 

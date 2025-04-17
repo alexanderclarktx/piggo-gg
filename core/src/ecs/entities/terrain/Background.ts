@@ -27,25 +27,23 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
         if (follow) {
           const { position } = entity.components
 
-          const { centeredEntity } = world.renderer?.camera ?? {}
-          if (centeredEntity && world.renderer) {
+          const { focus } = world.renderer?.camera ?? {}
+          if (focus && world.renderer) {
 
-            const { x, y, z, velocity } = centeredEntity.components.position.data
-
-            const flip = world.flipped()
+            const { x, y, z, velocity } = focus.components.position.data
 
             const xy = world.flip({ x, y })
             tile.tilePosition.x = 0.85 * xy.x
-            tile.tilePosition.y = 0.85 * xy.y
+            tile.tilePosition.y = 0.85 * xy.y + 0.2 * z
 
             position.setVelocity({
               x: velocity.x * 0.85,
               y: velocity.y * 0.85,
               z: velocity.z
             })
-            position.data.stop = centeredEntity.components.position.data.stop
+            position.data.stop = focus.components.position.data.stop
             position.setPosition({ z })
-            position.lastCollided = centeredEntity.components.position.lastCollided
+            position.lastCollided = focus.components.position.lastCollided
           }
         }
       },

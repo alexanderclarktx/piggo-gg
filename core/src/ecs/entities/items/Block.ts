@@ -82,6 +82,7 @@ export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
+      cullable: true,
       setup: async (r) => {
         const clone = blockGraphics(type).clone()
         clone.position.y = -height
@@ -176,6 +177,7 @@ const blockAtMouse = (mouse: XY): XYZ | null => {
 
   // sort by Z desc then Y desc
   const blocks = xBlocksBuffer[snapped.x]
+  if (!blocks) return null
 
   // sort by Z desc
   blocks.sort((a, b) => {

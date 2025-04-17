@@ -200,7 +200,14 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       values(world.systems).sort((a, b) => a.priority - b.priority).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
           if (!world.systems[system.id]) return
+          const now = performance.now()
+
           system.onTick?.(filterEntities(system.query, values(world.entities)), isRollback)
+
+          const ms = performance.now() - now
+          if (ms > 5) {
+            console.error(`System ${system.id} took ${ms}ms long to execute`)
+          }
         }
       })
 
