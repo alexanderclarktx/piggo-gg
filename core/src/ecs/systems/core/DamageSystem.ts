@@ -1,6 +1,7 @@
 import { ClientSystemBuilder, Entity, Health, Position, Renderable } from "@piggo-gg/core"
 import { ColorMatrixFilter } from "pixi.js"
 
+// todo extremely slow
 export const DamageSystem = ClientSystemBuilder({
   id: "DamageSystem",
   init: (world) => {

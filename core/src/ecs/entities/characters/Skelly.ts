@@ -1,7 +1,7 @@
 import {
-  Actions, Axe, Character, Collider, Debug, DefaultJoystickHandler, dropItem,
+  Actions, Character, Collider, Debug, DefaultJoystickHandler, dropItem,
   Effects, Element, Health, Input, Inventory, Move, Networked, Player, Pickaxe,
-  Point, Position, Renderable, Sword, WASDInputMap, XY, setActiveItemIndex, DudeSkin,
+  Point, Position, Renderable, WASDInputMap, XY, setActiveItemIndex, DudeSkin,
   VolleyCharacterAnimations, VolleyCharacterDynamic, Action, Shadow, BlockItem
 } from "@piggo-gg/core"
 
@@ -28,6 +28,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       press: {
         ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),
+        "shift": () => ({ actionId: "jetpack" }),
         "g": () => ({ actionId: "dropItem" }),
         "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
         "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
@@ -46,6 +47,9 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       point: Point,
       setActiveItemIndex,
       dropItem,
+      jetpack: Action("jetpack", ({ entity }) => {
+        entity?.components?.position?.setVelocity({ z: 5 })
+      }),
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
         entity.components.position.setVelocity({ z: 5 })

@@ -131,7 +131,7 @@ export const InputSystem = ClientSystemBuilder({
 
       let pointingDelta: XY
 
-      if (world.renderer?.camera.centeredEntity) {
+      if (world.renderer?.camera.focus) {
         const { width, height } = world.renderer.wh()
         pointingDelta = {
           x: round(mouseScreen.x - (width / 2), 2) * world.flipped(),

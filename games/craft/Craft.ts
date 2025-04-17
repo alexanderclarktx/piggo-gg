@@ -27,9 +27,10 @@ export const Craft: GameBuilder = {
   })
 }
 
+const size = 16
 const spawnTerrain = (world: World) => {
-  for (let i = -12; i < 12; i++) {
-    for (let j = -12; j < 12; j++) {
+  for (let i = -size; i < size; i++) {
+    for (let j = -size; j < size; j++) {
       const xy = intToBlock(i, j)
       const block = Block({ ...xy, z: 0 }, "grass")
       world.addEntity(block)
@@ -58,7 +59,8 @@ const CraftSystem = SystemBuilder({
           const { x, y, z, velocity } = position.data
 
           // set collider group
-          collider.setGroup((floor(z / 21) + 1).toString() as "1" | "2" | "3")
+          const group = (floor(z / 21) + 1).toString() as "1"
+          collider.setGroup(group)
 
           // stop falling if directly above a block
           const highest = highestBlock({ x, y }, world).z
