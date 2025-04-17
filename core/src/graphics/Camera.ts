@@ -116,13 +116,11 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         // cull far away entities
         let numHidden = 0
         for (const entity of entities) {
-          const { position, renderable } = entity.components
+          const { renderable } = entity.components
 
           if (renderable.cullable) {
-            if (!renderer.camera.inFrame({
-              x: position.data.x + renderable.position.x,
-              y: position.data.y + renderable.position.y
-            })) {
+            const { x, y } = renderable.c.position
+            if (!renderer.camera.inFrame({ x, y })) {
               renderable.visible = false
               numHidden++
             } else {
@@ -130,6 +128,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
             }
           }
         }
+        // console.log(`hidden ${numHidden} entities`)
       },
       onRender: (_, delta) => {
         if (!renderer.camera.focus) return

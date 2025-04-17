@@ -64,7 +64,6 @@ export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
     position: Position({ ...pos }),
     // debug: Debug(),
     element: Element("rock"),
-    health: Health({ hp: 50 }),
     collider: Collider({
       cullable: true,
       group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
@@ -230,8 +229,8 @@ export const BlockPreview = () => Entity({
           buildXBlocksBuffer(world)
         }
 
-        // const xyz = snapXYZ(world.flip(mouse), world)
-        const xyz = blockAtMouse(mouse)
+        const xyz = snapXYZ(world.flip(mouse), world)
+        // const xyz = blockAtMouse(mouse)
 
         if (!xyz) {
           entity.components.renderable.visible = false
