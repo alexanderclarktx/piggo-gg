@@ -48,7 +48,7 @@ export const Camera = (app: Application): Camera => {
       const camX = ((width / 2) - root.x) / camera.scale
       const camY = ((height / 2) - root.y) / camera.scale
 
-      const s = camera.scale * 1.5
+      const s = camera.scale * 1.4
 
       const result = abs(camX - x) < width / s && abs(camY - y) < height / s
 

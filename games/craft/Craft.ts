@@ -27,7 +27,7 @@ export const Craft: GameBuilder = {
   })
 }
 
-const size = 24
+const size = 16
 const spawnTerrain = (world: World) => {
   for (let i = -size; i < size; i++) {
     for (let j = -size; j < size; j++) {
