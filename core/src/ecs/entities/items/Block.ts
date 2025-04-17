@@ -1,6 +1,6 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
-  Health, Item, ItemActionParams, ItemBuilder, ItemEntity, mouse,
+  Health, Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
   pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
@@ -54,11 +54,11 @@ const blockGraphics = (type: BlockType) => {
     .lineTo(width, height)
     .lineTo(width, -width / 2)
     .fill({ color: colors[2] })
-  
-    return graphics[type]
+
+  return graphics[type]
 }
 
-export const Block = (pos: XYZ, type: BlockType) => Entity({
+export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
@@ -143,6 +143,68 @@ export const highestBlock = (pos: XY, world: World): XYZ => {
   return { x: snapped.x, y: snapped.y, z: level }
 }
 
+type XBlocks = Record<number, Entity<Position>[]>
+
+// todo move to an entity
+const xBlocksBuffer: XBlocks = {}
+
+const buildXBlocksBuffer = (world: World): XBlocks => {
+  const blocks = world.queryEntities<Position>(["position"], x => x.id.startsWith("block-"))
+
+  for (const block of blocks) {
+    const { x } = block.components.position.data
+    if (!xBlocksBuffer[x]) {
+      xBlocksBuffer[x] = []
+    }
+    xBlocksBuffer[x].push(block)
+  }
+
+  return xBlocksBuffer
+}
+
+const addToXBlocksBuffer = (block: Entity<Position>) => {
+  const { x } = block.components.position.data
+  if (!xBlocksBuffer[x]) {
+    xBlocksBuffer[x] = []
+  }
+  xBlocksBuffer[x].push(block)
+}
+
+// use the xBlocksBuffer to find the block at the mouse position
+const blockAtMouse = (mouse: XY): XYZ | null => {
+  const snapped = snapXY(mouse)
+
+  // sort by Z desc then Y desc
+  const blocks = xBlocksBuffer[snapped.x]
+
+  // sort by Z desc
+  blocks.sort((a, b) => {
+    const zA = a.components.position.data.z
+    const zB = b.components.position.data.z
+    return zB - zA
+  })
+
+  // sort by Y asc
+  blocks.sort((a, b) => {
+    const yA = a.components.position.data.y
+    const yB = b.components.position.data.y
+    return yB - yA
+  })
+
+  for (const block of blocks) {
+    const { x, y, z } = block.components.position.data
+
+    const bottom = y - z
+    const top = bottom - height - width
+
+    if (mouse.y <= bottom && mouse.y >= top) {
+      return { x, y, z }
+    }
+  }
+
+  return null
+}
+
 export const BlockPreview = () => Entity({
   id: "item-block-preview",
   components: {
@@ -162,9 +224,19 @@ export const BlockPreview = () => Entity({
 
         if (!visible) return
 
-        const xyz = snapXYZ(world.flip(mouse), world)
+        if (keys(xBlocksBuffer).length === 0) {
+          buildXBlocksBuffer(world)
+        }
 
-        entity.components.position.setPosition(xyz)
+        // const xyz = snapXYZ(world.flip(mouse), world)
+        const xyz = blockAtMouse(mouse)
+
+        if (!xyz) {
+          entity.components.renderable.visible = false
+        } else {
+          entity.components.renderable.visible = true
+          entity.components.position.setPosition(xyz)
+        }
       },
       setup: async (r) => {
         const g = pixiGraphics()
@@ -207,7 +279,10 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         if (hold) return
 
         const block = Block(snapXYZ(world.flip(mouse), world), type)
+
         world.addEntity(block)
+        addToXBlocksBuffer(block)
+
         world.client?.soundManager.play("click2")
       }
     }),
