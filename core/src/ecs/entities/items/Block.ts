@@ -1,6 +1,6 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
-  Health, Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
+  Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
   pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
@@ -111,15 +111,11 @@ export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
   }
 })
 
-
 // takes ij integer coordinates -> XY of that block from origin
-export const intToBlock = (i: number, j: number): XY => {
-  const x = (i - j) * width
-  const y = (i + j) * width / 2
-
-  console.log("intToBlock", x, y)
-  return { x, y }
-}
+export const intToBlock = (i: number, j: number): XY => ({
+  x: (i - j) * width,
+  y: (i + j) * width / 2
+})
 
 export const snapXY = (pos: XY): XY => {
   const half = width / 2
