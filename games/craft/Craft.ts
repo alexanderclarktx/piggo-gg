@@ -6,6 +6,8 @@ import {
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
+const noise = createNoise2D(Math.random)
+
 export const Craft: GameBuilder = {
   id: "craft",
   init: () => ({
@@ -28,7 +30,6 @@ export const Craft: GameBuilder = {
   })
 }
 
-const noise = createNoise2D(Math.random)
 const spawnTerrain = (world: World) => {
   const size = 16
 
@@ -40,7 +41,7 @@ const spawnTerrain = (world: World) => {
       const height = round(max(1, noise(i / 40, j / 40) * 10))
 
       for (let k = 0; k < height; k++) {
-        const block = Block({ ...xy, z: k * 21 }, k > 0 ? "obsidian" : "moss")
+        const block = Block({ ...xy, z: k * 21 }, k > 0 ? "obsidian" : "grass")
         world.addEntity(block)
       }
     }

@@ -11,7 +11,7 @@ const height = width / 3 * 2
 type BlockType = "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
 
 const BlockColors: Record<BlockType, [number, number, number]> = {
-  grass: [0x08dd00, 0x6E260E, 0x7B3F00],
+  grass: [0x08d000, 0x6E260E, 0x7B3F00],
   moss: [0x08bb00, 0x6E260E, 0x7B3F00],
   moonrock: [0xcbdaf2, 0x98b0d9, 0xdddddd],
   asteroid: [0x8b8b8b, 0x6E6E6E, 0xECF0F1],
