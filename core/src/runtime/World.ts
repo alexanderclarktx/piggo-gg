@@ -205,8 +205,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
           system.onTick?.(filterEntities(system.query, values(world.entities)), isRollback)
 
           const ms = performance.now() - now
-          if (ms > 5) {
-            console.error(`System ${system.id} took ${ms}ms long to execute`)
+          if (ms > 7) {
+            console.error(`${system.id} took ${ms}ms`)
           }
         }
       })
