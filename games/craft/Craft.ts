@@ -2,8 +2,9 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, World, Block, intToBlock
+  EscapeMenu, World, Block, intToBlock, max, round
 } from "@piggo-gg/core"
+import { createNoise2D } from 'simplex-noise';
 
 export const Craft: GameBuilder = {
   id: "craft",
@@ -27,13 +28,21 @@ export const Craft: GameBuilder = {
   })
 }
 
-const size = 16
+const noise = createNoise2D(Math.random)
 const spawnTerrain = (world: World) => {
+  const size = 16
+
   for (let i = -size; i < size; i++) {
     for (let j = -size; j < size; j++) {
+
       const xy = intToBlock(i, j)
-      const block = Block({ ...xy, z: 0 }, "grass")
-      world.addEntity(block)
+
+      const height = round(max(1, noise(i / 40, j / 40) * 10))
+
+      for (let k = 0; k < height; k++) {
+        const block = Block({ ...xy, z: k * 21 }, k > 0 ? "obsidian" : "moss")
+        world.addEntity(block)
+      }
     }
   }
 }
