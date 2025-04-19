@@ -55,7 +55,8 @@ export const PhysicsSystem = SystemBuilder({
 
         // cull static colliders
         entities = entities.filter((entity) => {
-          const { collider } = entity.components
+          const { collider, renderable } = entity.components
+          if (renderable?.visible === false) return false
           return (collider.isStatic === false || !collider.cullable || groups.has(collider.group))
         })
 
@@ -96,7 +97,7 @@ export const PhysicsSystem = SystemBuilder({
             y: Math.floor(position.data.velocity.y * 100) / 100
           }, true)
         }
-        console.log("Physics prep", performance.now() - time)
+        // console.log("Physics prep", performance.now() - time)
 
         // run physics
         physics.step()

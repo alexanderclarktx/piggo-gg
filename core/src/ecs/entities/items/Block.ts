@@ -8,10 +8,11 @@ import { Graphics } from "pixi.js"
 const width = 18
 const height = width / 3 * 2
 
-type BlockType = "grass" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+type BlockType = "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
 
 const BlockColors: Record<BlockType, [number, number, number]> = {
   grass: [0x08dd00, 0x6E260E, 0x7B3F00],
+  moss: [0x08bb00, 0x6E260E, 0x7B3F00],
   moonrock: [0xcbdaf2, 0x98b0d9, 0xdddddd],
   asteroid: [0x8b8b8b, 0x6E6E6E, 0xECF0F1],
   saphire: [0x00afff, 0x007fff, 0x00cfff],
@@ -21,6 +22,7 @@ const BlockColors: Record<BlockType, [number, number, number]> = {
 
 const graphics: Record<BlockType, Graphics | undefined> = {
   grass: undefined,
+  moss: undefined,
   moonrock: undefined,
   asteroid: undefined,
   saphire: undefined,
@@ -82,6 +84,20 @@ export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
       scaleMode: "nearest",
       zIndex: 3,
       cullable: true,
+      dynamic: ({ entity, world }) => {
+        // if (world.tick % 200 !== 0) return
+        if (
+          world.entity(`block-${pos.x}-${pos.y}-${pos.z + 21}`) &&
+          world.entity(`block-${pos.x - width}-${pos.y + width / 2}-${pos.z}`) &&
+          world.entity(`block-${pos.x + width}-${pos.y + width / 2}-${pos.z}`)
+        ) {
+          entity.components.renderable.visible = false
+          // console.log("block hidden")
+        } else {
+          // entity.components.renderable.visible = true
+          // console.log("block visible")
+        }
+      },
       setup: async (r) => {
         const clone = blockGraphics(type).clone()
         clone.position.y = -height
@@ -101,6 +117,7 @@ export const intToBlock = (i: number, j: number): XY => {
   const x = (i - j) * width
   const y = (i + j) * width / 2
 
+  console.log("intToBlock", x, y)
   return { x, y }
 }
 

@@ -107,7 +107,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
     return {
       id: "CameraSystem",
       query: ["renderable", "position"],
-      priority: 10,
+      priority: 9,
       onTick: (entities: Entity<Renderable | Position>[]) => {
         // camera focus on player's character
         const character = world.client?.playerCharacter()

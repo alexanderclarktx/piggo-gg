@@ -38,7 +38,7 @@ export const RenderSystem = ClientSystemBuilder({
     return {
       id: "RenderSystem",
       query: ["renderable", "position"],
-      priority: 9,
+      priority: 10,
       onTick: (entities: Entity<Renderable | Position>[]) => {
         if (!renderer) return
 
@@ -51,6 +51,7 @@ export const RenderSystem = ClientSystemBuilder({
           renderer.resizedFlag = false
         }
 
+        const time = performance.now()
         for (const entity of entities) {
           const { position, renderable } = entity.components
 
@@ -128,22 +129,24 @@ export const RenderSystem = ClientSystemBuilder({
           // set visible
           if (renderable.c.renderable !== renderable.visible) renderable.c.renderable = renderable.visible
         }
+        console.log("entity loop", performance.now() - time)
 
+        const t = performance.now()
         // sort entities by position (closeness to camera)
-        const sortedEntityPositions = values(entities).sort((a, b) => (
+        entities = entities.filter(x => x.components.renderable.visible)
+        entities.sort((a, b) => (
           (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
           (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
           // (a.components.position.data.y + a.components.position.data.z) -
           // (b.components.position.data.y + b.components.position.data.z)
         ))
+        console.log("sort", performance.now() - t)
 
         // set zIndex
-        sortedEntityPositions.forEach((entity, index) => {
-          const renderable = entity.components.renderable
-          if (renderable) {
-            renderable.c.zIndex = renderable.zIndex + 0.0001 * index
-          }
-        })
+        for (const [index, entity] of entities.entries()) {
+          const { renderable } = entity.components
+          renderable.c.zIndex = renderable.zIndex + 0.0001 * index
+        }
 
         // update screenFixed entities
         for (const entity of world.queryEntities<Renderable | Position>(["renderable", "position"])) {
