@@ -51,7 +51,7 @@ export const RenderSystem = ClientSystemBuilder({
           renderer.resizedFlag = false
         }
 
-        entities.forEach((entity) => {
+        for (const entity of entities) {
           const { position, renderable } = entity.components
 
           // render if skin changed
@@ -127,7 +127,7 @@ export const RenderSystem = ClientSystemBuilder({
 
           // set visible
           if (renderable.c.renderable !== renderable.visible) renderable.c.renderable = renderable.visible
-        })
+        }
 
         // sort entities by position (closeness to camera)
         const sortedEntityPositions = values(entities).sort((a, b) => (
@@ -146,26 +146,25 @@ export const RenderSystem = ClientSystemBuilder({
         })
 
         // update screenFixed entities
-        world.queryEntities<Renderable | Position>(["renderable", "position"]).forEach((entity) => {
+        for (const entity of world.queryEntities<Renderable | Position>(["renderable", "position"])) {
           updateScreenFixed(entity)
-        })
+        }
       },
       onRender(entities: Entity<Renderable | Position>[], delta) {
         for (const entity of entities) {
 
           const { position, renderable } = entity.components
 
-          if (!renderable.rendered) continue
+          if (!renderable.rendered || !renderable.interpolate) continue
 
           // ui renderables
           if (position.screenFixed) {
-            if (!renderable.interpolate) continue
             updateScreenFixed(entity)
           }
 
           // world renderables
           const { x, y, z, velocity } = position.data
-          if ((velocity.x || velocity.y || velocity.z) && renderable.interpolate) {
+          if ((velocity.x || velocity.y || velocity.z)) {
 
             const interpolated = position.interpolate(delta, world)
 

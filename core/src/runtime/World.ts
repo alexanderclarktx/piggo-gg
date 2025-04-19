@@ -150,8 +150,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       const c = Math.cos(a)
       const s = Math.sin(a)
 
-      let rx = (x * c - y * s)
-      let ry = (x * s + y * c)
+      const rx = (x * c - y * s)
+      const ry = (x * s + y * c)
 
       return { x: rx, y: ry }
     },
