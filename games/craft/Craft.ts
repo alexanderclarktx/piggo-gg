@@ -2,7 +2,9 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, World, Block, intToBlock, max, round
+  EscapeMenu, World, Block, intToBlock, max, round,
+  XY, randomChoice, BlockType, snapXYToChunk,
+  sqrt,
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
@@ -31,18 +33,53 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = (world: World) => {
-  const size = 16
+  const num = 5
+  for (let i = 0; i < num; i++) {
+    for (let j = 0; j < num; j++) {
+      const chunk = { x: i, y: j }
+      spawnChunk(world, chunk)
+    }
+  }
+}
 
-  for (let i = -size; i < size; i++) {
-    for (let j = -size; j < size; j++) {
+type Chunk = `${number}x${number}`
+const liveChunks = new Set<Chunk>()
+// const liveChunks: Map<number, Map<number, true>> = new Map()
 
-      const xy = intToBlock(i, j)
+const spawnChunk = (world: World, chunk: XY) => {
+  const { x, y } = chunk
+  liveChunks.add(`${x}x${y}`)
 
-      const height = round(max(1, noise(i / 40, j / 40) * 10))
+  // const choice: BlockType[] = ["asteroid", "moonrock", "saphire", "ruby", "obsidian", "grass", "moss"]
+  // const color = randomChoice(choice)
 
+  const size = 4
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      const xy = intToBlock(i + x * 4, j + y * 4)
+      const height = round(max(1, noise(xy.x / 300, xy.y / 300) * 10))
       for (let k = 0; k < height; k++) {
         const block = Block({ ...xy, z: k * 21 }, k > 0 ? "obsidian" : "grass")
         world.addEntity(block)
+      }
+    }
+  }
+}
+
+const despawnChunk = (world: World, chunk: XY) => {
+  const { x, y } = chunk
+  const size = 4
+
+  liveChunks.delete(`${x}x${y}`)
+
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      const xy = intToBlock(x * 4 + i, y * 4 + j)
+
+      let z = 0
+      while (world.entity(`block-${xy.x}-${xy.y}-${z * 21}`)) {
+        world.removeEntity(`block-${xy.x}-${xy.y}-${z * 21}`)
+        z++
       }
     }
   }
@@ -53,6 +90,8 @@ const CraftSystem = SystemBuilder({
   init: (world) => {
 
     spawnTerrain(world)
+
+    const playerChunks = new Map<string, XY>()
 
     return {
       id: "CraftSystem",
@@ -67,6 +106,40 @@ const CraftSystem = SystemBuilder({
 
           const { position, collider } = character.components
           const { x, y, z, velocity } = position.data
+
+          const chunk = snapXYToChunk({ x, y })
+
+          const distance = 3
+
+          if (playerChunks.has(character.id)) {
+            const prevChunk = playerChunks.get(character.id)!
+            if (prevChunk.x !== chunk.x || prevChunk.y !== chunk.y) {
+              playerChunks.set(character.id, chunk)
+
+              // despawn previous chunk
+              for (const liveChunk of liveChunks) {
+                const [chunkX, chunkY] = liveChunk.split("x").map(Number)
+
+                const chunkDistance = sqrt((chunk.x - chunkX) ** 2 + (chunk.y - chunkY) ** 2)
+                if (chunkDistance > distance) {
+                  despawnChunk(world, { x: chunkX, y: chunkY })
+                }
+              }
+
+              // spawn new chunk
+              for (let i = -distance; i <= distance; i++) {
+                for (let j = -distance; j <= distance; j++) {
+                  const newChunk = { x: chunk.x + i, y: chunk.y + j }
+                  if (!liveChunks.has(`${newChunk.x}x${newChunk.y}`)) {
+                    spawnChunk(world, newChunk)
+                  }
+                }
+              }
+
+            }
+          } else {
+            playerChunks.set(character.id, chunk)
+          }
 
           // set collider group
           const group = (floor(z / 21) + 1).toString() as "1"

@@ -56,7 +56,7 @@ export const RenderSystem = ClientSystemBuilder({
           const { position, renderable } = entity.components
 
           // render if skin changed
-          if (renderable.currentSkin !== renderable.data.desiredSkin) {
+          if (renderable.currentSkin && renderable.currentSkin !== renderable.data.desiredSkin) {
             renderable.c.removeChildren()
             renderable.rendered = false
           }
@@ -129,7 +129,8 @@ export const RenderSystem = ClientSystemBuilder({
           // set visible
           if (renderable.c.renderable !== renderable.visible) renderable.c.renderable = renderable.visible
         }
-        console.log("entity loop", performance.now() - time)
+        const loop = performance.now() - time
+        if (loop > 5) console.log("entity loop", performance.now() - time)
 
         const t = performance.now()
         // sort entities by position (closeness to camera)
@@ -140,7 +141,8 @@ export const RenderSystem = ClientSystemBuilder({
           // (a.components.position.data.y + a.components.position.data.z) -
           // (b.components.position.data.y + b.components.position.data.z)
         ))
-        console.log("sort", performance.now() - t)
+        const sort = performance.now() - t
+        if (sort > 5) console.log("sort loop", performance.now() - t)
 
         // set zIndex
         for (const [index, entity] of entities.entries()) {

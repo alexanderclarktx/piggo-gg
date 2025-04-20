@@ -1,5 +1,6 @@
 import {
   Actions, Clickable, Collider, Debug, Effects, Element, Entity,
+  floor,
   Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
   pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
@@ -8,7 +9,7 @@ import { Graphics } from "pixi.js"
 const width = 18
 const height = width / 3 * 2
 
-type BlockType = "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+export type BlockType = "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
 
 const BlockColors: Record<BlockType, [number, number, number]> = {
   grass: [0x08d000, 0x6E260E, 0x7B3F00],
@@ -103,9 +104,9 @@ export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
         clone.position.y = -height
         r.c.addChild(clone)
 
-        if (pos.z > 0) {
-          // r.setOutline({ color: 0x000000, thickness: 0.2 })
-        }
+        // if (pos.z > 0) {
+          r.setOutline({ color: 0x000000, thickness: 0.2 })
+        // }
       }
     })
   }
@@ -116,6 +117,22 @@ export const intToBlock = (i: number, j: number): XY => ({
   x: (i - j) * width,
   y: (i + j) * width / 2
 })
+
+const xyBlock = (pos: XY): XY => {
+  const half = width / 2
+  const gridX = (pos.x / width + pos.y / half) / 2
+  const gridY = (pos.y / half - pos.x / width) / 2
+  const tileX = round(gridX)
+  const tileY = round(gridY)
+  return { x: tileX, y: tileY }
+}
+
+export const snapXYToChunk = (pos: XY): XY => {
+  const snapped = xyBlock(pos)
+  const x = floor(snapped.x / 4)
+  const y = floor(snapped.y / 4)
+  return { x, y }
+}
 
 export const snapXY = (pos: XY): XY => {
   const half = width / 2

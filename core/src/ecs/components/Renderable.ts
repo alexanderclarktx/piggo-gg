@@ -225,7 +225,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       renderable.visible = false
 
       // remove from the world
-      // renderable.c.destroy() // TODO disabled because it breaks debug mode
+      renderable.c.destroy() // TODO disabled because it breaks debug mode
     },
     _init: async (renderer: Renderer | undefined, world: World) => {
       if (!renderer) return

@@ -48,7 +48,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       setActiveItemIndex,
       dropItem,
       jetpack: Action("jetpack", ({ entity }) => {
-        entity?.components?.position?.setVelocity({ z: 3 })
+        entity?.components?.position?.setVelocity({ z: 3 }) // todo use impulse
       }),
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return

@@ -82,7 +82,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => {
           position.setVelocity({ ...data.velocity, z: 0 })
           position.lastCollided = lastCollided
 
-          renderable.c.alpha = 0.25 - (data.z - highest.z) / 500
+          renderable.c.alpha = 0.25 - (data.z - highest.z) / 1000
 
           mask.position.x = highest.x - position.data.x
           mask.position.y = 9 + (highest.y - position.data.y)

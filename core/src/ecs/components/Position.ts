@@ -28,7 +28,7 @@ export type Position = Component<"position", {
   setPosition: (_: { x?: number, y?: number, z?: number }) => Position
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
-  impulse: (_: XY) => Position
+  impulse: (_: XYZ) => Position
   interpolate: (_: number, __: World) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
@@ -101,10 +101,11 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position.updateOrientation()
     },
-    impulse: ({ x, y }: XY) => {
+    impulse: ({ x, y, z }: XYZ) => {
       return position.setVelocity({
         x: position.data.velocity.x + x,
-        y: position.data.velocity.y + y
+        y: position.data.velocity.y + y,
+        z: position.data.velocity.z + z
       })
     },
     interpolate: (delta: number, world: World) => {
