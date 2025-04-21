@@ -4,7 +4,7 @@ import {
   Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
   pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
-import { Geometry, Graphics, Mesh, Shader } from "pixi.js"
+import { Geometry, Graphics, Mesh, Shader, Buffer, BufferUsage } from "pixi.js"
 
 const width = 18
 const height = width / 3 * 2
@@ -356,6 +356,12 @@ const geometry = new Geometry({
     9, 11, 10,
   ],
   attributes: {
+    // aInstanceOffset: {
+    //   instance: true,
+    //   buffer: new Buffer({
+
+    //   })
+    // },
     aUV: [
       // top
       0.0, 0.82, 0.0,
