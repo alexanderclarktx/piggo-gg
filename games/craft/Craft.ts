@@ -2,9 +2,7 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, World, Block, intToBlock, max, round,
-  XY, randomChoice, BlockType, snapXYToChunk,
-  sqrt,
+  EscapeMenu, World, Block, intToBlock, max, round, XY, snapXYToChunk, sqrt
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
@@ -33,7 +31,7 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = (world: World) => {
-  const num = 5
+  const num = 4
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
@@ -49,9 +47,6 @@ const liveChunks = new Set<Chunk>()
 const spawnChunk = (world: World, chunk: XY) => {
   const { x, y } = chunk
   liveChunks.add(`${x}x${y}`)
-
-  // const choice: BlockType[] = ["asteroid", "moonrock", "saphire", "ruby", "obsidian", "grass", "moss"]
-  // const color = randomChoice(choice)
 
   const size = 4
   for (let i = 0; i < size; i++) {
@@ -109,7 +104,7 @@ const CraftSystem = SystemBuilder({
 
           const chunk = snapXYToChunk({ x, y })
 
-          const distance = 3
+          const distance = 2
 
           if (playerChunks.has(character.id)) {
             const prevChunk = playerChunks.get(character.id)!

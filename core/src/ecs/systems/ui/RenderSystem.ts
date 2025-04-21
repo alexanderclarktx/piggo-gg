@@ -167,6 +167,11 @@ export const RenderSystem = ClientSystemBuilder({
             updateScreenFixed(entity)
           }
 
+          // todo
+          if (entity.id === "block-mesh") {
+            renderable.dynamic?.({ container: renderable.c, entity, world, renderable, client: world.client! })
+          }
+
           // world renderables
           const { x, y, z, velocity } = position.data
           if ((velocity.x || velocity.y || velocity.z)) {

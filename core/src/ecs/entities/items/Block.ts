@@ -343,8 +343,22 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
 
 // -----------------------------
 
+type Blocks = {
+
+}
+
+const Blocks = (): Blocks => {
+  return {
+    
+  }
+}
+
+const blocks: Blocks = {
+
+}
+
 const geometry = new Geometry({
-  instanceCount: 5,
+  instanceCount: 4,
   indexBuffer: [
     0, 1, 2,
     0, 2, 3,
@@ -356,12 +370,18 @@ const geometry = new Geometry({
     9, 11, 10,
   ],
   attributes: {
-    // aInstanceOffset: {
-    //   instance: true,
-    //   buffer: new Buffer({
-
-    //   })
-    // },
+    aInstanceOffset: {
+      instance: true,
+      buffer: new Buffer({
+        data: [
+          0, 54,
+          100, 54,
+          100, 107,
+          118, 116
+        ],
+        usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+      })
+    },
     aUV: [
       // top
       0.0, 0.82, 0.0,
@@ -384,21 +404,21 @@ const geometry = new Geometry({
     aPosition: [
       // top
       0, 0,
-      -width, width / 2,
-      0, width,
-      width, width / 2,
-
+      -width, -width / 2,
+      0, -width,
+      width, -width / 2,
+    
       // bottom-left
       0, 0,
-      -width, width / 2,
-      -width, -height,
-      0, -height - width / 2,
-
+      -width, -width / 2,
+      -width, height,
+      0, height + width / 2,
+    
       // bottom-right
       0, 0,
-      width, width / 2,
-      width, -height,
-      0, -height - width / 2,
+      width, -width / 2,
+      width, height,
+      0, height + width / 2,
     ]
   }
 })
@@ -408,24 +428,27 @@ const vertexSrc = `
 
   attribute vec2 aPosition;
   attribute vec3 aUV;
+  attribute vec2 aInstanceOffset;
 
   uniform vec2 uResolution;
   uniform vec2 uOffset;
-  uniform vec2 uScale;
   uniform float uZoom;
 
   varying vec3 vUV;
 
   void main() {
-    vec2 position = aPosition * uScale + uOffset / uZoom;
-    vec2 scaled = position * uZoom;
+    vUV = aUV;
 
-    vec2 clip = (scaled / uResolution) * 4.0 - 1.0;
+    vec2 worldPos = aPosition + aInstanceOffset;
+
+    vec2 screenPos = (worldPos - uOffset) * uZoom;
+
+    vec2 clip = (screenPos / uResolution) * 2.0;
+
+    clip.y *= -1.0;
 
     gl_Position = vec4(clip, 0.0, 1.0);
-
-    vUV = aUV;
-  }
+}
 `
 
 const fragmentSrc = `
@@ -445,8 +468,7 @@ const shader = Shader.from({
   },
   resources: {
     uniforms: {
-      uOffset: { value: [200, 300], type: 'vec2<f32>' },
-      uScale: { value: [1.0, 1.0], type: 'vec2<f32>' },
+      uOffset: { value: [0, 0], type: 'vec2<f32>' },
       uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
       uZoom: { value: 2.0, type: 'f32' }
     }
@@ -460,6 +482,7 @@ const BlockMesh = (xyz: XYZ) => Entity({
     renderable: Renderable({
       zIndex: 10,
       anchor: { x: 0.5, y: 0.5 },
+      interpolate: true,
       setup: async (r) => {
         const mesh = new Mesh({ geometry, shader })
 
@@ -467,9 +490,15 @@ const BlockMesh = (xyz: XYZ) => Entity({
       },
       dynamic: ({ world }) => {
         const zoom = world.renderer!.camera.scale
+        // const {x, y, z} = world.renderer!.camera.focus?.components.position.data ?? { x: 0, y: 0, z: 0 }
+        const {x, y} = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+        const resolution = world.renderer!.wh()
+        // console.log("zoom", zoom, x, y)
 
         if (shader.resources.uniforms?.uniforms?.uZoom) {
           shader.resources.uniforms.uniforms.uZoom = zoom
+          shader.resources.uniforms.uniforms.uOffset = [x, y]
+          shader.resources.uniforms.uniforms.uResolution = resolution
         }
       }
     })

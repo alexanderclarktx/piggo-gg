@@ -48,8 +48,9 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
         canvas,
         resolution: 1,
         antialias: true,
-        autoDensity: true,
-        backgroundColor: 0x000000
+        // autoDensity: true,
+        backgroundColor: 0x000000,
+        preference: "webgl"
       })
 
       renderer.handleResize()
