@@ -38,7 +38,7 @@ export const Api = (): Api => {
 
   const prisma = new PrismaClient()
   const JWT_SECRET = process.env["JWT_SECRET"] ?? "piggo"
-  const client = new OAuth2Client("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com")
+  const google = new OAuth2Client("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com")
 
   const verifyJWT = (data: { token: string }): SessionToken | false => {
     let token: SessionToken | undefined = undefined
@@ -199,7 +199,7 @@ export const Api = (): Api => {
       "auth/login": async ({ ws, data }) => {
 
         // 1. verify google jwt
-        const ticket = await client.verifyIdToken({
+        const ticket = await google.verifyIdToken({
           idToken: data.jwt,
           audience: "1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com"
         })

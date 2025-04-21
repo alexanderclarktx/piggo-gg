@@ -24,12 +24,14 @@ export type GameData = {
 
 // API
 
-export type Request<Route extends string, Response extends {} = {}> = {
+export type Request<Route, Response extends {} = {}> = {
   type: "request"
   id: string
   route: Route
   response: { id: string, error: string } | { id: string } & Response
 }
+
+export type Route = RequestTypes["route"]
 
 export type RequestTypes =
   LobbyList | LobbyCreate | LobbyJoin | LobbyExit |
