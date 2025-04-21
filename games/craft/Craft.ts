@@ -122,7 +122,7 @@ const CraftSystem = SystemBuilder({
 
                 const chunkDistance = sqrt((chunk.x - chunkX) ** 2 + (chunk.y - chunkY) ** 2)
                 if (chunkDistance > distance) {
-                  despawnChunk(world, { x: chunkX, y: chunkY })
+                  // despawnChunk(world, { x: chunkX, y: chunkY })
                 }
               }
 
@@ -131,7 +131,7 @@ const CraftSystem = SystemBuilder({
                 for (let j = -distance; j <= distance; j++) {
                   const newChunk = { x: chunk.x + i, y: chunk.y + j }
                   if (!liveChunks.has(`${newChunk.x}x${newChunk.y}`)) {
-                    spawnChunk(world, newChunk)
+                    // spawnChunk(world, newChunk)
                   }
                 }
               }

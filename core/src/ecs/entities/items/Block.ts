@@ -105,7 +105,7 @@ export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
         r.c.addChild(clone)
 
         // if (pos.z > 0) {
-          r.setOutline({ color: 0x000000, thickness: 0.2 })
+        r.setOutline({ color: 0x000000, thickness: 0.2 })
         // }
       }
     })
@@ -341,37 +341,72 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
   }
 })
 
-
 // -----------------------------
 
-
-// Block size and simple projection (2D iso-style layout)
-// const BLOCK_WIDTH = 64
-// const BLOCK_HEIGHT = 32
-
-// Build a simple geometry for a diamond-shaped isometric block face
-function createBlockGeometry(): Geometry {
+const blockGeometry = (): Geometry => {
   const geometry = new Geometry()
 
-  const positions = new Float32Array([
-    0, 0,                  // top
-    -width, width / 2,                   // left
-    0, width,                   // bottom
-    width, width / 2,                    // right
-  ])
-
   const uvs = new Float32Array([
-    0.5, 0.0,
-    0.0, 0.5,
-    0.5, 1.0,
-    1.0, 0.5,
+    // top
+    0.0, 0.82, 0.0,
+    0.0, 0.82, 0.0,
+    0.0, 0.82, 0.0,
+    0.0, 0.82, 0.0,
+
+    // left (placeholder UVs)
+    0.5, 0.2, 0.0,
+    0.5, 0.2, 0.0,
+    0.5, 0.2, 0.0,
+    0.5, 0.2, 0.0,
+
+    // right (placeholder UVs)
+    0.6, 0.3, 0.0,
+    0.6, 0.3, 0.0,
+    0.6, 0.3, 0.0,
+    0.6, 0.3, 0.0,
   ])
 
-  const indices = new Uint16Array([
+  const faceIds = new Float32Array([
+    // Top face
+    0, 0,
+    // Left face
+    1, 1,
+    // Right face
+    2, 2,
+  ])
+
+  const positions = new Float32Array([
+    // top
+    0, 0,
+    -width, width / 2,
+    0, width,
+    width, width / 2,
+
+    // bottom-left
+    0, 0,
+    -width, width / 2,
+    -width, -height,
+    0, -height - width / 2,
+
+    // bottom-right
+    0, 0,
+    width, width / 2,
+    width, -height,
+    0, -height - width / 2,
+  ])
+
+  const indices = [
     0, 1, 2,
-    0, 2, 3
-  ])
+    0, 2, 3,
 
+    4, 5, 7,
+    5, 7, 6,
+
+    8, 9, 11,
+    9, 11, 10,
+  ]
+
+  // geometry.addAttribute('aFaceId', faceIds)
   geometry.addAttribute('aVertexPosition', positions)
   geometry.addAttribute('aUV', uvs)
   geometry.addIndex(indices)
@@ -383,57 +418,47 @@ const vertexSrc = `
   precision mediump float;
 
   attribute vec2 aVertexPosition;
-  attribute vec2 aUV;
+  attribute vec3 aUV;
 
   uniform vec2 uResolution;
   uniform vec2 uOffset;
   uniform vec2 uScale;
   uniform float uZoom;
 
-  varying vec2 vUV;
+  varying vec3 vUV;
 
   void main() {
-    vec2 position = aVertexPosition * uScale + uOffset;
+    vec2 position = aVertexPosition * uScale + uOffset / uZoom;
     vec2 scaled = position * uZoom;
 
     vec2 clip = (scaled / uResolution) * 4.0 - 1.0;
-    clip.y *= -1.0; // Invert Y for WebGL (top-left becomes bottom-left)
+
     gl_Position = vec4(clip, 0.0, 1.0);
 
-    
-    // gl_Position = vec4((position / 100.0), 0.0, 1.0);
-    // // vUV = aUV;
+    vUV = aUV;
   }
 `
 
 const fragmentSrc = `
   precision mediump float;
 
-  varying vec2 vUV;
+  varying vec3 vUV;
 
   void main() {
-    // vec3 color = mix(vec3(0.8, 0.4, 0.2), vec3(0.2, 0.8, 1.0), vUV.y);
-    gl_FragColor = vec4(0.2, 0.8, 0.8, 1.0);
+    // gl_FragColor = vec4(color, 1.0);
+    // gl_FragColor = vec4(1.0);
+    gl_FragColor = vec4(vUV, 1.0);
   }
 `
 
-const geometry = createBlockGeometry()
 const shader = Shader.from({
   gl: {
     vertex: vertexSrc,
     fragment: fragmentSrc
   },
-  // gpu: {
-  //   vertex: {
-  //     source: vertexSrc
-  //   },
-  //   fragment: {
-  //     source: fragmentSrc
-  //   }
-  // },
   resources: {
     uniforms: {
-      uOffset: { value: [100, 100], type: 'vec2<f32>' },
+      uOffset: { value: [200, 300], type: 'vec2<f32>' },
       uScale: { value: [1.0, 1.0], type: 'vec2<f32>' },
       uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
       uZoom: { value: 2.0, type: 'f32' }
@@ -449,7 +474,7 @@ const BlockMesh = (xyz: XYZ) => Entity({
       zIndex: 10,
       anchor: { x: 0.5, y: 0.5 },
       setup: async (r) => {
-        const mesh = new Mesh({ geometry, shader })
+        const mesh = new Mesh({ geometry: blockGeometry(), shader })
 
         r.c = mesh
       },
