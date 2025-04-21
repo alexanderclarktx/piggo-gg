@@ -366,15 +366,6 @@ const blockGeometry = (): Geometry => {
     0.6, 0.3, 0.0,
   ])
 
-  const faceIds = new Float32Array([
-    // Top face
-    0, 0,
-    // Left face
-    1, 1,
-    // Right face
-    2, 2,
-  ])
-
   const positions = new Float32Array([
     // top
     0, 0,
@@ -406,7 +397,6 @@ const blockGeometry = (): Geometry => {
     9, 11, 10,
   ]
 
-  // geometry.addAttribute('aFaceId', faceIds)
   geometry.addAttribute('aVertexPosition', positions)
   geometry.addAttribute('aUV', uvs)
   geometry.addIndex(indices)
