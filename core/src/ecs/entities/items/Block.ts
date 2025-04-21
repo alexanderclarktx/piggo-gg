@@ -343,50 +343,9 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
 
 // -----------------------------
 
-const blockGeometry = (): Geometry => {
-  const geometry = new Geometry()
-
-  const uvs = new Float32Array([
-    // top
-    0.0, 0.82, 0.0,
-    0.0, 0.82, 0.0,
-    0.0, 0.82, 0.0,
-    0.0, 0.82, 0.0,
-
-    // left (placeholder UVs)
-    0.5, 0.2, 0.0,
-    0.5, 0.2, 0.0,
-    0.5, 0.2, 0.0,
-    0.5, 0.2, 0.0,
-
-    // right (placeholder UVs)
-    0.6, 0.3, 0.0,
-    0.6, 0.3, 0.0,
-    0.6, 0.3, 0.0,
-    0.6, 0.3, 0.0,
-  ])
-
-  const positions = new Float32Array([
-    // top
-    0, 0,
-    -width, width / 2,
-    0, width,
-    width, width / 2,
-
-    // bottom-left
-    0, 0,
-    -width, width / 2,
-    -width, -height,
-    0, -height - width / 2,
-
-    // bottom-right
-    0, 0,
-    width, width / 2,
-    width, -height,
-    0, -height - width / 2,
-  ])
-
-  const indices = [
+const geometry = new Geometry({
+  instanceCount: 5,
+  indexBuffer: [
     0, 1, 2,
     0, 2, 3,
 
@@ -395,19 +354,53 @@ const blockGeometry = (): Geometry => {
 
     8, 9, 11,
     9, 11, 10,
-  ]
+  ],
+  attributes: {
+    aUV: [
+      // top
+      0.0, 0.82, 0.0,
+      0.0, 0.82, 0.0,
+      0.0, 0.82, 0.0,
+      0.0, 0.82, 0.0,
 
-  geometry.addAttribute('aVertexPosition', positions)
-  geometry.addAttribute('aUV', uvs)
-  geometry.addIndex(indices)
+      // left (placeholder UVs)
+      0.5, 0.2, 0.0,
+      0.5, 0.2, 0.0,
+      0.5, 0.2, 0.0,
+      0.5, 0.2, 0.0,
 
-  return geometry
-}
+      // right (placeholder UVs)
+      0.6, 0.3, 0.0,
+      0.6, 0.3, 0.0,
+      0.6, 0.3, 0.0,
+      0.6, 0.3, 0.0,
+    ],
+    aPosition: [
+      // top
+      0, 0,
+      -width, width / 2,
+      0, width,
+      width, width / 2,
+
+      // bottom-left
+      0, 0,
+      -width, width / 2,
+      -width, -height,
+      0, -height - width / 2,
+
+      // bottom-right
+      0, 0,
+      width, width / 2,
+      width, -height,
+      0, -height - width / 2,
+    ]
+  }
+})
 
 const vertexSrc = `
   precision mediump float;
 
-  attribute vec2 aVertexPosition;
+  attribute vec2 aPosition;
   attribute vec3 aUV;
 
   uniform vec2 uResolution;
@@ -418,7 +411,7 @@ const vertexSrc = `
   varying vec3 vUV;
 
   void main() {
-    vec2 position = aVertexPosition * uScale + uOffset / uZoom;
+    vec2 position = aPosition * uScale + uOffset / uZoom;
     vec2 scaled = position * uZoom;
 
     vec2 clip = (scaled / uResolution) * 4.0 - 1.0;
@@ -435,8 +428,6 @@ const fragmentSrc = `
   varying vec3 vUV;
 
   void main() {
-    // gl_FragColor = vec4(color, 1.0);
-    // gl_FragColor = vec4(1.0);
     gl_FragColor = vec4(vUV, 1.0);
   }
 `
@@ -464,7 +455,7 @@ const BlockMesh = (xyz: XYZ) => Entity({
       zIndex: 10,
       anchor: { x: 0.5, y: 0.5 },
       setup: async (r) => {
-        const mesh = new Mesh({ geometry: blockGeometry(), shader })
+        const mesh = new Mesh({ geometry, shader })
 
         r.c = mesh
       },
