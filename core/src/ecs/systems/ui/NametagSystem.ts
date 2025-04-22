@@ -77,7 +77,7 @@ const Nametag = (player: Player, character: Character) => {
       renderable: Renderable({
         zIndex: 10,
         interpolate: true,
-        onTick:async ({ renderable }) => {
+        onTick: async ({ renderable }) => {
           renderable.visible = character.components.renderable.visible
 
           if (player.components.pc.data.name !== name || player.components.team.data.team !== team) {

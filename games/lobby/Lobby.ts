@@ -60,7 +60,7 @@ const PlayerName = (player: Entity<PC | Team>, y: number) => {
         zIndex: 12,
         interactiveChildren: true,
         visible: false,
-        onTick:async ({ renderable, world }) => {
+        onTick: async ({ renderable, world }) => {
           if (pc.data.name !== lastName || team.data.team !== lastTeam) {
             renderable.c.removeChildren()
             renderable.c.addChild(text())
