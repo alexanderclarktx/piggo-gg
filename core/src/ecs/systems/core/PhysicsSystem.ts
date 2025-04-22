@@ -104,7 +104,6 @@ export const PhysicsSystem = SystemBuilder({
 
         // update entity positions
         for (const [id, body] of entries(bodies)) {
-          // const body = bodies[id]
           const entity = world.entity<Collider | Position>(id)
           if (!entity) continue
 
