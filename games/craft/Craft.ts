@@ -2,7 +2,9 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, World, Block, intToBlock, max, round, XY, snapXYToChunk, sqrt
+  EscapeMenu, World, Block, intToBlock, max, round, XY, snapXYToChunk, sqrt,
+  blocks,
+  BlockMesh
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
@@ -25,7 +27,8 @@ export const Craft: GameBuilder = {
       Background({ rays: true, follow: true }),
       Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
-      BlockPreview()
+      BlockPreview(),
+      BlockMesh()
     ]
   })
 }
@@ -54,8 +57,10 @@ const spawnChunk = (world: World, chunk: XY) => {
       const xy = intToBlock(i + x * 4, j + y * 4)
       const height = round(max(1, noise(xy.x / 300, xy.y / 300) * 10))
       for (let k = 0; k < height; k++) {
-        const block = Block({ ...xy, z: k * 21 }, k > 0 ? "obsidian" : "grass")
-        world.addEntity(block)
+        // const block = Block({ ...xy, z: k * 21 }, k > 0 ? "obsidian" : "grass")
+        // world.addEntity(block)
+
+        blocks.add({ ...xy, z: k * 21, type: "grass" })
       }
     }
   }
@@ -146,7 +151,7 @@ const CraftSystem = SystemBuilder({
             position.data.stop = highest
           } else {
             position.data.gravity = 0.3
-            position.data.stop = -600
+            position.data.stop = 0
           }
 
           if (position.data.z === -600) {

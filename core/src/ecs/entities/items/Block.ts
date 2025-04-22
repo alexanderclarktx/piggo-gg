@@ -1,6 +1,5 @@
 import {
-  Actions, Clickable, Collider, Debug, Effects, Element, Entity,
-  floor,
+  Actions, Clickable, Collider, Debug, Effects, Element, Entity, floor,
   Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
   pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
 } from "@piggo-gg/core"
@@ -10,6 +9,7 @@ const width = 18
 const height = width / 3 * 2
 
 export type BlockType = "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+export type Voxel = XYZ & { type: BlockType }
 
 const BlockColors: Record<BlockType, [number, number, number]> = {
   grass: [0x08d000, 0x6E260E, 0x7B3F00],
@@ -311,10 +311,12 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
 
         // const block = Block(snapXYZ(world.flip(mouse), world), type)
         // const block = Block(snapXYZ(world.flip(mouse), world), type)
-        const block = BlockMesh(snapXYZ(world.flip(mouse), world))
+        // const block = BlockMesh(snapXYZ(world.flip(mouse), world))
 
-        world.addEntity(block)
+        // world.addEntity(block)
         // addToXBlocksBuffer(block)
+
+        blocks.add({ ...snapXYZ(world.flip(mouse), world), type })
 
         world.client?.soundManager.play("click2")
       }
@@ -344,21 +346,54 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
 // -----------------------------
 
 type Blocks = {
-
+  data: Voxel[]
+  add: (block: Voxel) => void
+  remove: (block: Voxel) => void
+  sort: () => void
 }
 
 const Blocks = (): Blocks => {
-  return {
-    
+
+  const keys: Set<string> = new Set()
+
+  const blocks: Blocks = {
+    data: [],
+    add: (block: Voxel) => {
+      if (keys.has(`${block.x}-${block.y}-${block.z}`)) return
+
+      blocks.data.push(block)
+      keys.add(`${block.x}-${block.y}-${block.z}`)
+    },
+    remove: (block: XYZ) => {
+      const index = blocks.data.findIndex(b => b.x === block.x && b.y === block.y && b.z === block.z)
+      if (index !== -1) {
+        blocks.data.splice(index, 1)
+        keys.delete(`${block.x}-${block.y}-${block.z}`)
+      }
+    },
+    sort: () => {
+      blocks.data.sort((a, b) => {
+        if (a.z !== b.z) return a.z - b.z
+        if (a.y !== b.y) return a.y - b.y
+        return a.x - b.x
+      })
+    }
   }
+
+  return blocks
 }
 
-const blocks: Blocks = {
+export const blocks = Blocks()
 
-}
+const buffer = new Buffer({
+  data: [
+    0, 0
+  ],
+  usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+})
 
 const geometry = new Geometry({
-  instanceCount: 4,
+  instanceCount: 1,
   indexBuffer: [
     0, 1, 2,
     0, 2, 3,
@@ -372,15 +407,7 @@ const geometry = new Geometry({
   attributes: {
     aInstanceOffset: {
       instance: true,
-      buffer: new Buffer({
-        data: [
-          0, 54,
-          100, 54,
-          100, 107,
-          118, 116
-        ],
-        usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
-      })
+      buffer
     },
     aUV: [
       // top
@@ -407,13 +434,13 @@ const geometry = new Geometry({
       -width, -width / 2,
       0, -width,
       width, -width / 2,
-    
+
       // bottom-left
       0, 0,
       -width, -width / 2,
       -width, height,
       0, height + width / 2,
-    
+
       // bottom-right
       0, 0,
       width, -width / 2,
@@ -475,7 +502,7 @@ const shader = Shader.from({
   }
 })
 
-const BlockMesh = (xyz: XYZ) => Entity({
+export const BlockMesh = () => Entity({
   id: "block-mesh",
   components: {
     position: Position(),
@@ -491,7 +518,7 @@ const BlockMesh = (xyz: XYZ) => Entity({
       dynamic: ({ world }) => {
         const zoom = world.renderer!.camera.scale
         // const {x, y, z} = world.renderer!.camera.focus?.components.position.data ?? { x: 0, y: 0, z: 0 }
-        const {x, y} = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+        const { x, y } = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
         const resolution = world.renderer!.wh()
         // console.log("zoom", zoom, x, y)
 
@@ -500,6 +527,22 @@ const BlockMesh = (xyz: XYZ) => Entity({
           shader.resources.uniforms.uniforms.uOffset = [x, y]
           shader.resources.uniforms.uniforms.uResolution = resolution
         }
+
+        // const data = blocks.data
+        blocks.sort()
+        const { data } = blocks
+
+        // vex2 array
+        const newBufferData = []
+        for (const block of data) {
+          const { x, y, z } = block
+          // newBufferData.set([x, y], newBufferData.length)
+          newBufferData.push(x, y-z)
+        }
+
+        console.log("newBufferData", newBufferData)
+        buffer.data = new Float32Array(newBufferData)
+        geometry.instanceCount = data.length
       }
     })
   }
