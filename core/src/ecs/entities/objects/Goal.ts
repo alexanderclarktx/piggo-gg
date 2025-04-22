@@ -63,7 +63,7 @@ export const Goal = ({ color, position, id, width }: GoalProps): Entity => {
         sensor: sensor
       }),
       renderable: Renderable({
-        onTick:({ container }) => {
+        onTick: ({ container }) => {
           const t = container.children[1] as Text
           if (t) t.text = `${data.goals}`
         },

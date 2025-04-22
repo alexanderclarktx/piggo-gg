@@ -8,7 +8,7 @@ export const switchTeamButton = () => Entity({
       zIndex: 1,
       interactiveChildren: true,
       visible: false,
-      onTick:({ renderable, world }) => {
+      onTick: ({ renderable, world }) => {
         renderable.visible = world.client?.connected ?? false
       },
       setup: async (renderable, renderer, world) => {

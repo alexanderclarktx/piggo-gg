@@ -138,7 +138,7 @@ export const Score = () => {
       renderable: Renderable({
         zIndex: 10,
         setContainer: async () => text,
-        onTick:({ world }) => {
+        onTick: ({ world }) => {
           const jumper = world.client?.playerCharacter()
           if (!jumper) return
 
@@ -166,7 +166,7 @@ const LeftBoundary = () => {
       debug: Debug(),
       renderable: Renderable({
         zIndex: 1,
-        onTick:({ world }) => {
+        onTick: ({ world }) => {
           const { x } = world.renderer!.camera.toCameraCoords({ x: 0, y: 0 })
           leftBoundary.components.position.setPosition({ x })
         },
@@ -187,7 +187,7 @@ const RightBoundary = () => {
       debug: Debug(),
       renderable: Renderable({
         zIndex: 1,
-        onTick:({ world }) => {
+        onTick: ({ world }) => {
           const { x } = world.renderer!.camera.toCameraCoords({ x: 300, y: 0 })
           rightBoundary.components.position.setPosition({ x })
         },

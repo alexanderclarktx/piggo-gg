@@ -17,7 +17,7 @@ export const Tooltip = (id: string, text: string) => {
         visible: true,
         interactiveChildren: true,
         zIndex: 100,
-        onTick:() => {
+        onTick: () => {
           if (!explainer || !explainerBg) return
 
           if (show <= 0) {

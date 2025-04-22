@@ -70,7 +70,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => {
       renderable: Renderable({
         zIndex: target.components.renderable.zIndex,
         interpolate: true,
-        onTick:({ entity, world }) => {
+        onTick: ({ entity, world }) => {
           const { position, renderable } = entity.components
           if (!position || !renderable) return
 

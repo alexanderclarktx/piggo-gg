@@ -90,7 +90,7 @@ export const Ball = () => Entity({
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
-      onTick:({ entity: ball, world }) => {
+      onTick: ({ entity: ball, world }) => {
         const { position: ballPos } = ball.components
         const { position, actions } = world.client?.playerCharacter()?.components ?? {}
         if (!position || !actions) return

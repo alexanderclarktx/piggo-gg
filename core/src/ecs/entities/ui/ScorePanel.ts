@@ -27,7 +27,7 @@ export const ScorePanel = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         anchor: { x: 0.5, y: 0 },
-        onTick:({ world }) => {
+        onTick: ({ world }) => {
           const state = world.game.state as { scoreLeft: number, scoreRight: number }
           if (left !== state.scoreLeft || right !== state.scoreRight) {
             left = state.scoreLeft

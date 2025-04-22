@@ -1,7 +1,7 @@
 import {
-  Actions, Clickable, Collider, Effects, Element, Entity, floor,
-  Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
-  pixiGraphics, Position, Renderable, round, World, XY, XYZ
+  Actions, Clickable, Effects, Entity, floor, Item, ItemActionParams,
+  ItemBuilder, ItemEntity, mouse, pixiGraphics, Position,
+  Renderable, round, World, XY, XYZ
 } from "@piggo-gg/core"
 import { Geometry, Graphics, Mesh, Shader, Buffer, BufferUsage } from "pixi.js"
 
@@ -60,56 +60,6 @@ const blockGraphics = (type: BlockType) => {
 
   return graphics[type]
 }
-
-const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
-  id: `block-${pos.x}-${pos.y}-${pos.z}`,
-  components: {
-    position: Position({ ...pos }),
-    element: Element("rock"),
-    collider: Collider({
-      cullable: true,
-      group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
-      hittable: pos.z > 0 ? true : false,
-      isStatic: true,
-      shape: "line",
-      points: [
-        0, width / 2,
-        -width, 0,
-        0, 3 - height,
-        width, 0,
-        0, width / 2
-      ]
-    }),
-    renderable: Renderable({
-      scaleMode: "nearest",
-      zIndex: 3,
-      cullable: true,
-      onTick: ({ entity, world }) => {
-        // if (world.tick % 200 !== 0) return
-        if (
-          world.entity(`block-${pos.x}-${pos.y}-${pos.z + 21}`) &&
-          world.entity(`block-${pos.x - width}-${pos.y + width / 2}-${pos.z}`) &&
-          world.entity(`block-${pos.x + width}-${pos.y + width / 2}-${pos.z}`)
-        ) {
-          entity.components.renderable.visible = false
-          // console.log("block hidden")
-        } else {
-          // entity.components.renderable.visible = true
-          // console.log("block visible")
-        }
-      },
-      setup: async (r) => {
-        const clone = blockGraphics(type).clone()
-        clone.position.y = -height
-        r.c.addChild(clone)
-
-        // if (pos.z > 0) {
-        r.setOutline({ color: 0x000000, thickness: 0.2 })
-        // }
-      }
-    })
-  }
-})
 
 // takes ij integer coordinates -> XY of that block from origin
 export const intToBlock = (i: number, j: number): XY => ({
@@ -216,9 +166,9 @@ export const BlockPreview = () => Entity({
 
         if (!visible) return
 
-        if (keys(xBlocksBuffer).length === 0) {
-          buildXBlocksBuffer(world)
-        }
+        // if (keys(xBlocksBuffer).length === 0) {
+        //   buildXBlocksBuffer(world)
+        // }
 
         const xyz = snapXYZ(world.flip(mouse))
         // const xyz = blockAtMouse(mouse)
@@ -348,7 +298,7 @@ type Blocks = {
   data: Voxel[]
   add: (block: Voxel) => void
   remove: (block: Voxel) => void
-  sort: () => void
+  sort: (world: World) => void
 }
 
 const Blocks = (): Blocks => {
@@ -370,11 +320,15 @@ const Blocks = (): Blocks => {
         keys.delete(`${block.x}-${block.y}-${block.z}`)
       }
     },
-    sort: () => {
+    sort: (world: World) => {
+
       blocks.data.sort((a, b) => {
+        const XYa = world.flip(a)
+        const XYb = world.flip(b)
+
+        if (XYa.y !== XYb.y) return XYa.y - XYb.y
         if (a.z !== b.z) return a.z - b.z
-        if (a.y !== b.y) return a.y - b.y
-        return a.x - b.x
+        return XYa.x - XYb.x
       })
     }
   }
@@ -525,13 +479,14 @@ export const BlockMesh = () => Entity({
           shader.resources.uniforms.uniforms.uResolution = resolution
         }
 
-        blocks.sort()
+        blocks.sort(world)
         const { data } = blocks
 
         // vex2 array
         const newBufferData = []
         for (const { x, y, z } of data) {
-          newBufferData.push(x, y - z)
+          const xy = world.flip({ x, y })
+          newBufferData.push(xy.x, xy.y - z)
         }
 
         // console.log("newBufferData", newBufferData)

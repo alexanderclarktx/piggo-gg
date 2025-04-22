@@ -3,7 +3,7 @@ import { Renderable, pixiGraphics } from "@piggo-gg/core"
 export const DebugBounds = (debugRenderable: Renderable): Renderable => {
 
   const renderable = Renderable({
-    onTick:({ container, renderable }) => {
+    onTick: ({ container, renderable }) => {
       container.position = { ...debugRenderable.position }
       renderable.visible = debugRenderable.visible
     },

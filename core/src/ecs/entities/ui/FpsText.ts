@@ -14,7 +14,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
     renderable: Renderable({
       zIndex: 3,
       setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0xffffff } }),
-      onTick:({ container, world }) => {
+      onTick: ({ container, world }) => {
         if (world.tick % 5 !== 0) return
 
         const t = container as Text

@@ -25,7 +25,7 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, cha
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,
       visible: false,
-      onTick:({ renderable, entity }) => {
+      onTick: ({ renderable, entity }) => {
         if (entity.components.item!.dropped) return
 
         const { pointing } = entity.components.position?.data ?? {}

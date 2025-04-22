@@ -40,7 +40,7 @@ export const PvEHUD = (): Entity => {
           renderable.c.removeChildren()
           renderable.c.addChild(...squares)
         },
-        onTick:async ({ container, world }) => {
+        onTick: async ({ container, world }) => {
           const playerCharacter = world.client?.playerCharacter()
           if (!playerCharacter) return
 

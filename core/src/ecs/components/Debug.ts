@@ -30,7 +30,7 @@ export const DebugSystem = ClientSystemBuilder({
 
       // text box
       const textBox = TextBox({
-        onTick:({ container, renderable }) => {
+        onTick: ({ container, renderable }) => {
           const c = container as Text
           if (renderable && position) {
             const bounds = renderable.c.getLocalBounds()
@@ -43,7 +43,7 @@ export const DebugSystem = ClientSystemBuilder({
       })
 
       const lineToHeading = Renderable({
-        onTick:({ container }) => {
+        onTick: ({ container }) => {
           const c = container as Graphics
           if (position.data.heading.x || position.data.heading.y) {
             c.clear().setStrokeStyle({ width: 1, color: 0x00ffff })
@@ -92,7 +92,7 @@ export const DebugSystem = ClientSystemBuilder({
     const drawAllColliders = () => {
 
       const r = Renderable({
-        onTick:({ container }) => {
+        onTick: ({ container }) => {
           const g = container as Graphics
           g.clear().setStrokeStyle({ width: 1, color: 0xffff00 })
           const { vertices } = physics.debugRender()
