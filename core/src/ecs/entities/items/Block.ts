@@ -134,45 +134,7 @@ export const snapXYToChunk = (pos: XY): XY => {
   return { x, y }
 }
 
-export const snapXY = (pos: XY): XY => {
-  const half = width / 2
-
-  // Convert to isometric grid coords (skewed grid space)
-  const gridX = (pos.x / width + pos.y / half) / 2
-  const gridY = (pos.y / half - pos.x / width) / 2
-
-  // Snap to nearest tile
-  const tileX = round(gridX)
-  const tileY = round(gridY)
-
-  // Convert back to screen position (center of tile)
-  const snappedX = (tileX - tileY) * width
-  const snappedY = (tileX + tileY) * half
-
-  return { x: snappedX, y: snappedY }
-}
-
-export const snapXYZ = (pos: XY, world: World): XYZ => {
-  return { z: highestBlock(pos, world).z, ...snapXY(pos) }
-}
-
-export const highestBlock = (pos: XY, world: World): XYZ => {
-  const snapped = snapXY(pos)
-
-  const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
-  let level = 0
-
-  // todo this is slow, should be a spatial hash ?
-  // for (const block of blocks) {
-  //   const { x, y, z } = block.components.position!.data
-  //   if (x === snapped.x && y === snapped.y) {
-  //     level = Math.max(level, z + 21)
-  //   }
-  // }
-
-  return { x: snapped.x, y: snapped.y, z: level }
-}
-
+// block[] at some X
 type XBlocks = Record<number, Entity<Position>[]>
 
 // todo move to an entity
@@ -345,6 +307,45 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
 
 // -----------------------------
 
+export const snapXY = (pos: XY): XY => {
+  const half = width / 2
+
+  // Convert to isometric grid coords (skewed grid space)
+  const gridX = (pos.x / width + pos.y / half) / 2
+  const gridY = (pos.y / half - pos.x / width) / 2
+
+  // Snap to nearest tile
+  const tileX = round(gridX)
+  const tileY = round(gridY)
+
+  // Convert back to screen position (center of tile)
+  const snappedX = (tileX - tileY) * width
+  const snappedY = (tileX + tileY) * half
+
+  return { x: snappedX, y: snappedY }
+}
+
+export const snapXYZ = (pos: XY, world: World): XYZ => {
+  return { z: highestBlock(pos).z, ...snapXY(pos) }
+}
+
+export const highestBlock = (pos: XY): XYZ => {
+  const snapped = snapXY(pos)
+
+  // const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
+  let level = 0
+
+  // todo this is slow, should be a spatial hash ?
+  for (const block of blocks.data) {
+    const { x, y, z } = block
+    if (x === snapped.x && y === snapped.y) {
+      level = Math.max(level, z + 21)
+    }
+  }
+
+  return { x: snapped.x, y: snapped.y, z: level }
+}
+
 type Blocks = {
   data: Voxel[]
   add: (block: Voxel) => void
@@ -466,7 +467,7 @@ const vertexSrc = `
   void main() {
     vUV = aUV;
 
-    vec2 worldPos = aPosition + aInstanceOffset;
+    vec2 worldPos = aPosition + aInstanceOffset - vec2(0, 12);
 
     vec2 screenPos = (worldPos - uOffset) * uZoom;
 
@@ -474,7 +475,7 @@ const vertexSrc = `
 
     clip.y *= -1.0;
 
-    gl_Position = vec4(clip, 0.0, 1.0);
+    gl_Position = vec4(clip.x, clip.y, 0, 1);
 }
 `
 
@@ -512,6 +513,8 @@ export const BlockMesh = () => Entity({
       interpolate: true,
       setup: async (r) => {
         const mesh = new Mesh({ geometry, shader })
+        // mesh.state.depthTest = true
+        // mesh.state.depthMask = true
 
         r.c = mesh
       },
@@ -540,7 +543,7 @@ export const BlockMesh = () => Entity({
           newBufferData.push(x, y-z)
         }
 
-        console.log("newBufferData", newBufferData)
+        // console.log("newBufferData", newBufferData)
         buffer.data = new Float32Array(newBufferData)
         geometry.instanceCount = data.length
       }

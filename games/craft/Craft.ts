@@ -32,12 +32,12 @@ export const Craft: GameBuilder = {
   })
 }
 
-const spawnTerrain = (world: World) => {
-  const num = 4
+const spawnTerrain = () => {
+  const num = 20
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
-      spawnChunk(world, chunk)
+      spawnChunk(chunk)
     }
   }
 }
@@ -46,7 +46,7 @@ type Chunk = `${number}x${number}`
 const liveChunks = new Set<Chunk>()
 // const liveChunks: Map<number, Map<number, true>> = new Map()
 
-const spawnChunk = (world: World, chunk: XY) => {
+const spawnChunk = (chunk: XY) => {
   const { x, y } = chunk
   liveChunks.add(`${x}x${y}`)
 
@@ -88,7 +88,7 @@ const CraftSystem = SystemBuilder({
   id: "CraftSystem",
   init: (world) => {
 
-    spawnTerrain(world)
+    spawnTerrain()
 
     const playerChunks = new Map<string, XY>()
 
@@ -145,12 +145,12 @@ const CraftSystem = SystemBuilder({
           collider.setGroup(group)
 
           // stop falling if directly above a block
-          const highest = highestBlock({ x, y }, world).z
+          const highest = highestBlock({ x, y }).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             position.data.stop = highest
           } else {
             position.data.gravity = 0.3
-            position.data.stop = 0
+            position.data.stop = -600
           }
 
           if (position.data.z === -600) {

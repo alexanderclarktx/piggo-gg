@@ -76,7 +76,7 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => {
 
           const { data, lastCollided } = target.components.position
 
-          const highest = highestBlock(data, world)
+          const highest = highestBlock(data)
 
           position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest.z })
           position.setVelocity({ ...data.velocity, z: 0 })
