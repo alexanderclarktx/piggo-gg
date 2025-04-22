@@ -54,10 +54,7 @@ const spawnChunk = (chunk: XY) => {
       const xy = intToBlock(i + x * 4, j + y * 4)
       const height = round(max(1, noise(xy.x / 300, xy.y / 300) * 10))
       for (let k = 0; k < height; k++) {
-        // const block = Block({ ...xy, z: k * 21 }, k > 0 ? "obsidian" : "grass")
-        // world.addEntity(block)
-
-        blocks.add({ ...xy, z: k * 21, type: "grass" })
+        blocks.add({ ...xy, z: k * 21, type: k > 0 ? "obsidian" : "grass" })
       }
     }
   }
@@ -116,7 +113,7 @@ const CraftSystem = SystemBuilder({
           }
 
           if (position.data.z === -600) {
-            position.setPosition({ x: 0, y: 0, z: 128 })
+            position.setPosition({ x: 0, y: 200, z: 128 })
             position.setVelocity({ x: 0, y: 0, z: 0 })
           }
         }

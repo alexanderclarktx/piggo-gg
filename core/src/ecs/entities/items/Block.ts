@@ -9,6 +9,7 @@ const width = 18
 const height = width / 3 * 2
 
 export type BlockType = "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+
 export type Voxel = XYZ & { type: BlockType }
 
 const BlockColors: Record<BlockType, [number, number, number]> = {
@@ -338,15 +339,18 @@ const Blocks = (): Blocks => {
 
 export const blocks = Blocks()
 
-const buffer = new Buffer({
-  data: [
-    0, 0
-  ],
+const posBuffer = new Buffer({
+  data: [],
+  usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+})
+
+const colorBuffer = new Buffer({
+  data: [],
   usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
 })
 
 const geometry = new Geometry({
-  instanceCount: 1,
+  instanceCount: 0,
   indexBuffer: [
     0, 1, 2,
     0, 2, 3,
@@ -358,43 +362,46 @@ const geometry = new Geometry({
     9, 11, 10,
   ],
   attributes: {
-    aInstanceOffset: {
+    aInstance: {
       instance: true,
-      buffer
+      buffer: posBuffer
     },
+    aInstanceColor: {
+      instance: true,
+      buffer: colorBuffer
+    },
+    aFace: [
+      0, 0, 0, 0, // top
+      1, 1, 1, 1, // left
+      2, 2, 2, 2  // right
+    ],
     aUV: [
-      // top
-      0.0, 0.82, 0.0,
+      0, 0.82, 0.0,
       0.0, 0.82, 0.0,
       0.0, 0.82, 0.0,
       0.0, 0.82, 0.0,
 
-      // left (placeholder UVs)
       0.5, 0.2, 0.0,
       0.5, 0.2, 0.0,
       0.5, 0.2, 0.0,
       0.5, 0.2, 0.0,
 
-      // right (placeholder UVs)
       0.6, 0.3, 0.0,
       0.6, 0.3, 0.0,
       0.6, 0.3, 0.0,
       0.6, 0.3, 0.0,
     ],
     aPosition: [
-      // top
       0, 0,
       -width, -width / 2,
       0, -width,
       width, -width / 2,
 
-      // bottom-left
       0, 0,
       -width, -width / 2,
       -width, height,
       0, height + width / 2,
 
-      // bottom-right
       0, 0,
       width, -width / 2,
       width, height,
@@ -408,26 +415,31 @@ const vertexSrc = `
 
   attribute vec2 aPosition;
   attribute vec3 aUV;
-  attribute vec2 aInstanceOffset;
+  attribute float aFace;
+
+  attribute vec2 aInstance;
+  attribute vec3 aInstanceColor;
 
   uniform vec2 uResolution;
   uniform vec2 uOffset;
   uniform float uZoom;
 
+  varying float vFace;
   varying vec3 vUV;
+  varying vec3 vInstanceColor;
 
   void main() {
-    vUV = aUV;
-
-    vec2 worldPos = aPosition + aInstanceOffset - vec2(0, 12);
-
+    vec2 worldPos = aPosition + aInstance - vec2(0, 12);
     vec2 screenPos = (worldPos - uOffset) * uZoom;
 
     vec2 clip = (screenPos / uResolution) * 2.0;
-
     clip.y *= -1.0;
 
     gl_Position = vec4(clip.x, clip.y, 0, 1);
+
+    vFace = aFace;
+    vInstanceColor = aInstanceColor;
+    vUV = aUV;
 }
 `
 
@@ -435,9 +447,30 @@ const fragmentSrc = `
   precision mediump float;
 
   varying vec3 vUV;
+  varying float vFace;
+  varying vec3 vInstanceColor;
+
+  vec3 unpackRGB(float hex) {
+    float r = floor(mod(hex / 65536.0, 256.0)) / 255.0;
+    float g = floor(mod(hex / 256.0, 256.0)) / 255.0;
+    float b = mod(hex, 256.0) / 255.0;
+    return vec3(r, g, b);
+  }
 
   void main() {
-    gl_FragColor = vec4(vUV, 1.0);
+    int face = int(vFace + 0.5);
+
+    vec3 color;
+
+    if (face == 0) {
+      color = unpackRGB(vInstanceColor[0]);
+    } else if (face == 1) {
+      color = unpackRGB(vInstanceColor[1]);
+    } else if (face == 2) {
+      color = unpackRGB(vInstanceColor[2]);
+    }
+
+    gl_FragColor = vec4(color, 1.0);
   }
 `
 
@@ -470,27 +503,30 @@ export const BlockMesh = () => Entity({
       },
       onRender: ({ world }) => {
         const zoom = world.renderer!.camera.scale
-        const { x, y } = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+        const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
         const resolution = world.renderer!.wh()
 
         if (shader.resources.uniforms?.uniforms?.uZoom) {
           shader.resources.uniforms.uniforms.uZoom = zoom
-          shader.resources.uniforms.uniforms.uOffset = [x, y]
+          shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
           shader.resources.uniforms.uniforms.uResolution = resolution
         }
 
         blocks.sort(world)
         const { data } = blocks
 
-        // vex2 array
-        const newBufferData = []
-        for (const { x, y, z } of data) {
-          const xy = world.flip({ x, y })
-          newBufferData.push(xy.x, xy.y - z)
+        const newPosBuffer = []
+        const newColorBuffer = []
+
+        for (const block of data) {
+          const { x, y } = world.flip(block)
+
+          newPosBuffer.push(x, y - block.z)
+          newColorBuffer.push(...BlockColors[block.type])
         }
 
-        // console.log("newBufferData", newBufferData)
-        buffer.data = new Float32Array(newBufferData)
+        posBuffer.data = new Float32Array(newPosBuffer)
+        colorBuffer.data = new Float32Array(newColorBuffer)
         geometry.instanceCount = data.length
       }
     })
