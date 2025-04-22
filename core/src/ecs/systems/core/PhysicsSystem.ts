@@ -30,8 +30,6 @@ export const PhysicsSystem = SystemBuilder({
         // wait until rapier is ready
         if (!physics) return
 
-        const time = performance.now()
-
         // reset physics if not rollback
         if (!isRollback) resetPhysics()
 
@@ -97,7 +95,6 @@ export const PhysicsSystem = SystemBuilder({
             y: Math.floor(position.data.velocity.y * 100) / 100
           }, true)
         }
-        // console.log("Physics prep", performance.now() - time)
 
         // run physics
         physics.step()

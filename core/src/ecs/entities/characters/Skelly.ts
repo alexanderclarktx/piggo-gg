@@ -69,7 +69,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       scaleMode: "nearest",
       setup: DudeSkin("white"),
       animationSelect: VolleyCharacterAnimations,
-      onTick:VolleyCharacterDynamic
+      onTick: VolleyCharacterDynamic
     })
   }
 })
