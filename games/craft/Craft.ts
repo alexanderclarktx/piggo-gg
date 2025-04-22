@@ -2,9 +2,8 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, World, Block, intToBlock, max, round, XY, snapXYToChunk, sqrt,
-  blocks,
-  BlockMesh
+  EscapeMenu, World, intToBlock, max, round, XY, snapXYToChunk, sqrt,
+  blocks, BlockMesh
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 

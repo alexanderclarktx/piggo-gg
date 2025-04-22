@@ -61,7 +61,7 @@ const blockGraphics = (type: BlockType) => {
   return graphics[type]
 }
 
-export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
+const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
@@ -163,12 +163,12 @@ export const highestBlock = (pos: XY, world: World): XYZ => {
   let level = 0
 
   // todo this is slow, should be a spatial hash ?
-  for (const block of blocks) {
-    const { x, y, z } = block.components.position!.data
-    if (x === snapped.x && y === snapped.y) {
-      level = Math.max(level, z + 21)
-    }
-  }
+  // for (const block of blocks) {
+  //   const { x, y, z } = block.components.position!.data
+  //   if (x === snapped.x && y === snapped.y) {
+  //     level = Math.max(level, z + 21)
+  //   }
+  // }
 
   return { x: snapped.x, y: snapped.y, z: level }
 }
@@ -507,7 +507,7 @@ export const BlockMesh = () => Entity({
   components: {
     position: Position(),
     renderable: Renderable({
-      zIndex: 10,
+      zIndex: 0,
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,
       setup: async (r) => {
