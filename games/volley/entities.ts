@@ -57,7 +57,7 @@ export const Dude = (player: Player) => Character({
         await Skins[r.data.desiredSkin ?? "dude-white"](r)
       },
       animationSelect: VolleyCharacterAnimations,
-      dynamic: VolleyCharacterDynamic
+      onTick:VolleyCharacterDynamic
     })
   }
 })
@@ -90,7 +90,7 @@ export const Ball = () => Entity({
       interpolate: true,
       scaleMode: "nearest",
       rotates: true,
-      dynamic: ({ entity: ball, world }) => {
+      onTick:({ entity: ball, world }) => {
         const { position: ballPos } = ball.components
         const { position, actions } = world.client?.playerCharacter()?.components ?? {}
         if (!position || !actions) return

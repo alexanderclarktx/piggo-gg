@@ -70,28 +70,28 @@ const ShadowEntity = (target: Target, size: number, yOffset: number) => {
       renderable: Renderable({
         zIndex: target.components.renderable.zIndex,
         interpolate: true,
-        dynamic: ({ entity, world }) => {
+        onTick:({ entity, world }) => {
           const { position, renderable } = entity.components
           if (!position || !renderable) return
 
           const { data, lastCollided } = target.components.position
 
-          const highest = highestBlock(data)
+          // const highest = highestBlock(data)
 
-          position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest.z })
+          // position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest.z })
           position.setVelocity({ ...data.velocity, z: 0 })
           position.lastCollided = lastCollided
 
-          renderable.c.alpha = 0.25 - (data.z - highest.z) / 1000
+          // renderable.c.alpha = 0.25 - (data.z - highest.z) / 1000
 
-          mask.position.x = highest.x - position.data.x
-          mask.position.y = 9 + (highest.y - position.data.y)
+          // mask.position.x = highest.x - position.data.x
+          // mask.position.y = 9 + (highest.y - position.data.y)
 
-          if (highest.z > 21) {
-            renderable.c.setMask({ mask })
-          } else {
-            renderable.c.mask = null
-          }
+          // if (highest.z > 21) {
+          //   renderable.c.setMask({ mask })
+          // } else {
+          //   renderable.c.mask = null
+          // }
         },
         setup: async (renderable) => {
           renderable.c = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })

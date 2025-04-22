@@ -2,8 +2,7 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, World, intToBlock, max, round, XY, snapXYToChunk, sqrt,
-  blocks, BlockMesh
+  EscapeMenu, World, intToBlock, max, round, XY, blocks, BlockMesh
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
@@ -33,7 +32,7 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = () => {
-  const num = 20
+  const num = 50
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
@@ -44,7 +43,6 @@ const spawnTerrain = () => {
 
 type Chunk = `${number}x${number}`
 const liveChunks = new Set<Chunk>()
-// const liveChunks: Map<number, Map<number, true>> = new Map()
 
 const spawnChunk = (chunk: XY) => {
   const { x, y } = chunk
@@ -90,8 +88,6 @@ const CraftSystem = SystemBuilder({
 
     spawnTerrain()
 
-    const playerChunks = new Map<string, XY>()
-
     return {
       id: "CraftSystem",
       query: [],
@@ -105,40 +101,6 @@ const CraftSystem = SystemBuilder({
 
           const { position, collider } = character.components
           const { x, y, z, velocity } = position.data
-
-          const chunk = snapXYToChunk({ x, y })
-
-          const distance = 2
-
-          if (playerChunks.has(character.id)) {
-            const prevChunk = playerChunks.get(character.id)!
-            if (prevChunk.x !== chunk.x || prevChunk.y !== chunk.y) {
-              playerChunks.set(character.id, chunk)
-
-              // despawn previous chunk
-              for (const liveChunk of liveChunks) {
-                const [chunkX, chunkY] = liveChunk.split("x").map(Number)
-
-                const chunkDistance = sqrt((chunk.x - chunkX) ** 2 + (chunk.y - chunkY) ** 2)
-                if (chunkDistance > distance) {
-                  // despawnChunk(world, { x: chunkX, y: chunkY })
-                }
-              }
-
-              // spawn new chunk
-              for (let i = -distance; i <= distance; i++) {
-                for (let j = -distance; j <= distance; j++) {
-                  const newChunk = { x: chunk.x + i, y: chunk.y + j }
-                  if (!liveChunks.has(`${newChunk.x}x${newChunk.y}`)) {
-                    // spawnChunk(world, newChunk)
-                  }
-                }
-              }
-
-            }
-          } else {
-            playerChunks.set(character.id, chunk)
-          }
 
           // set collider group
           const group = (floor(z / 21) + 1).toString() as "1"

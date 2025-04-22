@@ -33,7 +33,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(400, 200), y: randomI
         color: 0xffffff,
         scaleMode: "nearest",
         anchor: { x: 0.5, y: 0.7 },
-        dynamic: ({ renderable }) => {
+        onTick:({ renderable }) => {
           const { orientationRads } = piggo.components.position
 
           const x = (orientationRads > 2 && orientationRads < 6) ? 1 : -1

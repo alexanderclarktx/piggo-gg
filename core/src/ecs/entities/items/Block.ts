@@ -1,7 +1,7 @@
 import {
-  Actions, Clickable, Collider, Debug, Effects, Element, Entity, floor,
+  Actions, Clickable, Collider, Effects, Element, Entity, floor,
   Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
-  pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
+  pixiGraphics, Position, Renderable, round, World, XY, XYZ
 } from "@piggo-gg/core"
 import { Geometry, Graphics, Mesh, Shader, Buffer, BufferUsage } from "pixi.js"
 
@@ -65,7 +65,6 @@ const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
   id: `block-${pos.x}-${pos.y}-${pos.z}`,
   components: {
     position: Position({ ...pos }),
-    // debug: Debug(),
     element: Element("rock"),
     collider: Collider({
       cullable: true,
@@ -85,7 +84,7 @@ const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
       scaleMode: "nearest",
       zIndex: 3,
       cullable: true,
-      dynamic: ({ entity, world }) => {
+      onTick: ({ entity, world }) => {
         // if (world.tick % 200 !== 0) return
         if (
           world.entity(`block-${pos.x}-${pos.y}-${pos.z + 21}`) &&
@@ -206,7 +205,7 @@ export const BlockPreview = () => Entity({
       zIndex: 3,
       anchor: { x: 0.5, y: 0 },
       position: { x: 0, y: 0 },
-      dynamic: ({ entity, world }) => {
+      onTick: ({ entity, world }) => {
         let visible = false
 
         const activeItem = world.client?.playerCharacter()?.components.inventory?.activeItem(world)
@@ -221,7 +220,7 @@ export const BlockPreview = () => Entity({
           buildXBlocksBuffer(world)
         }
 
-        const xyz = snapXYZ(world.flip(mouse), world)
+        const xyz = snapXYZ(world.flip(mouse))
         // const xyz = blockAtMouse(mouse)
 
         if (!xyz) {
@@ -278,7 +277,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         // world.addEntity(block)
         // addToXBlocksBuffer(block)
 
-        blocks.add({ ...snapXYZ(world.flip(mouse), world), type })
+        blocks.add({ ...snapXYZ(world.flip(mouse)), type })
 
         world.client?.soundManager.play("click2")
       }
@@ -325,14 +324,13 @@ export const snapXY = (pos: XY): XY => {
   return { x: snappedX, y: snappedY }
 }
 
-export const snapXYZ = (pos: XY, world: World): XYZ => {
+export const snapXYZ = (pos: XY): XYZ => {
   return { z: highestBlock(pos).z, ...snapXY(pos) }
 }
 
 export const highestBlock = (pos: XY): XYZ => {
   const snapped = snapXY(pos)
 
-  // const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
   let level = 0
 
   // todo this is slow, should be a spatial hash ?
@@ -513,17 +511,13 @@ export const BlockMesh = () => Entity({
       interpolate: true,
       setup: async (r) => {
         const mesh = new Mesh({ geometry, shader })
-        // mesh.state.depthTest = true
-        // mesh.state.depthMask = true
 
         r.c = mesh
       },
-      dynamic: ({ world }) => {
+      onRender: ({ world }) => {
         const zoom = world.renderer!.camera.scale
-        // const {x, y, z} = world.renderer!.camera.focus?.components.position.data ?? { x: 0, y: 0, z: 0 }
         const { x, y } = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
         const resolution = world.renderer!.wh()
-        // console.log("zoom", zoom, x, y)
 
         if (shader.resources.uniforms?.uniforms?.uZoom) {
           shader.resources.uniforms.uniforms.uZoom = zoom
@@ -531,16 +525,13 @@ export const BlockMesh = () => Entity({
           shader.resources.uniforms.uniforms.uResolution = resolution
         }
 
-        // const data = blocks.data
         blocks.sort()
         const { data } = blocks
 
         // vex2 array
         const newBufferData = []
-        for (const block of data) {
-          const { x, y, z } = block
-          // newBufferData.set([x, y], newBufferData.length)
-          newBufferData.push(x, y-z)
+        for (const { x, y, z } of data) {
+          newBufferData.push(x, y - z)
         }
 
         // console.log("newBufferData", newBufferData)

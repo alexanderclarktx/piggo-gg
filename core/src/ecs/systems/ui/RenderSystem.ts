@@ -68,14 +68,14 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // run dynamic callback
-          if (renderable.dynamic && renderable.initialized) renderable.dynamic({
+          if (renderable.onTick && renderable.initialized) renderable.onTick({
             container: renderable.c, entity, world, renderable, client: world.client!
           })
 
           // run dynamic callback for children
           if (renderable.children && renderable.initialized) {
             renderable.children.forEach((child) => {
-              if (child.dynamic) child.dynamic({ container: child.c, entity, world, renderable: child, client: world.client! })
+              if (child.onTick) child.onTick({ container: child.c, entity, world, renderable: child, client: world.client! })
             })
           }
 
@@ -160,16 +160,15 @@ export const RenderSystem = ClientSystemBuilder({
 
           const { position, renderable } = entity.components
 
+          if (renderable.onRender && renderable.initialized ) {
+            renderable.onRender({ container: renderable.c, entity, world, renderable, client: world.client! })
+          }
+
           if (!renderable.rendered || !renderable.interpolate) continue
 
           // ui renderables
           if (position.screenFixed) {
             updateScreenFixed(entity)
-          }
-
-          // todo
-          if (entity.id === "block-mesh") {
-            renderable.dynamic?.({ container: renderable.c, entity, world, renderable, client: world.client! })
           }
 
           // world renderables

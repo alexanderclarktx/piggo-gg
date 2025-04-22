@@ -7,7 +7,7 @@ export const Chat = (): Entity => {
     padding: 3,
     fontSize: 16,
     color: 0x55FFFF,
-    dynamic: ({ container, renderable, world }) => {
+    onTick:({ container, renderable, world }) => {
       const t = container as Text
 
       // hide chat if no recent messages
@@ -41,7 +41,7 @@ export const Chat = (): Entity => {
     color: 0xFFFF33,
     // boxOutline: true,
     // visible: false,
-    dynamic: ({ container }) => {
+    onTick:({ container }) => {
       const t = container as Text
       const textToRender = chatBuffer.join("")
       chatIsOpen ? t.text = `${textToRender}|` : t.text = ""

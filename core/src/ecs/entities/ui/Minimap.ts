@@ -65,7 +65,7 @@ export const Minimap = (dim: number, tileMap: number[]): Entity => {
       }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: ({ world }) => {
+        onTick:({ world }) => {
 
           // remove dots that are no longer in the world
           keys(dots).forEach((id) => {
