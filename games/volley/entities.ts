@@ -52,12 +52,12 @@ export const Dude = (player: Player) => Character({
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
-      skin: (player.components.pc.data.name.startsWith("noob")) ? "dude-white" : "ghost", 
+      skin: (player.components.pc.data.name.startsWith("noob")) ? "dude-white" : "ghost",
       setup: async (r) => {
         await Skins[r.data.desiredSkin ?? "dude-white"](r)
       },
       animationSelect: VolleyCharacterAnimations,
-      onTick:VolleyCharacterDynamic
+      onTick: VolleyCharacterDynamic
     })
   }
 })
