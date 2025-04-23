@@ -243,12 +243,6 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
       mb1: ({ params, world }) => {
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
-
-        // const block = Block(snapXYZ(world.flip(mouse), world), type)
-        // const block = Block(snapXYZ(world.flip(mouse), world), type)
-        // const block = BlockMesh(snapXYZ(world.flip(mouse), world))
-
-        // world.addEntity(block)
         // addToXBlocksBuffer(block)
 
         blocks.add({ ...snapXYZ(world.flip(mouse)), type })
