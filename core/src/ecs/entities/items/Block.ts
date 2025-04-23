@@ -470,23 +470,23 @@ const fragmentSrc = `
   }
 `
 
-const shader = Shader.from({
-  gl: {
-    vertex: vertexSrc,
-    fragment: fragmentSrc
-  },
-  resources: {
-    uniforms: {
-      uOffset: { value: [0, 0], type: 'vec2<f32>' },
-      uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
-      uZoom: { value: 2.0, type: 'f32' }
-    }
-  }
-})
-
 export const BlockMesh = () => {
 
   const geometry = BLOCK_GEOMETRY()
+
+  const shader = Shader.from({
+    gl: {
+      vertex: vertexSrc,
+      fragment: fragmentSrc
+    },
+    resources: {
+      uniforms: {
+        uOffset: { value: [0, 0], type: 'vec2<f32>' },
+        uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
+        uZoom: { value: 2.0, type: 'f32' }
+      }
+    }
+  })
 
   return Entity({
     id: "block-mesh",
@@ -515,7 +515,8 @@ export const BlockMesh = () => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
 
-          const { y: playerY, z: playerZ } = position.data
+          const { z: playerZ } = position.data
+          const { y: playerY } = world.flip(position.data)
 
           blocks.sort(world)
           const { data } = blocks
@@ -529,7 +530,6 @@ export const BlockMesh = () => {
 
             const blockInFront = (y - playerY) > 0
             if (!blockInFront || block.z < playerZ) {
-
               instanceCount += 1
 
               newPosBuffer.push(x, y - block.z)
@@ -550,6 +550,20 @@ export const BlockMeshOcclusion = () => {
 
   const geometry = BLOCK_GEOMETRY()
 
+  const shader = Shader.from({
+    gl: {
+      vertex: vertexSrc,
+      fragment: fragmentSrc
+    },
+    resources: {
+      uniforms: {
+        uOffset: { value: [0, 0], type: 'vec2<f32>' },
+        uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
+        uZoom: { value: 2.0, type: 'f32' }
+      }
+    }
+  })
+
   return Entity({
     id: "block-mesh-occlusion",
     components: {
@@ -563,7 +577,7 @@ export const BlockMeshOcclusion = () => {
 
           r.c = mesh
         },
-        onRender: ({ world }) => {
+        onRender: ({ world, renderable }) => {
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
@@ -578,7 +592,8 @@ export const BlockMeshOcclusion = () => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
 
-          const { y: playerY, z: playerZ } = position.data
+          const { z: playerZ } = position.data
+          const { y: playerY } = world.flip(position.data)
 
           blocks.sort(world)
           const { data } = blocks
@@ -591,10 +606,7 @@ export const BlockMeshOcclusion = () => {
             const { x, y } = world.flip(block)
 
             const blockInFront = (y - playerY) > 0
-            // if (blockInFront || block.z <= playerZ) continue/
-
             if (blockInFront && block.z >= playerZ) {
-
               instanceCount += 1
 
               newPosBuffer.push(x, y - block.z)
@@ -605,6 +617,8 @@ export const BlockMeshOcclusion = () => {
           geometry.attributes.aInstance.buffer.data = new Float32Array(newPosBuffer)
           geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
           geometry.instanceCount = instanceCount
+
+          renderable.c.visible = instanceCount > 0
         }
       })
     }
