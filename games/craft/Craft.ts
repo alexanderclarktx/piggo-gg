@@ -2,11 +2,13 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, max, round, XY, blocks, BlockMesh
+  EscapeMenu, intToBlock, max, round, XY, blocks,
+  BlockMeshOcclusion,
+  BlockMesh
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
-
 const noise = createNoise2D(Math.random)
+
 
 export const Craft: GameBuilder = {
   id: "craft",
@@ -26,7 +28,8 @@ export const Craft: GameBuilder = {
       Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview(),
-      BlockMesh()
+      BlockMesh(),
+      BlockMeshOcclusion()
     ]
   })
 }

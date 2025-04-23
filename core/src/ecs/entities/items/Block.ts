@@ -339,17 +339,7 @@ const Blocks = (): Blocks => {
 
 export const blocks = Blocks()
 
-const posBuffer = new Buffer({
-  data: [],
-  usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
-})
-
-const colorBuffer = new Buffer({
-  data: [],
-  usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
-})
-
-const geometry = new Geometry({
+const BLOCK_GEOMETRY = () => new Geometry({
   instanceCount: 0,
   indexBuffer: [
     0, 1, 2,
@@ -364,11 +354,17 @@ const geometry = new Geometry({
   attributes: {
     aInstance: {
       instance: true,
-      buffer: posBuffer
+      buffer: new Buffer({
+        data: [],
+        usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+      })
     },
     aInstanceColor: {
       instance: true,
-      buffer: colorBuffer
+      buffer: new Buffer({
+        data: [],
+        usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+      })
     },
     aFace: [
       0, 0, 0, 0, // top
@@ -488,47 +484,129 @@ const shader = Shader.from({
   }
 })
 
-export const BlockMesh = () => Entity({
-  id: "block-mesh",
-  components: {
-    position: Position(),
-    renderable: Renderable({
-      zIndex: 0,
-      anchor: { x: 0.5, y: 0.5 },
-      interpolate: true,
-      setup: async (r) => {
-        const mesh = new Mesh({ geometry, shader })
+export const BlockMesh = () => {
 
-        r.c = mesh
-      },
-      onRender: ({ world }) => {
-        const zoom = world.renderer!.camera.scale
-        const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
-        const resolution = world.renderer!.wh()
+  const geometry = BLOCK_GEOMETRY()
 
-        if (shader.resources.uniforms?.uniforms?.uZoom) {
-          shader.resources.uniforms.uniforms.uZoom = zoom
-          shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
-          shader.resources.uniforms.uniforms.uResolution = resolution
+  return Entity({
+    id: "block-mesh",
+    components: {
+      position: Position(),
+      renderable: Renderable({
+        zIndex: 0,
+        anchor: { x: 0.5, y: 0.5 },
+        interpolate: true,
+        setup: async (r) => {
+          const mesh = new Mesh({ geometry, shader })
+
+          r.c = mesh
+        },
+        onRender: ({ world }) => {
+          const zoom = world.renderer!.camera.scale
+          const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+          const resolution = world.renderer!.wh()
+
+          if (shader.resources.uniforms?.uniforms?.uZoom) {
+            shader.resources.uniforms.uniforms.uZoom = zoom
+            shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uResolution = resolution
+          }
+
+          const { position } = world.client!.playerCharacter()?.components ?? {}
+          if (!position) return
+
+          const { y: playerY, z: playerZ } = position.data
+
+          blocks.sort(world)
+          const { data } = blocks
+
+          const newPosBuffer = []
+          const newColorBuffer = []
+
+          let instanceCount = 0
+          for (const block of data) {
+            const { x, y } = world.flip(block)
+
+            const blockInFront = (y - playerY) > 0
+            if (!blockInFront || block.z < playerZ) {
+
+              instanceCount += 1
+
+              newPosBuffer.push(x, y - block.z)
+              newColorBuffer.push(...BlockColors[block.type])
+            }
+          }
+
+          geometry.attributes.aInstance.buffer.data = new Float32Array(newPosBuffer)
+          geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
+          geometry.instanceCount = instanceCount
         }
+      })
+    }
+  })
+}
 
-        blocks.sort(world)
-        const { data } = blocks
+export const BlockMeshOcclusion = () => {
 
-        const newPosBuffer = []
-        const newColorBuffer = []
+  const geometry = BLOCK_GEOMETRY()
 
-        for (const block of data) {
-          const { x, y } = world.flip(block)
+  return Entity({
+    id: "block-mesh-occlusion",
+    components: {
+      position: Position(),
+      renderable: Renderable({
+        zIndex: 3.1,
+        anchor: { x: 0.5, y: 0.5 },
+        interpolate: true,
+        setup: async (r) => {
+          const mesh = new Mesh({ geometry, shader })
 
-          newPosBuffer.push(x, y - block.z)
-          newColorBuffer.push(...BlockColors[block.type])
+          r.c = mesh
+        },
+        onRender: ({ world }) => {
+          const zoom = world.renderer!.camera.scale
+          const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+          const resolution = world.renderer!.wh()
+
+          if (shader.resources.uniforms?.uniforms?.uZoom) {
+            shader.resources.uniforms.uniforms.uZoom = zoom
+            shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uResolution = resolution
+          }
+
+          // const playerPos = world.client!.playerCharacter()?.components.position.data
+          const { position } = world.client!.playerCharacter()?.components ?? {}
+          if (!position) return
+
+          const { y: playerY, z: playerZ } = position.data
+
+          blocks.sort(world)
+          const { data } = blocks
+
+          const newPosBuffer = []
+          const newColorBuffer = []
+
+          let instanceCount = 0
+          for (const block of data) {
+            const { x, y } = world.flip(block)
+
+            const blockInFront = (y - playerY) > 0
+            // if (blockInFront || block.z <= playerZ) continue/
+
+            if (blockInFront && block.z >= playerZ) {
+
+              instanceCount += 1
+
+              newPosBuffer.push(x, y - block.z)
+              newColorBuffer.push(...BlockColors[block.type])
+            }
+          }
+
+          geometry.attributes.aInstance.buffer.data = new Float32Array(newPosBuffer)
+          geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
+          geometry.instanceCount = instanceCount
         }
-
-        posBuffer.data = new Float32Array(newPosBuffer)
-        colorBuffer.data = new Float32Array(newColorBuffer)
-        geometry.instanceCount = data.length
-      }
-    })
-  }
-})
+      })
+    }
+  })
+}
