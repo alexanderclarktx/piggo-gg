@@ -24,7 +24,7 @@ export const Scoreboard = (): Entity => {
         visible: false,
         interactiveChildren: true,
         zIndex: 10,
-        dynamic: ({ world }) => {
+        onTick: ({ world }) => {
           const currentPlayerEntities = world.queryEntities(["pc"]) as Player[]
           const currentPlayers = new Set(currentPlayerEntities.map((p) => ({ name: p.id, entity: p })))
 

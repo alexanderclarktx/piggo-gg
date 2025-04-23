@@ -140,7 +140,7 @@ export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Tea
         scaleMode: "nearest",
         setup: team === 1 ? DudeSkin("red") : DudeSkin("blue"),
         animationSelect: VolleyCharacterAnimations,
-        dynamic: VolleyCharacterDynamic
+        onTick: VolleyCharacterDynamic
       })
     }
   })

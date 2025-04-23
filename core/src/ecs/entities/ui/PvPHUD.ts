@@ -30,7 +30,7 @@ export const MobilePvPHUD = (): Entity => {
 
           renderable.c.addChild(outline, hp, ammo)
         },
-        dynamic: ({ world }) => {
+        onTick: ({ world }) => {
           const playerCharacter = world.client?.playerCharacter()
           if (!playerCharacter) return
 
@@ -96,7 +96,7 @@ export const PvPHUD = (keys: AbilityStrings, labels: AbilityStrings): Entity => 
 
           renderable.c.addChild(outline, hp, ammo, square1, square2, square3, square4, key1, key2, key3, key4, label1, label2, label3, label4)
         },
-        dynamic: ({ world }) => {
+        onTick: ({ world }) => {
           const playerCharacter = world.client?.playerCharacter()
           if (!playerCharacter) return
 

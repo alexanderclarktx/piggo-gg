@@ -89,7 +89,7 @@ export const Friends = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        dynamic: ({ world, client }) => {
+        onTick: ({ world, client }) => {
           if (!world.renderer) return
 
           const h = world.client?.token ? 200 : 290

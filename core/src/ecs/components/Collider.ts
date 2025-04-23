@@ -42,7 +42,7 @@ export const ColliderGroups = {
   "30":    "01100000000000001100000000000000",
   "31":    "11000000000000011000000000000000",
   "32":    "00000000000001110000000000000111"
-} as const;
+} as const
 
 export type Collider = Component<"collider"> & {
   body: RigidBody | undefined

@@ -17,7 +17,7 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
     renderable: Renderable({
       zIndex: -2,
       interpolate: true,
-      dynamic: ({ renderable, world, entity }) => {
+      onTick: ({ renderable, world, entity }) => {
         const godRayFilter = renderable.filters["rays"] as GodrayFilter
         if (rays && godRayFilter) godRayFilter.time += 0.008
 

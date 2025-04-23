@@ -150,8 +150,8 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       const c = Math.cos(a)
       const s = Math.sin(a)
 
-      let rx = (x * c - y * s)
-      let ry = (x * s + y * c)
+      const rx = (x * c - y * s)
+      const ry = (x * s + y * c)
 
       return { x: rx, y: ry }
     },
@@ -206,7 +206,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
 
           const ms = performance.now() - now
           if (ms > 5) {
-            console.error(`System ${system.id} took ${ms}ms long to execute`)
+            console.error(`${system.id} took ${ms}ms`)
           }
         }
       })

@@ -13,8 +13,8 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
     position: Position({ x: x ?? 5, y: y ?? 25, screenFixed: true }),
     renderable: Renderable({
       zIndex: 3,
-      setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0x00ff00 } }),
-      dynamic: ({ container, world }) => {
+      setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0xffffff } }),
+      onTick: ({ container, world }) => {
         if (world.tick % 5 !== 0) return
 
         const t = container as Text
@@ -40,7 +40,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => {
       renderable: Renderable({
         zIndex: 3,
         setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0x00ff00 } }),
-        dynamic: ({ container, world }) => {
+        onTick: ({ container, world }) => {
           lagText.components.renderable.visible = world.client?.connected ?? false
 
           const lag = round(world.client?.ms ?? 0)

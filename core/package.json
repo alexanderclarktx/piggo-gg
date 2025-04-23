@@ -9,6 +9,7 @@
     "pixi-filters": "6.0.3",
     "pixi.js": "8.8.1",
     "react-hot-toast": "2.4.1",
+    "simplex-noise": "^4.0.3",
     "tone": "15.0.4"
   }
 }

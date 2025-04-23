@@ -21,7 +21,7 @@
   },
   "license": "MIT+CC",
   "dependencies": {
-    "typescript": "5.6.2"
+    "typescript": "5.8.3"
   },
   "devDependencies": {
     "copy-webpack-plugin": "11.0.0",

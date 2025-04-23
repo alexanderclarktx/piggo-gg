@@ -36,7 +36,9 @@ export type Renderable = Component<"renderable", {
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
-  dynamic: Dynamic | undefined
+
+  onRender: Dynamic | undefined
+  onTick: Dynamic | undefined
 
   prepareAnimations: (color?: number, alpha?: number) => void
   setScale: (xy: XY) => void
@@ -69,7 +71,8 @@ export type RenderableProps = {
   skin?: Skins
   visible?: boolean
   zIndex?: number
-  dynamic?: Dynamic
+  onRender?: Dynamic
+  onTick?: Dynamic
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
   setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void> // todo single arg
@@ -95,12 +98,15 @@ export const Renderable = (props: RenderableProps): Renderable => {
     children: undefined,
     cullable: props.cullable ?? false,
     currentSkin: undefined,
-    dynamic: props.dynamic,
     filters: {},
+    initialized: false,
     interactiveChildren: props.interactiveChildren ?? false,
     interpolate: props.interpolate ?? false,
-    initialized: false,
+    onRender: props.onRender,
+    onTick: props.onTick,
     position: props.position ?? { x: 0, y: 0 },
+    rendered: false,
+    renderer: undefined as unknown as Renderer,
     rotates: props.rotates ?? false,
     scale: props.scale ?? 1,
     scaleMode: props.scaleMode ?? "linear",
@@ -109,8 +115,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
     setup: props.setup ?? undefined,
     visible: props.visible ?? true,
     zIndex: props.zIndex ?? 0,
-    rendered: false,
-    renderer: undefined as unknown as Renderer,
     prepareAnimations: (color: number = 0xffffff, alpha: number = 1) => {
       values(renderable.animations).forEach((animation: AnimatedSprite) => {
         animation.animationSpeed = 0.1

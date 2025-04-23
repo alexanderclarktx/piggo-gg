@@ -60,7 +60,7 @@ const PlayerName = (player: Entity<PC | Team>, y: number) => {
         zIndex: 12,
         interactiveChildren: true,
         visible: false,
-        dynamic: async ({ renderable, world }) => {
+        onTick: async ({ renderable, world }) => {
           if (pc.data.name !== lastName || team.data.team !== lastTeam) {
             renderable.c.removeChildren()
             renderable.c.addChild(text())
@@ -138,7 +138,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
     renderable: Renderable({
       zIndex: 10,
       interactiveChildren: true,
-      dynamic: ({ world, renderable }) => {
+      onTick: ({ world, renderable }) => {
         const state = world.game.state as LobbyState
         if (state.gameId === game.id) {
           renderable.setOutline({ color: 0xffff00, thickness: 2 })
@@ -240,7 +240,7 @@ const CreateLobbyButton = () => {
         zIndex: 10,
         interactiveChildren: true,
         anchor: { x: 0.5, y: 0.5 },
-        dynamic: ({ world }) => {
+        onTick: ({ world }) => {
           const ready = (world.client?.ws.readyState ?? 0) === 1
           createLobbyButton.components.renderable.c.alpha = ready ? 1 : 0.6
           createLobbyButton.components.renderable.c.interactiveChildren = ready
@@ -294,7 +294,7 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
         scaleMode: "nearest",
         animationSelect: () => "idle",
         interactiveChildren: true,
-        dynamic: ({ world }) => {
+        onTick: ({ world }) => {
           if (!player.components.pc.data.name.startsWith("noob") && skin !== "ghost") {
             skin = "ghost"
             if (world.renderer) world.renderer.resizedFlag = true
@@ -337,7 +337,7 @@ const Profile = (): Entity => {
       position: Position({ x: 110, y: 85, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
-        dynamic: ({ world }) => {
+        onTick: ({ world }) => {
           const name = world.client?.playerName()
           if (name && playerName.text !== name) {
             playerName.text = name
@@ -373,7 +373,7 @@ const SignupCTA = () => Entity<Position | Renderable>({
       zIndex: 10,
       interactiveChildren: true,
       visible: false,
-      dynamic: ({ world, renderable }) => {
+      onTick: ({ world, renderable }) => {
         if (!world.client) return
         renderable.visible = !world.client.token
       },
@@ -421,7 +421,7 @@ const PlayersOnline = () => {
           })
           renderable.c.addChild(text)
         },
-        dynamic: ({ world }) => {
+        onTick: ({ world }) => {
           if (world.tick === 40 || world.tick % 200 === 0) refresh(world)
         }
       })

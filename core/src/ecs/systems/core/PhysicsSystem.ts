@@ -1,5 +1,5 @@
 import { init as RapierInit, World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat"
-import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round } from "@piggo-gg/core"
+import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, entries, keys, round } from "@piggo-gg/core"
 
 export let physics: RapierWorld
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
@@ -30,19 +30,16 @@ export const PhysicsSystem = SystemBuilder({
         // wait until rapier is ready
         if (!physics) return
 
-        // reset physics unless in rollback
+        // reset physics if not rollback
         if (!isRollback) resetPhysics()
 
         // remove old bodies (TODO does this matter)
-        keys(bodies).forEach((id) => {
+        for (const id of keys(bodies)) {
           if (!world.entities[id]) {
             physics.removeRigidBody(bodies[id])
             delete bodies[id]
           }
-        })
-
-        // sort entities by id
-        entities.sort((a, b) => a.id > b.id ? 1 : -1)
+        }
 
         const groups: Set<string> = new Set()
 
@@ -54,12 +51,19 @@ export const PhysicsSystem = SystemBuilder({
           }
         }
 
+        // cull static colliders
+        entities = entities.filter((entity) => {
+          const { collider, renderable } = entity.components
+          if (renderable?.visible === false) return false
+          return (collider.isStatic === false || !collider.cullable || groups.has(collider.group))
+        })
+
+        // sort entities by id
+        entities.sort((a, b) => a.id > b.id ? 1 : -1)
+
         // prepare physics bodies for each entity
         for (const entity of entities) {
           const { position, collider } = entity.components
-
-          // cull static colliders
-          if (collider.cullable && collider.isStatic && !groups.has(collider.group)) continue
 
           // handle new physics bodies
           if (!bodies[entity.id]) {
@@ -99,10 +103,12 @@ export const PhysicsSystem = SystemBuilder({
         physics.step()
 
         // update entity positions
-        keys(bodies).forEach((id) => {
-          const body = bodies[id]
-          const { position } = world.entities[id].components
-          if (!position) return
+        for (const [id, body] of entries(bodies)) {
+          const entity = world.entity<Collider | Position>(id)
+          if (!entity) continue
+
+          const { position, collider } = entity.components
+          if (collider.isStatic) continue
 
           // check if the entity has collided
           const diffX = position.data.velocity.x - Math.floor(body.linvel().x * 100) / 100
@@ -116,12 +122,12 @@ export const PhysicsSystem = SystemBuilder({
           position.data.y = round(body.translation().y * 100) / 100
           position.data.velocity.x = Math.floor(body.linvel().x * 100) / 100
           position.data.velocity.y = Math.floor(body.linvel().y * 100) / 100
-        })
+        }
 
         for (const [entity, collider] of colliders.entries()) {
 
           // check if standing
-          if (entity.components.position.data.friction && collider.rapierCollider) {
+          if (entity.components.position.data.friction && collider.rapierCollider && collider.isStatic === false) {
             let standing = false
 
             physics.contactPairsWith(collider.rapierCollider, (collider2) => {

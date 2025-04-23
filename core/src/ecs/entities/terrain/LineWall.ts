@@ -51,7 +51,7 @@ export const LineWall = (
       renderable: Renderable({
         visible: visible ?? false,
         zIndex: 3,
-        dynamic: ({ container }) => {
+        onTick: ({ container }) => {
           if (!wall.components.health) return
 
           const { hp, maxHp } = wall.components.health.data

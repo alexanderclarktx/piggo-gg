@@ -10,7 +10,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
   components: {
     debug: Debug(),
     position: Position({
-      x: pos?.x ?? 0, y: pos?.y ?? 0, z: 128,
+      x: pos?.x ?? 0, y: pos?.y ?? 200, z: 128,
       velocityResets: 1,
       speed: 125,
       gravity: 0.3
@@ -28,7 +28,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       press: {
         ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),
-        "shift": () => ({ actionId: "jetpack" }),
+        "r": () => ({ actionId: "jetpack" }),
         "g": () => ({ actionId: "dropItem" }),
         "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
         "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
@@ -48,7 +48,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       setActiveItemIndex,
       dropItem,
       jetpack: Action("jetpack", ({ entity }) => {
-        entity?.components?.position?.setVelocity({ z: 5 })
+        entity?.components?.position?.setVelocity({ z: 3 }) // todo use impulse
       }),
       jump: Action("jump", ({ entity }) => {
         if (!entity?.components?.position?.data.standing) return
@@ -69,7 +69,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       scaleMode: "nearest",
       setup: DudeSkin("white"),
       animationSelect: VolleyCharacterAnimations,
-      dynamic: VolleyCharacterDynamic
+      onTick: VolleyCharacterDynamic
     })
   }
 })

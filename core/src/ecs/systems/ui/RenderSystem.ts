@@ -38,7 +38,7 @@ export const RenderSystem = ClientSystemBuilder({
     return {
       id: "RenderSystem",
       query: ["renderable", "position"],
-      priority: 9,
+      priority: 10,
       onTick: (entities: Entity<Renderable | Position>[]) => {
         if (!renderer) return
 
@@ -51,11 +51,12 @@ export const RenderSystem = ClientSystemBuilder({
           renderer.resizedFlag = false
         }
 
-        entities.forEach((entity) => {
+        const time = performance.now()
+        for (const entity of entities) {
           const { position, renderable } = entity.components
 
           // render if skin changed
-          if (renderable.currentSkin !== renderable.data.desiredSkin) {
+          if (renderable.currentSkin && renderable.currentSkin !== renderable.data.desiredSkin) {
             renderable.c.removeChildren()
             renderable.rendered = false
           }
@@ -67,14 +68,14 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // run dynamic callback
-          if (renderable.dynamic && renderable.initialized) renderable.dynamic({
+          if (renderable.onTick && renderable.initialized) renderable.onTick({
             container: renderable.c, entity, world, renderable, client: world.client!
           })
 
           // run dynamic callback for children
           if (renderable.children && renderable.initialized) {
             renderable.children.forEach((child) => {
-              if (child.dynamic) child.dynamic({ container: child.c, entity, world, renderable: child, client: world.client! })
+              if (child.onTick) child.onTick({ container: child.c, entity, world, renderable: child, client: world.client! })
             })
           }
 
@@ -127,45 +128,52 @@ export const RenderSystem = ClientSystemBuilder({
 
           // set visible
           if (renderable.c.renderable !== renderable.visible) renderable.c.renderable = renderable.visible
-        })
+        }
+        const loop = performance.now() - time
+        if (loop > 5) console.log("entity loop", performance.now() - time)
 
+        const t = performance.now()
         // sort entities by position (closeness to camera)
-        const sortedEntityPositions = values(entities).sort((a, b) => (
+        entities = entities.filter(x => x.components.renderable.visible)
+        entities.sort((a, b) => (
           (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
           (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
           // (a.components.position.data.y + a.components.position.data.z) -
           // (b.components.position.data.y + b.components.position.data.z)
         ))
+        const sort = performance.now() - t
+        if (sort > 5) console.log("sort loop", performance.now() - t)
 
         // set zIndex
-        sortedEntityPositions.forEach((entity, index) => {
-          const renderable = entity.components.renderable
-          if (renderable) {
-            renderable.c.zIndex = renderable.zIndex + 0.0001 * index
-          }
-        })
+        for (const [index, entity] of entities.entries()) {
+          const { renderable } = entity.components
+          renderable.c.zIndex = renderable.zIndex + 0.0001 * index
+        }
 
         // update screenFixed entities
-        world.queryEntities<Renderable | Position>(["renderable", "position"]).forEach((entity) => {
+        for (const entity of world.queryEntities<Renderable | Position>(["renderable", "position"])) {
           updateScreenFixed(entity)
-        })
+        }
       },
       onRender(entities: Entity<Renderable | Position>[], delta) {
         for (const entity of entities) {
 
           const { position, renderable } = entity.components
 
-          if (!renderable.rendered) continue
+          if (renderable.onRender && renderable.initialized ) {
+            renderable.onRender({ container: renderable.c, entity, world, renderable, client: world.client! })
+          }
+
+          if (!renderable.rendered || !renderable.interpolate) continue
 
           // ui renderables
           if (position.screenFixed) {
-            if (!renderable.interpolate) continue
             updateScreenFixed(entity)
           }
 
           // world renderables
           const { x, y, z, velocity } = position.data
-          if ((velocity.x || velocity.y || velocity.z) && renderable.interpolate) {
+          if ((velocity.x || velocity.y || velocity.z)) {
 
             const interpolated = position.interpolate(delta, world)
 

@@ -26,7 +26,7 @@ export const HealthBar = ({ health }: HealthBarProps): Renderable => {
   const renderable = Renderable({
     zIndex: 10,
     interpolate: true,
-    dynamic: () => {
+    onTick: () => {
       const { hp, maxHp } = health.data
 
       const healthPercent = hp / maxHp

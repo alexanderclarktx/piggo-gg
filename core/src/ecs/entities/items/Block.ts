@@ -1,17 +1,21 @@
 import {
-  Actions, Clickable, Collider, Debug, Effects, Element, Entity,
-  Health, Item, ItemActionParams, ItemBuilder, ItemEntity, keys, mouse,
-  pixiGraphics, Position, Renderable, round, values, World, XY, XYZ
+  Actions, Clickable, Collider, Effects, Entity, floor, Item, ItemActionParams,
+  ItemBuilder, ItemEntity, mouse, pixiGraphics, Position,
+  Renderable, round, World, XY, XYZ
 } from "@piggo-gg/core"
-import { Graphics } from "pixi.js"
+import { Geometry, Graphics, Mesh, Shader, Buffer, BufferUsage } from "pixi.js"
 
 const width = 18
 const height = width / 3 * 2
 
-type BlockType = "grass" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+export type BlockType = "stone" | "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+
+export type Voxel = XYZ & { type: BlockType }
 
 const BlockColors: Record<BlockType, [number, number, number]> = {
-  grass: [0x08dd00, 0x6E260E, 0x7B3F00],
+  stone: [0x7b7b7b, 0x5E5E3E, 0x9b9b9b],
+  grass: [0x08d000, 0x6E260E, 0x7B3F00],
+  moss: [0x08bb00, 0x6E260E, 0x7B3F00],
   moonrock: [0xcbdaf2, 0x98b0d9, 0xdddddd],
   asteroid: [0x8b8b8b, 0x6E6E6E, 0xECF0F1],
   saphire: [0x00afff, 0x007fff, 0x00cfff],
@@ -20,7 +24,9 @@ const BlockColors: Record<BlockType, [number, number, number]> = {
 }
 
 const graphics: Record<BlockType, Graphics | undefined> = {
+  stone: undefined,
   grass: undefined,
+  moss: undefined,
   moonrock: undefined,
   asteroid: undefined,
   saphire: undefined,
@@ -58,16 +64,14 @@ const blockGraphics = (type: BlockType) => {
   return graphics[type]
 }
 
-export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
-  id: `block-${pos.x}-${pos.y}-${pos.z}`,
+export const BlockCollider = (n: number) => Entity<Position | Collider>({
+  id: `terrain-collider-${n}`,
   components: {
-    position: Position({ ...pos }),
-    // debug: Debug(),
-    element: Element("rock"),
+    position: Position(),
     collider: Collider({
       cullable: true,
-      group: (pos.z / 21 + 1).toString() as "1" | "2" | "3",
-      hittable: pos.z > 0 ? true : false,
+      group: "1",
+      hittable: true,
       isStatic: true,
       shape: "line",
       points: [
@@ -77,72 +81,33 @@ export const Block = (pos: XYZ, type: BlockType) => Entity<Position>({
         width, 0,
         0, width / 2
       ]
-    }),
-    renderable: Renderable({
-      scaleMode: "nearest",
-      zIndex: 3,
-      cullable: true,
-      setup: async (r) => {
-        const clone = blockGraphics(type).clone()
-        clone.position.y = -height
-        r.c.addChild(clone)
-
-        if (pos.z > 0) {
-          // r.setOutline({ color: 0x000000, thickness: 0.2 })
-        }
-      }
     })
   }
 })
 
-
 // takes ij integer coordinates -> XY of that block from origin
-export const intToBlock = (i: number, j: number): XY => {
-  const x = (i - j) * width
-  const y = (i + j) * width / 2
+export const intToBlock = (i: number, j: number): XY => ({
+  x: (i - j) * width,
+  y: (i + j) * width / 2
+})
 
+const xyBlock = (pos: XY): XY => {
+  const half = width / 2
+  const gridX = (pos.x / width + pos.y / half) / 2
+  const gridY = (pos.y / half - pos.x / width) / 2
+  const tileX = round(gridX)
+  const tileY = round(gridY)
+  return { x: tileX, y: tileY }
+}
+
+export const snapXYToChunk = (pos: XY): XY => {
+  const snapped = xyBlock(pos)
+  const x = floor(snapped.x / 4)
+  const y = floor(snapped.y / 4)
   return { x, y }
 }
 
-export const snapXY = (pos: XY): XY => {
-  const half = width / 2
-
-  // Convert to isometric grid coords (skewed grid space)
-  const gridX = (pos.x / width + pos.y / half) / 2
-  const gridY = (pos.y / half - pos.x / width) / 2
-
-  // Snap to nearest tile
-  const tileX = round(gridX)
-  const tileY = round(gridY)
-
-  // Convert back to screen position (center of tile)
-  const snappedX = (tileX - tileY) * width
-  const snappedY = (tileX + tileY) * half
-
-  return { x: snappedX, y: snappedY }
-}
-
-export const snapXYZ = (pos: XY, world: World): XYZ => {
-  return { z: highestBlock(pos, world).z, ...snapXY(pos) }
-}
-
-export const highestBlock = (pos: XY, world: World): XYZ => {
-  const snapped = snapXY(pos)
-
-  const blocks = values(world.entities).filter((e) => e.id.startsWith("block-"))
-  let level = 0
-
-  // todo this is slow, should be a spatial hash ?
-  for (const block of blocks) {
-    const { x, y, z } = block.components.position!.data
-    if (x === snapped.x && y === snapped.y) {
-      level = Math.max(level, z + 21)
-    }
-  }
-
-  return { x: snapped.x, y: snapped.y, z: level }
-}
-
+// block[] at some X
 type XBlocks = Record<number, Entity<Position>[]>
 
 // todo move to an entity
@@ -214,7 +179,7 @@ export const BlockPreview = () => Entity({
       zIndex: 3,
       anchor: { x: 0.5, y: 0 },
       position: { x: 0, y: 0 },
-      dynamic: ({ entity, world }) => {
+      onTick: ({ entity, world }) => {
         let visible = false
 
         const activeItem = world.client?.playerCharacter()?.components.inventory?.activeItem(world)
@@ -225,11 +190,11 @@ export const BlockPreview = () => Entity({
 
         if (!visible) return
 
-        if (keys(xBlocksBuffer).length === 0) {
-          buildXBlocksBuffer(world)
-        }
+        // if (keys(xBlocksBuffer).length === 0) {
+        //   buildXBlocksBuffer(world)
+        // }
 
-        const xyz = snapXYZ(world.flip(mouse), world)
+        const xyz = snapXYZ(world.flip(mouse))
         // const xyz = blockAtMouse(mouse)
 
         if (!xyz) {
@@ -278,11 +243,9 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
       mb1: ({ params, world }) => {
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
+        // addToXBlocksBuffer(block)
 
-        const block = Block(snapXYZ(world.flip(mouse), world), type)
-
-        world.addEntity(block)
-        addToXBlocksBuffer(block)
+        blocks.add({ ...snapXYZ(world.flip(mouse)), type })
 
         world.client?.soundManager.play("click2")
       }
@@ -308,3 +271,372 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
     })
   }
 })
+
+// -----------------------------
+
+export const snapXY = (pos: XY): XY => {
+  const half = width / 2
+
+  // Convert to isometric grid coords (skewed grid space)
+  const gridX = (pos.x / width + pos.y / half) / 2
+  const gridY = (pos.y / half - pos.x / width) / 2
+
+  // Snap to nearest tile
+  const tileX = round(gridX)
+  const tileY = round(gridY)
+
+  // Convert back to screen position (center of tile)
+  const snappedX = (tileX - tileY) * width
+  const snappedY = (tileX + tileY) * half
+
+  return { x: snappedX, y: snappedY }
+}
+
+export const snapXYZ = (pos: XY): XYZ => {
+  return { z: highestBlock(pos).z, ...snapXY(pos) }
+}
+
+export const highestBlock = (pos: XY): XYZ => {
+  const snapped = snapXY(pos)
+
+  let level = 0
+
+  // todo this is slow, should be a spatial hash ?
+  for (const block of blocks.data) {
+    const { x, y, z } = block
+    if (x === snapped.x && y === snapped.y) {
+      level = Math.max(level, z + 21)
+    }
+  }
+
+  return { x: snapped.x, y: snapped.y, z: level }
+}
+
+type Blocks = {
+  data: Voxel[]
+  add: (block: Voxel) => void
+  remove: (block: Voxel) => void
+  sort: (world: World) => void
+}
+
+const Blocks = (): Blocks => {
+
+  const keys: Set<string> = new Set()
+
+  const blocks: Blocks = {
+    data: [],
+    add: (block: Voxel) => {
+      if (keys.has(`${block.x}-${block.y}-${block.z}`)) return
+
+      blocks.data.push(block)
+      keys.add(`${block.x}-${block.y}-${block.z}`)
+    },
+    remove: (block: XYZ) => {
+      const index = blocks.data.findIndex(b => b.x === block.x && b.y === block.y && b.z === block.z)
+      if (index !== -1) {
+        blocks.data.splice(index, 1)
+        keys.delete(`${block.x}-${block.y}-${block.z}`)
+      }
+    },
+    sort: (world: World) => {
+
+      blocks.data.sort((a, b) => {
+        const XYa = world.flip(a)
+        const XYb = world.flip(b)
+
+        if (XYa.y !== XYb.y) return XYa.y - XYb.y
+        if (a.z !== b.z) return a.z - b.z
+        return XYa.x - XYb.x
+      })
+    }
+  }
+
+  return blocks
+}
+
+export const blocks = Blocks()
+
+const BLOCK_GEOMETRY = () => new Geometry({
+  instanceCount: 0,
+  indexBuffer: [
+    0, 1, 2,
+    0, 2, 3,
+
+    4, 5, 7,
+    5, 7, 6,
+
+    8, 9, 11,
+    9, 11, 10,
+  ],
+  attributes: {
+    aInstance: {
+      instance: true,
+      buffer: new Buffer({
+        data: [],
+        usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+      })
+    },
+    aInstanceColor: {
+      instance: true,
+      buffer: new Buffer({
+        data: [],
+        usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+      })
+    },
+    aFace: [
+      0, 0, 0, 0, // top
+      1, 1, 1, 1, // left
+      2, 2, 2, 2  // right
+    ],
+    aUV: [
+      0, 0.82, 0.0,
+      0.0, 0.82, 0.0,
+      0.0, 0.82, 0.0,
+      0.0, 0.82, 0.0,
+
+      0.5, 0.2, 0.0,
+      0.5, 0.2, 0.0,
+      0.5, 0.2, 0.0,
+      0.5, 0.2, 0.0,
+
+      0.6, 0.3, 0.0,
+      0.6, 0.3, 0.0,
+      0.6, 0.3, 0.0,
+      0.6, 0.3, 0.0,
+    ],
+    aPosition: [
+      0, 0,
+      -width, -width / 2,
+      0, -width,
+      width, -width / 2,
+
+      0, 0,
+      -width, -width / 2,
+      -width, height,
+      0, height + width / 2,
+
+      0, 0,
+      width, -width / 2,
+      width, height,
+      0, height + width / 2,
+    ]
+  }
+})
+
+const vertexSrc = `
+  precision mediump float;
+
+  attribute vec2 aPosition;
+  attribute vec3 aUV;
+  attribute float aFace;
+
+  attribute vec2 aInstance;
+  attribute vec3 aInstanceColor;
+
+  uniform vec2 uResolution;
+  uniform vec2 uOffset;
+  uniform float uZoom;
+
+  varying float vFace;
+  varying vec3 vUV;
+  varying vec3 vInstanceColor;
+
+  void main() {
+    vec2 worldPos = aPosition + aInstance - vec2(0, 12);
+    vec2 screenPos = (worldPos - uOffset) * uZoom;
+
+    vec2 clip = (screenPos / uResolution) * 2.0;
+    clip.y *= -1.0;
+
+    gl_Position = vec4(clip.x, clip.y, 0, 1);
+
+    vFace = aFace;
+    vInstanceColor = aInstanceColor;
+    vUV = aUV;
+}
+`
+
+const fragmentSrc = `
+  precision mediump float;
+
+  varying vec3 vUV;
+  varying float vFace;
+  varying vec3 vInstanceColor;
+
+  vec3 unpackRGB(float hex) {
+    float r = floor(mod(hex / 65536.0, 256.0)) / 255.0;
+    float g = floor(mod(hex / 256.0, 256.0)) / 255.0;
+    float b = mod(hex, 256.0) / 255.0;
+    return vec3(r, g, b);
+  }
+
+  void main() {
+    int face = int(vFace + 0.5);
+
+    vec3 color;
+
+    if (face == 0) {
+      color = unpackRGB(vInstanceColor[0]);
+    } else if (face == 1) {
+      color = unpackRGB(vInstanceColor[1]);
+    } else if (face == 2) {
+      color = unpackRGB(vInstanceColor[2]);
+    }
+
+    gl_FragColor = vec4(color, 1.0);
+  }
+`
+
+export const BlockMesh = () => {
+
+  const geometry = BLOCK_GEOMETRY()
+
+  const shader = Shader.from({
+    gl: {
+      vertex: vertexSrc,
+      fragment: fragmentSrc
+    },
+    resources: {
+      uniforms: {
+        uOffset: { value: [0, 0], type: 'vec2<f32>' },
+        uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
+        uZoom: { value: 2.0, type: 'f32' }
+      }
+    }
+  })
+
+  return Entity({
+    id: "block-mesh",
+    components: {
+      position: Position(),
+      renderable: Renderable({
+        zIndex: 0,
+        anchor: { x: 0.5, y: 0.5 },
+        interpolate: true,
+        setup: async (r) => {
+          const mesh = new Mesh({ geometry, shader })
+
+          r.c = mesh
+        },
+        onRender: ({ world }) => {
+          const zoom = world.renderer!.camera.scale
+          const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+          const resolution = world.renderer!.wh()
+
+          if (shader.resources.uniforms?.uniforms?.uZoom) {
+            shader.resources.uniforms.uniforms.uZoom = zoom
+            shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uResolution = resolution
+          }
+
+          const { position } = world.client!.playerCharacter()?.components ?? {}
+          if (!position) return
+
+          const playerZ = position.data.z - 20
+          const playerY = world.flip(position.data).y
+
+          blocks.sort(world)
+          const { data } = blocks
+
+          const newPosBuffer = []
+          const newColorBuffer = []
+
+          let instanceCount = 0
+          for (const block of data) {
+            const { x, y } = world.flip(block)
+
+            const blockInFront = (y - playerY) > 0
+            if (!blockInFront || block.z < playerZ) {
+              instanceCount += 1
+
+              newPosBuffer.push(x, y - block.z)
+              newColorBuffer.push(...BlockColors[block.type])
+            }
+          }
+
+          geometry.attributes.aInstance.buffer.data = new Float32Array(newPosBuffer)
+          geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
+          geometry.instanceCount = instanceCount
+        }
+      })
+    }
+  })
+}
+
+export const BlockMeshOcclusion = () => {
+
+  const geometry = BLOCK_GEOMETRY()
+
+  const shader = Shader.from({
+    gl: {
+      vertex: vertexSrc,
+      fragment: fragmentSrc
+    },
+    resources: {
+      uniforms: {
+        uOffset: { value: [0, 0], type: 'vec2<f32>' },
+        uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
+        uZoom: { value: 2.0, type: 'f32' }
+      }
+    }
+  })
+
+  return Entity({
+    id: "block-mesh-occlusion",
+    components: {
+      position: Position(),
+      renderable: Renderable({
+        zIndex: 3.1,
+        anchor: { x: 0.5, y: 0.5 },
+        interpolate: true,
+        setup: async (r) => {
+          const mesh = new Mesh({ geometry, shader })
+
+          r.c = mesh
+        },
+        onRender: ({ world, renderable }) => {
+          const zoom = world.renderer!.camera.scale
+          const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+          const resolution = world.renderer!.wh()
+
+          if (shader.resources.uniforms?.uniforms?.uZoom) {
+            shader.resources.uniforms.uniforms.uZoom = zoom
+            shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uResolution = resolution
+          }
+
+          const { position } = world.client!.playerCharacter()?.components ?? {}
+          if (!position) return
+
+          const playerZ = position.data.z - 20
+          const playerY = world.flip(position.data).y
+
+          blocks.sort(world)
+          const { data } = blocks
+
+          const newPosBuffer = []
+          const newColorBuffer = []
+
+          let instanceCount = 0
+          for (const block of data) {
+            const { x, y } = world.flip(block)
+
+            const blockInFront = (y - playerY) > 0
+            if (blockInFront && block.z >= playerZ) {
+              instanceCount += 1
+
+              newPosBuffer.push(x, y - block.z)
+              newColorBuffer.push(...BlockColors[block.type])
+            }
+          }
+
+          geometry.attributes.aInstance.buffer.data = new Float32Array(newPosBuffer)
+          geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
+          geometry.instanceCount = instanceCount
+
+          renderable.c.visible = instanceCount > 0
+        }
+      })
+    }
+  })
+}
