@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Effects, Entity, floor, Item, ItemActionParams,
+  Actions, Clickable, Collider, Effects, Entity, floor, Item, ItemActionParams,
   ItemBuilder, ItemEntity, mouse, pixiGraphics, Position,
   Renderable, round, World, XY, XYZ
 } from "@piggo-gg/core"
@@ -61,6 +61,27 @@ const blockGraphics = (type: BlockType) => {
 
   return graphics[type]
 }
+
+export const BlockCollider = (n: number) => Entity<Position | Collider>({
+  id: `terrain-collider-${n}`,
+  components: {
+    position: Position(),
+    collider: Collider({
+      cullable: true,
+      group: "1",
+      hittable: true,
+      isStatic: true,
+      shape: "line",
+      points: [
+        0, width / 2,
+        -width, 0,
+        0, 3 - height,
+        width, 0,
+        0, width / 2
+      ]
+    })
+  }
+})
 
 // takes ij integer coordinates -> XY of that block from origin
 export const intToBlock = (i: number, j: number): XY => ({
@@ -588,7 +609,6 @@ export const BlockMeshOcclusion = () => {
             shader.resources.uniforms.uniforms.uResolution = resolution
           }
 
-          // const playerPos = world.client!.playerCharacter()?.components.position.data
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
 

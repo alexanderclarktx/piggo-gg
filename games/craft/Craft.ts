@@ -2,13 +2,12 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, max, round, XY, blocks,
-  BlockMeshOcclusion,
-  BlockMesh
+  EscapeMenu, intToBlock, max, round, XY, blocks, BlockMeshOcclusion,
+  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
-const noise = createNoise2D(Math.random)
 
+const noise = createNoise2D(Math.random)
 
 export const Craft: GameBuilder = {
   id: "craft",
@@ -35,7 +34,7 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = () => {
-  const num = 10
+  const num = 20
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
@@ -44,20 +43,17 @@ const spawnTerrain = () => {
   }
 }
 
-type Chunk = `${number}x${number}`
-const liveChunks = new Set<Chunk>()
-
 const spawnChunk = (chunk: XY) => {
   const { x, y } = chunk
-  liveChunks.add(`${x}x${y}`)
 
   const size = 4
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       const xy = intToBlock(i + x * 4, j + y * 4)
-      const height = round(max(1, noise(xy.x / 300, xy.y / 300) * 10))
+      const height = round(max(1, noise(xy.x / 400, xy.y / 400) * 12))
       for (let k = 0; k < height; k++) {
-        blocks.add({ ...xy, z: k * 21, type: k > 0 ? "obsidian" : "grass" })
+        const type = k > 0 ? "obsidian" : "grass"
+        blocks.add({ ...xy, z: k * 21, type })
       }
     }
   }
@@ -68,6 +64,18 @@ const CraftSystem = SystemBuilder({
   init: (world) => {
 
     spawnTerrain()
+
+    const blockColliders: Entity<Position | Collider>[] = [
+      BlockCollider(0),
+      BlockCollider(1),
+      BlockCollider(2),
+      BlockCollider(3),
+      BlockCollider(4),
+      BlockCollider(5),
+      BlockCollider(6),
+      BlockCollider(7)
+    ]
+    world.addEntities(blockColliders)
 
     return {
       id: "CraftSystem",
@@ -80,12 +88,12 @@ const CraftSystem = SystemBuilder({
           const character = player.components.controlling.getCharacter(world)
           if (!character) continue
 
-          const { position, collider } = character.components
+          const { position } = character.components
           const { x, y, z, velocity } = position.data
 
           // set collider group
           const group = (floor(z / 21) + 1).toString() as "1"
-          collider.setGroup(group)
+          character.components.collider.setGroup(group)
 
           // stop falling if directly above a block
           const highest = highestBlock({ x, y }).z
@@ -99,6 +107,39 @@ const CraftSystem = SystemBuilder({
           if (position.data.z === -600) {
             position.setPosition({ x: 0, y: 200, z: 128 })
             position.setVelocity({ x: 0, y: 0, z: 0 })
+          }
+
+          let set: XYZ[] = []
+
+          // find closest blocks
+          for (const block of blocks.data) {
+            const { x, y, z } = block
+            if (z === 0) continue
+
+            const zDiff = z - position.data.z
+            if (zDiff > 100 || zDiff < -21) continue
+
+            const dist = Math.sqrt(Math.pow(x - position.data.x, 2) + Math.pow(y - position.data.y, 2))
+            if (dist < 100) set.push({ x, y, z })
+          }
+
+          set.sort((a, b) => {
+            const distA = Math.sqrt(Math.pow(a.x - position.data.x, 2) + Math.pow(a.y - position.data.y, 2))
+            const distB = Math.sqrt(Math.pow(b.x - position.data.x, 2) + Math.pow(b.y - position.data.y, 2))
+            return distA - distB
+          })
+
+          // update block colliders
+          for (const [index, blockCollider] of blockColliders.entries()) {
+            const { position, collider } = blockCollider.components
+            if (set[index]) {
+              const xyz = set[index]
+              position.setPosition(xyz)
+              collider.setGroup((xyz.z / 21 + 1).toString() as "1")
+              collider.active = true
+            } else {
+              collider.active = false
+            }
           }
         }
 
