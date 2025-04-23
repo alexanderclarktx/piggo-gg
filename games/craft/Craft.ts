@@ -3,8 +3,7 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
   EscapeMenu, intToBlock, max, round, XY, blocks, BlockMeshOcclusion,
-  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider,
-  randomChoice
+  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
