@@ -2,7 +2,7 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, World, intToBlock, max, round, XY, blocks, BlockMesh
+  EscapeMenu, intToBlock, max, round, XY, blocks, BlockMesh
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
@@ -55,25 +55,6 @@ const spawnChunk = (chunk: XY) => {
       const height = round(max(1, noise(xy.x / 300, xy.y / 300) * 10))
       for (let k = 0; k < height; k++) {
         blocks.add({ ...xy, z: k * 21, type: k > 0 ? "obsidian" : "grass" })
-      }
-    }
-  }
-}
-
-const despawnChunk = (world: World, chunk: XY) => {
-  const { x, y } = chunk
-  const size = 4
-
-  liveChunks.delete(`${x}x${y}`)
-
-  for (let i = 0; i < size; i++) {
-    for (let j = 0; j < size; j++) {
-      const xy = intToBlock(x * 4 + i, y * 4 + j)
-
-      let z = 0
-      while (world.entity(`block-${xy.x}-${xy.y}-${z * 21}`)) {
-        world.removeEntity(`block-${xy.x}-${xy.y}-${z * 21}`)
-        z++
       }
     }
   }
