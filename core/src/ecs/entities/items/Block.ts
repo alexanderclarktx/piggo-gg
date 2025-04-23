@@ -8,11 +8,12 @@ import { Geometry, Graphics, Mesh, Shader, Buffer, BufferUsage } from "pixi.js"
 const width = 18
 const height = width / 3 * 2
 
-export type BlockType = "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+export type BlockType = "stone" | "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
 
 export type Voxel = XYZ & { type: BlockType }
 
 const BlockColors: Record<BlockType, [number, number, number]> = {
+  stone: [0x7b7b7b, 0x5E5E3E, 0x9b9b9b],
   grass: [0x08d000, 0x6E260E, 0x7B3F00],
   moss: [0x08bb00, 0x6E260E, 0x7B3F00],
   moonrock: [0xcbdaf2, 0x98b0d9, 0xdddddd],
@@ -23,6 +24,7 @@ const BlockColors: Record<BlockType, [number, number, number]> = {
 }
 
 const graphics: Record<BlockType, Graphics | undefined> = {
+  stone: undefined,
   grass: undefined,
   moss: undefined,
   moonrock: undefined,
