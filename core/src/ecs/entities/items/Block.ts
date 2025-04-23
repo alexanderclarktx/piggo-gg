@@ -515,8 +515,8 @@ export const BlockMesh = () => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
 
-          const { z: playerZ } = position.data
-          const { y: playerY } = world.flip(position.data)
+          const playerZ = position.data.z - 20
+          const playerY = world.flip(position.data).y
 
           blocks.sort(world)
           const { data } = blocks
@@ -592,8 +592,8 @@ export const BlockMeshOcclusion = () => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
 
-          const { z: playerZ } = position.data
-          const { y: playerY } = world.flip(position.data)
+          const playerZ = position.data.z - 20
+          const playerY = world.flip(position.data).y
 
           blocks.sort(world)
           const { data } = blocks
