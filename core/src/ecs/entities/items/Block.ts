@@ -426,20 +426,20 @@ const BLOCK_GEOMETRY = () => new Geometry({
 const vertexSrc = `
   precision mediump float;
 
-  attribute vec2 aPosition;
-  attribute vec3 aUV;
-  attribute float aFace;
+  in vec2 aPosition;
+  in vec3 aUV;
+  in float aFace;
 
-  attribute vec2 aInstance;
-  attribute vec3 aInstanceColor;
+  in vec2 aInstance;
+  in vec3 aInstanceColor;
 
   uniform vec2 uResolution;
   uniform vec2 uOffset;
   uniform float uZoom;
 
-  varying float vFace;
-  varying vec3 vUV;
-  varying vec3 vInstanceColor;
+  out float vFace;
+  out vec3 vUV;
+  out vec3 vInstanceColor;
 
   void main() {
     vec2 worldPos = aPosition + aInstance - vec2(0, 12);
@@ -459,9 +459,9 @@ const vertexSrc = `
 const fragmentSrc = `
   precision mediump float;
 
-  varying vec3 vUV;
-  varying float vFace;
-  varying vec3 vInstanceColor;
+  in vec3 vUV;
+  in float vFace;
+  in vec3 vInstanceColor;
 
   vec3 unpackRGB(float hex) {
     float r = floor(mod(hex / 65536.0, 256.0)) / 255.0;
@@ -475,6 +475,8 @@ const fragmentSrc = `
 
     vec3 color;
 
+    out vec4 fragColor;
+
     if (face == 0) {
       color = unpackRGB(vInstanceColor[0]);
     } else if (face == 1) {
@@ -483,7 +485,7 @@ const fragmentSrc = `
       color = unpackRGB(vInstanceColor[2]);
     }
 
-    gl_FragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0);
   }
 `
 
@@ -580,6 +582,12 @@ export const BlockMeshOcclusion = () => {
       }
     }
   })
+
+  // @ts-expect-error
+  shader.glProgram.vertex = "#version 300 es\n" + vertexSrc
+  // @ts-expect-error
+  shader.glProgram.fragment = "#version 300 es\n" + fragmentSrc
+  console.log(shader.glProgram)
 
   return Entity({
     id: "block-mesh-occlusion",
