@@ -43,16 +43,29 @@ const spawnTerrain = () => {
   }
 }
 
+const sample = (x: number, y: number, factor: number): number => {
+  const first = noise(x / 60, y / 60) * 0.5
+  const second = noise(x / 30, y / 30) * 0.25
+  const third = noise(x / 15, y / 15) * 0.125
+
+  return (first + second + third) * factor
+}
+
 const spawnChunk = (chunk: XY) => {
   const { x, y } = chunk
 
   const size = 4
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      const xy = intToBlock(i + x * 4, j + y * 4)
-      const height = round(max(1, noise(xy.x / 400, xy.y / 400) * 14))
+
+      const xInt = i + x * size
+      const yInt = j + y * size
+      const xy = intToBlock(xInt, yInt)
+
+      const height = round(max(-4, sample(xInt, yInt, 14))) + 5
+      // const height = round(max(-9, noise(xInt / 50, yInt / 50) * 14)) + 10
       for (let k = 0; k < height; k++) {
-        const type = k > 10 ? "moonrock" : k == 0 ? "saphire" : "grass"
+        const type = k > 10 ? "grass" : k == 0 ? "saphire" : "grass"
         blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
       }
     }
