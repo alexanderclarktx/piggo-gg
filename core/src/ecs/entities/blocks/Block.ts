@@ -449,7 +449,7 @@ export const BlockMesh = () => {
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
-            shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
             shader.resources.uniforms.uniforms.uResolution = resolution
           }
 
@@ -513,7 +513,7 @@ export const BlockMeshOcclusion = () => {
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
-            shader.resources.uniforms.uniforms.uOffset = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
             shader.resources.uniforms.uniforms.uResolution = resolution
           }
 

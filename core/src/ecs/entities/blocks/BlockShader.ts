@@ -11,7 +11,7 @@ const vertexSrc = `
   in vec3 aInstanceColor;
 
   uniform vec2 uResolution;
-  uniform vec2 uOffset;
+  uniform vec2 uCamera;
   uniform float uZoom;
 
   out float vFace;
@@ -20,7 +20,7 @@ const vertexSrc = `
 
   void main() {
     vec2 worldPos = aPosition + aInstance - vec2(0, 12);
-    vec2 screenPos = (worldPos - uOffset) * uZoom;
+    vec2 screenPos = (worldPos - uCamera) * uZoom;
 
     vec2 clip = (screenPos / uResolution) * 2.0;
     clip.y *= -1.0;
@@ -74,7 +74,7 @@ export const BlockShader = (): Shader => {
     },
     resources: {
       uniforms: {
-        uOffset: { value: [0, 0], type: 'vec2<f32>' },
+        uCamera: { value: [0, 0], type: 'vec2<f32>' },
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
         uZoom: { value: 2.0, type: 'f32' }
       }
