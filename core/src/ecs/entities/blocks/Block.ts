@@ -1,33 +1,11 @@
 import {
-  abs,
-  BlockColors,
-  BlockDimensions, blocks, BlockShader, BlockTypeString, Collider, Entity, floor, mouse,
-  pixiGraphics, Position, Renderable, round, World, XY, XYZ
+  abs, BlockColors, BlockDimensions, blocks, BlockShader,
+  BlockTypeString, Entity, floor, mouse, pixiGraphics,
+  Position, Renderable, round, World, XY, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
-
-export const BlockCollider = (n: number) => Entity<Position | Collider>({
-  id: `terrain-collider-${n}`,
-  components: {
-    position: Position(),
-    collider: Collider({
-      cullable: true,
-      group: "1",
-      hittable: true,
-      isStatic: true,
-      shape: "line",
-      points: [
-        0, width / 2,
-        -width, 0,
-        0, 3 - height,
-        width, 0,
-        0, width / 2
-      ]
-    })
-  }
-})
 
 // takes ij integer coordinates -> XY of that block from origin
 export const intToBlock = (i: number, j: number): XY => ({
@@ -349,7 +327,7 @@ export const BlockMesh = () => {
           geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
           geometry.instanceCount = instanceCount
 
-          console.log("block mesh", performance.now() - time)
+          // console.log("block mesh", performance.now() - time)
         }
       })
     }
