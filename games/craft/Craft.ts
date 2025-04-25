@@ -3,7 +3,7 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
   EscapeMenu, intToBlock, max, round, XY, blocks, BlockMeshOcclusion,
-  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider
+  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt
 } from "@piggo-gg/core"
 import { createNoise2D } from 'simplex-noise';
 
@@ -53,7 +53,7 @@ const spawnChunk = (chunk: XY) => {
       const height = round(max(1, noise(xy.x / 400, xy.y / 400) * 14))
       for (let k = 0; k < height; k++) {
         const type = k > 10 ? "moonrock" : k == 0 ? "saphire" : "grass"
-        blocks.add({ ...xy, z: k * 21, type })
+        blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
       }
     }
   }
