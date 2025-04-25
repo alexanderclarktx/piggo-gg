@@ -1,69 +1,11 @@
 import {
-  Actions, BlockShader, Clickable, Collider, Effects, Entity, floor, Item, ItemActionParams,
-  ItemBuilder, ItemEntity, mouse, pixiGraphics, Position,
-  Renderable, round, World, XY, XYZ, abs,
-  BlockData
+  BlockColors,
+  BlockDimensions, blocks, BlockShader, BlockTypeString, Collider, Entity, floor, mouse,
+  pixiGraphics, Position, Renderable, round, World, XY, XYZ
 } from "@piggo-gg/core"
-import { Geometry, Graphics, Mesh, Buffer, BufferUsage } from "pixi.js"
+import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
-const width = 18
-const height = width / 3 * 2
-
-export type BlockType = "stone" | "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
-
-export type Voxel = XYZ & { type: BlockType }
-
-const BlockColors: Record<BlockType, [number, number, number]> = {
-  stone: [0x7b7b7b, 0x5E5E3E, 0x9b9b9b],
-  grass: [0x08d000, 0x6E260E, 0x7B3F00],
-  moss: [0x08bb00, 0x6E260E, 0x7B3F00],
-  moonrock: [0xcbdaf2, 0x98b0d9, 0xdddddd],
-  asteroid: [0x8b8b8b, 0x6E6E6E, 0xECF0F1],
-  saphire: [0x00afff, 0x007fff, 0x00cfff],
-  obsidian: [0x330055, 0x550077, 0xaa00aa],
-  ruby: [0x660033, 0x880000, 0xff0000]
-}
-
-const graphics: Record<BlockType, Graphics | undefined> = {
-  stone: undefined,
-  grass: undefined,
-  moss: undefined,
-  moonrock: undefined,
-  asteroid: undefined,
-  saphire: undefined,
-  obsidian: undefined,
-  ruby: undefined
-}
-
-const blockGraphics = (type: BlockType) => {
-  if (graphics[type]) return graphics[type]
-
-  const colors = BlockColors[type]
-
-  graphics[type] = pixiGraphics()
-    // top
-    .moveTo(0, 0)
-    .lineTo(-width, -width / 2)
-    .lineTo(0, -width)
-    .lineTo(width, -width / 2)
-    .lineTo(0, 0)
-    .fill({ color: colors[0] })
-
-    // bottom-left
-    .moveTo(-width, -width / 2)
-    .lineTo(-width, height)
-    .lineTo(0, height + width / 2)
-    .lineTo(0, 0)
-    .fill({ color: colors[1] })
-
-    // bottom-right
-    .lineTo(0, height + width / 2)
-    .lineTo(width, height)
-    .lineTo(width, -width / 2)
-    .fill({ color: colors[2] })
-
-  return graphics[type]
-}
+const { width, height } = BlockDimensions
 
 export const BlockCollider = (n: number) => Entity<Position | Collider>({
   id: `terrain-collider-${n}`,
@@ -236,43 +178,6 @@ export const BlockPreview = () => Entity({
   }
 })
 
-export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) => ItemEntity({
-  id: id ?? `item-block-${character.id}-${type}`,
-  components: {
-    position: Position({ follows: character?.id ?? "" }),
-    actions: Actions({
-      mb1: ({ params, world }) => {
-        const { hold, mouse } = params as ItemActionParams
-        if (hold) return
-        // addToXBlocksBuffer(block)
-
-        blocks.add({ ...snapXYZ(world.flip(mouse)), type })
-
-        world.client?.soundManager.play("click2")
-      }
-    }),
-    item: Item({ name: "block", flips: false }),
-    effects: Effects(),
-    clickable: Clickable({ width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 } }),
-    renderable: Renderable({
-      scaleMode: "nearest",
-      zIndex: 3,
-      scale: 0.3,
-      anchor: { x: 0.5, y: 0.5 },
-      interpolate: true,
-      visible: false,
-      rotates: false,
-      setup: async (r) => {
-        const clone = blockGraphics(type).clone()
-        clone.position.y = -height
-        r.c = clone
-
-        r.setOutline({ color: 0x000000, thickness: 1 })
-      }
-    })
-  }
-})
-
 // -----------------------------
 
 export const snapXY = (pos: XY): XY => {
@@ -312,8 +217,6 @@ export const highestBlock = (pos: XY): XYZ => {
 
   return { x: snapped.x, y: snapped.y, z: level }
 }
-
-export const blocks = BlockData()
 
 const BLOCK_GEOMETRY = () => new Geometry({
   instanceCount: 0,
@@ -422,22 +325,22 @@ export const BlockMesh = () => {
           blocks.sort(world)
           const { data } = blocks
 
-          const newPosBuffer = []
-          const newColorBuffer = []
+          const newPosBuffer: number[] = []
+          const newColorBuffer: number[] = []
 
           let instanceCount = 0
           for (const block of data) {
             const { x, y } = world.flip(block)
 
-            if (abs(offset.x - x) > 200) continue
-            if (abs(offset.y - y) > 200) continue
+            // if (abs(offset.x - x) > 200) continue
+            // if (abs(offset.y - y) > 200) continue
 
             const blockInFront = (y - playerY) > 0
             if (!blockInFront || block.z < playerZ) {
               instanceCount += 1
 
               newPosBuffer.push(x, y - block.z)
-              newColorBuffer.push(...BlockColors[block.type])
+              newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
             }
           }
 
@@ -445,7 +348,7 @@ export const BlockMesh = () => {
           geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
           geometry.instanceCount = instanceCount
 
-          console.log("block mesh", performance.now() - time)
+          // console.log("block mesh", performance.now() - time)
         }
       })
     }
@@ -491,22 +394,22 @@ export const BlockMeshOcclusion = () => {
           blocks.sort(world)
           const { data } = blocks
 
-          const newPosBuffer = []
-          const newColorBuffer = []
+          const newPosBuffer: number[] = []
+          const newColorBuffer: number[] = []
 
           let instanceCount = 0
           for (const block of data) {
             const { x, y } = world.flip(block)
 
-            if (abs(offset.x - x) > 200) continue
-            if (abs(offset.y - y) > 200) continue
+            // if (abs(offset.x - x) > 200) continue
+            // if (abs(offset.y - y) > 200) continue
 
             const blockInFront = (y - playerY) > 0
             if (blockInFront && block.z >= playerZ) {
               instanceCount += 1
 
               newPosBuffer.push(x, y - block.z)
-              newColorBuffer.push(...BlockColors[block.type])
+              newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
             }
           }
 

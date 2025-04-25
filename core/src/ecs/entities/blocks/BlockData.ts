@@ -11,6 +11,8 @@ export const BlockData = (): BlockData => {
 
   const keys: Set<string> = new Set()
 
+  let lastSort = 0
+
   const blocks: BlockData = {
     data: [],
     add: (block: Voxel) => {
@@ -27,7 +29,13 @@ export const BlockData = (): BlockData => {
       }
     },
     sort: (world: World) => {
+      if (lastSort === world.tick) {
+        return
+      } else {
+        lastSort = world.tick
+      }
 
+      const time = performance.now()
       blocks.data.sort((a, b) => {
         const XYa = world.flip(a)
         const XYb = world.flip(b)
@@ -36,8 +44,12 @@ export const BlockData = (): BlockData => {
         if (a.z !== b.z) return a.z - b.z
         return XYa.x - XYb.x
       })
+
+      // console.log('sort', performance.now() - time)
     }
   }
 
   return blocks
 }
+
+export const blocks = BlockData()
