@@ -1,7 +1,8 @@
 import {
   Actions, BlockShader, Clickable, Collider, Effects, Entity, floor, Item, ItemActionParams,
   ItemBuilder, ItemEntity, mouse, pixiGraphics, Position,
-  Renderable, round, World, XY, XYZ
+  Renderable, round, World, XY, XYZ, abs,
+  BlockData
 } from "@piggo-gg/core"
 import { Geometry, Graphics, Mesh, Buffer, BufferUsage } from "pixi.js"
 
@@ -312,49 +313,7 @@ export const highestBlock = (pos: XY): XYZ => {
   return { x: snapped.x, y: snapped.y, z: level }
 }
 
-type Blocks = {
-  data: Voxel[]
-  add: (block: Voxel) => void
-  remove: (block: Voxel) => void
-  sort: (world: World) => void
-}
-
-const Blocks = (): Blocks => {
-
-  const keys: Set<string> = new Set()
-
-  const blocks: Blocks = {
-    data: [],
-    add: (block: Voxel) => {
-      if (keys.has(`${block.x}-${block.y}-${block.z}`)) return
-
-      blocks.data.push(block)
-      keys.add(`${block.x}-${block.y}-${block.z}`)
-    },
-    remove: (block: XYZ) => {
-      const index = blocks.data.findIndex(b => b.x === block.x && b.y === block.y && b.z === block.z)
-      if (index !== -1) {
-        blocks.data.splice(index, 1)
-        keys.delete(`${block.x}-${block.y}-${block.z}`)
-      }
-    },
-    sort: (world: World) => {
-
-      blocks.data.sort((a, b) => {
-        const XYa = world.flip(a)
-        const XYb = world.flip(b)
-
-        if (XYa.y !== XYb.y) return XYa.y - XYb.y
-        if (a.z !== b.z) return a.z - b.z
-        return XYa.x - XYb.x
-      })
-    }
-  }
-
-  return blocks
-}
-
-export const blocks = Blocks()
+export const blocks = BlockData()
 
 const BLOCK_GEOMETRY = () => new Geometry({
   instanceCount: 0,
@@ -443,6 +402,7 @@ export const BlockMesh = () => {
           r.c = mesh
         },
         onRender: ({ world }) => {
+          const time = performance.now()
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
@@ -469,6 +429,9 @@ export const BlockMesh = () => {
           for (const block of data) {
             const { x, y } = world.flip(block)
 
+            if (abs(offset.x - x) > 200) continue
+            if (abs(offset.y - y) > 200) continue
+
             const blockInFront = (y - playerY) > 0
             if (!blockInFront || block.z < playerZ) {
               instanceCount += 1
@@ -481,6 +444,8 @@ export const BlockMesh = () => {
           geometry.attributes.aInstancePos.buffer.data = new Float32Array(newPosBuffer)
           geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
           geometry.instanceCount = instanceCount
+
+          console.log("block mesh", performance.now() - time)
         }
       })
     }
@@ -532,6 +497,9 @@ export const BlockMeshOcclusion = () => {
           let instanceCount = 0
           for (const block of data) {
             const { x, y } = world.flip(block)
+
+            if (abs(offset.x - x) > 200) continue
+            if (abs(offset.y - y) > 200) continue
 
             const blockInFront = (y - playerY) > 0
             if (blockInFront && block.z >= playerZ) {
