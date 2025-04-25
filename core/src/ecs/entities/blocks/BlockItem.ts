@@ -1,6 +1,7 @@
 import {
-  Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt, Clickable, Effects, Item, ItemActionParams,
-  ItemBuilder, ItemEntity, pixiGraphics, Position, Renderable, snapXYZ
+  Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt,
+  Clickable, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity,
+  pixiGraphics, Position, Renderable, snapXYZ
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -83,4 +84,3 @@ const blockGraphics = (type: BlockType) => {
 
   return graphics[type]
 }
-
