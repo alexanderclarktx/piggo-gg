@@ -83,6 +83,7 @@ export const BlockShader = (): Shader => {
 
   // @ts-expect-error
   shader.glProgram.vertex = "#version 300 es\n" + vertexSrc
+
   // @ts-expect-error
   shader.glProgram.fragment = "#version 300 es\n" + fragmentSrc
 
