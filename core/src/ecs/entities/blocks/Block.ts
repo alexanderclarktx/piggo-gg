@@ -1,4 +1,5 @@
 import {
+  abs,
   BlockColors,
   BlockDimensions, blocks, BlockShader, BlockTypeString, Collider, Entity, floor, mouse,
   pixiGraphics, Position, Renderable, round, World, XY, XYZ
@@ -332,8 +333,8 @@ export const BlockMesh = () => {
           for (const block of data) {
             const { x, y } = world.flip(block)
 
-            // if (abs(offset.x - x) > 200) continue
-            // if (abs(offset.y - y) > 200) continue
+            // if (abs(offset.x - x) > 300) continue
+            // if (abs(offset.y - y) > 300) continue
 
             const blockInFront = (y - playerY) > 0
             if (!blockInFront || block.z < playerZ) {
@@ -348,7 +349,7 @@ export const BlockMesh = () => {
           geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
           geometry.instanceCount = instanceCount
 
-          // console.log("block mesh", performance.now() - time)
+          console.log("block mesh", performance.now() - time)
         }
       })
     }
@@ -401,8 +402,8 @@ export const BlockMeshOcclusion = () => {
           for (const block of data) {
             const { x, y } = world.flip(block)
 
-            // if (abs(offset.x - x) > 200) continue
-            // if (abs(offset.y - y) > 200) continue
+            if (abs(offset.x - x) > 300) continue
+            if (abs(offset.y - y) > 300) continue
 
             const blockInFront = (y - playerY) > 0
             if (blockInFront && block.z >= playerZ) {
