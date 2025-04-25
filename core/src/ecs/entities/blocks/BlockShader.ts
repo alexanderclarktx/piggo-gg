@@ -7,7 +7,7 @@ const vertexSrc = `
   in vec3 aUV;
   in float aFace;
 
-  in vec2 aInstance;
+  in vec2 aInstancePos;
   in vec3 aInstanceColor;
 
   uniform vec2 uResolution;
@@ -19,7 +19,7 @@ const vertexSrc = `
   out vec3 vInstanceColor;
 
   void main() {
-    vec2 worldPos = aPosition + aInstance - vec2(0, 12);
+    vec2 worldPos = aPosition + aInstancePos - vec2(0, 12);
     vec2 screenPos = (worldPos - uCamera) * uZoom;
 
     vec2 clip = (screenPos / uResolution) * 2.0;

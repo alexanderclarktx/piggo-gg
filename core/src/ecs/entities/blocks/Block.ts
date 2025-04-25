@@ -369,7 +369,7 @@ const BLOCK_GEOMETRY = () => new Geometry({
     9, 11, 10,
   ],
   attributes: {
-    aInstance: {
+    aInstancePos: {
       instance: true,
       buffer: new Buffer({
         data: [],
@@ -478,7 +478,7 @@ export const BlockMesh = () => {
             }
           }
 
-          geometry.attributes.aInstance.buffer.data = new Float32Array(newPosBuffer)
+          geometry.attributes.aInstancePos.buffer.data = new Float32Array(newPosBuffer)
           geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
           geometry.instanceCount = instanceCount
         }
@@ -542,7 +542,7 @@ export const BlockMeshOcclusion = () => {
             }
           }
 
-          geometry.attributes.aInstance.buffer.data = new Float32Array(newPosBuffer)
+          geometry.attributes.aInstancePos.buffer.data = new Float32Array(newPosBuffer)
           geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
           geometry.instanceCount = instanceCount
 
