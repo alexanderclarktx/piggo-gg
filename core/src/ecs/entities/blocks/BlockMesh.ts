@@ -54,6 +54,22 @@ const BLOCK_GEOMETRY = () => new Geometry({
       0.6, 0.3, 0.0,
       0.6, 0.3, 0.0,
     ],
+    aOffset: [
+      0, width, width,
+      -width, 0, width,
+      0, -width, width,
+      width, 0, width,
+
+      0, width, width,
+      -width, 0, width,
+      -width, 0, -width,
+      0, width, -width,
+
+      0, width, width,
+      width, 0, width,
+      width, 0, -width,
+      0, width, -width
+    ],
     aPosition: [
       0, 0,
       -width, -width / 2,
@@ -127,7 +143,7 @@ export const BlockMesh = () => {
             if (!blockInFront || block.z < playerZ) {
               instanceCount += 1
 
-              newPosBuffer.push(x, y - block.z)
+              newPosBuffer.push(x, y, block.z)
               newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
             }
           }
@@ -196,7 +212,7 @@ export const BlockMeshOcclusion = () => {
             if (blockInFront && block.z >= playerZ) {
               instanceCount += 1
 
-              newPosBuffer.push(x, y - block.z)
+              newPosBuffer.push(x, y, block.z)
               newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
             }
           }

@@ -2,12 +2,13 @@ import { Shader } from "pixi.js"
 
 const vertexSrc = `
   precision mediump float;
-
+  
+  in float aFace;
   in vec2 aPosition;
   in vec3 aUV;
-  in float aFace;
+  in vec3 aOffset;
 
-  in vec2 aInstancePos;
+  in vec3 aInstancePos;
   in vec3 aInstanceColor;
 
   uniform vec2 uResolution;
@@ -17,9 +18,12 @@ const vertexSrc = `
   out float vFace;
   out vec3 vUV;
   out vec3 vInstanceColor;
+  out vec3 vWorldPos;
 
   void main() {
-    vec2 worldPos = aPosition + aInstancePos - vec2(0, 12);
+    vec2 pos2d = vec2(aInstancePos.x, aInstancePos.y - aInstancePos.z);
+
+    vec2 worldPos = aPosition + pos2d - vec2(0, 12);
     vec2 screenPos = (worldPos - uCamera) * uZoom;
 
     vec2 clip = (screenPos / uResolution) * 2.0;
@@ -30,6 +34,8 @@ const vertexSrc = `
     vFace = aFace;
     vInstanceColor = aInstanceColor;
     vUV = aUV;
+
+    vWorldPos = aInstancePos + aOffset;
   }
 `
 
