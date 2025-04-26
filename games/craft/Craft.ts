@@ -32,7 +32,7 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = () => {
-  const num = 20
+  const num = 10
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
@@ -59,12 +59,12 @@ const spawnChunk = (chunk: XY) => {
         octaves: 3
       })
 
-      if (height > 8) height += sample({
-        x: xInt + 100,
-        y: yInt + 100,
-        factor: 10,
-        octaves: 3
-      })
+      // if (height > 8) height += sample({
+      //   x: xInt + 100,
+      //   y: yInt + 100,
+      //   factor: 10,
+      //   octaves: 3
+      // })
 
       for (let k = 0; k < height; k++) {
 
@@ -72,7 +72,7 @@ const spawnChunk = (chunk: XY) => {
           [0, "obsidian"],
           [1, "saphire"],
           [7, "grass"],
-          [32, "ruby"]
+          [32, "white"]
         ])
 
         blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })

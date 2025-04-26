@@ -10,7 +10,8 @@ export const BlockTypeInt: Record<BlockType, number> = {
   asteroid: 4,
   saphire: 5,
   obsidian: 6,
-  ruby: 7
+  ruby: 7,
+  white: 8,
 }
 
 export const BlockTypeString: Record<number, BlockType> = {
@@ -21,10 +22,14 @@ export const BlockTypeString: Record<number, BlockType> = {
   4: "asteroid",
   5: "saphire",
   6: "obsidian",
-  7: "ruby"
+  7: "ruby",
+  8: "white",
 }
 
-export type BlockType = "stone" | "grass" | "moss" | "moonrock" | "asteroid" | "saphire" | "obsidian" | "ruby"
+export type BlockType =
+  "white" | "stone" | "grass" |
+  "moss" | "moonrock" | "asteroid" |
+  "saphire" | "obsidian" | "ruby"
 
 export type Voxel = XYZ & { type: number }
 
@@ -36,5 +41,6 @@ export const BlockColors: Record<BlockType, [number, number, number]> = {
   asteroid: [0x8b8b8b, 0x6E6E6E, 0xECF0F1],
   saphire: [0x00afff, 0x007fff, 0x00cfff],
   obsidian: [0x330055, 0x550077, 0xaa00aa],
-  ruby: [0x660033, 0x880000, 0xff0000]
+  ruby: [0x660033, 0x880000, 0xff0000],
+  white: [0xffffff, 0xffffff, 0xffffff],
 }

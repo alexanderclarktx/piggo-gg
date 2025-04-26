@@ -6,6 +6,7 @@ export type BlockData = {
   data: Voxel[]
   add: (block: Voxel) => void
   remove: (block: Voxel) => void
+  zSort: () => Voxel[]
   sort: (world: World) => Voxel[]
 }
 
@@ -29,6 +30,13 @@ export const BlockData = (): BlockData => {
         blocks.data.splice(index, 1)
         keys.delete(`${block.x}-${block.y}-${block.z}`)
       }
+    },
+    zSort: () => {
+      blocks.data.sort((a, b) => {
+        if (a.z !== b.z) return a.z - b.z
+        return a.y - b.y
+      })
+      return blocks.data
     },
     sort: (world: World) => {
       if (lastSort === world.tick) {

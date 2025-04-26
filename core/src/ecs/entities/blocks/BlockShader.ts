@@ -61,22 +61,24 @@ const fragmentSrc = `
 
   float sdfToBlocks(vec3 p) {
     float minDist = 1e10;
+    vec3 halfSize = vec3(18.0); // Assuming each block is 1x1x1
+
     for (int i = 0; i < 50; ++i) {
       vec3 blockPos = uTopBlocks[i];
-      
-      // Skip empty slots (optional if your data has empty blocks at end)
+
       if (blockPos.x == 0.0 && blockPos.y == 0.0 && blockPos.z == 0.0) continue;
-      
-      // Sphere approximation: distance from center minus radius
-      float blockRadius = 0.5; // tune this if needed
-      float d = length(p - blockPos) - blockRadius;
-      minDist = min(minDist, d);
+
+      vec3 d = abs(p - blockPos) - halfSize;
+      float dist = length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0);
+
+      minDist = min(minDist, dist);
     }
+
     return minDist;
   }
 
   bool isInShadow(vec3 start) {
-    vec3 sunDir = normalize(vec3(-1.0, -1.0, -2.0)); // Sun direction (adjustable!)
+    vec3 sunDir = normalize(vec3(1.0, 0, 2.0)); // Sun direction (adjustable!)
     vec3 p = start;
     for (int i = 0; i < 32; ++i) { // max march steps
       float d = sdfToBlocks(p);
