@@ -3,7 +3,8 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
   EscapeMenu, intToBlock, XY, blocks, BlockMeshOcclusion, BlockMesh,
-  Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt, sample
+  Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt, sample,
+  BlockType, range
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -51,15 +52,29 @@ const spawnChunk = (chunk: XY) => {
       const yInt = j + y * size
       const xy = intToBlock(xInt, yInt)
 
-      const height = sample({
+      let height = sample({
         x: xInt,
         y: yInt,
+        factor: 15,
+        octaves: 3
+      })
+
+      if (height > 8) height += sample({
+        x: xInt + 100,
+        y: yInt + 100,
         factor: 10,
         octaves: 3
       })
 
       for (let k = 0; k < height; k++) {
-        const type = k > 10 ? "grass" : k == 0 ? "saphire" : "grass"
+
+        const type = range<BlockType>(k, [
+          [0, "obsidian"],
+          [1, "saphire"],
+          [7, "grass"],
+          [32, "ruby"]
+        ])
+
         blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
       }
     }
