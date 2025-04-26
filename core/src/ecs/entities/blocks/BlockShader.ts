@@ -109,10 +109,7 @@ const fragmentSrc = `
     bool shadowed = isInShadow(vWorldPos);
 
     if (shadowed) {
-      float shadowSoftness = 0.1; // Adjust shadow softness
-      float shadow = smoothstep(0.0, shadowSoftness, sdfDistance);
-      color = mix(color, vec3(0.0), shadow); // Darken color based on shadow
-      // color *= 0.5; // Darken if in shadow (adjust darkness factor as you like)
+      color *= 0.5; // Darken if in shadow (adjust darkness factor as you like)
     }
 
     fragColor = vec4(color, 1.0);
