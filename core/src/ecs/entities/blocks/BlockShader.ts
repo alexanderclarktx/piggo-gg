@@ -14,11 +14,13 @@ const vertexSrc = `
   uniform vec2 uResolution;
   uniform vec2 uCamera;
   uniform float uZoom;
+  uniform vec3[50] uTopBlocks;
 
   out float vFace;
   out vec3 vUV;
   out vec3 vInstanceColor;
   out vec3 vWorldPos;
+  out vec3[50] vTopBlocks;
 
   void main() {
     vec2 pos2d = vec2(aInstancePos.x, aInstancePos.y - aInstancePos.z);
@@ -35,7 +37,8 @@ const vertexSrc = `
     vInstanceColor = aInstanceColor;
     vUV = aUV;
 
-    vWorldPos = aInstancePos + aOffset;
+    vTopBlocks = uTopBlocks;
+    vWorldPos = aInstancePos + aOffset;    
   }
 `
 
@@ -45,6 +48,9 @@ const fragmentSrc = `
   in vec3 vUV;
   in float vFace;
   in vec3 vInstanceColor;
+
+  in vec3 vWorldPos;
+  in vec3[50] vTopBlocks;
 
   out vec4 fragColor;
 
@@ -82,7 +88,8 @@ export const BlockShader = (): Shader => {
       uniforms: {
         uCamera: { value: [0, 0], type: 'vec2<f32>' },
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
-        uZoom: { value: 2.0, type: 'f32' }
+        uZoom: { value: 2.0, type: 'f32' },
+        uTopBlocks: { value: [], type: 'vec3<f32>' }
       }
     }
   })

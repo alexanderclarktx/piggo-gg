@@ -92,8 +92,9 @@ const BLOCK_GEOMETRY = () => new Geometry({
 export const BlockMesh = () => {
 
   const geometry = BLOCK_GEOMETRY()
-
   const shader = BlockShader()
+
+  let topBlocks: number[] = []
 
   return Entity({
     id: "block-mesh",
@@ -103,10 +104,17 @@ export const BlockMesh = () => {
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
-        setup: async (r) => {
-          const mesh = new Mesh({ geometry, shader })
+        setup: async (r, _, world) => {
+          r.c = new Mesh({ geometry, shader })
 
-          r.c = mesh
+          const data = blocks.sort(world)
+          for (let i = 0; i < 50; i++) {
+            const block = data[i]
+            const { x, y } = world.flip(block) // todo ?
+            topBlocks.push(x, y, block.z)
+          }
+
+          shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
         },
         onRender: ({ world }) => {
           const time = performance.now()

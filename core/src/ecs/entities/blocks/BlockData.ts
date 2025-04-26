@@ -6,7 +6,7 @@ export type BlockData = {
   data: Voxel[]
   add: (block: Voxel) => void
   remove: (block: Voxel) => void
-  sort: (world: World) => void
+  sort: (world: World) => Voxel[]
 }
 
 export const BlockData = (): BlockData => {
@@ -32,7 +32,7 @@ export const BlockData = (): BlockData => {
     },
     sort: (world: World) => {
       if (lastSort === world.tick) {
-        return
+        return blocks.data
       } else {
         lastSort = world.tick
       }
@@ -46,6 +46,8 @@ export const BlockData = (): BlockData => {
         if (a.z !== b.z) return a.z - b.z
         return XYa.x - XYb.x
       })
+
+      return blocks.data
 
       // console.log('sort', performance.now() - time)
     }
