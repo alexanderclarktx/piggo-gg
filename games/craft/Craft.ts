@@ -2,12 +2,9 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, max, round, XY, blocks, BlockMeshOcclusion,
-  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt
+  EscapeMenu, intToBlock, XY, blocks, BlockMeshOcclusion, BlockMesh,
+  Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt, sample
 } from "@piggo-gg/core"
-import { createNoise2D } from 'simplex-noise';
-
-const noise = createNoise2D(Math.random)
 
 export const Craft: GameBuilder = {
   id: "craft",
@@ -43,14 +40,6 @@ const spawnTerrain = () => {
   }
 }
 
-const sample = (x: number, y: number, factor: number): number => {
-  const first = noise(x / 60, y / 60) * 0.5
-  const second = noise(x / 30, y / 30) * 0.25
-  const third = noise(x / 15, y / 15) * 0.125
-
-  return (first + second + third) * factor
-}
-
 const spawnChunk = (chunk: XY) => {
   const { x, y } = chunk
 
@@ -62,8 +51,13 @@ const spawnChunk = (chunk: XY) => {
       const yInt = j + y * size
       const xy = intToBlock(xInt, yInt)
 
-      const height = round(max(-4, sample(xInt, yInt, 14))) + 5
-      // const height = round(max(-9, noise(xInt / 50, yInt / 50) * 14)) + 10
+      const height = sample({
+        x: xInt,
+        y: yInt,
+        factor: 10,
+        octaves: 3
+      })
+
       for (let k = 0; k < height; k++) {
         const type = k > 10 ? "grass" : k == 0 ? "saphire" : "grass"
         blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
