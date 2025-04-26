@@ -14,13 +14,11 @@ const vertexSrc = `
   uniform vec2 uResolution;
   uniform vec2 uCamera;
   uniform float uZoom;
-  uniform vec3[50] uTopBlocks;
 
   out float vFace;
   out vec3 vUV;
   out vec3 vInstanceColor;
   out vec3 vWorldPos;
-  out vec3[50] vTopBlocks;
 
   void main() {
     vec2 pos2d = vec2(aInstancePos.x, aInstancePos.y - aInstancePos.z);
@@ -37,7 +35,6 @@ const vertexSrc = `
     vInstanceColor = aInstanceColor;
     vUV = aUV;
 
-    vTopBlocks = uTopBlocks;
     vWorldPos = aInstancePos + aOffset;    
   }
 `
@@ -50,7 +47,8 @@ const fragmentSrc = `
   in vec3 vInstanceColor;
 
   in vec3 vWorldPos;
-  in vec3[50] vTopBlocks;
+
+  uniform vec3[50] uTopBlocks;
 
   out vec4 fragColor;
 
@@ -59,6 +57,34 @@ const fragmentSrc = `
     float g = floor(mod(hex / 256.0, 256.0)) / 255.0;
     float b = mod(hex, 256.0) / 255.0;
     return vec3(r, g, b);
+  }
+
+  float sdfToBlocks(vec3 p) {
+    float minDist = 1e10;
+    for (int i = 0; i < 50; ++i) {
+      vec3 blockPos = uTopBlocks[i];
+      
+      // Skip empty slots (optional if your data has empty blocks at end)
+      if (blockPos.x == 0.0 && blockPos.y == 0.0 && blockPos.z == 0.0) continue;
+      
+      // Sphere approximation: distance from center minus radius
+      float blockRadius = 0.5; // tune this if needed
+      float d = length(p - blockPos) - blockRadius;
+      minDist = min(minDist, d);
+    }
+    return minDist;
+  }
+
+  bool isInShadow(vec3 start) {
+    vec3 sunDir = normalize(vec3(-1.0, -1.0, -2.0)); // Sun direction (adjustable!)
+    vec3 p = start;
+    for (int i = 0; i < 32; ++i) { // max march steps
+      float d = sdfToBlocks(p);
+      if (d < 0.01) return true; // hit block
+      if (d > 50.0) break; // escaped into space
+      p += sunDir * d;
+    }
+    return false;
   }
 
   void main() {
@@ -72,6 +98,13 @@ const fragmentSrc = `
       color = unpackRGB(vInstanceColor[1]);
     } else if (face == 2) {
       color = unpackRGB(vInstanceColor[2]);
+    }
+
+    // --- Raymarching for shadow ---
+    bool shadowed = isInShadow(vWorldPos);
+
+    if (shadowed) {
+      color *= 0.4; // Darken if in shadow (adjust darkness factor as you like)
     }
 
     fragColor = vec4(color, 1.0);
