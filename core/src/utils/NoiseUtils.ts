@@ -1,4 +1,3 @@
-
 import { floor } from '@piggo-gg/core'
 import { createNoise2D } from 'simplex-noise'
 
@@ -29,9 +28,7 @@ export const sample = ({ x, y, factor, octaves }: sampleProps): number => {
   return floor(value * factor)
 }
 
-export type Range<T> = [number, T][]
-
-export const range = <T>(input: number, range: Range<T>): T => {
+export const range = <T>(input: number, range: [number, T][]): T => {
   if (range.length === 0) {
     throw new Error('Input and range must not be empty')
   }
