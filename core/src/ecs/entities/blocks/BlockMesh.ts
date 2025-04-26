@@ -6,6 +6,9 @@ import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
+const W = 18
+const V = 9
+
 const BLOCK_GEOMETRY = () => new Geometry({
   instanceCount: 0,
   indexBuffer: [
@@ -38,37 +41,21 @@ const BLOCK_GEOMETRY = () => new Geometry({
       1, 1, 1, 1, // left
       2, 2, 2, 2  // right
     ],
-    aUV: [
-      0, 0.82, 0.0,
-      0.0, 0.82, 0.0,
-      0.0, 0.82, 0.0,
-      0.0, 0.82, 0.0,
-
-      0.5, 0.2, 0.0,
-      0.5, 0.2, 0.0,
-      0.5, 0.2, 0.0,
-      0.5, 0.2, 0.0,
-
-      0.6, 0.3, 0.0,
-      0.6, 0.3, 0.0,
-      0.6, 0.3, 0.0,
-      0.6, 0.3, 0.0,
-    ],
     aOffset: [
-      0, width, width,
-      -width, 0, width,
-      0, -width, width,
-      width, 0, width,
+      0, V, 21,
+      -W, 0, 21, // 0
+      0, -V, 21,
+      W, 0, 21, // 0
 
-      0, width, width,
-      -width, 0, width,
-      -width, 0, -width,
-      0, width, -width,
+      0, V, 21,
+      -W, 0, 21, // 0
+      -W, 0, 0, // 0
+      0, V, 0,
 
-      0, width, width,
-      width, 0, width,
-      width, 0, -width,
-      0, width, -width
+      0, V, 21,
+      W, 0, 21, // 0
+      W, 0, 0, // 0
+      0, V, 0
     ],
     aPosition: [
       0, 0,
@@ -89,12 +76,12 @@ const BLOCK_GEOMETRY = () => new Geometry({
   }
 })
 
+let topBlocks: number[] = []
+
 export const BlockMesh = () => {
 
   const geometry = BLOCK_GEOMETRY()
   const shader = BlockShader()
-
-  let topBlocks: number[] = []
 
   return Entity({
     id: "block-mesh",
@@ -108,10 +95,10 @@ export const BlockMesh = () => {
           r.c = new Mesh({ geometry, shader })
 
           const data = blocks.zSort().reverse()
-          for (let i = 0; i < 50; i++) {
+          for (let i = 0; i < 1; i++) {
             const block = data[i]
             const { x, y } = world.flip(block) // todo ?
-            topBlocks.push(x, y, block.z)
+            // topBlocks.push(x, y, block.z)
           }
 
           shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
@@ -126,6 +113,7 @@ export const BlockMesh = () => {
             shader.resources.uniforms.uniforms.uZoom = zoom
             shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
             shader.resources.uniforms.uniforms.uResolution = resolution
+            shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
           }
 
           const { position } = world.client!.playerCharacter()?.components ?? {}
@@ -172,8 +160,6 @@ export const BlockMeshOcclusion = () => {
   const geometry = BLOCK_GEOMETRY()
   const shader = BlockShader()
 
-  let topBlocks: number[] = []
-
   return Entity({
     id: "block-mesh-occlusion",
     components: {
@@ -186,10 +172,10 @@ export const BlockMeshOcclusion = () => {
           r.c = new Mesh({ geometry, shader })
 
           const data = blocks.zSort().reverse()
-          for (let i = 0; i < 50; i++) {
+          for (let i = 0; i < 1; i++) {
             const block = data[i]
             const { x, y } = world.flip(block) // todo ?
-            topBlocks.push(x, y, block.z)
+            topBlocks.push(x, y, block.z + 10.5)
           }
 
           console.log("top blocks", topBlocks)
@@ -205,6 +191,7 @@ export const BlockMeshOcclusion = () => {
             shader.resources.uniforms.uniforms.uZoom = zoom
             shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
             shader.resources.uniforms.uniforms.uResolution = resolution
+            shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
           }
 
           const { position } = world.client!.playerCharacter()?.components ?? {}

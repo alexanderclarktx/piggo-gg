@@ -32,13 +32,28 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = () => {
-  const num = 10
+  const num = 5
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
       spawnChunk(chunk)
     }
   }
+}
+
+const spawnTiny = () => {
+  for (let i = 0; i < 12; i++) {
+    for (let j = 0; j < 12; j++) {
+      const xInt = i
+      const yInt = j
+      const xy = intToBlock(xInt, yInt)
+
+      blocks.add({ ...xy, z: 0, type: BlockTypeInt["asteroid"] })
+    }
+  }
+
+  const xy = intToBlock(4, 4)
+  blocks.add({ ...xy, z: 21, type: BlockTypeInt["asteroid"] })
 }
 
 const spawnChunk = (chunk: XY) => {
@@ -72,7 +87,7 @@ const spawnChunk = (chunk: XY) => {
           [0, "obsidian"],
           [1, "saphire"],
           [7, "grass"],
-          [32, "white"]
+          [32, "asteroid"]
         ])
 
         blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
@@ -85,7 +100,8 @@ const CraftSystem = SystemBuilder({
   id: "CraftSystem",
   init: (world) => {
 
-    spawnTerrain()
+    // spawnTerrain()
+    spawnTiny()
 
     const blockColliders: Entity<Position | Collider>[] = [
       BlockCollider(0),

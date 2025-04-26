@@ -5,7 +5,6 @@ const vertexSrc = `
   
   in float aFace;
   in vec2 aPosition;
-  in vec3 aUV;
   in vec3 aOffset;
 
   in vec3 aInstancePos;
@@ -16,7 +15,6 @@ const vertexSrc = `
   uniform float uZoom;
 
   out float vFace;
-  out vec3 vUV;
   out vec3 vInstanceColor;
   out vec3 vWorldPos;
 
@@ -33,22 +31,20 @@ const vertexSrc = `
 
     vFace = aFace;
     vInstanceColor = aInstanceColor;
-    vUV = aUV;
 
-    vWorldPos = aInstancePos + aOffset;    
+    vWorldPos = aInstancePos + aOffset + vec3(0.0, 0.0, 0.0);
   }
 `
 
 const fragmentSrc = `
   precision mediump float;
 
-  in vec3 vUV;
   in float vFace;
   in vec3 vInstanceColor;
-
   in vec3 vWorldPos;
 
-  uniform vec3[50] uTopBlocks;
+  uniform vec3[1] uTopBlocks;
+  uniform float uTime;
 
   out vec4 fragColor;
 
@@ -61,9 +57,9 @@ const fragmentSrc = `
 
   float sdfToBlocks(vec3 p) {
     float minDist = 1e10;
-    vec3 halfSize = vec3(18.0); // Assuming each block is 1x1x1
+    vec3 halfSize = vec3(18.0, 9.0, 10.5);
 
-    for (int i = 0; i < 50; ++i) {
+    for (int i = 0; i < 1; ++i) {
       vec3 blockPos = uTopBlocks[i];
 
       if (blockPos.x == 0.0 && blockPos.y == 0.0 && blockPos.z == 0.0) continue;
@@ -78,12 +74,19 @@ const fragmentSrc = `
   }
 
   bool isInShadow(vec3 start) {
-    vec3 sunDir = normalize(vec3(1.0, 0, 2.0)); // Sun direction (adjustable!)
-    vec3 p = start;
+
+    float ySun = sin(uTime * 0.1) * 2.0 - 1.0; // Sun Y position (adjustable!)
+    float xSun = cos(uTime * 0.1) * 2.0 - 1.0; // Sun X position (adjustable!)
+
+    vec3 sunDir = normalize(vec3(xSun, ySun, 1.0)); // Sun direction (adjustable!)
+
+    vec3 p = start + sunDir * 0.05; // Start point slightly offset from the block
     for (int i = 0; i < 32; ++i) { // max march steps
       float d = sdfToBlocks(p);
+
       if (d < 0.01) return true; // hit block
-      if (d > 50.0) break; // escaped into space
+      if (d > 500.0) break; // escaped into space
+
       p += sunDir * d;
     }
     return false;
@@ -106,7 +109,10 @@ const fragmentSrc = `
     bool shadowed = isInShadow(vWorldPos);
 
     if (shadowed) {
-      color *= 0.4; // Darken if in shadow (adjust darkness factor as you like)
+      float shadowSoftness = 0.1; // Adjust shadow softness
+      float shadow = smoothstep(0.0, shadowSoftness, sdfDistance);
+      color = mix(color, vec3(0.0), shadow); // Darken color based on shadow
+      // color *= 0.5; // Darken if in shadow (adjust darkness factor as you like)
     }
 
     fragColor = vec4(color, 1.0);
@@ -124,7 +130,8 @@ export const BlockShader = (): Shader => {
         uCamera: { value: [0, 0], type: 'vec2<f32>' },
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
         uZoom: { value: 2.0, type: 'f32' },
-        uTopBlocks: { value: [], type: 'vec3<f32>' }
+        uTopBlocks: { value: [], type: 'vec3<f32>' },
+        uTime: { value: 0, type: 'f32' }
       }
     }
   })

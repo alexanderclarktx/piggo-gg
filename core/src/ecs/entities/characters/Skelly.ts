@@ -10,7 +10,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
   components: {
     debug: Debug(),
     position: Position({
-      x: pos?.x ?? 0, y: pos?.y ?? 200, z: 128,
+      x: pos?.x ?? 0, y: pos?.y ?? 150, z: 50,
       velocityResets: 1,
       speed: 125,
       gravity: 0.3
