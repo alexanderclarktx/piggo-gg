@@ -73,12 +73,14 @@ const fragmentSrc = `
     return minDist;
   }
 
+  float traveled = 0.0;
+
   bool isInShadow(vec3 start) {
 
-    float ySun = sin(uTime * 0.1) * 2.0 - 1.0; // Sun Y position (adjustable!)
-    float xSun = cos(uTime * 0.1) * 2.0 - 1.0; // Sun X position (adjustable!)
+    float ySun = sin(uTime * 0.2) * 2.0 - 1.0;
+    float xSun = cos(uTime * 0.2) * 2.0 - 1.0;
 
-    vec3 sunDir = normalize(vec3(xSun, ySun, 1.0)); // Sun direction (adjustable!)
+    vec3 sunDir = normalize(vec3(xSun, ySun, 1.0));
 
     vec3 p = start + sunDir * 0.05; // Start point slightly offset from the block
     for (int i = 0; i < 32; ++i) { // max march steps
@@ -88,6 +90,7 @@ const fragmentSrc = `
       if (d > 500.0) break; // escaped into space
 
       p += sunDir * d;
+      traveled += d;
     }
     return false;
   }
@@ -109,7 +112,7 @@ const fragmentSrc = `
     bool shadowed = isInShadow(vWorldPos);
 
     if (shadowed) {
-      color *= 0.5; // Darken if in shadow (adjust darkness factor as you like)
+      color *= min(0.9, 0.5 + (traveled / 200.0)); // Darken if in shadow (adjust darkness factor as you like)
     }
 
     fragColor = vec4(color, 1.0);
