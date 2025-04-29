@@ -11,10 +11,9 @@
   "dependencies": {
     "@piggo-gg/games": "1.0.0",
     "@prisma/client": "6.3.0",
-    "google-auth-library": "^9.15.1",
+    "google-auth-library": "9.15.1",
     "jsonwebtoken": "9.0.2",
-    "mock-browser": "^0.92.14",
-    "openai": "^4.83.0"
+    "mock-browser": "0.92.14"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.8",
