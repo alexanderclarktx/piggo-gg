@@ -2,9 +2,8 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, XY, blocks, BlockMeshOcclusion, BlockMesh,
-  Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt, sample,
-  BlockType, range
+  EscapeMenu, intToBlock, XY, blocks, BlockMesh, Position, Collider, Entity,
+  XYZ, BlockCollider, BlockTypeInt, sample, BlockType, range
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -26,7 +25,7 @@ export const Craft: GameBuilder = {
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview(),
       BlockMesh(),
-      BlockMeshOcclusion()
+      BlockMesh(true)
     ]
   })
 }
