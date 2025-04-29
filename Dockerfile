@@ -1,8 +1,5 @@
 from oven/bun:1.2.11-slim
 
-run apt update
-run apt install -y python3
-
 # add package.json
 add package.json package.json
 
