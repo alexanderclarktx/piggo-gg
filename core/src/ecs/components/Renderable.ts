@@ -3,6 +3,7 @@ import { AdvancedBloomFilter, BevelFilter, GlowFilter, GodrayFilter, OutlineFilt
 import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from "pixi.js"
 
 export type Dynamic = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World, client: Client }) => void)
+export type DynamicDelta = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World, client: Client, delta: number }) => void)
 
 export type Renderable = Component<"renderable", {
   desiredSkin: Skins | undefined
@@ -37,7 +38,7 @@ export type Renderable = Component<"renderable", {
   setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
 
-  onRender: Dynamic | undefined
+  onRender: DynamicDelta | undefined
   onTick: Dynamic | undefined
 
   prepareAnimations: (color?: number, alpha?: number) => void
@@ -71,7 +72,7 @@ export type RenderableProps = {
   skin?: Skins
   visible?: boolean
   zIndex?: number
-  onRender?: Dynamic
+  onRender?: DynamicDelta
   onTick?: Dynamic
   setChildren?: (r: Renderer) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>

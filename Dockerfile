@@ -1,4 +1,4 @@
-from oven/bun:1.2.4-slim
+from oven/bun:1.2.11-slim
 
 # add package.json
 add package.json package.json
@@ -10,7 +10,7 @@ add web web
 add server server
 
 # install dependencies
-run bun install
+run bun install --production
 
 # run the server
 cmd [ "bun", "prod" ]

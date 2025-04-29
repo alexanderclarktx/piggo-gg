@@ -142,11 +142,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
 
         const interpolated = position.interpolate(delta, world)
 
-        const { x, y, z } = follow({
-          x: position.data.x + interpolated.x,
-          y: position.data.y + interpolated.y,
-          z: position.data.z + interpolated.z
-        })
+        const { x, y, z } = follow(interpolated)
 
         const rotated = world.flip({
           x: x + renderable.position.x,

@@ -15,7 +15,8 @@ const graphics: Record<BlockType, Graphics | undefined> = {
   asteroid: undefined,
   saphire: undefined,
   obsidian: undefined,
-  ruby: undefined
+  ruby: undefined,
+  white: undefined,
 }
 
 export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) => ItemEntity({

@@ -6,6 +6,9 @@ import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
+const W = 18
+const V = 9
+
 const BLOCK_GEOMETRY = () => new Geometry({
   instanceCount: 0,
   indexBuffer: [
@@ -38,21 +41,21 @@ const BLOCK_GEOMETRY = () => new Geometry({
       1, 1, 1, 1, // left
       2, 2, 2, 2  // right
     ],
-    aUV: [
-      0, 0.82, 0.0,
-      0.0, 0.82, 0.0,
-      0.0, 0.82, 0.0,
-      0.0, 0.82, 0.0,
+    aOffset: [
+      0, V, 21,
+      -W, 0, 21,
+      0, -V, 21,
+      W, 0, 21,
 
-      0.5, 0.2, 0.0,
-      0.5, 0.2, 0.0,
-      0.5, 0.2, 0.0,
-      0.5, 0.2, 0.0,
+      0, V, 21,
+      -W, 0, 21,
+      -W, 0, 0,
+      0, V, 0,
 
-      0.6, 0.3, 0.0,
-      0.6, 0.3, 0.0,
-      0.6, 0.3, 0.0,
-      0.6, 0.3, 0.0,
+      0, V, 21,
+      W, 0, 21,
+      W, 0, 0,
+      0, V, 0
     ],
     aPosition: [
       0, 0,
@@ -73,10 +76,11 @@ const BLOCK_GEOMETRY = () => new Geometry({
   }
 })
 
+let topBlocks: number[] = []
+
 export const BlockMesh = () => {
 
   const geometry = BLOCK_GEOMETRY()
-
   const shader = BlockShader()
 
   return Entity({
@@ -87,21 +91,33 @@ export const BlockMesh = () => {
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
-        setup: async (r) => {
-          const mesh = new Mesh({ geometry, shader })
+        setup: async (r, _, world) => {
+          r.c = new Mesh({ geometry, shader })
 
-          r.c = mesh
+          const data = blocks.zSort().reverse()
+          for (let i = 0; i < 1; i++) {
+            const block = data[i]
+            const { x, y } = world.flip(block) // todo ?
+            // topBlocks.push(x, y, block.z)
+          }
+
+          shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
         },
-        onRender: ({ world }) => {
+        onRender: ({ world, delta }) => {
           const time = performance.now()
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
+          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world)
+          const pcXYZ = pcPos ? [pcPos.x, pcPos.y, pcPos.z] : [0, 0, 0]
+
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
             shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uPlayer = pcXYZ
             shader.resources.uniforms.uniforms.uResolution = resolution
+            shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
           }
 
           const { position } = world.client!.playerCharacter()?.components ?? {}
@@ -127,7 +143,7 @@ export const BlockMesh = () => {
             if (!blockInFront || block.z < playerZ) {
               instanceCount += 1
 
-              newPosBuffer.push(x, y - block.z)
+              newPosBuffer.push(x, y, block.z)
               newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
             }
           }
@@ -146,7 +162,6 @@ export const BlockMesh = () => {
 export const BlockMeshOcclusion = () => {
 
   const geometry = BLOCK_GEOMETRY()
-
   const shader = BlockShader()
 
   return Entity({
@@ -157,20 +172,32 @@ export const BlockMeshOcclusion = () => {
         zIndex: 3.1,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
-        setup: async (r) => {
-          const mesh = new Mesh({ geometry, shader })
+        setup: async (r, _, world) => {
+          r.c = new Mesh({ geometry, shader })
 
-          r.c = mesh
+          const data = blocks.zSort().reverse()
+          for (let i = 0; i < 1; i++) {
+            const block = data[i]
+            const { x, y } = world.flip(block) // todo ?
+            topBlocks.push(x, y, block.z + 10.5)
+          }
+
+          shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
         },
-        onRender: ({ world, renderable }) => {
+        onRender: ({ world, renderable, delta }) => {
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
+          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world)
+          const pcXYZ = pcPos ? [pcPos.x, pcPos.y, pcPos.z] : [0, 0, 0]
+
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
             shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uPlayer = pcXYZ
             shader.resources.uniforms.uniforms.uResolution = resolution
+            shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
           }
 
           const { position } = world.client!.playerCharacter()?.components ?? {}
@@ -196,7 +223,7 @@ export const BlockMeshOcclusion = () => {
             if (blockInFront && block.z >= playerZ) {
               instanceCount += 1
 
-              newPosBuffer.push(x, y - block.z)
+              newPosBuffer.push(x, y, block.z)
               newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
             }
           }

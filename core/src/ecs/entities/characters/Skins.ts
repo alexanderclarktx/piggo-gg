@@ -1,4 +1,4 @@
-import { Entity, loadTexture, pixiAnimation, Renderable, World, Position, Dynamic, Action } from "@piggo-gg/core";
+import { Entity, loadTexture, pixiAnimation, Renderable, World, Position, Dynamic, Action } from "@piggo-gg/core"
 
 export type Skin = (r: Renderable) => Promise<void>
 type AnimationSelect = (entity: Entity<Position | Renderable>, world: World) => string

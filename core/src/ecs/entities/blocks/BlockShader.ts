@@ -2,12 +2,12 @@ import { Shader } from "pixi.js"
 
 const vertexSrc = `
   precision mediump float;
-
-  in vec2 aPosition;
-  in vec3 aUV;
+  
   in float aFace;
+  in vec2 aPosition;
+  in vec3 aOffset;
 
-  in vec2 aInstancePos;
+  in vec3 aInstancePos;
   in vec3 aInstanceColor;
 
   uniform vec2 uResolution;
@@ -15,11 +15,13 @@ const vertexSrc = `
   uniform float uZoom;
 
   out float vFace;
-  out vec3 vUV;
   out vec3 vInstanceColor;
+  out vec3 vWorldPos;
 
   void main() {
-    vec2 worldPos = aPosition + aInstancePos - vec2(0, 12);
+    vec2 pos2d = vec2(aInstancePos.x, aInstancePos.y - aInstancePos.z);
+
+    vec2 worldPos = aPosition + pos2d - vec2(0, 12);
     vec2 screenPos = (worldPos - uCamera) * uZoom;
 
     vec2 clip = (screenPos / uResolution) * 2.0;
@@ -29,16 +31,21 @@ const vertexSrc = `
 
     vFace = aFace;
     vInstanceColor = aInstanceColor;
-    vUV = aUV;
+
+    vWorldPos = aInstancePos + aOffset;
   }
 `
 
 const fragmentSrc = `
   precision mediump float;
 
-  in vec3 vUV;
   in float vFace;
   in vec3 vInstanceColor;
+  in vec3 vWorldPos;
+
+  uniform vec3[1] uTopBlocks;
+  uniform float uTime;
+  uniform vec3 uPlayer;
 
   out vec4 fragColor;
 
@@ -47,6 +54,64 @@ const fragmentSrc = `
     float g = floor(mod(hex / 256.0, 256.0)) / 255.0;
     float b = mod(hex, 256.0) / 255.0;
     return vec3(r, g, b);
+  }
+
+  float sdfToBlocks(vec3 p) {
+    float minDist = 1e10;
+    vec3 halfSize = vec3(18.0, 9.0, 10.5);
+
+    for (int i = 0; i < 1; ++i) {
+      vec3 blockPos = uTopBlocks[i];
+
+      if (blockPos.x == 0.0 && blockPos.y == 0.0 && blockPos.z == 0.0) continue;
+
+      vec3 d = abs(p - blockPos) - halfSize;
+      float dist = length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0);
+
+      minDist = min(minDist, dist);
+    }
+
+    return minDist;
+  }
+
+  float traveled = 0.0;
+
+  float shadeUnderPlayer(vec3 p) {
+    if (uPlayer.x == 0.0 && uPlayer.y == 0.0 && uPlayer.z == 0.0) return 0.0;
+
+    float zDist = p.z - uPlayer.z;
+    if (zDist > 0.0) return 0.0;
+
+    float dist = length(vec2(p.x - uPlayer.x, (p.y - uPlayer.y) * 2.0));
+    if (dist > 10.0) return 0.0;
+
+    float factor = abs(zDist) / 400.0 + 0.6;
+
+    if (dist > 8.0) {
+      factor += (dist - 8.0) / 4.0;
+    }
+
+    return factor;
+  }
+
+  bool isInShadow(vec3 start) {
+
+    float ySun = sin(uTime * 0.2) * 2.0 - 1.0;
+    float xSun = cos(uTime * 0.2) * 2.0 - 1.0;
+
+    vec3 sunDir = normalize(vec3(xSun, ySun, 1.0));
+
+    vec3 p = start + sunDir * 0.05;
+    for (int i = 0; i < 32; ++i) {
+      float d = sdfToBlocks(p);
+
+      if (d < 0.01) return true;
+      if (d > 500.0) break;
+
+      p += sunDir * d;
+      traveled += d;
+    }
+    return false;
   }
 
   void main() {
@@ -62,6 +127,17 @@ const fragmentSrc = `
       color = unpackRGB(vInstanceColor[2]);
     }
 
+    // bool shadowed = isInShadow(vWorldPos);
+    float shade = shadeUnderPlayer(vWorldPos);
+    if (shade > 0.0) {
+      color *= min(0.9, shade);
+    }
+
+    // if (shadowed) {
+      // color *= 0.5;
+      // color *= min(0.9, 0.5 + (traveled / 200.0));
+    // }
+
     fragColor = vec4(color, 1.0);
   }
 `
@@ -75,8 +151,11 @@ export const BlockShader = (): Shader => {
     resources: {
       uniforms: {
         uCamera: { value: [0, 0], type: 'vec2<f32>' },
+        uPlayer: { value: [0, 0, 0], type: 'vec3<f32>' },
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
-        uZoom: { value: 2.0, type: 'f32' }
+        uZoom: { value: 2.0, type: 'f32' },
+        uTopBlocks: { value: [], type: 'vec3<f32>' },
+        uTime: { value: 0, type: 'f32' }
       }
     }
   })

@@ -2,12 +2,10 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, max, round, XY, blocks, BlockMeshOcclusion,
-  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt
+  EscapeMenu, intToBlock, XY, blocks, BlockMeshOcclusion, BlockMesh,
+  Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt, sample,
+  BlockType, range
 } from "@piggo-gg/core"
-import { createNoise2D } from 'simplex-noise';
-
-const noise = createNoise2D(Math.random)
 
 export const Craft: GameBuilder = {
   id: "craft",
@@ -43,16 +41,48 @@ const spawnTerrain = () => {
   }
 }
 
+const spawnTiny = () => {
+  for (let i = 0; i < 12; i++) {
+    for (let j = 0; j < 12; j++) {
+      const xInt = i
+      const yInt = j
+      const xy = intToBlock(xInt, yInt)
+
+      blocks.add({ ...xy, z: 0, type: BlockTypeInt["asteroid"] })
+    }
+  }
+
+  const xy = intToBlock(4, 4)
+  blocks.add({ ...xy, z: 21, type: BlockTypeInt["asteroid"] })
+}
+
 const spawnChunk = (chunk: XY) => {
   const { x, y } = chunk
 
   const size = 4
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      const xy = intToBlock(i + x * 4, j + y * 4)
-      const height = round(max(1, noise(xy.x / 400, xy.y / 400) * 14))
+
+      const xInt = i + x * size
+      const yInt = j + y * size
+      const xy = intToBlock(xInt, yInt)
+
+      let height = sample({
+        x: xInt,
+        y: yInt,
+        factor: 15,
+        octaves: 3
+      })
+
       for (let k = 0; k < height; k++) {
-        const type = k > 10 ? "moonrock" : k == 0 ? "saphire" : "grass"
+
+        const type = range<BlockType>(k, [
+          [0, "obsidian"],
+          [1, "saphire"],
+          [7, "grass"],
+          [32, "asteroid"]
+        ])
+
         blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
       }
     }
@@ -64,6 +94,7 @@ const CraftSystem = SystemBuilder({
   init: (world) => {
 
     spawnTerrain()
+    // spawnTiny()
 
     const blockColliders: Entity<Position | Collider>[] = [
       BlockCollider(0),

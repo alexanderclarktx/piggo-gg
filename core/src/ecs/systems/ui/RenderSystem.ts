@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, values } from "@piggo-gg/core"
+import { Entity, Position, Renderable, ClientSystemBuilder } from "@piggo-gg/core"
 
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
@@ -161,7 +161,11 @@ export const RenderSystem = ClientSystemBuilder({
           const { position, renderable } = entity.components
 
           if (renderable.onRender && renderable.initialized ) {
-            renderable.onRender({ container: renderable.c, entity, world, renderable, client: world.client! })
+            renderable.onRender({
+              client: world.client!,
+              container: renderable.c,
+              delta, entity, renderable, world
+            })
           }
 
           if (!renderable.rendered || !renderable.interpolate) continue
@@ -172,17 +176,17 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // world renderables
-          const { x, y, z, velocity } = position.data
+          const { velocity } = position.data
           if ((velocity.x || velocity.y || velocity.z)) {
 
             const interpolated = position.interpolate(delta, world)
 
             const rotated = world.flip({
-              x: x + renderable.position.x + interpolated.x,
-              y: y + renderable.position.y + interpolated.y,
+              x: renderable.position.x + interpolated.x,
+              y: renderable.position.y + interpolated.y,
             })
 
-            renderable.c.position.set(rotated.x, rotated.y - z - interpolated.z)
+            renderable.c.position.set(rotated.x, rotated.y - interpolated.z)
           }
         }
       }

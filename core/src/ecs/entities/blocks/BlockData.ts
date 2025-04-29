@@ -1,4 +1,6 @@
-import { BlockDimensions, Entity, floor, round, Voxel, World, XY, XYZ, Position } from "@piggo-gg/core"
+import {
+  BlockDimensions, Entity, floor, round, Voxel, World, XY, XYZ, Position
+} from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
@@ -6,7 +8,8 @@ export type BlockData = {
   data: Voxel[]
   add: (block: Voxel) => void
   remove: (block: Voxel) => void
-  sort: (world: World) => void
+  zSort: () => Voxel[]
+  sort: (world: World) => Voxel[]
 }
 
 export const BlockData = (): BlockData => {
@@ -30,9 +33,16 @@ export const BlockData = (): BlockData => {
         keys.delete(`${block.x}-${block.y}-${block.z}`)
       }
     },
+    zSort: () => {
+      blocks.data.sort((a, b) => {
+        if (a.z !== b.z) return a.z - b.z
+        return a.y - b.y
+      })
+      return blocks.data
+    },
     sort: (world: World) => {
       if (lastSort === world.tick) {
-        return
+        return blocks.data
       } else {
         lastSort = world.tick
       }
@@ -46,8 +56,9 @@ export const BlockData = (): BlockData => {
         if (a.z !== b.z) return a.z - b.z
         return XYa.x - XYb.x
       })
-
       // console.log('sort', performance.now() - time)
+
+      return blocks.data
     }
   }
 

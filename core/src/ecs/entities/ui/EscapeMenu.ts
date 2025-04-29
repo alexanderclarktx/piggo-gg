@@ -1,4 +1,4 @@
-import { Actions, Entity, Renderable, Position, pixiGraphics, Input, PixiButton } from "@piggo-gg/core";
+import { Actions, Entity, Renderable, Position, pixiGraphics, Input, PixiButton } from "@piggo-gg/core"
 
 export const EscapeMenu = (): Entity => {
   let visible = false

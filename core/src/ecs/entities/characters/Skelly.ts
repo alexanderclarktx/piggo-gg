@@ -2,7 +2,7 @@ import {
   Actions, Character, Collider, Debug, DefaultJoystickHandler, dropItem,
   Effects, Element, Health, Input, Inventory, Move, Networked, Player, Pickaxe,
   Point, Position, Renderable, WASDInputMap, XY, setActiveItemIndex, DudeSkin,
-  VolleyCharacterAnimations, VolleyCharacterDynamic, Action, Shadow, BlockItem
+  VolleyCharacterAnimations, VolleyCharacterDynamic, Action, BlockItem
 } from "@piggo-gg/core"
 
 export const Skelly = (player: Player, pos?: XY) => Character({
@@ -10,7 +10,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
   components: {
     debug: Debug(),
     position: Position({
-      x: pos?.x ?? 0, y: pos?.y ?? 200, z: 128,
+      x: pos?.x ?? 0, y: pos?.y ?? 150, z: 50,
       velocityResets: 1,
       speed: 125,
       gravity: 0.3
@@ -23,7 +23,6 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       BlockItem("moonrock"), BlockItem("saphire"), BlockItem("ruby"), BlockItem("obsidian"), Pickaxe
     ]),
     element: Element("flesh"),
-    shadow: Shadow(5),
     input: Input({
       press: {
         ...WASDInputMap.press,

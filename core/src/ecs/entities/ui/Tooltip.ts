@@ -1,5 +1,5 @@
-import { Debug, Entity, PixiButton, pixiGraphics, pixiText, Position, Renderable } from "@piggo-gg/core";
-import { Graphics, Text } from "pixi.js";
+import { Debug, Entity, PixiButton, pixiGraphics, pixiText, Position, Renderable } from "@piggo-gg/core"
+import { Graphics, Text } from "pixi.js"
 
 export const Tooltip = (id: string, text: string) => {
 
