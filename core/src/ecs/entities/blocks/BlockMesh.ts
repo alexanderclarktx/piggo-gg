@@ -103,15 +103,19 @@ export const BlockMesh = () => {
 
           shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
         },
-        onRender: ({ world }) => {
+        onRender: ({ world, delta }) => {
           const time = performance.now()
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
+          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world)
+          const pcXYZ = pcPos ? [pcPos.x, pcPos.y, pcPos.z] : [0, 0, 0]
+
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
             shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uPlayer = pcXYZ
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
           }
@@ -178,18 +182,20 @@ export const BlockMeshOcclusion = () => {
             topBlocks.push(x, y, block.z + 10.5)
           }
 
-          console.log("top blocks", topBlocks)
-
           shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
         },
-        onRender: ({ world, renderable }) => {
+        onRender: ({ world, renderable, delta }) => {
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
+          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world)
+          const pcXYZ = pcPos ? [pcPos.x, pcPos.y, pcPos.z] : [0, 0, 0]
+
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
             shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uPlayer = pcXYZ
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
           }

@@ -32,7 +32,7 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = () => {
-  const num = 5
+  const num = 20
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
@@ -100,8 +100,8 @@ const CraftSystem = SystemBuilder({
   id: "CraftSystem",
   init: (world) => {
 
-    // spawnTerrain()
-    spawnTiny()
+    spawnTerrain()
+    // spawnTiny()
 
     const blockColliders: Entity<Position | Collider>[] = [
       BlockCollider(0),

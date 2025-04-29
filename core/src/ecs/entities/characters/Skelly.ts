@@ -23,7 +23,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       BlockItem("moonrock"), BlockItem("saphire"), BlockItem("ruby"), BlockItem("obsidian"), Pickaxe
     ]),
     element: Element("flesh"),
-    shadow: Shadow(5),
+    // shadow: Shadow(5),
     input: Input({
       press: {
         ...WASDInputMap.press,

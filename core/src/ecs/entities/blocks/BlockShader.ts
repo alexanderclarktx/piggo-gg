@@ -32,7 +32,7 @@ const vertexSrc = `
     vFace = aFace;
     vInstanceColor = aInstanceColor;
 
-    vWorldPos = aInstancePos + aOffset + vec3(0.0, 0.0, 0.0);
+    vWorldPos = aInstancePos + aOffset;
   }
 `
 
@@ -45,6 +45,7 @@ const fragmentSrc = `
 
   uniform vec3[1] uTopBlocks;
   uniform float uTime;
+  uniform vec3 uPlayer;
 
   out vec4 fragColor;
 
@@ -75,6 +76,24 @@ const fragmentSrc = `
 
   float traveled = 0.0;
 
+  float shadeUnderPlayer(vec3 p) {
+    if (uPlayer.x == 0.0 && uPlayer.y == 0.0 && uPlayer.z == 0.0) return 0.0;
+
+    float zDist = p.z - uPlayer.z;
+    if (zDist > 0.0) return 0.0;
+
+    float dist = length(vec2(p.x - uPlayer.x, (p.y - uPlayer.y) * 2.0));
+    if (dist > 10.0) return 0.0;
+
+    float factor = abs(zDist) / 400.0 + 0.6;
+
+    if (dist > 8.0) {
+      factor += (dist - 8.0) / 4.0;
+    }
+
+    return factor;
+  }
+
   bool isInShadow(vec3 start) {
 
     float ySun = sin(uTime * 0.2) * 2.0 - 1.0;
@@ -82,12 +101,12 @@ const fragmentSrc = `
 
     vec3 sunDir = normalize(vec3(xSun, ySun, 1.0));
 
-    vec3 p = start + sunDir * 0.05; // Start point slightly offset from the block
-    for (int i = 0; i < 32; ++i) { // max march steps
+    vec3 p = start + sunDir * 0.05;
+    for (int i = 0; i < 32; ++i) {
       float d = sdfToBlocks(p);
 
-      if (d < 0.01) return true; // hit block
-      if (d > 500.0) break; // escaped into space
+      if (d < 0.01) return true;
+      if (d > 500.0) break;
 
       p += sunDir * d;
       traveled += d;
@@ -108,12 +127,16 @@ const fragmentSrc = `
       color = unpackRGB(vInstanceColor[2]);
     }
 
-    // --- Raymarching for shadow ---
-    bool shadowed = isInShadow(vWorldPos);
-
-    if (shadowed) {
-      color *= min(0.9, 0.5 + (traveled / 200.0)); // Darken if in shadow (adjust darkness factor as you like)
+    // bool shadowed = isInShadow(vWorldPos);
+    float shade = shadeUnderPlayer(vWorldPos);
+    if (shade > 0.0) {
+      color *= min(0.9, shade);
     }
+
+    // if (shadowed) {
+      // color *= 0.5;
+      // color *= min(0.9, 0.5 + (traveled / 200.0));
+    // }
 
     fragColor = vec4(color, 1.0);
   }
@@ -128,6 +151,7 @@ export const BlockShader = (): Shader => {
     resources: {
       uniforms: {
         uCamera: { value: [0, 0], type: 'vec2<f32>' },
+        uPlayer: { value: [0, 0, 0], type: 'vec3<f32>' },
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
         uZoom: { value: 2.0, type: 'f32' },
         uTopBlocks: { value: [], type: 'vec3<f32>' },

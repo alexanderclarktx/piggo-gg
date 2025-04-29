@@ -29,7 +29,7 @@ export type Position = Component<"position", {
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
   impulse: (_: XYZ) => Position
-  interpolate: (_: number, __: World) => XYZ
+  interpolate: (delta: number, world: World) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
@@ -115,13 +115,13 @@ export const Position = (props: PositionProps = {}): Position => {
       }
 
       if (world.tick - position.lastCollided <= 4) {
-        return { x: 0, y: 0, z }
+        return { x: position.data.x, y: position.data.y, z: position.data.z }
       }
 
       return {
-        x: position.data.velocity.x * delta / 1000,
-        y: position.data.velocity.y * delta / 1000,
-        z
+        x: position.data.velocity.x * delta / 1000 + position.data.x,
+        y: position.data.velocity.y * delta / 1000 + position.data.y,
+        z: z + position.data.z
       }
     },
     setSpeed: (speed: number) => {
