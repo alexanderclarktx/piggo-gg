@@ -59,54 +59,31 @@ export const ShadowSystem = ClientSystemBuilder({
   }
 })
 
-const ShadowEntity = (target: Target, size: number, yOffset: number) => {
+const ShadowEntity = (target: Target, size: number, yOffset: number) => Entity<Renderable>({
+  id: `shadow-${target.id}`,
+  components: {
+    position: Position(),
+    renderable: Renderable({
+      zIndex: target.components.renderable.zIndex,
+      interpolate: true,
+      onTick: ({ entity, world }) => {
+        const { position, renderable } = entity.components
+        if (!position || !renderable) return
 
-  let mask: Graphics
+        const { data, lastCollided } = target.components.position
 
-  return Entity<Renderable>({
-    id: `shadow-${target.id}`,
-    components: {
-      position: Position(),
-      renderable: Renderable({
-        zIndex: target.components.renderable.zIndex,
-        interpolate: true,
-        onTick: ({ entity, world }) => {
-          const { position, renderable } = entity.components
-          if (!position || !renderable) return
+        const highest = highestBlock(data)
 
-          const { data, lastCollided } = target.components.position
+        position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest.z })
+        position.setVelocity({ ...data.velocity, z: 0 })
+        position.lastCollided = lastCollided
 
-          const highest = highestBlock(data)
-
-          position.setPosition({ x: data.x, y: data.y - (0.1 * world.flipped()) + yOffset, z: highest.z })
-          position.setVelocity({ ...data.velocity, z: 0 })
-          position.lastCollided = lastCollided
-
-          renderable.c.alpha = 0.25 - (data.z - highest.z) / 1000
-
-          mask.position.x = highest.x - position.data.x
-          mask.position.y = 9 + (highest.y - position.data.y)
-
-          if (highest.z > 21) {
-            renderable.c.setMask({ mask })
-          } else {
-            renderable.c.mask = null
-          }
-        },
-        setup: async (renderable) => {
-          renderable.c = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
-          renderable.setBlur({ strength: 3 })
-
-          mask = pixiGraphics()
-            .lineTo(-18, -18 / 2)
-            .lineTo(0, -18)
-            .lineTo(18, -18 / 2)
-            .lineTo(0, 0)
-            .fill({ color: 0x000000, alpha: 0 })
-
-          renderable.c.addChild(mask)
-        }
-      })
-    }
-  })
-}
+        renderable.c.alpha = 0.25 - (data.z - highest.z) / 1000
+      },
+      setup: async (renderable) => {
+        renderable.c = pixiGraphics().ellipse(0, 1, size * 2, size).fill({ color: 0x000000, alpha: 1 })
+        renderable.setBlur({ strength: 3 })
+      }
+    })
+  }
+})

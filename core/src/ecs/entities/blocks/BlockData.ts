@@ -1,4 +1,6 @@
-import { BlockDimensions, Entity, floor, round, Voxel, World, XY, XYZ, Position } from "@piggo-gg/core"
+import {
+  BlockDimensions, Entity, floor, round, Voxel, World, XY, XYZ, Position
+} from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
@@ -54,10 +56,9 @@ export const BlockData = (): BlockData => {
         if (a.z !== b.z) return a.z - b.z
         return XYa.x - XYb.x
       })
+      // console.log('sort', performance.now() - time)
 
       return blocks.data
-
-      // console.log('sort', performance.now() - time)
     }
   }
 
