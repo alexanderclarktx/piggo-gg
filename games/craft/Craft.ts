@@ -74,13 +74,6 @@ const spawnChunk = (chunk: XY) => {
         octaves: 3
       })
 
-      // if (height > 8) height += sample({
-      //   x: xInt + 100,
-      //   y: yInt + 100,
-      //   factor: 10,
-      //   octaves: 3
-      // })
-
       for (let k = 0; k < height; k++) {
 
         const type = range<BlockType>(k, [
