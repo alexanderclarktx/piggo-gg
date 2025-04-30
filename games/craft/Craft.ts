@@ -2,8 +2,9 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, blocks, BlockMesh, Position, Collider, Entity,
-  XYZ, BlockCollider, BlockTypeInt, spawnChunk
+  EscapeMenu, blocks, BlockMesh, Position, Collider, Entity,
+  XYZ, BlockCollider, BlockTypeInt, spawnChunk,
+  XYtoChunk
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -40,20 +41,20 @@ const spawnTerrain = () => {
   }
 }
 
-const spawnTiny = () => {
-  for (let i = 0; i < 12; i++) {
-    for (let j = 0; j < 12; j++) {
-      const xInt = i
-      const yInt = j
-      const xy = intToBlock(xInt, yInt)
+// const spawnTiny = () => {
+//   for (let i = 0; i < 12; i++) {
+//     for (let j = 0; j < 12; j++) {
+//       const xInt = i
+//       const yInt = j
+//       const xy = intToBlock(xInt, yInt)
 
-      blocks.add({ ...xy, z: 0, type: BlockTypeInt["asteroid"] })
-    }
-  }
+//       blocks.add({ ...xy, z: 0, type: BlockTypeInt["asteroid"] })
+//     }
+//   }
 
-  const xy = intToBlock(4, 4)
-  blocks.add({ ...xy, z: 21, type: BlockTypeInt["asteroid"] })
-}
+//   const xy = intToBlock(4, 4)
+//   blocks.add({ ...xy, z: 21, type: BlockTypeInt["asteroid"] })
+// }
 
 const CraftSystem = SystemBuilder({
   id: "CraftSystem",
@@ -92,8 +93,24 @@ const CraftSystem = SystemBuilder({
           const group = (floor(z / 21) + 1).toString() as "1"
           character.components.collider.setGroup(group)
 
+          const playerChunk = XYtoChunk(position.data)
+          // console.log("player chunk", playerChunk)
+
+          const chunks = [
+            playerChunk,
+            // { x: playerChunk.x + 1, y: playerChunk.y + 1 },
+            // { x: playerChunk.x - 1, y: playerChunk.y },
+            // { x: playerChunk.x + 1, y: playerChunk.y },
+            // { x: playerChunk.x, y: playerChunk.y - 1 },
+            // { x: playerChunk.x, y: playerChunk.y + 1 },
+            // { x: playerChunk.x - 1, y: playerChunk.y - 1 },
+            // { x: playerChunk.x + 1, y: playerChunk.y - 1 },
+            // { x: playerChunk.x - 1, y: playerChunk.y + 1 },
+            // { x: playerChunk.x + 1, y: playerChunk.y + 1 }
+          ]
+
           // stop falling if directly above a block
-          const highest = highestBlock({ x, y }).z
+          const highest = highestBlock({ x, y }, chunks).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             position.data.stop = highest
           } else {
@@ -108,8 +125,10 @@ const CraftSystem = SystemBuilder({
 
           let set: XYZ[] = []
 
+          
+
           // find closest blocks
-          for (const block of blocks.data()) {
+          for (const block of blocks.data(chunks)) {
             const { x, y, z } = block
             if (z === 0) continue
 

@@ -1,6 +1,7 @@
 import {
   BlockColors, BlockDimensions, blocks, BlockShader,
-  BlockTypeString, Entity, Position, Renderable
+  BlockTypeString, Entity, Position, Renderable,
+  XYtoChunk
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -63,8 +64,23 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const newPosBuffer: number[] = []
           const newColorBuffer: number[] = []
 
+          const playerChunk = XYtoChunk(position.data)
+
+          const chunks = [
+            playerChunk,
+            // { x: playerChunk.x + 1, y: playerChunk.y + 1 },
+            // { x: playerChunk.x - 1, y: playerChunk.y },
+            // { x: playerChunk.x + 1, y: playerChunk.y },
+            // { x: playerChunk.x, y: playerChunk.y - 1 },
+            // { x: playerChunk.x, y: playerChunk.y + 1 },
+            // { x: playerChunk.x - 1, y: playerChunk.y - 1 },
+            // { x: playerChunk.x + 1, y: playerChunk.y - 1 },
+            // { x: playerChunk.x - 1, y: playerChunk.y + 1 },
+            // { x: playerChunk.x + 1, y: playerChunk.y + 1 }
+          ]
+
           let instanceCount = 0
-          for (const block of blocks.data()) {
+          for (const block of blocks.data(chunks)) {
             // const { x, y } = world.flip(block)
             const { x, y } = block
 
