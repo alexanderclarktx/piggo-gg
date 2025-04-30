@@ -9,8 +9,6 @@ export type BlockData = {
   add: (block: Block) => void
   data: () => Block[] // TODO
   remove: (block: Block) => void
-  // zSort: () => Block[]
-  // sort: (world: World) => Block[]
 }
 
 export const BlockData = (): BlockData => {
@@ -33,30 +31,20 @@ export const BlockData = (): BlockData => {
     return `${chunkX}:${chunkY}`
   }
 
-  let lastSort = 0
-
   const blocks: BlockData = {
     add: (block: Block) => {
       const chunk = chunkIndexFromXY(block.x, block.y)
       if (!chunks[chunk]) {
-        console.log("chunk not found", chunk)
+        console.error("CHUNK NOT FOUND", chunk)
         return
       }
 
       const index = block.z * 16 + block.y * 4 + block.x
       if (chunks[chunk][index] === undefined) {
-        console.log("INVALID INDEX", index)
+        console.error("INVALID INDEX", index)
       }
 
       chunks[chunk][index] = block.type
-
-      const { x, y } = intToBlock(block.x, block.y)
-      const z = block.z * 21
-
-      // if (keys.has(`${x}-${y}-${block.z}`)) return
-      // keys.add(`${x}-${y}-${block.z}`)
-
-      // data.push({ x, y, z, type: block.type })
     },
     data: () => {
       const result: Block[] = []
