@@ -1,15 +1,15 @@
 import {
-  BlockDimensions, Entity, floor, round, Voxel, World, XY, XYZ, Position
+  BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  data: Voxel[]
-  add: (block: Voxel) => void
-  remove: (block: Voxel) => void
-  zSort: () => Voxel[]
-  sort: (world: World) => Voxel[]
+  data: Block[]
+  add: (block: Block) => void
+  remove: (block: Block) => void
+  zSort: () => Block[]
+  sort: (world: World) => Block[]
 }
 
 export const BlockData = (): BlockData => {
@@ -20,7 +20,7 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     data: [],
-    add: (block: Voxel) => {
+    add: (block: Block) => {
       if (keys.has(`${block.x}-${block.y}-${block.z}`)) return
 
       blocks.data.push(block)

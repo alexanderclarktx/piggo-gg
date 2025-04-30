@@ -2,6 +2,10 @@ import { XYZ } from "@piggo-gg/core"
 
 export const BlockDimensions = { width: 18, height: 12 }
 
+export type Block = XYZ & { type: number }
+
+export type BlockPlan = Block[]
+
 export const BlockTypeInt: Record<BlockType, number> = {
   stone: 0,
   grass: 1,
@@ -12,6 +16,8 @@ export const BlockTypeInt: Record<BlockType, number> = {
   obsidian: 6,
   ruby: 7,
   white: 8,
+  wood: 9,
+  leaf: 10
 }
 
 export const BlockTypeString: Record<number, BlockType> = {
@@ -24,14 +30,15 @@ export const BlockTypeString: Record<number, BlockType> = {
   6: "obsidian",
   7: "ruby",
   8: "white",
+  9: "wood",
+  10: "leaf"
 }
 
 export type BlockType =
   "white" | "stone" | "grass" |
   "moss" | "moonrock" | "asteroid" |
-  "saphire" | "obsidian" | "ruby"
-
-export type Voxel = XYZ & { type: number }
+  "saphire" | "obsidian" | "ruby" |
+  "wood" | "leaf"
 
 export const BlockColors: Record<BlockType, [number, number, number]> = {
   stone: [0x7b7b7b, 0x5E5E3E, 0x9b9b9b],
@@ -43,4 +50,6 @@ export const BlockColors: Record<BlockType, [number, number, number]> = {
   obsidian: [0x330055, 0x550077, 0xaa00aa],
   ruby: [0x660033, 0x880000, 0xff0000],
   white: [0xffffff, 0xffffff, 0xffffff],
+  wood: [0x8B4513, 0xA0522D, 0xD2691E],
+  leaf: [0x00ff00, 0x00ff00, 0x00ff00]
 }
