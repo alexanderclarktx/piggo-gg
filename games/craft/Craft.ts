@@ -109,7 +109,7 @@ const CraftSystem = SystemBuilder({
           let set: XYZ[] = []
 
           // find closest blocks
-          for (const block of blocks.data) {
+          for (const block of blocks.data()) {
             const { x, y, z } = block
             if (z === 0) continue
 

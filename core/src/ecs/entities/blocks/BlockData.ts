@@ -6,8 +6,8 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  data: Block[]
   add: (block: Block) => void
+  data: () => Block[]
   remove: (block: Block) => void
   zSort: () => Block[]
   sort: (world: World) => Block[]
@@ -16,40 +16,40 @@ export type BlockData = {
 export const BlockData = (): BlockData => {
 
   const keys: Set<string> = new Set()
+  const data: Block[] = []
 
   let lastSort = 0
 
   const blocks: BlockData = {
-    data: [],
     add: (block: Block) => {
       if (keys.has(`${block.x}-${block.y}-${block.z}`)) return
 
-      blocks.data.push(block)
+      data.push(block)
       keys.add(`${block.x}-${block.y}-${block.z}`)
     },
+    data: () => data,
     remove: ({ x, y, z }: XYZ) => {
-      const index = blocks.data.findIndex(b => b.x === x && b.y === y && b.z === z)
+      const index = data.findIndex(b => b.x === x && b.y === y && b.z === z)
       if (index !== -1) {
-        blocks.data.splice(index, 1)
+        data.splice(index, 1)
         keys.delete(`${x}-${y}-${z}`)
       }
     },
     zSort: () => {
-      blocks.data.sort((a, b) => {
+      data.sort((a, b) => {
         if (a.z !== b.z) return a.z - b.z
         return a.y - b.y
       })
-      return blocks.data
+      return data
     },
     sort: (world: World) => {
       if (lastSort === world.tick) {
-        return blocks.data
+        return data
       } else {
         lastSort = world.tick
       }
 
-      const time = performance.now()
-      blocks.data.sort((a, b) => {
+      data.sort((a, b) => {
         const XYa = world.flip(a)
         const XYb = world.flip(b)
 
@@ -57,9 +57,8 @@ export const BlockData = (): BlockData => {
         if (a.z !== b.z) return a.z - b.z
         return XYa.x - XYb.x
       })
-      // console.log('sort', performance.now() - time)
 
-      return blocks.data
+      return data
     }
   }
 
@@ -151,7 +150,7 @@ export const highestBlock = (pos: XY): XYZ => {
   let level = 0
 
   // todo this is slow, should be a spatial hash ?
-  for (const block of blocks.data) {
+  for (const block of blocks.data()) {
     const { x, y, z } = block
     if (x === snapped.x && y === snapped.y) {
       level = Math.max(level, z + 21)

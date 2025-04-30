@@ -59,13 +59,12 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const playerY = world.flip(position.data).y
 
           blocks.sort(world)
-          const { data } = blocks
 
           const newPosBuffer: number[] = []
           const newColorBuffer: number[] = []
 
           let instanceCount = 0
-          for (const block of data) {
+          for (const block of blocks.data()) {
             const { x, y } = world.flip(block)
 
             // if (abs(offset.x - x) > 300) continue
