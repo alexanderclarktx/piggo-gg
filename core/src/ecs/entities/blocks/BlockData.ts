@@ -1,16 +1,16 @@
 import {
   BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position,
-  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample
+  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample, entries
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
 export type BlockData = {
   add: (block: Block) => void
-  data: () => Block[]
+  data: () => Block[] // TODO
   remove: (block: Block) => void
-  zSort: () => Block[]
-  sort: (world: World) => Block[]
+  // zSort: () => Block[]
+  // sort: (world: World) => Block[]
 }
 
 export const BlockData = (): BlockData => {
@@ -18,48 +18,101 @@ export const BlockData = (): BlockData => {
   const keys: Set<string> = new Set()
   const data: Block[] = []
 
+  const chunks: Record<string, Int8Array> = {}
+
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 20; j++) {
+      const chunk = `${i}:${j}`
+      chunks[chunk] = new Int8Array(4 * 4 * 32)
+    }
+  }
+
+  const chunkIndexFromXY = (x: number, y: number): string => {
+    const chunkX = floor(x / 4)
+    const chunkY = floor(y / 4)
+    return `${chunkX}:${chunkY}`
+  }
+
   let lastSort = 0
 
   const blocks: BlockData = {
     add: (block: Block) => {
-      if (keys.has(`${block.x}-${block.y}-${block.z}`)) return
+      const chunk = chunkIndexFromXY(block.x, block.y)
+      if (!chunks[chunk]) {
+        console.log("chunk not found", chunk)
+        return
+      }
 
-      data.push(block)
-      keys.add(`${block.x}-${block.y}-${block.z}`)
+      const index = block.z * 16 + block.y * 4 + block.x
+      if (chunks[chunk][index] === undefined) {
+        console.log("INVALID INDEX", index)
+      }
+
+      chunks[chunk][index] = block.type
+
+      const { x, y } = intToBlock(block.x, block.y)
+      const z = block.z * 21
+
+      // if (keys.has(`${x}-${y}-${block.z}`)) return
+      // keys.add(`${x}-${y}-${block.z}`)
+
+      // data.push({ x, y, z, type: block.type })
     },
-    data: () => data,
+    data: () => {
+      const result: Block[] = []
+      const time = performance.now()
+      for (const [chunk, array] of entries(chunks)) {
+        const [chunkX, chunkY] = chunk.split(":").map(Number)
+
+        for (let i = 0; i < array.length; i++) {
+          const type = array[i]
+          if (type === 0) continue
+
+          let x = i % 4 + chunkX * 4
+          let y = Math.floor(i / 4) % 4 + chunkY * 4
+          let z = Math.floor(i / (4 * 4))
+
+          const xy = intToBlock(x, y)
+
+          const block: Block = { ...xy, z: z * 21, type }
+          result.push(block)
+        }
+      }
+      console.log("blocks data", performance.now() - time)
+      return result
+    },
     remove: ({ x, y, z }: XYZ) => {
-      const index = data.findIndex(b => b.x === x && b.y === y && b.z === z)
-      if (index !== -1) {
-        data.splice(index, 1)
-        keys.delete(`${x}-${y}-${z}`)
-      }
+      // const index = data.findIndex(b => b.x === x && b.y === y && b.z === z)
+      // if (index !== -1) {
+      //   data.splice(index, 1)
+      //   keys.delete(`${x}-${y}-${z}`)
+      // }
     },
-    zSort: () => {
-      data.sort((a, b) => {
-        if (a.z !== b.z) return a.z - b.z
-        return a.y - b.y
-      })
-      return data
-    },
-    sort: (world: World) => {
-      if (lastSort === world.tick) {
-        return data
-      } else {
-        lastSort = world.tick
-      }
+    // zSort: () => {
+    //   data.sort((a, b) => {
+    //     if (a.z !== b.z) return a.z - b.z
+    //     return a.y - b.y
+    //   })
+    //   return data
+    // },
+    // sort: (world: World) => {
+    //   if (lastSort === world.tick) {
+    //     return data
+    //   } else {
+    //     lastSort = world.tick
+    //   }
 
-      data.sort((a, b) => {
-        const XYa = world.flip(a)
-        const XYb = world.flip(b)
+    //   data.sort((a, b) => {
+    //     const XYa = world.flip(a)
+    //     const XYb = world.flip(b)
 
-        if (XYa.y !== XYb.y) return XYa.y - XYb.y
-        if (a.z !== b.z) return a.z - b.z
-        return XYa.x - XYb.x
-      })
+    //     if (XYa.y !== XYb.y) return XYa.y - XYb.y
+    //     if (a.z !== b.z) return a.z - b.z
+    //     return XYa.x - XYb.x
+    //   })
 
-      return data
-    }
+    //   return data
+    // }
   }
 
   return blocks
@@ -77,21 +130,19 @@ export const spawnChunk = (chunk: XY) => {
 
       let height = sample({ x, y, factor: 15, octaves: 3 })
 
-      for (let k = 0; k < height; k++) {
+      for (let z = 0; z < height; z++) {
 
-        const type = range<BlockType>(k, [
+        const type = range<BlockType>(z, [
           [0, "obsidian"],
           [1, "saphire"],
           [7, "grass"],
           [32, "asteroid"]
         ])
 
-        const xy = intToBlock(x, y)
+        blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
-        blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
-
-        if (k === height - 1 && type === "grass" && randomInt(100) === 1) {
-          for (const block of BlockTree({ ...xy, z: k * 21})) {
+        if (z === height - 1 && type === "grass" && randomInt(100) === 1) {
+          for (const block of BlockTree({ x, y, z })) {
             blocks.add(block)
           }
         }

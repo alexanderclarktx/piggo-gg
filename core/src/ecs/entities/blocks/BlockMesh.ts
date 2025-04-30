@@ -24,14 +24,14 @@ export const BlockMesh = (type: "foreground" | "background") => {
         setup: async (r, _, world) => {
           r.c = new Mesh({ geometry, shader })
 
-          const data = blocks.zSort().reverse()
-          for (let i = 0; i < 1; i++) {
-            const block = data[i]
-            const { x, y } = world.flip(block)
+          // const data = blocks.zSort().reverse()
+          // for (let i = 0; i < 1; i++) {
+          //   const block = data[i]
+            // const { x, y } = world.flip(block)
             // topBlocks.push(x, y, block.z)
-          }
+          // }
 
-          shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
+          // shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
         },
         onRender: ({ world, delta, renderable }) => {
           const time = performance.now()
@@ -58,14 +58,15 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const playerZ = position.data.z - 20
           const playerY = world.flip(position.data).y
 
-          blocks.sort(world)
+          // blocks.sort(world)
 
           const newPosBuffer: number[] = []
           const newColorBuffer: number[] = []
 
           let instanceCount = 0
           for (const block of blocks.data()) {
-            const { x, y } = world.flip(block)
+            // const { x, y } = world.flip(block)
+            const { x, y } = block
 
             // if (abs(offset.x - x) > 300) continue
             // if (abs(offset.y - y) > 300) continue
