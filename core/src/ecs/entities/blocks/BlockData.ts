@@ -70,37 +70,16 @@ export const BlockData = (): BlockData => {
       return result
     },
     remove: ({ x, y, z }: XYZ) => {
-      // const index = data.findIndex(b => b.x === x && b.y === y && b.z === z)
-      // if (index !== -1) {
-      //   data.splice(index, 1)
-      //   keys.delete(`${x}-${y}-${z}`)
-      // }
-    },
-    // zSort: () => {
-    //   data.sort((a, b) => {
-    //     if (a.z !== b.z) return a.z - b.z
-    //     return a.y - b.y
-    //   })
-    //   return data
-    // },
-    // sort: (world: World) => {
-    //   if (lastSort === world.tick) {
-    //     return data
-    //   } else {
-    //     lastSort = world.tick
-    //   }
+      const chunk = chunkIndexFromXY(x, y)
+      if (chunks[chunk]) {
+        const index = z * 16 + y * 4 + x
+        if (chunks[chunk][index] === undefined) {
+          console.error("REMOVE INVALID INDEX", index)
+        }
 
-    //   data.sort((a, b) => {
-    //     const XYa = world.flip(a)
-    //     const XYb = world.flip(b)
-
-    //     if (XYa.y !== XYb.y) return XYa.y - XYb.y
-    //     if (a.z !== b.z) return a.z - b.z
-    //     return XYa.x - XYb.x
-    //   })
-
-    //   return data
-    // }
+        chunks[chunk][index] = 0
+      }
+    }
   }
 
   return blocks
