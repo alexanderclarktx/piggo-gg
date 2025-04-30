@@ -65,17 +65,7 @@ export const BlockData = (): BlockData => {
       }
       return result
     },
-    remove: ({ x, y, z }: XYZ) => {
-      // const chunk = chunkIndexFromXY(x, y)
-      // if (data[chunk]) {
-      //   const index = z * 16 + y * 4 + x
-      //   if (data[chunk][index] === undefined) {
-      //     console.error("REMOVE INVALID INDEX", index)
-      //   }
-
-      //   data[chunk][index] = 0
-      // }
-    }
+    remove: ({ x, y, z }: XYZ) => { }
   }
 
   return blocks
