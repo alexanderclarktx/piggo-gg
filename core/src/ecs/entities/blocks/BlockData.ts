@@ -111,30 +111,20 @@ const intToBlock = (i: number, j: number): XY => ({
 })
 
 export const XYtoChunk = (pos: XY): XY => {
-  const s = pos.x + pos.y
-  const d = pos.y - pos.x
-
-  const chunkX = Math.floor(s / (width * 4))
-  const chunkY = Math.floor(d / (width * 4))
-
-  return { x: chunkX, y: chunkY }
+  const snapped = xyBlock(pos)
+  const x = floor(snapped.x / 4)
+  const y = floor(snapped.y / 4)
+  return { x, y }
 }
 
-// const xyBlock = (pos: XY): XY => {
-//   const half = width / 2
-//   const gridX = (pos.x / width + pos.y / half) / 2
-//   const gridY = (pos.y / half - pos.x / width) / 2
-//   const tileX = round(gridX)
-//   const tileY = round(gridY)
-//   return { x: tileX, y: tileY }
-// }
-
-// export const snapXYToChunk = (pos: XY): XY => {
-//   const snapped = xyBlock(pos)
-//   const x = floor(snapped.x / 4)
-//   const y = floor(snapped.y / 4)
-//   return { x, y }
-// }
+const xyBlock = (pos: XY): XY => {
+  const half = width / 2
+  const gridX = (pos.x / width + pos.y / half) / 2
+  const gridY = (pos.y / half - pos.x / width) / 2
+  const tileX = round(gridX)
+  const tileY = round(gridY)
+  return { x: tileX, y: tileY }
+}
 
 export const snapXY = (pos: XY): XY => {
   const half = width / 2

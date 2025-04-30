@@ -68,15 +68,15 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           const chunks = [
             playerChunk,
-            // { x: playerChunk.x + 1, y: playerChunk.y + 1 },
-            // { x: playerChunk.x - 1, y: playerChunk.y },
-            // { x: playerChunk.x + 1, y: playerChunk.y },
-            // { x: playerChunk.x, y: playerChunk.y - 1 },
-            // { x: playerChunk.x, y: playerChunk.y + 1 },
-            // { x: playerChunk.x - 1, y: playerChunk.y - 1 },
-            // { x: playerChunk.x + 1, y: playerChunk.y - 1 },
-            // { x: playerChunk.x - 1, y: playerChunk.y + 1 },
-            // { x: playerChunk.x + 1, y: playerChunk.y + 1 }
+            { x: playerChunk.x + 1, y: playerChunk.y + 1 },
+            { x: playerChunk.x - 1, y: playerChunk.y },
+            { x: playerChunk.x + 1, y: playerChunk.y },
+            { x: playerChunk.x, y: playerChunk.y - 1 },
+            { x: playerChunk.x, y: playerChunk.y + 1 },
+            { x: playerChunk.x - 1, y: playerChunk.y - 1 },
+            { x: playerChunk.x + 1, y: playerChunk.y - 1 },
+            { x: playerChunk.x - 1, y: playerChunk.y + 1 },
+            { x: playerChunk.x + 1, y: playerChunk.y + 1 }
           ]
 
           let instanceCount = 0

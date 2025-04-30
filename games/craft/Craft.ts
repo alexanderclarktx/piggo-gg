@@ -94,19 +94,17 @@ const CraftSystem = SystemBuilder({
           character.components.collider.setGroup(group)
 
           const playerChunk = XYtoChunk(position.data)
-          // console.log("player chunk", playerChunk)
 
           const chunks = [
             playerChunk,
-            // { x: playerChunk.x + 1, y: playerChunk.y + 1 },
-            // { x: playerChunk.x - 1, y: playerChunk.y },
-            // { x: playerChunk.x + 1, y: playerChunk.y },
-            // { x: playerChunk.x, y: playerChunk.y - 1 },
-            // { x: playerChunk.x, y: playerChunk.y + 1 },
-            // { x: playerChunk.x - 1, y: playerChunk.y - 1 },
-            // { x: playerChunk.x + 1, y: playerChunk.y - 1 },
-            // { x: playerChunk.x - 1, y: playerChunk.y + 1 },
-            // { x: playerChunk.x + 1, y: playerChunk.y + 1 }
+            { x: playerChunk.x - 1, y: playerChunk.y },
+            { x: playerChunk.x + 1, y: playerChunk.y },
+            { x: playerChunk.x, y: playerChunk.y - 1 },
+            { x: playerChunk.x, y: playerChunk.y + 1 },
+            { x: playerChunk.x - 1, y: playerChunk.y - 1 },
+            { x: playerChunk.x + 1, y: playerChunk.y - 1 },
+            { x: playerChunk.x - 1, y: playerChunk.y + 1 },
+            { x: playerChunk.x + 1, y: playerChunk.y + 1 }
           ]
 
           // stop falling if directly above a block
