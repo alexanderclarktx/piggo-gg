@@ -26,7 +26,7 @@ export const BlockData = (): BlockData => {
       blocks.data.push(block)
       keys.add(`${block.x}-${block.y}-${block.z}`)
     },
-    remove: ({x, y, z}: XYZ) => {
+    remove: ({ x, y, z }: XYZ) => {
       const index = blocks.data.findIndex(b => b.x === x && b.y === y && b.z === z)
       if (index !== -1) {
         blocks.data.splice(index, 1)
