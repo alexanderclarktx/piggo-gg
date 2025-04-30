@@ -2,9 +2,8 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, XY, blocks, BlockMeshOcclusion, BlockMesh,
-  Position, Collider, Entity, XYZ, BlockCollider, BlockTypeInt, sample,
-  BlockType, range
+  EscapeMenu, intToBlock, XY, blocks, BlockMesh, Position, Collider, Entity,
+  XYZ, BlockCollider, BlockTypeInt, sample, BlockType, range, BlockTree, randomInt
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -25,8 +24,8 @@ export const Craft: GameBuilder = {
       Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview(),
-      BlockMesh(),
-      BlockMeshOcclusion()
+      BlockMesh("background"),
+      BlockMesh("foreground")
     ]
   })
 }
@@ -84,6 +83,12 @@ const spawnChunk = (chunk: XY) => {
         ])
 
         blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
+
+        if (k === height - 1 && type === "grass" && randomInt(100) === 1) {
+          for (const block of BlockTree({ ...xy, z: k * 21})) {
+            blocks.add(block)
+          }
+        }
       }
     }
   }
