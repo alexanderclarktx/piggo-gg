@@ -24,8 +24,8 @@ export const Craft: GameBuilder = {
       Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview(),
-      BlockMesh(),
-      BlockMesh(true)
+      BlockMesh("background"),
+      BlockMesh("foreground")
     ]
   })
 }

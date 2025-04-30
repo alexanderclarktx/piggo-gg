@@ -6,15 +6,15 @@ import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
-export const BlockMesh = (occlude: boolean = false) => {
+export const BlockMesh = (type: "foreground" | "background") => {
   const geometry = BLOCK_GEOMETRY()
   const shader = BlockShader()
 
-  const zIndex = occlude ? 3.1 : 0
+  const zIndex = type === "foreground" ? 3.1 : 0
   let topBlocks: number[] = []
 
   return Entity({
-    id: `block-mesh-${occlude ? "occlusion" : "normal"}`,
+    id: `block-mesh-${type}`,
     components: {
       position: Position(),
       renderable: Renderable({
@@ -73,7 +73,7 @@ export const BlockMesh = (occlude: boolean = false) => {
 
             const blockInFront = (y - playerY) > 0
 
-            if (occlude) {
+            if (type === "foreground") {
               if (blockInFront && block.z >= playerZ) {
                 instanceCount += 1
                 newPosBuffer.push(x, y, block.z)
