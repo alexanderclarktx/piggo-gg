@@ -2,8 +2,8 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, intToBlock, XY, blocks, BlockMesh, Position, Collider, Entity,
-  XYZ, BlockCollider, BlockTypeInt, sample, BlockType, range, BlockTree, randomInt
+  EscapeMenu, intToBlock, blocks, BlockMesh, Position, Collider, Entity,
+  XYZ, BlockCollider, BlockTypeInt, spawnChunk
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -53,45 +53,6 @@ const spawnTiny = () => {
 
   const xy = intToBlock(4, 4)
   blocks.add({ ...xy, z: 21, type: BlockTypeInt["asteroid"] })
-}
-
-const spawnChunk = (chunk: XY) => {
-  const { x, y } = chunk
-
-  const size = 4
-  for (let i = 0; i < size; i++) {
-    for (let j = 0; j < size; j++) {
-
-      const xInt = i + x * size
-      const yInt = j + y * size
-      const xy = intToBlock(xInt, yInt)
-
-      let height = sample({
-        x: xInt,
-        y: yInt,
-        factor: 15,
-        octaves: 3
-      })
-
-      for (let k = 0; k < height; k++) {
-
-        const type = range<BlockType>(k, [
-          [0, "obsidian"],
-          [1, "saphire"],
-          [7, "grass"],
-          [32, "asteroid"]
-        ])
-
-        blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
-
-        if (k === height - 1 && type === "grass" && randomInt(100) === 1) {
-          for (const block of BlockTree({ ...xy, z: k * 21})) {
-            blocks.add(block)
-          }
-        }
-      }
-    }
-  }
 }
 
 const CraftSystem = SystemBuilder({

@@ -1,5 +1,6 @@
 import {
-  BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position
+  BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position,
+  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -67,6 +68,38 @@ export const BlockData = (): BlockData => {
 
 export const blocks = BlockData()
 
+export const spawnChunk = (chunk: XY) => {
+  const size = 4
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+
+      const x = i + chunk.x * size
+      const y = j + chunk.y * size
+
+      let height = sample({ x, y, factor: 15, octaves: 3 })
+
+      for (let k = 0; k < height; k++) {
+
+        const type = range<BlockType>(k, [
+          [0, "obsidian"],
+          [1, "saphire"],
+          [7, "grass"],
+          [32, "asteroid"]
+        ])
+
+        const xy = intToBlock(x, y)
+
+        blocks.add({ ...xy, z: k * 21, type: BlockTypeInt[type] })
+
+        if (k === height - 1 && type === "grass" && randomInt(100) === 1) {
+          for (const block of BlockTree({ ...xy, z: k * 21})) {
+            blocks.add(block)
+          }
+        }
+      }
+    }
+  }
+}
 
 // takes ij integer coordinates -> XY of that block from origin
 export const intToBlock = (i: number, j: number): XY => ({
