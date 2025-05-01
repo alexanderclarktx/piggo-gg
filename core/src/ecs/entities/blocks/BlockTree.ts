@@ -8,7 +8,7 @@ export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
 
   for (let i = 0; i < height; i++) {
     plan.push({
-      x, y, z: z + i * 21, type: BlockTypeInt["wood"]
+      x, y, z: z + i, type: BlockTypeInt["wood"]
     })
   }
 

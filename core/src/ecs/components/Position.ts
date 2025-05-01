@@ -115,13 +115,13 @@ export const Position = (props: PositionProps = {}): Position => {
       }
 
       if (world.tick - position.lastCollided <= 4) {
-        return { x: position.data.x, y: position.data.y, z: position.data.z }
+        return { x: position.data.x, y: position.data.y, z: position.data.z + z }
       }
 
       return {
         x: position.data.velocity.x * delta / 1000 + position.data.x,
         y: position.data.velocity.y * delta / 1000 + position.data.y,
-        z: z + position.data.z
+        z: position.data.z + z
       }
     },
     setSpeed: (speed: number) => {
