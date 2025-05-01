@@ -49,6 +49,24 @@ const fragmentSrc = `
 
   out vec4 fragColor;
 
+  float shadeUnderPlayer(vec3 p) {
+    if (uPlayer.x == 0.0 && uPlayer.y == 0.0 && uPlayer.z == 0.0) return 0.0;
+
+    float zDist = p.z - uPlayer.z;
+    if (zDist > 0.0) return 0.0;
+
+    float dist = length(vec2(p.x - uPlayer.x, (p.y - uPlayer.y) * 2.0));
+    if (dist > 10.0) return 0.0;
+
+    float factor = abs(zDist) / 400.0 + 0.6;
+
+    if (dist > 8.0) {
+      factor += (dist - 8.0) / 4.0;
+    }
+
+    return factor;
+  }
+
   vec3 unpackRGB(float hex) {
     float r = floor(mod(hex / 65536.0, 256.0)) / 255.0;
     float g = floor(mod(hex / 256.0, 256.0)) / 255.0;
@@ -75,24 +93,6 @@ const fragmentSrc = `
   }
 
   float traveled = 0.0;
-
-  float shadeUnderPlayer(vec3 p) {
-    if (uPlayer.x == 0.0 && uPlayer.y == 0.0 && uPlayer.z == 0.0) return 0.0;
-
-    float zDist = p.z - uPlayer.z;
-    if (zDist > 0.0) return 0.0;
-
-    float dist = length(vec2(p.x - uPlayer.x, (p.y - uPlayer.y) * 2.0));
-    if (dist > 10.0) return 0.0;
-
-    float factor = abs(zDist) / 400.0 + 0.6;
-
-    if (dist > 8.0) {
-      factor += (dist - 8.0) / 4.0;
-    }
-
-    return factor;
-  }
 
   bool isInShadow(vec3 start) {
 
