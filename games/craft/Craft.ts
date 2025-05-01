@@ -40,27 +40,11 @@ const spawnTerrain = () => {
   }
 }
 
-// const spawnTiny = () => {
-//   for (let i = 0; i < 12; i++) {
-//     for (let j = 0; j < 12; j++) {
-//       const xInt = i
-//       const yInt = j
-//       const xy = intToBlock(xInt, yInt)
-
-//       blocks.add({ ...xy, z: 0, type: BlockTypeInt["asteroid"] })
-//     }
-//   }
-
-//   const xy = intToBlock(4, 4)
-//   blocks.add({ ...xy, z: 21, type: BlockTypeInt["asteroid"] })
-// }
-
 const CraftSystem = SystemBuilder({
   id: "CraftSystem",
   init: (world) => {
 
     spawnTerrain()
-    // spawnTiny()
 
     const blockColliders: Entity<Position | Collider>[] = [
       BlockCollider(0),
@@ -121,8 +105,6 @@ const CraftSystem = SystemBuilder({
           }
 
           let set: XYZ[] = []
-
-          
 
           // find closest blocks
           for (const block of blocks.data(chunks)) {
