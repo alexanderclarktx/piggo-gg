@@ -77,6 +77,7 @@ const fragmentSrc = `
   float sdfToBlocks(vec3 p) {
     float minDist = 1e10;
     vec3 halfSize = vec3(18.0, 9.0, 10.5);
+    // vec3 halfSize = vec3(9.0);
 
     for (int i = 0; i < 1; ++i) {
       vec3 blockPos = uTopBlocks[i];
@@ -98,15 +99,16 @@ const fragmentSrc = `
 
     float ySun = sin(uTime * 0.2) * 2.0 - 1.0;
     float xSun = cos(uTime * 0.2) * 2.0 - 1.0;
-
     vec3 sunDir = normalize(vec3(xSun, ySun, 1.0));
 
-    vec3 p = start + sunDir * 0.05;
+    // vec3 sunDir = normalize(vec3(1.0, 0.0, 1.0));
+
+    vec3 p = start + sunDir * 0.1;
     for (int i = 0; i < 32; ++i) {
       float d = sdfToBlocks(p);
 
       if (d < 0.01) return true;
-      if (d > 500.0) break;
+      if (d > 200.0) break;
 
       p += sunDir * d;
       traveled += d;
@@ -127,16 +129,16 @@ const fragmentSrc = `
       color = unpackRGB(vInstanceColor[2]);
     }
 
-    // bool shadowed = isInShadow(vWorldPos);
     float shade = shadeUnderPlayer(vWorldPos);
-    if (shade > 0.0) {
-      color *= min(0.9, shade);
-    }
-
-    // if (shadowed) {
-      // color *= 0.5;
-      // color *= min(0.9, 0.5 + (traveled / 200.0));
+    // if (shade > 0.0) {
+    //   color *= min(0.9, shade);
     // }
+
+    bool shadowed = isInShadow(vWorldPos);
+    if (shadowed) {
+      color *= 0.5;
+      // color *= min(0.9, 0.5 + (traveled / 200.0));
+    }
 
     fragColor = vec4(color, 1.0);
   }

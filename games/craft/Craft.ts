@@ -40,11 +40,23 @@ const spawnTerrain = () => {
   }
 }
 
+const spawnTiny = () => {
+  const num = 8
+  for (let i = 0; i < num; i++) {
+    for (let j = 0; j < num; j++) {
+      blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
+    }
+  }
+
+  blocks.add({ x: 9, y: 9, z: 1, type: 2 })
+}
+
 const CraftSystem = SystemBuilder({
   id: "CraftSystem",
   init: (world) => {
 
-    spawnTerrain()
+    // spawnTerrain()
+    spawnTiny()
 
     const blockColliders: Entity<Position | Collider>[] = [
       BlockCollider(0),

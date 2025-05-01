@@ -71,9 +71,7 @@ export const BlockData = (): BlockData => {
           let y = pos.y * 4 + floor((i % 16) / 4)
           let z = floor(i / 16)
 
-          const xy = intToBlock(x, y)
-
-          const block: Block = { ...xy, z: z * 21, type }
+          const block: Block = { ...intToXYZ(x, y, z), type }
           chunkResult.push(block)
         }
         cache[key] = chunkResult
@@ -123,10 +121,15 @@ export const spawnChunk = (chunk: XY) => {
 }
 
 // ij integer coord -> XY of block
-const intToBlock = (i: number, j: number): XY => ({
+export const intToXY = (i: number, j: number): XY => ({
   x: (i - j) * width,
   y: (i + j) * width / 2
 })
+
+export const intToXYZ = (i: number, j: number, z: number): XYZ => {
+  const xy = intToXY(i, j)
+  return { x: xy.x, y: xy.y, z: z * 21 }
+}
 
 export const XYtoChunk = (pos: XY): XY => {
   const snapped = xyBlock(pos)
