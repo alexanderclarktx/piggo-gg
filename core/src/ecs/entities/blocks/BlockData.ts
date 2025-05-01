@@ -1,7 +1,6 @@
 import {
   BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position,
-  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample,
-  logPerf
+  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample, logPerf
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions

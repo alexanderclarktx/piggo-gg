@@ -31,7 +31,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           const playerChunk = XYtoChunk(position.data)
 
-          const renderDistance = 12
+          const renderDistance = 10
 
           const chunks: XY[] = []
 

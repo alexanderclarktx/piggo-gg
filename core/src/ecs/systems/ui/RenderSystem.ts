@@ -158,7 +158,7 @@ export const RenderSystem = ClientSystemBuilder({
 
           const { position, renderable } = entity.components
 
-          if (renderable.onRender && renderable.initialized ) {
+          if (renderable.onRender && renderable.initialized) {
             renderable.onRender({
               client: world.client!,
               container: renderable.c,
