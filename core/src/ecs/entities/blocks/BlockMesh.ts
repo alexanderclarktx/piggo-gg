@@ -1,7 +1,6 @@
 import {
-  BlockColors, BlockDimensions, blocks, BlockShader,
-  BlockTypeString, Entity, Position, Renderable,
-  XYtoChunk
+  Block, BlockColors, BlockDimensions, blocks, BlockShader,
+  BlockTypeString, Entity, Position, Renderable, XY, XYtoChunk
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -13,6 +12,8 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
   const zIndex = type === "foreground" ? 3.1 : 0
   let topBlocks: number[] = []
+
+  let chunkData: Block[] = []
 
   return Entity({
     id: `block-mesh-${type}`,
@@ -28,11 +29,29 @@ export const BlockMesh = (type: "foreground" | "background") => {
           // const data = blocks.zSort().reverse()
           // for (let i = 0; i < 1; i++) {
           //   const block = data[i]
-            // const { x, y } = world.flip(block)
-            // topBlocks.push(x, y, block.z)
+          // const { x, y } = world.flip(block)
+          // topBlocks.push(x, y, block.z)
           // }
 
           // shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
+        },
+        onTick: ({ world }) => {
+          const { position } = world.client!.playerCharacter()?.components ?? {}
+          if (!position) return
+
+          const playerChunk = XYtoChunk(position.data)
+
+          const renderDistance = 6
+
+          const chunks: XY[] = []
+
+          for (let x = -renderDistance; x <= renderDistance; x++) {
+            for (let y = -renderDistance; y <= renderDistance; y++) {
+              chunks.push({ x: playerChunk.x + x, y: playerChunk.y + y })
+            }
+          }
+
+          chunkData = blocks.data(chunks)
         },
         onRender: ({ world, delta, renderable }) => {
           const time = performance.now()
@@ -41,7 +60,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
-          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world) ?? {x: 0, y: 0, z: 0}
+          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
           const pcPosFlip = world.flip(pcPos)
           const pcXYZ = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
 
@@ -59,33 +78,13 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const playerZ = position.data.z - 20
           const playerY = world.flip(position.data).y
 
-          // blocks.sort(world)
-
           const newPosBuffer: number[] = []
           const newColorBuffer: number[] = []
 
-          const playerChunk = XYtoChunk(position.data)
-
-          const chunks = [
-            playerChunk,
-            { x: playerChunk.x + 1, y: playerChunk.y + 1 },
-            { x: playerChunk.x - 1, y: playerChunk.y },
-            { x: playerChunk.x + 1, y: playerChunk.y },
-            { x: playerChunk.x, y: playerChunk.y - 1 },
-            { x: playerChunk.x, y: playerChunk.y + 1 },
-            { x: playerChunk.x - 1, y: playerChunk.y - 1 },
-            { x: playerChunk.x + 1, y: playerChunk.y - 1 },
-            { x: playerChunk.x - 1, y: playerChunk.y + 1 },
-            { x: playerChunk.x + 1, y: playerChunk.y + 1 }
-          ]
-
           let instanceCount = 0
-          for (const block of blocks.data(chunks)) {
+          for (const block of chunkData) {
             // const { x, y } = world.flip(block)
             const { x, y } = block
-
-            // if (abs(offset.x - x) > 300) continue
-            // if (abs(offset.y - y) > 300) continue
 
             const blockInFront = (y - playerY) > 0
 
@@ -94,6 +93,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
                 instanceCount += 1
                 newPosBuffer.push(x, y, block.z)
                 newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
+                // newColorBuffer.push(...BlockColors["saphire"])
               }
             } else if (!blockInFront || block.z < playerZ) {
               instanceCount += 1
@@ -109,7 +109,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           renderable.c.visible = instanceCount > 0
 
-          // console.log("block mesh", performance.now() - time)
+          console.log("block mesh", performance.now() - time)
         }
       })
     }

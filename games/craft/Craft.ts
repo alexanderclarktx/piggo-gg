@@ -3,8 +3,7 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
   EscapeMenu, blocks, BlockMesh, Position, Collider, Entity,
-  XYZ, BlockCollider, BlockTypeInt, spawnChunk,
-  XYtoChunk
+  XYZ, BlockCollider, spawnChunk, XYtoChunk
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -32,7 +31,7 @@ export const Craft: GameBuilder = {
 }
 
 const spawnTerrain = () => {
-  const num = 20
+  const num = 100
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }

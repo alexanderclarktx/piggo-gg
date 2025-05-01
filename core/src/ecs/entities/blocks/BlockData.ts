@@ -15,8 +15,9 @@ export const BlockData = (): BlockData => {
 
   const data: Record<string, Int8Array> = {}
 
-  for (let i = 0; i < 20; i++) {
-    for (let j = 0; j < 20; j++) {
+  const chunks = 100
+  for (let i = 0; i < chunks; i++) {
+    for (let j = 0; j < chunks; j++) {
       const chunk = `${i}:${j}`
       data[chunk] = new Int8Array(4 * 4 * 32)
     }
@@ -33,15 +34,19 @@ export const BlockData = (): BlockData => {
         return
       }
 
-      const index = block.z * 16 + block.y * 4 + block.x
+      const x = block.x - chunkX * 4
+      const y = block.y - chunkY * 4
+
+      const index = block.z * 16 + y * 4 + x
       if (data[chunk][index] === undefined) {
-        console.error("INVALID INDEX", index)
+        console.error("INVALID INDEX", index, x, y, block.z)
       }
 
       data[chunk][index] = block.type
     },
     data: (at: XY[]) => {
       const result: Block[] = []
+      const time = performance.now()
 
       for (const pos of at) {
         const key = `${pos.x}:${pos.y}`
@@ -54,7 +59,7 @@ export const BlockData = (): BlockData => {
           if (type === 0) continue
 
           let x = pos.x * 4 + i % 4
-          let y = pos.y * 4 + floor(i / 4) % 4
+          let y = pos.y * 4 + floor((i % 16) / 4)
           let z = floor(i / 16)
 
           const xy = intToBlock(x, y)
@@ -63,6 +68,7 @@ export const BlockData = (): BlockData => {
           result.push(block)
         }
       }
+      // console.log("block data", performance.now() - time)
       return result
     },
     remove: ({ x, y, z }: XYZ) => { }
@@ -104,7 +110,7 @@ export const spawnChunk = (chunk: XY) => {
   }
 }
 
-// takes ij integer coordinates -> XY of that block from origin
+// ij integer coord -> XY of block
 const intToBlock = (i: number, j: number): XY => ({
   x: (i - j) * width,
   y: (i + j) * width / 2
@@ -163,6 +169,8 @@ export const highestBlock = (pos: XY, chunks: XY[]): XYZ => {
 
   return { x: snapped.x, y: snapped.y, z: level }
 }
+
+// ------------------------------------
 
 // block[] at some X
 type XBlocks = Record<number, Entity<Position>[]>
