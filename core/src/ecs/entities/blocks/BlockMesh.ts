@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader,
-  BlockTypeString, Entity, Position, Renderable, XY, XYtoChunk
+  BlockTypeString, Entity, logPerf, Position, Renderable, XY, XYtoChunk
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -31,7 +31,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           const playerChunk = XYtoChunk(position.data)
 
-          const renderDistance = 6
+          const renderDistance = 12
 
           const chunks: XY[] = []
 
@@ -99,7 +99,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           renderable.c.visible = instanceCount > 0
 
-          console.log("block mesh", performance.now() - time)
+          logPerf("block mesh", time)
         }
       })
     }

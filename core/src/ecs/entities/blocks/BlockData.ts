@@ -1,6 +1,7 @@
 import {
   BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position,
-  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample
+  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample,
+  logPerf
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -14,6 +15,8 @@ export type BlockData = {
 export const BlockData = (): BlockData => {
 
   const data: Record<string, Int8Array> = {}
+  const cache: Record<string, Block[]> = {}
+  const dirty: Record<string, boolean> = {}
 
   const chunks = 100
   for (let i = 0; i < chunks; i++) {
@@ -52,7 +55,14 @@ export const BlockData = (): BlockData => {
         const key = `${pos.x}:${pos.y}`
         if (!data[key]) continue
 
+        if (cache[key] && !dirty[key]) {
+          result.push(...cache[key])
+          continue
+        }
+
         const chunk = data[key]
+
+        const chunkResult: Block[] = []
 
         for (let i = 0; i < chunk.length; i++) {
           const type = chunk[i]
@@ -65,10 +75,13 @@ export const BlockData = (): BlockData => {
           const xy = intToBlock(x, y)
 
           const block: Block = { ...xy, z: z * 21, type }
-          result.push(block)
+          chunkResult.push(block)
         }
+        cache[key] = chunkResult
+        dirty[key] = false
+        result.push(...chunkResult)
       }
-      // console.log("block data", performance.now() - time)
+      logPerf("block data", time)
       return result
     },
     remove: ({ x, y, z }: XYZ) => { }

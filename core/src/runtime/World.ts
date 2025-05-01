@@ -1,7 +1,8 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY
+  Random, ComponentTypes, Data, Networked, XY,
+  logPerf
 } from "@piggo-gg/core"
 
 export type World = {
@@ -200,14 +201,10 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       values(world.systems).sort((a, b) => a.priority - b.priority).forEach((system) => {
         if (!isRollback || (isRollback && !system.skipOnRollback)) {
           if (!world.systems[system.id]) return
+
           const now = performance.now()
-
           system.onTick?.(filterEntities(system.query, values(world.entities)), isRollback)
-
-          const ms = performance.now() - now
-          if (ms > 5) {
-            console.error(`${system.id} took ${ms}ms`)
-          }
+          logPerf(system.id, now)
         }
       })
 
