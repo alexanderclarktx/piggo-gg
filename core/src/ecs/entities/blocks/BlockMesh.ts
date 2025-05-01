@@ -68,8 +68,8 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const playerZ = position.data.z - 20
           const playerY = world.flip(position.data).y
 
-          const newPosBuffer: number[] = []
-          const newColorBuffer: number[] = []
+          const newPosBuffer = new Float32Array(chunkData.length * 3)
+          const newColorBuffer = new Float32Array(chunkData.length * 3)
 
           let instanceCount = 0
           for (const block of chunkData) {
@@ -80,25 +80,22 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
             if (type === "foreground") {
               if (blockInFront && block.z >= playerZ) {
+                newPosBuffer.set([x, y, block.z], instanceCount * 3)
+                newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
                 instanceCount += 1
-                newPosBuffer.push(x, y, block.z)
-                newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
-                // newColorBuffer.push(...BlockColors["saphire"])
               }
             } else if (!blockInFront || block.z < playerZ) {
+              newPosBuffer.set([x, y, block.z], instanceCount * 3)
+              newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
               instanceCount += 1
-
-              newPosBuffer.push(x, y, block.z)
-              newColorBuffer.push(...BlockColors[BlockTypeString[block.type]])
             }
           }
 
-          geometry.attributes.aInstancePos.buffer.data = new Float32Array(newPosBuffer)
-          geometry.attributes.aInstanceColor.buffer.data = new Float32Array(newColorBuffer)
+          geometry.attributes.aInstancePos.buffer.data = newPosBuffer
+          geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
           geometry.instanceCount = instanceCount
 
           renderable.c.visible = instanceCount > 0
-
           logPerf("block mesh", time)
         }
       })
