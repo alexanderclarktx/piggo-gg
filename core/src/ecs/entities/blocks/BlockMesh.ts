@@ -11,7 +11,6 @@ export const BlockMesh = (type: "foreground" | "background") => {
   const shader = BlockShader()
 
   const zIndex = type === "foreground" ? 3.1 : 0
-  let topBlocks: number[] = []
 
   let chunkData: Block[] = []
 
@@ -23,17 +22,8 @@ export const BlockMesh = (type: "foreground" | "background") => {
         zIndex,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
-        setup: async (r, _, world) => {
+        setup: async (r) => {
           r.c = new Mesh({ geometry, shader })
-
-          // const data = blocks.zSort().reverse()
-          // for (let i = 0; i < 1; i++) {
-          //   const block = data[i]
-          // const { x, y } = world.flip(block)
-          // topBlocks.push(x, y, block.z)
-          // }
-
-          // shader.resources.uniforms.uniforms.uTopBlocks = topBlocks
         },
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
