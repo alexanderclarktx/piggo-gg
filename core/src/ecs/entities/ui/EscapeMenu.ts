@@ -92,9 +92,9 @@ export const EscapeMenu = (): Entity => {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       input: Input({
         press: {
-          "escape": ({ world, hold }) => {
+          "escape": ({ hold }) => {
             if (hold) return null
-            return { actionId: "toggleVisible", playerId: world.client?.playerId(), offline: true }
+            return { actionId: "toggleVisible", offline: true }
           }
         }
       }),
