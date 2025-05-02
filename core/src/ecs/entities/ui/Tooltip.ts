@@ -16,7 +16,7 @@ export const Tooltip = (id: string, text: string) => {
       renderable: Renderable({
         visible: true,
         interactiveChildren: true,
-        zIndex: 100,
+        zIndex: 8,
         onTick: () => {
           if (!explainer || !explainerBg) return
 
