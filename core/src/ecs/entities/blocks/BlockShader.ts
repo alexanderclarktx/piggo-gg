@@ -130,15 +130,15 @@ const fragmentSrc = `
     }
 
     float shade = shadeUnderPlayer(vWorldPos);
-    // if (shade > 0.0) {
-    //   color *= min(0.9, shade);
-    // }
-
-    bool shadowed = isInShadow(vWorldPos);
-    if (shadowed) {
-      color *= 0.5;
-      // color *= min(0.9, 0.5 + (traveled / 200.0));
+    if (shade > 0.0) {
+      color *= min(0.9, shade);
     }
+
+    // bool shadowed = isInShadow(vWorldPos);
+    // if (shadowed) {
+    //   color *= 0.5;
+      // color *= min(0.9, 0.5 + (traveled / 200.0));
+    // }
 
     fragColor = vec4(color, 1.0);
   }

@@ -1,6 +1,6 @@
 import {
-  Block, BlockColors, BlockDimensions, blocks, BlockShader,
-  BlockTypeString, Entity, intToXYZ, logPerf, Position, Renderable, XY, XYtoChunk
+  Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
+  Entity, logPerf, Position, Renderable, XY, XYtoChunk
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -64,8 +64,10 @@ export const BlockMesh = (type: "foreground" | "background") => {
             shader.resources.uniforms.uniforms.uPlayer = pcXYZ
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
-            const pos = intToXYZ(topBlocks[0].x, topBlocks[0].y, topBlocks[0].z)
-            shader.resources.uniforms.uniforms.uTopBlocks = [pos.x, pos.y, pos.z + 10.5]
+
+            // shadows
+            // const pos = intToXYZ(topBlocks[0].x, topBlocks[0].y, topBlocks[0].z)
+            // shader.resources.uniforms.uniforms.uTopBlocks = [pos.x, pos.y, pos.z + 10.5]
           }
 
           const { position } = world.client!.playerCharacter()?.components ?? {}

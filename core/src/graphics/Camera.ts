@@ -73,7 +73,7 @@ export const Camera = (app: Application): Camera => {
   }
 
   const rescale = () => {
-    const min = 1
+    const min = 1.2
     const max = 5
 
     if (camera.scale < min) camera.scale = min
