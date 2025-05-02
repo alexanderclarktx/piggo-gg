@@ -32,6 +32,7 @@ export const Lobby: GameBuilder = {
       Players(),
       PlayButton(),
       CreateLobbyButton(),
+      SettingsButton(),
       PlayersOnline()
     ],
     netcode: "delay"
@@ -276,6 +277,45 @@ const CreateLobbyButton = () => {
     }
   })
   return createLobbyButton
+}
+
+const SettingsButton = () => {
+  const settingsButton = Entity<Position>({
+    id: "settingsButton",
+    components: {
+      position: Position({ x: 300, y: 480, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        interactiveChildren: true,
+        setup: async (r, renderer, world) => {
+          const { width } = renderer.wh()
+          settingsButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
+
+          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+
+          const button = PixiButton({
+            content: () => ({
+              text: "Settings",
+              width: 260,
+              height: 40,
+              style: { fontSize: 26 }
+            }),
+            onClick: () => {
+              console.log("Settings")
+              world.client?.soundManager.play("click1", 0, undefined, true)
+            },
+            onEnter: () => {
+              r.setGlow({ outerStrength: 2 })
+              world.client?.soundManager.play("click3")
+            },
+            onLeave: () => r.setGlow()
+          })
+          r.c.addChild(button.c)
+        }
+      })
+    }
+  })
+  return settingsButton
 }
 
 const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
