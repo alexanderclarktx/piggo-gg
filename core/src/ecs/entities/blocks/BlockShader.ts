@@ -49,33 +49,6 @@ const fragmentSrc = `
 
   out vec4 fragColor;
 
-  vec3 unpackRGB(float hex) {
-    float r = floor(mod(hex / 65536.0, 256.0)) / 255.0;
-    float g = floor(mod(hex / 256.0, 256.0)) / 255.0;
-    float b = mod(hex, 256.0) / 255.0;
-    return vec3(r, g, b);
-  }
-
-  float sdfToBlocks(vec3 p) {
-    float minDist = 1e10;
-    vec3 halfSize = vec3(18.0, 9.0, 10.5);
-
-    for (int i = 0; i < 1; ++i) {
-      vec3 blockPos = uTopBlocks[i];
-
-      if (blockPos.x == 0.0 && blockPos.y == 0.0 && blockPos.z == 0.0) continue;
-
-      vec3 d = abs(p - blockPos) - halfSize;
-      float dist = length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0);
-
-      minDist = min(minDist, dist);
-    }
-
-    return minDist;
-  }
-
-  float traveled = 0.0;
-
   float shadeUnderPlayer(vec3 p) {
     if (uPlayer.x == 0.0 && uPlayer.y == 0.0 && uPlayer.z == 0.0) return 0.0;
 
@@ -94,19 +67,48 @@ const fragmentSrc = `
     return factor;
   }
 
+  vec3 unpackRGB(float hex) {
+    float r = floor(mod(hex / 65536.0, 256.0)) / 255.0;
+    float g = floor(mod(hex / 256.0, 256.0)) / 255.0;
+    float b = mod(hex, 256.0) / 255.0;
+    return vec3(r, g, b);
+  }
+
+  float sdfToBlocks(vec3 p) {
+    float minDist = 1e10;
+    vec3 halfSize = vec3(18.0, 9.0, 10.5);
+    // vec3 halfSize = vec3(9.0);
+
+    for (int i = 0; i < 1; ++i) {
+      vec3 blockPos = uTopBlocks[i];
+
+      if (blockPos.x == 0.0 && blockPos.y == 0.0 && blockPos.z == 0.0) continue;
+
+      vec3 d = abs(p - blockPos) - halfSize;
+      float dist = length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0);
+
+      minDist = min(minDist, dist);
+    }
+
+    return minDist;
+  }
+
+  float traveled = 0.0;
+
   bool isInShadow(vec3 start) {
 
     float ySun = sin(uTime * 0.2) * 2.0 - 1.0;
     float xSun = cos(uTime * 0.2) * 2.0 - 1.0;
-
     vec3 sunDir = normalize(vec3(xSun, ySun, 1.0));
 
-    vec3 p = start + sunDir * 0.05;
+    // vec3 sunDir = normalize(vec3(1.0, 0.0, 1.0));
+
+    vec3 p = start + sunDir * 0.1;
     for (int i = 0; i < 32; ++i) {
       float d = sdfToBlocks(p);
 
       if (d < 0.01) return true;
-      if (d > 500.0) break;
+      if (d > 200.0) break;
 
       p += sunDir * d;
       traveled += d;
@@ -127,14 +129,14 @@ const fragmentSrc = `
       color = unpackRGB(vInstanceColor[2]);
     }
 
-    // bool shadowed = isInShadow(vWorldPos);
     float shade = shadeUnderPlayer(vWorldPos);
     if (shade > 0.0) {
       color *= min(0.9, shade);
     }
 
+    // bool shadowed = isInShadow(vWorldPos);
     // if (shadowed) {
-      // color *= 0.5;
+    //   color *= 0.5;
       // color *= min(0.9, 0.5 + (traveled / 200.0));
     // }
 

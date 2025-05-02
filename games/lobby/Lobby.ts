@@ -154,7 +154,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
             text: game.id,
             textAnchor: { x: 0.5, y: 0.5 },
             textPos: { x: 0, y: -45 },
-            style: { fontSize: 28, fill: 0xffffff },
+            style: { fontSize: 28 },
             rounded: 14,
             height: 140,
             width: 170
@@ -208,7 +208,7 @@ const PlayButton = () => {
               text: "Play",
               width: 260,
               height: 40,
-              style: { fontSize: 26, fill: 0xffffff }
+              style: { fontSize: 26 }
             }),
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
@@ -256,7 +256,7 @@ const CreateLobbyButton = () => {
               text: "Invite Friends",
               width: 260,
               height: 40,
-              style: { fontSize: 26, fill: 0xffffff }
+              style: { fontSize: 26 }
             }),
             onClick: () => {
               world.client?.copyInviteLink()
@@ -416,7 +416,7 @@ const PlayersOnline = () => {
         setup: async (renderable) => {
           text = pixiText({
             text: "",
-            style: { fontSize: 18, fill: 0xffffff, alpha: 0.7 },
+            style: { fontSize: 18, alpha: 0.7 },
             anchor: { x: 1, y: 0 }
           })
           renderable.c.addChild(text)
