@@ -13,10 +13,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
   const zIndex = type === "foreground" ? 3.1 : 0
 
   let chunkData: Block[] = []
-
-  let topBlocks: Block[] = [
-    { x: 9, y: 9, z: 1, type: 2 },
-  ]
+  let topBlocks: Block[] = [{ x: 9, y: 9, z: 1, type: 2 }]
 
   return Entity({
     id: `block-mesh-${type}`,
