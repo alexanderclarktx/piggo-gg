@@ -1,7 +1,10 @@
 import {
   Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt,
   Clickable, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity,
-  pixiGraphics, Position, Renderable, snapXYZ
+  pixiGraphics, Position, Renderable, snapXYZ,
+  XYtoChunk,
+  XYtoIJ,
+  XYZtoChunk
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -31,7 +34,12 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         if (hold) return
         // addToXBlocksBuffer(block)
 
-        blocks.add({ ...snapXYZ(world.flip(mouse)), type: BlockTypeInt[type] })
+        const xyz = blocks.blockAtMouse(mouse)
+        if (!xyz) return
+        const spot = XYtoIJ(xyz)
+        blocks.add({ ...spot, z: 0, type: BlockTypeInt[type] })
+        console.log("BLOCK ADDED", xyz, type)
+        // blocks.add({ ...snapXYZ(world.flip(mouse)), type: BlockTypeInt[type] })
 
         world.client?.soundManager.play("click2")
       }

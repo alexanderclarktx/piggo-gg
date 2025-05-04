@@ -7,6 +7,7 @@ const { width, height } = BlockDimensions
 
 export type BlockData = {
   add: (block: Block) => void
+  blockAtMouse: (mouse: XY) => XYZ | null
   data: (at: XY[]) => Block[]
   remove: (block: Block) => void
 }
@@ -42,9 +43,20 @@ export const BlockData = (): BlockData => {
       const index = block.z * 16 + y * 4 + x
       if (data[chunk][index] === undefined) {
         console.error("INVALID INDEX", index, x, y, block.z)
+        return
       }
 
+      dirty[chunk] = true
+
       data[chunk][index] = block.type
+    },
+    blockAtMouse: (mouse: XY) => {
+      let possibleX = Math.floor(mouse.x / width)
+      // possibleX -= randomInt(10) === 1 ? 0 : 0.5
+
+      const snapped = snapXYZ(mouse)
+      return { ...snapped, x: possibleX * width }
+      // return XYZtoChunk({ ...snapped, z: z.z })
     },
     data: (at: XY[]) => {
       const result: Block[] = []
@@ -58,6 +70,7 @@ export const BlockData = (): BlockData => {
           result.push(...cache[key])
           continue
         }
+        console.log("dirty, calculating", key)
 
         const chunk = data[key]
 
@@ -78,6 +91,7 @@ export const BlockData = (): BlockData => {
         dirty[key] = false
         result.push(...chunkResult)
       }
+
       logPerf("block data", time)
       return result
     },
@@ -132,13 +146,20 @@ export const intToXYZ = (i: number, j: number, z: number): XYZ => {
 }
 
 export const XYtoChunk = (pos: XY): XY => {
-  const snapped = xyBlock(pos)
+  const snapped = XYtoIJ(pos)
   const x = floor(snapped.x / 4)
   const y = floor(snapped.y / 4)
   return { x, y }
 }
 
-const xyBlock = (pos: XY): XY => {
+export const XYZtoChunk = (pos: XYZ): XYZ => {
+  const snapped = XYtoIJ(pos)
+  const x = floor(snapped.x / 4)
+  const y = floor(snapped.y / 4)
+  return { x, y, z: pos.z / 21 }
+}
+
+export const XYtoIJ = (pos: XY): XY => {
   const half = width / 2
   const gridX = (pos.x / width + pos.y / half) / 2
   const gridY = (pos.y / half - pos.x / width) / 2

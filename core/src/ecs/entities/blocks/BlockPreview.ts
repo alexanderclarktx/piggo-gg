@@ -1,4 +1,4 @@
-import { BlockDimensions, Entity, mouse, pixiGraphics, Position, Renderable, snapXYZ } from "@piggo-gg/core"
+import { BlockDimensions, blocks, Entity, mouse, pixiGraphics, Position, Renderable, snapXYZ } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
@@ -25,8 +25,8 @@ export const BlockPreview = () => Entity({
         //   buildXBlocksBuffer(world)
         // }
 
-        const xyz = snapXYZ(world.flip(mouse))
-        // const xyz = blockAtMouse(mouse)
+        // const xyz = snapXYZ(world.flip(mouse))
+        const xyz = blocks.blockAtMouse(mouse)
 
         if (!xyz) {
           entity.components.renderable.visible = false
