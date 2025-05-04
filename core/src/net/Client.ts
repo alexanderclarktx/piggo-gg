@@ -105,14 +105,14 @@ export const Client = ({ world }: ClientProps): Client => {
       if (client.lobbyId) {
         url = `${hosts[env]}/?join=${client.lobbyId}`
         navigator.clipboard.writeText(url)
-        toast.success(`Copied Invite URL`)
+        toast.success(`Copied Invite Link`)
       } else {
         client.lobbyCreate((response) => {
           if ("error" in response) return
 
           url = `${hosts[env]}/?join=${response.lobbyId}`
           navigator.clipboard.writeText(url)
-          toast.success(`Copied Invite URL`)
+          toast.success(`Copied Invite Link`)
         })
       }
     },

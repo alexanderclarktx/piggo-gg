@@ -32,7 +32,7 @@ export const Lobby: GameBuilder = {
       Players(),
       PlayButton(),
       CreateLobbyButton(),
-      SettingsButton(),
+      // SettingsButton(),
       PlayersOnline()
     ],
     netcode: "delay"
