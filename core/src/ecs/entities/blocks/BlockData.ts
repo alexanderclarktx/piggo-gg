@@ -6,8 +6,8 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
+  atMouse: (mouse: XY) => XYZ | null
   add: (block: Block) => boolean
-  blockAtMouse: (mouse: XY) => XYZ | null
   data: (at: XY[]) => Block[]
   remove: (block: Block) => void
 }
@@ -31,6 +31,14 @@ export const BlockData = (): BlockData => {
   const chunkval = (x: number, y: number) => data[x]?.[y]
 
   const blocks: BlockData = {
+    atMouse: (mouse: XY) => {
+      let possibleX = Math.floor(mouse.x / width)
+      // possibleX -= randomInt(10) === 1 ? 0 : 0.5
+
+      const snapped = snapXYZ(mouse)
+      return { ...snapped, x: possibleX * width }
+      // return XYZtoChunk({ ...snapped, z: z.z })
+    },
     add: (block: Block) => {
       const chunkX = floor(block.x / 4)
       const chunkY = floor(block.y / 4)
@@ -61,14 +69,6 @@ export const BlockData = (): BlockData => {
       dirty[key] = true
 
       return true
-    },
-    blockAtMouse: (mouse: XY) => {
-      let possibleX = Math.floor(mouse.x / width)
-      // possibleX -= randomInt(10) === 1 ? 0 : 0.5
-
-      const snapped = snapXYZ(mouse)
-      return { ...snapped, x: possibleX * width }
-      // return XYZtoChunk({ ...snapped, z: z.z })
     },
     data: (at: XY[]) => {
       const result: Block[] = []

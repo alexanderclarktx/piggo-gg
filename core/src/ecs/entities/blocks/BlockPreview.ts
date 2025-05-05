@@ -26,7 +26,7 @@ export const BlockPreview = () => Entity({
         // }
 
         // const xyz = snapXYZ(world.flip(mouse))
-        const xyz = blocks.blockAtMouse(mouse)
+        const xyz = blocks.atMouse(mouse)
 
         if (!xyz) {
           entity.components.renderable.visible = false

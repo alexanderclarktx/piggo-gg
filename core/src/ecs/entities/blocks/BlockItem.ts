@@ -34,7 +34,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         if (hold) return
         // addToXBlocksBuffer(block)
 
-        const xyz = blocks.blockAtMouse(mouse)
+        const xyz = blocks.atMouse(mouse)
         if (!xyz) return
         const spot = XYtoIJ(xyz)
         const added = blocks.add({ ...spot, z: 10, type: BlockTypeInt[type] })
