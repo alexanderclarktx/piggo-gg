@@ -37,7 +37,8 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         const xyz = blocks.blockAtMouse(mouse)
         if (!xyz) return
         const spot = XYtoIJ(xyz)
-        blocks.add({ ...spot, z: 0, type: BlockTypeInt[type] })
+        const added = blocks.add({ ...spot, z: 10, type: BlockTypeInt[type] })
+        if (!added) return
         console.log("BLOCK ADDED", xyz, type)
         // blocks.add({ ...snapXYZ(world.flip(mouse)), type: BlockTypeInt[type] })
 

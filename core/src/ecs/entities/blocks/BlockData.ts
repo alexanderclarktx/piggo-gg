@@ -6,7 +6,7 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  add: (block: Block) => void
+  add: (block: Block) => boolean
   blockAtMouse: (mouse: XY) => XYZ | null
   data: (at: XY[]) => Block[]
   remove: (block: Block) => void
@@ -14,41 +14,53 @@ export type BlockData = {
 
 export const BlockData = (): BlockData => {
 
-  const data: Record<string, Int8Array> = {}
-  const cache: Record<string, Block[]> = {}
-  const dirty: Record<string, boolean> = {}
+  const data: Int8Array[][] = []
 
   const chunks = 100
   for (let i = 0; i < chunks; i++) {
+    data[i] = []
     for (let j = 0; j < chunks; j++) {
-      const chunk = `${i}:${j}`
-      data[chunk] = new Int8Array(4 * 4 * 32)
+      data[i][j] = new Int8Array(4 * 4 * 16)
     }
   }
+
+  const cache: Record<string, Block[]> = {}
+  const dirty: Record<string, boolean> = {}
+
+  const chunkey = (x: number, y: number) => `${x}:${y}`
+  const chunkval = (x: number, y: number) => data[x]?.[y]
 
   const blocks: BlockData = {
     add: (block: Block) => {
       const chunkX = floor(block.x / 4)
       const chunkY = floor(block.y / 4)
 
-      const chunk = `${chunkX}:${chunkY}`
-      if (!data[chunk]) {
-        console.error("CHUNK NOT FOUND", chunk)
-        return
+      if (!data[chunkX]?.[chunkY]) {
+        console.error("CHUNK NOT FOUND", chunkX, chunkY)
+        return false
       }
 
       const x = block.x - chunkX * 4
       const y = block.y - chunkY * 4
 
       const index = block.z * 16 + y * 4 + x
-      if (data[chunk][index] === undefined) {
+
+      if (data[chunkX][chunkY][index] === undefined) {
         console.error("INVALID INDEX", index, x, y, block.z)
-        return
+        return false
       }
 
-      dirty[chunk] = true
+      if (data[chunkX][chunkY][index] !== 0) {
+        console.error("BLOCK ALREADY EXISTS")
+        return false
+      }
 
-      data[chunk][index] = block.type
+      data[chunkX][chunkY][index] = block.type
+
+      const key = chunkey(chunkX, chunkY)
+      dirty[key] = true
+
+      return true
     },
     blockAtMouse: (mouse: XY) => {
       let possibleX = Math.floor(mouse.x / width)
@@ -63,16 +75,14 @@ export const BlockData = (): BlockData => {
       const time = performance.now()
 
       for (const pos of at) {
-        const key = `${pos.x}:${pos.y}`
-        if (!data[key]) continue
+        const chunk = chunkval(pos.x, pos.y)
+        if (!chunk) continue
 
+        const key = `${pos.x}:${pos.y}`
         if (cache[key] && !dirty[key]) {
           result.push(...cache[key])
           continue
         }
-        console.log("dirty, calculating", key)
-
-        const chunk = data[key]
 
         const chunkResult: Block[] = []
 
