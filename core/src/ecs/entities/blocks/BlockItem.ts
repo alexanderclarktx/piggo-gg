@@ -4,7 +4,8 @@ import {
   pixiGraphics, Position, Renderable, snapXYZ,
   XYtoChunk,
   XYtoIJ,
-  XYZtoChunk
+  XYZtoChunk,
+  XYZtoIJK
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -29,17 +30,22 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
-      mb1: ({ params, world }) => {
+      mb1: ({ params, world, player }) => {
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
         // addToXBlocksBuffer(block)
 
-        const xyz = blocks.atMouse(mouse)
+        const character = player?.components.controlling.getCharacter(world)
+        if (!character) return
+
+        const xyz = blocks.atMouse(mouse, character.components.position.data)
         if (!xyz) return
-        const spot = XYtoIJ(xyz)
-        const added = blocks.add({ ...spot, z: 10, type: BlockTypeInt[type] })
+
+        const spot = XYZtoIJK(xyz)
+        console.log("add block", xyz, spot)
+        const added = blocks.add({ ...spot, z: spot.z + 1, type: BlockTypeInt[type] })
         if (!added) return
-        console.log("BLOCK ADDED", xyz, type)
+
         // blocks.add({ ...snapXYZ(world.flip(mouse)), type: BlockTypeInt[type] })
 
         world.client?.soundManager.play("click2")

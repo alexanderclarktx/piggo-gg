@@ -1,12 +1,12 @@
 import {
   BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position,
-  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample, logPerf
+  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample, logPerf, abs
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  atMouse: (mouse: XY) => XYZ | null
+  atMouse: (mouse: XY, player: XYZ) => XYZ | null
   add: (block: Block) => boolean
   data: (at: XY[]) => Block[]
   remove: (block: Block) => void
@@ -31,13 +31,35 @@ export const BlockData = (): BlockData => {
   const chunkval = (x: number, y: number) => data[x]?.[y]
 
   const blocks: BlockData = {
-    atMouse: (mouse: XY) => {
-      let possibleX = Math.floor(mouse.x / width)
-      // possibleX -= randomInt(10) === 1 ? 0 : 0.5
+    atMouse: (mouse: XY, player: XYZ) => {
 
-      const snapped = snapXYZ(mouse)
-      return { ...snapped, x: possibleX * width }
-      // return XYZtoChunk({ ...snapped, z: z.z })
+      const playerChunk = XYtoChunk(player)
+
+      // check blocks in chunk if they are at mouse
+      const chunk = cache[chunkey(playerChunk.x, playerChunk.y)]
+      if (!chunk) return null
+
+      let found: Block | null = null
+      let dist = 1000
+      for (const block of chunk) {
+        const { x, y, z } = block
+
+        const screenY = y - z
+
+        if (x - mouse.x > width) continue
+        if (x - mouse.x < -width) continue
+
+        if (abs(screenY - mouse.y) > 10) continue
+
+        const d = Math.sqrt((x - mouse.x) ** 2 + (screenY - mouse.y) ** 2)
+        if (d < dist) {
+          found = block
+          dist = d
+        }
+      }
+
+      // console.log("found", found)
+      return found
     },
     add: (block: Block) => {
       const chunkX = floor(block.x / 4)
@@ -59,7 +81,7 @@ export const BlockData = (): BlockData => {
       }
 
       if (data[chunkX][chunkY][index] !== 0) {
-        console.error("BLOCK ALREADY EXISTS")
+        console.error("BLOCK ALREADY EXISTS", x, y, block.z)
         return false
       }
 
@@ -153,6 +175,13 @@ export const intToXY = (i: number, j: number): XY => ({
 export const intToXYZ = (i: number, j: number, z: number): XYZ => {
   const xy = intToXY(i, j)
   return { x: xy.x, y: xy.y, z: z * 21 }
+}
+
+export const XYZtoIJK = (pos: XYZ): XYZ => {
+  const snapped = XYtoIJ(pos)
+  const z = floor(pos.z / 21)
+  
+  return { x: snapped.x, y: snapped.y, z }
 }
 
 export const XYtoChunk = (pos: XY): XY => {
