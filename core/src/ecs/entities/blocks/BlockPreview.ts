@@ -1,4 +1,4 @@
-import { BlockDimensions, blocks, Entity, mouse, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { BlockDimensions, blocks, Debug, Entity, mouse, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
@@ -6,6 +6,7 @@ export const BlockPreview = () => Entity({
   id: "item-block-preview",
   components: {
     position: Position(),
+    debug: Debug(),
     renderable: Renderable({
       zIndex: 3,
       anchor: { x: 0.5, y: 0 },
@@ -30,7 +31,7 @@ export const BlockPreview = () => Entity({
           entity.components.renderable.visible = false
         } else {
           entity.components.renderable.visible = true
-          entity.components.position.setPosition({...xyz, z: xyz.z + 21})
+          entity.components.position.setPosition(xyz)
         }
       },
       setup: async (r) => {

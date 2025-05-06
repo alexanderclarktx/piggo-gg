@@ -37,7 +37,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         if (!xyz) return
 
         const spot = XYZtoIJK(xyz)
-        const added = blocks.add({ ...spot, z: spot.z + 1, type: BlockTypeInt[type] })
+        const added = blocks.add({ ...spot, type: BlockTypeInt[type] })
         if (!added) return
 
         world.client?.soundManager.play("click2")

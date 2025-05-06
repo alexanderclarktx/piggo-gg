@@ -1,7 +1,6 @@
 import {
   BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf, angleXY,
-  hypot
+  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -33,10 +32,8 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     atMouse: (mouse: XY, player: XYZ) => {
-
       const playerChunk = XYtoChunk(player)
 
-      // check blocks in chunk if they are at mouse
       const chunk = cache[chunkey(playerChunk.x, playerChunk.y)]
       if (!chunk) return null
 
@@ -47,17 +44,27 @@ export const BlockData = (): BlockData => {
         const { x, y, z } = block
 
         const screenY = y - z - height
-        const dx = x - mouse.x
-        const dy = screenY - mouse.y
+        const dx =  mouse.x - x
+        const dy = mouse.y - screenY
 
         // circle
         const d = hypot(dx, dy)
         if (d > width) continue
 
-        // angle
-        const angle = angleXY(dx, dy)
+        found = { ...block }
 
-        found = block
+        // angle
+        const angle = angleCC(dx, dy)
+        if (angle > 30 && angle <= 150) {
+          found.z += 21
+        } else if (angle > 150 && angle < 270) {
+          found.x += 18
+          found.y += 9
+        } else {
+          found.x -= 18
+          found.y += 9
+        }
+
         break
       }
 

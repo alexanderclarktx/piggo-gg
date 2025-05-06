@@ -125,8 +125,8 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
   y: (2 * y - x) / 2
 })
 
-export const angleXY = (x: number, y: number) => {
-  return (Math.atan2(y, x) * 180) / PI - 90
+export const angleCC = (x: number, y: number) => {
+  return (Math.atan2(y, x) * 180) / PI + 180
 }
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat()
