@@ -20,7 +20,7 @@ export const BlockData = (): BlockData => {
   for (let i = 0; i < chunks; i++) {
     data[i] = []
     for (let j = 0; j < chunks; j++) {
-      data[i][j] = new Int8Array(4 * 4 * 16)
+      data[i][j] = new Int8Array(4 * 4 * 32)
     }
   }
 
