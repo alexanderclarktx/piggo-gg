@@ -1,4 +1,4 @@
-import { BlockDimensions, blocks, Debug, Entity, mouse, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { BlockDimensions, blocks, Entity, mouse, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
@@ -6,7 +6,6 @@ export const BlockPreview = () => Entity({
   id: "item-block-preview",
   components: {
     position: Position(),
-    debug: Debug(),
     renderable: Renderable({
       zIndex: 3,
       anchor: { x: 0.5, y: 0 },
