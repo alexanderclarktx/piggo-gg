@@ -22,7 +22,7 @@ export type World = {
   tick: number
   tickFlag: "green" | "red"
   tickrate: number
-  tileMap: number[] | undefined
+  tileMap: number[] | undefined // deprecated
   time: DOMHighResTimeStamp
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string | undefined
@@ -250,7 +250,10 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
 
       world.tileMap = tileMap
 
-      world.renderer?.setBgColor(bgColor || 0x000000)
+      if (world.renderer) {
+        world.renderer.camera.scaleTo(2.5)
+        world.renderer.setBgColor(bgColor || 0x000000)
+      }
 
       // initialize new game
       world.addEntities(entities)

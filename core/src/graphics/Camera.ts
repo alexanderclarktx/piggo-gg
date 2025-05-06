@@ -12,6 +12,7 @@ export type Camera = {
   add: (r: Renderable) => void
   remove: (r: Renderable) => void
   scaleBy: (delta: number) => void
+  scaleTo: (scale: number) => void
   inFrame: (_: XY) => boolean
   moveBy: (_: XY) => void
   moveTo: (_: XY) => void
@@ -40,6 +41,10 @@ export const Camera = (app: Application): Camera => {
     },
     scaleBy: (delta: number) => {
       camera.scale += delta
+      rescale()
+    },
+    scaleTo: (scale: number) => {
+      camera.scale = scale
       rescale()
     },
     inFrame: ({ x, y }: XY) => { // TODO broken

@@ -39,7 +39,7 @@ export const EscapeMenu = (): Entity => {
           text: "Return to Lobby",
           pos: { x: width / 2, y: (height / 2) - 100 },
           style: { fontSize },
-          width: 260
+          width: 300
         }),
         onClick: () => {
           world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
@@ -68,7 +68,7 @@ export const EscapeMenu = (): Entity => {
           text: "Settings",
           pos: { x: width / 2, y: (height / 2) - 45 },
           style: { fontSize },
-          width: 260
+          width: 300
         }),
         onClick: () => {
           console.log("Settings")

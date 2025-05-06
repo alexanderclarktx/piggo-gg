@@ -1,7 +1,7 @@
 import {
   Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt,
   Clickable, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity,
-  pixiGraphics, Position, Renderable, snapXYZ
+  pixiGraphics, Position, Renderable, XYZtoIJK
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -26,12 +26,19 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
-      mb1: ({ params, world }) => {
+      mb1: ({ params, world, player }) => {
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
-        // addToXBlocksBuffer(block)
 
-        blocks.add({ ...snapXYZ(world.flip(mouse)), type: BlockTypeInt[type] })
+        const character = player?.components.controlling.getCharacter(world)
+        if (!character) return
+
+        const xyz = blocks.atMouse(mouse, character.components.position.data)
+        if (!xyz) return
+
+        const spot = XYZtoIJK(xyz)
+        const added = blocks.add({ ...spot, z: spot.z + 1, type: BlockTypeInt[type] })
+        if (!added) return
 
         world.client?.soundManager.play("click2")
       }
