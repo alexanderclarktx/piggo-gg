@@ -1,6 +1,6 @@
 import {
   BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position,
-  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample, logPerf, abs
+  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample, logPerf
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -40,7 +40,6 @@ export const BlockData = (): BlockData => {
       if (!chunk) return null
 
       let found: Block | null = null
-      // let dist = 1000
 
       for (let i = chunk.length - 1; i >= 0; i--) {
         const block = chunk[i]
@@ -48,28 +47,14 @@ export const BlockData = (): BlockData => {
 
         const screenY = y - z - height
 
-        // if (x - mouse.x > width) continue
-        // if (x - mouse.x < -width) continue
-        // if (abs(screenY - mouse.y) > 10) continue
-
+        // circle
         const d = Math.sqrt((x - mouse.x) ** 2 + (screenY - mouse.y) ** 2)
         if (d > width) continue
 
         found = block
         break
-
-
-
-
-        // if (d < dist) {
-        //   found = block
-        //   dist = d
-        // }
-
-
       }
 
-      // console.log("found", found)
       return found
     },
     add: (block: Block) => {
