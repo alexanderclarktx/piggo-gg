@@ -40,22 +40,33 @@ export const BlockData = (): BlockData => {
       if (!chunk) return null
 
       let found: Block | null = null
-      let dist = 1000
-      for (const block of chunk) {
+      // let dist = 1000
+
+      for (let i = chunk.length - 1; i >= 0; i--) {
+        const block = chunk[i]
         const { x, y, z } = block
 
-        const screenY = y - z
+        const screenY = y - z - height
 
-        if (x - mouse.x > width) continue
-        if (x - mouse.x < -width) continue
-
-        if (abs(screenY - mouse.y) > 10) continue
+        // if (x - mouse.x > width) continue
+        // if (x - mouse.x < -width) continue
+        // if (abs(screenY - mouse.y) > 10) continue
 
         const d = Math.sqrt((x - mouse.x) ** 2 + (screenY - mouse.y) ** 2)
-        if (d < dist) {
-          found = block
-          dist = d
-        }
+        if (d > width) continue
+
+        found = block
+        break
+
+
+
+
+        // if (d < dist) {
+        //   found = block
+        //   dist = d
+        // }
+
+
       }
 
       // console.log("found", found)
@@ -180,7 +191,7 @@ export const intToXYZ = (i: number, j: number, z: number): XYZ => {
 export const XYZtoIJK = (pos: XYZ): XYZ => {
   const snapped = XYtoIJ(pos)
   const z = floor(pos.z / 21)
-  
+
   return { x: snapped.x, y: snapped.y, z }
 }
 
