@@ -10,6 +10,7 @@ export type BlockData = {
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
   data: (at: XY[]) => Block[]
+  hasXYZ: (block: XYZ) => boolean
   remove: (block: Block) => void
 }
 
@@ -44,27 +45,32 @@ export const BlockData = (): BlockData => {
         const block = allBlocks[i]
         const { x, y, z } = block
 
+        const playerDist = hypot(player.x - x, player.y - y, player.z - z)
+        if (playerDist > 120) continue
+
         const screenY = y - z - height
-        const dx =  mouse.x - x
+        const dx = mouse.x - x
         const dy = mouse.y - screenY
 
         // circle
         const d = hypot(dx, dy)
         if (d > width) continue
 
-        found = { ...block }
+        const maybe = { ...block }
 
         // angle
         const angle = angleCC(dx, dy)
         if (angle > 30 && angle <= 150) {
-          found.z += 21
+          maybe.z += 21
         } else if (angle > 150 && angle < 270) {
-          found.x += 18
-          found.y += 9
+          maybe.x += 18
+          maybe.y += 9
         } else {
-          found.x -= 18
-          found.y += 9
+          maybe.x -= 18
+          maybe.y += 9
         }
+
+        if (!blocks.hasXYZ(maybe)) found = maybe
 
         break
       }
@@ -146,6 +152,17 @@ export const BlockData = (): BlockData => {
 
       logPerf("block data", time)
       return result
+    },
+    hasXYZ: (block: XYZ) => {
+      const chunk = XYtoChunk(block)
+
+      const ijk = XYZtoIJK(block)
+      const x = ijk.x - chunk.x * 4
+      const y = ijk.y - chunk.y * 4
+
+      const index = ijk.z * 16 + y * 4 + x
+
+      return Boolean((data[chunk.x]?.[chunk.y][index]))
     },
     remove: ({ x, y, z }: XYZ) => { }
   }
