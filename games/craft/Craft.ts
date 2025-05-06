@@ -55,8 +55,8 @@ const CraftSystem = SystemBuilder({
   id: "CraftSystem",
   init: (world) => {
 
-    // spawnTerrain()
-    spawnTiny()
+    spawnTerrain()
+    // spawnTiny()
 
     const blockColliders: Entity<Position | Collider>[] = [
       BlockCollider(0),
