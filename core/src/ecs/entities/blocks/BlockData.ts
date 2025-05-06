@@ -1,6 +1,6 @@
 import {
-  BlockDimensions, Entity, floor, round, Block, World, XY, XYZ, Position,
-  BlockTree, randomInt, BlockType, BlockTypeInt, range, sample, logPerf
+  BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
+  BlockType, BlockTypeInt, range, sample, logPerf
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -239,70 +239,4 @@ export const highestBlock = (pos: XY, chunks: XY[]): XYZ => {
   }
 
   return { x: snapped.x, y: snapped.y, z: level }
-}
-
-// ------------------------------------
-
-// block[] at some X
-type XBlocks = Record<number, Entity<Position>[]>
-
-// todo move to an entity
-const xBlocksBuffer: XBlocks = {}
-
-const buildXBlocksBuffer = (world: World): XBlocks => {
-  const blocks = world.queryEntities<Position>(["position"], x => x.id.startsWith("block-"))
-
-  for (const block of blocks) {
-    const { x } = block.components.position.data
-    if (!xBlocksBuffer[x]) {
-      xBlocksBuffer[x] = []
-    }
-    xBlocksBuffer[x].push(block)
-  }
-
-  return xBlocksBuffer
-}
-
-const addToXBlocksBuffer = (block: Entity<Position>) => {
-  const { x } = block.components.position.data
-  if (!xBlocksBuffer[x]) {
-    xBlocksBuffer[x] = []
-  }
-  xBlocksBuffer[x].push(block)
-}
-
-// use the xBlocksBuffer to find the block at the mouse position
-const blockAtMouse = (mouse: XY): XYZ | null => {
-  const snapped = snapXY(mouse)
-
-  // sort by Z desc then Y desc
-  const blocks = xBlocksBuffer[snapped.x]
-  if (!blocks) return null
-
-  // sort by Z desc
-  blocks.sort((a, b) => {
-    const zA = a.components.position.data.z
-    const zB = b.components.position.data.z
-    return zB - zA
-  })
-
-  // sort by Y asc
-  blocks.sort((a, b) => {
-    const yA = a.components.position.data.y
-    const yB = b.components.position.data.y
-    return yB - yA
-  })
-
-  for (const block of blocks) {
-    const { x, y, z } = block.components.position.data
-
-    const bottom = y - z
-    const top = bottom - height - width
-
-    if (mouse.y <= bottom && mouse.y >= top) {
-      return { x, y, z }
-    }
-  }
-
-  return null
 }
