@@ -7,7 +7,7 @@ export type TwoPoints = [number, number, number, number]
 export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
-export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin } = Math
+export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, PI } = Math
 
 export const round = (n: number, places = 0) => {
   const factor = pow(10, places)
@@ -124,6 +124,10 @@ export const isometricToWorld = ({ x, y }: XY): XY => ({
   x: (2 * y + x) / 2,
   y: (2 * y - x) / 2
 })
+
+export const angleXY = (x: number, y: number) => {
+  return (Math.atan2(y, x) * 180) / PI - 90
+}
 
 export const pointsIsometric = (points: number[][]) => points.map(([x, y]) => worldToIsometric({ x, y })).map(({ x, y }) => [x, y]).flat()
 

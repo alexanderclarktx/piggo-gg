@@ -1,6 +1,7 @@
 import {
   BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf
+  BlockType, BlockTypeInt, range, sample, logPerf, angleXY,
+  hypot
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -46,10 +47,15 @@ export const BlockData = (): BlockData => {
         const { x, y, z } = block
 
         const screenY = y - z - height
+        const dx = x - mouse.x
+        const dy = screenY - mouse.y
 
         // circle
-        const d = Math.sqrt((x - mouse.x) ** 2 + (screenY - mouse.y) ** 2)
+        const d = hypot(dx, dy)
         if (d > width) continue
+
+        // angle
+        const angle = angleXY(dx, dy)
 
         found = block
         break
