@@ -7,6 +7,7 @@ const { width, height } = BlockDimensions
 
 export type BlockData = {
   atMouse: (mouse: XY, player: XYZ) => XYZ | null
+  adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
   data: (at: XY[]) => Block[]
   remove: (block: Block) => void
@@ -34,13 +35,13 @@ export const BlockData = (): BlockData => {
     atMouse: (mouse: XY, player: XYZ) => {
       const playerChunk = XYtoChunk(player)
 
-      const chunk = cache[chunkey(playerChunk.x, playerChunk.y)]
-      if (!chunk) return null
+      const allBlocks = blocks.adjacent(playerChunk)
+      if (!allBlocks) return null
 
       let found: Block | null = null
 
-      for (let i = chunk.length - 1; i >= 0; i--) {
-        const block = chunk[i]
+      for (let i = allBlocks.length - 1; i >= 0; i--) {
+        const block = allBlocks[i]
         const { x, y, z } = block
 
         const screenY = y - z - height
@@ -67,8 +68,18 @@ export const BlockData = (): BlockData => {
 
         break
       }
-
       return found
+    },
+    adjacent: (block: XY) => {
+      const data: Block[] = []
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const t = cache[chunkey(block.x + i, block.y + j)]
+          if (!t) return null
+          data.push(...t)
+        }
+      }
+      return data
     },
     add: (block: Block) => {
       const chunkX = floor(block.x / 4)
