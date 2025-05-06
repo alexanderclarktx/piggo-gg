@@ -29,7 +29,6 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
       mb1: ({ params, world, player }) => {
         const { hold, mouse } = params as ItemActionParams
         if (hold) return
-        // addToXBlocksBuffer(block)
 
         const character = player?.components.controlling.getCharacter(world)
         if (!character) return
@@ -38,11 +37,8 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         if (!xyz) return
 
         const spot = XYZtoIJK(xyz)
-        console.log("add block", xyz, spot)
         const added = blocks.add({ ...spot, z: spot.z + 1, type: BlockTypeInt[type] })
         if (!added) return
-
-        // blocks.add({ ...snapXYZ(world.flip(mouse)), type: BlockTypeInt[type] })
 
         world.client?.soundManager.play("click2")
       }
