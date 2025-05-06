@@ -1,14 +1,16 @@
 import {
   BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf
+  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
 
 export type BlockData = {
   atMouse: (mouse: XY, player: XYZ) => XYZ | null
+  adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
   data: (at: XY[]) => Block[]
+  hasXYZ: (block: XYZ) => boolean
   remove: (block: Block) => void
 }
 
@@ -32,30 +34,58 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     atMouse: (mouse: XY, player: XYZ) => {
-
       const playerChunk = XYtoChunk(player)
 
-      // check blocks in chunk if they are at mouse
-      const chunk = cache[chunkey(playerChunk.x, playerChunk.y)]
-      if (!chunk) return null
+      const allBlocks = blocks.adjacent(playerChunk)
+      if (!allBlocks) return null
 
       let found: Block | null = null
 
-      for (let i = chunk.length - 1; i >= 0; i--) {
-        const block = chunk[i]
+      for (let i = allBlocks.length - 1; i >= 0; i--) {
+        const block = allBlocks[i]
         const { x, y, z } = block
 
+        const playerDist = hypot(player.x - x, player.y - y, player.z - z)
+        if (playerDist > 120) continue
+
         const screenY = y - z - height
+        const dx = mouse.x - x
+        const dy = mouse.y - screenY
 
         // circle
-        const d = Math.sqrt((x - mouse.x) ** 2 + (screenY - mouse.y) ** 2)
+        const d = hypot(dx, dy)
         if (d > width) continue
 
-        found = block
+        const maybe = { ...block }
+
+        // angle
+        const angle = angleCC(dx, dy)
+        if (angle > 30 && angle <= 150) {
+          maybe.z += 21
+        } else if (angle > 150 && angle < 270) {
+          maybe.x += 18
+          maybe.y += 9
+        } else {
+          maybe.x -= 18
+          maybe.y += 9
+        }
+
+        if (!blocks.hasXYZ(maybe)) found = maybe
+
         break
       }
-
       return found
+    },
+    adjacent: (block: XY) => {
+      const data: Block[] = []
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const t = cache[chunkey(block.x + i, block.y + j)]
+          if (!t) return null
+          data.push(...t)
+        }
+      }
+      return data
     },
     add: (block: Block) => {
       const chunkX = floor(block.x / 4)
@@ -122,6 +152,17 @@ export const BlockData = (): BlockData => {
 
       logPerf("block data", time)
       return result
+    },
+    hasXYZ: (block: XYZ) => {
+      const chunk = XYtoChunk(block)
+
+      const ijk = XYZtoIJK(block)
+      const x = ijk.x - chunk.x * 4
+      const y = ijk.y - chunk.y * 4
+
+      const index = ijk.z * 16 + y * 4 + x
+
+      return Boolean((data[chunk.x]?.[chunk.y][index]))
     },
     remove: ({ x, y, z }: XYZ) => { }
   }

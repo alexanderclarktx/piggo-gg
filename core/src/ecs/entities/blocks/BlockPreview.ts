@@ -30,7 +30,7 @@ export const BlockPreview = () => Entity({
           entity.components.renderable.visible = false
         } else {
           entity.components.renderable.visible = true
-          entity.components.position.setPosition({...xyz, z: xyz.z + 21})
+          entity.components.position.setPosition(xyz)
         }
       },
       setup: async (r) => {
