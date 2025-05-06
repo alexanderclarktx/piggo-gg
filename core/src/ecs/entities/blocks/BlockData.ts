@@ -1,6 +1,6 @@
 import {
   BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC
+  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC, keys
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -10,6 +10,7 @@ export type BlockData = {
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
   data: (at: XY[]) => Block[]
+  invalidate: () => void
   hasXYZ: (block: XYZ) => boolean
   remove: (block: Block) => void
 }
@@ -152,6 +153,11 @@ export const BlockData = (): BlockData => {
 
       logPerf("block data", time)
       return result
+    },
+    invalidate: () => {
+      for (const value of keys(dirty)) {
+        dirty[value] = true
+      }
     },
     hasXYZ: (block: XYZ) => {
       const chunk = XYtoChunk(block)
