@@ -211,7 +211,7 @@ export const spawnChunk = (chunk: XY) => {
 
         blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
-        if (z === height - 1 && type === "grass" && randomInt(100) === 1) {
+        if (z === height - 1 && type === "grass" && randomInt(200) === 1) {
           for (const block of BlockTree({ x, y, z })) {
             blocks.add(block)
           }
