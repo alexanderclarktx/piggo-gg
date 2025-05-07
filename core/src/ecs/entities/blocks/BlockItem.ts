@@ -37,6 +37,19 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         if (!xyz) return
 
         const spot = XYZtoIJK(xyz)
+        blocks.remove(spot)
+      },
+      mb2: ({ params, world, player }) => {
+        const { hold, mouse } = params as ItemActionParams
+        if (hold) return
+
+        const character = player?.components.controlling.getCharacter(world)
+        if (!character) return
+
+        const xyz = blocks.fromMouse(mouse, character.components.position.data)
+        if (!xyz) return
+
+        const spot = XYZtoIJK(xyz)
         const added = blocks.add({ ...spot, type: BlockTypeInt[type] })
         if (!added) return
 

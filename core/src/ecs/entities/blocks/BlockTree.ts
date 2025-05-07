@@ -1,32 +1,32 @@
-import { BlockPlan, BlockTypeInt, XYZ } from "@piggo-gg/core"
+import { BlockPlan, BlockTypeInt, randomInt, XYZ } from "@piggo-gg/core"
 
 export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
   const plan: BlockPlan = []
 
-  const height = 5
-  let leafWidth = 4
+  const height = randomInt(2) + 4
 
-  for (let i = 0; i < height; i++) {
+  const fluffy = randomInt(2) === 1
+
+  for (let i = 1; i <= height; i++) {
     plan.push({
       x, y, z: z + i, type: BlockTypeInt["wood"]
     })
   }
 
-  // put leafs all around the top
-  for (let i = 0; i < leafWidth; i++) {
-    // plan.push({
-    //   x: x + i * 18, y: y, z: z + (height) * 21, type: BlockTypeInt["leaf"]
-    // })
-    // plan.push({
-    //   x: x - i, y: y, z: z + (height) * 21, type: BlockTypeInt["leaf"]
-    // })
-    // plan.push({
-    //   x: x, y: y + i, z: z + (height) * 21, type: BlockTypeInt["leaf"]
-    // })
-    // plan.push({
-    //   x: x, y: y - i, z: z + (height) * 21, type: BlockTypeInt["leaf"]
-    // })
-  }
+  plan.push(
+    { x: x + 1, y, z: z + height, type: BlockTypeInt["moonrock"] },
+    { x: x - 1, y, z: z + height, type: BlockTypeInt["moonrock"] },
+    { x, y: y + 1, z: z + height, type: BlockTypeInt["moonrock"] },
+    { x, y: y - 1, z: z + height, type: BlockTypeInt["moonrock"] },
+    { x, y, z: z + height + 1, type: BlockTypeInt["moonrock"] }
+  )
+
+  if (fluffy) plan.push(
+    { x: x + 1, y: y + 1, z: z + height, type: BlockTypeInt["moonrock"] },
+    { x: x - 1, y: y + 1, z: z + height, type: BlockTypeInt["moonrock"] },
+    { x: x + 1, y: y - 1, z: z + height, type: BlockTypeInt["moonrock"] },
+    { x: x - 1, y: y - 1, z: z + height, type: BlockTypeInt["moonrock"] },
+  )
 
   return plan
 }

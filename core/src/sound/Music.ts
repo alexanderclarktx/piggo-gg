@@ -1,11 +1,11 @@
-import { ClientSystemBuilder, MusicSounds } from "@piggo-gg/core"
+import { ClientSystemBuilder, MusicSounds, randomInt } from "@piggo-gg/core"
 
 export const MusicSystem = ClientSystemBuilder({
   id: "MusicSystem",
   init: (world) => {
 
-    const tracks: MusicSounds[] = ["track1", "track2", "track3", "track4", "track5"]
-    let track = 4
+    const tracks: MusicSounds[] = ["track1", "track2", "track3", "track5"]
+    let track = randomInt(4, 1)
 
     let playing = false
 

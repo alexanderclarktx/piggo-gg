@@ -7,12 +7,13 @@ const { width, height } = BlockDimensions
 
 export type BlockData = {
   atMouse: (mouse: XY, player: XYZ) => XYZ | null
+  fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
   data: (at: XY[], flip?: boolean) => Block[]
   invalidate: () => void
   hasXYZ: (block: XYZ) => boolean
-  remove: (block: Block) => void
+  remove: (xyz: XYZ) => void
 }
 
 export const BlockData = (): BlockData => {
@@ -35,6 +36,34 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     atMouse: (mouse: XY, player: XYZ) => {
+      const playerChunk = XYtoChunk(player)
+
+      const allBlocks = blocks.adjacent(playerChunk)
+      if (!allBlocks) return null
+
+      let found: Block | null = null
+
+      for (let i = allBlocks.length - 1; i >= 0; i--) {
+        const block = allBlocks[i]
+        const { x, y, z } = block
+
+        const playerDist = hypot(player.x - x, player.y - y, player.z - z)
+        if (playerDist > 120) continue
+
+        const screenY = y - z - height
+        const dx = mouse.x - x
+        const dy = mouse.y - screenY
+
+        // circle
+        const d = hypot(dx, dy)
+        if (d > width) continue
+
+        found = { ...block }
+        break
+      }
+      return found
+    },
+    fromMouse: (mouse: XY, player: XYZ) => {
       const playerChunk = XYtoChunk(player)
 
       const allBlocks = blocks.adjacent(playerChunk)
@@ -182,7 +211,30 @@ export const BlockData = (): BlockData => {
 
       return Boolean((data[chunk.x]?.[chunk.y][index]))
     },
-    remove: ({ x, y, z }: XYZ) => { }
+    remove: ({ x, y, z }: XYZ) => {
+      const chunkX = floor(x / 4)
+      const chunkY = floor(y / 4)
+
+      if (!data[chunkX]?.[chunkY]) {
+        console.error("CHUNK NOT FOUND", chunkX, chunkY)
+        return
+      }
+
+      const xIndex = x - chunkX * 4
+      const yIndex = y - chunkY * 4
+
+      const index = z * 16 + yIndex * 4 + xIndex
+
+      if (data[chunkX][chunkY][index] === undefined) {
+        console.error("INVALID INDEX", index, xIndex, yIndex, z)
+        return
+      }
+
+      data[chunkX][chunkY][index] = 0
+
+      const key = chunkey(chunkX, chunkY)
+      dirty[key] = true
+    }
   }
 
   return blocks
@@ -211,7 +263,7 @@ export const spawnChunk = (chunk: XY) => {
 
         blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
-        if (z === height - 1 && type === "grass" && randomInt(100) === 1) {
+        if (z === height - 1 && type === "grass" && randomInt(200) === 1) {
           for (const block of BlockTree({ x, y, z })) {
             blocks.add(block)
           }
