@@ -135,16 +135,24 @@ export const BlockData = (): BlockData => {
 
         const chunkResult: Block[] = []
 
-        for (let i = 0; i < chunk.length; i++) {
-          const type = chunk[i]
-          if (type === 0) continue
+        for (let z = 0; z < 32; z++) {
+          for (let y = 0; y < 4; y++) {
+            for (let x = 0; x < 4; x++) {
 
-          let x = pos.x * 4 + i % 4
-          let y = pos.y * 4 + floor((i % 16) / 4)
-          let z = floor(i / 16)
+              const index = z * 16 + y * 4 + x
+              const type = chunk[index]
+              if (type === 0) continue
 
-          const block: Block = { ...intToXYZ(x, y, z), type }
-          chunkResult.push(block)
+              const xyz = intToXYZ(
+                x + pos.x * 4,
+                y + pos.y * 4,
+                z
+              )
+
+              const block: Block = { ...xyz, type }
+              chunkResult.push(block)
+            }
+          }
         }
         cache[key] = chunkResult
         dirty[key] = false
