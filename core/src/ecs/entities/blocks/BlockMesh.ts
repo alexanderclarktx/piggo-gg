@@ -15,6 +15,8 @@ export const BlockMesh = (type: "foreground" | "background") => {
   let chunkData: Block[] = []
   let topBlocks: Block[] = [{ x: 9, y: 9, z: 1, type: 2 }]
 
+  let flipped = 1
+
   return Entity({
     id: `block-mesh-${type}`,
     components: {
@@ -42,7 +44,12 @@ export const BlockMesh = (type: "foreground" | "background") => {
             }
           }
 
-          chunkData = blocks.data(chunks)
+          if (world.flipped() !== flipped) {
+            flipped = world.flipped()
+            blocks.invalidate()
+          }
+
+          chunkData = blocks.data(chunks, flipped === -1)
         },
         onRender: ({ world, delta, renderable }) => {
           const time = performance.now()
@@ -77,9 +84,9 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const newColorBuffer = new Float32Array(chunkData.length * 3)
 
           let instanceCount = 0
+
           for (const block of chunkData) {
-            // const { x, y } = world.flip(block)
-            const { x, y } = block
+            const { x, y } = world.flip(block)
 
             const blockInFront = (y - playerY) > 0
 
@@ -101,7 +108,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
           geometry.instanceCount = instanceCount
 
           renderable.c.visible = instanceCount > 0
-          logPerf("block mesh", time)
+          logPerf("block mesh", time, 9)
         }
       })
     }

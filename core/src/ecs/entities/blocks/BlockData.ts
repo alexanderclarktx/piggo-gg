@@ -1,6 +1,6 @@
 import {
   BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC
+  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC, keys
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -9,7 +9,8 @@ export type BlockData = {
   atMouse: (mouse: XY, player: XYZ) => XYZ | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
-  data: (at: XY[]) => Block[]
+  data: (at: XY[], flip?: boolean) => Block[]
+  invalidate: () => void
   hasXYZ: (block: XYZ) => boolean
   remove: (block: Block) => void
 }
@@ -107,7 +108,7 @@ export const BlockData = (): BlockData => {
       }
 
       if (data[chunkX][chunkY][index] !== 0) {
-        console.error("BLOCK ALREADY EXISTS", x, y, block.z)
+        // console.error("BLOCK ALREADY EXISTS", x, y, block.z)
         return false
       }
 
@@ -118,14 +119,22 @@ export const BlockData = (): BlockData => {
 
       return true
     },
-    data: (at: XY[]) => {
+    data: (at: XY[], flip: boolean = false) => {
       const result: Block[] = []
       const time = performance.now()
 
-      for (const pos of at) {
+      const start = flip ? at.length - 1 : 0;
+      const end = flip ? -1 : at.length;
+      const step = flip ? -1 : 1;
+
+      for (let i = start; i !== end; i += step) {
+        const pos = at[i]
+
+        // chunk exists
         const chunk = chunkval(pos.x, pos.y)
         if (!chunk) continue
 
+        // read the cache
         const key = `${pos.x}:${pos.y}`
         if (cache[key] && !dirty[key]) {
           result.push(...cache[key])
@@ -134,16 +143,20 @@ export const BlockData = (): BlockData => {
 
         const chunkResult: Block[] = []
 
-        for (let i = 0; i < chunk.length; i++) {
-          const type = chunk[i]
-          if (type === 0) continue
+        // find blocks in the chunk
+        for (let z = 0; z < 32; z++) {
+          for (let y = flip ? 3 : 0; flip ? y >= 0 : y < 4; flip ? y-- : y++) {
+            for (let x = flip ? 3 : 0; flip ? x >= 0 : x < 4; flip ? x-- : x++) {
 
-          let x = pos.x * 4 + i % 4
-          let y = pos.y * 4 + floor((i % 16) / 4)
-          let z = floor(i / 16)
+              const index = z * 16 + y * 4 + x
+              const type = chunk[index]
+              if (type === 0) continue
 
-          const block: Block = { ...intToXYZ(x, y, z), type }
-          chunkResult.push(block)
+              const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
+              const block: Block = { ...xyz, type }
+              chunkResult.push(block)
+            }
+          }
         }
         cache[key] = chunkResult
         dirty[key] = false
@@ -152,6 +165,11 @@ export const BlockData = (): BlockData => {
 
       logPerf("block data", time)
       return result
+    },
+    invalidate: () => {
+      for (const value of keys(dirty)) {
+        dirty[value] = true
+      }
     },
     hasXYZ: (block: XYZ) => {
       const chunk = XYtoChunk(block)
