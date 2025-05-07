@@ -9,7 +9,7 @@ export type BlockData = {
   atMouse: (mouse: XY, player: XYZ) => XYZ | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
-  data: (at: XY[]) => Block[]
+  data: (at: XY[], flip?: boolean) => Block[]
   invalidate: () => void
   hasXYZ: (block: XYZ) => boolean
   remove: (block: Block) => void
@@ -119,11 +119,12 @@ export const BlockData = (): BlockData => {
 
       return true
     },
-    data: (at: XY[]) => {
+    data: (at: XY[], flip: boolean = false) => {
       const result: Block[] = []
       const time = performance.now()
 
-      for (const pos of at) {
+      for (let atIndex = flip ? at.length - 1 : 0; flip ? atIndex >= 0 : atIndex < at.length; flip ? atIndex-- : atIndex++) {
+        const pos = at[atIndex]
         const chunk = chunkval(pos.x, pos.y)
         if (!chunk) continue
 
@@ -136,19 +137,14 @@ export const BlockData = (): BlockData => {
         const chunkResult: Block[] = []
 
         for (let z = 0; z < 32; z++) {
-          for (let y = 0; y < 4; y++) {
-            for (let x = 0; x < 4; x++) {
+          for (let y = flip ? 3 : 0; flip ? y >= 0 : y < 4; flip ? y-- : y++) {
+            for (let x = flip ? 3 : 0; flip ? x >= 0 : x < 4; flip ? x-- : x++) {
 
               const index = z * 16 + y * 4 + x
               const type = chunk[index]
               if (type === 0) continue
 
-              const xyz = intToXYZ(
-                x + pos.x * 4,
-                y + pos.y * 4,
-                z
-              )
-
+              const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
               const block: Block = { ...xyz, type }
               chunkResult.push(block)
             }

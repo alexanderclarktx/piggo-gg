@@ -44,12 +44,12 @@ export const BlockMesh = (type: "foreground" | "background") => {
             }
           }
 
-          // if (world.flipped() !== flipped) {
-          //   flipped = world.flipped()
-          //   blocks.invalidate()
-          // }
+          if (world.flipped() !== flipped) {
+            flipped = world.flipped()
+            blocks.invalidate()
+          }
 
-          chunkData = blocks.data(chunks)
+          chunkData = blocks.data(chunks, flipped === -1)
         },
         onRender: ({ world, delta, renderable }) => {
           const time = performance.now()
