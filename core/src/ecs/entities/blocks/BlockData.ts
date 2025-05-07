@@ -58,22 +58,7 @@ export const BlockData = (): BlockData => {
         const d = hypot(dx, dy)
         if (d > width) continue
 
-        const maybe = { ...block }
-
-        // angle
-        const angle = angleCC(dx, dy)
-        if (angle > 30 && angle <= 150) {
-          maybe.z += 21
-        } else if (angle > 150 && angle < 270) {
-          maybe.x += 18
-          maybe.y += 9
-        } else {
-          maybe.x -= 18
-          maybe.y += 9
-        }
-
-        if (!blocks.hasXYZ(maybe)) found = maybe
-
+        found = { ...block }
         break
       }
       return found
