@@ -85,9 +85,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           let instanceCount = 0
 
-          for (let i = 0; i < chunkData.length; i++) {
-            const block = chunkData[i]
-            // const block = flipped ? chunkData[chunkData.length - 1 - i] : chunkData[i]
+          for (const block of chunkData) {
             const { x, y } = world.flip(block)
 
             const blockInFront = (y - playerY) > 0
