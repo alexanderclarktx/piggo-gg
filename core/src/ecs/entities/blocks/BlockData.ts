@@ -123,11 +123,18 @@ export const BlockData = (): BlockData => {
       const result: Block[] = []
       const time = performance.now()
 
-      for (let atIndex = flip ? at.length - 1 : 0; flip ? atIndex >= 0 : atIndex < at.length; flip ? atIndex-- : atIndex++) {
-        const pos = at[atIndex]
+      const start = flip ? at.length - 1 : 0;
+      const end = flip ? -1 : at.length;
+      const step = flip ? -1 : 1;
+
+      for (let i = start; i !== end; i += step) {
+        const pos = at[i]
+
+        // chunk exists
         const chunk = chunkval(pos.x, pos.y)
         if (!chunk) continue
 
+        // read the cache
         const key = `${pos.x}:${pos.y}`
         if (cache[key] && !dirty[key]) {
           result.push(...cache[key])
@@ -136,6 +143,7 @@ export const BlockData = (): BlockData => {
 
         const chunkResult: Block[] = []
 
+        // find blocks in the chunk
         for (let z = 0; z < 32; z++) {
           for (let y = flip ? 3 : 0; flip ? y >= 0 : y < 4; flip ? y-- : y++) {
             for (let x = flip ? 3 : 0; flip ? x >= 0 : x < 4; flip ? x-- : x++) {
