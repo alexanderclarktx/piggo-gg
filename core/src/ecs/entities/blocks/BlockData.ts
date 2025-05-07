@@ -12,7 +12,7 @@ export type BlockData = {
   data: (at: XY[], flip?: boolean) => Block[]
   invalidate: () => void
   hasXYZ: (block: XYZ) => boolean
-  remove: (block: Block) => void
+  remove: (xyz: XYZ) => void
 }
 
 export const BlockData = (): BlockData => {
@@ -182,7 +182,30 @@ export const BlockData = (): BlockData => {
 
       return Boolean((data[chunk.x]?.[chunk.y][index]))
     },
-    remove: ({ x, y, z }: XYZ) => { }
+    remove: ({ x, y, z }: XYZ) => {
+      const chunkX = floor(x / 4)
+      const chunkY = floor(y / 4)
+
+      if (!data[chunkX]?.[chunkY]) {
+        console.error("CHUNK NOT FOUND", chunkX, chunkY)
+        return
+      }
+
+      const xIndex = x - chunkX * 4
+      const yIndex = y - chunkY * 4
+
+      const index = z * 16 + yIndex * 4 + xIndex
+
+      if (data[chunkX][chunkY][index] === undefined) {
+        console.error("INVALID INDEX", index, xIndex, yIndex, z)
+        return
+      }
+
+      data[chunkX][chunkY][index] = 0
+
+      const key = chunkey(chunkX, chunkY)
+      dirty[key] = true
+    }
   }
 
   return blocks

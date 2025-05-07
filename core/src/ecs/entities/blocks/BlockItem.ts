@@ -28,6 +28,19 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
     actions: Actions({
       mb1: ({ params, world, player }) => {
         const { hold, mouse } = params as ItemActionParams
+        if (!hold) return
+
+        const character = player?.components.controlling.getCharacter(world)
+        if (!character) return
+
+        const xyz = blocks.atMouse(mouse, character.components.position.data)
+        if (!xyz) return
+
+        const spot = XYZtoIJK(xyz)
+        const removed = blocks.remove(spot)
+      },
+      mb2: ({ params, world, player }) => {
+        const { hold, mouse } = params as ItemActionParams
         if (hold) return
 
         const character = player?.components.controlling.getCharacter(world)
