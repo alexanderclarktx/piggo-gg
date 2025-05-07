@@ -110,7 +110,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
           geometry.instanceCount = instanceCount
 
           renderable.c.visible = instanceCount > 0
-          logPerf("block mesh", time)
+          logPerf("block mesh", time, 9)
         }
       })
     }

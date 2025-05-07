@@ -108,7 +108,7 @@ export const BlockData = (): BlockData => {
       }
 
       if (data[chunkX][chunkY][index] !== 0) {
-        console.error("BLOCK ALREADY EXISTS", x, y, block.z)
+        // console.error("BLOCK ALREADY EXISTS", x, y, block.z)
         return false
       }
 
