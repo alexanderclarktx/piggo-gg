@@ -33,7 +33,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         const character = player?.components.controlling.getCharacter(world)
         if (!character) return
 
-        const xyz = blocks.atMouse(mouse, character.components.position.data)
+        const xyz = blocks.fromMouse(mouse, character.components.position.data)
         if (!xyz) return
 
         const spot = XYZtoIJK(xyz)
@@ -46,7 +46,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         const character = player?.components.controlling.getCharacter(world)
         if (!character) return
 
-        const xyz = blocks.atMouse(mouse, character.components.position.data)
+        const xyz = blocks.fromMouse(mouse, character.components.position.data)
         if (!xyz) return
 
         const spot = XYZtoIJK(xyz)

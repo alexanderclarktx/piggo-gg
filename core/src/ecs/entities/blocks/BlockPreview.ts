@@ -24,7 +24,7 @@ export const BlockPreview = () => Entity({
         const character = world.client?.playerCharacter()
         if (!character) return
 
-        const xyz = blocks.atMouse(mouse, character.components.position.data)
+        const xyz = blocks.fromMouse(mouse, character.components.position.data)
 
         if (!xyz) {
           entity.components.renderable.visible = false
