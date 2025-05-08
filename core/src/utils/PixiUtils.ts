@@ -68,6 +68,8 @@ export const pixiText = ({ text, pos, style, anchor }: pixiTextProps): Text => {
 }
 
 type PixiButtonContent = {
+  style: pixiTextStyle
+  text: string
   anchor?: XY
   fillAlpha?: number
   fillColor?: number
@@ -76,11 +78,16 @@ type PixiButtonContent = {
   rounded?: number
   strokeAlpha?: number
   strokeColor?: number
-  style: pixiTextStyle
-  text: string
   textAnchor?: XY
   textPos?: XY
   width?: number
+}
+
+export type PixiButton = {
+  c: Container,
+  onClick: undefined | (() => void),
+  redraw: (content?: () => PixiButtonContent) => void
+  bt: () => { boundary: Graphics, text: Text }
 }
 
 export type PixiButtonProps = {
@@ -91,13 +98,6 @@ export type PixiButtonProps = {
   onClick?: () => void
   onEnter?: () => void
   onLeave?: () => void
-}
-
-export type PixiButton = {
-  c: Container,
-  onClick: undefined | (() => void),
-  redraw: () => void
-  bt: () => { boundary: Graphics, text: Text }
 }
 
 export const PixiButton = (props: PixiButtonProps): PixiButton => {
@@ -149,9 +149,9 @@ export const PixiButton = (props: PixiButtonProps): PixiButton => {
   return {
     c,
     onClick: props.onClick,
-    redraw: () => {
+    redraw: (content) => {
       c.removeChildren()
-      c.addChild(...draw(props.content()))
+      c.addChild(...draw(content?.() ?? props.content()))
     },
     bt: () => {
       const boundary = c.children[0] as Graphics

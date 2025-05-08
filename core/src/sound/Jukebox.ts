@@ -1,4 +1,4 @@
-import { Entity, pixiGraphics, Position, randomInt, Renderable } from "@piggo-gg/core"
+import { Entity, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 type State = "stop" | "play"
@@ -7,6 +7,7 @@ export const Jukebox = (): Entity => {
 
   let discMarks: Graphics | null = null
   let arm: Graphics | null = null
+  // let button: Graphics | null = null
 
   let state: State = "stop"
 
@@ -62,7 +63,6 @@ export const Jukebox = (): Entity => {
                 .fill(0xe8e7e6)
 
               arm = pixiGraphics({ x: 70, y: -50, rotation: -0.92 })
-                // .moveTo(90, -50)
                 .lineTo(-42, 32)
                 .stroke({ color: 0xe8e7e6, width: 3 })
 
@@ -70,29 +70,45 @@ export const Jukebox = (): Entity => {
             }
           })
 
-          const button = Renderable({
+          const buttonRenderable = Renderable({
+            interactiveChildren: true,
+            position: { x: 65, y: 45 },
             setup: async (r) => {
-              const button = pixiGraphics()
-                .roundRect(50, 30, 30, 30, 10)
-                .fill(0x00aacc)
-                .fill({ color: 0x000000 })
-              button.interactive = true
 
-              button.on("pointerdown", () => {
-                console.log("click")
-                if (state === "stop") {
-                  state = "play"
-                  world.client?.soundManager.play("cassettePlay")
-                } else {
-                  state = "stop"
-                  world.client?.soundManager.play("cassetteStop")
-                }
+              const button = PixiButton({
+                content: () => ({
+                  text: " ", style: {
+                    fontSize: 0, fill: 0x000000
+                  },
+                  strokeColor: 0x00ff00,
+                  width: 26, height: 26,
+                }),
+                onClick: () => {
+                  if (state === "stop") {
+                    state = "play"
+                    world.client?.soundManager.play("cassettePlay")
+                    button.redraw(() => ({ text: " ", strokeColor: 0xff0000, style: {}, width: 26, height: 26 }))
+                  } else {
+                    state = "stop"
+                    world.client?.soundManager.play("cassetteStop")
+                    button.redraw(() => ({ text: " ", strokeColor: 0x00ff00, style: {}, width: 26, height: 26 }))
+                  }
+                },
+                onEnter: () => {
+                  buttonRenderable.setGlow({ outerStrength: 2 })
+                },
+                onLeave: () => {
+                  buttonRenderable.setGlow({ outerStrength: 0 })
+                },
               })
-              r.c = button
+
+              r.c = button.c
+
+              buttonRenderable.setBevel({ rotation: 90, lightAlpha: 0.6, shadowAlpha: 0.4 })
             }
           })
 
-          return [baseRenderable, other, button]
+          return [baseRenderable, other, buttonRenderable]
         }
       })
     }
