@@ -1,5 +1,6 @@
 import { ClientSystemBuilder, MusicSounds, randomInt } from "@piggo-gg/core"
 
+// deprecated
 export const MusicSystem = ClientSystemBuilder({
   id: "MusicSystem",
   init: (world) => {

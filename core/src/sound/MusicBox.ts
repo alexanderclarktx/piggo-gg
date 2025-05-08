@@ -1,7 +1,7 @@
 import { Entity, MusicSounds, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
-export const Jukebox = (): Entity => {
+export const MusicBox = (): Entity => {
 
   let discMarks: Graphics | null = null
   let arm: Graphics | null = null
@@ -12,8 +12,8 @@ export const Jukebox = (): Entity => {
   let state: "stop" | "play" = "stop"
   let track: MusicSounds = "track2"
 
-  const jukebox = Entity<Position>({
-    id: "jukebox",
+  const musicbox = Entity<Position>({
+    id: "musicbox",
     persists: true,
     components: {
       position: Position({ x: 400, y: 550, screenFixed: true }),
@@ -40,7 +40,7 @@ export const Jukebox = (): Entity => {
         setChildren: async (renderer, world) => {
 
           const { width } = renderer.wh()
-          jukebox.components.position.setPosition({ x: 220 + (width - 230) / 2 - 10 })
+          musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2 - 10 })
 
           const baseRenderable = Renderable({
             setup: async (r) => {
@@ -140,5 +140,5 @@ export const Jukebox = (): Entity => {
       })
     }
   })
-  return jukebox
+  return musicbox
 }
