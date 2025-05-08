@@ -8,8 +8,6 @@ export type CanvasProps = {
 
 export const Canvas = ({ setWorld }: CanvasProps) => {
 
-  let playedAudio = false
-
   useEffect(() => {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement
 
@@ -25,17 +23,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
 
   return (
     <div>
-      <audio>
-        <source src="/silent.mp3" type="audio/mp3"/>
-      </audio>
-      <canvas id="canvas" onPointerDown={() => {
-        if (playedAudio) return
-
-        const audioElement = document.querySelector("audio") as HTMLAudioElement
-        audioElement.play()
-
-        playedAudio = true
-      }}/>
+      <canvas id="canvas" />
     </div>
   )
 }

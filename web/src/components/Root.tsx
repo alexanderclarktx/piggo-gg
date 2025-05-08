@@ -15,10 +15,23 @@ export const Root = () => {
     (window as any).world = world
   }, [world])
 
+  let playedAudio = false
+
   return (
     <div style={{ userSelect: "none" }}>
+      <audio>
+        <source src="/silent.mp3" type="audio/mp3" />
+      </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
-      <div>
+      <div onPointerDown={() => {
+
+        if (playedAudio) return
+
+        const audioElement = document.querySelector("audio") as HTMLAudioElement
+        audioElement.play()
+
+        playedAudio = true
+      }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
           <Canvas setWorld={setWorld} />

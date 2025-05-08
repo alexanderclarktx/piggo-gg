@@ -12,6 +12,8 @@ export const Jukebox = (): Entity => {
   let state: "stop" | "play" = "stop"
   let track: MusicSounds = "track2"
 
+  // let pressable = true
+
   const jukebox = Entity<Position>({
     id: "jukebox",
     persists: true,
@@ -20,10 +22,12 @@ export const Jukebox = (): Entity => {
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        onTick: () => {
+        onTick: ({ renderable, world }) => {
           if (timeout > 0) timeout -= 1
 
           if (state === "play" && animation > 0) animation -= 1
+
+          renderable.visible = (world.game.id === "lobby")
         },
         onRender: () => {
           if (!discMarks || !arm) return
@@ -96,13 +100,19 @@ export const Jukebox = (): Entity => {
                 onClick: () => {
                   if (timeout) return
 
+                  if (world.client?.soundManager.state !== "running") {
+                    setTimeout(() => {button.onClick?.()}, 100)
+                    console.log("SoundManager not running")
+                    return
+                  }
+
                   if (state === "stop") {
                     state = "play"
                     world.client?.soundManager.play("cassettePlay")
                     world.client?.soundManager.play(track, 0, "+1")
                     button.redraw(() => ({ text: " ", strokeColor: 0xff0000, style: {}, width: 26, height: 26 }))
 
-                    timeout = 70
+                    timeout = 60
                     animation = 40
                   } else {
                     state = "stop"
@@ -110,7 +120,7 @@ export const Jukebox = (): Entity => {
                     world.client?.soundManager.stop(track)
                     button.redraw(() => ({ text: " ", strokeColor: 0x00ff00, style: {}, width: 26, height: 26 }))
 
-                    timeout = 70
+                    timeout = 50
                   }
                 },
                 onEnter: () => {
