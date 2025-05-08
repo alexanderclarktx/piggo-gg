@@ -1,8 +1,7 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture,
-  MusicBox
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox
 } from "@piggo-gg/core"
 import { Volley, Craft } from "@piggo-gg/games"
 import { Sprite, Text } from "pixi.js"
