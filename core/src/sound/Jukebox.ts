@@ -12,11 +12,11 @@ export const Jukebox = (): Entity => {
   let state: "stop" | "play" = "stop"
   let track: MusicSounds = "track2"
 
-  const jukebox = Entity({
+  const jukebox = Entity<Position>({
     id: "jukebox",
     persists: true,
     components: {
-      position: Position({ x: 400, y: 100, screenFixed: true }),
+      position: Position({ x: 400, y: 550, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -35,7 +35,10 @@ export const Jukebox = (): Entity => {
           if (state === "play" && arm.rotation < 0) arm.rotation += 0.008
           if (state === "stop" && arm.rotation > -0.92) arm.rotation -= 0.008
         },
-        setChildren: async (_, world) => {
+        setChildren: async (renderer, world) => {
+
+          const { width } = renderer.wh()
+          jukebox.components.position.setPosition({ x: 220 + (width - 230) / 2 - 10 })
 
           const baseRenderable = Renderable({
             setup: async (r) => {
@@ -69,7 +72,7 @@ export const Jukebox = (): Entity => {
                 .circle(70, -50, 5)
                 .fill(0xe8e7e6)
 
-              arm = pixiGraphics({ x: 70, y: -50, rotation: -0.92 })
+              arm = pixiGraphics({ x: 70, y: -50, rotation: state === "play" ? 0 : -0.92 })
                 .lineTo(-42, 32)
                 .stroke({ color: 0xe8e7e6, width: 3 })
 
@@ -87,7 +90,7 @@ export const Jukebox = (): Entity => {
                   text: " ", style: {
                     fontSize: 0, fill: 0x000000
                   },
-                  strokeColor: 0x00ff00,
+                  strokeColor: state === "play" ? 0xff0000 : 0x00ff00,
                   width: 26, height: 26,
                 }),
                 onClick: () => {
