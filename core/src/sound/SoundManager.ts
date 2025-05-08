@@ -1,7 +1,7 @@
 import { entries, GunNames, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
-export type MusicSounds = "piano1" | "track1" | "track2" | "track3" | "track5" | "cassetePlay" | "casseteStop"
+export type MusicSounds = "piano1" | "track1" | "track2" | "track3" | "track5" | "cassettePlay" | "cassetteStop"
 export type ClickSounds = "click1" | "click2" | "click3"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
@@ -52,8 +52,8 @@ export const SoundManager = (world: World): SoundManager => {
       track3: load("track3.mp3", -10),
       // track4: load("track4.mp3", -10),
       track5: load("track5.mp3", -10),
-      cassetePlay: load("cassete-play.mp3", -10),
-      casseteStop: load("cassete-stop.mp3", -10),
+      cassettePlay: load("cassettePlay.mp3", 0),
+      cassetteStop: load("cassetteStop.mp3", 0),
       click1: load("click1.mp3", -5),
       click2: load("click2.mp3", -5),
       click3: load("click3.mp3", -10),
@@ -96,7 +96,7 @@ export const SoundManager = (world: World): SoundManager => {
     play: (soundName: ValidSounds, startTime: number = 0, pos: XY | undefined = undefined, force: boolean = false) => {
       if (soundManager.muted && !soundName.startsWith("track")) return false
 
-      // if the sound is too far away, don't play it
+      // distance check
       if (pos) {
         const character = world.client?.playerCharacter()
         if (character) {
