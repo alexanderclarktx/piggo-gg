@@ -1,8 +1,8 @@
 import { entries, GunNames, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
-export type MusicSounds = "piano1" | "track1" | "track2" | "track3" | "track5" | "cassettePlay" | "cassetteStop"
-export type ClickSounds = "click1" | "click2" | "click3"
+export type MusicSounds = "track1" | "track2" | "track3" | "track5"
+export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
@@ -51,7 +51,7 @@ export const SoundManager = (world: World): SoundManager => {
     state: "closed",
     ready: false,
     sounds: {
-      piano1: load("piano1.mp3", 5),
+      // piano1: load("piano1.mp3", 5),
       track1: load("track1.mp3", -10),
       track2: load("track2.mp3", -10),
       track3: load("track3.mp3", -10),

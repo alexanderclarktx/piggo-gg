@@ -100,7 +100,6 @@ export const MusicBox = (): Entity => {
 
                   if (!world.client?.soundManager.ready) {
                     setTimeout(() => {button.onClick?.()}, 100)
-                    console.log("SoundManager not running")
                     return
                   }
 
