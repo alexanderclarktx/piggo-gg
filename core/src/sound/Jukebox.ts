@@ -6,13 +6,11 @@ export const Jukebox = (): Entity => {
   let discMarks: Graphics | null = null
   let arm: Graphics | null = null
 
-  let timeout = 0
+  let timeout = 40
   let animation = 0
 
   let state: "stop" | "play" = "stop"
   let track: MusicSounds = "track2"
-
-  // let pressable = true
 
   const jukebox = Entity<Position>({
     id: "jukebox",
@@ -100,7 +98,7 @@ export const Jukebox = (): Entity => {
                 onClick: () => {
                   if (timeout) return
 
-                  if (world.client?.soundManager.state !== "running") {
+                  if (!world.client?.soundManager.ready) {
                     setTimeout(() => {button.onClick?.()}, 100)
                     console.log("SoundManager not running")
                     return

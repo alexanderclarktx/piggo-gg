@@ -15,8 +15,6 @@ export const Root = () => {
     (window as any).world = world
   }, [world])
 
-  let playedAudio = false
-
   return (
     <div style={{ userSelect: "none" }}>
       <audio>
@@ -24,13 +22,14 @@ export const Root = () => {
       </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
+        if (!world) return
 
-        if (playedAudio) return
+        if (world.client!.soundManager.ready) return
 
         const audioElement = document.querySelector("audio") as HTMLAudioElement
         audioElement.play()
 
-        playedAudio = true
+        world.client!.soundManager.ready = true
       }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}

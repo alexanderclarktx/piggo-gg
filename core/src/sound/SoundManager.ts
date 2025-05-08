@@ -22,6 +22,7 @@ export type SoundManager = {
   muted: boolean
   state: "closed" | "running" | "suspended"
   sounds: Record<ValidSounds, Sound>
+  ready: boolean
   stop: (soundName: ValidSounds) => void
   stopAll: () => void
   play: (sound: ValidSounds, startTime?: number, fadeIn?: number | string, pos?: XY, force?: boolean) => boolean
@@ -48,6 +49,7 @@ export const SoundManager = (world: World): SoundManager => {
     music: { state: "stop", track: "track1" },
     muted: false,
     state: "closed",
+    ready: false,
     sounds: {
       piano1: load("piano1.mp3", 5),
       track1: load("track1.mp3", -10),
@@ -107,10 +109,10 @@ export const SoundManager = (world: World): SoundManager => {
         }
       }
     },
-    play: (soundName: ValidSounds, startTime: number | string = 0, fadeIn: number = 0, pos: XY | undefined = undefined, force: boolean = false) => {
+    play: (soundName: ValidSounds, startTime: number | string = 0, fadeIn: number = 0, pos: XY | undefined = undefined) => {
       if (soundManager.muted && !soundName.startsWith("track")) return false
 
-      // distance check
+      // check distance
       if (pos) {
         const character = world.client?.playerCharacter()
         if (character) {
@@ -122,19 +124,9 @@ export const SoundManager = (world: World): SoundManager => {
       try {
         if (soundManager.state !== "running") {
           soundManager.state = getContext().state
-          getTransport().cancel().start()
+          getTransport().cancel().start("+0")
         }
 
-        if (soundManager.state !== "running" && !force) return false
-
-        // if (isArray(soundName)) {
-        //   const choice = randomChoice(soundName)
-        //   const sound = soundManager.sounds[choice]
-        //   if (sound && sound.loaded) {
-        //     sound.start(0, startTime)
-        //     return true
-        //   }
-        // } else {
         const sound = soundManager.sounds[soundName]
         if (sound && sound.loaded) {
           sound.start(fadeIn, startTime)
