@@ -1,7 +1,8 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture,
+  Jukebox
 } from "@piggo-gg/core"
 import { Volley, Craft } from "@piggo-gg/games"
 import { Sprite, Text } from "pixi.js"
@@ -33,7 +34,8 @@ export const Lobby: GameBuilder = {
       PlayButton(),
       CreateLobbyButton(),
       // SettingsButton(),
-      PlayersOnline()
+      PlayersOnline(),
+      Jukebox()
     ],
     netcode: "delay"
   })
