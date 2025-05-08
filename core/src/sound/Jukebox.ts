@@ -1,28 +1,35 @@
-import { Entity, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { Entity, MusicSounds, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
-
-type State = "stop" | "play"
 
 export const Jukebox = (): Entity => {
 
   let discMarks: Graphics | null = null
   let arm: Graphics | null = null
-  // let button: Graphics | null = null
 
-  let state: State = "stop"
+  let timeout = 0
+  let animation = 0
+
+  let state: "stop" | "play" = "stop"
+  let track: MusicSounds = "track2"
 
   const jukebox = Entity({
     id: "jukebox",
+    persists: true,
     components: {
       position: Position({ x: 400, y: 100, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
+        onTick: () => {
+          if (timeout > 0) timeout -= 1
+
+          if (state === "play" && animation > 0) animation -= 1
+        },
         onRender: () => {
           if (!discMarks || !arm) return
 
           // rotate the disc
-          if (state === "play") discMarks.rotation += 0.01
+          if (state === "play" && animation === 0) discMarks.rotation += 0.008
 
           // rotate the arm
           if (state === "play" && arm.rotation < 0) arm.rotation += 0.008
@@ -84,14 +91,23 @@ export const Jukebox = (): Entity => {
                   width: 26, height: 26,
                 }),
                 onClick: () => {
+                  if (timeout) return
+
                   if (state === "stop") {
                     state = "play"
                     world.client?.soundManager.play("cassettePlay")
+                    world.client?.soundManager.play(track, 0, "+1")
                     button.redraw(() => ({ text: " ", strokeColor: 0xff0000, style: {}, width: 26, height: 26 }))
+
+                    timeout = 70
+                    animation = 40
                   } else {
                     state = "stop"
                     world.client?.soundManager.play("cassetteStop")
+                    world.client?.soundManager.stop(track)
                     button.redraw(() => ({ text: " ", strokeColor: 0x00ff00, style: {}, width: 26, height: 26 }))
+
+                    timeout = 70
                   }
                 },
                 onEnter: () => {

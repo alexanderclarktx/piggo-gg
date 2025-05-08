@@ -43,7 +43,7 @@ export const EscapeMenu = (): Entity => {
         }),
         onClick: () => {
           world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
-          world.client?.soundManager.play("click1", 0, undefined, true)
+          world.client?.soundManager.play("click1", 0, 0, undefined, true)
         },
         onEnter: () => {
           renderable.setGlow({ outerStrength: 2 })
@@ -72,7 +72,7 @@ export const EscapeMenu = (): Entity => {
         }),
         onClick: () => {
           console.log("Settings")
-          world.client?.soundManager.play("click1", 0, undefined, true)
+          world.client?.soundManager.play("click1", 0, 0, undefined, true)
         },
         onEnter: () => {
           renderable.setGlow({ outerStrength: 2 })
