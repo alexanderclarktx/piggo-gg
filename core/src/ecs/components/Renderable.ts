@@ -35,7 +35,7 @@ export type Renderable = Component<"renderable", {
   zIndex: number
 
   setContainer: ((r: Renderer) => Promise<Container>) | undefined
-  setChildren: ((r: Renderer) => Promise<Renderable[]>) | undefined
+  setChildren: ((r: Renderer, w: World) => Promise<Renderable[]>) | undefined
   setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
 
   onRender: DynamicDelta | undefined
@@ -74,7 +74,7 @@ export type RenderableProps = {
   zIndex?: number
   onRender?: DynamicDelta
   onTick?: Dynamic
-  setChildren?: (r: Renderer) => Promise<Renderable[]>
+  setChildren?: (r: Renderer, w: World) => Promise<Renderable[]>
   setContainer?: (r: Renderer) => Promise<Container>
   setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void> // todo single arg
 }
@@ -243,7 +243,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
       // add children
       if (renderable.setChildren && renderer) {
-        const childRenderables = await renderable.setChildren(renderer)
+        const childRenderables = await renderable.setChildren(renderer, world)
         renderable.children = childRenderables
 
         childRenderables.forEach(async (child) => {

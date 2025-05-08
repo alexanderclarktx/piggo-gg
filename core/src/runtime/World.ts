@@ -255,9 +255,14 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
         world.renderer.setBgColor(bgColor || 0x000000)
       }
 
-      // initialize new game
-      world.addEntities(entities)
+      // add new entities
+      for (const entity of entities) {
+        if (entity.persists && world.entity(entity.id)) continue
+        world.addEntity(entity)
+      }
+
       world.addSystemBuilders(systems)
+
       commands?.forEach((command) => world.commands[command.id] = command)
     }
   }

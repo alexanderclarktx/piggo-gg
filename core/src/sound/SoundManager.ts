@@ -1,8 +1,8 @@
 import { entries, GunNames, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
-export type MusicSounds = "piano1" | "track1" | "track2" | "track3" | "track4" | "track5"
-export type ClickSounds = "click1" | "click2" | "click3"
+export type MusicSounds = "track1" | "track2" | "track3" | "track5"
+export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
@@ -18,11 +18,14 @@ const load = (url: string, volume: number): Sound => {
 }
 
 export type SoundManager = {
+  music: { state: "stop" | "play", track: MusicSounds }
   muted: boolean
   state: "closed" | "running" | "suspended"
   sounds: Record<ValidSounds, Sound>
+  ready: boolean
+  stop: (soundName: ValidSounds) => void
   stopAll: () => void
-  play: (sound: ValidSounds, startTime?: number, pos?: XY, force?: boolean) => boolean
+  play: (sound: ValidSounds, startTime?: number, fadeIn?: number | string, pos?: XY, force?: boolean) => boolean
 }
 
 export const SoundManager = (world: World): SoundManager => {
@@ -43,15 +46,19 @@ export const SoundManager = (world: World): SoundManager => {
   window.addEventListener("focus", () => soundManager.muted = false)
 
   const soundManager: SoundManager = {
+    music: { state: "stop", track: "track1" },
     muted: false,
     state: "closed",
+    ready: false,
     sounds: {
-      piano1: load("piano1.mp3", 5),
+      // piano1: load("piano1.mp3", 5),
       track1: load("track1.mp3", -10),
       track2: load("track2.mp3", -10),
       track3: load("track3.mp3", -10),
-      track4: load("track4.mp3", -10),
+      // track4: load("track4.mp3", -10),
       track5: load("track5.mp3", -10),
+      cassettePlay: load("cassettePlay.mp3", 0),
+      cassetteStop: load("cassetteStop.mp3", -5),
       click1: load("click1.mp3", -5),
       click2: load("click2.mp3", -5),
       click3: load("click3.mp3", -10),
@@ -76,6 +83,17 @@ export const SoundManager = (world: World): SoundManager => {
       eat2: load("eat2.mp3", -20),
       spike: load("spike.mp3", 5),
     },
+    stop: (soundName: ValidSounds) => {
+      const sound = soundManager.sounds[soundName]
+      if (sound) {
+        try {
+          sound.stop()
+        }
+        catch (e) {
+          console.error(`error while stopping sound ${sound}`)
+        }
+      }
+    },
     stopAll: () => {
       for (const [name, sound] of entries(soundManager.sounds)) {
         if (sound.state === "started") {
@@ -91,10 +109,10 @@ export const SoundManager = (world: World): SoundManager => {
         }
       }
     },
-    play: (soundName: ValidSounds, startTime: number = 0, pos: XY | undefined = undefined, force: boolean = false) => {
+    play: (soundName: ValidSounds, startTime: number | string = 0, fadeIn: number = 0, pos: XY | undefined = undefined) => {
       if (soundManager.muted && !soundName.startsWith("track")) return false
 
-      // if the sound is too far away, don't play it
+      // check distance
       if (pos) {
         const character = world.client?.playerCharacter()
         if (character) {
@@ -106,25 +124,14 @@ export const SoundManager = (world: World): SoundManager => {
       try {
         if (soundManager.state !== "running") {
           soundManager.state = getContext().state
-          getTransport().cancel().start()
+          getTransport().cancel().start("+0")
         }
 
-        if (soundManager.state !== "running" && !force) return false
-
-        // if (isArray(soundName)) {
-        //   const choice = randomChoice(soundName)
-        //   const sound = soundManager.sounds[choice]
-        //   if (sound && sound.loaded) {
-        //     sound.start(0, startTime)
-        //     return true
-        //   }
-        // } else {
         const sound = soundManager.sounds[soundName]
         if (sound && sound.loaded) {
-          sound.start(0, startTime)
+          sound.start(fadeIn, startTime)
           return true
         }
-        // }
       } catch (e) {
         console.error(`error while playing sound ${soundName}`)
         return false

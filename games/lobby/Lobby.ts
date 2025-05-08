@@ -1,7 +1,7 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox
 } from "@piggo-gg/core"
 import { Volley, Craft } from "@piggo-gg/games"
 import { Sprite, Text } from "pixi.js"
@@ -33,7 +33,8 @@ export const Lobby: GameBuilder = {
       PlayButton(),
       CreateLobbyButton(),
       // SettingsButton(),
-      PlayersOnline()
+      PlayersOnline(),
+      MusicBox()
     ],
     netcode: "delay"
   })
@@ -162,7 +163,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-            world.client?.soundManager.play("click1", 0, undefined, true)
+            world.client?.soundManager.play("click1")
           },
           onEnter: () => {
             r.setGlow({ outerStrength: 2 })
@@ -214,7 +215,7 @@ const PlayButton = () => {
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
-              world.client?.soundManager.play("click1", 0, undefined, true)
+              world.client?.soundManager.play("click1")
             },
             onEnter: () => {
               r.setGlow({ outerStrength: 2 })
@@ -262,7 +263,7 @@ const CreateLobbyButton = () => {
             onClick: () => {
               world.client?.copyInviteLink()
 
-              world.client?.soundManager.play("click1", 0, undefined, true)
+              world.client?.soundManager.play("click1")
             },
             onEnter: () => {
               r.setGlow({ outerStrength: 2 })
@@ -302,7 +303,7 @@ const SettingsButton = () => {
             }),
             onClick: () => {
               console.log("Settings")
-              world.client?.soundManager.play("click1", 0, undefined, true)
+              world.client?.soundManager.play("click1")
             },
             onEnter: () => {
               r.setGlow({ outerStrength: 2 })
