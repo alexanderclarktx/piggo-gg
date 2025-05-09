@@ -166,6 +166,15 @@ export const RenderSystem = ClientSystemBuilder({
             })
           }
 
+          // children onRender
+          if (renderable.children && renderable.initialized) {
+            renderable.children.forEach((child) => {
+              if (child.onRender) child.onRender({
+                container: child.c, entity, world, renderable: child, client: world.client!, delta
+              })
+            })
+          }
+
           if (!renderable.rendered || !renderable.interpolate) continue
 
           // ui renderables

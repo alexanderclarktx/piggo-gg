@@ -67,18 +67,18 @@ export const MusicBox = (): Entity => {
             currentSong?.set({ volume: targetVolume })
           }
 
-          
+
 
           if (world.entity("escapeMenu")?.components.renderable?.visible === true) {
             renderable.visible = true
             const { width } = world.renderer!.wh()
 
 
-            musicbox.components.position.setPosition({ x: width / 2, y: 500})
+            musicbox.components.position.setPosition({ x: width / 2, y: 500 })
           } else if (world.game.id === "lobby") {
             renderable.visible = true
             const { width } = world.renderer!.wh()
-            musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2, y: 550})
+            musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2, y: 550 })
           } else {
             renderable.visible = false
           }
@@ -109,6 +109,13 @@ export const MusicBox = (): Entity => {
           const volumeDial = Renderable({
             position: { x: -70, y: -50 },
             interactiveChildren: true,
+            onRender: ({ renderable, world }) => {
+              if (dialDragging && !world.client?.bufferDown.get("mb1")) {
+                dialDragging = false
+                lastMouseY = 0
+                renderable.c.filters = []
+              }
+            },
             onTick: ({ renderable }) => {
               if (dialDragging) {
                 const xy = mouse
@@ -123,15 +130,8 @@ export const MusicBox = (): Entity => {
 
                 renderable.c.position.y += deltaY * 2
 
-                const check = renderable.c.position.y
                 renderable.c.position.y = Math.max(-90, renderable.c.position.y)
                 renderable.c.position.y = Math.min(-10, renderable.c.position.y)
-
-                if (check !== renderable.c.position.y) {
-                  dialDragging = false
-                  lastMouseY = 0
-                  renderable.c.filters = []
-                }
 
                 targetVolume = -20 - 10 * (renderable.c.position.y + 50) / 40
               }
@@ -146,12 +146,6 @@ export const MusicBox = (): Entity => {
               dial.on("pointerdown", (event) => {
                 dialDragging = true
               })
-
-              dial.onpointerupoutside = () => {
-                dialDragging = false
-                r.c.filters = []
-                lastMouseY = 0
-              }
 
               dial.on("pointerover", () => {
                 r.setGlow({ outerStrength: 1 })
