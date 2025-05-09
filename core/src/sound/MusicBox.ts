@@ -87,7 +87,7 @@ export const MusicBox = (): Entity => {
           const base = Renderable({
             setup: async (r) => {
               r.c = pixiGraphics()
-                .roundRect(-90, -70, 180, 140)
+                .roundRect(-90, -70, 180, 140, 12)
                 .fill(0x472709)
                 .stroke({ color: 0xffffff, width: 2 })
 
@@ -133,7 +133,6 @@ export const MusicBox = (): Entity => {
               dial.interactive = true
 
               dial.on("pointerdown", (event) => {
-                console.log("pointerdown", event)
                 dialDragging = true
               })
 
