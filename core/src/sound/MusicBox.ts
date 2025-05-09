@@ -67,8 +67,6 @@ export const MusicBox = (): Entity => {
             currentSong?.set({ volume: targetVolume })
           }
 
-
-
           if (world.entity("escapeMenu")?.components.renderable?.visible === true) {
             renderable.visible = true
             const { width } = world.renderer!.wh()
@@ -93,12 +91,12 @@ export const MusicBox = (): Entity => {
           if (state === "play" && arm.rotation < 0) arm.rotation += 0.008
           if (state === "stop" && arm.rotation > -0.92) arm.rotation -= 0.008
         },
-        setChildren: async (renderer, world) => {
+        setChildren: async (_, world) => {
 
           const base = Renderable({
             setup: async (r) => {
               r.c = pixiGraphics()
-                .roundRect(-90, -70, 180, 140, 12)
+                .roundRect(-90, -70, 180, 140, 10)
                 .fill(0x472709)
                 .stroke({ color: 0xffffff, width: 2 })
 
@@ -143,7 +141,8 @@ export const MusicBox = (): Entity => {
 
               dial.interactive = true
 
-              dial.on("pointerdown", (event) => {
+              dial.on("pointerdown", () => {
+                r.setGlow({ outerStrength: 1 })
                 dialDragging = true
               })
 
