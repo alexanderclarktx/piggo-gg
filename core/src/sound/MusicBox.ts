@@ -43,7 +43,7 @@ export const MusicBox = (): Entity => {
     components: {
       position: Position({ x: 400, y: 550, screenFixed: true }),
       renderable: Renderable({
-        zIndex: 10,
+        zIndex: 11,
         interactiveChildren: true,
         onTick: ({ renderable, world }) => {
           if (!world.client) return
@@ -67,7 +67,21 @@ export const MusicBox = (): Entity => {
             currentSong?.set({ volume: targetVolume })
           }
 
-          renderable.visible = (world.game.id === "lobby")
+          
+
+          if (world.entity("escapeMenu")?.components.renderable?.visible === true) {
+            renderable.visible = true
+            const { width } = world.renderer!.wh()
+
+
+            musicbox.components.position.setPosition({ x: width / 2, y: 500})
+          } else if (world.game.id === "lobby") {
+            renderable.visible = true
+            const { width } = world.renderer!.wh()
+            musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2, y: 550})
+          } else {
+            renderable.visible = false
+          }
         },
         onRender: () => {
           if (!discMarks || !arm) return
@@ -80,9 +94,6 @@ export const MusicBox = (): Entity => {
           if (state === "stop" && arm.rotation > -0.92) arm.rotation -= 0.008
         },
         setChildren: async (renderer, world) => {
-
-          const { width } = renderer.wh()
-          musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
           const base = Renderable({
             setup: async (r) => {
