@@ -128,7 +128,7 @@ export const MusicBox = (): Entity => {
             setup: async (r) => {
               const dial = pixiGraphics()
                 .roundRect(-9, 40, 18, 18, 6)
-                .fill(0xcccc99)
+                .fill(0xdd99aa)
 
               dial.interactive = true
 
