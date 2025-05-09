@@ -5,12 +5,33 @@ export const MusicBox = (): Entity => {
 
   let discMarks: Graphics | null = null
   let arm: Graphics | null = null
+  let disc: Graphics | null = null
 
   let timeout = 40
   let animation = 0
 
   let state: "stop" | "play" = "stop"
-  let track: MusicSounds = "track2"
+  let tracks: MusicSounds[] = ["track1", "track2", "track3", "track5"]
+  let trackIndex = 1
+
+  let discColors: Record<MusicSounds, number> = {
+    track1: 0x00aacc,
+    track2: 0xccaa00,
+    track3: 0x00ccaa,
+    track5: 0xaa00cc
+  }
+
+  const drawDisc = () => {
+    disc?.clear()
+    disc = pixiGraphics()
+      .circle(0, 0, 50)
+      .fill(0x1f1f1f)
+      .stroke({ color: 0xcccccc, width: 2 })
+      .circle(0, 0, 10)
+      .fill(discColors[tracks[trackIndex]])
+      .circle(0, 0, 2)
+      .fill(0x000000)
+  }
 
   const musicbox = Entity<Position>({
     id: "musicbox",
@@ -55,14 +76,7 @@ export const MusicBox = (): Entity => {
 
           const other = Renderable({
             setup: async (r) => {
-              const disc = pixiGraphics()
-                .circle(0, 0, 50)
-                .fill(0x1f1f1f)
-                .stroke({ color: 0xcccccc, width: 2 })
-                .circle(0, 0, 10)
-                .fill(0x00aacc)
-                .circle(0, 0, 2)
-                .fill(0x000000)
+              drawDisc()
 
               discMarks = pixiGraphics()
                 .arc(0, 0, 40, 0, Math.PI / 2)
@@ -78,7 +92,7 @@ export const MusicBox = (): Entity => {
                 .lineTo(-42, 32)
                 .stroke({ color: 0xe8e7e6, width: 3 })
 
-              r.c.addChild(disc, discMarks, armbase, arm)
+              r.c.addChild(disc!, discMarks, armbase, arm)
             }
           })
 
@@ -99,14 +113,14 @@ export const MusicBox = (): Entity => {
                   if (timeout) return
 
                   if (!world.client?.soundManager.ready) {
-                    setTimeout(() => {button.onClick?.()}, 100)
+                    setTimeout(() => { button.onClick?.() }, 100)
                     return
                   }
 
                   if (state === "stop") {
                     state = "play"
                     world.client?.soundManager.play("cassettePlay")
-                    world.client?.soundManager.play(track, 0, "+1")
+                    world.client?.soundManager.play(tracks[trackIndex], 0, "+1")
                     button.redraw(() => ({ text: " ", strokeColor: 0xff0000, style: {}, width: 26, height: 26 }))
 
                     timeout = 60
@@ -114,7 +128,7 @@ export const MusicBox = (): Entity => {
                   } else {
                     state = "stop"
                     world.client?.soundManager.play("cassetteStop")
-                    world.client?.soundManager.stop(track)
+                    world.client?.soundManager.stop(tracks[trackIndex])
                     button.redraw(() => ({ text: " ", strokeColor: 0x00ff00, style: {}, width: 26, height: 26 }))
 
                     timeout = 50
