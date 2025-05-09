@@ -84,7 +84,7 @@ export const MusicBox = (): Entity => {
           const { width } = renderer.wh()
           musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
-          const baseRenderable = Renderable({
+          const base = Renderable({
             setup: async (r) => {
               r.c = pixiGraphics()
                 .roundRect(-90, -70, 180, 140)
@@ -136,7 +136,7 @@ export const MusicBox = (): Entity => {
               }
 
               dial.on("pointerover", () => {
-                r.setGlow({ outerStrength: 2 })
+                r.setGlow({ outerStrength: 1 })
               })
 
               dial.on("pointerout", () => {
@@ -175,7 +175,7 @@ export const MusicBox = (): Entity => {
             }
           })
 
-          const buttonRenderable = Renderable({
+          const play = Renderable({
             interactiveChildren: true,
             position: { x: 65, y: 45 },
             setup: async (r) => {
@@ -217,20 +217,20 @@ export const MusicBox = (): Entity => {
                   }
                 },
                 onEnter: () => {
-                  buttonRenderable.setGlow({ outerStrength: 2 })
+                  play.setGlow({ outerStrength: 2 })
                 },
                 onLeave: () => {
-                  buttonRenderable.setGlow({ outerStrength: 0 })
+                  play.setGlow({ outerStrength: 0 })
                 },
               })
 
               r.c = button.c
 
-              buttonRenderable.setBevel({ rotation: 90, lightAlpha: 0.6, shadowAlpha: 0.4 })
+              play.setBevel({ rotation: 90, lightAlpha: 0.6, shadowAlpha: 0.4 })
             }
           })
 
-          return [baseRenderable, other, buttonRenderable, volumeDial]
+          return [base, other, play, volumeDial]
         }
       })
     }
