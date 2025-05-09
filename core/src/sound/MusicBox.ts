@@ -56,7 +56,6 @@ export const MusicBox = (): Entity => {
           if (state === "play" && animation > 0) animation -= 1
 
           if (state === "play" && timeout === 0 && currentSong?.state === "stopped") {
-            console.log("stopped")
             trackIndex = (trackIndex + 1) % tracks.length
             drawDisc()
             soundManager.play(tracks[trackIndex])
