@@ -59,7 +59,7 @@ export const MusicBox = (): Entity => {
             console.log("stopped")
             trackIndex = (trackIndex + 1) % tracks.length
             drawDisc()
-            soundManager.play(tracks[trackIndex], 0, "+1")
+            soundManager.play(tracks[trackIndex])
             timeout = 40
           }
 
