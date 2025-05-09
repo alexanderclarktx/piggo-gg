@@ -3,7 +3,8 @@ import { Entity, Position, Renderable, ClientSystemBuilder, logPerf } from "@pig
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
-    const { renderer } = world
+    const { renderer, client } = world
+    if (!client) return
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
@@ -69,13 +70,13 @@ export const RenderSystem = ClientSystemBuilder({
 
           // run dynamic callback
           if (renderable.onTick && renderable.initialized) renderable.onTick({
-            container: renderable.c, entity, world, renderable, client: world.client!
+            container: renderable.c, entity, world, renderable, client
           })
 
           // run dynamic callback for children
           if (renderable.children && renderable.initialized) {
             renderable.children.forEach((child) => {
-              if (child.onTick) child.onTick({ container: child.c, entity, world, renderable: child, client: world.client! })
+              if (child.onTick) child.onTick({ container: child.c, entity, world, renderable: child, client })
             })
           }
 
@@ -160,9 +161,16 @@ export const RenderSystem = ClientSystemBuilder({
 
           if (renderable.onRender && renderable.initialized) {
             renderable.onRender({
-              client: world.client!,
-              container: renderable.c,
-              delta, entity, renderable, world
+              container: renderable.c, client, delta, entity, renderable, world
+            })
+          }
+
+          // children onRender
+          if (renderable.children && renderable.initialized) {
+            renderable.children.forEach((child) => {
+              if (child.onRender) child.onRender({
+                container: child.c, entity, world, renderable: child, client, delta
+              })
             })
           }
 
