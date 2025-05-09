@@ -1,4 +1,4 @@
-import { Entity, MusicSounds, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { Entity, mouse, MusicSounds, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 export const MusicBox = (): Entity => {
@@ -13,6 +13,10 @@ export const MusicBox = (): Entity => {
   let state: "stop" | "play" = "stop"
   let tracks: MusicSounds[] = ["track1", "track2", "track3", "track5"]
   let trackIndex = 1
+
+  let lastMouseY = 0
+  let dialDragging = false
+  let targetVolume = -20
 
   let discColors: Record<MusicSounds, number> = {
     track1: 0x00bbdd,
@@ -42,16 +46,25 @@ export const MusicBox = (): Entity => {
         zIndex: 10,
         interactiveChildren: true,
         onTick: ({ renderable, world }) => {
+          if (!world.client) return
+
+          const { soundManager } = world.client
+          const currentSong = soundManager.sounds[tracks[trackIndex]]
+
           if (timeout > 0) timeout -= 1
 
           if (state === "play" && animation > 0) animation -= 1
 
-          if (state === "play" && timeout === 0 && world.client?.soundManager.sounds[tracks[trackIndex]]?.state === "stopped") {
+          if (state === "play" && timeout === 0 && currentSong?.state === "stopped") {
             console.log("stopped")
             trackIndex = (trackIndex + 1) % tracks.length
             drawDisc()
-            world.client?.soundManager.play(tracks[trackIndex], 0, "+1")
+            soundManager.play(tracks[trackIndex], 0, "+1")
             timeout = 40
+          }
+
+          if (state === "play" && currentSong) {
+            currentSong?.set({ volume: targetVolume })
           }
 
           renderable.visible = (world.game.id === "lobby")
@@ -82,6 +95,59 @@ export const MusicBox = (): Entity => {
             }
           })
 
+          const volumeDial = Renderable({
+            position: { x: -70, y: -50 },
+            interactiveChildren: true,
+            onTick: ({ renderable }) => {
+              if (dialDragging) {
+                const xy = mouse
+
+                if (lastMouseY === 0) {
+                  lastMouseY = xy.y
+                  return
+                }
+
+                const deltaY = xy.y - lastMouseY
+                lastMouseY = xy.y
+
+                renderable.c.position.y += deltaY * 2
+
+                renderable.c.position.y = Math.max(-90, renderable.c.position.y)
+                renderable.c.position.y = Math.min(-10, renderable.c.position.y)
+
+                targetVolume = -20 - 10 * (renderable.c.position.y + 50) / 40
+              }
+            },
+            setup: async (r) => {
+              const dial = pixiGraphics()
+                .roundRect(-9, 40, 18, 18, 6)
+                .fill(0xcccc99)
+
+              dial.interactive = true
+
+              dial.on("pointerdown", () => {
+                dialDragging = true
+              })
+
+              dial.onpointerupoutside = () => {
+                dialDragging = false
+                r.c.filters = []
+                lastMouseY = 0
+              }
+
+              dial.on("pointerover", () => {
+                r.setGlow({ outerStrength: 2 })
+              })
+
+              dial.on("pointerout", () => {
+                if (dialDragging) return
+                r.c.filters = []
+              })
+
+              r.c = dial
+            }
+          })
+
           const other = Renderable({
             setup: async (r) => {
               drawDisc()
@@ -92,6 +158,11 @@ export const MusicBox = (): Entity => {
                 .arc(0, 0, 40, -Math.PI, -Math.PI / 2)
                 .stroke({ color: 0xffffff, width: 2 })
 
+              const slide = pixiGraphics()
+                .moveTo(-70, -50)
+                .lineTo(-70, 50)
+                .stroke({ color: 0x000000, width: 4 })
+
               const armbase = pixiGraphics()
                 .circle(70, -50, 5)
                 .fill(0xe8e7e6)
@@ -100,7 +171,7 @@ export const MusicBox = (): Entity => {
                 .lineTo(-42, 32)
                 .stroke({ color: 0xe8e7e6, width: 3 })
 
-              r.c.addChild(disc!, discMarks, armbase, arm)
+              r.c.addChild(disc!, slide, discMarks, armbase, arm)
             }
           })
 
@@ -159,7 +230,7 @@ export const MusicBox = (): Entity => {
             }
           })
 
-          return [baseRenderable, other, buttonRenderable]
+          return [baseRenderable, other, buttonRenderable, volumeDial]
         }
       })
     }
