@@ -15,15 +15,15 @@ export const MusicBox = (): Entity => {
   let trackIndex = 1
 
   let discColors: Record<MusicSounds, number> = {
-    track1: 0x00aacc,
+    track1: 0x00bbdd,
     track2: 0xccaa00,
     track3: 0x00ccaa,
-    track5: 0xaa00cc
+    track5: 0xcc99cc
   }
 
   const drawDisc = () => {
-    disc?.clear()
-    disc = pixiGraphics()
+    if (disc === null) disc = pixiGraphics()
+    disc.clear()
       .circle(0, 0, 50)
       .fill(0x1f1f1f)
       .stroke({ color: 0xcccccc, width: 2 })
@@ -45,6 +45,14 @@ export const MusicBox = (): Entity => {
           if (timeout > 0) timeout -= 1
 
           if (state === "play" && animation > 0) animation -= 1
+
+          if (state === "play" && timeout === 0 && world.client?.soundManager.sounds[tracks[trackIndex]]?.state === "stopped") {
+            console.log("stopped")
+            trackIndex = (trackIndex + 1) % tracks.length
+            drawDisc()
+            world.client?.soundManager.play(tracks[trackIndex], 0, "+1")
+            timeout = 40
+          }
 
           renderable.visible = (world.game.id === "lobby")
         },
@@ -130,6 +138,9 @@ export const MusicBox = (): Entity => {
                     world.client?.soundManager.play("cassetteStop")
                     world.client?.soundManager.stop(tracks[trackIndex])
                     button.redraw(() => ({ text: " ", strokeColor: 0x00ff00, style: {}, width: 26, height: 26 }))
+
+                    trackIndex = (trackIndex + 1) % tracks.length
+                    drawDisc()
 
                     timeout = 50
                   }
