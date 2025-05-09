@@ -69,12 +69,12 @@ export const MusicBox = (): Entity => {
         setChildren: async (renderer, world) => {
 
           const { width } = renderer.wh()
-          musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2 - 10 })
+          musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
           const baseRenderable = Renderable({
             setup: async (r) => {
               r.c = pixiGraphics()
-                .roundRect(-70, -70, 160, 140)
+                .roundRect(-90, -70, 180, 140)
                 .fill(0x472709)
                 .stroke({ color: 0xffffff, width: 2 })
 
