@@ -112,8 +112,15 @@ export const MusicBox = (): Entity => {
 
                 renderable.c.position.y += deltaY * 2
 
+                const check = renderable.c.position.y
                 renderable.c.position.y = Math.max(-90, renderable.c.position.y)
                 renderable.c.position.y = Math.min(-10, renderable.c.position.y)
+
+                if (check !== renderable.c.position.y) {
+                  dialDragging = false
+                  lastMouseY = 0
+                  renderable.c.filters = []
+                }
 
                 targetVolume = -20 - 10 * (renderable.c.position.y + 50) / 40
               }
@@ -125,7 +132,8 @@ export const MusicBox = (): Entity => {
 
               dial.interactive = true
 
-              dial.on("pointerdown", () => {
+              dial.on("pointerdown", (event) => {
+                console.log("pointerdown", event)
                 dialDragging = true
               })
 
@@ -164,11 +172,11 @@ export const MusicBox = (): Entity => {
                 .stroke({ color: 0x000000, width: 4 })
 
               const armbase = pixiGraphics()
-                .circle(70, -50, 5)
+                .circle(65, -50, 5)
                 .fill(0xe8e7e6)
 
-              arm = pixiGraphics({ x: 70, y: -50, rotation: state === "play" ? 0 : -0.92 })
-                .lineTo(-42, 32)
+              arm = pixiGraphics({ x: 65, y: -50, rotation: state === "play" ? 0 : -0.92 })
+                .lineTo(-40, 30)
                 .stroke({ color: 0xe8e7e6, width: 3 })
 
               r.c.addChild(disc!, slide, discMarks, armbase, arm)
