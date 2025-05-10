@@ -120,7 +120,8 @@ export const MusicBox = (): Entity => {
               if (dialDragging && !world.client?.bufferDown.get("mb1")) {
                 dialDragging = false
                 lastMouseY = 0
-                renderable.c.filters = []
+                // renderable.c.filters = []
+                renderable.setGlow()
               }
             },
             onTick: ({ renderable }) => {
@@ -150,19 +151,19 @@ export const MusicBox = (): Entity => {
 
               dial.interactive = true
 
-              dial.on("pointerdown", () => {
+              dial.onpointerdown = () => {
                 r.setGlow({ outerStrength: 1 })
                 dialDragging = true
-              })
+              }
 
-              dial.on("pointerover", () => {
+              dial.onpointerover = () => {
                 r.setGlow({ outerStrength: 1 })
-              })
+              }
 
-              dial.on("pointerout", () => {
+              dial.onpointerout = () => {
                 if (dialDragging) return
-                r.c.filters = []
-              })
+                r.setGlow()
+              }
 
               r.c = dial
 
@@ -223,19 +224,6 @@ export const MusicBox = (): Entity => {
               r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
             }
           })
-
-          // const armRenderable = Renderable({
-          //   position: { x: 65, y: -50 },
-          //   setup: async (r) => {
-          //     arm = pixiGraphics()
-          //       .lineTo(0, 48)
-          //       .stroke({ color: 0xe8e7e6, width: 3 })
-
-          //     r.c = arm
-
-          //     r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
-          //   }
-          // })
 
           const other = Renderable({
             setup: async (r) => {
