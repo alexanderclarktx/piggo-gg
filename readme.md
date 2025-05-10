@@ -5,7 +5,7 @@ __Piggo__ is a multiplayer web game! Play online at [piggo.gg](https://piggo.gg)
 <br>
 
 <p align="center">
-  <img src="gameplay.gif" style="width:100%">
+  <img src="gameplay.gif" style="width:90%">
 </p>
 
 ## Product Objectives
