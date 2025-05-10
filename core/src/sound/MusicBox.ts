@@ -6,7 +6,7 @@ export const MusicBox = (): Entity => {
   let discMarks: Graphics | null = null
   let arm: Graphics | null = null
   let disc: Graphics | null = null
-  let dot: Graphics | null = null
+  let light: Graphics | null = null
 
   let timeout = 40
   let animation = 0
@@ -38,9 +38,9 @@ export const MusicBox = (): Entity => {
       .fill(0x000000)
   }
 
-  const drawDot = () => {
-    if (dot === null) dot = pixiGraphics()
-    dot.clear()
+  const drawLight = () => {
+    if (light === null) light = pixiGraphics()
+    light.clear()
       .circle(0, 0, 6)
       .fill(state === "play" ? 0x00ff00 : 0xff0000)
   }
@@ -95,8 +95,10 @@ export const MusicBox = (): Entity => {
           if (state === "play" && animation === 0) discMarks.rotation += delta / 1800
 
           // rotate the arm
-          if (state === "play" && arm.rotation < 0) arm.rotation += delta / 1500
-          if (state === "stop" && arm.rotation > -0.92) arm.rotation -= delta / 1500
+          if (state === "play" && arm.rotation <= 0.92) arm.rotation += delta / 1500
+          if (state === "stop" && arm.rotation > 0) arm.rotation -= delta / 1500
+
+          arm.rotation = Math.max(0, arm.rotation)
         },
         setChildren: async (_, world) => {
 
@@ -185,7 +187,6 @@ export const MusicBox = (): Entity => {
                   state = "play"
                   world.client?.soundManager.play("cassettePlay")
                   world.client?.soundManager.play(tracks[trackIndex], 0, "+1")
-                  // button.redraw(() => ({ text: " ", strokeColor: 0xff0000, style: {}, width: 26, height: 26 }))
 
                   timeout = 60
                   animation = 40
@@ -193,16 +194,16 @@ export const MusicBox = (): Entity => {
                   state = "stop"
                   world.client?.soundManager.play("cassetteStop")
                   world.client?.soundManager.stop(tracks[trackIndex])
-                  // button.redraw(() => ({ text: " ", strokeColor: 0x00ff00, style: {}, width: 26, height: 26 }))
 
                   trackIndex = (trackIndex + 1) % tracks.length
                   drawDisc()
 
                   timeout = 50
                 }
+
+                drawLight()
               }
               r.c.onpointerenter = () => {
-                console.log("enter")
                 r.setGlow({ outerStrength: 2 })
               }
               r.c.onpointerleave = () => {
@@ -223,6 +224,19 @@ export const MusicBox = (): Entity => {
             }
           })
 
+          // const armRenderable = Renderable({
+          //   position: { x: 65, y: -50 },
+          //   setup: async (r) => {
+          //     arm = pixiGraphics()
+          //       .lineTo(0, 48)
+          //       .stroke({ color: 0xe8e7e6, width: 3 })
+
+          //     r.c = arm
+
+          //     r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+          //   }
+          // })
+
           const other = Renderable({
             setup: async (r) => {
               discMarks = pixiGraphics()
@@ -236,28 +250,26 @@ export const MusicBox = (): Entity => {
                 .lineTo(-70, 45)
                 .stroke({ color: 0x000000, width: 4 })
 
-                //rotation: state === "play" ? 0 : -0.92
-
               arm = pixiGraphics({ x: 65, y: -50 })
-                .lineTo(-40, 30)
+                .lineTo(0, 48)
                 .stroke({ color: 0xe8e7e6, width: 3 })
 
               r.c.addChild(slide, discMarks, arm)
             }
           })
 
-          const light = Renderable({
+          const lightRenderable = Renderable({
             position: { x: 65, y: 45 },
             setup: async (r) => {
-              drawDot()
+              drawLight()
 
-              r.c = dot!
+              r.c = light!
 
               r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
             }
           })
 
-          return [base, discRenderable, armBaseRenderable, other, light, volumeDial]
+          return [base, discRenderable, armBaseRenderable, other, lightRenderable, volumeDial]
         }
       })
     }
