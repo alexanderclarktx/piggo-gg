@@ -147,7 +147,7 @@ export const MusicBox = (): Entity => {
             setup: async (r) => {
               const dial = pixiGraphics()
                 .roundRect(-9, 40, 18, 18, 6)
-                .fill(0xffff00)
+                .fill(0xffff55)
 
               dial.interactive = true
 
@@ -167,7 +167,7 @@ export const MusicBox = (): Entity => {
 
               r.c = dial
 
-              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 })
             }
           })
 
@@ -177,7 +177,7 @@ export const MusicBox = (): Entity => {
 
               r.c = disc!
 
-              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.2 })
 
               r.c.interactive = true
 
@@ -229,9 +229,9 @@ export const MusicBox = (): Entity => {
             setup: async (r) => {
               discMarks = pixiGraphics()
                 .arc(0, 0, 40, 0, Math.PI / 2)
-                .stroke({ color: 0xffffff, width: 2 })
+                .stroke({ color: 0xdddddd, width: 2 })
                 .arc(0, 0, 40, -Math.PI, -Math.PI / 2)
-                .stroke({ color: 0xffffff, width: 2 })
+                .stroke({ color: 0xdddddd, width: 2 })
 
               const slide = pixiGraphics()
                 .moveTo(-70, -45)
@@ -253,7 +253,7 @@ export const MusicBox = (): Entity => {
 
               r.c = light!
 
-              r.setBevel({ rotation: 90, lightAlpha: 0.9, shadowAlpha: 0.5 })
+              r.setBevel({ rotation: 90, lightAlpha: 0.8, shadowAlpha: 0.2 })
             }
           })
 
