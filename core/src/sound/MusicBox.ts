@@ -147,7 +147,7 @@ export const MusicBox = (): Entity => {
             setup: async (r) => {
               const dial = pixiGraphics()
                 .roundRect(-9, 40, 18, 18, 6)
-                .fill(0xffff55)
+                .fill(0xdd99aa)
 
               dial.interactive = true
 
@@ -167,7 +167,7 @@ export const MusicBox = (): Entity => {
 
               r.c = dial
 
-              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.4 })
+              r.setBevel({ rotation: 90, lightAlpha: 0.9, shadowAlpha: 0.4 })
             }
           })
 
