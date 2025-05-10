@@ -1,6 +1,6 @@
 <img align="left" height="60" hspace="0" src="web/res/piggo.svg">
 
-__Piggo__ is an open-source multiplayer web game! Play online at [piggo.gg](https://piggo.gg)
+__Piggo__ is a multiplayer web game! Play online at [piggo.gg](https://piggo.gg)
 
 <br>
 
@@ -10,17 +10,17 @@ __Piggo__ is an open-source multiplayer web game! Play online at [piggo.gg](http
 
 ## Product Objectives
 
-🐷 fun game modes
+🐷 build great games
 
-🕹️ intuitive UI/UX
+🕹️ clean UI/UX
 
 🥳 easy to play with friends
 
 ## Technical Objectives
 
-👨🏻‍💻 the code is readable
+👨🏻‍💻 readable code
 
-🎮 making new game modes is simple
+🎮 adding new games is simple
 
 👾 multiplayer is smooth & performant
 

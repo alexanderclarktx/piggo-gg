@@ -1,4 +1,4 @@
-import { Entity, mouse, MusicSounds, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { Entity, mouse, MusicSounds, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 export const MusicBox = (): Entity => {
@@ -6,6 +6,7 @@ export const MusicBox = (): Entity => {
   let discMarks: Graphics | null = null
   let arm: Graphics | null = null
   let disc: Graphics | null = null
+  let light: Graphics | null = null
 
   let timeout = 40
   let animation = 0
@@ -30,11 +31,18 @@ export const MusicBox = (): Entity => {
     disc.clear()
       .circle(0, 0, 50)
       .fill(0x1f1f1f)
-      .stroke({ color: 0xcccccc, width: 2 })
+      .stroke({ color: 0xdddddd, width: 2 })
       .circle(0, 0, 10)
       .fill(discColors[tracks[trackIndex]])
       .circle(0, 0, 2)
       .fill(0x000000)
+  }
+
+  const drawLight = () => {
+    if (light === null) light = pixiGraphics()
+    light.clear()
+      .circle(0, 0, 6)
+      .fill(state === "play" ? 0x00ff00 : 0xff0000)
   }
 
   const musicbox = Entity<Position>({
@@ -87,8 +95,10 @@ export const MusicBox = (): Entity => {
           if (state === "play" && animation === 0) discMarks.rotation += delta / 1800
 
           // rotate the arm
-          if (state === "play" && arm.rotation < 0) arm.rotation += delta / 1500
-          if (state === "stop" && arm.rotation > -0.92) arm.rotation -= delta / 1500
+          if (state === "play" && arm.rotation <= 0.92) arm.rotation += delta / 1500
+          if (state === "stop" && arm.rotation > 0) arm.rotation -= delta / 1500
+
+          arm.rotation = Math.max(0, arm.rotation)
         },
         setChildren: async (_, world) => {
 
@@ -110,7 +120,7 @@ export const MusicBox = (): Entity => {
               if (dialDragging && !world.client?.bufferDown.get("mb1")) {
                 dialDragging = false
                 lastMouseY = 0
-                renderable.c.filters = []
+                renderable.setGlow()
               }
             },
             onTick: ({ renderable }) => {
@@ -140,107 +150,113 @@ export const MusicBox = (): Entity => {
 
               dial.interactive = true
 
-              dial.on("pointerdown", () => {
+              dial.onpointerdown = () => {
                 r.setGlow({ outerStrength: 1 })
                 dialDragging = true
-              })
+              }
 
-              dial.on("pointerover", () => {
+              dial.onpointerover = () => {
                 r.setGlow({ outerStrength: 1 })
-              })
+              }
 
-              dial.on("pointerout", () => {
+              dial.onpointerout = () => {
                 if (dialDragging) return
-                r.c.filters = []
-              })
+                r.setGlow()
+              }
 
               r.c = dial
+
+              r.setBevel({ rotation: 90, lightAlpha: 0.9, shadowAlpha: 0.4 })
+            }
+          })
+
+          const discRenderable = Renderable({
+            setup: async (r) => {
+              drawDisc()
+
+              r.c = disc!
+
+              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.2 })
+
+              r.c.interactive = true
+
+              r.c.onclick = () => {
+                if (timeout) return
+
+                if (state === "stop") {
+                  state = "play"
+                  world.client?.soundManager.play("cassettePlay")
+                  world.client?.soundManager.play(tracks[trackIndex], 0, "+1")
+
+                  timeout = 60
+                  animation = 40
+                } else {
+                  state = "stop"
+                  world.client?.soundManager.play("cassetteStop")
+                  world.client?.soundManager.stop(tracks[trackIndex])
+
+                  trackIndex = (trackIndex + 1) % tracks.length
+                  drawDisc()
+
+                  timeout = 50
+                }
+
+                drawLight()
+              }
+              r.c.onpointerenter = () => {
+                r.setGlow({ outerStrength: 2 })
+              }
+              r.c.onpointerleave = () => {
+                r.setGlow()
+              }
+            }
+          })
+
+          const armBaseRenderable = Renderable({
+            setup: async (r) => {
+              const armbase = pixiGraphics()
+                .circle(65, -50, 6)
+                .fill(0xe8e7e6)
+
+              r.c = armbase
+
+              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
             }
           })
 
           const other = Renderable({
             setup: async (r) => {
-              drawDisc()
-
               discMarks = pixiGraphics()
                 .arc(0, 0, 40, 0, Math.PI / 2)
-                .stroke({ color: 0xffffff, width: 2 })
+                .stroke({ color: 0xdddddd, width: 2 })
                 .arc(0, 0, 40, -Math.PI, -Math.PI / 2)
-                .stroke({ color: 0xffffff, width: 2 })
+                .stroke({ color: 0xdddddd, width: 2 })
 
               const slide = pixiGraphics()
-                .moveTo(-70, -50)
-                .lineTo(-70, 50)
+                .moveTo(-70, -45)
+                .lineTo(-70, 45)
                 .stroke({ color: 0x000000, width: 4 })
 
-              const armbase = pixiGraphics()
-                .circle(65, -50, 5)
-                .fill(0xe8e7e6)
-
-              arm = pixiGraphics({ x: 65, y: -50, rotation: state === "play" ? 0 : -0.92 })
-                .lineTo(-40, 30)
+              arm = pixiGraphics({ x: 65, y: -50 })
+                .lineTo(0, 48)
                 .stroke({ color: 0xe8e7e6, width: 3 })
 
-              r.c.addChild(disc!, slide, discMarks, armbase, arm)
+              r.c.addChild(slide, discMarks, arm)
             }
           })
 
-          const play = Renderable({
-            interactiveChildren: true,
+          const lightRenderable = Renderable({
             position: { x: 65, y: 45 },
             setup: async (r) => {
+              drawLight()
 
-              const button = PixiButton({
-                content: () => ({
-                  text: " ", style: {
-                    fontSize: 0, fill: 0x000000
-                  },
-                  strokeColor: state === "play" ? 0xff0000 : 0x00ff00,
-                  width: 26, height: 26,
-                }),
-                onClick: () => {
-                  if (timeout) return
+              r.c = light!
 
-                  if (!world.client?.soundManager.ready) {
-                    setTimeout(() => { button.onClick?.() }, 100)
-                    return
-                  }
-
-                  if (state === "stop") {
-                    state = "play"
-                    world.client?.soundManager.play("cassettePlay")
-                    world.client?.soundManager.play(tracks[trackIndex], 0, "+1")
-                    button.redraw(() => ({ text: " ", strokeColor: 0xff0000, style: {}, width: 26, height: 26 }))
-
-                    timeout = 60
-                    animation = 40
-                  } else {
-                    state = "stop"
-                    world.client?.soundManager.play("cassetteStop")
-                    world.client?.soundManager.stop(tracks[trackIndex])
-                    button.redraw(() => ({ text: " ", strokeColor: 0x00ff00, style: {}, width: 26, height: 26 }))
-
-                    trackIndex = (trackIndex + 1) % tracks.length
-                    drawDisc()
-
-                    timeout = 50
-                  }
-                },
-                onEnter: () => {
-                  play.setGlow({ outerStrength: 2 })
-                },
-                onLeave: () => {
-                  play.setGlow({ outerStrength: 0 })
-                },
-              })
-
-              r.c = button.c
-
-              play.setBevel({ rotation: 90, lightAlpha: 0.6, shadowAlpha: 0.4 })
+              r.setBevel({ rotation: 90, lightAlpha: 0.8, shadowAlpha: 0.2 })
             }
           })
 
-          return [base, other, play, volumeDial]
+          return [base, discRenderable, armBaseRenderable, other, lightRenderable, volumeDial]
         }
       })
     }
