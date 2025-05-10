@@ -216,7 +216,7 @@ export const MusicBox = (): Entity => {
           const armBaseRenderable = Renderable({
             setup: async (r) => {
               const armbase = pixiGraphics()
-                .circle(65, -50, 5)
+                .circle(65, -50, 6)
                 .fill(0xe8e7e6)
 
               r.c = armbase
@@ -253,7 +253,7 @@ export const MusicBox = (): Entity => {
 
               r.c = light!
 
-              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+              r.setBevel({ rotation: 90, lightAlpha: 0.9, shadowAlpha: 0.5 })
             }
           })
 
