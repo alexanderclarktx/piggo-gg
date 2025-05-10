@@ -1,4 +1,4 @@
-import { Entity, mouse, MusicSounds, PixiButton, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { Entity, mouse, MusicSounds, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 export const MusicBox = (): Entity => {
@@ -120,7 +120,6 @@ export const MusicBox = (): Entity => {
               if (dialDragging && !world.client?.bufferDown.get("mb1")) {
                 dialDragging = false
                 lastMouseY = 0
-                // renderable.c.filters = []
                 renderable.setGlow()
               }
             },
