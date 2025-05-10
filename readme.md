@@ -1,11 +1,11 @@
 <img align="left" height="60" hspace="0" src="web/res/piggo.svg">
 
-__Piggo__ is an open-source multiplayer web game! Play online at [piggo.gg](https://piggo.gg)
+__Piggo__ is a multiplayer web game! Play online at [piggo.gg](https://piggo.gg)
 
 <br>
 
 <p align="center">
-  <img src="gameplay.gif" style="width:90%">
+  <img src="gameplay.gif" style="width:100%">
 </p>
 
 ## Product Objectives
