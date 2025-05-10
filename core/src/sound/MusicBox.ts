@@ -80,15 +80,15 @@ export const MusicBox = (): Entity => {
             renderable.visible = false
           }
         },
-        onRender: () => {
+        onRender: ({ delta }) => {
           if (!discMarks || !arm) return
 
           // rotate the disc
-          if (state === "play" && animation === 0) discMarks.rotation += 0.008
+          if (state === "play" && animation === 0) discMarks.rotation += delta / 1800
 
           // rotate the arm
-          if (state === "play" && arm.rotation < 0) arm.rotation += 0.008
-          if (state === "stop" && arm.rotation > -0.92) arm.rotation -= 0.008
+          if (state === "play" && arm.rotation < 0) arm.rotation += delta / 1500
+          if (state === "stop" && arm.rotation > -0.92) arm.rotation -= delta / 1500
         },
         setChildren: async (_, world) => {
 
