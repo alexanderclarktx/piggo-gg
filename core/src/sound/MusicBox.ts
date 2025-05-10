@@ -68,10 +68,10 @@ export const MusicBox = (): Entity => {
 
           if (world.entity("escapeMenu")?.components.renderable?.visible === true) {
             renderable.visible = true
-            const { width } = world.renderer!.wh()
+            const { width, height } = world.renderer!.wh()
 
 
-            musicbox.components.position.setPosition({ x: width / 2, y: 500 })
+            musicbox.components.position.setPosition({ x: width / 2, y: height / 2 + 80 })
           } else if (world.game.id === "lobby") {
             renderable.visible = true
             const { width } = world.renderer!.wh()
