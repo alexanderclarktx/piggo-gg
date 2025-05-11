@@ -3,7 +3,6 @@
   <img height="100" src="web/res/piggo.svg"/>
 
   &nbsp;
-  &nbsp;
 
   __Piggo__ is a web platform for gaming with friends! Play online at [piggo.gg](https://piggo.gg)
 </div>
