@@ -1,6 +1,6 @@
 
 <div align="center" style="font:">
-  <img height="140" src="web/res/piggo.svg"/>
+  <img height="110" src="web/res/piggo.svg"/>
 
   __Piggo__ is a web platform for gaming with friends! Play online at [piggo.gg](https://piggo.gg)
 </div>
