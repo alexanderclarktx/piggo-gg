@@ -5,8 +5,6 @@
   __Piggo__ is a web platform for gaming with friends! Play online at [piggo.gg](https://piggo.gg)
 </div>
 
-<br>
-
 <p align="center">
   <img src="gameplay.gif" style="width:90%"/>
 </p>
