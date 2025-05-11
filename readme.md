@@ -6,7 +6,7 @@
 </div>
 
 <p align="center">
-  <img src="gameplay.gif" style="width:100%"/>
+  <img src="gameplay.gif" style="width:90%"/>
 </p>
 
 ## Product Objectives
