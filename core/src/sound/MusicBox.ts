@@ -115,7 +115,6 @@ export const MusicBox = (): Entity => {
 
           const volumeDial = Renderable({
             position: { x: -70, y: -50 },
-            interactiveChildren: true,
             onRender: ({ renderable, world }) => {
               if (dialDragging && !world.client?.bufferDown.get("mb1")) {
                 dialDragging = false
@@ -176,11 +175,11 @@ export const MusicBox = (): Entity => {
 
               r.c = disc!
 
-              r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.2 })
+              // r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.2 })
 
-              r.c.interactive = true
+              disc!.interactive = true
 
-              r.c.onclick = () => {
+              disc!.onclick = () => {
                 if (timeout) return
 
                 if (state === "stop") {
@@ -203,10 +202,10 @@ export const MusicBox = (): Entity => {
 
                 drawLight()
               }
-              r.c.onpointerenter = () => {
+              disc!.onpointerenter = () => {
                 r.setGlow({ outerStrength: 2 })
               }
-              r.c.onpointerleave = () => {
+              disc!.onpointerleave = () => {
                 r.setGlow()
               }
             }

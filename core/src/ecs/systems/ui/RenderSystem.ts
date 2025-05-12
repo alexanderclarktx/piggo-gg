@@ -75,9 +75,9 @@ export const RenderSystem = ClientSystemBuilder({
 
           // run dynamic callback for children
           if (renderable.children && renderable.initialized) {
-            renderable.children.forEach((child) => {
-              if (child.onTick) child.onTick({ container: child.c, entity, world, renderable: child, client })
-            })
+            for (const child of renderable.children) {
+              child.onTick?.({ container: child.c, entity, world, renderable: child, client })
+            }
           }
 
           // update rotation
@@ -167,11 +167,11 @@ export const RenderSystem = ClientSystemBuilder({
 
           // children onRender
           if (renderable.children && renderable.initialized) {
-            renderable.children.forEach((child) => {
-              if (child.onRender) child.onRender({
+            for (const child of renderable.children) {
+              child.onRender?.({
                 container: child.c, entity, world, renderable: child, client, delta
               })
-            })
+            }
           }
 
           if (!renderable.rendered || !renderable.interpolate) continue

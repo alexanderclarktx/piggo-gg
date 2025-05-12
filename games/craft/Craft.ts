@@ -3,7 +3,7 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
   EscapeMenu, blocks, BlockMesh, Position, Collider, Entity,
-  XYZ, BlockCollider, spawnChunk, XYtoChunk
+  XYZ, BlockCollider, spawnChunk, XYtoChunk, Tooltip
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -25,7 +25,8 @@ export const Craft: GameBuilder = {
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockPreview(),
       BlockMesh("background"),
-      BlockMesh("foreground")
+      BlockMesh("foreground"),
+      Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: MB1\n  place: MB2\n camera: Q", { x: 0, y: 30 })
     ]
   })
 }
