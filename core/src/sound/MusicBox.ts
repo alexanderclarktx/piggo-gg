@@ -115,7 +115,6 @@ export const MusicBox = (): Entity => {
 
           const volumeDial = Renderable({
             position: { x: -70, y: -50 },
-            interactiveChildren: true,
             onRender: ({ renderable, world }) => {
               if (dialDragging && !world.client?.bufferDown.get("mb1")) {
                 dialDragging = false
