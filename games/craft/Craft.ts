@@ -26,7 +26,7 @@ export const Craft: GameBuilder = {
       BlockPreview(),
       BlockMesh("background"),
       BlockMesh("foreground"),
-      Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: MB1\n  place: MB2\n camera: Q", { x: 0, y: 30 })
+      Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: LEFT-CLICK\n  place: RIGHT-CLICK \n camera: Q", { x: 0, y: 30 })
     ]
   })
 }
