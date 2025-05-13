@@ -10,6 +10,8 @@ export const MusicBox = (): Entity => {
 
   let timeout = 40
   let animation = 0
+  let lightColor = 1
+  let lightDirection = -1
 
   let state: "stop" | "play" = "stop"
   let tracks: MusicSounds[] = ["track1", "track2", "track3", "track5"]
@@ -38,11 +40,11 @@ export const MusicBox = (): Entity => {
       .fill(0x000000)
   }
 
-  const drawLight = () => {
+  const drawLight = (color?: number) => {
     if (light === null) light = pixiGraphics()
     light.clear()
       .circle(0, 0, 6)
-      .fill(state === "play" ? 0x00ff00 : 0xff0000)
+      .fill(color ? color : state === "play" ? 0x00ee00 : 0xff0000)
   }
 
   const musicbox = Entity<Position>({
@@ -246,6 +248,22 @@ export const MusicBox = (): Entity => {
 
           const lightRenderable = Renderable({
             position: { x: 65, y: 45 },
+            onTick: () => {
+              if (state !== "play") {
+                drawLight()
+                lightColor = 1
+                lightDirection = -1
+                return
+              }
+
+              if (lightColor >= 1) lightDirection = -1
+              if (lightColor <= 0) lightDirection = 1
+
+              lightColor += 0.01 * lightDirection
+
+              const newColor = 0xbb + (lightColor * 0x44) << 8
+              drawLight(newColor)
+            },
             setup: async (r) => {
               drawLight()
 
