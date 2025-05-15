@@ -336,7 +336,7 @@ export const snapXYZ = (pos: XY): XYZ => {
   return { z: highestBlock(pos, []).z, ...snapXY(pos) }
 }
 
-export const highestBlock = (pos: XY, chunks: XY[]): XYZ => {
+export const highestBlock = (pos: XY, chunks: XY[], max?: number): XYZ => {
   const snapped = snapXY(pos)
 
   let level = 0
@@ -345,6 +345,7 @@ export const highestBlock = (pos: XY, chunks: XY[]): XYZ => {
   for (const block of blocks.data(chunks)) {
     const { x, y, z } = block
     if (x === snapped.x && y === snapped.y) {
+      if (max && z > max) continue
       level = Math.max(level, z + 21)
     }
   }

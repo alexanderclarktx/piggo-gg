@@ -104,7 +104,7 @@ const CraftSystem = SystemBuilder({
           ]
 
           // stop falling if directly above a block
-          const highest = highestBlock({ x, y }, chunks).z
+          const highest = highestBlock({ x, y }, chunks, z).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             position.data.stop = highest
           } else {
