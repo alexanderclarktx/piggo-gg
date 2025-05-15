@@ -1,5 +1,5 @@
 import { init as RapierInit, World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat"
-import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, entries, keys, round } from "@piggo-gg/core"
+import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, entries, keys, round, sign } from "@piggo-gg/core"
 
 export let physics: RapierWorld
 RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
@@ -110,18 +110,29 @@ export const PhysicsSystem = SystemBuilder({
           const { position, collider } = entity.components
           if (collider.isStatic) continue
 
+          const translation = body.translation()
+          const linvel = body.linvel()
+
           // check if the entity has collided
-          const diffX = position.data.velocity.x - Math.floor(body.linvel().x * 100) / 100
-          const diffY = position.data.velocity.y - Math.floor(body.linvel().y * 100) / 100
+          const diffX = position.data.velocity.x - Math.floor(linvel.x * 100) / 100
+          const diffY = position.data.velocity.y - Math.floor(linvel.y * 100) / 100
           if (position.data.velocityResets && (abs(diffX) > 1 || abs(diffY) > 1)) {
             position.lastCollided = world.tick
+
+            // don't jitter in corners
+            if (position.data.velocity.y !== 0 && sign(linvel.y) !== sign(position.data.velocity.y)) {
+              continue
+            } 
+            if (position.data.velocity.x !== 0 && sign(linvel.x) !== sign(position.data.velocity.x)) {
+              continue
+            }
           }
 
           // update position/velocity
-          position.data.x = round(body.translation().x * 100) / 100
-          position.data.y = round(body.translation().y * 100) / 100
-          position.data.velocity.x = Math.floor(body.linvel().x * 100) / 100
-          position.data.velocity.y = Math.floor(body.linvel().y * 100) / 100
+          position.data.x = round(translation.x * 100) / 100
+          position.data.y = round(translation.y * 100) / 100
+          position.data.velocity.x = Math.floor(linvel.x * 100) / 100
+          position.data.velocity.y = Math.floor(linvel.y * 100) / 100
         }
 
         for (const [entity, collider] of colliders.entries()) {
