@@ -1,12 +1,21 @@
-import { Player, SystemBuilder, entries, keys, stringify } from "@piggo-gg/core"
+import { Entity, Player, SystemBuilder, entries, keys, stringify, Position } from "@piggo-gg/core"
 
 export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   id: "ActionSystem",
   init: (world) => ({
     id: "ActionSystem",
-    query: [],
-    priority: 8,
-    onTick: () => {
+    query: ["position"],
+    priority: 6,
+    onTick: (entities: Entity<Position>[]) => {
+
+      for (const entity of entities) {
+        const { position } = entity.components
+        if (position.data.velocityResets && !position.data.heading.x && !position.data.heading.y) {
+          position.data.velocity.x = 0
+          if (world.game.view !== "side") position.data.velocity.y = 0
+        }
+      }
+
       const actionsAtTick = world.actions.atTick(world.tick)
       if (!actionsAtTick) return
 

@@ -67,7 +67,12 @@ const CraftSystem = SystemBuilder({
       BlockCollider(4),
       BlockCollider(5),
       BlockCollider(6),
-      BlockCollider(7)
+      BlockCollider(7),
+      BlockCollider(8),
+      BlockCollider(9),
+      BlockCollider(10),
+      BlockCollider(11),
+      BlockCollider(12)
     ]
     world.addEntities(blockColliders)
 
@@ -104,7 +109,7 @@ const CraftSystem = SystemBuilder({
           ]
 
           // stop falling if directly above a block
-          const highest = highestBlock({ x, y }, chunks).z
+          const highest = highestBlock({ x, y }, chunks, z).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             position.data.stop = highest
           } else {
@@ -128,7 +133,7 @@ const CraftSystem = SystemBuilder({
             if (zDiff > 100 || zDiff < -21) continue
 
             const dist = Math.sqrt(Math.pow(x - position.data.x, 2) + Math.pow(y - position.data.y, 2))
-            if (dist < 100) set.push({ x, y, z })
+            if (dist < 150) set.push({ x, y, z })
           }
 
           set.sort((a, b) => {
