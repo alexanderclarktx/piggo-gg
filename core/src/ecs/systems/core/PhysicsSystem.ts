@@ -117,15 +117,6 @@ export const PhysicsSystem = SystemBuilder({
           const diffX = position.data.velocity.x - Math.floor(linvel.x * 100) / 100
           const diffY = position.data.velocity.y - Math.floor(linvel.y * 100) / 100
           if (position.data.velocityResets && (abs(diffX) > 1 || abs(diffY) > 1)) {
-            // position.lastCollided = world.tick
-
-            // don't jitter in corners
-            // if (position.data.velocity.y !== 0 && sign(linvel.y) !== sign(position.data.velocity.y)) {
-            //   continue
-            // } 
-            // if (position.data.velocity.x !== 0 && sign(linvel.x) !== sign(position.data.velocity.x)) {
-            //   continue
-            // }
             if (sign(linvel.y) !== sign(position.data.velocity.y) && sign(linvel.x) !== sign(position.data.velocity.x)) {
               position.lastCollided = world.tick
               continue
@@ -192,16 +183,9 @@ export const PhysicsSystem = SystemBuilder({
           }
         })
 
-        // reset velocities
+        // update velocities (headings)
         entities.forEach((entity) => {
-          const { position } = entity.components
-          if (position.data.velocityResets && !position.data.heading.x && !position.data.heading.y) {
-            // position.data.velocity.x = 0/
-
-            // if (world.game.view !== "side") position.data.velocity.y = 0
-          }
-
-          position.updateVelocity()
+          entity.components.position.updateVelocity()
         })
       }
     }
