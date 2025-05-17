@@ -37,8 +37,8 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
             tile.tilePosition.y = 0.85 * xy.y
 
             position.setVelocity({
-              x: velocity.x,
-              y: velocity.y,
+              x: velocity.x * 0.85,
+              y: velocity.y * 0.85,
               z: velocity.z
             })
 
@@ -46,7 +46,11 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
             position.setPosition({ z })
 
             position.lastCollided = focus.components.position.lastCollided
-            position.localVelocity = { ...focus.components.position.localVelocity }
+            position.localVelocity = {
+              x: focus.components.position.localVelocity.x * 0.85,
+              y: focus.components.position.localVelocity.y * 0.85,
+              z: velocity.z
+            }
           }
         }
       },
