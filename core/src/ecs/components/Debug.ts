@@ -91,14 +91,11 @@ export const DebugSystem = ClientSystemBuilder({
 
     const drawAllColliders = () => {
 
-      const { physics } = world
-      if (!physics) return
-
       const r = Renderable({
         onTick: ({ container }) => {
           const g = container as Graphics
           g.clear().setStrokeStyle({ width: 1, color: 0xffff00 })
-          const { vertices } = physics.debugRender()
+          const { vertices } = world.physics?.debugRender() ?? { vertices: [] }
 
           for (let i = 0; i < vertices.length; i += 4) {
             const one = world.flip({ x: vertices[i], y: vertices[i + 1] })
