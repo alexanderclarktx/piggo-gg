@@ -118,14 +118,14 @@ export const LocalPhysicsSystem = ClientSystemBuilder({
           const diffY = position.data.velocity.y - Math.floor(linvel.y * 100) / 100
           if (position.data.velocityResets && (abs(diffX) > 1 || abs(diffY) > 1)) {
             if (sign(linvel.y) !== sign(position.data.velocity.y) && sign(linvel.x) !== sign(position.data.velocity.x)) {
-              position.local.lastCollided = world.tick
+              position.lastCollided = world.tick
               continue
             }
           }
 
-          // update local.velocity
-          position.local.velocity.x = Math.floor(linvel.x * 100) / 100
-          position.local.velocity.y = Math.floor(linvel.y * 100) / 100
+          // update localVelocity
+          position.localVelocity.x = Math.floor(linvel.x * 100) / 100
+          position.localVelocity.y = Math.floor(linvel.y * 100) / 100
         }
       }
     }

@@ -120,7 +120,7 @@ export const PhysicsSystem = SystemBuilder({
           const diffY = position.data.velocity.y - Math.floor(linvel.y * 100) / 100
           if (position.data.velocityResets && (abs(diffX) > 1 || abs(diffY) > 1)) {
             if (sign(linvel.y) !== sign(position.data.velocity.y) && sign(linvel.x) !== sign(position.data.velocity.x)) {
-              position.local.lastCollided = world.tick
+              position.lastCollided = world.tick
               continue
             }
           }

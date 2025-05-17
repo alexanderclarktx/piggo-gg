@@ -21,10 +21,8 @@ export type Position = Component<"position", {
   velocity: XYZ
   velocityResets: number
 }> & {
-  local: {
-    lastCollided: number
-    velocity: XYZ
-  }
+  lastCollided: number
+  localVelocity: XYZ
   screenFixed: boolean
   orientation: OctString
   orientationRads: number
@@ -80,10 +78,8 @@ export const Position = (props: PositionProps = {}): Position => {
       velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       velocityResets: props.velocityResets ?? 0
     },
-    local: {
-      lastCollided: 0,
-      velocity: { x: 0, y: 0, z: 0 }
-    },
+    lastCollided: 0,
+    localVelocity: { x: 0, y: 0, z: 0 },
     screenFixed: props.screenFixed ?? false,
     orientation: "r",
     orientationRads: 0,
@@ -122,13 +118,13 @@ export const Position = (props: PositionProps = {}): Position => {
         z = position.data.stop - position.data.z
       }
 
-      if (world.tick - position.local.lastCollided <= 4) {
+      if (world.tick - position.lastCollided <= 4) {
         return { x: position.data.x, y: position.data.y, z: position.data.z + z }
       }
 
       return {
-        x: position.local.velocity.x * delta / 1000 + position.data.x,
-        y: position.local.velocity.y * delta / 1000 + position.data.y,
+        x: position.localVelocity.x * delta / 1000 + position.data.x,
+        y: position.localVelocity.y * delta / 1000 + position.data.y,
         z: position.data.z + z
       }
     },
@@ -249,8 +245,8 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
               z: z
             }
 
-            position.local.lastCollided = target.components.position.local.lastCollided
-            position.local.velocity = { ...target.components.position.local.velocity }
+            position.lastCollided = target.components.position.lastCollided
+            position.localVelocity = { ...target.components.position.localVelocity }
           }
         }
       })
