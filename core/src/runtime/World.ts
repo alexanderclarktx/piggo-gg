@@ -237,6 +237,12 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))
 
+      // reset physics
+      if (world.physics) {
+        world.physics.free()
+        world.physics = new RapierWorld({ x: 0, y: 0 })
+      }
+
       // set new game
       world.game = game.init(world)
 
