@@ -12,13 +12,12 @@ export const LocalPhysicsSystem = ClientSystemBuilder({
       for (const id of keys(bodies)) delete bodies[id]
       colliders.clear()
 
-      const { physics } = world
-      if (!physics) return
+      if (!world.physics) return
 
-      physics.free()
+      world.physics.free()
 
       world.physics = new RapierWorld({ x: 0, y: 0 })
-      physics.timestep = 0.00625 // 25 / 1000 / 4
+      world.physics.timestep = 0.00625 // 25 / 1000 / 4
     }
 
     return {
@@ -28,11 +27,12 @@ export const LocalPhysicsSystem = ClientSystemBuilder({
       onTick: (entities: Entity<Collider | Position>[], isRollback: false) => {
 
         // wait until rapier is ready
-        const { physics } = world
-        if (!physics) return
+        if (!world.physics) return
 
         // reset physics if not rollback
         if (!isRollback) resetPhysics()
+
+        const { physics } = world
 
         // remove old bodies (TODO does this matter)
         for (const id of keys(bodies)) {

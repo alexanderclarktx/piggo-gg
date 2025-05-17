@@ -17,11 +17,8 @@ export const WASDInputMap: Partial<InputMap> = {
 const move = (entity: Entity, world: World, x: number, y: number): null | InvokedAction<"move", XY> => {
   if (!entity.components.position) return null
 
-  const { position } = entity.components
-
-  if (x > 0) position.data.facing = 1
-  if (x < 0) position.data.facing = -1
-  // position.data.facing = x >= 0 ? 1 : -1
+  if (x > 0) entity.components.position.data.facing = 1
+  if (x < 0) entity.components.position.data.facing = -1
 
   x *= world.flipped()
   y *= world.flipped()

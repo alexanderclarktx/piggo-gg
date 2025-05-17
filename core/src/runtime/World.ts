@@ -3,7 +3,7 @@ import {
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
   Random, ComponentTypes, Data, Networked, XY, logPerf
 } from "@piggo-gg/core"
-import { World as RapierWorld } from "@dimforge/rapier2d-compat"
+import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
 export type World = {
   actions: TickBuffer<InvokedAction>
@@ -269,6 +269,9 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
       commands?.forEach((command) => world.commands[command.id] = command)
     }
   }
+
+  // set up physics
+  RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
 
   // set up client
   if (world.mode === "client") world.client = Client({ world })
