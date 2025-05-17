@@ -78,5 +78,5 @@ const behavior = (entity: Entity<Position>, world: World): void | InvokedAction 
     }
   }
 
-  if (position.lastCollided - world.tick > -2) position.clearHeading()
+  if (position.local.lastCollided - world.tick > -2) position.clearHeading()
 }

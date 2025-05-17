@@ -6,6 +6,7 @@ export type Position = Component<"position", {
   x: number
   y: number
   z: number
+  facing: -1 | 1
   follows: string | undefined
   friction: number
   gravity: number
@@ -20,7 +21,10 @@ export type Position = Component<"position", {
   velocity: XYZ
   velocityResets: number
 }> & {
-  lastCollided: number
+  local: {
+    lastCollided: number
+    velocity: XYZ
+  }
   screenFixed: boolean
   orientation: OctString
   orientationRads: number
@@ -61,6 +65,7 @@ export const Position = (props: PositionProps = {}): Position => {
       x: props.x ?? 0,
       y: props.y ?? 0,
       z: props.z ?? 0,
+      facing: 1,
       follows: props.follows ?? undefined,
       friction: props.friction ?? 0,
       gravity: props.gravity ?? 0,
@@ -75,7 +80,10 @@ export const Position = (props: PositionProps = {}): Position => {
       velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       velocityResets: props.velocityResets ?? 0
     },
-    lastCollided: 0,
+    local: {
+      lastCollided: 0,
+      velocity: { x: 0, y: 0, z: 0 }
+    },
     screenFixed: props.screenFixed ?? false,
     orientation: "r",
     orientationRads: 0,
@@ -114,7 +122,7 @@ export const Position = (props: PositionProps = {}): Position => {
         z = position.data.stop - position.data.z
       }
 
-      if (world.tick - position.lastCollided <= 4) {
+      if (world.tick - position.local.lastCollided <= 4) {
         return { x: position.data.x, y: position.data.y, z: position.data.z + z }
       }
 
@@ -187,7 +195,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   init: (world) => ({
     id: "PositionSystem",
     query: ["position"],
-    priority: 8,
+    priority: 10,
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
@@ -238,7 +246,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
               z: z
             }
 
-            position.lastCollided = target.components.position.lastCollided
+            position.local.lastCollided = target.components.position.local.lastCollided
           }
         }
       })

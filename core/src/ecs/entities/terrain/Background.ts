@@ -43,7 +43,7 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
             })
             position.data.stop = focus.components.position.data.stop
             position.setPosition({ z })
-            position.lastCollided = focus.components.position.lastCollided
+            position.local.lastCollided = focus.components.position.local.lastCollided
           }
         }
       },

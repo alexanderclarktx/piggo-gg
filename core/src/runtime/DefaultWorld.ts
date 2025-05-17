@@ -1,7 +1,7 @@
 import {
   ActionSystem, ClickableSystem, CommandSystem, ControlSystem, CooldownSystem,
   DebugCommand, DebugSystem, EffectsSystem, ExpiresSystem, GameCommand, HealthSystem, InputSystem,
-  ItemSystem, NPCSystem, NametagSystem, PhysicsSystem, PlsCommand, PositionSystem, RandomSystem,
+  ItemSystem, LocalPhysics, NPCSystem, NametagSystem, PhysicsSystem, PlsCommand, PositionSystem, RandomSystem,
   RemoveCommand, RenderSystem, SpawnCommand, World, WorldBuilder, WorldProps
 } from "@piggo-gg/core"
 
@@ -11,6 +11,6 @@ export const DefaultWorld: WorldBuilder = (props: WorldProps) => World({
   systems: [
     RandomSystem, ExpiresSystem, ControlSystem, ClickableSystem, InputSystem, DebugSystem, ItemSystem,
     HealthSystem, CommandSystem, NPCSystem, NametagSystem, CooldownSystem,
-    PhysicsSystem, ActionSystem, EffectsSystem, PositionSystem, RenderSystem
+    PhysicsSystem, LocalPhysics, ActionSystem, EffectsSystem, PositionSystem, RenderSystem
   ]
 })
