@@ -127,8 +127,8 @@ export const Position = (props: PositionProps = {}): Position => {
       }
 
       return {
-        x: position.data.velocity.x * delta / 1000 + position.data.x,
-        y: position.data.velocity.y * delta / 1000 + position.data.y,
+        x: position.local.velocity.x * delta / 1000 + position.data.x,
+        y: position.local.velocity.y * delta / 1000 + position.data.y,
         z: position.data.z + z
       }
     },
@@ -166,6 +166,9 @@ export const Position = (props: PositionProps = {}): Position => {
       const Vy = Math.sin(angle) * position.data.speed
 
       position.setVelocity({ x: Vx, y: Vy })
+
+      if (Vx > 0 ) position.data.facing =1
+      if (Vx < 0) position.data.facing = -1
 
       return position
     },
@@ -247,6 +250,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
             }
 
             position.local.lastCollided = target.components.position.local.lastCollided
+            position.local.velocity = { ...target.components.position.local.velocity }
           }
         }
       })

@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, DebugBounds, Entity, FpsText, Component,
-  Position, Renderable, TextBox, physics, values, keys, pixiGraphics
+  Position, Renderable, TextBox, values, keys, pixiGraphics
 } from "@piggo-gg/core"
 import { Graphics, Text } from "pixi.js"
 
@@ -90,6 +90,9 @@ export const DebugSystem = ClientSystemBuilder({
     }
 
     const drawAllColliders = () => {
+
+      const { physics } = world
+      if (!physics) return
 
       const r = Renderable({
         onTick: ({ container }) => {
