@@ -2,8 +2,8 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
-  EscapeMenu, blocks, BlockMesh, Position, Collider, Entity,
-  XYZ, BlockCollider, spawnChunk, XYtoChunk, Tooltip
+  EscapeMenu, blocks, BlockMesh, Position, Collider, Entity, XYZ,
+  BlockCollider, spawnChunk, XYtoChunk, Tooltip, PhysicsSystem
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -13,6 +13,8 @@ export const Craft: GameBuilder = {
     netcode: "rollback",
     state: {},
     systems: [
+      PhysicsSystem("local"),
+      PhysicsSystem("global"),
       InventorySystem,
       ShadowSystem,
       CraftSystem,

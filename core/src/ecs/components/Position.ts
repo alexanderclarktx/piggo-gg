@@ -6,6 +6,7 @@ export type Position = Component<"position", {
   x: number
   y: number
   z: number
+  facing: -1 | 1
   follows: string | undefined
   friction: number
   gravity: number
@@ -21,6 +22,7 @@ export type Position = Component<"position", {
   velocityResets: number
 }> & {
   lastCollided: number
+  localVelocity: XYZ
   screenFixed: boolean
   orientation: OctString
   orientationRads: number
@@ -61,6 +63,7 @@ export const Position = (props: PositionProps = {}): Position => {
       x: props.x ?? 0,
       y: props.y ?? 0,
       z: props.z ?? 0,
+      facing: 1,
       follows: props.follows ?? undefined,
       friction: props.friction ?? 0,
       gravity: props.gravity ?? 0,
@@ -76,6 +79,7 @@ export const Position = (props: PositionProps = {}): Position => {
       velocityResets: props.velocityResets ?? 0
     },
     lastCollided: 0,
+    localVelocity: { x: 0, y: 0, z: 0 },
     screenFixed: props.screenFixed ?? false,
     orientation: "r",
     orientationRads: 0,
@@ -119,8 +123,8 @@ export const Position = (props: PositionProps = {}): Position => {
       }
 
       return {
-        x: position.data.velocity.x * delta / 1000 + position.data.x,
-        y: position.data.velocity.y * delta / 1000 + position.data.y,
+        x: position.data.x + position.localVelocity.x * delta / 1000,
+        y: position.data.y + position.localVelocity.y * delta / 1000,
         z: position.data.z + z
       }
     },
@@ -159,6 +163,9 @@ export const Position = (props: PositionProps = {}): Position => {
 
       position.setVelocity({ x: Vx, y: Vy })
 
+      if (Vx > 0) position.data.facing = 1
+      if (Vx < 0) position.data.facing = -1
+
       return position
     },
     rotate: (amount: number, stopAtZero: boolean = false) => {
@@ -187,7 +194,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   init: (world) => ({
     id: "PositionSystem",
     query: ["position"],
-    priority: 8,
+    priority: 10,
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
@@ -239,6 +246,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
             }
 
             position.lastCollided = target.components.position.lastCollided
+            position.localVelocity = { ...target.components.position.localVelocity }
           }
         }
       })

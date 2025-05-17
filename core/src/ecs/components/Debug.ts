@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, DebugBounds, Entity, FpsText, Component,
-  Position, Renderable, TextBox, physics, values, keys, pixiGraphics
+  Position, Renderable, TextBox, values, keys, pixiGraphics
 } from "@piggo-gg/core"
 import { Graphics, Text } from "pixi.js"
 
@@ -95,7 +95,7 @@ export const DebugSystem = ClientSystemBuilder({
         onTick: ({ container }) => {
           const g = container as Graphics
           g.clear().setStrokeStyle({ width: 1, color: 0xffff00 })
-          const { vertices } = physics.debugRender()
+          const { vertices } = world.physics?.debugRender() ?? { vertices: [] }
 
           for (let i = 0; i < vertices.length; i += 4) {
             const one = world.flip({ x: vertices[i], y: vertices[i + 1] })

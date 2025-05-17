@@ -39,7 +39,7 @@ export const RenderSystem = ClientSystemBuilder({
     return {
       id: "RenderSystem",
       query: ["renderable", "position"],
-      priority: 10,
+      priority: 11,
       onTick: (entities: Entity<Renderable | Position>[]) => {
         if (!renderer) return
 
