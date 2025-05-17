@@ -123,8 +123,8 @@ export const Position = (props: PositionProps = {}): Position => {
       }
 
       return {
-        x: position.localVelocity.x * delta / 1000 + position.data.x,
-        y: position.localVelocity.y * delta / 1000 + position.data.y,
+        x: position.data.x + position.localVelocity.x * delta / 1000,
+        y: position.data.y + position.localVelocity.y * delta / 1000,
         z: position.data.z + z
       }
     },

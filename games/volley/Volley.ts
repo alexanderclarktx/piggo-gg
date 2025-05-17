@@ -1,7 +1,7 @@
 import {
   Background, CameraSystem, Cursor, Entity, EscapeMenu, GameBuilder, LagText,
-  LocalPhysicsSystem, PhysicsSystem, Position, Renderable, ScorePanel,
-  ShadowSystem, SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
+  PhysicsSystem, Position, Renderable, ScorePanel, ShadowSystem, SpawnSystem,
+  SystemBuilder, Team, Tooltip, switchTeamButton, values
 } from "@piggo-gg/core"
 import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
 import { Bot } from "./Bot"
@@ -40,8 +40,8 @@ export const Volley: GameBuilder<VolleyState> = {
       teamServing: 1
     },
     systems: [
-      LocalPhysicsSystem,
-      PhysicsSystem,
+      PhysicsSystem("local"),
+      PhysicsSystem("global"),
       SpawnSystem(Dude),
       VolleySystem,
       ShadowSystem,
