@@ -1,12 +1,13 @@
-import { init as RapierInit, World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat"
-import { Collider, Entity, Position, SystemBuilder, XYdistance, abs, entries, keys, round, sign } from "@piggo-gg/core"
+import {
+  Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round, sign
+} from "@piggo-gg/core"
+import { World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat"
 
-export let physics: RapierWorld
-RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
-
-export const PhysicsSystem = SystemBuilder({
-  id: "PhysicsSystem",
+export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
+  id: mode === "global" ? "PhysicsSystem" : "LocalPhysicsSystem",
   init: (world) => {
+
+    if (mode === "local" && world.mode === "server") return undefined
 
     let bodies: Record<string, RigidBody> = {}
     let colliders: Map<Entity<Collider | Position>, Collider> = new Map()
@@ -14,24 +15,29 @@ export const PhysicsSystem = SystemBuilder({
     const resetPhysics = () => {
       for (const id of keys(bodies)) delete bodies[id]
       colliders.clear()
-      physics.free()
 
-      physics = new RapierWorld({ x: 0, y: 0 })
-      physics.timestep = 0.00625 // 25 / 1000 / 4
+      if (!world.physics) return
+
+      world.physics.free()
+
+      world.physics = new RapierWorld({ x: 0, y: 0 })
+      world.physics.timestep = 0.00625 // 25 / 1000 / 4
     }
 
     return {
-      id: "PhysicsSystem",
+      id: mode === "global" ? "PhysicsSystem" : "LocalPhysicsSystem",
       query: ["position", "collider"],
-      priority: 7,
+      priority: mode === "global" ? 7 : 9,
       onRollback: resetPhysics,
       onTick: (entities: Entity<Collider | Position>[], isRollback: false) => {
 
         // wait until rapier is ready
-        if (!physics) return
+        if (!world.physics) return
 
         // reset physics if not rollback
-        if (!isRollback) resetPhysics()
+        if (!isRollback && mode === "global") resetPhysics()
+
+        const { physics } = world
 
         // remove old bodies (TODO does this matter)
         for (const id of keys(bodies)) {
@@ -41,56 +47,66 @@ export const PhysicsSystem = SystemBuilder({
           }
         }
 
-        const groups: Set<string> = new Set()
+        if (mode === "global") {
 
-        // find dynamic body groups
-        for (const entity of entities) {
-          const { collider } = entity.components
-          if (collider.isStatic === false) {
-            groups.add(collider.group)
+          const groups: Set<string> = new Set()
+
+          // find dynamic body groups
+          for (const entity of entities) {
+            const { collider } = entity.components
+            if (collider.isStatic === false) {
+              groups.add(collider.group)
+            }
+          }
+
+          // cull static colliders
+          entities = entities.filter((entity) => {
+            const { collider, renderable } = entity.components
+            if (renderable?.visible === false) return false
+            return (collider.isStatic === false || !collider.cullable || groups.has(collider.group))
+          })
+
+          // sort entities by id
+          entities.sort((a, b) => a.id > b.id ? 1 : -1)
+
+          // prepare physics bodies for each entity
+          for (const entity of entities) {
+            const { position, collider } = entity.components
+
+            // handle new physics bodies
+            if (!bodies[entity.id]) {
+
+              // create rapier body/collider
+              const body = physics.createRigidBody(collider.bodyDesc)
+              try {
+                collider.rapierCollider = physics.createCollider(collider.colliderDesc, body)
+              } catch (e) {
+                console.log("Error creating collider", e)
+              }
+
+              // set Collider.body
+              collider.body = body
+
+              // store body
+              bodies[entity.id] = body
+
+              // store collider
+              colliders.set(entity, collider)
+            }
+
+            // update body position
+            bodies[entity.id].setTranslation({ x: position.data.x, y: position.data.y }, true)
           }
         }
 
-        // cull static colliders
-        entities = entities.filter((entity) => {
-          const { collider, renderable } = entity.components
-          if (renderable?.visible === false) return false
-          return (collider.isStatic === false || !collider.cullable || groups.has(collider.group))
-        })
-
-        // sort entities by id
-        entities.sort((a, b) => a.id > b.id ? 1 : -1)
-
-        // prepare physics bodies for each entity
+        // update body velocities
         for (const entity of entities) {
-          const { position, collider } = entity.components
+          const { collider, position} = entity.components
 
-          // handle new physics bodies
-          if (!bodies[entity.id]) {
+          if (collider.isStatic) continue
+          if (!collider.body) continue
 
-            // create rapier body/collider
-            const body = physics.createRigidBody(collider.bodyDesc)
-            try {
-              collider.rapierCollider = physics.createCollider(collider.colliderDesc, body)
-            } catch (e) {
-              console.log("Error creating collider", e)
-            }
-
-            // set Collider.body
-            collider.body = body
-
-            // store body
-            bodies[entity.id] = body
-
-            // store collider
-            colliders.set(entity, collider)
-          }
-
-          // update body position
-          bodies[entity.id].setTranslation({ x: position.data.x, y: position.data.y }, true)
-
-          // update body velocity
-          bodies[entity.id].setLinvel({
+          collider.body.setLinvel({
             x: Math.floor(position.data.velocity.x * 100) / 100,
             y: Math.floor(position.data.velocity.y * 100) / 100
           }, true)
@@ -103,15 +119,14 @@ export const PhysicsSystem = SystemBuilder({
         physics.step()
 
         // update entity positions
-        for (const [id, body] of entries(bodies)) {
-          const entity = world.entity<Collider | Position>(id)
-          if (!entity) continue
+        for (const entity of entities) {
+          const { collider, position } = entity.components
 
-          const { position, collider } = entity.components
           if (collider.isStatic) continue
+          if (!collider.body) continue
 
-          const translation = body.translation()
-          const linvel = body.linvel()
+          const translation = collider.body.translation()
+          const linvel = collider.body.linvel()
 
           // check if the entity has collided
           const diffX = position.data.velocity.x - Math.floor(linvel.x * 100) / 100
@@ -124,11 +139,18 @@ export const PhysicsSystem = SystemBuilder({
           }
 
           // update position/velocity
-          position.data.x = round(translation.x * 100) / 100
-          position.data.y = round(translation.y * 100) / 100
-          position.data.velocity.x = Math.floor(linvel.x * 100) / 100
-          position.data.velocity.y = Math.floor(linvel.y * 100) / 100
+          if (mode === "global") {
+            position.data.x = round(translation.x * 100) / 100
+            position.data.y = round(translation.y * 100) / 100
+            position.data.velocity.x = Math.floor(linvel.x * 100) / 100
+            position.data.velocity.y = Math.floor(linvel.y * 100) / 100
+          } else {
+            position.localVelocity.x = Math.floor(linvel.x * 100) / 100
+            position.localVelocity.y = Math.floor(linvel.y * 100) / 100
+          }
         }
+
+        if (mode === "local") return
 
         for (const [entity, collider] of colliders.entries()) {
 

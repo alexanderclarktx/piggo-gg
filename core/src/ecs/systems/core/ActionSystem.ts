@@ -5,7 +5,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   init: (world) => ({
     id: "ActionSystem",
     query: ["position"],
-    priority: 6,
+    priority: 8,
     onTick: (entities: Entity<Position>[]) => {
 
       for (const entity of entities) {

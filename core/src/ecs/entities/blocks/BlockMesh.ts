@@ -60,12 +60,11 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
           const pcPosFlip = world.flip(pcPos)
-          const pcXYZ = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
             shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
-            shader.resources.uniforms.uniforms.uPlayer = pcXYZ
+            shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
 
