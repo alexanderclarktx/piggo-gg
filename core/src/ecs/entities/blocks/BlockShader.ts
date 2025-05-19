@@ -6,6 +6,7 @@ const vertexSrc = `
   in float aFace;
   in vec2 aPosition;
   in vec3 aOffset;
+  in vec3 aBary;
 
   in vec3 aInstancePos;
   in vec3 aInstanceColor;
@@ -17,6 +18,8 @@ const vertexSrc = `
   out float vFace;
   out vec3 vInstanceColor;
   out vec3 vWorldPos;
+  out vec3 vBary;
+  out vec3 vOffset;
 
   void main() {
     vec2 pos2d = vec2(aInstancePos.x, aInstancePos.y - aInstancePos.z);
@@ -31,6 +34,8 @@ const vertexSrc = `
 
     vFace = aFace;
     vInstanceColor = aInstanceColor;
+    vBary = aBary;
+    vOffset = aOffset;
 
     vWorldPos = aInstancePos + aOffset;
   }
@@ -42,6 +47,8 @@ const fragmentSrc = `
   in float vFace;
   in vec3 vInstanceColor;
   in vec3 vWorldPos;
+  in vec3 vBary;
+  in vec3 vOffset;
 
   uniform vec3[1] uTopBlocks;
   uniform float uTime;
@@ -120,6 +127,21 @@ const fragmentSrc = `
     int face = int(vFace + 0.5);
 
     vec3 color;
+
+    float edgeFactor = min(min(vBary.x, vBary.y), vBary.z);
+    float edgeThreshold = 0.01;
+
+    bool isEdge =
+      vBary.x < edgeThreshold ||
+      vBary.y < edgeThreshold ||
+      vBary.z < edgeThreshold;
+
+    bool isMiddle = abs(vOffset.x) < 0.2 && abs(vOffset.y) < 8.9;
+
+    if (isEdge && !isMiddle) {
+      fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+      return;
+    }
 
     if (face == 0) {
       color = unpackRGB(vInstanceColor[0]);

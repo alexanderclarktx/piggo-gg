@@ -180,6 +180,24 @@ const BLOCK_GEOMETRY = () => new Geometry({
       width, -width / 2,
       width, height,
       0, height + width / 2,
+    ],
+    aBary: [
+      1, 0, 0,
+      0, 1, 0,
+      0, 0, 1,
+      0, 1, 0,
+
+
+      1, 1, 1,
+      1, 1, 1,
+      1, 1, 1,
+      1, 1, 1,
+
+
+      1, 1, 1,
+      1, 1, 1,
+      1, 1, 1,
+      1, 1, 1
     ]
   }
 })
