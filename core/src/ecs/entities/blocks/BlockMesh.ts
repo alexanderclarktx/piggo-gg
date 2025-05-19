@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, logPerf, Position, Renderable, XY, XYtoChunk
+  Entity, logPerf, mouse, Position, Renderable, XY, XYtoChunk
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -58,8 +58,14 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
-          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
+          const character = world.client?.playerCharacter()
+
+          // character position
+          const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
           const pcPosFlip = world.flip(pcPos)
+
+          // highlighted block
+          const highlighted = character ? blocks.atMouse(mouse, character.components.position.data) ?? { x: 0, y: 0, z: 0} : { x: 0, y: 0, z: 0 }
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
@@ -67,13 +73,14 @@ export const BlockMesh = (type: "foreground" | "background") => {
             shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
+            shader.resources.uniforms.uniforms.uHighlight = [highlighted.x, highlighted.y, highlighted.z]
 
             // shadows
             // const pos = intToXYZ(topBlocks[0].x, topBlocks[0].y, topBlocks[0].z)
             // shader.resources.uniforms.uniforms.uTopBlocks = [pos.x, pos.y, pos.z + 10.5]
           }
 
-          const { position } = world.client!.playerCharacter()?.components ?? {}
+          const { position } = character?.components ?? {}
           if (!position) return
 
           const playerZ = position.data.z - 20

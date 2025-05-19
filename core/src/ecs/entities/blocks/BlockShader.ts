@@ -16,6 +16,7 @@ const vertexSrc = `
   uniform float uZoom;
 
   out float vFace;
+  out vec3 vInstancePos;
   out vec3 vInstanceColor;
   out vec3 vWorldPos;
   out vec3 vBary;
@@ -33,6 +34,7 @@ const vertexSrc = `
     gl_Position = vec4(clip.x, clip.y, 0, 1);
 
     vFace = aFace;
+    vInstancePos = aInstancePos;
     vInstanceColor = aInstanceColor;
     vBary = aBary;
     vOffset = aOffset;
@@ -45,6 +47,7 @@ const fragmentSrc = `
   precision mediump float;
 
   in float vFace;
+  in vec3 vInstancePos;
   in vec3 vInstanceColor;
   in vec3 vWorldPos;
   in vec3 vBary;
@@ -53,6 +56,7 @@ const fragmentSrc = `
   uniform vec3[1] uTopBlocks;
   uniform float uTime;
   uniform vec3 uPlayer;
+  uniform vec3 uHighlight;
 
   out vec4 fragColor;
 
@@ -128,19 +132,24 @@ const fragmentSrc = `
 
     vec3 color;
 
-    float edgeFactor = min(min(vBary.x, vBary.y), vBary.z);
-    float edgeThreshold = 0.01;
+    if (vInstancePos.x == uHighlight.x &&
+        vInstancePos.y == uHighlight.y &&
+        vInstancePos.z == uHighlight.z) {
 
-    bool isEdge =
-      vBary.x < edgeThreshold ||
-      vBary.y < edgeThreshold ||
-      vBary.z < edgeThreshold;
+      float edgeFactor = min(min(vBary.x, vBary.y), vBary.z);
+      float edgeThreshold = 0.01;
 
-    bool isMiddle = abs(vOffset.x) < 0.2 && abs(vOffset.y) < 8.9;
+      bool isEdge =
+        vBary.x < edgeThreshold ||
+        vBary.y < edgeThreshold ||
+        vBary.z < edgeThreshold;
 
-    if (isEdge && !isMiddle) {
-      fragColor = vec4(0.0, 0.0, 0.0, 1.0);
-      return;
+      bool isMiddle = abs(vOffset.x) < 0.2 && abs(vOffset.y) < 8.9;
+
+      if (isEdge && !isMiddle) {
+        fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        return;
+      }
     }
 
     if (face == 0) {
@@ -179,7 +188,8 @@ export const BlockShader = (): Shader => {
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
         uZoom: { value: 2.0, type: 'f32' },
         uTopBlocks: { value: [], type: 'vec3<f32>' },
-        uTime: { value: 0, type: 'f32' }
+        uTime: { value: 0, type: 'f32' },
+        uHighlight: { value: [0, 0, 0], type: 'vec3<f32>' },
       }
     }
   })
