@@ -146,10 +146,21 @@ const fragmentSrc = `
 
       bool isMiddle = abs(vOffset.x) < 0.2 && abs(vOffset.y) < 8.9;
 
-      if (isEdge && !isMiddle) {
+      // if (isEdge && !isMiddle) {
+      //   fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+      //   return;
+      // }
+
+      bool isCenter = abs(vOffset.x) < 0.2;
+      bool isSide = abs(vOffset.x) > 17.8;
+      bool isTop = abs(vOffset.z) > 20.8;
+      bool isBottom = abs(vOffset.z) < 0.2;
+
+      if (isCenter || isSide || isTop || isBottom) {
         fragColor = vec4(0.0, 0.0, 0.0, 1.0);
         return;
       }
+
     }
 
     if (face == 0) {
