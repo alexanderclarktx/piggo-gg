@@ -263,6 +263,8 @@ export const Api = (): Api => {
       // set data for this client
       ws.data = { id: api.clientIncr, worldId: "", playerName: "noob", playerId: "" }
 
+      console.log("client connected", ws.remoteAddress)
+
       // add client to clients
       api.clients[ws.data.id] = ws
 
