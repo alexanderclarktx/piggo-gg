@@ -139,22 +139,22 @@ const fragmentSrc = `
     ) {
       if (face == 0) {
 
-        bool isEdge = vBary.x < 0.01 || vBary.y < 0.01 || vBary.z < 0.01;
-        bool isCenter = abs(vOffset.x) < 0.2;
+        bool isEdge = vBary.x < 0.02 || vBary.y < 0.02 || vBary.z < 0.02;
+        bool isCenter = abs(vOffset.x) < 0.4 && abs(vOffset.y) < 8.6;
 
         if (!isCenter && isEdge) {
-          fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          fragColor = vec4(0.0, 0.0, 0.6, 1.0);
           return;
         }
       } else {
 
-        bool isCenter = abs(vOffset.x) < 0.2;
-        bool isSide = abs(vOffset.x) > 17.8;
-        bool isTop = abs(vOffset.z) > 20.8;
-        bool isBottom = abs(vOffset.z) < 0.2;
+        bool isCenter = abs(vOffset.x) < 0.4;
+        bool isSide = abs(vOffset.x) > 17.6;
+        bool isTop = abs(vOffset.z) > 20.6;
+        bool isBottom = abs(vOffset.z) < 0.4;
 
         if (isCenter || isSide || isTop || isBottom) {
-          fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          fragColor = vec4(0.0, 0.0, 0.6, 1.0);
           return;
         }
       }
