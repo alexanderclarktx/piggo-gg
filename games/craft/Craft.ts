@@ -86,26 +86,24 @@ const CraftSystem = SystemBuilder({
       onTick: () => {
 
         // gravity
-        // const entities = world.queryEntities<Position>(["position"])
-        // for (const entity of entities) {
-        //   const { position } = entity.components
-        //   if (!position.data.gravity) return
+        const entities = world.queryEntities<Position>(["position"])
+        for (const entity of entities) {
+          const { position } = entity.components
+          if (!position.data.gravity) continue
 
-        //   const { x, y, z } = position.data
+          const { x, y, z, velocity } = position.data
 
-        //   const chunk = XYtoChunk(position.data)
-        //   const chunks = [
-        //     chunk,
-        //     { x: chunk.x - 1, y: chunk.y },
-        //     { x: chunk.x + 1, y: chunk.y },
-        //     { x: chunk.x, y: chunk.y - 1 },
-        //     { x: chunk.x, y: chunk.y + 1 },
-        //     { x: chunk.x - 1, y: chunk.y - 1 },
-        //     { x: chunk.x + 1, y: chunk.y - 1 },
-        //     { x: chunk.x - 1, y: chunk.y + 1 },
-        //     { x: chunk.x + 1, y: chunk.y + 1 }
-        //   ]
-        // }
+          const chunk = XYtoChunk(position.data)
+          const chunks = chunkNeighors(chunk)
+
+          const highest = highestBlock({ x, y }, chunks, z).z
+          if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
+            position.data.stop = highest
+          } else {
+            position.data.gravity = 0.3
+            position.data.stop = -600
+          }
+        }
 
         const players = world.queryEntities<Controlling>(["pc", "controlling"])
 
@@ -123,15 +121,6 @@ const CraftSystem = SystemBuilder({
           const playerChunk = XYtoChunk(position.data)
 
           const chunks = chunkNeighors(playerChunk)
-
-          // stop falling if directly above a block
-          const highest = highestBlock({ x, y }, chunks, z).z
-          if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
-            position.data.stop = highest
-          } else {
-            position.data.gravity = 0.3
-            position.data.stop = -600
-          }
 
           if (position.data.z === -600) {
             position.setPosition({ x: 0, y: 200, z: 128 })
@@ -170,12 +159,6 @@ const CraftSystem = SystemBuilder({
               collider.active = false
             }
           }
-        }
-
-        const shadows = values(world.entities).filter(e => e.id.startsWith("shadow-"))
-        for (const shadow of shadows) {
-          const { position, renderable } = shadow.components
-          renderable!.visible = position?.data.z !== 0
         }
       }
     }
