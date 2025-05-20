@@ -6,7 +6,7 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  atMouse: (mouse: XY, player: XYZ) => XYZ | null
+  atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
@@ -42,6 +42,7 @@ export const BlockData = (): BlockData => {
       if (!allBlocks) return null
 
       let found: Block | null = null
+      let face: 0 | 1 | 2 = 0
 
       for (let i = allBlocks.length - 1; i >= 0; i--) {
         const block = allBlocks[i]
@@ -59,9 +60,22 @@ export const BlockData = (): BlockData => {
         if (d > width) continue
 
         found = { ...block }
+
+        // angle
+        const angle = angleCC(dx, dy)
+        if (angle > 30 && angle <= 150) {
+          face = 0
+        } else if (angle > 150 && angle < 270) {
+          face = 2
+        } else {
+          face = 1
+        }
+
         break
       }
-      return found
+      if (!found) return null
+
+      return { block: found, face }
     },
     fromMouse: (mouse: XY, player: XYZ) => {
       const playerChunk = XYtoChunk(player)

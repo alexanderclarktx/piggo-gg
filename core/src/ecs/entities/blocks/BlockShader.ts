@@ -56,7 +56,7 @@ const fragmentSrc = `
   uniform vec3[1] uTopBlocks;
   uniform float uTime;
   uniform vec3 uPlayer;
-  uniform vec3 uHighlight;
+  uniform vec4 uHighlight;
 
   out vec4 fragColor;
 
@@ -134,33 +134,34 @@ const fragmentSrc = `
 
     if (vInstancePos.x == uHighlight.x &&
         vInstancePos.y == uHighlight.y &&
-        vInstancePos.z == uHighlight.z) {
+        vInstancePos.z == uHighlight.z &&
+        face == int(uHighlight.w + 0.5)
+    ) {
+      if (face == 0) {
 
-      float edgeFactor = min(min(vBary.x, vBary.y), vBary.z);
-      float edgeThreshold = 0.01;
+        float edgeFactor = min(min(vBary.x, vBary.y), vBary.z);
+        float edgeThreshold = 0.01;
 
-      bool isEdge =
-        vBary.x < edgeThreshold ||
-        vBary.y < edgeThreshold ||
-        vBary.z < edgeThreshold;
+        bool isEdge = vBary.x < edgeThreshold || vBary.y < edgeThreshold || vBary.z < edgeThreshold;
 
-      bool isMiddle = abs(vOffset.x) < 0.2 && abs(vOffset.y) < 8.9;
+        bool isMiddle = abs(vOffset.x) < 0.2 && abs(vOffset.y) < 8.9;
 
-      // if (isEdge && !isMiddle) {
-      //   fragColor = vec4(0.0, 0.0, 0.0, 1.0);
-      //   return;
-      // }
+        if (isEdge && !isMiddle) {
+          fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          return;
+        }
+      } else {
 
-      bool isCenter = abs(vOffset.x) < 0.2;
-      bool isSide = abs(vOffset.x) > 17.8;
-      bool isTop = abs(vOffset.z) > 20.8;
-      bool isBottom = abs(vOffset.z) < 0.2;
+        bool isCenter = abs(vOffset.x) < 0.2;
+        bool isSide = abs(vOffset.x) > 17.8;
+        bool isTop = abs(vOffset.z) > 20.8;
+        bool isBottom = abs(vOffset.z) < 0.2;
 
-      if (isCenter || isSide || isTop || isBottom) {
-        fragColor = vec4(0.0, 0.0, 0.0, 1.0);
-        return;
+        if (isCenter || isSide || isTop || isBottom) {
+          fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          return;
+        }
       }
-
     }
 
     if (face == 0) {
@@ -200,7 +201,7 @@ export const BlockShader = (): Shader => {
         uZoom: { value: 2.0, type: 'f32' },
         uTopBlocks: { value: [], type: 'vec3<f32>' },
         uTime: { value: 0, type: 'f32' },
-        uHighlight: { value: [0, 0, 0], type: 'vec3<f32>' },
+        uHighlight: { value: [0, 0, 0, 0], type: 'vec4<f32>' },
       }
     }
   })
