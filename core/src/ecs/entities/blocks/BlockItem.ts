@@ -1,7 +1,9 @@
 import {
   Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt,
-  Clickable, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity,
-  pixiGraphics, Position, Renderable, XYZtoIJK
+  Clickable, Controlling, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity,
+  NPC,
+  PC,
+  pixiGraphics, Position, Renderable, XYZdistance, XYZtoIJK
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -59,6 +61,25 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
     item: Item({ name: "block", flips: false }),
     effects: Effects(),
     clickable: Clickable({ width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 } }),
+    npc: NPC({
+      behavior: (entity, world) => {
+        if (!entity.components.item?.dropped) return
+
+        const itemPos = entity.components.position.data
+
+        const players = world.queryEntities<Controlling>(["controlling"])
+        for (const player of players) {
+          const character = player.components.controlling.getCharacter(world)
+          if (!character) continue
+
+          const { x, y, z } = character.components.position.data
+          const diff = XYZdistance(itemPos, { x, y, z })
+          if (diff < 10) {
+            world.actions.push(world.tick + 1, entity.id, { actionId: "pickupItem", playerId: player.id })
+          }
+        }
+      }
+    }),
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
