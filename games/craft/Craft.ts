@@ -1,9 +1,9 @@
 import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
-  Controlling, floor, highestBlock, values, Cursor, Chat,
-  EscapeMenu, blocks, BlockMesh, Position, Collider, Entity, XYZ,
-  BlockCollider, spawnChunk, XYtoChunk, Tooltip, PhysicsSystem
+  Controlling, floor, highestBlock, Cursor, Chat, EscapeMenu, blocks,
+  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, spawnChunk,
+  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -82,34 +82,17 @@ const CraftSystem = SystemBuilder({
       query: [],
       priority: 3,
       onTick: () => {
-        const players = world.queryEntities<Controlling>(["pc", "controlling"])
 
-        for (const player of players) {
-          const character = player.components.controlling.getCharacter(world)
-          if (!character) continue
+        // gravity
+        const entities = world.queryEntities<Position>(["position"])
+        for (const entity of entities) {
+          const { position } = entity.components
 
-          const { position } = character.components
           const { x, y, z, velocity } = position.data
 
-          // set collider group
-          const group = (floor(z / 21) + 1).toString() as "1"
-          character.components.collider.setGroup(group)
+          const chunk = XYtoChunk(position.data)
+          const chunks = chunkNeighors(chunk)
 
-          const playerChunk = XYtoChunk(position.data)
-
-          const chunks = [
-            playerChunk,
-            { x: playerChunk.x - 1, y: playerChunk.y },
-            { x: playerChunk.x + 1, y: playerChunk.y },
-            { x: playerChunk.x, y: playerChunk.y - 1 },
-            { x: playerChunk.x, y: playerChunk.y + 1 },
-            { x: playerChunk.x - 1, y: playerChunk.y - 1 },
-            { x: playerChunk.x + 1, y: playerChunk.y - 1 },
-            { x: playerChunk.x - 1, y: playerChunk.y + 1 },
-            { x: playerChunk.x + 1, y: playerChunk.y + 1 }
-          ]
-
-          // stop falling if directly above a block
           const highest = highestBlock({ x, y }, chunks, z).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             position.data.stop = highest
@@ -117,6 +100,23 @@ const CraftSystem = SystemBuilder({
             position.data.gravity = 0.3
             position.data.stop = -600
           }
+        }
+
+        const players = world.queryEntities<Controlling>(["pc", "controlling"])
+
+        for (const player of players) {
+          const character = player.components.controlling.getCharacter(world)
+          if (!character) continue
+
+          const { position } = character.components
+
+          // set collider group
+          const group = (floor(position.data.z / 21) + 1).toString() as "1"
+          character.components.collider.setGroup(group)
+
+          const playerChunk = XYtoChunk(position.data)
+
+          const chunks = chunkNeighors(playerChunk)
 
           if (position.data.z === -600) {
             position.setPosition({ x: 0, y: 200, z: 128 })
@@ -155,12 +155,6 @@ const CraftSystem = SystemBuilder({
               collider.active = false
             }
           }
-        }
-
-        const shadows = values(world.entities).filter(e => e.id.startsWith("shadow-"))
-        for (const shadow of shadows) {
-          const { position, renderable } = shadow.components
-          renderable!.visible = position?.data.z !== 0
         }
       }
     }
