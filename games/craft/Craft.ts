@@ -87,7 +87,7 @@ const CraftSystem = SystemBuilder({
         const entities = world.queryEntities<Position>(["position"])
         for (const entity of entities) {
           const { position } = entity.components
-          if (!position.data.gravity) continue
+          // if (!position.data.gravity) continue
 
           const { x, y, z, velocity } = position.data
 
