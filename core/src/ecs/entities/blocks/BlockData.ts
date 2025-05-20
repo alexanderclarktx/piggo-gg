@@ -366,3 +366,15 @@ export const highestBlock = (pos: XY, chunks: XY[], max?: number): XYZ => {
 
   return { x: snapped.x, y: snapped.y, z: level }
 }
+
+export const chunkNeighors = (chunk: XY): XY[] => ([
+  chunk,
+  { x: chunk.x - 1, y: chunk.y },
+  { x: chunk.x + 1, y: chunk.y },
+  { x: chunk.x, y: chunk.y - 1 },
+  { x: chunk.x, y: chunk.y + 1 },
+  { x: chunk.x - 1, y: chunk.y - 1 },
+  { x: chunk.x + 1, y: chunk.y - 1 },
+  { x: chunk.x - 1, y: chunk.y + 1 },
+  { x: chunk.x + 1, y: chunk.y + 1 }
+])

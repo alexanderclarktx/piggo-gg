@@ -48,6 +48,7 @@ export const dropItem = Action("dropItem", ({ world, entity }) => {
   item.dropped = true
   position.data.follows = undefined
   position.setVelocity({ x: 0, y: 0 })
+  position.setGravity(0.3)
 
   if (clickable) clickable.active = true
   if (collider) collider.active = true

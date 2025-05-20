@@ -3,7 +3,9 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, highestBlock, values, Cursor, Chat,
   EscapeMenu, blocks, BlockMesh, Position, Collider, Entity, XYZ,
-  BlockCollider, spawnChunk, XYtoChunk, Tooltip, PhysicsSystem
+  BlockCollider, spawnChunk, XYtoChunk, Tooltip, PhysicsSystem,
+  XY,
+  chunkNeighors
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -82,6 +84,29 @@ const CraftSystem = SystemBuilder({
       query: [],
       priority: 3,
       onTick: () => {
+
+        // gravity
+        // const entities = world.queryEntities<Position>(["position"])
+        // for (const entity of entities) {
+        //   const { position } = entity.components
+        //   if (!position.data.gravity) return
+
+        //   const { x, y, z } = position.data
+
+        //   const chunk = XYtoChunk(position.data)
+        //   const chunks = [
+        //     chunk,
+        //     { x: chunk.x - 1, y: chunk.y },
+        //     { x: chunk.x + 1, y: chunk.y },
+        //     { x: chunk.x, y: chunk.y - 1 },
+        //     { x: chunk.x, y: chunk.y + 1 },
+        //     { x: chunk.x - 1, y: chunk.y - 1 },
+        //     { x: chunk.x + 1, y: chunk.y - 1 },
+        //     { x: chunk.x - 1, y: chunk.y + 1 },
+        //     { x: chunk.x + 1, y: chunk.y + 1 }
+        //   ]
+        // }
+
         const players = world.queryEntities<Controlling>(["pc", "controlling"])
 
         for (const player of players) {
@@ -97,17 +122,7 @@ const CraftSystem = SystemBuilder({
 
           const playerChunk = XYtoChunk(position.data)
 
-          const chunks = [
-            playerChunk,
-            { x: playerChunk.x - 1, y: playerChunk.y },
-            { x: playerChunk.x + 1, y: playerChunk.y },
-            { x: playerChunk.x, y: playerChunk.y - 1 },
-            { x: playerChunk.x, y: playerChunk.y + 1 },
-            { x: playerChunk.x - 1, y: playerChunk.y - 1 },
-            { x: playerChunk.x + 1, y: playerChunk.y - 1 },
-            { x: playerChunk.x - 1, y: playerChunk.y + 1 },
-            { x: playerChunk.x + 1, y: playerChunk.y + 1 }
-          ]
+          const chunks = chunkNeighors(playerChunk)
 
           // stop falling if directly above a block
           const highest = highestBlock({ x, y }, chunks, z).z
