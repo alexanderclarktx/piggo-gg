@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, logPerf, Position, Renderable, XY, XYtoChunk
+  Entity, logPerf, mouse, Position, Renderable, XY, XYtoChunk
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -58,8 +58,15 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
-          const pcPos = world.client!.playerCharacter()?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
+          const character = world.client?.playerCharacter()
+
+          // character position
+          const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
           const pcPosFlip = world.flip(pcPos)
+
+          // highlighted face
+          let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
+          if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom
@@ -67,13 +74,14 @@ export const BlockMesh = (type: "foreground" | "background") => {
             shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
+            shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
 
             // shadows
             // const pos = intToXYZ(topBlocks[0].x, topBlocks[0].y, topBlocks[0].z)
             // shader.resources.uniforms.uniforms.uTopBlocks = [pos.x, pos.y, pos.z + 10.5]
           }
 
-          const { position } = world.client!.playerCharacter()?.components ?? {}
+          const { position } = character?.components ?? {}
           if (!position) return
 
           const playerZ = position.data.z - 20
@@ -124,7 +132,7 @@ const BLOCK_GEOMETRY = () => new Geometry({
     0, 2, 3,
 
     4, 5, 7,
-    5, 7, 6,
+    5, 6, 7,
 
     8, 9, 11,
     9, 11, 10,
@@ -180,6 +188,22 @@ const BLOCK_GEOMETRY = () => new Geometry({
       width, -width / 2,
       width, height,
       0, height + width / 2,
+    ],
+    aBary: [
+      1, 0, 0,
+      0, 1, 0,
+      0, 0, 1,
+      0, 1, 0,
+
+      1, 0, 0,
+      0, 1, 0,
+      1, 0, 0,
+      0, 0, 1,
+
+      1, 1, 1,
+      1, 1, 1,
+      1, 1, 1,
+      1, 1, 1
     ]
   }
 })

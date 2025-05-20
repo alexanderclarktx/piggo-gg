@@ -1,7 +1,7 @@
 import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
-  Controlling, floor, BlockPreview, highestBlock, values, Cursor, Chat,
+  Controlling, floor, highestBlock, values, Cursor, Chat,
   EscapeMenu, blocks, BlockMesh, Position, Collider, Entity, XYZ,
   BlockCollider, spawnChunk, XYtoChunk, Tooltip, PhysicsSystem
 } from "@piggo-gg/core"
@@ -25,7 +25,6 @@ export const Craft: GameBuilder = {
       Background({ rays: true, follow: true }),
       Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
-      BlockPreview(),
       BlockMesh("background"),
       BlockMesh("foreground"),
       Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: LEFT-CLICK\n  place: RIGHT-CLICK \n camera: Q", { x: 0, y: 30 })

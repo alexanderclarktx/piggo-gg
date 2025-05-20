@@ -6,6 +6,7 @@ const vertexSrc = `
   in float aFace;
   in vec2 aPosition;
   in vec3 aOffset;
+  in vec3 aBary;
 
   in vec3 aInstancePos;
   in vec3 aInstanceColor;
@@ -15,8 +16,11 @@ const vertexSrc = `
   uniform float uZoom;
 
   out float vFace;
+  out vec3 vInstancePos;
   out vec3 vInstanceColor;
   out vec3 vWorldPos;
+  out vec3 vBary;
+  out vec3 vOffset;
 
   void main() {
     vec2 pos2d = vec2(aInstancePos.x, aInstancePos.y - aInstancePos.z);
@@ -30,7 +34,10 @@ const vertexSrc = `
     gl_Position = vec4(clip.x, clip.y, 0, 1);
 
     vFace = aFace;
+    vInstancePos = aInstancePos;
     vInstanceColor = aInstanceColor;
+    vBary = aBary;
+    vOffset = aOffset;
 
     vWorldPos = aInstancePos + aOffset;
   }
@@ -40,12 +47,16 @@ const fragmentSrc = `
   precision mediump float;
 
   in float vFace;
+  in vec3 vInstancePos;
   in vec3 vInstanceColor;
   in vec3 vWorldPos;
+  in vec3 vBary;
+  in vec3 vOffset;
 
   uniform vec3[1] uTopBlocks;
   uniform float uTime;
   uniform vec3 uPlayer;
+  uniform vec4 uHighlight;
 
   out vec4 fragColor;
 
@@ -121,6 +132,34 @@ const fragmentSrc = `
 
     vec3 color;
 
+    if (vInstancePos.x == uHighlight.x &&
+        vInstancePos.y == uHighlight.y &&
+        vInstancePos.z == uHighlight.z &&
+        face == int(uHighlight.w + 0.5)
+    ) {
+      if (face == 0) {
+
+        bool isEdge = vBary.x < 0.01 || vBary.y < 0.01 || vBary.z < 0.01;
+        bool isCenter = abs(vOffset.x) < 0.2;
+
+        if (!isCenter && isEdge) {
+          fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          return;
+        }
+      } else {
+
+        bool isCenter = abs(vOffset.x) < 0.2;
+        bool isSide = abs(vOffset.x) > 17.8;
+        bool isTop = abs(vOffset.z) > 20.8;
+        bool isBottom = abs(vOffset.z) < 0.2;
+
+        if (isCenter || isSide || isTop || isBottom) {
+          fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          return;
+        }
+      }
+    }
+
     if (face == 0) {
       color = unpackRGB(vInstanceColor[0]);
     } else if (face == 1) {
@@ -157,7 +196,8 @@ export const BlockShader = (): Shader => {
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
         uZoom: { value: 2.0, type: 'f32' },
         uTopBlocks: { value: [], type: 'vec3<f32>' },
-        uTime: { value: 0, type: 'f32' }
+        uTime: { value: 0, type: 'f32' },
+        uHighlight: { value: [0, 0, 0, 0], type: 'vec4<f32>' },
       }
     }
   })
