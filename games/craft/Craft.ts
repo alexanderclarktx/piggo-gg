@@ -110,10 +110,9 @@ const CraftSystem = SystemBuilder({
           if (!character) continue
 
           const { position } = character.components
-          const { x, y, z, velocity } = position.data
 
           // set collider group
-          const group = (floor(z / 21) + 1).toString() as "1"
+          const group = (floor(position.data.z / 21) + 1).toString() as "1"
           character.components.collider.setGroup(group)
 
           const playerChunk = XYtoChunk(position.data)
