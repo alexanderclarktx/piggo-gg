@@ -64,11 +64,9 @@ export const BlockMesh = (type: "foreground" | "background") => {
           const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
           const pcPosFlip = world.flip(pcPos)
 
+          // highlighted face
           let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
           if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
-
-          // highlighted block
-          // const highlighted = character ? blocks.atMouse(mouse, character.components.position.data) ?? { x: 0, y: 0, z: 0} : { x: 0, y: 0, z: 0 }
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom

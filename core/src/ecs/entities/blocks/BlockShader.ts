@@ -139,14 +139,10 @@ const fragmentSrc = `
     ) {
       if (face == 0) {
 
-        float edgeFactor = min(min(vBary.x, vBary.y), vBary.z);
-        float edgeThreshold = 0.01;
+        bool isEdge = vBary.x < 0.01 || vBary.y < 0.01 || vBary.z < 0.01;
+        bool isCenter = abs(vOffset.x) < 0.2;
 
-        bool isEdge = vBary.x < edgeThreshold || vBary.y < edgeThreshold || vBary.z < edgeThreshold;
-
-        bool isMiddle = abs(vOffset.x) < 0.2 && abs(vOffset.y) < 8.9;
-
-        if (isEdge && !isMiddle) {
+        if (!isCenter && isEdge) {
           fragColor = vec4(0.0, 0.0, 0.0, 1.0);
           return;
         }
