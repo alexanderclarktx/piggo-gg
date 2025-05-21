@@ -1,6 +1,7 @@
 import {
   BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC, keys
+  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC,
+  keys, World, BlockTypeString, BlockItem, randomHash
 } from "@piggo-gg/core"
 
 const { width, height } = BlockDimensions
@@ -13,7 +14,7 @@ export type BlockData = {
   data: (at: XY[], flip?: boolean) => Block[]
   invalidate: () => void
   hasXYZ: (block: XYZ) => boolean
-  remove: (xyz: XYZ) => void
+  remove: (xyz: XYZ, world?: World) => void
 }
 
 export const BlockData = (): BlockData => {
@@ -225,7 +226,7 @@ export const BlockData = (): BlockData => {
 
       return Boolean((data[chunk.x]?.[chunk.y][index]))
     },
-    remove: ({ x, y, z }: XYZ) => {
+    remove: ({ x, y, z }, world) => {
       const chunkX = floor(x / 4)
       const chunkY = floor(y / 4)
 
@@ -242,6 +243,22 @@ export const BlockData = (): BlockData => {
       if (data[chunkX][chunkY][index] === undefined) {
         console.error("INVALID INDEX", index, xIndex, yIndex, z)
         return
+      }
+
+      const blockType = BlockTypeString[data[chunkX][chunkY][index]]
+
+      // spawn item
+      if (blockType && world) {
+        const playerCharacter = world.client?.playerCharacter()
+        if (playerCharacter) {
+          const item = BlockItem(blockType)({ character: playerCharacter, id: randomHash() })
+          const xy = intToXY(x, y)
+          item.components.position.data.follows = undefined
+          item.components.position.setPosition({ ...xy, z: (z + 1) * 21 })
+          item.components.item.dropped = true
+
+          world.addEntity(item)
+        }
       }
 
       data[chunkX][chunkY][index] = 0

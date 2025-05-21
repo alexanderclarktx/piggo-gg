@@ -1,6 +1,6 @@
 import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
-  World, genPlayerId, SoundManager, genHash, AuthLogin, FriendsList, Pls, NetClientReadSystem,
+  World, randomPlayerId, SoundManager, randomHash, AuthLogin, FriendsList, Pls, NetClientReadSystem,
   NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
@@ -59,7 +59,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
   let requestBuffer: Record<string, Callback> = {}
 
-  const player = Player({ id: genPlayerId() })
+  const player = Player({ id: randomPlayerId() })
   world.addEntity(player)
 
   const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {
@@ -117,7 +117,7 @@ export const Client = ({ world }: ClientProps): Client => {
       }
     },
     lobbyCreate: (callback) => {
-      request<LobbyCreate>({ route: "lobby/create", type: "request", id: genHash() }, (response) => {
+      request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash() }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to create lobby", response.error)
         } else {
@@ -128,7 +128,7 @@ export const Client = ({ world }: ClientProps): Client => {
       })
     },
     lobbyJoin: (lobbyId, callback) => {
-      request<LobbyJoin>({ route: "lobby/join", type: "request", id: genHash(), join: lobbyId }, (response) => {
+      request<LobbyJoin>({ route: "lobby/join", type: "request", id: randomHash(), join: lobbyId }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to join lobby", response.error)
         } else {
@@ -139,12 +139,12 @@ export const Client = ({ world }: ClientProps): Client => {
       })
     },
     metaPlayers: (callback) => {
-      request<MetaPlayers>({ route: "meta/players", type: "request", id: genHash() }, (response) => {
+      request<MetaPlayers>({ route: "meta/players", type: "request", id: randomHash() }, (response) => {
         callback(response)
       })
     },
     authLogin: async (jwt, callback) => {
-      request<AuthLogin>({ route: "auth/login", type: "request", id: genHash(), jwt }, (response) => {
+      request<AuthLogin>({ route: "auth/login", type: "request", id: randomHash(), jwt }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to login", response.error)
         } else {
@@ -157,13 +157,13 @@ export const Client = ({ world }: ClientProps): Client => {
       })
     },
     aiPls: (prompt, callback) => {
-      request<Pls>({ route: "ai/pls", type: "request", id: genHash(), prompt }, (response) => {
+      request<Pls>({ route: "ai/pls", type: "request", id: randomHash(), prompt }, (response) => {
         callback(response)
       })
     },
     profileCreate: (name, callback) => {
       if (!client.token) return
-      request<ProfileCreate>({ route: "profile/create", type: "request", id: genHash(), token: client.token, name }, (response) => {
+      request<ProfileCreate>({ route: "profile/create", type: "request", id: randomHash(), token: client.token, name }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to create profile", response.error)
         } else {
@@ -174,7 +174,7 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     profileGet: (callback) => {
       if (!client.token) return
-      request<ProfileGet>({ route: "profile/get", type: "request", id: genHash(), token: client.token }, (response) => {
+      request<ProfileGet>({ route: "profile/get", type: "request", id: randomHash(), token: client.token }, (response) => {
         if ("error" in response) {
           console.error("Client: failed to get profile", response.error)
           client.token = undefined
@@ -193,13 +193,13 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     friendsAdd: (name, callback) => {
       if (!client.token) return
-      request<FriendsAdd>({ route: "friends/add", type: "request", id: genHash(), token: client.token, name }, (response) => {
+      request<FriendsAdd>({ route: "friends/add", type: "request", id: randomHash(), token: client.token, name }, (response) => {
         callback(response)
       })
     },
     friendsList: (callback) => {
       if (!client.token) return
-      request<FriendsList>({ route: "friends/list", type: "request", id: genHash(), token: client.token }, (response) => {
+      request<FriendsList>({ route: "friends/list", type: "request", id: randomHash(), token: client.token }, (response) => {
         callback(response)
       })
     }

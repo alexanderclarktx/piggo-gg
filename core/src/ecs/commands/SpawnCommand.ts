@@ -1,4 +1,4 @@
-import { Command, Entity, InvokedAction, Piggo, Rock, Tree, Zomi, genHash, keys } from "@piggo-gg/core"
+import { Command, Entity, InvokedAction, Piggo, Rock, Tree, Zomi, randomHash, keys } from "@piggo-gg/core"
 
 const entityBuilders: Record<string, (_?: { id: string }) => Entity> = {
   "zombie": Zomi,
@@ -21,7 +21,7 @@ export const SpawnCommand: Command<SpawnCommandParams> = {
       if (id === match[1]) response = {
         actionId: "spawn",
         playerId: world.client?.playerId(),
-        params: { entity: id, id: `${match[1]}-${genHash()}` }
+        params: { entity: id, id: `${match[1]}-${randomHash()}` }
       }
     })
     return response
