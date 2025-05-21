@@ -226,7 +226,7 @@ export const BlockData = (): BlockData => {
 
       return Boolean((data[chunk.x]?.[chunk.y][index]))
     },
-    remove: ({ x, y, z }: XYZ, world: World) => {
+    remove: ({ x, y, z }, world) => {
       const chunkX = floor(x / 4)
       const chunkY = floor(y / 4)
 
