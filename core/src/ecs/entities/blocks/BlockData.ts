@@ -260,11 +260,7 @@ export const BlockData = (): BlockData => {
           item.components.item.dropped = true
 
           world.addEntity(item)
-          console.log("BLOCK ITEM", item.id, blockType, x, y)
         }
-
-
-        // item({ character: world.client?.playerCharacter()})
       }
 
       data[chunkX][chunkY][index] = 0
