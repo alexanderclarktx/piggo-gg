@@ -1,6 +1,6 @@
 import {
   ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes,
-  ResponseData, entries, genHash, keys, round, stringify, values
+  ResponseData, entries, randomHash, keys, round, stringify, values
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
@@ -61,7 +61,7 @@ export const Api = (): Api => {
         return { id: data.id }
       },
       "lobby/create": async ({ ws, data }) => {
-        const lobbyId = genHash()
+        const lobbyId = randomHash()
 
         // create world
         api.worlds[lobbyId] = ServerWorld()

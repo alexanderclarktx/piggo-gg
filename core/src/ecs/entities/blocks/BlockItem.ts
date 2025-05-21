@@ -37,7 +37,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         if (!xyz) return
 
         const spot = XYZtoIJK(xyz)
-        blocks.remove(spot)
+        blocks.remove(spot, world)
       },
       mb2: ({ params, world, player }) => {
         const { hold, mouse } = params as ItemActionParams
@@ -62,6 +62,8 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
     npc: NPC({
       behavior: (entity, world) => {
         if (!entity.components.item?.dropped) return
+
+        entity.components.renderable!.visible = true
 
         const players = world.queryEntities<Controlling>(["controlling"])
         for (const player of players) {
