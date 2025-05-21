@@ -249,8 +249,8 @@ export const BlockData = (): BlockData => {
 
       const blockType = BlockTypeString[data[chunkX][chunkY][index]]
 
+      // spawn item
       if (blockType && world) {
-        // spawn a blockitem
         const playerCharacter = world.client?.playerCharacter()
         if (playerCharacter) {
           const item = BlockItem(blockType)({ character: playerCharacter, id: randomHash() })

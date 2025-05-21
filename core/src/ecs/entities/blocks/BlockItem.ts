@@ -1,7 +1,7 @@
 import {
   Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt,
   Clickable, Controlling, Effects, Item, ItemActionParams, ItemBuilder,
-  ItemEntity, NPC, pixiGraphics, Position, Renderable, XYZdistance, XYZtoIJK
+  ItemEntity, NPC, pixiGraphics, Position, randomInt, Renderable, sin, XYZdistance, XYZtoIJK
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -21,81 +21,92 @@ const graphics: Record<BlockType, Graphics | undefined> = {
   leaf: undefined
 }
 
-export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) => ItemEntity({
-  id: id ?? `item-block-${character.id}-${type}`,
-  components: {
-    position: Position({ follows: character?.id ?? "" }),
-    actions: Actions({
-      mb1: ({ params, world, player }) => {
-        const { hold, mouse } = params as ItemActionParams
-        if (hold) return
+export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) => {
 
-        const character = player?.components.controlling.getCharacter(world)
-        if (!character) return
+  const rng = randomInt(100)
 
-        const xyz = blocks.atMouse(mouse, character.components.position.data)?.block
-        if (!xyz) return
+  const item = ItemEntity({
+    id: id ?? `item-block-${character.id}-${type}`,
+    components: {
+      position: Position({ follows: character?.id ?? "" }),
+      actions: Actions({
+        mb1: ({ params, world, player }) => {
+          const { hold, mouse } = params as ItemActionParams
+          if (hold) return
 
-        const spot = XYZtoIJK(xyz)
-        blocks.remove(spot, world)
-      },
-      mb2: ({ params, world, player }) => {
-        const { hold, mouse } = params as ItemActionParams
-        if (hold) return
+          const character = player?.components.controlling.getCharacter(world)
+          if (!character) return
 
-        const character = player?.components.controlling.getCharacter(world)
-        if (!character) return
+          const xyz = blocks.atMouse(mouse, character.components.position.data)?.block
+          if (!xyz) return
 
-        const xyz = blocks.fromMouse(mouse, character.components.position.data)
-        if (!xyz) return
+          const spot = XYZtoIJK(xyz)
+          blocks.remove(spot, world)
+        },
+        mb2: ({ params, world, player }) => {
+          const { hold, mouse } = params as ItemActionParams
+          if (hold) return
 
-        const spot = XYZtoIJK(xyz)
-        const added = blocks.add({ ...spot, type: BlockTypeInt[type] })
-        if (!added) return
+          const character = player?.components.controlling.getCharacter(world)
+          if (!character) return
 
-        world.client?.soundManager.play("click2")
-      }
-    }),
-    item: Item({ name: "block", flips: false }),
-    effects: Effects(),
-    clickable: Clickable({ width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 } }),
-    npc: NPC({
-      behavior: (entity, world) => {
-        if (!entity.components.item?.dropped) return
+          const xyz = blocks.fromMouse(mouse, character.components.position.data)
+          if (!xyz) return
 
-        entity.components.renderable!.visible = true
+          const spot = XYZtoIJK(xyz)
+          const added = blocks.add({ ...spot, type: BlockTypeInt[type] })
+          if (!added) return
 
-        const players = world.queryEntities<Controlling>(["controlling"])
-        for (const player of players) {
-          const character = player.components.controlling.getCharacter(world)
-          if (!character) continue
+          world.client?.soundManager.play("click2")
+        }
+      }),
+      item: Item({ name: "block", flips: false }),
+      effects: Effects(),
+      clickable: Clickable({ width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 } }),
+      npc: NPC({
+        behavior: (_, world) => {
+          if (!item.components.item?.dropped) return
 
-          const dist = XYZdistance(entity.components.position.data, character.components.position.data)
-          if (dist < 10) {
-            world.actions.push(world.tick + 1, entity.id, { actionId: "pickupItem", playerId: player.id })
-            // todo sound effect
+          item.components.renderable.visible = true
+
+          const players = world.queryEntities<Controlling>(["controlling"])
+          for (const player of players) {
+            const character = player.components.controlling.getCharacter(world)
+            if (!character) continue
+
+            const dist = XYZdistance(item.components.position.data, character.components.position.data)
+            if (dist < 10) {
+              world.actions.push(world.tick + 1, item.id, { actionId: "pickupItem", playerId: player.id })
+              // todo sound effect
+            }
           }
         }
-      }
-    }),
-    renderable: Renderable({
-      scaleMode: "nearest",
-      zIndex: 3,
-      scale: 0.3,
-      anchor: { x: 0.5, y: 0.5 },
-      interpolate: true,
-      visible: false,
-      rotates: false,
-      setup: async (r) => {
-        const clone = blockGraphics(type).clone()
-        clone.position.y = -height
-        r.c = clone
+      }),
+      renderable: Renderable({
+        scaleMode: "nearest",
+        zIndex: 3,
+        scale: 0.3,
+        anchor: { x: 0.5, y: 0.5 },
+        interpolate: true,
+        visible: false,
+        rotates: false,
+        onTick: ({ world }) => {
+          if (item.components.renderable.visible && item.components.item.dropped) {
+            item.components.renderable.position.y = sin((world.tick + rng) / 10) * 2
+          }
+        },
+        setup: async (r) => {
+          const clone = blockGraphics(type).clone()
+          clone.position.y = -height
+          r.c = clone
 
-        r.setOutline({ color: 0x000000, thickness: 1 })
-      }
-    })
-  }
-})
+          r.setOutline({ color: 0x000000, thickness: 1 })
+        }
+      })
+    }
+  })
+  return item
+}
 
 const blockGraphics = (type: BlockType) => {
   if (graphics[type]) return graphics[type]
