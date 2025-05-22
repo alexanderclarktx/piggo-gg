@@ -216,17 +216,6 @@ export const BlockData = (): BlockData => {
               const type = chunk[index]
               if (type === 0) continue
 
-
-              // cull unless z+1 or x+1 or y+1 are empty
-              // const zAbove = chunk[index + 16]
-              // const zUp = index + 16
-              // const xUp = flip ? index - 1 : index + 1
-              // const yUp = flip ? index - 4 : index + 4
-
-              // const checkX = flip ? x - 1 : x + 1
-              // const checkY = flip ? y - 4 : y + 4
-              // const checkZ = z + 16
-
               const dir = flip ? -1 : 1
 
               if (
