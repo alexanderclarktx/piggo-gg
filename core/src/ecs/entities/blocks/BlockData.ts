@@ -11,9 +11,9 @@ export type BlockData = {
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
-  culled: (at: XY[], flip?: boolean) => Block[]
+  visible: (at: XY[], flip?: boolean) => Block[]
   data: (at: XY[], flip?: boolean) => Block[]
-  invalidate: (c?: "cache" | "culledCache") => void
+  invalidate: (c?: "cache" | "visibleCache") => void
   hasXYZ: (block: XYZ) => boolean
   remove: (xyz: XYZ, world?: World) => void
 }
@@ -33,8 +33,8 @@ export const BlockData = (): BlockData => {
   const cache: Record<string, Block[]> = {}
   const dirty: Record<string, boolean> = {}
 
-  const culledCache: Record<string, Block[]> = {}
-  const culledDirty: Record<string, boolean> = {}
+  const visibleCache: Record<string, Block[]> = {}
+  const visibleDirty: Record<string, boolean> = {}
 
   const chunkey = (x: number, y: number) => `${x}:${y}`
   const chunkval = (x: number, y: number) => data[x]?.[y]
@@ -179,11 +179,11 @@ export const BlockData = (): BlockData => {
       const key = chunkey(chunkX, chunkY)
 
       dirty[key] = true
-      culledDirty[key] = true
+      visibleDirty[key] = true
 
       return true
     },
-    culled: (at: XY[], flip: boolean = false) => {
+    visible: (at: XY[], flip: boolean = false) => {
       const result: Block[] = []
       const time = performance.now()
 
@@ -198,10 +198,10 @@ export const BlockData = (): BlockData => {
         const chunk = chunkval(pos.x, pos.y)
         if (!chunk) continue
 
-        // read the culledCache
+        // read the visibleCache
         const key = `${pos.x}:${pos.y}`
-        if (culledCache[key] && !culledDirty[key]) {
-          result.push(...culledCache[key])
+        if (visibleCache[key] && !visibleDirty[key]) {
+          result.push(...visibleCache[key])
           continue
         }
 
@@ -218,6 +218,7 @@ export const BlockData = (): BlockData => {
 
               const dir = flip ? -1 : 1
 
+              // check if the block is visible
               if (
                 !val(pos.x * 4 + x + dir, pos.y * 4 + y, z) ||
                 !val(pos.x * 4 + x, pos.y * 4 + y + dir, z) ||
@@ -230,12 +231,12 @@ export const BlockData = (): BlockData => {
             }
           }
         }
-        culledCache[key] = chunkResult
-        culledDirty[key] = false
+        visibleCache[key] = chunkResult
+        visibleDirty[key] = false
         result.push(...chunkResult)
       }
 
-      logPerf("BlockData.culled", time)
+      logPerf("BlockData.visible", time)
       return result
     },
     data: (at: XY[], flip: boolean = false) => {
@@ -282,14 +283,14 @@ export const BlockData = (): BlockData => {
         result.push(...chunkResult)
       }
 
-      logPerf("BlockData.culled", time)
+      logPerf("BlockData.visible", time)
       return result
     },
-    invalidate: (c: "cache" | "culledCache" = "cache") => {
+    invalidate: (c: "cache" | "visibleCache" = "cache") => {
 
-      if (c === "culledCache") {
-        for (const value of keys(culledDirty)) {
-          culledDirty[value] = true
+      if (c === "visibleCache") {
+        for (const value of keys(visibleDirty)) {
+          visibleDirty[value] = true
         }
       } else {
         for (const value of keys(dirty)) {
@@ -348,7 +349,7 @@ export const BlockData = (): BlockData => {
       const key = chunkey(chunkX, chunkY)
 
       dirty[key] = true
-      culledDirty[key] = true
+      visibleDirty[key] = true
     }
   }
 
