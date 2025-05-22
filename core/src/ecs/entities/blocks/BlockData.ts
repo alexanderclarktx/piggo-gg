@@ -39,6 +39,20 @@ export const BlockData = (): BlockData => {
   const chunkey = (x: number, y: number) => `${x}:${y}`
   const chunkval = (x: number, y: number) => data[x]?.[y]
 
+  const val = (x: number, y: number, z: number) => {
+    const chunkX = floor(x / 4)
+    const chunkY = floor(y / 4)
+
+    const chunk = chunkval(chunkX, chunkY)
+    if (!chunk) return chunk
+
+    const xIndex = x - chunkX * 4
+    const yIndex = y - chunkY * 4
+    const index = z * 16 + yIndex * 4 + xIndex
+
+    return chunk[index]
+  }
+
   const blocks: BlockData = {
     atMouse: (mouse: XY, player: XYZ) => {
       const playerChunk = XYtoChunk(player)
@@ -205,9 +219,21 @@ export const BlockData = (): BlockData => {
 
               // cull unless z+1 or x+1 or y+1 are empty
               // const zAbove = chunk[index + 16]
-              if (chunk[index + 16] === 0 || chunk[index + 1] === 0 || chunk[index + 4] === 0) {
+              // const zUp = index + 16
+              // const xUp = flip ? index - 1 : index + 1
+              // const yUp = flip ? index - 4 : index + 4
 
+              // const checkX = flip ? x - 1 : x + 1
+              // const checkY = flip ? y - 4 : y + 4
+              // const checkZ = z + 16
 
+              const dir = flip ? -1 : 1
+
+              if (
+                !val(pos.x * 4 + x + dir, pos.y * 4 + y, z) ||
+                !val(pos.x * 4 + x, pos.y * 4 + y + dir, z) ||
+                !val(pos.x * 4 + x, pos.y * 4 + y, z + 1)
+              ) {
                 const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
                 const block: Block = { ...xyz, type }
                 chunkResult.push(block)
