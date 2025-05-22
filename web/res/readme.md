@@ -1,6 +1,6 @@
 # Credits
 
-cassette sound
+cassette sounds
 https://freesound.org/people/Garysguff/sounds/621905/
 
 music tracks

@@ -10,6 +10,7 @@ import { OAuth2Client } from "google-auth-library"
 
 export type PerClientData = {
   id: number
+  ip: string | null
   playerId: string
   playerName?: string
   worldId: string
@@ -241,7 +242,7 @@ export const Api = (): Api => {
           if (!origin || !["https://piggo.gg", "http://localhost:8000"].includes(origin)) {
             return new Response("invalid origin", { status: 403 })
           }
-          return server.upgrade(r) ? new Response() : new Response("upgrade failed", { status: 500 })
+          return server.upgrade(r, { data: { ip: r.headers.get("x-forwarded-for") } }) ? new Response() : new Response("upgrade failed", { status: 500 })
         },
         websocket: {
           perMessageDeflate: false,
@@ -261,9 +262,9 @@ export const Api = (): Api => {
     },
     handleOpen: (ws: ServerWebSocket<PerClientData>) => {
       // set data for this client
-      ws.data = { id: api.clientIncr, worldId: "", playerName: "noob", playerId: "" }
+      ws.data = { id: api.clientIncr, worldId: "", playerName: "noob", playerId: "", ip: ws.data.ip }
 
-      console.log("client connected", ws.remoteAddress)
+      console.log("client connected", ws.data.ip)
 
       // add client to clients
       api.clients[ws.data.id] = ws
