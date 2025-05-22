@@ -11,8 +11,9 @@ export type BlockData = {
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
+  culled: (at: XY[], flip?: boolean) => Block[]
   data: (at: XY[], flip?: boolean) => Block[]
-  invalidate: () => void
+  invalidate: (c?: "cache" | "culledCache") => void
   hasXYZ: (block: XYZ) => boolean
   remove: (xyz: XYZ, world?: World) => void
 }
@@ -31,6 +32,9 @@ export const BlockData = (): BlockData => {
 
   const cache: Record<string, Block[]> = {}
   const dirty: Record<string, boolean> = {}
+
+  const culledCache: Record<string, Block[]> = {}
+  const culledDirty: Record<string, boolean> = {}
 
   const chunkey = (x: number, y: number) => `${x}:${y}`
   const chunkval = (x: number, y: number) => data[x]?.[y]
@@ -163,6 +167,53 @@ export const BlockData = (): BlockData => {
 
       return true
     },
+    culled: (at: XY[], flip: boolean = false) => {
+      const result: Block[] = []
+      const time = performance.now()
+
+      const start = flip ? at.length - 1 : 0;
+      const end = flip ? -1 : at.length;
+      const step = flip ? -1 : 1;
+
+      for (let i = start; i !== end; i += step) {
+        const pos = at[i]
+
+        // chunk exists
+        const chunk = chunkval(pos.x, pos.y)
+        if (!chunk) continue
+
+        // read the culledCache
+        const key = `${pos.x}:${pos.y}`
+        if (culledCache[key] && !culledDirty[key]) {
+          result.push(...culledCache[key])
+          continue
+        }
+
+        const chunkResult: Block[] = []
+
+        // find blocks in the chunk
+        for (let z = 0; z < 32; z++) {
+          for (let y = flip ? 3 : 0; flip ? y >= 0 : y < 4; flip ? y-- : y++) {
+            for (let x = flip ? 3 : 0; flip ? x >= 0 : x < 4; flip ? x-- : x++) {
+
+              const index = z * 16 + y * 4 + x
+              const type = chunk[index]
+              if (type === 0) continue
+
+              const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
+              const block: Block = { ...xyz, type }
+              chunkResult.push(block)
+            }
+          }
+        }
+        culledCache[key] = chunkResult
+        culledDirty[key] = false
+        result.push(...chunkResult)
+      }
+
+      logPerf("BlockData.culled", time)
+      return result
+    },
     data: (at: XY[], flip: boolean = false) => {
       const result: Block[] = []
       const time = performance.now()
@@ -207,13 +258,24 @@ export const BlockData = (): BlockData => {
         result.push(...chunkResult)
       }
 
-      logPerf("block data", time)
+      logPerf("BlockData.culled", time)
       return result
     },
-    invalidate: () => {
-      for (const value of keys(dirty)) {
-        dirty[value] = true
+    invalidate: (c: "cache" | "culledCache" = "cache") => {
+
+      if (c === "culledCache") {
+        for (const value of keys(culledDirty)) {
+          culledDirty[value] = true
+        }
+      } else {
+        for (const value of keys(dirty)) {
+          dirty[value] = true
+        }
       }
+
+      // for (const value of keys(dirty)) {
+      //   dirty[value] = true
+      // }
     },
     hasXYZ: (block: XYZ) => {
       const chunk = XYtoChunk(block)

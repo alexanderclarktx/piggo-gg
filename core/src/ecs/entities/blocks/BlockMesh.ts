@@ -50,6 +50,8 @@ export const BlockMesh = (type: "foreground" | "background") => {
           }
 
           chunkData = blocks.data(chunks, flipped === -1)
+
+          console.log("chunkData", chunkData.length)
         },
         onRender: ({ world, delta, renderable }) => {
           const time = performance.now()
