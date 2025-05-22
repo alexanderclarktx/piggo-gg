@@ -272,10 +272,6 @@ export const BlockData = (): BlockData => {
           dirty[value] = true
         }
       }
-
-      // for (const value of keys(dirty)) {
-      //   dirty[value] = true
-      // }
     },
     hasXYZ: (block: XYZ) => {
       const chunk = XYtoChunk(block)
