@@ -156,7 +156,6 @@ export const RenderSystem = ClientSystemBuilder({
 
           if (renderable.children) {
             for (const child of renderable.children) {
-              // console.log(entity.id, child, child.zIndex)
               child.c.zIndex = child.zIndex
             }
           }
