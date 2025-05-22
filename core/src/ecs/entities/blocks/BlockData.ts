@@ -11,8 +11,9 @@ export type BlockData = {
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
+  visible: (at: XY[], flip?: boolean) => Block[]
   data: (at: XY[], flip?: boolean) => Block[]
-  invalidate: () => void
+  invalidate: (c?: "cache" | "visibleCache") => void
   hasXYZ: (block: XYZ) => boolean
   remove: (xyz: XYZ, world?: World) => void
 }
@@ -32,8 +33,25 @@ export const BlockData = (): BlockData => {
   const cache: Record<string, Block[]> = {}
   const dirty: Record<string, boolean> = {}
 
+  const visibleCache: Record<string, Block[]> = {}
+  const visibleDirty: Record<string, boolean> = {}
+
   const chunkey = (x: number, y: number) => `${x}:${y}`
   const chunkval = (x: number, y: number) => data[x]?.[y]
+
+  const val = (x: number, y: number, z: number) => {
+    const chunkX = floor(x / 4)
+    const chunkY = floor(y / 4)
+
+    const chunk = chunkval(chunkX, chunkY)
+    if (!chunk) return chunk
+
+    const xIndex = x - chunkX * 4
+    const yIndex = y - chunkY * 4
+    const index = z * 16 + yIndex * 4 + xIndex
+
+    return chunk[index]
+  }
 
   const blocks: BlockData = {
     atMouse: (mouse: XY, player: XYZ) => {
@@ -159,9 +177,67 @@ export const BlockData = (): BlockData => {
       data[chunkX][chunkY][index] = block.type
 
       const key = chunkey(chunkX, chunkY)
+
       dirty[key] = true
+      visibleDirty[key] = true
 
       return true
+    },
+    visible: (at: XY[], flip: boolean = false) => {
+      const result: Block[] = []
+      const time = performance.now()
+
+      const start = flip ? at.length - 1 : 0;
+      const end = flip ? -1 : at.length;
+      const step = flip ? -1 : 1;
+
+      for (let i = start; i !== end; i += step) {
+        const pos = at[i]
+
+        // chunk exists
+        const chunk = chunkval(pos.x, pos.y)
+        if (!chunk) continue
+
+        // read the visibleCache
+        const key = `${pos.x}:${pos.y}`
+        if (visibleCache[key] && !visibleDirty[key]) {
+          result.push(...visibleCache[key])
+          continue
+        }
+
+        const chunkResult: Block[] = []
+
+        // find blocks in the chunk
+        for (let z = 0; z < 32; z++) {
+          for (let y = flip ? 3 : 0; flip ? y >= 0 : y < 4; flip ? y-- : y++) {
+            for (let x = flip ? 3 : 0; flip ? x >= 0 : x < 4; flip ? x-- : x++) {
+
+              const index = z * 16 + y * 4 + x
+              const type = chunk[index]
+              if (type === 0) continue
+
+              const dir = flip ? -1 : 1
+
+              // check if the block is visible
+              if (
+                !val(pos.x * 4 + x + dir, pos.y * 4 + y, z) ||
+                !val(pos.x * 4 + x, pos.y * 4 + y + dir, z) ||
+                !val(pos.x * 4 + x, pos.y * 4 + y, z + 1)
+              ) {
+                const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
+                const block: Block = { ...xyz, type }
+                chunkResult.push(block)
+              }
+            }
+          }
+        }
+        visibleCache[key] = chunkResult
+        visibleDirty[key] = false
+        result.push(...chunkResult)
+      }
+
+      logPerf("BlockData.visible", time)
+      return result
     },
     data: (at: XY[], flip: boolean = false) => {
       const result: Block[] = []
@@ -207,12 +283,19 @@ export const BlockData = (): BlockData => {
         result.push(...chunkResult)
       }
 
-      logPerf("block data", time)
+      logPerf("BlockData.visible", time)
       return result
     },
-    invalidate: () => {
-      for (const value of keys(dirty)) {
-        dirty[value] = true
+    invalidate: (c: "cache" | "visibleCache" = "cache") => {
+
+      if (c === "visibleCache") {
+        for (const value of keys(visibleDirty)) {
+          visibleDirty[value] = true
+        }
+      } else {
+        for (const value of keys(dirty)) {
+          dirty[value] = true
+        }
       }
     },
     hasXYZ: (block: XYZ) => {
@@ -264,7 +347,9 @@ export const BlockData = (): BlockData => {
       data[chunkX][chunkY][index] = 0
 
       const key = chunkey(chunkX, chunkY)
+
       dirty[key] = true
+      visibleDirty[key] = true
     }
   }
 
