@@ -225,6 +225,11 @@ export const Renderable = (props: RenderableProps): Renderable => {
       // remove from the renderer
       renderable.renderer?.app.stage.removeChild(renderable.c)
       renderable.renderer?.camera.remove(renderable)
+      if (renderable.children) {
+        for (const child of renderable.children) {
+          child.cleanup()
+        }
+      }
 
       // remove all event listeners
       renderable.c.removeAllListeners()
