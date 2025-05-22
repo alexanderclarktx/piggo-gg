@@ -1,14 +1,12 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, logPerf, mouse, Position, Renderable, XY, XYtoChunk
+  Entity, mouse, Position, Renderable, XY, XYtoChunk
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
 export const BlockMesh = () => {
-  // const bgShader = BlockShader()
-  // const fgShader = BlockShader()
   const shader = BlockShader()
 
   const bgGeometry = BLOCK_GEOMETRY()
@@ -21,31 +19,8 @@ export const BlockMesh = () => {
     setup: async (r) => {
       r.c = new Mesh({ geometry: bgGeometry, shader })
     },
-    onRender: ({ world, delta, renderable }) => {
-      const time = performance.now()
-
-      const zoom = world.renderer!.camera.scale
-      const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
-      const resolution = world.renderer!.wh()
-
+    onRender: ({ world, renderable }) => {
       const character = world.client?.playerCharacter()
-
-      // character position
-      const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
-      const pcPosFlip = world.flip(pcPos)
-
-      // highlighted face
-      let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
-      if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
-
-      if (shader.resources.uniforms?.uniforms?.uZoom) {
-        shader.resources.uniforms.uniforms.uZoom = zoom
-        shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
-        shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
-        shader.resources.uniforms.uniforms.uResolution = resolution
-        shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
-        shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
-      }
 
       const { position } = character?.components ?? {}
       if (!position) return
@@ -63,18 +38,11 @@ export const BlockMesh = () => {
 
         const blockInFront = (y - playerY) > 0
 
-        // if (type === "foreground") {
-        //   if (blockInFront && block.z >= playerZ) {
-        //     newPosBuffer.set([x, y, block.z], instanceCount * 3)
-        //     newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-        //     instanceCount += 1
-        //   }
         if (!blockInFront || block.z < playerZ) {
           newPosBuffer.set([x, y, block.z], instanceCount * 3)
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
           instanceCount += 1
         }
-        // }
       }
 
       bgGeometry.attributes.aInstancePos.buffer.data = newPosBuffer
@@ -82,7 +50,6 @@ export const BlockMesh = () => {
       bgGeometry.instanceCount = instanceCount
 
       renderable.c.visible = instanceCount > 0
-      logPerf("block mesh", time, 9)
     }
   })
 
@@ -94,32 +61,8 @@ export const BlockMesh = () => {
     setup: async (r) => {
       r.c = new Mesh({ geometry: fgGeometry, shader })
     },
-    onRender: ({ world, delta, renderable }) => {
-      const time = performance.now()
-
-      const zoom = world.renderer!.camera.scale
-      const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
-      const resolution = world.renderer!.wh()
-
+    onRender: ({ world, renderable }) => {
       const character = world.client?.playerCharacter()
-
-      // character position
-      const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
-      const pcPosFlip = world.flip(pcPos)
-
-      // highlighted face
-      let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
-      if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
-
-      if (shader.resources.uniforms?.uniforms?.uZoom) {
-        shader.resources.uniforms.uniforms.uZoom = zoom
-        shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
-        shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
-        shader.resources.uniforms.uniforms.uResolution = resolution
-        shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
-        shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
-      }
-
       const { position } = character?.components ?? {}
       if (!position) return
 
@@ -136,18 +79,11 @@ export const BlockMesh = () => {
 
         const blockInFront = (y - playerY) > 0
 
-        // if (type === "foreground") {
-          if (blockInFront && block.z >= playerZ) {
-            newPosBuffer.set([x, y, block.z], instanceCount * 3)
-            newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-            instanceCount += 1
-          }
-        // if (!blockInFront || block.z < playerZ) {
-        //   newPosBuffer.set([x, y, block.z], instanceCount * 3)
-        //   newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-        //   instanceCount += 1
-        // }
-        // }
+        if (blockInFront && block.z >= playerZ) {
+          newPosBuffer.set([x, y, block.z], instanceCount * 3)
+          newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+          instanceCount += 1
+        }
       }
 
       fgGeometry.attributes.aInstancePos.buffer.data = newPosBuffer
@@ -155,7 +91,6 @@ export const BlockMesh = () => {
       fgGeometry.instanceCount = instanceCount
 
       renderable.c.visible = instanceCount > 0
-      logPerf("block mesh", time, 9)
     }
   })
 
@@ -195,6 +130,30 @@ export const BlockMesh = () => {
 
           chunkData = blocks.visible(chunks, flipped === -1)
         },
+        onRender: ({ world, delta }) => {
+          const zoom = world.renderer!.camera.scale
+          const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+          const resolution = world.renderer!.wh()
+
+          const character = world.client?.playerCharacter()
+
+          // character position
+          const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
+          const pcPosFlip = world.flip(pcPos)
+
+          // highlighted face
+          let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
+          if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
+
+          if (shader.resources.uniforms?.uniforms?.uZoom) {
+            shader.resources.uniforms.uniforms.uZoom = zoom
+            shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+            shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
+            shader.resources.uniforms.uniforms.uResolution = resolution
+            shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
+            shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
+          }
+        }
       })
     }
   })
