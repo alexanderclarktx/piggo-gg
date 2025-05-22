@@ -24,6 +24,7 @@ export type Renderable = Component<"renderable", {
   interactiveChildren: boolean
   interpolate: boolean
   initialized: boolean
+  obedient: boolean
   position: XY
   r: Renderable | undefined
   rendered: boolean
@@ -65,6 +66,7 @@ export type RenderableProps = {
   cullable?: boolean
   interactiveChildren?: boolean
   interpolate?: boolean
+  obedient?: boolean
   position?: XY
   rotates?: boolean
   scale?: number
@@ -105,6 +107,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     interpolate: props.interpolate ?? false,
     onRender: props.onRender,
     onTick: props.onTick,
+    obedient: props.obedient ?? true,
     position: props.position ?? { x: 0, y: 0 },
     rendered: false,
     renderer: undefined as unknown as Renderer,
@@ -248,7 +251,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
 
         childRenderables.forEach(async (child) => {
           await child._init(renderer, world)
-          renderable.c.addChild(child.c)
+          if (child.obedient) renderable.c.addChild(child.c)
         })
       }
 

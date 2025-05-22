@@ -76,7 +76,12 @@ export const RenderSystem = ClientSystemBuilder({
           // run dynamic callback for children
           if (renderable.children && renderable.initialized) {
             for (const child of renderable.children) {
-              child.onTick?.({ container: child.c, entity, world, renderable: child, client })
+              if (!child.rendered) {
+                if (child.obedient) continue
+                position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
+              } else {
+                child.onTick?.({ container: child.c, entity, world, renderable: child, client })
+              }
             }
           }
 
@@ -147,6 +152,13 @@ export const RenderSystem = ClientSystemBuilder({
         for (const [index, entity] of entities.entries()) {
           const { renderable } = entity.components
           renderable.c.zIndex = renderable.zIndex + 0.0001 * index
+
+          if (renderable.children) {
+            for (const child of renderable.children) {
+              console.log(entity.id, child, child.zIndex)
+              child.c.zIndex = child.zIndex
+            }
+          }
         }
 
         // update screenFixed entities

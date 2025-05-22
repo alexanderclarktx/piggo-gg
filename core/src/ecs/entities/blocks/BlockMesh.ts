@@ -6,27 +6,171 @@ import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
-export const BlockMesh = (type: "foreground" | "background") => {
-  const geometry = BLOCK_GEOMETRY()
-  const shader = BlockShader()
+export const BlockMesh = () => {
+  const bgShader = BlockShader()
+  const fgShader = BlockShader()
 
-  const zIndex = type === "foreground" ? 3.1 : 0
+  const bgGeometry = BLOCK_GEOMETRY()
+  const fgGeometry = BLOCK_GEOMETRY()
+
+  const bgChild = Renderable({
+    zIndex: 0,
+    anchor: { x: 0.5, y: 0.5 },
+    obedient: false,
+    setup: async (r) => {
+      r.c = new Mesh({ geometry: bgGeometry, shader: bgShader })
+    },
+    onRender: ({ world, delta, renderable }) => {
+      const time = performance.now()
+
+      const zoom = world.renderer!.camera.scale
+      const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+      const resolution = world.renderer!.wh()
+
+      const character = world.client?.playerCharacter()
+
+      // character position
+      const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
+      const pcPosFlip = world.flip(pcPos)
+
+      // highlighted face
+      let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
+      if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
+
+      if (bgShader.resources.uniforms?.uniforms?.uZoom) {
+        bgShader.resources.uniforms.uniforms.uZoom = zoom
+        bgShader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+        bgShader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
+        bgShader.resources.uniforms.uniforms.uResolution = resolution
+        bgShader.resources.uniforms.uniforms.uTime = performance.now() / 1000
+        bgShader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
+      }
+
+      const { position } = character?.components ?? {}
+      if (!position) return
+
+      const playerZ = position.data.z - 20
+      const playerY = world.flip(position.data).y
+
+      const newPosBuffer = new Float32Array(chunkData.length * 3)
+      const newColorBuffer = new Float32Array(chunkData.length * 3)
+
+      let instanceCount = 0
+
+      for (const block of chunkData) {
+        const { x, y } = world.flip(block)
+
+        const blockInFront = (y - playerY) > 0
+
+        // if (type === "foreground") {
+        //   if (blockInFront && block.z >= playerZ) {
+        //     newPosBuffer.set([x, y, block.z], instanceCount * 3)
+        //     newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+        //     instanceCount += 1
+        //   }
+        if (!blockInFront || block.z < playerZ) {
+          newPosBuffer.set([x, y, block.z], instanceCount * 3)
+          newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+          instanceCount += 1
+        }
+        // }
+      }
+
+      bgGeometry.attributes.aInstancePos.buffer.data = newPosBuffer
+      bgGeometry.attributes.aInstanceColor.buffer.data = newColorBuffer
+      bgGeometry.instanceCount = instanceCount
+
+      renderable.c.visible = instanceCount > 0
+      logPerf("block mesh", time, 9)
+    }
+  })
+
+  const fgChild = Renderable({
+    zIndex: 3.2,
+    anchor: { x: 0.5, y: 0.5 },
+    interpolate: true,
+    obedient: false,
+    setup: async (r) => {
+      r.c = new Mesh({ geometry: fgGeometry, shader: fgShader })
+    },
+    onRender: ({ world, delta, renderable }) => {
+      const time = performance.now()
+
+      const zoom = world.renderer!.camera.scale
+      const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+      const resolution = world.renderer!.wh()
+
+      const character = world.client?.playerCharacter()
+
+      // character position
+      const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
+      const pcPosFlip = world.flip(pcPos)
+
+      // highlighted face
+      let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
+      if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
+
+      if (fgShader.resources.uniforms?.uniforms?.uZoom) {
+        fgShader.resources.uniforms.uniforms.uZoom = zoom
+        fgShader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+        fgShader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
+        fgShader.resources.uniforms.uniforms.uResolution = resolution
+        fgShader.resources.uniforms.uniforms.uTime = performance.now() / 1000
+        fgShader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
+      }
+
+      const { position } = character?.components ?? {}
+      if (!position) return
+
+      const playerZ = position.data.z - 20
+      const playerY = world.flip(position.data).y
+
+      const newPosBuffer = new Float32Array(chunkData.length * 3)
+      const newColorBuffer = new Float32Array(chunkData.length * 3)
+
+      let instanceCount = 0
+
+      for (const block of chunkData) {
+        const { x, y } = world.flip(block)
+
+        const blockInFront = (y - playerY) > 0
+
+        // if (type === "foreground") {
+          if (blockInFront && block.z >= playerZ) {
+            newPosBuffer.set([x, y, block.z], instanceCount * 3)
+            newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+            instanceCount += 1
+          }
+        // if (!blockInFront || block.z < playerZ) {
+        //   newPosBuffer.set([x, y, block.z], instanceCount * 3)
+        //   newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+        //   instanceCount += 1
+        // }
+        // }
+      }
+
+      fgGeometry.attributes.aInstancePos.buffer.data = newPosBuffer
+      fgGeometry.attributes.aInstanceColor.buffer.data = newColorBuffer
+      fgGeometry.instanceCount = instanceCount
+
+      renderable.c.visible = instanceCount > 0
+      logPerf("block mesh", time, 9)
+    }
+  })
 
   let chunkData: Block[] = []
 
   let flipped = 1
 
   return Entity({
-    id: `block-mesh-${type}`,
+    id: `block-mesh`,
     components: {
       position: Position(),
       renderable: Renderable({
-        zIndex,
+        zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
-        setup: async (r) => {
-          r.c = new Mesh({ geometry, shader })
-        },
+        setChildren: async () => [bgChild, fgChild],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -50,68 +194,6 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           chunkData = blocks.visible(chunks, flipped === -1)
         },
-        onRender: ({ world, delta, renderable }) => {
-          const time = performance.now()
-
-          const zoom = world.renderer!.camera.scale
-          const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
-          const resolution = world.renderer!.wh()
-
-          const character = world.client?.playerCharacter()
-
-          // character position
-          const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
-          const pcPosFlip = world.flip(pcPos)
-
-          // highlighted face
-          let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
-          if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
-
-          if (shader.resources.uniforms?.uniforms?.uZoom) {
-            shader.resources.uniforms.uniforms.uZoom = zoom
-            shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
-            shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
-            shader.resources.uniforms.uniforms.uResolution = resolution
-            shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
-            shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
-          }
-
-          const { position } = character?.components ?? {}
-          if (!position) return
-
-          const playerZ = position.data.z - 20
-          const playerY = world.flip(position.data).y
-
-          const newPosBuffer = new Float32Array(chunkData.length * 3)
-          const newColorBuffer = new Float32Array(chunkData.length * 3)
-
-          let instanceCount = 0
-
-          for (const block of chunkData) {
-            const { x, y } = world.flip(block)
-
-            const blockInFront = (y - playerY) > 0
-
-            if (type === "foreground") {
-              if (blockInFront && block.z >= playerZ) {
-                newPosBuffer.set([x, y, block.z], instanceCount * 3)
-                newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-                instanceCount += 1
-              }
-            } else if (!blockInFront || block.z < playerZ) {
-              newPosBuffer.set([x, y, block.z], instanceCount * 3)
-              newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-              instanceCount += 1
-            }
-          }
-
-          geometry.attributes.aInstancePos.buffer.data = newPosBuffer
-          geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
-          geometry.instanceCount = instanceCount
-
-          renderable.c.visible = instanceCount > 0
-          logPerf("block mesh", time, 9)
-        }
       })
     }
   })
