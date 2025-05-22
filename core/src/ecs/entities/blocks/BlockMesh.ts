@@ -46,12 +46,10 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           if (world.flipped() !== flipped) {
             flipped = world.flipped()
-            blocks.invalidate()
+            blocks.invalidate("culledCache")
           }
 
-          chunkData = blocks.data(chunks, flipped === -1)
-
-          console.log("chunkData", chunkData.length)
+          chunkData = blocks.culled(chunks, flipped === -1)
         },
         onRender: ({ world, delta, renderable }) => {
           const time = performance.now()

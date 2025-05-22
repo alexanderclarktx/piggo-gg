@@ -163,7 +163,9 @@ export const BlockData = (): BlockData => {
       data[chunkX][chunkY][index] = block.type
 
       const key = chunkey(chunkX, chunkY)
+
       dirty[key] = true
+      culledDirty[key] = true
 
       return true
     },
@@ -200,9 +202,16 @@ export const BlockData = (): BlockData => {
               const type = chunk[index]
               if (type === 0) continue
 
-              const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
-              const block: Block = { ...xyz, type }
-              chunkResult.push(block)
+
+              // cull unless z+1 or x+1 or y+1 are empty
+              // const zAbove = chunk[index + 16]
+              if (chunk[index + 16] === 0 || chunk[index + 1] === 0 || chunk[index + 4] === 0) {
+
+
+                const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
+                const block: Block = { ...xyz, type }
+                chunkResult.push(block)
+              }
             }
           }
         }
@@ -322,7 +331,9 @@ export const BlockData = (): BlockData => {
       data[chunkX][chunkY][index] = 0
 
       const key = chunkey(chunkX, chunkY)
+
       dirty[key] = true
+      culledDirty[key] = true
     }
   }
 
