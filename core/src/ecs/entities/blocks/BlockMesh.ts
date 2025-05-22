@@ -7,8 +7,9 @@ import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 const { width, height } = BlockDimensions
 
 export const BlockMesh = () => {
-  const bgShader = BlockShader()
-  const fgShader = BlockShader()
+  // const bgShader = BlockShader()
+  // const fgShader = BlockShader()
+  const shader = BlockShader()
 
   const bgGeometry = BLOCK_GEOMETRY()
   const fgGeometry = BLOCK_GEOMETRY()
@@ -18,7 +19,7 @@ export const BlockMesh = () => {
     anchor: { x: 0.5, y: 0.5 },
     obedient: false,
     setup: async (r) => {
-      r.c = new Mesh({ geometry: bgGeometry, shader: bgShader })
+      r.c = new Mesh({ geometry: bgGeometry, shader })
     },
     onRender: ({ world, delta, renderable }) => {
       const time = performance.now()
@@ -37,13 +38,13 @@ export const BlockMesh = () => {
       let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
       if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
 
-      if (bgShader.resources.uniforms?.uniforms?.uZoom) {
-        bgShader.resources.uniforms.uniforms.uZoom = zoom
-        bgShader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
-        bgShader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
-        bgShader.resources.uniforms.uniforms.uResolution = resolution
-        bgShader.resources.uniforms.uniforms.uTime = performance.now() / 1000
-        bgShader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
+      if (shader.resources.uniforms?.uniforms?.uZoom) {
+        shader.resources.uniforms.uniforms.uZoom = zoom
+        shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+        shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
+        shader.resources.uniforms.uniforms.uResolution = resolution
+        shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
+        shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
       }
 
       const { position } = character?.components ?? {}
@@ -91,7 +92,7 @@ export const BlockMesh = () => {
     interpolate: true,
     obedient: false,
     setup: async (r) => {
-      r.c = new Mesh({ geometry: fgGeometry, shader: fgShader })
+      r.c = new Mesh({ geometry: fgGeometry, shader })
     },
     onRender: ({ world, delta, renderable }) => {
       const time = performance.now()
@@ -110,13 +111,13 @@ export const BlockMesh = () => {
       let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
       if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
 
-      if (fgShader.resources.uniforms?.uniforms?.uZoom) {
-        fgShader.resources.uniforms.uniforms.uZoom = zoom
-        fgShader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
-        fgShader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
-        fgShader.resources.uniforms.uniforms.uResolution = resolution
-        fgShader.resources.uniforms.uniforms.uTime = performance.now() / 1000
-        fgShader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
+      if (shader.resources.uniforms?.uniforms?.uZoom) {
+        shader.resources.uniforms.uniforms.uZoom = zoom
+        shader.resources.uniforms.uniforms.uCamera = [offset.x, offset.y]
+        shader.resources.uniforms.uniforms.uPlayer = [pcPosFlip.x, pcPosFlip.y + 2, pcPos.z]
+        shader.resources.uniforms.uniforms.uResolution = resolution
+        shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
+        shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
       }
 
       const { position } = character?.components ?? {}
