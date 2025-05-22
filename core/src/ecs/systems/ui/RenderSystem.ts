@@ -78,7 +78,6 @@ export const RenderSystem = ClientSystemBuilder({
             for (const child of renderable.children) {
               if (!child.rendered) {
                 if (child.obedient) continue
-                console.log("adding disobedient child", child)
                 position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
                 child.rendered = true
               } else {

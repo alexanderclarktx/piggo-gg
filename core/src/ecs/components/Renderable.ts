@@ -252,7 +252,6 @@ export const Renderable = (props: RenderableProps): Renderable => {
         childRenderables.forEach(async (child) => {
           await child._init(renderer, world)
           if (child.obedient) {
-            console.log("obedient child renderable added to parent")
             renderable.c.addChild(child.c)
           }
         })
