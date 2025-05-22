@@ -26,8 +26,6 @@ export const Craft: GameBuilder = {
       Cursor(), Chat(), EscapeMenu(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockMesh(),
-      // BlockMesh("background"),
-      // BlockMesh("foreground"),
       Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: LEFT-CLICK\n  place: RIGHT-CLICK \n camera: Q", { x: 0, y: 30 })
     ]
   })
