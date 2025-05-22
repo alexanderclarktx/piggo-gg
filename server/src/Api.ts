@@ -258,6 +258,8 @@ export const Api = (): Api => {
       const world = api.worlds[ws.data.worldId]
       if (world) world.handleClose(ws)
 
+      console.log("client disconnected", ws.data.ip)
+
       delete api.clients[ws.data.id]
     },
     handleOpen: (ws: ServerWebSocket<PerClientData>) => {
