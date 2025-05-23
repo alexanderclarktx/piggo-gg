@@ -192,7 +192,7 @@ export const BlockShader = (): Shader => {
     resources: {
       uniforms: {
         uCamera: { value: [0, 0], type: 'vec2<f32>' },
-        uPlayer: { value: [0, 0, 0], type: 'vec3<f32>' },
+        uPlayer: { value: [0, 0, 0], type: 'vec3<f32>' }, // just used for player shadow
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
         uZoom: { value: 2.0, type: 'f32' },
         uTopBlocks: { value: [], type: 'vec3<f32>' },
