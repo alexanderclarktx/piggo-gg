@@ -1,33 +1,94 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, logPerf, mouse, Position, Renderable, XY, XYtoChunk
+  Entity, Item, logPerf, logRare, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
-export const BlockMesh = (type: "foreground" | "background") => {
-  const geometry = BLOCK_GEOMETRY()
+export const BlockMesh = () => {
   const shader = BlockShader()
 
-  const zIndex = type === "foreground" ? 3.1 : 0
+  let targets: (XYZ & { zIndex: number })[] = []
+
+  const MeshChild = (i: number) => {
+
+    const geometry = BLOCK_GEOMETRY()
+
+    return Renderable({
+      zIndex: 0,
+      anchor: { x: 0.5, y: 0.5 },
+      obedient: false,
+      setup: async (r) => {
+        r.c = new Mesh({ geometry, shader })
+      },
+      onRender: ({ world, renderable }) => {
+        const before = targets[i]
+        const after = targets[i - 1]
+
+        const newPosBuffer = new Float32Array(8000 * 3) // todo inefficient ?
+        const newColorBuffer = new Float32Array(8000 * 3)
+
+        let instanceCount = 0
+
+        for (const block of chunkData) {
+          const { x: blockX, y: blockY } = world.flip(block)
+
+          if (before) {
+            const blockInFront = (blockY - before.y) > 0
+
+            if (!blockInFront || block.z < before.z) {
+              newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
+              newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+              instanceCount += 1
+            }
+          }
+
+          if (after) {
+            const blockInFront = (blockY - after.y) > 0
+
+            if (blockInFront && block.z >= after.z) {
+              newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
+              newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+              instanceCount += 1
+            }
+          }
+        }
+
+        geometry.attributes.aInstancePos.buffer.data = newPosBuffer
+        geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
+        geometry.instanceCount = instanceCount
+
+        renderable.c.visible = instanceCount > 0
+        // console.log(`MeshChild ${i} visible: ${instanceCount > 0}`)
+
+        if (after) {
+          renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
+          // renderable.c.zIndex = 3.00061
+          console.log(`MeshChild AFTER ${i} zIndex: ${renderable.c.zIndex} visible: ${instanceCount > 0}`)
+          // console.log(`after ${renderable.c.zIndex} visible: ${instanceCount > 0}`)
+
+          // logRare(renderable.c, world)
+        }
+      }
+    })
+  }
 
   let chunkData: Block[] = []
-  let topBlocks: Block[] = [{ x: 9, y: 9, z: 1, type: 2 }]
 
   let flipped = 1
 
   return Entity({
-    id: `block-mesh-${type}`,
+    id: `block-mesh`,
     components: {
       position: Position(),
       renderable: Renderable({
-        zIndex,
+        zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
-        setup: async (r) => {
-          r.c = new Mesh({ geometry, shader })
-        },
+        setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3)],
+        // setChildren: async () => [MeshChild(1)],
+        // setChildren: async () => [MeshChild(0), MeshChild(1)],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -51,9 +112,7 @@ export const BlockMesh = (type: "foreground" | "background") => {
 
           chunkData = blocks.visible(chunks, flipped === -1)
         },
-        onRender: ({ world, delta, renderable }) => {
-          const time = performance.now()
-
+        onRender: ({ world, delta }) => {
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
@@ -75,47 +134,41 @@ export const BlockMesh = (type: "foreground" | "background") => {
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
             shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
-
-            // shadows
-            // const pos = intToXYZ(topBlocks[0].x, topBlocks[0].y, topBlocks[0].z)
-            // shader.resources.uniforms.uniforms.uTopBlocks = [pos.x, pos.y, pos.z + 10.5]
           }
 
-          const { position } = character?.components ?? {}
-          if (!position) return
+          targets = []
 
-          const playerZ = position.data.z - 20
-          const playerY = world.flip(position.data).y
+          if (character) targets[0] = { x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20, zIndex: character.components.renderable.c.zIndex }
 
-          const newPosBuffer = new Float32Array(chunkData.length * 3)
-          const newColorBuffer = new Float32Array(chunkData.length * 3)
+          // const entities = world.queryEntities<Position>(["position", "renderable"])
+          const entities = world.queryEntities<Position | Renderable | Item>(["position", "renderable", "item"])
 
-          let instanceCount = 0
+          let i = 1
+          for (const entity of entities) {
+            if (entity.components.position.screenFixed) continue
+            if (!entity.components.item.dropped) continue
 
-          for (const block of chunkData) {
-            const { x, y } = world.flip(block)
-
-            const blockInFront = (y - playerY) > 0
-
-            if (type === "foreground") {
-              if (blockInFront && block.z >= playerZ) {
-                newPosBuffer.set([x, y, block.z], instanceCount * 3)
-                newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-                instanceCount += 1
-              }
-            } else if (!blockInFront || block.z < playerZ) {
-              newPosBuffer.set([x, y, block.z], instanceCount * 3)
-              newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-              instanceCount += 1
+            targets[i] = {
+              x: entity.components.position.data.x,
+              y: entity.components.position.data.y,
+              z: entity.components.position.data.z,
+              zIndex: entity.components.renderable.c.zIndex
             }
+            i += 1
+
+            // console.log(entity.id)
           }
+          targets.sort((a, b) => {
+            return a.y - b.y
 
-          geometry.attributes.aInstancePos.buffer.data = newPosBuffer
-          geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
-          geometry.instanceCount = instanceCount
 
-          renderable.c.visible = instanceCount > 0
-          logPerf("block mesh", time, 9)
+            // if (a.z === b.z) {
+            //   return b.y - a.y
+            // } else {
+            //   return b.z - a.z
+            // }
+          })
+          console.log(targets.map(x => x.y))
         }
       })
     }

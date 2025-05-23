@@ -258,7 +258,7 @@ export const Api = (): Api => {
       const world = api.worlds[ws.data.worldId]
       if (world) world.handleClose(ws)
 
-      console.log("client disconnected", ws.data.ip)
+      if (ws.data.ip) console.log("client disconnected", ws.data.ip)
 
       delete api.clients[ws.data.id]
     },
@@ -266,7 +266,7 @@ export const Api = (): Api => {
       // set data for this client
       ws.data = { id: api.clientIncr, worldId: "", playerName: "noob", playerId: "", ip: ws.data.ip }
 
-      console.log("client connected", ws.data.ip)
+      if (ws.data.ip) console.log("client connected", ws.data.ip)
 
       // add client to clients
       api.clients[ws.data.id] = ws
