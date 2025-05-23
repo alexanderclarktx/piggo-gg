@@ -26,8 +26,6 @@ export const BlockMesh = () => {
         const before = targets[i]
         const after = targets[i - 1]
 
-        // const { x, y } = world.flip(target)
-
         const newPosBuffer = new Float32Array(8000 * 3) // todo inneficient ?
         const newColorBuffer = new Float32Array(8000 * 3)
 
@@ -37,7 +35,6 @@ export const BlockMesh = () => {
           const { x: blockX, y: blockY } = world.flip(block)
 
           if (before) {
-
             const blockInFront = (blockY - before.y) > 0
 
             if (!blockInFront || block.z < before.z) {
@@ -48,12 +45,10 @@ export const BlockMesh = () => {
           }
 
           if (after) {
-            // const { x: beforeX, y: beforeY } = world.flip(beforeTarget)
-
             const blockInFront = (blockY - after.y) > 0
 
             if (blockInFront && block.z >= after.z) {
-              newPosBuffer.set([after.x, after.y, block.z], instanceCount * 3)
+              newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
               newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
               instanceCount += 1
             }
