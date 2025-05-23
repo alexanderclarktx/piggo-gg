@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, mouse, Position, Renderable, XY, XYtoChunk, XYZ
+  Entity, Item, logPerf, logRare, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -9,7 +9,7 @@ const { width, height } = BlockDimensions
 export const BlockMesh = () => {
   const shader = BlockShader()
 
-  const targets: XYZ[] = []
+  let targets: (XYZ & { zIndex: number })[] = []
 
   const MeshChild = (i: number) => {
 
@@ -26,8 +26,8 @@ export const BlockMesh = () => {
         const before = targets[i]
         const after = targets[i - 1]
 
-        const newPosBuffer = new Float32Array(chunkData.length * 3) // todo inefficient ?
-        const newColorBuffer = new Float32Array(chunkData.length * 3)
+        const newPosBuffer = new Float32Array(8000 * 3) // todo inefficient ?
+        const newColorBuffer = new Float32Array(8000 * 3)
 
         let instanceCount = 0
 
@@ -60,8 +60,16 @@ export const BlockMesh = () => {
         geometry.instanceCount = instanceCount
 
         renderable.c.visible = instanceCount > 0
+        // console.log(`MeshChild ${i} visible: ${instanceCount > 0}`)
 
-        if (after) renderable.c.zIndex = after.z + 0.0001
+        if (after) {
+          renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
+          // renderable.c.zIndex = 3.00061
+          console.log(`MeshChild AFTER ${i} zIndex: ${renderable.c.zIndex} visible: ${instanceCount > 0}`)
+          // console.log(`after ${renderable.c.zIndex} visible: ${instanceCount > 0}`)
+
+          // logRare(renderable.c, world)
+        }
       }
     })
   }
@@ -78,7 +86,9 @@ export const BlockMesh = () => {
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
-        setChildren: async () => [MeshChild(0), MeshChild(1)],
+        setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3)],
+        // setChildren: async () => [MeshChild(1)],
+        // setChildren: async () => [MeshChild(0), MeshChild(1)],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -126,7 +136,39 @@ export const BlockMesh = () => {
             shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
           }
 
-          targets[0] = { x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20 }
+          targets = []
+
+          if (character) targets[0] = { x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20, zIndex: character.components.renderable.c.zIndex }
+
+          // const entities = world.queryEntities<Position>(["position", "renderable"])
+          const entities = world.queryEntities<Position | Renderable | Item>(["position", "renderable", "item"])
+
+          let i = 1
+          for (const entity of entities) {
+            if (entity.components.position.screenFixed) continue
+            if (!entity.components.item.dropped) continue
+
+            targets[i] = {
+              x: entity.components.position.data.x,
+              y: entity.components.position.data.y,
+              z: entity.components.position.data.z,
+              zIndex: entity.components.renderable.c.zIndex
+            }
+            i += 1
+
+            // console.log(entity.id)
+          }
+          targets.sort((a, b) => {
+            return a.y - b.y
+
+
+            // if (a.z === b.z) {
+            //   return b.y - a.y
+            // } else {
+            //   return b.z - a.z
+            // }
+          })
+          console.log(targets.map(x => x.y))
         }
       })
     }

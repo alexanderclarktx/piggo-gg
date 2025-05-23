@@ -140,7 +140,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         const t = performance.now()
         // sort entities by position (closeness to camera)
-        entities = entities.filter(x => x.components.renderable.visible)
+        entities = entities.filter(x => (x.components.renderable.visible && x.components.renderable.zIndex === 4))
         entities.sort((a, b) => (
           (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
           (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
