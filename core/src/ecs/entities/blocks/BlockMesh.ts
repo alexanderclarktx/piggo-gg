@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, Item, logPerf, logRare, mouse, Position, Renderable, round, stringify, XY, XYtoChunk, XYZ
+  Entity, Item, mouse, Position, Renderable, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh, Shader, State } from "pixi.js"
 
@@ -9,13 +9,10 @@ const { width, height } = BlockDimensions
 export const BlockMesh = () => {
   const shader = BlockShader()
 
-  let chunkData: Block[] = []
-
-  let flipped = 1
-
   let targets: (XYZ & { zIndex: number, id: string })[] = []
-
   let mesh: Mesh<Geometry, Shader>
+  let chunkData: Block[] = []
+  let flipped = 1
 
   const MeshChild = (i: number) => {
 
@@ -34,7 +31,7 @@ export const BlockMesh = () => {
         const before = targets[i]
         const after = targets[i - 1]
 
-        const newPosBuffer = new Float32Array(chunkData.length * 3) // todo inefficient ?
+        const newPosBuffer = new Float32Array(chunkData.length * 3)
         const newColorBuffer = new Float32Array(chunkData.length * 3)
 
         let instanceCount = 0
@@ -84,10 +81,7 @@ export const BlockMesh = () => {
 
         renderable.c.visible = instanceCount > 0
         if (after) {
-          // renderable.c.zIndex = round(after.zIndex + 0.0001, 4)
-          // renderable.c.zIndex = after.zIndex + 10
-          renderable.zIndex = after.zIndex + 1
-          // logRare(`AFTER ${i} zIndex: ${renderable.c.zIndex} r.zIndex: ${renderable.zIndex} count: ${instanceCount}`, world)
+          renderable.zIndex = after.zIndex + 0.00001
         } else {
           // console.log(`BEFORE ${renderable.c.zIndex}`)
         }
