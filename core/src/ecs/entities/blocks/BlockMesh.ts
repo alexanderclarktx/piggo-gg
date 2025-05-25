@@ -34,8 +34,8 @@ export const BlockMesh = () => {
         const before = targets[i]
         const after = targets[i - 1]
 
-        const newPosBuffer = new Float32Array(4000 * 3) // todo inefficient ?
-        const newColorBuffer = new Float32Array(4000 * 3)
+        const newPosBuffer = new Float32Array(chunkData.length * 3) // todo inefficient ?
+        const newColorBuffer = new Float32Array(chunkData.length * 3)
 
         let instanceCount = 0
 
