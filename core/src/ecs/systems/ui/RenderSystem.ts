@@ -79,7 +79,6 @@ export const RenderSystem = ClientSystemBuilder({
               if (!child.rendered) {
                 if (child.obedient) continue
                 position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
-                console.log("rendered child", child.c.uid, entity.id)
                 child.rendered = true
               } else {
                 for (const child of renderable.children) {
@@ -144,6 +143,7 @@ export const RenderSystem = ClientSystemBuilder({
 
         const t = performance.now()
         // sort entities by position (closeness to camera)
+        entities = entities.filter(x => x.components.renderable.visible)
         entities.sort((a, b) => (
           (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
           (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
