@@ -1,7 +1,6 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position,
-  Character, abs, round, XY, XYZ, sign, sqrt, max, min,
-  logRare
+  Character, abs, round, XY, XYZ, sign, sqrt, max, min
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -118,8 +117,6 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         // camera focus on player's character
         const character = world.client?.playerCharacter()
         if (character) renderer.camera.focus = character
-
-        logRare(renderer.camera.root.children.map(c => `${c.constructor.name}: ${c.zIndex}`), world)
 
         // cull far away entities
         let numHidden = 0

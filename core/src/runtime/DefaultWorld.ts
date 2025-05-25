@@ -10,7 +10,7 @@ export const DefaultWorld: WorldBuilder = (props: WorldProps) => World({
   commands: [GameCommand, SpawnCommand, DebugCommand, RemoveCommand, PlsCommand],
   systems: [
     RandomSystem, ExpiresSystem, ControlSystem, ClickableSystem, InputSystem, DebugSystem, ItemSystem,
-    HealthSystem, CommandSystem, NPCSystem, CooldownSystem,
+    HealthSystem, CommandSystem, NPCSystem, NametagSystem, CooldownSystem,
     ActionSystem, EffectsSystem, PositionSystem, RenderSystem
   ]
 })
