@@ -2,7 +2,7 @@ import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
   Entity, Item, mouse, Position, Renderable, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
-import { Buffer, BufferUsage, Geometry, Mesh, Shader, State } from "pixi.js"
+import { Buffer, BufferUsage, Geometry, Mesh, Shader } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
@@ -23,9 +23,7 @@ export const BlockMesh = () => {
       anchor: { x: 0.5, y: 0.5 },
       obedient: false,
       setup: async (r) => {
-        mesh = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
-
-        r.c = mesh
+        r.c = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
       },
       onRender: ({ world, renderable }) => {
         const before = targets[i]
