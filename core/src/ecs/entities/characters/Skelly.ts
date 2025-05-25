@@ -20,9 +20,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     health: Health({ hp: 100 }),
     team: player.components.team,
     inventory: Inventory([
-      // BlockItem("moonrock"), BlockItem("saphire"), BlockItem("ruby"), BlockItem("obsidian"), Pickaxe
-      // BlockItem("moonrock")
-      Pickaxe
+      BlockItem("moonrock"), BlockItem("saphire"), BlockItem("ruby"), BlockItem("obsidian"), Pickaxe
     ]),
     element: Element("flesh"),
     input: Input({

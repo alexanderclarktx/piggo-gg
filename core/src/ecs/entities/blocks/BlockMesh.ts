@@ -52,8 +52,8 @@ export const BlockMesh = () => {
 
                 if (!blockInFront || block.z < before.z) {
                   newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
-                  // newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-                  newColorBuffer.set(BlockColors["leaf"], instanceCount * 3)
+                  newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+                  // newColorBuffer.set(BlockColors["leaf"], instanceCount * 3)
                   instanceCount += 1
                 }
               } else {
@@ -82,7 +82,7 @@ export const BlockMesh = () => {
         geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
         geometry.instanceCount = instanceCount
 
-        // renderable.c.visible = instanceCount > 0
+        renderable.c.visible = instanceCount > 0
         if (after) {
           // renderable.c.zIndex = round(after.zIndex + 0.0001, 4)
           // renderable.c.zIndex = after.zIndex + 10
@@ -102,8 +102,8 @@ export const BlockMesh = () => {
       renderable: Renderable({
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        setChildren: async () => [MeshChild(1), MeshChild(0)],
-        // setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2)],
+        // setChildren: async () => [MeshChild(1), MeshChild(0)],
+        setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2)],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -171,8 +171,6 @@ export const BlockMesh = () => {
               id: entity.id
             }
             i += 1
-
-            // console.log(entity.id)
           }
           targets.sort((a, b) => (a.y - b.y))
           // logRare(stringify(targets.map(x => x.id)), world)
