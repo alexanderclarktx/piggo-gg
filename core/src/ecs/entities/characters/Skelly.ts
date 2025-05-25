@@ -20,7 +20,8 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     health: Health({ hp: 100 }),
     team: player.components.team,
     inventory: Inventory([
-      BlockItem("moonrock"), BlockItem("saphire"), BlockItem("ruby"), BlockItem("obsidian"), Pickaxe
+      // BlockItem("moonrock"), BlockItem("saphire"), BlockItem("ruby"), BlockItem("obsidian"), Pickaxe
+      BlockItem("moonrock")
     ]),
     element: Element("flesh"),
     input: Input({
@@ -63,7 +64,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     renderable: Renderable({
       anchor: { x: 0.55, y: 0.9 },
       scale: 1.2,
-      zIndex: 4,
+      zIndex: 400,
       interpolate: true,
       scaleMode: "nearest",
       setup: DudeSkin("white"),

@@ -79,8 +79,12 @@ export const RenderSystem = ClientSystemBuilder({
               if (!child.rendered) {
                 if (child.obedient) continue
                 position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
+                console.log("rendered child", child.c.uid, entity.id)
                 child.rendered = true
               } else {
+                for (const child of renderable.children) {
+                  child.c.zIndex = child.zIndex
+                }
                 child.onTick?.({ container: child.c, entity, world, renderable: child, client })
               }
             }
@@ -140,25 +144,24 @@ export const RenderSystem = ClientSystemBuilder({
 
         const t = performance.now()
         // sort entities by position (closeness to camera)
-        entities = entities.filter(x => (x.components.renderable.visible && x.components.renderable.zIndex === 4))
-        entities.sort((a, b) => (
+        const copy = entities.filter(x => (x.components.renderable.visible && x.components.renderable.zIndex === 400))
+        copy.sort((a, b) => (
           (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
           (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
-          // (a.components.position.data.y + a.components.position.data.z) -
-          // (b.components.position.data.y + b.components.position.data.z)
         ))
         logPerf("sort loop", t)
 
         // set zIndex
-        for (const [index, entity] of entities.entries()) {
+        for (const [index, entity] of copy.entries()) {
           const { renderable } = entity.components
-          renderable.c.zIndex = renderable.zIndex + 0.0001 * index
+          renderable.c.zIndex = renderable.zIndex + 10 * index
 
-          if (renderable.children) {
-            for (const child of renderable.children) {
-              child.c.zIndex = child.zIndex
-            }
-          }
+          // if (renderable.children) {
+          //   for (const child of renderable.children) {
+          //     console.log("set child zIndex", child.zIndex, child.c.zIndex)
+          //     child.c.zIndex = child.zIndex
+          //   }
+          // }
         }
 
         // update screenFixed entities

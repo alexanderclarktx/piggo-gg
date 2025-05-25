@@ -1,6 +1,8 @@
 import {
   ClientSystemBuilder, Entity, Renderable, Position,
-  Character, abs, round, XY, XYZ, sign, sqrt, max, min
+  Character, abs, round, XY, XYZ, sign, sqrt, max, min,
+  logRare,
+  stringify
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
@@ -23,7 +25,7 @@ export type Camera = {
 // Camera handles the viewport of the game
 export const Camera = (app: Application): Camera => {
 
-  const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 })
+  const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1, cullableChildren: false })
   const renderables: Set<Renderable> = new Set()
 
   const camera: Camera = {
@@ -118,6 +120,9 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         const character = world.client?.playerCharacter()
         if (character) renderer.camera.focus = character
 
+        // logRare(renderer.camera.root.children.filter(c=>(c.zIndex >= 400)).map(c => `${c.constructor.name}: ${c.zIndex}`), world)
+        logRare(renderer.camera.root.children.map(c => `${c.constructor.name}: ${c.zIndex}`), world)
+
         // cull far away entities
         let numHidden = 0
         for (const entity of entities) {
@@ -137,6 +142,8 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
       },
       onRender: (_, delta) => {
         if (!renderer.camera.focus) return
+
+        // renderer.camera.root.sortChildren()
 
         if (targetScale !== renderer.camera.scale) {
           const diff = targetScale - renderer.camera.scale
