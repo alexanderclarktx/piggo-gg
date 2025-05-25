@@ -84,7 +84,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
       }),
       renderable: Renderable({
         scaleMode: "nearest",
-        zIndex: 400,
+        zIndex: 4,
         scale: 0.3,
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,

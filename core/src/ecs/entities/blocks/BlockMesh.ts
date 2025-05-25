@@ -2,7 +2,7 @@ import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
   Entity, Item, logPerf, logRare, mouse, Position, Renderable, round, stringify, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
-import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
+import { Buffer, BufferUsage, Geometry, Mesh, Shader, State } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
@@ -11,6 +11,8 @@ export const BlockMesh = () => {
 
   let targets: (XYZ & { zIndex: number, id: string })[] = []
   let shaders = [BlockShader(), BlockShader(), BlockShader()]
+
+  let mesh: Mesh<Geometry, Shader>
 
   const MeshChild = (i: number) => {
 
@@ -21,15 +23,16 @@ export const BlockMesh = () => {
       anchor: { x: 0.5, y: 0.5 },
       obedient: false,
       setup: async (r) => {
-        const mesh = new Mesh({ geometry, shader: shaders[0], interactive: false })
+        mesh = new Mesh({ geometry, shader: shaders[i], interactive: false, cullable: false, isRenderGroup: true })
+
         r.c = mesh
       },
       onRender: ({ world, renderable }) => {
         const before = targets[i]
         const after = targets[i - 1]
 
-        const newPosBuffer = new Float32Array(8000 * 3) // todo inefficient ?
-        const newColorBuffer = new Float32Array(8000 * 3)
+        const newPosBuffer = new Float32Array(4000 * 3) // todo inefficient ?
+        const newColorBuffer = new Float32Array(4000 * 3)
 
         let instanceCount = 0
 
@@ -39,14 +42,14 @@ export const BlockMesh = () => {
           if (after) {
             const blockInFront = (blockY - after.y) > 0
 
-            if (blockInFront && block.z >= after.z) { // confirmed AFTER
+            if (blockInFront && block.z >= after.z) {
 
               if (before) {
                 const blockInFront = (blockY - before.y) > 0
 
                 if (!blockInFront || block.z < before.z) {
                   newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
-                  newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
+                  // newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
                   newColorBuffer.set(BlockColors["leaf"], instanceCount * 3)
                   instanceCount += 1
                 }
@@ -70,7 +73,7 @@ export const BlockMesh = () => {
           }
         }
 
-        logRare(`MeshChild ${i} before: ${before?.id} after: ${after?.id} count: ${instanceCount}`, world)
+        // logRare(`MeshChild ${i} before: ${before?.id} after: ${after?.id} count: ${instanceCount}`, world)
 
         geometry.attributes.aInstancePos.buffer.data = newPosBuffer
         geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
@@ -80,7 +83,7 @@ export const BlockMesh = () => {
         if (after) {
           // renderable.c.zIndex = round(after.zIndex + 0.0001, 4)
           // renderable.c.zIndex = after.zIndex + 10
-          renderable.zIndex = after.zIndex + 10
+          renderable.zIndex = after.zIndex + 1
           // logRare(`AFTER ${i} zIndex: ${renderable.c.zIndex} r.zIndex: ${renderable.zIndex} count: ${instanceCount}`, world)
         } else {
           // console.log(`BEFORE ${renderable.c.zIndex}`)
@@ -100,8 +103,8 @@ export const BlockMesh = () => {
       renderable: Renderable({
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        // setChildren: async () => [MeshChild(1), MeshChild(0)],
-        setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2)],
+        setChildren: async () => [MeshChild(1), MeshChild(0)],
+        // setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2)],
         // setChildren: async () => [MeshChild(1)],
         // setChildren: async () => [MeshChild(0), MeshChild(1)],
         onTick: ({ world }) => {
@@ -177,7 +180,7 @@ export const BlockMesh = () => {
             // console.log(entity.id)
           }
           targets.sort((a, b) => (a.y - b.y))
-          logRare(stringify(targets.map(x => x.id)), world)
+          // logRare(stringify(targets.map(x => x.id)), world)
         }
       })
     }

@@ -154,14 +154,7 @@ export const RenderSystem = ClientSystemBuilder({
         // set zIndex
         for (const [index, entity] of copy.entries()) {
           const { renderable } = entity.components
-          renderable.c.zIndex = renderable.zIndex + 10 * index
-
-          // if (renderable.children) {
-          //   for (const child of renderable.children) {
-          //     console.log("set child zIndex", child.zIndex, child.c.zIndex)
-          //     child.c.zIndex = child.zIndex
-          //   }
-          // }
+          renderable.c.zIndex = renderable.zIndex + 0.0001 * index
         }
 
         // update screenFixed entities

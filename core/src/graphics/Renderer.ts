@@ -1,5 +1,9 @@
 import { Camera, Renderable, isMobile } from "@piggo-gg/core"
 import { Application } from "pixi.js"
+import { initDevtools } from '@pixi/devtools';
+
+// initDevtools({ app });
+// initDevtools({ stage, renderer });
 
 export type Renderer = {
   app: Application
@@ -18,6 +22,7 @@ export type Renderer = {
 export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
 
   const app = new Application()
+  initDevtools({ app })
 
   const renderer: Renderer = {
     app,

@@ -11,5 +11,8 @@
     "react-hot-toast": "2.4.1",
     "simplex-noise": "4.0.3",
     "tone": "15.0.4"
+  },
+  "devDependencies": {
+    "@pixi/devtools": "^2.0.1"
   }
 }
