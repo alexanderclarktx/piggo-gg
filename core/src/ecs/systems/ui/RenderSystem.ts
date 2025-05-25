@@ -144,15 +144,14 @@ export const RenderSystem = ClientSystemBuilder({
 
         const t = performance.now()
         // sort entities by position (closeness to camera)
-        const copy = entities.filter(x => (x.components.renderable.visible && x.components.renderable.zIndex === 400))
-        copy.sort((a, b) => (
+        entities.sort((a, b) => (
           (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
           (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
         ))
         logPerf("sort loop", t)
 
         // set zIndex
-        for (const [index, entity] of copy.entries()) {
+        for (const [index, entity] of entities.entries()) {
           const { renderable } = entity.components
           renderable.c.zIndex = renderable.zIndex + 0.0001 * index
         }

@@ -1,8 +1,8 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, Item, mouse, Position, Renderable, XY, XYtoChunk, XYZ
+  Entity, Item, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
-import { Buffer, BufferUsage, Geometry, Mesh, Shader } from "pixi.js"
+import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
@@ -10,7 +10,6 @@ export const BlockMesh = () => {
   const shader = BlockShader()
 
   let targets: (XYZ & { zIndex: number, id: string })[] = []
-  let mesh: Mesh<Geometry, Shader>
   let chunkData: Block[] = []
   let flipped = 1
 
@@ -71,17 +70,14 @@ export const BlockMesh = () => {
           }
         }
 
-        // logRare(`MeshChild ${i} before: ${before?.id} after: ${after?.id} count: ${instanceCount}`, world)
-
         geometry.attributes.aInstancePos.buffer.data = newPosBuffer
         geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
         geometry.instanceCount = instanceCount
 
         renderable.c.visible = instanceCount > 0
-        if (after) {
-          renderable.zIndex = after.zIndex + 0.00001
-        } else {
-          // console.log(`BEFORE ${renderable.c.zIndex}`)
+
+        if (after && instanceCount > 0) {
+          renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
         }
       }
     })
@@ -94,7 +90,6 @@ export const BlockMesh = () => {
       renderable: Renderable({
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        // setChildren: async () => [MeshChild(1), MeshChild(0)],
         setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2)],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}

@@ -1,4 +1,4 @@
-import { mocks } from 'mock-browser';
+import { mocks } from 'mock-browser'
 
 // for pixi-filters
 global.window = {

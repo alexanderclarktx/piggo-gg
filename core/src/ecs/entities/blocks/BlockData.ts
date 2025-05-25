@@ -187,9 +187,9 @@ export const BlockData = (): BlockData => {
       const result: Block[] = []
       const time = performance.now()
 
-      const start = flip ? at.length - 1 : 0;
-      const end = flip ? -1 : at.length;
-      const step = flip ? -1 : 1;
+      const start = flip ? at.length - 1 : 0
+      const end = flip ? -1 : at.length
+      const step = flip ? -1 : 1
 
       for (let i = start; i !== end; i += step) {
         const pos = at[i]
@@ -243,9 +243,9 @@ export const BlockData = (): BlockData => {
       const result: Block[] = []
       const time = performance.now()
 
-      const start = flip ? at.length - 1 : 0;
-      const end = flip ? -1 : at.length;
-      const step = flip ? -1 : 1;
+      const start = flip ? at.length - 1 : 0
+      const end = flip ? -1 : at.length
+      const step = flip ? -1 : 1
 
       for (let i = start; i !== end; i += step) {
         const pos = at[i]

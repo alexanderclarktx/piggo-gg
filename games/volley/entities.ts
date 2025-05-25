@@ -49,7 +49,7 @@ export const Dude = (player: Player) => Character({
     renderable: Renderable({
       anchor: { x: 0.55, y: 0.9 },
       scale: 1.2,
-      zIndex: 400,
+      zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
       skin: (player.components.pc.data.name.startsWith("noob")) ? "dude-white" : "ghost",

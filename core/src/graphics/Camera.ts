@@ -119,6 +119,8 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         const character = world.client?.playerCharacter()
         if (character) renderer.camera.focus = character
 
+        logRare(renderer.camera.root.children.map(c => `${c.constructor.name}: ${c.zIndex}`), world)
+
         // cull far away entities
         let numHidden = 0
         for (const entity of entities) {
