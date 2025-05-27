@@ -12,7 +12,6 @@ export const Tooltip = (id: string, text: string, pos: XY = { x: 85, y: 30 }) =>
     id: `tooltip-${id}`,
     components: {
       position: Position({ screenFixed: true }),
-      debug: Debug(),
       renderable: Renderable({
         visible: true,
         interactiveChildren: true,

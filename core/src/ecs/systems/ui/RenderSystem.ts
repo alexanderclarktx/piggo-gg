@@ -76,7 +76,14 @@ export const RenderSystem = ClientSystemBuilder({
           // run dynamic callback for children
           if (renderable.children && renderable.initialized) {
             for (const child of renderable.children) {
-              child.onTick?.({ container: child.c, entity, world, renderable: child, client })
+              if (!child.rendered) {
+                if (!child.obedient) {
+                  position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
+                }
+                child.rendered = true
+              } else {
+                child.onTick?.({ container: child.c, entity, world, renderable: child, client })
+              }
             }
           }
 
@@ -136,10 +143,10 @@ export const RenderSystem = ClientSystemBuilder({
         // sort entities by position (closeness to camera)
         entities = entities.filter(x => x.components.renderable.visible)
         entities.sort((a, b) => (
-          (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
-          (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
-          // (a.components.position.data.y + a.components.position.data.z) -
-          // (b.components.position.data.y + b.components.position.data.z)
+          // (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
+          // (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
+          (a.components.position.data.y + a.components.position.data.z) -
+          (b.components.position.data.y + b.components.position.data.z)
         ))
         logPerf("sort loop", t)
 
@@ -156,27 +163,35 @@ export const RenderSystem = ClientSystemBuilder({
       },
       onRender(entities: Entity<Renderable | Position>[], delta) {
         for (const entity of entities) {
-
           const { position, renderable } = entity.components
 
+          // sort entities by position (closeness to camera)
+          entities = entities.filter(x => x.components.renderable.visible)
+          entities.sort((a, b) => (
+            (a.components.position.data.y + a.components.position.data.z) -
+            (b.components.position.data.y + b.components.position.data.z)
+          ))
+
+          // set zIndex
+          for (const [index, entity] of entities.entries()) {
+            const { renderable } = entity.components
+            renderable.c.zIndex = renderable.zIndex + 0.0001 * index
+          }
+
           if (renderable.onRender && renderable.initialized) {
-            renderable.onRender({
-              container: renderable.c, client, delta, entity, renderable, world
-            })
+            renderable.onRender({ container: renderable.c, client, delta, entity, renderable, world })
           }
 
           // children onRender
           if (renderable.children && renderable.initialized) {
             for (const child of renderable.children) {
-              child.onRender?.({
-                container: child.c, entity, world, renderable: child, client, delta
-              })
+              child.onRender?.({ container: child.c, entity, world, renderable: child, client, delta })
             }
           }
 
           if (!renderable.rendered || !renderable.interpolate) continue
 
-          // ui renderables
+          // UI renderables
           if (position.screenFixed) {
             updateScreenFixed(entity)
           }

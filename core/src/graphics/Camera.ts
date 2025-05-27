@@ -23,7 +23,7 @@ export type Camera = {
 // Camera handles the viewport of the game
 export const Camera = (app: Application): Camera => {
 
-  const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1 })
+  const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1, cullableChildren: false })
   const renderables: Set<Renderable> = new Set()
 
   const camera: Camera = {

@@ -1,4 +1,4 @@
-import { RenderTexture } from "pixi.js";
+import { RenderTexture } from "pixi.js"
 
 const shadowMapSize = 1024
 const shadowRenderTexture = RenderTexture.create({ width: shadowMapSize, height: shadowMapSize })

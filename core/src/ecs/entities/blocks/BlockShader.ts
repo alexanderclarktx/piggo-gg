@@ -138,12 +138,11 @@ const fragmentSrc = `
         face == int(uHighlight.w + 0.5)
     ) {
       if (face == 0) {
-
         bool isEdge = vBary.x < 0.02 || vBary.y < 0.02 || vBary.z < 0.02;
         bool isCenter = abs(vOffset.x) < 0.4 && abs(vOffset.y) < 8.6;
 
         if (!isCenter && isEdge) {
-          fragColor = vec4(0.0, 0.0, 0.6, 1.0);
+          fragColor = vec4(0.0, 0.0, 0.3, 1.0);
           return;
         }
       } else {
@@ -154,7 +153,7 @@ const fragmentSrc = `
         bool isBottom = abs(vOffset.z) < 0.4;
 
         if (isCenter || isSide || isTop || isBottom) {
-          fragColor = vec4(0.0, 0.0, 0.6, 1.0);
+          fragColor = vec4(0.0, 0.0, 0.3, 1.0);
           return;
         }
       }
@@ -192,7 +191,7 @@ export const BlockShader = (): Shader => {
     resources: {
       uniforms: {
         uCamera: { value: [0, 0], type: 'vec2<f32>' },
-        uPlayer: { value: [0, 0, 0], type: 'vec3<f32>' },
+        uPlayer: { value: [0, 0, 0], type: 'vec3<f32>' }, // just used for player shadow
         uResolution: { value: [window.innerWidth, window.innerWidth], type: 'vec2<f32>' },
         uZoom: { value: 2.0, type: 'f32' },
         uTopBlocks: { value: [], type: 'vec3<f32>' },

@@ -1,33 +1,79 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, logPerf, mouse, Position, Renderable, XY, XYtoChunk
+  Entity, Item, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
 const { width, height } = BlockDimensions
 
-export const BlockMesh = (type: "foreground" | "background") => {
-  const geometry = BLOCK_GEOMETRY()
+export const BlockMesh = () => {
   const shader = BlockShader()
 
-  const zIndex = type === "foreground" ? 3.1 : 0
-
+  let layers: Block[][] = []
+  let targets: (XYZ & { zIndex: number, id: string })[] = []
   let chunkData: Block[] = []
-  let topBlocks: Block[] = [{ x: 9, y: 9, z: 1, type: 2 }]
-
   let flipped = 1
 
+  const MeshChild = (i: number) => {
+
+    const geometry = BLOCK_GEOMETRY()
+
+    return Renderable({
+      zIndex: 0,
+      anchor: { x: 0.5, y: 0.5 },
+      obedient: false,
+      setup: async (r) => {
+        r.c = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
+      },
+      onRender: ({ world, renderable }) => {
+        const layer = layers[i]
+        if (!layer) {
+          renderable.c.renderable = false
+          if (i === 1) console.log (`No layer ${i} found`)
+          return
+        }
+
+        const newPosBuffer = new Float32Array(layer.length * 3)
+        const newColorBuffer = new Float32Array(layer.length * 3)
+
+        for (let j = 0; j < layer.length; j++) {
+          const block = layer[j]
+          const { x: blockX, y: blockY } = world.flip(block)
+
+          newPosBuffer.set([blockX, blockY, block.z], j * 3)
+          newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
+
+          // if (i === 1) newColorBuffer.set(BlockColors["saphire"], j * 3)
+          // if (i === 2) newColorBuffer.set(BlockColors["wood"], j * 3)
+        }
+
+        geometry.attributes.aInstancePos.buffer.data = newPosBuffer
+        geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
+        geometry.instanceCount = layer.length
+
+        renderable.c.renderable = true
+
+        const after = targets[i - 1]
+        if (after && layer.length > 0) {
+          renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
+        }
+
+        // if (i === 1) console.log(`child ${i} zIndex: ${renderable.c.zIndex} layer: ${layer.length} targets# ${targets.length}`)
+      }
+    })
+  }
+
   return Entity({
-    id: `block-mesh-${type}`,
+    id: `block-mesh`,
     components: {
       position: Position(),
       renderable: Renderable({
-        zIndex,
+        zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        interpolate: true,
-        setup: async (r) => {
-          r.c = new Mesh({ geometry, shader })
-        },
+        setChildren: async () => [
+          MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3),
+          MeshChild(4), MeshChild(5), MeshChild(6), MeshChild(7)
+        ],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -52,8 +98,6 @@ export const BlockMesh = (type: "foreground" | "background") => {
           chunkData = blocks.visible(chunks, flipped === -1)
         },
         onRender: ({ world, delta, renderable }) => {
-          const time = performance.now()
-
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
@@ -75,47 +119,69 @@ export const BlockMesh = (type: "foreground" | "background") => {
             shader.resources.uniforms.uniforms.uResolution = resolution
             shader.resources.uniforms.uniforms.uTime = performance.now() / 1000
             shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
-
-            // shadows
-            // const pos = intToXYZ(topBlocks[0].x, topBlocks[0].y, topBlocks[0].z)
-            // shader.resources.uniforms.uniforms.uTopBlocks = [pos.x, pos.y, pos.z + 10.5]
           }
 
-          const { position } = character?.components ?? {}
-          if (!position) return
+          // console.log(`${renderable.children?.[1].c.zIndex} | ${renderable.children?.[2].c.zIndex}`)
 
-          const playerZ = position.data.z - 20
-          const playerY = world.flip(position.data).y
+          // reset state
+          targets = []
+          layers = []
 
-          const newPosBuffer = new Float32Array(chunkData.length * 3)
-          const newColorBuffer = new Float32Array(chunkData.length * 3)
+          if (character) targets[0] = {
+            x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20,
+            zIndex: character.components.renderable.c.zIndex,
+            id: character.id
+          }
 
-          let instanceCount = 0
+          // const entities = world.queryEntities<Position>(["position", "renderable"])
+          const entities = world.queryEntities<Position | Renderable | Item>(["position", "renderable", "item"])
 
+          let i = 1
+          for (const entity of entities) {
+            if (entity.components.position.screenFixed) continue
+            if (!entity.components.item.dropped) continue
+            if (!entity.components.renderable.rendered) continue
+            if (entity.components.renderable.c.zIndex === 4) continue
+
+            targets[i] = {
+              x: entity.components.position.data.x,
+              y: entity.components.position.data.y,
+              z: entity.components.position.data.z - 20,
+              zIndex: entity.components.renderable.c.zIndex,
+              id: entity.id
+            }
+            i += 1
+          }
+          targets.sort((a, b) => (a.zIndex - b.zIndex))
+
+          // divvy up the blocks for each mesh child
           for (const block of chunkData) {
-            const { x, y } = world.flip(block)
+            const { y: blockY } = world.flip(block)
 
-            const blockInFront = (y - playerY) > 0
+            for (let i = 0; i <= targets.length; i++) {
+              const target = targets[i]
 
-            if (type === "foreground") {
-              if (blockInFront && block.z >= playerZ) {
-                newPosBuffer.set([x, y, block.z], instanceCount * 3)
-                newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-                instanceCount += 1
+              if (!layers[i]) layers[i] = []
+
+              if (i === targets.length) {
+                layers[i].push(block)
+                break
               }
-            } else if (!blockInFront || block.z < playerZ) {
-              newPosBuffer.set([x, y, block.z], instanceCount * 3)
-              newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-              instanceCount += 1
+
+              // behind the next target
+              if (((target.y - blockY) > -12) && (block.z < target.z)) {
+                layers[i].push(block)
+                break
+              }
+
+              if (((target.y - blockY) > 0)) {
+                layers[i].push(block)
+                break
+              }
             }
           }
 
-          geometry.attributes.aInstancePos.buffer.data = newPosBuffer
-          geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
-          geometry.instanceCount = instanceCount
-
-          renderable.c.visible = instanceCount > 0
-          logPerf("block mesh", time, 9)
+          // console.log(`${targets[0]?.id} ${targets[0]?.zIndex} | ${targets[1]?.id} ${targets[1]?.zIndex}`)
         }
       })
     }

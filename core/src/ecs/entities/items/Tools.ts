@@ -31,7 +31,7 @@ export const Tool = (
     }),
     renderable: Renderable({
       scaleMode: "nearest",
-      zIndex: 3,
+      zIndex: 4,
       scale: 2.5,
       anchor: { x: 0.5, y: 0.5 },
       interpolate: true,
