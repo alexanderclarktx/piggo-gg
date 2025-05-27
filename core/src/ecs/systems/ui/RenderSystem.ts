@@ -81,9 +81,9 @@ export const RenderSystem = ClientSystemBuilder({
                 position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
                 child.rendered = true
               } else {
-                for (const child of renderable.children) {
-                  child.c.zIndex = child.zIndex
-                }
+                // for (const child of renderable.children) {
+                //   child.c.zIndex = child.zIndex
+                // }
                 child.onTick?.({ container: child.c, entity, world, renderable: child, client })
               }
             }
@@ -145,8 +145,10 @@ export const RenderSystem = ClientSystemBuilder({
         // sort entities by position (closeness to camera)
         entities = entities.filter(x => x.components.renderable.visible)
         entities.sort((a, b) => (
-          (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
-          (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
+          // (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
+          // (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
+          (a.components.position.data.y + a.components.position.data.z) -
+          (b.components.position.data.y + b.components.position.data.z)
         ))
         logPerf("sort loop", t)
 

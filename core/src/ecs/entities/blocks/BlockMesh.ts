@@ -9,6 +9,7 @@ const { width, height } = BlockDimensions
 export const BlockMesh = () => {
   const shader = BlockShader()
 
+  let layers: Block[][] = []
   let targets: (XYZ & { zIndex: number, id: string })[] = []
   let chunkData: Block[] = []
   let flipped = 1
@@ -25,60 +26,45 @@ export const BlockMesh = () => {
         r.c = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
       },
       onRender: ({ world, renderable }) => {
-        const before = targets[i]
         const after = targets[i - 1]
 
-        const newPosBuffer = new Float32Array(chunkData.length * 3)
-        const newColorBuffer = new Float32Array(chunkData.length * 3)
+        const layer = layers[i]
+        if (!layer) {
+          renderable.c.renderable = false
+          return
+        }
 
-        let instanceCount = 0
+        const newPosBuffer = new Float32Array(layer.length * 3)
+        const newColorBuffer = new Float32Array(layer.length * 3)
 
-        for (const block of chunkData) {
+        for (let j = 0; j < layer.length; j++) {
+          const block = layer[j]
           const { x: blockX, y: blockY } = world.flip(block)
 
-          if (after) {
-            const blockInFront = (blockY - after.y) > 0
+          newPosBuffer.set([blockX, blockY, block.z], j * 3)
 
-            if (blockInFront && block.z >= after.z) {
+          newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
+          if (i === 1) {
+            newColorBuffer.set(BlockColors["saphire"], j * 3)
+          }
 
-              if (before) {
-                const blockInFront = (blockY - before.y) > 0
-
-                if (!blockInFront || block.z < before.z) {
-                  newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
-                  newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-                  // newColorBuffer.set(BlockColors["leaf"], instanceCount * 3)
-                  instanceCount += 1
-                }
-              } else {
-
-                newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
-                newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-                // newColorBuffer.set(BlockColors["saphire"], instanceCount * 3)
-                instanceCount += 1
-              }
-            }
-          } else if (before) {
-            const blockInFront = (blockY - before.y) > 0
-
-            if (!blockInFront || block.z < before.z) {
-              newPosBuffer.set([blockX, blockY, block.z], instanceCount * 3)
-              newColorBuffer.set(BlockColors[BlockTypeString[block.type]], instanceCount * 3)
-              // newColorBuffer.set(BlockColors["wood"], instanceCount * 3)
-              instanceCount += 1
-            }
+          if (i === 2) {
+            // newColorBuffer.set(BlockColors["wood"], j * 3)
           }
         }
 
         geometry.attributes.aInstancePos.buffer.data = newPosBuffer
         geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
-        geometry.instanceCount = instanceCount
+        geometry.instanceCount = layer.length
 
-        renderable.c.visible = instanceCount > 0
+        renderable.c.renderable = layer.length > 0
+        renderable.visible = layer.length > 0
 
-        if (after && instanceCount > 0) {
+        if (after && layer.length > 0) {
           renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
         }
+
+        // console.log(`child ${i} zIndex: ${renderable.c.zIndex} targets: ${targets.length}`)
       }
     })
   }
@@ -114,7 +100,7 @@ export const BlockMesh = () => {
 
           chunkData = blocks.visible(chunks, flipped === -1)
         },
-        onRender: ({ world, delta }) => {
+        onRender: ({ world, delta, renderable }) => {
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
@@ -138,9 +124,16 @@ export const BlockMesh = () => {
             shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
           }
 
+          // console.log(layers.map(x => x.length))
+          console.log(renderable.children?.map(x => x.c.zIndex))
+
           targets = []
 
-          if (character) targets[0] = { x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20, zIndex: character.components.renderable.c.zIndex, id: character.id }
+          if (character) targets[0] = {
+            x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20,
+            zIndex: character.components.renderable.c.zIndex,
+            id: character.id
+          }
 
           // const entities = world.queryEntities<Position>(["position", "renderable"])
           const entities = world.queryEntities<Position | Renderable | Item>(["position", "renderable", "item"])
@@ -161,6 +154,39 @@ export const BlockMesh = () => {
           }
           targets.sort((a, b) => (a.y - b.y))
           // logRare(stringify(targets.map(x => x.id)), world)
+
+          layers = []
+
+          // divvy up the blocks for each mesh child
+          for (const block of chunkData) {
+            // const { y: blockY } = world.flip(block)
+
+            for (let i = 0; i <= targets.length; i++) {
+              const target = targets[i]
+
+              if (!layers[i]) layers[i] = []
+
+              if (i === targets.length) {
+                layers[i].push(block)
+                break
+              }
+
+              // behind the next target
+              // if (((target.y - block.y) > 0) || (block.z < target.z)) {
+              // if ((target.y - block.y) > 9) {
+              if (((target.y - block.y) > -9) && (block.z < target.z)) {
+                layers[i].push(block)
+                break
+                // console.log("push behind")
+              }
+
+              // or
+              if (((target.y - block.y) > 0)) {
+                layers[i].push(block)
+                break
+              }
+            }
+          }
         }
       })
     }

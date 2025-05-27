@@ -54,7 +54,7 @@ export const Chat = (): Entity => {
     components: {
       position: Position({ x: -400, y: -200, screenFixed: true }),
       renderable: Renderable({
-        zIndex: 4,
+        zIndex: 10,
         setChildren: async () => [messagesText(), chatBufferText()]
       })
     }
