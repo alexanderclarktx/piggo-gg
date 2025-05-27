@@ -26,11 +26,10 @@ export const BlockMesh = () => {
         r.c = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
       },
       onRender: ({ world, renderable }) => {
-        const after = targets[i - 1]
-
         const layer = layers[i]
         if (!layer) {
           renderable.c.renderable = false
+          if (i === 1) console.log (`No layer ${i} found`)
           return
         }
 
@@ -57,14 +56,14 @@ export const BlockMesh = () => {
         geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
         geometry.instanceCount = layer.length
 
-        renderable.c.renderable = layer.length > 0
-        renderable.visible = layer.length > 0
+        renderable.c.renderable = true
 
+        const after = targets[i - 1]
         if (after && layer.length > 0) {
           renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
         }
 
-        // console.log(`child ${i} zIndex: ${renderable.c.zIndex} targets: ${targets.length}`)
+        // if (i === 1) console.log(`child ${i} zIndex: ${renderable.c.zIndex} layer: ${layer.length} targets# ${targets.length}`)
       }
     })
   }
@@ -76,7 +75,10 @@ export const BlockMesh = () => {
       renderable: Renderable({
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3)],
+        setChildren: async () => [
+          MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3),
+          MeshChild(4), MeshChild(5), MeshChild(6), MeshChild(7)
+        ],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -124,9 +126,11 @@ export const BlockMesh = () => {
             shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
           }
 
-          console.log(`${renderable.children?.[1].c.zIndex} | ${renderable.children?.[2].c.zIndex}`)
+          // console.log(`${renderable.children?.[1].c.zIndex} | ${renderable.children?.[2].c.zIndex}`)
 
+          // reset state
           targets = []
+          layers = []
 
           if (character) targets[0] = {
             x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20,
@@ -141,6 +145,8 @@ export const BlockMesh = () => {
           for (const entity of entities) {
             if (entity.components.position.screenFixed) continue
             if (!entity.components.item.dropped) continue
+            if (!entity.components.renderable.rendered) continue
+            if (entity.components.renderable.c.zIndex === 4) continue
 
             targets[i] = {
               x: entity.components.position.data.x,
@@ -152,8 +158,6 @@ export const BlockMesh = () => {
             i += 1
           }
           targets.sort((a, b) => (a.zIndex - b.zIndex))
-
-          layers = []
 
           // divvy up the blocks for each mesh child
           for (const block of chunkData) {
@@ -173,7 +177,7 @@ export const BlockMesh = () => {
               // if ((target.y - block.y) > 9) {
 
               // behind the next target
-              if (((target.y - blockY) > -9) && (block.z < target.z)) {
+              if (((target.y - blockY) > -12) && (block.z < target.z)) {
                 layers[i].push(block)
                 break
               }
@@ -184,6 +188,8 @@ export const BlockMesh = () => {
               }
             }
           }
+
+          // console.log(`${targets[0]?.id} ${targets[0]?.zIndex} | ${targets[1]?.id} ${targets[1]?.zIndex}`)
         }
       })
     }

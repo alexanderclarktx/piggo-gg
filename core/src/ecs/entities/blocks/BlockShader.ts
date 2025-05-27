@@ -137,13 +137,14 @@ const fragmentSrc = `
         vInstancePos.z == uHighlight.z &&
         face == int(uHighlight.w + 0.5)
     ) {
+
       if (face == 0) {
 
         bool isEdge = vBary.x < 0.02 || vBary.y < 0.02 || vBary.z < 0.02;
         bool isCenter = abs(vOffset.x) < 0.4 && abs(vOffset.y) < 8.6;
 
         if (!isCenter && isEdge) {
-          fragColor = vec4(0.0, 0.0, 0.6, 1.0);
+          fragColor = vec4(0.0, 0.0, 0.3, 1.0);
           return;
         }
       } else {
@@ -154,7 +155,7 @@ const fragmentSrc = `
         bool isBottom = abs(vOffset.z) < 0.4;
 
         if (isCenter || isSide || isTop || isBottom) {
-          fragColor = vec4(0.0, 0.0, 0.6, 1.0);
+          fragColor = vec4(0.0, 0.0, 0.3, 1.0);
           return;
         }
       }
