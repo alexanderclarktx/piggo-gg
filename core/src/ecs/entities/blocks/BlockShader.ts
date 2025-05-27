@@ -137,9 +137,7 @@ const fragmentSrc = `
         vInstancePos.z == uHighlight.z &&
         face == int(uHighlight.w + 0.5)
     ) {
-
       if (face == 0) {
-
         bool isEdge = vBary.x < 0.02 || vBary.y < 0.02 || vBary.z < 0.02;
         bool isCenter = abs(vOffset.x) < 0.4 && abs(vOffset.y) < 8.6;
 

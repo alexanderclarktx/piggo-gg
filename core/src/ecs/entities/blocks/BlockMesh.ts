@@ -41,15 +41,10 @@ export const BlockMesh = () => {
           const { x: blockX, y: blockY } = world.flip(block)
 
           newPosBuffer.set([blockX, blockY, block.z], j * 3)
-
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
-          if (i === 1) {
-            // newColorBuffer.set(BlockColors["saphire"], j * 3)
-          }
 
-          if (i === 2) {
-            // newColorBuffer.set(BlockColors["wood"], j * 3)
-          }
+          // if (i === 1) newColorBuffer.set(BlockColors["saphire"], j * 3)
+          // if (i === 2) newColorBuffer.set(BlockColors["wood"], j * 3)
         }
 
         geometry.attributes.aInstancePos.buffer.data = newPosBuffer
@@ -151,7 +146,7 @@ export const BlockMesh = () => {
             targets[i] = {
               x: entity.components.position.data.x,
               y: entity.components.position.data.y,
-              z: entity.components.position.data.z,
+              z: entity.components.position.data.z - 20,
               zIndex: entity.components.renderable.c.zIndex,
               id: entity.id
             }
@@ -172,9 +167,6 @@ export const BlockMesh = () => {
                 layers[i].push(block)
                 break
               }
-
-              // if (((target.y - block.y) > 0) || (block.z < target.z)) {
-              // if ((target.y - block.y) > 9) {
 
               // behind the next target
               if (((target.y - blockY) > -12) && (block.z < target.z)) {

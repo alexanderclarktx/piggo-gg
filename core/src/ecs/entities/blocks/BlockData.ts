@@ -339,6 +339,7 @@ export const BlockData = (): BlockData => {
           item.components.position.data.follows = undefined
           item.components.position.setPosition({ ...xy, z: (z + 1) * 21 })
           item.components.item.dropped = true
+          item.components.renderable.visible = true
 
           world.addEntity(item)
         }
