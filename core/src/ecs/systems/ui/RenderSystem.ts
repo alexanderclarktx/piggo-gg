@@ -77,13 +77,11 @@ export const RenderSystem = ClientSystemBuilder({
           if (renderable.children && renderable.initialized) {
             for (const child of renderable.children) {
               if (!child.rendered) {
-                if (child.obedient) continue
-                position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
+                if (!child.obedient) {
+                  position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
+                }
                 child.rendered = true
               } else {
-                // for (const child of renderable.children) {
-                //   child.c.zIndex = child.zIndex
-                // }
                 child.onTick?.({ container: child.c, entity, world, renderable: child, client })
               }
             }
