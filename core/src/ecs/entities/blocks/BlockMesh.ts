@@ -45,7 +45,7 @@ export const BlockMesh = () => {
 
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
           if (i === 1) {
-            newColorBuffer.set(BlockColors["saphire"], j * 3)
+            // newColorBuffer.set(BlockColors["saphire"], j * 3)
           }
 
           if (i === 2) {
@@ -76,7 +76,7 @@ export const BlockMesh = () => {
       renderable: Renderable({
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2)],
+        setChildren: async () => [MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3)],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -124,8 +124,7 @@ export const BlockMesh = () => {
             shader.resources.uniforms.uniforms.uHighlight = [uHighlight.block.x, uHighlight.block.y, uHighlight.block.z, uHighlight.face]
           }
 
-          // console.log(layers.map(x => x.length))
-          console.log(renderable.children?.map(x => x.c.zIndex))
+          console.log(`${renderable.children?.[1].c.zIndex} | ${renderable.children?.[2].c.zIndex}`)
 
           targets = []
 
@@ -152,14 +151,13 @@ export const BlockMesh = () => {
             }
             i += 1
           }
-          targets.sort((a, b) => (a.y - b.y))
-          // logRare(stringify(targets.map(x => x.id)), world)
+          targets.sort((a, b) => (a.zIndex - b.zIndex))
 
           layers = []
 
           // divvy up the blocks for each mesh child
           for (const block of chunkData) {
-            // const { y: blockY } = world.flip(block)
+            const { y: blockY } = world.flip(block)
 
             for (let i = 0; i <= targets.length; i++) {
               const target = targets[i]
@@ -171,17 +169,16 @@ export const BlockMesh = () => {
                 break
               }
 
-              // behind the next target
               // if (((target.y - block.y) > 0) || (block.z < target.z)) {
               // if ((target.y - block.y) > 9) {
-              if (((target.y - block.y) > -9) && (block.z < target.z)) {
+
+              // behind the next target
+              if (((target.y - blockY) > -9) && (block.z < target.z)) {
                 layers[i].push(block)
                 break
-                // console.log("push behind")
               }
 
-              // or
-              if (((target.y - block.y) > 0)) {
+              if (((target.y - blockY) > 0)) {
                 layers[i].push(block)
                 break
               }

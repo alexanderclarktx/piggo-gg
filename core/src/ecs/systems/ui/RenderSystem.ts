@@ -165,27 +165,22 @@ export const RenderSystem = ClientSystemBuilder({
       },
       onRender(entities: Entity<Renderable | Position>[], delta) {
         for (const entity of entities) {
-
           const { position, renderable } = entity.components
 
           if (renderable.onRender && renderable.initialized) {
-            renderable.onRender({
-              container: renderable.c, client, delta, entity, renderable, world
-            })
+            renderable.onRender({ container: renderable.c, client, delta, entity, renderable, world })
           }
 
           // children onRender
           if (renderable.children && renderable.initialized) {
             for (const child of renderable.children) {
-              child.onRender?.({
-                container: child.c, entity, world, renderable: child, client, delta
-              })
+              child.onRender?.({ container: child.c, entity, world, renderable: child, client, delta })
             }
           }
 
           if (!renderable.rendered || !renderable.interpolate) continue
 
-          // ui renderables
+          // UI renderables
           if (position.screenFixed) {
             updateScreenFixed(entity)
           }
