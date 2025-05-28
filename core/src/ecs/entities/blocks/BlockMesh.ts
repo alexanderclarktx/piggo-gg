@@ -54,7 +54,6 @@ export const BlockMesh = () => {
         const after = targets[i - 1]
         if (after && layer.length > 0) {
           renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
-          renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
         }
       }
     })

@@ -1,6 +1,6 @@
 import {
   Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt, Clickable,
-  Controlling, Debug, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity, NPC,
+  Controlling, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity, NPC,
   pixiGraphics, Position, randomInt, Renderable, sin, XYZdistance, XYZtoIJK
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
@@ -29,7 +29,6 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
     id: id ?? `item-block-${character.id}-${type}`,
     components: {
       position: Position({ follows: character?.id ?? "" }),
-      debug: Debug(),
       actions: Actions({
         mb1: ({ params, world, player }) => {
           const { hold, mouse } = params as ItemActionParams
