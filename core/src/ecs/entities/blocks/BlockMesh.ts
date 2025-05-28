@@ -72,7 +72,9 @@ export const BlockMesh = () => {
         anchor: { x: 0.5, y: 0.5 },
         setChildren: async () => [
           MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3),
-          MeshChild(4), MeshChild(5), MeshChild(6), MeshChild(7)
+          MeshChild(4), MeshChild(5), MeshChild(6), MeshChild(7),
+          MeshChild(8), MeshChild(9), MeshChild(10), MeshChild(11),
+          MeshChild(12), MeshChild(13), MeshChild(14), MeshChild(15)
         ],
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
