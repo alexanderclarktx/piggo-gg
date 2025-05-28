@@ -66,9 +66,6 @@ export const Skelly = (player: Player, pos?: XY) => Character({
       zIndex: 4,
       interpolate: true,
       scaleMode: "nearest",
-      onRender: ({renderable}) => {
-        // console.log(renderable.c.zIndex)
-      },
       setup: DudeSkin("white"),
       animationSelect: VolleyCharacterAnimations,
       onTick: VolleyCharacterDynamic
