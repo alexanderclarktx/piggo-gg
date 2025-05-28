@@ -29,7 +29,6 @@ export const BlockMesh = () => {
         const layer = layers[i]
         if (!layer) {
           renderable.c.renderable = false
-          if (i === 1) console.log (`No layer ${i} found`)
           return
         }
 
@@ -43,8 +42,7 @@ export const BlockMesh = () => {
           newPosBuffer.set([blockX, blockY, block.z], j * 3)
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
 
-          // if (i === 1) newColorBuffer.set(BlockColors["saphire"], j * 3)
-          // if (i === 2) newColorBuffer.set(BlockColors["wood"], j * 3)
+          // newColorBuffer.set(BlockColors[BlockTypeString[i]], j * 3)
         }
 
         geometry.attributes.aInstancePos.buffer.data = newPosBuffer
@@ -56,9 +54,8 @@ export const BlockMesh = () => {
         const after = targets[i - 1]
         if (after && layer.length > 0) {
           renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
+          renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
         }
-
-        // if (i === 1) console.log(`child ${i} zIndex: ${renderable.c.zIndex} layer: ${layer.length} targets# ${targets.length}`)
       }
     })
   }
