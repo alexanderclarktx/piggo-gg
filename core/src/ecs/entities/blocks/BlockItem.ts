@@ -1,7 +1,7 @@
 import {
-  Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt,
-  Clickable, Controlling, Effects, Item, ItemActionParams, ItemBuilder,
-  ItemEntity, NPC, pixiGraphics, Position, randomInt, Renderable, sin, XYZdistance, XYZtoIJK
+  Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt, Clickable,
+  Controlling, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity, NPC,
+  pixiGraphics, Position, randomInt, Renderable, sin, XYZdistance, XYZtoIJK
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 

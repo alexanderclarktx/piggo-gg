@@ -29,7 +29,6 @@ export const BlockMesh = () => {
         const layer = layers[i]
         if (!layer) {
           renderable.c.renderable = false
-          if (i === 1) console.log (`No layer ${i} found`)
           return
         }
 
@@ -43,8 +42,7 @@ export const BlockMesh = () => {
           newPosBuffer.set([blockX, blockY, block.z], j * 3)
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
 
-          // if (i === 1) newColorBuffer.set(BlockColors["saphire"], j * 3)
-          // if (i === 2) newColorBuffer.set(BlockColors["wood"], j * 3)
+          // newColorBuffer.set(BlockColors[BlockTypeString[i]], j * 3)
         }
 
         geometry.attributes.aInstancePos.buffer.data = newPosBuffer
@@ -57,8 +55,6 @@ export const BlockMesh = () => {
         if (after && layer.length > 0) {
           renderable.c.zIndex = round(after.zIndex + 0.00001, 5)
         }
-
-        // if (i === 1) console.log(`child ${i} zIndex: ${renderable.c.zIndex} layer: ${layer.length} targets# ${targets.length}`)
       }
     })
   }
@@ -70,10 +66,7 @@ export const BlockMesh = () => {
       renderable: Renderable({
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        setChildren: async () => [
-          MeshChild(0), MeshChild(1), MeshChild(2), MeshChild(3),
-          MeshChild(4), MeshChild(5), MeshChild(6), MeshChild(7)
-        ],
+        setChildren: async () => Array.from({ length: 32 }, (_, i) => MeshChild(i)),
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
@@ -153,6 +146,8 @@ export const BlockMesh = () => {
             i += 1
           }
           targets.sort((a, b) => (a.zIndex - b.zIndex))
+
+          // console.log(`targets: ${targets.map(t => `${t.id} ${t.zIndex}`).join(" | ")}`)
 
           // divvy up the blocks for each mesh child
           for (const block of chunkData) {

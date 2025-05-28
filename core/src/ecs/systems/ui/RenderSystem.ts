@@ -139,16 +139,9 @@ export const RenderSystem = ClientSystemBuilder({
         }
         logPerf("render loop", time)
 
-        const t = performance.now()
         // sort entities by position (closeness to camera)
         entities = entities.filter(x => x.components.renderable.visible)
-        entities.sort((a, b) => (
-          // (a.components.renderable.c.position.y + a.components.position.data.z + a.components.position.data.z) -
-          // (b.components.renderable.c.position.y + b.components.position.data.z + b.components.position.data.z)
-          (a.components.position.data.y + a.components.position.data.z) -
-          (b.components.position.data.y + b.components.position.data.z)
-        ))
-        logPerf("sort loop", t)
+        entities.sort((a, b) => a.components.position.data.y - b.components.position.data.y)
 
         // set zIndex
         for (const [index, entity] of entities.entries()) {
@@ -164,19 +157,6 @@ export const RenderSystem = ClientSystemBuilder({
       onRender(entities: Entity<Renderable | Position>[], delta) {
         for (const entity of entities) {
           const { position, renderable } = entity.components
-
-          // sort entities by position (closeness to camera)
-          entities = entities.filter(x => x.components.renderable.visible)
-          entities.sort((a, b) => (
-            (a.components.position.data.y + a.components.position.data.z) -
-            (b.components.position.data.y + b.components.position.data.z)
-          ))
-
-          // set zIndex
-          for (const [index, entity] of entities.entries()) {
-            const { renderable } = entity.components
-            renderable.c.zIndex = renderable.zIndex + 0.0001 * index
-          }
 
           if (renderable.onRender && renderable.initialized) {
             renderable.onRender({ container: renderable.c, client, delta, entity, renderable, world })
