@@ -19,11 +19,11 @@ export const Tool = (
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
-      mb1: WhackBlock
       // mb1: Whack(sound, (e => {
       //   const { element } = e.components
       //   return damage[element?.data.kind ?? "flesh"]
       // }))
+      mb1: WhackBlock
     }),
     item: Item({ name, flips: true }),
     effects: Effects(),
