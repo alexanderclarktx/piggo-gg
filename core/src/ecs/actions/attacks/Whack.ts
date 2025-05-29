@@ -14,7 +14,7 @@ export const WhackBlock = Action("whack", ({ params, world, player, entity }) =>
   if (!position) return
 
   const rotation = world.flipped() * (position.data.pointingDelta.x > 0 ? 1 : -1)
-  position.rotate(rotation)
+  position.setRotation(rotation)
 
   const xyz = blocks.atMouse(mouse, character.components.position.data)?.block
   if (!xyz) {

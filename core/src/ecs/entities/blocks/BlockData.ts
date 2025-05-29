@@ -78,19 +78,30 @@ export const BlockData = (): BlockData => {
         const d = hypot(dx, dy)
         if (d > width) continue
 
-        found = { ...block }
+        const maybe = { ...block }
+        const adjacent = { ...block }
 
         // angle
         const angle = angleCC(dx, dy)
         if (angle > 30 && angle <= 150) {
           face = 0
+          adjacent.z += 21
         } else if (angle > 150 && angle < 270) {
           face = 2
+          adjacent.x += 18
+          adjacent.y += 9
         } else {
           face = 1
+          adjacent.x -= 18
+          adjacent.y += 9
         }
 
-        break
+        if (!blocks.hasXYZ(adjacent)) {
+          found = maybe
+          break
+        } else {
+          continue
+        }
       }
       if (!found) return null
 
