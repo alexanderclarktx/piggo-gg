@@ -28,7 +28,7 @@ export const Piggo = ({ id, positionProps = { x: randomInt(400, 200), y: randomI
       shadow: Shadow(5, 2),
       renderable: Renderable({
         scale: 1.5,
-        zIndex: 3,
+        zIndex: 4,
         interpolate: true,
         color: 0xffffff,
         scaleMode: "nearest",

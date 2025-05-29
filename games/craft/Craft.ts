@@ -3,7 +3,7 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, highestBlock, Cursor, Chat, EscapeMenu, blocks,
   BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, spawnChunk,
-  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors
+  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors, Piggo
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -24,6 +24,7 @@ export const Craft: GameBuilder = {
     entities: [
       Background({ rays: true, follow: true }),
       Cursor(), Chat(), EscapeMenu(),
+      Piggo(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockMesh(),
       Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: LEFT-CLICK\n  place: RIGHT-CLICK \n camera: Q", { x: 0, y: 30 })
