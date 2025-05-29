@@ -1,6 +1,7 @@
 import { entries, GunNames, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Sound } from "tone"
 
+export type BubbleSounds = "bubble"
 export type MusicSounds = "track1" | "track2" | "track3" | "track5"
 export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
@@ -10,7 +11,8 @@ export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" 
 export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
 export type VolleySounds = "spike"
 
-export type ValidSounds = MusicSounds | ClickSounds | GunNames | WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
+export type ValidSounds = BubbleSounds | MusicSounds | ClickSounds | GunNames |
+  WallPlaceSounds | ZombiDeathSounds | ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
 
 const load = (url: string, volume: number): Sound => {
   const player = new Sound({ url, volume: volume - 10 })
@@ -51,6 +53,7 @@ export const SoundManager = (world: World): SoundManager => {
     state: "closed",
     ready: false,
     sounds: {
+      bubble: load("bubble.mp3", -10),
       // piano1: load("piano1.mp3", 5),
       track1: load("track1.mp3", -10),
       track2: load("track2.mp3", -10),

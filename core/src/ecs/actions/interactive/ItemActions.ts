@@ -34,6 +34,8 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   if (collider) collider.active = false
 
   inventory.addItem(entity as ItemEntity, world)
+
+  world.client?.soundManager.play("bubble")
 })
 
 export const dropItem = Action("dropItem", ({ world, entity }) => {

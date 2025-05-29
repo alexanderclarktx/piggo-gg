@@ -273,7 +273,6 @@ export const BlockData = (): BlockData => {
       return result
     },
     invalidate: (c: "cache" | "visibleCache" = "cache") => {
-
       if (c === "visibleCache") {
         for (const value of keys(visibleDirty)) {
           visibleDirty[value] = true
