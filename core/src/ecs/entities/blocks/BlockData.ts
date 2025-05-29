@@ -108,47 +108,22 @@ export const BlockData = (): BlockData => {
       return { block: found, face }
     },
     fromMouse: (mouse: XY, player: XYZ) => {
-      const playerChunk = XYtoChunk(player)
+      const atMouse = blocks.atMouse(mouse, player)
+      if (!atMouse) return null
 
-      const allBlocks = blocks.adjacent(playerChunk)
-      if (!allBlocks) return null
+      const { block, face } = atMouse
 
-      let found: Block | null = null
-
-      for (let i = allBlocks.length - 1; i >= 0; i--) {
-        const block = allBlocks[i]
-        const { x, y, z } = block
-
-        const playerDist = hypot(player.x - x, player.y - y, player.z - z)
-        if (playerDist > 120) continue
-
-        const screenY = y - z - height
-        const dx = mouse.x - x
-        const dy = mouse.y - screenY
-
-        // circle
-        const d = hypot(dx, dy)
-        if (d > width) continue
-
-        const maybe = { ...block }
-
-        // angle
-        const angle = angleCC(dx, dy)
-        if (angle > 30 && angle <= 150) {
-          maybe.z += 21
-        } else if (angle > 150 && angle < 270) {
-          maybe.x += 18
-          maybe.y += 9
-        } else {
-          maybe.x -= 18
-          maybe.y += 9
-        }
-
-        if (!blocks.hasXYZ(maybe)) found = maybe
-
-        break
+      if (face === 0) block.z += 21
+      if (face === 1) {
+        block.x -= 18
+        block.y += 9
       }
-      return found
+      if (face === 2) {
+        block.x += 18
+        block.y += 9
+      }
+
+      return block
     },
     adjacent: (block: XY) => {
       const data: Block[] = []
