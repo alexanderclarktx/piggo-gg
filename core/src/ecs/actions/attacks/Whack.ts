@@ -1,7 +1,32 @@
 import {
-  Action, Character, DamageCalculation, Hitbox, HitboxProps,
-  KeyMouse, onHitCalculate, ValidSounds
+  Action, blocks, Character, DamageCalculation, Hitbox, HitboxProps,
+  ItemActionParams, KeyMouse, onHitCalculate, ValidSounds, XYZtoIJK
 } from "@piggo-gg/core"
+
+export const WhackBlock = Action("whack", ({ params, world, player, entity }) => {
+  const { hold, mouse } = params as ItemActionParams
+  if (hold) return
+
+  const character = player?.components.controlling.getCharacter(world)
+  if (!character) return
+
+  const { position } = entity?.components ?? {}
+  if (!position) return
+
+  const rotation = world.flipped() * (position.data.pointingDelta.x > 0 ? 1 : -1)
+  position.setRotation(rotation)
+
+  const xyz = blocks.atMouse(mouse, character.components.position.data)?.block
+  if (!xyz) {
+    world.client?.soundManager.play("whiff")
+    return
+  }
+
+  const spot = XYZtoIJK(xyz)
+  blocks.remove(spot, world)
+
+  world.client?.soundManager.play("clink")
+})
 
 export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: string }>(
   "whack",

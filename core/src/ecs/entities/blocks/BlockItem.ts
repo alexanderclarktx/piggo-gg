@@ -1,7 +1,7 @@
 import {
   Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt, Clickable,
   Controlling, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity, NPC,
-  pixiGraphics, Position, randomInt, Renderable, sin, XYZdistance, XYZtoIJK
+  pixiGraphics, Position, randomInt, Renderable, sin, WhackBlock, XYZdistance, XYZtoIJK
 } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
@@ -26,23 +26,11 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
   const rng = randomInt(100)
 
   const item = ItemEntity({
-    id: id ?? `item-block-${character.id}-${type}`,
+    id: `block-${type}-${id}`,
     components: {
       position: Position({ follows: character?.id ?? "" }),
       actions: Actions({
-        mb1: ({ params, world, player }) => {
-          const { hold, mouse } = params as ItemActionParams
-          if (hold) return
-
-          const character = player?.components.controlling.getCharacter(world)
-          if (!character) return
-
-          const xyz = blocks.atMouse(mouse, character.components.position.data)?.block
-          if (!xyz) return
-
-          const spot = XYZtoIJK(xyz)
-          blocks.remove(spot, world)
-        },
+        mb1: WhackBlock,
         mb2: ({ params, world, player }) => {
           const { hold, mouse } = params as ItemActionParams
           if (hold) return
@@ -58,9 +46,11 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
           if (!added) return
 
           world.client?.soundManager.play("click2")
+          // item.components.renderable.visible = false
+          // character.components.inventory?.removeItem(item.id, world)
         }
       }),
-      item: Item({ name: "block", flips: false }),
+      item: Item({ name: `block-${type}`, flips: false, stackable: true }),
       effects: Effects(),
       clickable: Clickable({ width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 } }),
       npc: NPC({
@@ -89,7 +79,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
         anchor: { x: 0.5, y: 0.5 },
         interpolate: true,
         visible: false,
-        rotates: false,
+        rotates: true,
         onTick: ({ world }) => {
           if (item.components.renderable.visible && item.components.item.dropped) {
             item.components.renderable.position.y = sin((world.tick + rng) / 10) * 2

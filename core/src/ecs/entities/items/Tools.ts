@@ -1,6 +1,6 @@
 import {
   Actions, Clickable, Effects, ElementKinds, Item, ItemBuilder, ItemEntity,
-  Position, Renderable, ValidSounds, Whack, loadTexture
+  Position, Renderable, ValidSounds, Whack, WhackBlock, loadTexture
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
@@ -19,10 +19,11 @@ export const Tool = (
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
-      mb1: Whack(sound, (e => {
-        const { element } = e.components
-        return damage[element?.data.kind ?? "flesh"]
-      }))
+      // mb1: Whack(sound, (e => {
+      //   const { element } = e.components
+      //   return damage[element?.data.kind ?? "flesh"]
+      // }))
+      mb1: WhackBlock
     }),
     item: Item({ name, flips: true }),
     effects: Effects(),

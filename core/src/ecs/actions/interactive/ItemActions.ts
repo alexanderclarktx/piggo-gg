@@ -21,6 +21,8 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   const { position, actions, effects, item, collider, renderable, clickable } = entity.components
   if (!position || !actions || !effects || !item || !renderable) return
 
+  if (!item.dropped) return
+
   item.dropped = false
 
   position.data.follows = character.id
@@ -32,6 +34,8 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   if (collider) collider.active = false
 
   inventory.addItem(entity as ItemEntity, world)
+
+  world.client?.soundManager.play("bubble")
 })
 
 export const dropItem = Action("dropItem", ({ world, entity }) => {
