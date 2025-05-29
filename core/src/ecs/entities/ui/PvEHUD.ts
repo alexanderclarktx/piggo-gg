@@ -97,7 +97,14 @@ export const PvEHUD = (): Entity => {
                 clone.scale.set(3 * item.components.renderable.scale)
 
                 container.addChild(clone)
-                icons[i] = { icon: clone, count: undefined }
+
+                // const count = item.components.item.stackable ?
+                //   pixiText({ text: `${slot!.length}`, pos: { x: 10, y: 4 }, style: { fontSize: 22, fill: 0xffffff } }) :
+                //   undefined
+
+                // icons[i] = { icon: clone, count }
+
+                // if (count) clone.addChild(count)
               }
             } else {
               const { count } = icons[i] || {}

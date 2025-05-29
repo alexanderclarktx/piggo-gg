@@ -46,6 +46,8 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
           if (!added) return
 
           world.client?.soundManager.play("click2")
+          // item.components.renderable.visible = false
+          // character.components.inventory?.removeItem(item.id, world)
         }
       }),
       item: Item({ name: `block-${type}`, flips: false, stackable: true }),
