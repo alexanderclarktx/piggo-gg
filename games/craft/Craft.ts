@@ -24,7 +24,7 @@ export const Craft: GameBuilder = {
     entities: [
       Background({ rays: true, follow: true }),
       Cursor(), Chat(), EscapeMenu(),
-      Piggo(),
+      // Piggo(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockMesh(),
       Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: LEFT-CLICK\n  place: RIGHT-CLICK \n camera: Q", { x: 0, y: 30 })

@@ -76,7 +76,7 @@ export const SoundManager = (world: World): SoundManager => {
       attack3: load("attack3.wav", -25),
       attack4: load("attack4.wav", -25),
       thud: load("thud.mp3", -15),
-      clink: load("clink.mp3", -15),
+      clink: load("clink.mp3", -10),
       whiff: load("whiff.wav", -15),
       slash: load("slash.mp3", -20),
       eat: load("eat.mp3", -20),

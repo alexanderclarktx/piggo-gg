@@ -1,6 +1,6 @@
 import {
-  Actions, Clickable, Effects, ElementKinds, Item, ItemBuilder, ItemEntity,
-  Position, Renderable, ValidSounds, Whack, loadTexture
+  Actions, Clickable, Effects, ElementKinds, Item, ItemActionParams, ItemBuilder, ItemEntity,
+  Position, Renderable, ValidSounds, Whack, WhackBlock, XYZtoIJK, blocks, loadTexture
 } from "@piggo-gg/core"
 import { Sprite } from "pixi.js"
 
@@ -19,10 +19,35 @@ export const Tool = (
   components: {
     position: Position({ follows: character?.id ?? "" }),
     actions: Actions({
-      mb1: Whack(sound, (e => {
-        const { element } = e.components
-        return damage[element?.data.kind ?? "flesh"]
-      }))
+      mb1: WhackBlock
+      // mb1: Whack(sound, (e => {
+      //   const { element } = e.components
+      //   return damage[element?.data.kind ?? "flesh"]
+      // }))
+      // mb1: ({ params, world, player, entity }) => {
+      //   const { hold, mouse } = params as ItemActionParams
+      //   if (hold) return
+
+      //   const character = player?.components.controlling.getCharacter(world)
+      //   if (!character) return
+
+      //   const { position } = entity?.components ?? {}
+      //   if (!position) return
+
+      //   const rotation = world.flipped() * (position.data.pointingDelta.x > 0 ? 1 : -1)
+      //   position.rotate(rotation)
+
+      //   const xyz = blocks.atMouse(mouse, character.components.position.data)?.block
+      //   if (!xyz) {
+      //     world.client?.soundManager.play("whiff")
+      //     return
+      //   }
+
+      //   const spot = XYZtoIJK(xyz)
+      //   blocks.remove(spot, world)
+
+      //   world.client?.soundManager.play("clink")
+      // },
     }),
     item: Item({ name, flips: true }),
     effects: Effects(),
