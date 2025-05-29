@@ -41,9 +41,11 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
       // stackable items
       if (item.components.item.stackable) {
         for (const slot of items) {
+          console.log("checking slot", slot, item.components.item.name)
           if (slot && slot.length && slot[0].includes(item.components.item.name)) {
             slot.push(item.id)
             added = true
+            console.log("pushed stackable")
             break
           }
         }
@@ -61,7 +63,7 @@ export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
       }
 
       // add to world
-      if (added && !world.entities[item.id]) {
+      if (added && !world.entity(item.id)) {
         world.addEntity(item)
       }
     },

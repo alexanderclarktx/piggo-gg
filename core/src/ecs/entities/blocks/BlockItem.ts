@@ -26,7 +26,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
   const rng = randomInt(100)
 
   const item = ItemEntity({
-    id: id ?? `item-block-${character.id}-${type}`,
+    id: `block-${type}-${id}`,
     components: {
       position: Position({ follows: character?.id ?? "" }),
       actions: Actions({
@@ -48,7 +48,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
           world.client?.soundManager.play("click2")
         }
       }),
-      item: Item({ name: "block", flips: false }),
+      item: Item({ name: `block-${type}`, flips: false, stackable: true }),
       effects: Effects(),
       clickable: Clickable({ width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 } }),
       npc: NPC({
