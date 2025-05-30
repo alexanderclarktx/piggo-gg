@@ -341,10 +341,6 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
             skin = "ghost"
             if (world.renderer) world.renderer.resizedFlag = true
           }
-
-          // if (world.client?.token && avatar.components.position.data.y !== 85 && pos.y === 85) {
-          //   avatar.components.position.setPosition({ x: 110, y: 85 })
-          // }
         },
         setup: async (r, _, world) => {
           await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
@@ -384,10 +380,6 @@ const Profile = (): Entity => {
           if (name && playerName.text !== name) {
             playerName.text = name
           }
-
-          // if (world.client?.token && profile.components.position.data.y !== 85) {
-          //   profile.components.position.setPosition({ x: 110, y: -110 })
-          // }
         },
         setup: async (renderable, _, world) => {
           const outline = pixiGraphics()
@@ -398,10 +390,6 @@ const Profile = (): Entity => {
           renderable.c.addChild(outline, playerName)
 
           renderable.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
-
-          // if (!world.client?.token) {
-          //   profile.components.position.setPosition({ x: 110, y: 175 })
-          // }
         }
       })
     }
