@@ -409,10 +409,6 @@ const SignupCTA = () => Entity<Position | Renderable>({
         if (!world.client) return
         renderable.visible = !world.client.token
       },
-      // onRender: ({ entity, world, delta }) => {
-      //   const portion = delta / 25
-        // entity.components.position.data.y = max(0, round(entity.components.position.data.y + sin((world.tick + portion) / 16) * 0.05, 3))
-      // },
       setup: async (r) => {
         const text = pixiText({
           text: "^\nSign In for\na cool skin!",
