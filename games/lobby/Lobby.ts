@@ -24,10 +24,10 @@ export const Lobby: GameBuilder = {
       Background({ moving: true, rays: true }),
       Cursor(),
       Chat(),
-      Friends(),
+      // Friends(),
       Profile(),
       SignupCTA(),
-      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 85 })] : []].flat(),
+      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: -110 })] : []].flat(),
       GameLobby(),
       Players(),
       PlayButton(),
@@ -201,7 +201,7 @@ const PlayButton = () => {
           const state = world.game.state as LobbyState
 
           const { width } = renderer.wh()
-          playButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
+          playButton.components.position.setPosition({ x: width / 2 })
 
           r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
@@ -249,7 +249,7 @@ const CreateLobbyButton = () => {
         },
         setup: async (r, renderer, world) => {
           const { width } = renderer.app.screen
-          createLobbyButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
+          createLobbyButton.components.position.setPosition({ x: width / 2 })
 
           r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
@@ -319,6 +319,7 @@ const SettingsButton = () => {
   return settingsButton
 }
 
+// todo player param optional ?
 const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
   const { pc } = player.components
 
@@ -339,10 +340,6 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
           if (!player.components.pc.data.name.startsWith("noob") && skin !== "ghost") {
             skin = "ghost"
             if (world.renderer) world.renderer.resizedFlag = true
-          }
-
-          if (world.client?.token && avatar.components.position.data.y !== 85 && pos.y === 85) {
-            avatar.components.position.setPosition({ x: 110, y: 85 })
           }
         },
         setup: async (r, _, world) => {
@@ -367,7 +364,7 @@ const Profile = (): Entity => {
 
   const playerName = pixiText({
     text: "Profile",
-    style: { fontSize: 32 },
+    style: { fontSize: 34, fill: colors.piggo },
     pos: { x: 0, y: 50 },
     anchor: { x: 0.5, y: 0 }
   })
@@ -375,7 +372,7 @@ const Profile = (): Entity => {
   const profile = Entity<Position | Renderable>({
     id: "profile",
     components: {
-      position: Position({ x: 110, y: 85, screenFixed: true }),
+      position: Position({ x: 110, y: -110, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         onTick: ({ world }) => {
@@ -383,22 +380,16 @@ const Profile = (): Entity => {
           if (name && playerName.text !== name) {
             playerName.text = name
           }
-
-          if (world.client?.token && profile.components.position.data.y !== 85) {
-            profile.components.position.setPosition({ x: 110, y: 85 })
-          }
         },
-        setup: async (renderable, _, world) => {
+        setup: async (renderable) => {
           const outline = pixiGraphics()
-            .roundRect(-100, -75, 200, 170, 3)
-            .fill({ color: 0x000000, alpha: 0.5 })
-            .stroke({ color: colors.piggo, alpha: 0.8, width: 2 })
+            .roundRect(-100, -75, 200, 170, 10)
+            .fill({ color: 0x000000, alpha: 1 })
+            .stroke({ color: 0xffffff, width: 2 })
 
           renderable.c.addChild(outline, playerName)
 
-          if (!world.client?.token) {
-            profile.components.position.setPosition({ x: 110, y: 175 })
-          }
+          renderable.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
         }
       })
     }
@@ -420,18 +411,20 @@ const SignupCTA = () => Entity<Position | Renderable>({
       },
       setup: async (r) => {
         const text = pixiText({
-          text: "^\nSign In\nfor a free skin!",
+          text: "^\nSign In for\na cool skin!",
           anchor: { x: 0.5, y: 0.9 },
           style: { align: "center", fontSize: 18, fontWeight: "bold" },
-          pos: { x: 110, y: 70 }
+          pos: { x: 90, y: 65 }
         })
 
         const outline = pixiGraphics()
-          .roundRect(10, 10, 200, 80, 3)
+          .roundRect(10, 10, 160, 70, 10)
           .fill({ color: 0x000000, alpha: 0.9 })
           .stroke({ color: 0x00ffff, alpha: 1, width: 2 })
 
         r.c.addChild(outline, text)
+
+        r.setBevel({ rotation: 90, lightAlpha: 0.8, shadowAlpha: 0.4 })
       }
     })
   }
@@ -500,7 +493,7 @@ const GameLobby = (): Entity => {
             }
           }
 
-          const offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
+          const offset = { x: width / 2, y: height / 2 - 60 }
 
           // align the game buttons
           const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
