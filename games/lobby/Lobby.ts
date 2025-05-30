@@ -1,7 +1,10 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox,
+  sin,
+  round,
+  max
 } from "@piggo-gg/core"
 import { Volley, Craft } from "@piggo-gg/games"
 import { Sprite, Text } from "pixi.js"
@@ -408,6 +411,10 @@ const SignupCTA = () => Entity<Position | Renderable>({
       onTick: ({ world, renderable }) => {
         if (!world.client) return
         renderable.visible = !world.client.token
+      },
+      onRender: ({ entity, world, delta }) => {
+        const portion = delta / 25
+        entity.components.position.data.y = max(0, round(entity.components.position.data.y + sin((world.tick + portion) / 8) * 0.1, 3))
       },
       setup: async (r) => {
         const text = pixiText({
