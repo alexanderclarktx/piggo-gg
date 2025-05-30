@@ -24,10 +24,10 @@ export const Lobby: GameBuilder = {
       Background({ moving: true, rays: true }),
       Cursor(),
       Chat(),
-      Friends(),
+      // Friends(),
       Profile(),
       SignupCTA(),
-      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 85 })] : []].flat(),
+      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: -110 })] : []].flat(),
       GameLobby(),
       Players(),
       PlayButton(),
@@ -201,7 +201,7 @@ const PlayButton = () => {
           const state = world.game.state as LobbyState
 
           const { width } = renderer.wh()
-          playButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
+          playButton.components.position.setPosition({ x: width / 2 })
 
           r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
@@ -249,7 +249,7 @@ const CreateLobbyButton = () => {
         },
         setup: async (r, renderer, world) => {
           const { width } = renderer.app.screen
-          createLobbyButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
+          createLobbyButton.components.position.setPosition({ x: width / 2 })
 
           r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
@@ -319,6 +319,7 @@ const SettingsButton = () => {
   return settingsButton
 }
 
+// todo player param optional ?
 const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
   const { pc } = player.components
 
@@ -341,9 +342,9 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
             if (world.renderer) world.renderer.resizedFlag = true
           }
 
-          if (world.client?.token && avatar.components.position.data.y !== 85 && pos.y === 85) {
-            avatar.components.position.setPosition({ x: 110, y: 85 })
-          }
+          // if (world.client?.token && avatar.components.position.data.y !== 85 && pos.y === 85) {
+          //   avatar.components.position.setPosition({ x: 110, y: 85 })
+          // }
         },
         setup: async (r, _, world) => {
           await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
@@ -375,7 +376,7 @@ const Profile = (): Entity => {
   const profile = Entity<Position | Renderable>({
     id: "profile",
     components: {
-      position: Position({ x: 110, y: 85, screenFixed: true }),
+      position: Position({ x: 110, y: -110, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         onTick: ({ world }) => {
@@ -384,21 +385,21 @@ const Profile = (): Entity => {
             playerName.text = name
           }
 
-          if (world.client?.token && profile.components.position.data.y !== 85) {
-            profile.components.position.setPosition({ x: 110, y: 85 })
-          }
+          // if (world.client?.token && profile.components.position.data.y !== 85) {
+          //   profile.components.position.setPosition({ x: 110, y: -110 })
+          // }
         },
         setup: async (renderable, _, world) => {
           const outline = pixiGraphics()
             .roundRect(-100, -75, 200, 170, 3)
-            .fill({ color: 0x000000, alpha: 0.5 })
+            // .fill({ color: 0x000000, alpha: 0.5 })
             .stroke({ color: colors.piggo, alpha: 0.8, width: 2 })
 
           renderable.c.addChild(outline, playerName)
 
-          if (!world.client?.token) {
-            profile.components.position.setPosition({ x: 110, y: 175 })
-          }
+          // if (!world.client?.token) {
+          //   profile.components.position.setPosition({ x: 110, y: 175 })
+          // }
         }
       })
     }
@@ -500,7 +501,7 @@ const GameLobby = (): Entity => {
             }
           }
 
-          const offset = { x: 220 + ((width - 230) / 2), y: height / 2 - 60 }
+          const offset = { x: width / 2, y: height / 2 - 60 }
 
           // align the game buttons
           const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)

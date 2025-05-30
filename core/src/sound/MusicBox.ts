@@ -85,7 +85,7 @@ export const MusicBox = (): Entity => {
           } else if (world.game.id === "lobby") {
             renderable.visible = true
             const { width } = world.renderer!.wh()
-            musicbox.components.position.setPosition({ x: 220 + (width - 230) / 2, y: 550 })
+            musicbox.components.position.setPosition({ x: width / 2, y: 550 })
           } else {
             renderable.visible = false
           }
