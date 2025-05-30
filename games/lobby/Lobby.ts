@@ -381,7 +381,7 @@ const Profile = (): Entity => {
             playerName.text = name
           }
         },
-        setup: async (renderable, _, world) => {
+        setup: async (renderable) => {
           const outline = pixiGraphics()
             .roundRect(-100, -75, 200, 170, 10)
             .fill({ color: 0x000000, alpha: 1 })
