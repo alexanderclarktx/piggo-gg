@@ -368,7 +368,7 @@ const Profile = (): Entity => {
 
   const playerName = pixiText({
     text: "Profile",
-    style: { fontSize: 32 },
+    style: { fontSize: 34, fill: colors.piggo },
     pos: { x: 0, y: 50 },
     anchor: { x: 0.5, y: 0 }
   })
@@ -391,11 +391,13 @@ const Profile = (): Entity => {
         },
         setup: async (renderable, _, world) => {
           const outline = pixiGraphics()
-            .roundRect(-100, -75, 200, 170, 3)
-            // .fill({ color: 0x000000, alpha: 0.5 })
-            .stroke({ color: colors.piggo, alpha: 0.8, width: 2 })
+            .roundRect(-100, -75, 200, 170, 10)
+            .fill({ color: 0x000000, alpha: 1 })
+            .stroke({ color: 0xffffff, width: 2 })
 
           renderable.c.addChild(outline, playerName)
+
+          renderable.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
 
           // if (!world.client?.token) {
           //   profile.components.position.setPosition({ x: 110, y: 175 })
@@ -428,11 +430,13 @@ const SignupCTA = () => Entity<Position | Renderable>({
         })
 
         const outline = pixiGraphics()
-          .roundRect(10, 10, 200, 80, 3)
+          .roundRect(10, 10, 200, 80, 10)
           .fill({ color: 0x000000, alpha: 0.9 })
           .stroke({ color: 0x00ffff, alpha: 1, width: 2 })
 
         r.c.addChild(outline, text)
+
+        r.setBevel({ rotation: 90, lightAlpha: 0.8, shadowAlpha: 0.4 })
       }
     })
   }
