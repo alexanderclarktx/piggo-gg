@@ -1,4 +1,4 @@
-import { Entity, mouse, MusicSounds, pixiGraphics, Position, Renderable } from "@piggo-gg/core"
+import { colors, Entity, mouse, MusicSounds, pixiGraphics, Position, Renderable, sin } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 export const MusicBox = (): Entity => {
@@ -20,6 +20,7 @@ export const MusicBox = (): Entity => {
   let lastMouseY = 0
   let dialDragging = false
   let targetVolume = -20
+  let discHovered = false
 
   let discColors: Record<MusicSounds, number> = {
     track1: 0x00bbdd,
@@ -172,12 +173,15 @@ export const MusicBox = (): Entity => {
           })
 
           const discRenderable = Renderable({
+            onRender: ({ renderable, world, delta }) => {
+              if (!discHovered && state === "stop") {
+                renderable.setGlow({ color: colors.piggo, outerStrength: 0.7 + sin((world.tick + delta / 25) / 16) * 0.7 })
+              }
+            },
             setup: async (r) => {
               drawDisc()
 
               r.c = disc!
-
-              // r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.2 })
 
               disc!.interactive = true
 
@@ -205,9 +209,11 @@ export const MusicBox = (): Entity => {
                 drawLight()
               }
               disc!.onpointerenter = () => {
+                discHovered = true
                 r.setGlow({ outerStrength: 2 })
               }
               disc!.onpointerleave = () => {
+                discHovered = false
                 r.setGlow()
               }
             }

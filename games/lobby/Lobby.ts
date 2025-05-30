@@ -1,10 +1,7 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
   Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox,
-  sin,
-  round,
-  max
+  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox
 } from "@piggo-gg/core"
 import { Volley, Craft } from "@piggo-gg/games"
 import { Sprite, Text } from "pixi.js"
@@ -412,20 +409,20 @@ const SignupCTA = () => Entity<Position | Renderable>({
         if (!world.client) return
         renderable.visible = !world.client.token
       },
-      onRender: ({ entity, world, delta }) => {
-        const portion = delta / 25
-        entity.components.position.data.y = max(0, round(entity.components.position.data.y + sin((world.tick + portion) / 8) * 0.1, 3))
-      },
+      // onRender: ({ entity, world, delta }) => {
+      //   const portion = delta / 25
+        // entity.components.position.data.y = max(0, round(entity.components.position.data.y + sin((world.tick + portion) / 16) * 0.05, 3))
+      // },
       setup: async (r) => {
         const text = pixiText({
-          text: "^\nSign In\nfor a free skin!",
+          text: "^\nSign In for\na cool skin!",
           anchor: { x: 0.5, y: 0.9 },
           style: { align: "center", fontSize: 18, fontWeight: "bold" },
-          pos: { x: 110, y: 70 }
+          pos: { x: 90, y: 65 }
         })
 
         const outline = pixiGraphics()
-          .roundRect(10, 10, 200, 80, 10)
+          .roundRect(10, 10, 160, 70, 10)
           .fill({ color: 0x000000, alpha: 0.9 })
           .stroke({ color: 0x00ffff, alpha: 1, width: 2 })
 
