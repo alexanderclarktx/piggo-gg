@@ -1,7 +1,7 @@
-import { Debug, Entity, PixiButton, pixiGraphics, pixiText, Position, Renderable, XY } from "@piggo-gg/core"
+import { Entity, PixiButton, pixiGraphics, pixiText, Position, Renderable } from "@piggo-gg/core"
 import { Graphics, Text } from "pixi.js"
 
-export const Tooltip = (id: string, text: string, pos: XY = { x: 85, y: 30 }) => {
+export const Tooltip = (id: string, text: string) => {
 
   let explainer: Text | undefined = undefined
   let explainerBg: Graphics | undefined = undefined
@@ -11,7 +11,7 @@ export const Tooltip = (id: string, text: string, pos: XY = { x: 85, y: 30 }) =>
   const tooltip = Entity<Position>({
     id: `tooltip-${id}`,
     components: {
-      position: Position({ screenFixed: true }),
+      position: Position({ x: 30, y: 30, screenFixed: true }),
       renderable: Renderable({
         visible: true,
         interactiveChildren: true,
@@ -33,10 +33,7 @@ export const Tooltip = (id: string, text: string, pos: XY = { x: 85, y: 30 }) =>
 
           show -= 1
         },
-        setup: async (renderable, renderer) => {
-          const { width } = renderer.app.screen
-          tooltip.components.position.setPosition({ x: width / 2 + pos.x, y: pos.y })
-
+        setup: async (renderable) => {
           explainer = pixiText({
             text,
             style: { fill: 0xffffff, fontSize: 20 },

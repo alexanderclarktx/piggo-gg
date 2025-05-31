@@ -109,7 +109,7 @@ export const Ball = () => Entity({
         const texture = (await loadTexture("vball.json"))["0"] as Texture
         texture.source.scaleMode = "nearest"
 
-        r.c = pixiGraphics().circle(0, 0, 5).fill({ texture })
+        r.c = pixiGraphics().circle(0, 0, 5.5).fill({ texture })
       }
     })
   }
