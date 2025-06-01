@@ -6,7 +6,7 @@ export const Tooltip = (id: string, text: string) => {
   let explainer: Text | undefined = undefined
   let explainerBg: Graphics | undefined = undefined
 
-  let show = 600
+  let show = 1200
 
   const tooltip = Entity<Position>({
     id: `tooltip-${id}`,
