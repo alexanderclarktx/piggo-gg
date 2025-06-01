@@ -94,7 +94,7 @@ export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Tea
           if (far) {
             // jump for the serve
             if (state.phase === "serve" && position.data.standing && !XYdiff(position.data, ballPos.data, 20)) {
-              if ((world.tick - state.lastHitTick < 50)) return
+              if ((world.tick - state.lastWinTick < 30)) return
               return { actionId: "jump", entityId: bot.id }
             }
 
