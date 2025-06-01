@@ -1,4 +1,4 @@
-import { colors, Entity, mouse, MusicSounds, pixiGraphics, Position, Renderable, sin } from "@piggo-gg/core"
+import { Entity, mouse, MusicSounds, pixiGraphics, Position, Renderable, sin } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 export const MusicBox = (): Entity => {
@@ -175,7 +175,7 @@ export const MusicBox = (): Entity => {
           const discRenderable = Renderable({
             onRender: ({ renderable, world, delta }) => {
               if (!discHovered && state === "stop") {
-                renderable.setGlow({ color: colors.piggo, outerStrength: 0.7 + sin((world.tick + delta / 25) / 16) * 0.7 })
+                renderable.setGlow({ color: 0xffff00, outerStrength: 0.7 + sin((world.tick + delta / 25) / 16) * 1 })
               }
             },
             setup: async (r) => {

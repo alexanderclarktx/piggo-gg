@@ -16,6 +16,7 @@ export type VolleyState = {
   lastHitTeam: 0 | 1 | 2
   lastHitTick: number
   lastWin: 0 | 1 | 2
+  lastWinTick: number
   phase: "serve" | "play" | "point" | "game"
   scoreLeft: number
   scoreRight: number
@@ -34,6 +35,7 @@ export const Volley: GameBuilder<VolleyState> = {
       lastHitTeam: 0,
       lastHitTick: 0,
       lastWin: 0,
+      lastWinTick: 0,
       phase: "point",
       scoreLeft: 0,
       scoreRight: 0,
@@ -62,7 +64,7 @@ export const Volley: GameBuilder<VolleyState> = {
       ScorePanel(),
       LagText({ y: 5 }),
       switchTeamButton(),
-      Tooltip("controls", " move: WASD\n jump: SPACE\n  aim: MOUSE\n  hit: LEFT CLICK"),
+      Tooltip("controls", " move: WASD\n jump: SPACE\n  aim: MOUSE\n  hit: LEFT CLICK "),
     ]
   })
 }
@@ -215,6 +217,7 @@ const VolleySystem = SystemBuilder({
           if (ballPos.data.z === 0) {
             state.phase = "point"
             state.lastWin = (ballPos.data.x < 225) ? 2 : 1
+            state.lastWinTick = world.tick
           }
 
           for (const character of characters) {
