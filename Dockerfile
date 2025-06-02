@@ -1,7 +1,7 @@
 from oven/bun:1.2.15-slim
 
 # openssl for postgres
-apt-get update -y && apt-get install -y openssl
+run apt-get update -y && apt-get install -y openssl
 
 # add package.json
 add package.json package.json
