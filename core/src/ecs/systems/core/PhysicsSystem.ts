@@ -159,7 +159,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             let standing = false
 
             physics.contactPairsWith(collider.rapierCollider, (collider2) => {
-              const collided = colliders.entries().find(([_, c]) => c.rapierCollider === collider2)
+              const collided = [...colliders.entries()].find(([_, c]) => c.rapierCollider === collider2)
               if (collided && world.entities[collided[0].id]) {
                 const { position } = world.entities[collided[0].id].components
                 if (position!.data.y > entity.components.position.data.y) {
@@ -176,7 +176,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             const collidedWith: Entity<Collider | Position>[] = []
 
             physics.intersectionPairsWith(collider.rapierCollider, (collider2) => {
-              const collided = colliders.entries().find(([_, c]) => c.rapierCollider === collider2)
+              const collided = [...colliders.entries()].find(([_, c]) => c.rapierCollider === collider2)
               if (collided && world.entities[collided[0].id]) collidedWith.push(world.entity<Collider | Position>(collided[0].id)!)
             })
 
