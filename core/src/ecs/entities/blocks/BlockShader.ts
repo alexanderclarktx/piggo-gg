@@ -121,8 +121,11 @@ const fragmentSrc = `
       color = unpackRGB(vInstanceColor[0]);
       if (mod(vInstancePos.z, 42.0) == 0.0) {
         if (vInstanceColor[0] == 577536.0) {
-          color.y *= 0.9; // darken the top block
-          color.z = 0.3; // darken the top block
+          color.y *= 0.9;
+          color.z = 0.3;
+        } else if (vInstanceColor[0] == 9145227.0) {
+          color.x = 0.6;
+          color.y = 0.6;
         }
       }
     } else if (face == 1) {

@@ -41,7 +41,7 @@ export const BlockMesh = () => {
 
           newPosBuffer.set([blockX, blockY, block.z], j * 3)
 
-          // if (block.type === 1) logRare(BlockColors[BlockTypeString[block.type]], world)
+          // if (block.type === 4) logRare(BlockColors[BlockTypeString[block.type]], world)
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
 
           // newColorBuffer.set(BlockColors[BlockTypeString[i]], j * 3)
