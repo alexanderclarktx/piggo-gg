@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, Item, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
+  Entity, Item, logRare, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -40,6 +40,8 @@ export const BlockMesh = () => {
           const { x: blockX, y: blockY } = world.flip(block)
 
           newPosBuffer.set([blockX, blockY, block.z], j * 3)
+
+          // if (block.type === 1) logRare(BlockColors[BlockTypeString[block.type]], world)
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
 
           // newColorBuffer.set(BlockColors[BlockTypeString[i]], j * 3)
