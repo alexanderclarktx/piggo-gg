@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, Item, logRare, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
+  Entity, Item, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
