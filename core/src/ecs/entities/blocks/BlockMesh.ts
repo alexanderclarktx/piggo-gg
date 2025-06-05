@@ -14,6 +14,31 @@ export const BlockMesh = () => {
   let chunkData: Block[] = []
   let flipped = 1
 
+  // const ShadowMap = () => {
+  //   const geometry = BLOCK_GEOMETRY()
+
+  //   const shader = 
+
+  //   return Renderable({
+  //     zIndex: 0,
+  //     anchor: { x: 0.5, y: 0.5 },
+  //     obedient: false,
+  //     setup: async (r) => {
+  //       r.c = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
+  //     },
+  //     onRender: ({ world, renderable }) => {
+  //       const player = world.client?.playerCharacter()
+  //       if (!player) return
+
+  //       const pos = player.components.position.data
+  //       const flipPos = world.flip(pos)
+
+  //       renderable.c.renderable = true
+  //       renderable.c.position.set(flipPos.x, flipPos.y + 2, pos.z - 20)
+  //     }
+  //   })
+  // }
+
   const MeshChild = (i: number) => {
 
     const geometry = BLOCK_GEOMETRY()

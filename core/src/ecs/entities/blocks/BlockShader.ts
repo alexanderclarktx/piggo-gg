@@ -1,6 +1,6 @@
 import { Shader } from "pixi.js"
 
-const vertexSrc = `
+const vertex = `
   precision mediump float;
   
   in float aFace;
@@ -43,7 +43,7 @@ const vertexSrc = `
   }
 `
 
-const fragmentSrc = `
+const fragment = `
   precision mediump float;
 
   in float vFace;
@@ -145,10 +145,7 @@ const fragmentSrc = `
 
 export const BlockShader = (): Shader => {
   const shader = Shader.from({
-    gl: {
-      vertex: vertexSrc,
-      fragment: fragmentSrc
-    },
+    gl: { vertex, fragment },
     resources: {
       uniforms: {
         uCamera: { value: [0, 0], type: 'vec2<f32>' },
