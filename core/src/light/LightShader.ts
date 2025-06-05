@@ -1,6 +1,6 @@
 import { Shader } from "pixi.js"
 
-const vertexSrc = `
+const vertex = `
   precision mediump float;
   
   in vec2 aPosition;
@@ -9,7 +9,7 @@ const vertexSrc = `
   
 `
 
-const fragmentSrc = `
+const fragment = `
   precision mediump float;
 
   in vec2 vPosition;
@@ -30,10 +30,7 @@ const fragmentSrc = `
 
 export const LightShader = (): Shader => {
   const shader = Shader.from({
-    gl: {
-      vertex: vertexSrc,
-      fragment: fragmentSrc,
-    },
+    gl: { vertex, fragment },
     resources: {
       uniforms: {
         
@@ -42,10 +39,10 @@ export const LightShader = (): Shader => {
   })
 
   // @ts-expect-error
-  shader.glProgram.vertex = "#version 300 es\n" + vertexSrc
+  shader.glProgram.vertex = "#version 300 es\n" + vertex
 
   // @ts-expect-error
-  shader.glProgram.fragment = "#version 300 es\n" + fragmentSrc
+  shader.glProgram.fragment = "#version 300 es\n" + fragment
 
   return shader
 }
