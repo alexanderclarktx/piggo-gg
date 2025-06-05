@@ -5,39 +5,45 @@ const vertex = `
 
   in vec2 aPosition;
   in vec3 aOffset;
-  in vec3 aBary;
+  in vec3 aInstancePos;
 
   uniform mat4 uModelViewProjection;
 
-  out vec3 vBary;
   out float vDepth;
 
   void main() {
-    vec4 worldPosition = vec4(aPosition + aOffset.xy, aOffset.z, 1.0);
+    vec4 worldPosition = vec4(aInstancePos + aOffset + vec3(aPosition, 0.0), 1.0);
     vec4 clipPosition = uModelViewProjection * worldPosition;
 
-    vBary = aBary;
-    vDepth = clipPosition.z / clipPosition.w; // NDC depth
     gl_Position = clipPosition;
+
+    // vDepth = clipPosition.z / clipPosition.w; // NDC depth
+
+    // gl_Position = vec4(aPosition / 1000.0, 0.0, 1.0);
   }
 `
 
 const fragment = `
   precision mediump float;
 
-  in vec2 vPosition;
-  in vec3 vOffset;
-  in vec3 vBary;
+  // in float vDepth;
 
-  uniform vec3 uLightColor;
-  uniform float uLightIntensity;
-  
   out vec4 fragColor;
 
+  // These should match the values used in your ortho projection matrix
+  // uniform float uNear;
+  // uniform float uFar;
+
   void main() {
-    // Calculate light effect based on position and barycentric coordinates
-    float lightEffect = max(0.0, dot(vBary, vec3(1.0))) * uLightIntensity;
-    fragColor = vec4(uLightColor * lightEffect, 1.0);
+    // Convert linear depth to [0, 1] range
+    // float normalizedDepth = (vDepth - uNear) / (uFar - uNear);
+
+    // Clamp to be safe (optional)
+    // normalizedDepth = clamp(normalizedDepth, 0.0, 1.0);
+
+    // Store depth in red channel
+    // fragColor = vec4(normalizedDepth, 0.0, 0.0, 1.0);
+    fragColor = vec4(1.0, 0.0, 1.0, 1.0);
   }
 `
 
@@ -46,7 +52,7 @@ export const SunShader = (): Shader => {
     gl: { vertex, fragment },
     resources: {
       uniforms: {
-        
+        uModelViewProjection: { type: "mat4x4<f32>", value: null }
       }
     }
   })

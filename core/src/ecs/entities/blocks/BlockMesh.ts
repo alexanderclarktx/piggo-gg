@@ -1,8 +1,9 @@
 import {
   Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
-  Entity, Item, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
+  Entity, Item, mouse, pixiCircle, Position, Renderable, round, SunShader, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
+import { mat4 } from "gl-matrix"
 
 const { width, height } = BlockDimensions
 
@@ -14,30 +15,61 @@ export const BlockMesh = () => {
   let chunkData: Block[] = []
   let flipped = 1
 
-  // const ShadowMap = () => {
-  //   const geometry = BLOCK_GEOMETRY()
+  const ShadowMap = () => {
+    const geometry = BLOCK_GEOMETRY()
 
-  //   const shader = 
+    const shader = SunShader()
 
-  //   return Renderable({
-  //     zIndex: 0,
-  //     anchor: { x: 0.5, y: 0.5 },
-  //     obedient: false,
-  //     setup: async (r) => {
-  //       r.c = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
-  //     },
-  //     onRender: ({ world, renderable }) => {
-  //       const player = world.client?.playerCharacter()
-  //       if (!player) return
+    const size = 200;
 
-  //       const pos = player.components.position.data
-  //       const flipPos = world.flip(pos)
+    // testing
+    // const view = mat4.create()
+    const view = mat4.lookAt(mat4.create(), [-1000, 0, 1000], [0, 500, 0], [0, 1, 0]);
+    const ortho = mat4.ortho(mat4.create(), -10000, 10000, -10000, 10000, -1000, 1000);
 
-  //       renderable.c.renderable = true
-  //       renderable.c.position.set(flipPos.x, flipPos.y + 2, pos.z - 20)
-  //     }
-  //   })
-  // }
+    // const view = mat4.lookAt(mat4.create(), [-1000, 0, 1000], [0, 100, 0], [0, 1, 0]);
+    // const ortho = mat4.ortho(mat4.create(), -size, size, -size, size, -size, size);
+    const mvp = mat4.create();
+    mat4.multiply(mvp, ortho, view);
+
+    shader.resources.uniforms = {
+      uModelViewProjection: mvp
+    }
+
+    return Renderable({
+      zIndex: 5,
+      anchor: { x: 0.5, y: 0.5 },
+      obedient: false,
+      setup: async (r) => {
+        r.c = new Mesh({ geometry, shader, interactive: false, cullable: false, isRenderGroup: true })
+      },
+      onRender: ({ world, renderable }) => {
+        const layer = layers[1]
+        if (!layer) {
+          console.log("no layer")
+          // renderable.c.renderable = false
+          return
+        }
+
+        const newPosBuffer = new Float32Array(layer.length * 3)
+        const newColorBuffer = new Float32Array(layer.length * 3)
+
+        for (let j = 0; j < layer.length; j++) {
+          const block = layer[j]
+          const { x: blockX, y: blockY } = world.flip(block)
+
+          newPosBuffer.set([blockX, blockY, block.z], j * 3)
+          newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
+        }
+
+        geometry.attributes.aInstancePos.buffer.data = newPosBuffer
+        geometry.attributes.aInstanceColor.buffer.data = newColorBuffer
+        geometry.instanceCount = layer.length
+
+        // console.log("instance count", geometry.instanceCount)
+      }
+    })
+  }
 
   const MeshChild = (i: number) => {
 
@@ -91,7 +123,8 @@ export const BlockMesh = () => {
       renderable: Renderable({
         zIndex: 0,
         anchor: { x: 0.5, y: 0.5 },
-        setChildren: async () => Array.from({ length: 32 }, (_, i) => MeshChild(i)),
+        setChildren: async () => [ShadowMap()],
+        // setChildren: async () => Array.from({ length: 32 }, (_, i) => MeshChild(i)),
         onTick: ({ world }) => {
           const { position } = world.client!.playerCharacter()?.components ?? {}
           if (!position) return
