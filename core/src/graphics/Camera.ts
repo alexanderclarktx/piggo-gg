@@ -78,7 +78,7 @@ export const Camera = (app: Application): Camera => {
   }
 
   const rescale = () => {
-    const min = 1.2
+    const min = 0.1
     const max = 5
 
     if (camera.scale < min) camera.scale = min
@@ -106,7 +106,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
     renderer.app.canvas.addEventListener("wheel", (event) => {
       targetScale += -0.01 * sign(event.deltaY) * sqrt(abs(event.deltaY))
       targetScale = min(targetScale, 5)
-      targetScale = max(targetScale, 1)
+      targetScale = max(targetScale, 0.1)
     })
 
     return {
