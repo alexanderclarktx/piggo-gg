@@ -1,4 +1,4 @@
-import { Shader, Matrix } from "pixi.js"
+import { Shader } from "pixi.js"
 
 const vertex = `
   precision mediump float;
