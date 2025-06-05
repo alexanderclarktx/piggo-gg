@@ -1,12 +1,25 @@
-import { Shader } from "pixi.js"
+import { Shader, Matrix } from "pixi.js"
 
 const vertex = `
   precision mediump float;
-  
+
   in vec2 aPosition;
   in vec3 aOffset;
   in vec3 aBary;
-  
+
+  uniform mat4 uModelViewProjection;
+
+  out vec3 vBary;
+  out float vDepth;
+
+  void main() {
+    vec4 worldPosition = vec4(aPosition + aOffset.xy, aOffset.z, 1.0);
+    vec4 clipPosition = uModelViewProjection * worldPosition;
+
+    vBary = aBary;
+    vDepth = clipPosition.z / clipPosition.w; // NDC depth
+    gl_Position = clipPosition;
+  }
 `
 
 const fragment = `
@@ -28,7 +41,7 @@ const fragment = `
   }
 `
 
-export const LightShader = (): Shader => {
+export const SunShader = (): Shader => {
   const shader = Shader.from({
     gl: { vertex, fragment },
     resources: {
