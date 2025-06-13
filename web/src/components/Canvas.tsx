@@ -1,4 +1,4 @@
-import { DefaultWorld, isMobile, Renderer, World } from "@piggo-gg/core"
+import { DefaultWorld, isMobile, Renderer, Three, World } from "@piggo-gg/core"
 import { games } from "@piggo-gg/games"
 import { useEffect } from "react"
 
@@ -14,11 +14,14 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
     const mobile = isMobile()
     if (mobile) canvas.style.border = "none"
 
-    const renderer = Renderer(canvas)
+    // const renderer = Renderer(canvas)
+    const three = Three(canvas)
 
-    renderer.init().then(() => {
-      setWorld(DefaultWorld({ renderer, games }))
-    })
+    setWorld(DefaultWorld({ games, three }))
+
+    // renderer.init().then(() => {
+    //   setWorld(DefaultWorld({ renderer, games, three }))
+    // })
   }, [])
 
   return (
