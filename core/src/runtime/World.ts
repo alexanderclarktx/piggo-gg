@@ -85,7 +85,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     random: Random(123456789),
     renderer,
     systems: {},
-    three: three,
+    three,
     tick: 0,
     tickFlag: "green",
     tickrate: 25,

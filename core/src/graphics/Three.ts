@@ -1,43 +1,116 @@
-import { BoxGeometry, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three"
+import { AmbientLight, BoxGeometry, BufferAttribute, Color, DirectionalLight, InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D, PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer } from "three"
 
 export type Three = {
-
+  setZoom: (zoom: number) => void
 }
 
 export const Three = (canvas: HTMLCanvasElement): Three => {
 
   const scene = new Scene()
 
-  const camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000)
-  camera.position.z = 1
+  let zoom = 2
 
-  const geometry = new BoxGeometry(0.2, 0.2, 0.2)
-  const mesh = new Mesh(geometry, new MeshNormalMaterial())
+  const renderer = new WebGLRenderer({ antialias: true, canvas })
 
-  // mesh.position.set(0, 0, 0.1)
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = 2
 
-  scene.add(mesh)
+  renderer.setAnimationLoop((time: number) => {
+    // rotate the camera
+    camera.position.set(Math.sin(time / 3000) * -zoom, zoom * 0.5, Math.cos(time / 3000) * zoom)
+    camera.lookAt(0, 0, 0)
+
+    renderer.render(scene, camera)
+  })
+
+  const camera = new PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.01, 1000)
+  camera.position.set(-1, 1, 1)
+  camera.lookAt(0, 0, 0)
+
+  const light = new DirectionalLight(0xffffff, 6)
+  light.position.set(10, 10, 10)
+  light.castShadow = true
+  scene.add(light)
+
+  const ambient = new AmbientLight(0xffffff, 2)
+  scene.add(ambient)
+
+  const geometry = new BoxGeometry(0.3, 0.3, 0.3)
+
+  const TL = new TextureLoader()
+
+  // texture
+  TL.load("dirt.png", (texture: Texture) => {
+    instancedMesh.material.map = texture
+
+    instancedMesh.material.needsUpdate = true
+    instancedMesh.material.visible = true
+
+    texture.magFilter = NearestFilter
+    texture.minFilter = NearestFilter
+  })
+
+  // normals
+  TL.load("dirt_normal.png", (texture: Texture) => {
+    instancedMesh.material.roughnessMap = texture
+    instancedMesh.material.roughness = 0.5
+
+    instancedMesh.material.needsUpdate = true
+  })
+
+  const instancedMesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
+    vertexColors: true, visible: false
+  }), 16)
+  instancedMesh.castShadow = true
+  instancedMesh.receiveShadow = true
+
+  const position = geometry.attributes.position
+  const colorAttr = new Float32Array(position.count * 3)
+
+  const faceColors = [
+    new Color(0xaaaaaa),
+    new Color(0xaaaaaa),
+    new Color(0x00ff00),
+    new Color(0xaaaaaa),
+    new Color(0xaaaaaa),
+    new Color(0xaaaaaa)
+  ]
+
+  // color the faces
+  for (let i = 0; i < position.count; i++) {
+    const faceIndex = Math.floor(i / 4)
+    const color = faceColors[faceIndex]
+    colorAttr.set([color.r, color.g, color.b], i * 3)
+  }
+
+  geometry.setAttribute('color', new BufferAttribute(colorAttr, 3))
+
+  const dummy = new Object3D()
+
+  // arrange in a 2d grid (x/z)
+  for (let i = 0; i < 16; i++) {
+    dummy.position.set((i % 4) * 0.3 - 0.45, 0, Math.floor(i / 4) * 0.3 - 0.45)
+
+    if (i === 10) dummy.position.y = 0.3
+
+    dummy.updateMatrix()
+    instancedMesh.setMatrixAt(i, dummy.matrix)
+  }
+
+  scene.add(instancedMesh)
 
   const resize = () => {
     renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
   }
 
-  const animate = (time: number) => {
-    mesh.rotation.x = time / 2000
-    mesh.rotation.y = time / 1000
-
-    renderer.render(scene, camera)
-  }
-
-  const renderer = new WebGLRenderer({ antialias: true, canvas })
-
-  renderer.setAnimationLoop(animate)
-
-  const three: Three = {
-
-  }
+  canvas.addEventListener("wheel", (event: WheelEvent) => {
+    zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
+    zoom = Math.max(1, Math.min(zoom, 10))
+  })
 
   resize()
 
-  return three
+  return {
+    setZoom: (z: number) => zoom = z
+  }
 }
