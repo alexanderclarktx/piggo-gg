@@ -1,7 +1,7 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY, logPerf
+  Random, ComponentTypes, Data, Networked, XY, logPerf, Three
 } from "@piggo-gg/core"
 import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
@@ -21,6 +21,7 @@ export type World = {
   random: Random
   renderer: Renderer | undefined
   systems: Record<string, System>
+  three: Three | undefined
   tick: number
   tickFlag: "green" | "red"
   tickrate: number
@@ -48,12 +49,13 @@ export type WorldProps = {
   commands?: Command[]
   games?: GameBuilder[]
   systems?: SystemBuilder[]
+  three?: Three
   renderer?: Renderer | undefined
   mode?: "client" | "server"
 }
 
 // World manages all runtime state
-export const World = ({ commands, games, systems, renderer, mode }: WorldProps): World => {
+export const World = ({ commands, games, systems, renderer, mode, three }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
 
@@ -83,6 +85,7 @@ export const World = ({ commands, games, systems, renderer, mode }: WorldProps):
     random: Random(123456789),
     renderer,
     systems: {},
+    three,
     tick: 0,
     tickFlag: "green",
     tickrate: 25,
