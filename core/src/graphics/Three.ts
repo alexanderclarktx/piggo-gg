@@ -1,4 +1,10 @@
-import { AmbientLight, BoxGeometry, BufferAttribute, Color, DirectionalLight, InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D, PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer } from "three"
+import {
+  AmbientLight, BoxGeometry, BufferAttribute, Color, DirectionalLight,
+  InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
+  PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer
+} from "three"
+
+const evening = 0xffd9c3
 
 export type Three = {
   setZoom: (zoom: number) => void
@@ -23,19 +29,27 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
     renderer.render(scene, camera)
   })
 
-  const camera = new PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.01, 1000)
+  const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000)
   camera.position.set(-1, 1, 1)
   camera.lookAt(0, 0, 0)
 
-  const light = new DirectionalLight(0xffffff, 6)
-  light.position.set(10, 10, 10)
+  const light = new DirectionalLight(evening, 10)
+  light.position.set(10, 6, 10)
   light.castShadow = true
   scene.add(light)
-
-  const ambient = new AmbientLight(0xffffff, 2)
+evening
+  const ambient = new AmbientLight(evening, 1)
   scene.add(ambient)
 
   const geometry = new BoxGeometry(0.3, 0.3, 0.3)
+
+  const instancedMesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
+    vertexColors: true, visible: false, specularIntensity: 0.05
+  }), 16)
+
+  instancedMesh.castShadow = true
+  instancedMesh.receiveShadow = true
+
 
   const TL = new TextureLoader()
 
@@ -50,19 +64,14 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
     texture.minFilter = NearestFilter
   })
 
-  // normals
-  TL.load("dirt_normal.png", (texture: Texture) => {
-    instancedMesh.material.roughnessMap = texture
-    instancedMesh.material.roughness = 0.5
+  const mat = instancedMesh.material
+
+  // roughness map
+  TL.load("dirt_nn.png", (texture: Texture) => {
+    mat.roughnessMap = texture
 
     instancedMesh.material.needsUpdate = true
   })
-
-  const instancedMesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
-    vertexColors: true, visible: false
-  }), 16)
-  instancedMesh.castShadow = true
-  instancedMesh.receiveShadow = true
 
   const position = geometry.attributes.position
   const colorAttr = new Float32Array(position.count * 3)
