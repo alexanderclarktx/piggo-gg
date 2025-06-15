@@ -37,7 +37,7 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
   light.position.set(10, 6, 10)
   light.castShadow = true
   scene.add(light)
-evening
+
   const ambient = new AmbientLight(evening, 1)
   scene.add(ambient)
 
@@ -49,7 +49,6 @@ evening
 
   instancedMesh.castShadow = true
   instancedMesh.receiveShadow = true
-
 
   const TL = new TextureLoader()
 
