@@ -67,10 +67,10 @@ export const Camera = (app: Application): Camera => {
       root.x = round(app.screen.width / 2 - x * camera.scale, 3)
       root.y = round(app.screen.height / 2 - y * camera.scale, 3)
     },
-    toWorldCoords: ({ x, y }: XY) => ({
+    toWorldCoords: ({ x, y }: XY) => (root.scale ? {
       x: round((x - root.x) / camera.scale, 3),
       y: round((y - root.y) / camera.scale, 3)
-    }),
+    } : { x: 0, y: 0 }),
     toCameraCoords: ({ x, y }: XY) => ({
       x: round(x * camera.scale + root.x, 3),
       y: round(y * camera.scale + root.y, 3)
@@ -84,7 +84,7 @@ export const Camera = (app: Application): Camera => {
     if (camera.scale < min) camera.scale = min
     if (camera.scale > max) camera.scale = max
 
-    root.scale.set(camera.scale, camera.scale)
+    root.scale?.set(camera.scale, camera.scale)
   }
 
   rescale()
