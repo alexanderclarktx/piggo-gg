@@ -1,5 +1,5 @@
 import {
-  AmbientLight, BoxGeometry, BufferAttribute, Color, DirectionalLight,
+  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
   InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
   PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -22,9 +22,16 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
   renderer.shadowMap.type = 2
 
   renderer.setAnimationLoop((time: number) => {
-    // rotate the camera
-    camera.position.set(Math.sin(time / 3000) * -zoom, zoom * 0.5, Math.cos(time / 3000) * zoom)
+    // rotate+zoom
+    // camera.position.set(Math.sin(time / 3000) * -zoom, zoom * 0.5, Math.cos(time / 3000) * zoom)
+
+    // zoom
+    camera.position.set(-zoom, zoom * 0.5, zoom)
+
     camera.lookAt(0, 0, 0)
+
+    // rotate the sun
+    if (zoom > 1) light.position.set(Math.sin(time / 5000) * 10, 6, Math.cos(time / 5000) * 10)
 
     renderer.render(scene, camera)
   })
@@ -35,7 +42,13 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
 
   const light = new DirectionalLight(evening, 10)
   light.position.set(10, 6, 10)
+
+  light.shadow.normalBias = 0.02
+  light.shadow.mapSize.set(1024, 1024)
   light.castShadow = true
+
+  // scene.add(new CameraHelper(light.shadow.camera))
+
   scene.add(light)
 
   const ambient = new AmbientLight(evening, 1)
@@ -68,7 +81,6 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
   // roughness map
   TL.load("dirt_nn.png", (texture: Texture) => {
     mat.roughnessMap = texture
-
     instancedMesh.material.needsUpdate = true
   })
 
