@@ -3,6 +3,7 @@ import {
   InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
   PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer
 } from "three"
+import { sin, cos } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
@@ -22,16 +23,16 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
   renderer.shadowMap.type = 2
 
   renderer.setAnimationLoop((time: number) => {
-    // rotate+zoom
-    // camera.position.set(Math.sin(time / 3000) * -zoom, zoom * 0.5, Math.cos(time / 3000) * zoom)
-
-    // zoom
+    // camera zoom
     camera.position.set(-zoom, zoom * 0.5, zoom)
-
     camera.lookAt(0, 0, 0)
 
+    const t = time / 1000
+
     // rotate the sun
-    if (zoom > 1) light.position.set(Math.sin(time / 5000) * 10, 6, Math.cos(time / 5000) * 10)
+    if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
+
+    ambient.intensity = 2 + sin(t)
 
     renderer.render(scene, camera)
   })
@@ -40,16 +41,15 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
   camera.position.set(-1, 1, 1)
   camera.lookAt(0, 0, 0)
 
-  const light = new DirectionalLight(evening, 10)
-  light.position.set(10, 6, 10)
+  const sun = new DirectionalLight(evening, 10)
+  scene.add(sun)
 
-  light.shadow.normalBias = 0.02
-  light.shadow.mapSize.set(1024, 1024)
-  light.castShadow = true
+  sun.position.set(10, 6, 10)
+  sun.shadow.normalBias = 0.02
+  sun.shadow.mapSize.set(1024, 1024)
+  sun.castShadow = true
 
-  // scene.add(new CameraHelper(light.shadow.camera))
-
-  scene.add(light)
+  scene.add(new CameraHelper(sun.shadow.camera))
 
   const ambient = new AmbientLight(evening, 1)
   scene.add(ambient)
