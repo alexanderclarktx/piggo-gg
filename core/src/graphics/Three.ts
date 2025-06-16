@@ -9,6 +9,8 @@ const evening = 0xffd9c3
 
 export type Three = {
   setZoom: (zoom: number) => void
+  activate: () => void
+  deactivate: () => void
 }
 
 export const Three = (canvas: HTMLCanvasElement): Three => {
@@ -21,21 +23,6 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
 
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = 2
-
-  renderer.setAnimationLoop((time: number) => {
-    // camera zoom
-    camera.position.set(-zoom, zoom * 0.5, zoom)
-    camera.lookAt(0, 0, 0)
-
-    const t = time / 1000
-
-    // rotate the sun
-    if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
-
-    ambient.intensity = 2 + sin(t)
-
-    renderer.render(scene, camera)
-  })
 
   const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000)
   camera.position.set(-1, 1, 1)
@@ -131,6 +118,27 @@ export const Three = (canvas: HTMLCanvasElement): Three => {
   resize()
 
   return {
-    setZoom: (z: number) => zoom = z
+    setZoom: (z: number) => zoom = z,
+    deactivate: () => {
+      renderer.setAnimationLoop(null)
+      renderer.dispose()
+      scene.clear()
+    },
+    activate: () => {
+      renderer.setAnimationLoop(() => {
+        // camera zoom
+        camera.position.set(-zoom, zoom * 0.5, zoom)
+        camera.lookAt(0, 0, 0)
+
+        const t = performance.now() / 1000
+
+        // rotate the sun
+        if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
+
+        ambient.intensity = 2 + sin(t)
+
+        renderer.render(scene, camera)
+      })
+    }
   }
 }

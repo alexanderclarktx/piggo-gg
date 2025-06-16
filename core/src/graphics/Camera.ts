@@ -134,7 +134,6 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
           }
         }
 
-        world.three?.setZoom(renderer.camera.scale)
         // console.log(`hidden ${numHidden} entities`)
       },
       onRender: (_, delta) => {

@@ -291,6 +291,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
   // schedule onRender
   if (renderer) {
     renderer.app.ticker.add(() => {
+      console.log("onRender")
       const now = performance.now()
       values(world.systems).forEach((system) => {
         system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)

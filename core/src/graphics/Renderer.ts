@@ -8,6 +8,7 @@ export type Renderer = {
   resizedFlag: boolean
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
+  deactivate: () => void
   handleResize: () => void
   init: () => Promise<void>
   setBgColor: (color: number) => void
@@ -32,6 +33,22 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
     },
     addWorld: (renderable: Renderable) => {
       if (renderable) renderer.camera?.add(renderable)
+    },
+    deactivate: () => {
+      // remove all gui renderables
+      // renderer.guiRenderables.forEach((renderable) => {
+      //   if (renderable.c) renderer.app.stage.removeChild(renderable.c)
+      // })
+      // renderer.guiRenderables = []
+
+      console.log("deactivating renderer")
+
+      app.destroy({removeView: true}, {children: true, texture: true, context: true, style: true, textureSource: true})
+
+      // remove all world renderables
+      // renderer.camera?.removeAll()
+      // app.stop()
+      // app.ticker.stop()
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
@@ -75,7 +92,7 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
     },
     setBgColor: (color: number) => {
-      app.renderer.background.color = color
+      if (app.renderer) app.renderer.background.color = color
     },
     wh: () => ({
       width: app.screen.width,

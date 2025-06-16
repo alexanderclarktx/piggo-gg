@@ -14,14 +14,14 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
     const mobile = isMobile()
     if (mobile) canvas.style.border = "none"
 
-    // const renderer = Renderer(canvas)
     const three = Three(canvas)
+    // setWorld(DefaultWorld({ games, three }))
 
-    setWorld(DefaultWorld({ games, three }))
+    const renderer = Renderer(canvas)
 
-    // renderer.init().then(() => {
-    //   setWorld(DefaultWorld({ renderer, games, three }))
-    // })
+    renderer.init().then(() => {
+      setWorld(DefaultWorld({ renderer, games }))
+    })
   }, [])
 
   return (
