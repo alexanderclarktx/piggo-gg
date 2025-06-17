@@ -8,6 +8,7 @@ export type Renderer = {
   resizedFlag: boolean
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
+  deactivate: () => void
   handleResize: () => void
   init: () => Promise<void>
   setBgColor: (color: number) => void
@@ -33,6 +34,9 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
     addWorld: (renderable: Renderable) => {
       if (renderable) renderer.camera?.add(renderable)
     },
+    deactivate: () => {
+      app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
+    },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
         renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
@@ -44,7 +48,7 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
     init: async () => {
 
       // create the pixi.js application
-      await renderer.app.init({
+      await app.init({
         canvas,
         resolution: 1,
         antialias: true,
@@ -57,10 +61,10 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
       renderer.handleResize()
 
       // set up the camera
-      renderer.app.stage.addChild(renderer.camera.root)
+      app.stage.addChild(renderer.camera.root)
 
       // hide the cursor
-      renderer.app.renderer.events.cursorStyles.default = "none"
+      app.renderer.events.cursorStyles.default = "none"
 
       // handle screen resize
       window.addEventListener("resize", renderer.handleResize)
@@ -75,11 +79,11 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
     },
     setBgColor: (color: number) => {
-      renderer.app.renderer.background.color = color
+      if (app.renderer) app.renderer.background.color = color
     },
     wh: () => ({
-      width: renderer.app.screen.width,
-      height: renderer.app.screen.height
+      width: app.screen.width,
+      height: app.screen.height
     })
   }
   return renderer

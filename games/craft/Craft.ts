@@ -3,7 +3,7 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, highestBlock, Cursor, Chat, EscapeMenu, blocks,
   BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, spawnChunk,
-  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors, Piggo
+  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors, Piggo, RenderSystem
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -18,6 +18,7 @@ export const Craft: GameBuilder = {
       InventorySystem,
       ShadowSystem,
       CraftSystem,
+      RenderSystem,
       CameraSystem((xyz) => xyz),
       SpawnSystem(Skelly)
     ],

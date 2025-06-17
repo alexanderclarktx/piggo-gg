@@ -7,7 +7,7 @@ export type TwoPoints = [number, number, number, number]
 export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
-export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, PI } = Math
+export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, cos, PI } = Math
 
 export const round = (n: number, places = 0) => {
   const factor = pow(10, places)

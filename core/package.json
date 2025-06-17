@@ -10,6 +10,10 @@
     "pixi.js": "8.9.2",
     "react-hot-toast": "2.4.1",
     "simplex-noise": "4.0.3",
+    "three": "0.177.0",
     "tone": "15.0.4"
+  },
+  "devDependencies": {
+    "@types/three": "^0.177.0"
   }
 }
