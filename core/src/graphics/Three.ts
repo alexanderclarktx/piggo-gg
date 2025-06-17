@@ -1,9 +1,9 @@
+import { sin, cos } from "@piggo-gg/core"
 import {
   AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
   InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
   PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { sin, cos } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
@@ -38,27 +38,24 @@ export const Three = (c: HTMLCanvasElement): Three => {
       canvas.id = "canvas"
       parent?.appendChild(canvas)
 
-      console.log("activating three")
-
       scene = new Scene()
 
       renderer = new WebGLRenderer({ antialias: true, canvas })
 
       renderer.setAnimationLoop(() => {
-        // camera zoom
-        camera.position.set(-zoom, zoom * 0.5, zoom)
-        camera.lookAt(0, 0, 0)
-
         const t = performance.now() / 1000
+
+        // ambient lighting
+        ambient.intensity = 2 + sin(t)
 
         // rotate the sun
         if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
 
-        ambient.intensity = 2 + sin(t)
+        // camera zoom
+        camera.position.set(-zoom, zoom * 0.5, zoom)
+        camera.lookAt(0, 0, 0)
 
         renderer!.render(scene!, camera)
-
-        console.log("animationLoop")
       })
 
       renderer.shadowMap.enabled = true
@@ -134,7 +131,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       const dummy = new Object3D()
 
-      // arrange in a 2d grid (x/z)
+      // arrange blocks in 2D grid
       for (let i = 0; i < 16; i++) {
         dummy.position.set((i % 4) * 0.3 - 0.45, 0, Math.floor(i / 4) * 0.3 - 0.45)
 
