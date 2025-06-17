@@ -103,7 +103,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
       const mat = instancedMesh.material
 
       // roughness map
-      TL.load("dirt_nn.png", (texture: Texture) => {
+      TL.load("dirt_norm.png", (texture: Texture) => {
         mat.roughnessMap = texture
         instancedMesh.material.needsUpdate = true
       })

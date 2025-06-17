@@ -35,7 +35,6 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
       if (renderable) renderer.camera?.add(renderable)
     },
     deactivate: () => {
-      console.log("deactivating renderer")
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
     },
     handleResize: () => {

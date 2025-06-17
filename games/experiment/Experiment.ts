@@ -12,8 +12,7 @@ export const Experiment: GameBuilder = {
       netcode: "rollback",
       state: {},
       systems: [],
-      entities: [],
-
+      entities: []
     }
   }
 }
