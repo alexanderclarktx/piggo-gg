@@ -1,8 +1,7 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors,
-  Cursor, Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background,
-  Actions, Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox,
-  RenderSystem
+  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor,
+  Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions,
+  Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem
 } from "@piggo-gg/core"
 import { Volley, Craft, Experiment } from "@piggo-gg/games"
 import { Sprite, Text } from "pixi.js"
@@ -469,7 +468,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Craft, Volley, Experiment]
+  const list: GameBuilder[] = location?.hostname === "localhost" ? [Craft, Volley, Experiment] : [Craft, Volley]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({
