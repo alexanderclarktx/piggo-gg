@@ -35,20 +35,8 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
       if (renderable) renderer.camera?.add(renderable)
     },
     deactivate: () => {
-      // remove all gui renderables
-      // renderer.guiRenderables.forEach((renderable) => {
-      //   if (renderable.c) renderer.app.stage.removeChild(renderable.c)
-      // })
-      // renderer.guiRenderables = []
-
       console.log("deactivating renderer")
-
-      app.destroy({removeView: true}, {children: true, texture: true, context: true, style: true, textureSource: true})
-
-      // remove all world renderables
-      // renderer.camera?.removeAll()
-      // app.stop()
-      // app.ticker.stop()
+      app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {

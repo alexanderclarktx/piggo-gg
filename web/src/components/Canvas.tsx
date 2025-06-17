@@ -20,7 +20,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
     const renderer = Renderer(canvas)
 
     renderer.init().then(() => {
-      setWorld(DefaultWorld({ renderer, games }))
+      setWorld(DefaultWorld({ renderer, games, three }))
     })
   }, [])
 
