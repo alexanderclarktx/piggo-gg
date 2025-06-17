@@ -468,7 +468,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = location?.hostname === "localhost" ? [Craft, Volley, Experiment] : [Craft, Volley]
+  const list: GameBuilder[] = [Craft, Volley, Experiment]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({
