@@ -15,8 +15,6 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
     if (mobile) canvas.style.border = "none"
 
     const three = Three(canvas)
-    // setWorld(DefaultWorld({ games, three }))
-
     const renderer = Renderer(canvas)
 
     renderer.init().then(() => {

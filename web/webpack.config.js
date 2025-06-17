@@ -34,7 +34,6 @@ module.exports = {
         { from: "./src/*.css", to: () => "[name].css" },
         { from: "./res/*.svg", to: () => "[name].svg" },
         { from: "./res/*.png", to: () => "[name].png" },
-        { from: "./res/*.jpg", to: () => "[name].jpg" },
         { from: "./res/*.json", to: () => "[name].json" },
         { from: "./res/*.mp3", to: () => "[name].mp3" },
         { from: "./res/*.wav", to: () => "[name].wav" },
