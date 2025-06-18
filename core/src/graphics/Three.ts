@@ -1,6 +1,7 @@
 import { sin, cos } from "@piggo-gg/core"
+import { EffectComposer } from "postprocessing"
 import {
-  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
+  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, CubeTextureLoader, DirectionalLight,
   InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
   PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -57,7 +58,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       scene = new Scene()
 
-      renderer = new WebGLRenderer({ antialias: true, canvas })
+      renderer = new WebGLRenderer({ antialias: true, canvas, powerPreference: "high-performance" })
 
       renderer.setAnimationLoop(() => {
         const t = performance.now() / 1000
@@ -122,6 +123,20 @@ export const Three = (c: HTMLCanvasElement): Three => {
         mat.roughnessMap = texture
         instancedMesh.material.needsUpdate = true
       })
+
+      // background
+      TL.load("night-2.png", (texture: Texture) => {
+        texture.magFilter = NearestFilter
+        texture.minFilter = NearestFilter
+
+        texture.mapping = 301
+        texture.colorSpace = "srgb"
+
+        texture.needsUpdate = true
+        scene!.background = texture
+      })
+
+      // const composer = new EffectComposer(renderer)
 
       const position = geometry.attributes.position
       const colorAttr = new Float32Array(position.count * 3)

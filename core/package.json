@@ -8,6 +8,7 @@
     "@pixi/ui": "2.2.1",
     "pixi-filters": "6.0.3",
     "pixi.js": "8.9.2",
+    "postprocessing": "^6.37.4",
     "react-hot-toast": "2.4.1",
     "simplex-noise": "4.0.3",
     "three": "0.177.0",
