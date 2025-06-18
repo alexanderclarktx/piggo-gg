@@ -1,5 +1,5 @@
 import { sin, cos } from "@piggo-gg/core"
-import { EffectComposer } from "postprocessing"
+import { BlendFunction, BloomEffect, EffectComposer, EffectPass, GodRaysEffect, RenderPass, Resolution, SelectiveBloomEffect, SMAAEffect, SMAAPreset } from "postprocessing"
 import {
   AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, CubeTextureLoader, DirectionalLight,
   InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
@@ -58,7 +58,11 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       scene = new Scene()
 
-      renderer = new WebGLRenderer({ antialias: true, canvas, powerPreference: "high-performance" })
+      renderer = new WebGLRenderer({
+        antialias: false, canvas, powerPreference: "high-performance"
+      })
+
+      three.resize()
 
       renderer.setAnimationLoop(() => {
         const t = performance.now() / 1000
@@ -73,7 +77,8 @@ export const Three = (c: HTMLCanvasElement): Three => {
         camera.position.set(-zoom, zoom * 0.5, zoom)
         camera.lookAt(0, 0, 0)
 
-        renderer!.render(scene!, camera)
+        // renderer!.render(scene!, camera)
+        composer.render()
       })
 
       renderer.shadowMap.enabled = true
@@ -125,7 +130,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
       })
 
       // background
-      TL.load("night-2.png", (texture: Texture) => {
+      TL.load("night.png", (texture: Texture) => {
         texture.magFilter = NearestFilter
         texture.minFilter = NearestFilter
 
@@ -136,7 +141,19 @@ export const Three = (c: HTMLCanvasElement): Three => {
         scene!.background = texture
       })
 
-      // const composer = new EffectComposer(renderer)
+      const composer = new EffectComposer(renderer, { multisampling: 4 })
+      composer.addPass(new RenderPass(scene, camera))
+
+      composer.addPass(new EffectPass(camera, new BloomEffect({
+        luminanceThreshold: 0.2,
+        luminanceSmoothing: 0.1,
+        intensity: 0.4,
+        resolutionScale: 2
+      })))
+
+      composer.addPass(new EffectPass(camera, new SMAAEffect({ preset: SMAAPreset.LOW })))
+
+      console.log(composer)
 
       const position = geometry.attributes.position
       const colorAttr = new Float32Array(position.count * 3)
@@ -177,8 +194,6 @@ export const Three = (c: HTMLCanvasElement): Three => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
         zoom = Math.max(1, Math.min(zoom, 10))
       })
-
-      three.resize()
     }
   }
   return three
