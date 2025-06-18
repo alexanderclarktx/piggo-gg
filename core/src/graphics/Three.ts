@@ -9,8 +9,10 @@ const evening = 0xffd9c3
 
 export type Three = {
   setZoom: (zoom: number) => void
+  debug: (state: boolean) => void
   activate: () => void
   deactivate: () => void
+  resize: () => void
 }
 
 export const Three = (c: HTMLCanvasElement): Three => {
@@ -19,15 +21,30 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
   let renderer: undefined | WebGLRenderer
   let scene: undefined | Scene
+  let sun: undefined | DirectionalLight
 
   let zoom = 2
+  let debug = false
 
-  return {
+  const three: Three = {
     setZoom: (z: number) => zoom = z,
+    resize: () => {
+      if (renderer) {
+        renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+      }
+    },
     deactivate: () => {
       renderer?.setAnimationLoop(null)
       renderer?.dispose()
       scene?.clear()
+    },
+    debug: (state: boolean) => {
+      if (debug === state) return
+
+      debug = state
+      if (debug && renderer && scene && sun) {
+        scene.add(new CameraHelper(sun.shadow.camera))
+      }
     },
     activate: () => {
 
@@ -46,10 +63,10 @@ export const Three = (c: HTMLCanvasElement): Three => {
         const t = performance.now() / 1000
 
         // ambient lighting
-        ambient.intensity = 2 + sin(t)
+        // ambient.intensity = 2 + sin(t)
 
         // rotate the sun
-        if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
+        // if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
 
         // camera zoom
         camera.position.set(-zoom, zoom * 0.5, zoom)
@@ -65,15 +82,13 @@ export const Three = (c: HTMLCanvasElement): Three => {
       camera.position.set(-1, 1, 1)
       camera.lookAt(0, 0, 0)
 
-      const sun = new DirectionalLight(evening, 10)
+      sun = new DirectionalLight(evening, 10)
       scene.add(sun)
 
       sun.position.set(10, 6, 10)
       sun.shadow.normalBias = 0.02
       sun.shadow.mapSize.set(1024, 1024)
       sun.castShadow = true
-
-      scene.add(new CameraHelper(sun.shadow.camera))
 
       const ambient = new AmbientLight(evening, 1)
       scene.add(ambient)
@@ -143,16 +158,13 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       scene.add(instancedMesh)
 
-      const resize = () => {
-        renderer!.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
-      }
-
       canvas.addEventListener("wheel", (event: WheelEvent) => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
         zoom = Math.max(1, Math.min(zoom, 10))
       })
 
-      resize()
+      three.resize()
     }
   }
+  return three
 }
