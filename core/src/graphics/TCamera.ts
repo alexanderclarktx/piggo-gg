@@ -13,8 +13,11 @@ export const TCamera = (): TCamera => {
   let vert = 0
   let hori = 0
 
-  window.addEventListener('mousemove', (e) => {
+  window.addEventListener('pointermove', (e) => {
     if (!document.pointerLockElement) return
+
+    console.log(e.movementX, e.movementY)
+    console.log(e.clientX, e.clientY)
 
     vert -= e.movementY * 0.001
     hori -= e.movementX * 0.001
@@ -23,7 +26,7 @@ export const TCamera = (): TCamera => {
 
     camera.rotation.set(vert, hori, 0)
   })
-  document.body.requestPointerLock()
+  document.body.requestPointerLock({ unadjustedMovement: true })
 
   document.body.addEventListener('click', () => {
     document.body.requestPointerLock()

@@ -1,7 +1,7 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY, logPerf, Three
+  Random, ComponentTypes, Data, Networked, XY, logPerf, TRenderer
 } from "@piggo-gg/core"
 import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
@@ -21,7 +21,7 @@ export type World = {
   random: Random
   renderer: Renderer | undefined
   systems: Record<string, System>
-  three: Three | undefined
+  three: TRenderer | undefined
   tick: number
   tickFlag: "green" | "red"
   tickrate: number
@@ -49,7 +49,7 @@ export type WorldProps = {
   commands?: Command[]
   games?: GameBuilder[]
   systems?: SystemBuilder[]
-  three?: Three
+  three?: TRenderer
   renderer?: Renderer | undefined
   mode?: "client" | "server"
 }

@@ -1,15 +1,15 @@
 import {
-  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
-  InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
-  PerspectiveCamera, Scene, Texture, TextureLoader, Vector3, WebGLRenderer
+  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color,
+  DirectionalLight, InstancedMesh, MeshPhysicalMaterial, NearestFilter,
+  Object3D, Scene, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, max, TCamera } from "@piggo-gg/core"
+import { sin, cos, TCamera } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
-export type Three = {
-  tcamera: TCamera
+export type TRenderer = {
+  camera: TCamera
   setZoom: (zoom: number) => void
   debug: (state: boolean) => void
   activate: () => void
@@ -17,7 +17,7 @@ export type Three = {
   resize: () => void
 }
 
-export const Three = (c: HTMLCanvasElement): Three => {
+export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
   let canvas: HTMLCanvasElement = c
 
@@ -29,8 +29,8 @@ export const Three = (c: HTMLCanvasElement): Three => {
   let zoom = 2
   let debug = false
 
-  const three: Three = {
-    tcamera: TCamera(),
+  const three: TRenderer = {
+    camera: TCamera(),
     setZoom: (z: number) => zoom = z,
     resize: () => {
       if (renderer) {
@@ -142,7 +142,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
         scene!.background = texture
       })
 
-      const camera = three.tcamera.c
+      const camera = three.camera.c
 
       const composer = new EffectComposer(renderer, { multisampling: 4 })
       composer.addPass(new RenderPass(scene, camera))
