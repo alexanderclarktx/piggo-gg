@@ -79,7 +79,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
         // if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
 
         // camera zoom
-        camera.position.set(-zoom, zoom * 0.5, zoom)
+        // camera.position.set(-zoom, zoom * 0.5, zoom)
         camera.lookAt(0, 0, 0)
 
         // renderer!.render(scene!, camera)
@@ -205,8 +205,19 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       // inputs
       window.addEventListener("keydown", (event) => {
-        if (event.key === "b") three.debug(!debug)
-        if (event.key === "r") three.resize()
+        const k = event.key.toLowerCase()
+        console.log("key:", k)
+        if ( k === "b") three.debug(!debug)
+        if ( k === "r") three.resize()
+
+        if ( k === " ") {
+          camera.position.y += 0.1
+          console.log("camera:", camera.position)
+        }
+        if ( k === "shift") {
+          camera.position.y -= 0.1
+          console.log("camera:", camera.position)
+        }
       })
     }
   }
