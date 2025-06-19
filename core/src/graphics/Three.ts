@@ -29,9 +29,6 @@ export const Three = (c: HTMLCanvasElement): Three => {
   let zoom = 2
   let debug = false
 
-  let vert = 0
-  let hori = 0
-
   const three: Three = {
     tcamera: TCamera(),
     setZoom: (z: number) => zoom = z,
@@ -92,11 +89,6 @@ export const Three = (c: HTMLCanvasElement): Three => {
       renderer.shadowMap.enabled = true
       renderer.shadowMap.type = 2
 
-      const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000)
-      camera.position.set(-1, 1, 1)
-      camera.lookAt(0, 0, 0)
-      camera.rotation.order = 'YXZ'
-
       sun = new DirectionalLight(evening, 10)
       scene.add(sun)
 
@@ -149,6 +141,8 @@ export const Three = (c: HTMLCanvasElement): Three => {
         texture.needsUpdate = true
         scene!.background = texture
       })
+
+      const camera = three.tcamera.c
 
       const composer = new EffectComposer(renderer, { multisampling: 4 })
       composer.addPass(new RenderPass(scene, camera))
@@ -204,76 +198,6 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
-
-      window.addEventListener('mousemove', (e) => {
-        if (!document.pointerLockElement) return
-
-        vert -= e.movementY * 0.001
-        hori -= e.movementX * 0.001
-
-        vert = max(-1.5, Math.min(1.5, vert))
-
-        camera.rotation.set(vert, hori, 0)
-      })
-      document.body.requestPointerLock()
-
-      document.body.addEventListener('click', () => {
-        document.body.requestPointerLock()
-      })
-
-      // inputs
-      window.addEventListener("keydown", (event) => {
-        const k = event.key.toLowerCase()
-
-        if (k === "b") three.debug(!debug)
-        if (k === "r") three.resize()
-
-        if (k === " ") {
-          camera.position.y += 0.1
-        }
-        if (k === "shift") {
-          camera.position.y -= 0.1
-        }
-
-        if (k === "a") {
-          const t = new Vector3(0, 0, 0)
-          camera.getWorldDirection(t)
-          t.y = 0
-          t.normalize()
-
-          const left = new Vector3()
-          left.crossVectors(camera.up, t).normalize()
-
-          camera.position.addScaledVector(left, 0.1)
-        }
-        if (k === "d") {
-          const t = new Vector3(0, 0, 0)
-          camera.getWorldDirection(t)
-          t.y = 0
-          t.normalize()
-
-          const right = new Vector3()
-          right.crossVectors(t, camera.up).normalize()
-
-          camera.position.addScaledVector(right, 0.1)
-        }
-        if (k === "w") {
-          const t = new Vector3(0, 0, 0)
-          camera.getWorldDirection(t)
-          t.y = 0
-          t.normalize()
-
-          camera.position.addScaledVector(t, 0.1)
-        }
-        if (k === "s") {
-          const t = new Vector3(0, 0, 0)
-          camera.getWorldDirection(t)
-          t.y = 0
-          t.normalize()
-
-          camera.position.addScaledVector(t, -0.1)
-        }
-      })
     }
   }
   return three

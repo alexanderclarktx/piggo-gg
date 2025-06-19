@@ -5,7 +5,8 @@ const Guy = (player: Player) => Character({
   components: {
     position: Position(),
     collider: Collider({
-      shape: "ball"
+      shape: "ball",
+      radius: 4
     }),
     input: Input({
 
