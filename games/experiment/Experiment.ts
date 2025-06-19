@@ -18,10 +18,7 @@ const Guy = (player: Player) => Character({
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
         "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": ({hold}) => {
-          if (hold) return null
-          return { actionId: "move", params: { key: "up" } }
-        }
+        " ": () => ({ actionId: "move", params: { key: "up" } })
       }
     }),
     actions: Actions({
@@ -48,6 +45,7 @@ const Guy = (player: Player) => Character({
         } else if (params.key === "s") {
           toward.copy(dir).negate().normalize()
         } else if (params.key === "up") {
+          if (!position.data.standing) return
           toward.set(0, 0.05, 0)
           setZ = true
         }
