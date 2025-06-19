@@ -16,7 +16,7 @@ export const Lobby: GameBuilder = {
   init: (world) => ({
     id: "lobby",
     state: {
-      gameId: "3D"
+      gameId: location?.hostname === "localhost" ? "3D" : "craft"
     },
     systems: [RenderSystem],
     view: "side",
