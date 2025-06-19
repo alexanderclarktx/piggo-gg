@@ -1,4 +1,4 @@
-import { Actions, Collider, Component, Entity, Input, Position, Renderable, SystemBuilder, Team, World } from "@piggo-gg/core"
+import { Actions, Collider, Component, Entity, Input, Position, SystemBuilder, Team, World } from "@piggo-gg/core"
 
 export type Character = Entity<Position | Collider | Input | Actions | Team>
 export const Character = Entity<Position | Collider | Input | Actions | Team>
