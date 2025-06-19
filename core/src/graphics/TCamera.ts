@@ -21,11 +21,7 @@ export const TCameraSystem = () => ClientSystemBuilder({
 
         const { position } = pc.components
 
-        console.log("TCameraSystem", position.data.y)
-        world.three.camera.c.position.set(position.data.x, position.data.y, position.data.z)
-        // world.three.camera.c.position.y = position.data.y
-        // world.three.camera.c.position.x = position.data.x
-        // world.three.camera.c.position.z = position.data.z
+        world.three.camera.c.position.set(position.data.x, position.data.z, position.data.y)
       }
     }
   }
@@ -61,50 +57,12 @@ export const TCamera = (): TCamera => {
     // if (k === "b") three.debug(!debug)
     // if (k === "r") three.resize()
 
-    if (k === " ") {
-      camera.position.y += 0.1
-    }
-    if (k === "shift") {
-      camera.position.y -= 0.1
-    }
-
-    // if (k === "a") {
-    //   const t = new Vector3(0, 0, 0)
-    //   camera.getWorldDirection(t)
-    //   t.y = 0
-    //   t.normalize()
-
-    //   const left = new Vector3()
-    //   left.crossVectors(camera.up, t).normalize()
-
-    //   camera.position.addScaledVector(left, 0.1)
+    // if (k === " ") {
+    //   camera.position.y += 0.1
     // }
-    // if (k === "d") {
-    //   const t = new Vector3(0, 0, 0)
-    //   camera.getWorldDirection(t)
-    //   t.y = 0
-    //   t.normalize()
 
-    //   const right = new Vector3()
-    //   right.crossVectors(t, camera.up).normalize()
-
-    //   camera.position.addScaledVector(right, 0.1)
-    // }
-    // if (k === "w") {
-    //   const t = new Vector3(0, 0, 0)
-    //   camera.getWorldDirection(t)
-    //   t.y = 0
-    //   t.normalize()
-
-    //   camera.position.addScaledVector(t, 0.1)
-    // }
-    // if (k === "s") {
-    //   const t = new Vector3(0, 0, 0)
-    //   camera.getWorldDirection(t)
-    //   t.y = 0
-    //   t.normalize()
-
-    //   camera.position.addScaledVector(t, -0.1)
+    // if (k === "shift") {
+    //   camera.position.y -= 0.1
     // }
   })
 
@@ -113,8 +71,8 @@ export const TCamera = (): TCamera => {
     worldDirection: () => {
       const t = new Vector3(0, 0, 0)
       camera.getWorldDirection(t)
-      t.y = 0
-      t.normalize()
+      // t.y = 0
+      // t.normalize()
       return t
     }
   }

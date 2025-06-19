@@ -14,10 +14,10 @@ const Guy = (player: Player) => Character({
     }),
     input: Input({
       press: {
-        "w": () => ({ actionId: "move", params: { x: 0, y: -1, z: -1 } }),
-        "s": () => ({ actionId: "move", params: { x: 0, y: 1, z: 1 } }),
-        "a": () => ({ actionId: "move", params: { x: -1, y: 0, z: 0 } }),
-        "d": () => ({ actionId: "move", params: { x: 1, y: 0, z: 0 } })
+        "w": () => ({ actionId: "move", params: { key: "w" } }),
+        "a": () => ({ actionId: "move", params: { key: "a" } }),
+        "s": () => ({ actionId: "move", params: { key: "s" } }),
+        "d": () => ({ actionId: "move", params: { key: "d" } })
       }
     }),
     actions: Actions({
@@ -25,12 +25,35 @@ const Guy = (player: Player) => Character({
         const camera = world.three?.camera
         if (!camera) return
 
-        const dir = camera.worldDirection()
+        if (!["a", "d", "w", "s"].includes(params.key)) return
 
-        if (!params.y) return
+        const dir = camera.worldDirection()
+        const toward = new Vector3()
+
+        if (params.key === "a") {
+          toward.crossVectors(camera.c.up, dir).normalize() // left
+        } else if (params.key === "d") {
+          toward.crossVectors(dir, camera.c.up).normalize() // right
+        } else if (params.key === "w") {
+          toward.copy(dir).normalize() // forward
+        } else if (params.key === "s") {
+          toward.copy(dir).negate().normalize() // backward
+        }
+
         entity?.components?.position?.setVelocity({
-          y: params.y, x: params.x, z: 0
+          x: toward.x,
+          y: toward.z,
+          z: toward.y
         })
+
+        // console.log("move", params, entity?.components?.position?.data.x,
+        //   entity?.components?.position?.data.y, entity?.components?.position?.data.z
+        // )
+
+        // if (!params.y) return
+        // entity?.components?.position?.setVelocity({
+        //   y: params.y, x: params.x, z: 0
+        // })
       })
     }),
     team: Team(1)
