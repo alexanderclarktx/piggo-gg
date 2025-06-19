@@ -1,7 +1,7 @@
 import {
   AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
   InstancedMesh, MeshPhysicalMaterial, NearestFilter, Object3D,
-  PerspectiveCamera, Scene, Texture, TextureLoader, WebGLRenderer
+  PerspectiveCamera, Scene, Texture, TextureLoader, Vector3, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos } from "@piggo-gg/core"
@@ -80,7 +80,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
         // camera zoom
         // camera.position.set(-zoom, zoom * 0.5, zoom)
-        camera.lookAt(0, 0, 0)
+        // camera.lookAt(0, 0, 0)
 
         // renderer!.render(scene!, camera)
         composer.render()
@@ -199,7 +199,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
         zoom = Math.max(1, Math.min(zoom, 10))
       })
-      
+
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
@@ -207,16 +207,52 @@ export const Three = (c: HTMLCanvasElement): Three => {
       window.addEventListener("keydown", (event) => {
         const k = event.key.toLowerCase()
         console.log("key:", k)
-        if ( k === "b") three.debug(!debug)
-        if ( k === "r") three.resize()
 
-        if ( k === " ") {
+        if (k === "b") three.debug(!debug)
+        if (k === "r") three.resize()
+
+        if (k === " ") {
           camera.position.y += 0.1
-          console.log("camera:", camera.position)
         }
-        if ( k === "shift") {
+        if (k === "shift") {
           camera.position.y -= 0.1
-          console.log("camera:", camera.position)
+        }
+
+        if (k === "a") {
+          const t = new Vector3(0, 0, 0)
+          camera.getWorldDirection(t)
+
+          const left = new Vector3()
+          left.crossVectors(camera.up, t).normalize()
+
+          camera.position.addScaledVector(left, 0.1)
+        }
+        if (k === "d") {
+          const t = new Vector3(0, 0, 0)
+          camera.getWorldDirection(t)
+
+          const right = new Vector3()
+          right.crossVectors(t, camera.up).normalize()
+
+          camera.position.addScaledVector(right, 0.1)
+        }
+        if (k === "w") {
+          const t = new Vector3(0, 0, 0)
+          camera.getWorldDirection(t)
+
+          t.y = 0
+          t.normalize()
+
+          camera.position.addScaledVector(t, 0.1)
+        }
+        if (k === "s") {
+          const t = new Vector3(0, 0, 0)
+          camera.getWorldDirection(t)
+
+          t.y = 0
+          t.normalize()
+
+          camera.position.addScaledVector(t, -0.1)
         }
       })
     }
