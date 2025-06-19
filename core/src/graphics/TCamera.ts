@@ -1,9 +1,35 @@
-import { max, min } from "@piggo-gg/core";
+import { ClientSystemBuilder, max, min } from "@piggo-gg/core";
 import { PerspectiveCamera, Vector3 } from "three";
 
 export type TCamera = {
   c: PerspectiveCamera
+  worldDirection: () => Vector3
 }
+
+export const TCameraSystem = () => ClientSystemBuilder({
+  id: "TCameraSystem",
+  init: (world) => {
+    return {
+      id: "TCameraSystem",
+      query: [],
+      priority: 9,
+      onTick: () => {
+        if (!world.three) return
+
+        const pc = world.client?.playerCharacter()
+        if (!pc) return
+
+        const { position } = pc.components
+
+        console.log("TCameraSystem", position.data.y)
+        world.three.camera.c.position.set(position.data.x, position.data.y, position.data.z)
+        // world.three.camera.c.position.y = position.data.y
+        // world.three.camera.c.position.x = position.data.x
+        // world.three.camera.c.position.z = position.data.z
+      }
+    }
+  }
+})
 
 export const TCamera = (): TCamera => {
 
@@ -42,48 +68,55 @@ export const TCamera = (): TCamera => {
       camera.position.y -= 0.1
     }
 
-    if (k === "a") {
-      const t = new Vector3(0, 0, 0)
-      camera.getWorldDirection(t)
-      t.y = 0
-      t.normalize()
+    // if (k === "a") {
+    //   const t = new Vector3(0, 0, 0)
+    //   camera.getWorldDirection(t)
+    //   t.y = 0
+    //   t.normalize()
 
-      const left = new Vector3()
-      left.crossVectors(camera.up, t).normalize()
+    //   const left = new Vector3()
+    //   left.crossVectors(camera.up, t).normalize()
 
-      camera.position.addScaledVector(left, 0.1)
-    }
-    if (k === "d") {
-      const t = new Vector3(0, 0, 0)
-      camera.getWorldDirection(t)
-      t.y = 0
-      t.normalize()
+    //   camera.position.addScaledVector(left, 0.1)
+    // }
+    // if (k === "d") {
+    //   const t = new Vector3(0, 0, 0)
+    //   camera.getWorldDirection(t)
+    //   t.y = 0
+    //   t.normalize()
 
-      const right = new Vector3()
-      right.crossVectors(t, camera.up).normalize()
+    //   const right = new Vector3()
+    //   right.crossVectors(t, camera.up).normalize()
 
-      camera.position.addScaledVector(right, 0.1)
-    }
-    if (k === "w") {
-      const t = new Vector3(0, 0, 0)
-      camera.getWorldDirection(t)
-      t.y = 0
-      t.normalize()
+    //   camera.position.addScaledVector(right, 0.1)
+    // }
+    // if (k === "w") {
+    //   const t = new Vector3(0, 0, 0)
+    //   camera.getWorldDirection(t)
+    //   t.y = 0
+    //   t.normalize()
 
-      camera.position.addScaledVector(t, 0.1)
-    }
-    if (k === "s") {
-      const t = new Vector3(0, 0, 0)
-      camera.getWorldDirection(t)
-      t.y = 0
-      t.normalize()
+    //   camera.position.addScaledVector(t, 0.1)
+    // }
+    // if (k === "s") {
+    //   const t = new Vector3(0, 0, 0)
+    //   camera.getWorldDirection(t)
+    //   t.y = 0
+    //   t.normalize()
 
-      camera.position.addScaledVector(t, -0.1)
-    }
+    //   camera.position.addScaledVector(t, -0.1)
+    // }
   })
 
   const tCamera: TCamera = {
-    c: camera
+    c: camera,
+    worldDirection: () => {
+      const t = new Vector3(0, 0, 0)
+      camera.getWorldDirection(t)
+      t.y = 0
+      t.normalize()
+      return t
+    }
   }
   return tCamera
 }

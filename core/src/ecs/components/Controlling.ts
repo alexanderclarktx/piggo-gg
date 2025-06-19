@@ -21,8 +21,8 @@ export const Controlling = (props: ControllingProps = {}): Controlling => {
       const character = world.entities[controlling.data.entityId]
       if (!character) return undefined
 
-      const { position, input, actions, renderable } = character.components
-      if (!position || !input || !actions || !renderable) return undefined
+      const { position, input, actions } = character.components
+      if (!position || !input || !actions) return undefined
 
       return character as Character
     }

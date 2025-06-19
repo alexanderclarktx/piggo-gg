@@ -144,8 +144,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       const camera = three.camera.c
 
-      canvas.requestPointerLock({ unadjustedMovement: true })
-
       const composer = new EffectComposer(renderer, { multisampling: 4 })
       composer.addPass(new RenderPass(scene, camera))
 
