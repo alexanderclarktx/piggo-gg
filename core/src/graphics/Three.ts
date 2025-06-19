@@ -160,8 +160,6 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       composer.addPass(new EffectPass(camera, new SMAAEffect({ preset: SMAAPreset.LOW })))
 
-      console.log(composer)
-
       const position = geometry.attributes.position
       const colorAttr = new Float32Array(position.count * 3)
 
@@ -224,7 +222,6 @@ export const Three = (c: HTMLCanvasElement): Three => {
       // inputs
       window.addEventListener("keydown", (event) => {
         const k = event.key.toLowerCase()
-        // console.log("key:", k)
 
         if (k === "b") three.debug(!debug)
         if (k === "r") three.resize()
