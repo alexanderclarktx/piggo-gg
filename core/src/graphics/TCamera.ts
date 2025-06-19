@@ -46,21 +46,6 @@ export const TCamera = (): TCamera => {
     camera.rotation.set(vert, hori, 0)
   })
 
-  window.addEventListener("keydown", (event) => {
-    const k = event.key.toLowerCase()
-
-    // if (k === "b") three.debug(!debug)
-    // if (k === "r") three.resize()
-
-    // if (k === " ") {
-    //   camera.position.y += 0.1
-    // }
-
-    // if (k === "shift") {
-    //   camera.position.y -= 0.1
-    // }
-  })
-
   const tCamera: TCamera = {
     c: camera,
     worldDirection: () => {
