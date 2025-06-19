@@ -55,6 +55,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       }
     },
     activate: () => {
+      document.body.requestPointerLock({ unadjustedMovement: true })
+
+      document.body.addEventListener('click', () => {
+        document.body.requestPointerLock()
+      })
 
       // recreate the canvas
       const parent = canvas.parentElement

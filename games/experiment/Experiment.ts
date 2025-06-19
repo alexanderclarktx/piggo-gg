@@ -7,7 +7,7 @@ import { Vector3 } from "three"
 const Guy = (player: Player) => Character({
   id: "guy",
   components: {
-    position: Position({ velocityResets: 1 }),
+    position: Position({ velocityResets: 1, gravity: 0.003, stop: 0.7, z: 4, x: 1, y: 2 }),
     collider: Collider({
       shape: "ball",
       radius: 4
@@ -17,7 +17,11 @@ const Guy = (player: Player) => Character({
         "w": () => ({ actionId: "move", params: { key: "w" } }),
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
-        "d": () => ({ actionId: "move", params: { key: "d" } })
+        "d": () => ({ actionId: "move", params: { key: "d" } }),
+        " ": ({hold}) => {
+          if (hold) return null
+          return { actionId: "move", params: { key: "up" } }
+        }
       }
     }),
     actions: Actions({
@@ -25,26 +29,31 @@ const Guy = (player: Player) => Character({
         const camera = world.three?.camera
         if (!camera) return
 
-        if (!["a", "d", "w", "s"].includes(params.key)) return
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        if (!["a", "d", "w", "s", "up"].includes(params.key)) return
 
         const dir = camera.worldDirection()
         const toward = new Vector3()
 
+        let setZ = false
+
         if (params.key === "a") {
-          toward.crossVectors(camera.c.up, dir).normalize() // left
+          toward.crossVectors(camera.c.up, dir).normalize()
         } else if (params.key === "d") {
-          toward.crossVectors(dir, camera.c.up).normalize() // right
+          toward.crossVectors(dir, camera.c.up).normalize()
         } else if (params.key === "w") {
-          toward.copy(dir).normalize() // forward
+          toward.copy(dir).normalize()
         } else if (params.key === "s") {
-          toward.copy(dir).negate().normalize() // backward
+          toward.copy(dir).negate().normalize()
+        } else if (params.key === "up") {
+          toward.set(0, 0.05, 0)
+          setZ = true
         }
 
-        entity?.components?.position?.setVelocity({
-          x: toward.x,
-          y: toward.z,
-          z: toward.y
-        })
+        position.setVelocity({ x: toward.x, y: toward.z })
+        if (setZ) position.setVelocity({ z: toward.y })
 
         // console.log("move", params, entity?.components?.position?.data.x,
         //   entity?.components?.position?.data.y, entity?.components?.position?.data.z

@@ -45,11 +45,6 @@ export const TCamera = (): TCamera => {
 
     camera.rotation.set(vert, hori, 0)
   })
-  document.body.requestPointerLock({ unadjustedMovement: true })
-
-  document.body.addEventListener('click', () => {
-    document.body.requestPointerLock()
-  })
 
   window.addEventListener("keydown", (event) => {
     const k = event.key.toLowerCase()
@@ -71,8 +66,8 @@ export const TCamera = (): TCamera => {
     worldDirection: () => {
       const t = new Vector3(0, 0, 0)
       camera.getWorldDirection(t)
-      // t.y = 0
-      // t.normalize()
+      t.y = 0
+      t.normalize()
       return t
     }
   }
