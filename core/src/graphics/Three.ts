@@ -4,11 +4,12 @@ import {
   PerspectiveCamera, Scene, Texture, TextureLoader, Vector3, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, max } from "@piggo-gg/core"
+import { sin, cos, max, TCamera } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
 export type Three = {
+  tcamera: TCamera
   setZoom: (zoom: number) => void
   debug: (state: boolean) => void
   activate: () => void
@@ -32,6 +33,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
   let hori = 0
 
   const three: Three = {
+    tcamera: TCamera(),
     setZoom: (z: number) => zoom = z,
     resize: () => {
       if (renderer) {
