@@ -8,7 +8,7 @@ import { Sprite, Text } from "pixi.js"
 import { Friends } from "./Friends"
 
 type LobbyState = {
-  gameId: "volley" | "craft" | "experiment"
+  gameId: "volley" | "craft" | "3D"
 }
 
 export const Lobby: GameBuilder = {
@@ -16,7 +16,7 @@ export const Lobby: GameBuilder = {
   init: (world) => ({
     id: "lobby",
     state: {
-      gameId: "craft"
+      gameId: "3D"
     },
     systems: [RenderSystem],
     view: "side",
