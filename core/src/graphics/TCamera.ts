@@ -16,9 +16,6 @@ export const TCamera = (): TCamera => {
   window.addEventListener('pointermove', (e) => {
     if (!document.pointerLockElement) return
 
-    console.log(e.movementX, e.movementY)
-    console.log(e.clientX, e.clientY)
-
     vert -= e.movementY * 0.001
     hori -= e.movementX * 0.001
 
