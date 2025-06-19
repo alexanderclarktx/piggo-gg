@@ -23,6 +23,7 @@ export const Three = (c: HTMLCanvasElement): Three => {
   let renderer: undefined | WebGLRenderer
   let scene: undefined | Scene
   let sun: undefined | DirectionalLight
+  let helper: undefined | CameraHelper
 
   let zoom = 2
   let debug = false
@@ -44,7 +45,11 @@ export const Three = (c: HTMLCanvasElement): Three => {
 
       debug = state
       if (debug && renderer && scene && sun) {
-        scene.add(new CameraHelper(sun.shadow.camera))
+        helper = new CameraHelper(sun.shadow.camera)
+        scene.add(helper)
+      } else if (!debug && renderer && scene && helper) {
+        scene.remove(helper)
+        helper = undefined
       }
     },
     activate: () => {
@@ -193,6 +198,15 @@ export const Three = (c: HTMLCanvasElement): Three => {
       canvas.addEventListener("wheel", (event: WheelEvent) => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
         zoom = Math.max(1, Math.min(zoom, 10))
+      })
+      
+      // prevent right-click
+      canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+
+      // inputs
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "b") three.debug(!debug)
+        if (event.key === "r") three.resize()
       })
     }
   }
