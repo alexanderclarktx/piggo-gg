@@ -15,7 +15,11 @@ const Guy = () => Character({
     }),
     input: Input({
       press: {
+        "w,s": () => null, "a,d": () => null,
         "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
+        "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
+        "a,s": () => ({ actionId: "move", params: { key: "as" } }),
+        "d,s": () => ({ actionId: "move", params: { key: "ds" } }),
         "w": () => ({ actionId: "move", params: { key: "w" } }),
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
@@ -31,7 +35,7 @@ const Guy = () => Character({
         const { position } = entity?.components ?? {}
         if (!position) return
 
-        if (!["wa", "a", "d", "w", "s", "up"].includes(params.key)) return
+        if (!["wa", "wd", "as", "ds", "a", "d", "w", "s", "up"].includes(params.key)) return
 
         const dir = camera.worldDirection()
         const toward = new Vector3()
@@ -39,7 +43,6 @@ const Guy = () => Character({
         let setZ = false
 
         if (params.key === "a") {
-          console.log("a")
           toward.crossVectors(camera.c.up, dir).normalize()
         } else if (params.key === "d") {
           toward.crossVectors(dir, camera.c.up).normalize()
@@ -48,10 +51,21 @@ const Guy = () => Character({
         } else if (params.key === "s") {
           toward.copy(dir).negate().normalize()
         } else if (params.key === "wa") {
-          console.log("wa")
           const forward = dir.clone().normalize()
           const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
           toward.copy(forward.add(left).normalize())
+        } else if (params.key === "wd") {
+          const forward = dir.clone().normalize()
+          const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
+          toward.copy(forward.add(right).normalize())
+        } else if (params.key === "as") {
+          const backward = dir.clone().negate().normalize()
+          const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
+          toward.copy(backward.add(left).normalize())
+        } else if (params.key === "ds") {
+          const backward = dir.clone().negate().normalize()
+          const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
+          toward.copy(backward.add(right).normalize())
         } else if (params.key === "up") {
           if (!position.data.standing) return
           toward.set(0, 0.03, 0)
