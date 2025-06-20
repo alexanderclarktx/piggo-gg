@@ -83,7 +83,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         // ambient.intensity = 2 + sin(t)
 
         // rotate the sun
-        // if (zoom > 1) sun!.position.set(cos(t) * 100, sin(t) * 100, cos(t) * 100)
+        // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
 
         // sunSphere.position.copy(sun!.position)
 
@@ -101,7 +101,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sun = new DirectionalLight(evening, 10)
       scene.add(sun)
 
-      sun.position.set(100, 60, 100)
+      sun.position.set(200, 100, 200)
       sun.shadow.normalBias = 0.02
       sun.shadow.mapSize.set(1024, 1024)
       sun.castShadow = true
@@ -149,7 +149,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         texture.wrapS = RepeatWrapping
         texture.wrapT = RepeatWrapping
-        texture.repeat.set(3, 3)
+        texture.repeat.set(5, 3)
 
         const sphere = new SphereGeometry(500, 60, 40)
 
@@ -171,8 +171,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         roughness: 0.1,
       })
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
-      scene.add(sunSphere)
       sunSphere.position.copy(sun.position)
+      scene.add(sunSphere)
 
       const camera = three.camera.c
 
