@@ -1,5 +1,6 @@
 import {
   Action, Actions, Character, Collider, GameBuilder, Input,
+  Networked,
   PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
@@ -8,12 +9,14 @@ const Guy = () => Character({
   id: "guy",
   components: {
     position: Position({ velocityResets: 1, gravity: 0.001, stop: 0.7, z: 1, x: 0, y: 2 }),
+    networked: Networked(),
     collider: Collider({
       shape: "ball",
       radius: 4
     }),
     input: Input({
       press: {
+        "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
         "w": () => ({ actionId: "move", params: { key: "w" } }),
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
@@ -29,7 +32,7 @@ const Guy = () => Character({
         const { position } = entity?.components ?? {}
         if (!position) return
 
-        if (!["a", "d", "w", "s", "up"].includes(params.key)) return
+        if (!["wa", "a", "d", "w", "s", "up"].includes(params.key)) return
 
         const dir = camera.worldDirection()
         const toward = new Vector3()
@@ -37,6 +40,7 @@ const Guy = () => Character({
         let setZ = false
 
         if (params.key === "a") {
+          console.log("a")
           toward.crossVectors(camera.c.up, dir).normalize()
         } else if (params.key === "d") {
           toward.crossVectors(dir, camera.c.up).normalize()
@@ -44,13 +48,18 @@ const Guy = () => Character({
           toward.copy(dir).normalize()
         } else if (params.key === "s") {
           toward.copy(dir).negate().normalize()
+        } else if (params.key === "wa") {
+          console.log("wa")
+          const forward = dir.clone().normalize()
+          const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
+          toward.copy(forward.add(left).normalize())
         } else if (params.key === "up") {
           if (!position.data.standing) return
           toward.set(0, 0.03, 0)
           setZ = true
         }
 
-        position.setVelocity({ x: toward.x, y: toward.z })
+        position.setVelocity({ x: toward.x * 2, y: toward.z * 2 })
         if (setZ) position.setVelocity({ z: toward.y })
       })
     }),

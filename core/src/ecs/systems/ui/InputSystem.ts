@@ -178,6 +178,7 @@ export const InputSystem = ClientSystemBuilder({
               if (invocation && actions.actionMap[invocation.actionId]) {
                 invocation.playerId = world.client?.playerId()
                 world.actions.push(world.tick + 1, character.id, invocation)
+                console.log(world.tick, "wa")
               }
             }
 
@@ -199,6 +200,7 @@ export const InputSystem = ClientSystemBuilder({
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
               world.actions.push(world.tick + 1, character.id, invocation)
+              console.log(world.tick, "a")
             }
           }
 
@@ -320,7 +322,7 @@ export const InputSystem = ClientSystemBuilder({
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop()
 
-        // handle UI input
+        // handle UI input (todo why networked ??)
         enitities.forEach((entity) => {
           const { networked } = entity.components
           if (!networked) handleInputForUIEntity(entity, world)
