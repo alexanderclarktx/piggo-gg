@@ -1,7 +1,7 @@
 import {
-  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color,
-  DirectionalLight, InstancedMesh, MeshPhysicalMaterial, NearestFilter,
-  Object3D, Scene, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, BackSide, BoxGeometry, BufferAttribute, CameraHelper, Color,
+  DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
+  Object3D, RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos, TCamera, World } from "@piggo-gg/core"
@@ -77,13 +77,15 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       three.resize()
 
       renderer.setAnimationLoop(() => {
-        const t = performance.now() / 500
+        const t = performance.now() / 5000
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
 
         // rotate the sun
-        // if (zoom > 1) sun!.position.set(1, sin(t) * 6, cos(t) * 10)
+        // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
+
+        // sunSphere.position.copy(sun!.position)
 
         // camera zoom
         // camera.position.set(-zoom, zoom * 0.5, zoom)
@@ -99,7 +101,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sun = new DirectionalLight(evening, 10)
       scene.add(sun)
 
-      sun.position.set(10, 6, 10)
+      sun.position.set(200, 100, 200)
       sun.shadow.normalBias = 0.02
       sun.shadow.mapSize.set(1024, 1024)
       sun.castShadow = true
@@ -145,9 +147,32 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         texture.mapping = 301
         texture.colorSpace = "srgb"
 
-        texture.needsUpdate = true
-        scene!.background = texture
+        texture.wrapS = RepeatWrapping
+        texture.wrapT = RepeatWrapping
+        texture.repeat.set(5, 3)
+
+        const sphere = new SphereGeometry(500, 60, 40)
+
+        const material = new MeshBasicMaterial({
+          map: texture,
+          side: 1
+        })
+
+        const mesh = new Mesh(sphere, material)
+
+        scene!.add(mesh)
       })
+
+      const sunSphereGeometry = new SphereGeometry(10, 32, 32)
+      const sunSphereMaterial = new MeshPhysicalMaterial({
+        color: 0xffd9c3,
+        emissive: 0xffd9c3,
+        emissiveIntensity: 1,
+        roughness: 0.1,
+      })
+      const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
+      sunSphere.position.copy(sun.position)
+      scene.add(sunSphere)
 
       const camera = three.camera.c
 
