@@ -77,13 +77,15 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       three.resize()
 
       renderer.setAnimationLoop(() => {
-        const t = performance.now() / 500
+        const t = performance.now() / 5000
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
 
         // rotate the sun
-        // if (zoom > 1) sun!.position.set(1, sin(t) * 6, cos(t) * 10)
+        // if (zoom > 1) sun!.position.set(cos(t) * 100, sin(t) * 100, cos(t) * 100)
+
+        // sunSphere.position.copy(sun!.position)
 
         // camera zoom
         // camera.position.set(-zoom, zoom * 0.5, zoom)
@@ -99,7 +101,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sun = new DirectionalLight(evening, 10)
       scene.add(sun)
 
-      sun.position.set(10, 6, 10)
+      sun.position.set(100, 60, 100)
       sun.shadow.normalBias = 0.02
       sun.shadow.mapSize.set(1024, 1024)
       sun.castShadow = true
@@ -160,6 +162,17 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         scene!.add(mesh)
       })
+
+      const sunSphereGeometry = new SphereGeometry(10, 32, 32)
+      const sunSphereMaterial = new MeshPhysicalMaterial({
+        color: 0xffd9c3,
+        emissive: 0xffd9c3,
+        emissiveIntensity: 1,
+        roughness: 0.1,
+      })
+      const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
+      scene.add(sunSphere)
+      sunSphere.position.copy(sun.position)
 
       const camera = three.camera.c
 
