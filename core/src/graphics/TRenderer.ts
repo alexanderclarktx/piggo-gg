@@ -1,7 +1,7 @@
 import {
-  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color,
-  DirectionalLight, InstancedMesh, MeshPhysicalMaterial, NearestFilter,
-  Object3D, Scene, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, BackSide, BoxGeometry, BufferAttribute, CameraHelper, Color,
+  DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
+  Object3D, RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos, TCamera, World } from "@piggo-gg/core"
@@ -145,8 +145,20 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         texture.mapping = 301
         texture.colorSpace = "srgb"
 
-        texture.needsUpdate = true
-        scene!.background = texture
+        texture.wrapS = RepeatWrapping
+        texture.wrapT = RepeatWrapping
+        texture.repeat.set(3, 3)
+
+        const sphere = new SphereGeometry(500, 60, 40)
+
+        const material = new MeshBasicMaterial({
+          map: texture,
+          side: 1
+        })
+
+        const mesh = new Mesh(sphere, material)
+
+        scene!.add(mesh)
       })
 
       const camera = three.camera.c
