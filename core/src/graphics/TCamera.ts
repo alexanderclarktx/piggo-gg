@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, max, min } from "@piggo-gg/core";
+import { ClientSystemBuilder, cos, max, min, sin } from "@piggo-gg/core";
 import { PerspectiveCamera, Vector3 } from "three";
 
 export type TCamera = {
@@ -33,9 +33,9 @@ export const TCameraSystem = () => ClientSystemBuilder({
 
         const interpolated = position.interpolate(delta, world)
 
-        world.three.camera.c.position.set(
-          interpolated.x, interpolated.z, interpolated.y
-        )
+        // world.three.camera.c.position.set(
+        //   interpolated.x, interpolated.z, interpolated.y
+        // )
       }
     }
   }
@@ -63,11 +63,8 @@ export const TCamera = (): TCamera => {
   const tCamera: TCamera = {
     c: camera,
     worldDirection: () => {
-      const t = new Vector3(0, 0, 0)
-      camera.getWorldDirection(t)
-      t.y = 0
-      t.normalize()
-      return t
+      const t = new Vector3(-sin(hori), 0, -cos(hori))
+      return t.normalize()
     }
   }
   return tCamera
