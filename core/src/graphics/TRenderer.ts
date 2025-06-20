@@ -77,13 +77,13 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       three.resize()
 
       renderer.setAnimationLoop(() => {
-        const t = performance.now() / 1000
+        const t = performance.now() / 500
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
 
         // rotate the sun
-        // if (zoom > 1) sun.position.set(0, sin(t) * 6, cos(t) * 10)
+        // if (zoom > 1) sun!.position.set(1, sin(t) * 6, cos(t) * 10)
 
         // camera zoom
         // camera.position.set(-zoom, zoom * 0.5, zoom)
@@ -111,7 +111,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       const instancedMesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
         vertexColors: true, visible: false, specularIntensity: 0.05
-      }), 16)
+      }), 256)
 
       instancedMesh.castShadow = true
       instancedMesh.receiveShadow = true
@@ -169,7 +169,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const faceColors = [
         new Color(0xaaaaaa),
         new Color(0xaaaaaa),
-        new Color(0x00ff00),
+        new Color(0x00ee55),
         new Color(0xaaaaaa),
         new Color(0xaaaaaa),
         new Color(0xaaaaaa)
@@ -187,10 +187,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const dummy = new Object3D()
 
       // arrange blocks in 2D grid
-      for (let i = 0; i < 16; i++) {
-        dummy.position.set((i % 4) * 0.3 - 0.45, 0, Math.floor(i / 4) * 0.3 - 0.45)
+      for (let i = 0; i < 256; i++) {
+        dummy.position.set((i % 16) * 0.3 - 0.45, 0, Math.floor(i / 16) * 0.3 - 0.45)
 
-        if (i === 10) dummy.position.y = 0.3
+        if ([31, 67, 134, 121].includes(i)) dummy.position.y = 0.3
 
         dummy.updateMatrix()
         instancedMesh.setMatrixAt(i, dummy.matrix)
