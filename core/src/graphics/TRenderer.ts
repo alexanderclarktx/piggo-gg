@@ -88,8 +88,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         // camera zoom
         // camera.position.set(-zoom, zoom * 0.5, zoom)
 
-        // values(world.systems).forEach((system) => {
-        //   system.onRender?.()
         world.onRender?.()
 
         composer.render()
