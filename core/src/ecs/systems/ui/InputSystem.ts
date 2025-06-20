@@ -320,7 +320,7 @@ export const InputSystem = ClientSystemBuilder({
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop()
 
-        // handle UI input
+        // handle UI input (todo why networked ??)
         enitities.forEach((entity) => {
           const { networked } = entity.components
           if (!networked) handleInputForUIEntity(entity, world)
