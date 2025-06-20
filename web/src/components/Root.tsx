@@ -2,6 +2,7 @@ import { World, isMobile } from "@piggo-gg/core"
 import { Canvas, Title } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
+import FPSCounter from '@sethwebster/react-fps-counter'
 
 export type LoginState = "not logged in" | "🟢 Logged In" | ""
 
@@ -36,6 +37,7 @@ export const Root = () => {
           <Canvas setWorld={setWorld} />
         </div>
       </div>
+      <FPSCounter visible={true} position="bottom-left" targetFrameRate={120} />
     </div>
   )
 }
