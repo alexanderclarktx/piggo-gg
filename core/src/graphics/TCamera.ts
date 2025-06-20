@@ -22,6 +22,20 @@ export const TCameraSystem = () => ClientSystemBuilder({
         const { position } = pc.components
 
         world.three.camera.c.position.set(position.data.x, position.data.z, position.data.y)
+      },
+      onRender: (_, delta) => {
+        if (!world.three) return
+
+        const pc = world.client?.playerCharacter()
+        if (!pc) return
+
+        const { position } = pc.components
+
+        const interpolated = position.interpolate(delta, world)
+
+        world.three.camera.c.position.set(
+          interpolated.x, interpolated.z, interpolated.y
+        )
       }
     }
   }

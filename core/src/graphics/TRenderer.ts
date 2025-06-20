@@ -4,7 +4,7 @@ import {
   Object3D, Scene, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, TCamera } from "@piggo-gg/core"
+import { sin, cos, TCamera, values, World } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
@@ -12,7 +12,7 @@ export type TRenderer = {
   camera: TCamera
   setZoom: (zoom: number) => void
   debug: (state: boolean) => void
-  activate: () => void
+  activate: (world: World) => void
   deactivate: () => void
   resize: () => void
 }
@@ -54,7 +54,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         helper = undefined
       }
     },
-    activate: () => {
+    activate: (world: World) => {
       document.body.requestPointerLock({ unadjustedMovement: true })
 
       document.body.addEventListener('click', () => {
@@ -87,6 +87,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         // camera zoom
         // camera.position.set(-zoom, zoom * 0.5, zoom)
+
+        // values(world.systems).forEach((system) => {
+        //   system.onRender?.()
+        world.onRender?.()
 
         composer.render()
       })

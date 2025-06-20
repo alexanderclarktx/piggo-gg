@@ -37,6 +37,7 @@ export type World = {
   flip: (xy: XY) => XY
   flipped: () => 1 | -1
   onTick: (_: { isRollback: boolean }) => void
+  onRender: () => void
   queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter?: (entity: Entity<T>) => boolean) => Entity<T>[]
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -223,6 +224,14 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
           delete world.entitiesAtTick[tick]
         }
       })
+    },
+    onRender: () => {
+      if (world.renderer || world.three) {
+        const now = performance.now()
+        values(world.systems).forEach((system) => {
+          system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
+        })
+      }
     },
     queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter: (entity: Entity<T>) => boolean = () => true) => {
       const entities = filterEntities(query, values(world.entities)) as Entity<T>[]
