@@ -47,6 +47,7 @@ export type PositionProps = {
   velocity?: { x: number, y: number }
   gravity?: number
   friction?: number
+  stop?: number
   speed?: number
   velocityResets?: number
   screenFixed?: boolean
@@ -74,7 +75,7 @@ export const Position = (props: PositionProps = {}): Position => {
       rotation: props.rotation ?? 0,
       speed: props.speed ?? 0,
       standing: true,
-      stop: 0,
+      stop: props.stop ?? 0,
       velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       velocityResets: props.velocityResets ?? 0
     },

@@ -1,7 +1,7 @@
-import { Actions, Collider, Component, Entity, Input, Position, Renderable, SystemBuilder, Team, World } from "@piggo-gg/core"
+import { Actions, Collider, Component, Entity, Input, Position, SystemBuilder, Team, World } from "@piggo-gg/core"
 
-export type Character = Entity<Position | Collider | Input | Actions | Renderable | Team>
-export const Character = Entity<Position | Collider | Input | Actions | Renderable | Team>
+export type Character = Entity<Position | Collider | Input | Actions | Team>
+export const Character = Entity<Position | Collider | Input | Actions | Team>
 
 export type Controlling = Component<"controlling", { entityId: string }> & {
   getCharacter: (world: World) => Character | undefined
@@ -21,8 +21,8 @@ export const Controlling = (props: ControllingProps = {}): Controlling => {
       const character = world.entities[controlling.data.entityId]
       if (!character) return undefined
 
-      const { position, input, actions, renderable } = character.components
-      if (!position || !input || !actions || !renderable) return undefined
+      const { position, input, actions } = character.components
+      if (!position || !input || !actions) return undefined
 
       return character as Character
     }

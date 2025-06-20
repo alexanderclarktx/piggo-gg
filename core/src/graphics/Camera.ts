@@ -144,6 +144,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         }
 
         const { position, renderable } = renderer.camera.focus.components
+        if (!position || !renderable) return
 
         const interpolated = position.interpolate(delta, world)
 
@@ -153,6 +154,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
           x: x + renderable.position.x,
           y: y + renderable.position.y
         })
+
         renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - z })
       }
     }

@@ -92,7 +92,7 @@ export const BlockMesh = () => {
         },
         onRender: ({ world, delta, renderable }) => {
           const zoom = world.renderer!.camera.scale
-          const offset = world.renderer!.camera.focus?.components.renderable.c.position ?? { x: 0, y: 0, z: 0 }
+          const offset = world.renderer!.camera.focus?.components.renderable?.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
 
           const character = world.client?.playerCharacter()
@@ -122,7 +122,7 @@ export const BlockMesh = () => {
 
           if (character) targets[0] = {
             x: pcPosFlip.x, y: pcPosFlip.y, z: pcPos.z - 20,
-            zIndex: character.components.renderable.c.zIndex,
+            zIndex: character.components.renderable?.c.zIndex ?? 4,
             id: character.id
           }
 
