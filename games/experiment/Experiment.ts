@@ -72,7 +72,7 @@ const Guy = () => Character({
           setZ = true
         }
 
-        position.setVelocity({ x: toward.x * 2, y: toward.z * 2 })
+        if (!setZ) position.setVelocity({ x: toward.x * 2, y: toward.z * 2 })
         if (setZ) position.setVelocity({ z: toward.y })
       })
     }),
