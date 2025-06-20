@@ -4,7 +4,7 @@ import {
   Object3D, Scene, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, TCamera, values, World } from "@piggo-gg/core"
+import { sin, cos, TCamera, World } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
