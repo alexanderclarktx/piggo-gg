@@ -178,7 +178,6 @@ export const InputSystem = ClientSystemBuilder({
               if (invocation && actions.actionMap[invocation.actionId]) {
                 invocation.playerId = world.client?.playerId()
                 world.actions.push(world.tick + 1, character.id, invocation)
-                console.log(world.tick, "wa")
               }
             }
 
@@ -200,7 +199,6 @@ export const InputSystem = ClientSystemBuilder({
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
               world.actions.push(world.tick + 1, character.id, invocation)
-              console.log(world.tick, "a")
             }
           }
 

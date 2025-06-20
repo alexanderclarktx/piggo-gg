@@ -1,6 +1,5 @@
 import {
-  Action, Actions, Character, Collider, GameBuilder, Input,
-  Networked,
+  Action, Actions, Character, Collider, GameBuilder, Input, Networked,
   PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
