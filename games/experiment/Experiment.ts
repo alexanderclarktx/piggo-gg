@@ -1,13 +1,13 @@
 import {
-  Action, Actions, Character, Collider, GameBuilder, Input, PhysicsSystem,
-  Player, Position, SpawnSystem, TCameraSystem, Team
+  Action, Actions, Character, Collider, GameBuilder, Input,
+  PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 
-const Guy = (player: Player) => Character({
+const Guy = () => Character({
   id: "guy",
   components: {
-    position: Position({ velocityResets: 1, gravity: 0.001, stop: 0.7, z: 4, x: 1, y: 2 }),
+    position: Position({ velocityResets: 1, gravity: 0.001, stop: 0.7, z: 1, x: 0, y: 2 }),
     collider: Collider({
       shape: "ball",
       radius: 4
@@ -52,15 +52,6 @@ const Guy = (player: Player) => Character({
 
         position.setVelocity({ x: toward.x, y: toward.z })
         if (setZ) position.setVelocity({ z: toward.y })
-
-        // console.log("move", params, entity?.components?.position?.data.x,
-        //   entity?.components?.position?.data.y, entity?.components?.position?.data.z
-        // )
-
-        // if (!params.y) return
-        // entity?.components?.position?.setVelocity({
-        //   y: params.y, x: params.x, z: 0
-        // })
       })
     }),
     team: Team(1)
