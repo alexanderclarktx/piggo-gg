@@ -84,7 +84,7 @@ export const Experiment: GameBuilder = {
   id: "3D",
   init: (world) => {
 
-    world.renderer?.deactivate()
+    world.renderer?.deactivate(world)
     world.three?.activate(world)
 
     return {
