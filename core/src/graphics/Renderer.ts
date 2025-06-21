@@ -1,4 +1,4 @@
-import { Camera, Renderable, isMobile } from "@piggo-gg/core"
+import { Camera, Renderable, World, isMobile } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
 export type Renderer = {
@@ -8,7 +8,7 @@ export type Renderer = {
   resizedFlag: boolean
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
-  deactivate: () => void
+  deactivate: (world: World) => void
   handleResize: () => void
   init: () => Promise<void>
   setBgColor: (color: number) => void
@@ -34,8 +34,10 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
     addWorld: (renderable: Renderable) => {
       if (renderable) renderer.camera?.add(renderable)
     },
-    deactivate: () => {
+    deactivate: (world: World) => {
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
+
+      world.renderer = undefined
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
