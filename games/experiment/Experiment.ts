@@ -7,7 +7,7 @@ import { Vector3 } from "three"
 const Guy = () => Character({
   id: "guy",
   components: {
-    position: Position({ velocityResets: 1, gravity: 0.001, stop: 0.7, z: 1, x: 0, y: 2 }),
+    position: Position({ velocityResets: 1, gravity: 0.002, stop: 0.7, z: 1, x: 0, y: 2 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
@@ -68,7 +68,7 @@ const Guy = () => Character({
           toward.copy(backward.add(right).normalize())
         } else if (params.key === "up") {
           if (!position.data.standing) return
-          toward.set(0, 0.03, 0)
+          toward.set(0, 0.04, 0)
           setZ = true
         }
 
