@@ -1,6 +1,6 @@
 import {
-  AmbientLight, BackSide, BoxGeometry, BufferAttribute, CameraHelper, Color,
-  DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
+  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
+  InstancedMesh, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
   Object3D, RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
@@ -15,6 +15,8 @@ export type TRenderer = {
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
+  pointerLock: () => void
+  pointerUnlock: () => void
 }
 
 export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
@@ -54,12 +56,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         helper = undefined
       }
     },
-    activate: (world: World) => {
+    pointerLock: () => {
       document.body.requestPointerLock({ unadjustedMovement: true })
-
-      document.body.addEventListener('click', () => {
-        document.body.requestPointerLock()
-      })
+    },
+    pointerUnlock: () => {
+      document.exitPointerLock()
+    },
+    activate: (world: World) => {
+      three.pointerLock()
 
       // recreate the canvas
       const parent = canvas.parentElement

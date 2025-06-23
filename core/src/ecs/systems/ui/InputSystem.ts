@@ -120,6 +120,7 @@ export const InputSystem = ClientSystemBuilder({
     const handleInputForCharacter = (character: Character, world: World) => {
       // copy the input buffer
       let buffer = world.client!.bufferDown.copy()
+      let bufferUp = world.client!.bufferUp.copy()
 
       // check for actions
       const { input, actions, position, inventory } = character.components
@@ -205,6 +206,29 @@ export const InputSystem = ClientSystemBuilder({
 
           // remove the key from the buffer
           buffer.remove(keyPress)
+        }
+      }
+
+      // handle key releases
+      for (const keyUp in input.inputMap.release) {
+
+        if (bufferUp.get(keyUp)) {
+          const controllerInput = input.inputMap.release[keyUp]
+          if (controllerInput != null) {
+            const invocation = controllerInput({
+              mouse,
+              entity: character,
+              tick: world.tick,
+              world,
+              hold: false
+            })
+            if (invocation && actions.actionMap[invocation.actionId]) {
+              invocation.playerId = world.client?.playerId()
+              world.actions.push(world.tick + 1, character.id, invocation)
+            }
+          }
+
+          bufferUp.remove(keyUp)
         }
       }
 

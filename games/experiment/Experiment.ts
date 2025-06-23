@@ -14,6 +14,9 @@ const Guy = () => Character({
       radius: 4
     }),
     input: Input({
+      release: {
+        "escape": () => ({ actionId: "escape" })
+      },
       press: {
         "w,s": () => null, "a,d": () => null,
         "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
@@ -28,6 +31,9 @@ const Guy = () => Character({
       }
     }),
     actions: Actions({
+      escape: Action("escape", ({ world }) => {
+        world.three?.pointerLock()
+      }),
       move: Action("move", ({ entity, params, world }) => {
         const camera = world.three?.camera
         if (!camera) return
