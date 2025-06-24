@@ -1,8 +1,15 @@
+import { World, XYZ } from '@piggo-gg/core'
 import { CircleGeometry, Group, Mesh, MeshBasicMaterial } from 'three'
 import { Text } from 'troika-three-text'
 
-export const Radial = (options: string[] = [], radius = 1) => {
+export type Radial = {
+  update: (world: World) => void
+  group: Group
+}
+
+export const Radial = (options: string[]): Radial => {
   const group = new Group()
+  const radius = 1
 
   options.forEach((label, i) => {
     const angle = (i / options.length) * Math.PI * 2
@@ -28,5 +35,18 @@ export const Radial = (options: string[] = [], radius = 1) => {
     group.add(text)
   })
 
-  return group
+  return {
+    group,
+    update: (world) => {
+      const player = world.client?.playerCharacter()
+      if (!player) return
+
+      const { position } = player.components
+
+      // const interpolated = position.interpolate()
+
+      // Update the radial position based on player position
+      group.position.set(position.data.x - 0.4, position.data.z, position.data.y - 0.8)
+    }
+  }
 }
