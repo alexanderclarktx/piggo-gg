@@ -243,7 +243,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
-      tRenderer.debug(true)
+      // tRenderer.debug(location.hostname === "localhost")
     }
   }
   return tRenderer
