@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
     "experimentalDecorators": true,
-    "lib": ["es2015", "dom"],
+    "lib": ["es2017", "dom"],
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitOverride": true,
@@ -20,6 +20,7 @@
     "target": "ESNext",
     // "noUncheckedIndexedAccess": true,
     // "strictFunctionTypes": true,
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": ["web/**/*", "server/**/*", "core/**/*", "games/**/*"]
 }

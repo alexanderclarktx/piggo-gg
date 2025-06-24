@@ -12,7 +12,8 @@
     "react-hot-toast": "2.4.1",
     "simplex-noise": "4.0.3",
     "three": "0.177.0",
-    "tone": "15.0.4"
+    "tone": "15.0.4",
+    "troika-3d-text": "^0.52.4"
   },
   "devDependencies": {
     "@types/three": "^0.177.0"

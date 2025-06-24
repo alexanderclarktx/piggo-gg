@@ -4,7 +4,7 @@ import {
   Object3D, RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, TCamera, World } from "@piggo-gg/core"
+import { sin, cos, TCamera, World, Radial } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
@@ -73,6 +73,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       parent?.appendChild(canvas)
 
       scene = new Scene()
+
+      scene.add(Radial(["aaaaaaa", "bbbbb", "cccccc"]))
 
       renderer = new WebGLRenderer({
         antialias: false, canvas, powerPreference: "high-performance"
