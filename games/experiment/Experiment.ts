@@ -15,7 +15,8 @@ const Guy = () => Character({
     }),
     input: Input({
       release: {
-        "escape": () => ({ actionId: "escape" })
+        "escape": () => ({ actionId: "escape" }),
+        "mb1": () => ({ actionId: "escape" })
       },
       press: {
         "w,s": () => null, "a,d": () => null,
