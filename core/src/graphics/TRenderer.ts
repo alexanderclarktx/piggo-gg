@@ -1,6 +1,6 @@
 import {
-  AmbientLight, BackSide, BoxGeometry, BufferAttribute, CameraHelper, Color,
-  DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
+  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
+  InstancedMesh, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
   Object3D, RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
@@ -15,6 +15,8 @@ export type TRenderer = {
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
+  pointerLock: () => void
+  pointerUnlock: () => void
 }
 
 export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
@@ -29,7 +31,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let zoom = 2
   let debug = false
 
-  const three: TRenderer = {
+  const tRenderer: TRenderer = {
     camera: TCamera(),
     setZoom: (z: number) => zoom = z,
     resize: () => {
@@ -54,12 +56,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         helper = undefined
       }
     },
-    activate: (world: World) => {
+    pointerLock: () => {
       document.body.requestPointerLock({ unadjustedMovement: true })
-
-      document.body.addEventListener('click', () => {
-        document.body.requestPointerLock()
-      })
+    },
+    pointerUnlock: () => {
+      document.exitPointerLock()
+    },
+    activate: (world: World) => {
+      tRenderer.pointerLock()
 
       // recreate the canvas
       const parent = canvas.parentElement
@@ -74,7 +78,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         antialias: false, canvas, powerPreference: "high-performance"
       })
 
-      three.resize()
+      tRenderer.resize()
 
       renderer.setAnimationLoop(() => {
         const t = performance.now() / 5000
@@ -103,8 +107,13 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       sun.position.set(200, 100, 200)
       sun.shadow.normalBias = 0.02
-      sun.shadow.mapSize.set(1024, 1024)
+      sun.shadow.mapSize.set(2048, 2048)
       sun.castShadow = true
+
+      // widen the shadow
+      sun.shadow.camera.left = -10
+      sun.shadow.camera.right = 10
+      sun.shadow.camera.updateProjectionMatrix()
 
       const ambient = new AmbientLight(evening, 1)
       scene.add(ambient)
@@ -113,7 +122,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       const instancedMesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
         vertexColors: true, visible: false, specularIntensity: 0.05
-      }), 256)
+      }), 512)
 
       instancedMesh.castShadow = true
       instancedMesh.receiveShadow = true
@@ -149,7 +158,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         texture.wrapS = RepeatWrapping
         texture.wrapT = RepeatWrapping
-        texture.repeat.set(5, 3)
+        texture.repeat.set(3.5, 2.5)
 
         const sphere = new SphereGeometry(500, 60, 40)
 
@@ -174,7 +183,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sunSphere.position.copy(sun.position)
       scene.add(sunSphere)
 
-      const camera = three.camera.c
+      const camera = tRenderer.camera.c
 
       const composer = new EffectComposer(renderer, { multisampling: 4 })
       composer.addPass(new RenderPass(scene, camera))
@@ -212,10 +221,13 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const dummy = new Object3D()
 
       // arrange blocks in 2D grid
-      for (let i = 0; i < 256; i++) {
-        dummy.position.set((i % 16) * 0.3 - 0.45, 0, Math.floor(i / 16) * 0.3 - 0.45)
+      for (let i = 0; i < 512; i++) {
+        const j = i % 16
+        const k = Math.floor(i / 16)
 
-        if ([31, 67, 134, 121].includes(i)) dummy.position.y = 0.3
+        dummy.position.set(j * 0.3, 0, k * 0.3)
+
+        if ([31, 67, 134, 121, 300, 501, 420].includes(i)) dummy.position.y = 0.3
 
         dummy.updateMatrix()
         instancedMesh.setMatrixAt(i, dummy.matrix)
@@ -230,7 +242,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+
+      // tRenderer.debug(location.hostname === "localhost")
     }
   }
-  return three
+  return tRenderer
 }
