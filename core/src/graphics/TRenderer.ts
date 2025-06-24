@@ -225,10 +225,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         const j = i % 16
         const k = Math.floor(i / 16)
 
-        dummy.position.set(j * 0.3 - 2.25, 0, k * 0.3 - 2.25)
-        // dummy.rotation.set(0, Math.random() * Math.PI * 2, 0)
-
-        // dummy.position.set((i % 16) * 0.3 - 0.45, 0, Math.floor(i / 16) * 0.3 - 0.45)
+        dummy.position.set(j * 0.3, 0, k * 0.3)
 
         if ([31, 67, 134, 121, 300, 501, 420].includes(i)) dummy.position.y = 0.3
 
