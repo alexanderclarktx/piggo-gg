@@ -53,7 +53,7 @@ export const InputSystem = ClientSystemBuilder({
 
       const key = event.button === 0 ? "mb1" : "mb2"
 
-      world.client!.bufferDown.push({ key, mouse, tick: world.tick, hold: false })
+      world.client!.bufferDown.push({ key, mouse, tick: world.tick, hold: 0 })
     })
 
     document.addEventListener("pointerup", (event) => {
@@ -62,7 +62,7 @@ export const InputSystem = ClientSystemBuilder({
       if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
       world.client!.bufferDown.remove(key)
-      world.client!.bufferUp.push({ key, mouse, tick: world.tick, hold: false })
+      world.client!.bufferUp.push({ key, mouse, tick: world.tick, hold: 0 })
     })
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
@@ -74,9 +74,14 @@ export const InputSystem = ClientSystemBuilder({
         // handle released backspace
         if (chatIsOpen && keyName === "backspace") backspaceOn = false
 
-        // remove from bufferedDown and add to bufferedUp
+        const down = world.client?.bufferDown.get(keyName)
+        if (!down) return
+
+        // add to bufferUp
+        world.client!.bufferUp.push({ key: keyName, mouse, tick: world.tick, hold: down.hold })
+
+        // remove from bufferedDown
         world.client!.bufferDown.remove(keyName)
-        world.client!.bufferUp.push({ key: keyName, mouse, tick: world.tick, hold: false })
       }
     })
 
@@ -120,7 +125,7 @@ export const InputSystem = ClientSystemBuilder({
           if (chatIsOpen && validChatCharacters.has(keyName)) {
             chatBuffer.push(keyName)
           } else {
-            world.client!.bufferDown.push({ key: keyName, mouse, tick: world.tick, hold: false })
+            world.client!.bufferDown.push({ key: keyName, mouse, tick: world.tick, hold: 0 })
           }
         }
       }
@@ -185,7 +190,7 @@ export const InputSystem = ClientSystemBuilder({
                 mouse: { ...mouse },
                 entity: character,
                 world,
-                hold: keyMouse?.hold || false
+                hold: keyMouse?.hold ?? 0
               })
               if (invocation && actions.actionMap[invocation.actionId]) {
                 invocation.playerId = world.client?.playerId()
@@ -221,8 +226,9 @@ export const InputSystem = ClientSystemBuilder({
 
       // handle key releases
       for (const keyUp in input.inputMap.release) {
+        const keyMouse = bufferUp.get(keyUp)
 
-        if (bufferUp.get(keyUp)) {
+        if (keyMouse) {
           const controllerInput = input.inputMap.release[keyUp]
           if (controllerInput != null) {
             const invocation = controllerInput({
@@ -230,7 +236,7 @@ export const InputSystem = ClientSystemBuilder({
               entity: character,
               tick: world.tick,
               world,
-              hold: false
+              hold: keyMouse.hold
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()
@@ -315,7 +321,7 @@ export const InputSystem = ClientSystemBuilder({
               mouse,
               entity,
               world,
-              hold: false
+              hold: 0
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = world.client?.playerId()

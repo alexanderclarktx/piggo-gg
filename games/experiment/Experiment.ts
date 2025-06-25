@@ -1,5 +1,5 @@
 import {
-  Action, Actions, Character, Collider, GameBuilder, Input, Networked,
+  Action, Actions, Character, Collider, GameBuilder, Input, max, Networked,
   PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
@@ -16,7 +16,8 @@ const Guy = () => Character({
     input: Input({
       release: {
         "escape": () => ({ actionId: "escape" }),
-        "mb1": () => ({ actionId: "escape" })
+        "mb1": () => ({ actionId: "escape" }),
+        "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
       },
       press: {
         "w,s": () => null, "a,d": () => null,
@@ -28,12 +29,21 @@ const Guy = () => Character({
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
         "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": () => ({ actionId: "move", params: { key: "up" } })
+        " ": () => ({ actionId: "move", params: { key: "up" } }),
+        // "f": () => ({ actionId: "jump" }),
       }
     }),
     actions: Actions({
       escape: Action("escape", ({ world }) => {
         world.three?.pointerLock()
+      }),
+      jump: Action("jump", ({ entity, params }) => {
+        const position = entity?.components?.position
+        if (!position || !params.hold) return
+
+        if (!position.data.standing) return
+
+        position.setVelocity({ z: max(params.hold, 50) * 0.0025 })
       }),
       move: Action("move", ({ entity, params, world }) => {
         const camera = world.three?.camera
