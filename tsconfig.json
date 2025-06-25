@@ -20,6 +20,7 @@
     "target": "ESNext",
     // "noUncheckedIndexedAccess": true,
     // "strictFunctionTypes": true,
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": ["web/**/*", "server/**/*", "core/**/*", "games/**/*"]
 }

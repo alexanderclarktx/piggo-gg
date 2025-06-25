@@ -1,11 +1,13 @@
 import {
-  Component, Entity, Oct, OctString, SystemBuilder, World, XY, XYZ, max, min, reduce, round, toOctString
+  Component, Entity, Oct, OctString, SystemBuilder, World,
+  XY, XYZ, max, min, reduce, round, toOctString
 } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
   x: number
   y: number
   z: number
+  aim: XY
   facing: -1 | 1
   follows: string | undefined
   friction: number
@@ -30,6 +32,7 @@ export type Position = Component<"position", {
   setPosition: (_: { x?: number, y?: number, z?: number }) => Position
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
+  moveAim: (_: XY) => Position
   impulse: (_: XYZ) => Position
   interpolate: (delta: number, world: World) => XYZ
   setSpeed: (_: number) => void
@@ -69,6 +72,7 @@ export const Position = (props: PositionProps = {}): Position => {
       friction: props.friction ?? 0,
       gravity: props.gravity ?? 0,
       heading: { x: NaN, y: NaN },
+      aim: { x: 0, y: 0 },
       offset: props.offset ?? { x: 0, y: 0 },
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
@@ -105,6 +109,13 @@ export const Position = (props: PositionProps = {}): Position => {
       if (z !== undefined) position.data.velocity.z = round(z * 100) / 100
 
       return position.updateOrientation()
+    },
+    moveAim: ({ x, y }: XY) => {
+      position.data.aim.x = round(position.data.aim.x - x, 3)
+      position.data.aim.y = round(position.data.aim.y - y, 3)
+
+      position.data.aim.y = max(-1.5, min(1.5, position.data.aim.y))
+      return position
     },
     impulse: ({ x, y, z }: XYZ) => {
       return position.setVelocity({

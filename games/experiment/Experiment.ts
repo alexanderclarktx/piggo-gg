@@ -44,7 +44,7 @@ const Guy = () => Character({
 
         if (!["wa", "wd", "as", "ds", "a", "d", "w", "s", "up"].includes(params.key)) return
 
-        const dir = camera.worldDirection()
+        const dir = camera.worldDirection(world)
         const toward = new Vector3()
 
         let setZ = false

@@ -4,7 +4,7 @@ import {
   Object3D, RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, TCamera, World } from "@piggo-gg/core"
+import { sin, cos, TCamera, World, Radial } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
@@ -27,6 +27,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let scene: undefined | Scene
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
+  let radial: undefined | Radial
 
   let zoom = 2
   let debug = false
@@ -74,6 +75,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       scene = new Scene()
 
+      // radial = Radial(["A", "B", "C"])
+      // scene.add(radial.group)
+
       renderer = new WebGLRenderer({
         antialias: false, canvas, powerPreference: "high-performance"
       })
@@ -82,6 +86,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       renderer.setAnimationLoop(() => {
         const t = performance.now() / 5000
+
+        if (radial) radial.update(world)
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
