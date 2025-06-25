@@ -32,7 +32,7 @@ export const KeyBuffer = (b?: KeyMouse[]): KeyBuffer => {
     },
     updateHold: (tick: number) => {
       for (const b of buffer) {
-        b.hold = tick - b.tick
+        b.hold = tick - b.tick - 1
       }
     }
   }
