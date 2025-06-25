@@ -21,12 +21,21 @@ export const InputSystem = ClientSystemBuilder({
     let joystickOn = false
     let mouseScreen: XY = { x: 0, y: 0 }
 
-    renderer?.app.canvas.addEventListener("pointermove", (event) => {
+    window.addEventListener("pointermove", (event) => {
       if (CurrentJoystickPosition.active && XYdiff(mouseScreen, { x: event.offsetX, y: event.offsetY }, 100)) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      mouse = renderer.camera.toWorldCoords(mouseScreen)
+      mouse = renderer!.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
+
+      if (world.three && document.pointerLockElement) {
+        const pc = world.client?.playerCharacter()
+        if (!pc) return
+
+        pc.components.position.moveAim(
+          { x: event.movementX * 0.001, y: event.movementY * 0.001 }
+        )
+      }
     })
 
     renderer?.app.canvas.addEventListener("pointerdown", (event) => {
@@ -128,28 +137,30 @@ export const InputSystem = ClientSystemBuilder({
       const rotated = world.flip({ x: position.data.x, y: position.data.y })
 
       // update Position.pointing based on mouse
-      const angle = Math.atan2(mouse.y - rotated.y, mouse.x - rotated.x)
-      const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
+      if (world.renderer) {
+        const angle = Math.atan2(mouse.y - rotated.y, mouse.x - rotated.x)
+        const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
-      let pointingDelta: XY
+        let pointingDelta: XY
 
-      if (world.renderer?.camera.focus) {
-        const { width, height } = world.renderer.wh()
-        pointingDelta = {
-          x: round(mouseScreen.x - (width / 2), 2) * world.flipped(),
-          y: round(mouseScreen.y - (height / 2), 2) * world.flipped()
+        if (world.renderer?.camera.focus) {
+          const { width, height } = world.renderer.wh()
+          pointingDelta = {
+            x: round(mouseScreen.x - (width / 2), 2) * world.flipped(),
+            y: round(mouseScreen.y - (height / 2), 2) * world.flipped()
+          }
+        } else {
+          pointingDelta = {
+            x: round(mouse.x - rotated.x, 2) * world.flipped(),
+            y: round(mouse.y - (rotated.y - position.data.z), 2) * world.flipped()
+          }
         }
-      } else {
-        pointingDelta = {
-          x: round(mouse.x - rotated.x, 2) * world.flipped(),
-          y: round(mouse.y - (rotated.y - position.data.z), 2) * world.flipped()
-        }
-      }
 
-      if (actions.actionMap["point"]) {
-        world.actions.push(world.tick + 1, character.id,
-          { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
-        )
+        if (actions.actionMap["point"]) {
+          world.actions.push(world.tick + 1, character.id,
+            { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+          )
+        }
       }
 
       // handle joystick input
