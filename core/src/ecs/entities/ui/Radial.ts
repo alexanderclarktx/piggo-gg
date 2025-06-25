@@ -1,4 +1,4 @@
-import { World, XYZ } from '@piggo-gg/core'
+import { World } from '@piggo-gg/core'
 import { CircleGeometry, Group, Mesh, MeshBasicMaterial } from 'three'
 import { Text } from 'troika-three-text'
 
@@ -14,7 +14,7 @@ export const Radial = (options: string[]): Radial => {
   options.forEach((label, i) => {
     const angle = (i / options.length) * Math.PI * 2
 
-    // Create a circle background (optional)
+    // circle background
     const circleGeo = new CircleGeometry(0.4, 32)
     const circleMat = new MeshBasicMaterial({ color: 0xffffff })
     const circle = new Mesh(circleGeo, circleMat)
@@ -22,7 +22,7 @@ export const Radial = (options: string[]): Radial => {
     circle.userData.label = label
     group.add(circle)
 
-    // Create 3D text using Troika
+    // label
     const text = new Text()
     text.text = label
     text.fontSize = 0.3
@@ -45,7 +45,6 @@ export const Radial = (options: string[]): Radial => {
 
       // const interpolated = position.interpolate()
 
-      // Update the radial position based on player position
       group.position.set(position.data.x - 0.4, position.data.z, position.data.y - 0.8)
     }
   }
