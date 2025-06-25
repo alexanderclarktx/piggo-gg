@@ -1,6 +1,6 @@
-import { World } from '@piggo-gg/core'
-import { CircleGeometry, Group, Mesh, MeshBasicMaterial } from 'three'
-import { Text } from 'troika-three-text'
+import { World } from "@piggo-gg/core"
+import { CircleGeometry, Group, Mesh, MeshBasicMaterial } from "three"
+import { Text } from "troika-three-text"
 
 export type Radial = {
   update: (world: World) => void
@@ -28,10 +28,10 @@ export const Radial = (options: string[]): Radial => {
     text.fontSize = 0.3
     text.color = 0x000000
     text.position.copy(circle.position)
-    text.position.z += 0.01 // slightly above circle
-    text.anchorX = 'center'
-    text.anchorY = 'middle'
-    text.sync() // required to update layout
+    text.position.z += 0.01
+    text.anchorX = "center"
+    text.anchorY = "middle"
+    text.sync()
     group.add(text)
   })
 
