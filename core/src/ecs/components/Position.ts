@@ -33,7 +33,7 @@ export type Position = Component<"position", {
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
   moveAim: (_: XY) => Position
-  impulse: (_: XYZ) => Position
+  impulse: (_: { x?: number, y?: number, z?: number }) => Position
   interpolate: (delta: number, world: World) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
@@ -118,11 +118,15 @@ export const Position = (props: PositionProps = {}): Position => {
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
-      return position.setVelocity({
-        x: position.data.velocity.x + x,
-        y: position.data.velocity.y + y,
-        z: position.data.velocity.z + z
-      })
+      if (x !== undefined) position.data.velocity.x += x
+      if (y !== undefined) position.data.velocity.y += y
+      if (z !== undefined) position.data.velocity.z += z
+      return position
+      // return position.setVelocity({
+      //   x: position.data.velocity.x + x,
+      //   y: position.data.velocity.y + y,
+      //   z: position.data.velocity.z + z
+      // })
     },
     interpolate: (delta: number, world: World) => {
       let z = position.data.velocity.z * delta / world.tickrate
