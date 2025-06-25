@@ -75,8 +75,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       scene = new Scene()
 
-      radial = Radial(["A", "B", "C"])
-      scene.add(radial.group)
+      // radial = Radial(["A", "B", "C"])
+      // scene.add(radial.group)
 
       renderer = new WebGLRenderer({
         antialias: false, canvas, powerPreference: "high-performance"
