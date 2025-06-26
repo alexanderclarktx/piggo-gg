@@ -101,7 +101,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
         // update body velocities
         for (const entity of entities) {
-          const { collider, position} = entity.components
+          const { collider, position } = entity.components
 
           if (collider.isStatic) continue
           if (!collider.body) continue
@@ -149,25 +149,8 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
         if (mode === "local") return
 
+        // sensor callbacks
         for (const [entity, collider] of colliders.entries()) {
-
-          // check if standing
-          if (entity.components.position.data.friction && collider.rapierCollider && collider.isStatic === false) {
-            let standing = false
-
-            physics.contactPairsWith(collider.rapierCollider, (collider2) => {
-              const collided = [...colliders.entries()].find(([_, c]) => c.rapierCollider === collider2)
-              if (collided && world.entities[collided[0].id]) {
-                const { position } = world.entities[collided[0].id].components
-                if (position!.data.y > entity.components.position.data.y) {
-                  standing = true
-                }
-              }
-            })
-            entity.components.position.data.standing = standing
-          }
-
-          // sensor callbacks
           if (collider.sensor && collider.rapierCollider) {
 
             const collidedWith: Entity<Collider | Position>[] = []

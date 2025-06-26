@@ -7,7 +7,7 @@ import { Vector3 } from "three"
 const Guy = () => Character({
   id: "guy",
   components: {
-    position: Position({ velocityResets: 0, gravity: 0.002, stop: 0.7, z: 1, x: 0, y: 2 }),
+    position: Position({ friction: true, gravity: 0.002, stop: 0.7, z: 1, x: 0, y: 2 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
@@ -99,7 +99,7 @@ const Guy = () => Character({
         }
 
         if (!setZ) {
-          let factor = position.data.standing ? 0.35 : 0.1
+          let factor = position.data.standing ? 0.4 : 0.1
           if (params.sprint) factor *= 2
           position.impulse({ x: toward.x * factor, y: toward.z * factor })
         }

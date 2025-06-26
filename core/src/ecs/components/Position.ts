@@ -1,6 +1,6 @@
 import {
-  Component, Entity, Oct, OctString, SystemBuilder, World,
-  XY, XYZ, abs, max, min, reduce, round, toOctString
+  Component, Entity, Oct, OctString, SystemBuilder,
+  World, XY, XYZ, abs, max, min, round, toOctString
 } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
@@ -10,7 +10,7 @@ export type Position = Component<"position", {
   aim: XY
   facing: -1 | 1
   follows: string | undefined
-  friction: number
+  friction: boolean
   gravity: number
   heading: XY
   offset: XY
@@ -50,7 +50,7 @@ export type PositionProps = {
   z?: number
   velocity?: { x: number, y: number }
   gravity?: number
-  friction?: number
+  friction?: boolean
   stop?: number
   speed?: number
   velocityResets?: number
@@ -70,7 +70,7 @@ export const Position = (props: PositionProps = {}): Position => {
       z: props.z ?? 0,
       facing: 1,
       follows: props.follows ?? undefined,
-      friction: props.friction ?? 0,
+      friction: props.friction ?? false,
       gravity: props.gravity ?? 0,
       heading: { x: NaN, y: NaN },
       aim: { x: 0, y: 0 },
@@ -237,21 +237,14 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         }
 
         // velocity dampening
-        if (!position.data.velocityResets) {
-          // if (position.data.standing) {
-            entity.components.position.scaleVelocity(position.data.standing ? 0.85 : 0.98)
-          // } else {}
+        if (position.data.friction) {
+          entity.components.position.scaleVelocity(position.data.standing ? 0.8 : 0.98)
         }
 
         // side-view gravity
         if (position.data.gravity && world.game.view === "side") {
           position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
           position.updateOrientation()
-        }
-
-        // side-view air resistance
-        if (position.data.friction && world.game.view === "side") {
-          position.data.velocity.x = reduce(position.data.velocity.x, position.data.friction)
         }
 
         // follows
