@@ -374,6 +374,28 @@ export const spawnChunk = (chunk: XY) => {
   }
 }
 
+
+export const spawnTiny = () => {
+  const num = 8
+  for (let i = 0; i < num; i++) {
+    for (let j = 0; j < num; j++) {
+      blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
+    }
+  }
+
+  blocks.add({ x: 9, y: 9, z: 1, type: 2 })
+}
+
+export const spawnTerrain = () => {
+  const num = 100
+  for (let i = 0; i < num; i++) {
+    for (let j = 0; j < num; j++) {
+      const chunk = { x: i, y: j }
+      spawnChunk(chunk)
+    }
+  }
+}
+
 // ij integer coord -> XY of block
 export const intToXY = (i: number, j: number): XY => ({
   x: (i - j) * width,

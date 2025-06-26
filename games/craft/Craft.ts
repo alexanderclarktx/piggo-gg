@@ -2,8 +2,8 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, highestBlock, Cursor, Chat, EscapeMenu, blocks,
-  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, spawnChunk,
-  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors, Piggo, RenderSystem
+  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider,
+  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors, RenderSystem, spawnTerrain
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -31,27 +31,6 @@ export const Craft: GameBuilder = {
       Tooltip("controls", "   move: WASD\n   jump: SPACE\n  break: LEFT-CLICK\n  place: RIGHT-CLICK \n camera: Q")
     ]
   })
-}
-
-const spawnTerrain = () => {
-  const num = 100
-  for (let i = 0; i < num; i++) {
-    for (let j = 0; j < num; j++) {
-      const chunk = { x: i, y: j }
-      spawnChunk(chunk)
-    }
-  }
-}
-
-const spawnTiny = () => {
-  const num = 8
-  for (let i = 0; i < num; i++) {
-    for (let j = 0; j < num; j++) {
-      blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
-    }
-  }
-
-  blocks.add({ x: 9, y: 9, z: 1, type: 2 })
 }
 
 const CraftSystem = SystemBuilder({
