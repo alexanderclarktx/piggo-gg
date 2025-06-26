@@ -1,6 +1,6 @@
 import {
-  Component, Entity, Oct, OctString, SystemBuilder, World,
-  XY, XYZ, max, min, reduce, round, toOctString
+  Component, Entity, Oct, OctString, SystemBuilder,
+  World, XY, XYZ, abs, max, min, round, toOctString
 } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
@@ -10,7 +10,7 @@ export type Position = Component<"position", {
   aim: XY
   facing: -1 | 1
   follows: string | undefined
-  friction: number
+  friction: boolean
   gravity: number
   heading: XY
   offset: XY
@@ -32,8 +32,9 @@ export type Position = Component<"position", {
   setPosition: (_: { x?: number, y?: number, z?: number }) => Position
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
+  scaleVelocity: (factor: number) => Position
   moveAim: (_: XY) => Position
-  impulse: (_: XYZ) => Position
+  impulse: (_: { x?: number, y?: number, z?: number }) => Position
   interpolate: (delta: number, world: World) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
@@ -49,7 +50,7 @@ export type PositionProps = {
   z?: number
   velocity?: { x: number, y: number }
   gravity?: number
-  friction?: number
+  friction?: boolean
   stop?: number
   speed?: number
   velocityResets?: number
@@ -69,7 +70,7 @@ export const Position = (props: PositionProps = {}): Position => {
       z: props.z ?? 0,
       facing: 1,
       follows: props.follows ?? undefined,
-      friction: props.friction ?? 0,
+      friction: props.friction ?? false,
       gravity: props.gravity ?? 0,
       heading: { x: NaN, y: NaN },
       aim: { x: 0, y: 0 },
@@ -110,6 +111,15 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position.updateOrientation()
     },
+    scaleVelocity: (factor: number) => {
+      position.data.velocity.x *= factor
+      position.data.velocity.y *= factor
+
+      if (abs(position.data.velocity.x) < 0.02) position.data.velocity.x = 0
+      if (abs(position.data.velocity.y) < 0.02) position.data.velocity.y = 0
+
+      return position
+    },
     moveAim: ({ x, y }: XY) => {
       position.data.aim.x = round(position.data.aim.x - x, 3)
       position.data.aim.y = round(position.data.aim.y - y, 3)
@@ -118,11 +128,10 @@ export const Position = (props: PositionProps = {}): Position => {
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
-      return position.setVelocity({
-        x: position.data.velocity.x + x,
-        y: position.data.velocity.y + y,
-        z: position.data.velocity.z + z
-      })
+      if (x !== undefined) position.data.velocity.x += x
+      if (y !== undefined) position.data.velocity.y += y
+      if (z !== undefined) position.data.velocity.z += z
+      return position
     },
     interpolate: (delta: number, world: World) => {
       let z = position.data.velocity.z * delta / world.tickrate
@@ -227,15 +236,15 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
           position.data.standing = true
         }
 
+        // velocity dampening
+        if (position.data.friction) {
+          entity.components.position.scaleVelocity(position.data.standing ? 0.8 : 0.98)
+        }
+
         // side-view gravity
         if (position.data.gravity && world.game.view === "side") {
           position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
           position.updateOrientation()
-        }
-
-        // side-view air resistance
-        if (position.data.friction && world.game.view === "side") {
-          position.data.velocity.x = reduce(position.data.velocity.x, position.data.friction)
         }
 
         // follows

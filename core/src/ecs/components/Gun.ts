@@ -21,7 +21,7 @@ export type Gun = Component<"gun", GunProps & {
   reloading: boolean
   outlineColor: number
 }> & {
-  canShoot: (world: World, tick: number, hold: boolean) => boolean
+  canShoot: (world: World, tick: number, hold: number) => boolean
   didShoot: (world: World) => void
 }
 
@@ -43,7 +43,7 @@ export const Gun = (props: GunProps): Gun => {
       reloadTime: props.reloadTime,
       speed: props.speed
     },
-    canShoot: (world: World, tick: number, hold: boolean) => {
+    canShoot: (world: World, tick: number, hold: number) => {
 
       const { lastShot, fireRate, clip, reloading } = gun.data
 

@@ -1,6 +1,6 @@
 import { XY } from "@piggo-gg/core"
 
-export type KeyMouse = { key: string, mouse: XY, tick: number, hold: boolean }
+export type KeyMouse = { key: string, mouse: XY, tick: number, hold: number }
 
 export type KeyBuffer = {
   all: () => KeyMouse[]
@@ -31,11 +31,9 @@ export const KeyBuffer = (b?: KeyMouse[]): KeyBuffer => {
       buffer = buffer.filter((b) => b.key !== key)
     },
     updateHold: (tick: number) => {
-      buffer.forEach((b) => {
-        if (b.hold === false && b.tick + 1 < tick) {
-          b.hold = true
-        }
-      })
+      for (const b of buffer) {
+        b.hold = tick - b.tick - 1
+      }
     }
   }
 }

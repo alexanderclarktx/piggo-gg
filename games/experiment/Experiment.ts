@@ -1,5 +1,5 @@
 import {
-  Action, Actions, Character, Collider, GameBuilder, Input, Networked,
+  Action, Actions, Character, Collider, GameBuilder, Input, min, Networked,
   PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
@@ -7,7 +7,7 @@ import { Vector3 } from "three"
 const Guy = () => Character({
   id: "guy",
   components: {
-    position: Position({ velocityResets: 1, gravity: 0.002, stop: 0.7, z: 1, x: 0, y: 2 }),
+    position: Position({ friction: true, gravity: 0.002, stop: 0.7, z: 1, x: 0, y: 2 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
@@ -16,10 +16,21 @@ const Guy = () => Character({
     input: Input({
       release: {
         "escape": () => ({ actionId: "escape" }),
-        "mb1": () => ({ actionId: "escape" })
+        "mb1": () => ({ actionId: "escape" }),
+        "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
       },
       press: {
         "w,s": () => null, "a,d": () => null,
+
+        "shift,w,a": () => ({ actionId: "move", params: { key: "wa", sprint: true } }),
+        "shift,w,d": () => ({ actionId: "move", params: { key: "wd", sprint: true } }),
+        "shift,a,s": () => ({ actionId: "move", params: { key: "as", sprint: true } }),
+        "shift,d,s": () => ({ actionId: "move", params: { key: "ds", sprint: true } }),
+        "shift,w": () => ({ actionId: "move", params: { key: "w", sprint: true } }),
+        "shift,a": () => ({ actionId: "move", params: { key: "a", sprint: true } }),
+        "shift,s": () => ({ actionId: "move", params: { key: "s", sprint: true } }),
+        "shift,d": () => ({ actionId: "move", params: { key: "d", sprint: true } }),
+
         "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
         "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
         "a,s": () => ({ actionId: "move", params: { key: "as" } }),
@@ -34,6 +45,14 @@ const Guy = () => Character({
     actions: Actions({
       escape: Action("escape", ({ world }) => {
         world.three?.pointerLock()
+      }),
+      jump: Action("jump", ({ entity, params }) => {
+        const position = entity?.components?.position
+        if (!position || !params.hold) return
+
+        if (!position.data.standing) return
+
+        position.setVelocity({ z: min(params.hold, 50) * 0.005 })
       }),
       move: Action("move", ({ entity, params, world }) => {
         const camera = world.three?.camera
@@ -79,7 +98,11 @@ const Guy = () => Character({
           setZ = true
         }
 
-        if (!setZ) position.setVelocity({ x: toward.x * 2, y: toward.z * 2 })
+        if (!setZ) {
+          let factor = position.data.standing ? 0.4 : 0.1
+          if (params.sprint) factor *= 2
+          position.impulse({ x: toward.x * factor, y: toward.z * factor })
+        }
         if (setZ) position.setVelocity({ z: toward.y })
       })
     }),
