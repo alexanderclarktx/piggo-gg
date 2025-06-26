@@ -1,6 +1,6 @@
 import {
-  Action, Actions, Character, Collider, GameBuilder, Input, logRare, max, min, Networked,
-  NPC, PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
+  Action, Actions, Character, Collider, GameBuilder, Input, min, Networked,
+  PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 
@@ -12,39 +12,6 @@ const Guy = () => Character({
     collider: Collider({
       shape: "ball",
       radius: 4
-    }),
-    npc: NPC({
-      behavior: (entity, world) => {
-        const { velocity } = entity.components.position.data
-
-        logRare(`v x:${velocity.x} y:${velocity.y} z:${velocity.z}`, world)
-
-        // cap velocity
-        const hyp = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
-        if (hyp > 2) {
-          // const angle = Math.atan2(velocity.y, velocity.x)
-          // velocity.x = Math.cos(angle) * 2
-          // velocity.y = Math.sin(angle) * 2
-        }
-
-        // dampening
-        if (hyp > 0) {
-          // console.log(`dampening: ${hyp}`)
-          // entity.components.position.reduceVelocity(0.02)
-          // subtract 0.01 from the hypotenuse
-          // const newHyp = min(hyp, 2) - 0.1
-          // if (newHyp <= 0) {
-            // velocity.x = 0
-            // velocity.y = 0
-          // } else {
-            // const angle = Math.atan2(velocity.y, velocity.x)
-            // velocity.x = Math.cos(angle) * newHyp
-            // velocity.y = Math.sin(angle) * newHyp
-          // }
-        }
-
-        return null
-      }
     }),
     input: Input({
       release: {
@@ -62,8 +29,7 @@ const Guy = () => Character({
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
         "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": () => ({ actionId: "move", params: { key: "up" } }),
-        // "f": () => ({ actionId: "jump" }),
+        " ": () => ({ actionId: "move", params: { key: "up" } })
       }
     }),
     actions: Actions({
@@ -76,7 +42,7 @@ const Guy = () => Character({
 
         if (!position.data.standing) return
 
-        position.setVelocity({ z: max(params.hold, 50) * 0.0025 })
+        position.setVelocity({ z: min(params.hold, 50) * 0.005 })
       }),
       move: Action("move", ({ entity, params, world }) => {
         const camera = world.three?.camera
