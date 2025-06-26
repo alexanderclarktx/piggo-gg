@@ -21,6 +21,16 @@ const Guy = () => Character({
       },
       press: {
         "w,s": () => null, "a,d": () => null,
+
+        "shift,w,a": () => ({ actionId: "move", params: { key: "wa", sprint: true } }),
+        "shift,w,d": () => ({ actionId: "move", params: { key: "wd", sprint: true } }),
+        "shift,a,s": () => ({ actionId: "move", params: { key: "as", sprint: true } }),
+        "shift,d,s": () => ({ actionId: "move", params: { key: "ds", sprint: true } }),
+        "shift,w": () => ({ actionId: "move", params: { key: "w", sprint: true } }),
+        "shift,a": () => ({ actionId: "move", params: { key: "a", sprint: true } }),
+        "shift,s": () => ({ actionId: "move", params: { key: "s", sprint: true } }),
+        "shift,d": () => ({ actionId: "move", params: { key: "d", sprint: true } }),
+
         "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
         "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
         "a,s": () => ({ actionId: "move", params: { key: "as" } }),
@@ -89,10 +99,10 @@ const Guy = () => Character({
         }
 
         if (!setZ) {
-          // if (toward.x !== 0)
-          position.impulse({ x: toward.x * 0.2, y: toward.z * 0.2 })
+          let factor = position.data.standing ? 0.35 : 0.1
+          if (params.sprint) factor *= 2
+          position.impulse({ x: toward.x * factor, y: toward.z * factor })
         }
-        // if (!setZ) position.setVelocity({ x: toward.x * 2, y: toward.z * 2 })
         if (setZ) position.setVelocity({ z: toward.y })
       })
     }),

@@ -1,6 +1,6 @@
 import {
   Component, Entity, Oct, OctString, SystemBuilder, World,
-  XY, XYZ, max, min, reduce, round, toOctString
+  XY, XYZ, abs, max, min, reduce, round, toOctString
 } from "@piggo-gg/core"
 
 export type Position = Component<"position", {
@@ -32,6 +32,7 @@ export type Position = Component<"position", {
   setPosition: (_: { x?: number, y?: number, z?: number }) => Position
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
+  scaleVelocity: (factor: number) => Position
   moveAim: (_: XY) => Position
   impulse: (_: { x?: number, y?: number, z?: number }) => Position
   interpolate: (delta: number, world: World) => XYZ
@@ -40,7 +41,6 @@ export type Position = Component<"position", {
   clearHeading: () => Position
   updateOrientation: () => Position
   updateVelocity: () => Position
-  reduceVelocity: (n: number) => Position
   rotate: (_: number, stopAtZero?: boolean) => Position
 }
 
@@ -111,6 +111,15 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position.updateOrientation()
     },
+    scaleVelocity: (factor: number) => {
+      position.data.velocity.x *= factor
+      position.data.velocity.y *= factor
+
+      if (abs(position.data.velocity.x) < 0.02) position.data.velocity.x = 0
+      if (abs(position.data.velocity.y) < 0.02) position.data.velocity.y = 0
+
+      return position
+    },
     moveAim: ({ x, y }: XY) => {
       position.data.aim.x = round(position.data.aim.x - x, 3)
       position.data.aim.y = round(position.data.aim.y - y, 3)
@@ -180,16 +189,6 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position
     },
-    reduceVelocity: (n: number) => {
-      // console.log(`reduceVelocity: ${n}`, position.data.velocity.y) 
-      position.data.velocity.x = reduce(position.data.velocity.x, n)
-      position.data.velocity.y = reduce(position.data.velocity.y, n)
-
-      // console.log(`reduced to`, position.data.velocity) 
-      // position.data.velocity.z = reduce(position.data.velocity.z, n)
-
-      return position
-    },
     rotate: (amount: number, stopAtZero: boolean = false) => {
       position.data.rotation += amount
 
@@ -222,8 +221,6 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         const { position } = entity.components
 
-        // entity.components.position.reduceVelocity(0.02)
-
         // gravity & z
         if (position.data.velocity.z || position.data.z) {
           position.data.z = max(position.data.z + position.data.velocity.z, position.data.stop)
@@ -237,6 +234,13 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
           }
         } else {
           position.data.standing = true
+        }
+
+        // velocity dampening
+        if (!position.data.velocityResets) {
+          // if (position.data.standing) {
+            entity.components.position.scaleVelocity(position.data.standing ? 0.85 : 0.98)
+          // } else {}
         }
 
         // side-view gravity
