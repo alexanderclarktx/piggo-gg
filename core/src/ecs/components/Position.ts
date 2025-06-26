@@ -40,6 +40,7 @@ export type Position = Component<"position", {
   clearHeading: () => Position
   updateOrientation: () => Position
   updateVelocity: () => Position
+  reduceVelocity: (n: number) => Position
   rotate: (_: number, stopAtZero?: boolean) => Position
 }
 
@@ -122,11 +123,6 @@ export const Position = (props: PositionProps = {}): Position => {
       if (y !== undefined) position.data.velocity.y += y
       if (z !== undefined) position.data.velocity.z += z
       return position
-      // return position.setVelocity({
-      //   x: position.data.velocity.x + x,
-      //   y: position.data.velocity.y + y,
-      //   z: position.data.velocity.z + z
-      // })
     },
     interpolate: (delta: number, world: World) => {
       let z = position.data.velocity.z * delta / world.tickrate
@@ -184,6 +180,16 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position
     },
+    reduceVelocity: (n: number) => {
+      // console.log(`reduceVelocity: ${n}`, position.data.velocity.y) 
+      position.data.velocity.x = reduce(position.data.velocity.x, n)
+      position.data.velocity.y = reduce(position.data.velocity.y, n)
+
+      // console.log(`reduced to`, position.data.velocity) 
+      // position.data.velocity.z = reduce(position.data.velocity.z, n)
+
+      return position
+    },
     rotate: (amount: number, stopAtZero: boolean = false) => {
       position.data.rotation += amount
 
@@ -215,6 +221,8 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
       entities.forEach(entity => {
 
         const { position } = entity.components
+
+        // entity.components.position.reduceVelocity(0.02)
 
         // gravity & z
         if (position.data.velocity.z || position.data.z) {

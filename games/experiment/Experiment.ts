@@ -1,6 +1,6 @@
 import {
-  Action, Actions, Character, Collider, GameBuilder, Input, max, Networked,
-  PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
+  Action, Actions, Character, Collider, GameBuilder, Input, logRare, max, min, Networked,
+  NPC, PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 
@@ -12,6 +12,39 @@ const Guy = () => Character({
     collider: Collider({
       shape: "ball",
       radius: 4
+    }),
+    npc: NPC({
+      behavior: (entity, world) => {
+        const { velocity } = entity.components.position.data
+
+        logRare(`v x:${velocity.x} y:${velocity.y} z:${velocity.z}`, world)
+
+        // cap velocity
+        const hyp = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
+        if (hyp > 2) {
+          // const angle = Math.atan2(velocity.y, velocity.x)
+          // velocity.x = Math.cos(angle) * 2
+          // velocity.y = Math.sin(angle) * 2
+        }
+
+        // dampening
+        if (hyp > 0) {
+          // console.log(`dampening: ${hyp}`)
+          // entity.components.position.reduceVelocity(0.02)
+          // subtract 0.01 from the hypotenuse
+          // const newHyp = min(hyp, 2) - 0.1
+          // if (newHyp <= 0) {
+            // velocity.x = 0
+            // velocity.y = 0
+          // } else {
+            // const angle = Math.atan2(velocity.y, velocity.x)
+            // velocity.x = Math.cos(angle) * newHyp
+            // velocity.y = Math.sin(angle) * newHyp
+          // }
+        }
+
+        return null
+      }
     }),
     input: Input({
       release: {
@@ -91,7 +124,7 @@ const Guy = () => Character({
 
         if (!setZ) {
           // if (toward.x !== 0)
-          position.impulse({ x: toward.x * 0.5, y: toward.z * 0.5 })
+          position.impulse({ x: toward.x * 0.2, y: toward.z * 0.2 })
         }
         // if (!setZ) position.setVelocity({ x: toward.x * 2, y: toward.z * 2 })
         if (setZ) position.setVelocity({ z: toward.y })

@@ -106,10 +106,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           if (collider.isStatic) continue
           if (!collider.body) continue
 
-          collider.body.setLinvel({
-            x: Math.floor(position.data.velocity.x * 100) / 100,
-            y: Math.floor(position.data.velocity.y * 100) / 100
-          }, true)
+          collider.body.setLinvel(position.data.velocity, true)
         }
 
         // run physics
@@ -129,8 +126,8 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           const linvel = collider.body.linvel()
 
           // check if the entity has collided
-          const diffX = position.data.velocity.x - Math.floor(linvel.x * 100) / 100
-          const diffY = position.data.velocity.y - Math.floor(linvel.y * 100) / 100
+          const diffX = position.data.velocity.x - round(linvel.x, 3)
+          const diffY = position.data.velocity.y - round(linvel.y, 3)
           if (position.data.velocityResets && (abs(diffX) > 1 || abs(diffY) > 1)) {
             if (sign(linvel.y) !== sign(position.data.velocity.y) && sign(linvel.x) !== sign(position.data.velocity.x)) {
               position.lastCollided = world.tick
@@ -140,13 +137,13 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           // update position/velocity
           if (mode === "global") {
-            position.data.x = round(translation.x * 100) / 100
-            position.data.y = round(translation.y * 100) / 100
-            position.data.velocity.x = Math.floor(linvel.x * 100) / 100
-            position.data.velocity.y = Math.floor(linvel.y * 100) / 100
+            position.data.x = round(translation.x, 3)
+            position.data.y = round(translation.y, 3)
+            position.data.velocity.x = round(linvel.x, 3)
+            position.data.velocity.y = round(linvel.y, 3)
           } else {
-            position.localVelocity.x = Math.floor(linvel.x * 100) / 100
-            position.localVelocity.y = Math.floor(linvel.y * 100) / 100
+            position.localVelocity.x = round(linvel.x, 3)
+            position.localVelocity.y = round(linvel.y, 3)
           }
         }
 
