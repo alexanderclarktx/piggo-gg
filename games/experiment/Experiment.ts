@@ -1,7 +1,6 @@
 import {
-  Action, Actions, blocks, Character, chunkNeighbors, Collider, entries, GameBuilder, Input, min, Networked,
-  PhysicsSystem, Position, SpawnSystem, spawnTerrain, spawnTiny, SystemBuilder, TCameraSystem, Team,
-  XYtoChunk
+  Action, Actions, blocks, Character, chunkNeighbors, Collider, GameBuilder, highestBlock, Input, min, Networked,
+  PhysicsSystem, Position, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
 
@@ -150,13 +149,33 @@ const ExperimentSystem = SystemBuilder({
         const pc = world.client?.playerCharacter()
         // console.log("TBlockMesh pc", pc)
 
+        // gravity
+        const entities = world.queryEntities<Position>(["position"])
+        for (const entity of entities) {
+          const { position } = entity.components
+
+          const { x, y, z, velocity } = position.data
+
+          const chunk = XYtoChunk({ x: position.data.x * 20, y: position.data.y * 20 })
+          const chunks = chunkNeighbors(chunk, 4)
+
+          const highest = highestBlock({ x, y }, chunks, z).z
+          if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
+            position.data.stop = highest / 20
+            console.log("stop", position.data.stop)
+          } else {
+            // position.data.gravity = 0.002
+            // position.data.stop = -600 * 0.3
+          }
+        }
+
         if (!placed && pc) {
 
           const dummy = new Object3D()
 
           const { position } = pc.components
 
-          const chunk = XYtoChunk({x: position.data.x * 20, y: position.data.y * 20})
+          const chunk = XYtoChunk({ x: position.data.x * 20, y: position.data.y * 20 })
           const neighbors = chunkNeighbors(chunk, 4)
 
           const chunkData = blocks.visible(neighbors, false, true)
@@ -167,7 +186,6 @@ const ExperimentSystem = SystemBuilder({
             placed = true
 
             const { x, y, z } = chunkData[i]
-            // dummy.position.set(x / 60, 0, y / 30)
             dummy.position.set(x * 0.3, z * 0.3, y * 0.3)
             dummy.updateMatrix()
 
