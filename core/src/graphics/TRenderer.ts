@@ -76,6 +76,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       parent?.appendChild(canvas)
 
       scene = new Scene()
+      scene.add(tRenderer.blocks)
 
       // radial = Radial(["A", "B", "C"])
       // scene.add(radial.group)
@@ -207,8 +208,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         dummy.updateMatrix()
         tRenderer.blocks.setMatrixAt(i, dummy.matrix)
       }
-
-      scene.add(tRenderer.blocks)
 
       canvas.addEventListener("wheel", (event: WheelEvent) => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
