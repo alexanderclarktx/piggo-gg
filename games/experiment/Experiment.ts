@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blocks, Character, Collider, entries, GameBuilder, Input, min, Networked,
+  Action, Actions, blocks, Character, chunkNeighbors, Collider, entries, GameBuilder, Input, min, Networked,
   PhysicsSystem, Position, SpawnSystem, spawnTerrain, spawnTiny, SystemBuilder, TCameraSystem, Team,
   XYtoChunk
 } from "@piggo-gg/core"
@@ -154,22 +154,13 @@ const ExperimentSystem = SystemBuilder({
 
           const dummy = new Object3D()
 
-          // const { position } = pc.components
+          const { position } = pc.components
 
-          // const chunk = XYtoChunk({x: position.data.x * 20, y: position.data.y * 20})
+          const chunk = XYtoChunk({x: position.data.x * 20, y: position.data.y * 20})
+          const neighbors = chunkNeighbors(chunk, 4)
 
-          const chunkData = blocks.visible([
-            { x: 1, y: 1 },
-            { x: 1, y: 2 },
-            { x: 1, y: 3 },
-            { x: 2, y: 1 },
-            { x: 2, y: 2 },
-            { x: 2, y: 3 },
-            { x: 3, y: 1 },
-            { x: 3, y: 2 },
-            { x: 3, y: 3 }
-          ], false, true)
-          // console.log("chunkData", chunkData.length, chunk.x, chunk.y)
+          const chunkData = blocks.visible(neighbors, false, true)
+          world.three!.blocks!.count = chunkData.length
 
           // for (const [i, block] of entries(chunkData)) {
           for (let i = 0; i < chunkData.length; i++) {

@@ -478,14 +478,26 @@ export const highestBlock = (pos: XY, chunks: XY[], max?: number): XYZ => {
   return { x: snapped.x, y: snapped.y, z: level }
 }
 
-export const chunkNeighors = (chunk: XY): XY[] => ([
-  chunk,
-  { x: chunk.x - 1, y: chunk.y },
-  { x: chunk.x + 1, y: chunk.y },
-  { x: chunk.x, y: chunk.y - 1 },
-  { x: chunk.x, y: chunk.y + 1 },
-  { x: chunk.x - 1, y: chunk.y - 1 },
-  { x: chunk.x + 1, y: chunk.y - 1 },
-  { x: chunk.x - 1, y: chunk.y + 1 },
-  { x: chunk.x + 1, y: chunk.y + 1 }
-])
+export const chunkNeighbors = (chunk: XY, dist: number = 1): XY[] => {
+  const neighbors: XY[] = []
+
+  for (let dx = -dist; dx <= dist; dx++) {
+    for (let dy = -dist; dy <= dist; dy++) {
+      if (dx === 0 && dy === 0) continue // skip the center chunk
+      neighbors.push({ x: chunk.x + dx, y: chunk.y + dy })
+    }
+  }
+  return neighbors
+}
+
+// export const chunkNeighors = (chunk: XY): XY[] => ([
+//   chunk,
+//   { x: chunk.x - 1, y: chunk.y },
+//   { x: chunk.x + 1, y: chunk.y },
+//   { x: chunk.x, y: chunk.y - 1 },
+//   { x: chunk.x, y: chunk.y + 1 },
+//   { x: chunk.x - 1, y: chunk.y - 1 },
+//   { x: chunk.x + 1, y: chunk.y - 1 },
+//   { x: chunk.x - 1, y: chunk.y + 1 },
+//   { x: chunk.x + 1, y: chunk.y + 1 }
+// ])

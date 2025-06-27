@@ -2,7 +2,7 @@ import {
   BoxGeometry, BufferAttribute, Color, InstancedMesh,
   InstancedMeshEventMap, MeshPhysicalMaterial, Object3D
 } from "three"
-import { World, blocks, XYtoChunk, spawnTiny } from "@piggo-gg/core"
+import { World, blocks, XYtoChunk } from "@piggo-gg/core"
 
 export type TBlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial, InstancedMeshEventMap>
 
@@ -56,23 +56,6 @@ export const TBlockMesh = (world: World): TBlockMesh => {
   //     console.log(`Block at (${x}, ${y}, ${z}) set at index ${index}`)
   //     // mesh.setMatrixAt(index, dummy.setPosition(x, y, z).matrix)
   //   }
-  // }
-  console.log(`TBlockMesh created with ${mesh.count} instances`)
-
-
-  // const dummy = new Object3D()
-
-  // arrange blocks in 2D grid
-  // for (let i = 0; i < 512; i++) {
-  //   const j = i % 16
-  //   const k = Math.floor(i / 16)
-
-  //   dummy.position.set(j * 0.3, 0, k * 0.3)
-
-  //   if ([31, 67, 134, 121, 300, 501, 420].includes(i)) dummy.position.y = 0.3
-
-  //   dummy.updateMatrix()
-  //   mesh.setMatrixAt(i, dummy.matrix)
   // }
 
   return mesh
