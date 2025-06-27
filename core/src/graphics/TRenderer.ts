@@ -1,15 +1,16 @@
 import {
-  AmbientLight, BoxGeometry, BufferAttribute, CameraHelper, Color, DirectionalLight,
-  InstancedMesh, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
-  Object3D, RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, CameraHelper, DirectionalLight, Mesh, MeshBasicMaterial,
+  MeshPhysicalMaterial, NearestFilter, Object3D, RepeatWrapping, Scene,
+  SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, TCamera, World, Radial } from "@piggo-gg/core"
+import { sin, cos, TCamera, World, Radial, TBlockMesh } from "@piggo-gg/core"
 
 const evening = 0xffd9c3
 
 export type TRenderer = {
   camera: TCamera
+  blocks: TBlockMesh
   setZoom: (zoom: number) => void
   debug: (state: boolean) => void
   activate: (world: World) => void
@@ -34,6 +35,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
   const tRenderer: TRenderer = {
     camera: TCamera(),
+    blocks: TBlockMesh(),
     setZoom: (z: number) => zoom = z,
     resize: () => {
       if (renderer) {
@@ -124,34 +126,28 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const ambient = new AmbientLight(evening, 1)
       scene.add(ambient)
 
-      const geometry = new BoxGeometry(0.3, 0.3, 0.3)
-
-      const instancedMesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
-        vertexColors: true, visible: false, specularIntensity: 0.05
-      }), 512)
-
-      instancedMesh.castShadow = true
-      instancedMesh.receiveShadow = true
+      tRenderer.blocks.castShadow = true
+      tRenderer.blocks.receiveShadow = true
 
       const TL = new TextureLoader()
 
       // texture
       TL.load("dirt.png", (texture: Texture) => {
-        instancedMesh.material.map = texture
+        tRenderer.blocks.material.map = texture
 
-        instancedMesh.material.needsUpdate = true
-        instancedMesh.material.visible = true
+        tRenderer.blocks.material.needsUpdate = true
+        tRenderer.blocks.material.visible = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = NearestFilter
       })
 
-      const mat = instancedMesh.material
+      const mat = tRenderer.blocks.material
 
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
         mat.roughnessMap = texture
-        instancedMesh.material.needsUpdate = true
+        tRenderer.blocks.material.needsUpdate = true
       })
 
       // background
@@ -203,27 +199,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       composer.addPass(new EffectPass(camera, new SMAAEffect({ preset: SMAAPreset.LOW })))
 
-      const position = geometry.attributes.position
-      const colorAttr = new Float32Array(position.count * 3)
-
-      const faceColors = [
-        new Color(0xaaaaaa),
-        new Color(0xaaaaaa),
-        new Color(0x00ee55),
-        new Color(0xaaaaaa),
-        new Color(0xaaaaaa),
-        new Color(0xaaaaaa)
-      ]
-
-      // color the faces
-      for (let i = 0; i < position.count; i++) {
-        const faceIndex = Math.floor(i / 4)
-        const color = faceColors[faceIndex]
-        colorAttr.set([color.r, color.g, color.b], i * 3)
-      }
-
-      geometry.setAttribute('color', new BufferAttribute(colorAttr, 3))
-
       const dummy = new Object3D()
 
       // arrange blocks in 2D grid
@@ -236,10 +211,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         if ([31, 67, 134, 121, 300, 501, 420].includes(i)) dummy.position.y = 0.3
 
         dummy.updateMatrix()
-        instancedMesh.setMatrixAt(i, dummy.matrix)
+        tRenderer.blocks.setMatrixAt(i, dummy.matrix)
       }
 
-      scene.add(instancedMesh)
+      scene.add(tRenderer.blocks)
 
       canvas.addEventListener("wheel", (event: WheelEvent) => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))

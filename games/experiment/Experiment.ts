@@ -1,6 +1,6 @@
 import {
   Action, Actions, Character, Collider, GameBuilder, Input, min, Networked,
-  PhysicsSystem, Position, SpawnSystem, TCameraSystem, Team
+  PhysicsSystem, Position, SpawnSystem, spawnTerrain, spawnTiny, TCameraSystem, Team
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 
@@ -116,6 +116,13 @@ export const Experiment: GameBuilder = {
 
     world.renderer?.deactivate(world)
     world.three?.activate(world)
+
+    spawnTiny()
+
+    const pc = world.client?.playerCharacter()
+    if (pc) {
+
+    }
 
     return {
       id: "3D",
