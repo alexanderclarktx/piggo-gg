@@ -11,7 +11,7 @@ export type BlockData = {
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
-  visible: (at: XY[], flip?: boolean) => Block[]
+  visible: (at: XY[], flip?: boolean, ij?: boolean) => Block[]
   data: (at: XY[], flip?: boolean) => Block[]
   invalidate: (c?: "cache" | "visibleCache") => void
   hasXYZ: (block: XYZ) => boolean
@@ -169,7 +169,7 @@ export const BlockData = (): BlockData => {
 
       return true
     },
-    visible: (at: XY[], flip: boolean = false) => {
+    visible: (at: XY[], flip: boolean = false, ij: boolean = false) => {
       const result: Block[] = []
       const time = performance.now()
 
@@ -210,7 +210,9 @@ export const BlockData = (): BlockData => {
                 !val(pos.x * 4 + x, pos.y * 4 + y + dir, z) ||
                 !val(pos.x * 4 + x, pos.y * 4 + y, z + 1)
               ) {
-                const xyz = intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
+                const xyz = ij ?
+                  {x: x + pos.x * 4, y: y + pos.y * 4, z} :
+                  intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
                 const block: Block = { ...xyz, type }
                 chunkResult.push(block)
               }

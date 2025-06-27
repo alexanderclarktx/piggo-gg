@@ -10,7 +10,7 @@ const evening = 0xffd9c3
 
 export type TRenderer = {
   camera: TCamera
-  blocks: TBlockMesh
+  blocks: undefined | TBlockMesh
   setZoom: (zoom: number) => void
   debug: (state: boolean) => void
   activate: (world: World) => void
@@ -35,7 +35,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
   const tRenderer: TRenderer = {
     camera: TCamera(),
-    blocks: TBlockMesh(),
+    blocks: undefined,
     setZoom: (z: number) => zoom = z,
     resize: () => {
       if (renderer) {
@@ -76,6 +76,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       parent?.appendChild(canvas)
 
       scene = new Scene()
+
+      tRenderer.blocks = TBlockMesh(world)
       scene.add(tRenderer.blocks)
 
       // radial = Radial(["A", "B", "C"])
@@ -131,10 +133,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       // texture
       TL.load("dirt.png", (texture: Texture) => {
-        tRenderer.blocks.material.map = texture
+        tRenderer.blocks!.material.map = texture
 
-        tRenderer.blocks.material.needsUpdate = true
-        tRenderer.blocks.material.visible = true
+        tRenderer.blocks!.material.needsUpdate = true
+        tRenderer.blocks!.material.visible = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = NearestFilter
@@ -145,7 +147,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
         mat.roughnessMap = texture
-        tRenderer.blocks.material.needsUpdate = true
+        tRenderer.blocks!.material.needsUpdate = true
       })
 
       // background

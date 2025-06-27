@@ -1,8 +1,9 @@
 import {
-  Action, Actions, Character, Collider, GameBuilder, Input, min, Networked,
-  PhysicsSystem, Position, SpawnSystem, spawnTerrain, spawnTiny, TCameraSystem, Team
+  Action, Actions, blocks, Character, Collider, entries, GameBuilder, Input, min, Networked,
+  PhysicsSystem, Position, SpawnSystem, spawnTerrain, spawnTiny, SystemBuilder, TCameraSystem, Team,
+  XYtoChunk
 } from "@piggo-gg/core"
-import { Vector3 } from "three"
+import { Object3D, Vector3 } from "three"
 
 const Guy = () => Character({
   id: "guy",
@@ -117,13 +118,6 @@ export const Experiment: GameBuilder = {
     world.renderer?.deactivate(world)
     world.three?.activate(world)
 
-    spawnTiny()
-
-    const pc = world.client?.playerCharacter()
-    if (pc) {
-
-    }
-
     return {
       id: "3D",
       netcode: "rollback",
@@ -132,9 +126,68 @@ export const Experiment: GameBuilder = {
         SpawnSystem(Guy),
         PhysicsSystem("global"),
         PhysicsSystem("local"),
-        TCameraSystem()
+        TCameraSystem(),
+        ExperimentSystem
       ],
       entities: []
     }
   }
 }
+
+const ExperimentSystem = SystemBuilder({
+  id: "ExperimentSystem",
+  init: (world) => {
+
+    // spawnTiny()
+    spawnTerrain()
+    let placed = false
+
+    return {
+      id: "ExperimentSystem",
+      query: [],
+      priority: 3,
+      onTick: () => {
+        const pc = world.client?.playerCharacter()
+        // console.log("TBlockMesh pc", pc)
+
+        if (!placed && pc) {
+
+          const dummy = new Object3D()
+
+          // const { position } = pc.components
+
+          // const chunk = XYtoChunk({x: position.data.x * 20, y: position.data.y * 20})
+
+          const chunkData = blocks.visible([
+            { x: 1, y: 1 },
+            { x: 1, y: 2 },
+            { x: 1, y: 3 },
+            { x: 2, y: 1 },
+            { x: 2, y: 2 },
+            { x: 2, y: 3 },
+            { x: 3, y: 1 },
+            { x: 3, y: 2 },
+            { x: 3, y: 3 }
+          ], false, true)
+          // console.log("chunkData", chunkData.length, chunk.x, chunk.y)
+
+          // for (const [i, block] of entries(chunkData)) {
+          for (let i = 0; i < chunkData.length; i++) {
+            placed = true
+
+            const { x, y, z } = chunkData[i]
+            // dummy.position.set(x / 60, 0, y / 30)
+            dummy.position.set(x * 0.3, z * 0.3, y * 0.3)
+            dummy.updateMatrix()
+
+            world.three?.blocks?.setMatrixAt(i, dummy.matrix)
+            world.three!.blocks!.instanceMatrix.needsUpdate = true
+
+            // console.log(`Block at (${x}, ${y}, ${z}) set at index ${i}`)
+            // mesh.setMatrixAt(index, dummy.setPosition(x, y, z).matrix)
+          }
+        }
+      }
+    }
+  }
+})
