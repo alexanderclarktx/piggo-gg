@@ -126,9 +126,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const ambient = new AmbientLight(evening, 1)
       scene.add(ambient)
 
-      tRenderer.blocks.castShadow = true
-      tRenderer.blocks.receiveShadow = true
-
       const TL = new TextureLoader()
 
       // texture
@@ -164,10 +161,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         const sphere = new SphereGeometry(500, 60, 40)
 
-        const material = new MeshBasicMaterial({
-          map: texture,
-          side: 1
-        })
+        const material = new MeshBasicMaterial({ map: texture, side: 1 })
 
         const mesh = new Mesh(sphere, material)
 
