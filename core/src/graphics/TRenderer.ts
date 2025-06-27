@@ -1,6 +1,6 @@
 import {
   AmbientLight, CameraHelper, DirectionalLight, Mesh, MeshBasicMaterial,
-  MeshPhysicalMaterial, NearestFilter, Object3D, RepeatWrapping, Scene,
+  MeshPhysicalMaterial, NearestFilter, RepeatWrapping, Scene,
   SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
@@ -193,21 +193,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })))
 
       composer.addPass(new EffectPass(camera, new SMAAEffect({ preset: SMAAPreset.LOW })))
-
-      const dummy = new Object3D()
-
-      // arrange blocks in 2D grid
-      for (let i = 0; i < 512; i++) {
-        const j = i % 16
-        const k = Math.floor(i / 16)
-
-        dummy.position.set(j * 0.3, 0, k * 0.3)
-
-        if ([31, 67, 134, 121, 300, 501, 420].includes(i)) dummy.position.y = 0.3
-
-        dummy.updateMatrix()
-        tRenderer.blocks.setMatrixAt(i, dummy.matrix)
-      }
 
       canvas.addEventListener("wheel", (event: WheelEvent) => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))

@@ -1,6 +1,6 @@
 import {
   BoxGeometry, BufferAttribute, Color, InstancedMesh,
-  InstancedMeshEventMap, MeshPhysicalMaterial
+  InstancedMeshEventMap, MeshPhysicalMaterial, Object3D
 } from "three"
 
 export type TBlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial, InstancedMeshEventMap>
@@ -24,12 +24,27 @@ export const TBlockMesh = (): TBlockMesh => {
 
   geometry.setAttribute('color', new BufferAttribute(colorAttr, 3))
 
-  const blockMesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
+  const mesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
     vertexColors: true, visible: false, specularIntensity: 0.05
   }), 512)
 
-  blockMesh.castShadow = true
-  blockMesh.receiveShadow = true
+  mesh.castShadow = true
+  mesh.receiveShadow = true
 
-  return blockMesh
+  const dummy = new Object3D()
+
+  // arrange blocks in 2D grid
+  for (let i = 0; i < 512; i++) {
+    const j = i % 16
+    const k = Math.floor(i / 16)
+
+    dummy.position.set(j * 0.3, 0, k * 0.3)
+
+    if ([31, 67, 134, 121, 300, 501, 420].includes(i)) dummy.position.y = 0.3
+
+    dummy.updateMatrix()
+    mesh.setMatrixAt(i, dummy.matrix)
+  }
+
+  return mesh
 }
