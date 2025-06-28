@@ -7,6 +7,7 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
+  highestBlockIJ: (pos: XY, max?: number) => XYZ
   atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
@@ -54,6 +55,27 @@ export const BlockData = (): BlockData => {
   }
 
   const blocks: BlockData = {
+    highestBlockIJ: (pos: XY, max?: number): XYZ => {
+      let level = 0
+      const xChunk = floor(pos.x / 4)
+      const yChunk = floor(pos.y / 4)
+
+      const chunk = data[xChunk]?.[yChunk]
+
+      if (chunk !== undefined) {
+
+        const offset = (pos.x - xChunk * 4) + (pos.y - yChunk * 4) * 4
+
+        const zStart = 0
+        for (let z = zStart; z < (max ?? 32); z++) {
+          const index = z * 16 + offset
+          const type = chunk[index]
+          if (type !== 0) level = z
+        }
+      }
+      // console.log(`at ${pos.x}|${pos.y} level:${level}`, level)
+      return { x: pos.x, y: pos.y, z: level }
+    },
     atMouse: (mouse: XY, player: XYZ) => {
       const playerChunk = XYtoChunk(player)
 
@@ -211,7 +233,7 @@ export const BlockData = (): BlockData => {
                 !val(pos.x * 4 + x, pos.y * 4 + y, z + 1)
               ) {
                 const xyz = ij ?
-                  {x: x + pos.x * 4, y: y + pos.y * 4, z} :
+                  { x: x + pos.x * 4, y: y + pos.y * 4, z } :
                   intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
                 const block: Block = { ...xyz, type }
                 chunkResult.push(block)

@@ -1,6 +1,6 @@
 import {
-  Action, Actions, blocks, Character, chunkNeighbors, Collider, GameBuilder, highestBlock, Input, min, Networked,
-  PhysicsSystem, Position, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk
+  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, floor, GameBuilder, Input, min, Networked,
+  PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
 
@@ -154,20 +154,17 @@ const ExperimentSystem = SystemBuilder({
         // console.log("TBlockMesh pc", pc)
 
         // gravity
-        const entities = world.queryEntities<Position>(["position"])
+        const entities = world.queryEntities<Position>(["position","team"])
         for (const entity of entities) {
           const { position } = entity.components
 
           const { x, y, z, velocity } = position.data
 
-          const chunk = XYtoChunk({ x: position.data.x * 20, y: position.data.y * 20 })
-          const chunks = chunkNeighbors(chunk, 4)
-
-          const highest = highestBlock({ x, y }, chunks, z).z
+          const highest = blocks.highestBlockIJ({ x: round(x / 0.3), y: round(y / 0.3) }, ceil(z / 0.3 + 0.1)).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
-            const stop = highest / 20
-            // position.data.stop = stop
-            console.log("stop", stop)
+            const stop = highest * 0.3
+            position.data.stop = stop
+            // console.log("stop", stop)
           } else {
             // position.data.gravity = 0.002
             // position.data.stop = -600 * 0.3
