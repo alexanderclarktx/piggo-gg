@@ -513,15 +513,3 @@ export const chunkNeighbors = (chunk: XY, dist: number = 1): XY[] => {
   }
   return neighbors
 }
-
-// export const chunkNeighors = (chunk: XY): XY[] => ([
-//   chunk,
-//   { x: chunk.x - 1, y: chunk.y },
-//   { x: chunk.x + 1, y: chunk.y },
-//   { x: chunk.x, y: chunk.y - 1 },
-//   { x: chunk.x, y: chunk.y + 1 },
-//   { x: chunk.x - 1, y: chunk.y - 1 },
-//   { x: chunk.x + 1, y: chunk.y - 1 },
-//   { x: chunk.x - 1, y: chunk.y + 1 },
-//   { x: chunk.x + 1, y: chunk.y + 1 }
-// ])
