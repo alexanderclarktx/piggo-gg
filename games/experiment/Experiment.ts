@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, GameBuilder, Input, min, Networked,
+  Action, Actions, BlockCollider, blocks, ceil, Character, chunkNeighbors, Collider, Entity, GameBuilder, Input, min, Networked,
   PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
@@ -18,7 +18,7 @@ const Guy = () => Character({
         "escape": () => ({ actionId: "escape" }),
         "mb1": () => ({ actionId: "escape" }),
         "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
-        "g": ({world}) => {
+        "g": ({ world }) => {
           world.three?.debug()
           return null
         }
@@ -125,6 +125,11 @@ export const Experiment: GameBuilder = {
     world.renderer?.deactivate(world)
     world.three?.activate(world)
 
+    const blockColliders: Entity<Position | Collider>[] = Array.from(
+      { length: 12 }, (_, i) => BlockCollider(i)
+    )
+    world.addEntities(blockColliders)
+
     return {
       id: "3D",
       netcode: "rollback",
@@ -157,7 +162,7 @@ const ExperimentSystem = SystemBuilder({
         const pc = world.client?.playerCharacter()
 
         // gravity
-        const entities = world.queryEntities<Position>(["position","team"])
+        const entities = world.queryEntities<Position>(["position", "team"])
         for (const entity of entities) {
           const { position } = entity.components
 

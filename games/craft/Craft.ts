@@ -40,21 +40,9 @@ const CraftSystem = SystemBuilder({
     spawnTerrain()
     // spawnTiny()
 
-    const blockColliders: Entity<Position | Collider>[] = [
-      BlockCollider(0),
-      BlockCollider(1),
-      BlockCollider(2),
-      BlockCollider(3),
-      BlockCollider(4),
-      BlockCollider(5),
-      BlockCollider(6),
-      BlockCollider(7),
-      BlockCollider(8),
-      BlockCollider(9),
-      BlockCollider(10),
-      BlockCollider(11),
-      BlockCollider(12)
-    ]
+    const blockColliders: Entity<Position | Collider>[] = Array.from(
+      { length: 12 }, (_, i) => BlockCollider(i)
+    )
     world.addEntities(blockColliders)
 
     return {

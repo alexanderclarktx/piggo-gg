@@ -507,7 +507,6 @@ export const chunkNeighbors = (chunk: XY, dist: number = 1): XY[] => {
 
   for (let dx = -dist; dx <= dist; dx++) {
     for (let dy = -dist; dy <= dist; dy++) {
-      if (dx === 0 && dy === 0) continue // skip the center chunk
       neighbors.push({ x: chunk.x + dx, y: chunk.y + dy })
     }
   }
