@@ -1,6 +1,6 @@
 import { BlockDimensions, Collider, Entity, Position } from "@piggo-gg/core"
 
-// const { width, height } = BlockDimensions
+const { width, height } = BlockDimensions
 
 export const BlockCollider = (n: number) => Entity<Position | Collider>({
   id: `terrain-collider-${n}`,
@@ -11,24 +11,29 @@ export const BlockCollider = (n: number) => Entity<Position | Collider>({
       group: "1",
       hittable: true,
       isStatic: true,
-      shape: "ball",
-      radius: 0.3,
-      // points: [
-      //   -0.3, 0,
+      shape: "line",
+      points: [
+        0, width / 2,
+        -width, 0,
+        0, 3 - height,
+        width, 0,
+        0, width / 2
+      ]
+    })
+  }
+})
 
-        
-        // -width, 0,
-        // 0, 3 - height,
-        // width, 0,
-        // 0, width / 2
-      // ]
-      // points: [
-      //   0, width / 2,
-      //   -width, 0,
-      //   0, 3 - height,
-      //   width, 0,
-      //   0, width / 2
-      // ]
+export const TBlockCollider = (n: number) => Entity<Position | Collider>({
+  id: `terrain-collider-${n}`,
+  components: {
+    position: Position(),
+    collider: Collider({
+      cullable: true,
+      group: "1",
+      hittable: true,
+      isStatic: true,
+      shape: "cuboid",
+      width: 0.16, length: 0.16
     })
   }
 })

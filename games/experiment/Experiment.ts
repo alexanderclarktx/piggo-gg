@@ -1,7 +1,7 @@
 import {
-  Action, Actions, BlockCollider, blocks, ceil, Character, chunkNeighbors, Collider,
-  Entity, floor, GameBuilder, Input, logRare, min, Networked, PhysicsSystem, Position,
-  round, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk, XYZ
+  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, Entity, floor,
+  GameBuilder, Input, logRare, min, Networked, PhysicsSystem, Position, round, SpawnSystem,
+  spawnTerrain, SystemBuilder, TBlockCollider, TCameraSystem, Team, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
 
@@ -151,7 +151,7 @@ const ExperimentSystem = SystemBuilder({
     let placed = false
 
     const blockColliders: Entity<Position | Collider>[] = Array.from(
-      { length: 1 }, (_, i) => BlockCollider(i)
+      { length: 12 }, (_, i) => TBlockCollider(i)
     )
     world.addEntities(blockColliders)
 
@@ -183,8 +183,12 @@ const ExperimentSystem = SystemBuilder({
             position.data.stop = 0
           }
 
+          world.three!.sphere2?.position.set(
+            position.data.x, position.data.z + 0.3, position.data.y
+          )
+
           // set collider group
-          const group = (floor(position.data.z / 0.3) + 1).toString() as "1"
+          const group = (ceil(position.data.z / 0.3) + 1).toString() as "1"
           entity.components.collider.setGroup(group)
           entity.components.collider.active = true
 
@@ -198,7 +202,7 @@ const ExperimentSystem = SystemBuilder({
             if (z === 0) continue
 
             const zDiff = z - position.data.z
-            if (zDiff > 2 || zDiff < -0.3) continue
+            if (zDiff > 2 || zDiff <= 0) continue
             // console.log("zDiff", zDiff)
 
             const dist = Math.sqrt(Math.pow(x - position.data.x, 2) + Math.pow(y - position.data.y, 2))
@@ -220,8 +224,9 @@ const ExperimentSystem = SystemBuilder({
               const xyz = set[index]
               position.setPosition(xyz)
 
-              const group = floor(xyz.z / 0.3 + 1).toString() as "1"
+              const group = floor(xyz.z / 0.3).toString() as "1"
               collider.setGroup(group)
+              world.three!.sphere?.position.set(xyz.x, xyz.z, xyz.y)
               logRare(`blockCollider xyz:${xyz.x},${xyz.y},${xyz.z} group:${group}`, world)
               collider.active = true
             } else {

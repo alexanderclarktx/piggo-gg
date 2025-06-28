@@ -1,5 +1,5 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, Mesh, MeshBasicMaterial,
+  AmbientLight, CameraHelper, DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial,
   MeshPhysicalMaterial, NearestFilter, RepeatWrapping, Scene,
   SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -10,6 +10,8 @@ const evening = 0xffd9c3
 
 export type TRenderer = {
   camera: TCamera
+  sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
+  sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   blocks: undefined | TBlockMesh
   setZoom: (zoom: number) => void
   debug: (state?: boolean) => void
@@ -36,6 +38,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
   const tRenderer: TRenderer = {
     camera: TCamera(),
+    sphere: undefined,
+    sphere2: undefined,
     blocks: undefined,
     setZoom: (z: number) => zoom = z,
     resize: () => {
@@ -81,6 +85,30 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       tRenderer.blocks = TBlockMesh()
       scene.add(tRenderer.blocks)
+
+      tRenderer.sphere = new InstancedMesh(
+        new SphereGeometry(0.15),
+        new MeshPhysicalMaterial({
+          color: 0xffd9c3,
+          emissive: 0xffd9c3,
+          emissiveIntensity: 1,
+          roughness: 0.1,
+          visible: true
+        }),
+        10
+      )
+      tRenderer.sphere2 = new Mesh(
+        new SphereGeometry(0.1),
+        new MeshPhysicalMaterial({
+          color: 0x00ff00,
+          emissive: 0x00ff00,
+          emissiveIntensity: 1,
+          roughness: 0.1,
+          visible: true
+        })
+      )
+      scene.add(tRenderer.sphere)
+      scene.add(tRenderer.sphere2)
 
       // radial = Radial(["A", "B", "C"])
       // scene.add(radial.group)
