@@ -168,11 +168,8 @@ const ExperimentSystem = SystemBuilder({
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             const stop = highest * 0.3
             position.data.stop = stop
-            // console.log("stop", stop)
           } else {
             position.data.stop = 0
-            // position.data.gravity = 0.002
-            // console.log("reset stop")
           }
 
           // FOV
