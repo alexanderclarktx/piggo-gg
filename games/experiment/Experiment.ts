@@ -1,6 +1,7 @@
 import {
-  Action, Actions, BlockCollider, blocks, ceil, Character, chunkNeighbors, Collider, Entity, GameBuilder, Input, min, Networked,
-  PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk
+  Action, Actions, BlockCollider, blocks, ceil, Character, chunkNeighbors, Collider,
+  Entity, floor, GameBuilder, Input, logRare, min, Networked, PhysicsSystem, Position,
+  round, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
 
@@ -11,7 +12,7 @@ const Guy = () => Character({
     networked: Networked(),
     collider: Collider({
       shape: "ball",
-      radius: 4
+      radius: 0.1
     }),
     input: Input({
       release: {
@@ -125,11 +126,6 @@ export const Experiment: GameBuilder = {
     world.renderer?.deactivate(world)
     world.three?.activate(world)
 
-    const blockColliders: Entity<Position | Collider>[] = Array.from(
-      { length: 12 }, (_, i) => BlockCollider(i)
-    )
-    world.addEntities(blockColliders)
-
     return {
       id: "3D",
       netcode: "rollback",
@@ -154,21 +150,32 @@ const ExperimentSystem = SystemBuilder({
     spawnTerrain()
     let placed = false
 
+    const blockColliders: Entity<Position | Collider>[] = Array.from(
+      { length: 1 }, (_, i) => BlockCollider(i)
+    )
+    world.addEntities(blockColliders)
+
     return {
       id: "ExperimentSystem",
       query: [],
       priority: 3,
       onTick: () => {
-        const pc = world.client?.playerCharacter()
 
-        // gravity
-        const entities = world.queryEntities<Position>(["position", "team"])
+        const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         for (const entity of entities) {
           const { position } = entity.components
-
           const { x, y, z, velocity } = position.data
 
-          const highest = blocks.highestBlockIJ({ x: round(x / 0.3), y: round(y / 0.3) }, ceil(z / 0.3 + 0.1)).z
+          // FOV
+          // let velXY = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
+          // velXY = max(0, velXY - 2)
+          // console.log("velXY", velXY)
+          // world.three!.camera.setFov(60 - (min(velXY * 0.5, 5)))
+
+          const ij = { x: round(x / 0.3), y: round(y / 0.3) }
+
+          // gravity
+          const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1)).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             const stop = highest * 0.3
             position.data.stop = stop
@@ -176,13 +183,55 @@ const ExperimentSystem = SystemBuilder({
             position.data.stop = 0
           }
 
-          // FOV
-          // let velXY = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
-          // velXY = max(0, velXY - 2)
-          // console.log("velXY", velXY)
-          // world.three!.camera.setFov(60 - (min(velXY * 0.5, 5)))
+          // set collider group
+          const group = (floor(position.data.z / 0.3) + 1).toString() as "1"
+          entity.components.collider.setGroup(group)
+          entity.components.collider.active = true
+
+          const chunks = chunkNeighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
+
+          let set: XYZ[] = []
+
+          // find closest blocks
+          for (const block of blocks.visible(chunks, false, true)) {
+            const { x, y, z } = {x: block.x * 0.3, y: block.y * 0.3, z: block.z * 0.3}
+            if (z === 0) continue
+
+            const zDiff = z - position.data.z
+            if (zDiff > 2 || zDiff < -0.3) continue
+            // console.log("zDiff", zDiff)
+
+            const dist = Math.sqrt(Math.pow(x - position.data.x, 2) + Math.pow(y - position.data.y, 2))
+            if (dist < 20) set.push({x, y, z})
+          }
+
+          logRare(`ij: ${position.data.x},${position.data.y},${position.data.z} group: ${group} set:${set.length}`, world)
+
+          set.sort((a, b) => {
+            const distA = Math.sqrt(Math.pow(a.x - position.data.x, 2) + Math.pow(a.y - position.data.y, 2))
+            const distB = Math.sqrt(Math.pow(b.x - position.data.x, 2) + Math.pow(b.y - position.data.y, 2))
+            return distA - distB
+          })
+
+          // update block colliders
+          for (const [index, blockCollider] of blockColliders.entries()) {
+            const { position, collider } = blockCollider.components
+            if (set[index]) {
+              const xyz = set[index]
+              position.setPosition(xyz)
+
+              const group = floor(xyz.z / 0.3 + 1).toString() as "1"
+              collider.setGroup(group)
+              logRare(`blockCollider xyz:${xyz.x},${xyz.y},${xyz.z} group:${group}`, world)
+              collider.active = true
+            } else {
+              collider.active = false
+            }
+          }
         }
 
+        // render blocks
+        const pc = world.client?.playerCharacter()
         if (!placed && pc) {
 
           const dummy = new Object3D()
