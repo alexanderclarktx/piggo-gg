@@ -62,6 +62,8 @@ export const BlockData = (): BlockData => {
 
       const chunk = data[xChunk]?.[yChunk]
 
+      if (max && max > 32) max = 32
+
       if (chunk !== undefined) {
 
         const offset = (pos.x - xChunk * 4) + (pos.y - yChunk * 4) * 4

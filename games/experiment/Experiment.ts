@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, floor, GameBuilder, Input, min, Networked,
+  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, GameBuilder, Input, min, Networked,
   PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder, TCameraSystem, Team, XYtoChunk
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
@@ -166,9 +166,16 @@ const ExperimentSystem = SystemBuilder({
             position.data.stop = stop
             // console.log("stop", stop)
           } else {
+            position.data.stop = 0
             // position.data.gravity = 0.002
-            // position.data.stop = -600 * 0.3
+            // console.log("reset stop")
           }
+
+          // FOV
+          // let velXY = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
+          // velXY = max(0, velXY - 2)
+          // console.log("velXY", velXY)
+          // world.three!.camera.setFov(60 - (min(velXY * 0.5, 5)))
         }
 
         if (!placed && pc) {
