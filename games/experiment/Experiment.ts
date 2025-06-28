@@ -164,8 +164,6 @@ const ExperimentSystem = SystemBuilder({
 
           const { x, y, z, velocity } = position.data
 
-          // world.three!.sunLookAt(x, y, z)
-
           const highest = blocks.highestBlockIJ({ x: round(x / 0.3), y: round(y / 0.3) }, ceil(z / 0.3 + 0.1)).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
             const stop = highest * 0.3
