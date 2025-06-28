@@ -12,12 +12,13 @@ export type TRenderer = {
   camera: TCamera
   blocks: undefined | TBlockMesh
   setZoom: (zoom: number) => void
-  debug: (state: boolean) => void
+  debug: (state?: boolean) => void
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
   pointerLock: () => void
   pointerUnlock: () => void
+  sunLookAt: (x: number, y: number, z: number) => void
 }
 
 export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
@@ -47,7 +48,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       renderer?.dispose()
       scene?.clear()
     },
-    debug: (state: boolean) => {
+    debug: (state?: boolean) => {
+      if (state === undefined) state = !debug
       if (debug === state) return
 
       debug = state
@@ -102,9 +104,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         // sunSphere.position.copy(sun!.position)
 
-        // camera zoom
-        // camera.position.set(-zoom, zoom * 0.5, zoom)
-
         world.onRender?.()
 
         composer.render()
@@ -122,8 +121,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sun.castShadow = true
 
       // widen the shadow
-      sun.shadow.camera.left = -10
-      sun.shadow.camera.right = 10
+      sun.shadow.camera.left = -25
+      sun.shadow.camera.right = 25
+      sun.shadow.camera.top = 10
+      sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
 
       const ambient = new AmbientLight(evening, 1)
@@ -203,8 +204,15 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
-
-      // tRenderer.debug(location.hostname === "localhost")
+    },
+    sunLookAt: (x: number, y: number, z: number) => {
+      if (sun) {
+        sun.shadow.camera.lookAt(x, z, y)
+        sun.shadow.camera.updateProjectionMatrix()
+        sun.shadow.camera.updateMatrixWorld()
+      } else {
+        console.warn("Sun not initialized")
+      }
     }
   }
   return tRenderer

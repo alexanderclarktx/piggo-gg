@@ -18,6 +18,10 @@ const Guy = () => Character({
         "escape": () => ({ actionId: "escape" }),
         "mb1": () => ({ actionId: "escape" }),
         "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
+        "g": ({world}) => {
+          world.three?.debug()
+          return null
+        }
       },
       press: {
         "w,s": () => null, "a,d": () => null,
@@ -159,6 +163,8 @@ const ExperimentSystem = SystemBuilder({
           const { position } = entity.components
 
           const { x, y, z, velocity } = position.data
+
+          // world.three!.sunLookAt(x, y, z)
 
           const highest = blocks.highestBlockIJ({ x: round(x / 0.3), y: round(y / 0.3) }, ceil(z / 0.3 + 0.1)).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
