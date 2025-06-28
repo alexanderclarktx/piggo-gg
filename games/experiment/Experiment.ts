@@ -187,7 +187,6 @@ const ExperimentSystem = SystemBuilder({
           world.three!.blocks!.count = chunkData.length
           console.log(`rendering ${chunkData.length} blocks`)
 
-          // for (const [i, block] of entries(chunkData)) {
           for (let i = 0; i < chunkData.length; i++) {
             placed = true
 
@@ -197,9 +196,6 @@ const ExperimentSystem = SystemBuilder({
 
             world.three?.blocks?.setMatrixAt(i, dummy.matrix)
             world.three!.blocks!.instanceMatrix.needsUpdate = true
-
-            // console.log(`Block at (${x}, ${y}, ${z}) set at index ${i}`)
-            // mesh.setMatrixAt(index, dummy.setPosition(x, y, z).matrix)
           }
         }
       }
