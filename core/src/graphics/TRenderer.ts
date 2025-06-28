@@ -79,7 +79,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       scene = new Scene()
 
-      tRenderer.blocks = TBlockMesh(world)
+      tRenderer.blocks = TBlockMesh()
       scene.add(tRenderer.blocks)
 
       // radial = Radial(["A", "B", "C"])

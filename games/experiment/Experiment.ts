@@ -155,7 +155,6 @@ const ExperimentSystem = SystemBuilder({
       priority: 3,
       onTick: () => {
         const pc = world.client?.playerCharacter()
-        // console.log("TBlockMesh pc", pc)
 
         // gravity
         const entities = world.queryEntities<Position>(["position","team"])
