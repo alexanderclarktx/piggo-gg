@@ -209,7 +209,7 @@ const ExperimentSystem = SystemBuilder({
             if (dist < 20) set.push({x, y, z})
           }
 
-          logRare(`ij: ${position.data.x},${position.data.y},${position.data.z} group: ${group} set:${set.length}`, world)
+          // logRare(`ij: ${position.data.x},${position.data.y},${position.data.z} group: ${group} set:${set.length}`, world)
 
           set.sort((a, b) => {
             const distA = Math.sqrt(Math.pow(a.x - position.data.x, 2) + Math.pow(a.y - position.data.y, 2))
@@ -227,7 +227,7 @@ const ExperimentSystem = SystemBuilder({
               const group = floor(xyz.z / 0.3).toString() as "1"
               collider.setGroup(group)
               world.three!.sphere?.position.set(xyz.x, xyz.z, xyz.y)
-              logRare(`blockCollider xyz:${xyz.x},${xyz.y},${xyz.z} group:${group}`, world)
+              // logRare(`blockCollider xyz:${xyz.x},${xyz.y},${xyz.z} group:${group}`, world)
               collider.active = true
             } else {
               collider.active = false
