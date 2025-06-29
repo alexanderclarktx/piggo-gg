@@ -60,9 +60,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       if (debug && renderer && scene && sun) {
         helper = new CameraHelper(sun.shadow.camera)
         scene.add(helper)
+        tRenderer.sphere!.visible = true
+        tRenderer.sphere2!.visible = true
+        // tRenderer.sphere!.instanceMatrix.needsUpdate = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
+        tRenderer.sphere!.visible = false
+        tRenderer.sphere2!.visible = false
       }
     },
     pointerLock: () => {
@@ -92,8 +97,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           color: 0xffd9c3,
           emissive: 0xffd9c3,
           emissiveIntensity: 1,
-          roughness: 0.1,
-          visible: true
+          roughness: 0.1
         }),
         10
       )
@@ -103,10 +107,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           color: 0x00ff00,
           emissive: 0x00ff00,
           emissiveIntensity: 1,
-          roughness: 0.1,
-          visible: true
+          roughness: 0.1
         })
       )
+      tRenderer.sphere.visible = false
+      tRenderer.sphere2.visible = false
       scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
 
