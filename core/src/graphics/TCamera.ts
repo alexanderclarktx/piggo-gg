@@ -4,6 +4,7 @@ import { PerspectiveCamera, Vector3 } from "three"
 export type TCamera = {
   c: PerspectiveCamera
   worldDirection: (world: World) => Vector3
+  setFov: (fov: number) => void
 }
 
 export const TCameraSystem = () => ClientSystemBuilder({
@@ -23,7 +24,7 @@ export const TCameraSystem = () => ClientSystemBuilder({
 
         const interpolated = position.interpolate(delta, world)
 
-        world.three.camera.c.position.set(interpolated.x, interpolated.z, interpolated.y)
+        world.three.camera.c.position.set(interpolated.x, interpolated.z + 0.6, interpolated.y)
 
         world.three.camera.c.rotation.set(
           position.data.aim.y, position.data.aim.x, 0
@@ -50,6 +51,10 @@ export const TCamera = (): TCamera => {
 
       const t = new Vector3(-sin(x), 0, -cos(x))
       return t.normalize()
+    },
+    setFov: (fov: number) => {
+      camera.fov = fov
+      camera.updateProjectionMatrix()
     }
   }
   return tCamera

@@ -2,8 +2,8 @@ import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, highestBlock, Cursor, Chat, EscapeMenu, blocks,
-  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider, spawnChunk,
-  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighors, Piggo, RenderSystem
+  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider,
+  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighbors, RenderSystem, spawnTerrain
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -33,27 +33,6 @@ export const Craft: GameBuilder = {
   })
 }
 
-const spawnTerrain = () => {
-  const num = 100
-  for (let i = 0; i < num; i++) {
-    for (let j = 0; j < num; j++) {
-      const chunk = { x: i, y: j }
-      spawnChunk(chunk)
-    }
-  }
-}
-
-const spawnTiny = () => {
-  const num = 8
-  for (let i = 0; i < num; i++) {
-    for (let j = 0; j < num; j++) {
-      blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
-    }
-  }
-
-  blocks.add({ x: 9, y: 9, z: 1, type: 2 })
-}
-
 const CraftSystem = SystemBuilder({
   id: "CraftSystem",
   init: (world) => {
@@ -61,21 +40,9 @@ const CraftSystem = SystemBuilder({
     spawnTerrain()
     // spawnTiny()
 
-    const blockColliders: Entity<Position | Collider>[] = [
-      BlockCollider(0),
-      BlockCollider(1),
-      BlockCollider(2),
-      BlockCollider(3),
-      BlockCollider(4),
-      BlockCollider(5),
-      BlockCollider(6),
-      BlockCollider(7),
-      BlockCollider(8),
-      BlockCollider(9),
-      BlockCollider(10),
-      BlockCollider(11),
-      BlockCollider(12)
-    ]
+    const blockColliders: Entity<Position | Collider>[] = Array.from(
+      { length: 12 }, (_, i) => BlockCollider(i)
+    )
     world.addEntities(blockColliders)
 
     return {
@@ -92,7 +59,7 @@ const CraftSystem = SystemBuilder({
           const { x, y, z, velocity } = position.data
 
           const chunk = XYtoChunk(position.data)
-          const chunks = chunkNeighors(chunk)
+          const chunks = chunkNeighbors(chunk)
 
           const highest = highestBlock({ x, y }, chunks, z).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
@@ -117,7 +84,7 @@ const CraftSystem = SystemBuilder({
 
           const playerChunk = XYtoChunk(position.data)
 
-          const chunks = chunkNeighors(playerChunk)
+          const chunks = chunkNeighbors(playerChunk)
 
           if (position.data.z === -600) {
             position.setPosition({ x: 0, y: 200, z: 128 })

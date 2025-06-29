@@ -22,3 +22,18 @@ export const BlockCollider = (n: number) => Entity<Position | Collider>({
     })
   }
 })
+
+export const TBlockCollider = (n: number) => Entity<Position | Collider>({
+  id: `terrain-collider-${n}`,
+  components: {
+    position: Position(),
+    collider: Collider({
+      cullable: true,
+      group: "1",
+      hittable: true,
+      isStatic: true,
+      shape: "cuboid",
+      width: 0.16, length: 0.16
+    })
+  }
+})
