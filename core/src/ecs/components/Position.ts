@@ -135,19 +135,20 @@ export const Position = (props: PositionProps = {}): Position => {
     },
     interpolate: (world: World) => {
       const delta = performance.now() - world.time
-      let z = position.data.velocity.z * delta / world.tickrate
-      if (position.data.stop && position.data.z + z < position.data.stop) {
-        z = position.data.stop - position.data.z
+
+      let dz = position.data.velocity.z * delta / world.tickrate
+      if (position.data.stop < position.data.z && position.data.z + dz < position.data.stop) {
+        dz = position.data.stop - position.data.z
       }
 
       if (world.tick - position.lastCollided <= 4) {
-        return { x: position.data.x, y: position.data.y, z: position.data.z + z }
+        return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
       }
 
       return {
         x: position.data.x + position.localVelocity.x * delta / 1000,
         y: position.data.y + position.localVelocity.y * delta / 1000,
-        z: position.data.z + z
+        z: position.data.z + dz
       }
     },
     setSpeed: (speed: number) => {
