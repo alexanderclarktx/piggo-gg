@@ -1,7 +1,7 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial,
-  MeshPhysicalMaterial, NearestFilter, RepeatWrapping, Scene,
-  SphereGeometry, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh,
+  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, RepeatWrapping,
+  Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos, TCamera, World, Radial, TBlockMesh } from "@piggo-gg/core"
