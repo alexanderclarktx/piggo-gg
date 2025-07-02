@@ -1,7 +1,7 @@
 import {
   Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, Entity, floor,
-  GameBuilder, Input, logRare, min, Networked, PhysicsSystem, Position, round, SpawnSystem,
-  spawnTerrain, SystemBuilder, TBlockCollider, TCameraSystem, Team, XYtoChunk, XYZ
+  GameBuilder, Input, min, Networked, PhysicsSystem, Position, round, SpawnSystem,
+  spawnTerrain, SystemBuilder, TBlockCollider, TCameraSystem, Team, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 
@@ -170,25 +170,19 @@ const ExperimentSystem = SystemBuilder({
             position.data.z = 10
           }
 
-          // FOV
-          // let velXY = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
-          // velXY = max(0, velXY - 2)
-          // console.log("velXY", velXY)
-          // world.three!.camera.setFov(60 - (min(velXY * 0.5, 5)))
-
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
           // gravity
           const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1)).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
-            const stop = highest * 0.3 + 0.15
+            const stop = highest * 0.3 + 0.3
             position.data.stop = stop
           } else {
             position.data.stop = -5
           }
 
           // set collider group
-          const pgroup = (1 + floor(position.data.z / 0.3)).toString() as "1"
+          const pgroup = (floor(position.data.z / 0.3 + 0.01)).toString() as "1"
           entity.components.collider.setGroup(pgroup)
           entity.components.collider.active = true
 
@@ -199,11 +193,9 @@ const ExperimentSystem = SystemBuilder({
           // find closest blocks
           for (const block of blocks.visible(chunks, false, true)) {
             const { x, y, z } = { x: block.x * 0.3, y: block.y * 0.3, z: block.z * 0.3 }
-            // if (z === 0) continue
 
             const zDiff = z - position.data.z
             if (zDiff > 0.5 || zDiff < -0.5) continue
-            // console.log("zDiff", zDiff)
 
             const dist = Math.sqrt(
               Math.pow(x - position.data.x, 2) +
@@ -213,21 +205,9 @@ const ExperimentSystem = SystemBuilder({
             if (dist < 20) set.push({ x, y, z })
           }
 
-          // logRare(`ij: ${position.data.x},${position.data.y},${position.data.z} group: ${group} set:${set.length}`, world)
-
           set.sort((a, b) => {
-            const distA = Math.sqrt(
-              Math.pow(a.x - position.data.x, 2) +
-              Math.pow(a.y - position.data.y, 2) +
-              Math.pow(a.z - position.data.z, 2)
-            )
-            const distB = Math.sqrt(
-              Math.pow(b.x - position.data.x, 2) +
-              Math.pow(b.y - position.data.y, 2) +
-              Math.pow(b.z - position.data.z, 2)
-            )
-            // const distA = Math.sqrt(Math.pow(a.x - position.data.x, 2) + Math.pow(a.y - position.data.y, 2))
-            // const distB = Math.sqrt(Math.pow(b.x - position.data.x, 2) + Math.pow(b.y - position.data.y, 2))
+            const distA = XYZdistance(a, position.data)
+            const distB = XYZdistance(b, position.data)
             return distA - distB
           })
 
@@ -239,20 +219,19 @@ const ExperimentSystem = SystemBuilder({
               position.setPosition(xyz)
 
               const group = round(xyz.z / 0.3).toString() as "1"
-              // const group = "6" as "1"
               collider.setGroup(group)
 
               const sphere = world.three?.sphere!
 
               const dummy = new Object3D()
-              dummy.position.set(xyz.x, xyz.z, xyz.y)
+              dummy.position.set(xyz.x, xyz.z + 0.15, xyz.y)
               dummy.updateMatrix()
               sphere.setMatrixAt(index, dummy.matrix)
               sphere.instanceMatrix.needsUpdate = true
 
               sphere.setColorAt(index, new Color((pgroup == group) ? 0x0000ff : 0xff0000))
               sphere.instanceColor!.needsUpdate = true
-              console.log(group, pgroup, pgroup == group)
+              // console.log(group, pgroup, pgroup == group)
 
               collider.active = true
             } else {
@@ -280,7 +259,7 @@ const ExperimentSystem = SystemBuilder({
             placed = true
 
             const { x, y, z } = chunkData[i]
-            dummy.position.set(x * 0.3, z * 0.3, y * 0.3)
+            dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
             world.three?.blocks?.setMatrixAt(i, dummy.matrix)
