@@ -105,7 +105,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         new MeshPhysicalMaterial({
           color: 0xffd9c3,
           emissive: 0xffd9c3,
-          emissiveIntensity: 0.5,
+          emissiveIntensity: 0,
           roughness: 0.5
         }), 12
       )

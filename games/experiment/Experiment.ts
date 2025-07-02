@@ -3,7 +3,7 @@ import {
   GameBuilder, Input, logRare, min, Networked, PhysicsSystem, Position, round, SpawnSystem,
   spawnTerrain, SystemBuilder, TBlockCollider, TCameraSystem, Team, XYtoChunk, XYZ
 } from "@piggo-gg/core"
-import { Object3D, Vector3 } from "three"
+import { Color, Object3D, Vector3 } from "three"
 
 const Guy = () => Character({
   id: "guy",
@@ -188,8 +188,8 @@ const ExperimentSystem = SystemBuilder({
           }
 
           // set collider group
-          const group = (1 + floor(position.data.z / 0.3)).toString() as "1"
-          entity.components.collider.setGroup(group)
+          const pgroup = (1 + floor(position.data.z / 0.3)).toString() as "1"
+          entity.components.collider.setGroup(pgroup)
           entity.components.collider.active = true
 
           const chunks = chunkNeighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
@@ -238,15 +238,21 @@ const ExperimentSystem = SystemBuilder({
               const xyz = set[index]
               position.setPosition(xyz)
 
-              const group = floor(xyz.z / 0.3).toString() as "1"
+              const group = round(xyz.z / 0.3).toString() as "1"
+              // const group = "6" as "1"
               collider.setGroup(group)
+
+              const sphere = world.three?.sphere!
 
               const dummy = new Object3D()
               dummy.position.set(xyz.x, xyz.z, xyz.y)
               dummy.updateMatrix()
+              sphere.setMatrixAt(index, dummy.matrix)
+              sphere.instanceMatrix.needsUpdate = true
 
-              world.three!.sphere?.setMatrixAt(index, dummy.matrix)
-              world.three!.sphere!.instanceMatrix.needsUpdate = true
+              sphere.setColorAt(index, new Color((pgroup == group) ? 0x0000ff : 0xff0000))
+              sphere.instanceColor!.needsUpdate = true
+              console.log(group, pgroup, pgroup == group)
 
               collider.active = true
             } else {
