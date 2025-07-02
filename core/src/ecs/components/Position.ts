@@ -35,7 +35,7 @@ export type Position = Component<"position", {
   scaleVelocity: (factor: number) => Position
   moveAim: (_: XY) => Position
   impulse: (_: { x?: number, y?: number, z?: number }) => Position
-  interpolate: (delta: number, world: World) => XYZ
+  interpolate: (world: World) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
@@ -133,7 +133,8 @@ export const Position = (props: PositionProps = {}): Position => {
       if (z !== undefined) position.data.velocity.z += z
       return position
     },
-    interpolate: (delta: number, world: World) => {
+    interpolate: (world: World) => {
+      const delta = performance.now() - world.time
       let z = position.data.velocity.z * delta / world.tickrate
       if (position.data.stop && position.data.z + z < position.data.stop) {
         z = position.data.stop - position.data.z
