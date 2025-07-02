@@ -104,7 +104,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         new SphereGeometry(0.16),
         new MeshPhysicalMaterial({
           color: 0xffd9c3,
-          emissive: 0xffd9c3,
           emissiveIntensity: 0,
           roughness: 0.5
         }), 12
@@ -113,7 +112,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         new SphereGeometry(0.05),
         new MeshPhysicalMaterial({
           color: 0x00ff00,
-          emissive: 0x00ff00,
           emissiveIntensity: 0.5,
           roughness: 0.5
         })
@@ -148,7 +146,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         const pc = world.client?.playerCharacter()
         if (pc && eagle) {
           const interpolated = pc.components.position.interpolate(world)
-          eagle.scene.position.set(interpolated.x, interpolated.z + 0.6, interpolated.y)
+          eagle.scene.position.set(interpolated.x, interpolated.z + 0.3, interpolated.y)
 
           const { aim } = pc.components.position.data
           eagle.scene.rotation.set(aim.y, aim.x, 0)

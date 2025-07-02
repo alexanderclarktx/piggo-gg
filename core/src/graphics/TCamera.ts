@@ -30,7 +30,7 @@ export const TCameraSystem = () => ClientSystemBuilder({
 
         world.three.camera.c.position.set(
           interpolated.x - rotatedOffset.x,
-          interpolated.z + 0.7,
+          interpolated.z + 0.4,
           interpolated.y - rotatedOffset.z
         )
 
