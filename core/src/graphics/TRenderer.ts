@@ -68,14 +68,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         helper = new CameraHelper(sun.shadow.camera)
         scene.add(helper)
         tRenderer.sphere!.visible = true
-        tRenderer.sphere2!.visible = true
+        // tRenderer.sphere2!.visible = true
         if (eagle) eagle.scene.visible = false
         // tRenderer.sphere!.instanceMatrix.needsUpdate = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
         tRenderer.sphere!.visible = false
-        tRenderer.sphere2!.visible = false
+        // tRenderer.sphere2!.visible = false
         if (eagle) eagle.scene.visible = true
       }
     },
@@ -111,15 +111,16 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2 = new Mesh(
         new SphereGeometry(0.05),
         new MeshPhysicalMaterial({
-          color: 0x00ff00,
+          color: 0x00ffff,
           emissiveIntensity: 0.5,
-          roughness: 0.5
+          roughness: 0.5,
+          wireframe: true
         })
       )
       tRenderer.sphere.frustumCulled = false
       tRenderer.sphere2.castShadow = true
       tRenderer.sphere.visible = false
-      tRenderer.sphere2.visible = false
+      // tRenderer.sphere2.visible = false
       scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
 
