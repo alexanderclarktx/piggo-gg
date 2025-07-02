@@ -1,5 +1,5 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh,
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh, LinearMipMapNearestFilter,
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -196,7 +196,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         tRenderer.blocks!.material.visible = true
 
         texture.magFilter = NearestFilter
-        texture.minFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
       })
 
       const mat = tRenderer.blocks.material
