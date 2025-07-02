@@ -225,7 +225,8 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         // gravity & z
         if (position.data.velocity.z || position.data.z) {
-          // position.data.z = max(position.data.z + position.data.velocity.z, position.data.stop)
+
+          // apply stop
           const wouldGo = position.data.z + position.data.velocity.z
           if (position.data.stop < position.data.z && wouldGo < position.data.stop) {
             position.data.z = position.data.stop
@@ -233,6 +234,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
             position.data.z = wouldGo
           }
 
+          // set standing
           if (position.data.z === position.data.stop) {
             position.data.velocity.z = 0
             position.data.standing = true
