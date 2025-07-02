@@ -5,7 +5,7 @@ import {
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos, TCamera, World, Radial, TBlockMesh } from "@piggo-gg/core"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
 const evening = 0xffd9c3
 
@@ -34,6 +34,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let radial: undefined | Radial
+  let eagle: undefined | GLTF
 
   let zoom = 2
   let debug = false
@@ -246,12 +247,12 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })
 
       glbLoader.load("eagle.glb", (gltf) => {
-        const eagle = gltf.scene
-        eagle.scale.set(0.1, 0.1, 0.1)
-        eagle.position.set(3, 3, 3)
-        scene?.add(eagle)
+        eagle = gltf
+        eagle.scene.scale.set(0.1, 0.1, 0.1)
+        eagle.scene.position.set(3, 3, 3)
+        scene?.add(eagle.scene)
 
-        const mixer = new AnimationMixer(eagle)
+        const mixer = new AnimationMixer(eagle.scene)
         mixer.clipAction(gltf.animations[0]).play()
 
         tRenderer.mixers.push(mixer)
@@ -263,7 +264,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           Cylinder_3: 0x632724
         }
 
-        eagle.traverse((child) => {
+        eagle.scene.traverse((child) => {
           if (child instanceof Mesh) {
             child.material = new MeshStandardMaterial({ color: colors[child.name] })
             child.castShadow = true
