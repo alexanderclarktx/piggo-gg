@@ -13,7 +13,7 @@ add web web
 add server server
 
 # install dependencies
-run bun install --production
+run bun install
 
 # run the server
 cmd [ "bun", "prod" ]
