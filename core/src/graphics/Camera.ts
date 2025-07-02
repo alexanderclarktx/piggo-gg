@@ -135,7 +135,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         }
         // console.log(`hidden ${numHidden} entities`)
       },
-      onRender: (_, delta) => {
+      onRender: () => {
         if (!renderer.camera.focus) return
 
         if (targetScale !== renderer.camera.scale) {
