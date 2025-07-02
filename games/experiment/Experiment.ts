@@ -166,6 +166,10 @@ const ExperimentSystem = SystemBuilder({
           const { position } = entity.components
           const { x, y, z, velocity } = position.data
 
+          if (z < -4) {
+            position.data.z = 10
+          }
+
           // FOV
           // let velXY = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
           // velXY = max(0, velXY - 2)
@@ -180,11 +184,11 @@ const ExperimentSystem = SystemBuilder({
             const stop = highest * 0.3 + 0.15
             position.data.stop = stop
           } else {
-            position.data.stop = 0
+            position.data.stop = -5
           }
 
           // set collider group
-          const group = (ceil(position.data.z / 0.3) + 1).toString() as "1"
+          const group = (1 + floor(position.data.z / 0.3)).toString() as "1"
           entity.components.collider.setGroup(group)
           entity.components.collider.active = true
 
@@ -279,7 +283,7 @@ const ExperimentSystem = SystemBuilder({
         const interpolated = pc.components.position.interpolate(world)
 
         world.three?.sphere2?.position.set(
-          interpolated.x, interpolated.z, interpolated.y
+          interpolated.x, interpolated.z + 0.1, interpolated.y
         )
       }
     }

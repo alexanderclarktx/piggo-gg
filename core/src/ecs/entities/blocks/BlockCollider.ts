@@ -33,7 +33,7 @@ export const TBlockCollider = (n: number) => Entity<Position | Collider>({
       hittable: true,
       isStatic: true,
       shape: "cuboid",
-      width: 0.16, length: 0.16
+      width: 0.1, length: 0.1
     })
   }
 })
