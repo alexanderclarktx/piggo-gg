@@ -5,7 +5,7 @@ import {
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos, TCamera, World, Radial, TBlockMesh } from "@piggo-gg/core"
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
 const evening = 0xffd9c3
 
@@ -264,7 +264,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
             child.castShadow = true
             child.receiveShadow = true
 
-            if (child.material && 'skinning' in child.material) {
+            if (child.material && "skinning" in child.material) {
               child.material.skinning = true
               child.material.needsUpdate = true
             }
