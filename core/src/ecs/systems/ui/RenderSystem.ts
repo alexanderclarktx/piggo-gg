@@ -180,7 +180,7 @@ export const RenderSystem = ClientSystemBuilder({
           const { velocity } = position.data
           if ((velocity.x || velocity.y || velocity.z)) {
 
-            const interpolated = position.interpolate(delta, world)
+            const interpolated = position.interpolate(world)
 
             const rotated = world.flip({
               x: renderable.position.x + interpolated.x,

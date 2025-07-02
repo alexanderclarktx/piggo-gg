@@ -22,7 +22,7 @@ export const TCameraSystem = () => ClientSystemBuilder({
 
         const { position } = pc.components
 
-        const interpolated = position.interpolate(delta, world)
+        const interpolated = position.interpolate(world)
 
         // world.three.camera.c.position.set(interpolated.x - 0.5, interpolated.z + 0.6, interpolated.y)
 

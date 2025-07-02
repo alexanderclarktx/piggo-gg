@@ -146,7 +146,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         const { position, renderable } = renderer.camera.focus.components
         if (!position || !renderable) return
 
-        const interpolated = position.interpolate(delta, world)
+        const interpolated = position.interpolate(world)
 
         const { x, y, z } = follow(interpolated)
 

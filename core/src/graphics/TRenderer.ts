@@ -144,9 +144,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         const pc = world.client?.playerCharacter()
         if (pc && eagle) {
           const { position } = pc.components
-          // const interpolated = position.interpolate(0.01, world)
+          const interpolated = position.interpolate(world)
           eagle.scene.position.set(
-            position.data.x, position.data.z + 0.6, position.data.y
+            interpolated.x, interpolated.z + 0.6, interpolated.y
           )
 
           // eagle.scene.position.set(interpolated.x, interpolated.z + 0.6, interpolated.y)

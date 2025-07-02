@@ -98,7 +98,7 @@ export const BlockMesh = () => {
           const character = world.client?.playerCharacter()
 
           // character position
-          const pcPos = character?.components.position.interpolate(delta, world) ?? { x: 0, y: 0, z: 0 }
+          const pcPos = character?.components.position.interpolate(world) ?? { x: 0, y: 0, z: 0 }
           const pcPosFlip = world.flip(pcPos)
 
           // highlighted face
