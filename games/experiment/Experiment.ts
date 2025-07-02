@@ -183,11 +183,6 @@ const ExperimentSystem = SystemBuilder({
             position.data.stop = 0
           }
 
-          if (position.data.z > 10) {
-            position.data.gravity = 0
-            position.data.velocity.z = 0
-          }
-
           // set collider group
           const group = (ceil(position.data.z / 0.3) + 1).toString() as "1"
           entity.components.collider.setGroup(group)
