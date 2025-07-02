@@ -145,16 +145,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         // update eagle position
         const pc = world.client?.playerCharacter()
         if (pc && eagle) {
-          const { position } = pc.components
-          const interpolated = position.interpolate(world)
-          eagle.scene.position.set(
-            interpolated.x, interpolated.z + 0.6, interpolated.y
-          )
+          const interpolated = pc.components.position.interpolate(world)
+          eagle.scene.position.set(interpolated.x, interpolated.z + 0.6, interpolated.y)
 
-          // eagle.scene.position.set(interpolated.x, interpolated.z + 0.6, interpolated.y)
-          eagle.scene.rotation.set(
-            position.data.aim.y, position.data.aim.x, 0
-          )
+          const { aim } = pc.components.position.data
+          eagle.scene.rotation.set(aim.y, aim.x, 0)
         }
 
         // ambient lighting

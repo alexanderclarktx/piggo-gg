@@ -8,3 +8,6 @@ https://freemusicarchive.org/music/holiznacc0/
 
 tiny hero sprites
 https://craftpix.net/freebies/free-pixel-art-tiny-hero-sprites/
+
+eagle mesh
+https://opengameart.org/content/animated-animales-low-poly
