@@ -1,5 +1,5 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh,
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh, LinearMipMapNearestFilter,
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -68,14 +68,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         helper = new CameraHelper(sun.shadow.camera)
         scene.add(helper)
         tRenderer.sphere!.visible = true
-        tRenderer.sphere2!.visible = true
+        // tRenderer.sphere2!.visible = true
         if (eagle) eagle.scene.visible = false
         // tRenderer.sphere!.instanceMatrix.needsUpdate = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
         tRenderer.sphere!.visible = false
-        tRenderer.sphere2!.visible = false
+        // tRenderer.sphere2!.visible = false
         if (eagle) eagle.scene.visible = true
       }
     },
@@ -101,26 +101,27 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       scene.add(tRenderer.blocks)
 
       tRenderer.sphere = new InstancedMesh(
-        new SphereGeometry(0.15),
+        new SphereGeometry(0.16),
         new MeshPhysicalMaterial({
           color: 0xffd9c3,
-          emissive: 0xffd9c3,
-          emissiveIntensity: 1,
-          roughness: 0.1
-        }),
-        10
+          emissiveIntensity: 0,
+          roughness: 0.5
+        }), 12
       )
       tRenderer.sphere2 = new Mesh(
-        new SphereGeometry(0.1),
+        new SphereGeometry(0.05),
         new MeshPhysicalMaterial({
-          color: 0x00ff00,
-          emissive: 0x00ff00,
-          emissiveIntensity: 1,
-          roughness: 0.1
+          color: 0x00ffff,
+          emissiveIntensity: 0.5,
+          roughness: 0.5,
+          wireframe: true,
         })
       )
+      tRenderer.sphere.frustumCulled = false
+      tRenderer.sphere2.castShadow = true
+      tRenderer.sphere2.receiveShadow = true
       tRenderer.sphere.visible = false
-      tRenderer.sphere2.visible = false
+      // tRenderer.sphere2.visible = false
       scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
 
@@ -147,7 +148,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         const pc = world.client?.playerCharacter()
         if (pc && eagle) {
           const interpolated = pc.components.position.interpolate(world)
-          eagle.scene.position.set(interpolated.x, interpolated.z + 0.6, interpolated.y)
+          eagle.scene.position.set(interpolated.x, interpolated.z + 0.3, interpolated.y)
 
           const { aim } = pc.components.position.data
           eagle.scene.rotation.set(aim.y, aim.x, 0)
@@ -195,7 +196,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         tRenderer.blocks!.material.visible = true
 
         texture.magFilter = NearestFilter
-        texture.minFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
       })
 
       const mat = tRenderer.blocks.material
