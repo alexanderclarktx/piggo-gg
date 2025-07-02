@@ -28,8 +28,6 @@ export const TBlockMesh = (): TBlockMesh => {
     vertexColors: true, visible: false, specularIntensity: 0.05, wireframe: false
   }), 1024 * 1024)
 
-  // texture.anisotropy = renderer.capabilities.getMaxAnisotropy()
-
   mesh.castShadow = true
   mesh.receiveShadow = true
   mesh.frustumCulled = false
