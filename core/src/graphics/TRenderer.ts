@@ -27,6 +27,9 @@ export type TRenderer = {
 
 export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
+  const TL = new TextureLoader()
+  const GL = new GLTFLoader()
+
   let canvas: HTMLCanvasElement = c
 
   let renderer: undefined | WebGLRenderer
@@ -38,8 +41,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
   let zoom = 2
   let debug = false
-
-  const glbLoader = new GLTFLoader()
 
   const tRenderer: TRenderer = {
     camera: TCamera(),
@@ -186,8 +187,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const ambient = new AmbientLight(evening, 1)
       scene.add(ambient)
 
-      const TL = new TextureLoader()
-
       // texture
       TL.load("dirt.png", (texture: Texture) => {
         tRenderer.blocks!.material.map = texture
@@ -258,7 +257,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         zoom = Math.max(1, Math.min(zoom, 10))
       })
 
-      glbLoader.load("eagle.glb", (gltf) => {
+      GL.load("eagle.glb", (gltf) => {
         eagle = gltf
         eagle.scene.scale.set(0.05, 0.05, 0.05)
         eagle.scene.position.set(3, 3, 3)
