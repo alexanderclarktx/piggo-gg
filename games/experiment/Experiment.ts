@@ -1,6 +1,5 @@
 import {
-  abs,
-  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, cos, Entity, floor,
+  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, Entity, floor,
   GameBuilder, Input, min, Networked, PhysicsSystem, Position, round, SpawnSystem,
   spawnTerrain, SystemBuilder, TBlockCollider, TCameraSystem, Team, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -9,7 +8,7 @@ import { Color, Object3D, Vector3 } from "three"
 const Guy = () => Character({
   id: "guy",
   components: {
-    position: Position({ friction: true, gravity: 0.002, stop: 2, z: 1, x: 0, y: 2 }),
+    position: Position({ friction: true, gravity: 0.002, stop: 2, z: 6, x: 20, y: 20 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
@@ -175,7 +174,7 @@ const ExperimentSystem = SystemBuilder({
 
           // gravity
           const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1)).z
-          if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
+          if (highest > 0 && velocity.z <= 0) {
             const stop = highest * 0.3 + 0.3
             position.data.stop = stop
           } else {
@@ -232,7 +231,6 @@ const ExperimentSystem = SystemBuilder({
 
               sphere.setColorAt(index, new Color((pgroup == group) ? 0x0000ff : 0xff0000))
               sphere.instanceColor!.needsUpdate = true
-              // console.log(group, pgroup, pgroup == group)
 
               collider.active = true
             } else {

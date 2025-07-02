@@ -114,7 +114,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           color: 0x00ffff,
           emissiveIntensity: 0.5,
           roughness: 0.5,
-          wireframe: true
+          wireframe: true,
         })
       )
       tRenderer.sphere.frustumCulled = false
