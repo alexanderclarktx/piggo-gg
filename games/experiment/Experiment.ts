@@ -240,8 +240,14 @@ const ExperimentSystem = SystemBuilder({
 
               const group = floor(xyz.z / 0.3).toString() as "1"
               collider.setGroup(group)
-              world.three!.sphere?.position.set(xyz.x, xyz.z, xyz.y)
-              // logRare(`blockCollider xyz:${xyz.x},${xyz.y},${xyz.z} group:${group}`, world)
+
+              const dummy = new Object3D()
+              dummy.position.set(xyz.x, xyz.z + 0.15, xyz.y)
+              dummy.updateMatrix()
+
+              world.three!.sphere?.setMatrixAt(index, dummy.matrix)
+              world.three!.sphere!.instanceMatrix.needsUpdate = true
+
               collider.active = true
             } else {
               collider.active = false
@@ -283,7 +289,7 @@ const ExperimentSystem = SystemBuilder({
         const interpolated = pc.components.position.interpolate(world)
 
         world.three?.sphere2?.position.set(
-          interpolated.x, interpolated.z + 0.1, interpolated.y
+          interpolated.x, interpolated.z + 0.05, interpolated.y
         )
       }
     }

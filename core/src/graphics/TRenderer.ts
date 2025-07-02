@@ -101,14 +101,13 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       scene.add(tRenderer.blocks)
 
       tRenderer.sphere = new InstancedMesh(
-        new SphereGeometry(0.15),
+        new SphereGeometry(0.16),
         new MeshPhysicalMaterial({
           color: 0xffd9c3,
           emissive: 0xffd9c3,
-          emissiveIntensity: 1,
-          roughness: 0.1
-        }),
-        10
+          emissiveIntensity: 0.5,
+          roughness: 0.5
+        }), 12
       )
       tRenderer.sphere2 = new Mesh(
         new SphereGeometry(0.05),
@@ -119,6 +118,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           roughness: 0.5
         })
       )
+      tRenderer.sphere2.castShadow = true
       tRenderer.sphere.visible = false
       tRenderer.sphere2.visible = false
       scene.add(tRenderer.sphere)
