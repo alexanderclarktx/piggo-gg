@@ -140,6 +140,21 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           mixer.update(0.01)
         }
 
+        // update eagle position
+        const pc = world.client?.playerCharacter()
+        if (pc && eagle) {
+          const { position } = pc.components
+          // const interpolated = position.interpolate(0.01, world)
+          eagle.scene.position.set(
+            position.data.x, position.data.z + 0.6, position.data.y
+          )
+
+          // eagle.scene.position.set(interpolated.x, interpolated.z + 0.6, interpolated.y)
+          eagle.scene.rotation.set(
+            position.data.aim.y, position.data.aim.x, 0
+          )
+        }
+
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
 
