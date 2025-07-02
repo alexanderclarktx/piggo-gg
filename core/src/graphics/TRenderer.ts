@@ -111,12 +111,12 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         10
       )
       tRenderer.sphere2 = new Mesh(
-        new SphereGeometry(0.1),
+        new SphereGeometry(0.05),
         new MeshPhysicalMaterial({
           color: 0x00ff00,
           emissive: 0x00ff00,
-          emissiveIntensity: 1,
-          roughness: 0.1
+          emissiveIntensity: 0.5,
+          roughness: 0.5
         })
       )
       tRenderer.sphere.visible = false

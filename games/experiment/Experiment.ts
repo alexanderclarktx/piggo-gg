@@ -177,7 +177,7 @@ const ExperimentSystem = SystemBuilder({
           // gravity
           const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1)).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
-            const stop = highest * 0.3
+            const stop = highest * 0.3 + 0.15
             position.data.stop = stop
           } else {
             position.data.stop = 0
@@ -278,8 +278,8 @@ const ExperimentSystem = SystemBuilder({
 
         const interpolated = pc.components.position.interpolate(world)
 
-        world.three!.sphere2?.position.set(
-          interpolated.x, interpolated.z + 0.3, interpolated.y
+        world.three?.sphere2?.position.set(
+          interpolated.x, interpolated.z, interpolated.y
         )
       }
     }
