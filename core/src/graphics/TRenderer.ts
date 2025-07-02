@@ -1,7 +1,7 @@
 import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh,
-  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, RepeatWrapping,
-  Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
+  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter,
+  RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos, TCamera, World, Radial, TBlockMesh } from "@piggo-gg/core"
@@ -256,18 +256,18 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         tRenderer.mixers.push(mixer)
 
-        eagle.castShadow = true
-        eagle.receiveShadow = true
+        const colors: Record<string, number> = {
+          Cylinder: 0x5C2421,
+          Cylinder_1: 0xE7C41C,
+          Cylinder_2: 0xffffff,
+          Cylinder_3: 0x632724
+        }
 
         eagle.traverse((child) => {
           if (child instanceof Mesh) {
+            child.material = new MeshStandardMaterial({ color: colors[child.name] })
             child.castShadow = true
             child.receiveShadow = true
-
-            if (child.material && "skinning" in child.material) {
-              child.material.skinning = true
-              child.material.needsUpdate = true
-            }
           }
         })
       })
