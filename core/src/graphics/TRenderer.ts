@@ -1,10 +1,11 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial,
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh, Mesh, MeshBasicMaterial,
   MeshPhysicalMaterial, NearestFilter, RepeatWrapping, Scene,
   SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { sin, cos, TCamera, World, Radial, TBlockMesh } from "@piggo-gg/core"
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const evening = 0xffd9c3
 
@@ -13,6 +14,7 @@ export type TRenderer = {
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   blocks: undefined | TBlockMesh
+  mixers: AnimationMixer[]
   setZoom: (zoom: number) => void
   debug: (state?: boolean) => void
   activate: (world: World) => void
@@ -36,11 +38,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let zoom = 2
   let debug = false
 
+  const glbLoader = new GLTFLoader()
+
   const tRenderer: TRenderer = {
     camera: TCamera(),
     sphere: undefined,
     sphere2: undefined,
     blocks: undefined,
+    mixers: [],
     setZoom: (z: number) => zoom = z,
     resize: () => {
       if (renderer) {
@@ -128,6 +133,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         const t = performance.now() / 5000
 
         if (radial) radial.update(world)
+
+        // animations
+        for (const mixer of tRenderer.mixers) {
+          mixer.update(0.01)
+        }
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
@@ -233,6 +243,33 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       canvas.addEventListener("wheel", (event: WheelEvent) => {
         zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
         zoom = Math.max(1, Math.min(zoom, 10))
+      })
+
+      glbLoader.load("eagle.glb", (gltf) => {
+        const eagle = gltf.scene
+        eagle.scale.set(0.1, 0.1, 0.1)
+        eagle.position.set(3, 3, 3)
+        scene?.add(eagle)
+
+        const mixer = new AnimationMixer(eagle)
+        mixer.clipAction(gltf.animations[0]).play()
+
+        tRenderer.mixers.push(mixer)
+
+        eagle.castShadow = true
+        eagle.receiveShadow = true
+
+        eagle.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+
+            if (child.material && 'skinning' in child.material) {
+              child.material.skinning = true
+              child.material.needsUpdate = true
+            }
+          }
+        })
       })
 
       // prevent right-click
