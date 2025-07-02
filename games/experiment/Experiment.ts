@@ -183,11 +183,10 @@ const ExperimentSystem = SystemBuilder({
             position.data.stop = 0
           }
 
-          // const interpolated = position.interpolate(world)
-
-          // world.three!.sphere2?.position.set(
-          //  interpolated.x,interpolated.z + 0.3,interpolated.y
-          // )
+          if (position.data.z > 10) {
+            position.data.gravity = 0
+            position.data.velocity.z = 0
+          }
 
           // set collider group
           const group = (ceil(position.data.z / 0.3) + 1).toString() as "1"
@@ -201,21 +200,35 @@ const ExperimentSystem = SystemBuilder({
           // find closest blocks
           for (const block of blocks.visible(chunks, false, true)) {
             const { x, y, z } = { x: block.x * 0.3, y: block.y * 0.3, z: block.z * 0.3 }
-            if (z === 0) continue
+            // if (z === 0) continue
 
             const zDiff = z - position.data.z
-            if (zDiff > 2 || zDiff <= 0) continue
+            if (zDiff > 0.5 || zDiff < -0.5) continue
             // console.log("zDiff", zDiff)
 
-            const dist = Math.sqrt(Math.pow(x - position.data.x, 2) + Math.pow(y - position.data.y, 2))
+            const dist = Math.sqrt(
+              Math.pow(x - position.data.x, 2) +
+              Math.pow(y - position.data.y, 2) +
+              Math.pow(z - position.data.z, 2)
+            )
             if (dist < 20) set.push({ x, y, z })
           }
 
           // logRare(`ij: ${position.data.x},${position.data.y},${position.data.z} group: ${group} set:${set.length}`, world)
 
           set.sort((a, b) => {
-            const distA = Math.sqrt(Math.pow(a.x - position.data.x, 2) + Math.pow(a.y - position.data.y, 2))
-            const distB = Math.sqrt(Math.pow(b.x - position.data.x, 2) + Math.pow(b.y - position.data.y, 2))
+            const distA = Math.sqrt(
+              Math.pow(a.x - position.data.x, 2) +
+              Math.pow(a.y - position.data.y, 2) +
+              Math.pow(a.z - position.data.z, 2)
+            )
+            const distB = Math.sqrt(
+              Math.pow(b.x - position.data.x, 2) +
+              Math.pow(b.y - position.data.y, 2) +
+              Math.pow(b.z - position.data.z, 2)
+            )
+            // const distA = Math.sqrt(Math.pow(a.x - position.data.x, 2) + Math.pow(a.y - position.data.y, 2))
+            // const distB = Math.sqrt(Math.pow(b.x - position.data.x, 2) + Math.pow(b.y - position.data.y, 2))
             return distA - distB
           })
 

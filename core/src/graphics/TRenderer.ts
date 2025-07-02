@@ -265,7 +265,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       glbLoader.load("eagle.glb", (gltf) => {
         eagle = gltf
-        eagle.scene.scale.set(0.1, 0.1, 0.1)
+        eagle.scene.scale.set(0.05, 0.05, 0.05)
         eagle.scene.position.set(3, 3, 3)
         scene?.add(eagle.scene)
 
