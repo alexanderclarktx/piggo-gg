@@ -68,12 +68,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         scene.add(helper)
         tRenderer.sphere!.visible = true
         tRenderer.sphere2!.visible = true
+        if (eagle) eagle.scene.visible = false
         // tRenderer.sphere!.instanceMatrix.needsUpdate = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
         tRenderer.sphere!.visible = false
         tRenderer.sphere2!.visible = false
+        if (eagle) eagle.scene.visible = true
       }
     },
     pointerLock: () => {

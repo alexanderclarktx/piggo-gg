@@ -183,9 +183,11 @@ const ExperimentSystem = SystemBuilder({
             position.data.stop = 0
           }
 
-          world.three!.sphere2?.position.set(
-            position.data.x, position.data.z + 0.3, position.data.y
-          )
+          // const interpolated = position.interpolate(world)
+
+          // world.three!.sphere2?.position.set(
+          //  interpolated.x,interpolated.z + 0.3,interpolated.y
+          // )
 
           // set collider group
           const group = (ceil(position.data.z / 0.3) + 1).toString() as "1"
@@ -198,7 +200,7 @@ const ExperimentSystem = SystemBuilder({
 
           // find closest blocks
           for (const block of blocks.visible(chunks, false, true)) {
-            const { x, y, z } = {x: block.x * 0.3, y: block.y * 0.3, z: block.z * 0.3}
+            const { x, y, z } = { x: block.x * 0.3, y: block.y * 0.3, z: block.z * 0.3 }
             if (z === 0) continue
 
             const zDiff = z - position.data.z
@@ -206,7 +208,7 @@ const ExperimentSystem = SystemBuilder({
             // console.log("zDiff", zDiff)
 
             const dist = Math.sqrt(Math.pow(x - position.data.x, 2) + Math.pow(y - position.data.y, 2))
-            if (dist < 20) set.push({x, y, z})
+            if (dist < 20) set.push({ x, y, z })
           }
 
           // logRare(`ij: ${position.data.x},${position.data.y},${position.data.z} group: ${group} set:${set.length}`, world)
@@ -261,6 +263,16 @@ const ExperimentSystem = SystemBuilder({
             world.three!.blocks!.instanceMatrix.needsUpdate = true
           }
         }
+      },
+      onRender: () => {
+        const pc = world.client?.playerCharacter()
+        if (!pc) return
+
+        const interpolated = pc.components.position.interpolate(world)
+
+        world.three!.sphere2?.position.set(
+          interpolated.x, interpolated.z + 0.3, interpolated.y
+        )
       }
     }
   }
