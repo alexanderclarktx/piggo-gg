@@ -118,6 +118,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           roughness: 0.5
         })
       )
+      tRenderer.sphere.frustumCulled = false
       tRenderer.sphere2.castShadow = true
       tRenderer.sphere.visible = false
       tRenderer.sphere2.visible = false

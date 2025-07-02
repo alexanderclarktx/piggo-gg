@@ -25,7 +25,7 @@ export const TBlockMesh = (): TBlockMesh => {
   geometry.setAttribute('color', new BufferAttribute(colorAttr, 3))
 
   const mesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
-    vertexColors: true, visible: false, specularIntensity: 0.05, wireframe: true
+    vertexColors: true, visible: false, specularIntensity: 0.05, wireframe: false
   }), 1024 * 1024)
 
   mesh.castShadow = true

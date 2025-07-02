@@ -242,7 +242,7 @@ const ExperimentSystem = SystemBuilder({
               collider.setGroup(group)
 
               const dummy = new Object3D()
-              dummy.position.set(xyz.x, xyz.z + 0.15, xyz.y)
+              dummy.position.set(xyz.x, xyz.z, xyz.y)
               dummy.updateMatrix()
 
               world.three!.sphere?.setMatrixAt(index, dummy.matrix)
