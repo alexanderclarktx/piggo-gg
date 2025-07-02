@@ -119,6 +119,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       )
       tRenderer.sphere.frustumCulled = false
       tRenderer.sphere2.castShadow = true
+      tRenderer.sphere2.receiveShadow = true
       tRenderer.sphere.visible = false
       // tRenderer.sphere2.visible = false
       scene.add(tRenderer.sphere)

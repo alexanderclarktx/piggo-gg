@@ -1,5 +1,6 @@
 import {
-  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, Entity, floor,
+  abs,
+  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, cos, Entity, floor,
   GameBuilder, Input, min, Networked, PhysicsSystem, Position, round, SpawnSystem,
   spawnTerrain, SystemBuilder, TBlockCollider, TCameraSystem, Team, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -267,7 +268,7 @@ const ExperimentSystem = SystemBuilder({
           }
         }
       },
-      onRender: () => {
+      onRender: (_, delta) => {
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
@@ -276,6 +277,12 @@ const ExperimentSystem = SystemBuilder({
         world.three?.sphere2?.position.set(
           interpolated.x, interpolated.z + 0.05, interpolated.y
         )
+
+        const { velocity } = pc.components.position.data
+
+        // rotate the sphere
+        world.three?.sphere2?.rotateOnWorldAxis(new Vector3(1, 0, 0), delta * velocity.y * 0.01)
+        world.three?.sphere2?.rotateOnWorldAxis(new Vector3(0, 0, 1), delta * velocity.x * 0.01)
       }
     }
   }
