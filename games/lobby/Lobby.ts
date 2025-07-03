@@ -1,12 +1,10 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor,
-  Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions,
-  Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem,
-  blockGraphics,
-  pixiContainer
+  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor, Chat,
+  PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions, Networked, DudeSkin,
+  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, blockGraphics, pixiContainer
 } from "@piggo-gg/core"
 import { Volley, Craft, Blox } from "@piggo-gg/games"
-import { Container, Graphics, Sprite, Text } from "pixi.js"
+import { Container, Text } from "pixi.js"
 import { Friends } from "./Friends"
 
 type LobbyState = {
@@ -187,8 +185,6 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           graphic.scale.set(1.5)
           graphic.position.set(0, 10)
           icon.addChild(graphic)
-          // const textures = await loadTexture("piggo-logo.json")
-          // icon = new Sprite({ texture: textures["piggo-logo"], scale: 1, anchor: { x: 0.5, y: 0.2 } })
         }
         // icon.texture.source.scaleMode = "nearest"
 

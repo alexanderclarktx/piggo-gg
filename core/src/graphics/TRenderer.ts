@@ -153,7 +153,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           for (const mixer of tRenderer.mixers) {
             // mixer.update(0.01)
             mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
-            // mixer.update(pc?.components.position.data.velocity.x * 0.05)
           }
         }
 
