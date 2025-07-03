@@ -23,7 +23,7 @@ const Guy = () => Character({
           world.three?.debug()
           return null
         },
-        "e": () => ({ actionId: "eagle" })
+        "e": () => ({ actionId: "fly" })
       },
       press: {
         "w,s": () => null, "a,d": () => null,
@@ -49,14 +49,15 @@ const Guy = () => Character({
       }
     }),
     actions: Actions({
-      eagle: Action("eagle", ({ entity, world }) => {
+      escape: Action("escape", ({ world }) => {
+        world.three?.pointerLock()
+      }),
+      fly: Action("fly", ({ entity }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
-        position.data.flying = true
-      }),
-      escape: Action("escape", ({ world }) => {
-        world.three?.pointerLock()
+        position.data.flying = !position.data.flying
+        console.log("flying", position.data.flying)
       }),
       jump: Action("jump", ({ entity, params }) => {
         const position = entity?.components?.position
