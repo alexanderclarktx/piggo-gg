@@ -57,6 +57,7 @@ const Guy = () => Character({
         if (!position) return
 
         position.data.flying = !position.data.flying
+        position.data.velocity.z = 0
       }),
       jump: Action("jump", ({ entity, params }) => {
         const position = entity?.components?.position
