@@ -101,6 +101,8 @@ const Guy = () => Character({
           if (!position.data.standing) return
           toward.set(0, 0.04, 0)
           setZ = true
+
+          world.client?.soundManager.play("bubble")
         }
 
         if (!setZ) {

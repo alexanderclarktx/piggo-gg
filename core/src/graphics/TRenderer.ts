@@ -1,6 +1,6 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh, LinearMipMapNearestFilter,
-  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter,
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh,
+  LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
@@ -37,7 +37,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let radial: undefined | Radial
-  let eagle: undefined | GLTF
+  let duck: undefined | GLTF
 
   let zoom = 2
   let debug = false
@@ -69,14 +69,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         scene.add(helper)
         tRenderer.sphere!.visible = true
         tRenderer.sphere2!.visible = true
-        if (eagle) eagle.scene.visible = false
+        if (duck) duck.scene.visible = false
         // tRenderer.sphere!.instanceMatrix.needsUpdate = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
         tRenderer.sphere!.visible = false
         tRenderer.sphere2!.visible = false
-        if (eagle) eagle.scene.visible = true
+        if (duck) duck.scene.visible = true
       }
     },
     pointerLock: () => {
@@ -139,14 +139,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         if (radial) radial.update(world)
 
-        // update eagle position
+        // update duck position
         const pc = world.client?.playerCharacter()
-        if (pc && eagle) {
+        if (pc && duck) {
           const interpolated = pc.components.position.interpolate(world)
-          eagle.scene.position.set(interpolated.x, interpolated.z - 0.02, interpolated.y)
+          duck.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
 
           const { aim, velocity } = pc.components.position.data
-          eagle.scene.rotation.set(0, aim.x + PI / 2, 0)
+          duck.scene.rotation.set(0, aim.x + PI / 2, 0)
 
 
           // animations
@@ -256,18 +256,18 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       composer.addPass(new EffectPass(camera, new SMAAEffect({ preset: SMAAPreset.LOW })))
 
-      canvas.addEventListener("wheel", (event: WheelEvent) => {
-        zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
-        zoom = Math.max(1, Math.min(zoom, 10))
-      })
+      // canvas.addEventListener("wheel", (event: WheelEvent) => {
+      //   zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
+      //   zoom = Math.max(1, Math.min(zoom, 10))
+      // })
 
       GL.load("duck.glb", (gltf) => {
-        eagle = gltf
-        eagle.scene.scale.set(0.08, 0.08, 0.08)
-        eagle.scene.position.set(3, 3, 3)
-        scene?.add(eagle.scene)
+        duck = gltf
+        duck.scene.scale.set(0.08, 0.08, 0.08)
+        duck.scene.position.set(3, 3, 3)
+        scene?.add(duck.scene)
 
-        const mixer = new AnimationMixer(eagle.scene)
+        const mixer = new AnimationMixer(duck.scene)
         mixer.clipAction(gltf.animations[1]).play()
 
         tRenderer.mixers.push(mixer)
@@ -279,7 +279,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           Cylinder_3: 0x632724
         }
 
-        eagle.scene.traverse((child) => {
+        duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
             // child.material = new MeshStandardMaterial({ color: colors[child.name] })
             child.castShadow = true
