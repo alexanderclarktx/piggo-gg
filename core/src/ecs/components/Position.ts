@@ -11,6 +11,7 @@ export type Position = Component<"position", {
   facing: -1 | 1
   follows: string | undefined
   friction: boolean
+  flying: boolean
   gravity: number
   heading: XY
   offset: XY
@@ -71,6 +72,7 @@ export const Position = (props: PositionProps = {}): Position => {
       facing: 1,
       follows: props.follows ?? undefined,
       friction: props.friction ?? false,
+      flying: false,
       gravity: props.gravity ?? 0,
       heading: { x: NaN, y: NaN },
       aim: { x: 0, y: 0 },
@@ -140,6 +142,7 @@ export const Position = (props: PositionProps = {}): Position => {
       if (position.data.stop < position.data.z && position.data.z + dz < position.data.stop) {
         dz = position.data.stop - position.data.z
       }
+      if (position.data.flying) dz = 0
 
       if (world.tick - position.lastCollided <= 4) {
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
@@ -227,11 +230,13 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         if (position.data.velocity.z || position.data.z) {
 
           // apply stop
-          const wouldGo = position.data.z + position.data.velocity.z
-          if (position.data.stop < position.data.z && wouldGo < position.data.stop) {
-            position.data.z = position.data.stop
-          } else {
-            position.data.z = wouldGo
+          if (!position.data.flying) {
+            const wouldGo = position.data.z + position.data.velocity.z
+            if (position.data.stop < position.data.z && wouldGo < position.data.stop) {
+              position.data.z = position.data.stop
+            } else {
+              position.data.z = wouldGo
+            }
           }
 
           // set standing
@@ -240,11 +245,18 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
             position.data.standing = true
           } else {
             position.data.standing = false
-            position.data.velocity.z -= position.data.gravity
+            if (!position.data.flying) {
+              position.data.velocity.z -= position.data.gravity
+            }
           }
         } else {
           position.data.standing = true
         }
+
+        // console.log(
+        //   position.data.flying,
+        //   position.data.velocity.z
+        // )
 
         // velocity dampening
         if (position.data.friction) {
