@@ -1,14 +1,16 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor,
   Chat, PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions,
-  Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem
+  Networked, DudeSkin, Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem,
+  blockGraphics,
+  pixiContainer
 } from "@piggo-gg/core"
 import { Volley, Craft, Experiment } from "@piggo-gg/games"
-import { Sprite, Text } from "pixi.js"
+import { Container, Graphics, Sprite, Text } from "pixi.js"
 import { Friends } from "./Friends"
 
 type LobbyState = {
-  gameId: "volley" | "craft" | "3D"
+  gameId: "volley" | "craft" | "blox"
 }
 
 export const Lobby: GameBuilder = {
@@ -16,7 +18,7 @@ export const Lobby: GameBuilder = {
   init: (world) => ({
     id: "lobby",
     state: {
-      gameId: location?.hostname === "localhost" ? "3D" : "craft"
+      gameId: location?.hostname === "localhost" ? "blox" : "craft"
     },
     systems: [RenderSystem],
     view: "side",
@@ -26,7 +28,7 @@ export const Lobby: GameBuilder = {
       Chat(),
       // Friends(),
       Profile(),
-      SignupCTA(),
+      // SignupCTA(),
       ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: -110 })] : []].flat(),
       GameLobby(),
       Players(),
@@ -172,19 +174,23 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           onLeave: () => r.setGlow()
         })
 
-        let icon: Sprite
+        let icon: Container = pixiContainer()
 
         if (game.id === "craft") {
           const textures = await loadTexture("pickaxe.json")
-          icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
+          // icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
         } else if (game.id === "volley") {
           const textures = await loadTexture("vball.json")
-          icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
+          // icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
         } else {
-          const textures = await loadTexture("piggo-logo.json")
-          icon = new Sprite({ texture: textures["piggo-logo"], scale: 1, anchor: { x: 0.5, y: 0.2 } })
+          const graphic = blockGraphics("grass")
+          graphic.scale.set(1.5)
+          graphic.position.set(0, 10)
+          icon.addChild(graphic)
+          // const textures = await loadTexture("piggo-logo.json")
+          // icon = new Sprite({ texture: textures["piggo-logo"], scale: 1, anchor: { x: 0.5, y: 0.2 } })
         }
-        icon.texture.source.scaleMode = "nearest"
+        // icon.texture.source.scaleMode = "nearest"
 
         r.c.addChild(button.c, icon)
       }
@@ -468,7 +474,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Craft, Volley, Experiment]
+  const list: GameBuilder[] = [Experiment]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({

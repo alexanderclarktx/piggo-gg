@@ -122,14 +122,14 @@ const Guy = () => Character({
 })
 
 export const Experiment: GameBuilder = {
-  id: "3D",
+  id: "blox",
   init: (world) => {
 
     world.renderer?.deactivate(world)
     world.three?.activate(world)
 
     return {
-      id: "3D",
+      id: "blox",
       netcode: "rollback",
       state: {},
       systems: [

@@ -98,7 +98,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
   return item
 }
 
-const blockGraphics = (type: BlockType) => {
+export const blockGraphics = (type: BlockType): Graphics => {
   if (graphics[type]) return graphics[type]
 
   const colors = BlockColors[type]
