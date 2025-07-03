@@ -5,7 +5,7 @@ import {
   blockGraphics,
   pixiContainer
 } from "@piggo-gg/core"
-import { Volley, Craft, Experiment } from "@piggo-gg/games"
+import { Volley, Craft, Blox } from "@piggo-gg/games"
 import { Container, Graphics, Sprite, Text } from "pixi.js"
 import { Friends } from "./Friends"
 
@@ -252,7 +252,8 @@ const CreateLobbyButton = () => {
         interactiveChildren: true,
         anchor: { x: 0.5, y: 0.5 },
         onTick: ({ world }) => {
-          const ready = (world.client?.ws.readyState ?? 0) === 1
+          // const ready = (world.client?.ws.readyState ?? 0) === 1
+          const ready = false
           createLobbyButton.components.renderable.c.alpha = ready ? 1 : 0.6
           createLobbyButton.components.renderable.c.interactiveChildren = ready
         },
@@ -474,7 +475,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Experiment]
+  const list: GameBuilder[] = [Blox]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({

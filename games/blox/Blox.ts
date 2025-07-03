@@ -121,7 +121,7 @@ const Guy = () => Character({
   }
 })
 
-export const Experiment: GameBuilder = {
+export const Blox: GameBuilder = {
   id: "blox",
   init: (world) => {
 
@@ -137,15 +137,15 @@ export const Experiment: GameBuilder = {
         PhysicsSystem("global"),
         PhysicsSystem("local"),
         TCameraSystem(),
-        ExperimentSystem
+        BloxSystem
       ],
       entities: []
     }
   }
 }
 
-const ExperimentSystem = SystemBuilder({
-  id: "ExperimentSystem",
+const BloxSystem = SystemBuilder({
+  id: "BloxSystem",
   init: (world) => {
 
     // spawnTiny()
@@ -158,7 +158,7 @@ const ExperimentSystem = SystemBuilder({
     world.addEntities(blockColliders)
 
     return {
-      id: "ExperimentSystem",
+      id: "BloxSystem",
       query: [],
       priority: 3,
       onTick: () => {
