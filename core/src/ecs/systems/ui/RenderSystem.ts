@@ -4,7 +4,7 @@ export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
     const { renderer, client } = world
-    if (!client) return
+    if (!client) return undefined
 
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
@@ -180,7 +180,7 @@ export const RenderSystem = ClientSystemBuilder({
           const { velocity } = position.data
           if ((velocity.x || velocity.y || velocity.z)) {
 
-            const interpolated = position.interpolate(world)
+            const interpolated = position.interpolate(world, delta)
 
             const rotated = world.flip({
               x: renderable.position.x + interpolated.x,

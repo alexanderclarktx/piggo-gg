@@ -57,7 +57,6 @@ const Guy = () => Character({
         if (!position) return
 
         position.data.flying = !position.data.flying
-        console.log("flying", position.data.flying)
       }),
       jump: Action("jump", ({ entity, params }) => {
         const position = entity?.components?.position
@@ -280,10 +279,18 @@ const BloxSystem = SystemBuilder({
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
-        const interpolated = pc.components.position.interpolate(world)
+        const interpolated = pc.components.position.interpolate(world, delta)
 
         world.three?.sphere2?.position.set(
           interpolated.x, interpolated.z + 0.05, interpolated.y
+        )
+
+        world.three?.duck?.scene.position.set(
+          interpolated.x, interpolated.z - 0.025, interpolated.y
+        )
+
+        world.three?.eagle?.scene.position.set(
+          interpolated.x, interpolated.z + 0.1, interpolated.y
         )
 
         const { velocity } = pc.components.position.data

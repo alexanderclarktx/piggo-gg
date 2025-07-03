@@ -36,7 +36,7 @@ export type Position = Component<"position", {
   scaleVelocity: (factor: number) => Position
   moveAim: (_: XY) => Position
   impulse: (_: { x?: number, y?: number, z?: number }) => Position
-  interpolate: (world: World) => XYZ
+  interpolate: (world: World, delta: number) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
@@ -135,8 +135,7 @@ export const Position = (props: PositionProps = {}): Position => {
       if (z !== undefined) position.data.velocity.z += z
       return position
     },
-    interpolate: (world: World) => {
-      const delta = performance.now() - world.time
+    interpolate: (world: World, delta: number) => {
 
       let dz = position.data.velocity.z * delta / world.tickrate
       if (position.data.stop < position.data.z && position.data.z + dz < position.data.stop) {
@@ -145,6 +144,7 @@ export const Position = (props: PositionProps = {}): Position => {
       if (position.data.flying) dz = 0
 
       if (world.tick - position.lastCollided <= 4) {
+        console.log("last collided")
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
       }
 
@@ -220,7 +220,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   init: (world) => ({
     id: "PositionSystem",
     query: ["position"],
-    priority: 10,
+    priority: 9,
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 

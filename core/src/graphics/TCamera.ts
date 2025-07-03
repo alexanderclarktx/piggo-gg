@@ -14,7 +14,7 @@ export const TCameraSystem = () => ClientSystemBuilder({
       id: "TCameraSystem",
       query: [],
       priority: 9,
-      onRender: () => {
+      onRender: (_, delta) => {
         if (!world.three) return
 
         const pc = world.client?.playerCharacter()
@@ -22,7 +22,7 @@ export const TCameraSystem = () => ClientSystemBuilder({
 
         const { position } = pc.components
 
-        const interpolated = position.interpolate(world)
+        const interpolated = position.interpolate(world, delta)
 
         const rotatedOffset = new Vector3(
           -sin(position.data.aim.x), 0, -cos(position.data.aim.x)

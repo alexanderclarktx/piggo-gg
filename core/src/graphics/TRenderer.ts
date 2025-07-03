@@ -15,6 +15,8 @@ export type TRenderer = {
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   blocks: undefined | TBlockMesh
   mixers: AnimationMixer[]
+  duck: undefined | GLTF
+  eagle: undefined | GLTF
   setZoom: (zoom: number) => void
   debug: (state?: boolean) => void
   activate: (world: World) => void
@@ -38,9 +40,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let helper: undefined | CameraHelper
   let radial: undefined | Radial
 
-  let duck: undefined | GLTF
-  let eagle: undefined | GLTF
-
   let zoom = 2
   let debug = false
 
@@ -50,6 +49,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     sphere2: undefined,
     blocks: undefined,
     mixers: [],
+    duck: undefined,
+    eagle: undefined,
     setZoom: (z: number) => zoom = z,
     resize: () => {
       if (renderer) {
@@ -71,14 +72,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         scene.add(helper)
         tRenderer.sphere!.visible = true
         tRenderer.sphere2!.visible = true
-        if (duck) duck.scene.visible = false
-        // tRenderer.sphere!.instanceMatrix.needsUpdate = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
         tRenderer.sphere!.visible = false
         tRenderer.sphere2!.visible = false
-        if (duck) duck.scene.visible = true
       }
     },
     pointerLock: () => {
@@ -143,16 +141,16 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         // update duck position
         const pc = world.client?.playerCharacter()
+        const { duck, eagle } = tRenderer
         if (pc && duck && eagle) {
-          const interpolated = pc.components.position.interpolate(world)
-          duck.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
-          eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
 
           const { aim, velocity, flying } = pc.components.position.data
 
+          // rotation
           duck.scene.rotation.set(0, aim.x + PI / 2, 0)
           eagle.scene.rotation.set(0, aim.x, 0)
 
+          // visibility
           duck.scene.visible = debug ? false : !flying
           eagle.scene.visible = debug ? false : flying
 
@@ -271,14 +269,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       //   zoom = Math.max(1, Math.min(zoom, 10))
       // })
 
-      GL.load("eagle.glb", (gltf) => {
-        eagle = gltf
+      GL.load("eagle.glb", (eagle) => {
+        tRenderer.eagle = eagle
         eagle.scene.scale.set(0.05, 0.05, 0.05)
         eagle.scene.position.set(3, 3, 3)
         scene?.add(eagle.scene)
 
         const mixer = new AnimationMixer(eagle.scene)
-        mixer.clipAction(gltf.animations[0]).play()
+        mixer.clipAction(eagle.animations[0]).play()
 
         tRenderer.mixers.push(mixer)
 
@@ -298,14 +296,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         })
       })
 
-      GL.load("duck.glb", (gltf) => {
-        duck = gltf
+      GL.load("duck.glb", (duck) => {
+        tRenderer.duck = duck
         duck.scene.scale.set(0.08, 0.08, 0.08)
         duck.scene.position.set(3, 3, 3)
         scene?.add(duck.scene)
 
         const mixer = new AnimationMixer(duck.scene)
-        mixer.clipAction(gltf.animations[1]).play()
+        mixer.clipAction(duck.animations[1]).play()
 
         tRenderer.mixers.push(mixer)
 
