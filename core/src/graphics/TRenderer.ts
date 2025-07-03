@@ -4,7 +4,7 @@ import {
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, TCamera, World, Radial, TBlockMesh } from "@piggo-gg/core"
+import { sin, cos, TCamera, World, Radial, TBlockMesh, PI, hypot } from "@piggo-gg/core"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -68,14 +68,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         helper = new CameraHelper(sun.shadow.camera)
         scene.add(helper)
         tRenderer.sphere!.visible = true
-        // tRenderer.sphere2!.visible = true
+        tRenderer.sphere2!.visible = true
         if (eagle) eagle.scene.visible = false
         // tRenderer.sphere!.instanceMatrix.needsUpdate = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
         tRenderer.sphere!.visible = false
-        // tRenderer.sphere2!.visible = false
+        tRenderer.sphere2!.visible = false
         if (eagle) eagle.scene.visible = true
       }
     },
@@ -121,7 +121,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.castShadow = true
       tRenderer.sphere2.receiveShadow = true
       tRenderer.sphere.visible = false
-      // tRenderer.sphere2.visible = false
+      tRenderer.sphere2.visible = false
       scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
 
@@ -139,19 +139,22 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         if (radial) radial.update(world)
 
-        // animations
-        for (const mixer of tRenderer.mixers) {
-          mixer.update(0.01)
-        }
-
         // update eagle position
         const pc = world.client?.playerCharacter()
         if (pc && eagle) {
           const interpolated = pc.components.position.interpolate(world)
-          eagle.scene.position.set(interpolated.x, interpolated.z + 0.3, interpolated.y)
+          eagle.scene.position.set(interpolated.x, interpolated.z - 0.02, interpolated.y)
 
-          const { aim } = pc.components.position.data
-          eagle.scene.rotation.set(aim.y, aim.x, 0)
+          const { aim, velocity } = pc.components.position.data
+          eagle.scene.rotation.set(0, aim.x + PI / 2, 0)
+
+
+          // animations
+          for (const mixer of tRenderer.mixers) {
+            // mixer.update(0.01)
+            mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
+            // mixer.update(pc?.components.position.data.velocity.x * 0.05)
+          }
         }
 
         // ambient lighting
@@ -175,7 +178,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       sun.position.set(200, 100, 200)
       sun.shadow.normalBias = 0.02
-      sun.shadow.mapSize.set(2048, 2048)
+      sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
       sun.castShadow = true
 
       // widen the shadow
@@ -258,14 +261,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         zoom = Math.max(1, Math.min(zoom, 10))
       })
 
-      GL.load("eagle.glb", (gltf) => {
+      GL.load("duck.glb", (gltf) => {
         eagle = gltf
-        eagle.scene.scale.set(0.05, 0.05, 0.05)
+        eagle.scene.scale.set(0.08, 0.08, 0.08)
         eagle.scene.position.set(3, 3, 3)
         scene?.add(eagle.scene)
 
         const mixer = new AnimationMixer(eagle.scene)
-        mixer.clipAction(gltf.animations[0]).play()
+        mixer.clipAction(gltf.animations[1]).play()
 
         tRenderer.mixers.push(mixer)
 
@@ -278,7 +281,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         eagle.scene.traverse((child) => {
           if (child instanceof Mesh) {
-            child.material = new MeshStandardMaterial({ color: colors[child.name] })
+            // child.material = new MeshStandardMaterial({ color: colors[child.name] })
             child.castShadow = true
             child.receiveShadow = true
           }
