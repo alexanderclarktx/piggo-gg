@@ -139,7 +139,7 @@ export const Position = (props: PositionProps = {}): Position => {
     interpolate: (world: World, delta: number) => {
 
       let dz = position.data.velocity.z * delta / world.tickrate
-      if (position.data.stop < position.data.z && position.data.z + dz < position.data.stop) {
+      if (position.data.stop <= position.data.z && position.data.z + dz < position.data.stop) {
         dz = position.data.stop - position.data.z
       }
       if (position.data.flying) dz = 0
@@ -232,12 +232,12 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
           // apply stop
           // if (!position.data.flying) {
-            const wouldGo = position.data.z + position.data.velocity.z
-            if (position.data.stop < position.data.z && wouldGo < position.data.stop) {
-              position.data.z = position.data.stop
-            } else {
-              position.data.z = wouldGo
-            }
+          const wouldGo = position.data.z + position.data.velocity.z
+          if (position.data.stop <= position.data.z && wouldGo < position.data.stop) {
+            position.data.z = position.data.stop
+          } else {
+            position.data.z = wouldGo
+          }
           // }
 
           // set standing
@@ -254,14 +254,9 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
           position.data.standing = true
         }
 
-        // console.log(
-        //   position.data.flying,
-        //   position.data.velocity.z
-        // )
-
+        // flying direction
         if (position.data.flying) {
           position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
-          // console.log("flying", position.data.velocity.z)
         }
 
         // velocity dampening

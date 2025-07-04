@@ -231,9 +231,9 @@ const BloxSystem = SystemBuilder({
               const group = round(xyz.z / 0.3).toString() as "1"
               collider.setGroup(group)
 
-              if (world.three?.debug === false) continue
+              collider.active = true
 
-              console.log("calc spheres")
+              if (world.three?.debug === false) continue
 
               const sphere = world.three?.sphere!
 
@@ -245,8 +245,6 @@ const BloxSystem = SystemBuilder({
 
               sphere.setColorAt(index, new Color((pgroup == group) ? 0x0000ff : 0xff0000))
               sphere.instanceColor!.needsUpdate = true
-
-              collider.active = true
             } else {
               collider.active = false
             }
@@ -297,10 +295,6 @@ const BloxSystem = SystemBuilder({
         world.three?.eagle?.scene.position.set(
           interpolated.x, interpolated.z + 0.1, interpolated.y
         )
-
-        // world.three?.eagle?.scene.rotation.set(
-        //   0, pc.components.position.data.aim.x, 0
-        // )
 
         const { velocity } = pc.components.position.data
 
