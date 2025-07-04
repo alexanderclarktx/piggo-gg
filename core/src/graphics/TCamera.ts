@@ -25,18 +25,16 @@ export const TCameraSystem = () => ClientSystemBuilder({
         const interpolated = position.interpolate(world, delta)
 
         const rotatedOffset = new Vector3(
-          -sin(position.data.aim.x), 0, -cos(position.data.aim.x)
-        ).normalize().multiplyScalar(0.6)
+          -sin(position.data.aim.x), position.data.aim.y, -cos(position.data.aim.x)
+        ).multiplyScalar(0.6)
 
         world.three.camera.c.position.set(
           interpolated.x - rotatedOffset.x,
-          interpolated.z + 0.4,
+          interpolated.z + 0.4 - rotatedOffset.y,
           interpolated.y - rotatedOffset.z
         )
 
-        world.three.camera.c.rotation.set(
-          position.data.aim.y, position.data.aim.x, 0
-        )
+        world.three.camera.c.lookAt(interpolated.x, interpolated.z + 0.2, interpolated.y)
       }
     }
   }

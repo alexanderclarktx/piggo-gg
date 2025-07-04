@@ -120,7 +120,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.receiveShadow = true
       tRenderer.sphere.visible = false
       tRenderer.sphere2.visible = false
-      tRenderer.sphere2.rotation.order = "YXZ"
 
       scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
