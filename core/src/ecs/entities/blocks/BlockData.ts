@@ -232,6 +232,8 @@ export const BlockData = (): BlockData => {
               if (
                 !val(pos.x * 4 + x + dir, pos.y * 4 + y, z) ||
                 !val(pos.x * 4 + x, pos.y * 4 + y + dir, z) ||
+                !val(pos.x * 4 + x, pos.y * 4 + y - dir, z) ||
+                !val(pos.x * 4 + x - dir, pos.y * 4 + y, z) ||
                 !val(pos.x * 4 + x, pos.y * 4 + y, z + 1)
               ) {
                 const xyz = ij ?
