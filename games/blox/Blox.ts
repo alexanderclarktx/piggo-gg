@@ -63,7 +63,7 @@ const Guy = () => Character({
         const position = entity?.components?.position
         if (!position || !params.hold) return
 
-        if (!position.data.standing) return
+        if (!position.data.standing || position.data.flying) return
 
         position.setVelocity({ z: min(params.hold, 50) * 0.005 })
       }),
@@ -106,7 +106,7 @@ const Guy = () => Character({
           const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
           toward.copy(backward.add(right).normalize())
         } else if (params.key === "up") {
-          if (!position.data.standing) return
+          if (!position.data.standing || position.data.flying) return
           toward.set(0, 0.04, 0)
           setZ = true
 
