@@ -264,12 +264,6 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
           entity.components.position.scaleVelocity(position.data.standing ? 0.8 : 0.98)
         }
 
-        // side-view gravity
-        if (position.data.gravity && world.game.view === "side") {
-          position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
-          position.updateOrientation()
-        }
-
         // follows
         if (position.data.follows) {
           const target = world.entity(position.data.follows)
