@@ -126,7 +126,6 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.aim.x = round(position.data.aim.x - x, 3)
       position.data.aim.y = round(position.data.aim.y - y, 3)
 
-      // position.data.aim.y = max(-1.5, min(1.5, position.data.aim.y)
       position.data.aim.y = max(-0.6166, min(0.6166, position.data.aim.y))
       return position
     },
@@ -145,7 +144,6 @@ export const Position = (props: PositionProps = {}): Position => {
       if (position.data.flying) dz = 0
 
       if (world.tick - position.lastCollided <= 4) {
-        console.log("last collided")
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
       }
 
@@ -231,14 +229,12 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         if (position.data.velocity.z || position.data.z) {
 
           // apply stop
-          // if (!position.data.flying) {
           const wouldGo = position.data.z + position.data.velocity.z
           if (position.data.stop <= position.data.z && wouldGo < position.data.stop) {
             position.data.z = position.data.stop
           } else {
             position.data.z = wouldGo
           }
-          // }
 
           // set standing
           if (position.data.z === position.data.stop) {
