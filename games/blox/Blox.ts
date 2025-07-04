@@ -5,8 +5,8 @@ import {
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 
-const Guy = () => Character({
-  id: "guy",
+const Bird = () => Character({
+  id: "bird",
   components: {
     position: Position({ friction: true, gravity: 0.002, flying: true, z: 6, x: 20, y: 20 }),
     networked: Networked(),
@@ -141,7 +141,7 @@ export const Blox: GameBuilder = {
       netcode: "rollback",
       state: {},
       systems: [
-        SpawnSystem(Guy),
+        SpawnSystem(Bird),
         PhysicsSystem("global"),
         PhysicsSystem("local"),
         TCameraSystem(),
