@@ -64,15 +64,17 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       scene?.clear()
     },
     setDebug: (state?: boolean) => {
-      const { debug } = tRenderer
-      if (state === undefined) state = !debug
-      if (debug === state) return
+      if (state === undefined) state = !tRenderer.debug
+      if (tRenderer.debug === state) return
 
       tRenderer.debug = state
-      if (debug && renderer && scene && sun) {
+
+      if (!renderer || !scene || !sun) return
+
+      if (tRenderer.debug) {
         helper = new CameraHelper(sun.shadow.camera)
         scene.add(helper)
-      } else if (!debug && renderer && scene && helper) {
+      } else if (!tRenderer.debug && helper) {
         scene.remove(helper)
         helper = undefined
       }
