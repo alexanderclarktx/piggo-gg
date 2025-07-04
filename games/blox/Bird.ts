@@ -76,32 +76,36 @@ export const Bird = () => Character({
         const toward = new Vector3()
 
         let setZ = false
+        let rotation = 0
 
         if (params.key === "a") {
           toward.crossVectors(camera.c.up, dir).normalize()
 
           if (position.data.flying) {
-            world.three?.eagle?.scene.rotateZ(0.1)
+            rotation = 0.1
+            // world.three?.eagle?.scene.rotateZ(0.1)
           }
         } else if (params.key === "d") {
           toward.crossVectors(dir, camera.c.up).normalize()
 
           if (position.data.flying) {
-            world.three?.eagle?.scene.rotateZ(-0.1)
+            rotation = -0.1
+            // world.three?.eagle?.scene.rotateZ(-0.1)
           }
         } else if (params.key === "w") {
           toward.copy(dir).normalize()
         } else if (params.key === "s") {
-          if (position.data.flying) return
-
-          toward.copy(dir).negate().normalize()
+          if (!position.data.flying) {
+            toward.copy(dir).negate().normalize()
+          }
         } else if (params.key === "wa") {
           const forward = dir.clone().normalize()
           const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
           toward.copy(forward.add(left).normalize())
 
           if (position.data.flying) {
-            world.three?.eagle?.scene.rotateZ(0.1)
+            rotation = 0.1
+            // world.three?.eagle?.scene.rotateZ(0.1)
           }
         } else if (params.key === "wd") {
           const forward = dir.clone().normalize()
@@ -109,20 +113,22 @@ export const Bird = () => Character({
           toward.copy(forward.add(right).normalize())
 
           if (position.data.flying) {
-            world.three?.eagle?.scene.rotateZ(-0.1)
+            rotation = -0.1
           }
         } else if (params.key === "as") {
-          if (position.data.flying) return
+          if (!position.data.flying) {
 
-          const backward = dir.clone().negate().normalize()
-          const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
-          toward.copy(backward.add(left).normalize())
+            const backward = dir.clone().negate().normalize()
+            const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
+            toward.copy(backward.add(left).normalize())
+          }
         } else if (params.key === "ds") {
-          if (position.data.flying) return
+          if (!position.data.flying) {
 
-          const backward = dir.clone().negate().normalize()
-          const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
-          toward.copy(backward.add(right).normalize())
+            const backward = dir.clone().negate().normalize()
+            const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
+            toward.copy(backward.add(right).normalize())
+          }
         } else if (params.key === "up") {
           if (!position.data.standing || position.data.flying) return
           toward.set(0, 0.04, 0)
@@ -130,6 +136,8 @@ export const Bird = () => Character({
 
           world.client?.soundManager.play("bubble")
         }
+
+        position.data.rotation = rotation
 
         if (!setZ) {
           let factor = 0

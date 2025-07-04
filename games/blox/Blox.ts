@@ -51,7 +51,11 @@ const BloxSystem = SystemBuilder({
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         for (const entity of entities) {
           const { position } = entity.components
-          const { x, y, z, velocity } = position.data
+          const { x, y, z, velocity, flying } = position.data
+
+          if (flying) {
+            position.data.rotation = 0
+          }
 
           if (z < -4) {
             position.data.z = 10
