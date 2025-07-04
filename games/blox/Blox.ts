@@ -20,7 +20,7 @@ const Guy = () => Character({
         "mb1": () => ({ actionId: "escape" }),
         "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
         "g": ({ world }) => {
-          world.three?.debug()
+          world.three?.setDebug()
           return null
         },
         "e": () => ({ actionId: "fly" })
@@ -231,6 +231,10 @@ const BloxSystem = SystemBuilder({
               const group = round(xyz.z / 0.3).toString() as "1"
               collider.setGroup(group)
 
+              if (world.three?.debug === false) continue
+
+              console.log("calc spheres")
+
               const sphere = world.three?.sphere!
 
               const dummy = new Object3D()
@@ -293,6 +297,10 @@ const BloxSystem = SystemBuilder({
         world.three?.eagle?.scene.position.set(
           interpolated.x, interpolated.z + 0.1, interpolated.y
         )
+
+        // world.three?.eagle?.scene.rotation.set(
+        //   0, pc.components.position.data.aim.x, 0
+        // )
 
         const { velocity } = pc.components.position.data
 

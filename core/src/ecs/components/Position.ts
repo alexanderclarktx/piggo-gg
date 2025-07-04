@@ -230,14 +230,14 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         if (position.data.velocity.z || position.data.z) {
 
           // apply stop
-          if (!position.data.flying) {
+          // if (!position.data.flying) {
             const wouldGo = position.data.z + position.data.velocity.z
             if (position.data.stop < position.data.z && wouldGo < position.data.stop) {
               position.data.z = position.data.stop
             } else {
               position.data.z = wouldGo
             }
-          }
+          // }
 
           // set standing
           if (position.data.z === position.data.stop) {
@@ -257,6 +257,11 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         //   position.data.flying,
         //   position.data.velocity.z
         // )
+
+        if (position.data.flying) {
+          position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
+          // console.log("flying", position.data.velocity.z)
+        }
 
         // velocity dampening
         if (position.data.friction) {

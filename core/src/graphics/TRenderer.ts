@@ -15,10 +15,11 @@ export type TRenderer = {
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   blocks: undefined | TBlockMesh
   mixers: AnimationMixer[]
+  debug: boolean
   duck: undefined | GLTF
   eagle: undefined | GLTF
   setZoom: (zoom: number) => void
-  debug: (state?: boolean) => void
+  setDebug: (state?: boolean) => void
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
@@ -41,7 +42,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let radial: undefined | Radial
 
   let zoom = 2
-  let debug = false
 
   const tRenderer: TRenderer = {
     camera: TCamera(),
@@ -49,6 +49,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     sphere2: undefined,
     blocks: undefined,
     mixers: [],
+    debug: false,
     duck: undefined,
     eagle: undefined,
     setZoom: (z: number) => zoom = z,
@@ -62,21 +63,18 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       renderer?.dispose()
       scene?.clear()
     },
-    debug: (state?: boolean) => {
+    setDebug: (state?: boolean) => {
+      const { debug } = tRenderer
       if (state === undefined) state = !debug
       if (debug === state) return
 
-      debug = state
+      tRenderer.debug = state
       if (debug && renderer && scene && sun) {
         helper = new CameraHelper(sun.shadow.camera)
         scene.add(helper)
-        tRenderer.sphere!.visible = true
-        tRenderer.sphere2!.visible = true
       } else if (!debug && renderer && scene && helper) {
         scene.remove(helper)
         helper = undefined
-        tRenderer.sphere!.visible = false
-        tRenderer.sphere2!.visible = false
       }
     },
     pointerLock: () => {
@@ -122,6 +120,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.receiveShadow = true
       tRenderer.sphere.visible = false
       tRenderer.sphere2.visible = false
+      tRenderer.sphere2.rotation.order = "YXZ"
+
       scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
 
@@ -141,18 +141,21 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         // update duck position
         const pc = world.client?.playerCharacter()
-        const { duck, eagle } = tRenderer
+        const { duck, eagle, debug, sphere, sphere2 } = tRenderer
+
         if (pc && duck && eagle) {
 
           const { aim, velocity, flying } = pc.components.position.data
 
           // rotation
           duck.scene.rotation.set(0, aim.x + PI / 2, 0)
-          eagle.scene.rotation.set(0, aim.x, 0)
+          eagle.scene.rotation.set(aim.y, aim.x, 0)
 
           // visibility
           duck.scene.visible = debug ? false : !flying
           eagle.scene.visible = debug ? false : flying
+          sphere!.visible = debug
+          sphere2!.visible = debug
 
           // animations
           for (const mixer of tRenderer.mixers) {
@@ -274,6 +277,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         eagle.scene.scale.set(0.05, 0.05, 0.05)
         eagle.scene.position.set(3, 3, 3)
         scene?.add(eagle.scene)
+
+        eagle.scene.rotation.order = "YXZ"
 
         const mixer = new AnimationMixer(eagle.scene)
         mixer.clipAction(eagle.animations[0]).play()
