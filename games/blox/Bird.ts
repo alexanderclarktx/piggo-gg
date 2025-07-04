@@ -79,8 +79,16 @@ export const Bird = () => Character({
 
         if (params.key === "a") {
           toward.crossVectors(camera.c.up, dir).normalize()
+
+          if (position.data.flying) {
+            world.three?.eagle?.scene.rotateZ(0.1)
+          }
         } else if (params.key === "d") {
           toward.crossVectors(dir, camera.c.up).normalize()
+
+          if (position.data.flying) {
+            world.three?.eagle?.scene.rotateZ(-0.1)
+          }
         } else if (params.key === "w") {
           toward.copy(dir).normalize()
         } else if (params.key === "s") {
@@ -89,10 +97,18 @@ export const Bird = () => Character({
           const forward = dir.clone().normalize()
           const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
           toward.copy(forward.add(left).normalize())
+
+          if (position.data.flying) {
+            world.three?.eagle?.scene.rotateZ(0.1)
+          }
         } else if (params.key === "wd") {
           const forward = dir.clone().normalize()
           const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
           toward.copy(forward.add(right).normalize())
+
+          if (position.data.flying) {
+            world.three?.eagle?.scene.rotateZ(-0.1)
+          }
         } else if (params.key === "as") {
           const backward = dir.clone().negate().normalize()
           const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
