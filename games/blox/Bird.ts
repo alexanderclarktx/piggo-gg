@@ -89,6 +89,8 @@ export const Bird = () => Character({
 
           if (position.data.flying) {
             rotating = -0.08
+          } else {
+            // position.data.rotation = -Math.PI / 2
           }
         } else if (params.key === "w") {
           toward.copy(dir).normalize()

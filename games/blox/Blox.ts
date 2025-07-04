@@ -54,10 +54,13 @@ const BloxSystem = SystemBuilder({
           const { position } = entity.components
           const { x, y, z, velocity, flying, rotation } = position.data
 
+          position.data.rotating = 0
+
           if (flying) {
-            position.data.rotating = 0
             if (rotation < 0) position.data.rotating = min(0.08, -rotation)
             if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
+          } else {
+            position.data.rotation = 0
           }
 
           if (z < -4) {
@@ -199,7 +202,6 @@ const BloxSystem = SystemBuilder({
           )
 
           eagle.scene.rotation.z = rotation - rotating * delta / 1000
-          // eagle.scene.rotateZ(rotation / 3)
         }
 
         const { velocity } = pc.components.position.data

@@ -146,10 +146,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         if (pc && duck && eagle) {
 
-          const { aim, velocity, flying } = pc.components.position.data
+          const { aim, velocity, flying, rotation } = pc.components.position.data
 
           // rotation
-          duck.scene.rotation.set(0, aim.x + PI / 2, 0)
+          duck.scene.rotation.set(0, aim.x + PI / 2 + rotation, 0)
+
           eagle.scene.rotation.y = aim.x
           eagle.scene.rotation.x = aim.y
 
