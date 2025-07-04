@@ -11,6 +11,7 @@ export type Position = Component<"position", {
   facing: -1 | 1
   follows: string | undefined
   friction: boolean
+  flying: boolean
   gravity: number
   heading: XY
   offset: XY
@@ -35,7 +36,7 @@ export type Position = Component<"position", {
   scaleVelocity: (factor: number) => Position
   moveAim: (_: XY) => Position
   impulse: (_: { x?: number, y?: number, z?: number }) => Position
-  interpolate: (world: World) => XYZ
+  interpolate: (world: World, delta: number) => XYZ
   setSpeed: (_: number) => void
   setHeading: (_: XY) => Position
   clearHeading: () => Position
@@ -71,6 +72,7 @@ export const Position = (props: PositionProps = {}): Position => {
       facing: 1,
       follows: props.follows ?? undefined,
       friction: props.friction ?? false,
+      flying: false,
       gravity: props.gravity ?? 0,
       heading: { x: NaN, y: NaN },
       aim: { x: 0, y: 0 },
@@ -124,7 +126,7 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.aim.x = round(position.data.aim.x - x, 3)
       position.data.aim.y = round(position.data.aim.y - y, 3)
 
-      position.data.aim.y = max(-1.5, min(1.5, position.data.aim.y))
+      position.data.aim.y = max(-0.6166, min(0.6166, position.data.aim.y))
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
@@ -133,13 +135,13 @@ export const Position = (props: PositionProps = {}): Position => {
       if (z !== undefined) position.data.velocity.z += z
       return position
     },
-    interpolate: (world: World) => {
-      const delta = performance.now() - world.time
+    interpolate: (world: World, delta: number) => {
 
       let dz = position.data.velocity.z * delta / world.tickrate
-      if (position.data.stop < position.data.z && position.data.z + dz < position.data.stop) {
+      if (position.data.stop <= position.data.z && position.data.z + dz < position.data.stop) {
         dz = position.data.stop - position.data.z
       }
+      if (position.data.flying) dz = 0
 
       if (world.tick - position.lastCollided <= 4) {
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
@@ -217,7 +219,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   init: (world) => ({
     id: "PositionSystem",
     query: ["position"],
-    priority: 10,
+    priority: 9,
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
@@ -228,7 +230,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
           // apply stop
           const wouldGo = position.data.z + position.data.velocity.z
-          if (position.data.stop < position.data.z && wouldGo < position.data.stop) {
+          if (position.data.stop <= position.data.z && wouldGo < position.data.stop) {
             position.data.z = position.data.stop
           } else {
             position.data.z = wouldGo
@@ -240,21 +242,22 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
             position.data.standing = true
           } else {
             position.data.standing = false
-            position.data.velocity.z -= position.data.gravity
+            if (!position.data.flying) {
+              position.data.velocity.z -= position.data.gravity
+            }
           }
         } else {
           position.data.standing = true
         }
 
+        // flying direction
+        if (position.data.flying) {
+          position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
+        }
+
         // velocity dampening
         if (position.data.friction) {
           entity.components.position.scaleVelocity(position.data.standing ? 0.8 : 0.98)
-        }
-
-        // side-view gravity
-        if (position.data.gravity && world.game.view === "side") {
-          position.data.velocity.y = min(position.data.velocity.y + position.data.gravity, position.data.gravity * 45)
-          position.updateOrientation()
         }
 
         // follows

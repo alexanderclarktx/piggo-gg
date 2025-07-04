@@ -20,9 +20,10 @@ const Guy = () => Character({
         "mb1": () => ({ actionId: "escape" }),
         "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
         "g": ({ world }) => {
-          world.three?.debug()
+          world.three?.setDebug()
           return null
-        }
+        },
+        "e": () => ({ actionId: "fly" })
       },
       press: {
         "w,s": () => null, "a,d": () => null,
@@ -51,11 +52,18 @@ const Guy = () => Character({
       escape: Action("escape", ({ world }) => {
         world.three?.pointerLock()
       }),
+      fly: Action("fly", ({ entity }) => {
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        position.data.flying = !position.data.flying
+        position.data.velocity.z = 0
+      }),
       jump: Action("jump", ({ entity, params }) => {
         const position = entity?.components?.position
         if (!position || !params.hold) return
 
-        if (!position.data.standing) return
+        if (!position.data.standing || position.data.flying) return
 
         position.setVelocity({ z: min(params.hold, 50) * 0.005 })
       }),
@@ -98,7 +106,7 @@ const Guy = () => Character({
           const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
           toward.copy(backward.add(right).normalize())
         } else if (params.key === "up") {
-          if (!position.data.standing) return
+          if (!position.data.standing || position.data.flying) return
           toward.set(0, 0.04, 0)
           setZ = true
 
@@ -174,7 +182,7 @@ const BloxSystem = SystemBuilder({
 
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
-          // gravity
+          // vertical stopping
           const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1)).z
           if (highest > 0 && velocity.z <= 0) {
             const stop = highest * 0.3 + 0.3
@@ -223,6 +231,10 @@ const BloxSystem = SystemBuilder({
               const group = round(xyz.z / 0.3).toString() as "1"
               collider.setGroup(group)
 
+              collider.active = true
+
+              if (world.three?.debug === false) continue
+
               const sphere = world.three?.sphere!
 
               const dummy = new Object3D()
@@ -233,8 +245,6 @@ const BloxSystem = SystemBuilder({
 
               sphere.setColorAt(index, new Color((pgroup == group) ? 0x0000ff : 0xff0000))
               sphere.instanceColor!.needsUpdate = true
-
-              collider.active = true
             } else {
               collider.active = false
             }
@@ -272,10 +282,18 @@ const BloxSystem = SystemBuilder({
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
-        const interpolated = pc.components.position.interpolate(world)
+        const interpolated = pc.components.position.interpolate(world, delta)
 
         world.three?.sphere2?.position.set(
           interpolated.x, interpolated.z + 0.05, interpolated.y
+        )
+
+        world.three?.duck?.scene.position.set(
+          interpolated.x, interpolated.z - 0.025, interpolated.y
+        )
+
+        world.three?.eagle?.scene.position.set(
+          interpolated.x, interpolated.z + 0.1, interpolated.y
         )
 
         const { velocity } = pc.components.position.data

@@ -9,7 +9,6 @@ export type Game<State extends {} = {}, T extends string = string> = {
   state: State
   systems: SystemBuilder[]
   tileMap?: number[]
-  view?: "top" | "side"
 }
 
 export type GameBuilder<State extends {} = {}, T extends string = string> = {

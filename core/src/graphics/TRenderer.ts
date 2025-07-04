@@ -1,10 +1,10 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh,
-  LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter,
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh, LinearMipMapNearestFilter,
+  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
-import { sin, cos, TCamera, World, Radial, TBlockMesh, PI, hypot } from "@piggo-gg/core"
+import { hypot, PI, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -15,8 +15,11 @@ export type TRenderer = {
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   blocks: undefined | TBlockMesh
   mixers: AnimationMixer[]
+  debug: boolean
+  duck: undefined | GLTF
+  eagle: undefined | GLTF
   setZoom: (zoom: number) => void
-  debug: (state?: boolean) => void
+  setDebug: (state?: boolean) => void
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
@@ -37,10 +40,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let radial: undefined | Radial
-  let duck: undefined | GLTF
 
   let zoom = 2
-  let debug = false
 
   const tRenderer: TRenderer = {
     camera: TCamera(),
@@ -48,6 +49,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     sphere2: undefined,
     blocks: undefined,
     mixers: [],
+    debug: false,
+    duck: undefined,
+    eagle: undefined,
     setZoom: (z: number) => zoom = z,
     resize: () => {
       if (renderer) {
@@ -59,24 +63,20 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       renderer?.dispose()
       scene?.clear()
     },
-    debug: (state?: boolean) => {
-      if (state === undefined) state = !debug
-      if (debug === state) return
+    setDebug: (state?: boolean) => {
+      if (state === undefined) state = !tRenderer.debug
+      if (tRenderer.debug === state) return
 
-      debug = state
-      if (debug && renderer && scene && sun) {
+      tRenderer.debug = state
+
+      if (!renderer || !scene || !sun) return
+
+      if (tRenderer.debug) {
         helper = new CameraHelper(sun.shadow.camera)
         scene.add(helper)
-        tRenderer.sphere!.visible = true
-        tRenderer.sphere2!.visible = true
-        if (duck) duck.scene.visible = false
-        // tRenderer.sphere!.instanceMatrix.needsUpdate = true
-      } else if (!debug && renderer && scene && helper) {
+      } else if (!tRenderer.debug && helper) {
         scene.remove(helper)
         helper = undefined
-        tRenderer.sphere!.visible = false
-        tRenderer.sphere2!.visible = false
-        if (duck) duck.scene.visible = true
       }
     },
     pointerLock: () => {
@@ -122,6 +122,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.receiveShadow = true
       tRenderer.sphere.visible = false
       tRenderer.sphere2.visible = false
+
       scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
 
@@ -141,18 +142,30 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         // update duck position
         const pc = world.client?.playerCharacter()
-        if (pc && duck) {
-          const interpolated = pc.components.position.interpolate(world)
-          duck.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+        const { duck, eagle, debug, sphere, sphere2 } = tRenderer
 
-          const { aim, velocity } = pc.components.position.data
+        if (pc && duck && eagle) {
+
+          const { aim, velocity, flying } = pc.components.position.data
+
+          // rotation
           duck.scene.rotation.set(0, aim.x + PI / 2, 0)
+          eagle.scene.rotation.set(aim.y, aim.x, 0)
 
+          // visibility
+          duck.scene.visible = debug ? false : !flying
+          eagle.scene.visible = debug ? false : flying
+          sphere!.visible = debug
+          sphere2!.visible = debug
 
           // animations
           for (const mixer of tRenderer.mixers) {
             // mixer.update(0.01)
-            mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
+            if (flying) {
+              mixer.update(sqrt(hypot(velocity.x, velocity.y, velocity.z)) * 0.005 + 0.01)
+            } else {
+              mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
+            }
           }
         }
 
@@ -260,14 +273,16 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       //   zoom = Math.max(1, Math.min(zoom, 10))
       // })
 
-      GL.load("duck.glb", (gltf) => {
-        duck = gltf
-        duck.scene.scale.set(0.08, 0.08, 0.08)
-        duck.scene.position.set(3, 3, 3)
-        scene?.add(duck.scene)
+      GL.load("eagle.glb", (eagle) => {
+        tRenderer.eagle = eagle
+        eagle.scene.scale.set(0.05, 0.05, 0.05)
+        eagle.scene.position.set(3, 3, 3)
+        scene?.add(eagle.scene)
 
-        const mixer = new AnimationMixer(duck.scene)
-        mixer.clipAction(gltf.animations[1]).play()
+        eagle.scene.rotation.order = "YXZ"
+
+        const mixer = new AnimationMixer(eagle.scene)
+        mixer.clipAction(eagle.animations[0]).play()
 
         tRenderer.mixers.push(mixer)
 
@@ -278,9 +293,28 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           Cylinder_3: 0x632724
         }
 
+        eagle.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.material = new MeshStandardMaterial({ color: colors[child.name] })
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+      })
+
+      GL.load("duck.glb", (duck) => {
+        tRenderer.duck = duck
+        duck.scene.scale.set(0.08, 0.08, 0.08)
+        duck.scene.position.set(3, 3, 3)
+        scene?.add(duck.scene)
+
+        const mixer = new AnimationMixer(duck.scene)
+        mixer.clipAction(duck.animations[1]).play()
+
+        tRenderer.mixers.push(mixer)
+
         duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
-            // child.material = new MeshStandardMaterial({ color: colors[child.name] })
             child.castShadow = true
             child.receiveShadow = true
           }

@@ -11,7 +11,6 @@ export const Animals: GameBuilder = {
     netcode: "rollback",
     state: {},
     systems: [CameraSystem(), SpawnSystem(Animal)],
-    view: "side",
     entities: [
       ...DefaultUI(world),
       Background({ img: "stars.png" }),

@@ -10,7 +10,6 @@ export const Flappy: GameBuilder = {
   init: () => ({
     id: "flappy",
     bgColor: 0x000000,
-    view: "side",
     state: {},
     systems: [
       CameraSystem(({ x }) => ({ x, y: 0, z: 0 })),

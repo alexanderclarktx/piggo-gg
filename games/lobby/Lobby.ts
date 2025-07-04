@@ -19,7 +19,6 @@ export const Lobby: GameBuilder = {
       gameId: "blox"
     },
     systems: [RenderSystem],
-    view: "side",
     entities: [
       Background({ moving: true, rays: true }),
       Cursor(),

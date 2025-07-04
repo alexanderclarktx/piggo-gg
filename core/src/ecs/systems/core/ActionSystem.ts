@@ -12,7 +12,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
         const { position } = entity.components
         if (position.data.velocityResets && !position.data.heading.x && !position.data.heading.y) {
           position.data.velocity.x = 0
-          if (world.game.view !== "side") position.data.velocity.y = 0
+          position.data.velocity.y = 0
         }
       }
 

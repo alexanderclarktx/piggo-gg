@@ -90,7 +90,7 @@ export const BlockMesh = () => {
 
           chunkData = blocks.visible(chunks, flipped === -1)
         },
-        onRender: ({ world }) => {
+        onRender: ({ world, delta }) => {
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable?.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
@@ -98,7 +98,7 @@ export const BlockMesh = () => {
           const character = world.client?.playerCharacter()
 
           // character position
-          const pcPos = character?.components.position.interpolate(world) ?? { x: 0, y: 0, z: 0 }
+          const pcPos = character?.components.position.interpolate(world, delta) ?? { x: 0, y: 0, z: 0 }
           const pcPosFlip = world.flip(pcPos)
 
           // highlighted face

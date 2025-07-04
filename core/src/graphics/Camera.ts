@@ -135,7 +135,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         }
         // console.log(`hidden ${numHidden} entities`)
       },
-      onRender: () => {
+      onRender: (_, delta) => {
         if (!renderer.camera.focus) return
 
         if (targetScale !== renderer.camera.scale) {
@@ -146,7 +146,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
         const { position, renderable } = renderer.camera.focus.components
         if (!position || !renderable) return
 
-        const interpolated = position.interpolate(world)
+        const interpolated = position.interpolate(world, delta)
 
         const { x, y, z } = follow(interpolated)
 
