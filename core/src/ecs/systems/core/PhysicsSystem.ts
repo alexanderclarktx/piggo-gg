@@ -27,7 +27,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
     return {
       id: mode === "global" ? "PhysicsSystem" : "LocalPhysicsSystem",
       query: ["position", "collider"],
-      priority: mode === "global" ? 7 : 10,
+      priority: mode === "global" ? 7 : 9,
       onRollback: resetPhysics,
       onTick: (entities: Entity<Collider | Position>[], isRollback: false) => {
 

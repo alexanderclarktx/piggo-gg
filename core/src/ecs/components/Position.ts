@@ -221,7 +221,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   init: (world) => ({
     id: "PositionSystem",
     query: ["position"],
-    priority: 9,
+    priority: 10,
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
