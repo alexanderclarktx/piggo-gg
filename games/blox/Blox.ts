@@ -8,7 +8,7 @@ import { Color, Object3D, Vector3 } from "three"
 const Guy = () => Character({
   id: "guy",
   components: {
-    position: Position({ friction: true, gravity: 0.002, stop: 2, z: 6, x: 20, y: 20 }),
+    position: Position({ friction: true, flying: true, z: 6, x: 20, y: 20 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
