@@ -7,7 +7,7 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  highestBlockIJ: (pos: XY, max?: number) => XYZ
+  highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   adjacent: (block: XY) => Block[] | null
@@ -55,8 +55,9 @@ export const BlockData = (): BlockData => {
   }
 
   const blocks: BlockData = {
-    highestBlockIJ: (pos: XY, max?: number): XYZ => {
+    highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0
+
       const xChunk = floor(pos.x / 4)
       const yChunk = floor(pos.y / 4)
 
@@ -74,9 +75,9 @@ export const BlockData = (): BlockData => {
           const type = chunk[index]
           if (type !== 0) level = z
         }
+        return { x: pos.x, y: pos.y, z: level }
       }
-      // console.log(`at ${pos.x}|${pos.y} level:${level}`, level)
-      return { x: pos.x, y: pos.y, z: level }
+      return undefined
     },
     atMouse: (mouse: XY, player: XYZ) => {
       const playerChunk = XYtoChunk(player)
@@ -384,7 +385,7 @@ export const spawnChunk = (chunk: XY) => {
       for (let z = 0; z < height; z++) {
 
         const type = range<BlockType>(z, [
-          [0, "obsidian"],
+          [0, "saphire"],
           [1, "saphire"],
           [7, "grass"],
           [32, "asteroid"]

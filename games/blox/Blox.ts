@@ -183,9 +183,10 @@ const BloxSystem = SystemBuilder({
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
           // vertical stopping
-          const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1)).z
-          if (highest > 0 && velocity.z <= 0) {
-            const stop = highest * 0.3 + 0.3
+          const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1))
+
+          if (highest !== undefined && velocity.z <= 0) {
+            const stop = highest.z * 0.3 + 0.3
             position.data.stop = stop
           } else {
             position.data.stop = -5
