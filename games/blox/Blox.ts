@@ -56,10 +56,8 @@ const BloxSystem = SystemBuilder({
 
           if (flying) {
             position.data.rotating = 0
-            if (rotation < 0) position.data.rotating = min(0.05, -rotation)
-            if (rotation > 0) position.data.rotating = -1 * min(0.05, rotation)
-
-            console.log(rotation, position.data.rotating)
+            if (rotation < 0) position.data.rotating = min(0.08, -rotation)
+            if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
           }
 
           if (z < -4) {
@@ -179,6 +177,8 @@ const BloxSystem = SystemBuilder({
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
+        if (!world.three) return
+
         const interpolated = pc.components.position.interpolate(world, delta)
 
         world.three?.sphere2?.position.set(
@@ -189,9 +189,18 @@ const BloxSystem = SystemBuilder({
           interpolated.x, interpolated.z - 0.025, interpolated.y
         )
 
-        world.three?.eagle?.scene.position.set(
-          interpolated.x, interpolated.z + 0.1, interpolated.y
-        )
+        const { eagle } = world.three
+        if (eagle) {
+
+          const { rotation, rotating } = pc.components.position.data
+
+          eagle.scene.position.set(
+            interpolated.x, interpolated.z + 0.1, interpolated.y
+          )
+
+          eagle.scene.rotation.z = rotation - rotating * delta / 1000
+          // eagle.scene.rotateZ(rotation / 3)
+        }
 
         const { velocity } = pc.components.position.data
 

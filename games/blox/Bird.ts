@@ -82,13 +82,13 @@ export const Bird = () => Character({
           toward.crossVectors(camera.c.up, dir).normalize()
 
           if (position.data.flying) {
-            rotating = 0.05
+            rotating = 0.08
           }
         } else if (params.key === "d") {
           toward.crossVectors(dir, camera.c.up).normalize()
 
           if (position.data.flying) {
-            rotating = -0.05
+            rotating = -0.08
           }
         } else if (params.key === "w") {
           toward.copy(dir).normalize()
@@ -102,7 +102,7 @@ export const Bird = () => Character({
           toward.copy(forward.add(left).normalize())
 
           if (position.data.flying) {
-            rotating = 0.05
+            rotating = 0.08
           }
         } else if (params.key === "wd") {
           const forward = dir.clone().normalize()
@@ -110,7 +110,7 @@ export const Bird = () => Character({
           toward.copy(forward.add(right).normalize())
 
           if (position.data.flying) {
-            rotating = -0.05
+            rotating = -0.08
           }
         } else if (params.key === "as") {
           if (!position.data.flying) {
@@ -134,7 +134,7 @@ export const Bird = () => Character({
           world.client?.soundManager.play("bubble")
         }
 
-        position.data.rotating = rotating
+        if (rotating) position.data.rotating = rotating
 
         if (!setZ) {
           let factor = 0
