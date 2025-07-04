@@ -1,5 +1,6 @@
 import {
   blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder,
+  min,
   PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -51,10 +52,14 @@ const BloxSystem = SystemBuilder({
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         for (const entity of entities) {
           const { position } = entity.components
-          const { x, y, z, velocity, flying } = position.data
+          const { x, y, z, velocity, flying, rotation } = position.data
 
           if (flying) {
-            position.data.rotation = 0
+            position.data.rotating = 0
+            if (rotation < 0) position.data.rotating = min(0.05, -rotation)
+            if (rotation > 0) position.data.rotating = -1 * min(0.05, rotation)
+
+            console.log(rotation, position.data.rotating)
           }
 
           if (z < -4) {

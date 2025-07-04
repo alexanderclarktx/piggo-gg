@@ -18,6 +18,7 @@ export type Position = Component<"position", {
   pointing: Oct
   pointingDelta: XY
   rotation: number
+  rotating: number
   speed: number
   standing: boolean
   stop: number
@@ -81,6 +82,7 @@ export const Position = (props: PositionProps = {}): Position => {
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
       rotation: props.rotation ?? 0,
+      rotating: 0,
       speed: props.speed ?? 0,
       standing: true,
       stop: props.stop ?? 0,
@@ -260,6 +262,11 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         // velocity dampening
         if (position.data.friction) {
           entity.components.position.scaleVelocity(position.data.standing ? 0.8 : 0.98)
+        }
+
+        // rotation
+        if (position.data.rotating) {
+          position.data.rotation += position.data.rotating
         }
 
         // follows
