@@ -18,6 +18,7 @@ export type Position = Component<"position", {
   pointing: Oct
   pointingDelta: XY
   rotation: number
+  rotating: number
   speed: number
   standing: boolean
   stop: number
@@ -52,6 +53,7 @@ export type PositionProps = {
   velocity?: { x: number, y: number }
   gravity?: number
   friction?: boolean
+  flying?: boolean
   stop?: number
   speed?: number
   velocityResets?: number
@@ -72,7 +74,7 @@ export const Position = (props: PositionProps = {}): Position => {
       facing: 1,
       follows: props.follows ?? undefined,
       friction: props.friction ?? false,
-      flying: false,
+      flying: props.flying ?? false,
       gravity: props.gravity ?? 0,
       heading: { x: NaN, y: NaN },
       aim: { x: 0, y: 0 },
@@ -80,6 +82,7 @@ export const Position = (props: PositionProps = {}): Position => {
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
       rotation: props.rotation ?? 0,
+      rotating: 0,
       speed: props.speed ?? 0,
       standing: true,
       stop: props.stop ?? 0,
@@ -126,7 +129,8 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.aim.x = round(position.data.aim.x - x, 3)
       position.data.aim.y = round(position.data.aim.y - y, 3)
 
-      position.data.aim.y = max(-0.6166, min(0.6166, position.data.aim.y))
+      const factor = position.data.flying ? 1.1 : 0.6166
+      position.data.aim.y = max(-factor, min(factor, position.data.aim.y))
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
@@ -219,7 +223,7 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
   init: (world) => ({
     id: "PositionSystem",
     query: ["position"],
-    priority: 9,
+    priority: 10,
     onTick: (entities: Entity<Position>[]) => {
       entities.forEach(entity => {
 
@@ -258,6 +262,12 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         // velocity dampening
         if (position.data.friction) {
           entity.components.position.scaleVelocity(position.data.standing ? 0.8 : 0.98)
+        }
+
+        // rotation
+        if (position.data.rotating) {
+          position.data.rotation += position.data.rotating
+          position.data.rotation = max(-Math.PI / 3, min(Math.PI / 3, position.data.rotation))
         }
 
         // follows

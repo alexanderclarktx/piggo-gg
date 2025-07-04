@@ -1,133 +1,10 @@
 import {
-  Action, Actions, blocks, ceil, Character, chunkNeighbors, Collider, Entity, floor,
-  GameBuilder, Input, min, Networked, PhysicsSystem, Position, round, SpawnSystem,
-  spawnTerrain, SystemBuilder, TBlockCollider, TCameraSystem, Team, XYtoChunk, XYZ, XYZdistance
+  blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder, min,
+  PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  TBlockCollider, TCameraSystem, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
-
-const Guy = () => Character({
-  id: "guy",
-  components: {
-    position: Position({ friction: true, gravity: 0.002, stop: 2, z: 6, x: 20, y: 20 }),
-    networked: Networked(),
-    collider: Collider({
-      shape: "ball",
-      radius: 0.1
-    }),
-    input: Input({
-      release: {
-        "escape": () => ({ actionId: "escape" }),
-        "mb1": () => ({ actionId: "escape" }),
-        "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
-        "g": ({ world }) => {
-          world.three?.setDebug()
-          return null
-        },
-        "e": () => ({ actionId: "fly" })
-      },
-      press: {
-        "w,s": () => null, "a,d": () => null,
-
-        "shift,w,a": () => ({ actionId: "move", params: { key: "wa", sprint: true } }),
-        "shift,w,d": () => ({ actionId: "move", params: { key: "wd", sprint: true } }),
-        "shift,a,s": () => ({ actionId: "move", params: { key: "as", sprint: true } }),
-        "shift,d,s": () => ({ actionId: "move", params: { key: "ds", sprint: true } }),
-        "shift,w": () => ({ actionId: "move", params: { key: "w", sprint: true } }),
-        "shift,a": () => ({ actionId: "move", params: { key: "a", sprint: true } }),
-        "shift,s": () => ({ actionId: "move", params: { key: "s", sprint: true } }),
-        "shift,d": () => ({ actionId: "move", params: { key: "d", sprint: true } }),
-
-        "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
-        "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
-        "a,s": () => ({ actionId: "move", params: { key: "as" } }),
-        "d,s": () => ({ actionId: "move", params: { key: "ds" } }),
-        "w": () => ({ actionId: "move", params: { key: "w" } }),
-        "a": () => ({ actionId: "move", params: { key: "a" } }),
-        "s": () => ({ actionId: "move", params: { key: "s" } }),
-        "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": () => ({ actionId: "move", params: { key: "up" } })
-      }
-    }),
-    actions: Actions({
-      escape: Action("escape", ({ world }) => {
-        world.three?.pointerLock()
-      }),
-      fly: Action("fly", ({ entity }) => {
-        const { position } = entity?.components ?? {}
-        if (!position) return
-
-        position.data.flying = !position.data.flying
-        position.data.velocity.z = 0
-      }),
-      jump: Action("jump", ({ entity, params }) => {
-        const position = entity?.components?.position
-        if (!position || !params.hold) return
-
-        if (!position.data.standing || position.data.flying) return
-
-        position.setVelocity({ z: min(params.hold, 50) * 0.005 })
-      }),
-      move: Action("move", ({ entity, params, world }) => {
-        const camera = world.three?.camera
-        if (!camera) return
-
-        const { position } = entity?.components ?? {}
-        if (!position) return
-
-        if (!["wa", "wd", "as", "ds", "a", "d", "w", "s", "up"].includes(params.key)) return
-
-        const dir = camera.worldDirection(world)
-        const toward = new Vector3()
-
-        let setZ = false
-
-        if (params.key === "a") {
-          toward.crossVectors(camera.c.up, dir).normalize()
-        } else if (params.key === "d") {
-          toward.crossVectors(dir, camera.c.up).normalize()
-        } else if (params.key === "w") {
-          toward.copy(dir).normalize()
-        } else if (params.key === "s") {
-          toward.copy(dir).negate().normalize()
-        } else if (params.key === "wa") {
-          const forward = dir.clone().normalize()
-          const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
-          toward.copy(forward.add(left).normalize())
-        } else if (params.key === "wd") {
-          const forward = dir.clone().normalize()
-          const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
-          toward.copy(forward.add(right).normalize())
-        } else if (params.key === "as") {
-          const backward = dir.clone().negate().normalize()
-          const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
-          toward.copy(backward.add(left).normalize())
-        } else if (params.key === "ds") {
-          const backward = dir.clone().negate().normalize()
-          const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
-          toward.copy(backward.add(right).normalize())
-        } else if (params.key === "up") {
-          if (!position.data.standing || position.data.flying) return
-          toward.set(0, 0.04, 0)
-          setZ = true
-
-          world.client?.soundManager.play("bubble")
-        }
-
-        if (!setZ) {
-          let factor = 0
-          if (params.sprint) {
-            factor = position.data.standing ? 0.9 : 0.12
-          } else {
-            factor = position.data.standing ? 0.5 : 0.08
-          }
-          position.impulse({ x: toward.x * factor, y: toward.z * factor })
-        }
-        if (setZ) position.setVelocity({ z: toward.y })
-      })
-    }),
-    team: Team(1)
-  }
-})
+import { Bird } from "./Bird"
 
 export const Blox: GameBuilder = {
   id: "blox",
@@ -141,7 +18,7 @@ export const Blox: GameBuilder = {
       netcode: "rollback",
       state: {},
       systems: [
-        SpawnSystem(Guy),
+        SpawnSystem(Bird),
         PhysicsSystem("global"),
         PhysicsSystem("local"),
         TCameraSystem(),
@@ -174,7 +51,16 @@ const BloxSystem = SystemBuilder({
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         for (const entity of entities) {
           const { position } = entity.components
-          const { x, y, z, velocity } = position.data
+          const { x, y, z, velocity, flying, rotation } = position.data
+
+          position.data.rotating = 0
+
+          if (flying) {
+            if (rotation < 0) position.data.rotating = min(0.08, -rotation)
+            if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
+          } else {
+            position.data.rotation = 0
+          }
 
           if (z < -4) {
             position.data.z = 10
@@ -183,9 +69,10 @@ const BloxSystem = SystemBuilder({
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
           // vertical stopping
-          const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1)).z
-          if (highest > 0 && velocity.z <= 0) {
-            const stop = highest * 0.3 + 0.3
+          const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1))
+
+          if (highest !== undefined && velocity.z <= 0) {
+            const stop = highest.z * 0.3 + 0.3
             position.data.stop = stop
           } else {
             position.data.stop = -5
@@ -269,9 +156,19 @@ const BloxSystem = SystemBuilder({
           for (let i = 0; i < chunkData.length; i++) {
             placed = true
 
-            const { x, y, z } = chunkData[i]
+            const { x, y, z, type } = chunkData[i]
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
+
+            if (type === 10) {
+              world.three?.blocks?.setColorAt(i, new Color(0x00ee88))
+            } else if (type === 9) {
+              world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
+            } else if (type === 6) {
+              world.three?.blocks?.setColorAt(i, new Color(0x440066))
+            } else if (type === 11) {
+              world.three?.blocks?.setColorAt(i, new Color(0xF5F5DC))
+            }
 
             world.three?.blocks?.setMatrixAt(i, dummy.matrix)
             world.three!.blocks!.instanceMatrix.needsUpdate = true
@@ -281,6 +178,8 @@ const BloxSystem = SystemBuilder({
       onRender: (_, delta) => {
         const pc = world.client?.playerCharacter()
         if (!pc) return
+
+        if (!world.three) return
 
         const interpolated = pc.components.position.interpolate(world, delta)
 
@@ -292,9 +191,17 @@ const BloxSystem = SystemBuilder({
           interpolated.x, interpolated.z - 0.025, interpolated.y
         )
 
-        world.three?.eagle?.scene.position.set(
-          interpolated.x, interpolated.z + 0.1, interpolated.y
-        )
+        const { eagle } = world.three
+        if (eagle) {
+
+          const { rotation, rotating } = pc.components.position.data
+
+          eagle.scene.position.set(
+            interpolated.x, interpolated.z + 0.1, interpolated.y
+          )
+
+          eagle.scene.rotation.z = rotation - rotating * delta / 1000
+        }
 
         const { velocity } = pc.components.position.data
 
