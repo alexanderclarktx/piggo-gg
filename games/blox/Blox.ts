@@ -269,9 +269,15 @@ const BloxSystem = SystemBuilder({
           for (let i = 0; i < chunkData.length; i++) {
             placed = true
 
-            const { x, y, z } = chunkData[i]
+            const { x, y, z, type } = chunkData[i]
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
+
+            if (type === 3) {
+              world.three?.blocks?.setColorAt(i, new Color(0x00ee55))
+            } else if (type === 9) {
+              world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
+            }
 
             world.three?.blocks?.setMatrixAt(i, dummy.matrix)
             world.three!.blocks!.instanceMatrix.needsUpdate = true

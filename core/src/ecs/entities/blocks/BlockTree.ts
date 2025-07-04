@@ -5,8 +5,6 @@ export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
 
   const height = randomInt(2) + 4
 
-  const fluffy = randomInt(2) === 1
-
   for (let i = 1; i <= height; i++) {
     plan.push({
       x, y, z: z + i, type: BlockTypeInt["wood"]
@@ -20,6 +18,8 @@ export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
     { x, y: y - 1, z: z + height, type: BlockTypeInt["moonrock"] },
     { x, y, z: z + height + 1, type: BlockTypeInt["moonrock"] }
   )
+
+  const fluffy = randomInt(2) === 1
 
   if (fluffy) plan.push(
     { x: x + 1, y: y + 1, z: z + height, type: BlockTypeInt["moonrock"] },
