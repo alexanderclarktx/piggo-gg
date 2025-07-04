@@ -1,6 +1,5 @@
 import {
-  blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder,
-  min,
+  blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder, min,
   PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
