@@ -18,7 +18,8 @@ const graphics: Record<BlockType, Graphics | undefined> = {
   ruby: undefined,
   white: undefined,
   wood: undefined,
-  leaf: undefined
+  leaf: undefined,
+  birch: undefined
 }
 
 export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) => {

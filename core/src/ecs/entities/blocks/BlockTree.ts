@@ -5,13 +5,15 @@ export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
 
   let height = randomInt(2) + 4
 
-  if (randomInt(2) === 1 && height === 6) {
-    height += pow(randomInt(3), randomInt(2) + 1)
+  if (randomInt(4) === 1) {
+    height += randomInt(5)
   }
+
+  const woodType = randomChoice(["wood", "obsidian"]) as BlockType
 
   for (let i = 1; i <= height; i++) {
     plan.push({
-      x, y, z: z + i, type: BlockTypeInt["wood"]
+      x, y, z: z + i, type: BlockTypeInt[woodType]
     })
   }
   
