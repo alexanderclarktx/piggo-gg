@@ -127,7 +127,8 @@ export const Position = (props: PositionProps = {}): Position => {
       position.data.aim.x = round(position.data.aim.x - x, 3)
       position.data.aim.y = round(position.data.aim.y - y, 3)
 
-      position.data.aim.y = max(-0.6166, min(0.6166, position.data.aim.y))
+      const factor = position.data.flying ? 1.1 : 0.6166
+      position.data.aim.y = max(-factor, min(factor, position.data.aim.y))
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
