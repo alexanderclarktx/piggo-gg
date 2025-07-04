@@ -273,7 +273,7 @@ const BloxSystem = SystemBuilder({
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
-            if (type === 3) {
+            if (type === 10) {
               world.three?.blocks?.setColorAt(i, new Color(0x00ee55))
             } else if (type === 9) {
               world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
