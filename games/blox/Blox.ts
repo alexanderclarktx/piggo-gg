@@ -55,12 +55,9 @@ const BloxSystem = SystemBuilder({
 
           position.data.rotating = 0
 
-          if (flying) {
-            if (rotation < 0) position.data.rotating = min(0.08, -rotation)
-            if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
-          } else {
-            position.data.rotation = 0
-          }
+
+          if (rotation < 0) position.data.rotating = min(0.08, -rotation)
+          if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
 
           if (z < -4) {
             position.data.z = 10
