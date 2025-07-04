@@ -145,7 +145,6 @@ export const Position = (props: PositionProps = {}): Position => {
       if (position.data.stop <= position.data.z && position.data.z + dz < position.data.stop) {
         dz = position.data.stop - position.data.z
       }
-      if (position.data.flying) dz = 0
 
       if (world.tick - position.lastCollided <= 4) {
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
