@@ -14,3 +14,6 @@ https://opengameart.org/content/animated-animales-low-poly
 
 duck mesh
 https://opengameart.org/content/rigged-duckling
+
+apple mesh
+https://www.cgtrader.com/free-3d-models/food/fruit/apple-fruit-afa5e664-8ff8-4598-9568-a21c35520ca3

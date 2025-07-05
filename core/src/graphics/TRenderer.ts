@@ -304,7 +304,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         })
       })
 
-      GL.load("duck.glb", (duck) => {
+      GL.load("apple.glb", (duck) => {
         tRenderer.duck = duck
         duck.scene.scale.set(0.08, 0.08, 0.08)
         duck.scene.position.set(3, 3, 3)

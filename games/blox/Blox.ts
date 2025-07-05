@@ -188,8 +188,8 @@ const BloxSystem = SystemBuilder({
           interpolated.x, interpolated.z - 0.025, interpolated.y
         )
 
-        const { eagle } = world.three
-        if (eagle) {
+        const { eagle, duck } = world.three
+        if (eagle && duck) {
 
           const { rotation, rotating } = pc.components.position.data
 
@@ -198,6 +198,8 @@ const BloxSystem = SystemBuilder({
           )
 
           eagle.scene.rotation.z = rotation - rotating * delta / 1000
+
+          duck.scene.rotation.y = rotation - rotating * delta / 1000
         }
 
         const { velocity } = pc.components.position.data
