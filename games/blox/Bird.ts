@@ -14,7 +14,7 @@ export const Bird = () => Character({
       release: {
         "escape": () => ({ actionId: "escape" }),
         "mb1": () => ({ actionId: "escape" }),
-        "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
+        "f": ({ hold }) => ({ actionId: "bigjump", params: { hold } }),
         "g": ({ world }) => {
           world.three?.setDebug()
           return null
@@ -41,7 +41,7 @@ export const Bird = () => Character({
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
         "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": () => ({ actionId: "move", params: { key: "up" } })
+        " ": () => ({ actionId: "jump" })
       }
     }),
     actions: Actions({
@@ -55,13 +55,24 @@ export const Bird = () => Character({
         position.data.flying = !position.data.flying
         position.data.velocity.z = 0
       }),
-      jump: Action("jump", ({ entity, params }) => {
+      bigjump: Action("bigjump", ({ entity, params }) => {
         const position = entity?.components?.position
         if (!position || !params.hold) return
 
         if (!position.data.standing || position.data.flying) return
 
         position.setVelocity({ z: min(params.hold, 50) * 0.005 })
+      }),
+      jump: Action("jump", ({ entity, world }) => {
+
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        if (!position.data.standing || position.data.flying) return
+
+        position.setVelocity({ z: 0.04 })
+
+        world.client?.soundManager.play("bubble")
       }),
       move: Action("move", ({ entity, params, world }) => {
         const camera = world.three?.camera
@@ -118,12 +129,6 @@ export const Bird = () => Character({
             const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
             toward.copy(backward.add(right).normalize())
           }
-        } else if (params.key === "up") {
-          if (!position.data.standing || position.data.flying) return
-          toward.set(0, 0.04, 0)
-          setZ = true
-
-          world.client?.soundManager.play("bubble")
         }
 
         if (rotating) position.data.rotating = rotating
@@ -137,7 +142,6 @@ export const Bird = () => Character({
           }
           position.impulse({ x: toward.x * factor, y: toward.z * factor })
         }
-        if (setZ) position.setVelocity({ z: toward.y })
       })
     }),
     team: Team(1)
