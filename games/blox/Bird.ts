@@ -41,7 +41,7 @@ export const Bird = () => Character({
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
         "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": () => ({ actionId: "jump" })
+        " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
       }
     }),
     actions: Actions({
@@ -63,12 +63,12 @@ export const Bird = () => Character({
 
         position.setVelocity({ z: min(params.hold, 50) * 0.005 })
       }),
-      jump: Action("jump", ({ entity, world }) => {
-
+      jump: Action("jump", ({ entity, world, params }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
-        if (!position.data.standing || position.data.flying) return
+        if (position.data.flying) return
+        if (!position.data.standing && params.hold) return
 
         position.setVelocity({ z: 0.04 })
 
@@ -86,7 +86,6 @@ export const Bird = () => Character({
         const dir = camera.worldDirection(world)
         const toward = new Vector3()
 
-        let setZ = false
         let rotating = 0
 
         if (params.key === "a") {
@@ -133,15 +132,15 @@ export const Bird = () => Character({
 
         if (rotating) position.data.rotating = rotating
 
-        if (!setZ) {
-          let factor = 0
-          if (params.sprint) {
-            factor = position.data.standing ? 0.9 : 0.12
-          } else {
-            factor = position.data.standing ? 0.5 : 0.08
-          }
-          position.impulse({ x: toward.x * factor, y: toward.z * factor })
+        let factor = 0
+
+        if (position.data.standing) {
+          factor = params.sprint ? 0.9 : 0.5
+        } else {
+          factor = params.sprint ? 0.14 : 0.08
         }
+
+        position.impulse({ x: toward.x * factor, y: toward.z * factor })
       })
     }),
     team: Team(1)
