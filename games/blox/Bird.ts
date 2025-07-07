@@ -1,5 +1,6 @@
 import { Action, Actions, Character, Collider, Input, min, Networked, Position, Team } from "@piggo-gg/core"
 import { Vector3 } from "three"
+import { BloxState } from "./Blox"
 
 export const Bird = () => Character({
   id: "bird",
@@ -14,12 +15,11 @@ export const Bird = () => Character({
       release: {
         "escape": () => ({ actionId: "escape" }),
         "mb1": () => ({ actionId: "escape" }),
-        "f": ({ hold }) => ({ actionId: "jump", params: { hold } }),
         "g": ({ world }) => {
           world.three?.setDebug()
           return null
         },
-        "e": () => ({ actionId: "fly" })
+        "e": () => ({ actionId: "transform" })
       },
       press: {
         "w,s": () => null, "a,d": () => null,
@@ -41,27 +41,37 @@ export const Bird = () => Character({
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
         "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": () => ({ actionId: "move", params: { key: "up" } })
+        " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
       }
     }),
     actions: Actions({
       escape: Action("escape", ({ world }) => {
         world.three?.pointerLock()
       }),
-      fly: Action("fly", ({ entity }) => {
+      transform: Action("transform", ({ entity }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
         position.data.flying = !position.data.flying
         position.data.velocity.z = 0
       }),
-      jump: Action("jump", ({ entity, params }) => {
-        const position = entity?.components?.position
-        if (!position || !params.hold) return
+      jump: Action("jump", ({ entity, world, params }) => {
+        if (!entity) return
 
-        if (!position.data.standing || position.data.flying) return
+        const { position } = entity?.components ?? {}
+        if (!position) return
 
-        position.setVelocity({ z: min(params.hold, 50) * 0.005 })
+        if (position.data.flying) return
+        if (!position.data.standing && params.hold) return
+
+        const state = world.game.state as BloxState
+        if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
+
+        // double jumped
+        if (!position.data.standing) state.doubleJumped.push(entity.id)
+
+        position.setVelocity({ z: 0.04 })
+        world.client?.soundManager.play("bubble")
       }),
       move: Action("move", ({ entity, params, world }) => {
         const camera = world.three?.camera
@@ -75,7 +85,6 @@ export const Bird = () => Character({
         const dir = camera.worldDirection(world)
         const toward = new Vector3()
 
-        let setZ = false
         let rotating = 0
 
         if (params.key === "a") {
@@ -118,26 +127,19 @@ export const Bird = () => Character({
             const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
             toward.copy(backward.add(right).normalize())
           }
-        } else if (params.key === "up") {
-          if (!position.data.standing || position.data.flying) return
-          toward.set(0, 0.04, 0)
-          setZ = true
-
-          world.client?.soundManager.play("bubble")
         }
 
         if (rotating) position.data.rotating = rotating
 
-        if (!setZ) {
-          let factor = 0
-          if (params.sprint) {
-            factor = position.data.standing ? 0.9 : 0.12
-          } else {
-            factor = position.data.standing ? 0.5 : 0.08
-          }
-          position.impulse({ x: toward.x * factor, y: toward.z * factor })
+        let factor = 0
+
+        if (position.data.standing) {
+          factor = params.sprint ? 0.9 : 0.5
+        } else {
+          factor = params.sprint ? 0.12 : 0.08
         }
-        if (setZ) position.setVelocity({ z: toward.y })
+
+        position.impulse({ x: toward.x * factor, y: toward.z * factor })
       })
     }),
     team: Team(1)
