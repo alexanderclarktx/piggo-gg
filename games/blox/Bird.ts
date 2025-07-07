@@ -15,12 +15,11 @@ export const Bird = () => Character({
       release: {
         "escape": () => ({ actionId: "escape" }),
         "mb1": () => ({ actionId: "escape" }),
-        "f": ({ hold }) => ({ actionId: "bigjump", params: { hold } }),
         "g": ({ world }) => {
           world.three?.setDebug()
           return null
         },
-        "e": () => ({ actionId: "fly" })
+        "e": () => ({ actionId: "transform" })
       },
       press: {
         "w,s": () => null, "a,d": () => null,
@@ -49,20 +48,12 @@ export const Bird = () => Character({
       escape: Action("escape", ({ world }) => {
         world.three?.pointerLock()
       }),
-      fly: Action("fly", ({ entity }) => {
+      transform: Action("transform", ({ entity }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
         position.data.flying = !position.data.flying
         position.data.velocity.z = 0
-      }),
-      bigjump: Action("bigjump", ({ entity, params }) => {
-        const position = entity?.components?.position
-        if (!position || !params.hold) return
-
-        if (!position.data.standing || position.data.flying) return
-
-        position.setVelocity({ z: min(params.hold, 50) * 0.005 })
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
