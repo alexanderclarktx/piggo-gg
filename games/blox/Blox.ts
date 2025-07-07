@@ -199,7 +199,7 @@ const BloxSystem = SystemBuilder({
 
           eagle.scene.rotation.z = rotation - rotating * delta / 1000
 
-          duck.scene.rotation.y = rotation - rotating * delta / 1000
+          // duck.scene.rotation.y = rotation - rotating * delta / 1000
         }
 
         const { velocity } = pc.components.position.data
