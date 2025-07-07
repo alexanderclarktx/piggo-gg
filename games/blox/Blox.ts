@@ -6,7 +6,11 @@ import {
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
 
-export const Blox: GameBuilder = {
+export type BloxState = {
+  doubleJumped: string[]
+}
+
+export const Blox: GameBuilder<BloxState> = {
   id: "blox",
   init: (world) => {
 
@@ -16,7 +20,9 @@ export const Blox: GameBuilder = {
     return {
       id: "blox",
       netcode: "rollback",
-      state: {},
+      state: {
+        doubleJumped: []
+      },
       systems: [
         SpawnSystem(Bird),
         PhysicsSystem("global"),
@@ -47,25 +53,29 @@ const BloxSystem = SystemBuilder({
       query: [],
       priority: 3,
       onTick: () => {
+        const state = world.game.state as BloxState
 
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         for (const entity of entities) {
           const { position } = entity.components
-          const { x, y, z, velocity, flying, rotation } = position.data
+          const { x, y, z, velocity, rotation, standing } = position.data
 
+          // double-jump state cleanup
+          if (standing) {
+            state.doubleJumped = state.doubleJumped.filter(id => id !== entity.id)
+          }
+
+          // reset rotation
           position.data.rotating = 0
-
-
           if (rotation < 0) position.data.rotating = min(0.08, -rotation)
           if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
 
-          if (z < -4) {
-            position.data.z = 10
-          }
+          // fell off the map
+          if (z < -4) position.data.z = 10
 
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
-          // vertical stopping
+          // vertical stop
           const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1))
 
           if (highest !== undefined && velocity.z <= 0) {

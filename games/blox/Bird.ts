@@ -1,5 +1,6 @@
 import { Action, Actions, Character, Collider, Input, min, Networked, Position, Team } from "@piggo-gg/core"
 import { Vector3 } from "three"
+import { BloxState } from "./Blox"
 
 export const Bird = () => Character({
   id: "bird",
@@ -64,14 +65,21 @@ export const Bird = () => Character({
         position.setVelocity({ z: min(params.hold, 50) * 0.005 })
       }),
       jump: Action("jump", ({ entity, world, params }) => {
+        if (!entity) return
+
         const { position } = entity?.components ?? {}
         if (!position) return
 
         if (position.data.flying) return
         if (!position.data.standing && params.hold) return
 
-        position.setVelocity({ z: 0.04 })
+        const state = world.game.state as BloxState
+        if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
 
+        // double jumped
+        if (!position.data.standing) state.doubleJumped.push(entity.id)
+
+        position.setVelocity({ z: 0.04 })
         world.client?.soundManager.play("bubble")
       }),
       move: Action("move", ({ entity, params, world }) => {
