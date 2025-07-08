@@ -1,9 +1,7 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor, Chat,
   PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions, Networked, DudeSkin,
-  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, blockGraphics, pixiContainer,
-  pixiCircle,
-  pixiRect
+  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, pixiContainer, pixiRect
 } from "@piggo-gg/core"
 import { Volley, Craft, DDE } from "@piggo-gg/games"
 import { Container, Sprite, Text } from "pixi.js"
@@ -144,7 +142,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
       onTick: ({ world, renderable }) => {
         const state = world.game.state as LobbyState
         if (state.gameId === game.id) {
-          renderable.setOutline({ color: 0xffff00, thickness: 2 })
+          renderable.setOutline({ color: 0x00ff88, thickness: 1 })
         } else {
           renderable.setOutline()
         }
@@ -173,6 +171,8 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           onLeave: () => r.setGlow()
         })
 
+        r.c.addChild(button.c)
+
         let icon: Container = pixiContainer()
 
         if (game.id === "craft") {
@@ -183,15 +183,13 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           // icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
         } else {
           const textures = await loadTexture("dde-art.json")
-          const g = pixiRect({ rounded: 5, x: -85, y: -85, w: 170, h: 170, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
+          const g = pixiRect({ rounded: 10, x: -80, y: -80, w: 160, h: 160, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
           g.position.set(0, -20)
           icon = g
-
-          // icon = new Sprite({ texture: textures["0"], scale: 0.65, anchor: { x: 0.5, y: 0.6 } })
         }
         // icon.texture.source.scaleMode = "nearest"
 
-        r.c.addChild(button.c, icon)
+        r.c.addChild(icon)
       }
     })
   }
