@@ -385,6 +385,8 @@ export const BlockData = (): BlockData => {
 
 export const blocks = BlockData()
 
+export const trees: XYZ[] = []
+
 export const spawnChunk = (chunk: XY) => {
   const size = 4
   for (let i = 0; i < size; i++) {
@@ -407,9 +409,15 @@ export const spawnChunk = (chunk: XY) => {
         blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
         if (z === height - 1 && type === "grass" && randomInt(200) === 1) {
+
+          let h = 0
+
           for (const block of BlockTree({ x, y, z })) {
+            if (h === 0 && block.type === BlockTypeInt.leaf) h = block.z
             blocks.add(block)
           }
+
+          trees.push({ x: x * 0.3, y: y * 0.3, z: h * 0.3 })
         }
       }
     }

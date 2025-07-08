@@ -1,7 +1,7 @@
 import {
   blocks, ceil, Collider, Entity, floor, GameBuilder, min, PhysicsSystem,
-  Position, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
-  TBlockCollider, TCameraSystem, values, XYtoChunk, XYZ, XYZdistance
+  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
@@ -148,8 +148,17 @@ const DDESystem = SystemBuilder({
           }
         }
 
+        // spawn apples
         if (world.tick % 10 === 0 && world.three && world.three.apples[0] && world.three.apples.length < 50) {
-          const apple = TApple({ x: randomInt(25), y: randomInt(25), z: randomInt(4) })
+
+          const randomTree = trees[randomInt(trees.length - 1)]
+          const randomSpot = randomChoice([
+            { x: 0.5, y: 0.5 }
+          ])
+          const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z }
+
+          const apple = TApple(xyz)
+          console.log(`spawning apple at ${xyz.x}, ${xyz.y}, ${xyz.z}`)
           world.addEntity(apple)
         }
 
