@@ -1,6 +1,6 @@
 import { Action, Actions, Character, Collider, Input, min, Networked, Position, Team } from "@piggo-gg/core"
 import { Vector3 } from "three"
-import { BloxState } from "./Blox"
+import { DDEState } from "./DDE"
 
 export const Bird = () => Character({
   id: "bird",
@@ -64,7 +64,7 @@ export const Bird = () => Character({
         if (position.data.flying) return
         if (!position.data.standing && params.hold) return
 
-        const state = world.game.state as BloxState
+        const state = world.game.state as DDEState
         if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
 
         // double jumped

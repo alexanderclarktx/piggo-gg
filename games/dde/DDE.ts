@@ -6,19 +6,19 @@ import {
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
 
-export type BloxState = {
+export type DDEState = {
   doubleJumped: string[]
 }
 
-export const Blox: GameBuilder<BloxState> = {
-  id: "blox",
+export const DDE: GameBuilder<DDEState> = {
+  id: "Duck Duck Eagle",
   init: (world) => {
 
     world.renderer?.deactivate(world)
     world.three?.activate(world)
 
     return {
-      id: "blox",
+      id: "Duck Duck Eagle",
       netcode: "rollback",
       state: {
         doubleJumped: []
@@ -28,15 +28,15 @@ export const Blox: GameBuilder<BloxState> = {
         PhysicsSystem("global"),
         PhysicsSystem("local"),
         TCameraSystem(),
-        BloxSystem
+        DDESystem
       ],
       entities: []
     }
   }
 }
 
-const BloxSystem = SystemBuilder({
-  id: "BloxSystem",
+const DDESystem = SystemBuilder({
+  id: "DDESystem",
   init: (world) => {
 
     // spawnTiny()
@@ -49,11 +49,11 @@ const BloxSystem = SystemBuilder({
     world.addEntities(blockColliders)
 
     return {
-      id: "BloxSystem",
+      id: "DDESystem",
       query: [],
       priority: 3,
       onTick: () => {
-        const state = world.game.state as BloxState
+        const state = world.game.state as DDEState
 
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         for (const entity of entities) {

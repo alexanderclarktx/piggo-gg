@@ -3,12 +3,12 @@ import {
   PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions, Networked, DudeSkin,
   Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, blockGraphics, pixiContainer
 } from "@piggo-gg/core"
-import { Volley, Craft, Blox } from "@piggo-gg/games"
+import { Volley, Craft, DDE } from "@piggo-gg/games"
 import { Container, Text } from "pixi.js"
 import { Friends } from "./Friends"
 
 type LobbyState = {
-  gameId: "volley" | "craft" | "blox"
+  gameId: "volley" | "craft" | "Duck Duck Eagle"
 }
 
 export const Lobby: GameBuilder = {
@@ -16,7 +16,7 @@ export const Lobby: GameBuilder = {
   init: (world) => ({
     id: "lobby",
     state: {
-      gameId: "blox"
+      gameId: "Duck Duck Eagle"
     },
     systems: [RenderSystem],
     entities: [
@@ -157,8 +157,8 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
             textPos: { x: 0, y: -45 },
             style: { fontSize: 28 },
             rounded: 14,
-            height: 140,
-            width: 170
+            height: 180,
+            width: 270
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -470,7 +470,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Blox]
+  const list: GameBuilder[] = [DDE]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({
