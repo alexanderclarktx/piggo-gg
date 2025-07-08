@@ -207,7 +207,6 @@ const DDESystem = SystemBuilder({
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = blocks.neighbors(chunk, 24)
-          console.log(`neighbors: ${neighbors.length}`, neighbors)
 
           const chunkData = blocks.visible(neighbors, false, true)
           world.three!.blocks!.count = chunkData.length
