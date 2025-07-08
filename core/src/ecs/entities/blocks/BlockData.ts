@@ -214,8 +214,6 @@ export const BlockData = (): BlockData => {
       const end = flip ? -1 : at.length
       const step = flip ? -1 : 1
 
-      const seen: Set<string> = new Set()
-
       for (let i = start; i !== end; i += step) {
         const pos = at[i]
 
@@ -225,10 +223,10 @@ export const BlockData = (): BlockData => {
 
         // read the visibleCache
         const key = `${pos.x}:${pos.y}`
-        // if (visibleCache[key] && !visibleDirty[key]) {
-        //   result.push(...visibleCache[key])
-        //   continue
-        // }
+        if (visibleCache[key] && !visibleDirty[key]) {
+          result.push(...visibleCache[key])
+          continue
+        }
 
         const chunkResult: Block[] = []
 
@@ -256,13 +254,7 @@ export const BlockData = (): BlockData => {
                   intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
 
                 const block: Block = { ...xyz, type }
-
-                if (seen.has(`${xyz.x}:${xyz.y}:${xyz.z}`)) {
-                  console.warn("Duplicate block found", xyz)
-                  continue
-                }
                 chunkResult.push(block)
-                seen.add(`${xyz.x}:${xyz.y}:${xyz.z}`)
               }
             }
           }
