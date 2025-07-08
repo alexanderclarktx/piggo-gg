@@ -417,7 +417,7 @@ export const spawnChunk = (chunk: XY) => {
             blocks.add(block)
           }
 
-          trees.push({ x: x * 0.3, y: y * 0.3, z: h * 0.3 })
+          trees.push({ x: x * 0.3, y: y * 0.3, z: h * 0.3 + 0.15 })
         }
       }
     }

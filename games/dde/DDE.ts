@@ -152,13 +152,25 @@ const DDESystem = SystemBuilder({
         if (world.tick % 10 === 0 && world.three && world.three.apples[0] && world.three.apples.length < 50) {
 
           const randomTree = trees[randomInt(trees.length - 1)]
+
+          const a = 0.52
+          const b = 0.3
+          const z = -0.24
+
           const randomSpot = randomChoice([
-            { x: 0.5, y: 0.5 }
+            { x: a, y: 0, z: 0 },
+            { x: -a, y: 0, z: 0 },
+            { x: 0, y: a, z: 0 },
+            { x: 0, y: -a, z: 0 },
+
+            { x: b, y: 0, z },
+            { x: -b, y: 0, z },
+            { x: 0, y: b, z },
+            { x: 0, y: -b, z }
           ])
-          const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z }
+          const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
 
           const apple = TApple(xyz)
-          console.log(`spawning apple at ${xyz.x}, ${xyz.y}, ${xyz.z}`)
           world.addEntity(apple)
         }
 
