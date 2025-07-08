@@ -146,7 +146,7 @@ const DDESystem = SystemBuilder({
           }
         }
 
-        if (world.tick % 5 === 0 && world.three && world.three.apples.length < 50) {
+        if (world.tick % 10 === 0 && world.three && world.three.apples.length < 50) {
           const apple = TApple({ x: randomInt(25), y: randomInt(25), z: randomInt(4) })
           world.addEntity(apple)
         }
