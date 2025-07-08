@@ -39,7 +39,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let canvas: HTMLCanvasElement = c
 
   let renderer: undefined | WebGLRenderer
-  // let scene: undefined | Scene
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let radial: undefined | Radial
@@ -100,21 +99,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       canvas.id = "canvas"
       parent?.appendChild(canvas)
 
-      // tRenderer.scene = 
-
       tRenderer.blocks = TBlockMesh()
       tRenderer.scene.add(tRenderer.blocks)
-
-      // tRenderer.apples = new InstancedMesh(
-      //   new SphereGeometry(1),
-      //   new MeshPhysicalMaterial({
-      //     color: 0xff0000,
-      //     emissive: 0xff0000,
-      //     roughness: 0.5,
-      //   }), 100
-      // )
-      // tRenderer.apples.frustumCulled = false
-      // tRenderer.scene.add(tRenderer.apples)
 
       tRenderer.sphere = new InstancedMesh(
         new SphereGeometry(0.16),
@@ -350,8 +336,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
             child.receiveShadow = true
           }
         })
-
-        // tRenderer.scene.add(apple.scene)
       })
 
       // prevent right-click
