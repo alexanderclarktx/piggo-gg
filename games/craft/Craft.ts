@@ -3,7 +3,7 @@ import {
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
   Controlling, floor, highestBlock, Cursor, Chat, EscapeMenu, blocks,
   BlockMesh, Position, Collider, Entity, XYZ, BlockCollider,
-  XYtoChunk, Tooltip, PhysicsSystem, chunkNeighbors, RenderSystem, spawnTerrain
+  XYtoChunk, Tooltip, PhysicsSystem, RenderSystem, spawnTerrain
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -59,7 +59,7 @@ const CraftSystem = SystemBuilder({
           const { x, y, z, velocity } = position.data
 
           const chunk = XYtoChunk(position.data)
-          const chunks = chunkNeighbors(chunk)
+          const chunks = blocks.neighbors(chunk)
 
           const highest = highestBlock({ x, y }, chunks, z).z
           if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
@@ -84,7 +84,7 @@ const CraftSystem = SystemBuilder({
 
           const playerChunk = XYtoChunk(position.data)
 
-          const chunks = chunkNeighbors(playerChunk)
+          const chunks = blocks.neighbors(playerChunk)
 
           if (position.data.z === -600) {
             position.setPosition({ x: 0, y: 200, z: 128 })

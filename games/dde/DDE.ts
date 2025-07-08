@@ -1,6 +1,6 @@
 import {
-  blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder, min,
-  PhysicsSystem, Position, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, min, PhysicsSystem,
+  Position, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
@@ -91,7 +91,7 @@ const DDESystem = SystemBuilder({
           entity.components.collider.setGroup(pgroup)
           entity.components.collider.active = true
 
-          const chunks = chunkNeighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
+          const chunks = blocks.neighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
 
           let set: XYZ[] = []
 
@@ -180,10 +180,11 @@ const DDESystem = SystemBuilder({
 
           const dummy = new Object3D()
 
-          const { position } = pc.components
+          // const { position } = pc.components
 
-          const chunk = XYtoChunk({ x: position.data.x * 20, y: position.data.y * 20 })
-          const neighbors = chunkNeighbors(chunk, 24)
+          const chunk = XYtoChunk({ x: 1, y: 1 })
+          const neighbors = blocks.neighbors(chunk, 24)
+          console.log(`neighbors: ${neighbors.length}`)
 
           const chunkData = blocks.visible(neighbors, false, true)
           world.three!.blocks!.count = chunkData.length

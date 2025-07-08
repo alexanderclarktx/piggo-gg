@@ -7,16 +7,17 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
-  atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
-  fromMouse: (mouse: XY, player: XYZ) => Block | null
-  adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
-  visible: (at: XY[], flip?: boolean, ij?: boolean) => Block[]
+  adjacent: (block: XY) => Block[] | null
+  atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
   data: (at: XY[], flip?: boolean) => Block[]
-  invalidate: (c?: "cache" | "visibleCache") => void
+  fromMouse: (mouse: XY, player: XYZ) => Block | null
   hasXYZ: (block: XYZ) => boolean
+  highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
+  neighbors: (chunk: XY, dist?: number) => XY[]
+  invalidate: (c?: "cache" | "visibleCache") => void
   remove: (xyz: XYZ, world?: World) => void
+  visible: (at: XY[], flip?: boolean, ij?: boolean) => Block[]
 }
 
 export const BlockData = (): BlockData => {
@@ -149,6 +150,17 @@ export const BlockData = (): BlockData => {
       }
 
       return block
+    },
+    neighbors: (chunk: XY, dist: number = 1) => {
+      const neighbors: XY[] = []
+
+      for (let dx = -dist; dx <= dist; dx++) {
+        for (let dy = -dist; dy <= dist; dy++) {
+          if (!data[chunk.x + dx]?.[chunk.y + dy]) continue
+          neighbors.push({ x: chunk.x + dx, y: chunk.y + dy })
+        }
+      }
+      return neighbors
     },
     adjacent: (block: XY) => {
       const data: Block[] = []
@@ -416,7 +428,7 @@ export const spawnTiny = () => {
 }
 
 export const spawnTerrain = () => {
-  const num = 100
+  const num = 20
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
@@ -503,15 +515,4 @@ export const highestBlock = (pos: XY, chunks: XY[], max?: number): XYZ => {
   }
 
   return { x: snapped.x, y: snapped.y, z: level }
-}
-
-export const chunkNeighbors = (chunk: XY, dist: number = 1): XY[] => {
-  const neighbors: XY[] = []
-
-  for (let dx = -dist; dx <= dist; dx++) {
-    for (let dy = -dist; dy <= dist; dy++) {
-      neighbors.push({ x: chunk.x + dx, y: chunk.y + dy })
-    }
-  }
-  return neighbors
 }
