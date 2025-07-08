@@ -1,11 +1,11 @@
-import { Entity, Position, randomInt } from "@piggo-gg/core";
+import { Entity, Position, randomInt, XYZ } from "@piggo-gg/core";
 
-export const TApple = (): Entity<Position> => {
+export const TApple = (xyz: XYZ): Entity<Position> => {
 
   const apple = Entity<Position>({
     id: `apple-${randomInt(1000)}`,
     components: {
-      position: Position({ x: 10, y: 10, z: 5 })
+      position: Position(xyz)
     }
   })
 

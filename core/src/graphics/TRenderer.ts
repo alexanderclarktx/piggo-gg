@@ -1,6 +1,7 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, InstancedMesh, LinearMipMapNearestFilter,
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, InstancedMesh, LinearMipMapNearestFilter,
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter,
+  Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
@@ -10,13 +11,14 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type TRenderer = {
-  apples: GLTF[]
+  apples: Group<Object3DEventMap>[]
   blocks: undefined | TBlockMesh
   camera: TCamera
   debug: boolean
   duck: undefined | GLTF
   eagle: undefined | GLTF
   mixers: AnimationMixer[]
+  scene: Scene
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   setZoom: (zoom: number) => void
@@ -37,7 +39,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let canvas: HTMLCanvasElement = c
 
   let renderer: undefined | WebGLRenderer
-  let scene: undefined | Scene
+  // let scene: undefined | Scene
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let radial: undefined | Radial
@@ -47,6 +49,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   const tRenderer: TRenderer = {
     apples: [],
     camera: TCamera(),
+    scene: new Scene(),
     sphere: undefined,
     sphere2: undefined,
     blocks: undefined,
@@ -63,7 +66,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     deactivate: () => {
       renderer?.setAnimationLoop(null)
       renderer?.dispose()
-      scene?.clear()
+      tRenderer.scene.clear()
     },
     setDebug: (state?: boolean) => {
       if (state === undefined) state = !tRenderer.debug
@@ -71,13 +74,13 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       tRenderer.debug = state
 
-      if (!renderer || !scene || !sun) return
+      if (!renderer || !sun) return
 
       if (tRenderer.debug) {
         helper = new CameraHelper(sun.shadow.camera)
-        scene.add(helper)
+        tRenderer.scene.add(helper)
       } else if (!tRenderer.debug && helper) {
-        scene.remove(helper)
+        tRenderer.scene.remove(helper)
         helper = undefined
       }
     },
@@ -97,10 +100,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       canvas.id = "canvas"
       parent?.appendChild(canvas)
 
-      scene = new Scene()
+      // tRenderer.scene = 
 
       tRenderer.blocks = TBlockMesh()
-      scene.add(tRenderer.blocks)
+      tRenderer.scene.add(tRenderer.blocks)
 
       // tRenderer.apples = new InstancedMesh(
       //   new SphereGeometry(1),
@@ -111,7 +114,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       //   }), 100
       // )
       // tRenderer.apples.frustumCulled = false
-      // scene.add(tRenderer.apples)
+      // tRenderer.scene.add(tRenderer.apples)
 
       tRenderer.sphere = new InstancedMesh(
         new SphereGeometry(0.16),
@@ -123,7 +126,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       )
       tRenderer.sphere.frustumCulled = false
       tRenderer.sphere.visible = false
-      scene.add(tRenderer.sphere)
+      tRenderer.scene.add(tRenderer.sphere)
 
       tRenderer.sphere2 = new Mesh(
         new SphereGeometry(0.05),
@@ -137,10 +140,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.castShadow = true
       tRenderer.sphere2.receiveShadow = true
       tRenderer.sphere2.visible = false
-      scene.add(tRenderer.sphere2)
+      tRenderer.scene.add(tRenderer.sphere2)
 
       // radial = Radial(["A", "B", "C"])
-      // scene.add(radial.group)
+      // tRenderer.scene.add(radial.group)
 
       renderer = new WebGLRenderer({
         antialias: false, canvas, powerPreference: "high-performance"
@@ -201,7 +204,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       renderer.shadowMap.type = 2
 
       sun = new DirectionalLight(evening, 10)
-      scene.add(sun)
+      tRenderer.scene.add(sun)
 
       sun.position.set(200, 100, 200)
       sun.shadow.normalBias = 0.02
@@ -216,7 +219,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sun.shadow.camera.updateProjectionMatrix()
 
       const ambient = new AmbientLight(evening, 1)
-      scene.add(ambient)
+      tRenderer.scene.add(ambient)
 
       // texture
       TL.load("dirt.png", (texture: Texture) => {
@@ -255,7 +258,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         const mesh = new Mesh(sphere, material)
 
-        scene!.add(mesh)
+        tRenderer.scene.add(mesh)
       })
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
@@ -267,12 +270,12 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
       sunSphere.position.copy(sun.position)
-      scene.add(sunSphere)
+      tRenderer.scene.add(sunSphere)
 
       const camera = tRenderer.camera.c
 
       const composer = new EffectComposer(renderer, { multisampling: 4 })
-      composer.addPass(new RenderPass(scene, camera))
+      composer.addPass(new RenderPass(tRenderer.scene, camera))
 
       composer.addPass(new EffectPass(camera, new BloomEffect({
         luminanceThreshold: 0.2,
@@ -292,7 +295,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         tRenderer.eagle = eagle
         eagle.scene.scale.set(0.05, 0.05, 0.05)
         eagle.scene.position.set(3, 3, 3)
-        scene?.add(eagle.scene)
+        tRenderer.scene.add(eagle.scene)
 
         eagle.scene.rotation.order = "YXZ"
 
@@ -321,7 +324,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         tRenderer.duck = duck
         duck.scene.scale.set(0.08, 0.08, 0.08)
         duck.scene.position.set(3, 3, 3)
-        scene?.add(duck.scene)
+        tRenderer.scene.add(duck.scene)
 
         const mixer = new AnimationMixer(duck.scene)
         mixer.clipAction(duck.animations[1]).play()
@@ -337,9 +340,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })
 
       GL.load("apple.glb", (apple) => {
-        apple.scene.scale.set(0.1, 0.1, 0.1)
+        apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        tRenderer.apples.push(apple)
+        tRenderer.apples.push(apple.scene)
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {
@@ -348,7 +351,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           }
         })
 
-        scene?.add(apple.scene)
+        tRenderer.scene.add(apple.scene)
       })
 
       // prevent right-click

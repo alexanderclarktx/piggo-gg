@@ -1,6 +1,6 @@
 import {
   blocks, ceil, chunkNeighbors, Collider, Entity, entries, floor, GameBuilder, min,
-  PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  PhysicsSystem, Position, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
@@ -147,7 +147,7 @@ const DDESystem = SystemBuilder({
         }
 
         if (world.tick % 80 === 0) {
-          const apple = TApple()
+          const apple = TApple({ x: randomInt(25), y: randomInt(25), z: randomInt(5) })
           world.addEntity(apple)
         }
 
@@ -165,15 +165,14 @@ const DDESystem = SystemBuilder({
           dummy.position.set(x, z, y)
           dummy.updateMatrix()
 
-          if (world.three.apples[i]) {
-            world.three.apples[i].scene.position.set(x, z, y)
-            world.three.apples[i].scene.updateMatrix()
-          }
+          if (!world.three.apples[i]) {
+            world.three.apples[i] = world.three.apples[0].clone(true)
+            world.three.apples[i].position.set(x, z, y)
+            world.three.apples[i].updateMatrix()
 
-          // world.three.apples?.setMatrixAt(i, dummy.matrix)
-          // world.three.apples!.instanceMatrix.needsUpdate = true
+            world.three.scene.add(world.three.apples[i])
+          }
         }
-        console.log("apples", apples.length)
 
         // render blocks
         const pc = world.client?.playerCharacter()
