@@ -165,8 +165,13 @@ const DDESystem = SystemBuilder({
           dummy.position.set(x, z, y)
           dummy.updateMatrix()
 
-          world.three.apples?.setMatrixAt(i, dummy.matrix)
-          world.three.apples!.instanceMatrix.needsUpdate = true
+          if (world.three.apples[i]) {
+            world.three.apples[i].scene.position.set(x, z, y)
+            world.three.apples[i].scene.updateMatrix()
+          }
+
+          // world.three.apples?.setMatrixAt(i, dummy.matrix)
+          // world.three.apples!.instanceMatrix.needsUpdate = true
         }
         console.log("apples", apples.length)
 

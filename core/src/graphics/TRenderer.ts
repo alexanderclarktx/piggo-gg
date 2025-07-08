@@ -10,7 +10,7 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type TRenderer = {
-  apples: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
+  apples: GLTF[]
   blocks: undefined | TBlockMesh
   camera: TCamera
   debug: boolean
@@ -45,7 +45,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let zoom = 2
 
   const tRenderer: TRenderer = {
-    apples: undefined,
+    apples: [],
     camera: TCamera(),
     sphere: undefined,
     sphere2: undefined,
@@ -102,16 +102,16 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.blocks = TBlockMesh()
       scene.add(tRenderer.blocks)
 
-      tRenderer.apples = new InstancedMesh(
-        new SphereGeometry(1),
-        new MeshPhysicalMaterial({
-          color: 0xff0000,
-          emissive: 0xff0000,
-          roughness: 0.5,
-        }), 100
-      )
-      tRenderer.apples.frustumCulled = false
-      scene.add(tRenderer.apples)
+      // tRenderer.apples = new InstancedMesh(
+      //   new SphereGeometry(1),
+      //   new MeshPhysicalMaterial({
+      //     color: 0xff0000,
+      //     emissive: 0xff0000,
+      //     roughness: 0.5,
+      //   }), 100
+      // )
+      // tRenderer.apples.frustumCulled = false
+      // scene.add(tRenderer.apples)
 
       tRenderer.sphere = new InstancedMesh(
         new SphereGeometry(0.16),
@@ -334,6 +334,21 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
             child.receiveShadow = true
           }
         })
+      })
+
+      GL.load("apple.glb", (apple) => {
+        apple.scene.scale.set(0.1, 0.1, 0.1)
+
+        tRenderer.apples.push(apple)
+
+        apple.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+
+        scene?.add(apple.scene)
       })
 
       // prevent right-click
