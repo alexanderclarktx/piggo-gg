@@ -26,7 +26,7 @@ export const Lobby: GameBuilder = {
       // Friends(),
       Profile(),
       // SignupCTA(),
-      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: -110 })] : []].flat(),
+      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
       GameLobby(),
       Players(),
       PlayButton(),
@@ -337,7 +337,7 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
     components: {
       position: Position({ ...pos, screenFixed: true }),
       renderable: Renderable({
-        zIndex: 10,
+        zIndex: 11,
         anchor: { x: 0.55, y: 0.5 },
         scale: 3.5,
         scaleMode: "nearest",
@@ -357,9 +357,9 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
             r.c.onpointerdown = callback
           }
 
-          if (!world.client?.token && pos.y === 85) {
-            avatar.components.position.setPosition({ x: 110, y: 175 })
-          }
+          // if (!world.client?.token && pos.y === 85) {
+          //   avatar.components.position.setPosition({ x: 110, y: 175 })
+          // }
         }
       })
     }
@@ -379,7 +379,7 @@ const Profile = (): Entity => {
   const profile = Entity<Position | Renderable>({
     id: "profile",
     components: {
-      position: Position({ x: 110, y: -110, screenFixed: true }),
+      position: Position({ x: 110, y: 85, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         onTick: ({ world }) => {

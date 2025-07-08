@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Collider, Input, min, Networked, Position, Team } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, Networked, Position, Team } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
@@ -15,15 +15,21 @@ export const Bird = () => Character({
       release: {
         "escape": () => ({ actionId: "escape" }),
         "mb1": () => ({ actionId: "escape" }),
-        "g": ({ world }) => {
-          world.three?.setDebug()
-          return null
-        },
         "e": () => ({ actionId: "transform" })
       },
       press: {
         "w,s": () => null, "a,d": () => null,
 
+        // debug
+        "g": ({ world, hold }) => {
+          if (hold === 40) world.three?.setDebug()
+          return null
+        },
+
+        // jump
+        " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
+
+        // sprint
         "shift,w,a": () => ({ actionId: "move", params: { key: "wa", sprint: true } }),
         "shift,w,d": () => ({ actionId: "move", params: { key: "wd", sprint: true } }),
         "shift,a,s": () => ({ actionId: "move", params: { key: "as", sprint: true } }),
@@ -33,6 +39,7 @@ export const Bird = () => Character({
         "shift,s": () => ({ actionId: "move", params: { key: "s", sprint: true } }),
         "shift,d": () => ({ actionId: "move", params: { key: "d", sprint: true } }),
 
+        // move
         "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
         "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
         "a,s": () => ({ actionId: "move", params: { key: "as" } }),
@@ -40,8 +47,7 @@ export const Bird = () => Character({
         "w": () => ({ actionId: "move", params: { key: "w" } }),
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
-        "d": () => ({ actionId: "move", params: { key: "d" } }),
-        " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
+        "d": () => ({ actionId: "move", params: { key: "d" } })
       }
     }),
     actions: Actions({

@@ -1,10 +1,11 @@
 import {
-  blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder, min,
-  PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder,
-  TBlockCollider, TCameraSystem, XYtoChunk, XYZ, XYZdistance
+  blocks, ceil, Collider, Entity, floor, GameBuilder, min, PhysicsSystem,
+  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
+import { TApple } from "./TApple"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -39,8 +40,7 @@ const DDESystem = SystemBuilder({
   id: "DDESystem",
   init: (world) => {
 
-    // spawnTiny()
-    spawnTerrain()
+    spawnTerrain(24)
     let placed = false
 
     const blockColliders: Entity<Position | Collider>[] = Array.from(
@@ -71,7 +71,10 @@ const DDESystem = SystemBuilder({
           if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
 
           // fell off the map
-          if (z < -4) position.data.z = 10
+          if (z < -4) {
+            position.setPosition({ x: 14, y: 14, z: 8 })
+          }
+          // console.log(position.data.x, position.data.y, position.data.z)
 
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
@@ -90,7 +93,7 @@ const DDESystem = SystemBuilder({
           entity.components.collider.setGroup(pgroup)
           entity.components.collider.active = true
 
-          const chunks = chunkNeighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
+          const chunks = blocks.neighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
 
           let set: XYZ[] = []
 
@@ -145,16 +148,65 @@ const DDESystem = SystemBuilder({
           }
         }
 
+        // spawn apples
+        if (world.tick % 10 === 0 && world.three && world.three.apples[0] && world.three.apples.length < 50) {
+
+          const randomTree = trees[randomInt(trees.length - 1)]
+
+          const a = 0.52
+          const b = 0.3
+          const z = -0.24
+
+          const randomSpot = randomChoice([
+            { x: a, y: 0, z: 0 },
+            { x: -a, y: 0, z: 0 },
+            { x: 0, y: a, z: 0 },
+            { x: 0, y: -a, z: 0 },
+
+            { x: b, y: 0, z },
+            { x: -b, y: 0, z },
+            { x: 0, y: b, z },
+            { x: 0, y: -b, z }
+          ])
+          const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
+
+          const apple = TApple(xyz)
+          world.addEntity(apple)
+        }
+
+        // render apples
+        const apples = values(world.entities).filter(e => e.id.startsWith("apple"))
+        for (let i = 1; i <= apples.length; i++) {
+          const apple = apples[i - 1]
+
+          const { position } = apple.components
+          if (!position || !world.three) continue
+
+          const { x, y, z } = position.data
+
+          const dummy = new Object3D()
+          dummy.position.set(x, z, y)
+          dummy.updateMatrix()
+
+          if (!world.three.apples[i]) {
+            world.three.apples[i] = world.three.apples[0].clone(true)
+            world.three.apples[i].position.set(x, z, y)
+            world.three.apples[i].updateMatrix()
+
+            world.three.scene.add(world.three.apples[i])
+          }
+        }
+
         // render blocks
         const pc = world.client?.playerCharacter()
         if (!placed && pc) {
 
           const dummy = new Object3D()
 
-          const { position } = pc.components
+          // const { position } = pc.components
 
-          const chunk = XYtoChunk({ x: position.data.x * 20, y: position.data.y * 20 })
-          const neighbors = chunkNeighbors(chunk, 24)
+          const chunk = XYtoChunk({ x: 1, y: 1 })
+          const neighbors = blocks.neighbors(chunk, 24)
 
           const chunkData = blocks.visible(neighbors, false, true)
           world.three!.blocks!.count = chunkData.length

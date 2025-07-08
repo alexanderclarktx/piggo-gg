@@ -7,23 +7,24 @@ import {
 const { width, height } = BlockDimensions
 
 export type BlockData = {
-  highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
-  atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
-  fromMouse: (mouse: XY, player: XYZ) => Block | null
-  adjacent: (block: XY) => Block[] | null
   add: (block: Block) => boolean
-  visible: (at: XY[], flip?: boolean, ij?: boolean) => Block[]
+  adjacent: (block: XY) => Block[] | null
+  atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
   data: (at: XY[], flip?: boolean) => Block[]
-  invalidate: (c?: "cache" | "visibleCache") => void
+  fromMouse: (mouse: XY, player: XYZ) => Block | null
   hasXYZ: (block: XYZ) => boolean
+  highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
+  neighbors: (chunk: XY, dist?: number) => XY[]
+  invalidate: (c?: "cache" | "visibleCache") => void
   remove: (xyz: XYZ, world?: World) => void
+  visible: (at: XY[], flip?: boolean, ij?: boolean) => Block[]
 }
 
 export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
 
-  const chunks = 100
+  const chunks = 24
   for (let i = 0; i < chunks; i++) {
     data[i] = []
     for (let j = 0; j < chunks; j++) {
@@ -150,6 +151,17 @@ export const BlockData = (): BlockData => {
 
       return block
     },
+    neighbors: (chunk: XY, dist: number = 1) => {
+      const neighbors: XY[] = []
+
+      for (let dx = -dist; dx <= dist; dx++) {
+        for (let dy = -dist; dy <= dist; dy++) {
+          if (!data[chunk.x + dx]?.[chunk.y + dy]) continue
+          neighbors.push({ x: chunk.x + dx, y: chunk.y + dy })
+        }
+      }
+      return neighbors
+    },
     adjacent: (block: XY) => {
       const data: Block[] = []
       for (let i = -1; i <= 1; i++) {
@@ -240,6 +252,7 @@ export const BlockData = (): BlockData => {
                 const xyz = ij ?
                   { x: x + pos.x * 4, y: y + pos.y * 4, z } :
                   intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
+
                 const block: Block = { ...xyz, type }
                 chunkResult.push(block)
               }
@@ -372,6 +385,8 @@ export const BlockData = (): BlockData => {
 
 export const blocks = BlockData()
 
+export const trees: XYZ[] = []
+
 export const spawnChunk = (chunk: XY) => {
   const size = 4
   for (let i = 0; i < size; i++) {
@@ -394,9 +409,15 @@ export const spawnChunk = (chunk: XY) => {
         blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
         if (z === height - 1 && type === "grass" && randomInt(200) === 1) {
+
+          let h = 0
+
           for (const block of BlockTree({ x, y, z })) {
+            if (h === 0 && block.type === BlockTypeInt.leaf) h = block.z
             blocks.add(block)
           }
+
+          trees.push({ x: x * 0.3, y: y * 0.3, z: h * 0.3 + 0.15 })
         }
       }
     }
@@ -415,8 +436,7 @@ export const spawnTiny = () => {
   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
 }
 
-export const spawnTerrain = () => {
-  const num = 100
+export const spawnTerrain = (num: number = 10) => {
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
@@ -503,15 +523,4 @@ export const highestBlock = (pos: XY, chunks: XY[], max?: number): XYZ => {
   }
 
   return { x: snapped.x, y: snapped.y, z: level }
-}
-
-export const chunkNeighbors = (chunk: XY, dist: number = 1): XY[] => {
-  const neighbors: XY[] = []
-
-  for (let dx = -dist; dx <= dist; dx++) {
-    for (let dy = -dist; dy <= dist; dy++) {
-      neighbors.push({ x: chunk.x + dx, y: chunk.y + dy })
-    }
-  }
-  return neighbors
 }
