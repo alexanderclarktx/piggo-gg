@@ -40,8 +40,7 @@ const DDESystem = SystemBuilder({
   id: "DDESystem",
   init: (world) => {
 
-    // spawnTiny()
-    spawnTerrain()
+    spawnTerrain(24)
     let placed = false
 
     const blockColliders: Entity<Position | Collider>[] = Array.from(
@@ -72,7 +71,9 @@ const DDESystem = SystemBuilder({
           if (rotation > 0) position.data.rotating = -1 * min(0.08, rotation)
 
           // fell off the map
-          if (z < -4) position.data.z = 10
+          if (z < -4) {
+            position.setPosition({ x: 24, y: 24, z: 10 })
+          }
 
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
@@ -184,7 +185,7 @@ const DDESystem = SystemBuilder({
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = blocks.neighbors(chunk, 24)
-          console.log(`neighbors: ${neighbors.length}`)
+          console.log(`neighbors: ${neighbors.length}`, neighbors)
 
           const chunkData = blocks.visible(neighbors, false, true)
           world.three!.blocks!.count = chunkData.length

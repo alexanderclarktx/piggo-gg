@@ -24,7 +24,7 @@ export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
 
-  const chunks = 100
+  const chunks = 24
   for (let i = 0; i < chunks; i++) {
     data[i] = []
     for (let j = 0; j < chunks; j++) {
@@ -214,6 +214,8 @@ export const BlockData = (): BlockData => {
       const end = flip ? -1 : at.length
       const step = flip ? -1 : 1
 
+      const seen: Set<string> = new Set()
+
       for (let i = start; i !== end; i += step) {
         const pos = at[i]
 
@@ -223,10 +225,10 @@ export const BlockData = (): BlockData => {
 
         // read the visibleCache
         const key = `${pos.x}:${pos.y}`
-        if (visibleCache[key] && !visibleDirty[key]) {
-          result.push(...visibleCache[key])
-          continue
-        }
+        // if (visibleCache[key] && !visibleDirty[key]) {
+        //   result.push(...visibleCache[key])
+        //   continue
+        // }
 
         const chunkResult: Block[] = []
 
@@ -252,8 +254,15 @@ export const BlockData = (): BlockData => {
                 const xyz = ij ?
                   { x: x + pos.x * 4, y: y + pos.y * 4, z } :
                   intToXYZ(x + pos.x * 4, y + pos.y * 4, z)
+
                 const block: Block = { ...xyz, type }
+
+                if (seen.has(`${xyz.x}:${xyz.y}:${xyz.z}`)) {
+                  console.warn("Duplicate block found", xyz)
+                  continue
+                }
                 chunkResult.push(block)
+                seen.add(`${xyz.x}:${xyz.y}:${xyz.z}`)
               }
             }
           }
@@ -427,8 +436,7 @@ export const spawnTiny = () => {
   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
 }
 
-export const spawnTerrain = () => {
-  const num = 20
+export const spawnTerrain = (num: number = 10) => {
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
