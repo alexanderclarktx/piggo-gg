@@ -1,7 +1,7 @@
 import {
   blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder, min,
   PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder,
-  TBlockCollider, TCameraSystem, XYtoChunk, XYZ, XYZdistance
+  TBlockCollider, TCameraSystem, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
@@ -144,6 +144,10 @@ const DDESystem = SystemBuilder({
             }
           }
         }
+
+        // render apples
+        const apples = values(world.entities).filter(e => e.id.startsWith("apple"))
+        console.log("apples", apples.length)
 
         // render blocks
         const pc = world.client?.playerCharacter()
