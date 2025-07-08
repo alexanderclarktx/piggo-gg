@@ -72,7 +72,7 @@ const DDESystem = SystemBuilder({
 
           // fell off the map
           if (z < -4) {
-            position.setPosition({ x: 24, y: 24, z: 10 })
+            position.setPosition({ x: 24, y: 24, z: 8 })
           }
 
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
