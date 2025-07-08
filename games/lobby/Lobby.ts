@@ -1,14 +1,14 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor, Chat,
   PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions, Networked, DudeSkin,
-  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, blockGraphics, pixiContainer
+  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, pixiContainer, pixiRect
 } from "@piggo-gg/core"
-import { Volley, Craft, Blox } from "@piggo-gg/games"
-import { Container, Text } from "pixi.js"
+import { Volley, Craft, DDE } from "@piggo-gg/games"
+import { Container, Sprite, Text } from "pixi.js"
 import { Friends } from "./Friends"
 
 type LobbyState = {
-  gameId: "volley" | "craft" | "blox"
+  gameId: "volley" | "craft" | "Duck Duck Eagle"
 }
 
 export const Lobby: GameBuilder = {
@@ -16,7 +16,7 @@ export const Lobby: GameBuilder = {
   init: (world) => ({
     id: "lobby",
     state: {
-      gameId: "blox"
+      gameId: "Duck Duck Eagle"
     },
     systems: [RenderSystem],
     entities: [
@@ -33,7 +33,7 @@ export const Lobby: GameBuilder = {
       CreateLobbyButton(),
       // SettingsButton(),
       PlayersOnline(),
-      MusicBox()
+      // MusicBox()
     ],
     netcode: "delay"
   })
@@ -135,14 +135,14 @@ const Players = (): Entity => {
 const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
   id: `gamebutton-${game.id}`,
   components: {
-    position: Position({ x: 0, y: 110, screenFixed: true }),
+    position: Position({ x: 0, y: 160, screenFixed: true }),
     renderable: Renderable({
       zIndex: 10,
       interactiveChildren: true,
       onTick: ({ world, renderable }) => {
         const state = world.game.state as LobbyState
         if (state.gameId === game.id) {
-          renderable.setOutline({ color: 0xffff00, thickness: 2 })
+          renderable.setOutline({ color: 0x00ff88, thickness: 1 })
         } else {
           renderable.setOutline()
         }
@@ -154,11 +154,11 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           content: () => ({
             text: game.id,
             textAnchor: { x: 0.5, y: 0.5 },
-            textPos: { x: 0, y: -45 },
-            style: { fontSize: 28 },
+            textPos: { x: 0, y: 90 },
+            style: { fontSize: 24 },
             rounded: 14,
-            height: 140,
-            width: 170
+            height: 240,
+            width: 270
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -171,6 +171,8 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           onLeave: () => r.setGlow()
         })
 
+        r.c.addChild(button.c)
+
         let icon: Container = pixiContainer()
 
         if (game.id === "craft") {
@@ -180,14 +182,14 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           const textures = await loadTexture("vball.json")
           // icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
         } else {
-          const graphic = blockGraphics("grass")
-          graphic.scale.set(1.5)
-          graphic.position.set(0, 10)
-          icon.addChild(graphic)
+          const textures = await loadTexture("dde-art.json")
+          const g = pixiRect({ rounded: 10, x: -80, y: -80, w: 160, h: 160, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
+          g.position.set(0, -20)
+          icon = g
         }
         // icon.texture.source.scaleMode = "nearest"
 
-        r.c.addChild(button.c, icon)
+        r.c.addChild(icon)
       }
     })
   }
@@ -197,7 +199,7 @@ const PlayButton = () => {
   const playButton = Entity<Position>({
     id: "playButton",
     components: {
-      position: Position({ x: 300, y: 360, screenFixed: true }),
+      position: Position({ x: 300, y: 380, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -241,7 +243,7 @@ const CreateLobbyButton = () => {
   const createLobbyButton = Entity<Position | Renderable>({
     id: "createLobbyButton",
     components: {
-      position: Position({ x: 300, y: 420, screenFixed: true }),
+      position: Position({ x: 300, y: 440, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -470,7 +472,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Blox]
+  const list: GameBuilder[] = [DDE]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({
