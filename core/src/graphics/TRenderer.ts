@@ -10,14 +10,15 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type TRenderer = {
-  camera: TCamera
-  sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
-  sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
+  apples: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   blocks: undefined | TBlockMesh
-  mixers: AnimationMixer[]
+  camera: TCamera
   debug: boolean
   duck: undefined | GLTF
   eagle: undefined | GLTF
+  mixers: AnimationMixer[]
+  sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
+  sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   setZoom: (zoom: number) => void
   setDebug: (state?: boolean) => void
   activate: (world: World) => void
@@ -44,6 +45,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let zoom = 2
 
   const tRenderer: TRenderer = {
+    apples: undefined,
     camera: TCamera(),
     sphere: undefined,
     sphere2: undefined,
@@ -100,6 +102,17 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.blocks = TBlockMesh()
       scene.add(tRenderer.blocks)
 
+      tRenderer.apples = new InstancedMesh(
+        new SphereGeometry(1),
+        new MeshPhysicalMaterial({
+          color: 0xff0000,
+          emissive: 0xff0000,
+          roughness: 0.5,
+        }), 100
+      )
+      tRenderer.apples.frustumCulled = false
+      scene.add(tRenderer.apples)
+
       tRenderer.sphere = new InstancedMesh(
         new SphereGeometry(0.16),
         new MeshPhysicalMaterial({
@@ -108,6 +121,10 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           roughness: 0.5
         }), 12
       )
+      tRenderer.sphere.frustumCulled = false
+      tRenderer.sphere.visible = false
+      scene.add(tRenderer.sphere)
+
       tRenderer.sphere2 = new Mesh(
         new SphereGeometry(0.05),
         new MeshPhysicalMaterial({
@@ -117,13 +134,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           wireframe: true,
         })
       )
-      tRenderer.sphere.frustumCulled = false
       tRenderer.sphere2.castShadow = true
       tRenderer.sphere2.receiveShadow = true
-      tRenderer.sphere.visible = false
       tRenderer.sphere2.visible = false
-
-      scene.add(tRenderer.sphere)
       scene.add(tRenderer.sphere2)
 
       // radial = Radial(["A", "B", "C"])

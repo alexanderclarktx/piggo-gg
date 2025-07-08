@@ -1,10 +1,11 @@
 import {
-  blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder, min,
+  blocks, ceil, chunkNeighbors, Collider, Entity, entries, floor, GameBuilder, min,
   PhysicsSystem, Position, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
+import { TApple } from "./TApple"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -145,8 +146,28 @@ const DDESystem = SystemBuilder({
           }
         }
 
+        if (world.tick % 80 === 0) {
+          const apple = TApple()
+          world.addEntity(apple)
+        }
+
         // render apples
         const apples = values(world.entities).filter(e => e.id.startsWith("apple"))
+        for (let i = 0; i < apples.length; i++) {
+          const apple = apples[i]
+
+          const { position } = apple.components
+          if (!position || !world.three) continue
+
+          const { x, y, z } = position.data
+
+          const dummy = new Object3D()
+          dummy.position.set(x, z, y)
+          dummy.updateMatrix()
+
+          world.three.apples?.setMatrixAt(i, dummy.matrix)
+          world.three.apples!.instanceMatrix.needsUpdate = true
+        }
         console.log("apples", apples.length)
 
         // render blocks
