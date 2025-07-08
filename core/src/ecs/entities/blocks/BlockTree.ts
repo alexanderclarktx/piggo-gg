@@ -1,4 +1,6 @@
-import { BlockPlan, BlockType, BlockTypeInt, pow, randomChoice, randomInt, XYZ } from "@piggo-gg/core"
+import {
+  BlockPlan, BlockType, BlockTypeInt, randomChoice, randomInt, XYZ
+} from "@piggo-gg/core"
 
 export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
   const plan: BlockPlan = []
