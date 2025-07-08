@@ -1,5 +1,5 @@
 import {
-  blocks, ceil, chunkNeighbors, Collider, Entity, entries, floor, GameBuilder, min,
+  blocks, ceil, chunkNeighbors, Collider, Entity, floor, GameBuilder, min,
   PhysicsSystem, Position, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -146,15 +146,15 @@ const DDESystem = SystemBuilder({
           }
         }
 
-        if (world.tick % 10 === 0 && world.three && world.three.apples.length < 50) {
+        if (world.tick % 10 === 0 && world.three && world.three.apples[0] && world.three.apples.length < 50) {
           const apple = TApple({ x: randomInt(25), y: randomInt(25), z: randomInt(4) })
           world.addEntity(apple)
         }
 
         // render apples
         const apples = values(world.entities).filter(e => e.id.startsWith("apple"))
-        for (let i = 0; i < apples.length; i++) {
-          const apple = apples[i]
+        for (let i = 1; i <= apples.length; i++) {
+          const apple = apples[i - 1]
 
           const { position } = apple.components
           if (!position || !world.three) continue

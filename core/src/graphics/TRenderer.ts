@@ -1,7 +1,7 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, InstancedMesh, LinearMipMapNearestFilter,
-  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter,
-  Object3DEventMap,
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group,
+  InstancedMesh, LinearMipMapNearestFilter, Mesh, MeshBasicMaterial,
+  MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
@@ -351,7 +351,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
           }
         })
 
-        tRenderer.scene.add(apple.scene)
+        // tRenderer.scene.add(apple.scene)
       })
 
       // prevent right-click
