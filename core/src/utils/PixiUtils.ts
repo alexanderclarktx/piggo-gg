@@ -33,7 +33,7 @@ export const pixiRect = ({ x, y, w, h, rounded = 0, style }: pixiRectProps): Gra
   return pixiStyle({ g, ...style })
 }
 
-export const pixiCircle = ({ x = 0, y = 0, r, style }: pixiCircleProps): Graphics => {
+export const pixiCircle = ({ x = 0, y = 0, r, style = {} }: pixiCircleProps): Graphics => {
   const g = pixiGraphics().circle(x, y, r)
   return pixiStyle({ g, strokeWidth: 0, ...style })
 }

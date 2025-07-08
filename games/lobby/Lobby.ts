@@ -1,7 +1,9 @@
 import {
   GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor, Chat,
   PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions, Networked, DudeSkin,
-  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, blockGraphics, pixiContainer
+  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, blockGraphics, pixiContainer,
+  pixiCircle,
+  pixiRect
 } from "@piggo-gg/core"
 import { Volley, Craft, DDE } from "@piggo-gg/games"
 import { Container, Sprite, Text } from "pixi.js"
@@ -135,7 +137,7 @@ const Players = (): Entity => {
 const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
   id: `gamebutton-${game.id}`,
   components: {
-    position: Position({ x: 0, y: 110, screenFixed: true }),
+    position: Position({ x: 0, y: 160, screenFixed: true }),
     renderable: Renderable({
       zIndex: 10,
       interactiveChildren: true,
@@ -154,10 +156,10 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           content: () => ({
             text: game.id,
             textAnchor: { x: 0.5, y: 0.5 },
-            textPos: { x: 0, y: 45 },
-            style: { fontSize: 28 },
+            textPos: { x: 0, y: 90 },
+            style: { fontSize: 24 },
             rounded: 14,
-            height: 180,
+            height: 240,
             width: 270
           }),
           onClick: () => {
@@ -171,19 +173,23 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           onLeave: () => r.setGlow()
         })
 
-        let icon: Sprite
+        let icon: Container = pixiContainer()
 
         if (game.id === "craft") {
           const textures = await loadTexture("pickaxe.json")
-          icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
+          // icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
         } else if (game.id === "volley") {
           const textures = await loadTexture("vball.json")
-          icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
+          // icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
         } else {
           const textures = await loadTexture("dde-art.json")
-          icon = new Sprite({ texture: textures["0"], scale: 0.5, anchor: { x: 0.5, y: 0.5 } })
+          const g = pixiRect({ rounded: 5, x: -85, y: -85, w: 170, h: 170, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
+          g.position.set(0, -20)
+          icon = g
+
+          // icon = new Sprite({ texture: textures["0"], scale: 0.65, anchor: { x: 0.5, y: 0.6 } })
         }
-        icon.texture.source.scaleMode = "nearest"
+        // icon.texture.source.scaleMode = "nearest"
 
         r.c.addChild(button.c, icon)
       }
@@ -195,7 +201,7 @@ const PlayButton = () => {
   const playButton = Entity<Position>({
     id: "playButton",
     components: {
-      position: Position({ x: 300, y: 360, screenFixed: true }),
+      position: Position({ x: 300, y: 380, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -239,7 +245,7 @@ const CreateLobbyButton = () => {
   const createLobbyButton = Entity<Position | Renderable>({
     id: "createLobbyButton",
     components: {
-      position: Position({ x: 300, y: 420, screenFixed: true }),
+      position: Position({ x: 300, y: 440, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
