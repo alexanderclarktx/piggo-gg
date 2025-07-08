@@ -4,7 +4,7 @@ import {
   Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, blockGraphics, pixiContainer
 } from "@piggo-gg/core"
 import { Volley, Craft, DDE } from "@piggo-gg/games"
-import { Container, Text } from "pixi.js"
+import { Container, Sprite, Text } from "pixi.js"
 import { Friends } from "./Friends"
 
 type LobbyState = {
@@ -33,7 +33,7 @@ export const Lobby: GameBuilder = {
       CreateLobbyButton(),
       // SettingsButton(),
       PlayersOnline(),
-      MusicBox()
+      // MusicBox()
     ],
     netcode: "delay"
   })
@@ -154,7 +154,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           content: () => ({
             text: game.id,
             textAnchor: { x: 0.5, y: 0.5 },
-            textPos: { x: 0, y: -45 },
+            textPos: { x: 0, y: 45 },
             style: { fontSize: 28 },
             rounded: 14,
             height: 180,
@@ -171,21 +171,19 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           onLeave: () => r.setGlow()
         })
 
-        let icon: Container = pixiContainer()
+        let icon: Sprite
 
         if (game.id === "craft") {
           const textures = await loadTexture("pickaxe.json")
-          // icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
+          icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
         } else if (game.id === "volley") {
           const textures = await loadTexture("vball.json")
-          // icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
+          icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
         } else {
-          const graphic = blockGraphics("grass")
-          graphic.scale.set(1.5)
-          graphic.position.set(0, 10)
-          icon.addChild(graphic)
+          const textures = await loadTexture("dde-art.json")
+          icon = new Sprite({ texture: textures["0"], scale: 0.5, anchor: { x: 0.5, y: 0.5 } })
         }
-        // icon.texture.source.scaleMode = "nearest"
+        icon.texture.source.scaleMode = "nearest"
 
         r.c.addChild(button.c, icon)
       }
