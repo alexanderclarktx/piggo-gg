@@ -1,5 +1,5 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, min, PhysicsSystem,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, HtmlButton, min, PhysicsSystem,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -47,6 +47,11 @@ const DDESystem = SystemBuilder({
       { length: 12 }, (_, i) => TBlockCollider(i)
     )
     world.addEntities(blockColliders)
+
+    const canvasDiv = document.getElementById("canvas-div")
+    canvasDiv?.appendChild(HtmlButton({
+      text: "E", style: { position: "absolute", top: "95%", left: "5%" }
+    }))
 
     return {
       id: "DDESystem",

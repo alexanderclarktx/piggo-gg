@@ -13,6 +13,7 @@ const evening = 0xffd9c3
 export type TRenderer = {
   apples: Group<Object3DEventMap>[]
   blocks: undefined | TBlockMesh
+  canvas: HTMLCanvasElement
   camera: TCamera
   debug: boolean
   duck: undefined | GLTF
@@ -36,7 +37,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   const TL = new TextureLoader()
   const GL = new GLTFLoader()
 
-  let canvas: HTMLCanvasElement = c
+  // let canvas: HTMLCanvasElement = c
 
   let renderer: undefined | WebGLRenderer
   let sun: undefined | DirectionalLight
@@ -47,6 +48,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
   const tRenderer: TRenderer = {
     apples: [],
+    canvas: c,
     camera: TCamera(),
     scene: new Scene(),
     sphere: undefined,
@@ -93,11 +95,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.pointerLock()
 
       // recreate the canvas
-      const parent = canvas.parentElement
-      canvas.remove()
-      canvas = document.createElement("canvas")
-      canvas.id = "canvas"
-      parent?.appendChild(canvas)
+      const parent = tRenderer.canvas.parentElement
+      tRenderer.canvas.remove()
+      tRenderer.canvas = document.createElement("canvas")
+      tRenderer.canvas.id = "canvas"
+      parent?.appendChild(tRenderer.canvas)
 
       tRenderer.blocks = TBlockMesh()
       tRenderer.scene.add(tRenderer.blocks)
@@ -132,7 +134,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       // tRenderer.scene.add(radial.group)
 
       renderer = new WebGLRenderer({
-        antialias: false, canvas, powerPreference: "high-performance"
+        antialias: false, canvas: tRenderer.canvas, powerPreference: "high-performance"
       })
 
       tRenderer.resize()
@@ -339,7 +341,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })
 
       // prevent right-click
-      canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+      tRenderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
     },
     sunLookAt: (x: number, y: number, z: number) => {
       if (sun) {
