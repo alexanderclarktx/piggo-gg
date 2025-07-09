@@ -37,8 +37,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   const TL = new TextureLoader()
   const GL = new GLTFLoader()
 
-  // let canvas: HTMLCanvasElement = c
-
   let renderer: undefined | WebGLRenderer
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
@@ -58,7 +56,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     debug: false,
     duck: undefined,
     eagle: undefined,
-    setZoom: (z: number) => zoom = z,
+    setZoom: (z: number) => {
+      zoom = z
+    },
     resize: () => {
       if (renderer) {
         renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
