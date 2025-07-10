@@ -2,8 +2,8 @@ export type HtmlButtonProps = {
   text?: string
   style?: {
     position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
-    top?: `${number}%`
-    left?: `${number}%`
+    top?: `${number}%` | `${number}px`
+    left?: `${number}%` | `${number}px`
     transform?: string
     padding?: string
     fontSize?: `${number}px`

@@ -152,11 +152,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           const { aim, velocity, flying } = pc.components.position.data
 
-          // rotation
-          duck.scene.rotation.set(0, aim.x + PI / 2, 0)
-
           eagle.scene.rotation.y = aim.x
           eagle.scene.rotation.x = aim.y
+          duck.scene.rotation.y = aim.x + PI
 
           // visibility
           duck.scene.visible = debug ? false : !flying
@@ -308,10 +306,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         })
       })
 
-      GL.load("duck.glb", (duck) => {
+      GL.load("duckling.glb", (duck) => {
         tRenderer.duck = duck
         duck.scene.scale.set(0.08, 0.08, 0.08)
-        duck.scene.position.set(3, 3, 3)
         tRenderer.scene.add(duck.scene)
 
         const mixer = new AnimationMixer(duck.scene)
@@ -327,7 +324,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         })
       })
 
-      GL.load("apple.glb", (apple) => {
+      GL.load("apple-poly2.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
         tRenderer.apples.push(apple.scene)

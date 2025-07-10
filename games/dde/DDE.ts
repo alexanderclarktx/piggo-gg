@@ -48,9 +48,9 @@ const DDESystem = SystemBuilder({
     )
     world.addEntities(blockColliders)
 
-    const canvasDiv = document.getElementById("canvas-div")
-    canvasDiv?.appendChild(HtmlButton({
-      text: "E", style: { position: "absolute", top: "95%", left: "5%" }
+    // const canvasDiv = document.getElementById("canvas-div")
+    world.three?.canvas.parentElement?.appendChild(HtmlButton({
+      text: "E", style: { position: "absolute", top: "5px", left: "5px" }
     }))
 
     return {
