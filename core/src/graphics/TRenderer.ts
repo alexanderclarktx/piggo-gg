@@ -324,7 +324,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         })
       })
 
-      GL.load("apple-poly2.glb", (apple) => {
+      GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
         tRenderer.apples.push(apple.scene)

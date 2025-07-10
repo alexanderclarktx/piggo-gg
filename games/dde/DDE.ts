@@ -241,29 +241,19 @@ const DDESystem = SystemBuilder({
       },
       onRender: (_, delta) => {
         const pc = world.client?.playerCharacter()
-        if (!pc) return
-
-        if (!world.three) return
+        if (!pc || !world.three) return
 
         const interpolated = pc.components.position.interpolate(world, delta)
 
-        world.three?.sphere2?.position.set(
-          interpolated.x, interpolated.z + 0.05, interpolated.y
-        )
+        const { eagle, duck, sphere2 } = world.three
 
-        world.three?.duck?.scene.position.set(
-          interpolated.x, interpolated.z - 0.025, interpolated.y
-        )
+        sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+        duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
 
-        const { eagle, duck } = world.three
-        if (eagle && duck) {
-
+        if (eagle) {
           const { rotation, rotating } = pc.components.position.data
 
-          eagle.scene.position.set(
-            interpolated.x, interpolated.z + 0.1, interpolated.y
-          )
-
+          eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
           eagle.scene.rotation.z = rotation - rotating * delta / 1000
         }
 
