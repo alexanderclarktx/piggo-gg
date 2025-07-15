@@ -1,5 +1,5 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, HtmlButton, keys, min, PhysicsSystem,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, min, PhysicsSystem,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -183,8 +183,6 @@ const DDESystem = SystemBuilder({
         // render apples
         const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
         for (const appleEntity of appleEntities) {
-        // for (let i = 1; i <= apples.length; i++) {
-          // const apple = apples[i - 1]
 
           const { position } = appleEntity.components
           if (!position || !world.three) continue
@@ -203,12 +201,6 @@ const DDESystem = SystemBuilder({
             world.three.scene.add(apple)
 
             world.three.apples[appleEntity.id] = apple
-            // world.three.apples[i] = world.three.apples[0].clone(true)
-            // world.three.apples[i].position.set(x, z, y)
-            // world.three.apples[i].updateMatrix()
-
-            // world.three.scene.add(world.three.apples[i])
-            
           }
         }
 
@@ -217,8 +209,6 @@ const DDESystem = SystemBuilder({
         if (!placed && pc) {
 
           const dummy = new Object3D()
-
-          // const { position } = pc.components
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = blocks.neighbors(chunk, 24)
