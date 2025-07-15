@@ -11,8 +11,9 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type TRenderer = {
-  apples: Group<Object3DEventMap>[]
+  apples: Record<string,Group<Object3DEventMap>>
   blocks: undefined | TBlockMesh
+  canvas: HTMLCanvasElement
   camera: TCamera
   debug: boolean
   duck: undefined | GLTF
@@ -36,8 +37,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   const TL = new TextureLoader()
   const GL = new GLTFLoader()
 
-  let canvas: HTMLCanvasElement = c
-
   let renderer: undefined | WebGLRenderer
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
@@ -46,7 +45,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let zoom = 2
 
   const tRenderer: TRenderer = {
-    apples: [],
+    apples: {},
+    canvas: c,
     camera: TCamera(),
     scene: new Scene(),
     sphere: undefined,
@@ -56,7 +56,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     debug: false,
     duck: undefined,
     eagle: undefined,
-    setZoom: (z: number) => zoom = z,
+    setZoom: (z: number) => {
+      zoom = z
+    },
     resize: () => {
       if (renderer) {
         renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
@@ -93,11 +95,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.pointerLock()
 
       // recreate the canvas
-      const parent = canvas.parentElement
-      canvas.remove()
-      canvas = document.createElement("canvas")
-      canvas.id = "canvas"
-      parent?.appendChild(canvas)
+      const parent = tRenderer.canvas.parentElement
+      tRenderer.canvas.remove()
+      tRenderer.canvas = document.createElement("canvas")
+      tRenderer.canvas.id = "canvas"
+      parent?.appendChild(tRenderer.canvas)
 
       tRenderer.blocks = TBlockMesh()
       tRenderer.scene.add(tRenderer.blocks)
@@ -132,7 +134,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       // tRenderer.scene.add(radial.group)
 
       renderer = new WebGLRenderer({
-        antialias: false, canvas, powerPreference: "high-performance"
+        antialias: false, canvas: tRenderer.canvas, powerPreference: "high-performance"
       })
 
       tRenderer.resize()
@@ -150,11 +152,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           const { aim, velocity, flying } = pc.components.position.data
 
-          // rotation
-          duck.scene.rotation.set(0, aim.x + PI / 2, 0)
-
           eagle.scene.rotation.y = aim.x
           eagle.scene.rotation.x = aim.y
+          duck.scene.rotation.y = aim.x + PI / 2
 
           // visibility
           duck.scene.visible = debug ? false : !flying
@@ -309,7 +309,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       GL.load("duck.glb", (duck) => {
         tRenderer.duck = duck
         duck.scene.scale.set(0.08, 0.08, 0.08)
-        duck.scene.position.set(3, 3, 3)
         tRenderer.scene.add(duck.scene)
 
         const mixer = new AnimationMixer(duck.scene)
@@ -328,7 +327,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        tRenderer.apples.push(apple.scene)
+        tRenderer.apples["apple-0"] = apple.scene
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {
@@ -339,7 +338,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })
 
       // prevent right-click
-      canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+      tRenderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
     },
     sunLookAt: (x: number, y: number, z: number) => {
       if (sun) {

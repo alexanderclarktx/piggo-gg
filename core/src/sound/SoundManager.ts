@@ -82,8 +82,8 @@ export const SoundManager = (world: World): SoundManager => {
       clink: load("clink.mp3", -10),
       whiff: load("whiff.wav", -15),
       slash: load("slash.mp3", -20),
-      eat: load("eat.mp3", -20),
-      eat2: load("eat2.mp3", -20),
+      eat: load("eat.mp3", -10),
+      eat2: load("eat2.mp3", -10),
       spike: load("spike.mp3", 5),
     },
     stop: (soundName: ValidSounds) => {

@@ -1,11 +1,12 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, min, PhysicsSystem,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, min, PhysicsSystem,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
 import { TApple } from "./TApple"
+import { BirdHUD } from "./BirdHUD"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -29,7 +30,8 @@ export const DDE: GameBuilder<DDEState> = {
         PhysicsSystem("global"),
         PhysicsSystem("local"),
         TCameraSystem(),
-        DDESystem
+        DDESystem,
+        BirdHUD
       ],
       entities: []
     }
@@ -47,6 +49,8 @@ const DDESystem = SystemBuilder({
       { length: 12 }, (_, i) => TBlockCollider(i)
     )
     world.addEntities(blockColliders)
+
+    let i = 1
 
     return {
       id: "DDESystem",
@@ -149,7 +153,7 @@ const DDESystem = SystemBuilder({
         }
 
         // spawn apples
-        if (world.tick % 10 === 0 && world.three && world.three.apples[0] && world.three.apples.length < 50) {
+        if (world.tick % 10 === 0 && world.three && world.three.apples["apple-0"] && keys(world.three.apples).length < 50) {
 
           const randomTree = trees[randomInt(trees.length - 1)]
 
@@ -170,16 +174,17 @@ const DDESystem = SystemBuilder({
           ])
           const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
 
-          const apple = TApple(xyz)
+          const apple = TApple(xyz, i)
           world.addEntity(apple)
+
+          i += 1
         }
 
         // render apples
-        const apples = values(world.entities).filter(e => e.id.startsWith("apple"))
-        for (let i = 1; i <= apples.length; i++) {
-          const apple = apples[i - 1]
+        const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
+        for (const appleEntity of appleEntities) {
 
-          const { position } = apple.components
+          const { position } = appleEntity.components
           if (!position || !world.three) continue
 
           const { x, y, z } = position.data
@@ -188,12 +193,14 @@ const DDESystem = SystemBuilder({
           dummy.position.set(x, z, y)
           dummy.updateMatrix()
 
-          if (!world.three.apples[i]) {
-            world.three.apples[i] = world.three.apples[0].clone(true)
-            world.three.apples[i].position.set(x, z, y)
-            world.three.apples[i].updateMatrix()
+          if (!world.three.apples[appleEntity.id]) {
+            const apple = world.three.apples["apple-0"].clone(true)
 
-            world.three.scene.add(world.three.apples[i])
+            apple.position.set(x, z, y)
+            apple.updateMatrix()
+            world.three.scene.add(apple)
+
+            world.three.apples[appleEntity.id] = apple
           }
         }
 
@@ -202,8 +209,6 @@ const DDESystem = SystemBuilder({
         if (!placed && pc) {
 
           const dummy = new Object3D()
-
-          // const { position } = pc.components
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = blocks.neighbors(chunk, 24)
@@ -236,29 +241,19 @@ const DDESystem = SystemBuilder({
       },
       onRender: (_, delta) => {
         const pc = world.client?.playerCharacter()
-        if (!pc) return
-
-        if (!world.three) return
+        if (!pc || !world.three) return
 
         const interpolated = pc.components.position.interpolate(world, delta)
 
-        world.three?.sphere2?.position.set(
-          interpolated.x, interpolated.z + 0.05, interpolated.y
-        )
+        const { eagle, duck, sphere2 } = world.three
 
-        world.three?.duck?.scene.position.set(
-          interpolated.x, interpolated.z - 0.025, interpolated.y
-        )
+        sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+        duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y) // 0.055
 
-        const { eagle, duck } = world.three
-        if (eagle && duck) {
-
+        if (eagle) {
           const { rotation, rotating } = pc.components.position.data
 
-          eagle.scene.position.set(
-            interpolated.x, interpolated.z + 0.1, interpolated.y
-          )
-
+          eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
           eagle.scene.rotation.z = rotation - rotating * delta / 1000
         }
 

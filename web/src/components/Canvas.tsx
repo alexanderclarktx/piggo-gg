@@ -23,7 +23,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
   }, [])
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       <canvas id="canvas" />
     </div>
   )
