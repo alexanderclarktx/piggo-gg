@@ -23,11 +23,13 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
           if (dist < 0.4) {
             world.removeEntity(apple.id)
             removed = true
-            console.log(`Apple collected at ${applePos.x}, ${applePos.y}, ${applePos.z}`)
 
             // visual cleanup 
             world.three!.apples[apple.id]?.removeFromParent()
             delete world.three!.apples[apple.id]
+
+            // sound effect
+            world.client?.soundManager.play("eat", 0.2)
           }
         }
       })
