@@ -247,7 +247,7 @@ const DDESystem = SystemBuilder({
         const { eagle, duck, sphere2 } = world.three
 
         sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-        duck?.scene.position.set(interpolated.x, interpolated.z + 0.025, interpolated.y) // 0.055
+        duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y) // 0.055
 
         if (eagle) {
           const { rotation, rotating } = pc.components.position.data
