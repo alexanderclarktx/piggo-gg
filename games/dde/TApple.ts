@@ -20,7 +20,7 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
 
           const dist = XYZdistance(position.data, applePos)
 
-          if (dist < 0.4) {
+          if (dist < 0.1) {
             world.removeEntity(apple.id)
             removed = true
 
