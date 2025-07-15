@@ -54,6 +54,8 @@ const DDESystem = SystemBuilder({
     //   text: "E", style: { position: "absolute", top: "5px", left: "5px" }
     // }))
 
+    let i = 1
+
     return {
       id: "DDESystem",
       query: [],
@@ -176,8 +178,10 @@ const DDESystem = SystemBuilder({
           ])
           const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
 
-          const apple = TApple(xyz)
+          const apple = TApple(xyz, i)
           world.addEntity(apple)
+
+          i += 1
         }
 
         // render apples
