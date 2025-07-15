@@ -154,7 +154,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           eagle.scene.rotation.y = aim.x
           eagle.scene.rotation.x = aim.y
-          duck.scene.rotation.y = aim.x + PI
+          duck.scene.rotation.y = aim.x + PI / 2
 
           // visibility
           duck.scene.visible = debug ? false : !flying
@@ -306,7 +306,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         })
       })
 
-      GL.load("duckling.glb", (duck) => {
+      GL.load("duck.glb", (duck) => {
         tRenderer.duck = duck
         duck.scene.scale.set(0.08, 0.08, 0.08)
         tRenderer.scene.add(duck.scene)
