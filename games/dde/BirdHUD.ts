@@ -21,8 +21,8 @@ export const BirdHUD = SystemBuilder({
     // const width = world.three?.canvas.clientWidth || 800
     const height = world.three?.canvas.clientHeight || 600
 
-    const top = height / 4 * 3
-    const left = 80
+    const top = height / 5 * 4
+    const left = 100
 
     world.three?.canvas.parentElement?.appendChild(HtmlButton({
       text: "A",
@@ -42,6 +42,11 @@ export const BirdHUD = SystemBuilder({
     world.three?.canvas.parentElement?.appendChild(HtmlButton({
       text: "S",
       style: { top: `${top}px`, left: `${left}px`, ...HUDStyle }
+    }))
+
+    world.three?.canvas.parentElement?.appendChild(HtmlButton({
+      text: "E",
+      style: { top: `${top - 150}px`, left: `${left}px`, ...HUDStyle }
     }))
 
     return {
