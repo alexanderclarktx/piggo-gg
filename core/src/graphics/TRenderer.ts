@@ -11,7 +11,7 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type TRenderer = {
-  apples: Group<Object3DEventMap>[]
+  apples: Record<string,Group<Object3DEventMap>>
   blocks: undefined | TBlockMesh
   canvas: HTMLCanvasElement
   camera: TCamera
@@ -45,7 +45,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let zoom = 2
 
   const tRenderer: TRenderer = {
-    apples: [],
+    apples: {},
     canvas: c,
     camera: TCamera(),
     scene: new Scene(),
@@ -327,7 +327,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        tRenderer.apples.push(apple.scene)
+        tRenderer.apples["apple-0"] = apple.scene
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {

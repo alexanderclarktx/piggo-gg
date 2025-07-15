@@ -1,5 +1,5 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, HtmlButton, min, PhysicsSystem,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, HtmlButton, keys, min, PhysicsSystem,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -49,10 +49,6 @@ const DDESystem = SystemBuilder({
       { length: 12 }, (_, i) => TBlockCollider(i)
     )
     world.addEntities(blockColliders)
-
-    // world.three?.canvas.parentElement?.appendChild(HtmlButton({
-    //   text: "E", style: { position: "absolute", top: "5px", left: "5px" }
-    // }))
 
     let i = 1
 
@@ -157,7 +153,7 @@ const DDESystem = SystemBuilder({
         }
 
         // spawn apples
-        if (world.tick % 10 === 0 && world.three && world.three.apples[0] && world.three.apples.length < 50) {
+        if (world.tick % 10 === 0 && world.three && world.three.apples["apple-0"] && keys(world.three.apples).length < 50) {
 
           const randomTree = trees[randomInt(trees.length - 1)]
 
@@ -185,11 +181,12 @@ const DDESystem = SystemBuilder({
         }
 
         // render apples
-        const apples = values(world.entities).filter(e => e.id.startsWith("apple"))
-        for (let i = 1; i <= apples.length; i++) {
-          const apple = apples[i - 1]
+        const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
+        for (const appleEntity of appleEntities) {
+        // for (let i = 1; i <= apples.length; i++) {
+          // const apple = apples[i - 1]
 
-          const { position } = apple.components
+          const { position } = appleEntity.components
           if (!position || !world.three) continue
 
           const { x, y, z } = position.data
@@ -198,12 +195,20 @@ const DDESystem = SystemBuilder({
           dummy.position.set(x, z, y)
           dummy.updateMatrix()
 
-          if (!world.three.apples[i]) {
-            world.three.apples[i] = world.three.apples[0].clone(true)
-            world.three.apples[i].position.set(x, z, y)
-            world.three.apples[i].updateMatrix()
+          if (!world.three.apples[appleEntity.id]) {
+            const apple = world.three.apples["apple-0"].clone(true)
 
-            world.three.scene.add(world.three.apples[i])
+            apple.position.set(x, z, y)
+            apple.updateMatrix()
+            world.three.scene.add(apple)
+
+            world.three.apples[appleEntity.id] = apple
+            // world.three.apples[i] = world.three.apples[0].clone(true)
+            // world.three.apples[i].position.set(x, z, y)
+            // world.three.apples[i].updateMatrix()
+
+            // world.three.scene.add(world.three.apples[i])
+            
           }
         }
 

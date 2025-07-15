@@ -26,8 +26,8 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
             console.log(`Apple collected at ${applePos.x}, ${applePos.y}, ${applePos.z}`)
 
             // visual cleanup 
-            world.three!.apples[i]?.removeFromParent()
-            world.three!.apples.splice(i, 1)
+            world.three!.apples[apple.id]?.removeFromParent()
+            delete world.three!.apples[apple.id]
           }
         }
       })
