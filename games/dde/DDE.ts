@@ -6,6 +6,7 @@ import {
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
 import { TApple } from "./TApple"
+import { BirdHUD } from "./BirdHUD"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -29,7 +30,8 @@ export const DDE: GameBuilder<DDEState> = {
         PhysicsSystem("global"),
         PhysicsSystem("local"),
         TCameraSystem(),
-        DDESystem
+        DDESystem,
+        BirdHUD
       ],
       entities: []
     }
@@ -48,9 +50,9 @@ const DDESystem = SystemBuilder({
     )
     world.addEntities(blockColliders)
 
-    world.three?.canvas.parentElement?.appendChild(HtmlButton({
-      text: "E", style: { position: "absolute", top: "5px", left: "5px" }
-    }))
+    // world.three?.canvas.parentElement?.appendChild(HtmlButton({
+    //   text: "E", style: { position: "absolute", top: "5px", left: "5px" }
+    // }))
 
     return {
       id: "DDESystem",

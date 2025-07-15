@@ -1,19 +1,34 @@
 export type HtmlButtonProps = {
   text?: string
   style?: {
-    position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
-    top?: `${number}%` | `${number}px`
-    left?: `${number}%` | `${number}px`
-    transform?: string
-    padding?: string
-    fontSize?: `${number}px`
-    backgroundColor?: `#${string}`
-    color?: `#${string}`
+    
+    alignItems?: "center" | "flex-start" | "flex-end" | "stretch"
+    backgroundColor?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
     border?: string
     borderRadius?: `${number}px`
+    color?: `#${string}`
     cursor?: "pointer" | "default" | "not-allowed"
+    display?: "block" | "inline-block" | "flex" | "inline-flex" | "none"
+    fontFamily?: "Courier New" | "Arial" | "Verdana" | "Times New Roman" | "Georgia" | "Tahoma" | "Trebuchet MS"
+    fontSize?: `${number}px`
+    fontWeight?: "normal" | "bold" | "bolder" | "lighter"
+    height?: `${number}px`
+    justifyContent?: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
+    left?: `${number}%` | `${number}px`
+    lineHeight?: `${number}px`
+    padding?: string
+    position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
+    top?: `${number}%` | `${number}px`
+    transform?: string
+    width?: `${number}px`
     zIndex?: number
   }
+}
+
+const defaults: HtmlButtonProps["style"] = {
+  position: "absolute",
+  fontFamily: "Courier New",
+  fontWeight: "bold"
 }
 
 export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
@@ -23,6 +38,10 @@ export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
     b.textContent = props.text
   }
 
+  // defaults
+  Object.assign(b.style, defaults)
+
+  // custom styles
   Object.assign(b.style, props.style)
 
   return b
