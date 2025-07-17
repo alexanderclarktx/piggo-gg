@@ -18,9 +18,7 @@ export const BirdHUD = SystemBuilder({
   id: "BirdHUD",
   init: (world) => {
 
-    // const width = world.three?.canvas.clientWidth || 800
     const height = world.three?.canvas.clientHeight || 600
-
     const top = height / 5 * 4
     const left = 100
 
@@ -56,7 +54,9 @@ export const BirdHUD = SystemBuilder({
       query: [],
       priority: 10,
       onTick: () => {
+        const aDown = world.client?.bufferDown?.get("a")
 
+        aButton.style.backgroundColor = aDown ? "rgba(0, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.3)"
       }
     }
   }
