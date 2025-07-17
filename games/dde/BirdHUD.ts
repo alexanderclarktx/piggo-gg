@@ -26,37 +26,43 @@ export const BirdHUD = SystemBuilder({
       text: "A",
       style: { top: `${top}px`, left: `${left - 50}px`, ...HUDStyle }
     })
-
-    world.three?.canvas.parentElement?.appendChild(aButton)
-
-    world.three?.canvas.parentElement?.appendChild(HtmlButton({
-      text: "W",
-      style: { top: `${top - 50}px`, left: `${left}px`, ...HUDStyle }
-    }))
-
-    world.three?.canvas.parentElement?.appendChild(HtmlButton({
+    const dButton = HtmlButton({
       text: "D",
       style: { top: `${top}px`, left: `${left + 50}px`, ...HUDStyle }
-    }))
-
-    world.three?.canvas.parentElement?.appendChild(HtmlButton({
+    })
+    const sButton = HtmlButton({
       text: "S",
       style: { top: `${top}px`, left: `${left}px`, ...HUDStyle }
-    }))
-
-    world.three?.canvas.parentElement?.appendChild(HtmlButton({
+    })
+    const wButton = HtmlButton({
+      text: "W",
+      style: { top: `${top - 50}px`, left: `${left}px`, ...HUDStyle }
+    })
+    const eButton = HtmlButton({
       text: "E",
       style: { top: `${top - 150}px`, left: `${left}px`, ...HUDStyle }
-    }))
+    })
+
+    world.three?.canvas.parentElement?.append(aButton, sButton, wButton, dButton, eButton)
 
     return {
       id: "BirdHUD",
       query: [],
       priority: 10,
       onTick: () => {
-        const aDown = world.client?.bufferDown?.get("a")
+        const down = world.client?.bufferDown.all()?.map(key => key.key)
+        if (!down) return
 
-        aButton.style.backgroundColor = aDown ? "rgba(0, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.3)"
+        aButton.style.backgroundColor = down.includes("a") ? "rgba(0, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.3)"
+        dButton.style.backgroundColor = down.includes("d") ? "rgba(0, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.3)"
+        sButton.style.backgroundColor = down.includes("s") ? "rgba(0, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.3)"
+        wButton.style.backgroundColor = down.includes("w") ? "rgba(0, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.3)"
+        eButton.style.backgroundColor = down.includes("e") ? "rgba(0, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.3)"
+
+        const pc = world.client?.playerCharacter()
+        if (!pc) return
+
+        sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
       }
     }
   }
