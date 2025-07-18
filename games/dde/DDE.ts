@@ -1,6 +1,6 @@
 import {
   blocks, ceil, Collider, Entity, floor, GameBuilder, keys, min, PhysicsSystem,
-  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, sqrt, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
@@ -108,12 +108,8 @@ const DDESystem = SystemBuilder({
             const zDiff = z - position.data.z
             if (zDiff > 0.5 || zDiff < -0.5) continue
 
-            const dist = Math.sqrt(
-              Math.pow(x - position.data.x, 2) +
-              Math.pow(y - position.data.y, 2) +
-              Math.pow(z - position.data.z, 2)
-            )
-            if (dist < 20) set.push({ x, y, z })
+            const dist = XYZdistance({ x, y, z }, position.data)
+            if (dist < 1) set.push({ x, y, z })
           }
 
           set.sort((a, b) => {
