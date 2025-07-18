@@ -1,18 +1,23 @@
-import { HtmlButton, HtmlButtonProps, SystemBuilder } from "@piggo-gg/core"
+import { HtmlButton, SystemBuilder } from "@piggo-gg/core"
 
-const HUDStyle = {
-  position: "absolute",
-  padding: "10px",
-  fontSize: "26px",
-  backgroundColor: "rgba(0, 0, 0, 0.3)",
-  color: "#ffffff",
-  border: "2px solid #ffffff",
-  borderRadius: "8px",
-  width: "40px",
-  height: "40px",
-  lineHeight: "18px",
-  fontFamily: "Courier New",
-} as HtmlButtonProps["style"]
+const BirdButton = (text: string, left: number, top: number, visible: boolean = true) => HtmlButton({
+  text,
+  style: {
+    position: "absolute",
+    left: `${left}px`,
+    top: `${top}px`,
+    width: "40px",
+    height: "40px",
+    fontSize: "26px",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    color: "#ffffff",
+    border: "2px solid #ffffff",
+    borderRadius: "8px",
+    lineHeight: "18px",
+    fontFamily: "Courier New",
+    visibility: visible ? "visible" : "hidden"
+  }
+})
 
 export const BirdHUD = SystemBuilder({
   id: "BirdHUD",
@@ -22,26 +27,11 @@ export const BirdHUD = SystemBuilder({
     const top = height / 5 * 4
     const left = 100
 
-    const aButton = HtmlButton({
-      text: "A",
-      style: { top: `${top}px`, left: `${left - 50}px`, ...HUDStyle }
-    })
-    const dButton = HtmlButton({
-      text: "D",
-      style: { top: `${top}px`, left: `${left + 50}px`, ...HUDStyle }
-    })
-    const sButton = HtmlButton({
-      text: "S",
-      style: { top: `${top}px`, left: `${left}px`, ...HUDStyle }
-    })
-    const wButton = HtmlButton({
-      text: "W",
-      style: { top: `${top - 50}px`, left: `${left}px`, ...HUDStyle }
-    })
-    const eButton = HtmlButton({
-      text: "E",
-      style: { top: `${top - 150}px`, left: `${left}px`, ...HUDStyle }
-    })
+    const aButton = BirdButton("A", left - 50, top)
+    const dButton = BirdButton("D", left + 50, top)
+    const sButton = BirdButton("S", left, top, false)
+    const wButton = BirdButton("W", left, top - 50)
+    const eButton = BirdButton("E", left, top - 150)
 
     world.three?.canvas.parentElement?.append(aButton, sButton, wButton, dButton, eButton)
 

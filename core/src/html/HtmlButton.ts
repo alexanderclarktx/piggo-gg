@@ -1,7 +1,6 @@
 export type HtmlButtonProps = {
   text?: string
   style?: {
-    
     alignItems?: "center" | "flex-start" | "flex-end" | "stretch"
     backgroundColor?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
     border?: string
@@ -20,6 +19,7 @@ export type HtmlButtonProps = {
     position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
     top?: `${number}%` | `${number}px`
     transform?: string
+    visibility?: "visible" | "hidden"
     width?: `${number}px`
     zIndex?: number
   }
