@@ -4,7 +4,6 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from "postprocessing"
 import { hypot, PI, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
@@ -134,7 +133,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       // tRenderer.scene.add(radial.group)
 
       renderer = new WebGLRenderer({
-        antialias: false, canvas: tRenderer.canvas, powerPreference: "high-performance"
+        antialias: true,
+        canvas: tRenderer.canvas,
+        powerPreference: "high-performance"
       })
 
       tRenderer.resize()
@@ -183,7 +184,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         world.onRender?.()
 
-        composer.render()
+        renderer!.render(tRenderer.scene, tRenderer.camera.c)
       })
 
       renderer.shadowMap.enabled = true
@@ -257,20 +258,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
       sunSphere.position.copy(sun.position)
       tRenderer.scene.add(sunSphere)
-
-      const camera = tRenderer.camera.c
-
-      const composer = new EffectComposer(renderer, { multisampling: 4 })
-      composer.addPass(new RenderPass(tRenderer.scene, camera))
-
-      composer.addPass(new EffectPass(camera, new BloomEffect({
-        luminanceThreshold: 0.2,
-        luminanceSmoothing: 0.1,
-        intensity: 0.4,
-        resolutionScale: 2
-      })))
-
-      composer.addPass(new EffectPass(camera, new SMAAEffect({ preset: SMAAPreset.LOW })))
 
       // canvas.addEventListener("wheel", (event: WheelEvent) => {
       //   zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
