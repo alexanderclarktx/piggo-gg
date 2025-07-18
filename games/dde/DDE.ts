@@ -129,7 +129,7 @@ const DDESystem = SystemBuilder({
               const xyz = set[index]
               position.setPosition(xyz)
 
-              const group = round(xyz.z / 0.3).toString() as "1"
+              const group = (floor(xyz.z / 0.3 + 0.01)).toString() as "1"
               collider.setGroup(group)
 
               collider.active = true
