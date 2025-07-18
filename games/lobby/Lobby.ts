@@ -160,15 +160,15 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
             height: 240,
             width: 270
           }),
-          onClick: () => {
-            world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-            world.client?.soundManager.play("click1")
-          },
-          onEnter: () => {
-            r.setGlow({ outerStrength: 2 })
-            world.client?.soundManager.play("click3")
-          },
-          onLeave: () => r.setGlow()
+          // onClick: () => {
+          //   world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
+          //   world.client?.soundManager.play("click1")
+          // },
+          // onEnter: () => {
+          //   r.setGlow({ outerStrength: 2 })
+          //   world.client?.soundManager.play("click3")
+          // },
+          // onLeave: () => r.setGlow()
         })
 
         r.c.addChild(button.c)

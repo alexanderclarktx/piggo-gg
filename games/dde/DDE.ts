@@ -6,7 +6,7 @@ import {
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
 import { TApple } from "./TApple"
-import { BirdHUD } from "./BirdHUD"
+import { BirdHUDSystem } from "./BirdHUDSystem"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -31,7 +31,7 @@ export const DDE: GameBuilder<DDEState> = {
         PhysicsSystem("local"),
         TCameraSystem(),
         DDESystem,
-        BirdHUD
+        BirdHUDSystem
       ],
       entities: []
     }
@@ -129,7 +129,7 @@ const DDESystem = SystemBuilder({
               const xyz = set[index]
               position.setPosition(xyz)
 
-              const group = round(xyz.z / 0.3).toString() as "1"
+              const group = (floor(xyz.z / 0.3 + 0.01)).toString() as "1"
               collider.setGroup(group)
 
               collider.active = true
