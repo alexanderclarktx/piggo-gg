@@ -29,7 +29,7 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
             delete world.three!.apples[apple.id]
 
             // sound effect
-            world.client?.soundManager.play("eat", 0.2)
+            world.client?.soundManager.play("eat", 0.3)
           }
         }
       })

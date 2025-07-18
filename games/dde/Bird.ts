@@ -139,10 +139,12 @@ export const Bird = () => Character({
 
         let factor = 0
 
-        if (position.data.standing) {
-          factor = params.sprint ? 0.9 : 0.5
+        if (position.data.flying) {
+          factor = params.sprint ? 0.16 : 0.09
+        } else if (position.data.standing) {
+          factor = params.sprint ? 0.8 : 0.5
         } else {
-          factor = params.sprint ? 0.12 : 0.08
+          factor = params.sprint ? 0.1 : 0.07
         }
 
         position.impulse({ x: toward.x * factor, y: toward.z * factor })
