@@ -210,9 +210,7 @@ const DDESystem = SystemBuilder({
 
         // render blocks
         const t2 = performance.now()
-        const pc = world.client?.playerCharacter()
-        if (!placed && pc) {
-
+        if (!placed) {
           const dummy = new Object3D()
 
           const chunk = XYtoChunk({ x: 1, y: 1 })

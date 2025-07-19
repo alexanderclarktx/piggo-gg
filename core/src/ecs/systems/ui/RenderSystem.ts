@@ -3,18 +3,15 @@ import { Entity, Position, Renderable, ClientSystemBuilder, logPerf } from "@pig
 export const RenderSystem = ClientSystemBuilder({
   id: "RenderSystem",
   init: (world) => {
-    const { renderer, client } = world
-    if (!client) return undefined
-
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
 
-      await renderable._init(renderer, world)
+      await renderable._init(world.renderer, world)
 
       if (position.screenFixed) {
-        renderer?.addGui(renderable)
+        world.renderer?.addGui(renderable)
       } else {
-        renderer?.addWorld(renderable)
+        world.renderer?.addWorld(renderable)
       }
     }
 
@@ -24,13 +21,13 @@ export const RenderSystem = ClientSystemBuilder({
       if (!position.screenFixed) return
 
       if (position.data.x < 0) {
-        renderable.c.x = renderer!.app.screen.width + position.data.x
+        renderable.c.x = world.renderer!.app.screen.width + position.data.x
       } else {
         renderable.c.x = position.data.x
       }
 
       if (position.data.y < 0) {
-        renderable.c.y = renderer!.app.screen.height + position.data.y
+        renderable.c.y = world.renderer!.app.screen.height + position.data.y
       } else {
         renderable.c.y = position.data.y
       }
@@ -41,7 +38,8 @@ export const RenderSystem = ClientSystemBuilder({
       query: ["renderable", "position"],
       priority: 11,
       onTick: (entities: Entity<Renderable | Position>[]) => {
-        if (!renderer) return
+        const { renderer, client } = world
+        if (!renderer || !client) return
 
         if (renderer.resizedFlag) {
           renderer.guiRenderables.forEach((renderable) => {
@@ -155,6 +153,9 @@ export const RenderSystem = ClientSystemBuilder({
         }
       },
       onRender(entities: Entity<Renderable | Position>[], delta) {
+        const { renderer, client } = world
+        if (!renderer || !client) return
+
         for (const entity of entities) {
           const { position, renderable } = entity.components
 
