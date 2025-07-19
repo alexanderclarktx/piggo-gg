@@ -1,5 +1,5 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, min, PhysicsSystem,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PhysicsSystem,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, sqrt, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -62,6 +62,7 @@ const DDESystem = SystemBuilder({
         const state = world.game.state as DDEState
 
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
+        const t4 = performance.now()
         for (const entity of entities) {
           const { position } = entity.components
           const { x, y, z, velocity, rotation, standing } = position.data
@@ -149,8 +150,10 @@ const DDESystem = SystemBuilder({
             }
           }
         }
+        logPerf("update colliders", t4)
 
         // spawn apples
+        const t3 = performance.now()
         if (world.tick % 10 === 0 && world.three && world.three.apples["apple-0"] && keys(world.three.apples).length < 50) {
 
           const randomTree = trees[randomInt(trees.length - 1)]
@@ -177,8 +180,10 @@ const DDESystem = SystemBuilder({
 
           i += 1
         }
+        logPerf("spawn apples", t3)
 
         // render apples
+        const t = performance.now()
         const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
         for (const appleEntity of appleEntities) {
 
@@ -201,8 +206,10 @@ const DDESystem = SystemBuilder({
             world.three.apples[appleEntity.id] = apple
           }
         }
+        logPerf("render apples", t)
 
         // render blocks
+        const t2 = performance.now()
         const pc = world.client?.playerCharacter()
         if (!placed && pc) {
 
@@ -236,6 +243,7 @@ const DDESystem = SystemBuilder({
             world.three!.blocks!.instanceMatrix.needsUpdate = true
           }
         }
+        logPerf("render blocks", t2)
       },
       onRender: (_, delta) => {
         const pc = world.client?.playerCharacter()
