@@ -10,6 +10,7 @@ import { BirdHUDSystem } from "./BirdHUDSystem"
 
 export type DDEState = {
   doubleJumped: string[]
+  applesEaten: Record<string, number>
 }
 
 export const DDE: GameBuilder<DDEState> = {
@@ -23,7 +24,8 @@ export const DDE: GameBuilder<DDEState> = {
       id: "Duck Duck Eagle",
       netcode: "rollback",
       state: {
-        doubleJumped: []
+        doubleJumped: [],
+        applesEaten: {}
       },
       systems: [
         SpawnSystem(Bird),

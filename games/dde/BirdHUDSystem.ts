@@ -1,4 +1,5 @@
 import { HtmlButton, HtmlText, SystemBuilder } from "@piggo-gg/core"
+import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
   id: "BirdHUDSystem",
@@ -51,9 +52,15 @@ export const BirdHUDSystem = SystemBuilder({
         eButton.style.backgroundColor = down.includes("e") ? active : inactive
 
         const pc = world.client?.playerCharacter()
-        if (!pc) return
+        if (pc) {
+          sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
+        }
 
-        sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
+        const state = world.game.state as DDEState
+        const pcApplesEaten = state.applesEaten[world.client?.playerId() || ""] || 0
+        scoreText.textContent = `Score: ${pcApplesEaten}`
+
+        // console.log("DDE State:", state)
       }
     }
   }
