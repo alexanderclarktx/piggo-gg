@@ -21,12 +21,9 @@ const defaults: HtmlTextProps["style"] = {
 export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
   const div = document.createElement('div')
 
-  if (props.text) {
-    div.textContent = props.text
-  }
+  if (props.text) div.textContent = props.text
 
   Object.assign(div.style, defaults)
-
   Object.assign(div.style, props.style)
 
   return div
