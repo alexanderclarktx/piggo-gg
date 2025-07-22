@@ -10,7 +10,7 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type TRenderer = {
-  apples: Record<string,Group<Object3DEventMap>>
+  apples: Record<string, Group<Object3DEventMap>>
   blocks: undefined | TBlockMesh
   canvas: HTMLCanvasElement
   camera: TCamera
@@ -59,9 +59,12 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       zoom = z
     },
     resize: () => {
-      if (renderer) {
-        renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
-      }
+      if (!renderer) return
+
+      renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+
+      tRenderer.camera.c.aspect = window.innerWidth / window.innerHeight
+      tRenderer.camera.c.updateProjectionMatrix()
     },
     deactivate: () => {
       renderer?.setAnimationLoop(null)
@@ -326,6 +329,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       // prevent right-click
       tRenderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+
+      // handle screen resize
+      window.addEventListener("resize", tRenderer.resize)
     },
     sunLookAt: (x: number, y: number, z: number) => {
       if (sun) {
