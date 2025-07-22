@@ -37,6 +37,8 @@ export const BirdHUDSystem = SystemBuilder({
     const active = "rgba(0, 255, 255, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
 
+    let currentApplesEaten = 0
+
     return {
       id: "BirdHUDSystem",
       query: [],
@@ -58,9 +60,11 @@ export const BirdHUDSystem = SystemBuilder({
 
         const state = world.game.state as DDEState
         const pcApplesEaten = state.applesEaten[world.client?.playerId() || ""] || 0
-        scoreText.textContent = `Score: ${pcApplesEaten}`
 
-        // console.log("DDE State:", state)
+        if (pcApplesEaten !== currentApplesEaten) {
+          currentApplesEaten = pcApplesEaten
+          scoreText.textContent = `Score: ${currentApplesEaten}`
+        }
       }
     }
   }

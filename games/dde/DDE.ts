@@ -62,7 +62,7 @@ const DDESystem = SystemBuilder({
         const state = world.game.state as DDEState
 
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
-        const t4 = performance.now()
+        const t0 = performance.now()
         for (const entity of entities) {
           const { position } = entity.components
           const { x, y, z, velocity, rotation, standing } = position.data
@@ -150,10 +150,10 @@ const DDESystem = SystemBuilder({
             }
           }
         }
-        logPerf("update colliders", t4)
+        logPerf("update colliders", t0)
 
         // spawn apples
-        const t3 = performance.now()
+        const t1 = performance.now()
         if (world.tick % 10 === 0 && world.three && world.three.apples["apple-0"] && keys(world.three.apples).length < 50) {
 
           const randomTree = trees[randomInt(trees.length - 1)]
@@ -180,10 +180,10 @@ const DDESystem = SystemBuilder({
 
           i += 1
         }
-        logPerf("spawn apples", t3)
+        logPerf("spawn apples", t1)
 
         // render apples
-        const t = performance.now()
+        const t2 = performance.now()
         const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
         for (const appleEntity of appleEntities) {
 
@@ -206,10 +206,10 @@ const DDESystem = SystemBuilder({
             world.three.apples[appleEntity.id] = apple
           }
         }
-        logPerf("render apples", t)
+        logPerf("render apples", t2)
 
         // render blocks
-        const t2 = performance.now()
+        const t3 = performance.now()
         if (!placed) {
           const dummy = new Object3D()
 
@@ -241,7 +241,7 @@ const DDESystem = SystemBuilder({
             world.three!.blocks!.instanceMatrix.needsUpdate = true
           }
         }
-        logPerf("render blocks", t2)
+        logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {
         const pc = world.client?.playerCharacter()
