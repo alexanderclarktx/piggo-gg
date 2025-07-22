@@ -1,5 +1,5 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PhysicsSystem,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, logRare, min, PhysicsSystem,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, sqrt, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -258,7 +258,8 @@ const DDESystem = SystemBuilder({
           const { rotation, rotating } = pc.components.position.data
 
           eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-          eagle.scene.rotation.z = rotation - rotating * delta / 1000
+          eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
+          logRare(`rotation:${rotation} rotating:${rotating} delta:${delta}`, world)
         }
 
         const { velocity } = pc.components.position.data
