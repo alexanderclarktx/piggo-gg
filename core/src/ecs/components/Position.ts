@@ -1,5 +1,5 @@
 import {
-  Component, Entity, Oct, OctString, SystemBuilder,
+  Component, Entity, Oct, OctString, PI, SystemBuilder,
   World, XY, XYZ, abs, max, min, round, toOctString
 } from "@piggo-gg/core"
 
@@ -266,7 +266,11 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         // rotation
         if (position.data.rotating) {
           position.data.rotation += position.data.rotating
-          position.data.rotation = max(-Math.PI / 3, min(Math.PI / 3, position.data.rotation))
+          position.data.rotation = max(-PI / 3, min(PI / 3, position.data.rotation))
+
+          if (position.data.rotation === -PI / 3 || position.data.rotation === PI / 3) {
+            position.data.rotating = 0
+          }
         }
 
         // follows

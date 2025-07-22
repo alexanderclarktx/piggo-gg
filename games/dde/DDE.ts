@@ -259,7 +259,6 @@ const DDESystem = SystemBuilder({
 
           eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
           eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
-          logRare(`rotation:${rotation} rotating:${rotating} delta:${delta}`, world)
         }
 
         const { velocity } = pc.components.position.data
