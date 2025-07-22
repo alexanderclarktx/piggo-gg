@@ -1,7 +1,7 @@
 import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
   World, randomPlayerId, SoundManager, randomHash, AuthLogin, FriendsList, Pls, NetClientReadSystem,
-  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer
+  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -32,6 +32,7 @@ export type Client = {
   lastMessageTick: number
   lobbyId: string | undefined
   ms: number
+  mobile: boolean
   player: Player
   soundManager: SoundManager
   token: string | undefined
@@ -87,6 +88,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lastMessageTick: 0,
     lobbyId: undefined,
     ms: 0,
+    mobile: isMobile(),
     player,
     soundManager: SoundManager(world),
     token: undefined,

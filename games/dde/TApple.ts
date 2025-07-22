@@ -1,4 +1,5 @@
 import { Entity, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
+import { DDEState } from "./DDE";
 
 export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
 
@@ -12,6 +13,7 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
         behavior: (_, world) => {
           if (removed) return
 
+          // todo every player
           const pc = world.client?.playerCharacter()
           if (!pc) return
 
@@ -30,6 +32,15 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
 
             // sound effect
             world.client?.soundManager.play("eat", 0.3)
+
+            // score
+            const state = world.game.state as DDEState
+            const playerId = world.client?.playerId() || ""
+            if (!state.applesEaten[playerId]) {
+              state.applesEaten[playerId] = 1
+            } else {
+              state.applesEaten[playerId] += 1
+            }
           }
         }
       })

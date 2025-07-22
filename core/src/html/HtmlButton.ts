@@ -34,14 +34,9 @@ const defaults: HtmlButtonProps["style"] = {
 export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   const b = document.createElement('button')
 
-  if (props.text) {
-    b.textContent = props.text
-  }
+  if (props.text) b.textContent = props.text
 
-  // defaults
   Object.assign(b.style, defaults)
-
-  // custom styles
   Object.assign(b.style, props.style)
 
   return b

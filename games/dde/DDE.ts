@@ -1,5 +1,5 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, min, PhysicsSystem,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PhysicsSystem,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
@@ -10,6 +10,7 @@ import { BirdHUDSystem } from "./BirdHUDSystem"
 
 export type DDEState = {
   doubleJumped: string[]
+  applesEaten: Record<string, number>
 }
 
 export const DDE: GameBuilder<DDEState> = {
@@ -23,7 +24,8 @@ export const DDE: GameBuilder<DDEState> = {
       id: "Duck Duck Eagle",
       netcode: "rollback",
       state: {
-        doubleJumped: []
+        doubleJumped: [],
+        applesEaten: {}
       },
       systems: [
         SpawnSystem(Bird),
@@ -60,6 +62,7 @@ const DDESystem = SystemBuilder({
         const state = world.game.state as DDEState
 
         const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
+        const t0 = performance.now()
         for (const entity of entities) {
           const { position } = entity.components
           const { x, y, z, velocity, rotation, standing } = position.data
@@ -108,12 +111,8 @@ const DDESystem = SystemBuilder({
             const zDiff = z - position.data.z
             if (zDiff > 0.5 || zDiff < -0.5) continue
 
-            const dist = Math.sqrt(
-              Math.pow(x - position.data.x, 2) +
-              Math.pow(y - position.data.y, 2) +
-              Math.pow(z - position.data.z, 2)
-            )
-            if (dist < 20) set.push({ x, y, z })
+            const dist = XYZdistance({ x, y, z }, position.data)
+            if (dist < 1) set.push({ x, y, z })
           }
 
           set.sort((a, b) => {
@@ -151,8 +150,10 @@ const DDESystem = SystemBuilder({
             }
           }
         }
+        logPerf("update colliders", t0)
 
         // spawn apples
+        const t1 = performance.now()
         if (world.tick % 10 === 0 && world.three && world.three.apples["apple-0"] && keys(world.three.apples).length < 50) {
 
           const randomTree = trees[randomInt(trees.length - 1)]
@@ -179,8 +180,10 @@ const DDESystem = SystemBuilder({
 
           i += 1
         }
+        logPerf("spawn apples", t1)
 
         // render apples
+        const t2 = performance.now()
         const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
         for (const appleEntity of appleEntities) {
 
@@ -203,11 +206,11 @@ const DDESystem = SystemBuilder({
             world.three.apples[appleEntity.id] = apple
           }
         }
+        logPerf("render apples", t2)
 
         // render blocks
-        const pc = world.client?.playerCharacter()
-        if (!placed && pc) {
-
+        const t3 = performance.now()
+        if (!placed) {
           const dummy = new Object3D()
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
@@ -229,7 +232,7 @@ const DDESystem = SystemBuilder({
             } else if (type === 9) {
               world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
             } else if (type === 6) {
-              world.three?.blocks?.setColorAt(i, new Color(0x440066))
+              world.three?.blocks?.setColorAt(i, new Color(0x660088))
             } else if (type === 11) {
               world.three?.blocks?.setColorAt(i, new Color(0xF5F5DC))
             }
@@ -238,6 +241,7 @@ const DDESystem = SystemBuilder({
             world.three!.blocks!.instanceMatrix.needsUpdate = true
           }
         }
+        logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {
         const pc = world.client?.playerCharacter()
@@ -254,7 +258,7 @@ const DDESystem = SystemBuilder({
           const { rotation, rotating } = pc.components.position.data
 
           eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-          eagle.scene.rotation.z = rotation - rotating * delta / 1000
+          eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
         }
 
         const { velocity } = pc.components.position.data

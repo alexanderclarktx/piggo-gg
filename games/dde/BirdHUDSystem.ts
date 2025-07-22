@@ -1,10 +1,13 @@
-import { HtmlButton, SystemBuilder } from "@piggo-gg/core"
+import { HtmlButton, HtmlText, SystemBuilder } from "@piggo-gg/core"
+import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
   id: "BirdHUDSystem",
   init: (world) => {
 
+    const width = world.three?.canvas.clientWidth || 800
     const height = world.three?.canvas.clientHeight || 600
+
     const top = height / 5 * 4
     const left = 100
 
@@ -14,10 +17,27 @@ export const BirdHUDSystem = SystemBuilder({
     const wButton = SmallButton("W", left, top - 50)
     const eButton = SmallButton("E", left, top - 150)
 
-    world.three?.canvas.parentElement?.append(aButton, sButton, wButton, dButton, eButton)
+    const scoreText = HtmlText({
+      text: "Score: 0",
+      style: {
+        left: `${width / 2}px`,
+        top: `${20}px`,
+        fontSize: "24px",
+        color: "#ffffff",
+        position: "absolute",
+        transform: "translateX(-50%)",
+      }
+    })
+
+    world.three?.canvas.parentElement?.append(
+      aButton, sButton, wButton, dButton, eButton,
+      scoreText
+    )
 
     const active = "rgba(0, 255, 255, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
+
+    let currentApplesEaten = 0
 
     return {
       id: "BirdHUDSystem",
@@ -34,9 +54,17 @@ export const BirdHUDSystem = SystemBuilder({
         eButton.style.backgroundColor = down.includes("e") ? active : inactive
 
         const pc = world.client?.playerCharacter()
-        if (!pc) return
+        if (pc) {
+          sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
+        }
 
-        sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
+        const state = world.game.state as DDEState
+        const pcApplesEaten = state.applesEaten[world.client?.playerId() || ""] || 0
+
+        if (pcApplesEaten !== currentApplesEaten) {
+          currentApplesEaten = pcApplesEaten
+          scoreText.textContent = `Score: ${currentApplesEaten}`
+        }
       }
     }
   }
@@ -45,7 +73,6 @@ export const BirdHUDSystem = SystemBuilder({
 const SmallButton = (text: string, left: number, top: number, visible: boolean = true) => HtmlButton({
   text,
   style: {
-    position: "absolute",
     left: `${left}px`,
     top: `${top}px`,
     width: "40px",
@@ -56,7 +83,6 @@ const SmallButton = (text: string, left: number, top: number, visible: boolean =
     border: "2px solid #ffffff",
     borderRadius: "8px",
     lineHeight: "18px",
-    fontFamily: "Courier New",
     visibility: visible ? "visible" : "hidden"
   }
 })
