@@ -40,7 +40,6 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
               state.applesEaten[playerId] = 1
             } else {
               state.applesEaten[playerId] += 1
-              console.log("+= 1", world.tick)
             }
           }
         }

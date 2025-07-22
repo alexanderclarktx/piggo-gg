@@ -1,6 +1,6 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, logRare, min, PhysicsSystem,
-  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, sqrt, SystemBuilder,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PhysicsSystem,
+  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
@@ -232,7 +232,7 @@ const DDESystem = SystemBuilder({
             } else if (type === 9) {
               world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
             } else if (type === 6) {
-              world.three?.blocks?.setColorAt(i, new Color(0x440066))
+              world.three?.blocks?.setColorAt(i, new Color(0x660088))
             } else if (type === 11) {
               world.three?.blocks?.setColorAt(i, new Color(0xF5F5DC))
             }

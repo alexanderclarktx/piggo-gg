@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Collider, Input, Networked, Position, Team } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, max, Networked, Position, Team } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
@@ -59,7 +59,7 @@ export const Bird = () => Character({
         if (!position) return
 
         position.data.flying = !position.data.flying
-        position.data.velocity.z = 0
+        position.data.velocity.z = max(0, position.data.velocity.z)
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
