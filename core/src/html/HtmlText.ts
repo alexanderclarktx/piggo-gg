@@ -28,3 +28,14 @@ export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
 
   return div
 }
+
+export const HtmlLabel = (text: string, left: number, top: number) => HtmlText({
+  text,
+  style: {
+    left: `${left}px`,
+    top: `${top}px`,
+    fontSize: "20px",
+    color: "#ffffff",
+    transform: "translateX(-50%)"
+  }
+})

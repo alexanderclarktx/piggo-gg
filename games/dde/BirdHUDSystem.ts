@@ -1,4 +1,4 @@
-import { HtmlButton, HtmlText, SystemBuilder } from "@piggo-gg/core"
+import { HtmlButton, HtmlLabel, HtmlText, SystemBuilder } from "@piggo-gg/core"
 import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
@@ -8,7 +8,7 @@ export const BirdHUDSystem = SystemBuilder({
     const width = world.three?.canvas.clientWidth || 800
     const height = world.three?.canvas.clientHeight || 600
 
-    const top = height / 5 * 4
+    const top = height / 5 * 3
     const left = 100
 
     const aButton = SmallButton("A", left - 50, top)
@@ -17,29 +17,8 @@ export const BirdHUDSystem = SystemBuilder({
     const wButton = SmallButton("W", left, top - 50)
     const eButton = SmallButton("E", left, top - 150)
 
-    const transformLabel = HtmlText({
-      text: "transform",
-      style: {
-        left: `${left + 20}px`,
-        top: `${top - 100}px`,
-        fontSize: "20px",
-        color: "#ffffff",
-        position: "absolute",
-        transform: "translateX(-50%)"
-      }
-    })
-
-    const moveLabel = HtmlText({
-      text: "move",
-      style: {
-        left: `${left + 20}px`,
-        top: `${top + 50}px`,
-        fontSize: "20px",
-        color: "#ffffff",
-        position: "absolute",
-        transform: "translateX(-50%)"
-      }
-    })
+    const transformLabel = HtmlLabel("transform", left + 20, top - 100)
+    const moveLabel = HtmlLabel("move", left + 20, top + 50)
 
     const scoreText = HtmlText({
       text: "score: 0",
@@ -48,7 +27,6 @@ export const BirdHUDSystem = SystemBuilder({
         top: `${height - 50}px`,
         fontSize: "28px",
         color: "#ffffff",
-        position: "absolute",
         transform: "translateX(-50%)",
       }
     })
