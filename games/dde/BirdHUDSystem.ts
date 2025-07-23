@@ -17,6 +17,30 @@ export const BirdHUDSystem = SystemBuilder({
     const wButton = SmallButton("W", left, top - 50)
     const eButton = SmallButton("E", left, top - 150)
 
+    const transformLabel = HtmlText({
+      text: "transform",
+      style: {
+        left: `${left + 20}px`,
+        top: `${top - 100}px`,
+        fontSize: "20px",
+        color: "#ffffff",
+        position: "absolute",
+        transform: "translateX(-50%)"
+      }
+    })
+
+    const moveLabel = HtmlText({
+      text: "move",
+      style: {
+        left: `${left + 20}px`,
+        top: `${top + 50}px`,
+        fontSize: "20px",
+        color: "#ffffff",
+        position: "absolute",
+        transform: "translateX(-50%)"
+      }
+    })
+
     const scoreText = HtmlText({
       text: "Score: 0",
       style: {
@@ -31,6 +55,7 @@ export const BirdHUDSystem = SystemBuilder({
 
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
+      transformLabel, moveLabel,
       scoreText
     )
 
