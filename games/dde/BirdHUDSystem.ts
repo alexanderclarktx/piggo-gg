@@ -9,19 +9,19 @@ export const BirdHUDSystem = SystemBuilder({
     const height = world.three?.canvas.clientHeight || 600
 
     const top = height / 5 * 3
-    const left = 100
+    const left = 120
 
-    const aButton = SmallButton({ text: "A", left: left - 50, top })
-    const dButton = SmallButton({ text: "D", left: left + 50, top })
-    const sButton = SmallButton({ text: "S", left, top, visible: false })
-    const wButton = SmallButton({ text: "W", left, top: top - 50 })
-    const eButton = SmallButton({ text: "E", left, top: top - 150 })
+    const aButton = KeyButton({ text: "A", left: left - 50, top })
+    const dButton = KeyButton({ text: "D", left: left + 50, top })
+    const sButton = KeyButton({ text: "S", left, top, visible: false })
+    const wButton = KeyButton({ text: "W", left, top: top - 50 })
+    const eButton = KeyButton({ text: "E", left, top: top - 150 })
 
-    const boostButton = SmallButton({ text: "shift", left, top: top + 100, width: 120 })
+    const boostButton = KeyButton({ text: "shift", left, top: top + 110, width: 120 })
 
-    const transformLabel = HtmlLabel("transform", left + 20, top - 100)
-    const moveLabel = HtmlLabel("move", left + 20, top + 50)
-    const boostLabel = HtmlLabel("boost", left + 20, top + 200)
+    const transformLabel = HtmlLabel("transform", left, top - 100)
+    const moveLabel = HtmlLabel("move", left, top + 50)
+    const boostLabel = HtmlLabel("boost", left, top + 160)
 
     const scoreText = HtmlText({
       text: "score: 0",
@@ -59,11 +59,10 @@ export const BirdHUDSystem = SystemBuilder({
         sButton.style.backgroundColor = down.includes("s") ? active : inactive
         wButton.style.backgroundColor = down.includes("w") ? active : inactive
         eButton.style.backgroundColor = down.includes("e") ? active : inactive
+        boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
 
         const pc = world.client?.playerCharacter()
-        if (pc) {
-          sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
-        }
+        if (pc) sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
 
         const state = world.game.state as DDEState
         const pcApplesEaten = state.applesEaten[world.client?.playerId() || ""] || 0
@@ -77,7 +76,7 @@ export const BirdHUDSystem = SystemBuilder({
   }
 })
 
-type SmallButtonProps = {
+type KeyButtonProps = {
   text: string
   left: number
   top: number
@@ -85,7 +84,7 @@ type SmallButtonProps = {
   width?: number
 }
 
-const SmallButton = (props: SmallButtonProps) => HtmlButton({
+const KeyButton = (props: KeyButtonProps) => HtmlButton({
   text: props.text,
   style: {
     left: `${props.left}px`,
@@ -98,6 +97,7 @@ const SmallButton = (props: SmallButtonProps) => HtmlButton({
     border: "2px solid #ffffff",
     borderRadius: "8px",
     lineHeight: "18px",
-    visibility: props.visible === false ? "hidden" : "visible"
+    visibility: props.visible === false ? "hidden" : "visible",
+    transform: "translateX(-50%)"
   }
 })
