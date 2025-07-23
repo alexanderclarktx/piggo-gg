@@ -77,7 +77,6 @@ export const BirdHUDSystem = SystemBuilder({
   }
 })
 
-
 type SmallButtonProps = {
   text: string
   left: number
@@ -85,6 +84,7 @@ type SmallButtonProps = {
   visible?: boolean
   width?: number
 }
+
 const SmallButton = (props: SmallButtonProps) => HtmlButton({
   text: props.text,
   style: {
