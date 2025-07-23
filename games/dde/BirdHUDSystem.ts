@@ -11,14 +11,17 @@ export const BirdHUDSystem = SystemBuilder({
     const top = height / 5 * 3
     const left = 100
 
-    const aButton = SmallButton("A", left - 50, top)
-    const dButton = SmallButton("D", left + 50, top)
-    const sButton = SmallButton("S", left, top, false)
-    const wButton = SmallButton("W", left, top - 50)
-    const eButton = SmallButton("E", left, top - 150)
+    const aButton = SmallButton({ text: "A", left: left - 50, top })
+    const dButton = SmallButton({ text: "D", left: left + 50, top })
+    const sButton = SmallButton({ text: "S", left, top, visible: false })
+    const wButton = SmallButton({ text: "W", left, top: top - 50 })
+    const eButton = SmallButton({ text: "E", left, top: top - 150 })
+
+    const boostButton = SmallButton({ text: "shift", left, top: top + 100, width: 120 })
 
     const transformLabel = HtmlLabel("transform", left + 20, top - 100)
     const moveLabel = HtmlLabel("move", left + 20, top + 50)
+    const boostLabel = HtmlLabel("boost", left + 20, top + 200)
 
     const scoreText = HtmlText({
       text: "score: 0",
@@ -33,7 +36,8 @@ export const BirdHUDSystem = SystemBuilder({
 
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
-      transformLabel, moveLabel,
+      boostButton,
+      transformLabel, moveLabel, boostLabel,
       scoreText
     )
 
@@ -73,12 +77,20 @@ export const BirdHUDSystem = SystemBuilder({
   }
 })
 
-const SmallButton = (text: string, left: number, top: number, visible: boolean = true) => HtmlButton({
-  text,
+
+type SmallButtonProps = {
+  text: string
+  left: number
+  top: number
+  visible?: boolean
+  width?: number
+}
+const SmallButton = (props: SmallButtonProps) => HtmlButton({
+  text: props.text,
   style: {
-    left: `${left}px`,
-    top: `${top}px`,
-    width: "40px",
+    left: `${props.left}px`,
+    top: `${props.top}px`,
+    width: `${props.width ?? 40}px`,
     height: "40px",
     fontSize: "26px",
     backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -86,6 +98,6 @@ const SmallButton = (text: string, left: number, top: number, visible: boolean =
     border: "2px solid #ffffff",
     borderRadius: "8px",
     lineHeight: "18px",
-    visibility: visible ? "visible" : "hidden"
+    visibility: props.visible === false ? "hidden" : "visible"
   }
 })
