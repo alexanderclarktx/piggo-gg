@@ -267,7 +267,6 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
         if (position.data.rotating) {
           position.data.rotation += position.data.rotating
 
-
           const limit = position.data.flying ? PI / 3 : PI / 5
 
           position.data.rotation = max(-limit, min(limit, position.data.rotation))
