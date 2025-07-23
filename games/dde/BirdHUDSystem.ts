@@ -70,6 +70,8 @@ export const BirdHUDSystem = SystemBuilder({
           sButton.style.visibility = visibility
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
+
+          // jumpButton.style.borderImage
         }
 
         const state = world.game.state as DDEState
@@ -100,6 +102,7 @@ const KeyButton = (props: KeyButtonProps) => HtmlButton({
     width: `${props.width ?? 40}px`,
     height: "40px",
     fontSize: "26px",
+    // borderImage: "linear-gradient(to bottom, #ffffff, #cccccc) 1",
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     color: "#ffffff",
     border: "2px solid #ffffff",

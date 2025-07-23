@@ -2,6 +2,7 @@ export type HtmlButtonProps = {
   text?: string
   style?: {
     alignItems?: "center" | "flex-start" | "flex-end" | "stretch"
+    borderImage?: `linear-gradient(${string}) ${number}`
     backgroundColor?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
     border?: string
     borderRadius?: `${number}px`
@@ -22,13 +23,15 @@ export type HtmlButtonProps = {
     visibility?: "visible" | "hidden"
     width?: `${number}px`
     zIndex?: number
+    clipPath?: string
   }
 }
 
 const defaults: HtmlButtonProps["style"] = {
   position: "absolute",
   fontFamily: "Courier New",
-  fontWeight: "bold"
+  fontWeight: "bold",
+  // clipPath: "inset(0 round 3px)"
 }
 
 export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
