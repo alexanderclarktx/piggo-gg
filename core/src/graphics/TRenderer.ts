@@ -158,7 +158,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           eagle.scene.rotation.y = aim.x
           eagle.scene.rotation.x = aim.y
-          // duck.scene.rotation.y = aim.x + PI / 2 + rotation - rotating * (40 - delta) / 40
 
           // visibility
           duck.scene.visible = debug ? false : !flying
