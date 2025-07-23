@@ -260,7 +260,8 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         // velocity dampening
         if (position.data.friction) {
-          entity.components.position.scaleVelocity(position.data.standing ? 0.84 : 0.98)
+          const scale = (position.data.standing && !position.data.flying) ? 0.8 : 0.98
+          entity.components.position.scaleVelocity(scale)
         }
 
         // rotation
