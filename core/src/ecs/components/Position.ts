@@ -260,15 +260,19 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
 
         // velocity dampening
         if (position.data.friction) {
-          entity.components.position.scaleVelocity(position.data.standing ? 0.84 : 0.98)
+          const scale = (position.data.standing && !position.data.flying) ? 0.8 : 0.98
+          entity.components.position.scaleVelocity(scale)
         }
 
         // rotation
         if (position.data.rotating) {
           position.data.rotation += position.data.rotating
-          position.data.rotation = max(-PI / 3, min(PI / 3, position.data.rotation))
 
-          if (position.data.rotation === -PI / 3 || position.data.rotation === PI / 3) {
+          const limit = position.data.flying ? PI / 3 : PI / 5
+
+          position.data.rotation = max(-limit, min(limit, position.data.rotation))
+
+          if (position.data.rotation === -limit || position.data.rotation === limit) {
             position.data.rotating = 0
           }
         }

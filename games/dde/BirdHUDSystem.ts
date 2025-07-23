@@ -1,4 +1,4 @@
-import { HtmlButton, HtmlText, SystemBuilder } from "@piggo-gg/core"
+import { HtmlButton, HtmlLabel, HtmlText, SystemBuilder } from "@piggo-gg/core"
 import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
@@ -8,29 +8,38 @@ export const BirdHUDSystem = SystemBuilder({
     const width = world.three?.canvas.clientWidth || 800
     const height = world.three?.canvas.clientHeight || 600
 
-    const top = height / 5 * 4
-    const left = 100
+    const top = height / 5 * 3
+    const left = 120
 
-    const aButton = SmallButton("A", left - 50, top)
-    const dButton = SmallButton("D", left + 50, top)
-    const sButton = SmallButton("S", left, top, false)
-    const wButton = SmallButton("W", left, top - 50)
-    const eButton = SmallButton("E", left, top - 150)
+    const aButton = KeyButton({ text: "A", left: left - 50, top })
+    const dButton = KeyButton({ text: "D", left: left + 50, top })
+    const sButton = KeyButton({ text: "S", left, top, visible: false })
+    const wButton = KeyButton({ text: "W", left, top: top - 50 })
+    const eButton = KeyButton({ text: "E", left, top: top - 150 })
+
+    const boostButton = KeyButton({ text: "shift", left, top: top + 100, width: 120 })
+    const jumpButton = KeyButton({ text: "spacebar", left, top: top + 200, width: 160, visible: false })
+
+    const transformLabel = HtmlLabel("transform", left, top - 100)
+    const moveLabel = HtmlLabel("move", left, top + 50)
+    const boostLabel = HtmlLabel("boost", left, top + 150)
+    const jumpLabel = HtmlLabel("jump", left, top + 250, false)
 
     const scoreText = HtmlText({
-      text: "Score: 0",
+      text: "score: 0",
       style: {
         left: `${width / 2}px`,
-        top: `${20}px`,
-        fontSize: "24px",
+        top: `${height - 50}px`,
+        fontSize: "28px",
         color: "#ffffff",
-        position: "absolute",
         transform: "translateX(-50%)",
       }
     })
 
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
+      boostButton, jumpButton,
+      transformLabel, moveLabel, boostLabel, jumpLabel,
       scoreText
     )
 
@@ -52,10 +61,17 @@ export const BirdHUDSystem = SystemBuilder({
         sButton.style.backgroundColor = down.includes("s") ? active : inactive
         wButton.style.backgroundColor = down.includes("w") ? active : inactive
         eButton.style.backgroundColor = down.includes("e") ? active : inactive
+        boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
+        jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
 
         const pc = world.client?.playerCharacter()
         if (pc) {
-          sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
+          const visibility = pc.components.position.data.flying ? "hidden" : "visible"
+          sButton.style.visibility = visibility
+          jumpButton.style.visibility = visibility
+          jumpLabel.style.visibility = visibility
+
+          // jumpButton.style.borderImage
         }
 
         const state = world.game.state as DDEState
@@ -63,26 +79,36 @@ export const BirdHUDSystem = SystemBuilder({
 
         if (pcApplesEaten !== currentApplesEaten) {
           currentApplesEaten = pcApplesEaten
-          scoreText.textContent = `Score: ${currentApplesEaten}`
+          scoreText.textContent = `score: ${currentApplesEaten}`
         }
       }
     }
   }
 })
 
-const SmallButton = (text: string, left: number, top: number, visible: boolean = true) => HtmlButton({
-  text,
+type KeyButtonProps = {
+  text: string
+  left: number
+  top: number
+  visible?: boolean
+  width?: number
+}
+
+const KeyButton = (props: KeyButtonProps) => HtmlButton({
+  text: props.text,
   style: {
-    left: `${left}px`,
-    top: `${top}px`,
-    width: "40px",
+    left: `${props.left}px`,
+    top: `${props.top}px`,
+    width: `${props.width ?? 40}px`,
     height: "40px",
     fontSize: "26px",
+    // borderImage: "linear-gradient(to bottom, #ffffff, #cccccc) 1",
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     color: "#ffffff",
     border: "2px solid #ffffff",
     borderRadius: "8px",
     lineHeight: "18px",
-    visibility: visible ? "visible" : "hidden"
+    visibility: props.visible === false ? "hidden" : "visible",
+    transform: "translateX(-50%)"
   }
 })

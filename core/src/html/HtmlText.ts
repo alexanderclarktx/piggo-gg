@@ -9,6 +9,7 @@ export type HtmlTextProps = {
     position?: "absolute" | "relative",
     top?: `${number}px` | `${number}%`,
     transform?: `translateX(${number}%)`
+    visibility?: "visible" | "hidden"
   }
 }
 
@@ -28,3 +29,15 @@ export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
 
   return div
 }
+
+export const HtmlLabel = (text: string, left: number, top: number, visible: boolean = true) => HtmlText({
+  text,
+  style: {
+    left: `${left}px`,
+    top: `${top}px`,
+    fontSize: "20px",
+    color: "#ffffff",
+    transform: "translateX(-50%)",
+    visibility: visible ? "visible" : "hidden"
+  }
+})

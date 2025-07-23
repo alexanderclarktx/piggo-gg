@@ -4,7 +4,7 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { hypot, PI, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
+import { hypot, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -158,7 +158,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           eagle.scene.rotation.y = aim.x
           eagle.scene.rotation.x = aim.y
-          duck.scene.rotation.y = aim.x + PI / 2
 
           // visibility
           duck.scene.visible = debug ? false : !flying
@@ -253,10 +252,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
-        color: 0xffd9c3,
-        emissive: 0xffd9c3,
-        emissiveIntensity: 1,
-        roughness: 0.1,
+        emissive: evening,
+        emissiveIntensity: 1
       })
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
       sunSphere.position.copy(sun.position)
