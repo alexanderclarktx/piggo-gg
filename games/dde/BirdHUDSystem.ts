@@ -42,11 +42,11 @@ export const BirdHUDSystem = SystemBuilder({
     })
 
     const scoreText = HtmlText({
-      text: "Score: 0",
+      text: "score: 0",
       style: {
         left: `${width / 2}px`,
-        top: `${20}px`,
-        fontSize: "24px",
+        top: `${height - 50}px`,
+        fontSize: "28px",
         color: "#ffffff",
         position: "absolute",
         transform: "translateX(-50%)",
@@ -88,7 +88,7 @@ export const BirdHUDSystem = SystemBuilder({
 
         if (pcApplesEaten !== currentApplesEaten) {
           currentApplesEaten = pcApplesEaten
-          scoreText.textContent = `Score: ${currentApplesEaten}`
+          scoreText.textContent = `score: ${currentApplesEaten}`
         }
       }
     }
