@@ -17,11 +17,13 @@ export const BirdHUDSystem = SystemBuilder({
     const wButton = KeyButton({ text: "W", left, top: top - 50 })
     const eButton = KeyButton({ text: "E", left, top: top - 150 })
 
-    const boostButton = KeyButton({ text: "shift", left, top: top + 110, width: 120 })
+    const boostButton = KeyButton({ text: "shift", left, top: top + 100, width: 120 })
+    const jumpButton = KeyButton({ text: "spacebar", left, top: top + 200, width: 160, visible: false })
 
     const transformLabel = HtmlLabel("transform", left, top - 100)
     const moveLabel = HtmlLabel("move", left, top + 50)
-    const boostLabel = HtmlLabel("boost", left, top + 160)
+    const boostLabel = HtmlLabel("boost", left, top + 150)
+    const jumpLabel = HtmlLabel("jump", left, top + 250, false)
 
     const scoreText = HtmlText({
       text: "score: 0",
@@ -36,8 +38,8 @@ export const BirdHUDSystem = SystemBuilder({
 
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
-      boostButton,
-      transformLabel, moveLabel, boostLabel,
+      boostButton, jumpButton,
+      transformLabel, moveLabel, boostLabel, jumpLabel,
       scoreText
     )
 
@@ -60,9 +62,15 @@ export const BirdHUDSystem = SystemBuilder({
         wButton.style.backgroundColor = down.includes("w") ? active : inactive
         eButton.style.backgroundColor = down.includes("e") ? active : inactive
         boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
+        jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
 
         const pc = world.client?.playerCharacter()
-        if (pc) sButton.style.visibility = pc.components.position.data.flying ? "hidden" : "visible"
+        if (pc) {
+          const visibility = pc.components.position.data.flying ? "hidden" : "visible"
+          sButton.style.visibility = visibility
+          jumpButton.style.visibility = visibility
+          jumpLabel.style.visibility = visibility
+        }
 
         const state = world.game.state as DDEState
         const pcApplesEaten = state.applesEaten[world.client?.playerId() || ""] || 0
