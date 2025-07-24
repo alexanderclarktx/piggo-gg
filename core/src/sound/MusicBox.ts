@@ -29,7 +29,7 @@ export const MusicBox = (): Entity => {
     track5: 0xcc99cc
   }
 
-  const drawDisc = () => {
+  const redraw = () => {
     if (disc === null) disc = pixiGraphics()
     disc.clear()
       .circle(0, 0, 50)
@@ -68,7 +68,7 @@ export const MusicBox = (): Entity => {
 
           if (state === "play" && timeout === 0 && currentSong?.state === "stopped") {
             trackIndex = (trackIndex + 1) % tracks.length
-            drawDisc()
+            redraw()
             soundManager.play(tracks[trackIndex])
             timeout = 40
           }
@@ -179,7 +179,7 @@ export const MusicBox = (): Entity => {
               }
             },
             setup: async (r) => {
-              drawDisc()
+              redraw()
 
               r.c = disc!
 
@@ -200,8 +200,8 @@ export const MusicBox = (): Entity => {
                   world.client?.soundManager.play("cassetteStop")
                   world.client?.soundManager.stop(tracks[trackIndex])
 
-                  trackIndex = (trackIndex + 1) % tracks.length
-                  drawDisc()
+                  // trackIndex = (trackIndex + 1) % tracks.length
+                  redraw()
 
                   timeout = 50
                 }
