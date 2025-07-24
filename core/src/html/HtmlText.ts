@@ -2,12 +2,12 @@ export type HtmlTextProps = {
   text?: string,
   style: {
     color?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
-    fontFamily?: "Courier New" | "Arial" | "Verdana",
-    fontSize?: `${number}px`,
-    fontWeight?: "normal" | "bold" | "bolder" | "lighter",
-    left?: `${number}px` | `${number}%`,
-    position?: "absolute" | "relative",
-    top?: `${number}px` | `${number}%`,
+    fontFamily?: "Courier New" | "Arial" | "Verdana"
+    fontSize?: `${number}px`
+    fontWeight?: "normal" | "bold" | "bolder" | "lighter"
+    left?: `${number}px` | `${number}%`
+    position?: "absolute" | "relative"
+    top?: `${number}px` | `${number}%`
     transform?: `translateX(${number}%)`
     visibility?: "visible" | "hidden"
   }
