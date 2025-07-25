@@ -1,4 +1,5 @@
 import {
+  BlockPhysicsSystem,
   blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PhysicsSystem, PI,
   Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
@@ -29,8 +30,9 @@ export const DDE: GameBuilder<DDEState> = {
       },
       systems: [
         SpawnSystem(Bird),
-        PhysicsSystem("global"),
-        PhysicsSystem("local"),
+        BlockPhysicsSystem(),
+        // PhysicsSystem("global"),
+        // PhysicsSystem("local"),
         TCameraSystem(),
         DDESystem,
         BirdHUDSystem
