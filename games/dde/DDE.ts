@@ -1,13 +1,12 @@
 import {
-  BlockPhysicsSystem,
-  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PhysicsSystem, PI,
-  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PI, Position,
+  randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
   TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
-import { TApple } from "./TApple"
 import { BirdHUDSystem } from "./BirdHUDSystem"
+import { TApple } from "./TApple"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -32,8 +31,6 @@ export const DDE: GameBuilder<DDEState> = {
         SpawnSystem(Bird),
         BlockPhysicsSystem("global"),
         BlockPhysicsSystem("local"),
-        // PhysicsSystem("global"),
-        // PhysicsSystem("local"),
         TCameraSystem(),
         DDESystem,
         BirdHUDSystem
