@@ -30,7 +30,8 @@ export const DDE: GameBuilder<DDEState> = {
       },
       systems: [
         SpawnSystem(Bird),
-        BlockPhysicsSystem(),
+        BlockPhysicsSystem("global"),
+        BlockPhysicsSystem("local"),
         // PhysicsSystem("global"),
         // PhysicsSystem("local"),
         TCameraSystem(),
