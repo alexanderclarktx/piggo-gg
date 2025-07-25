@@ -13,6 +13,7 @@ export type BlockData = {
   data: (at: XY[], flip?: boolean) => Block[]
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   hasXYZ: (block: XYZ) => boolean
+  hasIJK: (ijk: XYZ) => boolean
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
   invalidate: (c?: "cache" | "visibleCache") => void
@@ -335,6 +336,14 @@ export const BlockData = (): BlockData => {
       const index = ijk.z * 16 + y * 4 + x
 
       return Boolean((data[chunk.x]?.[chunk.y][index]))
+    },
+    hasIJK: (ijk: XYZ) => {
+      const chunkX = floor(ijk.x / 4)
+      const chunkY = floor(ijk.y / 4)
+
+      const index = ijk.z * 16 + (ijk.y - chunkY * 4) * 4 + (ijk.x - chunkX * 4)
+
+      return Boolean((data[chunkX]?.[chunkY][index]))
     },
     remove: ({ x, y, z }, world) => {
       const chunkX = floor(x / 4)

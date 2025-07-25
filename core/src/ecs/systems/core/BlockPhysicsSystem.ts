@@ -1,4 +1,4 @@
-import { Collider, Entity, logRare, Position, SystemBuilder } from "@piggo-gg/core"
+import { blocks, Collider, Entity, logRare, Position, round, SystemBuilder, XYZtoIJK } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
   id: mode === "global" ? "BlockPhysicsSystem" : "LocalBlockPhysicsSystem",
@@ -16,9 +16,17 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
         for (const entity of entities) {
           const { position, collider } = entity.components
 
-          const { velocity } = position.data
+          const { velocity, x, y, z } = position.data
 
           if (collider.isStatic) continue
+
+          // check if entity is about to hit a block
+
+          const ijk = { x: round(x / 0.3), y: round(y / 0.3), z: round(z / 0.3) }
+          const inBlock = blocks.hasIJK(ijk)
+          if (inBlock) {
+            console.log("IN BLOCK")
+          }
 
           if (mode === "local") {
             position.localVelocity.x = velocity.x
