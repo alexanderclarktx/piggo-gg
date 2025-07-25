@@ -27,12 +27,39 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             return
           }
 
-          // Apply gravity
-          // velocity.y += world.gravity
+          // gravity & z
+          if (position.data.velocity.z || position.data.z) {
+
+            // apply stop
+            const wouldGo = position.data.z + position.data.velocity.z
+            if (position.data.stop <= position.data.z && wouldGo < position.data.stop) {
+              position.data.z = position.data.stop
+            } else {
+              position.data.z = wouldGo
+            }
+
+            // set standing
+            if (position.data.z === position.data.stop) {
+              position.data.velocity.z = 0
+              position.data.standing = true
+            } else {
+              position.data.standing = false
+              if (!position.data.flying) {
+                position.data.velocity.z -= position.data.gravity
+              }
+            }
+          } else {
+            position.data.standing = true
+          }
+
+          // flying direction
+          if (position.data.flying) {
+            position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
+          }
 
           // Move the entity
-          position.data.x += velocity.x / 1000 * 40
-          position.data.y += velocity.y / 1000 * 40
+          position.data.x += velocity.x / 40
+          position.data.y += velocity.y / 40
 
           // friction
           if (position.data.friction) {
