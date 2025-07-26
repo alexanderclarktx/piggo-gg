@@ -54,7 +54,7 @@ export const BirdHUDSystem = SystemBuilder({
       scoreText, posText
     )
 
-    const active = "rgba(0, 255, 255, 0.6)"
+    const active = "rgba(0, 205, 255, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
 
     let currentApplesEaten = 0
@@ -86,7 +86,7 @@ export const BirdHUDSystem = SystemBuilder({
           jumpLabel.style.visibility = visibility
 
           if (world.client?.env === "dev") {
-            posText.textContent = `${position.data.x.toFixed(2)}|${position.data.y.toFixed(2)}|${position.data.z.toFixed(2)}`
+            posText.innerHTML = `<span style='color: #00ffff'>${position.data.x.toFixed(2)}</span><span style='color: #ffff00'> ${position.data.y.toFixed(2)}</span><span style='color: #ff0000'> ${position.data.z.toFixed(2)}</span>`
             posText.style.visibility = "visible"
           } else {
             posText.style.visibility = "hidden"
