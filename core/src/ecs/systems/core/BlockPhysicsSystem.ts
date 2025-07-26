@@ -57,7 +57,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           const inBlock = blocks.hasIJK(ijk)
 
           const blockSize = 0.3
-          // const r = 0.1
+          const r = 0.05
 
           if (inBlock) {
 
@@ -74,10 +74,10 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             }
 
             // Clamp each axis independently based on which direction it's trying to enter from
-            if (velocity.x > 0 && wouldGo.x > blockMin.x) {
+            if (velocity.x > 0 && wouldGo.x + r > blockMin.x) {
               const was = position.data.x
 
-              position.data.x = round(blockMin.x, 2)
+              position.data.x = round(blockMin.x - r, 2)
               position.data.velocity.x = 0
 
               console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
@@ -87,10 +87,10 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                 position.localVelocity.y = velocity.y
                 return
               }
-            } else if (velocity.x < 0 && wouldGo.x < blockMax.x) {
+            } else if (velocity.x < 0 && wouldGo.x -r < blockMax.x) {
               const was = position.data.x
 
-              position.data.x = round(blockMax.x, 2)
+              position.data.x = round(blockMax.x + r, 2)
               position.data.velocity.x = 0
 
               console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
