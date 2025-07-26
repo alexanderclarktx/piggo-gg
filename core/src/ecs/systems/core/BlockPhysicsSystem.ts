@@ -1,4 +1,4 @@
-import { blocks, Collider, Entity, floor, Position, round, sign, SystemBuilder, XYZ } from "@piggo-gg/core"
+import { blocks, Collider, Entity, floor, Position, round, sign, SystemBuilder } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
   id: mode === "global" ? "BlockPhysicsSystem" : "LocalBlockPhysicsSystem",
