@@ -1,4 +1,6 @@
-import { blocks, Collider, Entity, floor, Position, round, sign, SystemBuilder } from "@piggo-gg/core"
+import {
+  blocks, Collider, Entity, floor, Position, round, sign, SystemBuilder
+} from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
   id: mode === "global" ? "BlockPhysicsSystem" : "LocalBlockPhysicsSystem",
@@ -93,7 +95,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           }
 
           const ySweep = blocks.hasIJK(ijk)
-          // if (mode === "global") console.log(`ijk:${ijk.x},${ijk.y},${ijk.z} ySweep:${ySweep}`)
 
           if (ySweep) {
             // if (mode === "global") console.log("ySweep", world.tick)
