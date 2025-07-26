@@ -2,13 +2,15 @@ import { blocks, Collider, Entity, floor, Position, round, sign, SystemBuilder, 
 
 const addToVector = (vec: XYZ, amount: number): XYZ => {
   const len = Math.hypot(vec.x, vec.y)
+
+  if (len === 0) return vec
+
   const xRatio = vec.x / len
   const yRatio = vec.y / len
-  console.log(xRatio, yRatio)
 
   return {
-    x: vec.x + xRatio * amount * sign(vec.x),
-    y: vec.y + yRatio * amount * sign(vec.y),
+    x: vec.x + xRatio * amount,
+    y: vec.y + yRatio * amount,
     z: vec.z
   }
 }
@@ -31,16 +33,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           const { velocity, x, y, z } = position.data
 
-          const scaledVelocity = addToVector(velocity, 0.1)
+          // const scaledVelocity = addToVector(velocity, 0.1)
 
           const wouldGo: XYZ = {
-            x: x + scaledVelocity.x / 40,
-            y: y + scaledVelocity.y / 40,
-            z: z + scaledVelocity.z
+            x: x + velocity.x / 40,
+            y: y + velocity.y / 40,
+            z: z + velocity.z
           }
 
           // add 0.1 along the vector
-          // const wouldGo = addToVector(wouldGoUnscaled, 0.1)
+          const wouldGoScaled = addToVector(wouldGo, 0.1 * sign(velocity.x))
 
           // const ijk = {
           //   x: floor((0.15 + wouldGo.x) / 0.3),
@@ -48,21 +50,21 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           //   z: floor((0.15 + wouldGo.z) / 0.3)
           // }
           const ijk = {
-            x: floor((0.15 + wouldGo.x) / 0.3),
-            y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((0.15 + wouldGo.z) / 0.3)
+            x: floor((0.15 + wouldGoScaled.x) / 0.3),
+            y: floor((0.15 + wouldGoScaled.y) / 0.3),
+            z: floor((0.15 + wouldGoScaled.z) / 0.3)
           }
           const inBlock = blocks.hasIJK(ijk)
 
           const blockSize = 0.3
-          const r = 0.1
+          // const r = 0.1
 
           if (inBlock) {
 
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
               y: ijk.y * blockSize - 0.15,
-              z: ijk.z * blockSize - 0.15,
+              z: ijk.z * blockSize - blockSize,
             }
 
             const blockMax = {
@@ -72,20 +74,23 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             }
 
             // Clamp each axis independently based on which direction it's trying to enter from
-            if (velocity.x > 0 && wouldGo.x + r > blockMin.x) {
+            if (velocity.x > 0 && wouldGo.x > blockMin.x) {
+              const was = position.data.x
 
-              position.data.x = round(blockMin.x - r, 2)
+              position.data.x = round(blockMin.x, 2)
               position.data.velocity.x = 0
+
+              console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
 
               if (mode === "local") {
                 position.localVelocity.x = 0
                 position.localVelocity.y = velocity.y
                 return
               }
-            } else if (velocity.x < 0 && wouldGo.x - r < blockMax.x) {
+            } else if (velocity.x < 0 && wouldGo.x < blockMax.x) {
               const was = position.data.x
 
-              position.data.x = round(blockMax.x + r, 3)
+              position.data.x = round(blockMax.x, 2)
               position.data.velocity.x = 0
 
               console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
@@ -173,7 +178,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           // Move the entity
           const was = position.data.x
           position.data.x += position.data.velocity.x / 40
-          // console.log("was", was, "now", position.data.x, mode, entity.id, world.tick)
+          console.log("was", was, "now", position.data.x, mode, entity.id, world.tick)
           position.data.y += position.data.velocity.y / 40
 
           // friction
