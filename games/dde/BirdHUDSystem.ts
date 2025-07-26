@@ -72,6 +72,9 @@ export const BirdHUDSystem = SystemBuilder({
           jumpLabel.style.visibility = visibility
 
           // jumpButton.style.borderImage
+
+          const { position } = pc.components
+          scoreText.textContent = `x: ${position.data.x}`// y: ${position.data.y}`
         }
 
         const state = world.game.state as DDEState
@@ -79,7 +82,7 @@ export const BirdHUDSystem = SystemBuilder({
 
         if (pcApplesEaten !== currentApplesEaten) {
           currentApplesEaten = pcApplesEaten
-          scoreText.textContent = `score: ${currentApplesEaten}`
+          // scoreText.textContent = `score: ${currentApplesEaten}`
         }
       }
     }
