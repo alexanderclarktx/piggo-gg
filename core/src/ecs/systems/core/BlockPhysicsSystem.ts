@@ -21,7 +21,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           const { velocity, x, y, z } = position.data
 
-          position.localVelocity = { ...velocity }
+          position.localVelocity = { ...position.data.velocity }
 
           // zSweep
 
@@ -64,7 +64,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             } else if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
               if (mode === "local") {
                 position.localVelocity.z = round(blockMax.z, 3) - position.data.z
-                // if (position.localVelocity.z !== 0) console.log("localVelocity.z set", position.localVelocity.z, position.localVelocity.x, position.localVelocity.y)
               } else {
                 position.data.z = round(blockMax.z, 3)
                 position.data.velocity.z = 0
@@ -84,7 +83,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           wouldGo = {
             x: x,
             y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
-            z: z + velocity.z
+            z: z
           }
 
           ijk = {
@@ -113,14 +112,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.y > 0 && wouldGo.y > blockMin.y) {
               if (mode === "local") {
-                // position.localVelocity.y = position.data.y - round(blockMin.y - r, 3)
+                position.localVelocity.y = 40 * (round(blockMin.y - r, 3) - position.data.y)
               } else {
                 position.data.y = round(blockMin.y - r, 3)
                 position.data.velocity.y = 0
               }
             } else if (velocity.y < 0 && wouldGo.y < blockMax.y) {
               if (mode === "local") {
-                // position.localVelocity.y = position.data.y - round(blockMax.y + r, 3)
+                position.localVelocity.y = 40 * (round(blockMax.y + r, 3) - position.data.y)
               } else {
                 position.data.y = round(blockMax.y + r, 3)
                 position.data.velocity.y = 0
@@ -133,7 +132,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           wouldGo = {
             x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
             y: y,
-            z: z + velocity.z
+            z: z
           }
 
           ijk = {
@@ -182,7 +181,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             wouldGo = {
               x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
               y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
-              z: z + velocity.z
+              z: z
             }
 
             ijk = {
@@ -271,14 +270,12 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
                 if (distY > distX) {
                   if (mode === "local") {
-                    // position.localVelocity.x = position.data.x - round(blockMax.x + r, 3)
                   } else {
                     position.data.x = round(blockMax.x + r, 3)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
-                    // position.localVelocity.y = position.data.y - round(blockMax.y + r, 3)
                   }
                   else {
                     position.data.y = round(blockMax.y + r, 3)
