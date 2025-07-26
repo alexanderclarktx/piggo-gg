@@ -86,7 +86,7 @@ export const BirdHUDSystem = SystemBuilder({
           jumpLabel.style.visibility = visibility
 
           if (world.client?.env === "dev") {
-            posText.textContent = `${position.data.y.toFixed(2)}|${position.data.z.toFixed(2)}|${position.data.x.toFixed(2)}`
+            posText.textContent = `${position.data.x.toFixed(2)}|${position.data.y.toFixed(2)}|${position.data.z.toFixed(2)}`
             posText.style.visibility = "visible"
           } else {
             posText.style.visibility = "hidden"
