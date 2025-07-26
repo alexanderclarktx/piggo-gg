@@ -33,8 +33,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           const { velocity, x, y, z } = position.data
 
-          // const scaledVelocity = addToVector(velocity, 0.1)
-
           const wouldGo: XYZ = {
             x: x + velocity.x / 40,
             y: y + velocity.y / 40,
@@ -42,7 +40,11 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           }
 
           // add 0.1 along the vector
-          const wouldGoScaled = addToVector(wouldGo, 0.1 * sign(velocity.x))
+          const wouldGoScaled = {
+            x: wouldGo.x + 0.1 * sign(velocity.x),
+            y: wouldGo.y + 0.1 * sign(velocity.y),
+            z: wouldGo.z + 0.1 * sign(velocity.z)
+          }
 
           // const ijk = {
           //   x: floor((0.15 + wouldGo.x) / 0.3),
@@ -77,23 +79,23 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             if (velocity.x > 0 && wouldGo.x + r > blockMin.x) {
               const was = position.data.x
 
-              position.data.x = round(blockMin.x - r, 2)
+              position.data.x = round(blockMin.x, 2)
               position.data.velocity.x = 0
 
-              console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
+              // console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
 
               if (mode === "local") {
                 position.localVelocity.x = 0
                 position.localVelocity.y = velocity.y
                 return
               }
-            } else if (velocity.x < 0 && wouldGo.x -r < blockMax.x) {
+            } else if (velocity.x < 0 && wouldGoScaled.x < blockMax.x) {
               const was = position.data.x
 
-              position.data.x = round(blockMax.x + r, 2)
+              position.data.x = round(blockMax.x + 0.05, 2)
               position.data.velocity.x = 0
 
-              console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
+              console.log(`COLLIDED  clamped: ${position.data.x} was: ${was} blockMax: ${blockMax.x}`)
 
               if (mode === "local") {
                 position.localVelocity.x = 0
@@ -123,9 +125,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             // }
 
             // if (velocity.z > 0 && wouldGo.z + r > blockMin.z) {
-              // position.data.z = blockMin.z - r
+            // position.data.z = blockMin.z - r
             // } else if (velocity.z < 0 && wouldGo.z - r < blockMax.z) {
-              // position.data.z = blockMax.z + r
+            // position.data.z = blockMax.z + r
             // }
 
             // if (mode === "local") {
