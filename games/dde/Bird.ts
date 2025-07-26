@@ -26,6 +26,24 @@ export const Bird = () => Character({
           return null
         },
 
+        "t": ({entity}) => {
+          // const pc = world.client?.playerCharacter()
+          // if (!pc) return null
+
+          const { position } = entity?.components ?? {}
+          if (!position) return null
+
+          position.data.aim.x += 0.01
+          return null
+
+          // const position = pc.components.position
+          // if (!position) return null
+
+          // position.data.flying = !position.data.flying
+          // position.data.velocity.z = max(0, position.data.velocity.z)
+          // return null
+        },
+
         // jump
         " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
 

@@ -37,7 +37,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           }
 
           const ySweep = blocks.hasIJK(ijk)
-          if (mode === "global") console.log(`ijk:${ijk.x},${ijk.y},${ijk.z} ySweep:${ySweep}`)
+          // if (mode === "global") console.log(`ijk:${ijk.x},${ijk.y},${ijk.z} ySweep:${ySweep}`)
 
           if (ySweep) {
 
@@ -117,20 +117,139 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               y: blockMin.y + blockSize,
               z: blockMin.z + blockSize,
             }
-            
-            if (velocity.x > 0 && wouldGo.x > blockMin.x) {
+
+            if (velocity.x > 0) {
               if (mode === "local") {
                 position.localVelocity.x = 0
               } else {
                 position.data.x = round(blockMin.x - r, 2)
                 position.data.velocity.x = 0
               }
-            } else if (velocity.x < 0 && wouldGo.x < blockMax.x) {
+            } else if (velocity.x < 0) {
               if (mode === "local") {
                 position.localVelocity.x = 0
               } else {
                 position.data.x = round(blockMax.x + r, 2)
                 position.data.velocity.x = 0
+              }
+            }
+          }
+
+          if (!ySweep && !xSweep) {
+            wouldGo = {
+              x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
+              y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
+              z: z + velocity.z
+            }
+
+            ijk = {
+              x: floor((0.15 + wouldGo.x) / 0.3),
+              y: floor((0.15 + wouldGo.y) / 0.3),
+              z: floor((0.15 + wouldGo.z) / 0.3)
+            }
+
+            const cornerSweep = blocks.hasIJK(ijk)
+
+            if (cornerSweep) {
+              const blockMin = {
+                x: ijk.x * blockSize - 0.15,
+                y: ijk.y * blockSize - 0.15,
+                z: ijk.z * blockSize - blockSize,
+              }
+
+              const blockMax = {
+                x: blockMin.x + blockSize,
+                y: blockMin.y + blockSize,
+                z: blockMin.z + blockSize,
+              }
+
+              if (velocity.x > 0 && velocity.y > 0) {
+
+                // compare distance to blockMin and blockMax
+                const distX = Math.abs(blockMin.x - wouldGo.x)
+                const distY = Math.abs(blockMin.y - wouldGo.y)
+
+                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
+                if (distY > distX) {
+                  if (mode === "local") {
+                    position.localVelocity.x = 0
+                  } else {
+                    position.data.x = round(blockMin.x - r, 2)
+                    position.data.velocity.x = 0
+                  }
+                } else {
+                  if (mode === "local") {
+                    position.localVelocity.y = 0
+                  }
+                  else {
+                    position.data.y = round(blockMin.y - r, 2)
+                    position.data.velocity.y = 0
+                  }
+                }
+              } else if (velocity.x < 0 && velocity.y > 0) {
+                // compare distance to blockMin and blockMax
+                const distX = Math.abs(blockMax.x - wouldGo.x)
+                const distY = Math.abs(blockMin.y - wouldGo.y)
+
+                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
+                if (distY > distX) {
+                  if (mode === "local") {
+                    position.localVelocity.x = 0
+                  } else {
+                    position.data.x = round(blockMax.x + r, 2)
+                    position.data.velocity.x = 0
+                  }
+                } else {
+                  if (mode === "local") {
+                    position.localVelocity.y = 0
+                  } else {
+                    position.data.y = round(blockMin.y - r, 2)
+                    position.data.velocity.y = 0
+                  }
+                }
+              } else if (velocity.x > 0 && velocity.y < 0) {
+                // compare distance to blockMin and blockMax
+                const distX = Math.abs(blockMin.x - wouldGo.x)
+                const distY = Math.abs(blockMax.y - wouldGo.y)
+
+                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
+                if (distY > distX) {
+                  if (mode === "local") {
+                    position.localVelocity.x = 0
+                  } else {
+                    position.data.x = round(blockMin.x - r, 2)
+                    position.data.velocity.x = 0
+                  }
+                } else {
+                  if (mode === "local") {
+                    position.localVelocity.y = 0
+                  } else {
+                    position.data.y = round(blockMax.y + r, 2)
+                    position.data.velocity.y = 0
+                  }
+                }
+              } else if (velocity.x < 0 && velocity.y < 0) {
+                // compare distance to blockMin and blockMax
+                const distX = Math.abs(blockMax.x - wouldGo.x)
+                const distY = Math.abs(blockMax.y - wouldGo.y)
+
+                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
+                if (distY > distX) {
+                  if (mode === "local") {
+                    position.localVelocity.x = 0
+                  } else {
+                    position.data.x = round(blockMax.x + r, 2)
+                    position.data.velocity.x = 0
+                  }
+                } else {
+                  if (mode === "local") {
+                    position.localVelocity.y = 0
+                  }
+                  else {
+                    position.data.y = round(blockMax.y + r, 2)
+                    position.data.velocity.y = 0
+                  }
+                }
               }
             }
           }
