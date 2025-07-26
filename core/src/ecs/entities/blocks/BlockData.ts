@@ -343,7 +343,7 @@ export const BlockData = (): BlockData => {
 
       const index = ijk.z * 16 + (ijk.y - chunkY * 4) * 4 + (ijk.x - chunkX * 4)
 
-      return Boolean((data[chunkX]?.[chunkY][index]))
+      return Boolean((data[chunkX]?.[chunkY]?.[index]))
     },
     remove: ({ x, y, z }, world) => {
       const chunkX = floor(x / 4)
