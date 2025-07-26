@@ -261,7 +261,6 @@ const DDESystem = SystemBuilder({
           eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
           eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
 
-          // duck.scene.rotation.y = aim.x + PI / 2 + rotation - rotating * (40 - delta) / 40
           duck.scene.rotation.y = aim.x + PI / 2
         }
 
