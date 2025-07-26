@@ -6,6 +6,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
     if (mode === "local" && world.mode === "server") return undefined
 
+    const blockSize = 0.3
+    const r = 0.05
+
     return {
       id: mode === "global" ? "BlockPhysicsSystem" : "LocalBlockPhysicsSystem",
       query: ["position", "collider"],
@@ -18,23 +21,25 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           const { velocity, x, y, z } = position.data
 
-          const wouldGo: XYZ = {
-            x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
+          position.localVelocity.x = position.data.velocity.x
+          position.localVelocity.y = position.data.velocity.y
+
+          let wouldGo: XYZ = {
+            x: x + velocity.x / 40 - 0.05 * sign(velocity.x),
             y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
             z: z + velocity.z
           }
 
-          const ijk = {
+          let ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
             z: floor((0.15 + wouldGo.z) / 0.3)
           }
-          const inBlock = blocks.hasIJK(ijk)
 
-          const blockSize = 0.3
-          const r = 0.05
+          const ySweep = blocks.hasIJK(ijk)
+          if (mode === "global") console.log(`ijk:${ijk.x},${ijk.y},${ijk.z} ySweep:${ySweep}`)
 
-          if (inBlock) {
+          if (ySweep) {
 
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
@@ -48,77 +53,89 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               z: blockMin.z + blockSize,
             }
 
-            // Clamp each axis independently based on which direction it's trying to enter from
-            if (velocity.x > 0 && wouldGo.x > blockMin.x) {
-              const was = position.data.x
-
-              position.data.x = round(blockMin.x - r, 2)
-              position.data.velocity.x = 0
-
-              // console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
-
+            if (velocity.y > 0 && wouldGo.y > blockMin.y) {
               if (mode === "local") {
-                position.localVelocity.x = 0
-                position.localVelocity.y = velocity.y
-                return
+                position.localVelocity.y = 0
+              } else {
+                position.data.y = round(blockMin.y - r, 2)
+                position.data.velocity.y = 0
               }
-            } else if (velocity.x < 0 && wouldGo.x < blockMax.x) {
-              const was = position.data.x
-
-              position.data.x = round(blockMax.x + r, 2)
-              position.data.velocity.x = 0
-
-              console.log(`COLLIDED  clamped: ${position.data.x} was: ${was} blockMax: ${blockMax.x}`)
-
+            } else if (velocity.y < 0 && wouldGo.y < blockMax.y) {
               if (mode === "local") {
-                position.localVelocity.x = 0
-                position.localVelocity.y = velocity.y
-                return
+                position.localVelocity.y = 0
+              } else {
+                position.data.y = round(blockMax.y + r, 2)
+                position.data.velocity.y = 0
               }
             }
 
-            // if (velocity.y > 0 && wouldGo.y + r > blockMin.y) {
-            //   position.data.y = round(blockMin.y - 0.05, 2)
-            //   position.data.velocity.y = 0
+            // // Clamp each axis independently based on which direction it's trying to enter from
+            // if (velocity.x > 0 && wouldGo.x > blockMin.x) {
+            //   const was = position.data.x
 
-            //   if (mode === "local") {
-            //     position.localVelocity.x = velocity.x
-            //     position.localVelocity.y = 0
-            //     return
-            //   }
-            // } else if (velocity.y < 0 && wouldGo.y - r < blockMax.y) {
-            //   position.data.y = round(blockMax.y + 0.05, 2)
-            //   position.data.velocity.y = 0
+            //   position.data.x = round(blockMin.x - r, 2)
+            //   position.data.velocity.x = 0
 
-            //   if (mode === "local") {
-            //     position.localVelocity.x = velocity.x
-            //     position.localVelocity.y = 0
-            //     return
-            //   }
+            //   // console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
+
+            // } else if (velocity.x < 0 && wouldGo.x < blockMax.x) {
+            //   const was = position.data.x
+
+            //   position.data.x = round(blockMax.x + r, 2)
+            //   position.data.velocity.x = 0
+
+            //   console.log(`COLLIDED  clamped: ${position.data.x} was: ${was} blockMax: ${blockMax.x}`)
             // }
 
-            // if (velocity.z > 0 && wouldGo.z + r > blockMin.z) {
-            // position.data.z = blockMin.z - r
-            // } else if (velocity.z < 0 && wouldGo.z - r < blockMax.z) {
-            // position.data.z = blockMax.z + r
-            // }
-
-            // if (mode === "local") {
-            //   position.localVelocity.x = 0
-            //   return
-            // }
-
-            // console.log(`Collided with block at ijk: ${ijk.x},${ijk.y},${ijk.z} clamped: x:${position.data.x}, y:${position.data.y}, z:${position.data.z}`)
-
-            // return
+            // if (mode === "local") return
           }
 
-          if (mode === "local") {
-            position.localVelocity.x = velocity.x
-            position.localVelocity.y = velocity.y
-            // logRare(`pos: ${position.data.x},${position.data.y} vel: ${velocity.x},${velocity.y} local: ${position.localVelocity.x},${position.localVelocity.y}`, world)
-            return
+          wouldGo = {
+            x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
+            y: y + velocity.y / 40 - 0.05 * sign(velocity.y),
+            z: z + velocity.z
           }
+
+          ijk = {
+            x: floor((0.15 + wouldGo.x) / 0.3),
+            y: floor((0.15 + wouldGo.y) / 0.3),
+            z: floor((0.15 + wouldGo.z) / 0.3)
+          }
+
+          const xSweep = blocks.hasIJK(ijk)
+
+          if (xSweep) {
+
+            const blockMin = {
+              x: ijk.x * blockSize - 0.15,
+              y: ijk.y * blockSize - 0.15,
+              z: ijk.z * blockSize - blockSize,
+            }
+
+            const blockMax = {
+              x: blockMin.x + blockSize,
+              y: blockMin.y + blockSize,
+              z: blockMin.z + blockSize,
+            }
+            
+            if (velocity.x > 0 && wouldGo.x > blockMin.x) {
+              if (mode === "local") {
+                position.localVelocity.x = 0
+              } else {
+                position.data.x = round(blockMin.x - r, 2)
+                position.data.velocity.x = 0
+              }
+            } else if (velocity.x < 0 && wouldGo.x < blockMax.x) {
+              if (mode === "local") {
+                position.localVelocity.x = 0
+              } else {
+                position.data.x = round(blockMax.x + r, 2)
+                position.data.velocity.x = 0
+              }
+            }
+          }
+
+          if (mode === "local") return
 
           // gravity & z
           if (position.data.velocity.z || position.data.z) {
@@ -153,7 +170,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           // Move the entity
           const was = position.data.x
           position.data.x += position.data.velocity.x / 40
-          console.log("was", was, "now", position.data.x, mode, entity.id, world.tick)
+          // console.log("was", was, "now", position.data.x, mode, entity.id, world.tick)
           position.data.y += position.data.velocity.y / 40
 
           // friction

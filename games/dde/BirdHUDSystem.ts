@@ -1,4 +1,4 @@
-import { HtmlButton, HtmlLabel, HtmlText, SystemBuilder } from "@piggo-gg/core"
+import { HtmlButton, HtmlLabel, HtmlText, round, SystemBuilder } from "@piggo-gg/core"
 import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
@@ -74,7 +74,7 @@ export const BirdHUDSystem = SystemBuilder({
           // jumpButton.style.borderImage
 
           const { position } = pc.components
-          scoreText.textContent = `x: ${position.data.x}`// y: ${position.data.y}`
+          scoreText.textContent = `${round(position.data.y, 2)}|${round(position.data.x, 2)}`
         }
 
         const state = world.game.state as DDEState
