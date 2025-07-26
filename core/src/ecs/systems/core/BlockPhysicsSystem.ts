@@ -23,6 +23,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           position.localVelocity = { ...velocity }
 
+          // zSweep
+
           let wouldGo = {
             x, y,
             z: z + velocity.z + 0.1 * sign(velocity.z)
@@ -38,8 +40,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           if (zSweep) {
             // if (mode === "global") console.log("zSweep", world.tick)
-
-            // console.log(`zSweep ijk:${ijk.x},${ijk.y},${ijk.z} velocity:${velocity.z}`, world.tick)
 
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
@@ -80,8 +80,10 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             console.log("falling")
           }
 
+          // ySweep
+
           wouldGo = {
-            x: x + velocity.x / 40 - 0.05 * sign(velocity.x),
+            x: x,
             y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
             z: z + velocity.z
           }
@@ -127,9 +129,11 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             }
           }
 
+          // xSweep
+
           wouldGo = {
             x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
-            y: y + velocity.y / 40 - 0.05 * sign(velocity.y),
+            y: y,
             z: z + velocity.z
           }
 
@@ -172,6 +176,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               }
             }
           }
+
+          // cornerSweep
 
           if (!ySweep && !xSweep) {
             wouldGo = {
