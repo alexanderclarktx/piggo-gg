@@ -1,7 +1,7 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PI, Position,
-  randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
+  blocks, ceil, Collider, GameBuilder, keys, logPerf, min, PI, Position,
+  randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
+  BlockPhysicsSystem, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
@@ -47,11 +47,6 @@ const DDESystem = SystemBuilder({
     spawnTerrain(24)
     let placed = false
 
-    const blockColliders: Entity<Position | Collider>[] = Array.from(
-      { length: 12 }, (_, i) => TBlockCollider(i)
-    )
-    world.addEntities(blockColliders)
-
     let i = 1
 
     return {
@@ -94,61 +89,6 @@ const DDESystem = SystemBuilder({
           } else {
             world.announce(`no block found ij:${ij.x},${ij.y} at z:${ceil(z / 0.3 + 0.1)}`)
             position.data.stop = -5
-          }
-
-          // set collider group
-          const pgroup = (floor(position.data.z / 0.3 + 0.01)).toString() as "1"
-          entity.components.collider.setGroup(pgroup)
-          entity.components.collider.active = true
-
-          const chunks = blocks.neighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
-
-          let set: XYZ[] = []
-
-          // find closest blocks
-          for (const block of blocks.visible(chunks, false, true)) {
-            const { x, y, z } = { x: block.x * 0.3, y: block.y * 0.3, z: block.z * 0.3 }
-
-            const zDiff = z - position.data.z
-            if (zDiff > 0.5 || zDiff < -0.5) continue
-
-            const dist = XYZdistance({ x, y, z }, position.data)
-            if (dist < 1) set.push({ x, y, z })
-          }
-
-          set.sort((a, b) => {
-            const distA = XYZdistance(a, position.data)
-            const distB = XYZdistance(b, position.data)
-            return distA - distB
-          })
-
-          // update block colliders
-          for (const [index, blockCollider] of blockColliders.entries()) {
-            const { position, collider } = blockCollider.components
-            if (set[index]) {
-              const xyz = set[index]
-              position.setPosition(xyz)
-
-              const group = (floor(xyz.z / 0.3 + 0.01)).toString() as "1"
-              collider.setGroup(group)
-
-              collider.active = true
-
-              if (world.three?.debug === false) continue
-
-              const sphere = world.three?.sphere!
-
-              const dummy = new Object3D()
-              dummy.position.set(xyz.x, xyz.z + 0.15, xyz.y)
-              dummy.updateMatrix()
-              sphere.setMatrixAt(index, dummy.matrix)
-              sphere.instanceMatrix.needsUpdate = true
-
-              sphere.setColorAt(index, new Color((pgroup == group) ? 0x0000ff : 0xff0000))
-              sphere.instanceColor!.needsUpdate = true
-            } else {
-              collider.active = false
-            }
           }
         }
         logPerf("update colliders", t0)

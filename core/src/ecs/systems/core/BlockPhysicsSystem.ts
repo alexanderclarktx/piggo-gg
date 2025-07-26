@@ -27,13 +27,13 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           let wouldGo: XYZ = {
             x: x + velocity.x / 40 - 0.05 * sign(velocity.x),
             y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
-            z: z + velocity.z
+            z: z
           }
 
           let ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((0.05 + wouldGo.z) / 0.3)
+            z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
           const ySweep = blocks.hasIJK(ijk)
@@ -93,13 +93,13 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           wouldGo = {
             x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
             y: y + velocity.y / 40 - 0.05 * sign(velocity.y),
-            z: z + velocity.z
+            z: z
           }
 
           ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((0.05 + wouldGo.z) / 0.3)
+            z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
           const xSweep = blocks.hasIJK(ijk)
@@ -139,13 +139,13 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             wouldGo = {
               x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
               y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
-              z: z + velocity.z
+              z: z
             }
 
             ijk = {
               x: floor((0.15 + wouldGo.x) / 0.3),
               y: floor((0.15 + wouldGo.y) / 0.3),
-              z: floor((0.05 + wouldGo.z) / 0.3)
+              z: floor((0.01 + wouldGo.z) / 0.3)
             }
 
             const cornerSweep = blocks.hasIJK(ijk)
