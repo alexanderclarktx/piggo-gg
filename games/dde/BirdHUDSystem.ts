@@ -54,7 +54,7 @@ export const BirdHUDSystem = SystemBuilder({
       scoreText, posText
     )
 
-    const active = "rgba(0, 205, 255, 0.6)"
+    const active = "rgba(0, 255, 255, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
 
     let currentApplesEaten = 0
