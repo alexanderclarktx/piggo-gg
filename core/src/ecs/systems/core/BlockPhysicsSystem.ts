@@ -55,17 +55,18 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.z > 0 && wouldGo.z > blockMin.z) {
               if (mode === "local") {
-                position.localVelocity.z = round(blockMin.z - 0.1, 2) - position.data.z
+                position.localVelocity.z = round(blockMin.z - 0.1, 3) - position.data.z
               } else {
-                position.data.z = round(blockMin.z - 0.1, 2)
+                position.data.z = round(blockMin.z - 0.1, 3)
                 position.data.velocity.z = 0
                 position.data.standing = false
               }
             } else if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
               if (mode === "local") {
-                position.localVelocity.z = round(blockMax.z, 2) - position.data.z
+                position.localVelocity.z = round(blockMax.z, 3) - position.data.z
+                // if (position.localVelocity.z !== 0) console.log("localVelocity.z set", position.localVelocity.z, position.localVelocity.x, position.localVelocity.y)
               } else {
-                position.data.z = round(blockMax.z, 2)
+                position.data.z = round(blockMax.z, 3)
                 position.data.velocity.z = 0
                 position.data.standing = true
               }
@@ -112,16 +113,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.y > 0 && wouldGo.y > blockMin.y) {
               if (mode === "local") {
-                position.localVelocity.y = position.data.y - round(blockMin.y - r, 2)
+                // position.localVelocity.y = position.data.y - round(blockMin.y - r, 3)
               } else {
-                position.data.y = round(blockMin.y - r, 2)
+                position.data.y = round(blockMin.y - r, 3)
                 position.data.velocity.y = 0
               }
             } else if (velocity.y < 0 && wouldGo.y < blockMax.y) {
               if (mode === "local") {
-                position.localVelocity.y = position.data.y - round(blockMax.y + r, 2)
+                // position.localVelocity.y = position.data.y - round(blockMax.y + r, 3)
               } else {
-                position.data.y = round(blockMax.y + r, 2)
+                position.data.y = round(blockMax.y + r, 3)
                 position.data.velocity.y = 0
               }
             }
@@ -160,16 +161,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.x > 0) {
               if (mode === "local") {
-                position.localVelocity.x = position.data.x - round(blockMin.x - r, 2)
+                position.localVelocity.x = 40 * (round(blockMin.x - r, 3) - position.data.x)
               } else {
-                position.data.x = round(blockMin.x - r, 2)
+                position.data.x = round(blockMin.x - r, 3)
                 position.data.velocity.x = 0
               }
             } else if (velocity.x < 0) {
               if (mode === "local") {
-                position.localVelocity.x = position.data.x - round(blockMax.x + r, 2)
+                position.localVelocity.x = 40 * (round(blockMax.x + r, 3) - position.data.x)
               } else {
-                position.data.x = round(blockMax.x + r, 2)
+                position.data.x = round(blockMax.x + r, 3)
                 position.data.velocity.x = 0
               }
             }
@@ -212,17 +213,17 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
                 if (distY > distX) {
                   if (mode === "local") {
-                    position.localVelocity.x = 0
+                    // position.localVelocity.x = 0
                   } else {
-                    position.data.x = round(blockMin.x - r, 2)
+                    position.data.x = round(blockMin.x - r, 3)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
-                    position.localVelocity.y = 0
+                    // position.localVelocity.y = 0
                   }
                   else {
-                    position.data.y = round(blockMin.y - r, 2)
+                    position.data.y = round(blockMin.y - r, 3)
                     position.data.velocity.y = 0
                   }
                 }
@@ -232,16 +233,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
                 if (distY > distX) {
                   if (mode === "local") {
-                    position.localVelocity.x = 0
+                    // position.localVelocity.x = 0
                   } else {
-                    position.data.x = round(blockMax.x + r, 2)
+                    position.data.x = round(blockMax.x + r, 3)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
-                    position.localVelocity.y = 0
+                    // position.localVelocity.y = 0
                   } else {
-                    position.data.y = round(blockMin.y - r, 2)
+                    position.data.y = round(blockMin.y - r, 3)
                     position.data.velocity.y = 0
                   }
                 }
@@ -251,16 +252,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
                 if (distY > distX) {
                   if (mode === "local") {
-                    position.localVelocity.x = 0
+                    // position.localVelocity.x = 0
                   } else {
-                    position.data.x = round(blockMin.x - r, 2)
+                    position.data.x = round(blockMin.x - r, 3)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
-                    position.localVelocity.y = 0
+                    // position.localVelocity.y = 0
                   } else {
-                    position.data.y = round(blockMax.y + r, 2)
+                    position.data.y = round(blockMax.y + r, 3)
                     position.data.velocity.y = 0
                   }
                 }
@@ -270,17 +271,17 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
                 if (distY > distX) {
                   if (mode === "local") {
-                    position.localVelocity.x = position.data.x - round(blockMax.x + r, 2)
+                    // position.localVelocity.x = position.data.x - round(blockMax.x + r, 3)
                   } else {
-                    position.data.x = round(blockMax.x + r, 2)
+                    position.data.x = round(blockMax.x + r, 3)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
-                    position.localVelocity.y = position.data.y - round(blockMax.y + r, 2)
+                    // position.localVelocity.y = position.data.y - round(blockMax.y + r, 3)
                   }
                   else {
-                    position.data.y = round(blockMax.y + r, 2)
+                    position.data.y = round(blockMax.y + r, 3)
                     position.data.velocity.y = 0
                   }
                 }

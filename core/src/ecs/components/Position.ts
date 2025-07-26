@@ -141,6 +141,8 @@ export const Position = (props: PositionProps = {}): Position => {
     },
     interpolate: (world: World, delta: number) => {
 
+      delta = min(25, delta)
+
       let dz = position.data.velocity.z * delta / world.tickrate
       if (position.data.stop <= position.data.z && position.data.z + dz < position.data.stop) {
         dz = position.data.stop - position.data.z
@@ -153,7 +155,7 @@ export const Position = (props: PositionProps = {}): Position => {
       return {
         x: position.data.x + position.localVelocity.x * delta / 1000,
         y: position.data.y + position.localVelocity.y * delta / 1000,
-        z: position.data.z + position.localVelocity.z * delta / 25
+        z: position.data.z + position.localVelocity.z * delta / world.tickrate
       }
     },
     setSpeed: (speed: number) => {
