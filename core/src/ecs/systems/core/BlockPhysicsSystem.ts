@@ -33,7 +33,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           let ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((wouldGo.z) / 0.3)
+            z: floor((0.15 + wouldGo.z) / 0.3)
           }
 
           const ySweep = blocks.hasIJK(ijk)
@@ -44,7 +44,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
               y: ijk.y * blockSize - 0.15,
-              z: ijk.z * blockSize - blockSize,
+              z: ijk.z * blockSize - 0.15,
             }
 
             const blockMax = {
@@ -99,7 +99,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((wouldGo.z) / 0.3)
+            z: floor((0.15 + wouldGo.z) / 0.3)
           }
 
           const xSweep = blocks.hasIJK(ijk)
@@ -109,7 +109,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
               y: ijk.y * blockSize - 0.15,
-              z: ijk.z * blockSize - blockSize,
+              z: ijk.z * blockSize - 0.15,
             }
 
             const blockMax = {
@@ -145,7 +145,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             ijk = {
               x: floor((0.15 + wouldGo.x) / 0.3),
               y: floor((0.15 + wouldGo.y) / 0.3),
-              z: floor((wouldGo.z) / 0.3)
+              z: floor((0.15 + wouldGo.z) / 0.3)
             }
 
             const cornerSweep = blocks.hasIJK(ijk)
@@ -154,7 +154,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               const blockMin = {
                 x: ijk.x * blockSize - 0.15,
                 y: ijk.y * blockSize - 0.15,
-                z: ijk.z * blockSize - blockSize,
+                z: ijk.z * blockSize - 0.15,
               }
 
               const blockMax = {
