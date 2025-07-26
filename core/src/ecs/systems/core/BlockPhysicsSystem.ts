@@ -1,10 +1,10 @@
-import { blocks, Collider, Entity, floor, max, Position, round, sign, SystemBuilder, XYZ } from "@piggo-gg/core"
+import { blocks, Collider, Entity, floor, Position, round, sign, SystemBuilder, XYZ } from "@piggo-gg/core"
 
 const addToVector = (vec: XYZ, amount: number): XYZ => {
-
-  const total = Math.hypot(vec.x, vec.y)
-  const xRatio = vec.x / total
-  const yRatio = vec.y / total
+  const len = Math.hypot(vec.x, vec.y)
+  const xRatio = vec.x / len
+  const yRatio = vec.y / len
+  console.log(xRatio, yRatio)
 
   return {
     x: vec.x + xRatio * amount * sign(vec.x),
@@ -19,8 +19,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
     if (mode === "local" && world.mode === "server") return undefined
 
-    // let bodies
-
     return {
       id: mode === "global" ? "BlockPhysicsSystem" : "LocalBlockPhysicsSystem",
       query: ["position", "collider"],
@@ -33,14 +31,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           const { velocity, x, y, z } = position.data
 
-          const wouldGoUnscaled: XYZ = {
-            x: x + velocity.x / 40,
-            y: y + velocity.y / 40,
-            z: z + position.data.velocity.z
+          const scaledVelocity = addToVector(velocity, 0.1)
+
+          const wouldGo: XYZ = {
+            x: x + scaledVelocity.x / 40,
+            y: y + scaledVelocity.y / 40,
+            z: z + scaledVelocity.z
           }
 
           // add 0.1 along the vector
-          const wouldGo = addToVector(wouldGoUnscaled, 0.1)
+          // const wouldGo = addToVector(wouldGoUnscaled, 0.1)
 
           // const ijk = {
           //   x: floor((0.15 + wouldGo.x) / 0.3),
@@ -74,7 +74,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             // Clamp each axis independently based on which direction it's trying to enter from
             if (velocity.x > 0 && wouldGo.x + r > blockMin.x) {
 
-              position.data.x = round(blockMin.x - 0.05, 2)
+              position.data.x = round(blockMin.x - r, 2)
               position.data.velocity.x = 0
 
               if (mode === "local") {
@@ -85,7 +85,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             } else if (velocity.x < 0 && wouldGo.x - r < blockMax.x) {
               const was = position.data.x
 
-              position.data.x = round(blockMax.x + 0.05, 3)
+              position.data.x = round(blockMax.x + r, 3)
               position.data.velocity.x = 0
 
               console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
