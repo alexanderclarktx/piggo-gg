@@ -1,12 +1,12 @@
 import {
-  blocks, ceil, Collider, Entity, floor, GameBuilder, keys, logPerf, min, PhysicsSystem, PI,
-  Position, randomChoice, randomInt, round, SpawnSystem, spawnTerrain, SystemBuilder,
-  TBlockCollider, TCameraSystem, trees, values, XYtoChunk, XYZ, XYZdistance
+  blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
+  randomChoice, randomInt, SpawnSystem, spawnTerrain, SystemBuilder,
+  BlockPhysicsSystem, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
-import { TApple } from "./TApple"
 import { BirdHUDSystem } from "./BirdHUDSystem"
+import { TApple } from "./TApple"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -29,8 +29,8 @@ export const DDE: GameBuilder<DDEState> = {
       },
       systems: [
         SpawnSystem(Bird),
-        PhysicsSystem("global"),
-        PhysicsSystem("local"),
+        BlockPhysicsSystem("global"),
+        BlockPhysicsSystem("local"),
         TCameraSystem(),
         DDESystem,
         BirdHUDSystem
@@ -46,11 +46,6 @@ const DDESystem = SystemBuilder({
 
     spawnTerrain(24)
     let placed = false
-
-    const blockColliders: Entity<Position | Collider>[] = Array.from(
-      { length: 12 }, (_, i) => TBlockCollider(i)
-    )
-    world.addEntities(blockColliders)
 
     let i = 1
 
@@ -80,74 +75,6 @@ const DDESystem = SystemBuilder({
           // fell off the map
           if (z < -4) {
             position.setPosition({ x: 14, y: 14, z: 8 })
-          }
-          // console.log(position.data.x, position.data.y, position.data.z)
-
-          const ij = { x: round(x / 0.3), y: round(y / 0.3) }
-
-          // vertical stop
-          const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1))
-
-          if (highest !== undefined && velocity.z <= 0) {
-            const stop = highest.z * 0.3 + 0.3
-            position.data.stop = stop
-          } else {
-            position.data.stop = -5
-          }
-
-          // set collider group
-          const pgroup = (floor(position.data.z / 0.3 + 0.01)).toString() as "1"
-          entity.components.collider.setGroup(pgroup)
-          entity.components.collider.active = true
-
-          const chunks = blocks.neighbors({ x: floor(ij.x / 4), y: floor(ij.y / 4) })
-
-          let set: XYZ[] = []
-
-          // find closest blocks
-          for (const block of blocks.visible(chunks, false, true)) {
-            const { x, y, z } = { x: block.x * 0.3, y: block.y * 0.3, z: block.z * 0.3 }
-
-            const zDiff = z - position.data.z
-            if (zDiff > 0.5 || zDiff < -0.5) continue
-
-            const dist = XYZdistance({ x, y, z }, position.data)
-            if (dist < 1) set.push({ x, y, z })
-          }
-
-          set.sort((a, b) => {
-            const distA = XYZdistance(a, position.data)
-            const distB = XYZdistance(b, position.data)
-            return distA - distB
-          })
-
-          // update block colliders
-          for (const [index, blockCollider] of blockColliders.entries()) {
-            const { position, collider } = blockCollider.components
-            if (set[index]) {
-              const xyz = set[index]
-              position.setPosition(xyz)
-
-              const group = (floor(xyz.z / 0.3 + 0.01)).toString() as "1"
-              collider.setGroup(group)
-
-              collider.active = true
-
-              if (world.three?.debug === false) continue
-
-              const sphere = world.three?.sphere!
-
-              const dummy = new Object3D()
-              dummy.position.set(xyz.x, xyz.z + 0.15, xyz.y)
-              dummy.updateMatrix()
-              sphere.setMatrixAt(index, dummy.matrix)
-              sphere.instanceMatrix.needsUpdate = true
-
-              sphere.setColorAt(index, new Color((pgroup == group) ? 0x0000ff : 0xff0000))
-              sphere.instanceColor!.needsUpdate = true
-            } else {
-              collider.active = false
-            }
           }
         }
         logPerf("update colliders", t0)
@@ -260,7 +187,7 @@ const DDESystem = SystemBuilder({
           eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
           eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
 
-          duck.scene.rotation.y = aim.x + PI / 2 + rotation - rotating * (40 - delta) / 40
+          duck.scene.rotation.y = aim.x + PI / 2
         }
 
         const { velocity } = pc.components.position.data

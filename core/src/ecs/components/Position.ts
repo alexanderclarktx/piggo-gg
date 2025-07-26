@@ -141,6 +141,8 @@ export const Position = (props: PositionProps = {}): Position => {
     },
     interpolate: (world: World, delta: number) => {
 
+      delta = min(25, delta)
+
       let dz = position.data.velocity.z * delta / world.tickrate
       if (position.data.stop <= position.data.z && position.data.z + dz < position.data.stop) {
         dz = position.data.stop - position.data.z
@@ -153,7 +155,7 @@ export const Position = (props: PositionProps = {}): Position => {
       return {
         x: position.data.x + position.localVelocity.x * delta / 1000,
         y: position.data.y + position.localVelocity.y * delta / 1000,
-        z: position.data.z + dz
+        z: position.data.z + position.localVelocity.z * delta / world.tickrate
       }
     },
     setSpeed: (speed: number) => {
@@ -227,42 +229,6 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
       entities.forEach(entity => {
 
         const { position } = entity.components
-
-        // gravity & z
-        if (position.data.velocity.z || position.data.z) {
-
-          // apply stop
-          const wouldGo = position.data.z + position.data.velocity.z
-          if (position.data.stop <= position.data.z && wouldGo < position.data.stop) {
-            position.data.z = position.data.stop
-          } else {
-            position.data.z = wouldGo
-          }
-
-          // set standing
-          if (position.data.z === position.data.stop) {
-            position.data.velocity.z = 0
-            position.data.standing = true
-          } else {
-            position.data.standing = false
-            if (!position.data.flying) {
-              position.data.velocity.z -= position.data.gravity
-            }
-          }
-        } else {
-          position.data.standing = true
-        }
-
-        // flying direction
-        if (position.data.flying) {
-          position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
-        }
-
-        // velocity dampening
-        if (position.data.friction) {
-          const scale = (position.data.standing && !position.data.flying) ? 0.8 : 0.98
-          entity.components.position.scaleVelocity(scale)
-        }
 
         // rotation
         if (position.data.rotating) {

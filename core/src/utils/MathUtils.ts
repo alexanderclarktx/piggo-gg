@@ -177,6 +177,19 @@ export const normalize = ({ x, y, entity }: { x: number, y: number, entity: Enti
   return { x: newX, y: newY }
 }
 
+export const vectorExtend = (vec: XYZ, amount: number): XYZ => {
+  const len = hypot(vec.x, vec.y, vec.z)
+  if (len === 0) return vec
+
+  const newLen = len + amount
+
+  return {
+    x: (vec.x / len) * newLen,
+    y: (vec.y / len) * newLen,
+    z: (vec.z / len) * newLen
+  }
+}
+
 export const checkBounds = (renderer: Renderer, position: Position, clickable: Clickable, click: XY, clickWorld: XY): boolean => {
 
   let { x, y } = position.data

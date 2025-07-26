@@ -1,4 +1,4 @@
-import { HtmlButton, HtmlLabel, HtmlText, SystemBuilder } from "@piggo-gg/core"
+import { HtmlButton, HtmlLabel, HtmlText, round, SystemBuilder } from "@piggo-gg/core"
 import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
@@ -36,11 +36,22 @@ export const BirdHUDSystem = SystemBuilder({
       }
     })
 
+    const posText = HtmlText({
+      text: "0|0|0",
+      style: {
+        left: `${width / 2}px`,
+        top: `${height - 100}px`,
+        fontSize: "24px",
+        color: "#00ffff",
+        transform: "translateX(-50%)",
+      }
+    })
+
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
       boostButton, jumpButton,
       transformLabel, moveLabel, boostLabel, jumpLabel,
-      scoreText
+      scoreText, posText
     )
 
     const active = "rgba(0, 255, 255, 0.6)"
@@ -66,12 +77,20 @@ export const BirdHUDSystem = SystemBuilder({
 
         const pc = world.client?.playerCharacter()
         if (pc) {
-          const visibility = pc.components.position.data.flying ? "hidden" : "visible"
+          const { position } = pc.components
+
+          const visibility = position.data.flying ? "hidden" : "visible"
+
           sButton.style.visibility = visibility
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 
-          // jumpButton.style.borderImage
+          if (world.client?.env === "dev") {
+            posText.innerHTML = `<span style='color: #00ffff'>${position.data.x.toFixed(2)}</span><span style='color: #ffff00'> ${position.data.y.toFixed(2)}</span><span style='color: #ff0000'> ${position.data.z.toFixed(2)}</span>`
+            posText.style.visibility = "visible"
+          } else {
+            posText.style.visibility = "hidden"
+          }
         }
 
         const state = world.game.state as DDEState
