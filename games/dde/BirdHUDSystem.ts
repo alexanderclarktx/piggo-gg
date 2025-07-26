@@ -36,11 +36,22 @@ export const BirdHUDSystem = SystemBuilder({
       }
     })
 
+    const posText = HtmlText({
+      text: "0|0|0",
+      style: {
+        left: `${width / 2}px`,
+        top: `${height - 100}px`,
+        fontSize: "24px",
+        color: "#00ffff",
+        transform: "translateX(-50%)",
+      }
+    })
+
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
       boostButton, jumpButton,
       transformLabel, moveLabel, boostLabel, jumpLabel,
-      scoreText
+      scoreText, posText
     )
 
     const active = "rgba(0, 255, 255, 0.6)"
@@ -66,15 +77,20 @@ export const BirdHUDSystem = SystemBuilder({
 
         const pc = world.client?.playerCharacter()
         if (pc) {
-          const visibility = pc.components.position.data.flying ? "hidden" : "visible"
+          const { position } = pc.components
+
+          const visibility = position.data.flying ? "hidden" : "visible"
+
           sButton.style.visibility = visibility
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 
-          // jumpButton.style.borderImage
-
-          const { position } = pc.components
-          scoreText.textContent = `${round(position.data.y, 2)}|${round(position.data.x, 2)}`
+          if (world.client?.env === "dev") {
+            posText.textContent = `${position.data.y.toFixed(2)}|${position.data.z.toFixed(2)}|${position.data.x.toFixed(2)}`
+            posText.style.visibility = "visible"
+          } else {
+            posText.style.visibility = "hidden"
+          }
         }
 
         const state = world.game.state as DDEState
@@ -82,7 +98,7 @@ export const BirdHUDSystem = SystemBuilder({
 
         if (pcApplesEaten !== currentApplesEaten) {
           currentApplesEaten = pcApplesEaten
-          // scoreText.textContent = `score: ${currentApplesEaten}`
+          scoreText.textContent = `score: ${currentApplesEaten}`
         }
       }
     }

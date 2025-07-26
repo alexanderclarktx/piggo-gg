@@ -33,7 +33,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           let ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((0.15 + wouldGo.z) / 0.3)
+            z: floor((wouldGo.z) / 0.3)
           }
 
           const ySweep = blocks.hasIJK(ijk)
@@ -99,7 +99,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((0.15 + wouldGo.z) / 0.3)
+            z: floor((wouldGo.z) / 0.3)
           }
 
           const xSweep = blocks.hasIJK(ijk)
@@ -145,7 +145,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             ijk = {
               x: floor((0.15 + wouldGo.x) / 0.3),
               y: floor((0.15 + wouldGo.y) / 0.3),
-              z: floor((0.15 + wouldGo.z) / 0.3)
+              z: floor((wouldGo.z) / 0.3)
             }
 
             const cornerSweep = blocks.hasIJK(ijk)
@@ -164,12 +164,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               }
 
               if (velocity.x > 0 && velocity.y > 0) {
-
-                // compare distance to blockMin and blockMax
                 const distX = Math.abs(blockMin.x - wouldGo.x)
                 const distY = Math.abs(blockMin.y - wouldGo.y)
 
-                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
                 if (distY > distX) {
                   if (mode === "local") {
                     position.localVelocity.x = 0
@@ -187,11 +184,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   }
                 }
               } else if (velocity.x < 0 && velocity.y > 0) {
-                // compare distance to blockMin and blockMax
                 const distX = Math.abs(blockMax.x - wouldGo.x)
                 const distY = Math.abs(blockMin.y - wouldGo.y)
 
-                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
                 if (distY > distX) {
                   if (mode === "local") {
                     position.localVelocity.x = 0
@@ -208,11 +203,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   }
                 }
               } else if (velocity.x > 0 && velocity.y < 0) {
-                // compare distance to blockMin and blockMax
                 const distX = Math.abs(blockMin.x - wouldGo.x)
                 const distY = Math.abs(blockMax.y - wouldGo.y)
 
-                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
                 if (distY > distX) {
                   if (mode === "local") {
                     position.localVelocity.x = 0
@@ -229,11 +222,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   }
                 }
               } else if (velocity.x < 0 && velocity.y < 0) {
-                // compare distance to blockMin and blockMax
                 const distX = Math.abs(blockMax.x - wouldGo.x)
                 const distY = Math.abs(blockMax.y - wouldGo.y)
 
-                console.log("CORNER COLLISION", ijk, blockMin, blockMax, velocity)
                 if (distY > distX) {
                   if (mode === "local") {
                     position.localVelocity.x = 0
