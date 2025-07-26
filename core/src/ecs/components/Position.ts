@@ -153,7 +153,7 @@ export const Position = (props: PositionProps = {}): Position => {
       return {
         x: position.data.x + position.localVelocity.x * delta / 1000,
         y: position.data.y + position.localVelocity.y * delta / 1000,
-        z: position.data.z + dz
+        z: position.data.z + position.localVelocity.z * delta / 25
       }
     },
     setSpeed: (speed: number) => {

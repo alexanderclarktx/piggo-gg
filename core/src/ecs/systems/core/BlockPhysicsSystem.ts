@@ -21,8 +21,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           const { velocity, x, y, z } = position.data
 
-          position.localVelocity.x = position.data.velocity.x
-          position.localVelocity.y = position.data.velocity.y
+          position.localVelocity = { ...velocity }
 
           let wouldGo: XYZ = {
             x: x + velocity.x / 40 - 0.05 * sign(velocity.x),
@@ -68,26 +67,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                 position.data.velocity.y = 0
               }
             }
-
-            // // Clamp each axis independently based on which direction it's trying to enter from
-            // if (velocity.x > 0 && wouldGo.x > blockMin.x) {
-            //   const was = position.data.x
-
-            //   position.data.x = round(blockMin.x - r, 2)
-            //   position.data.velocity.x = 0
-
-            //   // console.log(`Collided ijk: ${ijk.x} clamped: x:${position.data.x} was: ${was}`)
-
-            // } else if (velocity.x < 0 && wouldGo.x < blockMax.x) {
-            //   const was = position.data.x
-
-            //   position.data.x = round(blockMax.x + r, 2)
-            //   position.data.velocity.x = 0
-
-            //   console.log(`COLLIDED  clamped: ${position.data.x} was: ${was} blockMax: ${blockMax.x}`)
-            // }
-
-            // if (mode === "local") return
           }
 
           wouldGo = {
@@ -245,42 +224,69 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             }
           }
 
-          if (mode === "local") return
+          wouldGo = { x, y, z: z + velocity.z + 0.1 * sign(velocity.z) }
 
-          // gravity & z
-          if (position.data.velocity.z || position.data.z) {
-
-            // apply stop
-            const wouldGo = position.data.z + position.data.velocity.z
-            if (position.data.stop <= position.data.z && wouldGo < position.data.stop) {
-              position.data.z = position.data.stop
-            } else {
-              position.data.z = wouldGo
-            }
-
-            // set standing
-            if (position.data.z === position.data.stop) {
-              position.data.velocity.z = 0
-              position.data.standing = true
-            } else {
-              position.data.standing = false
-              if (!position.data.flying) {
-                position.data.velocity.z -= position.data.gravity
-              }
-            }
-          } else {
-            position.data.standing = true
+          ijk = {
+            x: floor((0.15 + wouldGo.x) / 0.3),
+            y: floor((0.15 + wouldGo.y) / 0.3),
+            z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
-          // flying direction
+          const zSweep = blocks.hasIJK(ijk)
+
+          // position.data.standing = false
+
+          if (zSweep) {
+
+            // console.log(`zSweep ijk:${ijk.x},${ijk.y},${ijk.z} velocity:${velocity.z}`, world.tick)
+
+            const blockMin = {
+              x: ijk.x * blockSize - 0.15,
+              y: ijk.y * blockSize - 0.15,
+              z: ijk.z * blockSize,
+            }
+
+            const blockMax = {
+              x: blockMin.x + blockSize,
+              y: blockMin.y + blockSize,
+              z: blockMin.z + blockSize,
+            }
+
+            if (velocity.z > 0 && wouldGo.z > blockMin.z) {
+              if (mode === "local") {
+                position.localVelocity.z = round(blockMin.z - 0.1, 2) - position.data.z
+              } else {
+                position.data.z = round(blockMin.z - 0.1, 2)
+                position.data.velocity.z = 0
+                position.data.standing = false
+              }
+            } else if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
+              if (mode === "local") {
+                position.localVelocity.z = round(blockMax.z, 2) - position.data.z
+              } else {
+                position.data.z = round(blockMax.z, 2)
+                position.data.velocity.z = 0
+                position.data.standing = true
+              }
+            } else if (mode !== "local") {
+              position.data.standing = false
+              position.data.z += position.data.velocity.z
+            }
+          } else if (mode !== "local") {
+            position.data.standing = false
+            position.data.z += position.data.velocity.z
+          }
+
+          if (mode === "local") return
+
           if (position.data.flying) {
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
+          } else {
+            position.data.velocity.z -= position.data.gravity
           }
 
           // Move the entity
-          const was = position.data.x
           position.data.x += position.data.velocity.x / 40
-          // console.log("was", was, "now", position.data.x, mode, entity.id, world.tick)
           position.data.y += position.data.velocity.y / 40
 
           // friction

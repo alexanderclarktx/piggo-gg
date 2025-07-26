@@ -81,15 +81,15 @@ const DDESystem = SystemBuilder({
           const ij = { x: round(x / 0.3), y: round(y / 0.3) }
 
           // vertical stop
-          const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1))
+          // const highest = blocks.highestBlockIJ(ij, ceil(z / 0.3 + 0.1))
 
-          if (highest !== undefined && velocity.z <= 0) {
-            const stop = highest.z * 0.3 + 0.3
-            position.data.stop = stop
-          } else {
-            world.announce(`no block found ij:${ij.x},${ij.y} at z:${ceil(z / 0.3 + 0.1)}`)
-            position.data.stop = -5
-          }
+          // if (highest !== undefined && velocity.z <= 0) {
+          //   const stop = highest.z * 0.3 + 0.3
+          //   position.data.stop = stop
+          // } else {
+          //   world.announce(`no block found ij:${ij.x},${ij.y} at z:${ceil(z / 0.3 + 0.1)}`)
+          //   position.data.stop = -5
+          // }
         }
         logPerf("update colliders", t0)
 
