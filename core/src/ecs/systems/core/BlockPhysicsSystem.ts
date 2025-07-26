@@ -39,17 +39,18 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           // if (mode === "global") console.log(`ijk:${ijk.x},${ijk.y},${ijk.z} ySweep:${ySweep}`)
 
           if (ySweep) {
+            if (mode === "global") console.log("ySweep", world.tick)
 
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
               y: ijk.y * blockSize - 0.15,
-              z: ijk.z * blockSize - blockSize,
+              z: ijk.z * blockSize
             }
 
             const blockMax = {
               x: blockMin.x + blockSize,
               y: blockMin.y + blockSize,
-              z: blockMin.z + blockSize,
+              z: blockMin.z + blockSize
             }
 
             if (velocity.y > 0 && wouldGo.y > blockMin.y) {
@@ -84,11 +85,12 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           const xSweep = blocks.hasIJK(ijk)
 
           if (xSweep) {
+            if (mode === "global") console.log("xSweep", world.tick)
 
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
               y: ijk.y * blockSize - 0.15,
-              z: ijk.z * blockSize - blockSize,
+              z: ijk.z * blockSize
             }
 
             const blockMax = {
@@ -130,10 +132,11 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             const cornerSweep = blocks.hasIJK(ijk)
 
             if (cornerSweep) {
+              if (mode === "global") console.log("cornerSweep", world.tick)
               const blockMin = {
                 x: ijk.x * blockSize - 0.15,
                 y: ijk.y * blockSize - 0.15,
-                z: ijk.z * blockSize - blockSize,
+                z: ijk.z * blockSize
               }
 
               const blockMax = {
@@ -237,6 +240,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           // position.data.standing = false
 
           if (zSweep) {
+            // if (mode === "global") console.log("zSweep", world.tick)
 
             // console.log(`zSweep ijk:${ijk.x},${ijk.y},${ijk.z} velocity:${velocity.z}`, world.tick)
 
