@@ -72,12 +72,10 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             } else if (mode !== "local") {
               position.data.standing = false
               position.data.z += position.data.velocity.z
-              console.log("falling")
             }
           } else if (mode !== "local") {
             position.data.standing = false
             position.data.z += position.data.velocity.z
-            console.log("falling")
           }
 
           // ySweep
@@ -98,7 +96,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           // if (mode === "global") console.log(`ijk:${ijk.x},${ijk.y},${ijk.z} ySweep:${ySweep}`)
 
           if (ySweep) {
-            if (mode === "global") console.log("ySweep", world.tick)
+            // if (mode === "global") console.log("ySweep", world.tick)
 
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
@@ -114,14 +112,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.y > 0 && wouldGo.y > blockMin.y) {
               if (mode === "local") {
-                position.localVelocity.y = 0
+                position.localVelocity.y = position.data.y - round(blockMin.y - r, 2)
               } else {
                 position.data.y = round(blockMin.y - r, 2)
                 position.data.velocity.y = 0
               }
             } else if (velocity.y < 0 && wouldGo.y < blockMax.y) {
               if (mode === "local") {
-                position.localVelocity.y = 0
+                position.localVelocity.y = position.data.y - round(blockMax.y + r, 2)
               } else {
                 position.data.y = round(blockMax.y + r, 2)
                 position.data.velocity.y = 0
@@ -146,7 +144,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           const xSweep = blocks.hasIJK(ijk)
 
           if (xSweep) {
-            if (mode === "global") console.log("xSweep", world.tick)
+            // if (mode === "global") console.log("xSweep", world.tick)
 
             const blockMin = {
               x: ijk.x * blockSize - 0.15,
@@ -162,14 +160,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.x > 0) {
               if (mode === "local") {
-                position.localVelocity.x = 0
+                position.localVelocity.x = position.data.x - round(blockMin.x - r, 2)
               } else {
                 position.data.x = round(blockMin.x - r, 2)
                 position.data.velocity.x = 0
               }
             } else if (velocity.x < 0) {
               if (mode === "local") {
-                position.localVelocity.x = 0
+                position.localVelocity.x = position.data.x - round(blockMax.x + r, 2)
               } else {
                 position.data.x = round(blockMax.x + r, 2)
                 position.data.velocity.x = 0
@@ -195,7 +193,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             const cornerSweep = blocks.hasIJK(ijk)
 
             if (cornerSweep) {
-              if (mode === "global") console.log("cornerSweep", world.tick)
+              // if (mode === "global") console.log("cornerSweep", world.tick)
               const blockMin = {
                 x: ijk.x * blockSize - 0.15,
                 y: ijk.y * blockSize - 0.15,
@@ -272,14 +270,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
                 if (distY > distX) {
                   if (mode === "local") {
-                    position.localVelocity.x = 0
+                    position.localVelocity.x = position.data.x - round(blockMax.x + r, 2)
                   } else {
                     position.data.x = round(blockMax.x + r, 2)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
-                    position.localVelocity.y = 0
+                    position.localVelocity.y = position.data.y - round(blockMax.y + r, 2)
                   }
                   else {
                     position.data.y = round(blockMax.y + r, 2)
