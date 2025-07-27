@@ -50,8 +50,6 @@ export const Api = (): Api => {
     return false
   }
 
-  const skiplog: RequestTypes["route"][] = ["meta/players", "auth/login"]
-
   const api: Api = {
     bun: undefined,
     clientIncr: 1,
