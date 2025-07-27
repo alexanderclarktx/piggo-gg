@@ -15,4 +15,3 @@ export type GameBuilder<State extends {} = {}, T extends string = string> = {
   id: T
   init: (world: World) => Game<State, T>
 }
-  
