@@ -26,7 +26,7 @@ export const BirdHUDSystem = SystemBuilder({
     const jumpLabel = HtmlLabel("jump", left, top + 250, false)
 
     const scoreText = HtmlText({
-      text: "score: 0",
+      text: "apples: 0",
       style: {
         left: `${width / 2}px`,
         top: `${height - 50}px`,
@@ -98,7 +98,7 @@ export const BirdHUDSystem = SystemBuilder({
 
         if (pcApplesEaten !== currentApplesEaten) {
           currentApplesEaten = pcApplesEaten
-          scoreText.textContent = `score: ${currentApplesEaten}`
+          scoreText.textContent = `apples: ${currentApplesEaten}`
         }
       }
     }

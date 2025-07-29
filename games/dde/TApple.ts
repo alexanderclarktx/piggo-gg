@@ -50,6 +50,7 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
                 console.log("Player has eaten 10 apples!", timeElapsed.toFixed(2), "seconds")
 
                 state.applesEaten[playerId] = 0
+                delete state.applesTimer[playerId]
               }
             }
           }

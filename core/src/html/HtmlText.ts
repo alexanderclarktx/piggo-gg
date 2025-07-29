@@ -8,6 +8,7 @@ export type HtmlTextProps = {
     left?: `${number}px` | `${number}%`
     position?: "absolute" | "relative"
     top?: `${number}px` | `${number}%`
+    textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
     transform?: `translateX(${number}%)`
     visibility?: "visible" | "hidden"
   }
@@ -16,7 +17,8 @@ export type HtmlTextProps = {
 const defaults: HtmlTextProps["style"] = {
   position: "absolute",
   fontFamily: "Courier New",
-  fontWeight: "bold"
+  fontWeight: "bold",
+  textShadow: "2px 2px 2px rgba(0, 0, 0, 0.5)",
 }
 
 export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
