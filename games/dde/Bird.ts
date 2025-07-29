@@ -59,7 +59,6 @@ export const Bird = () => Character({
         if (!position) return
 
         position.data.flying = !position.data.flying
-        position.data.velocity.z = max(0, position.data.velocity.z)
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
