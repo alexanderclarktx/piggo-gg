@@ -11,6 +11,7 @@ import { TApple } from "./TApple"
 export type DDEState = {
   doubleJumped: string[]
   applesEaten: Record<string, number>
+  applesTimer: Record<string, number>
 }
 
 export const DDE: GameBuilder<DDEState> = {
@@ -25,7 +26,8 @@ export const DDE: GameBuilder<DDEState> = {
       netcode: "rollback",
       state: {
         doubleJumped: [],
-        applesEaten: {}
+        applesEaten: {},
+        applesTimer: {}
       },
       systems: [
         SpawnSystem(Bird),
