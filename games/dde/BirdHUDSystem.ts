@@ -1,4 +1,4 @@
-import { HtmlButton, HtmlLabel, HtmlText, round, SystemBuilder } from "@piggo-gg/core"
+import { colors, HtmlButton, HtmlLabel, HtmlText, round, SystemBuilder } from "@piggo-gg/core"
 import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
@@ -26,7 +26,7 @@ export const BirdHUDSystem = SystemBuilder({
     const jumpLabel = HtmlLabel("jump", left, top + 250, false)
 
     const scoreText = HtmlText({
-      text: "apples: 0",
+      text: "",
       style: {
         left: `${width / 2}px`,
         top: `${height - 50}px`,
@@ -57,7 +57,7 @@ export const BirdHUDSystem = SystemBuilder({
     const active = "rgba(0, 255, 255, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
 
-    let currentApplesEaten = 0
+    let currentApplesEaten = -1
 
     return {
       id: "BirdHUDSystem",
@@ -98,7 +98,7 @@ export const BirdHUDSystem = SystemBuilder({
 
         if (pcApplesEaten !== currentApplesEaten) {
           currentApplesEaten = pcApplesEaten
-          scoreText.textContent = `apples: ${currentApplesEaten}`
+          scoreText.innerHTML = `<span>apples: </span><span style='color: #ffc0cb'>${currentApplesEaten}</span>`
         }
       }
     }
