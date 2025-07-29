@@ -18,7 +18,7 @@ const defaults: HtmlTextProps["style"] = {
   position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
-  textShadow: "2px 2px 2px rgba(0, 0, 0, 0.5)",
+  textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
 }
 
 export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
