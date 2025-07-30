@@ -1,4 +1,6 @@
-import { colors, HtmlButton, HtmlLabel, HtmlText, round, SystemBuilder } from "@piggo-gg/core"
+import {
+  HtmlMusic, HtmlButton, HtmlLabel, HtmlText, SystemBuilder
+} from "@piggo-gg/core"
 import { DDEState } from "./DDE"
 
 export const BirdHUDSystem = SystemBuilder({
@@ -28,7 +30,7 @@ export const BirdHUDSystem = SystemBuilder({
     const scoreText = HtmlText({
       text: "",
       style: {
-        left: `${width / 2}px`,
+        left: `50%`,
         top: `${height - 50}px`,
         fontSize: "28px",
         color: "#ffffff",
@@ -39,19 +41,21 @@ export const BirdHUDSystem = SystemBuilder({
     const posText = HtmlText({
       text: "0|0|0",
       style: {
-        left: `${width / 2}px`,
+        left: `50%`,
         top: `${height - 100}px`,
         fontSize: "24px",
         color: "#00ffff",
-        transform: "translateX(-50%)",
+        transform: "translateX(-50%)"
       }
     })
+
+    const music = HtmlMusic()
 
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
       boostButton, jumpButton,
       transformLabel, moveLabel, boostLabel, jumpLabel,
-      scoreText, posText
+      scoreText, posText, music
     )
 
     const active = "rgba(0, 255, 255, 0.6)"
