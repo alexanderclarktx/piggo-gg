@@ -39,6 +39,8 @@ export const Api = (): Api => {
   const JWT_SECRET = process.env["JWT_SECRET"] ?? "piggo"
   const google = new OAuth2Client("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com")
 
+  const skiplog: RequestTypes["route"][] = ["meta/players", "auth/login"]
+
   const verifyJWT = (data: { token: string }): SessionToken | false => {
     let token: SessionToken | undefined = undefined
     try {
