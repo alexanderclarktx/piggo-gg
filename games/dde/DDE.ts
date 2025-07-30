@@ -11,6 +11,7 @@ import { TApple } from "./TApple"
 export type DDEState = {
   doubleJumped: string[]
   applesEaten: Record<string, number>
+  applesTimer: Record<string, number>
 }
 
 export const DDE: GameBuilder<DDEState> = {
@@ -25,7 +26,8 @@ export const DDE: GameBuilder<DDEState> = {
       netcode: "rollback",
       state: {
         doubleJumped: [],
-        applesEaten: {}
+        applesEaten: {},
+        applesTimer: {}
       },
       systems: [
         SpawnSystem(Bird),
@@ -60,7 +62,7 @@ const DDESystem = SystemBuilder({
         const t0 = performance.now()
         for (const entity of entities) {
           const { position } = entity.components
-          const { x, y, z, velocity, rotation, standing } = position.data
+          const { z, rotation, standing } = position.data
 
           // double-jump state cleanup
           if (standing) {
@@ -77,7 +79,7 @@ const DDESystem = SystemBuilder({
             position.setPosition({ x: 14, y: 14, z: 8 })
           }
         }
-        logPerf("update colliders", t0)
+        logPerf("player positions", t0)
 
         // spawn apples
         const t1 = performance.now()
@@ -107,7 +109,7 @@ const DDESystem = SystemBuilder({
 
           i += 1
         }
-        logPerf("spawn apples", t1)
+        logPerf("spawn apple", t1)
 
         // render apples
         const t2 = performance.now()

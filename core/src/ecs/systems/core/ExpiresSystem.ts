@@ -1,6 +1,6 @@
 import { Entity, Expires, SystemBuilder } from "@piggo-gg/core"
 
-export const ExpiresSystem: SystemBuilder<"ExpiresSystem"> = {
+export const ExpiresSystem = SystemBuilder<"ExpiresSystem">({
   id: "ExpiresSystem",
   init: (world) => ({
     id: "ExpiresSystem",
@@ -19,4 +19,4 @@ export const ExpiresSystem: SystemBuilder<"ExpiresSystem"> = {
       })
     }
   })
-}
+})

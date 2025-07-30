@@ -54,12 +54,19 @@ export const Bird = () => Character({
       escape: Action("escape", ({ world }) => {
         world.three?.pointerLock()
       }),
-      transform: Action("transform", ({ entity }) => {
+      transform: Action("transform", ({ entity, world, player }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
         position.data.flying = !position.data.flying
-        position.data.velocity.z = max(0, position.data.velocity.z)
+
+        if (player) {
+          const state = world.game.state as DDEState
+          if (state.applesEaten[player.id] !== undefined) {
+            state.applesEaten[player.id] = 0
+            delete state.applesTimer[player.id]
+          }
+        }
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return

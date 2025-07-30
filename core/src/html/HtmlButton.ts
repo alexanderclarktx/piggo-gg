@@ -18,6 +18,7 @@ export type HtmlButtonProps = {
     lineHeight?: `${number}px`
     padding?: string
     position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
+    textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
     top?: `${number}%` | `${number}px`
     transform?: string
     visibility?: "visible" | "hidden"
@@ -31,6 +32,7 @@ const defaults: HtmlButtonProps["style"] = {
   position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
+  textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)"
   // clipPath: "inset(0 round 3px)"
 }
 

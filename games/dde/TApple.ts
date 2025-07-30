@@ -18,6 +18,7 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
           if (!pc) return
 
           const { position } = pc.components
+
           const applePos = apple.components.position.data
 
           const dist = XYZdistance(position.data, applePos)
@@ -33,13 +34,24 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
             // sound effect
             world.client?.soundManager.play("eat", 0.3)
 
+            if (position.data.flying) return
+
             // score
             const state = world.game.state as DDEState
             const playerId = world.client?.playerId() || ""
             if (!state.applesEaten[playerId]) {
               state.applesEaten[playerId] = 1
+              state.applesTimer[playerId] = world.tick
             } else {
               state.applesEaten[playerId] += 1
+
+              if (state.applesEaten[playerId] >= 10) {
+                const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000
+                console.log("Player has eaten 10 apples!", timeElapsed.toFixed(2), "seconds")
+
+                state.applesEaten[playerId] = 0
+                delete state.applesTimer[playerId]
+              }
             }
           }
         }

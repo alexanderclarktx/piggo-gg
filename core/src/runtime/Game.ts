@@ -1,7 +1,7 @@
 import { Command, Entity, SystemBuilder, World } from "@piggo-gg/core"
 
-export type Game<State extends {} = {}, T extends string = string> = {
-  id: T
+export type Game<State extends {} = {}, ID extends string = string> = {
+  id: ID
   bgColor?: number
   commands?: Command[]
   entities: Entity[]

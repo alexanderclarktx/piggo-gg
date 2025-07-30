@@ -2,7 +2,7 @@ import { Character, Controlling, Player, SystemBuilder } from "@piggo-gg/core"
 
 type CharacterSpawner = (player: Player) => Character
 
-export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSystem"> => ({
+export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSystem">({
   id: "SpawnSystem",
   init: (world) => {
 
@@ -11,7 +11,7 @@ export const SpawnSystem = (spawner: CharacterSpawner): SystemBuilder<"SpawnSyst
     return {
       id: "SpawnSystem",
       query: ["pc"],
-      priority: 5, // todo
+      priority: 5,
       onTick: (players: Player[]) => {
 
         // cleanup

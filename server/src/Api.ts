@@ -18,17 +18,15 @@ export type PerClientData = {
 
 type SessionToken = { googleId: string }
 
-const skiplog: RequestTypes["route"][] = ["meta/players", "auth/login"]
+type Handler<R extends RequestTypes["route"]> = (_: { ws: ServerWebSocket<PerClientData>, data: ExtractedRequestTypes<R> }) =>
+  Promise<ExtractedRequestTypes<R>['response']>
 
 export type Api = {
   bun: Server | undefined
   clientIncr: number
   clients: Record<string, ServerWebSocket<PerClientData>>
   worlds: Record<string, ServerWorld>
-  handlers: {
-    [R in RequestTypes["route"]]: (_: { ws: ServerWebSocket<PerClientData>, data: ExtractedRequestTypes<R> }) =>
-      Promise<ExtractedRequestTypes<R>['response']>
-  }
+  handlers: { [R in RequestTypes["route"]]: Handler<R> }
   init: () => Api
   handleClose: (ws: ServerWebSocket<PerClientData>) => void
   handleOpen: (ws: ServerWebSocket<PerClientData>) => void

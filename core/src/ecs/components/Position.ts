@@ -219,7 +219,7 @@ export const Position = (props: PositionProps = {}): Position => {
   return position
 }
 
-export const PositionSystem: SystemBuilder<"PositionSystem"> = {
+export const PositionSystem = SystemBuilder<"PositionSystem">({
   id: "PositionSystem",
   init: (world) => ({
     id: "PositionSystem",
@@ -269,4 +269,4 @@ export const PositionSystem: SystemBuilder<"PositionSystem"> = {
       })
     }
   })
-}
+})
