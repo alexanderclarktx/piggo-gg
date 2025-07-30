@@ -97,11 +97,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.pointerLock()
 
       // recreate the canvas
-      const parent = tRenderer.canvas.parentElement
-      tRenderer.canvas.remove()
-      tRenderer.canvas = document.createElement("canvas")
-      tRenderer.canvas.id = "canvas"
-      parent?.appendChild(tRenderer.canvas)
+      // const parent = tRenderer.canvas.parentElement
+      // tRenderer.canvas.remove()
+      // tRenderer.canvas = document.createElement("canvas")
+      // tRenderer.canvas.id = "canvas"
+      // parent?.appendChild(tRenderer.canvas)
 
       tRenderer.blocks = TBlockMesh()
       tRenderer.scene.add(tRenderer.blocks)

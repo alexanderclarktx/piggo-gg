@@ -18,7 +18,7 @@ export const DDE: GameBuilder<DDEState> = {
   id: "Duck Duck Eagle",
   init: (world) => {
 
-    world.renderer?.deactivate(world)
+    // world.renderer?.deactivate(world)
     world.three?.activate(world)
 
     return {

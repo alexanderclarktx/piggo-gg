@@ -25,7 +25,7 @@ export const InputSystem = ClientSystemBuilder({
       if (CurrentJoystickPosition.active && XYdiff(mouseScreen, { x: event.offsetX, y: event.offsetY }, 100)) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      mouse = renderer!.camera.toWorldCoords(mouseScreen)
+      if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (world.three && document.pointerLockElement) {
@@ -43,7 +43,7 @@ export const InputSystem = ClientSystemBuilder({
       if (world.tick <= world.client!.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      mouse = renderer.camera.toWorldCoords(mouseScreen)
+      if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (CurrentJoystickPosition.active && !joystickOn) {
@@ -149,7 +149,7 @@ export const InputSystem = ClientSystemBuilder({
         let pointingDelta: XY
 
         if (world.renderer?.camera.focus) {
-          const { width, height } = world.renderer.wh()
+          const { width, height } = world.renderer?.wh()
           pointingDelta = {
             x: round(mouseScreen.x - (width / 2), 2) * world.flipped(),
             y: round(mouseScreen.y - (height / 2), 2) * world.flipped()
@@ -343,7 +343,7 @@ export const InputSystem = ClientSystemBuilder({
         world.client!.bufferDown.updateHold(world.tick)
 
         // update mouse position, the camera might have moved
-        if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
+        if (renderer) mouse = renderer?.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus()) {
