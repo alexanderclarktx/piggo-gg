@@ -7,7 +7,6 @@ export const BirdHUDSystem = SystemBuilder({
   id: "BirdHUDSystem",
   init: (world) => {
 
-    const width = world.three?.canvas.clientWidth || 800
     const height = world.three?.canvas.clientHeight || 600
 
     const top = height / 5 * 3
@@ -49,13 +48,13 @@ export const BirdHUDSystem = SystemBuilder({
       }
     })
 
-    const music = HtmlMusic()
+    // const music = HtmlMusic()
 
     world.three?.canvas.parentElement?.append(
       aButton, sButton, wButton, dButton, eButton,
       boostButton, jumpButton,
       transformLabel, moveLabel, boostLabel, jumpLabel,
-      scoreText, posText, music
+      scoreText, posText
     )
 
     const active = "rgba(0, 255, 255, 0.6)"

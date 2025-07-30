@@ -15,6 +15,7 @@ export type HtmlButtonProps = {
     height?: `${number}px`
     justifyContent?: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
     left?: `${number}%` | `${number}px`
+    right?: `${number}%` | `${number}px`
     lineHeight?: `${number}px`
     padding?: string
     position?: "absolute" | "relative" | "fixed" | "sticky" | "static"

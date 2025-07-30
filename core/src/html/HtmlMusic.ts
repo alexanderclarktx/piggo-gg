@@ -3,32 +3,18 @@ import { HtmlDiv } from "./HtmlButton"
 export const HtmlMusic = (): HTMLDivElement => {
   const div = HtmlDiv({
     style: {
-      left: "80%",
+      right: "50px",
       top: "50px",
       position: "absolute",
-      width: "300px",
-      height: "300px",
+      width: "200px",
+      height: "160px",
       borderRadius: "5%",
-      backgroundColor: "#472709",
-      // boxShadow: "0 0 30px rgba(0,0,0,0.4)",
+      backgroundColor: "rgba(71, 39, 9, 0.8)",
       display: "flex",
-      // flexDirection: "column",
       alignItems: "center",
-      justifyContent: "center",
-      transform: "translateX(-50%)"
+      justifyContent: "center"
     }
   })
-  // const div = document.createElement('div')
-
-  // div.style.left = "50px"
-  // div.style.top = "50px"
-  // div.style.position = "absolute"
-
-  // div.style.width = "300px"
-  // div.style.height = "300px"
-  // div.style.borderRadius = "5%"
-  // div.style.backgroundColor = "#472709"
-  // div.style.boxShadow = "0 0 30px rgba(0,0,0,0.4)"
 
   return div
 }
