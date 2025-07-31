@@ -21,7 +21,6 @@ export type TRenderer = {
   scene: Scene
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
-  setZoom: (zoom: number) => void
   setDebug: (state?: boolean) => void
   activate: (world: World) => void
   deactivate: () => void
@@ -41,8 +40,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let helper: undefined | CameraHelper
   let radial: undefined | Radial
 
-  let zoom = 2
-
   const tRenderer: TRenderer = {
     apples: {},
     canvas: c,
@@ -55,9 +52,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     debug: false,
     duck: undefined,
     eagle: undefined,
-    setZoom: (z: number) => {
-      zoom = z
-    },
     resize: () => {
       if (!renderer) return
 
@@ -99,15 +93,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      // tRenderer.pointerLock()
-
-      // recreate the canvas
-      // const parent = tRenderer.canvas.parentElement
-      // tRenderer.canvas.remove()
-      // tRenderer.canvas = document.createElement("canvas")
-      // tRenderer.canvas.id = "canvas"
-      // parent?.appendChild(tRenderer.canvas)
-
       tRenderer.blocks = TBlockMesh()
       tRenderer.scene.add(tRenderer.blocks)
 
@@ -172,7 +157,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           // animations
           for (const mixer of tRenderer.mixers) {
-            // mixer.update(0.01)
             if (flying) {
               mixer.update(sqrt(hypot(velocity.x, velocity.y, velocity.z)) * 0.005 + 0.01)
             } else {
@@ -261,11 +245,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
       sunSphere.position.copy(sun.position)
       tRenderer.scene.add(sunSphere)
-
-      // tRenderer.canvas.addEventListener("wheel", (event: WheelEvent) => {
-      //   zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
-      //   zoom = Math.max(1, Math.min(zoom, 10))
-      // })
 
       GL.load("eagle.glb", (eagle) => {
         tRenderer.eagle = eagle
