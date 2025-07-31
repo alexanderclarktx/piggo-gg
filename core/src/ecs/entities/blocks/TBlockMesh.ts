@@ -26,7 +26,7 @@ export const TBlockMesh = (): TBlockMesh => {
 
   const mesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
     vertexColors: true, visible: false, specularIntensity: 0.05, wireframe: false
-  }), 14000)
+  }), 800)
 
   mesh.castShadow = true
   mesh.receiveShadow = true

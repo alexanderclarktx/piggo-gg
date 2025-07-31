@@ -46,7 +46,7 @@ const DDESystem = SystemBuilder({
   id: "DDESystem",
   init: (world) => {
 
-    spawnTerrain(24)
+    spawnTerrain(4)
     let placed = false
 
     let i = 1
