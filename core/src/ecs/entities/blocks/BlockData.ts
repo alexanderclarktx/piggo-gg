@@ -445,7 +445,7 @@ export const spawnTiny = () => {
   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
 }
 
-export const spawnTerrain = (num: number = 10, world: World) => {
+export const spawnTerrain = (world: World, num: number = 10) => {
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }

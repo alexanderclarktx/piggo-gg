@@ -1,5 +1,5 @@
 import { Data, Entity, floor, Networked, round, SystemBuilder } from "@piggo-gg/core"
-import { createNoise2D } from "simplex-noise/dist/esm/simplex-noise"
+import { createNoise2D } from "simplex-noise"
 
 export type sampleProps = {
   x: number
@@ -29,7 +29,9 @@ export const Random = (startingSeed: number): Random => {
       for (let octave = 1; octave <= octaves; octave++) {
         const frequency = Math.pow(2, octave)
         const amplitude = Math.pow(0.5, octave)
-        value += simplex(x / 100 * frequency, y / 100 * frequency) * amplitude
+
+        const sampled = (1 + simplex(x / 100 * frequency, y / 100 * frequency)) / 2
+        value += sampled * amplitude
       }
 
       return floor(value * factor)
