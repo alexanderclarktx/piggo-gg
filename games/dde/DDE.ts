@@ -1,6 +1,6 @@
 import {
   blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
-  randomChoice, randomInt, SpawnSystem, spawnTerrain, SystemBuilder,
+  randomChoice, SpawnSystem, spawnTerrain, SystemBuilder,
   BlockPhysicsSystem, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
@@ -85,7 +85,7 @@ const DDESystem = SystemBuilder({
         const t1 = performance.now()
         if (world.tick % 10 === 0 && world.three && world.three.apples["apple-0"] && keys(world.three.apples).length < 50) {
 
-          const randomTree = trees[randomInt(trees.length - 1)]
+          const randomTree = trees[world.random.int(trees.length - 1)]
 
           const a = 0.52
           const b = 0.3

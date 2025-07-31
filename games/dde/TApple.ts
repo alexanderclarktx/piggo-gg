@@ -1,4 +1,4 @@
-import { Entity, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
+import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
 import { DDEState } from "./DDE";
 
 export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
@@ -9,6 +9,7 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
     id: `apple-${i}`,
     components: {
       position: Position(xyz),
+      networked: Networked(),
       npc: NPC({
         behavior: (_, world) => {
           if (removed) return
