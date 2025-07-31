@@ -143,7 +143,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       renderer = new WebGLRenderer({
         antialias: true,
         canvas: tRenderer.canvas,
-        powerPreference: "default"
+        powerPreference: "high-performance"
       })
 
       tRenderer.resize()
