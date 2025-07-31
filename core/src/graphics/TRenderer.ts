@@ -4,7 +4,7 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { hypot, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
+import { hypot, isMobile, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -61,9 +61,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     resize: () => {
       if (!renderer) return
 
-      renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+      if (isMobile()) {
+        renderer.setSize(window.innerWidth, window.outerHeight)
+        tRenderer.camera.c.aspect = window.innerWidth / window.outerHeight
+      } else {
+        renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+        tRenderer.camera.c.aspect = window.innerWidth / window.innerHeight
+      }
 
-      tRenderer.camera.c.aspect = window.innerWidth / window.innerHeight
       tRenderer.camera.c.updateProjectionMatrix()
     },
     deactivate: () => {
@@ -94,7 +99,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      tRenderer.pointerLock()
+      // tRenderer.pointerLock()
 
       // recreate the canvas
       // const parent = tRenderer.canvas.parentElement
