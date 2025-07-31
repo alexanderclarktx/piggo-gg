@@ -12,6 +12,7 @@ export type Random = {
   index: number,
   seed: Entity<Data>,
   startingSeed: number,
+  choice: <T>(input: T[]) => T
   int: (range: number, subtract?: number) => number
   next: () => number
   noise: (props: sampleProps) => number
@@ -52,6 +53,9 @@ export const Random = (startingSeed: number): Random => {
 
       random.seed.components.data.set("seed", next)
       return (next >>> 0) / 4294967296
+    },
+    choice: <T>(input: T[]) => {
+      return input[floor(random.next() * input.length)]
     },
     int: (range: number, subtract: number = 0) => {
       const n = random.next()

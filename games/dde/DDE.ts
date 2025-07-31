@@ -1,6 +1,6 @@
 import {
-  blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
-  randomChoice, SpawnSystem, spawnTerrain, SystemBuilder,
+  blocks, Collider, GameBuilder, keys, logPerf, min, PI,
+  Position, SpawnSystem, spawnTerrain, SystemBuilder,
   BlockPhysicsSystem, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
@@ -91,7 +91,7 @@ const DDESystem = SystemBuilder({
           const b = 0.3
           const z = -0.24
 
-          const randomSpot = randomChoice([
+          const randomSpot = world.random.choice([
             { x: a, y: 0, z: 0 },
             { x: -a, y: 0, z: 0 },
             { x: 0, y: a, z: 0 },
