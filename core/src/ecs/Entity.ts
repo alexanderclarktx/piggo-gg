@@ -1,9 +1,11 @@
-import { Component, ComponentTypes, NetworkedComponentData, deserializeComponent, entries, keys, serializeComponent, values } from "@piggo-gg/core"
+import {
+  Component, ComponentTypes, NetworkedComponentData, deserializeComponent,
+  entries, keys, serializeComponent, values
+} from "@piggo-gg/core"
 
 // an Entity is a uniquely identified set of Components
 export type Entity<T extends ComponentTypes = ComponentTypes> = {
   id: string
-  extend: (_: ComponentTypes[]) => Entity<T>
   serialize: () => SerializedEntity
   deserialize: (serializedEntity: SerializedEntity) => void
   removed: boolean
@@ -21,20 +23,13 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
 
 export type SerializedEntity = Record<string, NetworkedComponentData>
 
-export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "extend" | "removed">
+export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "removed">
 
 export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): Entity<T> => {
 
   const entity: Entity<T> = {
     ...protoEntity,
     removed: false,
-    extend: (components: ComponentTypes[]) => {
-      components.forEach(component => {
-        // @ts-expect-error
-        entity.components[component.type] = component
-      })
-      return entity
-    },
     serialize: () => {
       const serializedEntity: SerializedEntity = {}
 
@@ -45,6 +40,7 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
           serializedEntity[component.type] = { ...serializedComponent }
         }
       })
+
       return serializedEntity
     },
     deserialize: (serializedEntity: SerializedEntity) => deserializeEntity(entity, serializedEntity)

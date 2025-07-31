@@ -301,6 +301,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         duck.scene.scale.set(0.08, 0.08, 0.08)
         tRenderer.scene.add(duck.scene)
 
+        duck.scene.visible = false
+
         const mixer = new AnimationMixer(duck.scene)
         mixer.clipAction(duck.animations[1]).play()
 

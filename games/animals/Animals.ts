@@ -40,7 +40,7 @@ const Platform = (x: number, y: number) => {
 }
 
 export const Animal = (player: Player, color?: number, pos?: XY) => {
-  const animal: Character = Entity({
+  const animal: Character = Character({
     id: `animal-${player.id}`,
     components: {
       debug: Debug(),
