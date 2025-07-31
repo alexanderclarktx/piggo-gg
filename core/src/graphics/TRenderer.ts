@@ -4,7 +4,7 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { hypot, isMobile, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
+import { hypot, isMobile, localAim, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -144,10 +144,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         if (pc && duck && eagle) {
 
-          const { aim, velocity, flying } = pc.components.position.data
-
-          eagle.scene.rotation.y = aim.x
-          eagle.scene.rotation.x = aim.y
+          const { velocity, flying } = pc.components.position.data
 
           // visibility
           duck.scene.visible = debug ? false : !flying

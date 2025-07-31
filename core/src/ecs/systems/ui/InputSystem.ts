@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition,
-  Entity, Input, InvokedAction, World, XY, XYdiff, round
+  Entity, Input, InvokedAction, World, XY, XYdiff, max, min, round
 } from "@piggo-gg/core"
 
 export var chatBuffer: string[] = []
@@ -9,6 +9,14 @@ export var mouse: XY = { x: 0, y: 0 }
 export var mouseScreen: XY = { x: 0, y: 0 }
 
 export let localAim: XY = { x: 0, y: 0 }
+
+const moveAim = ({ x, y }: XY, flying: boolean) => {
+  localAim.x = round(localAim.x - x, 3)
+  localAim.y = round(localAim.y - y, 3)
+
+  const factor = flying ? 1.1 : 0.6166
+  localAim.y = max(-factor, min(factor, localAim.y))
+}
 
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
@@ -34,11 +42,7 @@ export const InputSystem = ClientSystemBuilder({
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
-        // pc.components.position.moveAim(
-        //   { x: event.movementX * 0.001, y: event.movementY * 0.001 }
-        // )
-        localAim.x = round(localAim.x - event.movementX * 0.001, 3)
-        localAim.y = round(localAim.y - event.movementY * 0.001, 3)
+        moveAim({ x: event.movementX * 0.001, y: event.movementY * 0.001 }, pc.components.position.data.flying)
       }
     })
 

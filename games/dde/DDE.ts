@@ -1,7 +1,7 @@
 import {
-  blocks, Collider, GameBuilder, keys, logPerf, min, PI,
-  Position, SpawnSystem, spawnTerrain, SystemBuilder,
-  BlockPhysicsSystem, TCameraSystem, trees, values, XYtoChunk
+  blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
+  SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
+  TCameraSystem, trees, values, XYtoChunk, localAim
 } from "@piggo-gg/core"
 import { Color, Object3D, Vector3 } from "three"
 import { Bird } from "./Bird"
@@ -198,12 +198,15 @@ const DDESystem = SystemBuilder({
         duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y) // 0.055
 
         if (eagle && duck) {
-          const { rotation, rotating, aim } = pc.components.position.data
+          const { rotation, rotating } = pc.components.position.data
 
           eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
+
+          eagle.scene.rotation.y = localAim.x
+          eagle.scene.rotation.x = localAim.y
           eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
 
-          duck.scene.rotation.y = aim.x + PI / 2
+          duck.scene.rotation.y = localAim.x + PI / 2
         }
 
         const { velocity } = pc.components.position.data
