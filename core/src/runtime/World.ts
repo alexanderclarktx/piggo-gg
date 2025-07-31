@@ -83,7 +83,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     lastTick: 0,
     mode: mode ?? "client",
     physics: undefined,
-    random: Random(123456789),
+    random: Random(123456111),
     renderer,
     systems: {},
     three,
