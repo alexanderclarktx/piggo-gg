@@ -419,8 +419,6 @@ export const spawnChunk = (chunk: XY, world: World) => {
 
         if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
 
-          // let h = 0
-
           let height = world.random.int(2) + 4
           if (world.random.int(4) === 1) {
             height += world.random.int(5)
@@ -430,7 +428,6 @@ export const spawnChunk = (chunk: XY, world: World) => {
           const fluffy = world.random.int(2) === 1
 
           for (const block of BlockTree({ x, y, z }, height, t, fluffy)) {
-            // if (h === 0 && block.type === BlockTypeInt.leaf) h = block.z
             blocks.add(block)
           }
 
