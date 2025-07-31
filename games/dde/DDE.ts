@@ -108,7 +108,6 @@ const DDESystem = SystemBuilder({
 
           const apple = TApple(xyz, 1 + numApples)
           world.addEntity(apple)
-          console.log("spawn apple", apple.id, world.tick)
         }
         logPerf("spawn apple", t1)
 

@@ -37,8 +37,10 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
               removed = true
 
               // visual cleanup 
-              world.three!.apples[apple.id]?.removeFromParent()
-              delete world.three!.apples[apple.id]
+              if (world.three) {
+                world.three!.apples[apple.id]?.removeFromParent()
+                delete world.three!.apples[apple.id]
+              }
 
               // sound effect
               world.client?.soundManager.play("eat", 0.3)
@@ -47,7 +49,8 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
 
               // score
               const state = world.game.state as DDEState
-              const playerId = world.client?.playerId() || ""
+              const playerId = player.id
+
               if (!state.applesEaten[playerId]) {
                 state.applesEaten[playerId] = 1
                 state.applesTimer[playerId] = world.tick
