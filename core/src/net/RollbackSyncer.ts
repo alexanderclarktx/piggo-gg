@@ -172,7 +172,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
           if (local[entityId]) {
             if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
-              mustRollback(`entity: ${entityId} mismatch ${message.tick} ${stringify(local[entityId])} ${stringify(serializedEntity)}`)
+              mustRollback(`entity: ${entityId} mismatch ${message.tick}\n${stringify(local[entityId])}\n> ${stringify(serializedEntity)}`)
               continue
             }
           }
@@ -198,15 +198,16 @@ export const RollbackSyncer = (world: World): Syncer => {
           }
 
           if (!world.entities[entityId]) {
-            const entityKind = entityId.split("-")[0]
-            const constructor = entityConstructors[entityKind]
-            if (constructor !== undefined) {
-              console.log("ADD ENTITY", entityId)
-              world.addEntity(constructor({ id: entityId }))
-              world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
-            } else {
-              console.error("UNKNOWN ENTITY ON SERVER", entityId)
-            }
+            // const entityKind = entityId.split("-")[0]
+            // const constructor = entityConstructors[entityKind]
+            // if (constructor !== undefined) {
+            //   console.log("ADD ENTITY", entityId)
+              // world.addEntity(constructor({ id: entityId }))
+              // world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
+            // } else {
+            //   console.error("UNKNOWN ENTITY ON SERVER", entityId)
+            // }
+            console.log("ADD ENTITY", entityId)
           } else {
             world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
           }

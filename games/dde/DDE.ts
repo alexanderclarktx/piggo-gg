@@ -81,7 +81,7 @@ const DDESystem = SystemBuilder({
         }
         logPerf("player positions", t0)
 
-        const numApples = keys(world.entities).filter(id => id.startsWith("apple-")).length
+        const numApples = keys(world.entities).filter(id => id.startsWith("tapple-")).length
 
         // spawn apples
         const t1 = performance.now()
@@ -108,13 +108,13 @@ const DDESystem = SystemBuilder({
 
           const apple = TApple(xyz, 1 + numApples)
           world.addEntity(apple)
-          // console.log("spawn apple", apple.id, xyz)
+          console.log("spawn apple", apple.id, xyz)
         }
         logPerf("spawn apple", t1)
 
         // render apples
         const t2 = performance.now()
-        const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
+        const appleEntities = values(world.entities).filter(e => e.id.startsWith("tapple"))
         for (const appleEntity of appleEntities) {
 
           const { position } = appleEntity.components

@@ -6,7 +6,7 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
   let removed = false
 
   const apple = Entity<Position>({
-    id: `apple-${i}`,
+    id: `tapple-${i}`,
     components: {
       position: Position(xyz),
       networked: Networked(),
