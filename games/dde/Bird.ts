@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Collider, Input, max, Networked, Position, Team } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, Networked, Position, Team } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
@@ -13,8 +13,14 @@ export const Bird = () => Character({
     }),
     input: Input({
       release: {
-        "escape": () => ({ actionId: "escape" }),
-        "mb1": () => ({ actionId: "escape" }),
+        "escape": ({ world }) => {
+          world.three?.pointerLock()
+          return null
+        },
+        "mb1": ({ world }) => {
+          world.three?.pointerLock()
+          return null
+        },
         "e": () => ({ actionId: "transform" })
       },
       press: {
@@ -51,9 +57,6 @@ export const Bird = () => Character({
       }
     }),
     actions: Actions({
-      escape: Action("escape", ({ world }) => {
-        world.three?.pointerLock()
-      }),
       transform: Action("transform", ({ entity, world, player }) => {
         const { position } = entity?.components ?? {}
         if (!position) return

@@ -38,7 +38,7 @@ export const InputSystem = ClientSystemBuilder({
       }
     })
 
-    renderer?.app.canvas.addEventListener("pointerdown", (event) => {
+    world.three?.canvas.addEventListener("pointerdown", (event) => {
       if (!joystickOn && CurrentJoystickPosition.active) return
       if (world.tick <= world.client!.clickThisFrame.value) return
 
@@ -61,6 +61,16 @@ export const InputSystem = ClientSystemBuilder({
 
       if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
+      if (key === "mb1") {
+        const pc = world.client?.playerCharacter()
+        if (pc) {
+          pc.components.input.inputMap.release[key]?.({
+            mouse, entity: pc, world, tick: world.tick, hold: 0
+          })
+          return
+        }
+      }
+
       world.client!.bufferDown.remove(key)
       world.client!.bufferUp.push({ key, mouse, tick: world.tick, hold: 0 })
     })
@@ -76,6 +86,16 @@ export const InputSystem = ClientSystemBuilder({
 
         const down = world.client?.bufferDown.get(keyName)
         if (!down) return
+
+        if (keyName === "escape") {
+          const pc = world.client?.playerCharacter()
+          if (pc) {
+            pc.components.input.inputMap.release[keyName]?.({
+              mouse, entity: pc, world, tick: world.tick, hold: down.hold
+            })
+            return
+          }
+        }
 
         // add to bufferUp
         world.client!.bufferUp.push({ key: keyName, mouse, tick: world.tick, hold: down.hold })
