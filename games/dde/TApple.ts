@@ -1,4 +1,4 @@
-import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
+import { Entity, Networked, NPC, PC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
 import { DDEState } from "./DDE";
 
 export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
@@ -15,43 +15,52 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
           if (removed) return
 
           // todo every player
-          const pc = world.client?.playerCharacter()
-          if (!pc) return
+          // const pc = world.client?.playerCharacter()
+          // if (!pc) return
 
-          const { position } = pc.components
+          const players = world.players()
 
-          const applePos = apple.components.position.data
+          for (const player of players) {
+            const character = player.components.controlling?.getCharacter(world)
+            if (!character) continue
 
-          const dist = XYZdistance(position.data, applePos)
+            const { position } = character.components
 
-          if (dist < 0.16) {
-            world.removeEntity(apple.id)
-            removed = true
+            // const { position } = pc.components
 
-            // visual cleanup 
-            world.three!.apples[apple.id]?.removeFromParent()
-            delete world.three!.apples[apple.id]
+            const applePos = apple.components.position.data
 
-            // sound effect
-            world.client?.soundManager.play("eat", 0.3)
+            const dist = XYZdistance(position.data, applePos)
 
-            if (position.data.flying) return
+            if (dist < 0.16) {
+              world.removeEntity(apple.id)
+              removed = true
 
-            // score
-            const state = world.game.state as DDEState
-            const playerId = world.client?.playerId() || ""
-            if (!state.applesEaten[playerId]) {
-              state.applesEaten[playerId] = 1
-              state.applesTimer[playerId] = world.tick
-            } else {
-              state.applesEaten[playerId] += 1
+              // visual cleanup 
+              world.three!.apples[apple.id]?.removeFromParent()
+              delete world.three!.apples[apple.id]
 
-              if (state.applesEaten[playerId] >= 10) {
-                const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000
-                console.log("Player has eaten 10 apples!", timeElapsed.toFixed(2), "seconds")
+              // sound effect
+              world.client?.soundManager.play("eat", 0.3)
 
-                state.applesEaten[playerId] = 0
-                delete state.applesTimer[playerId]
+              if (position.data.flying) return
+
+              // score
+              const state = world.game.state as DDEState
+              const playerId = world.client?.playerId() || ""
+              if (!state.applesEaten[playerId]) {
+                state.applesEaten[playerId] = 1
+                state.applesTimer[playerId] = world.tick
+              } else {
+                state.applesEaten[playerId] += 1
+
+                if (state.applesEaten[playerId] >= 10) {
+                  const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000
+                  console.log(`Player ${playerId} has eaten 10 apples!`, timeElapsed.toFixed(2), "seconds")
+
+                  state.applesEaten[playerId] = 0
+                  delete state.applesTimer[playerId]
+                }
               }
             }
           }

@@ -1,7 +1,7 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY, logPerf, TRenderer
+  Random, ComponentTypes, Data, Networked, XY, logPerf, TRenderer, PC
 } from "@piggo-gg/core"
 import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
@@ -38,6 +38,7 @@ export type World = {
   flipped: () => 1 | -1
   onTick: (_: { isRollback: boolean }) => void
   onRender: () => void
+  players: () => Entity<PC>[]
   queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter?: (entity: Entity<T>) => boolean) => Entity<T>[]
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
@@ -232,6 +233,9 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
           system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
         })
       }
+    },
+    players: () => {
+      return world.queryEntities<PC>(["pc"])
     },
     queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter: (entity: Entity<T>) => boolean = () => true) => {
       const entities = filterEntities(query, values(world.entities)) as Entity<T>[]

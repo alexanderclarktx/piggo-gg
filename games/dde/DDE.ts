@@ -58,15 +58,15 @@ const DDESystem = SystemBuilder({
       onTick: () => {
         const state = world.game.state as DDEState
 
-        const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
+        const characters = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         const t0 = performance.now()
-        for (const entity of entities) {
-          const { position } = entity.components
+        for (const character of characters) {
+          const { position } = character.components
           const { z, rotation, standing } = position.data
 
           // double-jump state cleanup
           if (standing) {
-            state.doubleJumped = state.doubleJumped.filter(id => id !== entity.id)
+            state.doubleJumped = state.doubleJumped.filter(id => id !== character.id)
           }
 
           // reset rotation
@@ -108,7 +108,7 @@ const DDESystem = SystemBuilder({
 
           const apple = TApple(xyz, 1 + numApples)
           world.addEntity(apple)
-          console.log("spawn apple", apple.id, xyz)
+          console.log("spawn apple", apple.id, world.tick)
         }
         logPerf("spawn apple", t1)
 
