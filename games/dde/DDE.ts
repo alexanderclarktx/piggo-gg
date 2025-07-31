@@ -46,7 +46,7 @@ const DDESystem = SystemBuilder({
   id: "DDESystem",
   init: (world) => {
 
-    // spawnTerrain(4)
+    spawnTerrain(24)
     let placed = false
 
     let i = 1
@@ -139,37 +139,39 @@ const DDESystem = SystemBuilder({
 
         // render blocks
         const t3 = performance.now()
-        // if (!placed) {
-        //   const dummy = new Object3D()
+        if (!placed) {
+          const dummy = new Object3D()
 
-        //   const chunk = XYtoChunk({ x: 1, y: 1 })
-        //   const neighbors = blocks.neighbors(chunk, 24)
+          console.log("placing")
 
-        //   const chunkData = blocks.visible(neighbors, false, true)
-        //   if (world.three?.blocks) world.three.blocks.count = chunkData.length
-        //   // console.log(`rendering ${chunkData.length} blocks`)
+          const chunk = XYtoChunk({ x: 1, y: 1 })
+          const neighbors = blocks.neighbors(chunk, 24)
 
-        //   for (let i = 0; i < chunkData.length; i++) {
-        //     placed = true
+          const chunkData = blocks.visible(neighbors, false, true)
+          if (world.three?.blocks) world.three.blocks.count = chunkData.length
+          // console.log(`rendering ${chunkData.length} blocks`)
 
-        //     const { x, y, z, type } = chunkData[i]
-        //     dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
-        //     dummy.updateMatrix()
+          for (let i = 0; i < chunkData.length; i++) {
+            placed = true
 
-        //     if (type === 10) {
-        //       world.three?.blocks?.setColorAt(i, new Color(0x00ee88))
-        //     } else if (type === 9) {
-        //       world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
-        //     } else if (type === 6) {
-        //       world.three?.blocks?.setColorAt(i, new Color(0x660088))
-        //     } else if (type === 11) {
-        //       world.three?.blocks?.setColorAt(i, new Color(0xF5F5DC))
-        //     }
+            const { x, y, z, type } = chunkData[i]
+            dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
+            dummy.updateMatrix()
 
-        //     world.three?.blocks?.setMatrixAt(i, dummy.matrix)
-        //     if (world.three?.blocks) world.three.blocks.instanceMatrix.needsUpdate = true
-        //   }
-        // }
+            if (type === 10) {
+              world.three?.blocks?.setColorAt(i, new Color(0x00ee88))
+            } else if (type === 9) {
+              world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
+            } else if (type === 6) {
+              world.three?.blocks?.setColorAt(i, new Color(0x660088))
+            } else if (type === 11) {
+              world.three?.blocks?.setColorAt(i, new Color(0xF5F5DC))
+            }
+
+            world.three?.blocks?.setMatrixAt(i, dummy.matrix)
+            if (world.three?.blocks) world.three.blocks.instanceMatrix.needsUpdate = true
+          }
+        }
         logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {

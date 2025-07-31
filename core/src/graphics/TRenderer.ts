@@ -108,8 +108,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       // tRenderer.canvas.id = "canvas"
       // parent?.appendChild(tRenderer.canvas)
 
-      // tRenderer.blocks = TBlockMesh()
-      // tRenderer.scene.add(tRenderer.blocks)
+      tRenderer.blocks = TBlockMesh()
+      tRenderer.scene.add(tRenderer.blocks)
 
       tRenderer.sphere = new InstancedMesh(
         new SphereGeometry(0.16),
@@ -216,23 +216,21 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.scene.add(ambient)
 
       // texture
-      // TL.load("dirt.png", (texture: Texture) => {
-      //   tRenderer.blocks!.material.map = texture
+      TL.load("dirt.png", (texture: Texture) => {
+        tRenderer.blocks!.material.map = texture
 
-      //   tRenderer.blocks!.material.needsUpdate = true
-      //   tRenderer.blocks!.material.visible = true
+        tRenderer.blocks!.material.needsUpdate = true
+        tRenderer.blocks!.material.visible = true
 
-      //   texture.magFilter = NearestFilter
-      //   texture.minFilter = LinearMipMapNearestFilter
-      // })
-
-      // const mat = tRenderer.blocks.material
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
 
       // roughness map
-      // TL.load("dirt_norm.png", (texture: Texture) => {
-      //   mat.roughnessMap = texture
-      //   tRenderer.blocks!.material.needsUpdate = true
-      // })
+      TL.load("dirt_norm.png", (texture: Texture) => {
+        tRenderer.blocks!.material.roughnessMap = texture
+        tRenderer.blocks!.material.needsUpdate = true
+      })
 
       // background
       TL.load("night.png", (texture: Texture) => {
@@ -264,70 +262,70 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sunSphere.position.copy(sun.position)
       tRenderer.scene.add(sunSphere)
 
-      // canvas.addEventListener("wheel", (event: WheelEvent) => {
+      // tRenderer.canvas.addEventListener("wheel", (event: WheelEvent) => {
       //   zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
       //   zoom = Math.max(1, Math.min(zoom, 10))
       // })
 
-      // GL.load("eagle.glb", (eagle) => {
-      //   tRenderer.eagle = eagle
-      //   eagle.scene.scale.set(0.05, 0.05, 0.05)
-      //   eagle.scene.position.set(3, 3, 3)
-      //   tRenderer.scene.add(eagle.scene)
+      GL.load("eagle.glb", (eagle) => {
+        tRenderer.eagle = eagle
+        eagle.scene.scale.set(0.05, 0.05, 0.05)
+        eagle.scene.position.set(3, 3, 3)
+        tRenderer.scene.add(eagle.scene)
 
-      //   eagle.scene.rotation.order = "YXZ"
+        eagle.scene.rotation.order = "YXZ"
 
-      //   const mixer = new AnimationMixer(eagle.scene)
-      //   mixer.clipAction(eagle.animations[0]).play()
+        const mixer = new AnimationMixer(eagle.scene)
+        mixer.clipAction(eagle.animations[0]).play()
 
-      //   tRenderer.mixers.push(mixer)
+        tRenderer.mixers.push(mixer)
 
-      //   const colors: Record<string, number> = {
-      //     Cylinder: 0x5C2421,
-      //     Cylinder_1: 0xE7C41C,
-      //     Cylinder_2: 0xffffff,
-      //     Cylinder_3: 0x632724
-      //   }
+        const colors: Record<string, number> = {
+          Cylinder: 0x5C2421,
+          Cylinder_1: 0xE7C41C,
+          Cylinder_2: 0xffffff,
+          Cylinder_3: 0x632724
+        }
 
-      //   eagle.scene.traverse((child) => {
-      //     if (child instanceof Mesh) {
-      //       child.material = new MeshStandardMaterial({ color: colors[child.name] })
-      //       child.castShadow = true
-      //       child.receiveShadow = true
-      //     }
-      //   })
-      // })
+        eagle.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.material = new MeshStandardMaterial({ color: colors[child.name] })
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+      })
 
-      // GL.load("ugly-duckling.glb", (duck) => {
-      //   tRenderer.duck = duck
-      //   duck.scene.scale.set(0.08, 0.08, 0.08)
-      //   tRenderer.scene.add(duck.scene)
+      GL.load("ugly-duckling.glb", (duck) => {
+        tRenderer.duck = duck
+        duck.scene.scale.set(0.08, 0.08, 0.08)
+        tRenderer.scene.add(duck.scene)
 
-      //   const mixer = new AnimationMixer(duck.scene)
-      //   mixer.clipAction(duck.animations[1]).play()
+        const mixer = new AnimationMixer(duck.scene)
+        mixer.clipAction(duck.animations[1]).play()
 
-      //   tRenderer.mixers.push(mixer)
+        tRenderer.mixers.push(mixer)
 
-      //   duck.scene.traverse((child) => {
-      //     if (child instanceof Mesh) {
-      //       child.castShadow = true
-      //       child.receiveShadow = true
-      //     }
-      //   })
-      // })
+        duck.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+      })
 
-      // GL.load("apple.glb", (apple) => {
-      //   apple.scene.scale.set(0.16, 0.16, 0.16)
+      GL.load("apple.glb", (apple) => {
+        apple.scene.scale.set(0.16, 0.16, 0.16)
 
-      //   tRenderer.apples["apple-0"] = apple.scene
+        tRenderer.apples["apple-0"] = apple.scene
 
-      //   apple.scene.traverse((child) => {
-      //     if (child instanceof Mesh) {
-      //       child.castShadow = true
-      //       child.receiveShadow = true
-      //     }
-      //   })
-      // })
+        apple.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+      })
 
       // prevent right-click
       tRenderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
