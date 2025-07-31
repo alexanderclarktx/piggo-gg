@@ -23,7 +23,7 @@ export const DDE: GameBuilder<DDEState> = {
 
     return {
       id: "Duck Duck Eagle",
-      netcode: "delay",
+      netcode: "rollback",
       state: {
         doubleJumped: [],
         applesEaten: {},
