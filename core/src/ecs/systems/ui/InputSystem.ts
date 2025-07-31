@@ -8,6 +8,8 @@ export var chatIsOpen = false
 export var mouse: XY = { x: 0, y: 0 }
 export var mouseScreen: XY = { x: 0, y: 0 }
 
+export let localAim: XY = { x: 0, y: 0 }
+
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
@@ -32,9 +34,11 @@ export const InputSystem = ClientSystemBuilder({
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
-        pc.components.position.moveAim(
-          { x: event.movementX * 0.001, y: event.movementY * 0.001 }
-        )
+        // pc.components.position.moveAim(
+        //   { x: event.movementX * 0.001, y: event.movementY * 0.001 }
+        // )
+        localAim.x = round(localAim.x - event.movementX * 0.001, 3)
+        localAim.y = round(localAim.y - event.movementY * 0.001, 3)
       }
     })
 
@@ -183,7 +187,13 @@ export const InputSystem = ClientSystemBuilder({
 
         if (actions.actionMap["point"]) {
           world.actions.push(world.tick + 1, character.id,
-            { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+            { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta, aim: position.data.aim } }
+          )
+        }
+      } else if (world.three) {
+        if (actions.actionMap["point"]) {
+          world.actions.push(world.tick + 1, character.id,
+            { actionId: "point", playerId: world.client?.playerId(), params: { pointing: 0, pointingDelta: 0, aim: { ...localAim } } }
           )
         }
       }

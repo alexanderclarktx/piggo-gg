@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Collider, Input, Networked, Position, Team, World, XYZ } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, Networked, Point, Position, Team, World, XYZ } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
@@ -66,6 +66,7 @@ export const Bird = () => Character({
       }
     }),
     actions: Actions({
+      point: Point,
       transform: Action("transform", ({ entity, world, player }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
