@@ -103,8 +103,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       // tRenderer.canvas.id = "canvas"
       // parent?.appendChild(tRenderer.canvas)
 
-      tRenderer.blocks = TBlockMesh()
-      tRenderer.scene.add(tRenderer.blocks)
+      // tRenderer.blocks = TBlockMesh()
+      // tRenderer.scene.add(tRenderer.blocks)
 
       tRenderer.sphere = new InstancedMesh(
         new SphereGeometry(0.16),
@@ -211,23 +211,23 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.scene.add(ambient)
 
       // texture
-      TL.load("dirt.png", (texture: Texture) => {
-        tRenderer.blocks!.material.map = texture
+      // TL.load("dirt.png", (texture: Texture) => {
+      //   tRenderer.blocks!.material.map = texture
 
-        tRenderer.blocks!.material.needsUpdate = true
-        tRenderer.blocks!.material.visible = true
+      //   tRenderer.blocks!.material.needsUpdate = true
+      //   tRenderer.blocks!.material.visible = true
 
-        texture.magFilter = NearestFilter
-        texture.minFilter = LinearMipMapNearestFilter
-      })
+      //   texture.magFilter = NearestFilter
+      //   texture.minFilter = LinearMipMapNearestFilter
+      // })
 
-      const mat = tRenderer.blocks.material
+      // const mat = tRenderer.blocks.material
 
       // roughness map
-      TL.load("dirt_norm.png", (texture: Texture) => {
-        mat.roughnessMap = texture
-        tRenderer.blocks!.material.needsUpdate = true
-      })
+      // TL.load("dirt_norm.png", (texture: Texture) => {
+      //   mat.roughnessMap = texture
+      //   tRenderer.blocks!.material.needsUpdate = true
+      // })
 
       // background
       TL.load("night.png", (texture: Texture) => {
