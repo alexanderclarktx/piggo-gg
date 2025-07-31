@@ -14,7 +14,7 @@ export const BirdHUDSystem = SystemBuilder({
 
     const aButton = KeyButton({ text: "A", left: left - 50, top })
     const dButton = KeyButton({ text: "D", left: left + 50, top })
-    const sButton = KeyButton({ text: "S", left, top, visible: false })
+    const sButton = KeyButton({ text: "S", left, top })
     const wButton = KeyButton({ text: "W", left, top: top - 50 })
     const eButton = KeyButton({ text: "E", left, top: top - 150 })
 
@@ -84,7 +84,6 @@ export const BirdHUDSystem = SystemBuilder({
 
           const visibility = position.data.flying ? "hidden" : "visible"
 
-          sButton.style.visibility = visibility
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 

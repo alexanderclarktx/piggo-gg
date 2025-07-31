@@ -11,10 +11,6 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   return { vec, dir }
 }
 
-// const vecToXYZ = (vec: Vector3 | undefined): XYZ => ({
-//   x: vec?.x ?? 0, y: vec?.y ?? 0, z: vec?.z ?? 0
-// })
-
 export const Bird = () => Character({
   id: "bird",
   components: {
@@ -49,24 +45,24 @@ export const Bird = () => Character({
         " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
 
         // sprint
-        "shift,w,a": () => ({ actionId: "move", params: { key: "wa", sprint: true } }),
-        "shift,w,d": () => ({ actionId: "move", params: { key: "wd", sprint: true } }),
-        "shift,a,s": () => ({ actionId: "move", params: { key: "as", sprint: true } }),
-        "shift,d,s": () => ({ actionId: "move", params: { key: "ds", sprint: true } }),
-        "shift,w": () => ({ actionId: "move", params: { key: "w", sprint: true } }),
-        "shift,a": () => ({ actionId: "move", params: { key: "a", sprint: true } }),
-        "shift,s": () => ({ actionId: "move", params: { key: "s", sprint: true } }),
-        "shift,d": () => ({ actionId: "move", params: { key: "d", sprint: true } }),
+        "shift,w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", sprint: true, ...upAndDir(world) } }),
+        "shift,w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", sprint: true, ...upAndDir(world) } }),
+        "shift,a,s": ({ world }) => ({ actionId: "move", params: { key: "as", sprint: true, ...upAndDir(world) } }),
+        "shift,d,s": ({ world }) => ({ actionId: "move", params: { key: "ds", sprint: true, ...upAndDir(world) } }),
+        "shift,w": ({ world }) => ({ actionId: "move", params: { key: "w", sprint: true, ...upAndDir(world) } }),
+        "shift,a": ({ world }) => ({ actionId: "move", params: { key: "a", sprint: true, ...upAndDir(world) } }),
+        "shift,s": ({ world }) => ({ actionId: "move", params: { key: "s", sprint: true, ...upAndDir(world) } }),
+        "shift,d": ({ world }) => ({ actionId: "move", params: { key: "d", sprint: true, ...upAndDir(world) } }),
 
         // move
-        "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
-        "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
-        "a,s": () => ({ actionId: "move", params: { key: "as" } }),
-        "d,s": () => ({ actionId: "move", params: { key: "ds" } }),
+        "w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", ...upAndDir(world) } }),
+        "w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", ...upAndDir(world) } }),
+        "a,s": ({ world }) => ({ actionId: "move", params: { key: "as", ...upAndDir(world) } }),
+        "d,s": ({ world }) => ({ actionId: "move", params: { key: "ds", ...upAndDir(world) } }),
         "w": ({ world }) => ({ actionId: "move", params: { key: "w", ...upAndDir(world) } }),
-        "a": () => ({ actionId: "move", params: { key: "a" } }),
-        "s": () => ({ actionId: "move", params: { key: "s" } }),
-        "d": () => ({ actionId: "move", params: { key: "d" } })
+        "a": ({ world }) => ({ actionId: "move", params: { key: "a", ...upAndDir(world) } }),
+        "s": ({ world }) => ({ actionId: "move", params: { key: "s", ...upAndDir(world) } }),
+        "d": ({ world }) => ({ actionId: "move", params: { key: "d", ...upAndDir(world) } })
       }
     }),
     actions: Actions({
@@ -108,8 +104,6 @@ export const Bird = () => Character({
         const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
         const dir = new Vector3(params.dir.x, params.dir.y, params.dir.z)
 
-        console.log("move")
-
         const { position } = entity?.components ?? {}
         if (!position) return
 
@@ -130,9 +124,7 @@ export const Bird = () => Character({
         } else if (params.key === "w") {
           toward.copy(dir).normalize()
         } else if (params.key === "s") {
-          if (!position.data.flying) {
-            toward.copy(dir).negate().normalize()
-          }
+          toward.copy(dir).negate().normalize()
         } else if (params.key === "wa") {
           const forward = dir.clone().normalize()
           const left = new Vector3().crossVectors(up, dir).normalize()
@@ -146,19 +138,17 @@ export const Bird = () => Character({
 
           rotating = -0.1
         } else if (params.key === "as") {
-          if (!position.data.flying) {
+          const backward = dir.clone().negate().normalize()
+          const left = new Vector3().crossVectors(up, dir).normalize()
+          toward.copy(backward.add(left).normalize())
 
-            const backward = dir.clone().negate().normalize()
-            const left = new Vector3().crossVectors(up, dir).normalize()
-            toward.copy(backward.add(left).normalize())
-          }
+          rotating = 0.1
         } else if (params.key === "ds") {
-          if (!position.data.flying) {
+          const backward = dir.clone().negate().normalize()
+          const right = new Vector3().crossVectors(dir, up).normalize()
+          toward.copy(backward.add(right).normalize())
 
-            const backward = dir.clone().negate().normalize()
-            const right = new Vector3().crossVectors(dir, up).normalize()
-            toward.copy(backward.add(right).normalize())
-          }
+          rotating = -0.1
         }
 
         if (rotating) position.data.rotating = rotating
