@@ -48,7 +48,7 @@ export const DelaySyncer = (): Syncer => ({
 
         if (!message.serializedEntities[entityId]) {
           console.log("DELETE ENTITY", entityId)
-          // world.removeEntity(entityId)
+          world.removeEntity(entityId)
         }
       }
     })
