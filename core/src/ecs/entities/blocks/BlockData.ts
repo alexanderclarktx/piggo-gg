@@ -1,6 +1,6 @@
 import {
-  BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC,
+  BlockDimensions, floor, round, Block, XY, XYZ, BlockTree,
+  BlockType, BlockTypeInt, logPerf, hypot, angleCC,
   keys, World, BlockTypeString, BlockItem, randomHash
 } from "@piggo-gg/core"
 
@@ -396,7 +396,7 @@ export const blocks = BlockData()
 
 export const trees: XYZ[] = []
 
-export const spawnChunk = (chunk: XY) => {
+export const spawnChunk = (chunk: XY, world: World) => {
   const size = 4
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
@@ -404,11 +404,11 @@ export const spawnChunk = (chunk: XY) => {
       const x = i + chunk.x * size
       const y = j + chunk.y * size
 
-      let height = sample({ x, y, factor: 15, octaves: 3 })
+      let height = world.random.noise({ x, y, factor: 15, octaves: 3 })
 
       for (let z = 0; z < height; z++) {
 
-        const type = range<BlockType>(z, [
+        const type = world.random.range<BlockType>(z, [
           [0, "saphire"],
           [1, "saphire"],
           [7, "grass"],
@@ -417,7 +417,7 @@ export const spawnChunk = (chunk: XY) => {
 
         blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
-        if (z === height - 1 && type === "grass" && randomInt(200) === 1) {
+        if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
 
           let h = 0
 
@@ -445,11 +445,11 @@ export const spawnTiny = () => {
   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
 }
 
-export const spawnTerrain = (num: number = 10) => {
+export const spawnTerrain = (num: number = 10, world: World) => {
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
-      spawnChunk(chunk)
+      spawnChunk(chunk, world)
     }
   }
 }
