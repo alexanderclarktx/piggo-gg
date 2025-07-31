@@ -85,7 +85,7 @@ const DDESystem = SystemBuilder({
 
         // spawn apples
         const t1 = performance.now()
-        if (world.tick % 10 === 0 && numApples < 50) {
+        if (world.tick % 10 === 0 && world.tick > 40 && numApples < 50) {
 
           const randomTree = trees[world.random.int(trees.length - 1)]
 
@@ -125,8 +125,8 @@ const DDESystem = SystemBuilder({
           dummy.position.set(x, z, y)
           dummy.updateMatrix()
 
-          if (!world.three.apples[appleEntity.id]) {
-            const apple = world.three.apples["apple-0"].clone(true)
+          if (!world.three.apples[appleEntity.id] && world.three.apples["tapple-0"]) {
+            const apple = world.three.apples["tapple-0"].clone(true)
 
             apple.position.set(x, z, y)
             apple.updateMatrix()
@@ -136,6 +136,18 @@ const DDESystem = SystemBuilder({
           }
         }
         logPerf("render apples", t2)
+
+        // unrender apples
+        const appleEntityIds = appleEntities.map(e => e.id)
+        for (const renderedApple of keys(world.three?.apples ?? {})) {
+          if (renderedApple === "tapple-0") continue
+
+          if (!appleEntityIds.includes(renderedApple)) {
+            world.three!.apples[renderedApple]?.removeFromParent()
+            delete world.three!.apples[renderedApple]
+            console.log("removed apple", renderedApple)
+          }
+        }
 
         // render blocks
         const t3 = performance.now()
