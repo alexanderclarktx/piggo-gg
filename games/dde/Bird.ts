@@ -1,6 +1,19 @@
-import { Action, Actions, Character, Collider, Input, Networked, Position, Team } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, Networked, Position, Team, World, XYZ } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
+
+const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
+  const camera = world.three?.camera
+  if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
+
+  const vec = { ...camera.c.up }
+  const dir = { ...camera.worldDirection(world) }
+  return { vec, dir }
+}
+
+// const vecToXYZ = (vec: Vector3 | undefined): XYZ => ({
+//   x: vec?.x ?? 0, y: vec?.y ?? 0, z: vec?.z ?? 0
+// })
 
 export const Bird = () => Character({
   id: "bird",
@@ -50,7 +63,7 @@ export const Bird = () => Character({
         "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
         "a,s": () => ({ actionId: "move", params: { key: "as" } }),
         "d,s": () => ({ actionId: "move", params: { key: "ds" } }),
-        "w": () => ({ actionId: "move", params: { key: "w" } }),
+        "w": ({ world }) => ({ actionId: "move", params: { key: "w", ...upAndDir(world) } }),
         "a": () => ({ actionId: "move", params: { key: "a" } }),
         "s": () => ({ actionId: "move", params: { key: "s" } }),
         "d": () => ({ actionId: "move", params: { key: "d" } })
@@ -89,26 +102,29 @@ export const Bird = () => Character({
         position.setVelocity({ z: 0.04 })
         world.client?.soundManager.play("bubble")
       }),
-      move: Action("move", ({ entity, params, world }) => {
-        const camera = world.three?.camera
-        if (!camera) return
+      move: Action("move", ({ entity, params }) => {
+        if (!params.vec || !params.dir) return
+
+        const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
+        const dir = new Vector3(params.dir.x, params.dir.y, params.dir.z)
+
+        console.log("move")
 
         const { position } = entity?.components ?? {}
         if (!position) return
 
         if (!["wa", "wd", "as", "ds", "a", "d", "w", "s", "up"].includes(params.key)) return
 
-        const dir = camera.worldDirection(world)
         const toward = new Vector3()
 
         let rotating = 0
 
         if (params.key === "a") {
-          toward.crossVectors(camera.c.up, dir).normalize()
+          toward.crossVectors(up, dir).normalize()
 
           rotating = 0.1
         } else if (params.key === "d") {
-          toward.crossVectors(dir, camera.c.up).normalize()
+          toward.crossVectors(dir, up).normalize()
 
           rotating = -0.1
         } else if (params.key === "w") {
@@ -119,13 +135,13 @@ export const Bird = () => Character({
           }
         } else if (params.key === "wa") {
           const forward = dir.clone().normalize()
-          const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
+          const left = new Vector3().crossVectors(up, dir).normalize()
           toward.copy(forward.add(left).normalize())
 
           rotating = 0.1
         } else if (params.key === "wd") {
           const forward = dir.clone().normalize()
-          const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
+          const right = new Vector3().crossVectors(dir, up).normalize()
           toward.copy(forward.add(right).normalize())
 
           rotating = -0.1
@@ -133,14 +149,14 @@ export const Bird = () => Character({
           if (!position.data.flying) {
 
             const backward = dir.clone().negate().normalize()
-            const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
+            const left = new Vector3().crossVectors(up, dir).normalize()
             toward.copy(backward.add(left).normalize())
           }
         } else if (params.key === "ds") {
           if (!position.data.flying) {
 
             const backward = dir.clone().negate().normalize()
-            const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
+            const right = new Vector3().crossVectors(dir, up).normalize()
             toward.copy(backward.add(right).normalize())
           }
         }

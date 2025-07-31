@@ -70,7 +70,7 @@ export const Api = (): Api => {
         // set world id for this client
         ws.data.worldId = lobbyId
 
-        console.log(`lobby created: ${lobbyId}`)
+        console.log(`created lobby: ${lobbyId} game: ${api.worlds[lobbyId].world.game.id}`)
 
         return { id: data.id, lobbyId }
       },

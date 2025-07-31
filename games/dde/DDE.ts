@@ -23,7 +23,7 @@ export const DDE: GameBuilder<DDEState> = {
 
     return {
       id: "Duck Duck Eagle",
-      netcode: "rollback",
+      netcode: "delay",
       state: {
         doubleJumped: [],
         applesEaten: {},
@@ -139,7 +139,7 @@ const DDESystem = SystemBuilder({
 
         // render blocks
         const t3 = performance.now()
-        if (!placed) {
+        if (!placed && world.mode === "client") {
           const dummy = new Object3D()
 
           console.log("placing")

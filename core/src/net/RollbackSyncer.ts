@@ -2,7 +2,7 @@ import {
   ceil, entityConstructors, entries, GameData, keys, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
-// TODO not generic across games (dude/spike)
+// TODO not generic across games (bird/spike)
 export const RollbackSyncer = (world: World): Syncer => {
 
   let last = 0
@@ -20,7 +20,7 @@ export const RollbackSyncer = (world: World): Syncer => {
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-        if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+        if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
           for (const action of actions) {
             if (action.actionId !== "spike") {
               world.actions.push(world.tick, entityId, { ...action, offline: true })
@@ -34,7 +34,7 @@ export const RollbackSyncer = (world: World): Syncer => {
     // spike
     for (const [tick, actionSet] of entries(message.actions)) {
       for (const [entityId, actions] of entries(actionSet)) {
-        if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+        if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
           for (const action of actions) {
             if (action.actionId === "spike") {
               const pushed = world.actions.push(Number(tick), entityId, { ...action, offline: true })
@@ -47,7 +47,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
     // deserialize
     keys(message.serializedEntities).forEach((entityId) => {
-      if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+      if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
         world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
       }
     })
@@ -59,7 +59,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
-        if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+        if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
           continue
         }
         world.actions.set(message.tick, entityId, actions)
@@ -126,7 +126,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       if (message.actions[message.tick]) {
         for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+          if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
             continue
           }
 
@@ -166,7 +166,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       if (!rollback) {
         for (const [entityId, serializedEntity] of entries(remote)) {
-          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+          if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
             continue
           }
 
@@ -193,7 +193,7 @@ export const RollbackSyncer = (world: World): Syncer => {
         keys(message.serializedEntities).forEach((entityId) => {
 
           // ignore other players' characters
-          if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+          if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
             return
           }
 
@@ -225,7 +225,7 @@ export const RollbackSyncer = (world: World): Syncer => {
         // set actions
         if (message.actions[message.tick]) {
           entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
-            if (entityId.startsWith("dude") && entityId !== world.client?.playerCharacter()?.id) {
+            if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
               return
             }
             world.actions.set(message.tick, entityId, actions)
