@@ -299,7 +299,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
         tRenderer.apples["tapple-0"] = apple.scene
-        console.log("apple loaded tapple-0")
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {
