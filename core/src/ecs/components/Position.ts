@@ -65,12 +65,15 @@ export type PositionProps = {
 
 // the entity's position in the world
 export const Position = (props: PositionProps = {}): Position => {
+
+  const x = props.x ? round(props.x, 3) : 0
+  const y = props.y ? round(props.y, 3) : 0
+  const z = props.z ? round(props.z, 3) : 0
+
   const position: Position = {
     type: "position",
     data: {
-      x: props.x ?? 0,
-      y: props.y ?? 0,
-      z: props.z ?? 0,
+      x, y, z,
       facing: 1,
       follows: props.follows ?? undefined,
       friction: props.friction ?? false,
