@@ -1,4 +1,4 @@
-import { Entity, Networked, NPC, PC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
+import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
 import { DDEState } from "./DDE";
 
 export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
@@ -14,10 +14,6 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
         behavior: (_, world) => {
           if (removed) return
 
-          // todo every player
-          // const pc = world.client?.playerCharacter()
-          // if (!pc) return
-
           const players = world.players()
 
           for (const player of players) {
@@ -25,8 +21,6 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
             if (!character) continue
 
             const { position } = character.components
-
-            // const { position } = pc.components
 
             const applePos = apple.components.position.data
 

@@ -1,7 +1,9 @@
 import {
   blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
   SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim
+  TCameraSystem, trees, values, XYtoChunk, localAim,
+  hypot,
+  sqrt
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap, Skeleton, SkeletonHelper } from "three"
 import { Bird } from "./Bird"
@@ -198,7 +200,6 @@ const DDESystem = SystemBuilder({
 
           const chunkData = blocks.visible(neighbors, false, true)
           if (world.three?.blocks) world.three.blocks.count = chunkData.length
-          // console.log(`rendering ${chunkData.length} blocks`)
 
           for (let i = 0; i < chunkData.length; i++) {
             placed = true
@@ -226,6 +227,7 @@ const DDESystem = SystemBuilder({
       onRender: (_, delta) => {
         const players = world.players()
 
+        // update player positions
         for (const player of players) {
           const character = player.components.controlling?.getCharacter(world)
           if (!character) continue
@@ -233,47 +235,32 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
+          const { rotation, rotating, flying } = position.data
+
           const interpolated = position.interpolate(world, delta)
 
-          const { duck, eagle } = world.three?.playerAssets[character.id] ?? {}
-          if (duck) {
-            duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
-            duck.rotation.y = localAim.x + PI / 2
-            duck.visible = !position.data.flying
-          }
+          if (!world.three?.playerAssets[character.id]) continue
 
-          if (eagle) {
-            eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-            eagle.rotation.y = localAim.x
-            eagle.rotation.x = localAim.y
-            eagle.visible = position.data.flying
+          const { duck, eagle, mixers } = world.three?.playerAssets[character.id]
+
+          duck.visible = !position.data.flying
+          duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+          duck.rotation.y = localAim.x + PI / 2
+
+          eagle.visible = position.data.flying
+          eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
+          eagle.rotation.y = localAim.x
+          eagle.rotation.x = localAim.y
+          eagle.rotation.z = rotation - rotating * (40 - delta) / 40
+
+          for (const mixer of mixers) {
+            if (flying) {
+              mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
+            } else {
+              mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
+            }
           }
         }
-
-        // const interpolated = pc.components.position.interpolate(world, delta)
-
-        // const { eagles, ducks, sphere2 } = world.three
-
-        // sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-        // duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y) // 0.055
-
-        // if (eagle && duck) {
-        //   const { rotation, rotating } = pc.components.position.data
-
-        //   eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-
-        //   eagle.scene.rotation.y = localAim.x
-        //   eagle.scene.rotation.x = localAim.y
-        //   eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
-
-        //   duck.scene.rotation.y = localAim.x + PI / 2
-        // }
-
-        // const { velocity } = pc.components.position.data
-
-        // rotate the sphere
-        // world.three?.sphere2?.rotateOnWorldAxis(new Vector3(1, 0, 0), delta * velocity.y * 0.01)
-        // world.three?.sphere2?.rotateOnWorldAxis(new Vector3(0, 0, 1), delta * velocity.x * 0.01)
       }
     }
   }

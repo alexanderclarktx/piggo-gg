@@ -141,25 +141,25 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         if (radial) radial.update(world)
 
-        const { playerAssets } = tRenderer
+        // const { playerAssets } = tRenderer
 
-        for (const [id, { mixers }] of entries(playerAssets)) {
-          const character = world.entity(id)
-          if (!character) continue
+        // for (const [id, { mixers }] of entries(playerAssets)) {
+        //   const character = world.entity(id)
+        //   if (!character) continue
 
-          const { position } = character.components
-          if (!position) continue
+        //   const { position } = character.components
+        //   if (!position) continue
 
-          const { flying } = position.data
+        //   const { flying } = position.data
 
-          for (const mixer of mixers) {
-            if (flying) {
-              mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
-            } else {
-              mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
-            }
-          }
-        }
+        //   for (const mixer of mixers) {
+        //     if (flying) {
+        //       mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
+        //     } else {
+        //       mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
+        //     }
+        //   }
+        // }
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
