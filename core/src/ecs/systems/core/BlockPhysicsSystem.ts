@@ -25,70 +25,15 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           position.localVelocity = { ...position.data.velocity }
 
-          // zSweep
-
-          let wouldGo = {
-            x, y,
-            z: z + velocity.z + 0.1 * sign(velocity.z)
-          }
-
-          let ijk = {
-            x: floor((0.15 + wouldGo.x) / 0.3),
-            y: floor((0.15 + wouldGo.y) / 0.3),
-            z: floor((0.01 + wouldGo.z) / 0.3)
-          }
-
-          const zSweep = blocks.hasIJK(ijk)
-
-          if (zSweep) {
-            // if (mode === "global") console.log("zSweep", world.tick)
-
-            const blockMin = {
-              x: ijk.x * blockSize - 0.15,
-              y: ijk.y * blockSize - 0.15,
-              z: ijk.z * blockSize
-            }
-
-            const blockMax = {
-              x: blockMin.x + blockSize,
-              y: blockMin.y + blockSize,
-              z: blockMin.z + blockSize
-            }
-
-            if (velocity.z > 0 && wouldGo.z > blockMin.z) {
-              if (mode === "local") {
-                position.localVelocity.z = round(blockMin.z - 0.1, 3) - position.data.z
-              } else {
-                position.data.z = round(blockMin.z - 0.1, 3)
-                position.data.velocity.z = 0
-                position.data.standing = false
-              }
-            } else if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
-              if (mode === "local") {
-                position.localVelocity.z = round(blockMax.z, 3) - position.data.z
-              } else {
-                position.data.z = round(blockMax.z, 3)
-                position.data.velocity.z = 0
-                position.data.standing = true
-              }
-            } else if (mode !== "local") {
-              position.data.standing = false
-              position.data.z += position.data.velocity.z
-            }
-          } else if (mode !== "local") {
-            position.data.standing = false
-            position.data.z += position.data.velocity.z
-          }
-
           // ySweep
 
-          wouldGo = {
+          let wouldGo = {
             x: x,
             y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
             z: z
           }
 
-          ijk = {
+          let ijk = {
             x: floor((0.15 + wouldGo.x) / 0.3),
             y: floor((0.15 + wouldGo.y) / 0.3),
             z: floor((0.01 + wouldGo.z) / 0.3)
@@ -285,6 +230,61 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                 }
               }
             }
+          }
+
+          // zSweep
+
+          wouldGo = {
+            x, y,
+            z: z + velocity.z + 0.1 * sign(velocity.z)
+          }
+
+          ijk = {
+            x: floor((0.15 + wouldGo.x) / 0.3),
+            y: floor((0.15 + wouldGo.y) / 0.3),
+            z: floor((0.01 + wouldGo.z) / 0.3)
+          }
+
+          const zSweep = blocks.hasIJK(ijk)
+
+          if (zSweep) {
+            // if (mode === "global") console.log("zSweep", world.tick)
+
+            const blockMin = {
+              x: ijk.x * blockSize - 0.15,
+              y: ijk.y * blockSize - 0.15,
+              z: ijk.z * blockSize
+            }
+
+            const blockMax = {
+              x: blockMin.x + blockSize,
+              y: blockMin.y + blockSize,
+              z: blockMin.z + blockSize
+            }
+
+            if (velocity.z > 0 && wouldGo.z > blockMin.z) {
+              if (mode === "local") {
+                position.localVelocity.z = round(blockMin.z - 0.1, 3) - position.data.z
+              } else {
+                position.data.z = round(blockMin.z - 0.1, 3)
+                position.data.velocity.z = 0
+                position.data.standing = false
+              }
+            } else if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
+              if (mode === "local") {
+                position.localVelocity.z = round(blockMax.z, 3) - position.data.z
+              } else {
+                position.data.z = round(blockMax.z, 3)
+                position.data.velocity.z = 0
+                position.data.standing = true
+              }
+            } else if (mode !== "local") {
+              position.data.standing = false
+              position.data.z += position.data.velocity.z
+            }
+          } else if (mode !== "local") {
+            position.data.standing = false
+            position.data.z += position.data.velocity.z
           }
 
           if (mode === "local") return
