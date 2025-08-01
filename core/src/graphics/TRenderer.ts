@@ -15,11 +15,16 @@ export type TRenderer = {
   canvas: HTMLCanvasElement
   camera: TCamera
   debug: boolean
-  ducks: Record<string, Group<Object3DEventMap>>
-  eagles: Record<string, Group<Object3DEventMap>>
+  playerAssets: Record<string, {
+    duck: Group<Object3DEventMap>
+    eagle: Group<Object3DEventMap>
+    mixers: AnimationMixer[]
+  }>
+  // ducks: Record<string, Group<Object3DEventMap>>
+  // eagles: Record<string, Group<Object3DEventMap>>
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
-  mixers: AnimationMixer[]
+  // mixers: Record<string, AnimationMixer>
   scene: Scene
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
@@ -50,10 +55,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     sphere: undefined,
     sphere2: undefined,
     blocks: undefined,
-    mixers: [],
+    playerAssets: {},
+    // mixers: {},
     debug: false,
-    ducks: {},
-    eagles: {},
+    // ducks: {},
+    // eagles: {},
     duck: undefined,
     eagle: undefined,
     resize: () => {
@@ -144,9 +150,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           // visibility & animations
         const pc = world.client?.playerCharacter()
-        const { ducks, eagles, debug, sphere, sphere2 } = tRenderer
+        const { playerAssets } = tRenderer
 
-        for (const [id, duck] of entries(ducks)) {
+        for (const [id, { mixers }] of entries(playerAssets)) {
           const character = world.entity(id)
           if (!character) continue
 
@@ -155,32 +161,14 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           const { flying } = position.data
 
-          // animations
-          if (flying) {
-            for (const mixer of tRenderer.mixers) {
+          for (const mixer of mixers) {
+            if (flying) {
               mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
-            }
-          } else {
-            for (const mixer of tRenderer.mixers) {
+            } else {
               mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
             }
           }
         }
-
-        // for (const [id, eagle] of entries(eagles)) {
-        //   const character = world.entity(id)
-        //   if (!character) continue
-
-        //   const { position } = character.components
-        //   if (!position) continue
-
-        //   const { flying } = position.data
-
-        //   // visibility
-        //   eagle.visible = debug ? false : flying
-        // }
-
-
 
         // if (pc && duck && eagle) {
 
@@ -294,7 +282,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         const mixer = new AnimationMixer(eagle.scene)
         mixer.clipAction(eagle.animations[0]).play()
 
-        tRenderer.mixers.push(mixer)
+        // tRenderer.mixers.
 
         const colors: Record<string, number> = {
           Cylinder: 0x5C2421,

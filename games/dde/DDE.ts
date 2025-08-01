@@ -150,8 +150,8 @@ const DDESystem = SystemBuilder({
         // render ducks and eagles
         for (const character of characters) {
           if (!world.three) continue
-          if (!world.three.ducks[character.id]) {
-            if (!world.three.duck) continue
+          if (!world.three.playerAssets[character.id]) {
+            if (!world.three.duck || !world.three.eagle) continue
 
             const { position } = character.components
 
@@ -164,11 +164,22 @@ const DDESystem = SystemBuilder({
             duck.frustumCulled = false
             duck.scale.set(0.08, 0.08, 0.08)
 
-            world.three.ducks[character.id] = duck
+            const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
 
-            const mixer = new AnimationMixer(duck)
-            mixer.clipAction(duck.animations[1]).play()
-            world.three.mixers.push(mixer)
+            world.three.scene.add(eagle)
+
+            eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
+            eagle.frustumCulled = false
+
+            const duckMixer = new AnimationMixer(duck)
+            duckMixer.clipAction(duck.animations[1]).play()
+
+            // const eagleMixer = new AnimationMixer(eagle)
+            // eagleMixer.clipAction(eagle.animations[0]).play()
+
+            world.three.playerAssets[character.id] = {
+              duck, eagle, mixers: [duckMixer]
+            }
 
             console.log("added duck", character.id, duck)
           }
@@ -221,14 +232,20 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
-          const duck = world.three?.ducks[character.id]
-          if (!duck) continue
-
           const interpolated = position.interpolate(world, delta)
 
-          duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+          const {duck, eagle} = world.three?.playerAssets[character.id] ?? {}
+          if (duck) {
+            duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
           duck.rotation.y = localAim.x + PI / 2
           duck.visible = !position.data.flying
+          }
+
+          if (eagle) {
+            eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
+            eagle.rotation.y = localAim.x
+            eagle.visible = position.data.flying
+          }
         }
 
         // const interpolated = pc.components.position.interpolate(world, delta)
