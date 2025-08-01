@@ -1,5 +1,5 @@
 import { Component, Entity, Position, World } from "@piggo-gg/core"
-// import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat"
+import { Collider as RapierCollider, ColliderDesc, RigidBody, RigidBodyDesc } from "@dimforge/rapier2d-compat"
 
 export type ColliderShapes = "ball" | "cuboid" | "line"
 
@@ -45,15 +45,15 @@ export const ColliderGroups = {
 } as const
 
 export type Collider = Component<"collider"> & {
-  // body: RigidBody | undefined
-  // bodyDesc: RigidBodyDesc
-  // colliderDesc: ColliderDesc
+  body: RigidBody | undefined
+  bodyDesc: RigidBodyDesc
+  colliderDesc: ColliderDesc
   cullable: boolean
   group: keyof typeof ColliderGroups
   hittable: boolean
   isStatic: boolean
   priority: number
-  // rapierCollider: RapierCollider | undefined
+  rapierCollider: RapierCollider | undefined
   sensor: SensorCallback
   type: "collider"
   setGroup: (group: keyof typeof ColliderGroups) => void
@@ -82,45 +82,45 @@ export const Collider = ({
   frictionAir, mass, restitution, sensor, rotation, priority, group
 }: ColliderProps): Collider => {
 
-  // let colliderDesc: ColliderDesc
+  let colliderDesc: ColliderDesc
 
-  // if (shape === "ball" && radius) {
-  //   colliderDesc = ColliderDesc.ball(radius)
-  // } else if (shape === "cuboid") {
-  //   colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1)
-  // } else if (shape === "line" && points) {
-  //   const s = ColliderDesc.polyline(Float32Array.from(points))
-  //   colliderDesc = s
-  // } else {
-  //   throw new Error("Invalid collider shape")
-  // }
+  if (shape === "ball" && radius) {
+    colliderDesc = ColliderDesc.ball(radius)
+  } else if (shape === "cuboid") {
+    colliderDesc = ColliderDesc.cuboid(length ?? 1, width ?? 1)
+  } else if (shape === "line" && points) {
+    const s = ColliderDesc.polyline(Float32Array.from(points))
+    colliderDesc = s
+  } else {
+    throw new Error("Invalid collider shape")
+  }
 
-  // colliderDesc.setFriction(0)
+  colliderDesc.setFriction(0)
 
-  // if (sensor) colliderDesc.setSensor(true)
-  // if (mass) colliderDesc.setMass(mass)
-  // if (restitution) colliderDesc.setRestitution(restitution)
-  // if (rotation) colliderDesc.setRotation(rotation)
+  if (sensor) colliderDesc.setSensor(true)
+  if (mass) colliderDesc.setMass(mass)
+  if (restitution) colliderDesc.setRestitution(restitution)
+  if (rotation) colliderDesc.setRotation(rotation)
 
-  // const bodyDesc = isStatic ? RigidBodyDesc.fixed() : RigidBodyDesc.dynamic()
-  // bodyDesc.setLinearDamping(frictionAir ?? 0)
+  const bodyDesc = isStatic ? RigidBodyDesc.fixed() : RigidBodyDesc.dynamic()
+  bodyDesc.setLinearDamping(frictionAir ?? 0)
 
   const collider: Collider = {
-    // body: undefined,
-    // bodyDesc,
-    // colliderDesc: colliderDesc,
+    body: undefined,
+    bodyDesc,
+    colliderDesc: colliderDesc,
     cullable: cullable ?? false,
     group: group ?? "default",
     hittable: hittable ?? false,
     isStatic: isStatic ?? false,
     priority: priority ?? 0,
-    // rapierCollider: undefined,
+    rapierCollider: undefined,
     sensor: sensor ?? (() => false),
     type: "collider",
     setGroup: (group) => {
       const n = Number.parseInt(ColliderGroups[group], 2)
       if (n >= 0 && n <= 4294967295) {
-        // colliderDesc.setCollisionGroups(n)
+        colliderDesc.setCollisionGroups(n)
         collider.group = group
       }
     }
