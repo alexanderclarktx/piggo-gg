@@ -1,8 +1,7 @@
 import {
   blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
   SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt,
-  TApple
+  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt, TApple
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { Bird } from "./Bird"
