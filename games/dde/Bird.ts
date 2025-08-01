@@ -7,7 +7,7 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
 
   const vec = { ...camera.c.up }
-  const dir = { ...camera.worldDirection(world) }
+  const dir = { ...camera.worldDirection() }
   return { vec, dir }
 }
 

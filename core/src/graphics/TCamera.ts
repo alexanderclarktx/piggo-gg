@@ -1,9 +1,9 @@
-import { ClientSystemBuilder, cos, localAim, sin, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, cos, localAim, sin } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
 export type TCamera = {
   c: PerspectiveCamera
-  worldDirection: (world: World) => Vector3
+  worldDirection: () => Vector3
   setFov: (fov: number) => void
 }
 
@@ -47,10 +47,7 @@ export const TCamera = (): TCamera => {
 
   const tCamera: TCamera = {
     c: camera,
-    worldDirection: (world: World) => {
-      // const pc = world.client?.playerCharacter()
-      // if (!pc) return new Vector3(0, 0, -1)
-
+    worldDirection: () => {
       const t = new Vector3(-sin(localAim.x), 0, -cos(localAim.x))
       return t.normalize()
     },
