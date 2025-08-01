@@ -226,7 +226,7 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
-          const { rotation, rotating, flying } = position.data
+          const { rotation, rotating, flying, aim } = position.data
 
           const interpolated = position.interpolate(world, delta)
 
@@ -234,14 +234,16 @@ const DDESystem = SystemBuilder({
 
           const { duck, eagle, mixers } = world.three?.playerAssets[character.id]
 
+          const orientation = player.id === world.client?.playerId() ? localAim : aim
+
           duck.visible = !position.data.flying
           duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
-          duck.rotation.y = localAim.x + PI / 2
+          duck.rotation.y = orientation.x + PI / 2
 
           eagle.visible = position.data.flying
           eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-          eagle.rotation.y = localAim.x
-          eagle.rotation.x = localAim.y
+          eagle.rotation.y = orientation.x
+          eagle.rotation.x = orientation.y
           eagle.rotation.z = rotation - rotating * (40 - delta) / 40
 
           for (const mixer of mixers) {
