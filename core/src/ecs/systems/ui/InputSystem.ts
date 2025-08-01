@@ -69,6 +69,9 @@ export const InputSystem = ClientSystemBuilder({
 
       if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
+      world.client!.bufferDown.remove(key)
+      world.client!.bufferUp.push({ key, mouse, tick: world.tick, hold: 0 })
+
       if (key === "mb1") {
         const pc = world.client?.playerCharacter()
         if (pc) {
@@ -78,9 +81,6 @@ export const InputSystem = ClientSystemBuilder({
           return
         }
       }
-
-      world.client!.bufferDown.remove(key)
-      world.client!.bufferUp.push({ key, mouse, tick: world.tick, hold: 0 })
     })
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {

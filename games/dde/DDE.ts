@@ -1,7 +1,11 @@
 import {
   blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
   SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt, TApple
+  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt, TApple,
+  Entity,
+  NPC,
+  Input,
+  Actions
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { Bird } from "./Bird"
@@ -12,6 +16,38 @@ export type DDEState = {
   doubleJumped: string[]
   applesEaten: Record<string, number>
   applesTimer: Record<string, number>
+}
+
+const DDEMenu = (): Entity => {
+
+  let open = false
+
+  const menu = Entity({
+    id: "DDEMenu",
+    components: {
+      position: Position({ x: 0, y: 0, z: 0 }),
+      input: Input({
+        press: {
+          "escape": ({ hold }) => {
+            if (hold) return null
+
+            if (!open && !document.pointerLockElement) {
+              open = true
+            }
+            console.log("DDE Menu pressed", open)
+            return null
+          }
+        }
+      }),
+      actions: Actions(),
+      npc: NPC({
+        behavior: (_, world) => {
+          console.log("DDE Menu NPC behavior", open)
+        }
+      })
+    }
+  })
+  return menu
 }
 
 export const DDE: GameBuilder<DDEState> = {
@@ -36,7 +72,9 @@ export const DDE: GameBuilder<DDEState> = {
         DDESystem,
         BirdHUDSystem
       ],
-      entities: []
+      entities: [
+        DDEMenu()
+      ]
     }
   }
 }
