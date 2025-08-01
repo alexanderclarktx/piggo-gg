@@ -19,7 +19,6 @@ export const DDE: GameBuilder<DDEState> = {
   id: "Duck Duck Eagle",
   init: (world) => {
 
-    // world.renderer?.deactivate(world)
     world.three?.activate(world)
 
     return {
@@ -48,9 +47,8 @@ const DDESystem = SystemBuilder({
   init: (world) => {
 
     spawnTerrain(world, 24)
-    let placed = false
 
-    // let i = 1
+    let blocksRendered = false
 
     return {
       id: "DDESystem",
@@ -187,10 +185,8 @@ const DDESystem = SystemBuilder({
 
         // render blocks
         const t3 = performance.now()
-        if (!placed && world.mode === "client") {
+        if (!blocksRendered && world.mode === "client") {
           const dummy = new Object3D()
-
-          console.log("placing")
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = blocks.neighbors(chunk, 24)
@@ -199,9 +195,8 @@ const DDESystem = SystemBuilder({
           if (world.three?.blocks) world.three.blocks.count = chunkData.length
 
           for (let i = 0; i < chunkData.length; i++) {
-            placed = true
-
             const { x, y, z, type } = chunkData[i]
+
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
@@ -218,6 +213,8 @@ const DDESystem = SystemBuilder({
             world.three?.blocks?.setMatrixAt(i, dummy.matrix)
             if (world.three?.blocks) world.three.blocks.instanceMatrix.needsUpdate = true
           }
+
+          blocksRendered = true
         }
         logPerf("render blocks", t3)
       },
