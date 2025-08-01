@@ -3,7 +3,7 @@ import {
   SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
   TCameraSystem, trees, values, XYtoChunk, localAim
 } from "@piggo-gg/core"
-import { Color, Group, Object3D, Object3DEventMap, Skeleton, SkeletonHelper } from "three"
+import { AnimationMixer, Color, Group, Object3D, Object3DEventMap, Skeleton, SkeletonHelper } from "three"
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
 import { TApple } from "./TApple"
@@ -158,21 +158,19 @@ const DDESystem = SystemBuilder({
             // const duck = world.three.duck.clone(true)
             const duck = clone(world.three.duck) as Group<Object3DEventMap>
 
-            duck.visible = true
-
             world.three.scene.add(duck)
 
             duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
             duck.frustumCulled = false
-            // duck.updateMatrix()
-            // duck.updateWorldMatrix(true, false)
-            
-            
-
             duck.scale.set(0.08, 0.08, 0.08)
 
             world.three.ducks[character.id] = duck
-            console.log("added duck", character.id)
+
+            const mixer = new AnimationMixer(duck)
+            mixer.clipAction(duck.animations[1]).play()
+            world.three.mixers.push(mixer)
+
+            console.log("added duck", character.id, duck)
           }
         }
 
@@ -230,6 +228,7 @@ const DDESystem = SystemBuilder({
 
           duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
           duck.rotation.y = localAim.x + PI / 2
+          duck.visible = !position.data.flying
         }
 
         // const interpolated = pc.components.position.interpolate(world, delta)

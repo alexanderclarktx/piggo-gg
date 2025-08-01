@@ -146,18 +146,26 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         const pc = world.client?.playerCharacter()
         const { ducks, eagles, debug, sphere, sphere2 } = tRenderer
 
-        // for (const [id, duck] of entries(ducks)) {
-        //   const character = world.entity(id)
-        //   if (!character) continue
+        for (const [id, duck] of entries(ducks)) {
+          const character = world.entity(id)
+          if (!character) continue
 
-        //   const { position } = character.components
-        //   if (!position) continue
+          const { position } = character.components
+          if (!position) continue
 
-        //   const { flying } = position.data
+          const { flying } = position.data
 
-        //   // visibility
-        //   duck.visible = true
-        // }
+          // animations
+          if (flying) {
+            for (const mixer of tRenderer.mixers) {
+              mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
+            }
+          } else {
+            for (const mixer of tRenderer.mixers) {
+              mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
+            }
+          }
+        }
 
         // for (const [id, eagle] of entries(eagles)) {
         //   const character = world.entity(id)
@@ -306,6 +314,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       GL.load("ugly-duckling.glb", (duck) => {
         tRenderer.duck = duck.scene
+
+        tRenderer.duck.animations = duck.animations
 
         duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
