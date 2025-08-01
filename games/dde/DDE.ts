@@ -179,7 +179,7 @@ const DDESystem = SystemBuilder({
             eagleMixer.clipAction(eagle.animations[0]).play()
 
             world.three.playerAssets[character.id] = {
-              duck, eagle, mixers: [duckMixer]
+              duck, eagle, mixers: [duckMixer, eagleMixer]
             }
 
             console.log("added duck", character.id, duck)
@@ -235,16 +235,17 @@ const DDESystem = SystemBuilder({
 
           const interpolated = position.interpolate(world, delta)
 
-          const {duck, eagle} = world.three?.playerAssets[character.id] ?? {}
+          const { duck, eagle } = world.three?.playerAssets[character.id] ?? {}
           if (duck) {
             duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
-          duck.rotation.y = localAim.x + PI / 2
-          duck.visible = !position.data.flying
+            duck.rotation.y = localAim.x + PI / 2
+            duck.visible = !position.data.flying
           }
 
           if (eagle) {
             eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
             eagle.rotation.y = localAim.x
+            eagle.rotation.x = localAim.y
             eagle.visible = position.data.flying
           }
         }

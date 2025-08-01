@@ -5,7 +5,7 @@ import {
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { entries, hypot, isMobile, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
@@ -20,11 +20,8 @@ export type TRenderer = {
     eagle: Group<Object3DEventMap>
     mixers: AnimationMixer[]
   }>
-  // ducks: Record<string, Group<Object3DEventMap>>
-  // eagles: Record<string, Group<Object3DEventMap>>
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
-  // mixers: Record<string, AnimationMixer>
   scene: Scene
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
@@ -144,12 +141,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.resize()
 
       renderer.setAnimationLoop(() => {
-        const t = performance.now() / 5000
 
         if (radial) radial.update(world)
 
-          // visibility & animations
-        const pc = world.client?.playerCharacter()
         const { playerAssets } = tRenderer
 
         for (const [id, { mixers }] of entries(playerAssets)) {
@@ -169,26 +163,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
             }
           }
         }
-
-        // if (pc && duck && eagle) {
-
-        //   const { velocity, flying } = pc.components.position.data
-
-        //   // visibility
-        //   duck.scene.visible = debug ? false : !flying
-        //   eagle.scene.visible = debug ? false : flying
-        //   sphere!.visible = debug
-        //   sphere2!.visible = debug
-
-        //   // animations
-        //   for (const mixer of tRenderer.mixers) {
-        //     if (flying) {
-        //       mixer.update(sqrt(hypot(velocity.x, velocity.y, velocity.z)) * 0.005 + 0.01)
-        //     } else {
-        //       mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
-        //     }
-        //   }
-        // }
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
