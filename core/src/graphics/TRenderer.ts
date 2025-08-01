@@ -4,7 +4,7 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { isMobile, Radial, TBlockMesh, TCamera, World } from "@piggo-gg/core"
+import { isMobile, TBlockMesh, TCamera, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -42,7 +42,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let renderer: undefined | WebGLRenderer
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
-  let radial: undefined | Radial
 
   const tRenderer: TRenderer = {
     apples: {},
@@ -126,9 +125,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.visible = false
       tRenderer.scene.add(tRenderer.sphere2)
 
-      // radial = Radial(["A", "B", "C"])
-      // tRenderer.scene.add(radial.group)
-
       renderer = new WebGLRenderer({
         antialias: true,
         canvas: tRenderer.canvas,
@@ -138,35 +134,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.resize()
 
       renderer.setAnimationLoop(() => {
-
-        if (radial) radial.update(world)
-
-        // const { playerAssets } = tRenderer
-
-        // for (const [id, { mixers }] of entries(playerAssets)) {
-        //   const character = world.entity(id)
-        //   if (!character) continue
-
-        //   const { position } = character.components
-        //   if (!position) continue
-
-        //   const { flying } = position.data
-
-        //   for (const mixer of mixers) {
-        //     if (flying) {
-        //       mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
-        //     } else {
-        //       mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
-        //     }
-        //   }
-        // }
-
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
 
         // rotate the sun
         // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
-
         // sunSphere.position.copy(sun!.position)
 
         world.onRender?.()
