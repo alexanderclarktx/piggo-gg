@@ -3,10 +3,12 @@ import {
   SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
   TCameraSystem, trees, values, XYtoChunk, localAim
 } from "@piggo-gg/core"
-import { Color, Object3D, Vector3 } from "three"
+import { Color, Group, Object3D, Object3DEventMap, Skeleton, SkeletonHelper } from "three"
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
 import { TApple } from "./TApple"
+
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 
 export type DDEState = {
   doubleJumped: string[]
@@ -121,10 +123,6 @@ const DDESystem = SystemBuilder({
 
           const { x, y, z } = position.data
 
-          const dummy = new Object3D()
-          dummy.position.set(x, z, y)
-          dummy.updateMatrix()
-
           if (!world.three.apples[appleEntity.id] && world.three.apples["tapple-0"]) {
             const apple = world.three.apples["tapple-0"].clone(true)
 
@@ -146,6 +144,35 @@ const DDESystem = SystemBuilder({
             world.three!.apples[renderedApple]?.removeFromParent()
             delete world.three!.apples[renderedApple]
             console.log("removed apple", renderedApple)
+          }
+        }
+
+        // render ducks and eagles
+        for (const character of characters) {
+          if (!world.three) continue
+          if (!world.three.ducks[character.id]) {
+            if (!world.three.duck) continue
+
+            const { position } = character.components
+
+            // const duck = world.three.duck.clone(true)
+            const duck = clone(world.three.duck) as Group<Object3DEventMap>
+
+            duck.visible = true
+
+            world.three.scene.add(duck)
+
+            duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
+            duck.frustumCulled = false
+            // duck.updateMatrix()
+            // duck.updateWorldMatrix(true, false)
+            
+            
+
+            duck.scale.set(0.08, 0.08, 0.08)
+
+            world.three.ducks[character.id] = duck
+            console.log("added duck", character.id)
           }
         }
 
@@ -187,33 +214,48 @@ const DDESystem = SystemBuilder({
         logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {
-        const pc = world.client?.playerCharacter()
-        if (!pc || !world.three) return
+        const players = world.players()
 
-        const interpolated = pc.components.position.interpolate(world, delta)
+        for (const player of players) {
+          const character = player.components.controlling?.getCharacter(world)
+          if (!character) continue
 
-        const { eagle, duck, sphere2 } = world.three
+          const { position } = character.components
+          if (!position) continue
 
-        sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-        duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y) // 0.055
+          const duck = world.three?.ducks[character.id]
+          if (!duck) continue
 
-        if (eagle && duck) {
-          const { rotation, rotating } = pc.components.position.data
+          const interpolated = position.interpolate(world, delta)
 
-          eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-
-          eagle.scene.rotation.y = localAim.x
-          eagle.scene.rotation.x = localAim.y
-          eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
-
-          duck.scene.rotation.y = localAim.x + PI / 2
+          duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+          duck.rotation.y = localAim.x + PI / 2
         }
 
-        const { velocity } = pc.components.position.data
+        // const interpolated = pc.components.position.interpolate(world, delta)
+
+        // const { eagles, ducks, sphere2 } = world.three
+
+        // sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+        // duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y) // 0.055
+
+        // if (eagle && duck) {
+        //   const { rotation, rotating } = pc.components.position.data
+
+        //   eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
+
+        //   eagle.scene.rotation.y = localAim.x
+        //   eagle.scene.rotation.x = localAim.y
+        //   eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
+
+        //   duck.scene.rotation.y = localAim.x + PI / 2
+        // }
+
+        // const { velocity } = pc.components.position.data
 
         // rotate the sphere
-        world.three?.sphere2?.rotateOnWorldAxis(new Vector3(1, 0, 0), delta * velocity.y * 0.01)
-        world.three?.sphere2?.rotateOnWorldAxis(new Vector3(0, 0, 1), delta * velocity.x * 0.01)
+        // world.three?.sphere2?.rotateOnWorldAxis(new Vector3(1, 0, 0), delta * velocity.y * 0.01)
+        // world.three?.sphere2?.rotateOnWorldAxis(new Vector3(0, 0, 1), delta * velocity.x * 0.01)
       }
     }
   }

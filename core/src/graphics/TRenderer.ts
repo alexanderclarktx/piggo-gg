@@ -4,7 +4,7 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { hypot, isMobile, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
+import { entries, hypot, isMobile, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -15,8 +15,10 @@ export type TRenderer = {
   canvas: HTMLCanvasElement
   camera: TCamera
   debug: boolean
-  duck: undefined | GLTF
-  eagle: undefined | GLTF
+  ducks: Record<string, Group<Object3DEventMap>>
+  eagles: Record<string, Group<Object3DEventMap>>
+  duck: undefined | Group<Object3DEventMap>
+  eagle: undefined | Group<Object3DEventMap>
   mixers: AnimationMixer[]
   scene: Scene
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
@@ -50,6 +52,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     blocks: undefined,
     mixers: [],
     debug: false,
+    ducks: {},
+    eagles: {},
     duck: undefined,
     eagle: undefined,
     resize: () => {
@@ -140,27 +144,55 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
           // visibility & animations
         const pc = world.client?.playerCharacter()
-        const { duck, eagle, debug, sphere, sphere2 } = tRenderer
+        const { ducks, eagles, debug, sphere, sphere2 } = tRenderer
 
-        if (pc && duck && eagle) {
+        // for (const [id, duck] of entries(ducks)) {
+        //   const character = world.entity(id)
+        //   if (!character) continue
 
-          const { velocity, flying } = pc.components.position.data
+        //   const { position } = character.components
+        //   if (!position) continue
 
-          // visibility
-          duck.scene.visible = debug ? false : !flying
-          eagle.scene.visible = debug ? false : flying
-          sphere!.visible = debug
-          sphere2!.visible = debug
+        //   const { flying } = position.data
 
-          // animations
-          for (const mixer of tRenderer.mixers) {
-            if (flying) {
-              mixer.update(sqrt(hypot(velocity.x, velocity.y, velocity.z)) * 0.005 + 0.01)
-            } else {
-              mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
-            }
-          }
-        }
+        //   // visibility
+        //   duck.visible = true
+        // }
+
+        // for (const [id, eagle] of entries(eagles)) {
+        //   const character = world.entity(id)
+        //   if (!character) continue
+
+        //   const { position } = character.components
+        //   if (!position) continue
+
+        //   const { flying } = position.data
+
+        //   // visibility
+        //   eagle.visible = debug ? false : flying
+        // }
+
+
+
+        // if (pc && duck && eagle) {
+
+        //   const { velocity, flying } = pc.components.position.data
+
+        //   // visibility
+        //   duck.scene.visible = debug ? false : !flying
+        //   eagle.scene.visible = debug ? false : flying
+        //   sphere!.visible = debug
+        //   sphere2!.visible = debug
+
+        //   // animations
+        //   for (const mixer of tRenderer.mixers) {
+        //     if (flying) {
+        //       mixer.update(sqrt(hypot(velocity.x, velocity.y, velocity.z)) * 0.005 + 0.01)
+        //     } else {
+        //       mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
+        //     }
+        //   }
+        // }
 
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
@@ -244,7 +276,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.scene.add(sunSphere)
 
       GL.load("eagle.glb", (eagle) => {
-        tRenderer.eagle = eagle
+        tRenderer.eagle = eagle.scene
         eagle.scene.scale.set(0.05, 0.05, 0.05)
         eagle.scene.position.set(3, 3, 3)
         tRenderer.scene.add(eagle.scene)
@@ -273,16 +305,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })
 
       GL.load("ugly-duckling.glb", (duck) => {
-        tRenderer.duck = duck
-        duck.scene.scale.set(0.08, 0.08, 0.08)
-        tRenderer.scene.add(duck.scene)
-
-        duck.scene.visible = false
-
-        const mixer = new AnimationMixer(duck.scene)
-        mixer.clipAction(duck.animations[1]).play()
-
-        tRenderer.mixers.push(mixer)
+        tRenderer.duck = duck.scene
 
         duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
