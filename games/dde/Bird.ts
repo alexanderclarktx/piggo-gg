@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Collider, Input, Networked, Point, Position, Team, World, XYZ } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, Networked, Player, Point, Position, Team, World, XYZ } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
@@ -11,8 +11,8 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   return { vec, dir }
 }
 
-export const Bird = () => Character({
-  id: "bird",
+export const Bird = (player: Player) => Character({
+  id: `bird-${player.id}`,
   components: {
     position: Position({ friction: true, gravity: 0.002, flying: true, z: 6, x: 20, y: 20 }),
     networked: Networked(),

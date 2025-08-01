@@ -140,7 +140,6 @@ const DDESystem = SystemBuilder({
           if (!appleEntityIds.includes(renderedApple)) {
             world.three!.apples[renderedApple]?.removeFromParent()
             delete world.three!.apples[renderedApple]
-            console.log("removed apple", renderedApple)
           }
         }
 
@@ -178,8 +177,6 @@ const DDESystem = SystemBuilder({
             world.three.playerAssets[character.id] = {
               duck, eagle, mixers: [duckMixer, eagleMixer]
             }
-
-            console.log("added duck", character.id, duck)
           }
         }
 
