@@ -49,6 +49,7 @@ const DDESystem = SystemBuilder({
     spawnTerrain(world, 24)
 
     let blocksRendered = false
+    let applesSpawned = false
 
     return {
       id: "DDESystem",
@@ -84,7 +85,8 @@ const DDESystem = SystemBuilder({
 
         // spawn apples
         const t1 = performance.now()
-        if (world.tick % 10 === 0 && world.tick > 40 && numApples < 50) {
+        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 50 + numApples; i++) {
+          applesSpawned = true
 
           const randomTree = trees[world.random.int(trees.length - 1)]
 
@@ -105,7 +107,7 @@ const DDESystem = SystemBuilder({
           ])
           const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
 
-          const apple = TApple(xyz, 1 + numApples)
+          const apple = TApple(xyz, 1 + i)
           world.addEntity(apple)
         }
         logPerf("spawn apple", t1)
