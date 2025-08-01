@@ -7,8 +7,7 @@ import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
 import { TApple } from "./TApple"
-
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils'
 
 export type DDEState = {
   doubleJumped: string[]
