@@ -53,10 +53,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     sphere2: undefined,
     blocks: undefined,
     playerAssets: {},
-    // mixers: {},
     debug: false,
-    // ducks: {},
-    // eagles: {},
     duck: undefined,
     eagle: undefined,
     resize: () => {
