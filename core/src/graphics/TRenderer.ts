@@ -273,16 +273,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       GL.load("eagle.glb", (eagle) => {
         tRenderer.eagle = eagle.scene
-        eagle.scene.scale.set(0.05, 0.05, 0.05)
-        eagle.scene.position.set(3, 3, 3)
-        tRenderer.scene.add(eagle.scene)
 
+        tRenderer.eagle.animations = eagle.animations
         eagle.scene.rotation.order = "YXZ"
-
-        const mixer = new AnimationMixer(eagle.scene)
-        mixer.clipAction(eagle.animations[0]).play()
-
-        // tRenderer.mixers.
 
         const colors: Record<string, number> = {
           Cylinder: 0x5C2421,

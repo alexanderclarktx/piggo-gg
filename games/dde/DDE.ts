@@ -170,12 +170,13 @@ const DDESystem = SystemBuilder({
 
             eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
             eagle.frustumCulled = false
+            eagle.scale.set(0.05, 0.05, 0.05)
 
             const duckMixer = new AnimationMixer(duck)
             duckMixer.clipAction(duck.animations[1]).play()
 
-            // const eagleMixer = new AnimationMixer(eagle)
-            // eagleMixer.clipAction(eagle.animations[0]).play()
+            const eagleMixer = new AnimationMixer(eagle)
+            eagleMixer.clipAction(eagle.animations[0]).play()
 
             world.three.playerAssets[character.id] = {
               duck, eagle, mixers: [duckMixer]
