@@ -1,12 +1,12 @@
 import {
   blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
   SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt
+  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt,
+  TApple
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
-import { TApple } from "./TApple"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 export type DDEState = {
@@ -107,7 +107,7 @@ const DDESystem = SystemBuilder({
           ])
           const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
 
-          const apple = TApple(xyz, 1 + i)
+          const apple = TApple({ id: `tapple-${1 + i}`, pos: xyz })
           world.addEntity(apple)
         }
         logPerf("spawn apple", t1)

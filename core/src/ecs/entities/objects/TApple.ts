@@ -1,14 +1,13 @@
-import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core";
-import { DDEState } from "./DDE";
+import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core"
 
-export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
+export const TApple = ({ id, pos }: { id: string, pos?: XYZ }): Entity<Position> => {
 
   let removed = false
 
   const apple = Entity<Position>({
-    id: `tapple-${i}`,
+    id,
     components: {
-      position: Position(xyz),
+      position: Position(pos ?? { x: 0, y: 0, z: 0 }),
       networked: Networked(),
       npc: NPC({
         behavior: (_, world) => {
@@ -42,23 +41,23 @@ export const TApple = (xyz: XYZ, i: number): Entity<Position> => {
               if (position.data.flying) return
 
               // score
-              const state = world.game.state as DDEState
-              const playerId = player.id
+              // const state = world.game.state as DDEState
+              // const playerId = player.id
 
-              if (!state.applesEaten[playerId]) {
-                state.applesEaten[playerId] = 1
-                state.applesTimer[playerId] = world.tick
-              } else {
-                state.applesEaten[playerId] += 1
+              // if (!state.applesEaten[playerId]) {
+              //   state.applesEaten[playerId] = 1
+              //   state.applesTimer[playerId] = world.tick
+              // } else {
+              //   state.applesEaten[playerId] += 1
 
-                if (state.applesEaten[playerId] >= 10) {
-                  const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000
-                  console.log(`Player ${playerId} has eaten 10 apples!`, timeElapsed.toFixed(2), "seconds")
+              //   if (state.applesEaten[playerId] >= 10) {
+              //     const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000
+              //     console.log(`Player ${playerId} has eaten 10 apples!`, timeElapsed.toFixed(2), "seconds")
 
-                  state.applesEaten[playerId] = 0
-                  delete state.applesTimer[playerId]
-                }
-              }
+              //     state.applesEaten[playerId] = 0
+              //     delete state.applesTimer[playerId]
+              //   }
+              // }
             }
           }
         }
