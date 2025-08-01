@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Collider, Entity, Position, Renderable, Team, polyline } from "@piggo-gg/core"
+import { ClientSystemBuilder, Collider, Entity, Position, Renderable, Team } from "@piggo-gg/core"
 
 export const SightSystem = ClientSystemBuilder({
   id: "SightSystem",
@@ -27,12 +27,12 @@ export const SightSystem = ClientSystemBuilder({
           let visible = true
 
           const line = [0, 0, playerPosition.data.x - position.data.x, playerPosition.data.y - position.data.y]
-          world.physics?.intersectionsWithShape(position.data, 0, polyline(line), (c) => {
-            if (c.isSensor() || c === collider.rapierCollider || c === playerCollider.rapierCollider) return true
+          // world.physics?.intersectionsWithShape(position.data, 0, polyline(line), (c) => {
+          //   if (c.isSensor() || c === collider.rapierCollider || c === playerCollider.rapierCollider) return true
 
-            visible = false
-            return false
-          })
+          //   visible = false
+          //   return false
+          // })
 
           team.visible = visible
           renderable.visible = visible

@@ -3,7 +3,6 @@ import {
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
   Random, ComponentTypes, Data, Networked, XY, logPerf, TRenderer, PC
 } from "@piggo-gg/core"
-import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
 export type World = {
   actions: TickBuffer<InvokedAction>
@@ -17,7 +16,6 @@ export type World = {
   lastTick: DOMHighResTimeStamp
   messages: TickBuffer<string>
   mode: "client" | "server"
-  physics: RapierWorld | undefined
   random: Random
   renderer: Renderer | undefined
   systems: Record<string, System>
@@ -83,7 +81,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     games: {},
     lastTick: 0,
     mode: mode ?? "client",
-    physics: undefined,
     random: Random(123456111),
     renderer,
     systems: {},
@@ -253,12 +250,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))
 
-      // reset physics
-      if (world.physics) {
-        world.physics.free()
-        world.physics = new RapierWorld({ x: 0, y: 0 })
-      }
-
       // set new game
       world.game = game.init(world)
 
@@ -291,9 +282,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       commands?.forEach((command) => world.commands[command.id] = command)
     }
   }
-
-  // set up physics
-  RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
 
   // set up client
   if (world.mode === "client") world.client = Client({ world })
