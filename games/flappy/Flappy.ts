@@ -86,7 +86,7 @@ const Floor = () => LineWall({ points: [-1000, 200, 10000, 200], sensor, visible
 const Ceiling = () => LineWall({ points: [-1000, -200, 10000, -200], sensor, visible: true })
 
 export const FlappyCharacter = (player: Player, color?: number, pos?: XY) => {
-  const flappy: Character = Entity({
+  const flappy: Character = Character({
     id: `flappy-${player.id}`,
     components: {
       debug: Debug(),

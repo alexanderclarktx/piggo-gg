@@ -7,7 +7,7 @@ export type PlayerProps = {
 
 export type Player = Entity<PC | Controlling | Actions | Team>
 
-export const Player = ({ id, name }: PlayerProps): Player => Entity({
+export const Player = ({ id, name }: PlayerProps): Player => Entity<PC | Controlling | Actions | Team>({
   id: id,
   persists: true,
   components: {

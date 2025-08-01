@@ -5,7 +5,7 @@ export type HtmlButtonProps = {
     borderImage?: `linear-gradient(${string}) ${number}`
     backgroundColor?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
     border?: string
-    borderRadius?: `${number}px`
+    borderRadius?: `${number}px` | `${number}%`
     color?: `#${string}`
     cursor?: "pointer" | "default" | "not-allowed"
     display?: "block" | "inline-block" | "flex" | "inline-flex" | "none"
@@ -15,6 +15,7 @@ export type HtmlButtonProps = {
     height?: `${number}px`
     justifyContent?: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
     left?: `${number}%` | `${number}px`
+    right?: `${number}%` | `${number}px`
     lineHeight?: `${number}px`
     padding?: string
     position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
@@ -45,4 +46,15 @@ export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   Object.assign(b.style, props.style)
 
   return b
+}
+
+export const HtmlDiv = (props: HtmlButtonProps): HTMLDivElement => {
+  const div = document.createElement('div')
+
+  if (props.text) div.textContent = props.text
+
+  Object.assign(div.style, defaults)
+  Object.assign(div.style, props.style)
+
+  return div
 }

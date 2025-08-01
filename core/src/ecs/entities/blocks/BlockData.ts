@@ -1,6 +1,6 @@
 import {
-  BlockDimensions, floor, round, Block, XY, XYZ, BlockTree, randomInt,
-  BlockType, BlockTypeInt, range, sample, logPerf, hypot, angleCC,
+  BlockDimensions, floor, round, Block, XY, XYZ, BlockTree,
+  BlockType, BlockTypeInt, logPerf, hypot, angleCC,
   keys, World, BlockTypeString, BlockItem, randomHash
 } from "@piggo-gg/core"
 
@@ -396,7 +396,7 @@ export const blocks = BlockData()
 
 export const trees: XYZ[] = []
 
-export const spawnChunk = (chunk: XY) => {
+export const spawnChunk = (chunk: XY, world: World) => {
   const size = 4
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
@@ -404,11 +404,11 @@ export const spawnChunk = (chunk: XY) => {
       const x = i + chunk.x * size
       const y = j + chunk.y * size
 
-      let height = sample({ x, y, factor: 15, octaves: 3 })
+      let height = world.random.noise({ x, y, factor: 15, octaves: 3 })
 
       for (let z = 0; z < height; z++) {
 
-        const type = range<BlockType>(z, [
+        const type = world.random.range<BlockType>(z, [
           [0, "saphire"],
           [1, "saphire"],
           [7, "grass"],
@@ -417,16 +417,21 @@ export const spawnChunk = (chunk: XY) => {
 
         blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
-        if (z === height - 1 && type === "grass" && randomInt(200) === 1) {
+        if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
 
-          let h = 0
+          let height = world.random.int(2) + 4
+          if (world.random.int(4) === 1) {
+            height += world.random.int(5)
+          }
 
-          for (const block of BlockTree({ x, y, z })) {
-            if (h === 0 && block.type === BlockTypeInt.leaf) h = block.z
+          const t = world.random.int(2) === 1 ? "wood" : "obsidian"
+          const fluffy = world.random.int(2) === 1
+
+          for (const block of BlockTree({ x, y, z }, height, t, fluffy)) {
             blocks.add(block)
           }
 
-          trees.push({ x: x * 0.3, y: y * 0.3, z: h * 0.3 + 0.15 })
+          trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
         }
       }
     }
@@ -445,11 +450,11 @@ export const spawnTiny = () => {
   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
 }
 
-export const spawnTerrain = (num: number = 10) => {
+export const spawnTerrain = (world: World, num: number = 10) => {
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
-      spawnChunk(chunk)
+      spawnChunk(chunk, world)
     }
   }
 }

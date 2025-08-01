@@ -1,12 +1,12 @@
 import {
   blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
-  randomChoice, randomInt, SpawnSystem, spawnTerrain, SystemBuilder,
-  BlockPhysicsSystem, TCameraSystem, trees, values, XYtoChunk
+  SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
+  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt, TApple
 } from "@piggo-gg/core"
-import { Color, Object3D, Vector3 } from "three"
+import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
-import { TApple } from "./TApple"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 export type DDEState = {
   doubleJumped: string[]
@@ -18,7 +18,6 @@ export const DDE: GameBuilder<DDEState> = {
   id: "Duck Duck Eagle",
   init: (world) => {
 
-    world.renderer?.deactivate(world)
     world.three?.activate(world)
 
     return {
@@ -46,10 +45,10 @@ const DDESystem = SystemBuilder({
   id: "DDESystem",
   init: (world) => {
 
-    spawnTerrain(24)
-    let placed = false
+    spawnTerrain(world, 24)
 
-    let i = 1
+    let blocksRendered = false
+    let applesSpawned = false
 
     return {
       id: "DDESystem",
@@ -58,15 +57,15 @@ const DDESystem = SystemBuilder({
       onTick: () => {
         const state = world.game.state as DDEState
 
-        const entities = world.queryEntities<Position | Collider>(["position", "team", "collider"])
+        const characters = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         const t0 = performance.now()
-        for (const entity of entities) {
-          const { position } = entity.components
+        for (const character of characters) {
+          const { position } = character.components
           const { z, rotation, standing } = position.data
 
           // double-jump state cleanup
           if (standing) {
-            state.doubleJumped = state.doubleJumped.filter(id => id !== entity.id)
+            state.doubleJumped = state.doubleJumped.filter(id => id !== character.id)
           }
 
           // reset rotation
@@ -81,17 +80,20 @@ const DDESystem = SystemBuilder({
         }
         logPerf("player positions", t0)
 
+        const numApples = keys(world.entities).filter(id => id.startsWith("tapple-")).length
+
         // spawn apples
         const t1 = performance.now()
-        if (world.tick % 10 === 0 && world.three && world.three.apples["apple-0"] && keys(world.three.apples).length < 50) {
+        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 50 + numApples; i++) {
+          applesSpawned = true
 
-          const randomTree = trees[randomInt(trees.length - 1)]
+          const randomTree = trees[world.random.int(trees.length - 1)]
 
           const a = 0.52
           const b = 0.3
           const z = -0.24
 
-          const randomSpot = randomChoice([
+          const randomSpot = world.random.choice([
             { x: a, y: 0, z: 0 },
             { x: -a, y: 0, z: 0 },
             { x: 0, y: a, z: 0 },
@@ -104,16 +106,14 @@ const DDESystem = SystemBuilder({
           ])
           const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
 
-          const apple = TApple(xyz, i)
+          const apple = TApple({ id: `tapple-${1 + i}`, pos: xyz })
           world.addEntity(apple)
-
-          i += 1
         }
         logPerf("spawn apple", t1)
 
         // render apples
         const t2 = performance.now()
-        const appleEntities = values(world.entities).filter(e => e.id.startsWith("apple"))
+        const appleEntities = values(world.entities).filter(e => e.id.startsWith("tapple"))
         for (const appleEntity of appleEntities) {
 
           const { position } = appleEntity.components
@@ -121,12 +121,8 @@ const DDESystem = SystemBuilder({
 
           const { x, y, z } = position.data
 
-          const dummy = new Object3D()
-          dummy.position.set(x, z, y)
-          dummy.updateMatrix()
-
-          if (!world.three.apples[appleEntity.id]) {
-            const apple = world.three.apples["apple-0"].clone(true)
+          if (!world.three.apples[appleEntity.id] && world.three.apples["tapple-0"]) {
+            const apple = world.three.apples["tapple-0"].clone(true)
 
             apple.position.set(x, z, y)
             apple.updateMatrix()
@@ -137,22 +133,68 @@ const DDESystem = SystemBuilder({
         }
         logPerf("render apples", t2)
 
+        // unrender apples
+        const appleEntityIds = appleEntities.map(e => e.id)
+        for (const renderedApple of keys(world.three?.apples ?? {})) {
+          if (renderedApple === "tapple-0") continue
+
+          if (!appleEntityIds.includes(renderedApple)) {
+            world.three!.apples[renderedApple]?.removeFromParent()
+            delete world.three!.apples[renderedApple]
+          }
+        }
+
+        // render ducks and eagles
+        for (const character of characters) {
+          if (!world.three) continue
+          if (!world.three.playerAssets[character.id]) {
+            if (!world.three.duck || !world.three.eagle) continue
+
+            const { position } = character.components
+
+            // const duck = world.three.duck.clone(true)
+            const duck = clone(world.three.duck) as Group<Object3DEventMap>
+
+            world.three.scene.add(duck)
+
+            duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
+            duck.frustumCulled = false
+            duck.scale.set(0.08, 0.08, 0.08)
+
+            const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
+
+            world.three.scene.add(eagle)
+
+            eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
+            eagle.frustumCulled = false
+            eagle.scale.set(0.05, 0.05, 0.05)
+
+            const duckMixer = new AnimationMixer(duck)
+            duckMixer.clipAction(duck.animations[1]).play()
+
+            const eagleMixer = new AnimationMixer(eagle)
+            eagleMixer.clipAction(eagle.animations[0]).play()
+
+            world.three.playerAssets[character.id] = {
+              duck, eagle, mixers: [duckMixer, eagleMixer]
+            }
+          }
+        }
+
         // render blocks
         const t3 = performance.now()
-        if (!placed) {
+        if (!blocksRendered && world.mode === "client") {
           const dummy = new Object3D()
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = blocks.neighbors(chunk, 24)
 
           const chunkData = blocks.visible(neighbors, false, true)
-          world.three!.blocks!.count = chunkData.length
-          console.log(`rendering ${chunkData.length} blocks`)
+          if (world.three?.blocks) world.three.blocks.count = chunkData.length
 
           for (let i = 0; i < chunkData.length; i++) {
-            placed = true
-
             const { x, y, z, type } = chunkData[i]
+
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
@@ -167,36 +209,52 @@ const DDESystem = SystemBuilder({
             }
 
             world.three?.blocks?.setMatrixAt(i, dummy.matrix)
-            world.three!.blocks!.instanceMatrix.needsUpdate = true
+            if (world.three?.blocks) world.three.blocks.instanceMatrix.needsUpdate = true
           }
+
+          blocksRendered = true
         }
         logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {
-        const pc = world.client?.playerCharacter()
-        if (!pc || !world.three) return
+        const players = world.players()
 
-        const interpolated = pc.components.position.interpolate(world, delta)
+        // update player positions
+        for (const player of players) {
+          const character = player.components.controlling?.getCharacter(world)
+          if (!character) continue
 
-        const { eagle, duck, sphere2 } = world.three
+          const { position } = character.components
+          if (!position) continue
 
-        sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-        duck?.scene.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y) // 0.055
+          const { rotation, rotating, flying, aim } = position.data
 
-        if (eagle && duck) {
-          const { rotation, rotating, aim } = pc.components.position.data
+          const interpolated = position.interpolate(world, delta)
 
-          eagle.scene.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-          eagle.scene.rotation.z = rotation - rotating * (40 - delta) / 40
+          if (!world.three?.playerAssets[character.id]) continue
 
-          duck.scene.rotation.y = aim.x + PI / 2
+          const { duck, eagle, mixers } = world.three?.playerAssets[character.id]
+
+          const orientation = player.id === world.client?.playerId() ? localAim : aim
+
+          duck.visible = !position.data.flying
+          duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+          duck.rotation.y = orientation.x + PI / 2
+
+          eagle.visible = position.data.flying
+          eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
+          eagle.rotation.y = orientation.x
+          eagle.rotation.x = orientation.y
+          eagle.rotation.z = rotation - rotating * (40 - delta) / 40
+
+          for (const mixer of mixers) {
+            if (flying) {
+              mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
+            } else {
+              mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
+            }
+          }
         }
-
-        const { velocity } = pc.components.position.data
-
-        // rotate the sphere
-        world.three?.sphere2?.rotateOnWorldAxis(new Vector3(1, 0, 0), delta * velocity.y * 0.01)
-        world.three?.sphere2?.rotateOnWorldAxis(new Vector3(0, 0, 1), delta * velocity.x * 0.01)
       }
     }
   }

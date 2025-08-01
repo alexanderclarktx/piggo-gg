@@ -1,12 +1,22 @@
 import {
   Actions, Character, ClientSystemBuilder, CurrentJoystickPosition,
-  Entity, Input, InvokedAction, World, XY, XYdiff, round
+  Entity, Input, InvokedAction, World, XY, XYdiff, max, min, round
 } from "@piggo-gg/core"
 
 export var chatBuffer: string[] = []
 export var chatIsOpen = false
 export var mouse: XY = { x: 0, y: 0 }
 export var mouseScreen: XY = { x: 0, y: 0 }
+
+export let localAim: XY = { x: 0, y: 0 }
+
+const moveAim = ({ x, y }: XY, flying: boolean) => {
+  localAim.x = round(localAim.x - x, 3)
+  localAim.y = round(localAim.y - y, 3)
+
+  const factor = flying ? 1.1 : 0.6166
+  localAim.y = max(-factor, min(factor, localAim.y))
+}
 
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
@@ -25,25 +35,23 @@ export const InputSystem = ClientSystemBuilder({
       if (CurrentJoystickPosition.active && XYdiff(mouseScreen, { x: event.offsetX, y: event.offsetY }, 100)) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      mouse = renderer!.camera.toWorldCoords(mouseScreen)
+      if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (world.three && document.pointerLockElement) {
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
-        pc.components.position.moveAim(
-          { x: event.movementX * 0.001, y: event.movementY * 0.001 }
-        )
+        moveAim({ x: event.movementX * 0.001, y: event.movementY * 0.001 }, pc.components.position.data.flying)
       }
     })
 
-    renderer?.app.canvas.addEventListener("pointerdown", (event) => {
+    world.three?.canvas.addEventListener("pointerdown", (event) => {
       if (!joystickOn && CurrentJoystickPosition.active) return
       if (world.tick <= world.client!.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      mouse = renderer.camera.toWorldCoords(mouseScreen)
+      if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (CurrentJoystickPosition.active && !joystickOn) {
@@ -61,6 +69,16 @@ export const InputSystem = ClientSystemBuilder({
 
       if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
+      if (key === "mb1") {
+        const pc = world.client?.playerCharacter()
+        if (pc) {
+          pc.components.input.inputMap.release[key]?.({
+            mouse, entity: pc, world, tick: world.tick, hold: 0
+          })
+          return
+        }
+      }
+
       world.client!.bufferDown.remove(key)
       world.client!.bufferUp.push({ key, mouse, tick: world.tick, hold: 0 })
     })
@@ -76,6 +94,16 @@ export const InputSystem = ClientSystemBuilder({
 
         const down = world.client?.bufferDown.get(keyName)
         if (!down) return
+
+        if (keyName === "escape") {
+          const pc = world.client?.playerCharacter()
+          if (pc) {
+            pc.components.input.inputMap.release[keyName]?.({
+              mouse, entity: pc, world, tick: world.tick, hold: down.hold
+            })
+            return
+          }
+        }
 
         // add to bufferUp
         world.client!.bufferUp.push({ key: keyName, mouse, tick: world.tick, hold: down.hold })
@@ -149,7 +177,7 @@ export const InputSystem = ClientSystemBuilder({
         let pointingDelta: XY
 
         if (world.renderer?.camera.focus) {
-          const { width, height } = world.renderer.wh()
+          const { width, height } = world.renderer?.wh()
           pointingDelta = {
             x: round(mouseScreen.x - (width / 2), 2) * world.flipped(),
             y: round(mouseScreen.y - (height / 2), 2) * world.flipped()
@@ -163,7 +191,13 @@ export const InputSystem = ClientSystemBuilder({
 
         if (actions.actionMap["point"]) {
           world.actions.push(world.tick + 1, character.id,
-            { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta } }
+            { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta, aim: position.data.aim } }
+          )
+        }
+      } else if (world.three) {
+        if (actions.actionMap["point"]) {
+          world.actions.push(world.tick + 1, character.id,
+            { actionId: "point", playerId: world.client?.playerId(), params: { pointing: 0, pointingDelta: 0, aim: { ...localAim } } }
           )
         }
       }
@@ -343,7 +377,7 @@ export const InputSystem = ClientSystemBuilder({
         world.client!.bufferDown.updateHold(world.tick)
 
         // update mouse position, the camera might have moved
-        if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
+        if (renderer) mouse = renderer?.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus()) {

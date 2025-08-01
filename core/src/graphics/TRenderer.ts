@@ -4,8 +4,8 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { hypot, Radial, sqrt, TBlockMesh, TCamera, World } from "@piggo-gg/core"
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { isMobile, TBlockMesh, TCamera, World } from "@piggo-gg/core"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
@@ -15,13 +15,16 @@ export type TRenderer = {
   canvas: HTMLCanvasElement
   camera: TCamera
   debug: boolean
-  duck: undefined | GLTF
-  eagle: undefined | GLTF
-  mixers: AnimationMixer[]
+  playerAssets: Record<string, {
+    duck: Group<Object3DEventMap>
+    eagle: Group<Object3DEventMap>
+    mixers: AnimationMixer[]
+  }>
+  duck: undefined | Group<Object3DEventMap>
+  eagle: undefined | Group<Object3DEventMap>
   scene: Scene
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
-  setZoom: (zoom: number) => void
   setDebug: (state?: boolean) => void
   activate: (world: World) => void
   deactivate: () => void
@@ -39,9 +42,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   let renderer: undefined | WebGLRenderer
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
-  let radial: undefined | Radial
-
-  let zoom = 2
 
   const tRenderer: TRenderer = {
     apples: {},
@@ -51,19 +51,21 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     sphere: undefined,
     sphere2: undefined,
     blocks: undefined,
-    mixers: [],
+    playerAssets: {},
     debug: false,
     duck: undefined,
     eagle: undefined,
-    setZoom: (z: number) => {
-      zoom = z
-    },
     resize: () => {
       if (!renderer) return
 
-      renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+      if (isMobile()) {
+        renderer.setSize(window.innerWidth, window.outerHeight)
+        tRenderer.camera.c.aspect = window.innerWidth / window.outerHeight
+      } else {
+        renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+        tRenderer.camera.c.aspect = window.innerWidth / window.innerHeight
+      }
 
-      tRenderer.camera.c.aspect = window.innerWidth / window.innerHeight
       tRenderer.camera.c.updateProjectionMatrix()
     },
     deactivate: () => {
@@ -94,15 +96,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      tRenderer.pointerLock()
-
-      // recreate the canvas
-      const parent = tRenderer.canvas.parentElement
-      tRenderer.canvas.remove()
-      tRenderer.canvas = document.createElement("canvas")
-      tRenderer.canvas.id = "canvas"
-      parent?.appendChild(tRenderer.canvas)
-
       tRenderer.blocks = TBlockMesh()
       tRenderer.scene.add(tRenderer.blocks)
 
@@ -132,9 +125,6 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.visible = false
       tRenderer.scene.add(tRenderer.sphere2)
 
-      // radial = Radial(["A", "B", "C"])
-      // tRenderer.scene.add(radial.group)
-
       renderer = new WebGLRenderer({
         antialias: true,
         canvas: tRenderer.canvas,
@@ -144,44 +134,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.resize()
 
       renderer.setAnimationLoop(() => {
-        const t = performance.now() / 5000
-
-        if (radial) radial.update(world)
-
-        // update duck position
-        const pc = world.client?.playerCharacter()
-        const { duck, eagle, debug, sphere, sphere2 } = tRenderer
-
-        if (pc && duck && eagle) {
-
-          const { aim, velocity, flying } = pc.components.position.data
-
-          eagle.scene.rotation.y = aim.x
-          eagle.scene.rotation.x = aim.y
-
-          // visibility
-          duck.scene.visible = debug ? false : !flying
-          eagle.scene.visible = debug ? false : flying
-          sphere!.visible = debug
-          sphere2!.visible = debug
-
-          // animations
-          for (const mixer of tRenderer.mixers) {
-            // mixer.update(0.01)
-            if (flying) {
-              mixer.update(sqrt(hypot(velocity.x, velocity.y, velocity.z)) * 0.005 + 0.01)
-            } else {
-              mixer.update(hypot(velocity.x, velocity.y) * 0.015 + 0.01)
-            }
-          }
-        }
-
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
 
         // rotate the sun
         // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
-
         // sunSphere.position.copy(sun!.position)
 
         world.onRender?.()
@@ -221,11 +178,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      const mat = tRenderer.blocks.material
-
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
-        mat.roughnessMap = texture
+        tRenderer.blocks!.material.roughnessMap = texture
         tRenderer.blocks!.material.needsUpdate = true
       })
 
@@ -259,23 +214,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       sunSphere.position.copy(sun.position)
       tRenderer.scene.add(sunSphere)
 
-      // canvas.addEventListener("wheel", (event: WheelEvent) => {
-      //   zoom += 0.01 * Math.sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
-      //   zoom = Math.max(1, Math.min(zoom, 10))
-      // })
-
       GL.load("eagle.glb", (eagle) => {
-        tRenderer.eagle = eagle
-        eagle.scene.scale.set(0.05, 0.05, 0.05)
-        eagle.scene.position.set(3, 3, 3)
-        tRenderer.scene.add(eagle.scene)
+        tRenderer.eagle = eagle.scene
 
+        tRenderer.eagle.animations = eagle.animations
         eagle.scene.rotation.order = "YXZ"
-
-        const mixer = new AnimationMixer(eagle.scene)
-        mixer.clipAction(eagle.animations[0]).play()
-
-        tRenderer.mixers.push(mixer)
 
         const colors: Record<string, number> = {
           Cylinder: 0x5C2421,
@@ -294,14 +237,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       })
 
       GL.load("ugly-duckling.glb", (duck) => {
-        tRenderer.duck = duck
-        duck.scene.scale.set(0.08, 0.08, 0.08)
-        tRenderer.scene.add(duck.scene)
+        tRenderer.duck = duck.scene
 
-        const mixer = new AnimationMixer(duck.scene)
-        mixer.clipAction(duck.animations[1]).play()
-
-        tRenderer.mixers.push(mixer)
+        tRenderer.duck.animations = duck.animations
 
         duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
@@ -314,7 +252,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        tRenderer.apples["apple-0"] = apple.scene
+        tRenderer.apples["tapple-0"] = apple.scene
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {

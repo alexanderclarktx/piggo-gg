@@ -69,7 +69,7 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
       const diff = msg.tick - world.tick
       latestClientDiff[msg.playerId] = diff
 
-      if (world.tick % 400 === 0) console.log(`player:${ws.data.playerName} diff:${diff}`)
+      if (world.tick % 400 === 0) console.log(`player:${ws.data.playerId} name:${ws.data.playerName} diff:${diff}`)
     }
   }
 }

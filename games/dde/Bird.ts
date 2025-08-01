@@ -1,9 +1,18 @@
-import { Action, Actions, Character, Collider, Input, max, Networked, Position, Team } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, Networked, Player, Point, Position, Team, World, XYZ } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
-export const Bird = () => Character({
-  id: "bird",
+const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
+  const camera = world.three?.camera
+  if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
+
+  const vec = { ...camera.c.up }
+  const dir = { ...camera.worldDirection() }
+  return { vec, dir }
+}
+
+export const Bird = (player: Player) => Character({
+  id: `bird-${player.id}`,
   components: {
     position: Position({ friction: true, gravity: 0.002, flying: true, z: 6, x: 20, y: 20 }),
     networked: Networked(),
@@ -13,8 +22,14 @@ export const Bird = () => Character({
     }),
     input: Input({
       release: {
-        "escape": () => ({ actionId: "escape" }),
-        "mb1": () => ({ actionId: "escape" }),
+        "escape": ({ world }) => {
+          world.three?.pointerLock()
+          return null
+        },
+        "mb1": ({ world }) => {
+          world.three?.pointerLock()
+          return null
+        },
         "e": () => ({ actionId: "transform" })
       },
       press: {
@@ -30,30 +45,28 @@ export const Bird = () => Character({
         " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
 
         // sprint
-        "shift,w,a": () => ({ actionId: "move", params: { key: "wa", sprint: true } }),
-        "shift,w,d": () => ({ actionId: "move", params: { key: "wd", sprint: true } }),
-        "shift,a,s": () => ({ actionId: "move", params: { key: "as", sprint: true } }),
-        "shift,d,s": () => ({ actionId: "move", params: { key: "ds", sprint: true } }),
-        "shift,w": () => ({ actionId: "move", params: { key: "w", sprint: true } }),
-        "shift,a": () => ({ actionId: "move", params: { key: "a", sprint: true } }),
-        "shift,s": () => ({ actionId: "move", params: { key: "s", sprint: true } }),
-        "shift,d": () => ({ actionId: "move", params: { key: "d", sprint: true } }),
+        "shift,w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", sprint: true, ...upAndDir(world) } }),
+        "shift,w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", sprint: true, ...upAndDir(world) } }),
+        "shift,a,s": ({ world }) => ({ actionId: "move", params: { key: "as", sprint: true, ...upAndDir(world) } }),
+        "shift,d,s": ({ world }) => ({ actionId: "move", params: { key: "ds", sprint: true, ...upAndDir(world) } }),
+        "shift,w": ({ world }) => ({ actionId: "move", params: { key: "w", sprint: true, ...upAndDir(world) } }),
+        "shift,a": ({ world }) => ({ actionId: "move", params: { key: "a", sprint: true, ...upAndDir(world) } }),
+        "shift,s": ({ world }) => ({ actionId: "move", params: { key: "s", sprint: true, ...upAndDir(world) } }),
+        "shift,d": ({ world }) => ({ actionId: "move", params: { key: "d", sprint: true, ...upAndDir(world) } }),
 
         // move
-        "w,a": () => ({ actionId: "move", params: { key: "wa" } }),
-        "w,d": () => ({ actionId: "move", params: { key: "wd" } }),
-        "a,s": () => ({ actionId: "move", params: { key: "as" } }),
-        "d,s": () => ({ actionId: "move", params: { key: "ds" } }),
-        "w": () => ({ actionId: "move", params: { key: "w" } }),
-        "a": () => ({ actionId: "move", params: { key: "a" } }),
-        "s": () => ({ actionId: "move", params: { key: "s" } }),
-        "d": () => ({ actionId: "move", params: { key: "d" } })
+        "w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", ...upAndDir(world) } }),
+        "w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", ...upAndDir(world) } }),
+        "a,s": ({ world }) => ({ actionId: "move", params: { key: "as", ...upAndDir(world) } }),
+        "d,s": ({ world }) => ({ actionId: "move", params: { key: "ds", ...upAndDir(world) } }),
+        "w": ({ world }) => ({ actionId: "move", params: { key: "w", ...upAndDir(world) } }),
+        "a": ({ world }) => ({ actionId: "move", params: { key: "a", ...upAndDir(world) } }),
+        "s": ({ world }) => ({ actionId: "move", params: { key: "s", ...upAndDir(world) } }),
+        "d": ({ world }) => ({ actionId: "move", params: { key: "d", ...upAndDir(world) } })
       }
     }),
     actions: Actions({
-      escape: Action("escape", ({ world }) => {
-        world.three?.pointerLock()
-      }),
+      point: Point,
       transform: Action("transform", ({ entity, world, player }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
@@ -86,60 +99,57 @@ export const Bird = () => Character({
         position.setVelocity({ z: 0.04 })
         world.client?.soundManager.play("bubble")
       }),
-      move: Action("move", ({ entity, params, world }) => {
-        const camera = world.three?.camera
-        if (!camera) return
+      move: Action("move", ({ entity, params }) => {
+        if (!params.vec || !params.dir) return
+
+        const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
+        const dir = new Vector3(params.dir.x, params.dir.y, params.dir.z)
 
         const { position } = entity?.components ?? {}
         if (!position) return
 
         if (!["wa", "wd", "as", "ds", "a", "d", "w", "s", "up"].includes(params.key)) return
 
-        const dir = camera.worldDirection(world)
         const toward = new Vector3()
 
         let rotating = 0
 
         if (params.key === "a") {
-          toward.crossVectors(camera.c.up, dir).normalize()
+          toward.crossVectors(up, dir).normalize()
 
           rotating = 0.1
         } else if (params.key === "d") {
-          toward.crossVectors(dir, camera.c.up).normalize()
+          toward.crossVectors(dir, up).normalize()
 
           rotating = -0.1
         } else if (params.key === "w") {
           toward.copy(dir).normalize()
         } else if (params.key === "s") {
-          if (!position.data.flying) {
-            toward.copy(dir).negate().normalize()
-          }
+          toward.copy(dir).negate().normalize()
         } else if (params.key === "wa") {
           const forward = dir.clone().normalize()
-          const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
+          const left = new Vector3().crossVectors(up, dir).normalize()
           toward.copy(forward.add(left).normalize())
 
           rotating = 0.1
         } else if (params.key === "wd") {
           const forward = dir.clone().normalize()
-          const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
+          const right = new Vector3().crossVectors(dir, up).normalize()
           toward.copy(forward.add(right).normalize())
 
           rotating = -0.1
         } else if (params.key === "as") {
-          if (!position.data.flying) {
+          const backward = dir.clone().negate().normalize()
+          const left = new Vector3().crossVectors(up, dir).normalize()
+          toward.copy(backward.add(left).normalize())
 
-            const backward = dir.clone().negate().normalize()
-            const left = new Vector3().crossVectors(camera.c.up, dir).normalize()
-            toward.copy(backward.add(left).normalize())
-          }
+          rotating = 0.1
         } else if (params.key === "ds") {
-          if (!position.data.flying) {
+          const backward = dir.clone().negate().normalize()
+          const right = new Vector3().crossVectors(dir, up).normalize()
+          toward.copy(backward.add(right).normalize())
 
-            const backward = dir.clone().negate().normalize()
-            const right = new Vector3().crossVectors(dir, camera.c.up).normalize()
-            toward.copy(backward.add(right).normalize())
-          }
+          rotating = -0.1
         }
 
         if (rotating) position.data.rotating = rotating

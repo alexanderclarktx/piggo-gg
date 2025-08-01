@@ -1,26 +1,15 @@
-import {
-  BlockPlan, BlockType, BlockTypeInt, randomChoice, randomInt, XYZ
-} from "@piggo-gg/core"
+import { BlockPlan, BlockTypeInt, XYZ } from "@piggo-gg/core"
 
-export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
+export const BlockTree = (xyz: XYZ, height: number, t: "wood" | "obsidian", fluffy: boolean): BlockPlan => {
   const plan: BlockPlan = []
 
-  let height = randomInt(2) + 4
-
-  if (randomInt(4) === 1) {
-    height += randomInt(5)
-  }
-
-  const woodType = randomChoice(["wood", "obsidian"]) as BlockType
+  const { x, y, z } = xyz
 
   for (let i = 1; i <= height; i++) {
-    plan.push({
-      x, y, z: z + i, type: BlockTypeInt[woodType]
-    })
+    plan.push({ x, y, z: z + i, type: BlockTypeInt[t] })
   }
-  
-  const leaf = randomChoice(["leaf"]) as BlockType
-  const type = BlockTypeInt[leaf]
+
+  const type = BlockTypeInt["leaf"]
 
   plan.push(
     { x: x + 1, y, z: z + height, type },
@@ -29,8 +18,6 @@ export const BlockTree = ({ x, y, z }: XYZ): BlockPlan => {
     { x, y: y - 1, z: z + height, type },
     { x, y, z: z + height + 1, type }
   )
-
-  const fluffy = randomInt(2) === 1
 
   if (fluffy) plan.push(
     { x: x + 1, y: y + 1, z: z + height, type },
