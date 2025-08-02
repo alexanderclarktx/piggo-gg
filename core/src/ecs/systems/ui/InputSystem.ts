@@ -69,8 +69,6 @@ export const InputSystem = ClientSystemBuilder({
 
       if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
-      console.log("pointerup", key, event)
-
       if (key === "mb1") {
         const pc = world.client?.playerCharacter()
         if (pc) {

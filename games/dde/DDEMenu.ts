@@ -11,7 +11,7 @@ export const DDEMenu = (): Entity => {
       visibility: "hidden",
       left: "50%",
       top: "50%",
-      width: "60%",
+      width: "30%",
       height: "40%",
       transform: "translate(-50%, -50%)",
       backgroundColor: "rgba(0, 0, 0, 0.95)",
