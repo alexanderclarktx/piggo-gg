@@ -49,6 +49,12 @@ export const DDEMenu = (): Entity => {
             }
           }
 
+          if (world.tick % 40 === 0) {
+            world.client?.lobbyList((response) => {
+              console.log(response.lobbies)
+            })
+          }
+
           const visible = !Boolean(document.pointerLockElement)
           overlay.style.visibility = visible ? "visible" : "hidden"
         }

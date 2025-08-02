@@ -1,6 +1,7 @@
 import {
   ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes,
-  ResponseData, entries, randomHash, keys, round, stringify, values
+  ResponseData, entries, randomHash, keys, round, stringify, values,
+  BadResponse
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
@@ -19,7 +20,7 @@ export type PerClientData = {
 type SessionToken = { googleId: string }
 
 type Handler<R extends RequestTypes["route"]> = (_: { ws: ServerWebSocket<PerClientData>, data: ExtractedRequestTypes<R> }) =>
-  Promise<ExtractedRequestTypes<R>['response']>
+  Promise<ExtractedRequestTypes<R>['response'] | BadResponse>
 
 export type Api = {
   bun: Server | undefined
@@ -59,7 +60,15 @@ export const Api = (): Api => {
     worlds: {},
     handlers: {
       "lobby/list": async ({ data }) => {
-        return { id: data.id }
+        const lobbies: Record<string, { id: string, name: string, players: number }> = {}
+        for (const [id, world] of entries(api.worlds)) {
+          lobbies[id] = {
+            id,
+            name: world.world.game.id,
+            players: keys(world.clients).length
+          }
+        }
+        return { id: data.id, lobbies }
       },
       "lobby/create": async ({ ws, data }) => {
         const lobbyId = randomHash()

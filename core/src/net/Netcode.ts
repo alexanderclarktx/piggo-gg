@@ -24,11 +24,14 @@ export type GameData = {
 
 // API
 
+export type BadResponse = { id: string, error: string }
+export type GoodResponse<R> = R & { id: string, success: true }
+
 export type Request<Route, Response extends {} = {}> = {
   type: "request"
   id: string
   route: Route
-  response: { id: string, error: string } | { id: string } & Response
+  response: GoodResponse<Response>
 }
 
 export type Route = RequestTypes["route"]
@@ -50,11 +53,11 @@ export type RequestData = {
 
 export type ResponseData = {
   type: "response"
-  data: RequestTypes["response"]
+  data: RequestTypes["response"] | BadResponse
 }
 
 // lobby endpoints
-export type LobbyList = Request<"lobby/list">
+export type LobbyList = Request<"lobby/list", { lobbies: Record<string, { id: string, name: string, players: number }> }>
 export type LobbyCreate = Request<"lobby/create", { lobbyId: string }>
 export type LobbyJoin = Request<"lobby/join"> & { join: string }
 export type LobbyExit = Request<"lobby/exit">
