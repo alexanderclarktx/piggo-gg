@@ -154,6 +154,13 @@ export const Client = ({ world }: ClientProps): Client => {
 
           world.removeSystem(NetClientReadSystem.id)
           world.removeSystem(NetClientWriteSystem.id)
+
+          const players = world.players()
+          for (const player of players) {
+            if (player.id === client.player.id) continue
+
+            world.removeEntity(player.id)
+          }
         }
       })
     },
