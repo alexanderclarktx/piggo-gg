@@ -30,7 +30,7 @@ export const NetClientWriteSystem = SystemBuilder({
             }
           }
           catch (e) {
-            console.error("NetcodeSystem: error sending message")
+            console.error("NetClientSystem: error sending message")
           }
         }
       }
@@ -61,7 +61,7 @@ export const NetClientReadSystem = SystemBuilder({
 
         // skip old messages
         if (message.tick < client.lastMessageTick) {
-          console.error("NetcodeSystem: skipping old message")
+          console.error("NetClientSystem: skipping old message")
           return
         }
 
@@ -90,7 +90,7 @@ export const NetClientReadSystem = SystemBuilder({
           })
         }
       } catch (e) {
-        console.error("NetcodeSystem: error parsing message")
+        console.error("NetClientSystem: error parsing message")
       }
     }
 
