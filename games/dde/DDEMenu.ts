@@ -30,9 +30,9 @@ export const DDEMenu = (world: World): Entity => {
       createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
 
       if (!inLobby) {
-        world.client?.lobbyCreate((response) => {
+        world.client?.lobbyCreate(() => {
           inLobby = true
-          console.log("Lobby created:", response)
+          polled = world.tick - 70
         })
       }
     },
@@ -90,16 +90,20 @@ export const DDEMenu = (world: World): Entity => {
             world.client?.lobbyList((response) => {
               console.log(response.lobbies)
 
+              lobbies.innerHTML = "" // Clear previous lobbies
               for (const [id, meta] of entries(response.lobbies)) {
                 const lobbyItem = HtmlText({
-                  text: `Lobby ${id}: ${meta.players} players`,
+                  text: `id:${id} players:${meta.players}`,
                   style: {
-                    padding: "5px",
+                    width: "98%",
                     left: "50%",
+                    marginTop: "4px",
+                    fontSize: "16px",
                     transform: "translateX(-50%)",
                     position: "relative",
-                    backgroundColor: "rgba(207, 246, 247, 0.5)",
-                    // borderBottom: "1px solid #ffffff"
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid #ffaaaa",
+                    borderRadius: "8px",
                   }
                 })
                 lobbies.appendChild(lobbyItem)

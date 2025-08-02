@@ -15,6 +15,8 @@ export type HtmlStyleProps = {
   justifyContent?: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
   left?: `${number}%` | `${number}px`
   lineHeight?: `${number}px`
+  margin?: `${number}px` | `${number}%`
+  marginTop?: `${number}px` | `${number}%`
   overflow?: "visible" | "hidden" | "scroll" | "auto"
   padding?: string
   pointerEvents?: "none" | "auto"
