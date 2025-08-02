@@ -4,8 +4,13 @@ export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   const b = document.createElement('button')
 
   if (props.text) b.textContent = props.text
+  if (props.onClick) b.addEventListener("pointerdown", props.onClick)
+  if (props.onRelease) b.addEventListener("pointerup", props.onRelease)
 
   Object.assign(b.style, defaults)
+
+  if (props.onClick || props.onRelease) b.style.pointerEvents = "auto"
+
   Object.assign(b.style, props.style)
 
   return b
@@ -27,4 +32,6 @@ const defaults: HtmlStyleProps = {
 export type HtmlButtonProps = {
   text?: string
   style?: HtmlStyleProps
+  onClick?: (event: MouseEvent) => void
+  onRelease?: (event: MouseEvent) => void
 }

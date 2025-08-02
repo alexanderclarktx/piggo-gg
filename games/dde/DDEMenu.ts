@@ -1,10 +1,10 @@
-import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton } from "@piggo-gg/core"
+import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World } from "@piggo-gg/core"
 
-export const DDEMenu = (): Entity => {
+export const DDEMenu = (world: World): Entity => {
 
   let init = false
-
   let polled = -60
+  let inLobby = false
 
   const lobbies = HtmlText({
     text: "LOBBIES",
@@ -14,7 +14,25 @@ export const DDEMenu = (): Entity => {
   })
 
   const createLobby = HtmlButton({
-    text: "Create Lobby"
+    text: "Create Lobby",
+    style: {
+      left: "25%",
+      top: "20%",
+      height: "40px"
+    },
+    onClick: () => {
+      createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
+
+      if (!inLobby) {
+        world.client?.lobbyCreate((response) => {
+          inLobby = true
+          console.log("Lobby created:", response)
+        })
+      }
+    },
+    onRelease: () => {
+      createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
+    }
   })
 
   const img = HtmlImg("dde-256.jpg", {
