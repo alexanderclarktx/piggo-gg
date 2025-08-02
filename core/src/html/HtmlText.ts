@@ -2,14 +2,16 @@ import { HtmlStyleProps } from "@piggo-gg/core"
 
 export type HtmlTextProps = {
   text?: string,
-  style: HtmlStyleProps
+  style?: HtmlStyleProps
 }
 
 const defaults: HtmlTextProps["style"] = {
   position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
+  fontSize: "20px",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
+  transform: "translate(-50%)",
   pointerEvents: "none"
 }
 
@@ -29,9 +31,6 @@ export const HtmlLabel = (text: string, left: number, top: number, visible: bool
   style: {
     left: `${left}px`,
     top: `${top}px`,
-    fontSize: "20px",
-    color: "#ffffff",
-    transform: "translateX(-50%)",
     visibility: visible ? "visible" : "hidden"
   }
 })

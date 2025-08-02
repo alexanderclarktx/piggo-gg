@@ -1,6 +1,6 @@
 import {
   BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
-  localAim, logPerf, min, PI, Position, SpawnSystem, spawnTerrain,
+  localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
   sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
@@ -38,7 +38,8 @@ export const DDE: GameBuilder<DDEState> = {
         BirdHUDSystem
       ],
       entities: [
-        DDEMenu()
+        DDEMenu(world),
+        Profile()
       ]
     }
   }

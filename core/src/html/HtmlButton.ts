@@ -25,7 +25,7 @@ export type HtmlButtonProps = {
   style: HtmlStyleProps
 }
 
-export const HtmlDiv = (style: HtmlStyleProps): HTMLDivElement => {
+export const HtmlDiv = (style: HtmlStyleProps = {}): HTMLDivElement => {
   const div = document.createElement('div')
 
   Object.assign(div.style, defaults)

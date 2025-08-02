@@ -1,8 +1,12 @@
-import { Entity, HtmlDiv, NPC, Position, HtmlImg } from "@piggo-gg/core"
+import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlLabel, World, HtmlText } from "@piggo-gg/core"
 
-export const DDEMenu = (): Entity => {
+export const DDEMenu = (world: World): Entity => {
 
   let init = false
+
+  const user = HtmlText({
+    text: world.client?.playerName() || "noob"
+  })
 
   const img = HtmlImg("dde-256.jpg", {
     left: "50%",
@@ -26,6 +30,7 @@ export const DDEMenu = (): Entity => {
   })
 
   overlay.appendChild(img)
+  overlay.appendChild(user)
 
   const menu = Entity({
     id: "DDEMenu",
