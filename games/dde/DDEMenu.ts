@@ -141,7 +141,7 @@ export const DDEMenu = (world: World): Entity => {
 
               for (const [id, meta] of entries(response.lobbies)) {
                 const lobby = HtmlText({
-                  text: `(${meta.players}) ${id}`,
+                  text: `(${meta.players}) ${meta.creator} ${id}`,
                   style: {
                     width: "70%",
                     height: "36px",

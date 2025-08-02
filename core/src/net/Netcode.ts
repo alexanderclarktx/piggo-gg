@@ -57,7 +57,7 @@ export type ResponseData = {
 }
 
 // lobby endpoints
-export type LobbyList = Request<"lobby/list", { lobbies: Record<string, { id: string, name: string, players: number }> }>
+export type LobbyList = Request<"lobby/list", { lobbies: Record<string, { id: string, creator: string, players: number }> }>
 export type LobbyCreate = Request<"lobby/create", { lobbyId: string }>
 export type LobbyJoin = Request<"lobby/join"> & { join: string }
 export type LobbyExit = Request<"lobby/exit">

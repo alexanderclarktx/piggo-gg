@@ -8,6 +8,7 @@ export type WS = ServerWebSocket<PerClientData>
 export type ServerWorld = {
   world: World
   clients: Record<string, WS>
+  creator: string
   getNumClients: () => number
   handleMessage: (ws: WS, msg: NetMessageTypes) => void
   handleClose: (ws: WS) => void
@@ -15,9 +16,10 @@ export type ServerWorld = {
 
 export type ServerWorldProps = {
   clients?: Record<string, WS>
+  creator: string
 }
 
-export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorld => {
+export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): ServerWorld => {
 
   const world = DefaultWorld({ mode: "server", games })
   const latestClientMessages: Record<string, GameData[]> = {}
@@ -30,6 +32,7 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
   return {
     world,
     clients,
+    creator,
     getNumClients: () => keys(clients).length,
     handleClose: (ws: WS) => {
       const player = world.entity(ws.data.playerId)
