@@ -287,7 +287,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             position.data.z += position.data.velocity.z
           }
 
-          if (mode === "local") return
+          if (mode === "local") continue
 
           if (position.data.flying) {
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
