@@ -14,7 +14,7 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
 export const Bird = (player: Player) => Character({
   id: `bird-${player.id}`,
   components: {
-    position: Position({ friction: true, gravity: 0.002, flying: true, z: 6, x: 20, y: 20 }),
+    position: Position({ friction: true, gravity: 0.002, flying: false, z: 6, x: 20, y: 20 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
