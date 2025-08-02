@@ -26,16 +26,17 @@ export const DDEMenu = (world: World): Entity => {
       fontSize: "20px",
     },
     onClick: () => {
-      createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
+      if (inLobby) return
 
-      if (!inLobby) {
-        world.client?.lobbyCreate(({ lobbyId }) => {
-          inLobby = lobbyId
-          polled = world.tick - 75
-        })
-      }
+      world.client?.lobbyCreate(({ lobbyId }) => {
+        inLobby = lobbyId
+        polled = world.tick - 75
+      })
     },
-    onRelease: () => {
+    onHover: () => {
+      createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
+    },
+    onHoverOut: () => {
       createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
     }
   })
@@ -83,6 +84,8 @@ export const DDEMenu = (world: World): Entity => {
           overlay.style.visibility = visible ? "visible" : "hidden"
 
           if (!visible) return
+
+          createLobby.style.visibility = inLobby ? "hidden" : "visible"
 
           if (world.tick - 80 > polled) {
             polled = world.tick
