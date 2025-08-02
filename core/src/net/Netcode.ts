@@ -25,7 +25,7 @@ export type GameData = {
 // API
 
 export type BadResponse = { id: string, error: string }
-export type GoodResponse<R> = R & { id: string, success: true }
+export type GoodResponse<R> = R & { id: string, success?: true }
 
 export type Request<Route, Response extends {} = {}> = {
   type: "request"

@@ -4,14 +4,14 @@ export const DDEMenu = (world: World): Entity => {
 
   let init = false
   let polled = -60
-  let inLobby = false
+  let inLobby: null | string = null
 
   const lobbies = HtmlDiv({
     width: "90%",
     height: "40%",
     left: "5%",
     top: "55%",
-    border: "2px solid #ffffff",
+    border: "2px solid #aaaaaa",
     borderRadius: "10px",
     // backgroundColor: "rgba(0, 0, 0, 0.5)",
     overflow: "scroll",
@@ -30,9 +30,9 @@ export const DDEMenu = (world: World): Entity => {
       createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
 
       if (!inLobby) {
-        world.client?.lobbyCreate(() => {
-          inLobby = true
-          polled = world.tick - 70
+        world.client?.lobbyCreate(({ lobbyId }) => {
+          inLobby = lobbyId
+          polled = world.tick - 75
         })
       }
     },
@@ -53,7 +53,7 @@ export const DDEMenu = (world: World): Entity => {
     visibility: "hidden",
     left: "50%",
     top: "50%",
-    width: "500px",
+    width: "400px",
     height: "400px",
     transform: "translate(-50%, -50%)",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -85,7 +85,7 @@ export const DDEMenu = (world: World): Entity => {
 
           if (!visible) return
 
-          if (polled + 80 < world.tick) {
+          if (world.tick - 80 > polled) {
             polled = world.tick
             world.client?.lobbyList((response) => {
               console.log(response.lobbies)
@@ -96,13 +96,14 @@ export const DDEMenu = (world: World): Entity => {
                   text: `id:${id} players:${meta.players}`,
                   style: {
                     width: "98%",
+                    height: "36px",
                     left: "50%",
                     marginTop: "4px",
                     fontSize: "16px",
                     transform: "translateX(-50%)",
                     position: "relative",
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    border: "2px solid #ffaaaa",
+                    border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #ffaaaa",
                     borderRadius: "8px",
                   }
                 })

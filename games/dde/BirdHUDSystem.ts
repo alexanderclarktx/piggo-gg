@@ -124,7 +124,7 @@ const KeyButton = (props: KeyButtonProps) => HtmlButton({
     height: "40px",
     fontSize: "26px",
     // borderImage: "linear-gradient(to bottom, #ffffff, #cccccc) 1",
-    lineHeight: "18px",
+    // lineHeight: "18px",
     visibility: props.visible === false ? "hidden" : "visible"
   }
 })

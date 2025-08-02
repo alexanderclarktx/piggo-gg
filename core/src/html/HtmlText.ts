@@ -12,7 +12,8 @@ const defaults: HtmlTextProps["style"] = {
   fontSize: "20px",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
   transform: "translate(-50%)",
-  pointerEvents: "none"
+  pointerEvents: "none",
+  alignItems: "center"
 }
 
 export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
