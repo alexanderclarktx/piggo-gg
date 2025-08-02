@@ -165,6 +165,12 @@ export const DDEMenu = (world: World): Entity => {
                   onHoverOut: () => {
                     button.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
                   },
+                  onClick: () => {
+                    world.client?.lobbyJoin(meta.id, () => {
+                      inLobby = meta.id
+                      polled = world.tick - 70
+                    })
+                  },
                   style: {
                     width: "25%",
                     height: "40px",
