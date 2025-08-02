@@ -141,7 +141,7 @@ export const DDEMenu = (world: World): Entity => {
 
               for (const [id, meta] of entries(response.lobbies)) {
                 const lobby = HtmlText({
-                  text: `${id} (${meta.players})`,
+                  text: `(${meta.players}) ${id}`,
                   style: {
                     width: "70%",
                     height: "36px",
@@ -152,7 +152,7 @@ export const DDEMenu = (world: World): Entity => {
                     textAlign: "center",
                     transform: "translateX(0%)",
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #ffaaaa",
+                    border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #aaffff",
                     borderRadius: "8px"
                   }
                 })
@@ -171,7 +171,8 @@ export const DDEMenu = (world: World): Entity => {
                     fontSize: "16px",
                     right: "4px",
                     marginTop: "4px",
-                    pointerEvents: "auto",
+                    border: meta.id === inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff",
+                    pointerEvents: meta.id === inLobby ? "none" : "auto",
                     transform: "translateX(0%)",
                     position: "relative",
                     float: "right"
@@ -186,9 +187,6 @@ export const DDEMenu = (world: World): Entity => {
                 wrapper.appendChild(button)
 
                 lobbies.appendChild(wrapper)
-
-                // lobbies.appendChild(lobby)
-                // lobbies.appendChild(button)
               }
 
               if (keys(response.lobbies).length === 0) {
