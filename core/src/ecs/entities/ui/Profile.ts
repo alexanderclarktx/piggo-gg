@@ -4,7 +4,7 @@ export const Profile = (): Entity => {
   const div = HtmlDiv({
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     width: "165px",
-    height: "80px",
+    height: "60px",
     left: "10px",
     top: "10px",
     border: "2px solid #ffffff",
