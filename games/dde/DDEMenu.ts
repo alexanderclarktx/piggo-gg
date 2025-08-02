@@ -1,4 +1,4 @@
-import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World } from "@piggo-gg/core"
+import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World, entries } from "@piggo-gg/core"
 
 export const DDEMenu = (world: World): Entity => {
 
@@ -6,11 +6,14 @@ export const DDEMenu = (world: World): Entity => {
   let polled = -60
   let inLobby = false
 
-  const lobbies = HtmlText({
-    text: "LOBBIES",
-    style: {
-      left: "50%"
-    }
+  const lobbies = HtmlDiv({
+    width: "90%",
+    height: "40%",
+    left: "5%",
+    top: "55%",
+    border: "2px solid #ffffff",
+    borderRadius: "10px",
+    overflow: "scroll"
   })
 
   const createLobby = HtmlButton({
@@ -18,7 +21,8 @@ export const DDEMenu = (world: World): Entity => {
     style: {
       left: "25%",
       top: "20%",
-      height: "40px"
+      height: "40px",
+      fontSize: "20px",
     },
     onClick: () => {
       createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
@@ -35,9 +39,9 @@ export const DDEMenu = (world: World): Entity => {
     }
   })
 
-  const img = HtmlImg("dde-256.jpg", {
-    right: "10px",
-    top: "10px",
+  const art = HtmlImg("dde-256.jpg", {
+    right: "5%",
+    top: "5%",
     width: "152px",
     border: "2px solid #aaffaa",
     borderRadius: "10px"
@@ -47,8 +51,8 @@ export const DDEMenu = (world: World): Entity => {
     visibility: "hidden",
     left: "50%",
     top: "50%",
-    width: "40%",
-    height: "50%",
+    width: "500px",
+    height: "400px",
     transform: "translate(-50%, -50%)",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     pointerEvents: "auto",
@@ -56,7 +60,7 @@ export const DDEMenu = (world: World): Entity => {
     borderRadius: "10px"
   })
 
-  overlay.appendChild(img)
+  overlay.appendChild(art)
   overlay.appendChild(lobbies)
   overlay.appendChild(createLobby)
 
@@ -83,6 +87,22 @@ export const DDEMenu = (world: World): Entity => {
             polled = world.tick
             world.client?.lobbyList((response) => {
               console.log(response.lobbies)
+
+              for (const [id, meta] of entries(response.lobbies)) {
+                const lobbyItem = HtmlText({
+                  text: `Lobby ${id}: ${meta.players} players`,
+                  style: {
+                    padding: "5px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    position: "relative",
+                    backgroundColor: "rgba(0, 0, 0, 1)",
+                    // borderBottom: "1px solid #ffffff"
+                  }
+                })
+                lobbies.appendChild(lobbyItem)
+                console.log("Lobby item created:", lobbyItem, lobbies.children.length)
+              }
             })
           }
         }

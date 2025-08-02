@@ -1,9 +1,10 @@
 export type HtmlStyleProps = {
   alignItems?: "center" | "flex-start" | "flex-end" | "stretch"
-  borderImage?: `linear-gradient(${string}) ${number}`
   backgroundColor?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
   border?: string
+  borderImage?: `linear-gradient(${string}) ${number}`
   borderRadius?: `${number}px` | `${number}%`
+  clipPath?: string
   color?: `#${string}`
   cursor?: "pointer" | "default" | "not-allowed"
   display?: "block" | "inline-block" | "flex" | "inline-flex" | "none"
@@ -13,16 +14,16 @@ export type HtmlStyleProps = {
   height?: `${number}px` | `${number}%`
   justifyContent?: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
   left?: `${number}%` | `${number}px`
-  right?: `${number}%` | `${number}px`
   lineHeight?: `${number}px`
+  overflow?: "visible" | "hidden" | "scroll" | "auto"
   padding?: string
   pointerEvents?: "none" | "auto"
   position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
+  right?: `${number}%` | `${number}px`
   textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
   top?: `${number}%` | `${number}px`
   transform?: string
   visibility?: "visible" | "hidden"
   width?: `${number}px` | `${number}%`
   zIndex?: number
-  clipPath?: string
 }
