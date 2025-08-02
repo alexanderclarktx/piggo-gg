@@ -92,6 +92,8 @@ export const DDEMenu = (world: World): Entity => {
       position: Position({ x: 0, y: 0, z: 0 }),
       npc: NPC({
         behavior: (_, world) => {
+          if (world.mode === "server") return
+
           if (!init) {
             const parent = world.three?.canvas?.parentElement
             if (parent) {
@@ -113,6 +115,7 @@ export const DDEMenu = (world: World): Entity => {
 
           if (world.tick - 80 > polled) {
             polled = world.tick
+            console.log("POLL")
             world.client?.lobbyList((response) => {
 
               lobbies.innerHTML = ""
