@@ -4,10 +4,6 @@ export const DDEMenu = (world: World): Entity => {
 
   let init = false
 
-  const user = HtmlText({
-    text: world.client?.playerName() || "noob"
-  })
-
   const img = HtmlImg("dde-256.jpg", {
     left: "50%",
     top: "10%",
@@ -30,7 +26,6 @@ export const DDEMenu = (world: World): Entity => {
   })
 
   overlay.appendChild(img)
-  overlay.appendChild(user)
 
   const menu = Entity({
     id: "DDEMenu",
