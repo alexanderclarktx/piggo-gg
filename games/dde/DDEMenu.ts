@@ -134,7 +134,6 @@ export const DDEMenu = (world: World): Entity => {
 
           if (world.tick - 80 > polled) {
             polled = world.tick
-            console.log("POLL")
             world.client?.lobbyList((response) => {
 
               lobbies.innerHTML = ""
