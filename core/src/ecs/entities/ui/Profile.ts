@@ -7,7 +7,7 @@ export const Profile = (): Entity => {
   const div = HtmlDiv({
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     width: "165px",
-    height: "60px",
+    height: "50px",
     left: "10px",
     top: "10px",
     border: "2px solid #ffffff",
@@ -20,7 +20,7 @@ export const Profile = (): Entity => {
       left: "50%",
       top: "50%",
       transform: "translate(-50%, -50%)",
-      fontSize: "28px"
+      fontSize: "24px"
     }
   })
 

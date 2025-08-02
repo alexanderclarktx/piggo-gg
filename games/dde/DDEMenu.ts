@@ -1,4 +1,4 @@
-import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World, entries } from "@piggo-gg/core"
+import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World, entries, keys } from "@piggo-gg/core"
 
 export const DDEMenu = (world: World): Entity => {
 
@@ -27,7 +27,7 @@ export const DDEMenu = (world: World): Entity => {
       width: "176px",
       right: "20px",
       fontSize: "20px",
-      transform: "",
+      transform: ""
     }
   })
 
@@ -134,6 +134,10 @@ export const DDEMenu = (world: World): Entity => {
                   }
                 })
                 lobbies.appendChild(lobbyItem)
+              }
+
+              if (keys(response.lobbies).length === 0) {
+                inLobby = null
               }
             })
           }
