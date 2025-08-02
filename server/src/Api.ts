@@ -1,7 +1,6 @@
 import {
-  ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes,
-  ResponseData, entries, randomHash, keys, round, stringify, values,
-  BadResponse
+  ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData,
+  entries, randomHash, keys, round, stringify, values, BadResponse
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
@@ -322,10 +321,9 @@ export const Api = (): Api => {
     entries(api.worlds).forEach(([id, world]) => {
       if (keys(world.clients).length === 0) {
         delete api.worlds[id]
-        console.log(`world deleted: ${id}`)
       }
     })
-  }, 10000)
+  }, 2000)
 
   return api
 }

@@ -42,7 +42,7 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
         world.removeEntity(player.id)
       }
 
-      delete clients[ws.remoteAddress]
+      delete clients[ws.data.playerId]
       delete latestClientMessages[ws.data.playerName!]
 
       console.log(`${ws.data.playerName} disconnected`)
