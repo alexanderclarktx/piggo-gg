@@ -19,6 +19,8 @@ export const DDEMenu = (world: World): Entity => {
     overflow: "scroll",
     scrollbarWidth: "thin",
     transform: "translateX(-50%)",
+    display: "flex",
+    flexDirection: "column"
   })
 
   const leaveLobby = HtmlButton({
@@ -172,12 +174,21 @@ export const DDEMenu = (world: World): Entity => {
                     pointerEvents: "auto",
                     transform: "translateX(0%)",
                     position: "relative",
-                    float: "right",
+                    float: "right"
                   }
                 })
 
-                lobbies.appendChild(lobby)
-                lobbies.appendChild(button)
+                const wrapper = HtmlDiv({
+                  position: "relative"
+                })
+
+                wrapper.appendChild(lobby)
+                wrapper.appendChild(button)
+
+                lobbies.appendChild(wrapper)
+
+                // lobbies.appendChild(lobby)
+                // lobbies.appendChild(button)
               }
 
               if (keys(response.lobbies).length === 0) {
