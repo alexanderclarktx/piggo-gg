@@ -45,6 +45,8 @@ export const NetClientReadSystem = SystemBuilder({
 
     const { client, tick } = world
 
+    client.lastMessageTick = 0
+
     let buffer: GameData[] = []
 
     const syncer = () => ({
