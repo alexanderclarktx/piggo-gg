@@ -62,7 +62,7 @@ export const Api = (): Api => {
         const lobbies: Record<string, { id: string, players: number, creator: string }> = {}
         for (const [id, world] of entries(api.worlds)) {
           lobbies[id] = {
-            id, players: keys(world.clients).length, creator: world.creator
+            id, players: keys(world.clients).length, creator: world.creator.data.playerName ?? "noob"
           }
         }
         return { id: data.id, lobbies }
@@ -71,7 +71,7 @@ export const Api = (): Api => {
         const lobbyId = randomHash()
 
         // create world
-        api.worlds[lobbyId] = ServerWorld({ creator: ws.data.playerName ?? "noob" })
+        api.worlds[lobbyId] = ServerWorld({ creator: ws })
 
         // set world id for this client
         ws.data.worldId = lobbyId
@@ -82,7 +82,7 @@ export const Api = (): Api => {
       },
       "lobby/join": async ({ ws, data }) => {
         if (!api.worlds[data.join]) {
-          api.worlds[data.join] = ServerWorld({ creator: ws.data.playerName ?? "noob" })
+          api.worlds[data.join] = ServerWorld({ creator: ws })
         }
 
         ws.data.worldId = data.join

@@ -8,7 +8,7 @@ export type WS = ServerWebSocket<PerClientData>
 export type ServerWorld = {
   world: World
   clients: Record<string, WS>
-  creator: string
+  creator: WS
   getNumClients: () => number
   handleMessage: (ws: WS, msg: NetMessageTypes) => void
   handleClose: (ws: WS) => void
@@ -16,7 +16,7 @@ export type ServerWorld = {
 
 export type ServerWorldProps = {
   clients?: Record<string, WS>
-  creator: string
+  creator: WS
 }
 
 export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): ServerWorld => {
