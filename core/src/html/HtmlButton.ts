@@ -16,11 +16,15 @@ const defaults: HtmlStyleProps = {
   fontFamily: "Courier New",
   fontWeight: "bold",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
-  pointerEvents: "none"
-  // clipPath: "inset(0 round 3px)"
+  backgroundColor: "rgba(0, 0, 0, 0.3)",
+  color: "#ffffff",
+  pointerEvents: "none",
+  border: "2px solid #ffffff",
+  borderRadius: "8px",
+  transform: "translateX(-50%)"
 }
 
 export type HtmlButtonProps = {
   text?: string
-  style: HtmlStyleProps
+  style?: HtmlStyleProps
 }

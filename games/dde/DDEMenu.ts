@@ -1,4 +1,4 @@
-import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText } from "@piggo-gg/core"
+import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton } from "@piggo-gg/core"
 
 export const DDEMenu = (): Entity => {
 
@@ -11,6 +11,10 @@ export const DDEMenu = (): Entity => {
     style: {
       left: "50%"
     }
+  })
+
+  const createLobby = HtmlButton({
+    text: "Create Lobby"
   })
 
   const img = HtmlImg("dde-256.jpg", {
@@ -36,6 +40,7 @@ export const DDEMenu = (): Entity => {
 
   overlay.appendChild(img)
   overlay.appendChild(lobbies)
+  overlay.appendChild(createLobby)
 
   const menu = Entity({
     id: "DDEMenu",
