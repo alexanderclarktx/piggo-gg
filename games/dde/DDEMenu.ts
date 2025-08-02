@@ -1,8 +1,9 @@
-import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World, entries, keys } from "@piggo-gg/core"
+import {
+  Entity, HtmlDiv, NPC, Position, HtmlImg,
+  HtmlText, HtmlButton, World, entries, keys
+} from "@piggo-gg/core"
 
 export const DDEMenu = (world: World): Entity => {
-
-  // if (world.mode === "server") return undefined
 
   let init = false
   let polled = -60
@@ -28,7 +29,15 @@ export const DDEMenu = (world: World): Entity => {
       right: "20px",
       fontSize: "20px",
       transform: ""
-    }
+    },
+    onClick: () => {
+      if (!inLobby) return
+
+      world.client?.lobbyLeave()
+
+      polled = world.tick - 70
+      inLobby = null
+    },
   })
 
   const createLobby = HtmlButton({

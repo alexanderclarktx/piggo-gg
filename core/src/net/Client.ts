@@ -45,6 +45,7 @@ export type Client = {
   copyInviteLink: () => void
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
+  lobbyLeave: () => void
   lobbyList: (callback: Callback<LobbyList>) => void
   metaPlayers: (callback: Callback<MetaPlayers>) => void
   authLogin: (jwt: string, callback?: Callback<AuthLogin>) => void
@@ -142,6 +143,16 @@ export const Client = ({ world }: ClientProps): Client => {
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
         }
       })
+    },
+    lobbyLeave: () => {
+      if (client.lobbyId === undefined) return
+
+      world.removeSystem(NetClientReadSystem.id)
+      world.removeSystem(NetClientWriteSystem.id)
+
+      client.ws.close()
+
+      client.lobbyId = undefined
     },
     lobbyList: (callback) => {
       request<LobbyList>({ route: "lobby/list", type: "request", id: randomHash() }, (response) => {
