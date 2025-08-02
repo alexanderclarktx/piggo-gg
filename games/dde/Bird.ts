@@ -22,35 +22,17 @@ export const Bird = (player: Player) => Character({
     }),
     input: Input({
       release: {
-        // "escape": ({ world }) => {
-        //   world.three?.pointerLock()
-        //   return null
-        // },
-        // "mb1": ({ world }) => {
-        //   world.three?.pointerLock()
-        //   return null
-        // },
+        "escape": ({ world }) => {
+          world.three?.pointerLock()
+          return null
+        },
+        "mb1": ({ world }) => {
+          world.three?.pointerLock()
+          return null
+        },
         "e": () => ({ actionId: "transform" })
       },
       press: {
-        "escape": ({ world, hold }) => {
-          if (hold) return null
-          if (!document.pointerLockElement) {
-            world.three?.pointerLock()
-          } else {
-            world.three?.pointerUnlock()
-          }
-          return null
-        },
-        "mb1": ({ world, hold }) => {
-          console.log("mb1 pressed", document.pointerLockElement, hold)
-          if (hold) return null
-          if (!document.pointerLockElement) {
-            world.three?.pointerLock()
-          }
-          
-          return null
-        },
         "w,s": () => null, "a,d": () => null,
 
         // debug

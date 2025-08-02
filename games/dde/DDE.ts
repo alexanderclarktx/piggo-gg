@@ -5,7 +5,9 @@ import {
   Entity,
   NPC,
   Input,
-  Actions
+  Actions,
+  HtmlDiv,
+  World
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { Bird } from "./Bird"
@@ -18,31 +20,54 @@ export type DDEState = {
   applesTimer: Record<string, number>
 }
 
-const DDEMenu = (): Entity => {
+const DDEMenu = (world: World): Entity => {
 
   let open = false
+
+  const overlay = HtmlDiv({
+    text: "Duck Duck Eagle",
+    style: {
+      visibility: "hidden",
+      left: "50%",
+      top: "50%",
+      width: "200px",
+      height: "200px",
+      transform: "translate(-50%, -50%)",
+      backgroundColor: "rgba(0, 250, 0, 0.5)",
+    }
+  })
+
+  const parent = world.three?.canvas?.parentElement
+  if (parent) {
+    parent.appendChild(overlay)
+  }
 
   const menu = Entity({
     id: "DDEMenu",
     components: {
       position: Position({ x: 0, y: 0, z: 0 }),
-      input: Input({
-        press: {
-          "escape": ({ hold }) => {
-            if (hold) return null
+      // input: Input({
+      //   release: {
+      //     "escape": ({ hold }) => {
+      //       // if (hold) return null
 
-            if (!open && !document.pointerLockElement) {
-              open = true
-            }
-            console.log("DDE Menu pressed", open)
-            return null
-          }
-        }
-      }),
-      actions: Actions(),
+      //       if (!open && !document.pointerLockElement) {
+      //         open = true
+      //       }
+      //       console.log("escape pressed", open, document.pointerLockElement)
+      //       return null
+      //     }
+      //   }
+      // }),
+      // actions: Actions(),
       npc: NPC({
         behavior: (_, world) => {
-          console.log("DDE Menu NPC behavior", open)
+
+          const pointerLocked = Boolean(document.pointerLockElement)
+
+          open = !pointerLocked
+
+          overlay.style.visibility = open ? "visible" : "hidden"
         }
       })
     }
@@ -73,7 +98,7 @@ export const DDE: GameBuilder<DDEState> = {
         BirdHUDSystem
       ],
       entities: [
-        DDEMenu()
+        DDEMenu(world),
       ]
     }
   }
