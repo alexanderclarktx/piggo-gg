@@ -1,6 +1,9 @@
 import { Entity, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/core"
 
 export const Profile = (): Entity => {
+
+  let init = false
+
   const div = HtmlDiv({
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     width: "165px",
@@ -29,8 +32,9 @@ export const Profile = (): Entity => {
       position: Position(),
       npc: NPC({
         behavior: (_, world) => {
-          if (!world.three?.canvas.parentElement?.contains(div)) {
+          if (!init) {
             world.three?.canvas.parentElement?.appendChild(div)
+            init = true
           }
 
           const playerName = world.client?.playerName()
@@ -40,9 +44,7 @@ export const Profile = (): Entity => {
           }
         }
       })
-
     }
   })
-
   return profile
 }
