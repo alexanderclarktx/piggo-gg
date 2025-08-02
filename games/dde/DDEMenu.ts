@@ -34,7 +34,6 @@ export const DDEMenu = (world: World): Entity => {
   const createLobby = HtmlButton({
     text: "Create Lobby",
     style: {
-      // bottom: "25%",
       top: "88%",
       height: "40px",
       width: "176px",
@@ -82,7 +81,6 @@ export const DDEMenu = (world: World): Entity => {
     borderRadius: "10px"
   })
 
-  // overlay.append(art, lobbies, createLobby, leaveLobby)
   overlay.appendChild(art)
   overlay.appendChild(lobbies)
   overlay.appendChild(createLobby)
