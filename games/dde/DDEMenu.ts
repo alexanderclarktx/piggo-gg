@@ -138,11 +138,12 @@ export const DDEMenu = (world: World): Entity => {
                     left: "50%",
                     marginTop: "4px",
                     fontSize: "16px",
+                    lineHeight: "36px",
+                    textAlign: "center",
                     transform: "translateX(-50%)",
-                    position: "relative",
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
                     border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #ffaaaa",
-                    borderRadius: "8px",
+                    borderRadius: "8px"
                   }
                 })
                 lobbies.appendChild(lobbyItem)
