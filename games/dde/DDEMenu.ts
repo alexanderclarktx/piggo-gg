@@ -13,7 +13,9 @@ export const DDEMenu = (world: World): Entity => {
     top: "55%",
     border: "2px solid #ffffff",
     borderRadius: "10px",
-    overflow: "scroll"
+    // backgroundColor: "rgba(0, 0, 0, 0.5)",
+    overflow: "scroll",
+    scrollbarWidth: "thin"
   })
 
   const createLobby = HtmlButton({
@@ -96,7 +98,7 @@ export const DDEMenu = (world: World): Entity => {
                     left: "50%",
                     transform: "translateX(-50%)",
                     position: "relative",
-                    backgroundColor: "rgba(0, 0, 0, 1)",
+                    backgroundColor: "rgba(207, 246, 247, 0.5)",
                     // borderBottom: "1px solid #ffffff"
                   }
                 })

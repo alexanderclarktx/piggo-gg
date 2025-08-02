@@ -20,6 +20,7 @@ export type HtmlStyleProps = {
   pointerEvents?: "none" | "auto"
   position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
   right?: `${number}%` | `${number}px`
+  scrollbarWidth?: "auto" | "thin" | "none"
   textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
   top?: `${number}%` | `${number}px`
   transform?: string
