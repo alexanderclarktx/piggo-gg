@@ -1,8 +1,9 @@
-import { Entity, HtmlDiv, NPC, Position, World } from "@piggo-gg/core"
+import { Entity, HtmlDiv, NPC, Position } from "@piggo-gg/core"
 
-export const DDEMenu = (world: World): Entity => {
+export const DDEMenu = (): Entity => {
 
   let open = false
+  let appended = false
 
   const overlay = HtmlDiv({
     text: "Duck Duck Eagle",
@@ -20,20 +21,21 @@ export const DDEMenu = (world: World): Entity => {
     }
   })
 
-  const parent = world.three?.canvas?.parentElement
-  if (parent) parent.appendChild(overlay)
-
   const menu = Entity({
     id: "DDEMenu",
     components: {
       position: Position({ x: 0, y: 0, z: 0 }),
       npc: NPC({
-        behavior: () => {
+        behavior: (_, world) => {
+          if (!appended) {
+            const parent = world.three?.canvas?.parentElement
+            if (parent) {
+              parent.appendChild(overlay)
+              appended = true
+            }
+          }
 
-          const pointerLocked = Boolean(document.pointerLockElement)
-
-          open = !pointerLocked
-
+          open = !Boolean(document.pointerLockElement)
           overlay.style.visibility = open ? "visible" : "hidden"
         }
       })
