@@ -6,9 +6,9 @@ export const DDEMenu = (): Entity => {
 
   const img = HtmlImg("dde-256.jpg", {
     left: "50%",
-    top: "20%",
+    top: "10%",
     transform: "translate(-50%)",
-    width: "196px",
+    width: "142px",
     borderRadius: "10px"
   })
 
