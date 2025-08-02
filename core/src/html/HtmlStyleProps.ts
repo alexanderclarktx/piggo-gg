@@ -7,7 +7,7 @@ export type HtmlStyleProps = {
   color?: `#${string}`
   cursor?: "pointer" | "default" | "not-allowed"
   display?: "block" | "inline-block" | "flex" | "inline-flex" | "none"
-  fontFamily?: "Courier New" | "Arial" | "Verdana" | "Times New Roman" | "Georgia" | "Tahoma" | "Trebuchet MS"
+  fontFamily?: "Courier New" | "Arial"
   fontSize?: `${number}px`
   fontWeight?: "normal" | "bold" | "bolder" | "lighter"
   height?: `${number}px` | `${number}%`
