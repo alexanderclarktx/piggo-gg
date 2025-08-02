@@ -62,9 +62,7 @@ export const Api = (): Api => {
         const lobbies: Record<string, { id: string, name: string, players: number }> = {}
         for (const [id, world] of entries(api.worlds)) {
           lobbies[id] = {
-            id,
-            name: world.world.game.id,
-            players: keys(world.clients).length
+            id, name: world.world.game.id, players: keys(world.clients).length
           }
         }
         return { id: data.id, lobbies }
