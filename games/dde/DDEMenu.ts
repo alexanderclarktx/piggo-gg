@@ -2,6 +2,8 @@ import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World, e
 
 export const DDEMenu = (world: World): Entity => {
 
+  // if (world.mode === "server") return undefined
+
   let init = false
   let polled = -60
   let inLobby: null | string = null
@@ -10,20 +12,35 @@ export const DDEMenu = (world: World): Entity => {
     width: "90%",
     height: "40%",
     left: "5%",
-    top: "55%",
+    top: "45%",
     border: "2px solid #aaaaaa",
     borderRadius: "10px",
     overflow: "scroll",
     scrollbarWidth: "thin"
   })
 
+  const leaveLobby = HtmlButton({
+    text: "Leave Lobby",
+    style: {
+      top: "88%",
+      height: "40px",
+      width: "176px",
+      right: "20px",
+      fontSize: "20px",
+      transform: "",
+    }
+  })
+
   const createLobby = HtmlButton({
     text: "Create Lobby",
     style: {
-      left: "25%",
-      top: "20%",
+      // bottom: "25%",
+      top: "88%",
       height: "40px",
+      width: "176px",
+      left: "20px",
       fontSize: "20px",
+      transform: "",
     },
     onClick: () => {
       if (inLobby) return
@@ -32,6 +49,8 @@ export const DDEMenu = (world: World): Entity => {
         inLobby = lobbyId
         polled = world.tick - 75
       })
+
+      console.log("create lobby")
     },
     onHover: () => {
       createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
@@ -44,7 +63,7 @@ export const DDEMenu = (world: World): Entity => {
   const art = HtmlImg("dde-256.jpg", {
     left: "50%",
     top: "5%",
-    width: "152px",
+    width: "140px",
     transform: "translateX(-50%)",
     border: "2px solid #ffffff",
     borderRadius: "10px"
@@ -63,9 +82,11 @@ export const DDEMenu = (world: World): Entity => {
     borderRadius: "10px"
   })
 
+  // overlay.append(art, lobbies, createLobby, leaveLobby)
   overlay.appendChild(art)
   overlay.appendChild(lobbies)
   overlay.appendChild(createLobby)
+  overlay.appendChild(leaveLobby)
 
   const menu = Entity({
     id: "DDEMenu",
@@ -86,7 +107,11 @@ export const DDEMenu = (world: World): Entity => {
 
           if (!visible) return
 
-          createLobby.style.visibility = inLobby ? "hidden" : "visible"
+          createLobby.style.pointerEvents = inLobby ? "none" : "auto"
+          leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
+
+          createLobby.style.border = inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #aaaaaa"
 
           if (world.tick - 80 > polled) {
             polled = world.tick
