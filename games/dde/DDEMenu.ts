@@ -1,14 +1,14 @@
-import { Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlLabel, World, HtmlText } from "@piggo-gg/core"
+import { Entity, HtmlDiv, NPC, Position, HtmlImg } from "@piggo-gg/core"
 
-export const DDEMenu = (world: World): Entity => {
+export const DDEMenu = (): Entity => {
 
   let init = false
 
   const img = HtmlImg("dde-256.jpg", {
-    left: "50%",
-    top: "10%",
-    transform: "translate(-50%)",
-    width: "142px",
+    right: "10px",
+    top: "10px",
+    width: "152px",
+    border: "2px solid #aaffaa",
     borderRadius: "10px"
   })
 

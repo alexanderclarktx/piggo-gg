@@ -38,7 +38,7 @@ export const DDE: GameBuilder<DDEState> = {
         BirdHUDSystem
       ],
       entities: [
-        DDEMenu(world),
+        DDEMenu(),
         Profile()
       ]
     }
