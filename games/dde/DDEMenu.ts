@@ -5,20 +5,19 @@ export const DDEMenu = (): Entity => {
   let open = false
   let appended = false
 
+  // const img = HtmlImg
+
   const overlay = HtmlDiv({
-    text: "Duck Duck Eagle",
-    style: {
-      visibility: "hidden",
-      left: "50%",
-      top: "50%",
-      width: "30%",
-      height: "40%",
-      transform: "translate(-50%, -50%)",
-      backgroundColor: "rgba(0, 0, 0, 0.95)",
-      pointerEvents: "auto",
-      border: "2px solid #ffffff",
-      borderRadius: "10px"
-    }
+    visibility: "hidden",
+    left: "50%",
+    top: "50%",
+    width: "40%",
+    height: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    pointerEvents: "auto",
+    border: "2px solid #ffffff",
+    borderRadius: "10px"
   })
 
   const menu = Entity({

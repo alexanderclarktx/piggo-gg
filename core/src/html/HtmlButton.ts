@@ -1,42 +1,17 @@
-export type HtmlButtonProps = {
-  text?: string
-  style?: {
-    alignItems?: "center" | "flex-start" | "flex-end" | "stretch"
-    borderImage?: `linear-gradient(${string}) ${number}`
-    backgroundColor?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
-    border?: string
-    borderRadius?: `${number}px` | `${number}%`
-    color?: `#${string}`
-    cursor?: "pointer" | "default" | "not-allowed"
-    display?: "block" | "inline-block" | "flex" | "inline-flex" | "none"
-    fontFamily?: "Courier New" | "Arial" | "Verdana" | "Times New Roman" | "Georgia" | "Tahoma" | "Trebuchet MS"
-    fontSize?: `${number}px`
-    fontWeight?: "normal" | "bold" | "bolder" | "lighter"
-    height?: `${number}px` | `${number}%`
-    justifyContent?: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
-    left?: `${number}%` | `${number}px`
-    right?: `${number}%` | `${number}px`
-    lineHeight?: `${number}px`
-    padding?: string
-    pointerEvents?: "none" | "auto"
-    position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
-    textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
-    top?: `${number}%` | `${number}px`
-    transform?: string
-    visibility?: "visible" | "hidden"
-    width?: `${number}px` | `${number}%`
-    zIndex?: number
-    clipPath?: string
-  }
-}
+import { HtmlStyleProps } from "@piggo-gg/core"
 
-const defaults: HtmlButtonProps["style"] = {
+const defaults: HtmlStyleProps = {
   position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
   pointerEvents: "none"
   // clipPath: "inset(0 round 3px)"
+}
+
+export type HtmlButtonProps = {
+  text?: string,
+  style: HtmlStyleProps
 }
 
 export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
@@ -50,13 +25,11 @@ export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   return b
 }
 
-export const HtmlDiv = (props: HtmlButtonProps): HTMLDivElement => {
+export const HtmlDiv = (style: HtmlStyleProps): HTMLDivElement => {
   const div = document.createElement('div')
 
-  if (props.text) div.textContent = props.text
-
   Object.assign(div.style, defaults)
-  Object.assign(div.style, props.style)
+  Object.assign(div.style, style)
 
   return div
 }

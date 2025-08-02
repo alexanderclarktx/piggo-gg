@@ -1,18 +1,8 @@
+import { HtmlStyleProps } from "@piggo-gg/core"
+
 export type HtmlTextProps = {
   text?: string,
-  style: {
-    color?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
-    fontFamily?: "Courier New" | "Arial" | "Verdana"
-    fontSize?: `${number}px`
-    fontWeight?: "normal" | "bold" | "bolder" | "lighter"
-    left?: `${number}px` | `${number}%`
-    pointerEvents?: "none" | "auto"
-    position?: "absolute" | "relative"
-    textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
-    top?: `${number}px` | `${number}%`
-    transform?: `translateX(${number}%)`
-    visibility?: "visible" | "hidden"
-  }
+  style: HtmlStyleProps
 }
 
 const defaults: HtmlTextProps["style"] = {
