@@ -2,7 +2,8 @@ import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData,
   RequestTypes, World, randomPlayerId, SoundManager, randomHash, AuthLogin,
   FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet,
-  ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile, LobbyList, BadResponse
+  ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile, LobbyList, BadResponse,
+  LobbyExit
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -146,12 +147,16 @@ export const Client = ({ world }: ClientProps): Client => {
       })
     },
     lobbyLeave: () => {
-      if (client.lobbyId === undefined) return
+      request<LobbyExit>({ route: "lobby/exit", type: "request", id: randomHash() }, (response) => {
+        if ("error" in response) {
+          console.error("Client: failed to leave lobby", response.error)
+        } else {
+          client.lobbyId = undefined
 
-      world.removeSystem(NetClientReadSystem.id)
-      world.removeSystem(NetClientWriteSystem.id)
-
-      client.lobbyId = undefined
+          world.removeSystem(NetClientReadSystem.id)
+          world.removeSystem(NetClientWriteSystem.id)
+        }
+      })
     },
     lobbyList: (callback) => {
       request<LobbyList>({ route: "lobby/list", type: "request", id: randomHash() }, (response) => {

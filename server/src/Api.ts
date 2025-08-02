@@ -88,7 +88,13 @@ export const Api = (): Api => {
         ws.data.worldId = data.join
         return { id: data.id }
       },
-      "lobby/exit": async ({ data }) => {
+      "lobby/exit": async ({ data, ws }) => {
+        const world = api.worlds[ws.data.worldId]
+        if (world) {
+          world.handleClose(ws)
+        } else {
+          return { id: data.id, error: "world not found" }
+        }
         return { id: data.id }
       },
       "meta/players": async ({ data }) => {
