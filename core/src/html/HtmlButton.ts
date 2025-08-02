@@ -1,5 +1,16 @@
 import { HtmlStyleProps } from "@piggo-gg/core"
 
+export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
+  const b = document.createElement('button')
+
+  if (props.text) b.textContent = props.text
+
+  Object.assign(b.style, defaults)
+  Object.assign(b.style, props.style)
+
+  return b
+}
+
 const defaults: HtmlStyleProps = {
   position: "absolute",
   fontFamily: "Courier New",
@@ -12,17 +23,6 @@ const defaults: HtmlStyleProps = {
 export type HtmlButtonProps = {
   text?: string,
   style: HtmlStyleProps
-}
-
-export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
-  const b = document.createElement('button')
-
-  if (props.text) b.textContent = props.text
-
-  Object.assign(b.style, defaults)
-  Object.assign(b.style, props.style)
-
-  return b
 }
 
 export const HtmlDiv = (style: HtmlStyleProps): HTMLDivElement => {
