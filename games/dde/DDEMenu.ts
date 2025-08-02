@@ -4,6 +4,8 @@ export const DDEMenu = (): Entity => {
 
   let init = false
 
+  let polled = -60
+
   const lobbies = HtmlText({
     text: "LOBBIES",
     style: {
@@ -49,14 +51,17 @@ export const DDEMenu = (): Entity => {
             }
           }
 
-          if (world.tick % 40 === 0) {
+          const visible = !Boolean(document.pointerLockElement)
+          overlay.style.visibility = visible ? "visible" : "hidden"
+
+          if (!visible) return
+
+          if (polled + 80 < world.tick) {
+            polled = world.tick
             world.client?.lobbyList((response) => {
               console.log(response.lobbies)
             })
           }
-
-          const visible = !Boolean(document.pointerLockElement)
-          overlay.style.visibility = visible ? "visible" : "hidden"
         }
       })
     }
