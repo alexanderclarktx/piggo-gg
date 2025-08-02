@@ -12,7 +12,7 @@ export type HtmlButtonProps = {
     fontFamily?: "Courier New" | "Arial" | "Verdana" | "Times New Roman" | "Georgia" | "Tahoma" | "Trebuchet MS"
     fontSize?: `${number}px`
     fontWeight?: "normal" | "bold" | "bolder" | "lighter"
-    height?: `${number}px`
+    height?: `${number}px` | `${number}%`
     justifyContent?: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
     left?: `${number}%` | `${number}px`
     right?: `${number}%` | `${number}px`
@@ -24,7 +24,7 @@ export type HtmlButtonProps = {
     top?: `${number}%` | `${number}px`
     transform?: string
     visibility?: "visible" | "hidden"
-    width?: `${number}px`
+    width?: `${number}px` | `${number}%`
     zIndex?: number
     clipPath?: string
   }
