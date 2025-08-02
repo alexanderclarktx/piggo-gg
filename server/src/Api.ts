@@ -1,6 +1,6 @@
 import {
-  ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes,
-  ResponseData, entries, randomHash, keys, round, stringify, values
+  ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData,
+  entries, randomHash, keys, round, stringify, values, BadResponse
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
@@ -19,7 +19,7 @@ export type PerClientData = {
 type SessionToken = { googleId: string }
 
 type Handler<R extends RequestTypes["route"]> = (_: { ws: ServerWebSocket<PerClientData>, data: ExtractedRequestTypes<R> }) =>
-  Promise<ExtractedRequestTypes<R>['response']>
+  Promise<ExtractedRequestTypes<R>['response'] | BadResponse>
 
 export type Api = {
   bun: Server | undefined
@@ -39,7 +39,7 @@ export const Api = (): Api => {
   const JWT_SECRET = process.env["JWT_SECRET"] ?? "piggo"
   const google = new OAuth2Client("1064669120093-9727dqiidriqmrn0tlpr5j37oefqdam3.apps.googleusercontent.com")
 
-  const skiplog: RequestTypes["route"][] = ["meta/players", "auth/login"]
+  const skiplog: RequestTypes["route"][] = ["meta/players", "auth/login", "lobby/list"]
 
   const verifyJWT = (data: { token: string }): SessionToken | false => {
     let token: SessionToken | undefined = undefined
@@ -59,30 +59,42 @@ export const Api = (): Api => {
     worlds: {},
     handlers: {
       "lobby/list": async ({ data }) => {
-        return { id: data.id }
+        const lobbies: Record<string, { id: string, players: number, creator: string }> = {}
+        for (const [id, world] of entries(api.worlds)) {
+          lobbies[id] = {
+            id, players: keys(world.clients).length, creator: world.creator.data.playerName ?? "noob"
+          }
+        }
+        return { id: data.id, lobbies }
       },
       "lobby/create": async ({ ws, data }) => {
         const lobbyId = randomHash()
 
         // create world
-        api.worlds[lobbyId] = ServerWorld()
+        api.worlds[lobbyId] = ServerWorld({ creator: ws })
 
         // set world id for this client
         ws.data.worldId = lobbyId
 
-        console.log(`created lobby: ${lobbyId} game: ${api.worlds[lobbyId].world.game.id}`)
+        console.log(`created lobby: ${lobbyId} creator: ${ws.data.playerName ?? "noob"}`)
 
         return { id: data.id, lobbyId }
       },
       "lobby/join": async ({ ws, data }) => {
         if (!api.worlds[data.join]) {
-          api.worlds[data.join] = ServerWorld()
+          api.worlds[data.join] = ServerWorld({ creator: ws })
         }
 
         ws.data.worldId = data.join
         return { id: data.id }
       },
-      "lobby/exit": async ({ data }) => {
+      "lobby/exit": async ({ data, ws }) => {
+        const world = api.worlds[ws.data.worldId]
+        if (world) {
+          world.handleClose(ws)
+        } else {
+          return { id: data.id, error: "world not found" }
+        }
         return { id: data.id }
       },
       "meta/players": async ({ data }) => {
@@ -313,10 +325,9 @@ export const Api = (): Api => {
     entries(api.worlds).forEach(([id, world]) => {
       if (keys(world.clients).length === 0) {
         delete api.worlds[id]
-        console.log(`world deleted: ${id}`)
       }
     })
-  }, 10000)
+  }, 2000)
 
   return api
 }

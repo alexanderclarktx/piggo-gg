@@ -220,12 +220,8 @@ export const Friends = (): Entity => {
             onClick: () => {
               const name = addFriendInputText.trim()
               world.client?.friendsAdd(name, (response) => {
-                if ("error" in response) {
-                  toast.error(response.error)
-                } else {
-                  toast.success("Friend request sent")
-                  close()
-                }
+                toast.success("Friend request sent")
+                close()
               })
             },
             onEnter: () => send.c.alpha = 1,

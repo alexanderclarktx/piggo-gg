@@ -1,7 +1,8 @@
 import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
-  World, randomPlayerId, SoundManager, randomHash, AuthLogin, FriendsList, Pls, NetClientReadSystem,
-  NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile
+  World, randomPlayerId, SoundManager, randomHash, AuthLogin, FriendsList, Pls,
+  NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers,
+  FriendsAdd, KeyBuffer, isMobile, LobbyList, BadResponse, LobbyExit
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -17,6 +18,7 @@ export const hosts = {
   production: "https://piggo.gg"
 }
 
+type APICallback<R extends RequestTypes = RequestTypes> = (response: R["response"] | BadResponse) => void
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
 
 export type Client = {
@@ -43,6 +45,8 @@ export type Client = {
   copyInviteLink: () => void
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
+  lobbyLeave: () => void
+  lobbyList: (callback: Callback<LobbyList>) => void
   metaPlayers: (callback: Callback<MetaPlayers>) => void
   authLogin: (jwt: string, callback?: Callback<AuthLogin>) => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
@@ -58,12 +62,12 @@ export type ClientProps = {
 
 export const Client = ({ world }: ClientProps): Client => {
 
-  let requestBuffer: Record<string, Callback> = {}
+  let requestBuffer: Record<string, APICallback> = {}
 
   const player = Player({ id: randomPlayerId() })
   world.addEntity(player)
 
-  const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: Callback<R>) => {
+  const request = <R extends RequestTypes>(data: Omit<R, "response">, callback: APICallback<R>) => {
     if (client.ws.readyState !== WebSocket.OPEN) return
 
     const requestData: RequestData = { type: "request", data }
@@ -125,8 +129,9 @@ export const Client = ({ world }: ClientProps): Client => {
         } else {
           client.lobbyId = response.lobbyId
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
+          world.tick = -100
+          callback(response)
         }
-        callback(response)
       })
     },
     lobbyJoin: (lobbyId, callback) => {
@@ -140,9 +145,41 @@ export const Client = ({ world }: ClientProps): Client => {
         }
       })
     },
+    lobbyLeave: () => {
+      request<LobbyExit>({ route: "lobby/exit", type: "request", id: randomHash() }, (response) => {
+        if ("error" in response) {
+          console.error("Client: failed to leave lobby", response.error)
+        } else {
+          client.lobbyId = undefined
+
+          world.removeSystem(NetClientReadSystem.id)
+          world.removeSystem(NetClientWriteSystem.id)
+
+          const players = world.players()
+          for (const player of players) {
+            if (player.id === client.player.id) continue
+
+            world.removeEntity(player.id)
+          }
+        }
+      })
+    },
+    lobbyList: (callback) => {
+      request<LobbyList>({ route: "lobby/list", type: "request", id: randomHash() }, (response) => {
+        if ("error" in response) {
+          console.error("Client: failed to get lobby list", response.error)
+        } else {
+          callback(response)
+        }
+      })
+    },
     metaPlayers: (callback) => {
       request<MetaPlayers>({ route: "meta/players", type: "request", id: randomHash() }, (response) => {
-        callback(response)
+        if ("error" in response) {
+          console.error("Client: failed to get meta players", response.error)
+        } else {
+          callback(response)
+        }
       })
     },
     authLogin: async (jwt, callback) => {
@@ -160,7 +197,11 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     aiPls: (prompt, callback) => {
       request<Pls>({ route: "ai/pls", type: "request", id: randomHash(), prompt }, (response) => {
-        callback(response)
+        if ("error" in response) {
+          console.error("Client: failed to get AI response", response.error)
+        } else {
+          callback(response)
+        }
       })
     },
     profileCreate: (name, callback) => {
@@ -170,8 +211,8 @@ export const Client = ({ world }: ClientProps): Client => {
           console.error("Client: failed to create profile", response.error)
         } else {
           client.profileGet()
+          callback(response)
         }
-        callback(response)
       })
     },
     profileGet: (callback) => {
@@ -196,13 +237,21 @@ export const Client = ({ world }: ClientProps): Client => {
     friendsAdd: (name, callback) => {
       if (!client.token) return
       request<FriendsAdd>({ route: "friends/add", type: "request", id: randomHash(), token: client.token, name }, (response) => {
-        callback(response)
+        if ("error" in response) {
+          console.error("Client: failed to add friend", response.error)
+        } else {
+          callback(response)
+        }
       })
     },
     friendsList: (callback) => {
       if (!client.token) return
       request<FriendsList>({ route: "friends/list", type: "request", id: randomHash(), token: client.token }, (response) => {
-        callback(response)
+        if ("error" in response) {
+          console.error("Client: failed to get friends list", response.error)
+        } else {
+          callback(response)
+        }
       })
     }
   }

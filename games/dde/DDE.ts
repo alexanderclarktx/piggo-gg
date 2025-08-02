@@ -1,12 +1,13 @@
 import {
-  blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
-  SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt, TApple
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
+  localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
+  sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import { DDEMenu } from "./DDEMenu"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -36,7 +37,10 @@ export const DDE: GameBuilder<DDEState> = {
         DDESystem,
         BirdHUDSystem
       ],
-      entities: []
+      entities: [
+        DDEMenu(world),
+        Profile()
+      ]
     }
   }
 }
@@ -144,15 +148,27 @@ const DDESystem = SystemBuilder({
           }
         }
 
+        // clean up old player assets
+        for (const playerId in world.three?.playerAssets ?? {}) {
+          if (!world.three) continue
+
+          if (!world.entities[playerId]) {
+            const { duck, eagle } = world.three.playerAssets[playerId]
+            duck.removeFromParent()
+            eagle.removeFromParent()
+            delete world.three.playerAssets[playerId]
+          }
+        }
+
         // render ducks and eagles
         for (const character of characters) {
           if (!world.three) continue
+
           if (!world.three.playerAssets[character.id]) {
             if (!world.three.duck || !world.three.eagle) continue
 
             const { position } = character.components
 
-            // const duck = world.three.duck.clone(true)
             const duck = clone(world.three.duck) as Group<Object3DEventMap>
 
             world.three.scene.add(duck)

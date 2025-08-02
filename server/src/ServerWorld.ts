@@ -8,6 +8,7 @@ export type WS = ServerWebSocket<PerClientData>
 export type ServerWorld = {
   world: World
   clients: Record<string, WS>
+  creator: WS
   getNumClients: () => number
   handleMessage: (ws: WS, msg: NetMessageTypes) => void
   handleClose: (ws: WS) => void
@@ -15,9 +16,10 @@ export type ServerWorld = {
 
 export type ServerWorldProps = {
   clients?: Record<string, WS>
+  creator: WS
 }
 
-export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorld => {
+export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): ServerWorld => {
 
   const world = DefaultWorld({ mode: "server", games })
   const latestClientMessages: Record<string, GameData[]> = {}
@@ -30,19 +32,18 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
   return {
     world,
     clients,
+    creator,
     getNumClients: () => keys(clients).length,
     handleClose: (ws: WS) => {
       const player = world.entity(ws.data.playerId)
       if (player) {
         const character = player.components.controlling?.getCharacter(world)
-        if (character) {
-          console.log(`removing character ${character.id}`)
-          world.removeEntity(character.id)
-        }
+        if (character) world.removeEntity(character.id)
+
         world.removeEntity(player.id)
       }
 
-      delete clients[ws.remoteAddress]
+      delete clients[ws.data.playerId]
       delete latestClientMessages[ws.data.playerName!]
 
       console.log(`${ws.data.playerName} disconnected`)

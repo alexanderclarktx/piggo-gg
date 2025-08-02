@@ -189,6 +189,9 @@ export const RollbackSyncer = (world: World): Syncer => {
 
         world.tick = message.tick - 1
 
+        let added = 0
+        let removed = 0
+
         // sync entities
         keys(message.serializedEntities).forEach((entityId) => {
 
@@ -201,13 +204,13 @@ export const RollbackSyncer = (world: World): Syncer => {
             const entityKind = entityId.split("-")[0]
             const constructor = entityConstructors[entityKind]
             if (constructor !== undefined) {
-              console.log("ADD ENTITY", entityId)
+              added += 1
+              // console.log("ADD ENTITY", entityId)
               world.addEntity(constructor({ id: entityId }))
               world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
             } else {
               console.error("UNKNOWN ENTITY ON SERVER", entityId)
             }
-            console.log("ADD ENTITY", entityId)
           } else {
             world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
           }
@@ -217,11 +220,14 @@ export const RollbackSyncer = (world: World): Syncer => {
         for (const [entityId, entity] of entries(world.entities)) {
           if (entity.components.networked) {
             if (!message.serializedEntities[entityId]) {
-              console.log("REMOVE ENTITY", entityId)
+              // console.log("REMOVE ENTITY", entityId)
               world.removeEntity(entityId)
+              removed += 1
             }
           }
         }
+
+        if (added || removed) console.log(`tick:${world.tick} ADDED:${added} REMOVED:${removed}`)
 
         // set actions
         if (message.actions[message.tick]) {
