@@ -39,7 +39,7 @@ export const DDEMenu = (world: World): Entity => {
       width: "176px",
       left: "20px",
       fontSize: "20px",
-      transform: "",
+      transform: ""
     },
     onClick: () => {
       if (inLobby) return
