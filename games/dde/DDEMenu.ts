@@ -42,10 +42,11 @@ export const DDEMenu = (world: World): Entity => {
   })
 
   const art = HtmlImg("dde-256.jpg", {
-    right: "5%",
+    left: "50%",
     top: "5%",
     width: "152px",
-    border: "2px solid #aaffaa",
+    transform: "translateX(-50%)",
+    border: "2px solid #ffffff",
     borderRadius: "10px"
   })
 
