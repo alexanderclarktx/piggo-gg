@@ -1,6 +1,6 @@
 import {
-  ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes,
-  ResponseData, entries, randomHash, keys, round, stringify, values
+  ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData,
+  entries, randomHash, keys, round, stringify, values, BadResponse
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
@@ -19,7 +19,7 @@ export type PerClientData = {
 type SessionToken = { googleId: string }
 
 type Handler<R extends RequestTypes["route"]> = (_: { ws: ServerWebSocket<PerClientData>, data: ExtractedRequestTypes<R> }) =>
-  Promise<ExtractedRequestTypes<R>['response']>
+  Promise<ExtractedRequestTypes<R>['response'] | BadResponse>
 
 export type Api = {
   bun: Server | undefined
@@ -59,7 +59,13 @@ export const Api = (): Api => {
     worlds: {},
     handlers: {
       "lobby/list": async ({ data }) => {
-        return { id: data.id }
+        const lobbies: Record<string, { id: string, name: string, players: number }> = {}
+        for (const [id, world] of entries(api.worlds)) {
+          lobbies[id] = {
+            id, name: world.world.game.id, players: keys(world.clients).length
+          }
+        }
+        return { id: data.id, lobbies }
       },
       "lobby/create": async ({ ws, data }) => {
         const lobbyId = randomHash()
@@ -313,10 +319,9 @@ export const Api = (): Api => {
     entries(api.worlds).forEach(([id, world]) => {
       if (keys(world.clients).length === 0) {
         delete api.worlds[id]
-        console.log(`world deleted: ${id}`)
       }
     })
-  }, 10000)
+  }, 2000)
 
   return api
 }

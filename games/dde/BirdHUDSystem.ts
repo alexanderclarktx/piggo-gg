@@ -123,13 +123,6 @@ const KeyButton = (props: KeyButtonProps) => HtmlButton({
     width: `${props.width ?? 40}px`,
     height: "40px",
     fontSize: "26px",
-    // borderImage: "linear-gradient(to bottom, #ffffff, #cccccc) 1",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    color: "#ffffff",
-    border: "2px solid #ffffff",
-    borderRadius: "8px",
-    lineHeight: "18px",
-    visibility: props.visible === false ? "hidden" : "visible",
-    transform: "translateX(-50%)"
+    visibility: props.visible === false ? "hidden" : "visible"
   }
 })

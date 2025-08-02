@@ -73,7 +73,8 @@ export const InputSystem = ClientSystemBuilder({
         const pc = world.client?.playerCharacter()
         if (pc) {
           pc.components.input.inputMap.release[key]?.({
-            mouse, entity: pc, world, tick: world.tick, hold: 0
+            // @ts-expect-error
+            mouse, entity: pc, world, tick: world.tick, hold: 0, target: event.target?.localName ?? ""
           })
           return
         }

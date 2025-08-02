@@ -35,14 +35,12 @@ export const ServerWorld = ({ clients = {} }: ServerWorldProps = {}): ServerWorl
       const player = world.entity(ws.data.playerId)
       if (player) {
         const character = player.components.controlling?.getCharacter(world)
-        if (character) {
-          console.log(`removing character ${character.id}`)
-          world.removeEntity(character.id)
-        }
+        if (character) world.removeEntity(character.id)
+
         world.removeEntity(player.id)
       }
 
-      delete clients[ws.remoteAddress]
+      delete clients[ws.data.playerId]
       delete latestClientMessages[ws.data.playerName!]
 
       console.log(`${ws.data.playerName} disconnected`)

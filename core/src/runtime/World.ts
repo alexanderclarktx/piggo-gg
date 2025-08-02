@@ -293,7 +293,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
   }
 
   // set up physics
-  RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
+  // RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
 
   // set up client
   if (world.mode === "client") world.client = Client({ world })

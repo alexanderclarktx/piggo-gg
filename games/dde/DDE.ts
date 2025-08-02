@@ -1,12 +1,13 @@
 import {
-  blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
-  SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt, TApple
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
+  localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
+  sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import { DDEMenu } from "./DDEMenu"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -36,7 +37,10 @@ export const DDE: GameBuilder<DDEState> = {
         DDESystem,
         BirdHUDSystem
       ],
-      entities: []
+      entities: [
+        DDEMenu(world),
+        Profile()
+      ]
     }
   }
 }
