@@ -138,23 +138,46 @@ export const DDEMenu = (world: World): Entity => {
               lobbies.innerHTML = ""
 
               for (const [id, meta] of entries(response.lobbies)) {
-                const lobbyItem = HtmlText({
-                  text: `id:${id} players:${meta.players}`,
+                const lobby = HtmlText({
+                  text: `${id} (${meta.players})`,
                   style: {
-                    width: "98%",
+                    width: "70%",
                     height: "36px",
-                    left: "50%",
+                    left: "4px",
                     marginTop: "4px",
                     fontSize: "16px",
                     lineHeight: "36px",
                     textAlign: "center",
-                    transform: "translateX(-50%)",
+                    transform: "translateX(0%)",
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
                     border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #ffaaaa",
                     borderRadius: "8px"
                   }
                 })
-                lobbies.appendChild(lobbyItem)
+
+                const button = HtmlButton({
+                  text: "Join",
+                  onHover: () => {
+                    button.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
+                  },
+                  onHoverOut: () => {
+                    button.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
+                  },
+                  style: {
+                    width: "25%",
+                    height: "40px",
+                    fontSize: "16px",
+                    right: "4px",
+                    marginTop: "4px",
+                    pointerEvents: "auto",
+                    transform: "translateX(0%)",
+                    position: "relative",
+                    float: "right",
+                  }
+                })
+
+                lobbies.appendChild(lobby)
+                lobbies.appendChild(button)
               }
 
               if (keys(response.lobbies).length === 0) {
