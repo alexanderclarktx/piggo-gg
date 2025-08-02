@@ -69,11 +69,14 @@ export const InputSystem = ClientSystemBuilder({
 
       if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
+      console.log("pointerup", key, event)
+
       if (key === "mb1") {
         const pc = world.client?.playerCharacter()
         if (pc) {
           pc.components.input.inputMap.release[key]?.({
-            mouse, entity: pc, world, tick: world.tick, hold: 0
+            // @ts-expect-error
+            mouse, entity: pc, world, tick: world.tick, hold: 0, target: event.target?.localName ?? ""
           })
           return
         }

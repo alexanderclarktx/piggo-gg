@@ -1,13 +1,8 @@
 import {
   blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
   SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt, TApple,
-  Entity,
-  NPC,
-  Input,
-  Actions,
-  HtmlDiv,
-  World
+  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt,
+  TApple, Entity, NPC, HtmlDiv, World
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { Bird } from "./Bird"
@@ -33,35 +28,20 @@ const DDEMenu = (world: World): Entity => {
       width: "200px",
       height: "200px",
       transform: "translate(-50%, -50%)",
-      backgroundColor: "rgba(0, 250, 0, 0.5)",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      pointerEvents: "auto"
     }
   })
 
   const parent = world.three?.canvas?.parentElement
-  if (parent) {
-    parent.appendChild(overlay)
-  }
+  if (parent) parent.appendChild(overlay)
 
   const menu = Entity({
     id: "DDEMenu",
     components: {
       position: Position({ x: 0, y: 0, z: 0 }),
-      // input: Input({
-      //   release: {
-      //     "escape": ({ hold }) => {
-      //       // if (hold) return null
-
-      //       if (!open && !document.pointerLockElement) {
-      //         open = true
-      //       }
-      //       console.log("escape pressed", open, document.pointerLockElement)
-      //       return null
-      //     }
-      //   }
-      // }),
-      // actions: Actions(),
       npc: NPC({
-        behavior: (_, world) => {
+        behavior: () => {
 
           const pointerLocked = Boolean(document.pointerLockElement)
 

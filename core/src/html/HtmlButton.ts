@@ -18,6 +18,7 @@ export type HtmlButtonProps = {
     right?: `${number}%` | `${number}px`
     lineHeight?: `${number}px`
     padding?: string
+    pointerEvents?: "none" | "auto"
     position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
     textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
     top?: `${number}%` | `${number}px`
@@ -33,7 +34,8 @@ const defaults: HtmlButtonProps["style"] = {
   position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
-  textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)"
+  textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
+  pointerEvents: "none"
   // clipPath: "inset(0 round 3px)"
 }
 

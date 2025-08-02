@@ -26,7 +26,8 @@ export const Bird = (player: Player) => Character({
           world.three?.pointerLock()
           return null
         },
-        "mb1": ({ world }) => {
+        "mb1": ({ world, target }) => {
+          if (target !== "canvas") return null
           world.three?.pointerLock()
           return null
         },
