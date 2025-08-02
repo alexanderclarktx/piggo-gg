@@ -20,7 +20,7 @@ export const Profile = (): Entity => {
       left: "50%",
       top: "50%",
       transform: "translate(-50%, -50%)",
-      fontSize: "24px"
+      fontSize: "22px"
     }
   })
 

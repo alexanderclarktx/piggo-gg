@@ -52,7 +52,7 @@ export const DDEMenu = (world: World): Entity => {
       console.log("create lobby")
     },
     onHover: () => {
-      createLobby.style.backgroundColor = "rgba(0, 255, 255, 0.6)"
+      createLobby.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
     },
     onHoverOut: () => {
       createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
@@ -64,7 +64,7 @@ export const DDEMenu = (world: World): Entity => {
     top: "5%",
     width: "140px",
     transform: "translateX(-50%)",
-    border: "2px solid #ffffff",
+    border: "2px solid #eeeeee",
     borderRadius: "10px"
   })
 
