@@ -148,15 +148,27 @@ const DDESystem = SystemBuilder({
           }
         }
 
+        // clean up old player assets
+        for (const playerId in world.three?.playerAssets ?? {}) {
+          if (!world.three) continue
+
+          if (!world.entities[playerId]) {
+            const { duck, eagle } = world.three.playerAssets[playerId]
+            duck.removeFromParent()
+            eagle.removeFromParent()
+            delete world.three.playerAssets[playerId]
+          }
+        }
+
         // render ducks and eagles
         for (const character of characters) {
           if (!world.three) continue
+
           if (!world.three.playerAssets[character.id]) {
             if (!world.three.duck || !world.three.eagle) continue
 
             const { position } = character.components
 
-            // const duck = world.three.duck.clone(true)
             const duck = clone(world.three.duck) as Group<Object3DEventMap>
 
             world.three.scene.add(duck)
