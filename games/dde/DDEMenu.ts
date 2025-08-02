@@ -38,6 +38,12 @@ export const DDEMenu = (world: World): Entity => {
       polled = world.tick - 70
       inLobby = null
     },
+    onHover: () => {
+      leaveLobby.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
+    },
+    onHoverOut: () => {
+      leaveLobby.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
+    }
   })
 
   const createLobby = HtmlButton({
@@ -55,10 +61,8 @@ export const DDEMenu = (world: World): Entity => {
 
       world.client?.lobbyCreate(({ lobbyId }) => {
         inLobby = lobbyId
-        polled = world.tick - 75
+        polled = world.tick - 70
       })
-
-      console.log("create lobby")
     },
     onHover: () => {
       createLobby.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
