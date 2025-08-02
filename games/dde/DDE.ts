@@ -1,60 +1,18 @@
 import {
-  blocks, Collider, GameBuilder, keys, logPerf, min, PI, Position,
-  SpawnSystem, spawnTerrain, SystemBuilder, BlockPhysicsSystem,
-  TCameraSystem, trees, values, XYtoChunk, localAim, hypot, sqrt,
-  TApple, Entity, NPC, HtmlDiv, World
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
+  localAim, logPerf, min, PI, Position, SpawnSystem, spawnTerrain,
+  sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import { DDEMenu } from "./DDEMenu"
 
 export type DDEState = {
   doubleJumped: string[]
   applesEaten: Record<string, number>
   applesTimer: Record<string, number>
-}
-
-const DDEMenu = (world: World): Entity => {
-
-  let open = false
-
-  const overlay = HtmlDiv({
-    text: "Duck Duck Eagle",
-    style: {
-      visibility: "hidden",
-      left: "50%",
-      top: "50%",
-      width: "60%",
-      height: "40%",
-      transform: "translate(-50%, -50%)",
-      backgroundColor: "rgba(0, 0, 0, 0.95)",
-      pointerEvents: "auto",
-      border: "2px solid #ffffff",
-      borderRadius: "10px"
-    }
-  })
-
-  const parent = world.three?.canvas?.parentElement
-  if (parent) parent.appendChild(overlay)
-
-  const menu = Entity({
-    id: "DDEMenu",
-    components: {
-      position: Position({ x: 0, y: 0, z: 0 }),
-      npc: NPC({
-        behavior: () => {
-
-          const pointerLocked = Boolean(document.pointerLockElement)
-
-          open = !pointerLocked
-
-          overlay.style.visibility = open ? "visible" : "hidden"
-        }
-      })
-    }
-  })
-  return menu
 }
 
 export const DDE: GameBuilder<DDEState> = {
