@@ -129,6 +129,7 @@ export const Client = ({ world }: ClientProps): Client => {
         } else {
           client.lobbyId = response.lobbyId
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
+          world.tick = -100
           callback(response)
         }
       })
@@ -149,8 +150,6 @@ export const Client = ({ world }: ClientProps): Client => {
 
       world.removeSystem(NetClientReadSystem.id)
       world.removeSystem(NetClientWriteSystem.id)
-
-      client.ws.close()
 
       client.lobbyId = undefined
     },

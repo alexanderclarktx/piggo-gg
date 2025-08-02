@@ -12,12 +12,13 @@ export const DDEMenu = (world: World): Entity => {
   const lobbies = HtmlDiv({
     width: "90%",
     height: "40%",
-    left: "5%",
+    left: "50%",
     top: "45%",
     border: "2px solid #aaaaaa",
     borderRadius: "10px",
     overflow: "scroll",
-    scrollbarWidth: "thin"
+    scrollbarWidth: "thin",
+    transform: "translateX(-50%)",
   })
 
   const leaveLobby = HtmlButton({
@@ -26,7 +27,7 @@ export const DDEMenu = (world: World): Entity => {
       top: "88%",
       height: "40px",
       width: "176px",
-      right: "20px",
+      right: "18px",
       fontSize: "20px",
       transform: ""
     },
@@ -52,7 +53,7 @@ export const DDEMenu = (world: World): Entity => {
       top: "88%",
       height: "40px",
       width: "176px",
-      left: "20px",
+      left: "18px",
       fontSize: "20px",
       transform: ""
     },
@@ -125,6 +126,9 @@ export const DDEMenu = (world: World): Entity => {
 
           createLobby.style.border = inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff"
           leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #aaaaaa"
+
+          createLobby.style.color = inLobby ? "#aaaaaa" : "#ffffff"
+          leaveLobby.style.color = inLobby ? "#ffffff" : "#aaaaaa"
 
           if (world.tick - 80 > polled) {
             polled = world.tick
