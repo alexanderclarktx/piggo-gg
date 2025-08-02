@@ -12,12 +12,12 @@ export const Profile = (): Entity => {
   })
 
   const name = HtmlText({
-    text: "noob",
+    text: "",
     style: {
       left: "50%",
       top: "50%",
       transform: "translate(-50%, -50%)",
-      fontSize: "36px"
+      fontSize: "28px"
     }
   })
 
@@ -31,11 +31,11 @@ export const Profile = (): Entity => {
         behavior: (_, world) => {
           if (!world.three?.canvas.parentElement?.contains(div)) {
             world.three?.canvas.parentElement?.appendChild(div)
-            console.log("Profile UI added")
           }
 
           const playerName = world.client?.playerName()
           if (playerName && playerName !== name.textContent) {
+            if (world.tick < 20) return
             name.textContent = playerName
           }
         }
