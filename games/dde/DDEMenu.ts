@@ -13,7 +13,6 @@ export const DDEMenu = (world: World): Entity => {
     top: "55%",
     border: "2px solid #aaaaaa",
     borderRadius: "10px",
-    // backgroundColor: "rgba(0, 0, 0, 0.5)",
     overflow: "scroll",
     scrollbarWidth: "thin"
   })
@@ -88,9 +87,9 @@ export const DDEMenu = (world: World): Entity => {
           if (world.tick - 80 > polled) {
             polled = world.tick
             world.client?.lobbyList((response) => {
-              console.log(response.lobbies)
 
-              lobbies.innerHTML = "" // Clear previous lobbies
+              lobbies.innerHTML = ""
+
               for (const [id, meta] of entries(response.lobbies)) {
                 const lobbyItem = HtmlText({
                   text: `id:${id} players:${meta.players}`,
@@ -108,7 +107,6 @@ export const DDEMenu = (world: World): Entity => {
                   }
                 })
                 lobbies.appendChild(lobbyItem)
-                console.log("Lobby item created:", lobbyItem, lobbies.children.length)
               }
             })
           }
