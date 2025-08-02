@@ -257,6 +257,8 @@ const DDESystem = SystemBuilder({
           duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
           duck.rotation.y = orientation.x + PI / 2
 
+          // console.log(interpolated.z - 0.025, player.id, position.data.z)
+
           eagle.visible = position.data.flying
           eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
           eagle.rotation.y = orientation.x

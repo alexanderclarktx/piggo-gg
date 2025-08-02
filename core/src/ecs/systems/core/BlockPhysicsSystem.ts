@@ -264,7 +264,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.z > 0 && wouldGo.z > blockMin.z) {
               if (mode === "local") {
-                position.localVelocity.z = round(blockMin.z - 0.1, 3) - position.data.z
+                position.localVelocity.z = round(blockMin.z - 0.1 - position.data.z, 3)
               } else {
                 position.data.z = round(blockMin.z - 0.1, 3)
                 position.data.velocity.z = 0
@@ -272,7 +272,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               }
             } else if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
               if (mode === "local") {
-                position.localVelocity.z = round(blockMax.z, 3) - position.data.z
+                position.localVelocity.z = round(blockMax.z - position.data.z, 3)
               } else {
                 position.data.z = round(blockMax.z, 3)
                 position.data.velocity.z = 0
@@ -295,7 +295,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             position.data.velocity.z -= position.data.gravity
           }
 
-          // Move the entity
+          // x/y movement
           position.data.x += position.data.velocity.x / 40
           position.data.y += position.data.velocity.y / 40
 
