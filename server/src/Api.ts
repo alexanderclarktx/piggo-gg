@@ -76,8 +76,6 @@ export const Api = (): Api => {
         // set world id for this client
         ws.data.worldId = lobbyId
 
-        // console.log(`created lobby: ${lobbyId} creator: ${ws.data.playerName ?? "noob"}`)
-
         return { id: data.id, lobbyId }
       },
       "lobby/join": async ({ ws, data }) => {
