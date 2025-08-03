@@ -37,16 +37,16 @@ export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): Server
     handleClose: (ws: WS) => {
       const player = world.entity(ws.data.playerId)
       if (player) {
-        const character = player.components.controlling?.getCharacter(world)
-        if (character) world.removeEntity(character.id)
+        // const character = player.components.controlling?.getCharacter(world)
+        // if (character) world.removeEntity(character.id)
 
         world.removeEntity(player.id)
       }
 
       delete clients[ws.data.playerId]
-      delete latestClientMessages[ws.data.playerName!]
+      delete latestClientMessages[ws.data.playerId]
 
-      console.log(`${ws.data.playerName} disconnected`)
+      console.log(`id:${ws.data.playerId} name:${ws.data.playerName} disconnected`)
     },
     handleMessage: (ws: WS, msg: NetMessageTypes) => {
       if (msg.type !== "game") return
@@ -60,7 +60,7 @@ export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): Server
         clients[msg.playerId] = ws
         latestClientMessages[msg.playerId] = []
 
-        console.log(`${ws.data.playerName} connected ${ws.remoteAddress}`)
+        console.log(`id:${ws.data.playerId} name:${ws.data.playerName} connected ${ws.remoteAddress}`)
       }
 
       // store last message for client
