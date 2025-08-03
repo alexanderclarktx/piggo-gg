@@ -4,14 +4,14 @@ export const Profile = (): Entity => {
 
   let init = false
 
-  const div = HtmlDiv({
+  const container = HtmlDiv({
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     width: "165px",
     height: "50px",
     left: "10px",
     top: "10px",
     border: "2px solid #ffffff",
-    borderRadius: "10px",
+    borderRadius: "10px"
   })
 
   const name = HtmlText({
@@ -24,7 +24,7 @@ export const Profile = (): Entity => {
     }
   })
 
-  div.appendChild(name)
+  container.appendChild(name)
 
   const profile = Entity({
     id: "HtmlProfile",
@@ -33,7 +33,8 @@ export const Profile = (): Entity => {
       npc: NPC({
         behavior: (_, world) => {
           if (!init) {
-            world.three?.canvas.parentElement?.appendChild(div)
+            world.three?.canvas.parentElement?.appendChild(container)
+            container.style.visibility = world.client?.mobile ? "hidden" : "visible"
             init = true
           }
 

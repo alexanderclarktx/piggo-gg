@@ -7,6 +7,8 @@ export const BirdHUDSystem = ClientSystemBuilder({
   id: "BirdHUDSystem",
   init: (world) => {
 
+    if (world.client?.mobile === true) return
+
     const height = world.three?.canvas.clientHeight || 600
 
     const top = height / 5 * 3
