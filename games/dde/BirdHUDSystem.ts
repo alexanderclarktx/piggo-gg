@@ -1,9 +1,9 @@
 import {
-  HtmlMusic, HtmlButton, HtmlLabel, HtmlText, SystemBuilder
+  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder
 } from "@piggo-gg/core"
 import { DDEState } from "./DDE"
 
-export const BirdHUDSystem = SystemBuilder({
+export const BirdHUDSystem = ClientSystemBuilder({
   id: "BirdHUDSystem",
   init: (world) => {
 
