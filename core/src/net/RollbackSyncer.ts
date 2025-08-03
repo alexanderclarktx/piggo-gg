@@ -96,10 +96,10 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
 
       if ((message.diff ?? 1) > 2) {
-        console.log("LARGE DIFF", message.diff)
+        console.log("speed up")
         world.tickrate = 30
-      } else if ((message.diff ?? 1) <= 0) {
-        console.log("SMALL DIFF", message.diff)
+      } else if ((message.diff ?? 2) < 2) {
+        console.log("slow down")
         world.tickrate = 20
       } else {
         world.tickrate = 25

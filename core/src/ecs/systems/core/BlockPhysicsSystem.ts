@@ -1,5 +1,5 @@
 import {
-  blocks, Collider, Entity, floor, Position, round, sign, SystemBuilder
+  abs, blocks, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
 } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
@@ -16,6 +16,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
       query: ["position", "collider"],
       priority: mode === "global" ? 7 : 9,
       onTick: (entities: Entity<Position | Collider>[]) => {
+
         for (const entity of entities) {
           const { position, collider } = entity.components
 
@@ -153,8 +154,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               }
 
               if (velocity.x > 0 && velocity.y > 0) {
-                const distX = Math.abs(blockMin.x - wouldGo.x)
-                const distY = Math.abs(blockMin.y - wouldGo.y)
+                const distX = abs(blockMin.x - wouldGo.x)
+                const distY = abs(blockMin.y - wouldGo.y)
 
                 if (distY > distX) {
                   if (mode === "local") {
@@ -173,8 +174,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   }
                 }
               } else if (velocity.x < 0 && velocity.y > 0) {
-                const distX = Math.abs(blockMax.x - wouldGo.x)
-                const distY = Math.abs(blockMin.y - wouldGo.y)
+                const distX = abs(blockMax.x - wouldGo.x)
+                const distY = abs(blockMin.y - wouldGo.y)
 
                 if (distY > distX) {
                   if (mode === "local") {
@@ -192,8 +193,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   }
                 }
               } else if (velocity.x > 0 && velocity.y < 0) {
-                const distX = Math.abs(blockMin.x - wouldGo.x)
-                const distY = Math.abs(blockMax.y - wouldGo.y)
+                const distX = abs(blockMin.x - wouldGo.x)
+                const distY = abs(blockMax.y - wouldGo.y)
 
                 if (distY > distX) {
                   if (mode === "local") {
@@ -211,8 +212,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   }
                 }
               } else if (velocity.x < 0 && velocity.y < 0) {
-                const distX = Math.abs(blockMax.x - wouldGo.x)
-                const distY = Math.abs(blockMax.y - wouldGo.y)
+                const distX = abs(blockMax.x - wouldGo.x)
+                const distY = abs(blockMax.y - wouldGo.y)
 
                 if (distY > distX) {
                   if (mode === "local") {
@@ -293,6 +294,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
           } else {
             position.data.velocity.z -= position.data.gravity
+            position.data.velocity.z = max(position.data.velocity.z, -0.25)
           }
 
           // x/y movement

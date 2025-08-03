@@ -118,7 +118,7 @@ export const DDEMenu = (world: World): Entity => {
             }
           }
 
-          const visible = !Boolean(document.pointerLockElement)
+          const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
           overlay.style.visibility = visible ? "visible" : "hidden"
 
           if (!visible) return

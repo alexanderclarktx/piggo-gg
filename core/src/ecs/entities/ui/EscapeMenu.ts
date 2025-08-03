@@ -71,7 +71,6 @@ export const EscapeMenu = (): Entity => {
           width: 300
         }),
         onClick: () => {
-          // console.log("Settings")
           world.client?.soundManager.play("click1")
         },
         onEnter: () => {

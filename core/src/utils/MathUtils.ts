@@ -11,7 +11,7 @@ export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, 
 
 export const round = (n: number, places = 0) => {
   const factor = pow(10, places)
-  return Math.round(n * factor) / factor
+  return Math.round((n + Number.EPSILON) * factor) / factor
 }
 
 export const randomInt = (n: number, s: number = 0) => {

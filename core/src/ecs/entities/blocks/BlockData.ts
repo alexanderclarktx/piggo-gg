@@ -179,7 +179,7 @@ export const BlockData = (): BlockData => {
       const chunkY = floor(block.y / 4)
 
       if (!data[chunkX]?.[chunkY]) {
-        console.error("CHUNK NOT FOUND", chunkX, chunkY)
+        // console.error("CHUNK NOT FOUND", chunkX, chunkY)
         return false
       }
 
