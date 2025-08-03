@@ -1,5 +1,5 @@
 import { Entity, JoystickHandler, Position, Renderable, XY, XYdiff, abs, loadTexture, min } from "@piggo-gg/core"
-import { Container, FederatedPointerEvent, Graphics, Sprite, Texture } from "pixi.js"
+import { Container, FederatedPointerEvent, Graphics, Sprite } from "pixi.js"
 
 export const CurrentJoystickPosition = { angle: 0, power: 0, active: false }
 

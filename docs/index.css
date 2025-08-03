@@ -31,7 +31,7 @@ canvas {
   left: 0;
   width: auto;
   height: auto;
-  object-fit: none;
+  object-fit: contain;
   user-select: none;
   -webkit-touch-callout: none; /* Disable the callout on iOS */
   -webkit-user-select: none;   /* Disable text selection on iOS */
