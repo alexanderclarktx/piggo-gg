@@ -18,7 +18,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
       priority: mode === "global" ? 7 : 9,
       onTick: (entities: Entity<Position | Collider>[]) => {
 
-        const hz = 1000 / world.tickrate
+        const hz = 40
 
         for (const entity of entities) {
           const { position, collider } = entity.components
