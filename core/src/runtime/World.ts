@@ -169,6 +169,9 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     onTick: ({ isRollback }) => {
       const now = performance.now()
 
+      const players = world.players()
+      if (players.length === 0) return
+
       // check whether it's time to calculate the next tick
       if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
         scheduleOnTick()

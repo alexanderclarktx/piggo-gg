@@ -18,7 +18,7 @@ export const Controlling = (props: ControllingProps = {}): Controlling => {
       entityId: props.entityId ?? ""
     },
     getCharacter: (world: World) => {
-      const character = world.entities[controlling.data.entityId]
+      const character = world.entity(controlling.data.entityId)
       if (!character) return undefined
 
       const { position, input, actions } = character.components
@@ -37,13 +37,11 @@ export const ControlSystem = SystemBuilder({
     query: ["controlling"],
     priority: 2,
     onTick: (entities: Entity<Controlling>[]) => {
-      entities.forEach((entity) => {
+      for (const entity of entities) {
         const character = entity.components.controlling.getCharacter(world)
 
-        if (!character) {
-          entity.components.controlling.data.entityId = ""
-        }
-      })
+        if (!character) entity.components.controlling.data.entityId = ""
+      }
     }
   })
 })

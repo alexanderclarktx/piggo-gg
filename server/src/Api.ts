@@ -320,13 +320,13 @@ export const Api = (): Api => {
     }
   }
 
+  // clean up empty worlds
   setInterval(() => {
-    // cleanup empty worlds
-    entries(api.worlds).forEach(([id, world]) => {
+    for (const [id, world] of entries(api.worlds)) {
       if (keys(world.clients).length === 0) {
         delete api.worlds[id]
       }
-    })
+    }
   }, 2000)
 
   return api
