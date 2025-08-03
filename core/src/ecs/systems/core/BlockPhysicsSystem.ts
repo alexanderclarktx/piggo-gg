@@ -1,6 +1,5 @@
 import {
-  abs,
-  blocks, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
+  abs, blocks, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
 } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
@@ -18,8 +17,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
       priority: mode === "global" ? 7 : 9,
       onTick: (entities: Entity<Position | Collider>[]) => {
 
-        const hz = 40
-
         for (const entity of entities) {
           const { position, collider } = entity.components
 
@@ -33,7 +30,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           let wouldGo = {
             x: x,
-            y: y + velocity.y / hz + 0.05 * sign(velocity.y),
+            y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
             z: z
           }
 
@@ -62,14 +59,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.y > 0 && wouldGo.y > blockMin.y) {
               if (mode === "local") {
-                position.localVelocity.y = hz * (round(blockMin.y - r, 3) - position.data.y)
+                position.localVelocity.y = 40 * (round(blockMin.y - r, 3) - position.data.y)
               } else {
                 position.data.y = round(blockMin.y - r, 3)
                 position.data.velocity.y = 0
               }
             } else if (velocity.y < 0 && wouldGo.y < blockMax.y) {
               if (mode === "local") {
-                position.localVelocity.y = hz * (round(blockMax.y + r, 3) - position.data.y)
+                position.localVelocity.y = 40 * (round(blockMax.y + r, 3) - position.data.y)
               } else {
                 position.data.y = round(blockMax.y + r, 3)
                 position.data.velocity.y = 0
@@ -80,7 +77,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           // xSweep
 
           wouldGo = {
-            x: x + velocity.x / hz + 0.05 * sign(velocity.x),
+            x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
             y: y,
             z: z
           }
@@ -110,14 +107,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.x > 0) {
               if (mode === "local") {
-                position.localVelocity.x = hz * (round(blockMin.x - r, 3) - position.data.x)
+                position.localVelocity.x = 40 * (round(blockMin.x - r, 3) - position.data.x)
               } else {
                 position.data.x = round(blockMin.x - r, 3)
                 position.data.velocity.x = 0
               }
             } else if (velocity.x < 0) {
               if (mode === "local") {
-                position.localVelocity.x = hz * (round(blockMax.x + r, 3) - position.data.x)
+                position.localVelocity.x = 40 * (round(blockMax.x + r, 3) - position.data.x)
               } else {
                 position.data.x = round(blockMax.x + r, 3)
                 position.data.velocity.x = 0
@@ -129,8 +126,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           if (!ySweep && !xSweep) {
             wouldGo = {
-              x: x + velocity.x / hz + 0.05 * sign(velocity.x),
-              y: y + velocity.y / hz + 0.05 * sign(velocity.y),
+              x: x + velocity.x / 40 + 0.05 * sign(velocity.x),
+              y: y + velocity.y / 40 + 0.05 * sign(velocity.y),
               z: z
             }
 
@@ -301,8 +298,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           }
 
           // x/y movement
-          position.data.x += position.data.velocity.x / hz
-          position.data.y += position.data.velocity.y / hz
+          position.data.x += position.data.velocity.x / 40
+          position.data.y += position.data.velocity.y / 40
 
           // friction
           if (position.data.friction) {
