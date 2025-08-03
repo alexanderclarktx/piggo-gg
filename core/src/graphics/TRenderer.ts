@@ -131,7 +131,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         powerPreference: "high-performance"
       })
 
-      renderer.setPixelRatio(2)
+      renderer.setPixelRatio(window.devicePixelRatio)
 
       tRenderer.resize()
 
