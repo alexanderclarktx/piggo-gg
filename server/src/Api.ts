@@ -76,7 +76,7 @@ export const Api = (): Api => {
         // set world id for this client
         ws.data.worldId = lobbyId
 
-        console.log(`created lobby: ${lobbyId} creator: ${ws.data.playerName ?? "noob"}`)
+        // console.log(`created lobby: ${lobbyId} creator: ${ws.data.playerName ?? "noob"}`)
 
         return { id: data.id, lobbyId }
       },
@@ -296,8 +296,8 @@ export const Api = (): Api => {
         if (handler) {
           if (!skiplog.includes(wsData.data.route)) {
             // @ts-expect-error
-            const { token, ...loggable } = wsData.data
-            console.log("request", stringify(loggable))
+            const { token, type, ...loggable } = wsData.data
+            console.log("<<", ws.data.playerName, stringify(loggable))
           }
 
           const start = performance.now()
@@ -306,7 +306,7 @@ export const Api = (): Api => {
           const result = handler({ ws, data: wsData.data }) // TODO fix type casting
           result.then((data) => {
             if (!skiplog.includes(wsData.data.route)) {
-              console.log(`response ms:${round(performance.now() - start)}`, stringify(data))
+              console.log(">>", ws.data.playerName, stringify({ route: wsData.data.route, ...data }), `ms:${round(performance.now() - start)}`)
             }
             const responseData: ResponseData = { type: "response", data }
             ws.send(encode(responseData))

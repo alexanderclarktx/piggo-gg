@@ -177,12 +177,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
         return
       }
 
-      // if (world.tickFlag === "red") {
-      //   console.log("")
-        // scheduleOnTick()
-        // return
-      // }
-
       // update lastTick
       if (!isRollback) {
         if ((now - world.tickrate - world.tickrate) > world.lastTick) {
