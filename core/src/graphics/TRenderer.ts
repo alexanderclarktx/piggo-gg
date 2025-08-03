@@ -131,6 +131,8 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
         powerPreference: "high-performance"
       })
 
+      if (world.client?.mobile) renderer.setPixelRatio(window.devicePixelRatio)
+
       tRenderer.resize()
 
       renderer.setAnimationLoop(() => {
