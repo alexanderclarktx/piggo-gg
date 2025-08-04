@@ -21,6 +21,15 @@ export const Bird = (player: Player) => Character({
       radius: 0.1
     }),
     input: Input({
+      joystick: ({ world }) => {
+        if (!world.client?.mobile) return null
+        const { power, angle, active } = world.client.analog.left
+        if (!active) return null
+
+        const dir = { x: Math.cos(angle), y: Math.sin(angle) }
+
+        return { actionId: "move2", params: { dir, power } }
+      },
       release: {
         "escape": ({ world }) => {
           world.three?.pointerLock()
@@ -100,6 +109,24 @@ export const Bird = (player: Player) => Character({
 
         position.setVelocity({ z: 0.04 })
         world.client?.soundManager.play("bubble")
+      }),
+      move2: Action("move2", ({ entity, params }) => {
+        if (!params.dir.x || !params.dir.y || !params.power) return
+
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        let factor = 0
+
+        if (position.data.flying) {
+          factor = params.sprint ? 0.16 : 0.09
+        } else if (position.data.standing) {
+          factor = params.sprint ? 0.65 : 0.45
+        } else {
+          factor = params.sprint ? 0.09 : 0.056
+        }
+
+        position.impulse({ x: params.dir.x * params.power * factor, y: params.dir.y * params.power * factor })
       }),
       move: Action("move", ({ entity, params }) => {
         if (!params.vec || !params.dir) return
