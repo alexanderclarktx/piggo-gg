@@ -1,4 +1,4 @@
-import { Client, HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
+import { Client, HtmlDiv, localAim, min, sqrt, XY } from "@piggo-gg/core"
 
 export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivElement => {
 

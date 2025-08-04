@@ -1,6 +1,7 @@
 import {
   Actions, Character, ClientSystemBuilder, Entity,
-  Input, InvokedAction, World, XY, max, min, round
+  Input, InvokedAction, World, XY, cos, max, min, round,
+  sin
 } from "@piggo-gg/core"
 
 export var chatBuffer: string[] = []
@@ -373,6 +374,20 @@ export const InputSystem = ClientSystemBuilder({
       query: ["input", "actions", "position"],
       priority: 4,
       skipOnRollback: true,
+      onRender: (_, deltaMS) => {
+        if (!world.client?.mobile) return
+
+        const { power, angle, active } = world.client.analog.right
+        if (!active) return
+
+        const pc = world.client?.playerCharacter()
+        if (!pc) return
+
+        const factor = deltaMS / 25 * 0.04
+        const { flying } = pc.components.position.data
+
+        moveAim({ x: power * cos(angle) * factor, y: power * sin(angle) * factor }, flying)
+      },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         world.client!.bufferDown.updateHold(world.tick)
 
