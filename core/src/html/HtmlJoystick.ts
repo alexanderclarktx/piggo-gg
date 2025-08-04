@@ -47,6 +47,7 @@ export const HtmlJoystick = (): HTMLDivElement => {
 
   stick.onpointerup = () => {
     dragging = false
+
     stick.style.backgroundColor = "rgba(0, 100, 255, 0.5)"
     stick.style.transform = "translate(0, 0)"
   }
