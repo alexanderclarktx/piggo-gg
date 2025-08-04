@@ -10,8 +10,6 @@ export const NetClientWriteSystem = SystemBuilder({
     const { client } = world
     if (!client) return undefined
 
-    let lastTickSent = 0
-
     const syncer = () => ({
       delay: DelaySyncer(),
       rollback: RollbackSyncer(world)
@@ -27,11 +25,6 @@ export const NetClientWriteSystem = SystemBuilder({
           try {
             const message = syncer().write(world)
             client.ws.send(encode(message))
-            if (lastTickSent && lastTickSent + 1 !== message.tick) {
-              console.error(`tick mismatch, last sent: ${lastTickSent}, current: ${message.tick}`)
-            }
-
-            lastTickSent = message.tick
           }
           catch (e) {
             console.error("error sending message")
@@ -67,7 +60,7 @@ export const NetClientReadSystem = SystemBuilder({
 
         // skip old messages
         if (message.tick < client.lastMessageTick) {
-          console.error("NetClientSystem: skipping old message")
+          console.error("skipping old message")
           return
         }
 
@@ -96,7 +89,7 @@ export const NetClientReadSystem = SystemBuilder({
           })
         }
       } catch (e) {
-        console.error("NetClientSystem: error parsing message")
+        console.error("error parsing message")
       }
     }
 

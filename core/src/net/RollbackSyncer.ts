@@ -152,8 +152,6 @@ export const RollbackSyncer = (world: World): Syncer => {
             }
           }
         }
-      } else {
-        // console.error(`no actions for tick ${message.tick}`)
       }
 
       // check entity states
