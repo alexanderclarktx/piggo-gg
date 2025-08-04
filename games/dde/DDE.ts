@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlJoystick, hypot, keys,
   localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
   sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
@@ -50,6 +50,11 @@ const DDESystem = SystemBuilder({
   init: (world) => {
 
     spawnTerrain(world, 24)
+
+    if (world.mode === "client") {
+      const joystick = HtmlJoystick()
+      world.three?.canvas.parentElement?.append(joystick)
+    }
 
     let blocksRendered = false
     let applesSpawned = false

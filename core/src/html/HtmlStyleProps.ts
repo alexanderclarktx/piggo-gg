@@ -28,6 +28,7 @@ export type HtmlStyleProps = {
   textAlign?: "left" | "center" | "right" | "justify"
   textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
   top?: `${number}%` | `${number}px`
+  touchAction?: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
   transform?: string
   visibility?: "visible" | "hidden"
   width?: `${number}px` | `${number}%`
