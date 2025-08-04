@@ -10,6 +10,8 @@ export const NetClientWriteSystem = SystemBuilder({
     const { client } = world
     if (!client) return undefined
 
+    let lastTickSent = 0
+
     const syncer = () => ({
       delay: DelaySyncer(),
       rollback: RollbackSyncer(world)
@@ -25,9 +27,14 @@ export const NetClientWriteSystem = SystemBuilder({
           try {
             const message = syncer().write(world)
             client.ws.send(encode(message))
+            if (lastTickSent && lastTickSent + 1 !== message.tick) {
+              console.warn(`NetClientWriteSystem: tick mismatch, last sent: ${lastTickSent}, current: ${message.tick}`)
+            }
             if (message.actions && keys(message.actions).length) {
               // console.log("sent actions", message.actions)
             }
+
+            lastTickSent = message.tick
           }
           catch (e) {
             console.error("NetClientSystem: error sending message")

@@ -137,9 +137,9 @@ export const Position = (props: PositionProps = {}): Position => {
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
-      if (x !== undefined) position.data.velocity.x += x
-      if (y !== undefined) position.data.velocity.y += y
-      if (z !== undefined) position.data.velocity.z += z
+      if (x !== undefined) position.data.velocity.x = round(position.data.velocity.x + x, 3)
+      if (y !== undefined) position.data.velocity.y = round(position.data.velocity.y + y, 3)
+      if (z !== undefined) position.data.velocity.z = round(position.data.velocity.z + z, 3)
       return position
     },
     interpolate: (world: World, delta: number) => {
