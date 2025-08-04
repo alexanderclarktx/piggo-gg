@@ -1,6 +1,6 @@
 import {
-  Actions, Character, ClientSystemBuilder, CurrentJoystickPosition,
-  Entity, Input, InvokedAction, World, XY, XYdiff, max, min, round
+  Actions, Character, ClientSystemBuilder, Entity,
+  Input, InvokedAction, World, XY, max, min, round
 } from "@piggo-gg/core"
 
 export var chatBuffer: string[] = []
@@ -28,11 +28,10 @@ export const InputSystem = ClientSystemBuilder({
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])
 
     let backspaceOn = false
-    let joystickOn = false
     let mouseScreen: XY = { x: 0, y: 0 }
 
     window.addEventListener("pointermove", (event) => {
-      if (CurrentJoystickPosition.active && XYdiff(mouseScreen, { x: event.offsetX, y: event.offsetY }, 100)) return
+      if (world.client?.analog.left.active || world.client?.analog.right.active) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
@@ -47,17 +46,17 @@ export const InputSystem = ClientSystemBuilder({
     })
 
     world.three?.canvas.addEventListener("pointerdown", (event) => {
-      if (!joystickOn && CurrentJoystickPosition.active) return
+      // if (!joystickOn && CurrentJoystickPosition.active) return
       if (world.tick <= world.client!.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
-      if (CurrentJoystickPosition.active && !joystickOn) {
-        joystickOn = true
-        return
-      }
+      // if (CurrentJoystickPosition.active && !joystickOn) {
+      //   joystickOn = true
+      //   return
+      // }
 
       const key = event.button === 0 ? "mb1" : "mb2"
 
@@ -67,7 +66,7 @@ export const InputSystem = ClientSystemBuilder({
     document.addEventListener("pointerup", (event) => {
       const key = event.button === 0 ? "mb1" : "mb2"
 
-      if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
+      // if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
       if (key === "mb1") {
         const pc = world.client?.playerCharacter()
@@ -204,7 +203,7 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       // handle joystick input
-      if (CurrentJoystickPosition.power > 0.1 && input.inputMap.joystick) {
+      if ((world.client?.analog.left.power ?? 0) > 0.1) {
         const joystickAction = input.inputMap.joystick({ character, world })
         if (joystickAction) world.actions.push(world.tick + 1, character.id, joystickAction)
       }
@@ -404,8 +403,6 @@ export const InputSystem = ClientSystemBuilder({
 
         world.client!.bufferUp.clear()
         world.client!.bufferDown.remove("capslock") // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
-
-        joystickOn = CurrentJoystickPosition.active
       }
     }
   }
