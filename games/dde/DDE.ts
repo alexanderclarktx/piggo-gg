@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlButton, HtmlJoystick, hypot, keys,
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlButton, HtmlJoystick, HtmlText, hypot, keys,
   localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
   sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
@@ -61,7 +61,7 @@ const DDESystem = SystemBuilder({
           bottom: "50px",
           left: "50%",
           transform: "translate(-50%)",
-          backgroundColor: "rgba(50, 255, 50, 0.5)",
+          backgroundColor: "rgba(255, 192, 203, 0.5)",
           width: "50px",
           height: "50px",
           borderRadius: "50%"
@@ -71,15 +71,25 @@ const DDESystem = SystemBuilder({
           world.actions.push(world.tick + 1, world.client?.playerCharacter()?.id ?? "", {
             actionId: "transform"
           })
-          transformButton.style.backgroundColor = "rgba(0, 255, 0, 0.8)"
+          transformButton.style.backgroundColor = "rgba(255, 192, 203, 0.9)"
         },
         onRelease: () => {
-          transformButton.style.backgroundColor = "rgba(50, 255, 50, 0.5)"
+          transformButton.style.backgroundColor = "rgba(255, 192, 203, 0.5)"
         }
       })
-      console.log(transformButton.style.pointerEvents)
 
       world.three?.canvas.parentElement?.append(transformButton)
+
+      const transformLabel = HtmlText({
+        text: "transform",
+        style: {
+          left: "50%",
+          bottom: "24px",
+          fontSize: "16px"
+        }
+      })
+
+      world.three?.canvas.parentElement?.append(transformLabel)
     }
 
     let blocksRendered = false
