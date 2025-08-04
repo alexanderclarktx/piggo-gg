@@ -29,7 +29,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
     }
 
     // send tick data to all clients
-    entries(clients).forEach(([id, client]) => {
+    for ( const [id, client] of entries(clients) ) {
       client.send(encode({
         ...tickData,
         latency: latestClientLag[id],
@@ -38,7 +38,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
       if (world.tick - 1 !== lastSent) {
         console.error(`sent last:${lastSent} world:${world.tick} to ${id}`)
       }
-    })
+    }
 
     lastSent = world.tick
   }
@@ -56,12 +56,14 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
 
         // process message actions
         if (message.actions[message.tick]) {
-          entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
-
-            actions.forEach((action) => {
-              world.actions.push(message.tick, entityId, action)
-            })
-          })
+          for (const [entityId, actions] of entries(message.actions[message.tick])) {
+            for (const action of actions) {
+              const pushed = world.actions.push(message.tick, entityId, action)
+              if (!pushed) {
+                console.error(`action ${action.actionId} not pushed for entity ${entityId} at tick ${message.tick}`)
+              }
+            }
+          }
         }
 
         // process message chats

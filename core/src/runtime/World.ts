@@ -171,7 +171,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
 
       if (world.tick > 120 && world.players().length === 0) return
 
-      // check whether it's time to calculate the next tick
+      // check if it's time to run the next tick
       if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
         scheduleOnTick()
         return
