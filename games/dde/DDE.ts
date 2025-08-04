@@ -52,8 +52,11 @@ const DDESystem = SystemBuilder({
     spawnTerrain(world, 24)
 
     if (world.client?.mobile && world.client) {
-      const joystick = HtmlJoystick(world.client)
-      world.three?.canvas.parentElement?.append(joystick)
+      const left = HtmlJoystick(world.client, "left")
+      world.three?.canvas.parentElement?.append(left)
+
+      const right = HtmlJoystick(world.client, "right")
+      world.three?.canvas.parentElement?.append(right)
     }
 
     let blocksRendered = false

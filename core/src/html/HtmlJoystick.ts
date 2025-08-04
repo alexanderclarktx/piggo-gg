@@ -1,13 +1,17 @@
 import { Client, HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
 
-export const HtmlJoystick = (client: Client): HTMLDivElement => {
+export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivElement => {
+
+  const idle = side === "left" ? "rgba(244, 251, 44, 0.5)" : "rgba(0, 100, 255, 0.5)"
+  const active = side === "left" ? "rgba(236, 243, 13, 0.8)" : "rgba(0, 100, 255, 0.8)"
+
   const stick = HtmlDiv({
-    backgroundColor: "rgba(0, 100, 255, 0.5)",
+    ...side === "left" ? { left: "80px" } : { right: "80px" },
+    backgroundColor: idle,
     width: "100px",
     height: "100px",
     borderRadius: "50%",
-    left: "40%",
-    top: "40%",
+    bottom: "50px",
     pointerEvents: "auto",
     touchAction: "none",
     userSelect: "none",
@@ -28,7 +32,7 @@ export const HtmlJoystick = (client: Client): HTMLDivElement => {
     center = { x: stick.offsetLeft + e.offsetX, y: stick.offsetTop + e.offsetY }
 
     dragging = true
-    stick.style.backgroundColor = "rgba(30, 60, 229, 0.8)"
+    stick.style.backgroundColor = active
   }
 
   stick.onpointermove = (e) => {
@@ -44,16 +48,24 @@ export const HtmlJoystick = (client: Client): HTMLDivElement => {
 
     stick.style.transform = `translate(${x}px, ${y}px)`
 
-    client.analog.left = { power: dist / 30, angle: angle, active: true }
+    if (side === "left") {
+      client.analog.left = { power: dist / 30, angle: angle, active: true }
+    } else {
+      client.analog.right = { power: dist / 30, angle: angle, active: true }
+    }
   }
 
   stick.onpointerup = () => {
     dragging = false
 
-    stick.style.backgroundColor = "rgba(0, 100, 255, 0.5)"
+    stick.style.backgroundColor = idle
     stick.style.transform = "translate(0, 0)"
 
-    client.analog.left = { power: 0, angle: 0, active: false }
+    if (side === "left") {
+      client.analog.left = { power: 0, angle: 0, active: false }
+    } else {
+      client.analog.right = { power: 0, angle: 0, active: false }
+    }
   }
 
   return stick

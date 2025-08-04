@@ -4,6 +4,7 @@ export type HtmlStyleProps = {
   border?: string
   borderImage?: `linear-gradient(${string}) ${number}`
   borderRadius?: `${number}px` | `${number}%`
+  bottom?: `${number}%` | `${number}px`
   clipPath?: string
   color?: `#${string}`
   cursor?: "pointer" | "default" | "not-allowed"
