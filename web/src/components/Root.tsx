@@ -38,7 +38,7 @@ export const Root = () => {
         </div>
       </div>
       {window.location.hostname === "localhost" && (
-        <FPSCounter visible={false} position="bottom-left" targetFrameRate={120} />
+        <FPSCounter visible={true} position="bottom-left" targetFrameRate={120} />
       )}
     </div>
   )
