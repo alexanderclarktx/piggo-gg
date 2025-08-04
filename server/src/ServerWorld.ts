@@ -25,7 +25,6 @@ export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): Server
   const latestClientMessages: Record<string, GameData[]> = {}
   const latestClientLag: Record<string, number> = {}
   const latestClientDiff: Record<string, number> = {}
-  const latestClientTick: Record<string, number> = {}
 
   world.addSystems([NetServerSystem({ world, clients, latestClientMessages, latestClientLag, latestClientDiff })])
   world.addSystemBuilders([NoobSystem])
@@ -58,14 +57,9 @@ export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): Server
         console.log(`id:${ws.data.playerId} name:${ws.data.playerName} connected ${ws.remoteAddress}`)
       }
 
-      if (latestClientTick[msg.playerId] && msg.tick - 1 !== latestClientTick[msg.playerId]) {
-        console.error(`client ${msg.playerId} tick mismatch: expected ${latestClientTick[msg.playerId] + 1}, got ${msg.tick}`)
-      }
-
       // store last message for client
       latestClientMessages[msg.playerId].push(msg)
       latestClientLag[msg.playerId] = Date.now() - msg.timestamp
-      latestClientTick[msg.playerId] = msg.tick
 
       const diff = msg.tick - world.tick
       latestClientDiff[msg.playerId] = diff

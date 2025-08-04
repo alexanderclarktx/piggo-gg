@@ -18,7 +18,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
 
     // build tick data
     const tickData: NetMessageTypes = {
-      actions: world.actions.fromTick(world.tick - 1),
+      actions: world.actions.fromTick(world.tick),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: "server",
