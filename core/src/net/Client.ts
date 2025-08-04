@@ -22,8 +22,12 @@ type APICallback<R extends RequestTypes = RequestTypes> = (response: R["response
 type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"]) => void
 
 export type Client = {
-  bufferDown: KeyBuffer,
-  bufferUp: KeyBuffer,
+  analog: {
+    left: { angle: number, power: number, active: boolean }
+    right: { angle: number, power: number, active: boolean }
+  }
+  bufferDown: KeyBuffer
+  bufferUp: KeyBuffer
   connected: boolean
   clickThisFrame: {
     value: number
@@ -80,6 +84,10 @@ export const Client = ({ world }: ClientProps): Client => {
   const env = location ? (location.hostname === "localhost" ? "dev" : "production") : "dev"
 
   const client: Client = {
+    analog: {
+      left: { angle: 0, power: 0, active: false },
+      right: { angle: 0, power: 0, active: false }
+    },
     bufferDown: KeyBuffer(),
     bufferUp: KeyBuffer(),
     connected: false,
