@@ -1,15 +1,15 @@
-import { Client, HtmlDiv, localAim, min, sqrt, XY } from "@piggo-gg/core"
+import { Client, HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
 
 export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivElement => {
 
-  const idle = side === "left" ? "rgba(244, 251, 44, 0.5)" : "rgba(0, 100, 255, 0.5)"
-  const active = side === "left" ? "rgba(236, 243, 13, 0.8)" : "rgba(0, 100, 255, 0.8)"
+  const idle = side === "left" ? "rgba(245, 215, 105, 0.5)" : "rgba(0, 100, 255, 0.5)"
+  const active = side === "left" ? "rgba(255, 224, 26, 0.8)" : "rgba(0, 100, 255, 0.8)"
 
   const stick = HtmlDiv({
     ...side === "left" ? { left: "80px" } : { right: "80px" },
     backgroundColor: idle,
-    width: "100px",
-    height: "100px",
+    width: "80px",
+    height: "80px",
     borderRadius: "50%",
     bottom: "50px",
     pointerEvents: "auto",
