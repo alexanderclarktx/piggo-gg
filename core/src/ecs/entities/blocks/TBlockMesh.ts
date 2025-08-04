@@ -22,7 +22,7 @@ export const TBlockMesh = (): TBlockMesh => {
     colorAttr.set([color.r, color.g, color.b], i * 3)
   }
 
-  geometry.setAttribute('color', new BufferAttribute(colorAttr, 3))
+  geometry.setAttribute("color", new BufferAttribute(colorAttr, 3))
 
   const mesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
     vertexColors: true, visible: false, specularIntensity: 0.05, wireframe: false

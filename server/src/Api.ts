@@ -19,7 +19,7 @@ export type PerClientData = {
 type SessionToken = { googleId: string }
 
 type Handler<R extends RequestTypes["route"]> = (_: { ws: ServerWebSocket<PerClientData>, data: ExtractedRequestTypes<R> }) =>
-  Promise<ExtractedRequestTypes<R>['response'] | BadResponse>
+  Promise<ExtractedRequestTypes<R>["response"] | BadResponse>
 
 export type Api = {
   bun: Server | undefined

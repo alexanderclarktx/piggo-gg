@@ -5,10 +5,12 @@ const defaults: HtmlStyleProps = {
 }
 
 export const HtmlDiv = (style: HtmlStyleProps = {}): HTMLDivElement => {
-  const div = document.createElement('div')
+  const div = document.createElement("div")
 
   Object.assign(div.style, defaults)
   Object.assign(div.style, style)
+
+  div.oncontextmenu = (e) => e.preventDefault()
 
   return div
 }

@@ -1,13 +1,14 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlJoystick, hypot, keys,
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlButton, HtmlJoystick, HtmlText, hypot, keys,
   localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
   sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
 import { DDEMenu } from "./DDEMenu"
+import { DDEMobileUI } from "./DDEMobileUI"
 
 export type DDEState = {
   doubleJumped: string[]
@@ -17,47 +18,37 @@ export type DDEState = {
 
 export const DDE: GameBuilder<DDEState> = {
   id: "Duck Duck Eagle",
-  init: (world) => {
-
-    world.three?.activate(world)
-
-    return {
-      id: "Duck Duck Eagle",
-      netcode: "rollback",
-      state: {
-        doubleJumped: [],
-        applesEaten: {},
-        applesTimer: {}
-      },
-      systems: [
-        SpawnSystem(Bird),
-        BlockPhysicsSystem("global"),
-        BlockPhysicsSystem("local"),
-        TCameraSystem(),
-        DDESystem,
-        BirdHUDSystem
-      ],
-      entities: [
-        DDEMenu(world),
-        Profile()
-      ]
-    }
-  }
+  init: (world) => ({
+    id: "Duck Duck Eagle",
+    netcode: "rollback",
+    state: {
+      doubleJumped: [],
+      applesEaten: {},
+      applesTimer: {}
+    },
+    systems: [
+      SpawnSystem(Bird),
+      BlockPhysicsSystem("global"),
+      BlockPhysicsSystem("local"),
+      TCameraSystem(),
+      DDESystem,
+      BirdHUDSystem
+    ],
+    entities: [
+      DDEMenu(world),
+      Profile()
+    ]
+  })
 }
 
 const DDESystem = SystemBuilder({
   id: "DDESystem",
   init: (world) => {
 
+    world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    if (world.client?.mobile && world.client) {
-      const left = HtmlJoystick(world.client, "left")
-      world.three?.canvas.parentElement?.append(left)
-
-      const right = HtmlJoystick(world.client, "right")
-      world.three?.canvas.parentElement?.append(right)
-    }
+    DDEMobileUI(world)
 
     let blocksRendered = false
     let applesSpawned = false

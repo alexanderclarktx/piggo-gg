@@ -33,7 +33,7 @@ export const Profile = (): Entity => {
       npc: NPC({
         behavior: (_, world) => {
           if (!init) {
-            world.three?.canvas.parentElement?.appendChild(container)
+            world.three?.append(container)
             container.style.visibility = world.client?.mobile ? "hidden" : "visible"
             init = true
           }

@@ -44,7 +44,7 @@ export type RequestTypes =
   Pls |
   MetaPlayers
 
-export type ExtractedRequestTypes<T extends RequestTypes['route']> = Extract<RequestTypes, { route: T }>
+export type ExtractedRequestTypes<T extends RequestTypes["route"]> = Extract<RequestTypes, { route: T }>
 
 export type RequestData = {
   type: "request"

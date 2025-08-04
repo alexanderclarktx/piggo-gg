@@ -63,7 +63,7 @@ export const Random = (startingSeed: number): Random => {
     },
     range: <T>(input: number, range: [number, T][]): T => {
       if (range.length === 0) {
-        throw new Error('Input and range must not be empty')
+        throw new Error("Input and range must not be empty")
       }
 
       let result = range.at(-1)![1]

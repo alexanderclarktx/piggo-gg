@@ -1,15 +1,15 @@
-import { Client, HtmlDiv, localAim, min, sqrt, XY } from "@piggo-gg/core"
+import { Client, HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
 
 export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivElement => {
 
-  const idle = side === "left" ? "rgba(244, 251, 44, 0.5)" : "rgba(0, 100, 255, 0.5)"
-  const active = side === "left" ? "rgba(236, 243, 13, 0.8)" : "rgba(0, 100, 255, 0.8)"
+  const idle = side === "left" ? "rgba(200, 60, 200, 0.5)" : "rgba(0, 100, 200, 0.5)"
+  const active = side === "left" ? "rgba(200, 60, 200, 0.8)" : "rgba(0, 100, 200, 0.8)"
 
   const stick = HtmlDiv({
-    ...side === "left" ? { left: "80px" } : { right: "80px" },
+    ...side === "left" ? { left: "10%" } : { right: "10%" },
     backgroundColor: idle,
-    width: "100px",
-    height: "100px",
+    width: "80px",
+    height: "80px",
     borderRadius: "50%",
     bottom: "50px",
     pointerEvents: "auto",
@@ -22,13 +22,7 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
 
   let center: XY = { x: 0, y: 0 }
 
-  stick.oncontextmenu = (e) => {
-    e.preventDefault()
-  }
-
   stick.onpointerdown = (e) => {
-    e.preventDefault()
-
     center = { x: stick.offsetLeft + e.offsetX, y: stick.offsetTop + e.offsetY }
 
     dragging = true
@@ -49,9 +43,9 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
     stick.style.transform = `translate(${x}px, ${y}px)`
 
     if (side === "left") {
-      client.analog.left = { power: dist / 30, angle: angle, active: true }
+      client.analog.left = { power: dist / 30, angle: angle, active: client.analog.left.active || performance.now() }
     } else {
-      client.analog.right = { power: dist / 30, angle: angle, active: true }
+      client.analog.right = { power: dist / 30, angle: angle, active: client.analog.right.active || performance.now() }
     }
   }
 

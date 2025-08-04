@@ -25,6 +25,7 @@ export type TRenderer = {
   scene: Scene
   sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
+  append: (...elements: HTMLElement[]) => void
   setDebug: (state?: boolean) => void
   activate: (world: World) => void
   deactivate: () => void
@@ -55,6 +56,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
     debug: false,
     duck: undefined,
     eagle: undefined,
+    append: (...elements: HTMLElement[]) => {
+      tRenderer.canvas.parentElement?.append(...elements)
+    },
     resize: () => {
       if (!renderer) return
 
