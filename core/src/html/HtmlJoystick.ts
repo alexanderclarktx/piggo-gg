@@ -6,7 +6,7 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
   const active = side === "left" ? "rgba(255, 224, 26, 0.8)" : "rgba(0, 100, 255, 0.8)"
 
   const stick = HtmlDiv({
-    ...side === "left" ? { left: "80px" } : { right: "80px" },
+    ...side === "left" ? { left: "10%" } : { right: "10%" },
     backgroundColor: idle,
     width: "80px",
     height: "80px",
