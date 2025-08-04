@@ -1,5 +1,6 @@
 import {
-  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys
+  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys,
+  values
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 
@@ -28,16 +29,18 @@ export const NetClientWriteSystem = SystemBuilder({
             const message = syncer().write(world)
             client.ws.send(encode(message))
             if (lastTickSent && lastTickSent + 1 !== message.tick) {
-              console.warn(`NetClientWriteSystem: tick mismatch, last sent: ${lastTickSent}, current: ${message.tick}`)
+              console.error(`tick mismatch, last sent: ${lastTickSent}, current: ${message.tick}`)
             }
-            if (message.actions && keys(message.actions).length) {
+            // console.log(values(message.actions[message.tick][world.client?.playerCharacter()?.id ?? ""]))
+            // if (keys(message.actions[message.tick][world.client?.playerCharacter()?.id ?? ""]).length === 0) {
+              // console.error("no actions sent", message.actions)
               // console.log("sent actions", message.actions)
-            }
+            // }
 
             lastTickSent = message.tick
           }
           catch (e) {
-            console.error("NetClientSystem: error sending message")
+            console.error("error sending message")
           }
         }
       }

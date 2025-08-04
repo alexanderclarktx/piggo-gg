@@ -1,5 +1,5 @@
 import {
-  ceil, entityConstructors, entries, GameData, keys, stringify, Syncer, values, World
+  ceil, entityConstructors, entries, GameData, keys, logDiff, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
 // TODO not generic across games (bird/spike)
@@ -151,6 +151,8 @@ export const RollbackSyncer = (world: World): Syncer => {
             }
           }
         }
+      } else {
+        // console.error(`no actions for tick ${message.tick}`)
       }
 
       // check entity states
@@ -172,7 +174,10 @@ export const RollbackSyncer = (world: World): Syncer => {
 
           if (local[entityId]) {
             if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
-              mustRollback(`entity: ${entityId} mismatch ${message.tick}\n${stringify(local[entityId])}\n> ${stringify(serializedEntity)}`)
+              mustRollback(`entity: ${entityId} mismatch ${message.tick}`)
+              console.log(message.actions[message.tick][entityId], localActions[entityId])
+              logDiff(local[entityId], serializedEntity)
+              // mustRollback(`entity: ${entityId} mismatch ${message.tick}\n${stringify(local[entityId])}\n> ${stringify(serializedEntity)}`)
               continue
             }
           }
