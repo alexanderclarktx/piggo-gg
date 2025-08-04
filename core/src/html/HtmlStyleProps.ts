@@ -4,6 +4,7 @@ export type HtmlStyleProps = {
   border?: string
   borderImage?: `linear-gradient(${string}) ${number}`
   borderRadius?: `${number}px` | `${number}%`
+  bottom?: `${number}%` | `${number}px`
   clipPath?: string
   color?: `#${string}`
   cursor?: "pointer" | "default" | "not-allowed"
@@ -28,7 +29,9 @@ export type HtmlStyleProps = {
   textAlign?: "left" | "center" | "right" | "justify"
   textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
   top?: `${number}%` | `${number}px`
+  touchAction?: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
   transform?: string
+  userSelect?: "none" | "auto" | "text" | "all"
   visibility?: "visible" | "hidden"
   width?: `${number}px` | `${number}%`
   zIndex?: number

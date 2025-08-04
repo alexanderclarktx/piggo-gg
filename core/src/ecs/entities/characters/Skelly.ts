@@ -1,7 +1,7 @@
 import {
-  Actions, Character, Collider, Debug, DefaultJoystickHandler, dropItem,
-  Effects, Element, Health, Input, Inventory, Move, Networked, Player, Pickaxe,
-  Point, Position, Renderable, WASDInputMap, XY, setActiveItemIndex, DudeSkin,
+  Actions, Character, Collider, Debug, dropItem, Effects, Element,
+  Health, Input, Inventory, Move, Networked, Player, Pickaxe, Point,
+  Position, Renderable, WASDInputMap, XY, setActiveItemIndex, DudeSkin,
   VolleyCharacterAnimations, VolleyCharacterDynamic, Action
 } from "@piggo-gg/core"
 
@@ -36,8 +36,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
           if (hold) return null
           return { actionId: "changeAngle" }
         }
-      },
-      joystick: DefaultJoystickHandler
+      }
     }),
     actions: Actions({
       move: Move,
