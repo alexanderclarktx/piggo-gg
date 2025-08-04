@@ -23,8 +23,8 @@ type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"])
 
 export type Client = {
   analog: {
-    left: { angle: number, power: number, active: boolean }
-    right: { angle: number, power: number, active: boolean }
+    left: { angle: number, power: number, active: false | number }
+    right: { angle: number, power: number, active: false | number }
   }
   bufferDown: KeyBuffer
   bufferUp: KeyBuffer

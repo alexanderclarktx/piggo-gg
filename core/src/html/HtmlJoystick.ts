@@ -49,9 +49,9 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
     stick.style.transform = `translate(${x}px, ${y}px)`
 
     if (side === "left") {
-      client.analog.left = { power: dist / 30, angle: angle, active: true }
+      client.analog.left = { power: dist / 30, angle: angle, active: client.analog.left.active || performance.now() }
     } else {
-      client.analog.right = { power: dist / 30, angle: angle, active: true }
+      client.analog.right = { power: dist / 30, angle: angle, active: client.analog.right.active || performance.now() }
     }
   }
 

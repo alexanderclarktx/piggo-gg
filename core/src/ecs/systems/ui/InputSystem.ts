@@ -360,24 +360,30 @@ export const InputSystem = ClientSystemBuilder({
       }
     }
 
+    let last = 0
+
     return {
       id: "InputSystem",
       query: ["input", "actions", "position"],
       priority: 4,
       skipOnRollback: true,
-      onRender: (_, deltaMS) => {
+      onRender: () => {
         if (!world.client?.mobile) return
 
         const { power, angle, active } = world.client.analog.right
-        if (!active) return
+        if (!active) {
+          last = 0
+          return
+        }
 
         const pc = world.client?.playerCharacter()
         if (!pc) return
-
-        const factor = deltaMS / 25 * 0.04
         const { flying } = pc.components.position.data
 
-        moveAim({ x: power * cos(angle) * factor, y: power * sin(angle) * factor }, flying)
+        const delta = last ? performance.now() - last : performance.now() - active
+        last = performance.now()
+
+        moveAim({ x: power * cos(angle) * delta / 400, y: power * sin(angle) * delta / 400 }, flying)
       },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         world.client!.bufferDown.updateHold(world.tick)
