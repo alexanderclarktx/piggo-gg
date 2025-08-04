@@ -21,7 +21,7 @@ export const DDEMobileUI = (world: World) => {
       bottom: "50px",
       left: "60%",
       transform: "translate(-50%)",
-      backgroundColor: "rgba(255, 192, 203, 0.5)",
+      backgroundColor: "rgba(255, 150, 150, 0.5)",
       width: "50px",
       height: "50px",
       borderRadius: "50%"
@@ -30,10 +30,10 @@ export const DDEMobileUI = (world: World) => {
       world.actions.push(
         world.tick + 1, world.client?.playerCharacter()?.id ?? "", { actionId: "transform" }
       )
-      transformButton.style.backgroundColor = "rgba(255, 192, 203, 0.9)"
+      transformButton.style.backgroundColor = "rgba(255, 150, 150, 0.9)"
     },
     onRelease: () => {
-      transformButton.style.backgroundColor = "rgba(255, 192, 203, 0.5)"
+      transformButton.style.backgroundColor = "rgba(255, 150, 150, 0.5)"
     }
   })
 
