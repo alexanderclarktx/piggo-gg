@@ -28,7 +28,7 @@ export const HtmlJoystick = (): HTMLDivElement => {
     center = { x: stick.offsetLeft + e.offsetX, y: stick.offsetTop + e.offsetY }
 
     dragging = true
-    stick.style.backgroundColor = "rgba(13, 27, 229, 0.8)"
+    stick.style.backgroundColor = "rgba(50, 80, 229, 0.8)"
   }
 
   stick.onpointermove = (e) => {
