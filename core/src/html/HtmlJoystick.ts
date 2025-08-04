@@ -1,4 +1,4 @@
-import { abs, HtmlDiv, max, sqrt, XY } from "@piggo-gg/core"
+import { abs, HtmlDiv, max, min, sqrt, XY } from "@piggo-gg/core"
 
 export const HtmlJoystick = (): HTMLDivElement => {
   const stick = HtmlDiv({
@@ -9,28 +9,29 @@ export const HtmlJoystick = (): HTMLDivElement => {
     left: "50%",
     top: "50%",
     pointerEvents: "auto",
+    touchAction: "none",
+    userSelect: "none",
     // touchAction: "none"
   })
 
   let dragging = false
 
-  let offsetX = 50
-  let offsetY = 50
-
   let center: XY = { x: 0, y: 0 }
 
+  stick.oncontextmenu = (e) => {
+    e.preventDefault()
+  }
+
   stick.onpointerdown = (e) => {
-    // e.preventDefault()
+    e.preventDefault()
 
-    center = { x: stick.offsetLeft, y: stick.offsetTop }
+    center = { x: stick.offsetLeft + 50, y: stick.offsetTop + 50 }
     console.log("center", center)
-
-    console.log("pointer down")
 
     dragging = true
     stick.style.backgroundColor = "rgba(0, 0, 255, 0.8)"
 
-    const rect = stick.getBoundingClientRect()
+    // const rect = stick.getBoundingClientRect()
     // const offsetX = e.clientX - rect.left
     // const offsetY = e.clientY - rect.top
   }
@@ -40,20 +41,21 @@ export const HtmlJoystick = (): HTMLDivElement => {
 
     const dx = e.clientX - center.x
     const dy = e.clientY - center.y
-    const dist = max(50, sqrt(dx * dx + dy * dy))
+    const dist = min(30, sqrt(dx * dx + dy * dy))
 
     const angle = Math.atan2(dy, dx)
     const x = dist * Math.cos(angle)
     const y = dist * Math.sin(angle)
 
-    stick.style.transform = `translate(${x - offsetX}px, ${y - offsetY}px)`
+    console.log("dx", dx, "dy", dy, "dist", dist, "x", x, "y", y)
+
+    stick.style.transform = `translate(${x}px, ${y}px)`
   }
 
   stick.onpointerup = () => {
     dragging = false
     stick.style.backgroundColor = "rgba(0, 0, 255, 0.5)"
-    stick.style.left = "50%"
-    stick.style.top = "50%"
+    stick.style.transform = "translate(0, 0)"
   }
 
   return stick

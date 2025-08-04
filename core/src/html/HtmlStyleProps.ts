@@ -30,6 +30,7 @@ export type HtmlStyleProps = {
   top?: `${number}%` | `${number}px`
   touchAction?: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
   transform?: string
+  userSelect?: "none" | "auto" | "text" | "all"
   visibility?: "visible" | "hidden"
   width?: `${number}px` | `${number}%`
   zIndex?: number
