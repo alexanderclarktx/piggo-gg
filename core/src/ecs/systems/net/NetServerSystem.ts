@@ -55,7 +55,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
         if (message.type !== "game") continue
 
         if (message.tick < world.tick) {
-          console.error(`old message for ${clientId} at tick ${message.tick}, current tick: ${world.tick}`)
+          console.error(`old message client:${clientId} msg:${message.tick} server: ${world.tick}`)
+          continue
         }
 
         // process message actions

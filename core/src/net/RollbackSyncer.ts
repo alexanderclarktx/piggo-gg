@@ -96,10 +96,10 @@ export const RollbackSyncer = (world: World): Syncer => {
         message = buffer.shift() as GameData
       }
 
-      if ((message.diff ?? 1) > 2) {
+      if ((message.diff ?? 1) > 3) {
         console.log("speed up")
         world.tickrate = 30
-      } else if ((message.diff ?? 2) < 1) {
+      } else if ((message.diff ?? 2) < 2) {
         console.log("slow down")
         world.tickrate = 20
       } else {
