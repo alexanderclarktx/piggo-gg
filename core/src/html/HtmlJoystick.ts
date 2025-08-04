@@ -18,6 +18,9 @@ export const HtmlJoystick = (): HTMLDivElement => {
 
   let center: XY = { x: 0, y: 0 }
 
+  let offsetX = 0
+  let offsetY = 0
+
   stick.oncontextmenu = (e) => {
     e.preventDefault()
   }
@@ -25,8 +28,13 @@ export const HtmlJoystick = (): HTMLDivElement => {
   stick.onpointerdown = (e) => {
     e.preventDefault()
 
+    offsetX = e.offsetX - 50
+    offsetY = e.offsetY - 50
+
     center = { x: stick.offsetLeft + 50, y: stick.offsetTop + 50 }
-    console.log("center", center)
+
+    // center = { x: stick.offsetLeft + dx, y: stick.offsetTop + dy }
+    console.log("offsetX", offsetX, "offsetY", offsetY)
 
     dragging = true
     stick.style.backgroundColor = "rgba(0, 0, 255, 0.8)"
