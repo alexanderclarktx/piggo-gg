@@ -2,7 +2,7 @@ import { World, isMobile } from "@piggo-gg/core"
 import { Canvas, Title } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
-import FPSCounter from '@sethwebster/react-fps-counter'
+import FPSCounter from "@sethwebster/react-fps-counter"
 
 export type LoginState = "not logged in" | "🟢 Logged In" | ""
 

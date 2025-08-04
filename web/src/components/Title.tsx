@@ -16,7 +16,7 @@ export const Title = ({ world, loginState, setLoginState }: TitleProps) => {
       marginBottom: 5
     }}>
 
-      <div style={{ position: 'absolute', left: 0, bottom: 0 }}>
+      <div style={{ position: "absolute", left: 0, bottom: 0 }}>
         <Login loginState={loginState} setLoginState={setLoginState} world={world} />
       </div>
 
@@ -42,7 +42,7 @@ export const Title = ({ world, loginState, setLoginState }: TitleProps) => {
         </svg>
       </div>
 
-      <div style={{ position: 'absolute', right: 0, bottom: 0 }}>
+      <div style={{ position: "absolute", right: 0, bottom: 0 }}>
         <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
           v<b>0.26.1</b>
         </span>

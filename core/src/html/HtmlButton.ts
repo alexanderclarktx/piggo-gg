@@ -1,19 +1,19 @@
 import { HtmlStyleProps } from "@piggo-gg/core"
 
 export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
-  const b = document.createElement('button')
+  const b = document.createElement("button")
 
   if (props.text) b.textContent = props.text
 
+  if (props.onClick || props.onRelease) b.style.pointerEvents = "auto"
   if (props.onClick) b.addEventListener("pointerdown", props.onClick)
   if (props.onRelease) b.addEventListener("pointerup", props.onRelease)
   if (props.onHover) b.addEventListener("pointerover", props.onHover)
   if (props.onHoverOut) b.addEventListener("pointerout", props.onHoverOut)
 
+  b.oncontextmenu = (e) => e.preventDefault()
+
   Object.assign(b.style, defaults)
-
-  if (props.onClick || props.onRelease) b.style.pointerEvents = "auto"
-
   Object.assign(b.style, props.style)
 
   return b

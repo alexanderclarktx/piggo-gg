@@ -10,7 +10,7 @@ export type TCamera = {
 export const TCamera = (): TCamera => {
 
   const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000)
-  camera.rotation.order = 'YXZ'
+  camera.rotation.order = "YXZ"
 
   const tCamera: TCamera = {
     c: camera,

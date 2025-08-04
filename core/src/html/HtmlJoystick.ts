@@ -22,13 +22,7 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
 
   let center: XY = { x: 0, y: 0 }
 
-  stick.oncontextmenu = (e) => {
-    e.preventDefault()
-  }
-
   stick.onpointerdown = (e) => {
-    e.preventDefault()
-
     center = { x: stick.offsetLeft + e.offsetX, y: stick.offsetTop + e.offsetY }
 
     dragging = true

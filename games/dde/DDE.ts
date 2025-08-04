@@ -1,10 +1,10 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlJoystick, hypot, keys,
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlButton, HtmlJoystick, hypot, keys,
   localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
   sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 import { Bird } from "./Bird"
 import { BirdHUDSystem } from "./BirdHUDSystem"
 import { DDEMenu } from "./DDEMenu"
@@ -52,11 +52,36 @@ const DDESystem = SystemBuilder({
     spawnTerrain(world, 24)
 
     if (world.client?.mobile && world.client) {
-      const left = HtmlJoystick(world.client, "left")
-      world.three?.canvas.parentElement?.append(left)
+      world.three?.canvas.parentElement?.append(
+        HtmlJoystick(world.client, "left")
+      )
 
-      const right = HtmlJoystick(world.client, "right")
-      world.three?.canvas.parentElement?.append(right)
+      world.three?.canvas.parentElement?.append(
+        HtmlJoystick(world.client, "right")
+      )
+
+      const transformButton = HtmlButton({
+        style: {
+          bottom: "50px",
+          left: "50%",
+          transform: "translate(-50%)",
+          backgroundColor: "rgba(50, 255, 50, 0.5)",
+          width: "50px",
+          height: "50px",
+          borderRadius: "50%"
+        },
+        onClick: () => {
+          world.actions.push(world.tick + 1, world.client?.playerCharacter()?.id ?? "", {
+            actionId: "transform"
+          })
+          transformButton.style.backgroundColor = "rgba(0, 255, 0, 0.8)"
+        },
+        onRelease: () => {
+          transformButton.style.backgroundColor = "rgba(50, 255, 50, 0.5)"
+        }
+      })
+
+      world.three?.canvas.parentElement?.append(transformButton)
     }
 
     let blocksRendered = false
