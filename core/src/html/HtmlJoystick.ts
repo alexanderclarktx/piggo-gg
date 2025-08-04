@@ -1,8 +1,8 @@
-import { abs, HtmlDiv, max, min, sqrt, XY } from "@piggo-gg/core"
+import { HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
 
 export const HtmlJoystick = (): HTMLDivElement => {
   const stick = HtmlDiv({
-    backgroundColor: "rgba(0, 0, 255, 0.5)",
+    backgroundColor: "rgba(0, 100, 255, 0.5)",
     width: "100px",
     height: "100px",
     borderRadius: "50%",
@@ -11,15 +11,12 @@ export const HtmlJoystick = (): HTMLDivElement => {
     pointerEvents: "auto",
     touchAction: "none",
     userSelect: "none",
-    // touchAction: "none"
+    border: "2px solid #ffffff"
   })
 
   let dragging = false
 
   let center: XY = { x: 0, y: 0 }
-
-  let offsetX = 0
-  let offsetY = 0
 
   stick.oncontextmenu = (e) => {
     e.preventDefault()
@@ -28,20 +25,10 @@ export const HtmlJoystick = (): HTMLDivElement => {
   stick.onpointerdown = (e) => {
     e.preventDefault()
 
-    offsetX = e.offsetX - 50
-    offsetY = e.offsetY - 50
-
-    center = { x: stick.offsetLeft + 50, y: stick.offsetTop + 50 }
-
-    // center = { x: stick.offsetLeft + dx, y: stick.offsetTop + dy }
-    console.log("offsetX", offsetX, "offsetY", offsetY)
+    center = { x: stick.offsetLeft + e.offsetX, y: stick.offsetTop + e.offsetY }
 
     dragging = true
-    stick.style.backgroundColor = "rgba(0, 0, 255, 0.8)"
-
-    // const rect = stick.getBoundingClientRect()
-    // const offsetX = e.clientX - rect.left
-    // const offsetY = e.clientY - rect.top
+    stick.style.backgroundColor = "rgba(13, 27, 229, 0.8)"
   }
 
   stick.onpointermove = (e) => {
@@ -55,14 +42,12 @@ export const HtmlJoystick = (): HTMLDivElement => {
     const x = dist * Math.cos(angle)
     const y = dist * Math.sin(angle)
 
-    console.log("dx", dx, "dy", dy, "dist", dist, "x", x, "y", y)
-
     stick.style.transform = `translate(${x}px, ${y}px)`
   }
 
   stick.onpointerup = () => {
     dragging = false
-    stick.style.backgroundColor = "rgba(0, 0, 255, 0.5)"
+    stick.style.backgroundColor = "rgba(0, 100, 255, 0.5)"
     stick.style.transform = "translate(0, 0)"
   }
 
