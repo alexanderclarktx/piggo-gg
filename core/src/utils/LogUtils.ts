@@ -1,7 +1,7 @@
-import { stringify, World } from "@piggo-gg/core"
+import { round, stringify, World } from "@piggo-gg/core"
 
 export const logPerf = (message: string, from: DOMHighResTimeStamp, threshold: number = 5) => {
-  const time = performance.now() - from
+  const time = round(performance.now() - from, 1)
   if (time > threshold) {
     console.log(message, time)
   }

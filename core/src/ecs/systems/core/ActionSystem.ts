@@ -19,9 +19,9 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
       const actionsAtTick = world.actions.atTick(world.tick)
       if (!actionsAtTick) return
 
-      entries(actionsAtTick).forEach(([entityId, actions]) => {
+      for ( const [entityId, actions] of entries(actionsAtTick)) {
 
-        // handle commands
+        // commands
         if (entityId === "world") {
           actions.forEach((invokedAction) => {
             const command = world.commands[invokedAction.actionId]
@@ -32,9 +32,8 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           return
         }
 
-        // handle actions
+        // actions
         actions.sort((a, b) => a.actionId.localeCompare(b.actionId))
-        // if (actions) actions.forEach((invokedAction) => {
         for (const invokedAction of actions) {
           const entity = world.entity(entityId)
 
@@ -64,7 +63,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
           action.invoke({ params: invokedAction.params ?? {}, entity, world, player })
         }
-      })
+      }
     }
   })
 }

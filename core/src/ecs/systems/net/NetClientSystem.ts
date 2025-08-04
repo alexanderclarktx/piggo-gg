@@ -1,6 +1,5 @@
 import {
-  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys,
-  values
+  DelaySyncer, GameData, RollbackSyncer, SystemBuilder, entries, keys
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 
@@ -31,11 +30,6 @@ export const NetClientWriteSystem = SystemBuilder({
             if (lastTickSent && lastTickSent + 1 !== message.tick) {
               console.error(`tick mismatch, last sent: ${lastTickSent}, current: ${message.tick}`)
             }
-            // console.log(values(message.actions[message.tick][world.client?.playerCharacter()?.id ?? ""]))
-            // if (keys(message.actions[message.tick][world.client?.playerCharacter()?.id ?? ""]).length === 0) {
-              // console.error("no actions sent", message.actions)
-              // console.log("sent actions", message.actions)
-            // }
 
             lastTickSent = message.tick
           }

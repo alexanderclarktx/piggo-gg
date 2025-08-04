@@ -54,6 +54,10 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
       for (const message of messages) {
         if (message.type !== "game") continue
 
+        if (message.tick <= world.tick) {
+          console.error(`old message for ${clientId} at tick ${message.tick}, current tick: ${world.tick}`)
+        }
+
         // process message actions
         if (message.actions[message.tick]) {
           for (const [entityId, actions] of entries(message.actions[message.tick])) {

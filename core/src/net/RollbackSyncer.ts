@@ -1,5 +1,6 @@
 import {
-  ceil, entityConstructors, entries, GameData, keys, logDiff, stringify, Syncer, values, World
+  ceil, entityConstructors, entries, GameData, keys,
+  logDiff, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
 // TODO not generic across games (bird/spike)
@@ -173,12 +174,11 @@ export const RollbackSyncer = (world: World): Syncer => {
           }
 
           if (local[entityId]) {
-            if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
+            if (stringify(local[entityId]) !== stringify(serializedEntity)) {
               mustRollback(`entity: ${entityId} mismatch ${message.tick}`)
               console.log(message.actions[message.tick][entityId], localActions[entityId])
               console.log(message.actions[message.tick-1][entityId], world.actions.atTick(message.tick - 1)?.[entityId])
               logDiff(local[entityId], serializedEntity)
-              // mustRollback(`entity: ${entityId} mismatch ${message.tick}\n${stringify(local[entityId])}\n> ${stringify(serializedEntity)}`)
               continue
             }
           }

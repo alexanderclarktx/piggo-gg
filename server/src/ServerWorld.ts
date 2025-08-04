@@ -38,9 +38,6 @@ export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): Server
     handleClose: (ws: WS) => {
       const player = world.entity(ws.data.playerId)
       if (player) {
-        // const character = player.components.controlling?.getCharacter(world)
-        // if (character) world.removeEntity(character.id)
-
         world.removeEntity(player.id)
       }
 
