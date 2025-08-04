@@ -176,6 +176,7 @@ export const RollbackSyncer = (world: World): Syncer => {
             if (JSON.stringify(local[entityId]) !== JSON.stringify(serializedEntity)) {
               mustRollback(`entity: ${entityId} mismatch ${message.tick}`)
               console.log(message.actions[message.tick][entityId], localActions[entityId])
+              console.log(message.actions[message.tick-1][entityId], world.actions.atTick(message.tick - 1)?.[entityId])
               logDiff(local[entityId], serializedEntity)
               // mustRollback(`entity: ${entityId} mismatch ${message.tick}\n${stringify(local[entityId])}\n> ${stringify(serializedEntity)}`)
               continue

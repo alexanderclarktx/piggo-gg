@@ -33,20 +33,22 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
         }
 
         // handle actions
-        if (actions) actions.forEach((invokedAction) => {
+        actions.sort((a, b) => a.actionId.localeCompare(b.actionId))
+        // if (actions) actions.forEach((invokedAction) => {
+        for (const invokedAction of actions) {
           const entity = world.entity(entityId)
 
           // entity not found
           if (!entity) {
             console.log(`entity ${entityId} not found for action ${invokedAction.actionId}`)
-            return
+            continue
           }
 
           // entity has no actions
           const actions = entity.components.actions
           if (!actions) {
             console.log(`${entityId} has no actions`)
-            return
+            continue
           }
 
           // find the action
@@ -55,13 +57,13 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           // action not found
           if (!action) {
             console.log(`action ${stringify(invokedAction)} not found in actionMap ${keys(actions.actionMap)}`)
-            return
+            continue
           }
 
           // execute the action
           const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
           action.invoke({ params: invokedAction.params ?? {}, entity, world, player })
-        })
+        }
       })
     }
   })
