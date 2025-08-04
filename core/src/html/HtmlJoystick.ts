@@ -1,6 +1,6 @@
-import { HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
+import { Client, HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
 
-export const HtmlJoystick = (): HTMLDivElement => {
+export const HtmlJoystick = (client: Client): HTMLDivElement => {
   const stick = HtmlDiv({
     backgroundColor: "rgba(0, 100, 255, 0.5)",
     width: "100px",
@@ -28,7 +28,7 @@ export const HtmlJoystick = (): HTMLDivElement => {
     center = { x: stick.offsetLeft + e.offsetX, y: stick.offsetTop + e.offsetY }
 
     dragging = true
-    stick.style.backgroundColor = "rgba(50, 80, 229, 0.8)"
+    stick.style.backgroundColor = "rgba(30, 60, 229, 0.8)"
   }
 
   stick.onpointermove = (e) => {
@@ -43,6 +43,8 @@ export const HtmlJoystick = (): HTMLDivElement => {
     const y = dist * Math.sin(angle)
 
     stick.style.transform = `translate(${x}px, ${y}px)`
+
+    client.analog.left = { power: dist / 30, angle: angle, active: true }
   }
 
   stick.onpointerup = () => {
@@ -50,6 +52,8 @@ export const HtmlJoystick = (): HTMLDivElement => {
 
     stick.style.backgroundColor = "rgba(0, 100, 255, 0.5)"
     stick.style.transform = "translate(0, 0)"
+
+    client.analog.left = { power: 0, angle: 0, active: false }
   }
 
   return stick
