@@ -47,14 +47,20 @@ const DDESystem = SystemBuilder({
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
+    // mobile UI
     if (world.client?.mobile && world.client) {
-      world.three?.canvas.parentElement?.append(
+      world.three?.append(
         HtmlJoystick(world.client, "left")
       )
 
-      world.three?.canvas.parentElement?.append(
+      world.three?.append(
         HtmlJoystick(world.client, "right")
       )
+
+      world.three?.append(HtmlText({
+        text: "transform",
+        style: { left: "50%", bottom: "24px", fontSize: "16px" }
+      }))
 
       const transformButton = HtmlButton({
         style: {
@@ -67,10 +73,9 @@ const DDESystem = SystemBuilder({
           borderRadius: "50%"
         },
         onClick: () => {
-          console.log("transform")
-          world.actions.push(world.tick + 1, world.client?.playerCharacter()?.id ?? "", {
-            actionId: "transform"
-          })
+          world.actions.push(
+            world.tick + 1, world.client?.playerCharacter()?.id ?? "", { actionId: "transform" }
+          )
           transformButton.style.backgroundColor = "rgba(255, 192, 203, 0.9)"
         },
         onRelease: () => {
@@ -78,18 +83,7 @@ const DDESystem = SystemBuilder({
         }
       })
 
-      world.three?.canvas.parentElement?.append(transformButton)
-
-      const transformLabel = HtmlText({
-        text: "transform",
-        style: {
-          left: "50%",
-          bottom: "24px",
-          fontSize: "16px"
-        }
-      })
-
-      world.three?.canvas.parentElement?.append(transformLabel)
+      world.three?.append(transformButton)
     }
 
     let blocksRendered = false

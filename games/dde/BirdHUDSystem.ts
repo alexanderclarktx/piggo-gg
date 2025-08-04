@@ -52,7 +52,7 @@ export const BirdHUDSystem = ClientSystemBuilder({
 
     // const music = HtmlMusic()
 
-    world.three?.canvas.parentElement?.append(
+    world.three?.append(
       aButton, sButton, wButton, dButton, eButton,
       boostButton, jumpButton,
       transformLabel, moveLabel, boostLabel, jumpLabel,
