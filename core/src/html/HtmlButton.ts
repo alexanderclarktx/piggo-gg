@@ -2,6 +2,7 @@ import { HtmlStyleProps } from "@piggo-gg/core"
 
 export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   const b = document.createElement("button")
+  Object.assign(b.style, defaults)
 
   if (props.text) b.textContent = props.text
 
@@ -13,7 +14,6 @@ export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
 
   b.oncontextmenu = (e) => e.preventDefault()
 
-  Object.assign(b.style, defaults)
   Object.assign(b.style, props.style)
 
   return b

@@ -17,38 +17,34 @@ export type DDEState = {
 
 export const DDE: GameBuilder<DDEState> = {
   id: "Duck Duck Eagle",
-  init: (world) => {
-
-    world.three?.activate(world)
-
-    return {
-      id: "Duck Duck Eagle",
-      netcode: "rollback",
-      state: {
-        doubleJumped: [],
-        applesEaten: {},
-        applesTimer: {}
-      },
-      systems: [
-        SpawnSystem(Bird),
-        BlockPhysicsSystem("global"),
-        BlockPhysicsSystem("local"),
-        TCameraSystem(),
-        DDESystem,
-        BirdHUDSystem
-      ],
-      entities: [
-        DDEMenu(world),
-        Profile()
-      ]
-    }
-  }
+  init: (world) => ({
+    id: "Duck Duck Eagle",
+    netcode: "rollback",
+    state: {
+      doubleJumped: [],
+      applesEaten: {},
+      applesTimer: {}
+    },
+    systems: [
+      SpawnSystem(Bird),
+      BlockPhysicsSystem("global"),
+      BlockPhysicsSystem("local"),
+      TCameraSystem(),
+      DDESystem,
+      BirdHUDSystem
+    ],
+    entities: [
+      DDEMenu(world),
+      Profile()
+    ]
+  })
 }
 
 const DDESystem = SystemBuilder({
   id: "DDESystem",
   init: (world) => {
 
+    world.three?.activate(world)
     spawnTerrain(world, 24)
 
     if (world.client?.mobile && world.client) {
@@ -71,6 +67,7 @@ const DDESystem = SystemBuilder({
           borderRadius: "50%"
         },
         onClick: () => {
+          console.log("transform")
           world.actions.push(world.tick + 1, world.client?.playerCharacter()?.id ?? "", {
             actionId: "transform"
           })
@@ -80,6 +77,7 @@ const DDESystem = SystemBuilder({
           transformButton.style.backgroundColor = "rgba(50, 255, 50, 0.5)"
         }
       })
+      console.log(transformButton.style.pointerEvents)
 
       world.three?.canvas.parentElement?.append(transformButton)
     }
