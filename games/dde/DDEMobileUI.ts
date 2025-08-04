@@ -11,15 +11,15 @@ export const DDEMobileUI = (world: World) => {
     HtmlJoystick(world.client, "right")
   )
 
-  world.three?.append(HtmlText({
-    text: "transform",
-    style: { left: "60%", bottom: "24px", fontSize: "14px" }
-  }))
+  // world.three?.append(HtmlText({
+  //   text: "transform",
+  //   style: { left: "60%", bottom: "24px", fontSize: "14px" }
+  // }))
 
   const transformButton = HtmlButton({
     style: {
-      bottom: "50px",
-      left: "60%",
+      bottom: "140px",
+      left: "10%",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 150, 0.5)",
       width: "50px",
@@ -39,16 +39,16 @@ export const DDEMobileUI = (world: World) => {
 
   world.three?.append(transformButton)
 
-  world.three?.append(HtmlText({
-    text: "jump",
-    style: { left: "40%", bottom: "24px", fontSize: "14px" }
-  }))
+  // world.three?.append(HtmlText({
+  //   text: "jump",
+  //   style: { left: "40%", bottom: "24px", fontSize: "14px" }
+  // }))
 
   const jumpButton = HtmlButton({
     style: {
-      bottom: "50px",
-      left: "40%",
-      transform: "translate(-50%)",
+      bottom: "140px",
+      right: "10%",
+      transform: "translate(50%)",
       backgroundColor: "rgba(20, 255, 60, 0.5)",
       width: "50px",
       height: "50px",
