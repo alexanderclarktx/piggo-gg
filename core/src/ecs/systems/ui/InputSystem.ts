@@ -399,10 +399,8 @@ export const InputSystem = ClientSystemBuilder({
         }
 
         // handle character input
-        const character = world.client?.player.components.controlling.getCharacter(world)
-        if (character && world.tick > world.client!.clickThisFrame.value) {
-          handleInputForCharacter(character, world)
-        }
+        const character = world.client?.playerCharacter()
+        if (character) handleInputForCharacter(character, world)
 
         // handle buffered backspace
         if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop()
