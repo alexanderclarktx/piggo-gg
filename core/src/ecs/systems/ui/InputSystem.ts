@@ -1,7 +1,6 @@
 import {
-  Actions, Character, ClientSystemBuilder, Entity,
-  Input, InvokedAction, World, XY, cos, max, min, round,
-  sin
+  Actions, Character, ClientSystemBuilder, Entity, Input,
+  InvokedAction, World, XY, cos, max, min, round, sin
 } from "@piggo-gg/core"
 
 export var chatBuffer: string[] = []
@@ -47,17 +46,11 @@ export const InputSystem = ClientSystemBuilder({
     })
 
     world.three?.canvas.addEventListener("pointerdown", (event) => {
-      // if (!joystickOn && CurrentJoystickPosition.active) return
       if (world.tick <= world.client!.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-
-      // if (CurrentJoystickPosition.active && !joystickOn) {
-      //   joystickOn = true
-      //   return
-      // }
 
       const key = event.button === 0 ? "mb1" : "mb2"
 
@@ -66,8 +59,6 @@ export const InputSystem = ClientSystemBuilder({
 
     document.addEventListener("pointerup", (event) => {
       const key = event.button === 0 ? "mb1" : "mb2"
-
-      // if (key === "mb1" && joystickOn && !CurrentJoystickPosition.active) return
 
       if (key === "mb1") {
         const pc = world.client?.playerCharacter()
