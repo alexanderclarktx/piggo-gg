@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Collider, Input, Networked, Player, Point, Position, Team, World, XYZ } from "@piggo-gg/core"
+import { Action, Actions, Character, Collider, Input, localAim, Networked, Player, Point, Position, Team, World, XYZ } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
@@ -26,7 +26,12 @@ export const Bird = (player: Player) => Character({
         const { power, angle, active } = world.client.analog.left
         if (!active) return null
 
-        const dir = { x: Math.cos(angle), y: Math.sin(angle) }
+        let dir = { x: Math.cos(angle), y: Math.sin(angle) }
+
+        dir = {
+          x: dir.x * Math.cos(-localAim.x) - dir.y * Math.sin(-localAim.x),
+          y: dir.x * Math.sin(-localAim.x) + dir.y * Math.cos(-localAim.x)
+        }
 
         return { actionId: "move2", params: { dir, power } }
       },
