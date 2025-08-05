@@ -11,7 +11,8 @@ import { DDEMenu } from "./DDEMenu"
 import { DDEMobileUI } from "./DDEMobileUI"
 
 export type DDEState = {
-  phase: "warmup" | "play"
+  phase: "warmup" | "starting" | "play"
+  willStart: undefined | number 
   doubleJumped: string[]
   applesEaten: Record<string, number>
   applesTimer: Record<string, number>
@@ -24,6 +25,7 @@ export const DDE: GameBuilder<DDEState> = {
     netcode: "rollback",
     state: {
       phase: "warmup",
+      willStart: undefined,
       doubleJumped: [],
       applesEaten: {},
       applesTimer: {}
@@ -65,6 +67,18 @@ const DDESystem = SystemBuilder({
 
         const players = world.players()
         const characters = world.characters()
+
+
+        if (world.mode === "server" && state.phase === "warmup" && players.length) {
+          const playersReady = players.filter(p => p.components.pc.data.ready)
+
+          if (playersReady.length === players.length) {
+            state.phase = "starting"
+            state.willStart = world.tick + 40 * 3
+          }
+        }
+
+        console.log(state.phase, state.willStart)
 
         const t0 = performance.now()
         for (const character of characters) {
