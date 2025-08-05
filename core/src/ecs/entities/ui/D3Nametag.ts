@@ -90,8 +90,7 @@ export const D3NametagSystem = SystemBuilder({
           }
 
           // update
-          const nametag = nametags[player.id]
-          if (nametag) nametag.update(world, delta)
+          nametags[player.id]?.update(world, delta)
         }
       }
     }
