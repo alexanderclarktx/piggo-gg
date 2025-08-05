@@ -240,6 +240,8 @@ const DDESystem = SystemBuilder({
           const character = player.components.controlling?.getCharacter(world)
           if (!character) continue
 
+          console.log("ready", player.components.pc.data.ready)
+
           const { position } = character.components
           if (!position) continue
 

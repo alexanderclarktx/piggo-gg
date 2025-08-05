@@ -56,6 +56,11 @@ export const Bird = (player: Player) => Character({
         }
       },
       press: {
+        "r": ({ hold }) => {
+          if (hold) return null
+          return { actionId: "ready" }
+        },
+
         // transform
         "e": ({ hold }) => {
           if (hold) return null
@@ -96,6 +101,11 @@ export const Bird = (player: Player) => Character({
       }
     }),
     actions: Actions({
+      ready: Action("ready", ({ player }) => {
+        if (!player) return
+
+        player.components.pc.data.ready = !player.components.pc.data.ready
+      }),
       point: Point,
       transform: Action("transform", ({ entity, world, player }) => {
         const { position } = entity?.components ?? {}
