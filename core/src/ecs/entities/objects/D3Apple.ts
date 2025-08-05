@@ -1,6 +1,6 @@
 import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core"
 
-export const TApple = ({ id, pos }: { id: string, pos?: XYZ }): Entity<Position> => {
+export const D3Apple = ({ id, pos }: { id: string, pos?: XYZ }): Entity<Position> => {
 
   let removed = false
 

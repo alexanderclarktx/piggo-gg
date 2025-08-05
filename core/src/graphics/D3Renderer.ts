@@ -258,7 +258,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        renderer.apples["tapple-0"] = apple.scene
+        renderer.apples["d3apple-0"] = apple.scene
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {
