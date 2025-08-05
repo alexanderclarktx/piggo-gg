@@ -1,5 +1,13 @@
 import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core"
 
+// TODO this is a duplicate from DDE
+type DDEState = {
+  phase: "warmup" | "play"
+  doubleJumped: string[]
+  applesEaten: Record<string, number>
+  applesTimer: Record<string, number>
+}
+
 export const D3Apple = ({ id, pos }: { id: string, pos?: XYZ }): Entity<Position> => {
 
   let removed = false
@@ -13,15 +21,13 @@ export const D3Apple = ({ id, pos }: { id: string, pos?: XYZ }): Entity<Position
         behavior: (_, world) => {
           if (removed) return
 
-          const players = world.players()
+          const applePos = apple.components.position.data
 
-          for (const player of players) {
+          for (const player of world.players()) {
             const character = player.components.controlling?.getCharacter(world)
             if (!character) continue
 
             const { position } = character.components
-
-            const applePos = apple.components.position.data
 
             const dist = XYZdistance(position.data, applePos)
 
@@ -36,28 +42,28 @@ export const D3Apple = ({ id, pos }: { id: string, pos?: XYZ }): Entity<Position
               }
 
               // sound effect
-              world.client?.soundManager.play({ soundName: "eat", start: 0.3 })
+              world.client?.soundManager.play({ soundName: "eat", start: 0.3, threshold: { pos: applePos, distance: 5 } })
 
               if (position.data.flying) return
 
-              // score
-              // const state = world.game.state as DDEState
-              // const playerId = player.id
+              // update state
+              const state = world.game.state as DDEState
+              const playerId = player.id
 
-              // if (!state.applesEaten[playerId]) {
-              //   state.applesEaten[playerId] = 1
-              //   state.applesTimer[playerId] = world.tick
-              // } else {
-              //   state.applesEaten[playerId] += 1
+              if (!state.applesEaten[playerId]) {
+                state.applesEaten[playerId] = 1
+                state.applesTimer[playerId] = world.tick
+              } else {
+                state.applesEaten[playerId] += 1
 
-              //   if (state.applesEaten[playerId] >= 10) {
-              //     const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000
-              //     console.log(`Player ${playerId} has eaten 10 apples!`, timeElapsed.toFixed(2), "seconds")
+                if (state.applesEaten[playerId] >= 10) {
+                  const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000
+                  console.log(`Player ${playerId} has eaten 10 apples!`, timeElapsed.toFixed(2), "seconds")
 
-              //     state.applesEaten[playerId] = 0
-              //     delete state.applesTimer[playerId]
-              //   }
-              // }
+                  state.applesEaten[playerId] = 0
+                  delete state.applesTimer[playerId]
+                }
+              }
             }
           }
         }
