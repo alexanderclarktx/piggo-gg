@@ -1,7 +1,7 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
-  localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
-  sqrt, SystemBuilder, D3Apple, D3CameraSystem, trees, values, XYtoChunk, D3NametagSystem
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys, localAim,
+  logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain, sqrt,
+  SystemBuilder, D3Apple, D3CameraSystem, trees, values, XYtoChunk, D3NametagSystem
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -239,8 +239,6 @@ const DDESystem = SystemBuilder({
         for (const player of players) {
           const character = player.components.controlling?.getCharacter(world)
           if (!character) continue
-
-          console.log("ready", player.components.pc.data.ready)
 
           const { position } = character.components
           if (!position) continue
