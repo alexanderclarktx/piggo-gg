@@ -24,7 +24,7 @@ export type SoundPlayProps = {
   start?: number | string
   fadeIn?: number | string
   threshold?: {
-    pos: XY
+    pos: XY // TODO xyz
     distance: number
   }
 }

@@ -1,6 +1,6 @@
 import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core"
 
-// TODO this is a duplicate from DDE
+// TODO duplicate from DDE.ts
 type DDEState = {
   phase: "warmup" | "play"
   doubleJumped: string[]
