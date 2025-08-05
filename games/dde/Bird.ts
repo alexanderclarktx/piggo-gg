@@ -53,11 +53,14 @@ export const Bird = (player: Player) => Character({
           if (world.client?.mobile) return null
           world.three?.pointerLock()
           return null
-        },
-        "e": () => ({ actionId: "transform" })
+        }
       },
       press: {
-        "w,s": () => null, "a,d": () => null,
+        // transform
+        "e": ({ hold }) => {
+          if (hold) return null
+          return { actionId: "transform" }
+        },
 
         // debug
         "g": ({ world, hold }) => {
@@ -67,6 +70,9 @@ export const Bird = (player: Player) => Character({
 
         // jump
         " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
+
+        // no movement
+        "w,s": () => null, "a,d": () => null,
 
         // sprint
         "shift,w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", sprint: true, ...upAndDir(world) } }),
