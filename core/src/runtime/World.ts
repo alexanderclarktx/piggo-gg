@@ -1,7 +1,7 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY, logPerf, D3Renderer, Player
+  Random, ComponentTypes, Data, Networked, XY, logPerf, D3Renderer, Player, Character
 } from "@piggo-gg/core"
 import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
@@ -33,6 +33,7 @@ export type World = {
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
+  characters: () => Character[]
   entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
   flip: (xy: XY) => XY
   flipped: () => 1 | -1
@@ -108,6 +109,9 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     },
     addEntityBuilders: (entityBuilders: (() => Entity)[]) => {
       entityBuilders.forEach((entityBuilder) => world.addEntity(entityBuilder()))
+    },
+    characters: () => {
+      return world.players().map(p => p.components.controlling?.getCharacter(world)).filter(Boolean) as Character[]
     },
     removeEntity: (id: string) => {
       const entity = world.entities[id]

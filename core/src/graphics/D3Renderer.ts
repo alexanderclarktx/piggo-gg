@@ -16,7 +16,7 @@ export type D3Renderer = {
   canvas: HTMLCanvasElement
   camera: D3Camera
   debug: boolean
-  playerAssets: Record<string, {
+  birdAssets: Record<string, {
     duck: Group<Object3DEventMap>
     eagle: Group<Object3DEventMap>
     mixers: AnimationMixer[]
@@ -54,7 +54,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     sphere: undefined,
     sphere2: undefined,
     blocks: undefined,
-    playerAssets: {},
+    birdAssets: {},
     debug: false,
     duck: undefined,
     eagle: undefined,

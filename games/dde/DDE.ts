@@ -64,15 +64,10 @@ const DDESystem = SystemBuilder({
         const state = world.game.state as DDEState
 
         const players = world.players()
+        const characters = world.characters()
 
-        
-
-        // const characters = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         const t0 = performance.now()
-        for (const player of players) {
-          const character = player.components.controlling?.getCharacter(world)
-          if (!character) continue
-
+        for (const character of characters) {
           const { position } = character.components
           const { z, rotation, standing } = position.data
 
@@ -89,6 +84,39 @@ const DDESystem = SystemBuilder({
           // fell off the map
           if (z < -4) {
             position.setPosition({ x: 14, y: 14, z: 8 })
+          }
+
+          // render assets
+          if (world.three && !world.three.birdAssets[character.id]) {
+            if (!world.three.duck || !world.three.eagle) continue
+
+            const { position } = character.components
+
+            const duck = clone(world.three.duck) as Group<Object3DEventMap>
+
+            world.three.scene.add(duck)
+
+            duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
+            duck.frustumCulled = false
+            duck.scale.set(0.08, 0.08, 0.08)
+
+            const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
+
+            world.three.scene.add(eagle)
+
+            eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
+            eagle.frustumCulled = false
+            eagle.scale.set(0.05, 0.05, 0.05)
+
+            const duckMixer = new AnimationMixer(duck)
+            duckMixer.clipAction(duck.animations[1]).play()
+
+            const eagleMixer = new AnimationMixer(eagle)
+            eagleMixer.clipAction(eagle.animations[0]).play()
+
+            world.three.birdAssets[character.id] = {
+              duck, eagle, mixers: [duckMixer, eagleMixer]
+            }
           }
         }
         logPerf("player positions", t0)
@@ -156,51 +184,14 @@ const DDESystem = SystemBuilder({
         }
 
         // clean up old player assets
-        for (const playerId in world.three?.playerAssets ?? {}) {
+        for (const playerId in world.three?.birdAssets ?? {}) {
           if (!world.three) continue
 
           if (!world.entity(playerId)) {
-            const { duck, eagle } = world.three.playerAssets[playerId]
+            const { duck, eagle } = world.three.birdAssets[playerId]
             duck.removeFromParent()
             eagle.removeFromParent()
-            delete world.three.playerAssets[playerId]
-          }
-        }
-
-        // render ducks and eagles
-        for (const character of characters) {
-          if (!world.three) continue
-
-          if (!world.three.playerAssets[character.id]) {
-            if (!world.three.duck || !world.three.eagle) continue
-
-            const { position } = character.components
-
-            const duck = clone(world.three.duck) as Group<Object3DEventMap>
-
-            world.three.scene.add(duck)
-
-            duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
-            duck.frustumCulled = false
-            duck.scale.set(0.08, 0.08, 0.08)
-
-            const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
-
-            world.three.scene.add(eagle)
-
-            eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
-            eagle.frustumCulled = false
-            eagle.scale.set(0.05, 0.05, 0.05)
-
-            const duckMixer = new AnimationMixer(duck)
-            duckMixer.clipAction(duck.animations[1]).play()
-
-            const eagleMixer = new AnimationMixer(eagle)
-            eagleMixer.clipAction(eagle.animations[0]).play()
-
-            world.three.playerAssets[character.id] = {
-              duck, eagle, mixers: [duckMixer, eagleMixer]
-            }
+            delete world.three.birdAssets[playerId]
           }
         }
 
@@ -254,9 +245,9 @@ const DDESystem = SystemBuilder({
 
           const interpolated = position.interpolate(world, delta)
 
-          if (!world.three?.playerAssets[character.id]) continue
+          if (!world.three?.birdAssets[character.id]) continue
 
-          const { duck, eagle, mixers } = world.three?.playerAssets[character.id]
+          const { duck, eagle, mixers } = world.three?.birdAssets[character.id]
 
           const orientation = player.id === world.client?.playerId() ? localAim : aim
 
