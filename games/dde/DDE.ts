@@ -63,9 +63,16 @@ const DDESystem = SystemBuilder({
       onTick: () => {
         const state = world.game.state as DDEState
 
-        const characters = world.queryEntities<Position | Collider>(["position", "team", "collider"])
+        const players = world.players()
+
+        
+
+        // const characters = world.queryEntities<Position | Collider>(["position", "team", "collider"])
         const t0 = performance.now()
-        for (const character of characters) {
+        for (const player of players) {
+          const character = player.components.controlling?.getCharacter(world)
+          if (!character) continue
+
           const { position } = character.components
           const { z, rotation, standing } = position.data
 
