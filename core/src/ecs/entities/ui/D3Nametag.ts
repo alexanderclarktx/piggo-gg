@@ -67,6 +67,8 @@ export const D3NametagSystem = SystemBuilder({
 
         const players = world.players()
 
+        // cleanup old nametags
+
         for (const player of players) {
 
           // if (player.id === world.client?.playerId()) continue
@@ -78,12 +80,9 @@ export const D3NametagSystem = SystemBuilder({
             world.three.scene.add(nametag.group)
           }
 
-          // update position
+          // update
           const nametag = nametags[player.id]
-          if (nametag) {
-            nametag.update(world, delta)
-            console.log("Nametag updated for player:", player.id)
-          }
+          if (nametag) nametag.update(world, delta)
         }
       }
     }
