@@ -121,7 +121,7 @@ export const Bird = (player: Player) => Character({
         if (!position.data.standing) state.doubleJumped.push(entity.id)
 
         position.setVelocity({ z: 0.04 })
-        world.client?.soundManager.play("bubble")
+        world.client?.soundManager.play({ soundName: "bubble" })
       }),
       move2: Action("move2", ({ entity, params }) => {
         if (!params.dir.x || !params.dir.y || !params.power) return

@@ -19,6 +19,16 @@ const load = (url: string, volume: number): Sound => {
   return player.toDestination()
 }
 
+export type SoundPlayProps = {
+  soundName: ValidSounds
+  start?: number | string
+  fadeIn?: number | string
+  threshold?: {
+    pos: XY
+    distance: number
+  }
+}
+
 export type SoundManager = {
   music: { state: "stop" | "play", track: MusicSounds }
   muted: boolean
@@ -27,7 +37,7 @@ export type SoundManager = {
   ready: boolean
   stop: (soundName: ValidSounds) => void
   stopAll: () => void
-  play: (sound: ValidSounds, startTime?: number, fadeIn?: number | string, pos?: XY, force?: boolean) => boolean
+  play: (props: SoundPlayProps) => boolean
 }
 
 export const SoundManager = (world: World): SoundManager => {
@@ -112,15 +122,15 @@ export const SoundManager = (world: World): SoundManager => {
         }
       }
     },
-    play: (soundName: ValidSounds, startTime: number | string = 0, fadeIn: number = 0, pos: XY | undefined = undefined) => {
+    play: ({ soundName, start = 0, fadeIn = 0, threshold }) => {
       if (soundManager.muted && !soundName.startsWith("track")) return false
 
       // check distance
-      if (pos) {
+      if (threshold) {
         const character = world.client?.playerCharacter()
         if (character) {
-          const distance = XYdistance(character.components.position.data, pos)
-          if (distance > 250) return false
+          const distance = XYdistance(character.components.position.data, threshold.pos)
+          if (distance > threshold.distance) return false
         }
       }
 
@@ -132,7 +142,7 @@ export const SoundManager = (world: World): SoundManager => {
 
         const sound = soundManager.sounds[soundName]
         if (sound && sound.loaded) {
-          sound.start(fadeIn, startTime)
+          sound.start(fadeIn, start)
           return true
         }
       } catch (e) {

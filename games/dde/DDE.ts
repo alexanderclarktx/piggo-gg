@@ -90,7 +90,7 @@ const DDESystem = SystemBuilder({
 
         // spawn apples
         const t1 = performance.now()
-        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 50 + numApples; i++) {
+        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 40 + numApples; i++) {
           applesSpawned = true
 
           const randomTree = trees[world.random.int(trees.length - 1)]

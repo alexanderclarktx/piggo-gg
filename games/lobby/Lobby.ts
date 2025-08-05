@@ -221,11 +221,11 @@ const PlayButton = () => {
             onClick: () => {
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
-              world.client?.soundManager.play("click1")
+              world.client?.soundManager.play({ soundName: "click1" })
             },
             onEnter: () => {
               r.setGlow({ outerStrength: 2 })
-              world.client?.soundManager.play("click3")
+              world.client?.soundManager.play({ soundName: "click3" })
             },
             onLeave: () => {
               r.setGlow()
@@ -270,11 +270,11 @@ const CreateLobbyButton = () => {
             onClick: () => {
               world.client?.copyInviteLink()
 
-              world.client?.soundManager.play("click1")
+              world.client?.soundManager.play({ soundName: "click1" })
             },
             onEnter: () => {
               r.setGlow({ outerStrength: 2 })
-              world.client?.soundManager.play("click3")
+              world.client?.soundManager.play({ soundName: "click3" })
             },
             onLeave: () => r.setGlow()
           })
@@ -310,11 +310,11 @@ const SettingsButton = () => {
             }),
             onClick: () => {
               console.log("Settings")
-              world.client?.soundManager.play("click1")
+              world.client?.soundManager.play({ soundName: "click1" })
             },
             onEnter: () => {
               r.setGlow({ outerStrength: 2 })
-              world.client?.soundManager.play("click3")
+              world.client?.soundManager.play({ soundName: "click3" })
             },
             onLeave: () => r.setGlow()
           })

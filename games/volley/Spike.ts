@@ -61,7 +61,7 @@ export const Spike = () => Action<{ target: XY, from: XYZ }>("spike", ({ world, 
   if (far) return
 
   // play sound
-  world.client?.soundManager.play("spike")
+  world.client?.soundManager.play({ soundName: "spike" })
 
   state.lastHit = entity.id
   if (state.lastHitTeam != team) {
