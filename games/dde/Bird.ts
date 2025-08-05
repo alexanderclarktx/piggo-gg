@@ -1,6 +1,6 @@
 import {
-  Action, Actions, Character, Collider, Input, localAim, Networked,
-  Player, Point, Position, Ready, round, Team, World, XYZ
+  abs, Action, Actions, Character, Collider, cos, Input, localAim,
+  Networked, Player, Point, Position, Ready, round, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -41,7 +41,7 @@ export const Bird = (player: Player) => Character({
           y: dir.x * Math.sin(-localAim.x) + dir.y * Math.cos(-localAim.x)
         }
 
-        return { actionId: "move2", params: { dir, power } }
+        return { actionId: "moveAnalog", params: { dir, power, angle } }
       },
       release: {
         "escape": ({ world }) => {
@@ -135,7 +135,7 @@ export const Bird = (player: Player) => Character({
         position.setVelocity({ z: 0.04 })
         world.client?.soundManager.play({ soundName: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
-      move2: Action("move2", ({ entity, params }) => {
+      moveAnalog: Action("moveAnalog", ({ entity, params }) => {
         if (!params.dir.x || !params.dir.y || !params.power) return
 
         const { position } = entity?.components ?? {}
@@ -145,6 +145,9 @@ export const Bird = (player: Player) => Character({
 
         if (position.data.flying) {
           factor = params.sprint ? 0.16 : 0.09
+
+          const sideness = cos(params.angle)
+          if (abs(sideness) > 0.5) position.data.rotating = -sideness * 0.1
         } else if (position.data.standing) {
           factor = params.sprint ? 0.65 : 0.45
         } else {
