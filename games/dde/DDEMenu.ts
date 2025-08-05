@@ -135,7 +135,6 @@ export const DDEMenu = (world: World): Entity => {
           if (world.tick - 80 > polled) {
             polled = world.tick
             world.client?.lobbyList((response) => {
-
               lobbies.innerHTML = ""
 
               for (const [id, meta] of entries(response.lobbies)) {

@@ -223,8 +223,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   }
                 } else {
                   if (mode === "local") {
-                  }
-                  else {
+                  } else {
                     position.data.y = round(blockMax.y + r, 3)
                     position.data.velocity.y = 0
                   }

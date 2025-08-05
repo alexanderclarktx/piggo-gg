@@ -1,4 +1,7 @@
-import { Action, Actions, Character, Collider, Input, localAim, Networked, Player, Point, Position, Team, World, XYZ } from "@piggo-gg/core"
+import {
+  Action, Actions, Character, Collider, Input, localAim, Networked,
+  Player, Point, Position, round, Team, World, XYZ
+} from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
@@ -6,8 +9,13 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   const camera = world.three?.camera
   if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
 
-  const vec = { ...camera.c.up }
-  const dir = { ...camera.worldDirection() }
+  const vec = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
+  const cameraWorldDirection = camera.worldDirection()
+  const dir = {
+    x: round(cameraWorldDirection.x, 3),
+    y: round(cameraWorldDirection.y, 3),
+    z: round(cameraWorldDirection.z, 3)
+  }
   return { vec, dir }
 }
 

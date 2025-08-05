@@ -19,9 +19,9 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
       const actionsAtTick = world.actions.atTick(world.tick)
       if (!actionsAtTick) return
 
-      entries(actionsAtTick).forEach(([entityId, actions]) => {
+      for ( const [entityId, actions] of entries(actionsAtTick)) {
 
-        // handle commands
+        // commands
         if (entityId === "world") {
           actions.forEach((invokedAction) => {
             const command = world.commands[invokedAction.actionId]
@@ -32,21 +32,22 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           return
         }
 
-        // handle actions
-        if (actions) actions.forEach((invokedAction) => {
+        // actions
+        actions.sort((a, b) => a.actionId.localeCompare(b.actionId))
+        for (const invokedAction of actions) {
           const entity = world.entity(entityId)
 
           // entity not found
           if (!entity) {
             console.log(`entity ${entityId} not found for action ${invokedAction.actionId}`)
-            return
+            continue
           }
 
           // entity has no actions
           const actions = entity.components.actions
           if (!actions) {
             console.log(`${entityId} has no actions`)
-            return
+            continue
           }
 
           // find the action
@@ -55,14 +56,14 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           // action not found
           if (!action) {
             console.log(`action ${stringify(invokedAction)} not found in actionMap ${keys(actions.actionMap)}`)
-            return
+            continue
           }
 
           // execute the action
-          const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Player : undefined
+          const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
           action.invoke({ params: invokedAction.params ?? {}, entity, world, player })
-        })
-      })
+        }
+      }
     }
   })
 }

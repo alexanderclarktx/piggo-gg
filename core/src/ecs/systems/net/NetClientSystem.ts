@@ -25,12 +25,9 @@ export const NetClientWriteSystem = SystemBuilder({
           try {
             const message = syncer().write(world)
             client.ws.send(encode(message))
-            if (message.actions && keys(message.actions).length) {
-              // console.log("sent actions", message.actions)
-            }
           }
           catch (e) {
-            console.error("NetClientSystem: error sending message")
+            console.error("error sending message")
           }
         }
       }
@@ -63,7 +60,7 @@ export const NetClientReadSystem = SystemBuilder({
 
         // skip old messages
         if (message.tick < client.lastMessageTick) {
-          console.error("NetClientSystem: skipping old message")
+          console.error("skipping old message")
           return
         }
 
@@ -92,7 +89,7 @@ export const NetClientReadSystem = SystemBuilder({
           })
         }
       } catch (e) {
-        console.error("NetClientSystem: error parsing message")
+        console.error("error parsing message")
       }
     }
 

@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, HtmlButton, HtmlJoystick, HtmlText, hypot, keys,
+  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
   localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
   sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
 } from "@piggo-gg/core"
@@ -11,6 +11,7 @@ import { DDEMenu } from "./DDEMenu"
 import { DDEMobileUI } from "./DDEMobileUI"
 
 export type DDEState = {
+  phase: "warmup" | "play"
   doubleJumped: string[]
   applesEaten: Record<string, number>
   applesTimer: Record<string, number>
@@ -22,6 +23,7 @@ export const DDE: GameBuilder<DDEState> = {
     id: "Duck Duck Eagle",
     netcode: "rollback",
     state: {
+      phase: "warmup",
       doubleJumped: [],
       applesEaten: {},
       applesTimer: {}
