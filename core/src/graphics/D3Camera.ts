@@ -1,18 +1,18 @@
 import { ClientSystemBuilder, cos, localAim, sin } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
-export type TCamera = {
+export type D3Camera = {
   c: PerspectiveCamera
   worldDirection: () => Vector3
   setFov: (fov: number) => void
 }
 
-export const TCamera = (): TCamera => {
+export const D3Camera = (): D3Camera => {
 
   const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000)
   camera.rotation.order = "YXZ"
 
-  const tCamera: TCamera = {
+  const d3Camera: D3Camera = {
     c: camera,
     worldDirection: () => {
       const t = new Vector3(-sin(localAim.x), 0, -cos(localAim.x))
@@ -23,13 +23,13 @@ export const TCamera = (): TCamera => {
       camera.updateProjectionMatrix()
     }
   }
-  return tCamera
+  return d3Camera
 }
 
-export const TCameraSystem = () => ClientSystemBuilder({
-  id: "TCameraSystem",
+export const D3CameraSystem = () => ClientSystemBuilder({
+  id: "D3CameraSystem",
   init: (world) => ({
-    id: "TCameraSystem",
+    id: "D3CameraSystem",
     query: [],
     priority: 9,
     onRender: (_, delta) => {

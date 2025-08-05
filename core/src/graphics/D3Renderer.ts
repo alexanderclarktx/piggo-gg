@@ -4,7 +4,7 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { isMobile, TBlockMesh, TCamera, World } from "@piggo-gg/core"
+import { isMobile, Radial, TBlockMesh, D3Camera, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -13,7 +13,7 @@ export type TRenderer = {
   apples: Record<string, Group<Object3DEventMap>>
   blocks: undefined | TBlockMesh
   canvas: HTMLCanvasElement
-  camera: TCamera
+  camera: D3Camera
   debug: boolean
   playerAssets: Record<string, {
     duck: Group<Object3DEventMap>
@@ -47,7 +47,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
   const tRenderer: TRenderer = {
     apples: {},
     canvas: c,
-    camera: TCamera(),
+    camera: D3Camera(),
     scene: new Scene(),
     sphere: undefined,
     sphere2: undefined,
@@ -138,6 +138,9 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       renderer.setPixelRatio(window.devicePixelRatio)
 
       tRenderer.resize()
+
+      const radial = Radial(["a", "b", "c", "d", "e", "f", "g", "h"])
+      tRenderer.scene.add(radial.group)
 
       renderer.setAnimationLoop(() => {
         // ambient lighting
