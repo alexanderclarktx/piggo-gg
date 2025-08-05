@@ -1,6 +1,6 @@
 import {
   Action, Actions, Character, Collider, Input, localAim, Networked,
-  Player, Point, Position, round, Team, World, XYZ
+  Player, Point, Position, Ready, round, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -101,11 +101,7 @@ export const Bird = (player: Player) => Character({
       }
     }),
     actions: Actions({
-      ready: Action("ready", ({ player }) => {
-        if (!player) return
-
-        player.components.pc.data.ready = !player.components.pc.data.ready
-      }),
+      ready: Ready,
       point: Point,
       transform: Action("transform", ({ entity, world, player }) => {
         const { position } = entity?.components ?? {}
