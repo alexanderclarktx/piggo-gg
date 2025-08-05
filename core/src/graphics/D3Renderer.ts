@@ -10,6 +10,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type D3Renderer = {
+  apple: undefined | Group<Object3DEventMap>
   apples: Record<string, Group<Object3DEventMap>>
   blocks: undefined | TBlockMesh
   canvas: HTMLCanvasElement
@@ -45,6 +46,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   let helper: undefined | CameraHelper
 
   const renderer: D3Renderer = {
+    apple: undefined,
     apples: {},
     canvas: c,
     camera: D3Camera(),
@@ -258,7 +260,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        renderer.apples["d3apple-0"] = apple.scene
+        renderer.apple = apple.scene
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {

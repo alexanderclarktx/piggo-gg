@@ -86,11 +86,11 @@ const DDESystem = SystemBuilder({
         }
         logPerf("player positions", t0)
 
-        const appleEntities = values(world.entities).filter(e => e.id.startsWith("d3apple"))
+        const apples = values(world.entities).filter(e => e.id.startsWith("d3apple"))
 
         // spawn apples
         const t1 = performance.now()
-        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 40 + appleEntities.length; i++) {
+        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 40 + apples.length; i++) {
           applesSpawned = true
 
           const randomTree = trees[world.random.int(trees.length - 1)]
@@ -120,15 +120,15 @@ const DDESystem = SystemBuilder({
         // render apples
         const t2 = performance.now()
         
-        for (const appleEntity of appleEntities) {
+        for (const appleEntity of apples) {
 
           const { position } = appleEntity.components
           if (!position || !world.three) continue
 
           const { x, y, z } = position.data
 
-          if (!world.three.apples[appleEntity.id] && world.three.apples["d3apple-0"]) {
-            const apple = world.three.apples["d3apple-0"].clone(true)
+          if (!world.three.apples[appleEntity.id] && world.three.apple) {
+            const apple = world.three.apple.clone(true)
 
             apple.position.set(x, z, y)
             apple.updateMatrix()
@@ -140,10 +140,8 @@ const DDESystem = SystemBuilder({
         logPerf("render apples", t2)
 
         // unrender apples
-        const appleEntityIds = appleEntities.map(e => e.id)
+        const appleEntityIds = apples.map(e => e.id)
         for (const renderedApple of keys(world.three?.apples ?? {})) {
-          if (renderedApple === "d3apple-0") continue
-
           if (!appleEntityIds.includes(renderedApple)) {
             world.three!.apples[renderedApple]?.removeFromParent()
             delete world.three!.apples[renderedApple]
