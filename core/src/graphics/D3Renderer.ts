@@ -9,7 +9,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
-export type TRenderer = {
+export type D3Renderer = {
   apples: Record<string, Group<Object3DEventMap>>
   blocks: undefined | TBlockMesh
   canvas: HTMLCanvasElement
@@ -35,16 +35,16 @@ export type TRenderer = {
   sunLookAt: (x: number, y: number, z: number) => void
 }
 
-export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
+export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
   const TL = new TextureLoader()
   const GL = new GLTFLoader()
 
-  let renderer: undefined | WebGLRenderer
+  let webgl: undefined | WebGLRenderer
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
 
-  const tRenderer: TRenderer = {
+  const tRenderer: D3Renderer = {
     apples: {},
     canvas: c,
     camera: D3Camera(),
@@ -60,21 +60,21 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.canvas.parentElement?.append(...elements)
     },
     resize: () => {
-      if (!renderer) return
+      if (!webgl) return
 
       if (isMobile()) {
-        renderer.setSize(window.innerWidth, window.outerHeight)
+        webgl.setSize(window.innerWidth, window.outerHeight)
         tRenderer.camera.c.aspect = window.innerWidth / window.outerHeight
       } else {
-        renderer.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+        webgl.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
         tRenderer.camera.c.aspect = window.innerWidth / window.innerHeight
       }
 
       tRenderer.camera.c.updateProjectionMatrix()
     },
     deactivate: () => {
-      renderer?.setAnimationLoop(null)
-      renderer?.dispose()
+      webgl?.setAnimationLoop(null)
+      webgl?.dispose()
       tRenderer.scene.clear()
     },
     setDebug: (state?: boolean) => {
@@ -83,7 +83,7 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
       tRenderer.debug = state
 
-      if (!renderer || !sun) return
+      if (!webgl || !sun) return
 
       if (tRenderer.debug) {
         helper = new CameraHelper(sun.shadow.camera)
@@ -129,20 +129,20 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
       tRenderer.sphere2.visible = false
       tRenderer.scene.add(tRenderer.sphere2)
 
-      renderer = new WebGLRenderer({
+      webgl = new WebGLRenderer({
         antialias: true,
         canvas: tRenderer.canvas,
         powerPreference: "high-performance"
       })
 
-      renderer.setPixelRatio(window.devicePixelRatio)
+      webgl.setPixelRatio(window.devicePixelRatio)
 
       tRenderer.resize()
 
       const radial = Radial(["a", "b", "c", "d", "e", "f", "g", "h"])
       tRenderer.scene.add(radial.group)
 
-      renderer.setAnimationLoop(() => {
+      webgl.setAnimationLoop(() => {
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
 
@@ -152,11 +152,11 @@ export const TRenderer = (c: HTMLCanvasElement): TRenderer => {
 
         world.onRender?.()
 
-        renderer!.render(tRenderer.scene, tRenderer.camera.c)
+        webgl?.render(tRenderer.scene, tRenderer.camera.c)
       })
 
-      renderer.shadowMap.enabled = true
-      renderer.shadowMap.type = 2
+      webgl.shadowMap.enabled = true
+      webgl.shadowMap.type = 2
 
       sun = new DirectionalLight(evening, 10)
       tRenderer.scene.add(sun)
