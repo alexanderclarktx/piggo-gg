@@ -86,11 +86,11 @@ const DDESystem = SystemBuilder({
         }
         logPerf("player positions", t0)
 
-        const numApples = keys(world.entities).filter(id => id.startsWith("d3apple-")).length
+        const appleEntities = values(world.entities).filter(e => e.id.startsWith("d3apple"))
 
         // spawn apples
         const t1 = performance.now()
-        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 40 + numApples; i++) {
+        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 40 + appleEntities.length; i++) {
           applesSpawned = true
 
           const randomTree = trees[world.random.int(trees.length - 1)]
@@ -119,7 +119,7 @@ const DDESystem = SystemBuilder({
 
         // render apples
         const t2 = performance.now()
-        const appleEntities = values(world.entities).filter(e => e.id.startsWith("d3apple"))
+        
         for (const appleEntity of appleEntities) {
 
           const { position } = appleEntity.components
