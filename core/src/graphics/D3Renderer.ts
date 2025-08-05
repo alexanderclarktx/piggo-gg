@@ -4,7 +4,7 @@ import {
   MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
   RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { isMobile, TBlockMesh, D3Camera, World, D3Nametag } from "@piggo-gg/core"
+import { isMobile, TBlockMesh, D3Camera, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -139,13 +139,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       renderer.resize()
 
-      let nametag: undefined | D3Nametag
-      const pc = world.client?.player
-      if (pc) {
-        nametag = D3Nametag(pc)
-        renderer.scene.add(nametag.group)
-      }
-
       webgl.setAnimationLoop(() => {
         // ambient lighting
         // ambient.intensity = 2 + sin(t)
@@ -153,8 +146,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         // rotate the sun
         // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
         // sunSphere.position.copy(sun!.position)
-
-        if (nametag) nametag.update(world)
 
         world.onRender?.()
 

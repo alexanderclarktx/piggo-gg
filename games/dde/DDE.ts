@@ -1,7 +1,8 @@
 import {
   BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
   localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
-  sqrt, SystemBuilder, TApple, D3CameraSystem, trees, values, XYtoChunk
+  sqrt, SystemBuilder, TApple, D3CameraSystem, trees, values, XYtoChunk,
+  D3NametagSystem
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -34,7 +35,8 @@ export const DDE: GameBuilder<DDEState> = {
       BlockPhysicsSystem("local"),
       D3CameraSystem(),
       DDESystem,
-      BirdHUDSystem
+      BirdHUDSystem,
+      D3NametagSystem
     ],
     entities: [
       DDEMenu(world),
