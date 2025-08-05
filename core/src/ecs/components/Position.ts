@@ -71,9 +71,7 @@ export const Position = (props: PositionProps = {}): Position => {
   const z = props.z ? round(props.z, 3) : 0
 
   const interpolatedCache = {
-    tick: 0,
-    delta: 0,
-    xyz: { x: 0, y: 0, z: 0 }
+    tick: 0, delta: 0, xyz: { x: 0, y: 0, z: 0 }
   }
 
   const position: Position = {
