@@ -44,7 +44,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
 
-  const tRenderer: D3Renderer = {
+  const renderer: D3Renderer = {
     apples: {},
     canvas: c,
     camera: D3Camera(),
@@ -57,39 +57,39 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     duck: undefined,
     eagle: undefined,
     append: (...elements: HTMLElement[]) => {
-      tRenderer.canvas.parentElement?.append(...elements)
+      renderer.canvas.parentElement?.append(...elements)
     },
     resize: () => {
       if (!webgl) return
 
       if (isMobile()) {
         webgl.setSize(window.innerWidth, window.outerHeight)
-        tRenderer.camera.c.aspect = window.innerWidth / window.outerHeight
+        renderer.camera.c.aspect = window.innerWidth / window.outerHeight
       } else {
         webgl.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
-        tRenderer.camera.c.aspect = window.innerWidth / window.innerHeight
+        renderer.camera.c.aspect = window.innerWidth / window.innerHeight
       }
 
-      tRenderer.camera.c.updateProjectionMatrix()
+      renderer.camera.c.updateProjectionMatrix()
     },
     deactivate: () => {
       webgl?.setAnimationLoop(null)
       webgl?.dispose()
-      tRenderer.scene.clear()
+      renderer.scene.clear()
     },
     setDebug: (state?: boolean) => {
-      if (state === undefined) state = !tRenderer.debug
-      if (tRenderer.debug === state) return
+      if (state === undefined) state = !renderer.debug
+      if (renderer.debug === state) return
 
-      tRenderer.debug = state
+      renderer.debug = state
 
       if (!webgl || !sun) return
 
-      if (tRenderer.debug) {
+      if (renderer.debug) {
         helper = new CameraHelper(sun.shadow.camera)
-        tRenderer.scene.add(helper)
-      } else if (!tRenderer.debug && helper) {
-        tRenderer.scene.remove(helper)
+        renderer.scene.add(helper)
+      } else if (!renderer.debug && helper) {
+        renderer.scene.remove(helper)
         helper = undefined
       }
     },
@@ -100,10 +100,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      tRenderer.blocks = TBlockMesh()
-      tRenderer.scene.add(tRenderer.blocks)
+      renderer.blocks = TBlockMesh()
+      renderer.scene.add(renderer.blocks)
 
-      tRenderer.sphere = new InstancedMesh(
+      renderer.sphere = new InstancedMesh(
         new SphereGeometry(0.16),
         new MeshPhysicalMaterial({
           color: 0xffd9c3,
@@ -111,11 +111,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
           roughness: 0.5
         }), 12
       )
-      tRenderer.sphere.frustumCulled = false
-      tRenderer.sphere.visible = false
-      tRenderer.scene.add(tRenderer.sphere)
+      renderer.sphere.frustumCulled = false
+      renderer.sphere.visible = false
+      renderer.scene.add(renderer.sphere)
 
-      tRenderer.sphere2 = new Mesh(
+      renderer.sphere2 = new Mesh(
         new SphereGeometry(0.05),
         new MeshPhysicalMaterial({
           color: 0x00ffff,
@@ -124,23 +124,23 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
           wireframe: true,
         })
       )
-      tRenderer.sphere2.castShadow = true
-      tRenderer.sphere2.receiveShadow = true
-      tRenderer.sphere2.visible = false
-      tRenderer.scene.add(tRenderer.sphere2)
+      renderer.sphere2.castShadow = true
+      renderer.sphere2.receiveShadow = true
+      renderer.sphere2.visible = false
+      renderer.scene.add(renderer.sphere2)
 
       webgl = new WebGLRenderer({
         antialias: true,
-        canvas: tRenderer.canvas,
+        canvas: renderer.canvas,
         powerPreference: "high-performance"
       })
 
       webgl.setPixelRatio(window.devicePixelRatio)
 
-      tRenderer.resize()
+      renderer.resize()
 
       const radial = Radial(["a", "b", "c", "d", "e", "f", "g", "h"])
-      tRenderer.scene.add(radial.group)
+      renderer.scene.add(radial.group)
 
       webgl.setAnimationLoop(() => {
         // ambient lighting
@@ -152,14 +152,14 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         world.onRender?.()
 
-        webgl?.render(tRenderer.scene, tRenderer.camera.c)
+        webgl?.render(renderer.scene, renderer.camera.c)
       })
 
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
       sun = new DirectionalLight(evening, 10)
-      tRenderer.scene.add(sun)
+      renderer.scene.add(sun)
 
       sun.position.set(200, 100, 200)
       sun.shadow.normalBias = 0.02
@@ -174,14 +174,14 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.updateProjectionMatrix()
 
       const ambient = new AmbientLight(evening, 1)
-      tRenderer.scene.add(ambient)
+      renderer.scene.add(ambient)
 
       // texture
       TL.load("dirt.png", (texture: Texture) => {
-        tRenderer.blocks!.material.map = texture
+        renderer.blocks!.material.map = texture
 
-        tRenderer.blocks!.material.needsUpdate = true
-        tRenderer.blocks!.material.visible = true
+        renderer.blocks!.material.needsUpdate = true
+        renderer.blocks!.material.visible = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
@@ -189,8 +189,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
-        tRenderer.blocks!.material.roughnessMap = texture
-        tRenderer.blocks!.material.needsUpdate = true
+        renderer.blocks!.material.roughnessMap = texture
+        renderer.blocks!.material.needsUpdate = true
       })
 
       // background
@@ -211,7 +211,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         const mesh = new Mesh(sphere, material)
 
-        tRenderer.scene.add(mesh)
+        renderer.scene.add(mesh)
       })
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
@@ -221,12 +221,12 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
       sunSphere.position.copy(sun.position)
-      tRenderer.scene.add(sunSphere)
+      renderer.scene.add(sunSphere)
 
       GL.load("eagle.glb", (eagle) => {
-        tRenderer.eagle = eagle.scene
+        renderer.eagle = eagle.scene
 
-        tRenderer.eagle.animations = eagle.animations
+        renderer.eagle.animations = eagle.animations
         eagle.scene.rotation.order = "YXZ"
 
         const colors: Record<string, number> = {
@@ -246,9 +246,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       GL.load("ugly-duckling.glb", (duck) => {
-        tRenderer.duck = duck.scene
+        renderer.duck = duck.scene
 
-        tRenderer.duck.animations = duck.animations
+        renderer.duck.animations = duck.animations
 
         duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
@@ -261,7 +261,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        tRenderer.apples["tapple-0"] = apple.scene
+        renderer.apples["tapple-0"] = apple.scene
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {
@@ -272,10 +272,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // prevent right-click
-      tRenderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+      renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
       // handle screen resize
-      window.addEventListener("resize", tRenderer.resize)
+      window.addEventListener("resize", renderer.resize)
     },
     sunLookAt: (x: number, y: number, z: number) => {
       if (sun) {
@@ -287,5 +287,5 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       }
     }
   }
-  return tRenderer
+  return renderer
 }
