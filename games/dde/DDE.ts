@@ -1,7 +1,7 @@
 import {
   BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
   localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
-  sqrt, SystemBuilder, TApple, TCameraSystem, trees, values, XYtoChunk
+  sqrt, SystemBuilder, D3Apple, D3CameraSystem, trees, values, XYtoChunk, D3NametagSystem
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -32,9 +32,10 @@ export const DDE: GameBuilder<DDEState> = {
       SpawnSystem(Bird),
       BlockPhysicsSystem("global"),
       BlockPhysicsSystem("local"),
-      TCameraSystem(),
+      D3CameraSystem(),
       DDESystem,
-      BirdHUDSystem
+      BirdHUDSystem,
+      D3NametagSystem
     ],
     entities: [
       DDEMenu(world),
@@ -85,7 +86,7 @@ const DDESystem = SystemBuilder({
         }
         logPerf("player positions", t0)
 
-        const numApples = keys(world.entities).filter(id => id.startsWith("tapple-")).length
+        const numApples = keys(world.entities).filter(id => id.startsWith("d3apple-")).length
 
         // spawn apples
         const t1 = performance.now()
@@ -111,14 +112,14 @@ const DDESystem = SystemBuilder({
           ])
           const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
 
-          const apple = TApple({ id: `tapple-${1 + i}`, pos: xyz })
+          const apple = D3Apple({ id: `d3apple-${1 + i}`, pos: xyz })
           world.addEntity(apple)
         }
         logPerf("spawn apple", t1)
 
         // render apples
         const t2 = performance.now()
-        const appleEntities = values(world.entities).filter(e => e.id.startsWith("tapple"))
+        const appleEntities = values(world.entities).filter(e => e.id.startsWith("d3apple"))
         for (const appleEntity of appleEntities) {
 
           const { position } = appleEntity.components
@@ -126,8 +127,8 @@ const DDESystem = SystemBuilder({
 
           const { x, y, z } = position.data
 
-          if (!world.three.apples[appleEntity.id] && world.three.apples["tapple-0"]) {
-            const apple = world.three.apples["tapple-0"].clone(true)
+          if (!world.three.apples[appleEntity.id] && world.three.apples["d3apple-0"]) {
+            const apple = world.three.apples["d3apple-0"].clone(true)
 
             apple.position.set(x, z, y)
             apple.updateMatrix()
@@ -141,7 +142,7 @@ const DDESystem = SystemBuilder({
         // unrender apples
         const appleEntityIds = appleEntities.map(e => e.id)
         for (const renderedApple of keys(world.three?.apples ?? {})) {
-          if (renderedApple === "tapple-0") continue
+          if (renderedApple === "d3apple-0") continue
 
           if (!appleEntityIds.includes(renderedApple)) {
             world.three!.apples[renderedApple]?.removeFromParent()

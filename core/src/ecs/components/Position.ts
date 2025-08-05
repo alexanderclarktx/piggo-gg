@@ -70,6 +70,10 @@ export const Position = (props: PositionProps = {}): Position => {
   const y = props.y ? round(props.y, 3) : 0
   const z = props.z ? round(props.z, 3) : 0
 
+  const interpolatedCache = {
+    tick: 0, delta: 0, xyz: { x: 0, y: 0, z: 0 }
+  }
+
   const position: Position = {
     type: "position",
     data: {
@@ -143,8 +147,12 @@ export const Position = (props: PositionProps = {}): Position => {
       return position
     },
     interpolate: (world: World, delta: number) => {
-
       delta = min(25, delta)
+
+      // check cache
+      if (interpolatedCache.tick === world.tick && interpolatedCache.delta === delta) {
+        return interpolatedCache.xyz
+      }
 
       let dz = position.data.velocity.z * delta / world.tickrate
       if (position.data.stop <= position.data.z && position.data.z + dz < position.data.stop) {
@@ -155,11 +163,15 @@ export const Position = (props: PositionProps = {}): Position => {
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
       }
 
-      return {
-        x: round( position.data.x + position.localVelocity.x * delta / 1000, 3),
-        y: round( position.data.y + position.localVelocity.y * delta / 1000, 3),
-        z: round( position.data.z + position.localVelocity.z * delta / world.tickrate, 3)
-      }
+      const x = round( position.data.x + position.localVelocity.x * delta / 1000, 3)
+      const y = round( position.data.y + position.localVelocity.y * delta / 1000, 3)
+      const z = round( position.data.z + position.localVelocity.z * delta / world.tickrate, 3)
+
+      interpolatedCache.tick = world.tick
+      interpolatedCache.delta = delta
+      interpolatedCache.xyz = { x, y, z }
+
+      return { x, y, z }
     },
     setSpeed: (speed: number) => {
       position.data.speed = speed

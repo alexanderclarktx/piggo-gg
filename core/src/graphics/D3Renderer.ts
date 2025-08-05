@@ -1,0 +1,288 @@
+import {
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group,
+  InstancedMesh, LinearMipMapNearestFilter, Mesh, MeshBasicMaterial,
+  MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
+  RepeatWrapping, Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
+} from "three"
+import { isMobile, TBlockMesh, D3Camera, World } from "@piggo-gg/core"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+
+const evening = 0xffd9c3
+
+export type D3Renderer = {
+  apples: Record<string, Group<Object3DEventMap>>
+  blocks: undefined | TBlockMesh
+  canvas: HTMLCanvasElement
+  camera: D3Camera
+  debug: boolean
+  playerAssets: Record<string, {
+    duck: Group<Object3DEventMap>
+    eagle: Group<Object3DEventMap>
+    mixers: AnimationMixer[]
+  }>
+  duck: undefined | Group<Object3DEventMap>
+  eagle: undefined | Group<Object3DEventMap>
+  scene: Scene
+  sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
+  sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
+  append: (...elements: HTMLElement[]) => void
+  setDebug: (state?: boolean) => void
+  activate: (world: World) => void
+  deactivate: () => void
+  resize: () => void
+  pointerLock: () => void
+  pointerUnlock: () => void
+  sunLookAt: (x: number, y: number, z: number) => void
+}
+
+export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
+
+  const TL = new TextureLoader()
+  const GL = new GLTFLoader()
+
+  let webgl: undefined | WebGLRenderer
+  let sun: undefined | DirectionalLight
+  let helper: undefined | CameraHelper
+
+  const renderer: D3Renderer = {
+    apples: {},
+    canvas: c,
+    camera: D3Camera(),
+    scene: new Scene(),
+    sphere: undefined,
+    sphere2: undefined,
+    blocks: undefined,
+    playerAssets: {},
+    debug: false,
+    duck: undefined,
+    eagle: undefined,
+    append: (...elements: HTMLElement[]) => {
+      renderer.canvas.parentElement?.append(...elements)
+    },
+    resize: () => {
+      if (!webgl) return
+
+      if (isMobile()) {
+        webgl.setSize(window.innerWidth, window.outerHeight)
+        renderer.camera.c.aspect = window.innerWidth / window.outerHeight
+      } else {
+        webgl.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+        renderer.camera.c.aspect = window.innerWidth / window.innerHeight
+      }
+
+      renderer.camera.c.updateProjectionMatrix()
+    },
+    deactivate: () => {
+      webgl?.setAnimationLoop(null)
+      webgl?.dispose()
+      renderer.scene.clear()
+    },
+    setDebug: (state?: boolean) => {
+      if (state === undefined) state = !renderer.debug
+      if (renderer.debug === state) return
+
+      renderer.debug = state
+
+      if (!webgl || !sun) return
+
+      if (renderer.debug) {
+        helper = new CameraHelper(sun.shadow.camera)
+        renderer.scene.add(helper)
+      } else if (!renderer.debug && helper) {
+        renderer.scene.remove(helper)
+        helper = undefined
+      }
+    },
+    pointerLock: () => {
+      document.body.requestPointerLock({ unadjustedMovement: true })
+    },
+    pointerUnlock: () => {
+      document.exitPointerLock()
+    },
+    activate: (world: World) => {
+      renderer.blocks = TBlockMesh()
+      renderer.scene.add(renderer.blocks)
+
+      renderer.sphere = new InstancedMesh(
+        new SphereGeometry(0.16),
+        new MeshPhysicalMaterial({
+          color: 0xffd9c3,
+          emissiveIntensity: 0,
+          roughness: 0.5
+        }), 12
+      )
+      renderer.sphere.frustumCulled = false
+      renderer.sphere.visible = false
+      renderer.scene.add(renderer.sphere)
+
+      renderer.sphere2 = new Mesh(
+        new SphereGeometry(0.05),
+        new MeshPhysicalMaterial({
+          color: 0x00ffff,
+          emissiveIntensity: 0.5,
+          roughness: 0.5,
+          wireframe: true,
+        })
+      )
+      renderer.sphere2.castShadow = true
+      renderer.sphere2.receiveShadow = true
+      renderer.sphere2.visible = false
+      renderer.scene.add(renderer.sphere2)
+
+      webgl = new WebGLRenderer({
+        antialias: true,
+        canvas: renderer.canvas,
+        powerPreference: "high-performance"
+      })
+
+      webgl.setPixelRatio(window.devicePixelRatio)
+
+      renderer.resize()
+
+      webgl.setAnimationLoop(() => {
+        // ambient lighting
+        // ambient.intensity = 2 + sin(t)
+
+        // rotate the sun
+        // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
+        // sunSphere.position.copy(sun!.position)
+
+        world.onRender?.()
+
+        webgl?.render(renderer.scene, renderer.camera.c)
+      })
+
+      webgl.shadowMap.enabled = true
+      webgl.shadowMap.type = 2
+
+      sun = new DirectionalLight(evening, 10)
+      renderer.scene.add(sun)
+
+      sun.position.set(200, 100, 200)
+      sun.shadow.normalBias = 0.02
+      sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
+      sun.castShadow = true
+
+      // widen the shadow
+      sun.shadow.camera.left = -25
+      sun.shadow.camera.right = 25
+      sun.shadow.camera.top = 10
+      sun.shadow.camera.bottom = -20
+      sun.shadow.camera.updateProjectionMatrix()
+
+      const ambient = new AmbientLight(evening, 1)
+      renderer.scene.add(ambient)
+
+      // texture
+      TL.load("dirt.png", (texture: Texture) => {
+        renderer.blocks!.material.map = texture
+
+        renderer.blocks!.material.needsUpdate = true
+        renderer.blocks!.material.visible = true
+
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
+      // roughness map
+      TL.load("dirt_norm.png", (texture: Texture) => {
+        renderer.blocks!.material.roughnessMap = texture
+        renderer.blocks!.material.needsUpdate = true
+      })
+
+      // background
+      TL.load("night.png", (texture: Texture) => {
+        texture.magFilter = NearestFilter
+        texture.minFilter = NearestFilter
+
+        texture.mapping = 301
+        texture.colorSpace = "srgb"
+
+        texture.wrapS = RepeatWrapping
+        texture.wrapT = RepeatWrapping
+        texture.repeat.set(3.5, 2.5)
+
+        const sphere = new SphereGeometry(500, 60, 40)
+
+        const material = new MeshBasicMaterial({ map: texture, side: 1 })
+
+        const mesh = new Mesh(sphere, material)
+
+        renderer.scene.add(mesh)
+      })
+
+      const sunSphereGeometry = new SphereGeometry(10, 32, 32)
+      const sunSphereMaterial = new MeshPhysicalMaterial({
+        emissive: evening,
+        emissiveIntensity: 1
+      })
+      const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
+      sunSphere.position.copy(sun.position)
+      renderer.scene.add(sunSphere)
+
+      GL.load("eagle.glb", (eagle) => {
+        renderer.eagle = eagle.scene
+
+        renderer.eagle.animations = eagle.animations
+        eagle.scene.rotation.order = "YXZ"
+
+        const colors: Record<string, number> = {
+          Cylinder: 0x5C2421,
+          Cylinder_1: 0xE7C41C,
+          Cylinder_2: 0xffffff,
+          Cylinder_3: 0x632724
+        }
+
+        eagle.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.material = new MeshStandardMaterial({ color: colors[child.name] })
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+      })
+
+      GL.load("ugly-duckling.glb", (duck) => {
+        renderer.duck = duck.scene
+
+        renderer.duck.animations = duck.animations
+
+        duck.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+      })
+
+      GL.load("apple.glb", (apple) => {
+        apple.scene.scale.set(0.16, 0.16, 0.16)
+
+        renderer.apples["d3apple-0"] = apple.scene
+
+        apple.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+      })
+
+      // prevent right-click
+      renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+
+      // handle screen resize
+      window.addEventListener("resize", renderer.resize)
+    },
+    sunLookAt: (x: number, y: number, z: number) => {
+      if (sun) {
+        sun.shadow.camera.lookAt(x, z, y)
+        sun.shadow.camera.updateProjectionMatrix()
+        sun.shadow.camera.updateMatrixWorld()
+      } else {
+        console.warn("Sun not initialized")
+      }
+    }
+  }
+  return renderer
+}
