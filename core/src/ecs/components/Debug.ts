@@ -151,8 +151,8 @@ export const DebugSystem = ClientSystemBuilder({
           if (!world.entity("fpsText")) drawFpsText()
 
           // clean up old entities
-          for (const id of keys(debugEntitiesPerEntity)) {
-            if (!world.entities[id]) rmDebug(id)
+          for (const id in debugEntitiesPerEntity) {
+            if (!world.entity(id)) rmDebug(id)
           }
         } else {
 

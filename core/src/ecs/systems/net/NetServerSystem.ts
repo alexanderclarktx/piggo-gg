@@ -48,7 +48,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
   }
 
   const readRollback = () => {
-    for (const clientId of keys(latestClientMessages)) {
+    for (const clientId in latestClientMessages) {
       const messages = latestClientMessages[clientId]
 
       for (const message of messages) {

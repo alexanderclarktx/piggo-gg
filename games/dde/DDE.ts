@@ -154,7 +154,7 @@ const DDESystem = SystemBuilder({
         for (const playerId in world.three?.playerAssets ?? {}) {
           if (!world.three) continue
 
-          if (!world.entities[playerId]) {
+          if (!world.entity(playerId)) {
             const { duck, eagle } = world.three.playerAssets[playerId]
             duck.removeFromParent()
             eagle.removeFromParent()
