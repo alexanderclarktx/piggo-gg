@@ -68,10 +68,19 @@ export const D3NametagSystem = SystemBuilder({
         const players = world.players()
 
         // cleanup old nametags
+        for (const id in nametags) {
+          if (!world.entity(id)) {
+            const nametag = nametags[id]
+            if (nametag) {
+              world.three.scene.remove(nametag.group)
+              delete nametags[id]
+            }
+          }
+        }
 
         for (const player of players) {
 
-          // if (player.id === world.client?.playerId()) continue
+          if (player.id === world.client?.playerId()) continue
 
           // new player
           if (!nametags[player.id]) {
