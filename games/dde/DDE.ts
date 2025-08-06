@@ -1,7 +1,7 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, keys, localAim, logPerf, min, PI, Profile, Random, randomInt,
-  SpawnSystem, spawnTerrain, sqrt, SystemBuilder, values, XYtoChunk
+  hypot, localAim, logPerf, min, PI, Profile, Random, randomInt,
+  SpawnSystem, spawnTerrain, sqrt, SystemBuilder, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
