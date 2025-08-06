@@ -182,7 +182,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
 
       // rollback
-      if (rollback && message.tick > 1) {
+      if (rollback) {
         const was = world.tick
 
         if (message.game !== world.game.id) {

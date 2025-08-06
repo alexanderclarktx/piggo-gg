@@ -11,7 +11,6 @@ const evening = 0xffd9c3
 
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
-  // apples: Record<string, Group<Object3DEventMap>>
   blocks: undefined | TBlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
@@ -47,7 +46,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
   const renderer: D3Renderer = {
     apple: undefined,
-    // apples: {},
     canvas: c,
     camera: D3Camera(),
     scene: new Scene(),
