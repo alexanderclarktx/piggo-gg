@@ -1,4 +1,4 @@
-import { Entity, Networked, NPC, Position, XYZ, XYZdistance } from "@piggo-gg/core"
+import { Entity, Networked, NPC, Position, World, XYZ, XYZdistance } from "@piggo-gg/core"
 
 // TODO duplicate from DDE.ts
 type DDEState = {
@@ -8,18 +8,39 @@ type DDEState = {
   applesTimer: Record<string, number>
 }
 
-export const D3Apple = ({ id, pos }: { id: string, pos?: XYZ }): Entity<Position> => {
+export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
 
   let removed = false
+  let tree: XYZ = { x: 0, y: 0, z: 0 }
+
+  const randomSpot = (world: World): XYZ => {
+    tree = world.trees[world.random.int(world.trees.length - 1)]
+
+    const a = 0.52
+    const b = 0.3
+    const z = -0.24
+
+    const randomSpot = world.random.choice([
+      { x: a, y: 0, z: 0 }, { x: -a, y: 0, z: 0 },
+      { x: 0, y: a, z: 0 }, { x: 0, y: -a, z: 0 },
+      { x: b, y: 0, z }, { x: -b, y: 0, z },
+      { x: 0, y: b, z }, { x: 0, y: -b, z }
+    ])
+    return { x: tree.x + randomSpot.x, y: tree.y + randomSpot.y, z: tree.z + randomSpot.z }
+  }
 
   const apple = Entity<Position>({
     id,
     components: {
-      position: Position(pos ?? { x: 0, y: 0, z: 0 }),
+      position: Position(),
       networked: Networked(),
       npc: NPC({
         behavior: (_, world) => {
           if (removed) return
+
+          if (apple.components.position.data.z === 0) {
+            apple.components.position.setPosition(randomSpot(world))
+          }
 
           const applePos = apple.components.position.data
 

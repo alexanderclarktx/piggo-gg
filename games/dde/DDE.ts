@@ -150,30 +150,13 @@ const DDESystem = SystemBuilder({
 
         // spawn apples
         const t1 = performance.now()
-        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 40 + apples.length; i++) {
+        if (world.tick > 40 && !applesSpawned) {
           applesSpawned = true
 
-          const randomTree = world.trees[world.random.int(world.trees.length - 1)]
-
-          const a = 0.52
-          const b = 0.3
-          const z = -0.24
-
-          const randomSpot = world.random.choice([
-            { x: a, y: 0, z: 0 },
-            { x: -a, y: 0, z: 0 },
-            { x: 0, y: a, z: 0 },
-            { x: 0, y: -a, z: 0 },
-
-            { x: b, y: 0, z },
-            { x: -b, y: 0, z },
-            { x: 0, y: b, z },
-            { x: 0, y: -b, z }
-          ])
-          const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
-
-          const apple = D3Apple({ id: `d3apple-${1 + i}`, pos: xyz })
-          world.addEntity(apple)
+          for (let i = 0; i < 40 + apples.length; i++) {
+            const apple = D3Apple({ id: `d3apple-${1 + i}` })
+            world.addEntity(apple)
+          }
         }
         logPerf("spawn apple", t1)
 
