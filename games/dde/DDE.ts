@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys, localAim,
+  BlockPhysicsSystem, Collider, GameBuilder, hypot, keys, localAim,
   logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain, sqrt,
   SystemBuilder, D3Apple, D3CameraSystem, trees, values, XYtoChunk, D3NametagSystem
 } from "@piggo-gg/core"
@@ -78,7 +78,13 @@ const DDESystem = SystemBuilder({
           }
         }
 
-        console.log(state.phase, state.willStart)
+        if (state.phase === "starting" && world.tick >= state.willStart!) {
+          state.phase = "play"
+
+          console.log("game start")
+
+          // regenerate blocks
+        }
 
         const t0 = performance.now()
         for (const character of characters) {
@@ -215,9 +221,9 @@ const DDESystem = SystemBuilder({
           const dummy = new Object3D()
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
-          const neighbors = blocks.neighbors(chunk, 24)
+          const neighbors = world.blocks.neighbors(chunk, 24)
 
-          const chunkData = blocks.visible(neighbors, false, true)
+          const chunkData = world.blocks.visible(neighbors, false, true)
           if (world.three?.blocks) world.three.blocks.count = chunkData.length
 
           for (let i = 0; i < chunkData.length; i++) {

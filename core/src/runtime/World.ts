@@ -1,12 +1,13 @@
 import {
   Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
   values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY, logPerf, D3Renderer, Player, Character
+  Random, ComponentTypes, Data, Networked, XY, logPerf, D3Renderer, Player, Character, BlockData
 } from "@piggo-gg/core"
 import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
 export type World = {
   actions: TickBuffer<InvokedAction>
+  blocks: BlockData
   client: Client | undefined
   commands: Record<string, Command>
   debug: boolean
@@ -74,6 +75,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
 
   const world: World = {
     actions: TickBuffer(),
+    blocks: BlockData(),
     messages: TickBuffer(),
     client: undefined,
     commands: {},

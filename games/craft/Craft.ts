@@ -1,7 +1,7 @@
 import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
-  Controlling, floor, highestBlock, Cursor, Chat, EscapeMenu, blocks,
+  Controlling, floor, Cursor, Chat, EscapeMenu,
   BlockMesh, Position, Collider, Entity, XYZ, BlockCollider,
   XYtoChunk, Tooltip, PhysicsSystem, RenderSystem, spawnTerrain
 } from "@piggo-gg/core"
@@ -59,15 +59,15 @@ const CraftSystem = SystemBuilder({
           const { x, y, z, velocity } = position.data
 
           const chunk = XYtoChunk(position.data)
-          const chunks = blocks.neighbors(chunk)
+          const chunks = world.blocks.neighbors(chunk)
 
-          const highest = highestBlock({ x, y }, chunks, z).z
-          if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
-            position.data.stop = highest
-          } else {
-            position.data.gravity = 0.3
-            position.data.stop = -600
-          }
+          // const highest = highestBlock({ x, y }, chunks, z).z
+          // if (highest > 0 && z < (highest + 20) && velocity.z <= 0) {
+          //   position.data.stop = highest
+          // } else {
+          //   position.data.gravity = 0.3
+          //   position.data.stop = -600
+          // }
         }
 
         const players = world.queryEntities<Controlling>(["pc", "controlling"])
@@ -84,7 +84,7 @@ const CraftSystem = SystemBuilder({
 
           const playerChunk = XYtoChunk(position.data)
 
-          const chunks = blocks.neighbors(playerChunk)
+          const chunks = world.blocks.neighbors(playerChunk)
 
           if (position.data.z === -600) {
             position.setPosition({ x: 0, y: 200, z: 128 })
@@ -94,7 +94,7 @@ const CraftSystem = SystemBuilder({
           let set: XYZ[] = []
 
           // find closest blocks
-          for (const block of blocks.data(chunks)) {
+          for (const block of world.blocks.data(chunks)) {
             const { x, y, z } = block
             if (z === 0) continue
 
