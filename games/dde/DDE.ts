@@ -68,8 +68,6 @@ const DDESystem = SystemBuilder({
         const state = world.game.state as DDEState
 
         const players = world.players()
-        const characters = world.characters()
-
 
         if (world.mode === "server" && state.phase === "warmup" && players.length) {
           const playersReady = players.filter(p => p.components.pc.data.ready)
@@ -84,24 +82,17 @@ const DDESystem = SystemBuilder({
         if (state.phase === "starting" && world.tick >= state.willStart!) {
           state.phase = "play"
 
-          console.log("game start", state)
-
-          // set world.random
           world.random = Random(state.nextSeed)
 
           world.blocks.clear()
 
-          // regenerate blocks
           spawnTerrain(world, 24)
 
           blocksRendered = false
-          applesSpawned = false
-
-          world.three?.blocks?.clear()
         }
 
         const t0 = performance.now()
-        for (const character of characters) {
+        for (const character of world.characters()) {
           const { position } = character.components
           const { z, rotation, standing } = position.data
 
@@ -231,14 +222,16 @@ const DDESystem = SystemBuilder({
 
         // render blocks
         const t3 = performance.now()
-        if (!blocksRendered && world.mode === "client") {
+        if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = world.blocks.neighbors(chunk, 24)
 
           const chunkData = world.blocks.visible(neighbors, false, true)
-          if (world.three?.blocks) world.three.blocks.count = chunkData.length
+          world.three.blocks.count = chunkData.length
+
+          const { blocks } = world.three
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z, type } = chunkData[i]
@@ -247,18 +240,21 @@ const DDESystem = SystemBuilder({
             dummy.updateMatrix()
 
             if (type === 10) {
-              world.three?.blocks?.setColorAt(i, new Color(0x00ee88))
+              blocks.setColorAt(i, new Color(0x00ee88))
             } else if (type === 9) {
-              world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
+              blocks.setColorAt(i, new Color(0x8B4513))
             } else if (type === 6) {
-              world.three?.blocks?.setColorAt(i, new Color(0x660088))
+              blocks.setColorAt(i, new Color(0x660088))
             } else if (type === 11) {
-              world.three?.blocks?.setColorAt(i, new Color(0xF5F5DC))
+              blocks.setColorAt(i, new Color(0xF5F5DC))
+            } else {
+              blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
-            world.three?.blocks?.setMatrixAt(i, dummy.matrix)
-            if (world.three?.blocks) world.three.blocks.instanceMatrix.needsUpdate = true
+            blocks.setMatrixAt(i, dummy.matrix)
           }
+          blocks.instanceMatrix.needsUpdate = true
+          if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
 
           blocksRendered = true
         }
