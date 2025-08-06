@@ -11,7 +11,7 @@ type DDEState = {
 
 export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
 
-  let removed = false
+  let eaten = false
 
   let treeIndex: number = -1
   let tree: XYZ = { x: 0, y: 0, z: 0 }
@@ -43,24 +43,21 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
       networked: Networked(),
       npc: NPC({
         behavior: (_, world) => {
-          if (removed) return
+          // if (removed) return
 
           if (treeIndex === -1 || !world.trees[treeIndex] ||!XYZequal(world.trees[treeIndex], tree)) {
             apple.components.position.setPosition(randomSpot(world))
 
-            console.log("updated apple position")
+            const { x, y, z } = apple.components.position.data
+            mesh?.position.set(x, z, y)
+          }
 
-            // render apple
-            if (world.three?.apple) {
-              if (!mesh) {
-                mesh = world.three.apple.clone(true)
-                world.three.scene.add(mesh)
-              }
+          if (!mesh && world.three?.apple) {
+            mesh = world.three.apple.clone(true)
+            world.three.scene.add(mesh)
 
-              const { x, y, z } = apple.components.position.data
-              mesh.position.set(x, z, y)
-              mesh.updateMatrix()
-            }
+            const {x, y, z} = apple.components.position.data
+            mesh.position.set(x, z, y)
           }
 
           const applePos = apple.components.position.data
@@ -73,15 +70,8 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
 
             const dist = XYZdistance(position.data, applePos)
 
-            if (dist < 0.16) {
-              world.removeEntity(apple.id)
-              removed = true
-
-              // visual cleanup 
-              if (world.three) {
-                world.three!.apples[apple.id]?.removeFromParent()
-                delete world.three!.apples[apple.id]
-              }
+            if (dist < 0.16 && !eaten) {
+              eaten = true
 
               // sound effect
               world.client?.soundManager.play({ soundName: "eat", start: 0.3, threshold: { pos: applePos, distance: 5 } })

@@ -85,10 +85,13 @@ const DDESystem = SystemBuilder({
           // new random seed
           world.random = Random(state.nextSeed)
 
-          // rebuild the world
+          // reset world state
           world.blocks.clear()
-          spawnTerrain(world, 24)
+          world.trees = []
           blocksRendered = false
+
+          // rebuild the world
+          spawnTerrain(world, 24)
 
           // reset player positions
           for (const character of world.characters()) {
@@ -156,7 +159,7 @@ const DDESystem = SystemBuilder({
         logPerf("player positions", t1)
 
         // spawn apples
-        if (world.tick > 40 && !applesSpawned) {
+        if (!applesSpawned) {
           for (let i = 0; i < 40; i++) {
             world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
           }
