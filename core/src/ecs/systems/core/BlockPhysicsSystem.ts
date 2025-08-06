@@ -144,7 +144,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             const cornerSweep = world.blocks.hasIJK(ijk)
 
             if (cornerSweep) {
-              if (mode === "global") console.log("cornerSweep", world.tick)
+              // if (mode === "global") console.log("cornerSweep", world.tick)
               const blockMin = {
                 x: ijk.x * blockSize - 0.15,
                 y: ijk.y * blockSize - 0.15,
@@ -278,17 +278,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               if (mode === "local") {
                 position.localVelocity.z = round(blockMax.z - position.data.z, 3)
               } else {
-                // console.log("gravity", position.data.gravity, "vel.z", position.data.velocity.z)
-                if (ySweep && xSweep && position.data.velocity.z === -0.008) {
-                  console.log("ignoring zsweep")
-                  position.data.standing = false
-                  position.data.z += position.data.velocity.z
-                } else {
-
-                  position.data.z = round(blockMax.z, 3)
-                  position.data.velocity.z = 0
-                  position.data.standing = true
-                }
+                position.data.z = round(blockMax.z, 3)
+                position.data.velocity.z = 0
+                position.data.standing = true
               }
             } else if (mode !== "local") {
               position.data.standing = false
