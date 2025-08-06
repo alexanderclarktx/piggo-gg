@@ -1,4 +1,4 @@
-import { Client, HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
+import { Client, HtmlDiv, min, pow, sqrt, XY } from "@piggo-gg/core"
 
 export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivElement => {
 
@@ -34,7 +34,7 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
 
     const dx = e.clientX - center.x
     const dy = e.clientY - center.y
-    const dist = min(30, sqrt(dx * dx + dy * dy))
+    const dist = min(40, sqrt(dx * dx + dy * dy))
 
     const angle = Math.atan2(dy, dx)
     const x = dist * Math.cos(angle)
@@ -43,9 +43,9 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
     stick.style.transform = `translate(${x}px, ${y}px)`
 
     if (side === "left") {
-      client.analog.left = { power: dist / 30, angle: angle, active: client.analog.left.active || performance.now() }
+      client.analog.left = { power: pow(dist / 40, 2), angle: angle, active: client.analog.left.active || performance.now() }
     } else {
-      client.analog.right = { power: dist / 30, angle: angle, active: client.analog.right.active || performance.now() }
+      client.analog.right = { power: pow(dist / 40, 2), angle: angle, active: client.analog.right.active || performance.now() }
     }
   }
 
