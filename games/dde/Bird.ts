@@ -137,7 +137,7 @@ export const Bird = (player: Player) => Character({
         // double jumped
         if (!position.data.standing) state.doubleJumped.push(entity.id)
 
-        position.setVelocity({ z: 0.04 })
+        position.setVelocity({ z: 0.043 })
         world.client?.soundManager.play({ soundName: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
       moveAnalog: Action("moveAnalog", ({ entity, params }) => {
