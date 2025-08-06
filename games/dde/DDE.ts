@@ -1,7 +1,8 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
   hypot, localAim, logPerf, min, PI, Profile, Random, randomInt,
-  SpawnSystem, spawnTerrain, sqrt, SystemBuilder, XYtoChunk
+  SpawnSystem, spawnTerrain, sqrt, SystemBuilder, XYtoChunk,
+  XYZdistance
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -68,6 +69,7 @@ const DDESystem = SystemBuilder({
         const state = world.game.state as DDEState
 
         const players = world.players()
+        const characters = world.characters()
 
         if (world.mode === "server" && state.phase === "warmup" && players.length) {
           const playersReady = players.filter(p => p.components.pc.data.ready)
@@ -94,7 +96,7 @@ const DDESystem = SystemBuilder({
           spawnTerrain(world, 24)
 
           // reset player positions
-          for (const character of world.characters()) {
+          for (const character of characters) {
             const { position } = character.components
 
             position.setPosition({ x: 20, y: 20, z: 6 })
@@ -104,7 +106,7 @@ const DDESystem = SystemBuilder({
         }
 
         const t1 = performance.now()
-        for (const character of world.characters()) {
+        for (const character of characters) {
           const { position } = character.components
           const { z, rotation, standing } = position.data
 
@@ -153,6 +155,21 @@ const DDESystem = SystemBuilder({
 
             world.three.birdAssets[character.id] = {
               duck, eagle, mixers: [duckMixer, eagleMixer]
+            }
+          }
+
+          // if eagle, check if eaten a duck
+          if (world.mode === "server" && position.data.flying) {
+            const ducks = characters.filter(c => c.components.position.data.flying === false)
+
+            for (const duck of ducks) {
+              const duckPos = duck.components.position
+
+              const distance = XYZdistance(position.data, duckPos.data)
+
+              if (distance < 0.2) {
+                duckPos.setPosition({ x: 20, y: 20, z: 6 })
+              }
             }
           }
         }
