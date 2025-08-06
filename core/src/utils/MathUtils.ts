@@ -63,6 +63,10 @@ export const XYequal = (a: XY, b: XY) => {
   return a.x === b.x && a.y === b.y
 }
 
+export const XYZequal = (a: XYZ, b: XYZ) => {
+  return a.x === b.x && a.y === b.y && a.z === b.z
+}
+
 export const middle = (a: XY, b: XY): XY => {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
 }

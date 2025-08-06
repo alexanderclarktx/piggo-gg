@@ -1,4 +1,4 @@
-import { Entity, Networked, NPC, Position, World, XYZ, XYZdistance } from "@piggo-gg/core"
+import { Entity, Networked, NPC, Position, World, XYZ, XYZdistance, XYZequal } from "@piggo-gg/core"
 
 // TODO duplicate from DDE.ts
 type DDEState = {
@@ -11,10 +11,14 @@ type DDEState = {
 export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
 
   let removed = false
+
+  let treeIndex: number = -1
   let tree: XYZ = { x: 0, y: 0, z: 0 }
 
   const randomSpot = (world: World): XYZ => {
-    tree = world.trees[world.random.int(world.trees.length - 1)]
+    treeIndex = world.random.int(world.trees.length - 1)
+
+    tree = world.trees[treeIndex]
 
     const a = 0.52
     const b = 0.3
@@ -38,7 +42,7 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
         behavior: (_, world) => {
           if (removed) return
 
-          if (apple.components.position.data.z === 0) {
+          if (treeIndex === -1 || !world.trees[treeIndex] ||!XYZequal(world.trees[treeIndex], tree)) {
             apple.components.position.setPosition(randomSpot(world))
           }
 

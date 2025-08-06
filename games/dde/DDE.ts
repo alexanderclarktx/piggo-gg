@@ -91,7 +91,7 @@ const DDESystem = SystemBuilder({
           blocksRendered = false
         }
 
-        const t0 = performance.now()
+        const t1 = performance.now()
         for (const character of world.characters()) {
           const { position } = character.components
           const { z, rotation, standing } = position.data
@@ -144,25 +144,20 @@ const DDESystem = SystemBuilder({
             }
           }
         }
-        logPerf("player positions", t0)
-
-        const apples = values(world.entities).filter(e => e.id.startsWith("d3apple"))
+        logPerf("player positions", t1)
 
         // spawn apples
-        const t1 = performance.now()
         if (world.tick > 40 && !applesSpawned) {
-          applesSpawned = true
-
-          for (let i = 0; i < 40 + apples.length; i++) {
-            const apple = D3Apple({ id: `d3apple-${1 + i}` })
-            world.addEntity(apple)
+          for (let i = 0; i < 40; i++) {
+            world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
           }
+          applesSpawned = true
         }
-        logPerf("spawn apple", t1)
 
         // render apples
         const t2 = performance.now()
 
+        const apples = values(world.entities).filter(e => e.id.startsWith("d3apple"))
         for (const appleEntity of apples) {
 
           const { position } = appleEntity.components
