@@ -43,38 +43,36 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
       networked: Networked(),
       npc: NPC({
         behavior: (_, world) => {
-          // if (removed) return
 
-          if (treeIndex === -1 || !world.trees[treeIndex] ||!XYZequal(world.trees[treeIndex], tree)) {
+          // relocate the apple
+          if (treeIndex === -1 || eaten || !world.trees[treeIndex] || !XYZequal(world.trees[treeIndex], tree)) {
             apple.components.position.setPosition(randomSpot(world))
-
-            const { x, y, z } = apple.components.position.data
-            mesh?.position.set(x, z, y)
+            eaten = false
           }
 
+          // render the apple
           if (!mesh && world.three?.apple) {
             mesh = world.three.apple.clone(true)
             world.three.scene.add(mesh)
-
-            const {x, y, z} = apple.components.position.data
-            mesh.position.set(x, z, y)
           }
 
-          const applePos = apple.components.position.data
+          // set mesh position
+          const { x, y, z } = apple.components.position.data
+          mesh?.position.set(x, z, y)
 
+          // check if eaten
           for (const player of world.players()) {
             const character = player.components.controlling?.getCharacter(world)
             if (!character) continue
 
             const { position } = character.components
-
-            const dist = XYZdistance(position.data, applePos)
+            const dist = XYZdistance(position.data, { x, y, z })
 
             if (dist < 0.16 && !eaten) {
               eaten = true
 
               // sound effect
-              world.client?.soundManager.play({ soundName: "eat", start: 0.3, threshold: { pos: applePos, distance: 5 } })
+              world.client?.soundManager.play({ soundName: "eat", start: 0.3, threshold: { pos: { x, y }, distance: 5 } })
 
               if (position.data.flying) return
 
