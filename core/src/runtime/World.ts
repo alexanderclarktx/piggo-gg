@@ -244,7 +244,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     },
     queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter: (entity: Entity<T>) => boolean = () => true) => {
       const entities = filterEntities(query, values(world.entities)) as Entity<T>[]
-      return entities.filter(filter)
+      return entities.filter(filter) // .sort((a, b) => a.id.localeCompare(b.id))
     },
     setGame: (game: GameBuilder | string) => {
       if (typeof game === "string") game = world.games[game]

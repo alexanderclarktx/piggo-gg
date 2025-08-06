@@ -79,16 +79,25 @@ const DDESystem = SystemBuilder({
           }
         }
 
-        if (state.phase === "starting" && world.tick >= state.willStart!) {
+        if (state.phase === "starting" && world.tick === state.willStart!) {
           state.phase = "play"
 
+          // new random seed
           world.random = Random(state.nextSeed)
 
+          // rebuild the world
           world.blocks.clear()
-
           spawnTerrain(world, 24)
-
           blocksRendered = false
+
+          // reset player positions
+          for (const character of world.characters()) {
+            const { position } = character.components
+
+            position.setPosition({ x: 20, y: 20, z: 6 })
+            position.setVelocity({ x: 0, y: 0, z: 0 })
+            position.data.flying = false
+          }
         }
 
         const t1 = performance.now()
@@ -152,38 +161,6 @@ const DDESystem = SystemBuilder({
             world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
           }
           applesSpawned = true
-        }
-
-        // render apples
-        const t2 = performance.now()
-
-        const apples = values(world.entities).filter(e => e.id.startsWith("d3apple"))
-        for (const appleEntity of apples) {
-
-          const { position } = appleEntity.components
-          if (!position || !world.three) continue
-
-          const { x, y, z } = position.data
-
-          if (!world.three.apples[appleEntity.id] && world.three.apple) {
-            const apple = world.three.apple.clone(true)
-
-            apple.position.set(x, z, y)
-            apple.updateMatrix()
-            world.three.scene.add(apple)
-
-            world.three.apples[appleEntity.id] = apple
-          }
-        }
-        logPerf("render apples", t2)
-
-        // unrender apples
-        const appleEntityIds = apples.map(e => e.id)
-        for (const renderedApple of keys(world.three?.apples ?? {})) {
-          if (!appleEntityIds.includes(renderedApple)) {
-            world.three!.apples[renderedApple]?.removeFromParent()
-            delete world.three!.apples[renderedApple]
-          }
         }
 
         // clean up old player assets
