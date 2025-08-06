@@ -10,6 +10,7 @@ export type BlockData = {
   add: (block: Block) => boolean
   adjacent: (block: XY) => Block[] | null
   atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
+  clear: () => void
   data: (at: XY[], flip?: boolean) => Block[]
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   hasXYZ: (block: XYZ) => boolean
@@ -33,11 +34,11 @@ export const BlockData = (): BlockData => {
     }
   }
 
-  const cache: Record<string, Block[]> = {}
-  const dirty: Record<string, boolean> = {}
+  let cache: Record<string, Block[]> = {}
+  let dirty: Record<string, boolean> = {}
 
-  const visibleCache: Record<string, Block[]> = {}
-  const visibleDirty: Record<string, boolean> = {}
+  let visibleCache: Record<string, Block[]> = {}
+  let visibleDirty: Record<string, boolean> = {}
 
   const chunkey = (x: number, y: number) => `${x}:${y}`
   const chunkval = (x: number, y: number) => data[x]?.[y]
@@ -133,6 +134,17 @@ export const BlockData = (): BlockData => {
       if (!found) return null
 
       return { block: found, face }
+    },
+    clear: () => {
+      for (let i = 0; i < chunks; i++) {
+        for (let j = 0; j < chunks; j++) {
+          data[i][j].fill(0)
+        }
+      }
+      cache = {}
+      dirty = {}
+      visibleCache = {}
+      visibleDirty = {}
     },
     fromMouse: (mouse: XY, player: XYZ) => {
       const atMouse = blocks.atMouse(mouse, player)

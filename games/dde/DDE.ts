@@ -1,6 +1,6 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem,
-  GameBuilder, hypot, keys, localAim, logPerf, min, PI, Profile,
+  GameBuilder, hypot, keys, localAim, logPerf, min, PI, Profile, Random, randomInt,
   SpawnSystem, spawnTerrain, sqrt, SystemBuilder, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
@@ -13,6 +13,7 @@ import { DDEMobileUI } from "./DDEMobileUI"
 export type DDEState = {
   phase: "warmup" | "starting" | "play"
   willStart: undefined | number
+  nextSeed: number
   doubleJumped: string[]
   applesEaten: Record<string, number>
   applesTimer: Record<string, number>
@@ -25,6 +26,7 @@ export const DDE: GameBuilder<DDEState> = {
     netcode: "rollback",
     state: {
       phase: "warmup",
+      nextSeed: 123456111,
       willStart: undefined,
       doubleJumped: [],
       applesEaten: {},
@@ -75,15 +77,27 @@ const DDESystem = SystemBuilder({
           if (playersReady.length === players.length) {
             state.phase = "starting"
             state.willStart = world.tick + 40 * 3
+            state.nextSeed = randomInt(1000000)
           }
         }
 
         if (state.phase === "starting" && world.tick >= state.willStart!) {
           state.phase = "play"
 
-          console.log("game start")
+          console.log("game start", state)
+
+          // set world.random
+          world.random = Random(state.nextSeed)
+
+          world.blocks.clear()
 
           // regenerate blocks
+          spawnTerrain(world, 24)
+
+          blocksRendered = false
+          applesSpawned = false
+
+          world.three?.blocks?.clear()
         }
 
         const t0 = performance.now()
