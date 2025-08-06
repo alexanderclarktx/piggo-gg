@@ -302,7 +302,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           // friction
           if (position.data.friction) {
-            const scale = (position.data.standing && !position.data.flying) ? 0.8 : 0.98
+            const { flying, standing } = position.data
+
+            const scale = flying ? 0.98 : (standing ? 0.7 : 0.94)
             entity.components.position.scaleVelocity(scale)
           }
         }
