@@ -28,6 +28,15 @@ export const D3Nametag = (player: Player): D3Nametag => {
       const character = player.components.controlling.getCharacter(world)
       if (!character) return
 
+      const pc = world.client?.playerCharacter()
+      if (pc) {
+        if (pc.components.position.data.flying && !character.components.position.data.flying) {
+          group.visible = false
+        } else {
+          group.visible = true
+        }
+      }
+
       const { position } = character.components
       const interpolated = position.interpolate(world, delta)
 
