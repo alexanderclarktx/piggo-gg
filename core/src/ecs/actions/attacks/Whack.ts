@@ -1,5 +1,5 @@
 import {
-  Action, blocks, Character, DamageCalculation, Hitbox, HitboxProps,
+  Action, Character, DamageCalculation, Hitbox, HitboxProps,
   ItemActionParams, KeyMouse, onHitCalculate, ValidSounds, XYZtoIJK
 } from "@piggo-gg/core"
 
@@ -16,16 +16,16 @@ export const WhackBlock = Action("whack", ({ params, world, player, entity }) =>
   const rotation = world.flipped() * (position.data.pointingDelta.x > 0 ? 1 : -1)
   position.setRotation(rotation)
 
-  const xyz = blocks.atMouse(mouse, character.components.position.data)?.block
+  const xyz = world.blocks.atMouse(mouse, character.components.position.data)?.block
   if (!xyz) {
-    world.client?.soundManager.play("whiff")
+    world.client?.soundManager.play({ soundName: "whiff" })
     return
   }
 
   const spot = XYZtoIJK(xyz)
-  blocks.remove(spot, world)
+  world.blocks.remove(spot, world)
 
-  world.client?.soundManager.play("clink")
+  world.client?.soundManager.play({ soundName: "clink" })
 })
 
 export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: string }>(
@@ -59,11 +59,11 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
       expireTicks: 2,
       onHit: (e2, world) => {
         const hit = onHitCalculate(characterEntity.components.team.data.team, damage)(e2, world)
-        if (hit) world.client?.soundManager.play(sound)
+        if (hit) world.client?.soundManager.play({ soundName: sound })
         return hit
       },
       onExpire: () => {
-        world.client?.soundManager.play("whiff")
+        world.client?.soundManager.play({ soundName: "whiff" })
       }
     }
 

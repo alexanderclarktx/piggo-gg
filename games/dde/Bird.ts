@@ -1,6 +1,6 @@
 import {
-  Action, Actions, Character, Collider, Input, localAim, Networked,
-  Player, Point, Position, round, Team, World, XYZ
+  abs, Action, Actions, Character, Collider, cos, Input, localAim,
+  Networked, Player, Point, Position, Ready, round, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -41,7 +41,7 @@ export const Bird = (player: Player) => Character({
           y: dir.x * Math.sin(-localAim.x) + dir.y * Math.cos(-localAim.x)
         }
 
-        return { actionId: "move2", params: { dir, power } }
+        return { actionId: "moveAnalog", params: { dir, power, angle } }
       },
       release: {
         "escape": ({ world }) => {
@@ -53,11 +53,19 @@ export const Bird = (player: Player) => Character({
           if (world.client?.mobile) return null
           world.three?.pointerLock()
           return null
-        },
-        "e": () => ({ actionId: "transform" })
+        }
       },
       press: {
-        "w,s": () => null, "a,d": () => null,
+        "r": ({ hold }) => {
+          if (hold) return null
+          return { actionId: "ready" }
+        },
+
+        // transform
+        "e": ({ hold }) => {
+          if (hold) return null
+          return { actionId: "transform" }
+        },
 
         // debug
         "g": ({ world, hold }) => {
@@ -67,6 +75,9 @@ export const Bird = (player: Player) => Character({
 
         // jump
         " ": ({ hold }) => ({ actionId: "jump", params: { hold } }),
+
+        // no movement
+        "w,s": () => null, "a,d": () => null,
 
         // sprint
         "shift,w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", sprint: true, ...upAndDir(world) } }),
@@ -90,6 +101,7 @@ export const Bird = (player: Player) => Character({
       }
     }),
     actions: Actions({
+      ready: Ready,
       point: Point,
       transform: Action("transform", ({ entity, world, player }) => {
         const { position } = entity?.components ?? {}
@@ -121,9 +133,9 @@ export const Bird = (player: Player) => Character({
         if (!position.data.standing) state.doubleJumped.push(entity.id)
 
         position.setVelocity({ z: 0.04 })
-        world.client?.soundManager.play("bubble")
+        world.client?.soundManager.play({ soundName: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
-      move2: Action("move2", ({ entity, params }) => {
+      moveAnalog: Action("moveAnalog", ({ entity, params }) => {
         if (!params.dir.x || !params.dir.y || !params.power) return
 
         const { position } = entity?.components ?? {}
@@ -133,6 +145,9 @@ export const Bird = (player: Player) => Character({
 
         if (position.data.flying) {
           factor = params.sprint ? 0.16 : 0.09
+
+          const sideness = cos(params.angle)
+          if (abs(sideness) > 0.5) position.data.rotating = -sideness * 0.1
         } else if (position.data.standing) {
           factor = params.sprint ? 0.65 : 0.45
         } else {
@@ -201,9 +216,9 @@ export const Bird = (player: Player) => Character({
         if (position.data.flying) {
           factor = params.sprint ? 0.16 : 0.09
         } else if (position.data.standing) {
-          factor = params.sprint ? 0.65 : 0.45
+          factor = params.sprint ? 1 : 0.65
         } else {
-          factor = params.sprint ? 0.09 : 0.056
+          factor = params.sprint ? 0.26 : 0.18
         }
 
         position.impulse({ x: toward.x * factor, y: toward.z * factor })

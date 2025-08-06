@@ -10,12 +10,12 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 const evening = 0xffd9c3
 
 export type D3Renderer = {
-  apples: Record<string, Group<Object3DEventMap>>
+  apple: undefined | Group<Object3DEventMap>
   blocks: undefined | TBlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
   debug: boolean
-  playerAssets: Record<string, {
+  birdAssets: Record<string, {
     duck: Group<Object3DEventMap>
     eagle: Group<Object3DEventMap>
     mixers: AnimationMixer[]
@@ -45,14 +45,14 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   let helper: undefined | CameraHelper
 
   const renderer: D3Renderer = {
-    apples: {},
+    apple: undefined,
     canvas: c,
     camera: D3Camera(),
     scene: new Scene(),
     sphere: undefined,
     sphere2: undefined,
     blocks: undefined,
-    playerAssets: {},
+    birdAssets: {},
     debug: false,
     duck: undefined,
     eagle: undefined,
@@ -258,7 +258,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       GL.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        renderer.apples["d3apple-0"] = apple.scene
+        renderer.apple = apple.scene
 
         apple.scene.traverse((child) => {
           if (child instanceof Mesh) {

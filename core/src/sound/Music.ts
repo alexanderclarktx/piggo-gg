@@ -14,7 +14,7 @@ export const MusicSystem = ClientSystemBuilder({
       if (!world.client) return
 
       if (!playing) {
-        playing = world.client?.soundManager.play(tracks[track])
+        playing = world.client?.soundManager.play({ soundName: tracks[track] })
         // if (playing) console.log("playing track", tracks[track])
       }
     }

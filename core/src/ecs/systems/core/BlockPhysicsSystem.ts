@@ -1,5 +1,5 @@
 import {
-  abs, blocks, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
+  abs, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
 } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
@@ -40,7 +40,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
-          const ySweep = blocks.hasIJK(ijk)
+          const ySweep = world.blocks.hasIJK(ijk)
 
           if (ySweep) {
             // if (mode === "global") console.log("ySweep", world.tick)
@@ -88,7 +88,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
-          const xSweep = blocks.hasIJK(ijk)
+          const xSweep = world.blocks.hasIJK(ijk)
 
           if (xSweep) {
             // if (mode === "global") console.log("xSweep", world.tick)
@@ -137,7 +137,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               z: floor((0.01 + wouldGo.z) / 0.3)
             }
 
-            const cornerSweep = blocks.hasIJK(ijk)
+            const cornerSweep = world.blocks.hasIJK(ijk)
 
             if (cornerSweep) {
               // if (mode === "global") console.log("cornerSweep", world.tick)
@@ -245,7 +245,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
-          const zSweep = blocks.hasIJK(ijk)
+          const zSweep = world.blocks.hasIJK(ijk)
 
           if (zSweep) {
             // if (mode === "global") console.log("zSweep", world.tick)
@@ -302,7 +302,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           // friction
           if (position.data.friction) {
-            const scale = (position.data.standing && !position.data.flying) ? 0.8 : 0.98
+            const { flying, standing } = position.data
+
+            const scale = flying ? 0.98 : (standing ? 0.7 : 0.94)
             entity.components.position.scaleVelocity(scale)
           }
         }

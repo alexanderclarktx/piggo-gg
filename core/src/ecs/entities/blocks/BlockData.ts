@@ -10,6 +10,7 @@ export type BlockData = {
   add: (block: Block) => boolean
   adjacent: (block: XY) => Block[] | null
   atMouse: (mouse: XY, player: XYZ) => { block: Block, face: 0 | 1 | 2 } | null
+  clear: () => void
   data: (at: XY[], flip?: boolean) => Block[]
   fromMouse: (mouse: XY, player: XYZ) => Block | null
   hasXYZ: (block: XYZ) => boolean
@@ -33,11 +34,11 @@ export const BlockData = (): BlockData => {
     }
   }
 
-  const cache: Record<string, Block[]> = {}
-  const dirty: Record<string, boolean> = {}
+  let cache: Record<string, Block[]> = {}
+  let dirty: Record<string, boolean> = {}
 
-  const visibleCache: Record<string, Block[]> = {}
-  const visibleDirty: Record<string, boolean> = {}
+  let visibleCache: Record<string, Block[]> = {}
+  let visibleDirty: Record<string, boolean> = {}
 
   const chunkey = (x: number, y: number) => `${x}:${y}`
   const chunkval = (x: number, y: number) => data[x]?.[y]
@@ -133,6 +134,17 @@ export const BlockData = (): BlockData => {
       if (!found) return null
 
       return { block: found, face }
+    },
+    clear: () => {
+      for (let i = 0; i < chunks; i++) {
+        for (let j = 0; j < chunks; j++) {
+          data[i][j].fill(0)
+        }
+      }
+      cache = {}
+      dirty = {}
+      visibleCache = {}
+      visibleDirty = {}
     },
     fromMouse: (mouse: XY, player: XYZ) => {
       const atMouse = blocks.atMouse(mouse, player)
@@ -392,10 +404,6 @@ export const BlockData = (): BlockData => {
   return blocks
 }
 
-export const blocks = BlockData()
-
-export const trees: XYZ[] = []
-
 export const spawnChunk = (chunk: XY, world: World) => {
   const size = 4
   for (let i = 0; i < size; i++) {
@@ -415,7 +423,7 @@ export const spawnChunk = (chunk: XY, world: World) => {
           [32, "asteroid"]
         ])
 
-        blocks.add({ x, y, z, type: BlockTypeInt[type] })
+        world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
 
         if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
 
@@ -428,10 +436,10 @@ export const spawnChunk = (chunk: XY, world: World) => {
           const fluffy = world.random.int(2) === 1
 
           for (const block of BlockTree({ x, y, z }, height, t, fluffy)) {
-            blocks.add(block)
+            world.blocks.add(block)
           }
 
-          trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
+          world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
         }
       }
     }
@@ -439,16 +447,16 @@ export const spawnChunk = (chunk: XY, world: World) => {
 }
 
 
-export const spawnTiny = () => {
-  const num = 8
-  for (let i = 0; i < num; i++) {
-    for (let j = 0; j < num; j++) {
-      blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
-    }
-  }
+// export const spawnTiny = () => {
+//   const num = 8
+//   for (let i = 0; i < num; i++) {
+//     for (let j = 0; j < num; j++) {
+//       blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
+//     }
+//   }
 
-  blocks.add({ x: 9, y: 9, z: 1, type: 2 })
-}
+//   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
+// }
 
 export const spawnTerrain = (world: World, num: number = 10) => {
   for (let i = 0; i < num; i++) {
@@ -518,23 +526,23 @@ export const snapXY = (pos: XY): XY => {
   return { x: snappedX, y: snappedY }
 }
 
-export const snapXYZ = (pos: XY): XYZ => {
-  return { z: highestBlock(pos, []).z, ...snapXY(pos) }
-}
+// export const snapXYZ = (pos: XY): XYZ => {
+//   return { z: highestBlock(pos, []).z, ...snapXY(pos) }
+// }
 
-export const highestBlock = (pos: XY, chunks: XY[], max?: number): XYZ => {
-  const snapped = snapXY(pos)
+// export const highestBlock = (pos: XY, chunks: XY[], max?: number): XYZ => {
+//   const snapped = snapXY(pos)
 
-  let level = 0
+//   let level = 0
 
-  // todo this is slow, should be a spatial hash ?
-  for (const block of blocks.data(chunks)) {
-    const { x, y, z } = block
-    if (x === snapped.x && y === snapped.y) {
-      if (max && z > max) continue
-      level = Math.max(level, z + 21)
-    }
-  }
+//   // todo this is slow, should be a spatial hash ?
+//   for (const block of blocks.data(chunks)) {
+//     const { x, y, z } = block
+//     if (x === snapped.x && y === snapped.y) {
+//       if (max && z > max) continue
+//       level = Math.max(level, z + 21)
+//     }
+//   }
 
-  return { x: snapped.x, y: snapped.y, z: level }
-}
+//   return { x: snapped.x, y: snapped.y, z: level }
+// }

@@ -1,5 +1,5 @@
 import {
-  Actions, BlockColors, BlockDimensions, blocks, BlockType, BlockTypeInt, Clickable,
+  Actions, BlockColors, BlockDimensions, BlockType, BlockTypeInt, Clickable,
   Controlling, Effects, Item, ItemActionParams, ItemBuilder, ItemEntity, NPC,
   pixiGraphics, Position, randomInt, Renderable, sin, WhackBlock, XYZdistance, XYZtoIJK
 } from "@piggo-gg/core"
@@ -39,14 +39,14 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
           const character = player?.components.controlling.getCharacter(world)
           if (!character) return
 
-          const xyz = blocks.fromMouse(mouse, character.components.position.data)
+          const xyz = world.blocks.fromMouse(mouse, character.components.position.data)
           if (!xyz) return
 
           const spot = XYZtoIJK(xyz)
-          const added = blocks.add({ ...spot, type: BlockTypeInt[type] })
+          const added = world.blocks.add({ ...spot, type: BlockTypeInt[type] })
           if (!added) return
 
-          world.client?.soundManager.play("click2")
+          world.client?.soundManager.play({ soundName: "click2" })
           // item.components.renderable.visible = false
           // character.components.inventory?.removeItem(item.id, world)
         }

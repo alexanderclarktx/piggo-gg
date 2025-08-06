@@ -1,5 +1,5 @@
 import {
-  Block, BlockColors, BlockDimensions, blocks, BlockShader, BlockTypeString,
+  Block, BlockColors, BlockDimensions, BlockShader, BlockTypeString,
   Entity, Item, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
@@ -85,10 +85,10 @@ export const BlockMesh = () => {
 
           if (world.flipped() !== flipped) {
             flipped = world.flipped()
-            blocks.invalidate("visibleCache")
+            world.blocks.invalidate("visibleCache")
           }
 
-          chunkData = blocks.visible(chunks, flipped === -1)
+          chunkData = world.blocks.visible(chunks, flipped === -1)
         },
         onRender: ({ world, delta }) => {
           const zoom = world.renderer!.camera.scale
@@ -103,7 +103,7 @@ export const BlockMesh = () => {
 
           // highlighted face
           let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
-          if (character) uHighlight = blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
+          if (character) uHighlight = world.blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
             shader.resources.uniforms.uniforms.uZoom = zoom

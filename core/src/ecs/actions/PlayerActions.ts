@@ -17,3 +17,9 @@ export const switchTeam = Action("switchTeam", ({ entity, world }) => {
   const characterTeam = controlling?.getCharacter(world)?.components.team
   if (characterTeam) characterTeam.switchTeam()
 }, 10)
+
+export const Ready = Action("ready", ({ player }) => {
+  if (!player) return
+
+  player.components.pc.data.ready = !player.components.pc.data.ready
+}, 10)

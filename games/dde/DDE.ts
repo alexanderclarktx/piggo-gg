@@ -1,7 +1,7 @@
 import {
-  BlockPhysicsSystem, blocks, Collider, GameBuilder, hypot, keys,
-  localAim, logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain,
-  sqrt, SystemBuilder, D3Apple, D3CameraSystem, trees, values, XYtoChunk, D3NametagSystem
+  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
+  hypot, localAim, logPerf, min, PI, Profile, Random, randomInt,
+  SpawnSystem, spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -11,7 +11,9 @@ import { DDEMenu } from "./DDEMenu"
 import { DDEMobileUI } from "./DDEMobileUI"
 
 export type DDEState = {
-  phase: "warmup" | "play"
+  phase: "warmup" | "starting" | "play"
+  willStart: undefined | number
+  nextSeed: number
   doubleJumped: string[]
   applesEaten: Record<string, number>
   applesTimer: Record<string, number>
@@ -24,6 +26,8 @@ export const DDE: GameBuilder<DDEState> = {
     netcode: "rollback",
     state: {
       phase: "warmup",
+      nextSeed: 123456111,
+      willStart: undefined,
       doubleJumped: [],
       applesEaten: {},
       applesTimer: {}
@@ -63,8 +67,44 @@ const DDESystem = SystemBuilder({
       onTick: () => {
         const state = world.game.state as DDEState
 
-        const characters = world.queryEntities<Position | Collider>(["position", "team", "collider"])
-        const t0 = performance.now()
+        const players = world.players()
+        const characters = world.characters()
+
+        if (world.mode === "server" && state.phase === "warmup" && players.length) {
+          const playersReady = players.filter(p => p.components.pc.data.ready)
+
+          if (playersReady.length === players.length) {
+            state.phase = "starting"
+            state.willStart = world.tick + 40 * 3
+            state.nextSeed = randomInt(1000000)
+          }
+        }
+
+        if (state.phase === "starting" && world.tick === state.willStart!) {
+          state.phase = "play"
+
+          // new random seed
+          world.random = Random(state.nextSeed)
+
+          // reset world state
+          world.blocks.clear()
+          world.trees = []
+          blocksRendered = false
+
+          // rebuild the world
+          spawnTerrain(world, 24)
+
+          // reset player positions
+          for (const character of characters) {
+            const { position } = character.components
+
+            position.setPosition({ x: 20, y: 20, z: 6 })
+            position.setVelocity({ x: 0, y: 0, z: 0 })
+            position.data.flying = false
+          }
+        }
+
+        const t1 = performance.now()
         for (const character of characters) {
           const { position } = character.components
           const { z, rotation, standing } = position.data
@@ -83,90 +123,9 @@ const DDESystem = SystemBuilder({
           if (z < -4) {
             position.setPosition({ x: 14, y: 14, z: 8 })
           }
-        }
-        logPerf("player positions", t0)
 
-        const numApples = keys(world.entities).filter(id => id.startsWith("d3apple-")).length
-
-        // spawn apples
-        const t1 = performance.now()
-        if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 50 + numApples; i++) {
-          applesSpawned = true
-
-          const randomTree = trees[world.random.int(trees.length - 1)]
-
-          const a = 0.52
-          const b = 0.3
-          const z = -0.24
-
-          const randomSpot = world.random.choice([
-            { x: a, y: 0, z: 0 },
-            { x: -a, y: 0, z: 0 },
-            { x: 0, y: a, z: 0 },
-            { x: 0, y: -a, z: 0 },
-
-            { x: b, y: 0, z },
-            { x: -b, y: 0, z },
-            { x: 0, y: b, z },
-            { x: 0, y: -b, z }
-          ])
-          const xyz = { x: randomTree.x + randomSpot.x, y: randomTree.y + randomSpot.y, z: randomTree.z + randomSpot.z }
-
-          const apple = D3Apple({ id: `d3apple-${1 + i}`, pos: xyz })
-          world.addEntity(apple)
-        }
-        logPerf("spawn apple", t1)
-
-        // render apples
-        const t2 = performance.now()
-        const appleEntities = values(world.entities).filter(e => e.id.startsWith("d3apple"))
-        for (const appleEntity of appleEntities) {
-
-          const { position } = appleEntity.components
-          if (!position || !world.three) continue
-
-          const { x, y, z } = position.data
-
-          if (!world.three.apples[appleEntity.id] && world.three.apples["d3apple-0"]) {
-            const apple = world.three.apples["d3apple-0"].clone(true)
-
-            apple.position.set(x, z, y)
-            apple.updateMatrix()
-            world.three.scene.add(apple)
-
-            world.three.apples[appleEntity.id] = apple
-          }
-        }
-        logPerf("render apples", t2)
-
-        // unrender apples
-        const appleEntityIds = appleEntities.map(e => e.id)
-        for (const renderedApple of keys(world.three?.apples ?? {})) {
-          if (renderedApple === "d3apple-0") continue
-
-          if (!appleEntityIds.includes(renderedApple)) {
-            world.three!.apples[renderedApple]?.removeFromParent()
-            delete world.three!.apples[renderedApple]
-          }
-        }
-
-        // clean up old player assets
-        for (const playerId in world.three?.playerAssets ?? {}) {
-          if (!world.three) continue
-
-          if (!world.entities[playerId]) {
-            const { duck, eagle } = world.three.playerAssets[playerId]
-            duck.removeFromParent()
-            eagle.removeFromParent()
-            delete world.three.playerAssets[playerId]
-          }
-        }
-
-        // render ducks and eagles
-        for (const character of characters) {
-          if (!world.three) continue
-
-          if (!world.three.playerAssets[character.id]) {
+          // render assets
+          if (world.three && !world.three.birdAssets[character.id]) {
             if (!world.three.duck || !world.three.eagle) continue
 
             const { position } = character.components
@@ -193,22 +152,60 @@ const DDESystem = SystemBuilder({
             const eagleMixer = new AnimationMixer(eagle)
             eagleMixer.clipAction(eagle.animations[0]).play()
 
-            world.three.playerAssets[character.id] = {
+            world.three.birdAssets[character.id] = {
               duck, eagle, mixers: [duckMixer, eagleMixer]
             }
+          }
+
+          // if eagle, check if eaten a duck
+          if (world.mode === "server" && position.data.flying) {
+            const ducks = characters.filter(c => c.components.position.data.flying === false)
+
+            for (const duck of ducks) {
+              const duckPos = duck.components.position
+
+              const distance = XYZdistance(position.data, duckPos.data)
+
+              if (distance < 0.2) {
+                duckPos.setPosition({ x: 20, y: 20, z: 6 })
+              }
+            }
+          }
+        }
+        logPerf("player positions", t1)
+
+        // spawn apples
+        if (!applesSpawned) {
+          for (let i = 0; i < 40; i++) {
+            world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
+          }
+          applesSpawned = true
+        }
+
+        // clean up old player assets
+        for (const playerId in world.three?.birdAssets ?? {}) {
+          if (!world.three) continue
+
+          if (!world.entity(playerId)) {
+            const { duck, eagle } = world.three.birdAssets[playerId]
+            duck.removeFromParent()
+            eagle.removeFromParent()
+            delete world.three.birdAssets[playerId]
           }
         }
 
         // render blocks
         const t3 = performance.now()
-        if (!blocksRendered && world.mode === "client") {
+        if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
-          const neighbors = blocks.neighbors(chunk, 24)
+          const neighbors = world.blocks.neighbors(chunk, 24)
 
-          const chunkData = blocks.visible(neighbors, false, true)
-          if (world.three?.blocks) world.three.blocks.count = chunkData.length
+          const chunkData = world.blocks.visible(neighbors, false, true)
+          world.three.blocks.count = chunkData.length
+
+          const { blocks } = world.three
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z, type } = chunkData[i]
@@ -217,18 +214,21 @@ const DDESystem = SystemBuilder({
             dummy.updateMatrix()
 
             if (type === 10) {
-              world.three?.blocks?.setColorAt(i, new Color(0x00ee88))
+              blocks.setColorAt(i, new Color(0x00ee88))
             } else if (type === 9) {
-              world.three?.blocks?.setColorAt(i, new Color(0x8B4513))
+              blocks.setColorAt(i, new Color(0x8B4513))
             } else if (type === 6) {
-              world.three?.blocks?.setColorAt(i, new Color(0x660088))
+              blocks.setColorAt(i, new Color(0x660088))
             } else if (type === 11) {
-              world.three?.blocks?.setColorAt(i, new Color(0xF5F5DC))
+              blocks.setColorAt(i, new Color(0xF5F5DC))
+            } else {
+              blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
-            world.three?.blocks?.setMatrixAt(i, dummy.matrix)
-            if (world.three?.blocks) world.three.blocks.instanceMatrix.needsUpdate = true
+            blocks.setMatrixAt(i, dummy.matrix)
           }
+          blocks.instanceMatrix.needsUpdate = true
+          if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
 
           blocksRendered = true
         }
@@ -249,9 +249,9 @@ const DDESystem = SystemBuilder({
 
           const interpolated = position.interpolate(world, delta)
 
-          if (!world.three?.playerAssets[character.id]) continue
+          if (!world.three?.birdAssets[character.id]) continue
 
-          const { duck, eagle, mixers } = world.three?.playerAssets[character.id]
+          const { duck, eagle, mixers } = world.three?.birdAssets[character.id]
 
           const orientation = player.id === world.client?.playerId() ? localAim : aim
 

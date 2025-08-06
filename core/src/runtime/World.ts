@@ -1,12 +1,14 @@
 import {
-  Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
-  values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY, logPerf, D3Renderer, Player
+  BlockData, Character, Client, Command, ComponentTypes, D3Renderer,
+  Data, Entity, Game, GameBuilder, InvokedAction, Networked, Player,
+  Random, Renderer, SerializedEntity, System, SystemBuilder, SystemEntity,
+  TickBuffer, ValidComponents, XY, XYZ, keys, logPerf, values
 } from "@piggo-gg/core"
-import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
+import { World as RapierWorld } from "@dimforge/rapier2d-compat"
 
 export type World = {
   actions: TickBuffer<InvokedAction>
+  blocks: BlockData
   client: Client | undefined
   commands: Record<string, Command>
   debug: boolean
@@ -27,12 +29,14 @@ export type World = {
   tickrate: number
   tileMap: number[] | undefined // deprecated
   time: DOMHighResTimeStamp
+  trees: XYZ[]
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string | undefined
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
+  characters: () => Character[]
   entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
   flip: (xy: XY) => XY
   flipped: () => 1 | -1
@@ -73,6 +77,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
 
   const world: World = {
     actions: TickBuffer(),
+    blocks: BlockData(),
     messages: TickBuffer(),
     client: undefined,
     commands: {},
@@ -93,6 +98,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     tickrate: 25,
     tileMap: undefined,
     time: performance.now(),
+    trees: [],
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable) {
@@ -108,6 +114,9 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     },
     addEntityBuilders: (entityBuilders: (() => Entity)[]) => {
       entityBuilders.forEach((entityBuilder) => world.addEntity(entityBuilder()))
+    },
+    characters: () => {
+      return world.players().map(p => p.components.controlling?.getCharacter(world)).filter(Boolean) as Character[]
     },
     removeEntity: (id: string) => {
       const entity = world.entities[id]
@@ -235,7 +244,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     },
     queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter: (entity: Entity<T>) => boolean = () => true) => {
       const entities = filterEntities(query, values(world.entities)) as Entity<T>[]
-      return entities.filter(filter)
+      return entities.filter(filter).sort((a, b) => a.id.localeCompare(b.id))
     },
     setGame: (game: GameBuilder | string) => {
       if (typeof game === "string") game = world.games[game]
