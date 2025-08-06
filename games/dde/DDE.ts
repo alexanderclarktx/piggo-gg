@@ -1,7 +1,7 @@
 import {
-  BlockPhysicsSystem, Collider, GameBuilder, hypot, keys, localAim,
-  logPerf, min, PI, Position, Profile, SpawnSystem, spawnTerrain, sqrt,
-  SystemBuilder, D3Apple, D3CameraSystem, trees, values, XYtoChunk, D3NametagSystem
+  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem,
+  GameBuilder, hypot, keys, localAim, logPerf, min, PI, Profile,
+  SpawnSystem, spawnTerrain, sqrt, SystemBuilder, values, XYtoChunk
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -12,7 +12,7 @@ import { DDEMobileUI } from "./DDEMobileUI"
 
 export type DDEState = {
   phase: "warmup" | "starting" | "play"
-  willStart: undefined | number 
+  willStart: undefined | number
   doubleJumped: string[]
   applesEaten: Record<string, number>
   applesTimer: Record<string, number>
@@ -148,7 +148,7 @@ const DDESystem = SystemBuilder({
         if (world.tick > 40 && !applesSpawned) for (let i = 0; i < 40 + apples.length; i++) {
           applesSpawned = true
 
-          const randomTree = trees[world.random.int(trees.length - 1)]
+          const randomTree = world.trees[world.random.int(world.trees.length - 1)]
 
           const a = 0.52
           const b = 0.3
@@ -174,7 +174,7 @@ const DDESystem = SystemBuilder({
 
         // render apples
         const t2 = performance.now()
-        
+
         for (const appleEntity of apples) {
 
           const { position } = appleEntity.components

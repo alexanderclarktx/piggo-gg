@@ -392,10 +392,6 @@ export const BlockData = (): BlockData => {
   return blocks
 }
 
-// export const blocks = BlockData()
-
-export const trees: XYZ[] = []
-
 export const spawnChunk = (chunk: XY, world: World) => {
   const size = 4
   for (let i = 0; i < size; i++) {
@@ -431,7 +427,7 @@ export const spawnChunk = (chunk: XY, world: World) => {
             world.blocks.add(block)
           }
 
-          trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
+          world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
         }
       }
     }

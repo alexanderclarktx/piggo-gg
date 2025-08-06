@@ -1,9 +1,10 @@
 import {
-  Client, Command, Entity, Game, GameBuilder, InvokedAction, Renderer, SerializedEntity,
-  values, TickBuffer, System, SystemBuilder, SystemEntity, keys, ValidComponents,
-  Random, ComponentTypes, Data, Networked, XY, logPerf, D3Renderer, Player, Character, BlockData
+  BlockData, Character, Client, Command, ComponentTypes, D3Renderer,
+  Data, Entity, Game, GameBuilder, InvokedAction, Networked, Player,
+  Random, Renderer, SerializedEntity, System, SystemBuilder, SystemEntity,
+  TickBuffer, ValidComponents, XY, XYZ, keys, logPerf, values
 } from "@piggo-gg/core"
-import { World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
+import { World as RapierWorld } from "@dimforge/rapier2d-compat"
 
 export type World = {
   actions: TickBuffer<InvokedAction>
@@ -28,6 +29,7 @@ export type World = {
   tickrate: number
   tileMap: number[] | undefined // deprecated
   time: DOMHighResTimeStamp
+  trees: XYZ[]
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string | undefined
   addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
@@ -96,6 +98,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     tickrate: 25,
     tileMap: undefined,
     time: performance.now(),
+    trees: [],
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable) {
