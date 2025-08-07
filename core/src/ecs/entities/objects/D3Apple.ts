@@ -1,13 +1,5 @@
-import { Entity, Networked, NPC, Position, World, XYZ, XYZdistance, XYZequal } from "@piggo-gg/core"
+import { DDEState, Entity, Networked, NPC, Position, World, XYZ, XYZdistance, XYZequal } from "@piggo-gg/core"
 import { Group } from "three"
-
-// TODO duplicate from DDE.ts
-type DDEState = {
-  phase: "warmup" | "play"
-  doubleJumped: string[]
-  applesEaten: Record<string, number>
-  applesTimer: Record<string, number>
-}
 
 export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
 
