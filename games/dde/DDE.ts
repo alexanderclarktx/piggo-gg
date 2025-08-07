@@ -270,7 +270,7 @@ const DDESystem = SystemBuilder({
           }
 
           if (world.three?.debug && player.id === world.client?.playerId()) {
-            world.three?.sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+            world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           }
 
           for (const mixer of mixers) {
