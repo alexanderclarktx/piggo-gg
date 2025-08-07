@@ -212,13 +212,13 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         //   Cylinder_3: 0x632724
         // }
 
-        // eagle.scene.traverse((child) => {
-        //   if (child instanceof Mesh) {
-        //     child.material = new MeshStandardMaterial({ color: colors[child.name] })
-        //     child.castShadow = true
-        //     child.receiveShadow = true
-        //   }
-        // })
+        eagle.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            // child.material = new MeshStandardMaterial({ color: colors[child.name] })
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
       })
 
       GL.load("ugly-duckling.glb", (duck) => {
