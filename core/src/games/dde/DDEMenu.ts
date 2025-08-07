@@ -8,8 +8,9 @@ export const DDEMenu = (world: World): Entity => {
   let init = false
   let polled = -60
   let inLobby: null | string = null
+  let activeMenu: "lobbies"
 
-  const wrapper = HtmlDiv({
+  const lobbies = HtmlDiv({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
@@ -17,32 +18,27 @@ export const DDEMenu = (world: World): Entity => {
     pointerEvents: "none"
   })
 
-  const art = HtmlImg("dde-256.jpg", {
-    top: "-10px",
-    left: "50%",
-    width: "140px",
-    transform: "translateX(-50%)",
-    border: "2px solid #eeeeee",
-    borderRadius: "10px",
-    position: "relative"
-  })
+  const art = Art()
 
   const sidebar = HtmlDiv({
-    width: "40px",
-
-
+    position: "relative"
   })
 
   sidebar.appendChild(HtmlButton({
     text: "lobbies",
     style: {
-      // width: "100%",
+      width: "120px",
+      position: "relative",
+      top: "-10px",
+      transform: "",
       height: "40px",
       fontSize: "20px",
+      display: "block",
+      pointerEvents: "auto"
     }
   }))
 
-  const lobbies = HtmlDiv({
+  const lobbyList = HtmlDiv({
     width: "380px",
     height: "230px",
     left: "50%",
@@ -121,13 +117,13 @@ export const DDEMenu = (world: World): Entity => {
     position: "relative"
   })
 
-  servers.appendChild(lobbies)
+  servers.appendChild(lobbyList)
   servers.appendChild(createLobby)
   servers.appendChild(leaveLobby)
 
-  wrapper.appendChild(art)
-  wrapper.appendChild(sidebar)
-  wrapper.appendChild(servers)
+  lobbies.appendChild(art)
+  lobbies.appendChild(sidebar)
+  lobbies.appendChild(servers)
 
   const menu = Entity({
     id: "DDEMenu",
@@ -140,14 +136,14 @@ export const DDEMenu = (world: World): Entity => {
           if (!init) {
             const parent = world.three?.canvas?.parentElement
             if (parent) {
-              parent.appendChild(wrapper)
+              parent.appendChild(lobbies)
               // parent.appendChild(servers)
               init = true
             }
           }
 
           const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
-          wrapper.style.visibility = visible ? "visible" : "hidden"
+          lobbies.style.visibility = visible ? "visible" : "hidden"
           // servers.style.visibility = visible ? "visible" : "hidden"
           // art.style.visibility = visible ? "visible" : "hidden"
 
@@ -165,7 +161,7 @@ export const DDEMenu = (world: World): Entity => {
           if (world.tick - 80 > polled) {
             polled = world.tick
             world.client?.lobbyList((response) => {
-              lobbies.innerHTML = ""
+              lobbyList.innerHTML = ""
 
               for (const [id, meta] of entries(response.lobbies)) {
                 const lobby = HtmlText({
@@ -213,14 +209,14 @@ export const DDEMenu = (world: World): Entity => {
                   }
                 })
 
-                const wrapper = HtmlDiv({
+                const lobbyWrapper = HtmlDiv({
                   position: "relative"
                 })
 
-                wrapper.appendChild(lobby)
-                wrapper.appendChild(button)
+                lobbyWrapper.appendChild(lobby)
+                lobbyWrapper.appendChild(button)
 
-                lobbies.appendChild(wrapper)
+                lobbyList.appendChild(lobbyWrapper)
               }
 
               if (keys(response.lobbies).length === 0) {
@@ -234,3 +230,13 @@ export const DDEMenu = (world: World): Entity => {
   })
   return menu
 }
+
+const Art = () => HtmlImg("dde-256.jpg", {
+  top: "-10px",
+  left: "50%",
+  width: "140px",
+  transform: "translateX(-50%)",
+  border: "2px solid #eeeeee",
+  borderRadius: "10px",
+  position: "relative"
+})
