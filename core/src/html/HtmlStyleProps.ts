@@ -20,6 +20,9 @@ export type HtmlStyleProps = {
   left?: `${number}%` | `${number}px`
   lineHeight?: `${number}px`
   margin?: `${number}px` | `${number}%`
+  marginBottom?: `${number}px` | `${number}%`
+  marginLeft?: `${number}px` | `${number}%`
+  marginRight?: `${number}px` | `${number}%`
   marginTop?: `${number}px` | `${number}%`
   overflow?: "visible" | "hidden" | "scroll" | "auto"
   padding?: string

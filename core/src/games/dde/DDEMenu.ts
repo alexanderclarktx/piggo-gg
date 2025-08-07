@@ -1,6 +1,7 @@
 import {
   Entity, HtmlDiv, NPC, Position, HtmlImg,
-  HtmlText, HtmlButton, World, entries, keys
+  HtmlText, HtmlButton, World, entries, keys,
+  HtmlStyleProps
 } from "@piggo-gg/core"
 
 type SubMenu = {
@@ -23,21 +24,13 @@ export const DDEMenu = (world: World): Entity => {
 
   const art = Art()
 
-  const sidebar = HtmlDiv({
-    position: "relative",
-    top: "10px",
-  })
+  const menuButtonStyle: HtmlStyleProps = {
+    width: "130px", position: "relative", top: "-10px", height: "40px", fontSize: "20px", pointerEvents: "auto"
+  }
 
   const lobbiesButton = HtmlButton({
     text: "lobbies",
-    style: {
-      width: "130px",
-      position: "relative",
-      top: "-10px",
-      height: "40px",
-      fontSize: "20px",
-      pointerEvents: "auto"
-    },
+    style: menuButtonStyle,
     onClick: () => {
       activeMenu = "lobbies"
     },
@@ -45,15 +38,7 @@ export const DDEMenu = (world: World): Entity => {
 
   const skinsButton = HtmlButton({
     text: "skins",
-    style: {
-      left: "8px",
-      width: "130px",
-      position: "relative",
-      top: "-10px",
-      height: "40px",
-      fontSize: "20px",
-      pointerEvents: "auto",
-    },
+    style: menuButtonStyle,
     onClick: () => {
       activeMenu = "skins"
     }
@@ -61,28 +46,29 @@ export const DDEMenu = (world: World): Entity => {
 
   const settingsButton = HtmlButton({
     text: "settings",
-    style: {
-      left: "15px",
-      width: "130px",
-      position: "relative",
-      top: "-10px",
-      height: "40px",
-      fontSize: "20px",
-      pointerEvents: "auto"
-    },
+    style: menuButtonStyle,
     onClick: () => {
       activeMenu = "settings"
     }
   })
 
-  sidebar.appendChild(lobbiesButton)
-  sidebar.appendChild(skinsButton)
-  sidebar.appendChild(settingsButton)
+
+  const submenuButtons = HtmlDiv({
+    position: "relative",
+    top: "10px",
+    width: "404px",
+    display: "flex",
+    justifyContent: "space-between"
+  })
+
+  submenuButtons.appendChild(lobbiesButton)
+  submenuButtons.appendChild(skinsButton)
+  submenuButtons.appendChild(settingsButton)
 
   const lobbies = Lobbies(world)
 
   ddeMenu.appendChild(art)
-  ddeMenu.appendChild(sidebar)
+  ddeMenu.appendChild(submenuButtons)
   ddeMenu.appendChild(lobbies.div)
 
   const menu = Entity({
