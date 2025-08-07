@@ -13,7 +13,7 @@ export const DDEMenu = (world: World): Entity => {
     width: "90%",
     height: "40%",
     left: "50%",
-    top: "45%",
+    top: "5%",
     border: "2px solid #aaaaaa",
     borderRadius: "10px",
     overflow: "scroll",
@@ -26,7 +26,7 @@ export const DDEMenu = (world: World): Entity => {
   const leaveLobby = HtmlButton({
     text: "Leave Lobby",
     style: {
-      top: "88%",
+      bottom: "5%",
       height: "40px",
       width: "176px",
       right: "18px",
@@ -52,7 +52,7 @@ export const DDEMenu = (world: World): Entity => {
   const createLobby = HtmlButton({
     text: "Create Lobby",
     style: {
-      top: "88%",
+      bottom: "5%",
       height: "40px",
       width: "176px",
       left: "18px",
@@ -84,23 +84,23 @@ export const DDEMenu = (world: World): Entity => {
     borderRadius: "10px"
   })
 
-  const overlay = HtmlDiv({
+  const servers = HtmlDiv({
     visibility: "hidden",
     left: "50%",
     top: "50%",
     width: "400px",
-    height: "400px",
+    height: "300px",
     transform: "translate(-50%, -50%)",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     pointerEvents: "auto",
     border: "2px solid #ffffff",
-    borderRadius: "10px"
+    borderRadius: "10px",
+    // display: "flex"
   })
 
-  overlay.appendChild(art)
-  overlay.appendChild(lobbies)
-  overlay.appendChild(createLobby)
-  overlay.appendChild(leaveLobby)
+  servers.appendChild(lobbies)
+  servers.appendChild(createLobby)
+  servers.appendChild(leaveLobby)
 
   const menu = Entity({
     id: "DDEMenu",
@@ -113,13 +113,14 @@ export const DDEMenu = (world: World): Entity => {
           if (!init) {
             const parent = world.three?.canvas?.parentElement
             if (parent) {
-              parent.appendChild(overlay)
+              parent.appendChild(art)
+              parent.appendChild(servers)
               init = true
             }
           }
 
           const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
-          overlay.style.visibility = visible ? "visible" : "hidden"
+          servers.style.visibility = visible ? "visible" : "hidden"
 
           if (!visible) return
 
