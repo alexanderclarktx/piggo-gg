@@ -24,7 +24,7 @@ const defaults: HtmlStyleProps = {
   fontFamily: "Courier New",
   fontWeight: "bold",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
-  backgroundColor: "rgba(0, 0, 0, 0.3)",
+  backgroundColor: "rgba(0, 0, 0, 0.4)",
   color: "#ffffff",
   pointerEvents: "none",
   border: "2px solid #ffffff",

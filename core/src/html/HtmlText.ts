@@ -11,7 +11,6 @@ const defaults: HtmlTextProps["style"] = {
   fontWeight: "bold",
   fontSize: "20px",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
-  transform: "translate(-50%)",
   pointerEvents: "none",
   alignItems: "center"
 }
@@ -32,6 +31,7 @@ export const HtmlLabel = (text: string, left: number, top: number, visible: bool
   style: {
     left: `${left}px`,
     top: `${top}px`,
-    visibility: visible ? "visible" : "hidden"
+    visibility: visible ? "visible" : "hidden",
+    transform: "translate(-50%)",
   }
 })

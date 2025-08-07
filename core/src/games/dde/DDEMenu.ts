@@ -1,7 +1,6 @@
 import {
-  Entity, HtmlDiv, NPC, Position, HtmlImg,
-  HtmlText, HtmlButton, World, entries, keys,
-  HtmlStyleProps
+  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText,
+  HtmlButton, World, entries, keys, HtmlStyleProps
 } from "@piggo-gg/core"
 
 type SubMenu = {
@@ -52,7 +51,6 @@ export const DDEMenu = (world: World): Entity => {
     }
   })
 
-
   const submenuButtons = HtmlDiv({
     position: "relative",
     top: "10px",
@@ -94,16 +92,16 @@ export const DDEMenu = (world: World): Entity => {
           if (!visible) return
 
           // menu buttons
-          lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          lobbiesButton.style.color = activeMenu === "lobbies" ? "#aaaaaa" : "#ffffff"
+          lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #bbbbbb" : "2px solid #ffffff"
+          lobbiesButton.style.color = activeMenu === "lobbies" ? "#bbbbbb" : "#ffffff"
 
-          skinsButton.style.border = activeMenu === "skins" ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          skinsButton.style.color = activeMenu === "skins" ? "#aaaaaa" : "#ffffff"
+          skinsButton.style.border = activeMenu === "skins" ? "2px solid #bbbbbb" : "2px solid #ffffff"
+          skinsButton.style.color = activeMenu === "skins" ? "#bbbbbb" : "#ffffff"
 
-          settingsButton.style.border = activeMenu === "settings" ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          settingsButton.style.color = activeMenu === "settings" ? "#aaaaaa" : "#ffffff"
+          settingsButton.style.border = activeMenu === "settings" ? "2px solid #bbbbbb" : "2px solid #ffffff"
+          settingsButton.style.color = activeMenu === "settings" ? "#bbbbbb" : "#ffffff"
 
-          // visiblity of submenus
+          // visibility of submenus
           lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
           // skins.div.style.display = activeMenu === "skins" ? "block" : "none"
           // settings.div.style.display = activeMenu === "settings" ? "block" : "none"
@@ -126,39 +124,14 @@ const Lobbies = (world: World): SubMenu => {
     height: "230px",
     left: "50%",
     top: "10px",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    border: "2px solid #aaaaaa",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    border: "2px solid #bbbbbb",
     borderRadius: "10px",
     overflow: "scroll",
     scrollbarWidth: "thin",
-    transform: "translateX(-50%)",
+    transform: "translate(-50%)",
     display: "flex",
     flexDirection: "column"
-  })
-
-  const leaveLobby = HtmlButton({
-    text: "Leave Lobby",
-    style: {
-      bottom: "10px",
-      right: "10px",
-      height: "40px",
-      width: "176px",
-      fontSize: "20px",
-    },
-    onClick: () => {
-      if (!inLobby) return
-
-      world.client?.lobbyLeave()
-
-      polled = world.tick - 70
-      inLobby = null
-    },
-    onHover: () => {
-      leaveLobby.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
-    },
-    onHoverOut: () => {
-      leaveLobby.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
-    }
   })
 
   const createLobby = HtmlButton({
@@ -167,7 +140,7 @@ const Lobbies = (world: World): SubMenu => {
       bottom: "10px",
       left: "10px",
       height: "40px",
-      width: "176px",
+      width: "186px",
       fontSize: "20px",
     },
     onClick: () => {
@@ -179,10 +152,31 @@ const Lobbies = (world: World): SubMenu => {
       })
     },
     onHover: () => {
-      createLobby.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
+      createLobby.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
     },
     onHoverOut: () => {
-      createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
+      createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
+    }
+  })
+
+  const leaveLobby = HtmlButton({
+    text: "Leave Lobby",
+    style: {
+      bottom: "10px", right: "10px", height: "40px", width: "186px", fontSize: "20px"
+    },
+    onClick: () => {
+      if (!inLobby) return
+
+      world.client?.lobbyLeave()
+
+      polled = world.tick - 70
+      inLobby = null
+    },
+    onHover: () => {
+      leaveLobby.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
+    },
+    onHoverOut: () => {
+      leaveLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
     }
   })
 
@@ -192,7 +186,7 @@ const Lobbies = (world: World): SubMenu => {
     width: "400px",
     height: "300px",
     transform: "translate(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
     pointerEvents: "auto",
     border: "2px solid #ffffff",
     borderRadius: "10px",
@@ -207,12 +201,12 @@ const Lobbies = (world: World): SubMenu => {
     div: lobbies,
     onTick: () => {
       createLobby.style.pointerEvents = inLobby ? "none" : "auto"
-      createLobby.style.border = inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff"
-      createLobby.style.color = inLobby ? "#aaaaaa" : "#ffffff"
+      createLobby.style.border = inLobby ? "2px solid #bbbbbb" : "2px solid #ffffff"
+      createLobby.style.color = inLobby ? "#bbbbbb" : "#ffffff"
 
       leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
-      leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #aaaaaa"
-      leaveLobby.style.color = inLobby ? "#ffffff" : "#aaaaaa"
+      leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #bbbbbb"
+      leaveLobby.style.color = inLobby ? "#ffffff" : "#bbbbbb"
 
       if (world.tick - 80 > polled) {
         polled = world.tick
@@ -229,8 +223,7 @@ const Lobbies = (world: World): SubMenu => {
                 fontSize: "16px",
                 lineHeight: "36px",
                 textAlign: "center",
-                transform: "translateX(0%)",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                backgroundColor: "rgba(0, 0, 0, 0.4)",
                 border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #aaffff",
                 borderRadius: "8px"
               }
@@ -239,10 +232,10 @@ const Lobbies = (world: World): SubMenu => {
             const button = HtmlButton({
               text: "Join",
               onHover: () => {
-                button.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
+                button.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
               },
               onHoverOut: () => {
-                button.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
+                button.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
               },
               onClick: () => {
                 world.client?.lobbyJoin(meta.id, () => {
@@ -255,9 +248,8 @@ const Lobbies = (world: World): SubMenu => {
                 height: "40px",
                 fontSize: "16px",
                 right: "5px",
-                border: meta.id === inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff",
+                border: meta.id === inLobby ? "2px solid #bbbbbb" : "2px solid #ffffff",
                 pointerEvents: meta.id === inLobby ? "none" : "auto",
-                transform: "translateX(0%)",
                 position: "relative",
                 float: "right"
               }

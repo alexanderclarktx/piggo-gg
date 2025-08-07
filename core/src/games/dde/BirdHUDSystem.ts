@@ -35,7 +35,7 @@ export const BirdHUDSystem = ClientSystemBuilder({
         top: `${height - 50}px`,
         fontSize: "28px",
         color: "#ffffff",
-        transform: "translateX(-50%)",
+        transform: "translate(-50%)",
       }
     })
 
@@ -46,7 +46,7 @@ export const BirdHUDSystem = ClientSystemBuilder({
         top: `${height - 100}px`,
         fontSize: "24px",
         color: "#00ffff",
-        transform: "translateX(-50%)"
+        transform: "translate(-50%)"
       }
     })
 
@@ -130,6 +130,6 @@ const KeyButton = (props: KeyButtonProps) => HtmlButton({
     height: "40px",
     fontSize: "26px",
     visibility: props.visible === false ? "hidden" : "visible",
-    transform: "translate(-50%)",
+    transform: "translate(-50%)"
   }
 })
