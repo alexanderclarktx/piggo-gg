@@ -35,7 +35,7 @@ export const DDEMenu = (world: World): Entity => {
 
   const lobbies = HtmlDiv({
     width: "380px",
-    height: "70%",
+    height: "230px",
     left: "50%",
     top: "10px",
     border: "2px solid #aaaaaa",
@@ -103,7 +103,7 @@ export const DDEMenu = (world: World): Entity => {
     visibility: "hidden",
     left: "50%",
     width: "400px",
-    height: "240px",
+    height: "300px",
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     pointerEvents: "auto",
