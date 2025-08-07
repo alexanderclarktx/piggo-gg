@@ -10,7 +10,7 @@ export type ServerWorld = {
   world: World
   clients: Record<string, WS>
   creator: WS
-  getNumClients: () => number
+  numClients: () => number
   handleMessage: (ws: WS, msg: NetMessageTypes) => void
   handleClose: (ws: WS) => void
 }
@@ -34,7 +34,7 @@ export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): Server
     world,
     clients,
     creator,
-    getNumClients: () => keys(clients).length,
+    numClients: () => keys(clients).length,
     handleClose: (ws: WS) => {
       world.removeEntity(ws.data.playerId)
 

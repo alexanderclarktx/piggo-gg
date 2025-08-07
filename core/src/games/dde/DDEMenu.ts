@@ -3,11 +3,14 @@ import {
   HtmlText, HtmlButton, World, entries, keys
 } from "@piggo-gg/core"
 
+type SubMenu = {
+  div: HTMLDivElement
+  onTick: () => void
+}
+
 export const DDEMenu = (world: World): Entity => {
 
   let init = false
-  let polled = -60
-  let inLobby: null | string = null
   let activeMenu: "lobbies" | "skins" | "settings" = "lobbies"
 
   const ddeMenu = HtmlDiv({
@@ -75,6 +78,62 @@ export const DDEMenu = (world: World): Entity => {
   sidebar.appendChild(lobbiesButton)
   sidebar.appendChild(skinsButton)
   sidebar.appendChild(settingsButton)
+
+  const lobbies = Lobbies(world)
+
+  ddeMenu.appendChild(art)
+  ddeMenu.appendChild(sidebar)
+  ddeMenu.appendChild(lobbies.div)
+
+  const menu = Entity({
+    id: "DDEMenu",
+    components: {
+      position: Position({ x: 0, y: 0, z: 0 }),
+      npc: NPC({
+        behavior: (_, world) => {
+          if (world.mode === "server") return
+
+          if (!init) {
+            const parent = world.three?.canvas?.parentElement
+            if (parent) {
+              parent.appendChild(ddeMenu)
+              init = true
+            }
+          }
+
+          // overall visibility of the menu
+          const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
+          ddeMenu.style.visibility = visible ? "visible" : "hidden"
+
+          if (!visible) return
+
+          // menu buttons
+          lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          lobbiesButton.style.color = activeMenu === "lobbies" ? "#aaaaaa" : "#ffffff"
+
+          skinsButton.style.border = activeMenu === "skins" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          skinsButton.style.color = activeMenu === "skins" ? "#aaaaaa" : "#ffffff"
+
+          settingsButton.style.border = activeMenu === "settings" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          settingsButton.style.color = activeMenu === "settings" ? "#aaaaaa" : "#ffffff"
+
+          // visiblity of submenus
+          lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
+          // skins.div.style.display = activeMenu === "skins" ? "block" : "none"
+          // settings.div.style.display = activeMenu === "settings" ? "block" : "none"
+
+          lobbies.onTick()
+        }
+      })
+    }
+  })
+  return menu
+}
+
+const Lobbies = (world: World): SubMenu => {
+
+  let polled = -60
+  let inLobby: null | string = null
 
   const lobbyList = HtmlDiv({
     width: "380px",
@@ -158,120 +217,84 @@ export const DDEMenu = (world: World): Entity => {
   lobbies.appendChild(createLobby)
   lobbies.appendChild(leaveLobby)
 
-  ddeMenu.appendChild(art)
-  ddeMenu.appendChild(sidebar)
-  ddeMenu.appendChild(lobbies)
+  return {
+    div: lobbies,
+    onTick: () => {
+      createLobby.style.pointerEvents = inLobby ? "none" : "auto"
+      createLobby.style.border = inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff"
+      createLobby.style.color = inLobby ? "#aaaaaa" : "#ffffff"
 
-  const menu = Entity({
-    id: "DDEMenu",
-    components: {
-      position: Position({ x: 0, y: 0, z: 0 }),
-      npc: NPC({
-        behavior: (_, world) => {
-          if (world.mode === "server") return
+      leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
+      leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #aaaaaa"
+      leaveLobby.style.color = inLobby ? "#ffffff" : "#aaaaaa"
 
-          if (!init) {
-            const parent = world.three?.canvas?.parentElement
-            if (parent) {
-              parent.appendChild(ddeMenu)
-              init = true
-            }
-          }
+      if (world.tick - 80 > polled) {
+        polled = world.tick
+        world.client?.lobbyList((response) => {
+          lobbyList.innerHTML = ""
 
-          // overall visibility of the menu
-          const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
-          ddeMenu.style.visibility = visible ? "visible" : "hidden"
-
-          if (!visible) return
-
-          // menu buttons
-          lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          lobbiesButton.style.color = activeMenu === "lobbies" ? "#aaaaaa" : "#ffffff"
-
-          skinsButton.style.border = activeMenu === "skins" ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          skinsButton.style.color = activeMenu === "skins" ? "#aaaaaa" : "#ffffff"
-
-          settingsButton.style.border = activeMenu === "settings" ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          settingsButton.style.color = activeMenu === "settings" ? "#aaaaaa" : "#ffffff"
-
-          createLobby.style.pointerEvents = inLobby ? "none" : "auto"
-          createLobby.style.border = inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          createLobby.style.color = inLobby ? "#aaaaaa" : "#ffffff"
-
-          leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
-          leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #aaaaaa"
-          leaveLobby.style.color = inLobby ? "#ffffff" : "#aaaaaa"
-
-          if (world.tick - 80 > polled) {
-            polled = world.tick
-            world.client?.lobbyList((response) => {
-              lobbyList.innerHTML = ""
-
-              for (const [id, meta] of entries(response.lobbies)) {
-                const lobby = HtmlText({
-                  text: `(${meta.players}) ${meta.creator} ${id}`,
-                  style: {
-                    width: "70%",
-                    height: "36px",
-                    left: "5px",
-                    fontSize: "16px",
-                    lineHeight: "36px",
-                    textAlign: "center",
-                    transform: "translateX(0%)",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #aaffff",
-                    borderRadius: "8px"
-                  }
-                })
-
-                const button = HtmlButton({
-                  text: "Join",
-                  onHover: () => {
-                    button.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
-                  },
-                  onHoverOut: () => {
-                    button.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
-                  },
-                  onClick: () => {
-                    world.client?.lobbyJoin(meta.id, () => {
-                      inLobby = meta.id
-                      polled = world.tick - 70
-                    })
-                  },
-                  style: {
-                    width: "25%",
-                    height: "40px",
-                    fontSize: "16px",
-                    right: "5px",
-                    border: meta.id === inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff",
-                    pointerEvents: meta.id === inLobby ? "none" : "auto",
-                    transform: "translateX(0%)",
-                    position: "relative",
-                    float: "right"
-                  }
-                })
-
-                const lobbyWrapper = HtmlDiv({
-                  position: "relative",
-                  marginTop: "5px"
-                })
-
-                lobbyWrapper.appendChild(lobby)
-                lobbyWrapper.appendChild(button)
-
-                lobbyList.appendChild(lobbyWrapper)
-              }
-
-              if (keys(response.lobbies).length === 0) {
-                inLobby = null
+          for (const [id, meta] of entries(response.lobbies)) {
+            const lobby = HtmlText({
+              text: `(${meta.players}) ${meta.creator} ${id}`,
+              style: {
+                width: "70%",
+                height: "36px",
+                left: "5px",
+                fontSize: "16px",
+                lineHeight: "36px",
+                textAlign: "center",
+                transform: "translateX(0%)",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #aaffff",
+                borderRadius: "8px"
               }
             })
+
+            const button = HtmlButton({
+              text: "Join",
+              onHover: () => {
+                button.style.backgroundColor = "rgba(0, 160, 255, 0.5)"
+              },
+              onHoverOut: () => {
+                button.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
+              },
+              onClick: () => {
+                world.client?.lobbyJoin(meta.id, () => {
+                  inLobby = meta.id
+                  polled = world.tick - 70
+                })
+              },
+              style: {
+                width: "25%",
+                height: "40px",
+                fontSize: "16px",
+                right: "5px",
+                border: meta.id === inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff",
+                pointerEvents: meta.id === inLobby ? "none" : "auto",
+                transform: "translateX(0%)",
+                position: "relative",
+                float: "right"
+              }
+            })
+
+            const lobbyWrapper = HtmlDiv({
+              position: "relative",
+              marginTop: "5px"
+            })
+
+            lobbyWrapper.appendChild(lobby)
+            lobbyWrapper.appendChild(button)
+
+            lobbyList.appendChild(lobbyWrapper)
           }
-        }
-      })
+
+          if (keys(response.lobbies).length === 0) {
+            inLobby = null
+          }
+        })
+      }
     }
-  })
-  return menu
+  }
 }
 
 const Art = () => HtmlImg("dde-256.jpg", {
