@@ -129,6 +129,7 @@ const KeyButton = (props: KeyButtonProps) => HtmlButton({
     width: `${props.width ?? 40}px`,
     height: "40px",
     fontSize: "26px",
-    visibility: props.visible === false ? "hidden" : "visible"
+    visibility: props.visible === false ? "hidden" : "visible",
+    transform: "translate(-50%)",
   }
 })

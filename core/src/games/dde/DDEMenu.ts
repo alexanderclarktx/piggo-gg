@@ -8,9 +8,9 @@ export const DDEMenu = (world: World): Entity => {
   let init = false
   let polled = -60
   let inLobby: null | string = null
-  let activeMenu: "lobbies"
+  let activeMenu: "lobbies" | "skins" | "settings" = "lobbies"
 
-  const lobbies = HtmlDiv({
+  const ddeMenu = HtmlDiv({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
@@ -21,22 +21,51 @@ export const DDEMenu = (world: World): Entity => {
   const art = Art()
 
   const sidebar = HtmlDiv({
-    position: "relative"
+    position: "relative",
+    top: "10px",
   })
 
-  sidebar.appendChild(HtmlButton({
+  const lobbiesButton = HtmlButton({
     text: "lobbies",
     style: {
-      width: "120px",
+      width: "130px",
       position: "relative",
       top: "-10px",
-      transform: "",
       height: "40px",
       fontSize: "20px",
-      display: "block",
       pointerEvents: "auto"
     }
-  }))
+  })
+
+  const skinsButton = HtmlButton({
+    text: "skins",
+    style: {
+      left: "8px",
+      width: "130px",
+      position: "relative",
+      top: "-10px",
+      height: "40px",
+      fontSize: "20px",
+      pointerEvents: "auto",
+    }
+  })
+
+  const settingsButton = HtmlButton({
+    text: "settings",
+    style: {
+      left: "15px",
+      width: "130px",
+      position: "relative",
+      top: "-10px",
+      height: "40px",
+      fontSize: "20px",
+      pointerEvents: "auto"
+    }
+  })
+
+  sidebar.appendChild(lobbiesButton)
+  sidebar.appendChild(skinsButton)
+  sidebar.appendChild(settingsButton)
 
   const lobbyList = HtmlDiv({
     width: "380px",
@@ -60,7 +89,6 @@ export const DDEMenu = (world: World): Entity => {
       height: "40px",
       width: "176px",
       fontSize: "20px",
-      transform: ""
     },
     onClick: () => {
       if (!inLobby) return
@@ -86,7 +114,6 @@ export const DDEMenu = (world: World): Entity => {
       height: "40px",
       width: "176px",
       fontSize: "20px",
-      transform: ""
     },
     onClick: () => {
       if (inLobby) return
@@ -104,8 +131,8 @@ export const DDEMenu = (world: World): Entity => {
     }
   })
 
-  const servers = HtmlDiv({
-    // visibility: "hidden",
+  const lobbies = HtmlDiv({
+    top: "5px",
     left: "50%",
     width: "400px",
     height: "300px",
@@ -117,13 +144,13 @@ export const DDEMenu = (world: World): Entity => {
     position: "relative"
   })
 
-  servers.appendChild(lobbyList)
-  servers.appendChild(createLobby)
-  servers.appendChild(leaveLobby)
+  lobbies.appendChild(lobbyList)
+  lobbies.appendChild(createLobby)
+  lobbies.appendChild(leaveLobby)
 
-  lobbies.appendChild(art)
-  lobbies.appendChild(sidebar)
-  lobbies.appendChild(servers)
+  ddeMenu.appendChild(art)
+  ddeMenu.appendChild(sidebar)
+  ddeMenu.appendChild(lobbies)
 
   const menu = Entity({
     id: "DDEMenu",
@@ -136,18 +163,19 @@ export const DDEMenu = (world: World): Entity => {
           if (!init) {
             const parent = world.three?.canvas?.parentElement
             if (parent) {
-              parent.appendChild(lobbies)
-              // parent.appendChild(servers)
+              parent.appendChild(ddeMenu)
               init = true
             }
           }
 
+          // overall visibility of the menu
           const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
-          lobbies.style.visibility = visible ? "visible" : "hidden"
-          // servers.style.visibility = visible ? "visible" : "hidden"
-          // art.style.visibility = visible ? "visible" : "hidden"
+          ddeMenu.style.visibility = visible ? "visible" : "hidden"
 
           if (!visible) return
+
+          // menu buttons
+          
 
           createLobby.style.pointerEvents = inLobby ? "none" : "auto"
           leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
@@ -234,8 +262,8 @@ export const DDEMenu = (world: World): Entity => {
 const Art = () => HtmlImg("dde-256.jpg", {
   top: "-10px",
   left: "50%",
-  width: "140px",
-  transform: "translateX(-50%)",
+  width: "200px",
+  transform: "translate(-50%)",
   border: "2px solid #eeeeee",
   borderRadius: "10px",
   position: "relative"

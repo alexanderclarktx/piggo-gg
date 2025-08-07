@@ -28,8 +28,7 @@ const defaults: HtmlStyleProps = {
   color: "#ffffff",
   pointerEvents: "none",
   border: "2px solid #ffffff",
-  borderRadius: "8px",
-  transform: "translateX(-50%)"
+  borderRadius: "8px"
 }
 
 export type HtmlButtonProps = {
