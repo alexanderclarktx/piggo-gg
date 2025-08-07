@@ -27,11 +27,17 @@ export const DDEMenu = (world: World): Entity => {
     position: "relative"
   })
 
+  const sidebar = HtmlDiv({
+    width: "40px",
+
+
+  })
+
   const lobbies = HtmlDiv({
-    width: "90%",
+    width: "380px",
     height: "70%",
     left: "50%",
-    top: "5%",
+    top: "10px",
     border: "2px solid #aaaaaa",
     borderRadius: "10px",
     overflow: "scroll",
@@ -44,10 +50,10 @@ export const DDEMenu = (world: World): Entity => {
   const leaveLobby = HtmlButton({
     text: "Leave Lobby",
     style: {
-      bottom: "5%",
+      bottom: "10px",
+      right: "10px",
       height: "40px",
       width: "176px",
-      right: "18px",
       fontSize: "20px",
       transform: ""
     },
@@ -70,10 +76,10 @@ export const DDEMenu = (world: World): Entity => {
   const createLobby = HtmlButton({
     text: "Create Lobby",
     style: {
-      bottom: "5%",
+      bottom: "10px",
+      left: "10px",
       height: "40px",
       width: "176px",
-      left: "18px",
       fontSize: "20px",
       transform: ""
     },
@@ -97,7 +103,7 @@ export const DDEMenu = (world: World): Entity => {
     visibility: "hidden",
     left: "50%",
     width: "400px",
-    height: "300px",
+    height: "240px",
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     pointerEvents: "auto",
