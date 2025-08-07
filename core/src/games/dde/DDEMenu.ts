@@ -64,10 +64,14 @@ export const DDEMenu = (world: World): Entity => {
   submenuButtons.appendChild(settingsButton)
 
   const lobbies = Lobbies(world)
+  const skins = Skins()
+  const settings = Settings()
 
   ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
   ddeMenu.appendChild(lobbies.div)
+  ddeMenu.appendChild(skins.div)
+  ddeMenu.appendChild(settings.div)
 
   const menu = Entity({
     id: "DDEMenu",
@@ -103,8 +107,8 @@ export const DDEMenu = (world: World): Entity => {
 
           // visibility of submenus
           lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
-          // skins.div.style.display = activeMenu === "skins" ? "block" : "none"
-          // settings.div.style.display = activeMenu === "settings" ? "block" : "none"
+          skins.div.style.display = activeMenu === "skins" ? "block" : "none"
+          settings.div.style.display = activeMenu === "settings" ? "block" : "none"
 
           lobbies.onTick()
         }
@@ -275,8 +279,48 @@ const Lobbies = (world: World): SubMenu => {
   }
 }
 
+const Skins = (): SubMenu => {
+  const skins = HtmlDiv({
+    top: "5px",
+    left: "50%",
+    width: "400px",
+    height: "300px",
+    transform: "translate(-50%)",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    pointerEvents: "auto",
+    border: "2px solid #ffffff",
+    borderRadius: "10px",
+    position: "relative"
+  })
+
+  return {
+    div: skins,
+    onTick: () => { }
+  }
+}
+
+const Settings = (): SubMenu => {
+  const settings = HtmlDiv({
+    top: "5px",
+    left: "50%",
+    width: "400px",
+    height: "300px",
+    transform: "translate(-50%)",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    pointerEvents: "auto",
+    border: "2px solid #ffffff",
+    borderRadius: "10px",
+    position: "relative"
+  })
+
+  return {
+    div: settings,
+    onTick: () => { }
+  }
+}
+
 const Art = () => HtmlImg("dde-256.jpg", {
-  top: "-10px",
+  top: "-5px",
   left: "50%",
   width: "200px",
   transform: "translate(-50%)",
