@@ -9,9 +9,27 @@ export const DDEMenu = (world: World): Entity => {
   let polled = -60
   let inLobby: null | string = null
 
+  const wrapper = HtmlDiv({
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    display: "block",
+    pointerEvents: "none"
+  })
+
+  const art = HtmlImg("dde-256.jpg", {
+    top: "-10px",
+    left: "50%",
+    width: "140px",
+    transform: "translateX(-50%)",
+    border: "2px solid #eeeeee",
+    borderRadius: "10px",
+    position: "relative"
+  })
+
   const lobbies = HtmlDiv({
     width: "90%",
-    height: "40%",
+    height: "70%",
     left: "50%",
     top: "5%",
     border: "2px solid #aaaaaa",
@@ -75,32 +93,25 @@ export const DDEMenu = (world: World): Entity => {
     }
   })
 
-  const art = HtmlImg("dde-256.jpg", {
-    left: "50%",
-    top: "5%",
-    width: "140px",
-    transform: "translateX(-50%)",
-    border: "2px solid #eeeeee",
-    borderRadius: "10px"
-  })
-
   const servers = HtmlDiv({
     visibility: "hidden",
     left: "50%",
-    top: "50%",
     width: "400px",
     height: "300px",
-    transform: "translate(-50%, -50%)",
+    transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     pointerEvents: "auto",
     border: "2px solid #ffffff",
     borderRadius: "10px",
-    // display: "flex"
+    position: "relative"
   })
 
   servers.appendChild(lobbies)
   servers.appendChild(createLobby)
   servers.appendChild(leaveLobby)
+
+  wrapper.appendChild(art)
+  wrapper.appendChild(servers)
 
   const menu = Entity({
     id: "DDEMenu",
@@ -113,14 +124,15 @@ export const DDEMenu = (world: World): Entity => {
           if (!init) {
             const parent = world.three?.canvas?.parentElement
             if (parent) {
-              parent.appendChild(art)
-              parent.appendChild(servers)
+              parent.appendChild(wrapper)
+              // parent.appendChild(servers)
               init = true
             }
           }
 
           const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
           servers.style.visibility = visible ? "visible" : "hidden"
+          art.style.visibility = visible ? "visible" : "hidden"
 
           if (!visible) return
 
