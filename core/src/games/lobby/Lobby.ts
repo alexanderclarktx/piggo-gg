@@ -1,11 +1,10 @@
 import {
-  GameBuilder, Entity, Position, pixiText, Renderable, pixiGraphics, colors, Cursor, Chat,
-  PixiButton, PC, Team, TeamColors, NPC, arrayEqual, Background, Actions, Networked, DudeSkin,
-  Ghost, XY, randomInt, World, loadTexture, MusicBox, RenderSystem, pixiContainer, pixiRect
+  Actions, arrayEqual, Background, Chat, colors, Cursor, DDE, DudeSkin,
+  Entity, GameBuilder, Ghost, loadTexture, MusicBox, Networked, NPC, PC,
+  PixiButton, pixiContainer, pixiGraphics, pixiRect, pixiText, Position,
+  randomInt, Renderable, RenderSystem, Team, TeamColors, World, XY
 } from "@piggo-gg/core"
-import { Volley, Craft, DDE } from "@piggo-gg/games"
-import { Container, Sprite, Text } from "pixi.js"
-import { Friends } from "./Friends"
+import { Container, Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley" | "craft" | "Duck Duck Eagle"

@@ -2,10 +2,9 @@ import {
   Action, Actions, Chase, closestEntity, Collider, Debug, Entity, middle,
   Move, Networked, NPC, Position, PositionProps, Renderable, Shadow,
   Team, teammates, TeamNumber, XYdiff, XYZdiff, DudeSkin,
-  VolleyCharacterAnimations, VolleyCharacterDynamic
+  VolleyCharacterAnimations, VolleyCharacterDynamic, range, VolleyState
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
-import { range, VolleyState } from "./Volley"
 
 export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Team> => {
   const bot: Entity<Position | Team> = Entity({

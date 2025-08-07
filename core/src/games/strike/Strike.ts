@@ -1,9 +1,8 @@
 import {
   Background, Shop, FloorCollidersArray, FloorTilesArray, HealthBarSystem,
   Minimap, ScorePanel, Scoreboard, SightSystem, isMobile, GameBuilder,
-  DefaultUI, CameraSystem, InventorySystem, PvPHUD
+  DefaultUI, CameraSystem, InventorySystem, PvPHUD, StrikeSystem
 } from "@piggo-gg/core"
-import { StrikeSystem } from "@piggo-gg/games"
 
 export const Strike: GameBuilder = {
   id: "strike",

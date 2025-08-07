@@ -1,5 +1,6 @@
-import { Background,  LineWall, SpawnSystem, pointsIsometric, Skelly, GameBuilder, DefaultUI } from "@piggo-gg/core"
-import { Rift } from "@piggo-gg/games"
+import {
+  Background, LineWall, SpawnSystem, pointsIsometric, Skelly, GameBuilder, DefaultUI, Rift
+} from "@piggo-gg/core"
 
 const wallPoints: number[][] = [
   [0, 100], // top
