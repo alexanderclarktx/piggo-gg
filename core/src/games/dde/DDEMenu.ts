@@ -81,6 +81,7 @@ export const DDEMenu = (world: World): Entity => {
     height: "230px",
     left: "50%",
     top: "10px",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     border: "2px solid #aaaaaa",
     borderRadius: "10px",
     overflow: "scroll",
@@ -185,8 +186,13 @@ export const DDEMenu = (world: World): Entity => {
 
           // menu buttons
           lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          lobbiesButton.style.color = activeMenu === "lobbies" ? "#aaaaaa" : "#ffffff"
+
           skinsButton.style.border = activeMenu === "skins" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          skinsButton.style.color = activeMenu === "skins" ? "#aaaaaa" : "#ffffff"
+
           settingsButton.style.border = activeMenu === "settings" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          settingsButton.style.color = activeMenu === "settings" ? "#aaaaaa" : "#ffffff"
 
           createLobby.style.pointerEvents = inLobby ? "none" : "auto"
           createLobby.style.border = inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff"
@@ -207,8 +213,7 @@ export const DDEMenu = (world: World): Entity => {
                   style: {
                     width: "70%",
                     height: "36px",
-                    left: "4px",
-                    marginTop: "4px",
+                    left: "5px",
                     fontSize: "16px",
                     lineHeight: "36px",
                     textAlign: "center",
@@ -237,8 +242,7 @@ export const DDEMenu = (world: World): Entity => {
                     width: "25%",
                     height: "40px",
                     fontSize: "16px",
-                    right: "4px",
-                    marginTop: "4px",
+                    right: "5px",
                     border: meta.id === inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff",
                     pointerEvents: meta.id === inLobby ? "none" : "auto",
                     transform: "translateX(0%)",
@@ -248,7 +252,8 @@ export const DDEMenu = (world: World): Entity => {
                 })
 
                 const lobbyWrapper = HtmlDiv({
-                  position: "relative"
+                  position: "relative",
+                  marginTop: "5px"
                 })
 
                 lobbyWrapper.appendChild(lobby)

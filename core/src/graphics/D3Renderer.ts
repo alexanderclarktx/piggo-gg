@@ -42,6 +42,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   let webgl: undefined | WebGLRenderer
   let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
+  let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
 
   const renderer: D3Renderer = {
     apple: undefined,
@@ -133,6 +134,12 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
         // sunSphere.position.copy(sun!.position)
 
+        // rotate the background
+        // if (background) {
+        //   background.rotation.y += 0.00005
+        //   background.rotation.x += 0.00005
+        // }
+
         world.onRender?.()
 
         webgl?.render(renderer.scene, renderer.camera.c)
@@ -192,9 +199,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         const material = new MeshBasicMaterial({ map: texture, side: 1 })
 
-        const mesh = new Mesh(sphere, material)
+        background = new Mesh(sphere, material)
 
-        renderer.scene.add(mesh)
+        renderer.scene.add(background)
       })
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
