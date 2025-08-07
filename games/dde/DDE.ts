@@ -256,14 +256,22 @@ const DDESystem = SystemBuilder({
           const orientation = player.id === world.client?.playerId() ? localAim : aim
 
           duck.visible = !position.data.flying
-          duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
-          duck.rotation.y = orientation.x + PI / 2
+          if (duck.visible) {
+            duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+            duck.rotation.y = orientation.x + PI / 2
+          }
 
           eagle.visible = position.data.flying
-          eagle.position.set(interpolated.x, interpolated.z + 0.1, interpolated.y)
-          eagle.rotation.y = orientation.x
-          eagle.rotation.x = orientation.y
-          eagle.rotation.z = rotation - rotating * (40 - delta) / 40
+          if (eagle.visible) {
+            eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
+            eagle.rotation.y = orientation.x
+            eagle.rotation.x = orientation.y
+            eagle.rotation.z = rotation - rotating * (40 - delta) / 40
+          }
+
+          if (world.three?.debug && player.id === world.client?.playerId()) {
+            world.three?.sphere2?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+          }
 
           for (const mixer of mixers) {
             if (flying) {

@@ -23,7 +23,7 @@ export type D3Renderer = {
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
   scene: Scene
-  sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
+  // sphere: undefined | InstancedMesh<SphereGeometry, MeshPhysicalMaterial>
   sphere2: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   append: (...elements: HTMLElement[]) => void
   setDebug: (state?: boolean) => void
@@ -49,7 +49,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     canvas: c,
     camera: D3Camera(),
     scene: new Scene(),
-    sphere: undefined,
+    // sphere: undefined,
     sphere2: undefined,
     blocks: undefined,
     birdAssets: {},
@@ -88,9 +88,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (renderer.debug) {
         helper = new CameraHelper(sun.shadow.camera)
         renderer.scene.add(helper)
+        renderer.sphere2!.visible = true
       } else if (!renderer.debug && helper) {
         renderer.scene.remove(helper)
         helper = undefined
+        renderer.sphere2!.visible = false
       }
     },
     pointerLock: () => {
@@ -103,17 +105,17 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.blocks = TBlockMesh()
       renderer.scene.add(renderer.blocks)
 
-      renderer.sphere = new InstancedMesh(
-        new SphereGeometry(0.16),
-        new MeshPhysicalMaterial({
-          color: 0xffd9c3,
-          emissiveIntensity: 0,
-          roughness: 0.5
-        }), 12
-      )
-      renderer.sphere.frustumCulled = false
-      renderer.sphere.visible = false
-      renderer.scene.add(renderer.sphere)
+      // renderer.sphere = new InstancedMesh(
+      //   new SphereGeometry(0.16),
+      //   new MeshPhysicalMaterial({
+      //     color: 0xffd9c3,
+      //     emissiveIntensity: 0,
+      //     roughness: 0.5
+      //   }), 12
+      // )
+      // renderer.sphere.frustumCulled = false
+      // renderer.sphere.visible = false
+      // renderer.scene.add(renderer.sphere)
 
       renderer.sphere2 = new Mesh(
         new SphereGeometry(0.05),
