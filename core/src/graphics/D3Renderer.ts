@@ -127,21 +127,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.resize()
 
       webgl.setAnimationLoop(() => {
-        // ambient lighting
-        // ambient.intensity = 2 + sin(t)
-
-        // rotate the sun
-        // if (zoom > 1) sun!.position.set(cos(t) * 200, sin(t) * 100, cos(t) * 200)
-        // sunSphere.position.copy(sun!.position)
-
-        // rotate the background
-        // if (background) {
-        //   background.rotation.y += 0.00005
-        //   background.rotation.x += 0.00005
-        // }
-
         world.onRender?.()
-
         webgl?.render(renderer.scene, renderer.camera.c)
       })
 
