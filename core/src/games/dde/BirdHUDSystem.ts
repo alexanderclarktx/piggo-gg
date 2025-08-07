@@ -100,6 +100,10 @@ export const BirdHUDSystem = ClientSystemBuilder({
         const state = world.game.state as DDEState
         const pcApplesEaten = state.applesEaten[world.client?.playerId() || ""] || 0
 
+        const isWarmup = state.phase === "warmup"
+        eButton.style.visibility = isWarmup ? "visible" : "hidden"
+        transformLabel.style.visibility = isWarmup ? "visible" : "hidden"
+
         if (pcApplesEaten !== currentApplesEaten) {
           currentApplesEaten = pcApplesEaten
           scoreText.innerHTML = `<span>apples: </span><span style='color: #ffc0cb'>${currentApplesEaten}/10</span>`
