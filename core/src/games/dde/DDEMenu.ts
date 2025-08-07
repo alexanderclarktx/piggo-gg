@@ -33,6 +33,15 @@ export const DDEMenu = (world: World): Entity => {
 
   })
 
+  sidebar.appendChild(HtmlButton({
+    text: "lobbies",
+    style: {
+      // width: "100%",
+      height: "40px",
+      fontSize: "20px",
+    }
+  }))
+
   const lobbies = HtmlDiv({
     width: "380px",
     height: "230px",
@@ -100,7 +109,7 @@ export const DDEMenu = (world: World): Entity => {
   })
 
   const servers = HtmlDiv({
-    visibility: "hidden",
+    // visibility: "hidden",
     left: "50%",
     width: "400px",
     height: "300px",
@@ -117,6 +126,7 @@ export const DDEMenu = (world: World): Entity => {
   servers.appendChild(leaveLobby)
 
   wrapper.appendChild(art)
+  wrapper.appendChild(sidebar)
   wrapper.appendChild(servers)
 
   const menu = Entity({
@@ -137,8 +147,9 @@ export const DDEMenu = (world: World): Entity => {
           }
 
           const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
-          servers.style.visibility = visible ? "visible" : "hidden"
-          art.style.visibility = visible ? "visible" : "hidden"
+          wrapper.style.visibility = visible ? "visible" : "hidden"
+          // servers.style.visibility = visible ? "visible" : "hidden"
+          // art.style.visibility = visible ? "visible" : "hidden"
 
           if (!visible) return
 
