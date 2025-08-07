@@ -60,12 +60,20 @@ const DDESystem = SystemBuilder({
     let blocksRendered = false
     let applesSpawned = false
 
+    let musicPlaying = false
+
     return {
       id: "DDESystem",
       query: [],
       priority: 3,
       onTick: () => {
         const state = world.game.state as DDEState
+
+        if (!musicPlaying && world.client?.soundManager.ready) {
+          musicPlaying = world.client.soundManager.play({ soundName: "birdsong1" })
+        } else if (world.client?.soundManager.sounds.birdsong1.state === "stopped") {
+          musicPlaying = false
+        }
 
         const players = world.players()
         const characters = world.characters()

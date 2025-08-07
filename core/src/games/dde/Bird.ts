@@ -140,7 +140,7 @@ export const Bird = (player: Player) => Character({
         position.setVelocity({ z: 0.043 })
         world.client?.soundManager.play({ soundName: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
-      moveAnalog: Action("moveAnalog", ({ entity, params }) => {
+      moveAnalog: Action("moveAnalog", ({ entity, params, world }) => {
         if (!params.dir.x || !params.dir.y || !params.power) return
 
         const { position } = entity?.components ?? {}
@@ -161,7 +161,7 @@ export const Bird = (player: Player) => Character({
 
         position.impulse({ x: params.dir.x * params.power * factor, y: params.dir.y * params.power * factor })
       }),
-      move: Action("move", ({ entity, params }) => {
+      move: Action("move", ({ entity, params, world }) => {
         if (!params.vec || !params.dir) return
 
         const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
@@ -224,6 +224,10 @@ export const Bird = (player: Player) => Character({
           factor = params.sprint ? run : walk
         } else {
           factor = params.sprint ? leap : hop
+        }
+
+        if (position.data.standing) {
+          // world.client?.soundManager.play({ soundName: "steps", threshold: { pos: position.data, distance: 5 } })
         }
 
         position.impulse({ x: toward.x * factor, y: toward.z * factor })
