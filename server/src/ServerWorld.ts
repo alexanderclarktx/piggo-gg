@@ -1,5 +1,6 @@
-import { DefaultWorld, GameData, keys, NetMessageTypes, NetServerSystem, Player, World } from "@piggo-gg/core"
-import { games } from "@piggo-gg/games"
+import {
+  DDE, DefaultWorld, GameData, keys, NetMessageTypes, NetServerSystem, Player, World
+} from "@piggo-gg/core"
 import { PerClientData, NoobSystem } from "@piggo-gg/server"
 import { ServerWebSocket } from "bun"
 
@@ -21,7 +22,7 @@ export type ServerWorldProps = {
 
 export const ServerWorld = ({ clients = {}, creator }: ServerWorldProps): ServerWorld => {
 
-  const world = DefaultWorld({ mode: "server", games })
+  const world = DefaultWorld({ mode: "server", games: [DDE] })
   const latestClientMessages: Record<string, GameData[]> = {}
   const latestClientLag: Record<string, number> = {}
   const latestClientDiff: Record<string, number> = {}

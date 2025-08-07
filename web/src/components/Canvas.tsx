@@ -1,5 +1,4 @@
-import { DefaultWorld, isMobile, D3Renderer, World } from "@piggo-gg/core"
-import { games } from "@piggo-gg/games"
+import { DefaultWorld, isMobile, D3Renderer, World, DDE } from "@piggo-gg/core"
 import { useEffect } from "react"
 
 export type CanvasProps = {
@@ -15,7 +14,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
     if (mobile) canvas.style.border = "none"
 
     const three = D3Renderer(canvas)
-    setWorld(DefaultWorld({ games, three }))
+    setWorld(DefaultWorld({ games: [ DDE ], three }))
   }, [])
 
   return (

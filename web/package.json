@@ -6,7 +6,6 @@
     "dev": "bun x webpack serve --port 8000"
   },
   "dependencies": {
-    "@piggo-gg/games": "1.0.0",
     "@sethwebster/react-fps-counter": "^0.0.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

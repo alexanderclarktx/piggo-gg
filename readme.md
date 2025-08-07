@@ -29,8 +29,7 @@
 
 |package|description|
 |--|--|
-|`core`| core game engine
-|`games`| games
+|`core`| engine & games
 |`web`| webapp
 |`server`| game server
 |`docs`| js bundle & resources (served statically by GitHub Pages)

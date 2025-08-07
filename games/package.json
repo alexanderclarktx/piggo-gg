@@ -1,8 +1,0 @@
-{
-  "name": "@piggo-gg/games",
-  "version": "1.0.0",
-  "main": "./main.ts",
-  "dependencies": {
-    "@piggo-gg/core": "1.0.0"
-  }
-}
