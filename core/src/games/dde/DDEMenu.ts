@@ -34,7 +34,10 @@ export const DDEMenu = (world: World): Entity => {
       height: "40px",
       fontSize: "20px",
       pointerEvents: "auto"
-    }
+    },
+    onClick: () => {
+      activeMenu = "lobbies"
+    },
   })
 
   const skinsButton = HtmlButton({
@@ -47,6 +50,9 @@ export const DDEMenu = (world: World): Entity => {
       height: "40px",
       fontSize: "20px",
       pointerEvents: "auto",
+    },
+    onClick: () => {
+      activeMenu = "skins"
     }
   })
 
@@ -60,6 +66,9 @@ export const DDEMenu = (world: World): Entity => {
       height: "40px",
       fontSize: "20px",
       pointerEvents: "auto"
+    },
+    onClick: () => {
+      activeMenu = "settings"
     }
   })
 
@@ -175,15 +184,16 @@ export const DDEMenu = (world: World): Entity => {
           if (!visible) return
 
           // menu buttons
-          
+          lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          skinsButton.style.border = activeMenu === "skins" ? "2px solid #aaaaaa" : "2px solid #ffffff"
+          settingsButton.style.border = activeMenu === "settings" ? "2px solid #aaaaaa" : "2px solid #ffffff"
 
           createLobby.style.pointerEvents = inLobby ? "none" : "auto"
-          leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
-
           createLobby.style.border = inLobby ? "2px solid #aaaaaa" : "2px solid #ffffff"
-          leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #aaaaaa"
-
           createLobby.style.color = inLobby ? "#aaaaaa" : "#ffffff"
+
+          leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
+          leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #aaaaaa"
           leaveLobby.style.color = inLobby ? "#ffffff" : "#aaaaaa"
 
           if (world.tick - 80 > polled) {
