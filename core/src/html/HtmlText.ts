@@ -32,6 +32,6 @@ export const HtmlLabel = (text: string, left: number, top: number, visible: bool
     left: `${left}px`,
     top: `${top}px`,
     visibility: visible ? "visible" : "hidden",
-    transform: "translate(-50%)",
+    transform: "translate(-50%)"
   }
 })
