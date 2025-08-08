@@ -1,6 +1,10 @@
 * {
-  -webkit-tap-highlight-color: transparent; /* removes tap highlight */
-  touch-action: manipulation; /* disables double-tap to zoom */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -ms-user-select: none;
+  touch-action: manipulation;
 }
 
 html {
@@ -12,9 +16,6 @@ html {
   color: rgb(232, 230, 227);
   color-scheme: light;
 
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
   color: white;
 }
 
@@ -37,11 +38,6 @@ canvas {
   width: auto;
   height: auto;
   object-fit: contain;
-  user-select: none;
-  -webkit-touch-callout: none; /* Disable the callout on iOS */
-  -webkit-user-select: none;   /* Disable text selection on iOS */
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* Remove tap highlight */
-  touch-action: none; /* Disable default touch actions like zooming */
 }
 
 video {
