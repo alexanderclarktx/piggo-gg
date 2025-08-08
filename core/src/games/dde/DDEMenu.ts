@@ -157,6 +157,7 @@ const Lobbies = (world: World): SubMenu => {
         inLobby = lobbyId
         polled = world.tick - 70
       })
+      leaveLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
     },
     onHover: () => {
       createLobby.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
@@ -178,6 +179,8 @@ const Lobbies = (world: World): SubMenu => {
 
       polled = world.tick - 70
       inLobby = null
+
+      createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
     },
     onHover: () => {
       leaveLobby.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
