@@ -1,5 +1,8 @@
 * {
   -webkit-tap-highlight-color: transparent; /* removes tap highlight */
+  -webkit-touch-callout: none; /* disables callout on iOS */
+  -webkit-user-select: none; /* disables text selection on iOS */
+  user-select: none;
   touch-action: manipulation; /* disables double-tap to zoom */
 }
 
