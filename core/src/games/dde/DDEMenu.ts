@@ -82,18 +82,15 @@ export const DDEMenu = (world: World): Entity => {
           if (world.mode === "server") return
 
           if (!init) {
-            const parent = world.three?.canvas?.parentElement
-            if (parent) {
-              parent.appendChild(ddeMenu)
-              init = true
-            }
+            world.three?.append(ddeMenu)
+            init = true
           }
 
-          // overall visibility of the menu
-          const visible = !Boolean(document.pointerLockElement) && !world.client?.mobile
-          ddeMenu.style.visibility = visible ? "visible" : "hidden"
+          // overall visibility
+          const hidden = Boolean(document.pointerLockElement) || world.client?.mobile
+          ddeMenu.style.visibility = hidden ? "hidden" : "visible"
 
-          if (!visible) return
+          if (hidden) return
 
           // menu buttons
           styleButton(lobbiesButton, activeMenu === "lobbies", lobbiesButton.matches(":hover"))

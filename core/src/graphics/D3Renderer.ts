@@ -62,8 +62,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (!webgl) return
 
       if (isMobile()) {
-        webgl.setSize(window.innerWidth, window.outerHeight)
-        renderer.camera.c.aspect = window.innerWidth / window.outerHeight
+        const height = document.fullscreenElement ? window.outerHeight : window.innerHeight
+
+        webgl.setSize(window.innerWidth, height)
+        renderer.camera.c.aspect = window.innerWidth / height
       } else {
         webgl.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
         renderer.camera.c.aspect = window.innerWidth / window.innerHeight
@@ -119,7 +121,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl = new WebGLRenderer({
         antialias: true,
         canvas: renderer.canvas,
-        powerPreference: "high-performance"
+        powerPreference: "high-performance",
+        precision: "highp"
       })
 
       webgl.setPixelRatio(window.devicePixelRatio)
@@ -252,6 +255,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // handle screen resize
       window.addEventListener("resize", renderer.resize)
+
+      // handle orientation change
+      screen.orientation.addEventListener("change", renderer.resize)
     },
     sunLookAt: (x: number, y: number, z: number) => {
       if (sun) {
