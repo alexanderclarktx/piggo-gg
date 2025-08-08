@@ -66,7 +66,7 @@ export const SoundManager = (world: World): SoundManager => {
     state: "closed",
     ready: false,
     sounds: {
-      birdsong1: load("birdsong1.mp3", -15),
+      birdsong1: load("birdsong1.mp3", -20),
       steps: load("steps.mp3", 0),
       bubble: load("bubble.mp3", -10),
       // piano1: load("piano1.mp3", 5),

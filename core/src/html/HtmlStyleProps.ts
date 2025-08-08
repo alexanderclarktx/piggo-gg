@@ -5,6 +5,7 @@ export type HtmlStyleProps = {
   borderImage?: `linear-gradient(${string}) ${number}`
   borderRadius?: `${number}px` | `${number}%`
   bottom?: `${number}%` | `${number}px`
+  boxSizing?: "border-box" | "content-box"
   clipPath?: string
   color?: `#${string}`
   cursor?: "pointer" | "default" | "not-allowed"
@@ -19,6 +20,9 @@ export type HtmlStyleProps = {
   left?: `${number}%` | `${number}px`
   lineHeight?: `${number}px`
   margin?: `${number}px` | `${number}%`
+  marginBottom?: `${number}px` | `${number}%`
+  marginLeft?: `${number}px` | `${number}%`
+  marginRight?: `${number}px` | `${number}%`
   marginTop?: `${number}px` | `${number}%`
   overflow?: "visible" | "hidden" | "scroll" | "auto"
   padding?: string
@@ -30,7 +34,7 @@ export type HtmlStyleProps = {
   textShadow?: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
   top?: `${number}%` | `${number}px`
   touchAction?: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
-  transform?: string
+  transform?: `translate(${number}%)` | `translate(${number}%, ${number}%)`
   userSelect?: "none" | "auto" | "text" | "all"
   visibility?: "visible" | "hidden"
   width?: `${number}px` | `${number}%`

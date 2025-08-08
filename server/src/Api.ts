@@ -61,6 +61,7 @@ export const Api = (): Api => {
       "lobby/list": async ({ data }) => {
         const lobbies: Record<string, { id: string, players: number, creator: string }> = {}
         for (const [id, world] of entries(api.worlds)) {
+          if (world.numClients() === 0) continue
           lobbies[id] = {
             id, players: keys(world.clients).length, creator: world.creator.data.playerName ?? "noob"
           }

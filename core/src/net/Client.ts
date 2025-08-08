@@ -53,6 +53,7 @@ export type Client = {
   lobbyList: (callback: Callback<LobbyList>) => void
   metaPlayers: (callback: Callback<MetaPlayers>) => void
   authLogin: (jwt: string, callback?: Callback<AuthLogin>) => void
+  logout: () => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
   profileCreate: (name: string, callback: Callback) => void
   profileGet: (callback?: Callback) => void
@@ -197,11 +198,15 @@ export const Client = ({ world }: ClientProps): Client => {
         } else {
           client.token = response.token
 
-          if (localStorage) localStorage.setItem("token", response.token)
+          localStorage?.setItem("token", response.token)
           if (!response.newUser) client.profileGet()
           if (callback) callback(response)
         }
       })
+    },
+    logout: () => {
+      localStorage?.removeItem("token")
+      window.location.reload()
     },
     aiPls: (prompt, callback) => {
       request<Pls>({ route: "ai/pls", type: "request", id: randomHash(), prompt }, (response) => {
