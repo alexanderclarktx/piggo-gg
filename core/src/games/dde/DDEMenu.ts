@@ -117,7 +117,7 @@ export const DDEMenu = (world: World): Entity => {
 const Lobbies = (world: World): SubMenu => {
 
   let polled = -60
-  let inLobby: null | string = null
+  let inLobby: string = ""
 
   const lobbyList = HtmlDiv({
     width: "380px",
@@ -137,11 +137,7 @@ const Lobbies = (world: World): SubMenu => {
   const createLobby = HtmlButton({
     text: "Create Lobby",
     style: {
-      bottom: "10px",
-      left: "10px",
-      height: "40px",
-      width: "186px",
-      fontSize: "20px",
+      bottom: "10px", left: "10px", height: "40px", width: "186px"
     },
     onClick: () => {
       if (inLobby) return
@@ -151,19 +147,13 @@ const Lobbies = (world: World): SubMenu => {
         polled = world.tick - 70
       })
       leaveLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
-    },
-    onHover: () => {
-      createLobby.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
-    },
-    onHoverOut: () => {
-      createLobby.style.backgroundColor = inLobby ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.4)"
     }
   })
 
   const leaveLobby = HtmlButton({
     text: "Leave Lobby",
     style: {
-      bottom: "10px", right: "10px", height: "40px", width: "186px", backgroundColor: "rgba(0, 0, 0, 0)"
+      bottom: "10px", right: "10px", height: "40px", width: "186px"
     },
     onClick: () => {
       if (!inLobby) return
@@ -171,15 +161,9 @@ const Lobbies = (world: World): SubMenu => {
       world.client?.lobbyLeave()
 
       polled = world.tick - 70
-      inLobby = null
+      inLobby = ""
 
       createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
-    },
-    onHover: () => {
-      leaveLobby.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
-    },
-    onHoverOut: () => {
-      leaveLobby.style.backgroundColor = inLobby ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 0)"
     }
   })
 
@@ -203,15 +187,9 @@ const Lobbies = (world: World): SubMenu => {
   return {
     div: lobbies,
     onTick: () => {
-      createLobby.style.pointerEvents = inLobby ? "none" : "auto"
-      createLobby.style.border = inLobby ? "2px solid #cccccc" : "2px solid #ffffff"
-      createLobby.style.color = inLobby ? "#cccccc" : "#ffffff"
-      // createLobby.style.backgroundColor = inLobby ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 0.1)"
 
-      leaveLobby.style.pointerEvents = inLobby ? "auto" : "none"
-      leaveLobby.style.border = inLobby ? "2px solid #ffffff" : "2px solid #cccccc"
-      leaveLobby.style.color = inLobby ? "#ffffff" : "#cccccc"
-      // leaveLobby.style.backgroundColor = inLobby ? "rgba(0, 0, 0, 0.1)" : "rgba(0, 0, 0, 0.4)"
+      styleButton(createLobby, Boolean(inLobby), createLobby.matches(":hover"))
+      styleButton(leaveLobby, Boolean(!inLobby), leaveLobby.matches(":hover"))
 
       if (world.tick - 80 > polled) {
         polled = world.tick
@@ -272,7 +250,7 @@ const Lobbies = (world: World): SubMenu => {
           }
 
           if (keys(response.lobbies).length === 0) {
-            inLobby = null
+            inLobby = ""
           }
         })
       }
