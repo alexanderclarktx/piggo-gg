@@ -199,22 +199,22 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sunSphere.position.copy(sun.position)
       renderer.scene.add(sunSphere)
 
-      GL.load("Eagle-Golden.glb", (eagle) => {
+      GL.load("eagle.glb", (eagle) => {
         renderer.eagle = eagle.scene
 
         renderer.eagle.animations = eagle.animations
         eagle.scene.rotation.order = "YXZ"
 
-        // const colors: Record<string, number> = {
-        //   Cylinder: 0x5C2421,
-        //   Cylinder_1: 0xE7C41C,
-        //   Cylinder_2: 0xffffff,
-        //   Cylinder_3: 0x632724
-        // }
+        const colors: Record<string, number> = {
+          Cylinder: 0x5C2421,
+          Cylinder_1: 0xE7C41C,
+          Cylinder_2: 0xffffff,
+          Cylinder_3: 0x632724
+        }
 
         eagle.scene.traverse((child) => {
           if (child instanceof Mesh) {
-            // child.material = new MeshStandardMaterial({ color: colors[child.name] })
+            child.material = new MeshStandardMaterial({ color: colors[child.name] })
             child.castShadow = true
             child.receiveShadow = true
           }
