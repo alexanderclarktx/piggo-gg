@@ -10,11 +10,12 @@ generator client {
 }
 
 model users {
-  name                   String    @id @unique @db.Citext
-  googleId               String    @unique
-  sentFriendRequests     friends[] @relation("Friendship1")
-  receivedFriendRequests friends[] @relation("Friendship2")
+  name                   String       @id @unique @db.Citext
+  googleId               String       @unique
+  sentFriendRequests     friends[]    @relation("Friendship1")
+  receivedFriendRequests friends[]    @relation("Friendship2")
   highscores             highscores[]
+  purchases              purchases[]
 }
 
 model friends {
@@ -27,6 +28,31 @@ model friends {
   createdAt DateTime         @default(now())
 
   @@unique([user1Id, user2Id])
+}
+
+model skins {
+  id        String      @id @default(uuid())
+  name      String      @db.Citext
+  createdAt DateTime    @default(now())
+  limited   Boolean     @default(false)
+  maxSupply Int         @default(0)
+  price     Int         @default(0)
+  purchases purchases[]
+
+  @@unique([name])
+  @@index([createdAt])
+}
+
+model purchases {
+  id          String   @id @default(uuid())
+  user        users    @relation(fields: [userId], references: [name])
+  userId      String   @db.Citext
+  skin        skins    @relation(fields: [skinId], references: [id])
+  skinId      String
+  purchasedAt DateTime @default(now())
+
+  @@unique([userId, skinId])
+  @@index([purchasedAt])
 }
 
 model highscores {
