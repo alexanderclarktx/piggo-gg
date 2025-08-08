@@ -23,6 +23,7 @@ const defaults: HtmlStyleProps = {
   position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
+  fontSize: "20px",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
   backgroundColor: "rgba(0, 0, 0, 0.4)",
   color: "#ffffff",
