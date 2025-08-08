@@ -98,18 +98,8 @@ export const DDEMenu = (world: World): Entity => {
 
           // menu buttons
           styleButton(lobbiesButton, activeMenu === "lobbies", lobbiesButton.matches(":hover"))
-          // lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #cccccc" : "2px solid #ffffff"
-          // lobbiesButton.style.color = activeMenu === "lobbies" ? "#cccccc" : "#ffffff"
-          // lobbiesButton.style.backgroundColor = activeMenu === "lobbies" ? "rgba(0, 0, 0, 0.1)" : "rgba(0, 0, 0, 0.4)"
-          // if (lobbiesButton.matches(":hover")) lobbiesButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
-
-          skinsButton.style.border = activeMenu === "skins" ? "2px solid #cccccc" : "2px solid #ffffff"
-          skinsButton.style.color = activeMenu === "skins" ? "#cccccc" : "#ffffff"
-          skinsButton.style.backgroundColor = activeMenu === "skins" ? "rgba(0, 0, 0, 0.1)" : "rgba(0, 0, 0, 0.4)"
-
-          settingsButton.style.border = activeMenu === "settings" ? "2px solid #cccccc" : "2px solid #ffffff"
-          settingsButton.style.color = activeMenu === "settings" ? "#cccccc" : "#ffffff"
-          settingsButton.style.backgroundColor = activeMenu === "settings" ? "rgba(0, 0, 0, 0.1)" : "rgba(0, 0, 0, 0.4)"
+          styleButton(skinsButton, activeMenu === "skins", skinsButton.matches(":hover"))
+          styleButton(settingsButton, activeMenu === "settings", settingsButton.matches(":hover"))
 
           // visibility of submenus
           lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
