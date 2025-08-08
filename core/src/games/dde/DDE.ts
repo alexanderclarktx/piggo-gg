@@ -75,6 +75,8 @@ const DDESystem = SystemBuilder({
           musicPlaying = false
         }
 
+        if (world.tick === 2) world.three?.resize()
+
         const players = world.players()
         const characters = world.characters()
 
