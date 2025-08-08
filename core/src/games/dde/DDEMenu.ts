@@ -1,6 +1,7 @@
 import {
   Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText,
-  HtmlButton, World, entries, keys, HtmlStyleProps
+  HtmlButton, World, entries, keys, HtmlStyleProps,
+  styleButton
 } from "@piggo-gg/core"
 
 type SubMenu = {
@@ -32,7 +33,7 @@ export const DDEMenu = (world: World): Entity => {
     style: menuButtonStyle,
     onClick: () => {
       activeMenu = "lobbies"
-    },
+    }
   })
 
   const skinsButton = HtmlButton({
@@ -96,9 +97,11 @@ export const DDEMenu = (world: World): Entity => {
           if (!visible) return
 
           // menu buttons
-          lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #cccccc" : "2px solid #ffffff"
-          lobbiesButton.style.color = activeMenu === "lobbies" ? "#cccccc" : "#ffffff"
-          lobbiesButton.style.backgroundColor = activeMenu === "lobbies" ? "rgba(0, 0, 0, 0.1)" : "rgba(0, 0, 0, 0.4)"
+          styleButton(lobbiesButton, activeMenu === "lobbies", lobbiesButton.matches(":hover"))
+          // lobbiesButton.style.border = activeMenu === "lobbies" ? "2px solid #cccccc" : "2px solid #ffffff"
+          // lobbiesButton.style.color = activeMenu === "lobbies" ? "#cccccc" : "#ffffff"
+          // lobbiesButton.style.backgroundColor = activeMenu === "lobbies" ? "rgba(0, 0, 0, 0.1)" : "rgba(0, 0, 0, 0.4)"
+          // if (lobbiesButton.matches(":hover")) lobbiesButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
 
           skinsButton.style.border = activeMenu === "skins" ? "2px solid #cccccc" : "2px solid #ffffff"
           skinsButton.style.color = activeMenu === "skins" ? "#cccccc" : "#ffffff"

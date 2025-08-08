@@ -40,3 +40,15 @@ export type HtmlButtonProps = {
   onHover?: (event: MouseEvent) => void
   onHoverOut?: (event: MouseEvent) => void
 }
+
+export const styleButton = (button: HTMLButtonElement, selected: boolean, hovered: boolean): void => {
+  if (selected) {
+    button.style.border = "2px solid #cccccc"
+    button.style.color = "#cccccc"
+    button.style.backgroundColor = "rgba(0, 0, 0, 0)"
+  } else {
+    button.style.border = "2px solid #ffffff"
+    button.style.color = "#ffffff"
+    button.style.backgroundColor = hovered ? "rgba(0, 160, 255, 0.4)" : "rgba(0, 0, 0, 0.4)"
+  }
+}
