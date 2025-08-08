@@ -1,7 +1,6 @@
 import {
-  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText,
-  HtmlButton, World, entries, keys, HtmlStyleProps,
-  styleButton
+  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton,
+  World, entries, keys, HtmlStyleProps, styleButton
 } from "@piggo-gg/core"
 
 type SubMenu = {
@@ -146,7 +145,6 @@ const Lobbies = (world: World): SubMenu => {
         inLobby = lobbyId
         polled = world.tick - 70
       })
-      leaveLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
     }
   })
 
@@ -162,8 +160,6 @@ const Lobbies = (world: World): SubMenu => {
 
       polled = world.tick - 70
       inLobby = ""
-
-      createLobby.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
     }
   })
 
@@ -232,6 +228,8 @@ const Lobbies = (world: World): SubMenu => {
                 fontSize: "16px",
                 right: "5px",
                 border: meta.id === inLobby ? "2px solid #bbbbbb" : "2px solid #ffffff",
+                color: meta.id === inLobby ? "#bbbbbb" : "#ffffff",
+                backgroundColor: meta.id === inLobby ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.4)",
                 pointerEvents: meta.id === inLobby ? "none" : "auto",
                 position: "relative",
                 float: "right"
