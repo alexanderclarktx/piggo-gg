@@ -20,7 +20,6 @@ html {
 }
 
 body, html {
-  touch-action: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -38,13 +37,4 @@ canvas {
   width: auto;
   height: auto;
   object-fit: contain;
-}
-
-video {
-  margin: 5px;
-  border-width: 3px;
-  border-color: rgb(77, 7, 105);
-  border-style: ridge;
-  width: 200px;
-  height: 130px;
 }

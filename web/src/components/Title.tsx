@@ -11,7 +11,6 @@ export const Title = ({ world, loginState, setLoginState }: TitleProps) => {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      userSelect: "none",
       margin: 0,
       marginBottom: 5
     }}>

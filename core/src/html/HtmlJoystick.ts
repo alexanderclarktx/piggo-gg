@@ -14,7 +14,6 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
     bottom: "40px",
     pointerEvents: "auto",
     touchAction: "none",
-    userSelect: "none",
     border: "2px solid #ffffff"
   })
 
