@@ -18,7 +18,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
   }, [])
 
   return (
-    <div style={{ position: "relative", touchAction: "none", WebkitTouchCallout: "none" }}>
+    <div style={{ position: "relative" }}>
       <canvas id="canvas" />
     </div>
   )
