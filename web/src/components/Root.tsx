@@ -17,7 +17,7 @@ export const Root = () => {
   }, [world])
 
   return (
-    <div style={{ userSelect: "none" }}>
+    <div>
       <audio>
         <source src="/silent.mp3" type="audio/mp3" />
       </audio>

@@ -11,7 +11,6 @@ export const Title = ({ world, loginState, setLoginState }: TitleProps) => {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      userSelect: "none",
       margin: 0,
       marginBottom: 5
     }}>
@@ -44,7 +43,7 @@ export const Title = ({ world, loginState, setLoginState }: TitleProps) => {
 
       <div style={{ position: "absolute", right: 0, bottom: 0 }}>
         <span style={{ fontFamily: "sans-serif", fontSize: 14, marginRight: 5, verticalAlign: "-70%" }}>
-          v<b>0.27.3</b>
+          v<b>0.27.4</b>
         </span>
         <a style={{ margin: 0, color: "inherit", textDecoration: "none" }} target="_blank" href="https://discord.gg/VfFG9XqDpJ">
           <FaDiscord size={20} style={{ color: "white", verticalAlign: "-80%" }}></FaDiscord>
