@@ -52,3 +52,17 @@ export const styleButton = (button: HTMLButtonElement, selected: boolean, hovere
     button.style.backgroundColor = hovered ? "rgba(0, 160, 255, 0.4)" : "rgba(0, 0, 0, 0.4)"
   }
 }
+
+export const styleSwitch = (button: HTMLButtonElement, enabled: boolean, hovered: boolean): void => {
+  if (enabled) {
+    button.textContent = "on"
+    button.style.border = "2px solid #00ff00"
+    button.style.color = "#00ff00"
+    button.style.backgroundColor = hovered ? "rgba(0, 160, 255, 0.4)" : "rgba(0, 0, 0, 0.4)"
+  } else {
+    button.textContent = "off"
+    button.style.border = "2px solid #ff0000"
+    button.style.color = "#ff0000"
+    button.style.backgroundColor = hovered ? "rgba(0, 160, 255, 0.4)" : "rgba(0, 0, 0, 0.4)"
+  }
+}

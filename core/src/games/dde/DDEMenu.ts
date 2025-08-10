@@ -1,7 +1,8 @@
 import {
   Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton,
   World, entries, keys, HtmlStyleProps, styleButton,
-  DDESettings
+  DDESettings,
+  styleSwitch
 } from "@piggo-gg/core"
 
 type SubMenu = {
@@ -104,6 +105,8 @@ export const DDEMenu = (world: World): Entity => {
           settings.div.style.display = activeMenu === "settings" ? "block" : "none"
 
           lobbies.onTick()
+          skins.onTick()
+          settings.onTick()
         }
       })
     }
@@ -288,27 +291,55 @@ const Settings = (world: World): SubMenu => {
     position: "relative"
   })
 
-  const disableAmbientSound = HtmlButton({
-    text: "Disable Ambient Sound",
+  const ambientSoundText = HtmlText({
+    text: "Ambient Sound",
     style: {
-      width: "100px",
+      width: "320px",
       height: "40px",
       position: "relative",
-      top: "10px",
+      // top: "10px",
       left: "10px",
+      fontSize: "16px",
+      lineHeight: "40px",
+      textAlign: "center"
+    }
+  })
+
+  const ambientSoundEnabled = HtmlButton({
+    text: "On",
+    style: {
+      width: "60px",
+      height: "40px",
+      position: "relative",
+      // top: "10px",
+      fontSize: "16px",
       pointerEvents: "auto"
     },
     onClick: () => {
       const settings = world.game.settings as DDESettings
       if (settings) {
-        settings.disableAmbientSound = !settings.disableAmbientSound
+        settings.ambientSound = !settings.ambientSound
       }
     }
   })
 
+  const ambientSoundWrapper = HtmlDiv({
+    position: "relative",
+    marginTop: "15px",
+    display: "flex"
+  })
+
+  ambientSoundWrapper.appendChild(ambientSoundText)
+  ambientSoundWrapper.appendChild(ambientSoundEnabled)
+
+  settings.appendChild(ambientSoundWrapper)
+
   return {
     div: settings,
-    onTick: () => { }
+    onTick: () => {
+      const settings = world.game.settings as DDESettings
+      styleSwitch(ambientSoundEnabled, (settings?.ambientSound ?? false), ambientSoundEnabled.matches(":hover"))
+    }
   }
 }
 

@@ -20,7 +20,7 @@ export type DDEState = {
 }
 
 export type DDESettings = {
-  disableAmbientSound: boolean
+  ambientSound: boolean
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -29,7 +29,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     id: "Duck Duck Eagle",
     netcode: "rollback",
     settings: {
-      disableAmbientSound: false
+      ambientSound: true
     },
     state: {
       phase: "warmup",
@@ -77,11 +77,11 @@ const DDESystem = SystemBuilder({
         const state = world.game.state as DDEState
         const settings = world.game.settings as DDESettings
 
-        if (!musicPlaying && world.client?.soundManager.ready && !settings.disableAmbientSound) {
+        if (!musicPlaying && world.client?.soundManager.ready && settings.ambientSound) {
           musicPlaying = world.client.soundManager.play({ soundName: "birdsong1" })
         } else if (world.client?.soundManager.sounds.birdsong1.state === "stopped") {
           musicPlaying = false
-        } else if (musicPlaying && settings.disableAmbientSound) {
+        } else if (musicPlaying && !settings.ambientSound) {
           world.client?.soundManager.stop("birdsong1")
           musicPlaying = false
         }
