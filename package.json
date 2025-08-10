@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "prod": "bun gen && bun --cwd server start",
-    "dev": "bun --cwd server dev && fg",
+    "dev": "bun --cwd server dev",
     "gen": "bun --cwd server prisma:generate",
     "db": "bun --cwd server prisma:local",
     "branch": "git checkout main && git pull && git branch -D $(whoami) && git checkout -b $(whoami)",
