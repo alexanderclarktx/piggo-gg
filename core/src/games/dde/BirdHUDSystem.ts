@@ -1,7 +1,8 @@
 import {
-  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder
+  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder,
+  HtmlDiv
 } from "@piggo-gg/core"
-import { DDEState } from "./DDE"
+import { DDESettings, DDEState } from "./DDE"
 
 export const BirdHUDSystem = ClientSystemBuilder({
   id: "BirdHUDSystem",
@@ -50,14 +51,30 @@ export const BirdHUDSystem = ClientSystemBuilder({
       }
     })
 
-    // const music = HtmlMusic()
+    const controls = HtmlDiv({
+      position: "absolute",
+      top: "0px",
+      left: "0px",
+      width: "100%",
+      height: "100%",
+      pointerEvents: "none"
+    })
 
-    world.three?.append(
-      aButton, sButton, wButton, dButton, eButton,
-      boostButton, jumpButton,
-      transformLabel, moveLabel, boostLabel, jumpLabel,
-      scoreText, posText
-    )
+    controls.appendChild(aButton)
+    controls.appendChild(dButton)
+    controls.appendChild(sButton)
+    controls.appendChild(wButton)
+    controls.appendChild(eButton)
+    controls.appendChild(boostButton)
+    controls.appendChild(jumpButton)
+    controls.appendChild(transformLabel)
+    controls.appendChild(moveLabel)
+    controls.appendChild(boostLabel)
+    controls.appendChild(jumpLabel)
+
+    world.three?.append(controls)
+    world.three?.append(scoreText)
+    world.three?.append(posText)
 
     const active = "rgba(0, 255, 255, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
@@ -69,6 +86,15 @@ export const BirdHUDSystem = ClientSystemBuilder({
       query: [],
       priority: 10,
       onTick: () => {
+        const settings = world.game.settings as DDESettings
+        controls.style.display = settings?.showControls ? "block" : "none"
+        // if (settings?.showControls === false) {
+        //   controls.style.display = "none"
+        //   return
+        // } else {
+        //   controls.style.display = "block"
+        // }
+
         const down = world.client?.bufferDown.all()?.map(key => key.key)
         if (!down) return
 
