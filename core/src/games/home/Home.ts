@@ -8,6 +8,7 @@ export const Home: GameBuilder = {
   init: (world) => ({
     id: "home",
     systems: [SpawnSystem(Skelly), ZomiSpawnSystem],
+    settings: {},
     state: {},
     netcode: "delay",
     entities: [

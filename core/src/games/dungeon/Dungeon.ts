@@ -15,6 +15,7 @@ export const Dungeon: GameBuilder = {
   init: (world) => ({
     id: "dungeon",
     netcode: "delay",
+    settings: {},
     state: {},
     systems: [InventorySystem, CameraSystem(), SpawnSystem(Skelly), ZomiSpawnSystem, HealthBarSystem],
     entities: [

@@ -11,6 +11,7 @@ export const Craft: GameBuilder = {
   init: () => ({
     id: "craft",
     netcode: "rollback",
+    settings: {},
     state: {},
     systems: [
       PhysicsSystem("local"),

@@ -19,11 +19,20 @@ export type DDEState = {
   applesTimer: Record<string, number>
 }
 
-export const DDE: GameBuilder<DDEState> = {
+export type DDESettings = {
+  ambientSound: boolean
+  showControls: boolean
+}
+
+export const DDE: GameBuilder<DDEState, DDESettings> = {
   id: "Duck Duck Eagle",
   init: (world) => ({
     id: "Duck Duck Eagle",
     netcode: "rollback",
+    settings: {
+      ambientSound: true,
+      showControls: true
+    },
     state: {
       phase: "warmup",
       nextSeed: 123456111,
@@ -67,11 +76,15 @@ const DDESystem = SystemBuilder({
       query: [],
       priority: 3,
       onTick: () => {
-        const state = world.game.state as DDEState
+        const state = world.state<DDEState>()
+        const settings = world.settings<DDESettings>()
 
-        if (!musicPlaying && world.client?.soundManager.ready) {
+        if (!musicPlaying && world.client?.soundManager.ready && settings.ambientSound) {
           musicPlaying = world.client.soundManager.play({ soundName: "birdsong1" })
         } else if (world.client?.soundManager.sounds.birdsong1.state === "stopped") {
+          musicPlaying = false
+        } else if (musicPlaying && !settings.ambientSound) {
+          world.client?.soundManager.stop("birdsong1")
           musicPlaying = false
         }
 

@@ -1,7 +1,7 @@
 import {
-  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder
+  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder, HtmlDiv
 } from "@piggo-gg/core"
-import { DDEState } from "./DDE"
+import { DDESettings, DDEState } from "./DDE"
 
 export const BirdHUDSystem = ClientSystemBuilder({
   id: "BirdHUDSystem",
@@ -50,14 +50,30 @@ export const BirdHUDSystem = ClientSystemBuilder({
       }
     })
 
-    // const music = HtmlMusic()
+    const controls = HtmlDiv({
+      position: "absolute",
+      top: "0px",
+      left: "0px",
+      width: "100%",
+      height: "100%",
+      pointerEvents: "none"
+    })
 
-    world.three?.append(
-      aButton, sButton, wButton, dButton, eButton,
-      boostButton, jumpButton,
-      transformLabel, moveLabel, boostLabel, jumpLabel,
-      scoreText, posText
-    )
+    controls.appendChild(aButton)
+    controls.appendChild(dButton)
+    controls.appendChild(sButton)
+    controls.appendChild(wButton)
+    controls.appendChild(eButton)
+    controls.appendChild(boostButton)
+    controls.appendChild(jumpButton)
+    controls.appendChild(transformLabel)
+    controls.appendChild(moveLabel)
+    controls.appendChild(boostLabel)
+    controls.appendChild(jumpLabel)
+
+    world.three?.append(controls)
+    world.three?.append(scoreText)
+    world.three?.append(posText)
 
     const active = "rgba(0, 255, 255, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
@@ -69,28 +85,31 @@ export const BirdHUDSystem = ClientSystemBuilder({
       query: [],
       priority: 10,
       onTick: () => {
-        const down = world.client?.bufferDown.all()?.map(key => key.key)
-        if (!down) return
+        const settings = world.settings<DDESettings>()
+        controls.style.display = settings.showControls ? "block" : "none"
 
-        aButton.style.backgroundColor = down.includes("a") ? active : inactive
-        dButton.style.backgroundColor = down.includes("d") ? active : inactive
-        sButton.style.backgroundColor = down.includes("s") ? active : inactive
-        wButton.style.backgroundColor = down.includes("w") ? active : inactive
-        eButton.style.backgroundColor = down.includes("e") ? active : inactive
-        boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
-        jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
+        const down = world.client?.bufferDown.all()?.map(key => key.key)
+        if (down) {
+          aButton.style.backgroundColor = down.includes("a") ? active : inactive
+          dButton.style.backgroundColor = down.includes("d") ? active : inactive
+          sButton.style.backgroundColor = down.includes("s") ? active : inactive
+          wButton.style.backgroundColor = down.includes("w") ? active : inactive
+          eButton.style.backgroundColor = down.includes("e") ? active : inactive
+          boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
+          jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
+        }
 
         const pc = world.client?.playerCharacter()
         if (pc) {
-          const { position } = pc.components
+          const { flying, x, y, z } = pc.components.position.data
 
-          const visibility = position.data.flying ? "hidden" : "visible"
+          const visibility = flying ? "hidden" : "visible"
 
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 
           if (world.client?.env === "dev") {
-            posText.innerHTML = `<span style='color: #00ffff'>${position.data.x.toFixed(2)}</span><span style='color: #ffff00'> ${position.data.y.toFixed(2)}</span><span style='color: #ff33cc'> ${position.data.z.toFixed(2)}</span>`
+            posText.innerHTML = `<span style='color: #00ffff'>${x.toFixed(2)}</span><span style='color: #ffff00'> ${y.toFixed(2)}</span><span style='color: #ff33cc'> ${z.toFixed(2)}</span>`
             posText.style.visibility = "visible"
           } else {
             posText.style.visibility = "hidden"

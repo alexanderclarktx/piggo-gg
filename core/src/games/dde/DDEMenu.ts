@@ -1,6 +1,6 @@
 import {
-  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton,
-  World, entries, keys, HtmlStyleProps, styleButton
+  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World,
+  entries, keys, HtmlStyleProps, styleButton, DDESettings, styleSwitch
 } from "@piggo-gg/core"
 
 type SubMenu = {
@@ -65,7 +65,7 @@ export const DDEMenu = (world: World): Entity => {
 
   const lobbies = Lobbies(world)
   const skins = Skins()
-  const settings = Settings()
+  const settings = Settings(world)
 
   ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
@@ -103,6 +103,8 @@ export const DDEMenu = (world: World): Entity => {
           settings.div.style.display = activeMenu === "settings" ? "block" : "none"
 
           lobbies.onTick()
+          skins.onTick()
+          settings.onTick()
         }
       })
     }
@@ -273,23 +275,73 @@ const Skins = (): SubMenu => {
   }
 }
 
-const Settings = (): SubMenu => {
+const Settings = (world: World): SubMenu => {
   const settings = HtmlDiv({
     top: "5px",
     left: "50%",
     width: "400px",
     height: "300px",
     transform: "translate(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
     pointerEvents: "auto",
     border: "2px solid #ffffff",
     borderRadius: "10px",
     position: "relative"
   })
 
+  const settingsRow = (text: string, key: keyof DDESettings): { div: HTMLDivElement, button: HTMLButtonElement } => {
+    const label = HtmlText({
+      text,
+      style: {
+        width: "320px",
+        height: "40px",
+        position: "relative",
+        left: "10px",
+        fontSize: "16px",
+        lineHeight: "40px",
+        textAlign: "center"
+      }
+    })
+
+    const button = HtmlButton({
+      text: "On",
+      style: {
+        width: "60px",
+        height: "40px",
+        position: "relative",
+        fontSize: "18px",
+        pointerEvents: "auto"
+      },
+      onClick: () => {
+        const settings = world.settings<DDESettings>()
+        settings[key] = !settings[key]
+      }
+    })
+
+    const div = HtmlDiv({
+      position: "relative",
+      marginTop: "15px",
+      display: "flex"
+    })
+
+    div.appendChild(label)
+    div.appendChild(button)
+
+    return { div, button }
+  }
+  const ambientSound = settingsRow("Ambient Sound", "ambientSound")
+  const showControls = settingsRow("Show Controls", "showControls")
+
+  settings.appendChild(ambientSound.div)
+  settings.appendChild(showControls.div)
+
   return {
     div: settings,
-    onTick: () => { }
+    onTick: () => {
+      const settings = world.settings<DDESettings>()
+      styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
+      styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
+    }
   }
 }
 
