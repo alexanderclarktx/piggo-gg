@@ -8,9 +8,14 @@ export const HtmlDiv = (style: HtmlStyleProps = {}): HTMLDivElement => {
   const div = document.createElement("div")
 
   Object.assign(div.style, defaults)
-  Object.assign(div.style, style)
 
   div.oncontextmenu = (e) => e.preventDefault()
+  div.ontouchstart = (e) => e.preventDefault()
+  div.ontouchend = (e) => e.preventDefault()
+  div.ontouchmove = (e) => e.preventDefault()
+  div.ontouchcancel = (e) => e.preventDefault()
+
+  Object.assign(div.style, style)
 
   return div
 }

@@ -27,7 +27,7 @@ const leap = 0.23
 export const Bird = (player: Player) => Character({
   id: `bird-${player.id}`,
   components: {
-    position: Position({ friction: true, gravity: 0.002, flying: false, z: 6, x: 24, y: 18 }),
+    position: Position({ friction: true, gravity: 0.002, flying: false, z: 6, x: 25, y: 18 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
