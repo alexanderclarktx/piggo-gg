@@ -76,8 +76,8 @@ const DDESystem = SystemBuilder({
       query: [],
       priority: 3,
       onTick: () => {
-        const state = world.game.state as DDEState
-        const settings = world.game.settings as DDESettings
+        const state = world.state<DDEState>()
+        const settings = world.settings<DDESettings>()
 
         if (!musicPlaying && world.client?.soundManager.ready && settings.ambientSound) {
           musicPlaying = world.client.soundManager.play({ soundName: "birdsong1" })

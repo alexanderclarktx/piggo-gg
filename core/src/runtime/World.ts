@@ -47,6 +47,8 @@ export type World = {
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
   setGame: (game: GameBuilder | string) => void
+  settings: <S extends {}>() => S
+  state: <S extends {}>() => S
 }
 
 export type WorldBuilder = (_: WorldProps) => World
@@ -294,6 +296,12 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       world.addSystemBuilders(systems)
 
       commands?.forEach((command) => world.commands[command.id] = command)
+    },
+    settings: <S extends {}>(): S => {
+      return world.game.settings as S
+    },
+    state: <S extends {}>(): S => {
+      return world.game.state as S
     }
   }
 

@@ -85,8 +85,8 @@ export const BirdHUDSystem = ClientSystemBuilder({
       query: [],
       priority: 10,
       onTick: () => {
-        const settings = world.game.settings as DDESettings
-        controls.style.display = settings?.showControls ? "block" : "none"
+        const settings = world.settings<DDESettings>()
+        controls.style.display = settings.showControls ? "block" : "none"
 
         const down = world.client?.bufferDown.all()?.map(key => key.key)
         if (down) {

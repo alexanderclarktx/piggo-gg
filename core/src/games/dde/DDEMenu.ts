@@ -284,7 +284,7 @@ const Settings = (world: World): SubMenu => {
     width: "400px",
     height: "300px",
     transform: "translate(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
     pointerEvents: "auto",
     border: "2px solid #ffffff",
     borderRadius: "10px",
@@ -315,10 +315,8 @@ const Settings = (world: World): SubMenu => {
         pointerEvents: "auto"
       },
       onClick: () => {
-        const settings = world.game.settings as DDESettings
-        if (settings) {
-          settings[key] = !settings[key]
-        }
+        const settings = world.settings<DDESettings>()
+        settings[key] = !settings[key]
       }
     })
 
@@ -333,18 +331,18 @@ const Settings = (world: World): SubMenu => {
 
     return { div, button }
   }
-  const ambientSoundSetting = settingsRow("Ambient Sound", "ambientSound")
-  const showControlsSetting = settingsRow("Show Controls", "showControls")
+  const ambientSound = settingsRow("Ambient Sound", "ambientSound")
+  const showControls = settingsRow("Show Controls", "showControls")
 
-  settings.appendChild(ambientSoundSetting.div)
-  settings.appendChild(showControlsSetting.div)
+  settings.appendChild(ambientSound.div)
+  settings.appendChild(showControls.div)
 
   return {
     div: settings,
     onTick: () => {
-      const settings = world.game.settings as DDESettings
-      styleSwitch(ambientSoundSetting.button, (settings?.ambientSound ?? false), ambientSoundSetting.button.matches(":hover"))
-      styleSwitch(showControlsSetting.button, (settings?.showControls ?? false), showControlsSetting.button.matches(":hover"))
+      const settings = world.settings<DDESettings>()
+      styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
+      styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
     }
   }
 }
