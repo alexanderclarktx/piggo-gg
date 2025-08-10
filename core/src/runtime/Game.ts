@@ -6,7 +6,7 @@ export type Game<State extends {} = {}, Settings extends {} = {}> = {
   commands?: Command[]
   entities: Entity[]
   netcode: "rollback" | "delay"
-  settings?: Settings
+  settings: Settings
   state: State
   systems: SystemBuilder[]
   tileMap?: number[]

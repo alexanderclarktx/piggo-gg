@@ -1,6 +1,7 @@
 import {
   Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton,
-  World, entries, keys, HtmlStyleProps, styleButton
+  World, entries, keys, HtmlStyleProps, styleButton,
+  DDESettings
 } from "@piggo-gg/core"
 
 type SubMenu = {
@@ -65,7 +66,7 @@ export const DDEMenu = (world: World): Entity => {
 
   const lobbies = Lobbies(world)
   const skins = Skins()
-  const settings = Settings()
+  const settings = Settings(world)
 
   ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
@@ -273,7 +274,7 @@ const Skins = (): SubMenu => {
   }
 }
 
-const Settings = (): SubMenu => {
+const Settings = (world: World): SubMenu => {
   const settings = HtmlDiv({
     top: "5px",
     left: "50%",
@@ -297,7 +298,12 @@ const Settings = (): SubMenu => {
       left: "10px",
       pointerEvents: "auto"
     },
-    onClick: () => {}
+    onClick: () => {
+      const settings = world.game.settings as DDESettings
+      if (settings) {
+        settings.disableAmbientSound = !settings.disableAmbientSound
+      }
+    }
   })
 
   return {

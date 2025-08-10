@@ -14,6 +14,7 @@ export const Lobby: GameBuilder = {
   id: "lobby",
   init: (world) => ({
     id: "lobby",
+    settings: {},
     state: {
       gameId: "Duck Duck Eagle"
     },

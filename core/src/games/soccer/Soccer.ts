@@ -9,6 +9,7 @@ export const Soccer: GameBuilder = {
   id: "soccer",
   init: (world) => ({
     id: "soccer",
+    settings: {},
     state: {},
     entities: [
       ...DefaultUI(world),

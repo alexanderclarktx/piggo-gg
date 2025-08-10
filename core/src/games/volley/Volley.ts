@@ -28,6 +28,7 @@ export const Volley: GameBuilder<VolleyState> = {
   init: () => ({
     id: "volley",
     netcode: "rollback",
+    settings: {},
     state: {
       hit: 0,
       jumpHits: [],
