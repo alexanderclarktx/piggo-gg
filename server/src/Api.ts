@@ -3,7 +3,7 @@ import {
   entries, randomHash, keys, round, stringify, values, BadResponse
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
-import { Server, ServerWebSocket, env, resolve } from "bun"
+import { Server, ServerWebSocket, env } from "bun"
 import jwt from "jsonwebtoken"
 import { decode, encode } from "@msgpack/msgpack"
 import { OAuth2Client } from "google-auth-library"
@@ -272,21 +272,20 @@ export const Api = (): Api => {
         fetch: async (req: Request) => {
           const url = new URL(req.url)
 
-          // let path = url.pathname
           if (url.pathname === "/") url.pathname = "/index.html"
 
-          const file = Bun.file("../docs" + url.pathname)
+          const path = "../docs" + url.pathname
+
+          const file = Bun.file(path)
           const exists = await file.exists()
           if (exists) {
             const fileContent = await file.bytes()
             const contentType = file.type
 
-            return new Response(fileContent, {
-              headers: { 'Content-Type': contentType }
-            })
+            return new Response(fileContent, { headers: { 'Content-Type': contentType } })
           } else {
-            console.error("404", "./docs" + url.pathname)
-            return new Response("File not found", { status: 404 })
+            console.error("404", path)
+            return new Response("file not found", { status: 404 })
           }
         }
       })
