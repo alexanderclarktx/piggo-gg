@@ -62,7 +62,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (!webgl) return
 
       if (isMobile()) {
-        const height = document.fullscreenElement ? window.outerHeight : window.innerHeight
+        // @ts-expect-error
+        const height = (document.fullscreenElement || window.navigator.standalone) ? window.outerHeight : window.innerHeight
 
         webgl.setSize(window.innerWidth, height)
         renderer.camera.c.aspect = window.innerWidth / height
