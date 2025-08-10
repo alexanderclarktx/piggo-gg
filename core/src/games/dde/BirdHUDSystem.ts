@@ -1,6 +1,5 @@
 import {
-  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder,
-  HtmlDiv
+  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder, HtmlDiv
 } from "@piggo-gg/core"
 import { DDESettings, DDEState } from "./DDE"
 
@@ -88,35 +87,29 @@ export const BirdHUDSystem = ClientSystemBuilder({
       onTick: () => {
         const settings = world.game.settings as DDESettings
         controls.style.display = settings?.showControls ? "block" : "none"
-        // if (settings?.showControls === false) {
-        //   controls.style.display = "none"
-        //   return
-        // } else {
-        //   controls.style.display = "block"
-        // }
 
         const down = world.client?.bufferDown.all()?.map(key => key.key)
-        if (!down) return
-
-        aButton.style.backgroundColor = down.includes("a") ? active : inactive
-        dButton.style.backgroundColor = down.includes("d") ? active : inactive
-        sButton.style.backgroundColor = down.includes("s") ? active : inactive
-        wButton.style.backgroundColor = down.includes("w") ? active : inactive
-        eButton.style.backgroundColor = down.includes("e") ? active : inactive
-        boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
-        jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
+        if (down) {
+          aButton.style.backgroundColor = down.includes("a") ? active : inactive
+          dButton.style.backgroundColor = down.includes("d") ? active : inactive
+          sButton.style.backgroundColor = down.includes("s") ? active : inactive
+          wButton.style.backgroundColor = down.includes("w") ? active : inactive
+          eButton.style.backgroundColor = down.includes("e") ? active : inactive
+          boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
+          jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
+        }
 
         const pc = world.client?.playerCharacter()
         if (pc) {
-          const { position } = pc.components
+          const { flying, x, y, z } = pc.components.position.data
 
-          const visibility = position.data.flying ? "hidden" : "visible"
+          const visibility = flying ? "hidden" : "visible"
 
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 
           if (world.client?.env === "dev") {
-            posText.innerHTML = `<span style='color: #00ffff'>${position.data.x.toFixed(2)}</span><span style='color: #ffff00'> ${position.data.y.toFixed(2)}</span><span style='color: #ff33cc'> ${position.data.z.toFixed(2)}</span>`
+            posText.innerHTML = `<span style='color: #00ffff'>${x.toFixed(2)}</span><span style='color: #ffff00'> ${y.toFixed(2)}</span><span style='color: #ff33cc'> ${z.toFixed(2)}</span>`
             posText.style.visibility = "visible"
           } else {
             posText.style.visibility = "hidden"
