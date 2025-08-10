@@ -21,6 +21,7 @@ export type DDEState = {
 
 export type DDESettings = {
   ambientSound: boolean
+  showControls: boolean
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -29,7 +30,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     id: "Duck Duck Eagle",
     netcode: "rollback",
     settings: {
-      ambientSound: true
+      ambientSound: true,
+      showControls: true
     },
     state: {
       phase: "warmup",

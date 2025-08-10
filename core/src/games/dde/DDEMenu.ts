@@ -291,52 +291,60 @@ const Settings = (world: World): SubMenu => {
     position: "relative"
   })
 
-  const ambientSoundText = HtmlText({
-    text: "Ambient Sound",
-    style: {
-      width: "320px",
-      height: "40px",
-      position: "relative",
-      left: "10px",
-      fontSize: "16px",
-      lineHeight: "40px",
-      textAlign: "center"
-    }
-  })
-
-  const ambientSoundEnabled = HtmlButton({
-    text: "On",
-    style: {
-      width: "60px",
-      height: "40px",
-      position: "relative",
-      fontSize: "18px",
-      pointerEvents: "auto"
-    },
-    onClick: () => {
-      const settings = world.game.settings as DDESettings
-      if (settings) {
-        settings.ambientSound = !settings.ambientSound
+  const settingsRow = (text: string, key: keyof DDESettings): { div: HTMLDivElement, button: HTMLButtonElement } => {
+    const label = HtmlText({
+      text,
+      style: {
+        width: "320px",
+        height: "40px",
+        position: "relative",
+        left: "10px",
+        fontSize: "16px",
+        lineHeight: "40px",
+        textAlign: "center"
       }
-    }
-  })
+    })
 
-  const ambientSoundWrapper = HtmlDiv({
-    position: "relative",
-    marginTop: "15px",
-    display: "flex"
-  })
+    const button = HtmlButton({
+      text: "On",
+      style: {
+        width: "60px",
+        height: "40px",
+        position: "relative",
+        fontSize: "18px",
+        pointerEvents: "auto"
+      },
+      onClick: () => {
+        const settings = world.game.settings as DDESettings
+        if (settings) {
+          settings[key] = !settings[key]
+        }
+      }
+    })
 
-  ambientSoundWrapper.appendChild(ambientSoundText)
-  ambientSoundWrapper.appendChild(ambientSoundEnabled)
+    const div = HtmlDiv({
+      position: "relative",
+      marginTop: "15px",
+      display: "flex"
+    })
 
-  settings.appendChild(ambientSoundWrapper)
+    div.appendChild(label)
+    div.appendChild(button)
+
+    return { div, button }
+  }
+  const ambientSoundSetting = settingsRow("Ambient Sound", "ambientSound")
+  const showControlsSetting = settingsRow("Show Controls", "showControls")
+
+  settings.appendChild(ambientSoundSetting.div)
+  settings.appendChild(showControlsSetting.div)
 
   return {
     div: settings,
     onTick: () => {
       const settings = world.game.settings as DDESettings
-      styleSwitch(ambientSoundEnabled, (settings?.ambientSound ?? false), ambientSoundEnabled.matches(":hover"))
+      styleSwitch(ambientSoundSetting.button, (settings?.ambientSound ?? false), ambientSoundSetting.button.matches(":hover"))
+      styleSwitch(showControlsSetting.button, (settings?.showControls ?? false), showControlsSetting.button.matches(":hover"))
     }
   }
 }
