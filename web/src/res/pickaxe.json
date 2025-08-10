@@ -1,0 +1,10 @@
+{
+  "frames": {
+    "0": { "frame": { "x": 2, "y": 2, "w": 16, "h": 16 } }
+  },
+  "meta": {
+    "image": "pickaxe.png",
+    "size": { "w": 20, "h": 20 },
+    "scale": "2.5"
+  }
+}

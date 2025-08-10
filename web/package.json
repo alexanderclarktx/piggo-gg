@@ -3,6 +3,7 @@
   "main": "./main.ts",
   "scripts": {
     "build": "rm -rf ./dist && NODE_ENV=production bun x webpack",
+    "bbuild": "rm -rf ./dist && NODE_ENV=production bun build src/index.tsx --outdir dist --production && cp -r src/res/* dist/",
     "dev": "bun x webpack serve --port 8000"
   },
   "dependencies": {

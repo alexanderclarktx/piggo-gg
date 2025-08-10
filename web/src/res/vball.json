@@ -1,0 +1,11 @@
+{
+  "frames": {
+    "0": { "frame": { "x": 0, "y": 0, "w": 18, "h": 18 } }
+  },
+  "meta": {
+    "image": "vball.png",
+    "format": "RGBA8888",
+    "size": { "w": 18, "h": 18 },
+    "scale": "1"
+  }
+}

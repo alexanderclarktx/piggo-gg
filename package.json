@@ -12,7 +12,7 @@
     "gen": "bun --cwd server prisma:generate",
     "db": "bun --cwd server prisma:local",
     "branch": "git checkout main && git pull && git branch -D $(whoami) && git checkout -b $(whoami)",
-    "pages": "ENV=production bun --cwd web build && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME",
+    "pages": "ENV=production bun --cwd web bbuild && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/",
     "ship": "bun pages && git add . && git commit -m 'ship' && git push",
     "b": "bun branch",
     "s": "bun ship"

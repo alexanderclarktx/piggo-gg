@@ -1,0 +1,11 @@
+{
+  "frames": {
+    "0": { "frame": { "x": 0, "y": 0, "w": 16, "h": 14 } }
+  },
+  "meta": {
+    "image": "key.png",
+    "format": "RGBA8888",
+    "size": { "w": 16, "h": 14 },
+    "scale": "1"
+  }
+}

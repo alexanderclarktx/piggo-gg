@@ -1,0 +1,11 @@
+{
+  "frames": {
+    "rock": { "frame": { "x": 320, "y": 6, "w": 29, "h": 24 } }
+  },
+  "meta": {
+    "image": "retro.png",
+    "format": "RGBA8888",
+    "size": { "w": 520, "h": 320 },
+    "scale": "1"
+  }
+}
