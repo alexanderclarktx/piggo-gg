@@ -13,6 +13,10 @@ export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   if (props.onHoverOut) b.addEventListener("pointerout", props.onHoverOut)
 
   b.oncontextmenu = (e) => e.preventDefault()
+  b.ontouchstart = (e) => e.preventDefault()
+  b.ontouchend = (e) => e.preventDefault()
+  b.ontouchmove = (e) => e.preventDefault()
+  b.ontouchcancel = (e) => e.preventDefault()
 
   Object.assign(b.style, props.style)
 
