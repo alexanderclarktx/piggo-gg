@@ -3,7 +3,7 @@ import {
   entries, randomHash, keys, round, stringify, values, BadResponse
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
-import { Server, ServerWebSocket, env } from "bun"
+import { Server, ServerWebSocket, env, resolve } from "bun"
 import jwt from "jsonwebtoken"
 import { decode, encode } from "@msgpack/msgpack"
 import { OAuth2Client } from "google-auth-library"
@@ -23,6 +23,7 @@ type Handler<R extends RequestTypes["route"]> = (_: { ws: ServerWebSocket<PerCli
 
 export type Api = {
   bun: Server | undefined
+  http: Server | undefined
   clientIncr: number
   clients: Record<string, ServerWebSocket<PerClientData>>
   worlds: Record<string, ServerWorld>
@@ -54,6 +55,7 @@ export const Api = (): Api => {
 
   const api: Api = {
     bun: undefined,
+    http: undefined,
     clientIncr: 1,
     clients: {},
     worlds: {},
@@ -264,6 +266,31 @@ export const Api = (): Api => {
         }
       })
 
+      api.http = Bun.serve({
+        hostname: "0.0.0.0",
+        port: 8000,
+        fetch: async (req: Request) => {
+          const url = new URL(req.url)
+
+          let path = url.pathname
+          if (path === "/") path = "/index.html"
+
+          const file = Bun.file("../docs" + path)
+          const exists = await file.exists()
+          if (exists) {
+            const fileContent = await file.bytes()
+            const contentType = file.type
+
+            return new Response(fileContent, {
+              headers: { 'Content-Type': contentType }
+            })
+          } else {
+            console.error("404", "./docs" + path)
+            return new Response("File not found", { status: 404 })
+          }
+        }
+      })
+
       return api
     },
     handleClose: (ws: ServerWebSocket<PerClientData>) => {
@@ -334,3 +361,4 @@ export const Api = (): Api => {
 
 const server = Api().init()
 console.log(`包 ${server.bun?.url}`)
+console.log(`http ${server.http?.url}`)
