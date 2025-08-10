@@ -266,7 +266,7 @@ export const Api = (): Api => {
         }
       })
 
-      if (env.NODE_ENV !== "production") api.http = Bun.serve({
+      if (env.NODE_ENV === "staging") api.http = Bun.serve({
         hostname: "0.0.0.0",
         port: 8000,
         fetch: async (req: Request) => {

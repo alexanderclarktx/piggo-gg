@@ -2,7 +2,8 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "build": "rm -rf ./dist && NODE_ENV=production bun x webpack"
+    "build": "rm -rf ./dist && NODE_ENV=production bun x webpack",
+    "dev": "bun x webpack serve --port 8000"
   },
   "dependencies": {
     "@sethwebster/react-fps-counter": "^0.0.19",
