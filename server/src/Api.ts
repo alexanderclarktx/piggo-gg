@@ -266,16 +266,16 @@ export const Api = (): Api => {
         }
       })
 
-      api.http = Bun.serve({
+      if (env.NODE_ENV !== "production") api.http = Bun.serve({
         hostname: "0.0.0.0",
         port: 8000,
         fetch: async (req: Request) => {
           const url = new URL(req.url)
 
-          let path = url.pathname
-          if (path === "/") path = "/index.html"
+          // let path = url.pathname
+          if (url.pathname === "/") url.pathname = "/index.html"
 
-          const file = Bun.file("../docs" + path)
+          const file = Bun.file("../docs" + url.pathname)
           const exists = await file.exists()
           if (exists) {
             const fileContent = await file.bytes()
@@ -285,7 +285,7 @@ export const Api = (): Api => {
               headers: { 'Content-Type': contentType }
             })
           } else {
-            console.error("404", "./docs" + path)
+            console.error("404", "./docs" + url.pathname)
             return new Response("File not found", { status: 404 })
           }
         }
@@ -361,4 +361,4 @@ export const Api = (): Api => {
 
 const server = Api().init()
 console.log(`包 ${server.bun?.url}`)
-console.log(`http ${server.http?.url}`)
+console.log(server.http ? `http ${server.http?.url}` : "http server not started")
