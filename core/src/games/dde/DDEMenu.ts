@@ -1,8 +1,6 @@
 import {
-  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton,
-  World, entries, keys, HtmlStyleProps, styleButton,
-  DDESettings,
-  styleSwitch
+  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World,
+  entries, keys, HtmlStyleProps, styleButton, DDESettings, styleSwitch
 } from "@piggo-gg/core"
 
 type SubMenu = {
