@@ -287,6 +287,19 @@ const Settings = (): SubMenu => {
     position: "relative"
   })
 
+  const disableAmbientSound = HtmlButton({
+    text: "Disable Ambient Sound",
+    style: {
+      width: "100px",
+      height: "40px",
+      position: "relative",
+      top: "10px",
+      left: "10px",
+      pointerEvents: "auto"
+    },
+    onClick: () => {}
+  })
+
   return {
     div: settings,
     onTick: () => { }
