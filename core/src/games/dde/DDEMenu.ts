@@ -297,7 +297,6 @@ const Settings = (world: World): SubMenu => {
       width: "320px",
       height: "40px",
       position: "relative",
-      // top: "10px",
       left: "10px",
       fontSize: "16px",
       lineHeight: "40px",
@@ -311,8 +310,7 @@ const Settings = (world: World): SubMenu => {
       width: "60px",
       height: "40px",
       position: "relative",
-      // top: "10px",
-      fontSize: "16px",
+      fontSize: "18px",
       pointerEvents: "auto"
     },
     onClick: () => {
