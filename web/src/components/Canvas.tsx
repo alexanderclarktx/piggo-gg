@@ -9,6 +9,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
 
   useEffect(() => {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement
+    canvas.ontouchend = (e) => e.preventDefault()
 
     const mobile = isMobile()
     if (mobile) canvas.style.border = "none"
