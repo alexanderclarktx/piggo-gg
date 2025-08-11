@@ -3,7 +3,7 @@
   "main": "./main.ts",
   "scripts": {
     "build": "rm -rf ./dist && NODE_ENV=production bun x webpack",
-    "bbuild": "rm -rf ./dist && NODE_ENV=production bun build src/index.tsx --outdir dist --minify-whitespace && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
+    "bbuild": "rm -rf ./dist && NODE_ENV=production bun build src/index.tsx --outdir dist --sourcemapl && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
     "dev": "bun x webpack serve --port 8000"
   },
   "dependencies": {
