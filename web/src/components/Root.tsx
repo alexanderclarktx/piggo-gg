@@ -39,9 +39,9 @@ export const Root = () => {
           <Canvas setWorld={setWorld} />
         </div>
       </div>
-      {window.location.hostname === "localhost" && (
+      {/* {window.location.hostname === "localhost" && (
         <FPSCounter visible={true} position="bottom-left" targetFrameRate={120} />
-      )}
+      )} */}
     </div>
   )
 }
