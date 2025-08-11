@@ -1,4 +1,4 @@
-import { Entity, HtmlDiv, HtmlText, NPC, Player, Position, RefreshableDiv } from "@piggo-gg/core"
+import { DDEState, Entity, HtmlDiv, HtmlText, NPC, Player, Position, RefreshableDiv } from "@piggo-gg/core"
 
 export const ReadyUI = (): Entity => {
 
@@ -22,6 +22,15 @@ export const ReadyUI = (): Entity => {
       npc: NPC({
         behavior: (_, world) => {
           if (world.mode === "server") return
+
+          const state = world.state<DDEState>()
+
+          if (!world.client?.connected || state.phase !== "warmup") {
+            container.style.visibility = "hidden"
+            return
+          }
+
+          container.style.visibility = "visible"
 
           if (!init) {
             init = true
