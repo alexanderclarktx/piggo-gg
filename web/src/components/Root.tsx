@@ -20,7 +20,7 @@ export const Root = () => {
 
   return (
     <div>
-      <audio>
+      {/* <audio>
         <source src="/silent.mp3" type="audio/mp3" />
       </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
@@ -41,7 +41,7 @@ export const Root = () => {
       </div>
       {window.location.hostname === "localhost" && (
         <FPSCounter visible={true} position="bottom-left" targetFrameRate={120} />
-      )}
+      )} */}
     </div>
   )
 }
