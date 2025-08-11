@@ -16,20 +16,34 @@ export const ReadyUI = (): Entity => {
     border: "2px solid #ffffff",
   })
 
-  // const playerRow = HtmlDiv({
-
-  // })
+  const playerRow = HtmlDiv({
+    position: "relative",
+    display: "flex",
+    width: "100%",
+    marginTop: "10px",
+  })
 
   const playerName = HtmlText({
-    text: "noob: 🔴",
+    text: "noobaaa",
     style: {
-      transform: "translate(-50%)",
-      marginTop: "10px",
-      position: "relative",
+      left: "10px"
     }
   })
 
-  container.append(playerName)
+  const playerReady = HtmlText({
+    text: "🟢",
+    style: {
+      position: "absolute",
+      right: "10px"
+    }
+  })
+
+  playerRow.append(playerName)
+  playerRow.append(playerReady)
+
+  container.append(playerRow)
+
+  // container.append(playerName)
 
   const ui = Entity({
     id: "ReadyUI",
