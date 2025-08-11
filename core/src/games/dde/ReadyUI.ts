@@ -9,7 +9,6 @@ export const ReadyUI = (): Entity => {
   const container = HtmlDiv({
     top: "10px",
     right: "10px",
-    // transform: "translate(-100%)",
     width: "200px",
     height: "100px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -57,9 +56,8 @@ export const ReadyUI = (): Entity => {
 }
 
 const PlayerRow = (player: Player): RefreshableDiv => {
-  const row = HtmlDiv({
+  const div = HtmlDiv({
     position: "relative",
-    display: "flex",
     width: "100%",
     marginTop: "10px",
   })
@@ -79,11 +77,11 @@ const PlayerRow = (player: Player): RefreshableDiv => {
     }
   })
 
-  row.append(nameText)
-  row.append(readyText)
+  div.append(nameText)
+  div.append(readyText)
 
   return {
-    div: row,
+    div,
     update: () => {
       nameText.textContent = player.components.pc.data.name
       readyText.textContent = player.components.pc.data.ready ? "🟢" : "🔴"
