@@ -7,6 +7,7 @@ const App = () => (
   </div>
 )
 
+console.log("MAKING APP")
 const domContainer = document.querySelector("#root")
 const root = createRoot(domContainer!)
 root.render(<App />)
