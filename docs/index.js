@@ -7648,7 +7648,14 @@ var Root = () => {
     window.world = world;
   }, [world]);
   console.log("returning Root");
-  return /* @__PURE__ */ jsx_runtime.jsx("div", {});
+  return /* @__PURE__ */ jsx_runtime.jsx("div", {
+    children: /* @__PURE__ */ jsx_runtime.jsx("audio", {
+      children: /* @__PURE__ */ jsx_runtime.jsx("source", {
+        src: "/silent.mp3",
+        type: "audio/mp3"
+      })
+    })
+  });
 };
 
 // src/index.tsx

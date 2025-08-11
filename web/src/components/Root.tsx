@@ -20,10 +20,10 @@ export const Root = () => {
 
   return (
     <div>
-      {/* <audio>
+      <audio>
         <source src="/silent.mp3" type="audio/mp3" />
       </audio>
-      <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
+      {/* <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world) return
 
