@@ -10,7 +10,6 @@ export const ReadyUI = (): Entity => {
     top: "10px",
     right: "10px",
     width: "200px",
-    height: "100px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: "10px",
     border: "2px solid #ffffff",
@@ -58,22 +57,26 @@ export const ReadyUI = (): Entity => {
 const PlayerRow = (player: Player): RefreshableDiv => {
   const div = HtmlDiv({
     position: "relative",
-    width: "100%",
     marginTop: "10px",
+    height: "30px",
   })
 
   const nameText = HtmlText({
     text: player.components.pc.data.name,
     style: {
-      left: "10px"
+      width: "160px",
+      display: "flex",
+      justifyContent: "center",
+      left: "10px",
+      fontSize: "18px",
     }
   })
 
   const readyText = HtmlText({
     text: player.components.pc.data.ready ? "🟢" : "🔴",
     style: {
-      position: "absolute",
-      right: "10px"
+      right: "10px",
+      fontSize: "18px",
     }
   })
 
