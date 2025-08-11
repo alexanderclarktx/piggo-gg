@@ -44,7 +44,7 @@ export const ReadyUI = (): Entity => {
             }
           }
 
-          for ( const player of players) {
+          for (const player of players) {
             playerRows[player.id]?.update()
           }
         }
