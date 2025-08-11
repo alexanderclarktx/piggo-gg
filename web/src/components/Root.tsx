@@ -23,7 +23,7 @@ export const Root = () => {
       <audio>
         <source src="/silent.mp3" type="audio/mp3" />
       </audio>
-      {/* <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
+      <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world) return
 
@@ -39,7 +39,7 @@ export const Root = () => {
           <Canvas setWorld={setWorld} />
         </div>
       </div>
-      {window.location.hostname === "localhost" && (
+      {/* {window.location.hostname === "localhost" && (
         <FPSCounter visible={true} position="bottom-left" targetFrameRate={120} />
       )} */}
     </div>
