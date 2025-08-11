@@ -19,3 +19,5 @@ export const HtmlDiv = (style: HtmlStyleProps = {}): HTMLDivElement => {
 
   return div
 }
+
+export type RefreshableDiv = { div: HTMLDivElement, update: () => void }

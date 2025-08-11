@@ -1,10 +1,10 @@
-import { Entity, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/core"
-
+import { Entity, HtmlDiv, HtmlText, NPC, Player, Position, RefreshableDiv } from "@piggo-gg/core"
 
 export const ReadyUI = (): Entity => {
 
   let init = false
   let numPlayers = 0
+  const playerRows: Record<string, RefreshableDiv> = {}
 
   const container = HtmlDiv({
     top: "10px",
@@ -17,50 +17,18 @@ export const ReadyUI = (): Entity => {
     border: "2px solid #ffffff",
   })
 
-  // const playerRow = HtmlDiv({
-  //   position: "relative",
-  //   display: "flex",
-  //   width: "100%",
-  //   marginTop: "10px",
-  // })
-
-  // const playerName = HtmlText({
-  //   text: "noobaaa",
-  //   style: {
-  //     left: "10px"
-  //   }
-  // })
-
-  // const playerReady = HtmlText({
-  //   text: "🟢",
-  //   style: {
-  //     position: "absolute",
-  //     right: "10px"
-  //   }
-  // })
-
-  // playerRow.append(playerName)
-  // playerRow.append(playerReady)
-
-  // container.append(playerRow)
-
-  // container.append(playerName)
-
   const ui = Entity({
     id: "ReadyUI",
     components: {
       position: Position(),
       npc: NPC({
         behavior: (_, world) => {
+          if (world.mode === "server") return
+
           if (!init) {
             init = true
-
-            console.log("ReadyUI init")
-
             world.three?.append(container)
           }
-
-          console.log("ReadyUI behavior", numPlayers, world.players().length)
 
           const players = world.players()
           if (numPlayers !== players.length) {
@@ -69,12 +37,16 @@ export const ReadyUI = (): Entity => {
             container.innerHTML = ""
 
             for (const player of players) {
-              const { name, ready } = player.components.pc.data
+              const playerRow = PlayerRow(player)
 
-              const playerRow = PlayerRow(name, ready)
-              container.append(playerRow)
-              console.log("Player row added:", name, ready)
+              container.append(playerRow.div)
+
+              playerRows[player.id] = playerRow
             }
+          }
+
+          for ( const player of players) {
+            playerRows[player.id]?.update()
           }
         }
       })
@@ -84,7 +56,7 @@ export const ReadyUI = (): Entity => {
   return ui
 }
 
-const PlayerRow = (playerName: string, ready: boolean): HTMLDivElement => {
+const PlayerRow = (player: Player): RefreshableDiv => {
   const row = HtmlDiv({
     position: "relative",
     display: "flex",
@@ -93,14 +65,14 @@ const PlayerRow = (playerName: string, ready: boolean): HTMLDivElement => {
   })
 
   const nameText = HtmlText({
-    text: playerName,
+    text: player.components.pc.data.name,
     style: {
       left: "10px"
     }
   })
 
   const readyText = HtmlText({
-    text: ready ? "🟢" : "🔴",
+    text: player.components.pc.data.ready ? "🟢" : "🔴",
     style: {
       position: "absolute",
       right: "10px"
@@ -110,5 +82,11 @@ const PlayerRow = (playerName: string, ready: boolean): HTMLDivElement => {
   row.append(nameText)
   row.append(readyText)
 
-  return row
+  return {
+    div: row,
+    update: () => {
+      nameText.textContent = player.components.pc.data.name
+      readyText.textContent = player.components.pc.data.ready ? "🟢" : "🔴"
+    }
+  }
 }
