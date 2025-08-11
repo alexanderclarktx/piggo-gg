@@ -16,6 +16,8 @@ export const Root = () => {
     (window as any).world = world
   }, [world])
 
+  console.log("returning Root")
+
   return (
     <div>
       <audio>
