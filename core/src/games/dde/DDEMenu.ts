@@ -1,12 +1,7 @@
 import {
-  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World,
-  entries, keys, HtmlStyleProps, styleButton, DDESettings, styleSwitch
+  Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World, entries,
+  keys, HtmlStyleProps, styleButton, DDESettings, styleSwitch, RefreshableDiv
 } from "@piggo-gg/core"
-
-type SubMenu = {
-  div: HTMLDivElement
-  onTick: () => void
-}
 
 export const DDEMenu = (world: World): Entity => {
 
@@ -102,9 +97,9 @@ export const DDEMenu = (world: World): Entity => {
           skins.div.style.display = activeMenu === "skins" ? "block" : "none"
           settings.div.style.display = activeMenu === "settings" ? "block" : "none"
 
-          lobbies.onTick()
-          skins.onTick()
-          settings.onTick()
+          lobbies.update()
+          skins.update()
+          settings.update()
         }
       })
     }
@@ -112,7 +107,7 @@ export const DDEMenu = (world: World): Entity => {
   return menu
 }
 
-const Lobbies = (world: World): SubMenu => {
+const Lobbies = (world: World): RefreshableDiv => {
 
   let polled = -60
   let inLobby: string = ""
@@ -181,7 +176,7 @@ const Lobbies = (world: World): SubMenu => {
 
   return {
     div: lobbies,
-    onTick: () => {
+    update: () => {
 
       styleButton(createLobby, Boolean(inLobby), createLobby.matches(":hover"))
       styleButton(leaveLobby, Boolean(!inLobby), leaveLobby.matches(":hover"))
@@ -255,7 +250,7 @@ const Lobbies = (world: World): SubMenu => {
   }
 }
 
-const Skins = (): SubMenu => {
+const Skins = (): RefreshableDiv => {
   const skins = HtmlDiv({
     top: "5px",
     left: "50%",
@@ -271,11 +266,11 @@ const Skins = (): SubMenu => {
 
   return {
     div: skins,
-    onTick: () => { }
+    update: () => { }
   }
 }
 
-const Settings = (world: World): SubMenu => {
+const Settings = (world: World): RefreshableDiv => {
   const settings = HtmlDiv({
     top: "5px",
     left: "50%",
@@ -337,7 +332,7 @@ const Settings = (world: World): SubMenu => {
 
   return {
     div: settings,
-    onTick: () => {
+    update: () => {
       const settings = world.settings<DDESettings>()
       styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
       styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
