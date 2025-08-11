@@ -54,7 +54,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     entities: [
       DDEMenu(world),
       Profile(),
-      ReadyUI()
+      // ReadyUI()
     ]
   })
 }
