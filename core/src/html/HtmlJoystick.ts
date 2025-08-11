@@ -13,7 +13,6 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HTMLDivEle
     borderRadius: "50%",
     bottom: "40px",
     pointerEvents: "auto",
-    touchAction: "none",
     border: "2px solid #ffffff"
   })
 

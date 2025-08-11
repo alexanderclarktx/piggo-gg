@@ -35,9 +35,9 @@ export const Bird = (player: Player) => Character({
     }),
     input: Input({
       joystick: ({ world }) => {
-        if (!world.client?.mobile) return null
-        const { power, angle, active } = world.client.analog.left
-        if (!active) return null
+        if (!world.client) return null
+
+        const { power, angle } = world.client.analog.left
 
         let dir = { x: Math.cos(angle), y: Math.sin(angle) }
 

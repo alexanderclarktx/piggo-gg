@@ -23,6 +23,7 @@ type Handler<R extends RequestTypes["route"]> = (_: { ws: ServerWebSocket<PerCli
 
 export type Api = {
   bun: Server | undefined
+  http: Server | undefined
   clientIncr: number
   clients: Record<string, ServerWebSocket<PerClientData>>
   worlds: Record<string, ServerWorld>
@@ -54,6 +55,7 @@ export const Api = (): Api => {
 
   const api: Api = {
     bun: undefined,
+    http: undefined,
     clientIncr: 1,
     clients: {},
     worlds: {},
@@ -264,6 +266,30 @@ export const Api = (): Api => {
         }
       })
 
+      if (env.NODE_ENV === "staging") api.http = Bun.serve({
+        hostname: "0.0.0.0",
+        port: 8000,
+        fetch: async (req: Request) => {
+          const url = new URL(req.url)
+
+          if (url.pathname === "/") url.pathname = "/index.html"
+
+          const path = "../docs" + url.pathname
+
+          const file = Bun.file(path)
+          const exists = await file.exists()
+          if (exists) {
+            const fileContent = await file.bytes()
+            const contentType = file.type
+
+            return new Response(fileContent, { headers: { 'Content-Type': contentType } })
+          } else {
+            console.error("404", path)
+            return new Response("file not found", { status: 404 })
+          }
+        }
+      })
+
       return api
     },
     handleClose: (ws: ServerWebSocket<PerClientData>) => {
@@ -334,3 +360,4 @@ export const Api = (): Api => {
 
 const server = Api().init()
 console.log(`包 ${server.bun?.url}`)
+console.log(server.http ? `鸭 ${server.http?.url}` : "http server not started")
