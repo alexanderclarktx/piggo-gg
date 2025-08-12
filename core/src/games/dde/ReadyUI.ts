@@ -6,7 +6,10 @@ import {
 export const ReadyUI = (): Entity => {
 
   let init = false
+
   let numPlayers = 0
+  let phase = "warmup"
+
   const playerRows: Record<string, RefreshableDiv> = {}
 
   const container = HtmlDiv({
@@ -19,8 +22,8 @@ export const ReadyUI = (): Entity => {
     border: "2px solid #ffffff"
   })
 
-  const title = HtmlText({
-    text: "warmup",
+  const title = () => HtmlText({
+    text: phase,
     style: {
       position: "relative",
       margin: "0 auto",
@@ -31,8 +34,6 @@ export const ReadyUI = (): Entity => {
       borderBottom: "2px dotted #ffffff"
     }
   })
-
-  container.appendChild(title)
 
   const ui = Entity({
     id: "ReadyUI",
@@ -54,12 +55,15 @@ export const ReadyUI = (): Entity => {
             world.three?.append(container)
           }
 
+          const state = world.state<DDEState>()
           const players = world.players()
-          if (numPlayers !== players.length) {
+
+          if (numPlayers !== players.length || phase !== state.phase) {
             numPlayers = players.length
+            phase = state.phase
 
             container.innerHTML = ""
-            container.appendChild(title)
+            container.appendChild(title())
 
             for (const player of players) {
               const playerRow = PlayerRow(player, world)
