@@ -20,8 +20,12 @@ export const ReadyUI = (): Entity => {
     text: "warmup",
     style: {
       position: "relative",
+      margin: "0 auto",
+      width: "60%",
       top: "4px",
-      textAlign: "center"
+      textAlign: "center",
+      marginBottom: "14px",
+      borderBottom: "2px dotted #ffffff"
     }
   })
 
@@ -77,7 +81,6 @@ export const ReadyUI = (): Entity => {
 const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   const div = HtmlDiv({
     position: "relative",
-    marginTop: "10px",
     height: "30px",
     width: "auto",
     justifyContent: "space-between",
@@ -92,7 +95,7 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
       fontSize: "18px",
       position: "relative",
       marginRight: "6px",
-      marginLeft: "6px",
+      marginLeft: "6px"
     }
   })
 
@@ -109,7 +112,6 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   const statusText = HtmlText({
     text: status(),
     style: {
-      // right: "10px",
       fontSize: "16px",
       position: "relative",
       marginRight: "6px"
