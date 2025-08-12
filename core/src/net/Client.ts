@@ -239,12 +239,6 @@ export const Client = ({ world }: ClientProps): Client => {
           if (localStorage) localStorage.removeItem("token")
         } else {
           client.player.components.pc.data.name = response.name
-
-          const character = client.player.components.controlling.getCharacter(world)
-          if (character) {
-            world.actions.push(world.tick + 2, character.id, { actionId: "changeSkin", params: { skin: "ghost" } })
-          }
-
           if (callback) callback(response)
         }
       })
