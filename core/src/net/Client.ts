@@ -136,7 +136,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lobbyCreate: (callback) => {
       request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash() }, (response) => {
         if ("error" in response) {
-          console.error("failed to create lobby", response.error)
+          console.error("failed to create lobby:", response.error)
         } else {
           client.lobbyId = response.lobbyId
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
@@ -148,7 +148,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lobbyJoin: (lobbyId, callback) => {
       request<LobbyJoin>({ route: "lobby/join", type: "request", id: randomHash(), join: lobbyId }, (response) => {
         if ("error" in response) {
-          console.error("failed to join lobby", response.error)
+          console.error("failed to join lobby:", response.error)
         } else {
           client.lobbyId = lobbyId
           callback(response)
@@ -159,7 +159,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lobbyLeave: () => {
       request<LobbyExit>({ route: "lobby/exit", type: "request", id: randomHash() }, (response) => {
         if ("error" in response) {
-          console.error("failed to leave lobby", response.error)
+          console.error("failed to leave lobby:", response.error)
         } else {
           client.lobbyId = undefined
 
@@ -178,7 +178,7 @@ export const Client = ({ world }: ClientProps): Client => {
     lobbyList: (callback) => {
       request<LobbyList>({ route: "lobby/list", type: "request", id: randomHash() }, (response) => {
         if ("error" in response) {
-          console.error("failed to get lobby list", response.error)
+          console.error("failed to get lobby list:", response.error)
         } else {
           callback(response)
         }
@@ -187,7 +187,7 @@ export const Client = ({ world }: ClientProps): Client => {
     metaPlayers: (callback) => {
       request<MetaPlayers>({ route: "meta/players", type: "request", id: randomHash() }, (response) => {
         if ("error" in response) {
-          console.error("failed to get meta players", response.error)
+          console.error("failed to get meta players:", response.error)
         } else {
           callback(response)
         }
@@ -196,7 +196,7 @@ export const Client = ({ world }: ClientProps): Client => {
     authLogin: async (jwt, callback) => {
       request<AuthLogin>({ route: "auth/login", type: "request", id: randomHash(), jwt }, (response) => {
         if ("error" in response) {
-          console.error("failed to login", response.error)
+          console.error("failed to login:", response.error)
         } else {
           client.token = response.token
 
@@ -213,7 +213,7 @@ export const Client = ({ world }: ClientProps): Client => {
     aiPls: (prompt, callback) => {
       request<Pls>({ route: "ai/pls", type: "request", id: randomHash(), prompt }, (response) => {
         if ("error" in response) {
-          console.error("failed to get AI response", response.error)
+          console.error("failed to get AI response:", response.error)
         } else {
           callback(response)
         }
@@ -223,7 +223,7 @@ export const Client = ({ world }: ClientProps): Client => {
       if (!client.token) return
       request<ProfileCreate>({ route: "profile/create", type: "request", id: randomHash(), token: client.token, name }, (response) => {
         if ("error" in response) {
-          console.error("failed to create profile", response.error)
+          console.error("failed to create profile:", response.error)
         } else {
           client.profileGet()
           callback(response)
@@ -234,7 +234,7 @@ export const Client = ({ world }: ClientProps): Client => {
       if (!client.token) return
       request<ProfileGet>({ route: "profile/get", type: "request", id: randomHash(), token: client.token }, (response) => {
         if ("error" in response) {
-          console.error("failed to get profile", response.error)
+          console.error("failed to get profile:", response.error)
           client.token = undefined
           if (localStorage) localStorage.removeItem("token")
         } else {
@@ -247,7 +247,7 @@ export const Client = ({ world }: ClientProps): Client => {
       if (!client.token) return
       request<FriendsAdd>({ route: "friends/add", type: "request", id: randomHash(), token: client.token, name }, (response) => {
         if ("error" in response) {
-          console.error("failed to add friend", response.error)
+          console.error("failed to add friend:", response.error)
         } else {
           callback(response)
         }
@@ -257,7 +257,7 @@ export const Client = ({ world }: ClientProps): Client => {
       if (!client.token) return
       request<FriendsList>({ route: "friends/list", type: "request", id: randomHash(), token: client.token }, (response) => {
         if ("error" in response) {
-          console.error("failed to get friends list", response.error)
+          console.error("failed to get friends list:", response.error)
         } else {
           callback(response)
         }
