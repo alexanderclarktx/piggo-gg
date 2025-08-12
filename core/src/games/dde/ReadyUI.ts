@@ -1,4 +1,4 @@
-import { DDEState, Entity, HtmlDiv, HtmlText, NPC, Player, Position, RefreshableDiv } from "@piggo-gg/core"
+import { DDEState, Entity, HtmlDiv, HtmlText, NPC, Player, Position, RefreshableDiv, World } from "@piggo-gg/core"
 
 export const ReadyUI = (): Entity => {
 
@@ -44,7 +44,7 @@ export const ReadyUI = (): Entity => {
             container.innerHTML = ""
 
             for (const player of players) {
-              const playerRow = PlayerRow(player)
+              const playerRow = PlayerRow(player, world)
 
               container.append(playerRow.div)
 
@@ -63,7 +63,7 @@ export const ReadyUI = (): Entity => {
   return ui
 }
 
-const PlayerRow = (player: Player): RefreshableDiv => {
+const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   const div = HtmlDiv({
     position: "relative",
     marginTop: "10px",
@@ -81,7 +81,7 @@ const PlayerRow = (player: Player): RefreshableDiv => {
     }
   })
 
-  const readyText = HtmlText({
+  const statusText = HtmlText({
     text: player.components.pc.data.ready ? "🟢" : "🔴",
     style: {
       right: "10px",
@@ -90,13 +90,13 @@ const PlayerRow = (player: Player): RefreshableDiv => {
   })
 
   div.append(nameText)
-  div.append(readyText)
+  div.append(statusText)
 
   return {
     div,
     update: () => {
       nameText.textContent = player.components.pc.data.name
-      readyText.textContent = player.components.pc.data.ready ? "🟢" : "🔴"
+      statusText.textContent = player.components.pc.data.ready ? "🟢" : "🔴"
     }
   }
 }
