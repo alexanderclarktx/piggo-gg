@@ -20,9 +20,9 @@ model users {
 
 model friends {
   id        String           @id @default(uuid())
-  user1     users            @relation("Friendship1", fields: [user1Id], references: [name])
+  user1     users            @relation("Friendship1", fields: [user1Id], references: [name], onDelete: Cascade)
   user1Id   String           @db.Citext
-  user2     users            @relation("Friendship2", fields: [user2Id], references: [name])
+  user2     users            @relation("Friendship2", fields: [user2Id], references: [name], onDelete: Cascade)
   user2Id   String           @db.Citext
   status    FriendshipStatus @default(PENDING)
   createdAt DateTime         @default(now())
