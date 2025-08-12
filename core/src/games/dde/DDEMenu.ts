@@ -343,7 +343,7 @@ const Settings = (world: World): RefreshableDiv => {
 const Art = () => HtmlImg("dde-256.jpg", {
   top: "-5px",
   left: "50%",
-  width: "200px",
+  width: "180px",
   transform: "translate(-50%)",
   border: "2px solid #eeeeee",
   borderRadius: "10px",

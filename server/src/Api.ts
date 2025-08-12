@@ -48,7 +48,7 @@ export const Api = (): Api => {
       token = jwt.verify(data.token, JWT_SECRET) as SessionToken
       if (token) return token
     } catch (e) {
-      console.error("JWT verification failed", e)
+      console.error("JWT verification failed:", (e as Error).message)
     }
     return false
   }
@@ -104,14 +104,14 @@ export const Api = (): Api => {
       },
       "friends/add": async ({ ws, data }) => {
         const token = verifyJWT(data)
-        if (!token) return { id: data.id, error: "Auth failed" }
+        if (!token) return { id: data.id, error: "auth failed" }
 
         if (ws.data.playerName === data.name) {
-          return { id: data.id, error: "That's you, silly" }
+          return { id: data.id, error: "that's you, silly" }
         }
 
         const user = await prisma.users.findUnique({ where: { name: data.name } })
-        if (!user) return { id: data.id, error: "User not found" }
+        if (!user) return { id: data.id, error: "user not found" }
 
         const friend = await prisma.friends.findFirst({
           where: {
@@ -122,13 +122,13 @@ export const Api = (): Api => {
 
         if (friend) {
           if (friend.status === "ACCEPTED") {
-            return { id: data.id, error: "Already friends" }
+            return { id: data.id, error: "already friends" }
           }
           if (friend.status === "PENDING") {
-            return { id: data.id, error: "Friend request already sent" }
+            return { id: data.id, error: "friend request already sent" }
           }
           if (friend.status === "BLOCKED") {
-            return { id: data.id, error: "User blocked" }
+            return { id: data.id, error: "user blocked" }
           }
         } else {
           await prisma.friends.create({
@@ -150,11 +150,11 @@ export const Api = (): Api => {
         try {
           token = jwt.verify(data.token, JWT_SECRET) as SessionToken
         } catch (e) {
-          return { id: data.id, error: "Auth failed" }
+          return { id: data.id, error: "auth failed" }
         }
 
         const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
-        if (!user) return { id: data.id, error: "User not found" }
+        if (!user) return { id: data.id, error: "user not found" }
 
         const friends = await prisma.friends.findMany({
           where: { user1: user, NOT: { status: "BLOCKED" } },
@@ -175,11 +175,11 @@ export const Api = (): Api => {
       },
       "profile/get": async ({ ws, data }) => {
         const token = verifyJWT(data)
-        if (!token) return { id: data.id, error: "Auth failed" }
+        if (!token) return { id: data.id, error: "auth failed" }
 
         // 2. find user
         const user = await prisma.users.findUnique({ where: { googleId: token.googleId } })
-        if (!user) return { id: data.id, error: "User not found" }
+        if (!user) return { id: data.id, error: "user not found" }
 
         // 3. update websocket playerName
         ws.data.playerName = user.name
@@ -197,12 +197,12 @@ export const Api = (): Api => {
         try {
           token = jwt.verify(data.token, JWT_SECRET) as SessionToken
         } catch (e) {
-          return { id: data.id, error: "Auth failed" }
+          return { id: data.id, error: "auth failed" }
         }
 
         // 2. check if username is taken
         const oldUser = await prisma.users.findUnique({ where: { name: data.name } })
-        if (oldUser) return { id: data.id, error: "Username already taken" }
+        if (oldUser) return { id: data.id, error: "username already taken" }
 
         // 3. create user
         const newUser = await prisma.users.create({
@@ -222,7 +222,7 @@ export const Api = (): Api => {
         const { sub } = ticket.getPayload() ?? {}
 
         if (!sub) {
-          return { id: data.id, error: "Google Auth failed" }
+          return { id: data.id, error: "google Auth failed" }
         }
 
         let newUser = false
