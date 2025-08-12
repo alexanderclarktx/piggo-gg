@@ -23,9 +23,7 @@ export const ReadyUI = (): Entity => {
         behavior: (_, world) => {
           if (world.mode === "server") return
 
-          const state = world.state<DDEState>()
-
-          if (!world.client?.connected || state.phase !== "warmup") {
+          if (!world.client?.connected) {
             container.style.visibility = "hidden"
             return
           }
@@ -81,8 +79,18 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     }
   })
 
+  const status = (): string => {
+    const state = world.state<DDEState>()
+    if (state.phase === "warmup") {
+      return player.components.pc.data.ready ? "🟢" : "🔴"
+    } else {
+      const character = player.components.controlling.getCharacter(world)
+      return character?.components.position.data.flying ? "🦅️" : "🐤"
+    }
+  }
+
   const statusText = HtmlText({
-    text: player.components.pc.data.ready ? "🟢" : "🔴",
+    text: status(),
     style: {
       right: "10px",
       fontSize: "18px",
@@ -96,7 +104,7 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     div,
     update: () => {
       nameText.textContent = player.components.pc.data.name
-      statusText.textContent = player.components.pc.data.ready ? "🟢" : "🔴"
+      statusText.textContent = status()
     }
   }
 }
