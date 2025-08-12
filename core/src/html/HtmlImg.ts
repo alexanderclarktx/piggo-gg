@@ -1,6 +1,6 @@
-import { HtmlStyleProps } from "@piggo-gg/core"
+import { CSS } from "@piggo-gg/core"
 
-export const HtmlImg = (src: string, style: HtmlStyleProps): HTMLImageElement => {
+export const HtmlImg = (src: string, style: CSS): HTMLImageElement => {
   const img = document.createElement("img")
   img.src = src
 
@@ -10,7 +10,7 @@ export const HtmlImg = (src: string, style: HtmlStyleProps): HTMLImageElement =>
   return img
 }
 
-const defaults: HtmlStyleProps = {
+const defaults: CSS = {
   position: "absolute",
   pointerEvents: "none"
 }

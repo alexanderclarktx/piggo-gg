@@ -1,4 +1,4 @@
-export type HtmlStyleProps = {
+export type CSS = {
   alignItems?: "center" | "flex-start" | "flex-end" | "stretch"
   backgroundColor?: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
   border?: string

@@ -1,8 +1,8 @@
-import { HtmlStyleProps } from "@piggo-gg/core"
+import { CSS } from "@piggo-gg/core"
 
 export type HtmlTextProps = {
   text?: string,
-  style?: HtmlStyleProps
+  style?: CSS
 }
 
 const defaults: HtmlTextProps["style"] = {

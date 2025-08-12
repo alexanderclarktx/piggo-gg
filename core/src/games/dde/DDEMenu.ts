@@ -1,6 +1,6 @@
 import {
   Entity, HtmlDiv, NPC, Position, HtmlImg, HtmlText, HtmlButton, World, entries,
-  keys, HtmlStyleProps, styleButton, DDESettings, styleSwitch, RefreshableDiv
+  keys, CSS, styleButton, DDESettings, styleSwitch, RefreshableDiv
 } from "@piggo-gg/core"
 
 export const DDEMenu = (world: World): Entity => {
@@ -18,7 +18,7 @@ export const DDEMenu = (world: World): Entity => {
 
   const art = Art()
 
-  const menuButtonStyle: HtmlStyleProps = {
+  const menuButtonStyle: CSS = {
     width: "130px", position: "relative", top: "-10px", height: "40px", pointerEvents: "auto"
   }
 

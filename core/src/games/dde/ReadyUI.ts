@@ -1,4 +1,7 @@
-import { DDEState, Entity, HtmlDiv, HtmlText, NPC, Player, Position, RefreshableDiv, World } from "@piggo-gg/core"
+import {
+  DDEState, Entity, HtmlDiv, HtmlText, NPC,
+  Player, Position, RefreshableDiv, World
+} from "@piggo-gg/core"
 
 export const ReadyUI = (): Entity => {
 
@@ -90,12 +93,10 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   const nameText = HtmlText({
     text: player.components.pc.data.name,
     style: {
-      textAlign: "center",
       flex: 1,
       fontSize: "18px",
       position: "relative",
-      marginRight: "6px",
-      marginLeft: "6px"
+      marginLeft: "10px"
     }
   })
 
@@ -114,7 +115,8 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     style: {
       fontSize: "16px",
       position: "relative",
-      marginRight: "6px"
+      marginRight: "10px",
+      marginLeft: "10px"
     }
   })
 
