@@ -3,8 +3,8 @@ import {
 } from "@piggo-gg/core"
 import { DDESettings, DDEState } from "./DDE"
 
-export const BirdHUDSystem = ClientSystemBuilder({
-  id: "BirdHUDSystem",
+export const HUDSystem = ClientSystemBuilder({
+  id: "HUDSystem",
   init: (world) => {
 
     if (world.client?.mobile === true) return
@@ -81,7 +81,7 @@ export const BirdHUDSystem = ClientSystemBuilder({
     let currentApplesEaten = -1
 
     return {
-      id: "BirdHUDSystem",
+      id: "HUDSystem",
       query: [],
       priority: 10,
       onTick: () => {
