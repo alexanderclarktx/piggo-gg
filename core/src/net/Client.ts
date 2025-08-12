@@ -28,6 +28,7 @@ export type Client = {
   }
   bufferDown: KeyBuffer
   bufferUp: KeyBuffer
+  busy: boolean
   connected: boolean
   clickThisFrame: {
     value: number
@@ -91,6 +92,7 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     bufferDown: KeyBuffer(),
     bufferUp: KeyBuffer(),
+    busy: false,
     connected: false,
     clickThisFrame: {
       value: 0,

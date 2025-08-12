@@ -1,4 +1,4 @@
-import { World } from "@piggo-gg/core"
+import { styleButton, World } from "@piggo-gg/core"
 import { LoginState } from "@piggo-gg/web"
 import { useState } from "react"
 
@@ -31,6 +31,7 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
         } else {
           setIsModalOpen(false)
           setUsernameInput("")
+          if (world?.client) world.client.busy = false
         }
       })
     } else {
@@ -46,7 +47,10 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
       callback: (response: { credential: string }) => {
         const jwt = response.credential
         world?.client?.authLogin(jwt, (response) => {
-          if ((!("error"! in response)) && response.newUser) setIsModalOpen(true)
+          if ((!("error"! in response)) && response.newUser) {
+            setIsModalOpen(true)
+            if (world?.client) world.client.busy = true
+          }
         })
       }
     })
@@ -98,31 +102,41 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
         >
           <div
             style={{
-              border: "1px solid white",
-              backgroundColor: "black",
+              border: "2px solid white",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
               padding: 20,
               borderRadius: 8,
               width: "300px",
-              textAlign: "center",
+              textAlign: "center"
             }}
           >
-            <h2>Set Your Username</h2>
+            <h2>set username</h2>
             <input
               type="text"
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
-              placeholder="noob"
               maxLength={15}
-              style={{ width: "80%", padding: 8, marginBottom: 10 }}
+              style={{ width: "80%", padding: 8, marginBottom: 10, fontSize: 18, outline: "none", borderRadius: "8px" }}
             />
             <h3 style={{ color: "red", fontSize: 16 }}>
               {error}
             </h3>
             <button
               onClick={handleUsernameSubmit}
-              style={{ padding: "8px 16px", marginTop: "8px", backgroundColor: "#cc00cc", color: "white", border: "none", borderRadius: 4 }}
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.4)",
+                border: "2px solid #ffffff",
+                borderRadius: 8,
+                color: "white",
+                fontSize: 18,
+                fontFamily: "Courier New",
+                marginTop: "8px",
+                padding: "8px 16px"
+              }}
+              onPointerEnter={(a) => styleButton(a.currentTarget, false, true)}
+              onPointerLeave={(a) => styleButton(a.currentTarget, false, false)}
             >
-              Submit
+              <b>submit</b>
             </button>
           </div>
         </div>
