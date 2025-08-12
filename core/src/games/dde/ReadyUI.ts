@@ -16,7 +16,7 @@ export const ReadyUI = (): Entity => {
     top: "10px",
     right: "10px",
     width: "auto",
-    minWidth: "200px",
+    minWidth: "180px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: "10px",
     border: "2px solid #ffffff"
@@ -91,7 +91,7 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     height: "30px",
     width: "auto",
     justifyContent: "space-between",
-    display: "flex",
+    display: "flex"
   })
 
   const nameText = HtmlText({
