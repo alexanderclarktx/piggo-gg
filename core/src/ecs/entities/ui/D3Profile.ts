@@ -8,7 +8,6 @@ export const D3Profile = (): Entity => {
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     width: "auto",
     minWidth: "165px",
-    display: "inline-flex",
     height: "46px",
     left: "10px",
     top: "10px",
@@ -19,12 +18,10 @@ export const D3Profile = (): Entity => {
   const name = HtmlText({
     text: "",
     style: {
-      left: "50%",
-      top: "50%",
-      transform: "translate(-50%, -50%)",
       fontSize: "22px",
       padding: "10px",
-      position: "relative"
+      position: "relative",
+      textAlign: "center"
     }
   })
 

@@ -9,11 +9,24 @@ export const ReadyUI = (): Entity => {
   const container = HtmlDiv({
     top: "10px",
     right: "10px",
-    width: "200px",
+    width: "auto",
+    minWidth: "200px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: "10px",
-    border: "2px solid #ffffff",
+    border: "2px solid #ffffff"
   })
+
+  const title = HtmlText({
+    text: "warmup",
+    style: {
+      position: "relative",
+      top: "4px",
+      justifyContent: "center",
+      display: "flex"
+    }
+  })
+
+  container.appendChild(title)
 
   const ui = Entity({
     id: "ReadyUI",
@@ -40,6 +53,7 @@ export const ReadyUI = (): Entity => {
             numPlayers = players.length
 
             container.innerHTML = ""
+            container.appendChild(title)
 
             for (const player of players) {
               const playerRow = PlayerRow(player, world)
@@ -66,16 +80,22 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     position: "relative",
     marginTop: "10px",
     height: "30px",
+    width: "auto",
+    justifyContent: "space-between",
+    display: "flex",
   })
 
   const nameText = HtmlText({
     text: player.components.pc.data.name,
     style: {
-      width: "160px",
-      display: "flex",
+      // width: "160px",
+      // display: "flex",
       justifyContent: "center",
-      left: "10px",
+      // transform: "translate(-50%)",
+      // left: "10px",
       fontSize: "18px",
+      position: "relative",
+      marginLeft: "6px",
     }
   })
 
@@ -92,8 +112,10 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   const statusText = HtmlText({
     text: status(),
     style: {
-      right: "10px",
+      // right: "10px",
       fontSize: "18px",
+      position: "relative",
+      marginRight: "6px"
     }
   })
 
