@@ -1,18 +1,38 @@
-import { DDEState, Entity, HtmlDiv, HtmlText, NPC, Player, Position, RefreshableDiv } from "@piggo-gg/core"
+import {
+  DDEState, Entity, HtmlDiv, HtmlText, NPC,
+  Player, Position, RefreshableDiv, World
+} from "@piggo-gg/core"
 
 export const ReadyUI = (): Entity => {
 
   let init = false
+
   let numPlayers = 0
+  let phase = "warmup"
+
   const playerRows: Record<string, RefreshableDiv> = {}
 
   const container = HtmlDiv({
     top: "10px",
     right: "10px",
-    width: "200px",
+    width: "auto",
+    minWidth: "180px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: "10px",
-    border: "2px solid #ffffff",
+    border: "2px solid #ffffff"
+  })
+
+  const title = () => HtmlText({
+    text: phase,
+    style: {
+      position: "relative",
+      margin: "0 auto",
+      width: "60%",
+      top: "4px",
+      textAlign: "center",
+      marginBottom: "14px",
+      borderBottom: "2px dotted #ffffff"
+    }
   })
 
   const ui = Entity({
@@ -23,9 +43,7 @@ export const ReadyUI = (): Entity => {
         behavior: (_, world) => {
           if (world.mode === "server") return
 
-          const state = world.state<DDEState>()
-
-          if (!world.client?.connected || state.phase !== "warmup") {
+          if (!world.client?.connected) {
             container.style.visibility = "hidden"
             return
           }
@@ -37,14 +55,18 @@ export const ReadyUI = (): Entity => {
             world.three?.append(container)
           }
 
+          const state = world.state<DDEState>()
           const players = world.players()
-          if (numPlayers !== players.length) {
+
+          if (numPlayers !== players.length || phase !== state.phase) {
             numPlayers = players.length
+            phase = state.phase
 
             container.innerHTML = ""
+            container.appendChild(title())
 
             for (const player of players) {
-              const playerRow = PlayerRow(player)
+              const playerRow = PlayerRow(player, world)
 
               container.append(playerRow.div)
 
@@ -63,40 +85,53 @@ export const ReadyUI = (): Entity => {
   return ui
 }
 
-const PlayerRow = (player: Player): RefreshableDiv => {
+const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   const div = HtmlDiv({
     position: "relative",
-    marginTop: "10px",
     height: "30px",
+    width: "auto",
+    justifyContent: "space-between",
+    display: "flex"
   })
 
   const nameText = HtmlText({
     text: player.components.pc.data.name,
     style: {
-      width: "160px",
-      display: "flex",
-      justifyContent: "center",
-      left: "10px",
+      flex: 1,
       fontSize: "18px",
+      position: "relative",
+      marginLeft: "10px"
     }
   })
 
-  const readyText = HtmlText({
-    text: player.components.pc.data.ready ? "🟢" : "🔴",
+  const status = (): string => {
+    const state = world.state<DDEState>()
+    if (state.phase === "warmup") {
+      return player.components.pc.data.ready ? "🟢" : "🔴"
+    } else {
+      const character = player.components.controlling.getCharacter(world)
+      return character?.components.position.data.flying ? "🦅️" : "🐤"
+    }
+  }
+
+  const statusText = HtmlText({
+    text: status(),
     style: {
-      right: "10px",
-      fontSize: "18px",
+      fontSize: "16px",
+      position: "relative",
+      marginRight: "10px",
+      marginLeft: "10px"
     }
   })
 
   div.append(nameText)
-  div.append(readyText)
+  div.append(statusText)
 
   return {
     div,
     update: () => {
       nameText.textContent = player.components.pc.data.name
-      readyText.textContent = player.components.pc.data.ready ? "🟢" : "🔴"
+      statusText.textContent = status()
     }
   }
 }

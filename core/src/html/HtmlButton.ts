@@ -1,4 +1,4 @@
-import { HtmlStyleProps } from "@piggo-gg/core"
+import { CSS } from "@piggo-gg/core"
 
 export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   const b = document.createElement("button")
@@ -23,7 +23,7 @@ export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
   return b
 }
 
-const defaults: HtmlStyleProps = {
+const defaults: CSS = {
   position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
@@ -38,7 +38,7 @@ const defaults: HtmlStyleProps = {
 
 export type HtmlButtonProps = {
   text?: string
-  style?: HtmlStyleProps
+  style?: CSS
   onClick?: (event: MouseEvent) => void
   onRelease?: (event: MouseEvent) => void
   onHover?: (event: MouseEvent) => void

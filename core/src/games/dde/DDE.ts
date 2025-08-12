@@ -1,12 +1,12 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, localAim, logPerf, min, PI, Profile, Random, randomInt,
+  hypot, localAim, logPerf, min, PI, D3Profile, Random, randomInt,
   SpawnSystem, spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 import { Bird } from "./Bird"
-import { BirdHUDSystem } from "./BirdHUDSystem"
+import { HUDSystem } from "./HUDSystem"
 import { DDEMenu } from "./DDEMenu"
 import { DDEMobileUI } from "./DDEMobileUI"
 import { ReadyUI } from "./ReadyUI"
@@ -48,12 +48,12 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       BlockPhysicsSystem("local"),
       D3CameraSystem(),
       DDESystem,
-      BirdHUDSystem,
+      HUDSystem,
       D3NametagSystem
     ],
     entities: [
       DDEMenu(world),
-      Profile(),
+      D3Profile(),
       ReadyUI()
     ]
   })

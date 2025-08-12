@@ -1,10 +1,10 @@
-import { HtmlStyleProps } from "@piggo-gg/core"
+import { CSS } from "@piggo-gg/core"
 
-const defaults: HtmlStyleProps = {
+const defaults: CSS = {
   position: "absolute"
 }
 
-export const HtmlDiv = (style: HtmlStyleProps = {}): HTMLDivElement => {
+export const HtmlDiv = (style: CSS = {}): HTMLDivElement => {
   const div = document.createElement("div")
 
   Object.assign(div.style, defaults)

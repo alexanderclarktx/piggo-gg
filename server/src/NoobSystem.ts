@@ -13,7 +13,7 @@ export const NoobSystem = SystemBuilder({
       priority: 5,
       onTick: (entities: Entity<PC>[]) => {
         for (const entity of entities) {
-          if (!seen.has(entity.id)) {
+          if (!seen.has(entity.id) && entity.components.pc.data.name === "noob") {
             seen.add(entity.id)
 
             if (seen.size > 1) {
