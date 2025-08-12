@@ -6,8 +6,10 @@ export const D3Profile = (): Entity => {
 
   const container = HtmlDiv({
     backgroundColor: "rgba(0, 0, 0, 0.3)",
-    width: "165px",
-    height: "50px",
+    width: "auto",
+    minWidth: "165px",
+    display: "inline-flex",
+    height: "46px",
     left: "10px",
     top: "10px",
     border: "2px solid #ffffff",
@@ -20,7 +22,9 @@ export const D3Profile = (): Entity => {
       left: "50%",
       top: "50%",
       transform: "translate(-50%, -50%)",
-      fontSize: "22px"
+      fontSize: "22px",
+      padding: "10px",
+      position: "relative"
     }
   })
 

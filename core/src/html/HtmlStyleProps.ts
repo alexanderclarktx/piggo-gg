@@ -24,8 +24,9 @@ export type HtmlStyleProps = {
   marginLeft?: `${number}px` | `${number}%`
   marginRight?: `${number}px` | `${number}%`
   marginTop?: `${number}px` | `${number}%`
+  minWidth?: `${number}px` | `${number}%`
   overflow?: "visible" | "hidden" | "scroll" | "auto"
-  padding?: string
+  padding?: `${number}px` | `${number}%`
   pointerEvents?: "none" | "auto"
   position?: "absolute" | "relative" | "fixed" | "sticky" | "static"
   right?: `${number}%` | `${number}px`
@@ -37,6 +38,6 @@ export type HtmlStyleProps = {
   transform?: `translate(${number}%)` | `translate(${number}%, ${number}%)`
   userSelect?: "none" | "auto" | "text" | "all"
   visibility?: "visible" | "hidden"
-  width?: `${number}px` | `${number}%`
+  width?: `${number}px` | `${number}%` | "auto"
   zIndex?: number
 }
