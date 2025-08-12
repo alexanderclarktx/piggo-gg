@@ -91,6 +91,7 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
       flex: 1,
       fontSize: "18px",
       position: "relative",
+      marginRight: "6px",
       marginLeft: "6px",
     }
   })
@@ -109,7 +110,7 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     text: status(),
     style: {
       // right: "10px",
-      fontSize: "18px",
+      fontSize: "16px",
       position: "relative",
       marginRight: "6px"
     }
