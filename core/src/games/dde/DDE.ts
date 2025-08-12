@@ -1,6 +1,6 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, localAim, logPerf, min, PI, Profile, Random, randomInt,
+  hypot, localAim, logPerf, min, PI, D3Profile, Random, randomInt,
   SpawnSystem, spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
@@ -53,7 +53,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     ],
     entities: [
       DDEMenu(world),
-      Profile(),
+      D3Profile(),
       ReadyUI()
     ]
   })

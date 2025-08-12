@@ -1,6 +1,6 @@
 import { Entity, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/core"
 
-export const Profile = (): Entity => {
+export const D3Profile = (): Entity => {
 
   let init = false
 
@@ -27,7 +27,7 @@ export const Profile = (): Entity => {
   container.appendChild(name)
 
   const profile = Entity({
-    id: "HtmlProfile",
+    id: "D3Profile",
     components: {
       position: Position(),
       npc: NPC({
