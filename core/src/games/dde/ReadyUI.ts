@@ -21,8 +21,7 @@ export const ReadyUI = (): Entity => {
     style: {
       position: "relative",
       top: "4px",
-      justifyContent: "center",
-      display: "flex"
+      textAlign: "center"
     }
   })
 
@@ -88,11 +87,8 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   const nameText = HtmlText({
     text: player.components.pc.data.name,
     style: {
-      // width: "160px",
-      // display: "flex",
-      justifyContent: "center",
-      // transform: "translate(-50%)",
-      // left: "10px",
+      textAlign: "center",
+      flex: 1,
       fontSize: "18px",
       position: "relative",
       marginLeft: "6px",

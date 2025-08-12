@@ -10,6 +10,7 @@ export type HtmlStyleProps = {
   color?: `#${string}`
   cursor?: "pointer" | "default" | "not-allowed"
   display?: "block" | "inline-block" | "flex" | "inline-flex" | "none"
+  flex?: number
   flexDirection?: "row" | "column" | "row-reverse" | "column-reverse"
   float?: "left" | "right" | "none"
   fontFamily?: "Courier New" | "Arial"
