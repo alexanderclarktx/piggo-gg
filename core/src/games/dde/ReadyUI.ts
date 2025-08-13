@@ -110,7 +110,10 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
       return player.components.pc.data.ready ? "🟢" : "🔴"
     } else {
       const character = player.components.controlling.getCharacter(world)
-      return character?.components.position.data.flying ? "🦅️" : "🐤"
+
+      const bird = character?.components.position.data.flying ? "🦅️" : "🐤"
+
+      return `${bird} (${player.components.pc.data.points})`
     }
   }
 
