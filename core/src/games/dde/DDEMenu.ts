@@ -188,9 +188,9 @@ const Lobbies = (world: World): RefreshableDiv => {
 
           for (const [id, meta] of entries(response.lobbies)) {
             const lobby = HtmlText({
-              text: `(${meta.players}) ${meta.creator} ${id}`,
+              text: `(${meta.players}) [${id}] ${meta.creator}`,
               style: {
-                width: "70%",
+                width: "75%",
                 height: "36px",
                 left: "5px",
                 fontSize: "16px",
@@ -217,7 +217,7 @@ const Lobbies = (world: World): RefreshableDiv => {
                 })
               },
               style: {
-                width: "25%",
+                width: "20%",
                 height: "40px",
                 fontSize: "16px",
                 right: "5px",
