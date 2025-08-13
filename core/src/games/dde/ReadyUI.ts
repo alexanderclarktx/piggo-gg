@@ -74,6 +74,7 @@ export const ReadyUI = (): Entity => {
             container.innerHTML = ""
             container.appendChild(title())
 
+            players.sort((a, b) => (b.components.pc.data.points - a.components.pc.data.points))
             for (const player of players) {
               const playerRow = PlayerRow(player, world)
 
