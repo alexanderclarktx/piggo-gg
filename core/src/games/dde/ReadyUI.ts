@@ -69,7 +69,7 @@ export const ReadyUI = (): Entity => {
 
           if (pointsChanged || numPlayers !== players.length || phase !== state.phase) {
             numPlayers = players.length
-            phase = state.phase
+            phase = state.phase === "play" ? `round ${state.round}` : state.phase
 
             container.innerHTML = ""
             container.appendChild(title())

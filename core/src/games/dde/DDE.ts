@@ -13,6 +13,7 @@ import { ReadyUI } from "./ReadyUI"
 
 export type DDEState = {
   phase: "warmup" | "starting" | "play"
+  round: number
   willStart: undefined | number
   nextSeed: number
   doubleJumped: string[]
@@ -35,11 +36,11 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     },
     state: {
       phase: "warmup",
+      round: 0,
       nextSeed: 123456111,
       willStart: undefined,
       doubleJumped: [],
-      applesEaten: {},
-      applesTimer: {}
+      applesEaten: {}
     },
     systems: [
       SpawnSystem(Bird),
@@ -92,14 +93,28 @@ const DDESystem = SystemBuilder({
         const players = world.players()
         const characters = world.characters()
 
+        let shouldStart = false
+
+        // start if all players ready
         if (world.mode === "server" && state.phase === "warmup" && players.length) {
           const playersReady = players.filter(p => p.components.pc.data.ready)
-
           if (playersReady.length === players.length) {
-            state.phase = "starting"
-            state.willStart = world.tick + 40 * 3
-            state.nextSeed = randomInt(1000000)
+            shouldStart = true
           }
+        }
+
+        // start if no ducks left
+        if (world.mode === "server" && state.phase === "play") {
+          const eagles = characters.filter(c => c.components.position.data.flying)
+          if (eagles.length === players.length) {
+            shouldStart = true
+          }
+        }
+
+        if (shouldStart) {
+          state.phase = "starting"
+          state.willStart = world.tick + 40 * 3
+          state.nextSeed = randomInt(1000000)
         }
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
@@ -107,6 +122,7 @@ const DDESystem = SystemBuilder({
           // update state
           state.phase = "play"
           state.applesEaten = {}
+          state.round += 1
 
           // new random seed
           world.random = Random(state.nextSeed)
