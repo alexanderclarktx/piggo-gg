@@ -97,18 +97,14 @@ const DDESystem = SystemBuilder({
 
         // start if all players ready
         if (world.mode === "server" && state.phase === "warmup" && players.length) {
-          const playersReady = players.filter(p => p.components.pc.data.ready)
-          if (playersReady.length === players.length) {
-            shouldStart = true
-          }
+          const notReady = players.filter(p => !p.components.pc.data.ready)
+          if (notReady.length === 0) shouldStart = true
         }
 
-        // start if no ducks left
+        // start next round if no ducks left
         if (world.mode === "server" && state.phase === "play") {
-          const eagles = characters.filter(c => c.components.position.data.flying)
-          if (eagles.length === players.length) {
-            shouldStart = true
-          }
+          const ducks = characters.filter(c => !c.components.position.data.flying)
+          if (ducks.length === 0) shouldStart = true
         }
 
         if (shouldStart) {

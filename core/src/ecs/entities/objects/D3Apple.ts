@@ -81,7 +81,6 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
                 player.components.pc.data.points += 1
 
                 if (state.applesEaten[player.id] >= 10) {
-                  player.components.pc.data.points += 2
                   character.components.position.data.flying = true
                 }
               }

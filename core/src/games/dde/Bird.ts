@@ -116,10 +116,6 @@ export const Bird = (player: Player) => Character({
         if (state.phase === "play") return
 
         position.data.flying = !position.data.flying
-
-        // if (player && state.applesEaten[player.id] !== undefined) {
-        //   state.applesEaten[player.id] = 0
-        // }
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
