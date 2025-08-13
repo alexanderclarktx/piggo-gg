@@ -9,6 +9,7 @@ export const ReadyUI = (): Entity => {
 
   let numPlayers = 0
   let phase = "warmup"
+  const playerPoints: Record<string, number> = {}
 
   const playerRows: Record<string, RefreshableDiv> = {}
 
@@ -58,7 +59,15 @@ export const ReadyUI = (): Entity => {
           const state = world.state<DDEState>()
           const players = world.players()
 
-          if (numPlayers !== players.length || phase !== state.phase) {
+          let pointsChanged = false
+          for (const player of players) {
+            if (player.components.pc.data.points !== playerPoints[player.id]) {
+              pointsChanged = true
+              break
+            }
+          }
+
+          if (pointsChanged || numPlayers !== players.length || phase !== state.phase) {
             numPlayers = players.length
             phase = state.phase
 
@@ -76,6 +85,7 @@ export const ReadyUI = (): Entity => {
 
           for (const player of players) {
             playerRows[player.id]?.update()
+            playerPoints[player.id] = player.components.pc.data.points
           }
         }
       })
