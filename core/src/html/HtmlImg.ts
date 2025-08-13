@@ -1,6 +1,8 @@
 import { CSS } from "@piggo-gg/core"
 
-export const HtmlImg = (src: string, style: CSS): HTMLImageElement => {
+export type HtmlImg = HTMLImageElement
+
+export const HtmlImg = (src: string, style: CSS): HtmlImg => {
   const img = document.createElement("img")
   img.src = src
 

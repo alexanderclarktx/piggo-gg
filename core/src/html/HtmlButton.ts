@@ -1,6 +1,8 @@
 import { CSS } from "@piggo-gg/core"
 
-export const HtmlButton = (props: HtmlButtonProps): HTMLButtonElement => {
+export type HtmlButton = HTMLButtonElement
+
+export const HtmlButton = (props: HtmlButtonProps): HtmlButton => {
   const b = document.createElement("button")
   Object.assign(b.style, defaults)
 
@@ -45,7 +47,7 @@ export type HtmlButtonProps = {
   onHoverOut?: (event: MouseEvent) => void
 }
 
-export const styleButton = (button: HTMLButtonElement, selected: boolean, hovered: boolean): void => {
+export const styleButton = (button: HtmlButton, selected: boolean, hovered: boolean): void => {
   if (selected) {
     button.style.border = "2px solid #cccccc"
     button.style.color = "#cccccc"
@@ -57,7 +59,7 @@ export const styleButton = (button: HTMLButtonElement, selected: boolean, hovere
   }
 }
 
-export const styleSwitch = (button: HTMLButtonElement, enabled: boolean, hovered: boolean): void => {
+export const styleSwitch = (button: HtmlButton, enabled: boolean, hovered: boolean): void => {
   if (enabled) {
     button.textContent = "on"
     button.style.border = "2px solid #00ff00"

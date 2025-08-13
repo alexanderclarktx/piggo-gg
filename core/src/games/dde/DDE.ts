@@ -13,11 +13,11 @@ import { ReadyUI } from "./ReadyUI"
 
 export type DDEState = {
   phase: "warmup" | "starting" | "play"
+  round: number
   willStart: undefined | number
   nextSeed: number
   doubleJumped: string[]
   applesEaten: Record<string, number>
-  applesTimer: Record<string, number>
 }
 
 export type DDESettings = {
@@ -36,11 +36,11 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     },
     state: {
       phase: "warmup",
+      round: 0,
       nextSeed: 123456111,
       willStart: undefined,
       doubleJumped: [],
-      applesEaten: {},
-      applesTimer: {}
+      applesEaten: {}
     },
     systems: [
       SpawnSystem(Bird),
@@ -93,18 +93,32 @@ const DDESystem = SystemBuilder({
         const players = world.players()
         const characters = world.characters()
 
-        if (world.mode === "server" && state.phase === "warmup" && players.length) {
-          const playersReady = players.filter(p => p.components.pc.data.ready)
+        let shouldStart = false
 
-          if (playersReady.length === players.length) {
-            state.phase = "starting"
-            state.willStart = world.tick + 40 * 3
-            state.nextSeed = randomInt(1000000)
-          }
+        // start if all players ready
+        if (world.mode === "server" && state.phase === "warmup" && players.length) {
+          const notReady = players.filter(p => !p.components.pc.data.ready)
+          if (notReady.length === 0) shouldStart = true
+        }
+
+        // start next round if no ducks left
+        if (world.mode === "server" && state.phase === "play") {
+          const ducks = characters.filter(c => !c.components.position.data.flying)
+          if (ducks.length === 0) shouldStart = true
+        }
+
+        if (shouldStart) {
+          state.phase = "starting"
+          state.willStart = world.tick + 40 * 3
+          state.nextSeed = randomInt(1000000)
         }
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
+
+          // update state
           state.phase = "play"
+          state.applesEaten = {}
+          state.round += 1
 
           // new random seed
           world.random = Random(state.nextSeed)

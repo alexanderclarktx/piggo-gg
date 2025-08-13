@@ -9,6 +9,7 @@ export const ReadyUI = (): Entity => {
 
   let numPlayers = 0
   let phase = "warmup"
+  const playerPoints: Record<string, number> = {}
 
   const playerRows: Record<string, RefreshableDiv> = {}
 
@@ -58,13 +59,22 @@ export const ReadyUI = (): Entity => {
           const state = world.state<DDEState>()
           const players = world.players()
 
-          if (numPlayers !== players.length || phase !== state.phase) {
+          let pointsChanged = false
+          for (const player of players) {
+            if (player.components.pc.data.points !== playerPoints[player.id]) {
+              pointsChanged = true
+              break
+            }
+          }
+
+          if (pointsChanged || numPlayers !== players.length || phase !== state.phase) {
             numPlayers = players.length
-            phase = state.phase
+            phase = state.phase === "play" ? `round ${state.round}` : state.phase
 
             container.innerHTML = ""
             container.appendChild(title())
 
+            players.sort((a, b) => (b.components.pc.data.points - a.components.pc.data.points))
             for (const player of players) {
               const playerRow = PlayerRow(player, world)
 
@@ -76,6 +86,7 @@ export const ReadyUI = (): Entity => {
 
           for (const player of players) {
             playerRows[player.id]?.update()
+            playerPoints[player.id] = player.components.pc.data.points
           }
         }
       })
@@ -110,7 +121,9 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
       return player.components.pc.data.ready ? "🟢" : "🔴"
     } else {
       const character = player.components.controlling.getCharacter(world)
-      return character?.components.position.data.flying ? "🦅️" : "🐤"
+
+      const bird = character?.components.position.data.flying ? "🦅️" : "🐤"
+      return `${bird} (${player.components.pc.data.points})`
     }
   }
 

@@ -4,7 +4,9 @@ const defaults: CSS = {
   position: "absolute"
 }
 
-export const HtmlDiv = (style: CSS = {}): HTMLDivElement => {
+export type HtmlDiv = HTMLDivElement
+
+export const HtmlDiv = (style: CSS = {}): HtmlDiv => {
   const div = document.createElement("div")
 
   Object.assign(div.style, defaults)
@@ -20,4 +22,4 @@ export const HtmlDiv = (style: CSS = {}): HTMLDivElement => {
   return div
 }
 
-export type RefreshableDiv = { div: HTMLDivElement, update: () => void }
+export type RefreshableDiv = { div: HtmlDiv, update: () => void }
