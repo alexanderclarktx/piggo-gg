@@ -1,4 +1,4 @@
-import { CSS } from "@piggo-gg/core"
+import { CSS, HtmlDiv } from "@piggo-gg/core"
 
 export type HtmlTextProps = {
   text?: string,
@@ -15,7 +15,7 @@ const defaults: HtmlTextProps["style"] = {
   alignItems: "center"
 }
 
-export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
+export const HtmlText = (props: HtmlTextProps): HtmlDiv => {
   const div = document.createElement("div")
 
   if (props.text) div.textContent = props.text
@@ -26,7 +26,7 @@ export const HtmlText = (props: HtmlTextProps): HTMLDivElement => {
   return div
 }
 
-export const HtmlLabel = (text: string, left: number, top: number, visible: boolean = true) => HtmlText({
+export const HtmlLabel = (text: string, left: number, top: number, visible = true) => HtmlText({
   text,
   style: {
     left: `${left}px`,

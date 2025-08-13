@@ -284,7 +284,7 @@ const Settings = (world: World): RefreshableDiv => {
     position: "relative"
   })
 
-  const settingsRow = (text: string, key: keyof DDESettings): { div: HTMLDivElement, button: HTMLButtonElement } => {
+const settingsRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
     const label = HtmlText({
       text,
       style: {
