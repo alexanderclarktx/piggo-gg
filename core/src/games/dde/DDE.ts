@@ -17,7 +17,6 @@ export type DDEState = {
   nextSeed: number
   doubleJumped: string[]
   applesEaten: Record<string, number>
-  applesTimer: Record<string, number>
 }
 
 export type DDESettings = {
@@ -104,7 +103,10 @@ const DDESystem = SystemBuilder({
         }
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
+
+          // update state
           state.phase = "play"
+          state.applesEaten = {}
 
           // new random seed
           world.random = Random(state.nextSeed)
