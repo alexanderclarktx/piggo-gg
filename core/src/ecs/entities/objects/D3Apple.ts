@@ -77,6 +77,7 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
                 state.applesTimer[playerId] = world.tick
               } else {
                 state.applesEaten[playerId] += 1
+                player.components.pc.data.points += 1
 
                 if (state.applesEaten[playerId] >= 10) {
                   const timeElapsed = (world.tick - state.applesTimer[playerId]) * 25 / 1000

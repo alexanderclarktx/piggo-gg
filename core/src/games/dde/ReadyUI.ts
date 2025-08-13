@@ -112,7 +112,6 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
       const character = player.components.controlling.getCharacter(world)
 
       const bird = character?.components.position.data.flying ? "🦅️" : "🐤"
-
       return `${bird} (${player.components.pc.data.points})`
     }
   }
