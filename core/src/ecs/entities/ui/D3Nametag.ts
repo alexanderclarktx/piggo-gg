@@ -1,6 +1,5 @@
-import { min, Player, SystemBuilder, World } from "@piggo-gg/core"
+import { D3Text, min, Player, SystemBuilder, World } from "@piggo-gg/core"
 import { Group } from "three"
-import { Text } from "troika-three-text"
 
 export type D3Nametag = {
   group: Group
@@ -9,16 +8,7 @@ export type D3Nametag = {
 
 export const D3Nametag = (player: Player): D3Nametag => {
   const group = new Group()
-  const text = new Text()
-
-  text.fontSize = 0.05
-  // text.font = "https://fonts.gstatic.com/s/cutivemono/v6/m8JWjfRfY7WVjVi2E-K9H6RCTmg.woff"
-  text.font = "https://fonts.gstatic.com/s/courierprime/v9/u-450q2lgwslOqpF_6gQ8kELWwZjW-_-tvg.ttf"
-  text.color = 0xffffff
-  text.outlineWidth = 0.001
-  text.anchorX = "center"
-  text.anchorY = "middle"
-  text.sync()
+  const text = D3Text()
 
   group.add(text)
 
