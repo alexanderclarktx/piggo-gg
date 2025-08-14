@@ -102,7 +102,8 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     height: "30px",
     width: "auto",
     justifyContent: "space-between",
-    display: "flex"
+    display: "flex",
+    border: ""
   })
 
   const nameText = HtmlText({
