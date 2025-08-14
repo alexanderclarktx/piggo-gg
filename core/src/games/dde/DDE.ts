@@ -115,6 +115,8 @@ const DDESystem = SystemBuilder({
               state.phase = "warmup"
               state.startedEagle = []
               state.round = 0
+
+              console.log(world.state())
             } else if (world.mode === "server") {
               shouldStart = true
             }
@@ -153,6 +155,8 @@ const DDESystem = SystemBuilder({
             position.setPosition({ x: 20, y: 20, z: 6 })
             position.setVelocity({ x: 0, y: 0, z: 0 })
             position.data.flying = false
+            localAim.x = 0
+            localAim.y = -0.2
           }
 
           // choose who starts as eagle
