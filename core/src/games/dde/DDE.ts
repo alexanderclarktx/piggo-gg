@@ -112,6 +112,9 @@ const DDESystem = SystemBuilder({
 
           if (ducks.length === 0) {
             if (characters.length === state.startedEagle.length) {
+              const winner = players[0].components.pc.data.name
+              world.announce(`${winner} wins! GG!`)
+
               state.phase = "warmup"
               state.startedEagle = []
               state.round = 0
@@ -134,7 +137,7 @@ const DDESystem = SystemBuilder({
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
 
-          world.announce(`starting round ${state.round + 1}!`)
+          world.announce(`round ${state.round + 1}!`)
 
           // update state
           state.applesEaten = {}
