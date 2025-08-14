@@ -97,7 +97,7 @@ const DDESystem = SystemBuilder({
         let shouldStart = false
 
         // start if all players ready
-        if (world.mode === "server" && state.phase === "warmup" && players.length) {
+        if (world.mode === "server" && state.phase === "warmup" && players.length > 1) {
           const notReady = players.filter(p => !p.components.pc.data.ready)
           if (notReady.length === 0) shouldStart = true
         }
