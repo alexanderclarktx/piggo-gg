@@ -3,33 +3,45 @@ import { Entity, entries, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/cor
 export const HtmlChat = (): Entity => {
 
   let init = false
-  let text = ""
   let hideTimer = 0
+  let inputText = ""
+  let messagesText = ""
 
   const wrapper = HtmlDiv({
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    // backgroundColor: "rgba(0, 0, 0, 0.2)",
     width: "300px",
     height: "400px",
     right: "10px",
     bottom: "10px",
     transform: "translate(0%)",
-    borderRadius: "8px",
-    border: "2px solid white",
+    // borderRadius: "8px",
+    // border: "2px solid white",
     display: "flex",
     flexDirection: "column"
   })
 
-  const messages = HtmlDiv({
-    width: "280px",
-    top: "10px",
-    left: "10px",
-    marginBottom: "30px",
+  const border = HtmlDiv({
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
     borderRadius: "8px",
-    position: "relative",
+    border: "2px solid white",
+  })
 
-    flex: 1,
-    overflow: "scroll",
-    backgroundColor: "rgba(0, 0, 255, 0.5)"
+  const messages = HtmlText({
+    text: "",
+    style: {
+      width: "280px",
+      top: "10px",
+      left: "10px",
+      marginBottom: "30px",
+      borderRadius: "8px",
+      position: "relative",
+
+      flex: 1,
+      overflow: "scroll",
+      backgroundColor: "rgba(0, 0, 255, 0.5)"
+    }
   })
 
   const input = HtmlText({
@@ -52,6 +64,7 @@ export const HtmlChat = (): Entity => {
     }
   })
 
+  wrapper.appendChild(border)
   wrapper.appendChild(messages)
   wrapper.appendChild(input)
 
@@ -84,19 +97,18 @@ export const HtmlChat = (): Entity => {
           //   wrapper.style.opacity = "1"
           // }
 
-          wrapper.style.visibility = isOpen ? "visible" : "hidden"
+          border.style.visibility = isOpen ? "visible" : "hidden"
 
           const buffered = `${inputBuffer.join("")}│`
-          if (buffered !== text) {
-            text = buffered
-            input.textContent = text
+          if (buffered !== inputText) {
+            inputText = buffered
+            input.textContent = inputText
           }
-
 
           let lastMessages: string[] = []
 
           // get last 4 messages
-          for (const tick of world.messages.keys().slice(-4)) {
+          for (const tick of world.messages.keys().slice(0, 4)) {
             const messagesForEntity = world.messages.atTick(tick)
             if (messagesForEntity) {
               for (const [entityId, messages] of entries(messagesForEntity)) {
@@ -111,18 +123,13 @@ export const HtmlChat = (): Entity => {
             }
           }
 
-          if (lastMessages.length) {
+          const joined = lastMessages.reverse().join("\n")
+          if (joined !== messagesText) {
+            messagesText = joined
+            messages.textContent = messagesText
 
+            console.log(joined)
           }
-          // if (messagesForEntity) entries(messagesForEntity).forEach(([player, messages]) => {
-          //   const playerName = world.entities[player]?.components.pc?.data.name ?? player
-          //   messages.forEach((message) => {
-          //     if (messages.length < 4) lastMessages.push(`${playerName}: ${message}`)
-          //   })
-          // })
-          // })
-
-          // t.text = lastMessages.reverse().join("\n")
         }
       })
     }
