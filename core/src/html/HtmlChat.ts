@@ -38,7 +38,12 @@ export const HtmlChat = (): Entity => {
       top: "10px",
       whiteSpace: "pre-line",
       width: "280px",
-      wordBreak: "break-all"
+      wordBreak: "break-all",
+
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      alignItems: "flex-start",
     }
   })
 
@@ -106,7 +111,7 @@ export const HtmlChat = (): Entity => {
           let lastMessages: string[] = []
 
           // get last 4 messages
-          for (const tick of world.messages.keys().slice(0, 4)) {
+          for (const tick of world.messages.keys().slice(0, 10)) {
             const messagesForEntity = world.messages.atTick(tick)
             if (messagesForEntity) {
               for (const [entityId, messages] of entries(messagesForEntity)) {
