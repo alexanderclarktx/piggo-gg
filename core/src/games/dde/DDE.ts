@@ -154,7 +154,7 @@ const DDESystem = SystemBuilder({
           for (const character of characters) {
             const { position } = character.components
 
-            position.setPosition({ x: 20, y: 20, z: 6 })
+            position.setPosition({ x: 14 + world.random.int(12, 6), y: 14 + world.random.int(12, 6), z: 6 })
             position.setVelocity({ x: 0, y: 0, z: 0 })
             position.data.flying = false
             localAim.x = 0
