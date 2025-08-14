@@ -255,7 +255,7 @@ const DDESystem = SystemBuilder({
 
         // spawn apples
         if (!applesSpawned) {
-          for (let i = 0; i < 40; i++) {
+          for (let i = 0; i < 25; i++) {
             world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
           }
           applesSpawned = true
