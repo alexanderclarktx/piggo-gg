@@ -71,7 +71,7 @@ export const HtmlChat = (): Entity => {
       position: Position(),
       npc: NPC({
         behavior: (_, world) => {
-          if (!world.client) return
+          if (!world.client || world.client.mobile) return
 
           if (!init) {
             init = true
