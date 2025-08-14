@@ -173,7 +173,10 @@ const DDESystem = SystemBuilder({
         }
 
         const t1 = performance.now()
-        for (const character of characters) {
+        for (const player of players) {
+          const character = player.components.controlling?.getCharacter(world)
+          if (!character) continue
+
           const { position } = character.components
           const { z, rotation, standing } = position.data
 
@@ -234,8 +237,13 @@ const DDESystem = SystemBuilder({
 
               const distance = XYZdistance(position.data, duckPos.data)
 
-              if (distance < 0.2) {
-                duckPos.setPosition({ x: 20, y: 20, z: 6 })
+              if (distance < 0.24) {
+                if (state.phase === "play") {
+                  duckPos.data.flying = true
+                  world.announce(`${player.components.pc.data.name} caught a duck!`)
+                } else {
+                  duckPos.setPosition({ x: 20, y: 20, z: 6 })
+                }
               }
             }
           }
