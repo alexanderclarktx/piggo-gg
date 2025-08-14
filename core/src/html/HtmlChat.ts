@@ -8,14 +8,11 @@ export const HtmlChat = (): Entity => {
   let messagesText = ""
 
   const wrapper = HtmlDiv({
-    // backgroundColor: "rgba(0, 0, 0, 0.2)",
     width: "300px",
-    height: "400px",
+    height: "300px",
     right: "10px",
     bottom: "10px",
     transform: "translate(0%)",
-    // borderRadius: "8px",
-    // border: "2px solid white",
     display: "flex",
     flexDirection: "column"
   })
@@ -128,8 +125,6 @@ export const HtmlChat = (): Entity => {
           if (joined !== messagesText) {
             messagesText = joined
             messages.textContent = messagesText
-
-            console.log(joined)
           }
         }
       })
