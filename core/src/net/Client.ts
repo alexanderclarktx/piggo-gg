@@ -35,7 +35,6 @@ export type Client = {
     set: (value: number) => void
     reset: () => void
   }
-  // connected: boolean
   env: "dev" | "production"
   lastMessageTick: number
   lobbyId: string | undefined

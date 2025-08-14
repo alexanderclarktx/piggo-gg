@@ -24,7 +24,7 @@ export const InputSystem = ClientSystemBuilder({
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])
 
-    let backspaceOn = 0
+    let backspace = 0
     let mouseScreen: XY = { x: 0, y: 0 }
 
     window.addEventListener("pointermove", (event) => {
@@ -79,7 +79,7 @@ export const InputSystem = ClientSystemBuilder({
         if (charactersPreventDefault.has(keyName)) event.preventDefault()
 
         // handle released backspace
-        if (world.client?.chat.isOpen && keyName === "backspace") backspaceOn = 0
+        if (world.client?.chat.isOpen && keyName === "backspace") backspace = 0
 
         const down = world.client?.bufferDown.get(keyName)
         if (!down) return
@@ -140,7 +140,7 @@ export const InputSystem = ClientSystemBuilder({
           // handle backspace
           if (world.client?.chat.isOpen && keyName === "backspace") {
             world.client!.chat.inputBuffer.pop()
-            backspaceOn = world.tick + 3
+            backspace = world.tick + 3
           }
 
           // push to chatBuffer or bufferedDown
@@ -405,7 +405,7 @@ export const InputSystem = ClientSystemBuilder({
         if (character && !world.client?.busy) handleInputForCharacter(character, world)
 
         // handle buffered backspace
-        if (world.client?.chat.isOpen && backspaceOn && (world.tick > backspaceOn) && (world.tick - backspaceOn) % 2 === 0) {
+        if (world.client?.chat.isOpen && backspace && (world.tick > backspace) && (world.tick - backspace) % 2 === 0) {
           world.client!.chat.inputBuffer.pop()
         }
 
