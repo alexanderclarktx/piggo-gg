@@ -48,6 +48,6 @@ export type CSS = {
   userSelect?: "none" | "auto" | "text" | "all"
   visibility?: "visible" | "hidden"
   width?: `${number}px` | `${number}%` | "auto"
-  wordWrap?: "normal" | "break-word"
+  wordBreak?: "normal" | "break-word" | "break-all"
   zIndex?: number
 }

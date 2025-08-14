@@ -21,28 +21,28 @@ export const HtmlChat = (): Entity => {
     width: "280px",
     top: "10px",
     left: "10px",
-    height: "340px",
+    // height: "340px",
+    flex: 1,
     overflow: "scroll",
-    // backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "rgba(0, 0, 255, 0.3)",
   })
 
   const input = HtmlText({
     text: "",
     style: {
       position: "absolute",
-      width: "280px",
+      width: "260px",
       minHeight: "30px",
       bottom: "10px",
       left: "10px",
       borderRadius: "8px",
       paddingLeft: "10px",
       paddingRight: "10px",
-      display: "flex",
       alignItems: "center",
-      overflow: "hidden",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
 
-      wordWrap: "break-word",
+      display: "inline-block",
+      wordBreak: "break-all",
     }
   })
 
