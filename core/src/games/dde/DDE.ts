@@ -12,12 +12,13 @@ import { DDEMobileUI } from "./DDEMobileUI"
 import { Scoreboard } from "./Scoreboard"
 
 export type DDEState = {
+  applesEaten: Record<string, number>
+  doubleJumped: string[]
+  nextSeed: number
   phase: "warmup" | "starting" | "play"
   round: number
+  startedEagle: string[]
   willStart: undefined | number
-  nextSeed: number
-  doubleJumped: string[]
-  applesEaten: Record<string, number>
 }
 
 export type DDESettings = {
@@ -35,12 +36,13 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       showControls: true
     },
     state: {
+      applesEaten: {},
+      doubleJumped: [],
+      nextSeed: 123456111,
       phase: "warmup",
       round: 0,
-      nextSeed: 123456111,
-      willStart: undefined,
-      doubleJumped: [],
-      applesEaten: {}
+      startedEagle: [],
+      willStart: undefined
     },
     systems: [
       SpawnSystem(Bird),
@@ -71,8 +73,7 @@ const DDESystem = SystemBuilder({
 
     let blocksRendered = false
     let applesSpawned = false
-
-    let musicPlaying = false
+    let ambience = false
 
     return {
       id: "DDESystem",
@@ -82,13 +83,14 @@ const DDESystem = SystemBuilder({
         const state = world.state<DDEState>()
         const settings = world.settings<DDESettings>()
 
-        if (!musicPlaying && world.client?.soundManager.ready && settings.ambientSound) {
-          musicPlaying = world.client.soundManager.play({ soundName: "birdsong1" })
+        // ambient sound
+        if (!ambience && world.client?.soundManager.ready && settings.ambientSound) {
+          ambience = world.client.soundManager.play({ soundName: "birdsong1" })
         } else if (world.client?.soundManager.sounds.birdsong1.state === "stopped") {
-          musicPlaying = false
-        } else if (musicPlaying && !settings.ambientSound) {
+          ambience = false
+        } else if (ambience && !settings.ambientSound) {
           world.client?.soundManager.stop("birdsong1")
-          musicPlaying = false
+          ambience = false
         }
 
         const players = world.players()
