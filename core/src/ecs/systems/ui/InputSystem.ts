@@ -142,7 +142,7 @@ export const InputSystem = ClientSystemBuilder({
 
           // push to chatBuffer or bufferedDown
           if (world.client?.chat.isOpen && validChatCharacters.has(keyName)) {
-            world.client!.chat.inputBuffer.push(keyName)
+            world.client!.chat.inputBuffer.push(event.key)
           } else {
             world.client!.bufferDown.push({ key: keyName, mouse, tick: world.tick, hold: 0 })
           }

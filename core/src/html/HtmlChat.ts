@@ -41,7 +41,7 @@ export const HtmlChat = (): Entity => {
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
 
-      display: "inline-block",
+      display: "flex",
       wordBreak: "break-all",
     }
   })
