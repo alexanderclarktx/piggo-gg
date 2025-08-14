@@ -108,7 +108,7 @@ export const HUDSystem = ClientSystemBuilder({
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 
-          if (world.client?.env === "dev") {
+          if (world.client?.env === "dev" && world.debug) {
             posText.innerHTML = `<span style='color: #00ffff'>${x.toFixed(2)}</span><span style='color: #ffff00'> ${y.toFixed(2)}</span><span style='color: #ff33cc'> ${z.toFixed(2)}</span>`
             posText.style.visibility = "visible"
           } else {
@@ -127,6 +127,8 @@ export const HUDSystem = ClientSystemBuilder({
           currentApplesEaten = pcApplesEaten
           scoreText.innerHTML = `<span>apples: </span><span style='color: #ffc0cb'>${currentApplesEaten}/10</span>`
         }
+
+        scoreText.style.visibility = state.phase === "play" && !pc?.components.position.data.flying ? "visible" : "hidden"
       }
     }
   }

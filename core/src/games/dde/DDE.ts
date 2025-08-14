@@ -1,7 +1,7 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, localAim, logPerf, min, PI, D3Profile, Random, randomInt,
-  SpawnSystem, spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance
+  hypot, localAim, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
+  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -54,7 +54,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     entities: [
       DDEMenu(world),
       D3Profile(),
-      ReadyUI()
+      ReadyUI(),
+      HtmlChat()
     ]
   })
 }

@@ -1,9 +1,9 @@
 import {
   SpawnSystem, isMobile, MobilePvEHUD, PvEHUD, Skelly, GameBuilder,
   CameraSystem, InventorySystem, ShadowSystem, Background, SystemBuilder,
-  Controlling, floor, Cursor, Chat, EscapeMenu,
-  BlockMesh, Position, Collider, Entity, XYZ, BlockCollider,
-  XYtoChunk, Tooltip, PhysicsSystem, RenderSystem, spawnTerrain
+  Controlling, floor, Cursor, EscapeMenu, BlockMesh, Position, Collider,
+  Entity, XYZ, BlockCollider, XYtoChunk, Tooltip, PhysicsSystem,
+  RenderSystem, spawnTerrain, PixiChat
 } from "@piggo-gg/core"
 
 export const Craft: GameBuilder = {
@@ -25,7 +25,7 @@ export const Craft: GameBuilder = {
     ],
     entities: [
       Background({ rays: true, follow: true }),
-      Cursor(), Chat(), EscapeMenu(),
+      Cursor(), PixiChat(), EscapeMenu(),
       // Piggo(),
       isMobile() ? MobilePvEHUD() : PvEHUD(),
       BlockMesh(),

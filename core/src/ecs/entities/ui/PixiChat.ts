@@ -1,7 +1,7 @@
-import { Entity, Position, Renderable, TextBox, chatBuffer, chatIsOpen, entries } from "@piggo-gg/core"
+import { Entity, Position, Renderable, TextBox, entries } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
-export const Chat = (): Entity => {
+export const PixiChat = (): Entity => {
 
   const messagesText = () => TextBox({
     padding: 3,
@@ -41,10 +41,10 @@ export const Chat = (): Entity => {
     color: 0xFFFF33,
     // boxOutline: true,
     // visible: false,
-    onTick: ({ container }) => {
+    onTick: ({ container, world }) => {
       const t = container as Text
-      const textToRender = chatBuffer.join("")
-      chatIsOpen ? t.text = `${textToRender}|` : t.text = ""
+      const textToRender = world.client!.chat.inputBuffer.join("")
+      world.client?.chat.isOpen ? t.text = `${textToRender}|` : t.text = ""
     }
   })
 

@@ -2,7 +2,7 @@ import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
   World, randomPlayerId, SoundManager, randomHash, AuthLogin, FriendsList, Pls,
   NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers,
-  FriendsAdd, KeyBuffer, isMobile, LobbyList, BadResponse, LobbyExit
+  FriendsAdd, KeyBuffer, isMobile, LobbyList, BadResponse, LobbyExit, Chat
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -29,12 +29,13 @@ export type Client = {
   bufferDown: KeyBuffer
   bufferUp: KeyBuffer
   busy: boolean
-  connected: boolean
+  chat: Chat
   clickThisFrame: {
     value: number
     set: (value: number) => void
     reset: () => void
   }
+  connected: boolean
   env: "dev" | "production"
   lastMessageTick: number
   lobbyId: string | undefined
@@ -93,12 +94,13 @@ export const Client = ({ world }: ClientProps): Client => {
     bufferDown: KeyBuffer(),
     bufferUp: KeyBuffer(),
     busy: false,
-    connected: false,
+    chat: Chat(),
     clickThisFrame: {
       value: 0,
       set: (value: number) => client.clickThisFrame.value = value,
       reset: () => client.clickThisFrame.value = 0
     },
+    connected: false,
     env,
     lastMessageTick: 0,
     lobbyId: undefined,

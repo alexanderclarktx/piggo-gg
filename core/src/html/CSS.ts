@@ -26,8 +26,10 @@ export type CSS = {
   marginLeft?: `${number}px` | `${number}%`
   marginRight?: `${number}px` | `${number}%`
   marginTop?: `${number}px` | `${number}%`
+  minHeight?: `${number}px` | `${number}%`
   minWidth?: `${number}px` | `${number}%`
   overflow?: "visible" | "hidden" | "scroll" | "auto"
+  overflowY?: "visible" | "hidden" | "scroll" | "auto"
   padding?: `${number}px` | `${number}%`,
   paddingBottom?: `${number}px` | `${number}%`
   paddingLeft?: `${number}px` | `${number}%`
@@ -47,5 +49,7 @@ export type CSS = {
   userSelect?: "none" | "auto" | "text" | "all"
   visibility?: "visible" | "hidden"
   width?: `${number}px` | `${number}%` | "auto"
+  whiteSpace?: "normal" | "nowrap" | "pre" | "pre-wrap" | "pre-line"
+  wordBreak?: "normal" | "break-word" | "break-all"
   zIndex?: number
 }
