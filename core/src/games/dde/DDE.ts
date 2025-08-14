@@ -134,6 +134,8 @@ const DDESystem = SystemBuilder({
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
 
+          world.announce(`starting round ${state.round + 1}!`)
+
           // update state
           state.applesEaten = {}
           state.phase = "play"
