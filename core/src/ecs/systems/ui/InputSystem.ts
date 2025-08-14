@@ -3,9 +3,8 @@ import {
   InvokedAction, World, XY, cos, max, min, round, sin
 } from "@piggo-gg/core"
 
-export var mouse: XY = { x: 0, y: 0 }
-export var mouseScreen: XY = { x: 0, y: 0 }
-
+export let mouse: XY = { x: 0, y: 0 }
+export let mouseScreen: XY = { x: 0, y: 0 }
 export let localAim: XY = { x: 0, y: 0 }
 
 const moveAim = ({ x, y }: XY, flying: boolean) => {
