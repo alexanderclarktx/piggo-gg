@@ -41,7 +41,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => {
         zIndex: 3,
         setContainer: async () => pixiText({ text: "", style: { fontSize: 16, fill: 0x00ff00 } }),
         onTick: ({ container, world }) => {
-          lagText.components.renderable.visible = world.client?.connected ?? false
+          lagText.components.renderable.visible = world.client?.net.synced ?? false
 
           const lag = round(world.client?.ms ?? 0)
 

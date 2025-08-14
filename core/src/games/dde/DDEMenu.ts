@@ -179,7 +179,7 @@ const Lobbies = (world: World): RefreshableDiv => {
     div: lobbies,
     update: () => {
 
-      styleButton(createLobby, Boolean(!inLobby), createLobby.matches(":hover"))
+      styleButton(createLobby, Boolean(!inLobby && world.client?.ws.OPEN), createLobby.matches(":hover"))
       styleButton(leaveLobby, Boolean(inLobby), leaveLobby.matches(":hover"))
 
       if (world.tick - 80 > polled) {
@@ -284,7 +284,7 @@ const Settings = (world: World): RefreshableDiv => {
     position: "relative"
   })
 
-const settingsRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
+  const settingsRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
     const label = HtmlText({
       text,
       style: {
