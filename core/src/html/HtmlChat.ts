@@ -31,16 +31,17 @@ export const HtmlChat = (): Entity => {
   const messages = HtmlText({
     text: "",
     style: {
-      width: "280px",
-      top: "10px",
+      backgroundColor: "rgba(0, 0, 255, 0.5)",
+      borderRadius: "8px",
+      flex: 1,
       left: "10px",
       marginBottom: "30px",
-      borderRadius: "8px",
-      position: "relative",
-
-      flex: 1,
       overflow: "scroll",
-      backgroundColor: "rgba(0, 0, 255, 0.5)"
+      position: "relative",
+      top: "10px",
+      whiteSpace: "pre-line",
+      width: "280px",
+      wordBreak: "break-all"
     }
   })
 
