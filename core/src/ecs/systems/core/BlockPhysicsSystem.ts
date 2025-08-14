@@ -1,5 +1,5 @@
 import {
-  abs, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
+  abs, Collider, DDESettings, Entity, floor, max, Position, round, sign, SystemBuilder
 } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
@@ -337,7 +337,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           if (mode === "local") continue
 
-          if (position.data.flying) {
+
+          const settings = world.settings<DDESettings>()
+          if (position.data.flying && !settings.experimentalEagleControls) {
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.1
           } else {
             position.data.velocity.z -= position.data.gravity

@@ -3,7 +3,7 @@ import {
   Networked, Player, Point, Position, Ready, round, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
-import { DDEState } from "./DDE"
+import { DDESettings, DDEState } from "./DDE"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   const camera = world.three?.camera
@@ -66,6 +66,14 @@ export const Bird = (player: Player) => Character({
           return { actionId: "ready" }
         },
 
+        // roll up
+        "up": ({ world }) => {
+          const settings = world.settings<DDESettings>()
+          if (!settings.experimentalEagleControls) return null
+
+          return { actionId: "roll", params: { dir: "up" } }
+        },
+
         // transform
         "e": ({ hold }) => {
           if (hold) return null
@@ -119,6 +127,21 @@ export const Bird = (player: Player) => Character({
         if (state.phase === "play") return
 
         position.data.flying = !position.data.flying
+      }),
+      roll: Action("roll", ({ entity, world, params }) => {
+        if (!entity) return
+
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        if (!position.data.flying) return
+
+        // roll up or down
+        if (params.dir === "up") {
+          position.impulse({ z: 0.04 })
+        } else if (params.dir === "down") {
+          position.impulse({ z: -0.04 })
+        }
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
