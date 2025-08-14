@@ -47,8 +47,6 @@ export const HtmlChat = (): Entity => {
           const { inputBuffer, isOpen } = world.client.chat
           if (isOpen) {
             wrapper.style.visibility = "visible"
-            // wrapper.style.display = "block"
-            // input.value = inputBuffer.join("\n")
           } else {
             wrapper.style.visibility = "hidden"
           }
