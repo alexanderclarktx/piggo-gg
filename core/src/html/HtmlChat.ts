@@ -3,6 +3,8 @@ import { Entity, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/core";
 export const HtmlChat = (): Entity => {
 
   let init = false
+  let text = ""
+  let hideTimer = 0
 
   const wrapper = HtmlDiv({
     backgroundColor: "rgba(0, 0, 0, 0.2)",
@@ -23,7 +25,7 @@ export const HtmlChat = (): Entity => {
       bottom: "10px",
       left: "10px",
       borderRadius: "8px",
-      
+
       backgroundColor: "rgba(0, 0, 0, 0.5)"
     }
   })
@@ -45,10 +47,24 @@ export const HtmlChat = (): Entity => {
           }
 
           const { inputBuffer, isOpen } = world.client.chat
+
           if (isOpen) {
-            wrapper.style.visibility = "visible"
-          } else {
-            wrapper.style.visibility = "hidden"
+            hideTimer = 120
+          } else if (hideTimer > 0) {
+            hideTimer--
+          }
+
+          if (hideTimer > 0 && hideTimer < 20) {
+            wrapper.style.opacity = `${hideTimer / 20}`
+          } else if (hideTimer >= 20) {
+            wrapper.style.opacity = "1"
+          }
+
+          wrapper.style.visibility = hideTimer ? "visible" : "hidden"
+
+          if (inputBuffer.join("") !== text) {
+            text = inputBuffer.join("")
+            input.textContent = text
           }
         }
       })
