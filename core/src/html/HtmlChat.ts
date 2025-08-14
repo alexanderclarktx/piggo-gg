@@ -14,23 +14,28 @@ export const HtmlChat = (): Entity => {
     bottom: "10px",
     transform: "translate(0%)",
     borderRadius: "8px",
-    border: "2px solid white"
+    border: "2px solid white",
+    display: "flex",
+    flexDirection: "column"
   })
 
   const messages = HtmlDiv({
     width: "280px",
     top: "10px",
     left: "10px",
-    // height: "340px",
+    marginBottom: "30px",
+    borderRadius: "8px",
+    position: "relative",
+
     flex: 1,
     overflow: "scroll",
-    backgroundColor: "rgba(0, 0, 255, 0.3)",
+    backgroundColor: "rgba(0, 0, 255, 0.5)"
   })
 
   const input = HtmlText({
     text: "",
     style: {
-      position: "absolute",
+      position: "relative",
       width: "260px",
       minHeight: "30px",
       bottom: "10px",
@@ -41,11 +46,12 @@ export const HtmlChat = (): Entity => {
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
 
-      display: "flex",
-      wordBreak: "break-all",
+      // display: "flex",
+      wordBreak: "break-all"
     }
   })
 
+  wrapper.appendChild(messages)
   wrapper.appendChild(input)
 
   const chat = Entity({
@@ -60,7 +66,7 @@ export const HtmlChat = (): Entity => {
           if (!init) {
             init = true
             world.three?.append(wrapper)
-            world.three?.append(messages)
+            // world.three?.append(messages)
           }
 
           const { inputBuffer, isOpen } = world.client.chat
