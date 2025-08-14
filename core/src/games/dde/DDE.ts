@@ -242,6 +242,7 @@ const DDESystem = SystemBuilder({
               if (distance < 0.24) {
                 if (state.phase === "play") {
                   duckPos.data.flying = true
+                  player.components.pc.data.points += 3
                   world.announce(`${player.components.pc.data.name} caught a duck!`)
                 } else {
                   duckPos.setPosition({ x: 20, y: 20, z: 6 })
