@@ -9,7 +9,7 @@ import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
 import { DDEMenu } from "./DDEMenu"
 import { DDEMobileUI } from "./DDEMobileUI"
-import { ReadyUI } from "./ReadyUI"
+import { Scoreboard } from "./Scoreboard"
 
 export type DDEState = {
   phase: "warmup" | "starting" | "play"
@@ -54,7 +54,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     entities: [
       DDEMenu(world),
       D3Profile(),
-      ReadyUI(),
+      Scoreboard(),
       HtmlChat()
     ]
   })

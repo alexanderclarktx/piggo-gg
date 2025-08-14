@@ -3,7 +3,7 @@ import {
   Player, Position, RefreshableDiv, World
 } from "@piggo-gg/core"
 
-export const ReadyUI = (): Entity => {
+export const Scoreboard = (): Entity => {
 
   let init = false
 
@@ -36,8 +36,8 @@ export const ReadyUI = (): Entity => {
     }
   })
 
-  const ui = Entity({
-    id: "ReadyUI",
+  const scoreboard = Entity({
+    id: "Scoreboard",
     components: {
       position: Position(),
       npc: NPC({
@@ -93,7 +93,7 @@ export const ReadyUI = (): Entity => {
     }
   })
 
-  return ui
+  return scoreboard
 }
 
 const PlayerRow = (player: Player, world: World): RefreshableDiv => {

@@ -14,20 +14,19 @@ export const HtmlChat = (): Entity => {
     bottom: "12px",
     transform: "translate(0%)",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    border: ""
   })
 
   const border = HtmlDiv({
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
-    borderRadius: "8px",
-    border: "2px solid white"
+    borderRadius: "8px"
   })
 
   const messages = HtmlText({
     style: {
-      borderRadius: "8px",
       flex: 1,
       left: "10px",
       marginBottom: "30px",
@@ -48,7 +47,6 @@ export const HtmlChat = (): Entity => {
     style: {
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
-      border: "2px solid white",
       borderRadius: "8px",
       bottom: "10px",
       display: "flex",
