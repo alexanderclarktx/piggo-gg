@@ -166,7 +166,7 @@ const DDESystem = SystemBuilder({
           const eagle = world.random.choice(candidates)
           if (eagle) {
             eagle.components.position.data.flying = true
-            eagle.components.position.setPosition({ x: 15, y: 33, z: 7 })
+            eagle.components.position.setPosition({ x: 15, y: 31, z: 6 })
 
             state.startedEagle.push(eagle.id)
           }
