@@ -26,7 +26,6 @@ export const HtmlChat = (): Entity => {
   })
 
   const messages = HtmlText({
-    text: "",
     style: {
       borderRadius: "8px",
       flex: 1,
@@ -46,7 +45,6 @@ export const HtmlChat = (): Entity => {
   })
 
   const input = HtmlText({
-    text: "",
     style: {
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -71,7 +69,6 @@ export const HtmlChat = (): Entity => {
 
   const chat = Entity({
     id: "html-chat",
-    persists: true,
     components: {
       position: Position(),
       npc: NPC({
@@ -99,7 +96,7 @@ export const HtmlChat = (): Entity => {
 
           let lastMessages: string[] = []
 
-          // get last 4 messages
+          // get recent messages
           for (const tick of world.messages.keys().slice(0, 6)) {
             const messagesForEntity = world.messages.atTick(tick)
             if (messagesForEntity) {
@@ -122,7 +119,7 @@ export const HtmlChat = (): Entity => {
             hideTimer = 100
           }
 
-          if (hideTimer > 0 && hideTimer < 20)  {
+          if (hideTimer > 0 && hideTimer < 20) {
             messages.style.opacity = (hideTimer / 20).toString()
           } else if (hideTimer === 0) {
             messages.style.visibility = "hidden"
