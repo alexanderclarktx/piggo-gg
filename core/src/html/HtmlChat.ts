@@ -9,7 +9,7 @@ export const HtmlChat = (): Entity => {
 
   const wrapper = HtmlDiv({
     width: "300px",
-    height: "300px",
+    height: "260px",
     right: "10px",
     bottom: "10px",
     transform: "translate(0%)",
@@ -28,22 +28,20 @@ export const HtmlChat = (): Entity => {
   const messages = HtmlText({
     text: "",
     style: {
-      backgroundColor: "rgba(0, 0, 255, 0.5)",
       borderRadius: "8px",
       flex: 1,
       left: "10px",
       marginBottom: "30px",
-      overflow: "scroll",
       position: "relative",
       top: "10px",
       whiteSpace: "pre-line",
       width: "280px",
       wordBreak: "break-all",
-
+      // overflowY: "auto",
       display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-end",
+      flexDirection: "column-reverse",
       alignItems: "flex-start",
+      pointerEvents: "auto"
     }
   })
 
@@ -83,24 +81,15 @@ export const HtmlChat = (): Entity => {
           if (!init) {
             init = true
             world.three?.append(wrapper)
-            // world.three?.append(messages)
           }
 
           const { inputBuffer, isOpen } = world.client.chat
 
-          // if (isOpen) {
-          //   hideTimer = 120
-          // } else if (hideTimer > 0) {
-          //   hideTimer--
-          // }
-
-          // if (hideTimer > 0 && hideTimer < 20) {
-          //   wrapper.style.opacity = `${hideTimer / 20}`
-          // } else if (hideTimer >= 20) {
-          //   wrapper.style.opacity = "1"
-          // }
+          if (hideTimer > 0) hideTimer -= 1
+          if (isOpen) hideTimer = 100
 
           border.style.visibility = isOpen ? "visible" : "hidden"
+          input.style.visibility = isOpen ? "visible" : "hidden"
 
           const buffered = `${inputBuffer.join("")}│`
           if (buffered !== inputText) {
@@ -111,7 +100,7 @@ export const HtmlChat = (): Entity => {
           let lastMessages: string[] = []
 
           // get last 4 messages
-          for (const tick of world.messages.keys().slice(0, 10)) {
+          for (const tick of world.messages.keys().slice(0, 6)) {
             const messagesForEntity = world.messages.atTick(tick)
             if (messagesForEntity) {
               for (const [entityId, messages] of entries(messagesForEntity)) {
@@ -130,6 +119,16 @@ export const HtmlChat = (): Entity => {
           if (joined !== messagesText) {
             messagesText = joined
             messages.textContent = messagesText
+            hideTimer = 100
+          }
+
+          if (hideTimer > 0 && hideTimer < 20)  {
+            messages.style.opacity = (hideTimer / 20).toString()
+          } else if (hideTimer === 0) {
+            messages.style.visibility = "hidden"
+          } else {
+            messages.style.visibility = "visible"
+            messages.style.opacity = "1"
           }
         }
       })

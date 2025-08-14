@@ -74,7 +74,10 @@ export const Bird = (player: Player) => Character({
 
         // debug
         "g": ({ world, hold }) => {
-          if (hold === 40) world.three?.setDebug()
+          if (hold === 40) {
+            world.debug = !world.debug
+            world.three?.setDebug()
+          }
           return null
         },
 

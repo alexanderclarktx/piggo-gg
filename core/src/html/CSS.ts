@@ -29,6 +29,7 @@ export type CSS = {
   minHeight?: `${number}px` | `${number}%`
   minWidth?: `${number}px` | `${number}%`
   overflow?: "visible" | "hidden" | "scroll" | "auto"
+  overflowY?: "visible" | "hidden" | "scroll" | "auto"
   padding?: `${number}px` | `${number}%`,
   paddingBottom?: `${number}px` | `${number}%`
   paddingLeft?: `${number}px` | `${number}%`
