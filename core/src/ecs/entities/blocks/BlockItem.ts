@@ -46,7 +46,7 @@ export const BlockItem = (type: BlockType): ItemBuilder => ({ character, id }) =
           const added = world.blocks.add({ ...spot, type: BlockTypeInt[type] })
           if (!added) return
 
-          world.client?.soundManager.play({ soundName: "click2" })
+          world.client?.sound.play({ name: "click2" })
           // item.components.renderable.visible = false
           // character.components.inventory?.removeItem(item.id, world)
         }

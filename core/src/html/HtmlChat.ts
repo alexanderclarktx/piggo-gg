@@ -99,17 +99,16 @@ export const HtmlChat = (): Entity => {
             const messagesForEntity = world.messages.atTick(tick)
             if (messagesForEntity) {
               for (const [entityId, messages] of entries(messagesForEntity)) {
-                const entity = world.entities[entityId]
-                if (entity?.components.pc) {
-                  const playerName = entity.components.pc.data.name ?? entityId
-                  messages.forEach((message) => {
-                    if (messages.length < 4) lastMessages.push(`${playerName}: ${message}`)
-                  })
-                }
+                const from = world.entity(entityId)?.components.pc?.data.name
+                messages.forEach((message) => {
+                  const string = from ? `${from}: ${message}` : message
+                  if (messages.length < 4) lastMessages.push(string)
+                })
               }
             }
           }
 
+          // TODO append child element per message instead
           const joined = lastMessages.reverse().join("\n")
           if (joined !== messagesText) {
             messagesText = joined

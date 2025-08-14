@@ -35,7 +35,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
 
   inventory.addItem(entity as ItemEntity, world)
 
-  world.client?.soundManager.play({ soundName: "bubble" })
+  world.client?.sound.play({ name: "bubble" })
 })
 
 export const dropItem = Action("dropItem", ({ world, entity }) => {

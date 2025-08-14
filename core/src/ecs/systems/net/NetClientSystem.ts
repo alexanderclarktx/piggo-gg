@@ -85,7 +85,7 @@ export const NetClientReadSystem = SystemBuilder({
         if (keys(message.chats).length) {
           entries(message.chats).forEach(([playerId, messages]) => {
             if (playerId === world.client?.playerId()) return
-            world.messages.set(world.tick, playerId, messages)
+            world.messages.set(message.tick, playerId, messages)
           })
         }
       } catch (e) {

@@ -1,5 +1,5 @@
 import { entries, GunNames, World, XY, XYdistance } from "@piggo-gg/core"
-import { getContext, getTransport, Player as Sound } from "tone"
+import { getContext, getTransport, Player as Tone } from "tone"
 
 export type BirdSounds = "steps" | "birdsong1"
 export type BubbleSounds = "bubble"
@@ -17,13 +17,13 @@ export type ValidSounds =
   GunNames | WallPlaceSounds | ZombiDeathSounds |
   ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
 
-const load = (url: string, volume: number): Sound => {
-  const player = new Sound({ url, volume: volume - 10 })
+const load = (url: string, volume: number): Tone => {
+  const player = new Tone({ url, volume: volume - 10 })
   return player.toDestination()
 }
 
 export type SoundPlayProps = {
-  soundName: ValidSounds
+  name: ValidSounds
   start?: number | string
   fadeIn?: number | string
   threshold?: {
@@ -32,40 +32,40 @@ export type SoundPlayProps = {
   }
 }
 
-export type SoundManager = {
+export type Sound = {
   music: { state: "stop" | "play", track: MusicSounds }
   muted: boolean
   state: "closed" | "running" | "suspended"
-  sounds: Record<ValidSounds, Sound>
+  tones: Record<ValidSounds, Tone>
   ready: boolean
-  stop: (soundName: ValidSounds) => void
+  stop: (name: ValidSounds) => void
   stopAll: () => void
   play: (props: SoundPlayProps) => boolean
 }
 
-export const SoundManager = (world: World): SoundManager => {
+export const Sound = (world: World): Sound => {
 
   // mute when tab is not visible
   document.addEventListener("visibilitychange", () => {
-    soundManager.muted = document.hidden
-    if (document.hidden) soundManager.stopAll()
+    sound.muted = document.hidden
+    if (document.hidden) sound.stopAll()
   })
 
   // mute when window is not focused
   window.addEventListener("blur", () => {
-    soundManager.muted = true
-    soundManager.stopAll()
+    sound.muted = true
+    sound.stopAll()
   })
 
   // unmute when window is focused
-  window.addEventListener("focus", () => soundManager.muted = false)
+  window.addEventListener("focus", () => sound.muted = false)
 
-  const soundManager: SoundManager = {
+  const sound: Sound = {
     music: { state: "stop", track: "track1" },
     muted: false,
     state: "closed",
     ready: false,
-    sounds: {
+    tones: {
       birdsong1: load("birdsong1.mp3", -20),
       steps: load("steps.mp3", 0),
       bubble: load("bubble.mp3", -10),
@@ -101,34 +101,34 @@ export const SoundManager = (world: World): SoundManager => {
       eat2: load("eat2.mp3", -10),
       spike: load("spike.mp3", 5),
     },
-    stop: (soundName: ValidSounds) => {
-      const sound = soundManager.sounds[soundName]
-      if (sound) {
+    stop: (name: ValidSounds) => {
+      const tone = sound.tones[name]
+      if (tone) {
         try {
-          sound.stop()
+          tone.stop()
         }
         catch (e) {
-          console.error(`error while stopping sound ${sound}`)
+          console.error(`error while stopping sound ${tone}`)
         }
       }
     },
     stopAll: () => {
-      for (const [name, sound] of entries(soundManager.sounds)) {
-        if (sound.state === "started") {
+      for (const [name, tone] of entries(sound.tones)) {
+        if (tone.state === "started") {
           try {
             if (name.startsWith("track")) {
               // sound.mute = true
             } else {
-              sound.stop()
+              tone.stop()
             }
           } catch (e) {
-            console.error(`error while stopping sound ${sound}`)
+            console.error(`error while stopping sound ${tone}`)
           }
         }
       }
     },
-    play: ({ soundName, start = 0, fadeIn = 0, threshold }) => {
-      if (soundManager.muted && !soundName.startsWith("track")) return false
+    play: ({ name, start = 0, fadeIn = 0, threshold }) => {
+      if (sound.muted && !name.startsWith("track")) return false
 
       // check distance
       if (threshold) {
@@ -140,23 +140,23 @@ export const SoundManager = (world: World): SoundManager => {
       }
 
       try {
-        if (soundManager.state !== "running") {
-          soundManager.state = getContext().state
+        if (sound.state !== "running") {
+          sound.state = getContext().state
           getTransport().cancel().start("+0")
         }
 
-        const sound = soundManager.sounds[soundName]
-        if (sound && sound.loaded) {
-          sound.start(fadeIn, start)
+        const tone = sound.tones[name]
+        if (tone && tone.loaded) {
+          tone.start(fadeIn, start)
           return true
         }
       } catch (e) {
-        console.error(`error while playing sound ${soundName}`)
+        console.error(`error while playing sound ${name}`)
         return false
       }
 
       return false
     }
   }
-  return soundManager
+  return sound
 }

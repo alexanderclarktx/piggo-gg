@@ -59,8 +59,8 @@ export const MusicBox = (): Entity => {
         onTick: ({ renderable, world }) => {
           if (!world.client) return
 
-          const { soundManager } = world.client
-          const currentSong = soundManager.sounds[tracks[trackIndex]]
+          const { sound } = world.client
+          const currentSong = sound.tones[tracks[trackIndex]]
 
           if (timeout > 0) timeout -= 1
 
@@ -69,7 +69,7 @@ export const MusicBox = (): Entity => {
           if (state === "play" && timeout === 0 && currentSong?.state === "stopped") {
             trackIndex = (trackIndex + 1) % tracks.length
             redraw()
-            soundManager.play({ soundName: tracks[trackIndex] })
+            sound.play({ name: tracks[trackIndex] })
             timeout = 40
           }
 
@@ -190,15 +190,15 @@ export const MusicBox = (): Entity => {
 
                 if (state === "stop") {
                   state = "play"
-                  world.client?.soundManager.play({ soundName: "cassettePlay" })
-                  world.client?.soundManager.play({ soundName: tracks[trackIndex], fadeIn: "+1" })
+                  world.client?.sound.play({ name: "cassettePlay" })
+                  world.client?.sound.play({ name: tracks[trackIndex], fadeIn: "+1" })
 
                   timeout = 60
                   animation = 40
                 } else {
                   state = "stop"
-                  world.client?.soundManager.play({ soundName: "cassetteStop" })
-                  world.client?.soundManager.stop(tracks[trackIndex])
+                  world.client?.sound.play({ name: "cassetteStop" })
+                  world.client?.sound.stop(tracks[trackIndex])
 
                   // trackIndex = (trackIndex + 1) % tracks.length
                   redraw()

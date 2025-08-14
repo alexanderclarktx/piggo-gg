@@ -155,7 +155,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       })
     },
     announce: (message: string) => {
-      world.messages.push(world.tick + 1, "game", message)
+      world.messages.set(world.tick + 1, "game", [message])
     },
     entity: <T extends ComponentTypes>(id: string) => {
       return world.entities[id] as Entity<T>
