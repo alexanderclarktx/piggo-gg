@@ -23,7 +23,7 @@ const load = (url: string, volume: number): Tone => {
 }
 
 export type SoundPlayProps = {
-  soundName: ValidSounds
+  name: ValidSounds
   start?: number | string
   fadeIn?: number | string
   threshold?: {
@@ -38,7 +38,7 @@ export type Sound = {
   state: "closed" | "running" | "suspended"
   tones: Record<ValidSounds, Tone>
   ready: boolean
-  stop: (soundName: ValidSounds) => void
+  stop: (name: ValidSounds) => void
   stopAll: () => void
   play: (props: SoundPlayProps) => boolean
 }
@@ -101,8 +101,8 @@ export const Sound = (world: World): Sound => {
       eat2: load("eat2.mp3", -10),
       spike: load("spike.mp3", 5),
     },
-    stop: (soundName: ValidSounds) => {
-      const tone = sound.tones[soundName]
+    stop: (name: ValidSounds) => {
+      const tone = sound.tones[name]
       if (tone) {
         try {
           tone.stop()
@@ -127,8 +127,8 @@ export const Sound = (world: World): Sound => {
         }
       }
     },
-    play: ({ soundName, start = 0, fadeIn = 0, threshold }) => {
-      if (sound.muted && !soundName.startsWith("track")) return false
+    play: ({ name, start = 0, fadeIn = 0, threshold }) => {
+      if (sound.muted && !name.startsWith("track")) return false
 
       // check distance
       if (threshold) {
@@ -145,13 +145,13 @@ export const Sound = (world: World): Sound => {
           getTransport().cancel().start("+0")
         }
 
-        const tone = sound.tones[soundName]
+        const tone = sound.tones[name]
         if (tone && tone.loaded) {
           tone.start(fadeIn, start)
           return true
         }
       } catch (e) {
-        console.error(`error while playing sound ${soundName}`)
+        console.error(`error while playing sound ${name}`)
         return false
       }
 

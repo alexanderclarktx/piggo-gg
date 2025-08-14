@@ -87,7 +87,7 @@ const DDESystem = SystemBuilder({
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {
-          ambient = sound.play({ soundName: "birdsong1" })
+          ambient = sound.play({ name: "birdsong1" })
         } else if (sound?.tones.birdsong1.state === "stopped") {
           ambient = false
         } else if (ambient && !settings.ambientSound) {

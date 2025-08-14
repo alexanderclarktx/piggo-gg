@@ -64,7 +64,7 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
               eaten = true
 
               // sound effect
-              world.client?.sound.play({ soundName: "eat", start: 0.3, threshold: { pos: { x, y }, distance: 5 } })
+              world.client?.sound.play({ name: "eat", start: 0.3, threshold: { pos: { x, y }, distance: 5 } })
 
               if (position.data.flying) return
 

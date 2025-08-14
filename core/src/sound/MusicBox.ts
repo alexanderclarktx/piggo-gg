@@ -69,7 +69,7 @@ export const MusicBox = (): Entity => {
           if (state === "play" && timeout === 0 && currentSong?.state === "stopped") {
             trackIndex = (trackIndex + 1) % tracks.length
             redraw()
-            sound.play({ soundName: tracks[trackIndex] })
+            sound.play({ name: tracks[trackIndex] })
             timeout = 40
           }
 
@@ -190,14 +190,14 @@ export const MusicBox = (): Entity => {
 
                 if (state === "stop") {
                   state = "play"
-                  world.client?.sound.play({ soundName: "cassettePlay" })
-                  world.client?.sound.play({ soundName: tracks[trackIndex], fadeIn: "+1" })
+                  world.client?.sound.play({ name: "cassettePlay" })
+                  world.client?.sound.play({ name: tracks[trackIndex], fadeIn: "+1" })
 
                   timeout = 60
                   animation = 40
                 } else {
                   state = "stop"
-                  world.client?.sound.play({ soundName: "cassetteStop" })
+                  world.client?.sound.play({ name: "cassetteStop" })
                   world.client?.sound.stop(tracks[trackIndex])
 
                   // trackIndex = (trackIndex + 1) % tracks.length
