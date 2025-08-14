@@ -86,8 +86,9 @@ export const HtmlChat = (): Entity => {
 
           wrapper.style.visibility = isOpen ? "visible" : "hidden"
 
-          if (inputBuffer.join("") !== text) {
-            text = inputBuffer.join("")
+          const buffered = `${inputBuffer.join("")}│`
+          if (buffered !== text) {
+            text = buffered
             input.textContent = text
           }
 
