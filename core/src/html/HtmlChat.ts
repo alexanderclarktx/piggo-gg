@@ -35,18 +35,19 @@ export const HtmlChat = (): Entity => {
   const input = HtmlText({
     text: "",
     style: {
-      position: "relative",
-      width: "260px",
-      minHeight: "30px",
-      bottom: "10px",
-      left: "10px",
-      borderRadius: "8px",
-      paddingLeft: "10px",
-      paddingRight: "10px",
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
-
-      // display: "flex",
+      border: "2px solid white",
+      borderRadius: "8px",
+      bottom: "10px",
+      display: "flex",
+      fontSize: "18px",
+      left: "10px",
+      minHeight: "30px",
+      paddingLeft: "10px",
+      paddingRight: "10px",
+      position: "relative",
+      width: "260px",
       wordBreak: "break-all"
     }
   })
