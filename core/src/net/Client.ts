@@ -307,6 +307,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
     client.ws.onopen = () => {
       console.log("connected to server")
+      client.net.connected = true
 
       const joinString: string | null = new URLSearchParams(window.location.search).get("join")
       if (joinString) {
@@ -330,6 +331,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
     client.ws.onclose = () => {
       console.error("disconnected from server")
+      client.net.connected = false
 
       setTimeout(() => {
         console.log("reconnecting to server")
