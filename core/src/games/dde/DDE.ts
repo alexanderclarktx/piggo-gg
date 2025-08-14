@@ -73,7 +73,7 @@ const DDESystem = SystemBuilder({
 
     let blocksRendered = false
     let applesSpawned = false
-    let ambience = false
+    let ambient = false
 
     return {
       id: "DDESystem",
@@ -83,14 +83,16 @@ const DDESystem = SystemBuilder({
         const state = world.state<DDEState>()
         const settings = world.settings<DDESettings>()
 
+        const { sound } = world.client ?? {}
+
         // ambient sound
-        if (!ambience && world.client?.soundManager.ready && settings.ambientSound) {
-          ambience = world.client.soundManager.play({ soundName: "birdsong1" })
-        } else if (world.client?.soundManager.sounds.birdsong1.state === "stopped") {
-          ambience = false
-        } else if (ambience && !settings.ambientSound) {
-          world.client?.soundManager.stop("birdsong1")
-          ambience = false
+        if (!ambient && sound?.ready && settings.ambientSound) {
+          ambient = sound.play({ soundName: "birdsong1" })
+        } else if (sound?.tones.birdsong1.state === "stopped") {
+          ambient = false
+        } else if (ambient && !settings.ambientSound) {
+          sound?.stop("birdsong1")
+          ambient = false
         }
 
         const players = world.players()

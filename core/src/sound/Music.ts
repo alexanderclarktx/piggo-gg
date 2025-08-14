@@ -14,7 +14,7 @@ export const MusicSystem = ClientSystemBuilder({
       if (!world.client) return
 
       if (!playing) {
-        playing = world.client?.soundManager.play({ soundName: tracks[track] })
+        playing = world.client?.sound.play({ soundName: tracks[track] })
         // if (playing) console.log("playing track", tracks[track])
       }
     }
@@ -27,7 +27,7 @@ export const MusicSystem = ClientSystemBuilder({
         if (!playing) {
           play()
         } else {
-          if (world.client!.soundManager.sounds[tracks[track]].state === "stopped") {
+          if (world.client!.sound.tones[tracks[track]].state === "stopped") {
             track = (track + 1) % tracks.length
             playing = false
           }

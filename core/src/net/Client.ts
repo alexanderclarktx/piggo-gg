@@ -1,7 +1,7 @@
 import {
-  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData, RequestTypes,
-  World, randomPlayerId, SoundManager, randomHash, AuthLogin, FriendsList, Pls,
-  NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers,
+  Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData,
+  RequestTypes, World, randomPlayerId, Sound, randomHash, AuthLogin, FriendsList,
+  Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers,
   FriendsAdd, KeyBuffer, isMobile, LobbyList, BadResponse, LobbyExit, Chat
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
@@ -45,7 +45,7 @@ export type Client = {
   ms: number
   mobile: boolean
   player: Player
-  soundManager: SoundManager
+  sound: Sound
   token: string | undefined
   ws: WebSocket
   playerId: () => string
@@ -113,7 +113,7 @@ export const Client = ({ world }: ClientProps): Client => {
     ms: 0,
     mobile: isMobile(),
     player,
-    soundManager: SoundManager(world),
+    sound: Sound(world),
     token: undefined,
     ws: new WebSocket(servers[env]),
     playerId: () => {

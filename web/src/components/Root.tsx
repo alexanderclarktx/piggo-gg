@@ -25,12 +25,12 @@ export const Root = () => {
       <div onPointerDown={() => {
         if (!world) return
 
-        if (world.client!.soundManager.ready) return
+        if (world.client!.sound.ready) return
 
         const audioElement = document.querySelector("audio") as HTMLAudioElement
         audioElement.play()
 
-        world.client!.soundManager.ready = true
+        world.client!.sound.ready = true
       }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}

@@ -18,14 +18,14 @@ export const WhackBlock = Action("whack", ({ params, world, player, entity }) =>
 
   const xyz = world.blocks.atMouse(mouse, character.components.position.data)?.block
   if (!xyz) {
-    world.client?.soundManager.play({ soundName: "whiff" })
+    world.client?.sound.play({ soundName: "whiff" })
     return
   }
 
   const spot = XYZtoIJK(xyz)
   world.blocks.remove(spot, world)
 
-  world.client?.soundManager.play({ soundName: "clink" })
+  world.client?.sound.play({ soundName: "clink" })
 })
 
 export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<KeyMouse & { character: string }>(
@@ -59,11 +59,11 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
       expireTicks: 2,
       onHit: (e2, world) => {
         const hit = onHitCalculate(characterEntity.components.team.data.team, damage)(e2, world)
-        if (hit) world.client?.soundManager.play({ soundName: sound })
+        if (hit) world.client?.sound.play({ soundName: sound })
         return hit
       },
       onExpire: () => {
-        world.client?.soundManager.play({ soundName: "whiff" })
+        world.client?.sound.play({ soundName: "whiff" })
       }
     }
 

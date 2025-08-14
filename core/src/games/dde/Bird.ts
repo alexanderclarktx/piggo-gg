@@ -136,7 +136,7 @@ export const Bird = (player: Player) => Character({
         if (!position.data.standing) state.doubleJumped.push(entity.id)
 
         position.setVelocity({ z: 0.043 })
-        world.client?.soundManager.play({ soundName: "bubble", threshold: { pos: position.data, distance: 5 } })
+        world.client?.sound.play({ soundName: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
       moveAnalog: Action("moveAnalog", ({ entity, params, world }) => {
         if (!params.dir.x || !params.dir.y || !params.power) return
@@ -225,7 +225,7 @@ export const Bird = (player: Player) => Character({
         }
 
         if (position.data.standing) {
-          // world.client?.soundManager.play({ soundName: "steps", threshold: { pos: position.data, distance: 5 } })
+          // world.client?.sound.play({ soundName: "steps", threshold: { pos: position.data, distance: 5 } })
         }
 
         position.impulse({ x: toward.x * factor, y: toward.z * factor })

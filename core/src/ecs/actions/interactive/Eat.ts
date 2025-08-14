@@ -12,7 +12,7 @@ export const Eat = Action<{ target: Entity<Position> }>("eat", ({ entity, params
     entity.components.renderable.scale += 0.3
   }
 
-  world.client?.soundManager.play({ soundName: "eat", start: 0.2 })
+  world.client?.sound.play({ soundName: "eat", start: 0.2 })
 
   if (entity.components.collider) {
     // @ts-expect-error

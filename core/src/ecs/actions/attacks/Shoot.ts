@@ -46,7 +46,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
     const bullet = Hitbox(bulletParams)
     world.addEntity(bullet)
 
-    world.client?.soundManager.play({ soundName: gun.data.name })
+    world.client?.sound.play({ soundName: gun.data.name })
 
     // auto reload
     if (gun.data.clip === 0) {
