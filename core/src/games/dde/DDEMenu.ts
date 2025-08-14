@@ -90,9 +90,9 @@ export const DDEMenu = (world: World): Entity => {
           if (hidden) return
 
           // menu buttons
-          styleButton(lobbiesButton, activeMenu === "lobbies", lobbiesButton.matches(":hover"))
-          styleButton(skinsButton, activeMenu === "skins", skinsButton.matches(":hover"))
-          styleButton(settingsButton, activeMenu === "settings", settingsButton.matches(":hover"))
+          styleButton(lobbiesButton, activeMenu !== "lobbies", lobbiesButton.matches(":hover"))
+          styleButton(skinsButton, activeMenu !== "skins", skinsButton.matches(":hover"))
+          styleButton(settingsButton, activeMenu !== "settings", settingsButton.matches(":hover"))
 
           // visibility of submenus
           lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
@@ -179,8 +179,8 @@ const Lobbies = (world: World): RefreshableDiv => {
     div: lobbies,
     update: () => {
 
-      styleButton(createLobby, Boolean(inLobby), createLobby.matches(":hover"))
-      styleButton(leaveLobby, Boolean(!inLobby), leaveLobby.matches(":hover"))
+      styleButton(createLobby, Boolean(!inLobby), createLobby.matches(":hover"))
+      styleButton(leaveLobby, Boolean(inLobby), leaveLobby.matches(":hover"))
 
       if (world.tick - 80 > polled) {
         polled = world.tick

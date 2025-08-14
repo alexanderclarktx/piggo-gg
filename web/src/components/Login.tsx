@@ -133,8 +133,8 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
                 marginTop: "8px",
                 padding: "8px 16px"
               }}
-              onPointerEnter={(a) => styleButton(a.currentTarget, false, true)}
-              onPointerLeave={(a) => styleButton(a.currentTarget, false, false)}
+              onPointerEnter={(a) => styleButton(a.currentTarget, true, true)}
+              onPointerLeave={(a) => styleButton(a.currentTarget, true, false)}
             >
               <b>submit</b>
             </button>
