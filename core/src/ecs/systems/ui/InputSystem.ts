@@ -3,8 +3,6 @@ import {
   InvokedAction, World, XY, cos, max, min, round, sin
 } from "@piggo-gg/core"
 
-export var chatBuffer: string[] = []
-export var chatIsOpen = false
 export var mouse: XY = { x: 0, y: 0 }
 export var mouseScreen: XY = { x: 0, y: 0 }
 
@@ -82,7 +80,7 @@ export const InputSystem = ClientSystemBuilder({
         if (charactersPreventDefault.has(keyName)) event.preventDefault()
 
         // handle released backspace
-        if (chatIsOpen && keyName === "backspace") backspaceOn = false
+        if (world.client?.chat.isOpen && keyName === "backspace") backspaceOn = false
 
         const down = world.client?.bufferDown.get(keyName)
         if (!down) return
@@ -121,29 +119,31 @@ export const InputSystem = ClientSystemBuilder({
         // prevent defaults
         if (charactersPreventDefault.has(keyName)) event.preventDefault()
 
+        const { isOpen, inputBuffer } = world.client!.chat
+
         // add to buffer
         if (!world.client!.bufferDown.get(keyName)) {
 
           // toggle chat
-          if (keyName === "enter" && !chatIsOpen) chatIsOpen = true
-          else if (chatIsOpen && (keyName === "enter" || keyName === "escape")) {
+          if (keyName === "enter" && !isOpen) world.client!.chat.isOpen = true
+          else if (isOpen && (keyName === "enter" || keyName === "escape")) {
 
             // push the message to messages
-            if (chatBuffer.length > 0) {
-              const message = chatBuffer.join("")
+            if (inputBuffer.length > 0) {
+              const message = inputBuffer.join("")
               world.messages.push(world.tick + 1, world.client?.playerId() ?? "", message)
             }
 
-            chatBuffer = []
-            chatIsOpen = false
+            world.client!.chat.inputBuffer = []
+            world.client!.chat.isOpen = false
           }
 
           // handle backspace
-          if (chatIsOpen && keyName === "backspace") backspaceOn = true
+          if (world.client?.chat.isOpen && keyName === "backspace") backspaceOn = true
 
           // push to chatBuffer or bufferedDown
-          if (chatIsOpen && validChatCharacters.has(keyName)) {
-            chatBuffer.push(keyName)
+          if (world.client?.chat.isOpen && validChatCharacters.has(keyName)) {
+            world.client!.chat.inputBuffer.push(keyName)
           } else {
             world.client!.bufferDown.push({ key: keyName, mouse, tick: world.tick, hold: 0 })
           }
@@ -403,7 +403,7 @@ export const InputSystem = ClientSystemBuilder({
         if (character && !world.client?.busy) handleInputForCharacter(character, world)
 
         // handle buffered backspace
-        if (chatIsOpen && backspaceOn && world.tick % 2 === 0) chatBuffer.pop()
+        if (world.client?.chat.isOpen && backspaceOn && world.tick % 2 === 0) world.client!.chat.inputBuffer.pop()
 
         // handle UI input (todo why networked ?)
         enitities.forEach((entity) => {

@@ -1,4 +1,4 @@
-import { Chat, Cursor, Entity, EscapeMenu, FullscreenButton, isMobile, World } from "@piggo-gg/core"
+import { Cursor, Entity, EscapeMenu, FullscreenButton, isMobile, PixiChat, World } from "@piggo-gg/core"
 
 export const DefaultUI = (world: World): Entity[] => {
   if (world.mode !== "client") return []
@@ -7,7 +7,7 @@ export const DefaultUI = (world: World): Entity[] => {
 }
 
 export const DefaultDesktopUI = (): Entity[] => 
-  isMobile() ? [] : [ FullscreenButton(), Cursor(), Chat(), EscapeMenu() ]
+  isMobile() ? [] : [ FullscreenButton(), Cursor(), PixiChat(), EscapeMenu() ]
 
 export const DefaultMobileUI = (): Entity[] =>
   isMobile() ? [] : []

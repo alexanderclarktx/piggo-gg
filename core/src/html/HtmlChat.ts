@@ -11,7 +11,7 @@ export const HtmlChat = (): Entity => {
     right: "10px",
     bottom: "10px",
     transform: "translate(0%)",
-    borderRadius: "8px",
+    borderRadius: "8px"
   })
 
   const input = HtmlText({
@@ -37,9 +37,20 @@ export const HtmlChat = (): Entity => {
       position: Position(),
       npc: NPC({
         behavior: (_, world) => {
+          if (!world.client) return
+
           if (!init) {
             init = true
             world.three?.append(wrapper)
+          }
+
+          const { inputBuffer, isOpen } = world.client.chat
+          if (isOpen) {
+            wrapper.style.visibility = "visible"
+            // wrapper.style.display = "block"
+            // input.value = inputBuffer.join("\n")
+          } else {
+            wrapper.style.visibility = "hidden"
           }
         }
       })

@@ -1,7 +1,7 @@
 import {
-  Actions, arrayEqual, Background, Chat, colors, Cursor, DDE, DudeSkin,
-  Entity, GameBuilder, Ghost, loadTexture, MusicBox, Networked, NPC, PC,
-  PixiButton, pixiContainer, pixiGraphics, pixiRect, pixiText, Position,
+  Actions, arrayEqual, Background, colors, Cursor, DDE, DudeSkin, Entity,
+  GameBuilder, Ghost, loadTexture, MusicBox, Networked, NPC, PC, PixiButton,
+  PixiChat, pixiContainer, pixiGraphics, pixiRect, pixiText, Position,
   randomInt, Renderable, RenderSystem, Team, TeamColors, World, XY
 } from "@piggo-gg/core"
 import { Container, Text } from "pixi.js"
@@ -22,7 +22,7 @@ export const Lobby: GameBuilder = {
     entities: [
       Background({ moving: true, rays: true }),
       Cursor(),
-      Chat(),
+      PixiChat(),
       // Friends(),
       Profile(),
       // SignupCTA(),
