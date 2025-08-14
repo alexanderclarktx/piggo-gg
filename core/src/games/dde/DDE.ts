@@ -109,20 +109,30 @@ const DDESystem = SystemBuilder({
         // start next round if no ducks left
         if (world.mode === "server" && state.phase === "play") {
           const ducks = characters.filter(c => !c.components.position.data.flying)
-          if (ducks.length === 0) shouldStart = true
+
+          if (ducks.length === 0) {
+            if (characters.length === state.startedEagle.length) {
+              state.phase = "warmup"
+              state.startedEagle = []
+              state.round = 0
+            } else if (world.mode === "server") {
+              shouldStart = true
+            }
+          }
         }
 
         if (shouldStart) {
           state.phase = "starting"
           state.willStart = world.tick + 40 * 3
           state.nextSeed = randomInt(1000000)
+          players.forEach(p => p.components.pc.data.ready = false)
         }
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
 
           // update state
-          state.phase = "play"
           state.applesEaten = {}
+          state.phase = "play"
           state.round += 1
 
           // new random seed
@@ -144,6 +154,15 @@ const DDESystem = SystemBuilder({
             position.setVelocity({ x: 0, y: 0, z: 0 })
             position.data.flying = false
           }
+
+          // choose who starts as eagle
+          const candidates = characters.filter(c => !state.startedEagle.includes(c.id))
+          console.log("candidates", candidates.map(c => c.id))
+          const eagle = world.random.choice(candidates)
+          eagle.components.position.data.flying = true
+          eagle.components.position.setPosition({ x: 15, y: 33, z: 7 })
+
+          state.startedEagle.push(eagle.id)
         }
 
         const t1 = performance.now()

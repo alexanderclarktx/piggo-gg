@@ -18,8 +18,11 @@ export const switchTeam = Action("switchTeam", ({ entity, world }) => {
   if (characterTeam) characterTeam.switchTeam()
 }, 10)
 
-export const Ready = Action("ready", ({ player }) => {
+export const Ready = Action("ready", ({ player, world }) => {
   if (!player) return
+
+  const state = world.state<{ phase: string }>()
+  if (state.phase !== "warmup") return
 
   player.components.pc.data.ready = !player.components.pc.data.ready
 }, 10)
