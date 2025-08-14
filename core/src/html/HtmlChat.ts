@@ -1,4 +1,4 @@
-import { Entity, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/core";
+import { Entity, entries, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/core";
 
 export const HtmlChat = (): Entity => {
 
@@ -13,7 +13,17 @@ export const HtmlChat = (): Entity => {
     right: "10px",
     bottom: "10px",
     transform: "translate(0%)",
-    borderRadius: "8px"
+    borderRadius: "8px",
+    border: "2px solid white"
+  })
+
+  const messages = HtmlDiv({
+    width: "280px",
+    top: "10px",
+    left: "10px",
+    height: "340px",
+    overflow: "scroll",
+    // backgroundColor: "rgba(0, 0, 0, 0.3)",
   })
 
   const input = HtmlText({
@@ -21,10 +31,16 @@ export const HtmlChat = (): Entity => {
     style: {
       position: "absolute",
       width: "280px",
-      height: "30px",
+      minHeight: "30px",
       bottom: "10px",
       left: "10px",
       borderRadius: "8px",
+      paddingLeft: "10px",
+
+      display: "flex",
+      alignItems: "center",
+
+      overflow: "hidden",
 
       backgroundColor: "rgba(0, 0, 0, 0.5)"
     }
@@ -44,28 +60,61 @@ export const HtmlChat = (): Entity => {
           if (!init) {
             init = true
             world.three?.append(wrapper)
+            world.three?.append(messages)
           }
 
           const { inputBuffer, isOpen } = world.client.chat
 
-          if (isOpen) {
-            hideTimer = 120
-          } else if (hideTimer > 0) {
-            hideTimer--
-          }
+          // if (isOpen) {
+          //   hideTimer = 120
+          // } else if (hideTimer > 0) {
+          //   hideTimer--
+          // }
 
-          if (hideTimer > 0 && hideTimer < 20) {
-            wrapper.style.opacity = `${hideTimer / 20}`
-          } else if (hideTimer >= 20) {
-            wrapper.style.opacity = "1"
-          }
+          // if (hideTimer > 0 && hideTimer < 20) {
+          //   wrapper.style.opacity = `${hideTimer / 20}`
+          // } else if (hideTimer >= 20) {
+          //   wrapper.style.opacity = "1"
+          // }
 
-          wrapper.style.visibility = hideTimer ? "visible" : "hidden"
+          wrapper.style.visibility = isOpen ? "visible" : "hidden"
 
           if (inputBuffer.join("") !== text) {
             text = inputBuffer.join("")
             input.textContent = text
           }
+
+
+          let lastMessages: string[] = []
+
+          // get last 4 messages
+          for (const tick of world.messages.keys().slice(-4)) {
+            const messagesForEntity = world.messages.atTick(tick)
+            if (messagesForEntity) {
+              for (const [entityId, messages] of entries(messagesForEntity)) {
+                const entity = world.entities[entityId]
+                if (entity?.components.pc) {
+                  const playerName = entity.components.pc.data.name ?? entityId
+                  messages.forEach((message) => {
+                    if (messages.length < 4) lastMessages.push(`${playerName}: ${message}`)
+                  })
+                }
+              }
+            }
+          }
+
+          if (lastMessages.length) {
+
+          }
+          // if (messagesForEntity) entries(messagesForEntity).forEach(([player, messages]) => {
+          //   const playerName = world.entities[player]?.components.pc?.data.name ?? player
+          //   messages.forEach((message) => {
+          //     if (messages.length < 4) lastMessages.push(`${playerName}: ${message}`)
+          //   })
+          // })
+          // })
+
+          // t.text = lastMessages.reverse().join("\n")
         }
       })
     }
