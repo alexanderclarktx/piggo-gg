@@ -36,13 +36,13 @@ export const HtmlChat = (): Entity => {
       left: "10px",
       borderRadius: "8px",
       paddingLeft: "10px",
-
+      paddingRight: "10px",
       display: "flex",
       alignItems: "center",
-
       overflow: "hidden",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
 
-      backgroundColor: "rgba(0, 0, 0, 0.5)"
+      wordWrap: "break-word",
     }
   })
 
