@@ -116,8 +116,11 @@ const DDESystem = SystemBuilder({
               state.startedEagle = []
               state.round = 0
 
-              console.log(world.state())
-            } else if (world.mode === "server") {
+              players.forEach(p => {
+                p.components.pc.data.ready = false
+                p.components.pc.data.points = 0
+              })
+            } else {
               shouldStart = true
             }
           }
@@ -127,7 +130,6 @@ const DDESystem = SystemBuilder({
           state.phase = "starting"
           state.willStart = world.tick + 40 * 3
           state.nextSeed = randomInt(1000000)
-          players.forEach(p => p.components.pc.data.ready = false)
         }
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
@@ -161,12 +163,13 @@ const DDESystem = SystemBuilder({
 
           // choose who starts as eagle
           const candidates = characters.filter(c => !state.startedEagle.includes(c.id))
-          console.log("candidates", candidates.map(c => c.id))
           const eagle = world.random.choice(candidates)
-          eagle.components.position.data.flying = true
-          eagle.components.position.setPosition({ x: 15, y: 33, z: 7 })
+          if (eagle) {
+            eagle.components.position.data.flying = true
+            eagle.components.position.setPosition({ x: 15, y: 33, z: 7 })
 
-          state.startedEagle.push(eagle.id)
+            state.startedEagle.push(eagle.id)
+          }
         }
 
         const t1 = performance.now()
