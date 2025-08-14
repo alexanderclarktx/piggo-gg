@@ -13,7 +13,8 @@ export const DDEMenu = (world: World): Entity => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "block",
-    pointerEvents: "none"
+    pointerEvents: "none",
+    border: ""
   })
 
   const art = Art()
@@ -51,7 +52,8 @@ export const DDEMenu = (world: World): Entity => {
     top: "10px",
     width: "404px",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    border: ""
   })
 
   submenuButtons.appendChild(lobbiesButton)
@@ -88,9 +90,9 @@ export const DDEMenu = (world: World): Entity => {
           if (hidden) return
 
           // menu buttons
-          styleButton(lobbiesButton, activeMenu === "lobbies", lobbiesButton.matches(":hover"))
-          styleButton(skinsButton, activeMenu === "skins", skinsButton.matches(":hover"))
-          styleButton(settingsButton, activeMenu === "settings", settingsButton.matches(":hover"))
+          styleButton(lobbiesButton, activeMenu !== "lobbies", lobbiesButton.matches(":hover"))
+          styleButton(skinsButton, activeMenu !== "skins", skinsButton.matches(":hover"))
+          styleButton(settingsButton, activeMenu !== "settings", settingsButton.matches(":hover"))
 
           // visibility of submenus
           lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
@@ -165,7 +167,6 @@ const Lobbies = (world: World): RefreshableDiv => {
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     pointerEvents: "auto",
-    border: "2px solid #ffffff",
     borderRadius: "10px",
     position: "relative"
   })
@@ -178,8 +179,8 @@ const Lobbies = (world: World): RefreshableDiv => {
     div: lobbies,
     update: () => {
 
-      styleButton(createLobby, Boolean(inLobby), createLobby.matches(":hover"))
-      styleButton(leaveLobby, Boolean(!inLobby), leaveLobby.matches(":hover"))
+      styleButton(createLobby, Boolean(!inLobby && world.client?.net.connected), createLobby.matches(":hover"))
+      styleButton(leaveLobby, Boolean(inLobby), leaveLobby.matches(":hover"))
 
       if (world.tick - 80 > polled) {
         polled = world.tick
@@ -232,7 +233,8 @@ const Lobbies = (world: World): RefreshableDiv => {
 
             const lobbyWrapper = HtmlDiv({
               position: "relative",
-              marginTop: "5px"
+              marginTop: "5px",
+              border: ""
             })
 
             lobbyWrapper.appendChild(lobby)
@@ -259,7 +261,6 @@ const Skins = (): RefreshableDiv => {
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     pointerEvents: "auto",
-    border: "2px solid #ffffff",
     borderRadius: "10px",
     position: "relative"
   })
@@ -279,12 +280,11 @@ const Settings = (world: World): RefreshableDiv => {
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
     pointerEvents: "auto",
-    border: "2px solid #ffffff",
     borderRadius: "10px",
     position: "relative"
   })
 
-const settingsRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
+  const settingsRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
     const label = HtmlText({
       text,
       style: {
@@ -316,7 +316,8 @@ const settingsRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, butt
     const div = HtmlDiv({
       position: "relative",
       marginTop: "15px",
-      display: "flex"
+      display: "flex",
+      border: ""
     })
 
     div.appendChild(label)

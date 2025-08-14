@@ -11,7 +11,6 @@ export const D3Profile = (): Entity => {
     height: "46px",
     left: "10px",
     top: "10px",
-    border: "2px solid #ffffff",
     borderRadius: "10px"
   })
 

@@ -35,10 +35,13 @@ export type Client = {
     set: (value: number) => void
     reset: () => void
   }
-  connected: boolean
   env: "dev" | "production"
   lastMessageTick: number
   lobbyId: string | undefined
+  net: {
+    synced: boolean
+    connected: boolean
+  },
   ms: number
   mobile: boolean
   player: Player
@@ -100,10 +103,13 @@ export const Client = ({ world }: ClientProps): Client => {
       set: (value: number) => client.clickThisFrame.value = value,
       reset: () => client.clickThisFrame.value = 0
     },
-    connected: false,
     env,
     lastMessageTick: 0,
     lobbyId: undefined,
+    net: {
+      synced: false,
+      connected: false
+    },
     ms: 0,
     mobile: isMobile(),
     player,
@@ -142,6 +148,7 @@ export const Client = ({ world }: ClientProps): Client => {
         } else {
           client.lobbyId = response.lobbyId
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
+          world.messages.clearBeforeTick(world.tick)
           world.tick = -100
           callback(response)
         }
@@ -268,7 +275,7 @@ export const Client = ({ world }: ClientProps): Client => {
   }
 
   setInterval(() => {
-    client.connected = Boolean(client.lastMessageTick && ((world.tick - client.lastMessageTick) < 60))
+    client.net.synced = Boolean(client.lastMessageTick && ((world.tick - client.lastMessageTick) < 60))
   }, 200)
 
   const setupWs = () => {
@@ -299,6 +306,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
     client.ws.onopen = () => {
       console.log("connected to server")
+      client.net.connected = true
 
       const joinString: string | null = new URLSearchParams(window.location.search).get("join")
       if (joinString) {
@@ -322,6 +330,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
     client.ws.onclose = () => {
       console.error("disconnected from server")
+      client.net.connected = false
 
       setTimeout(() => {
         console.log("reconnecting to server")

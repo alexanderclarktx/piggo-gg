@@ -70,7 +70,7 @@ const PlayerName = (player: Entity<PC | Team>, y: number) => {
             lastTeam = team.data.team
           }
 
-          renderable.visible = world.client?.connected === true
+          renderable.visible = world.client?.net.synced === true
         },
         setup: async (renderable) => {
           renderable.c.addChild(text())
@@ -121,7 +121,7 @@ const Players = (): Entity => {
             icon.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
 
             const avatar = avatars[index]
-            avatar.components.renderable.visible = world.client?.connected === true
+            avatar.components.renderable.visible = world.client?.net.synced === true
             avatar.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
 
             x += icon.components.renderable.c.width + 20

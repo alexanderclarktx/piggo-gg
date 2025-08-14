@@ -1,7 +1,8 @@
 import { CSS } from "@piggo-gg/core"
 
 const defaults: CSS = {
-  position: "absolute"
+  position: "absolute",
+  border: "2px solid white"
 }
 
 export type HtmlDiv = HTMLDivElement

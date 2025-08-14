@@ -5,14 +5,14 @@ import {
 import { ScrollBox } from "@pixi/ui"
 import { Container, Graphics } from "pixi.js"
 
-export const Scoreboard = (): Entity => {
+export const PixiScoreboard = (): Entity => {
   let players: Set<{ name: string, entity: Player }> = new Set()
   let team1: ScrollBox
   let team2: ScrollBox
   let width: number
 
   const scoreboard = Entity<Position>({
-    id: "scoreboard",
+    id: "pixi-scoreboard",
     components: {
       position: Position({ x: 200, y: 200, screenFixed: true }),
       input: Input({

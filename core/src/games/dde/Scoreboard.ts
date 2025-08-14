@@ -3,7 +3,7 @@ import {
   Player, Position, RefreshableDiv, World
 } from "@piggo-gg/core"
 
-export const ReadyUI = (): Entity => {
+export const Scoreboard = (): Entity => {
 
   let init = false
 
@@ -19,8 +19,7 @@ export const ReadyUI = (): Entity => {
     width: "auto",
     minWidth: "180px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: "10px",
-    border: "2px solid #ffffff"
+    borderRadius: "10px"
   })
 
   const title = () => HtmlText({
@@ -36,15 +35,15 @@ export const ReadyUI = (): Entity => {
     }
   })
 
-  const ui = Entity({
-    id: "ReadyUI",
+  const scoreboard = Entity({
+    id: "Scoreboard",
     components: {
       position: Position(),
       npc: NPC({
         behavior: (_, world) => {
           if (world.mode === "server") return
 
-          if (!world.client?.connected) {
+          if (!world.client?.net.synced) {
             container.style.visibility = "hidden"
             return
           }
@@ -93,7 +92,7 @@ export const ReadyUI = (): Entity => {
     }
   })
 
-  return ui
+  return scoreboard
 }
 
 const PlayerRow = (player: Player, world: World): RefreshableDiv => {
@@ -102,7 +101,8 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     height: "30px",
     width: "auto",
     justifyContent: "space-between",
-    display: "flex"
+    display: "flex",
+    border: ""
   })
 
   const nameText = HtmlText({

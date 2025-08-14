@@ -26,8 +26,10 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
       delete buffer[tick]
     },
     clearBeforeTick: (tick) => {
-      for (let i = 0; i < tick; i++) {
-        delete buffer[i]
+      for (const key of keys(buffer)) {
+        if (Number(key) < tick) {
+          delete buffer[Number(key)]
+        }
       }
     },
     fromTick: (tick, filter: (state: T) => boolean = () => true) => {
