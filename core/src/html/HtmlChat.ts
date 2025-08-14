@@ -22,7 +22,7 @@ export const HtmlChat = (): Entity => {
     height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     borderRadius: "8px",
-    border: "2px solid white",
+    border: "2px solid white"
   })
 
   const messages = HtmlText({
