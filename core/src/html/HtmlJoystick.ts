@@ -12,8 +12,7 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
     height: "80px",
     borderRadius: "50%",
     bottom: "40px",
-    pointerEvents: "auto",
-    border: "2px solid #ffffff"
+    pointerEvents: "auto"
   })
 
   let dragging = false
