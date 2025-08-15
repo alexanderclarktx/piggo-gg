@@ -292,7 +292,7 @@ const Settings = (world: World): RefreshableDiv => {
         height: "40px",
         position: "relative",
         left: "10px",
-        fontSize: "18px",
+        fontSize: "16px",
         lineHeight: "40px",
         textAlign: "center"
       }

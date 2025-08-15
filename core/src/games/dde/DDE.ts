@@ -24,7 +24,6 @@ export type DDEState = {
 export type DDESettings = {
   ambientSound: boolean
   showControls: boolean
-  experimentalEagleControls: boolean
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -34,8 +33,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     netcode: "rollback",
     settings: {
       ambientSound: true,
-      showControls: true,
-      experimentalEagleControls: false
+      showControls: true
     },
     state: {
       applesEaten: {},
@@ -349,7 +347,7 @@ const DDESystem = SystemBuilder({
           if (eagle.visible) {
             eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
             eagle.rotation.y = orientation.x
-            // eagle.rotation.x = orientation.y
+            eagle.rotation.x = orientation.y
             eagle.rotation.z = rotation - rotating * (40 - delta) / 40
           }
 
