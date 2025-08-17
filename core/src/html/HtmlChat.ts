@@ -5,6 +5,8 @@ export const HtmlChat = (): Entity => {
   let init = false
   let inputText = ""
 
+  let opened = false
+
   const fadeStack: number[] = []
   const messages: HtmlDiv[] = []
 
@@ -87,6 +89,13 @@ export const HtmlChat = (): Entity => {
             for (const message of messages) {
               message.style.visibility = "visible"
             }
+            opened = true
+          } else if (opened) {
+            opened = false
+            for (const message of messages) {
+              // if (messages.includes(message)) continue
+              message.style.visibility = "hidden"
+            }
           }
 
           const buffered = `${inputBuffer}│`
@@ -125,17 +134,21 @@ export const HtmlChat = (): Entity => {
 
           fresh.clear()
 
-          const len = fadeStack.length
-          for (let i = 0; i < len; i++) {
+          if (!isOpen) {
+            const len = fadeStack.length
+            for (let i = 0; i < len; i++) {
 
-            const diff = world.tick - fadeStack[i]
-            const message = messages[(messages.length - len) + i]
+              const diff = world.tick - fadeStack[i]
+              const message = messages[(messages.length - len) + i]
 
-            if (diff >= 20) {
-              message.style.visibility = "hidden"
-              fadeStack.shift()
-            } else {
-              message.style.opacity = `${Math.max(0, 1 - diff / 20)}`
+              if (diff >= 20) {
+                message.style.visibility = "hidden"
+                message.style.opacity = "1"
+                fadeStack.shift()
+              } else {
+                message.style.visibility = "visible"
+                message.style.opacity = `${Math.max(0, 1 - diff / 20)}`
+              }
             }
           }
         }
