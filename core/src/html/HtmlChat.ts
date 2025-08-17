@@ -129,7 +129,6 @@ export const HtmlChat = (): Entity => {
           for (let i = 0; i < len; i++) {
 
             const diff = world.tick - fadeStack[i]
-
             const message = messages[(messages.length - len) + i]
 
             if (diff >= 20) {
