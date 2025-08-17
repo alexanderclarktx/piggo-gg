@@ -5,11 +5,10 @@ export const HtmlChat = (): Entity => {
   let init = false
   let hideTimer = 0
   let inputText = ""
-  let messagesText = ""
 
   const wrapper = HtmlDiv({
     width: "300px",
-    height: "260px",
+    height: "250px",
     right: "12px",
     bottom: "12px",
     transform: "translate(0%)",
@@ -35,7 +34,7 @@ export const HtmlChat = (): Entity => {
       whiteSpace: "pre-line",
       width: "280px",
       wordBreak: "break-all",
-      // overflowY: "auto",
+      overflowY: "scroll",
       display: "flex",
       flexDirection: "column-reverse",
       alignItems: "flex-start",
@@ -93,24 +92,29 @@ export const HtmlChat = (): Entity => {
           }
 
           // get messages from this tick
-          const messagesThisTick = world.messages.atTick(world.tick)
-          if (messagesThisTick) {
-            for (const [id, msgs] of entries(messagesThisTick)) {
-              for (const msg of msgs) {
-                const entity = world.entity(id)
+          const { fresh } = world.messages
+          for (const freshTick of fresh) {
+            const messagesThisTick = world.messages.atTick(freshTick)
+            if (messagesThisTick) {
+              for (const [id, msgs] of entries(messagesThisTick)) {
+                for (const msg of msgs) {
+                  const entity = world.entity(id)
 
-                const from = entity ? entity.components.pc?.data.name || "noob" : null
-                const text = from ? `${from}: ${msg}` : msg
+                  const from = entity ? entity.components.pc?.data.name || "noob" : null
+                  const text = from ? `${from}: ${msg}` : msg
 
-                messages.prepend(HtmlText({
-                  text,
-                  style: {
-                    position: "relative"
-                  }
-                }))
+                  messages.prepend(HtmlText({
+                    text,
+                    style: {
+                      position: "relative"
+                    }
+                  }))
+                }
               }
             }
           }
+
+          fresh.clear()
 
           // let lastMessages: string[] = []
 

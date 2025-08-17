@@ -6,17 +6,17 @@ export type HtmlTextProps = {
 }
 
 const defaults: HtmlTextProps["style"] = {
-  position: "absolute",
   fontFamily: "Courier New",
   fontWeight: "bold",
   fontSize: "20px",
   textShadow: "2px 2px 1px rgba(0, 0, 0, 0.5)",
   pointerEvents: "none",
-  alignItems: "center"
+  alignItems: "center",
+  border: "none"
 }
 
 export const HtmlText = (props: HtmlTextProps): HtmlDiv => {
-  const div = document.createElement("div")
+  const div = HtmlDiv()
 
   if (props.text) div.textContent = props.text
 
