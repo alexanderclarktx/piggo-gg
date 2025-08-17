@@ -1,8 +1,7 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
   hypot, localAim, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
-  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat,
-  Crosshair
+  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"

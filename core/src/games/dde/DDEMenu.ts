@@ -299,7 +299,6 @@ const Settings = (world: World): RefreshableDiv => {
     })
 
     const button = HtmlButton({
-      // text: "On",
       style: {
         width: "60px",
         height: "40px",
@@ -325,6 +324,7 @@ const Settings = (world: World): RefreshableDiv => {
 
     return { div, button }
   }
+
   const ambientSound = settingsRow("Ambient Sound", "ambientSound")
   const showControls = settingsRow("Show Controls", "showControls")
   const eagleCrosshair = settingsRow("Eagle Crosshair", "eagleCrosshair")

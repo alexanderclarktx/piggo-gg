@@ -28,6 +28,7 @@ export type CSS = {
   marginTop?: `${number}px` | `${number}%`
   minHeight?: `${number}px` | `${number}%`
   minWidth?: `${number}px` | `${number}%`
+  msOverflowStyle?: "none"
   overflow?: "visible" | "hidden" | "scroll" | "auto"
   overflowY?: "visible" | "hidden" | "scroll" | "auto"
   padding?: `${number}px` | `${number}%`,
