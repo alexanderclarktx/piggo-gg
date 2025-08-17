@@ -37,7 +37,7 @@ export const HtmlChat = (): Entity => {
       wordBreak: "break-all",
       // overflowY: "auto",
       display: "flex",
-      flexDirection: "column-reverse",
+      flexDirection: "column",
       alignItems: "flex-start",
       pointerEvents: "auto"
     }
@@ -92,38 +92,59 @@ export const HtmlChat = (): Entity => {
             input.textContent = inputText
           }
 
-          let lastMessages: string[] = []
-
-          // get recent messages
-          for (const tick of world.messages.keys().slice(0, 6)) {
-            const messagesForEntity = world.messages.atTick(tick)
-            if (messagesForEntity) {
-              for (const [entityId, messages] of entries(messagesForEntity)) {
-                const from = world.entity(entityId)?.components.pc?.data.name
-                messages.forEach((message) => {
-                  const string = from ? `${from}: ${message}` : message
-                  if (messages.length < 4) lastMessages.push(string)
-                })
+          // get messages from this tick
+          const messagesThisTick = world.messages.atTick(world.tick)
+          if (messagesThisTick) {
+            for (const [id, msg] of entries(messagesThisTick)) {
+              const entity = world.entity(id)
+              if (entity) {
+                const from = entity.components.pc?.data.name || "Unknown"
+                const text = `${from}: ${msg}`
+                messages.appendChild(HtmlText({
+                  text,
+                  style: {
+                    position: "relative"
+                  }
+                }))
               }
             }
+            // messages.appendChild(HtmlText({
+            //   text
+            // }))
           }
+
+          // let lastMessages: string[] = []
+
+          // get recent messages
+          // for (const tick of world.messages.keys().slice(0, 6)) {
+          //   const messagesForEntity = world.messages.atTick(tick)
+          //   if (messagesForEntity) {
+          //     for (const [entityId, messages] of entries(messagesForEntity)) {
+          //       const from = world.entity(entityId)?.components.pc?.data.name
+          //       messages.forEach((message) => {
+          //         const string = from ? `${from}: ${message}` : message
+          //         if (messages.length < 4) lastMessages.push(string)
+          //       })
+          //     }
+          //   }
+          // }
 
           // TODO append child element per message instead
-          const joined = lastMessages.reverse().join("\n")
-          if (joined !== messagesText) {
-            messagesText = joined
-            messages.textContent = messagesText
-            hideTimer = 100
-          }
+          // const joined = lastMessages.reverse().join("\n")
+          // if (joined !== messagesText) {
+          //   messagesText = joined
+          //   messages.textContent = messagesText
+          //   hideTimer = 100
+          // }
 
-          if (hideTimer > 0 && hideTimer < 20) {
-            messages.style.opacity = (hideTimer / 20).toString()
-          } else if (hideTimer === 0) {
-            messages.style.visibility = "hidden"
-          } else {
-            messages.style.visibility = "visible"
-            messages.style.opacity = "1"
-          }
+          // if (hideTimer > 0 && hideTimer < 20) {
+          //   messages.style.opacity = (hideTimer / 20).toString()
+          // } else if (hideTimer === 0) {
+          //   messages.style.visibility = "hidden"
+          // } else {
+          //   messages.style.visibility = "visible"
+          //   messages.style.opacity = "1"
+          // }
         }
       })
     }
