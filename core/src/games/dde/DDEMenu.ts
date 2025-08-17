@@ -327,11 +327,11 @@ const Settings = (world: World): RefreshableDiv => {
   }
   const ambientSound = settingsRow("Ambient Sound", "ambientSound")
   const showControls = settingsRow("Show Controls", "showControls")
-  const showCrosshair = settingsRow("Show Crosshair", "showCrosshair")
+  const eagleCrosshair = settingsRow("Eagle Crosshair", "eagleCrosshair")
 
   settings.appendChild(ambientSound.div)
   settings.appendChild(showControls.div)
-  settings.appendChild(showCrosshair.div)
+  settings.appendChild(eagleCrosshair.div)
 
   return {
     div: settings,
@@ -339,7 +339,7 @@ const Settings = (world: World): RefreshableDiv => {
       const settings = world.settings<DDESettings>()
       styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
       styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
-      styleSwitch(showCrosshair.button, settings.showCrosshair, showCrosshair.button.matches(":hover"))
+      styleSwitch(eagleCrosshair.button, settings.eagleCrosshair, eagleCrosshair.button.matches(":hover"))
     }
   }
 }
