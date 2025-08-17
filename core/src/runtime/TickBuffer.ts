@@ -1,4 +1,4 @@
-import { entries, keys } from "@piggo-gg/core"
+import { entries, keys, stringify } from "@piggo-gg/core"
 
 export type TickBuffer<T extends ({} | string)> = {
   fresh: Set<number>
@@ -31,6 +31,7 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
       for (const key of keys(buffer)) {
         if (Number(key) < tick) {
           delete buffer[Number(key)]
+          tickBuffer.fresh.delete(Number(key))
         }
       }
     },
@@ -54,6 +55,10 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
     set: (tick, entityId, state) => {
       // empty buffer for tick if it doesn't exist
       if (!buffer[tick]) buffer[tick] = {}
+
+      const s = stringify(state)
+      const e = stringify(buffer[tick][entityId])
+      if (s === e) return
 
       // set state for entity
       buffer[tick][entityId] = state
