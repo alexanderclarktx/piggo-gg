@@ -3,10 +3,10 @@ import { Entity, entries, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/cor
 export const HtmlChat = (): Entity => {
 
   let init = false
-  // let hideTimer = 0
   let inputText = ""
 
   const fadeStack: number[] = []
+  const messages: HtmlDiv[] = []
 
   const wrapper = HtmlDiv({
     width: "300px",
@@ -26,22 +26,21 @@ export const HtmlChat = (): Entity => {
     borderRadius: "8px"
   })
 
-  const messages = HtmlText({
-    style: {
-      flex: 1,
-      left: "10px",
-      marginBottom: "30px",
-      position: "relative",
-      top: "10px",
-      whiteSpace: "pre-line",
-      width: "280px",
-      wordBreak: "break-all",
-      overflowY: "scroll",
-      display: "flex",
-      flexDirection: "column-reverse",
-      alignItems: "flex-start",
-      pointerEvents: "auto"
-    }
+  const chatDiv = HtmlDiv({
+    flex: 1,
+    left: "10px",
+    marginBottom: "30px",
+    position: "relative",
+    top: "10px",
+    whiteSpace: "pre-line",
+    width: "280px",
+    wordBreak: "break-all",
+    overflowY: "scroll",
+    display: "flex",
+    flexDirection: "column-reverse",
+    alignItems: "flex-start",
+    pointerEvents: "auto",
+    border: ""
   })
 
   const input = HtmlText({
@@ -63,7 +62,7 @@ export const HtmlChat = (): Entity => {
   })
 
   wrapper.appendChild(border)
-  wrapper.appendChild(messages)
+  wrapper.appendChild(chatDiv)
   wrapper.appendChild(input)
 
   const chat = Entity({
@@ -81,11 +80,14 @@ export const HtmlChat = (): Entity => {
 
           const { inputBuffer, isOpen } = world.client.chat
 
-          // if (hideTimer > 0) hideTimer -= 1
-          // if (isOpen) hideTimer = 100
-
           border.style.visibility = isOpen ? "visible" : "hidden"
           input.style.visibility = isOpen ? "visible" : "hidden"
+
+          if (isOpen) {
+            for (const message of messages) {
+              message.style.visibility = "visible"
+            }
+          }
 
           const buffered = `${inputBuffer}│`
           if (buffered !== inputText) {
@@ -105,15 +107,17 @@ export const HtmlChat = (): Entity => {
                   const from = entity ? entity.components.pc?.data.name || "noob" : null
                   const text = from ? `${from}: ${msg}` : msg
 
-                  messages.prepend(HtmlText({
+                  const message = HtmlText({
                     text,
                     style: {
                       position: "relative",
                       color: from ? "#ffffff" : "#00eeff"
                     }
-                  }))
+                  })
+                  chatDiv.prepend(message)
 
                   fadeStack.push(world.tick + 160)
+                  messages.push(message)
                 }
               }
             }
@@ -125,14 +129,15 @@ export const HtmlChat = (): Entity => {
           for (let i = 0; i < len; i++) {
 
             const diff = world.tick - fadeStack[i]
+            const message = messages[messages.length - 1 - i]
 
-            const child = messages.children[len - 1 - i] as HtmlDiv
+            // const child = chatDiv.children[len - 1 - i] as HtmlDiv
 
             if (diff >= 20) {
-              child.style.visibility = "hidden"
+              message.style.visibility = "hidden"
               fadeStack.shift()
             } else {
-              child.style.opacity = `${Math.max(0, 1 - diff / 20)}`
+              message.style.opacity = `${Math.max(0, 1 - diff / 20)}`
             }
           }
         }
