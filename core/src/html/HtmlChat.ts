@@ -37,7 +37,7 @@ export const HtmlChat = (): Entity => {
       wordBreak: "break-all",
       // overflowY: "auto",
       display: "flex",
-      flexDirection: "column",
+      flexDirection: "column-reverse",
       alignItems: "flex-start",
       pointerEvents: "auto"
     }
@@ -95,12 +95,14 @@ export const HtmlChat = (): Entity => {
           // get messages from this tick
           const messagesThisTick = world.messages.atTick(world.tick)
           if (messagesThisTick) {
-            for (const [id, msg] of entries(messagesThisTick)) {
-              const entity = world.entity(id)
-              if (entity) {
-                const from = entity.components.pc?.data.name || "Unknown"
-                const text = `${from}: ${msg}`
-                messages.appendChild(HtmlText({
+            for (const [id, msgs] of entries(messagesThisTick)) {
+              for (const msg of msgs) {
+                const entity = world.entity(id)
+
+                const from = entity ? entity.components.pc?.data.name || "noob" : null
+                const text = from ? `${from}: ${msg}` : msg
+
+                messages.prepend(HtmlText({
                   text,
                   style: {
                     position: "relative"
@@ -108,9 +110,6 @@ export const HtmlChat = (): Entity => {
                 }))
               }
             }
-            // messages.appendChild(HtmlText({
-            //   text
-            // }))
           }
 
           // let lastMessages: string[] = []
