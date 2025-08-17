@@ -1,9 +1,9 @@
 export type Chat = {
-  inputBuffer: string[]
+  inputBuffer: string
   isOpen: boolean
 }
 
 export const Chat = (): Chat => ({
-  inputBuffer: [],
+  inputBuffer: "",
   isOpen: false
 })

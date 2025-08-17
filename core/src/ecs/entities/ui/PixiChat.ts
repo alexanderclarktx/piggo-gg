@@ -43,7 +43,7 @@ export const PixiChat = (): Entity => {
     // visible: false,
     onTick: ({ container, world }) => {
       const t = container as Text
-      const textToRender = world.client!.chat.inputBuffer.join("")
+      const textToRender = world.client!.chat.inputBuffer
       world.client?.chat.isOpen ? t.text = `${textToRender}|` : t.text = ""
     }
   })

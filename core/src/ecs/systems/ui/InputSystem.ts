@@ -129,23 +129,23 @@ export const InputSystem = ClientSystemBuilder({
 
             // push the message to messages
             if (inputBuffer.length > 0) {
-              const message = inputBuffer.join("")
+              const message = inputBuffer
               world.messages.push(world.tick + 1, world.client?.playerId() ?? "", message)
             }
 
-            world.client!.chat.inputBuffer = []
+            world.client!.chat.inputBuffer = ""
             world.client!.chat.isOpen = false
           }
 
           // handle backspace
           if (world.client?.chat.isOpen && keyName === "backspace") {
-            world.client!.chat.inputBuffer.pop()
+            world.client!.chat.inputBuffer = world.client!.chat.inputBuffer.slice(0, -1)
             backspace = world.tick + 3
           }
 
           // push to chatBuffer or bufferedDown
           if (world.client?.chat.isOpen && validChatCharacters.has(keyName)) {
-            world.client!.chat.inputBuffer.push(event.key)
+            world.client!.chat.inputBuffer += keyName
           } else {
             world.client!.bufferDown.push({ key: keyName, mouse, tick: world.tick, hold: 0 })
           }
@@ -406,7 +406,7 @@ export const InputSystem = ClientSystemBuilder({
 
         // handle buffered backspace
         if (world.client?.chat.isOpen && backspace && (world.tick > backspace) && (world.tick - backspace) % 2 === 0) {
-          world.client!.chat.inputBuffer.pop()
+          world.client!.chat.inputBuffer = world.client!.chat.inputBuffer.slice(0, -1)
         }
 
         // handle UI input (todo why networked ?)

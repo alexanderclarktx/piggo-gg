@@ -85,7 +85,7 @@ export const HtmlChat = (): Entity => {
           border.style.visibility = isOpen ? "visible" : "hidden"
           input.style.visibility = isOpen ? "visible" : "hidden"
 
-          const buffered = `${inputBuffer.join("")}│`
+          const buffered = `${inputBuffer}│`
           if (buffered !== inputText) {
             inputText = buffered
             input.textContent = inputText
@@ -115,39 +115,6 @@ export const HtmlChat = (): Entity => {
           }
 
           fresh.clear()
-
-          // let lastMessages: string[] = []
-
-          // get recent messages
-          // for (const tick of world.messages.keys().slice(0, 6)) {
-          //   const messagesForEntity = world.messages.atTick(tick)
-          //   if (messagesForEntity) {
-          //     for (const [entityId, messages] of entries(messagesForEntity)) {
-          //       const from = world.entity(entityId)?.components.pc?.data.name
-          //       messages.forEach((message) => {
-          //         const string = from ? `${from}: ${message}` : message
-          //         if (messages.length < 4) lastMessages.push(string)
-          //       })
-          //     }
-          //   }
-          // }
-
-          // TODO append child element per message instead
-          // const joined = lastMessages.reverse().join("\n")
-          // if (joined !== messagesText) {
-          //   messagesText = joined
-          //   messages.textContent = messagesText
-          //   hideTimer = 100
-          // }
-
-          // if (hideTimer > 0 && hideTimer < 20) {
-          //   messages.style.opacity = (hideTimer / 20).toString()
-          // } else if (hideTimer === 0) {
-          //   messages.style.visibility = "hidden"
-          // } else {
-          //   messages.style.visibility = "visible"
-          //   messages.style.opacity = "1"
-          // }
         }
       })
     }
