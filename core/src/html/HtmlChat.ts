@@ -125,7 +125,7 @@ export const HtmlChat = (): Entity => {
                   })
                   chatDiv.prepend(message)
 
-                  fadeStack.push(world.tick + 120)
+                  fadeStack.push(world.tick + 140)
                   messages.push(message)
                 }
               }
