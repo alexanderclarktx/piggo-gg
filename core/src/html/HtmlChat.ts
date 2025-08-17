@@ -116,7 +116,7 @@ export const HtmlChat = (): Entity => {
                   })
                   chatDiv.prepend(message)
 
-                  fadeStack.push(world.tick + 160)
+                  fadeStack.push(world.tick + 120)
                   messages.push(message)
                 }
               }
@@ -129,9 +129,8 @@ export const HtmlChat = (): Entity => {
           for (let i = 0; i < len; i++) {
 
             const diff = world.tick - fadeStack[i]
-            const message = messages[messages.length - 1 - i]
 
-            // const child = chatDiv.children[len - 1 - i] as HtmlDiv
+            const message = messages[(messages.length - len) + i]
 
             if (diff >= 20) {
               message.style.visibility = "hidden"
