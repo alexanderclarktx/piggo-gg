@@ -3,8 +3,10 @@ import { Entity, entries, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/cor
 export const HtmlChat = (): Entity => {
 
   let init = false
-  let hideTimer = 0
+  // let hideTimer = 0
   let inputText = ""
+
+  const fadeStack: number[] = []
 
   const wrapper = HtmlDiv({
     width: "300px",
@@ -79,8 +81,8 @@ export const HtmlChat = (): Entity => {
 
           const { inputBuffer, isOpen } = world.client.chat
 
-          if (hideTimer > 0) hideTimer -= 1
-          if (isOpen) hideTimer = 100
+          // if (hideTimer > 0) hideTimer -= 1
+          // if (isOpen) hideTimer = 100
 
           border.style.visibility = isOpen ? "visible" : "hidden"
           input.style.visibility = isOpen ? "visible" : "hidden"
@@ -107,15 +109,32 @@ export const HtmlChat = (): Entity => {
                     text,
                     style: {
                       position: "relative",
-                      color: from ? "#ffffff": "#00eeff"
+                      color: from ? "#ffffff" : "#00eeff"
                     }
                   }))
+
+                  fadeStack.push(world.tick + 160)
                 }
               }
             }
           }
 
           fresh.clear()
+
+          const len = fadeStack.length
+          for (let i = 0; i < len; i++) {
+
+            const diff = world.tick - fadeStack[i]
+
+            const child = messages.children[len - 1 - i] as HtmlDiv
+
+            if (diff >= 20) {
+              child.style.visibility = "hidden"
+              fadeStack.shift()
+            } else {
+              child.style.opacity = `${Math.max(0, 1 - diff / 20)}`
+            }
+          }
         }
       })
     }
