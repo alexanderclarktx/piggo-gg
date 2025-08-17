@@ -25,6 +25,7 @@ export type DDEState = {
 export type DDESettings = {
   ambientSound: boolean
   showControls: boolean
+  showCrosshair: boolean
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -34,7 +35,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     netcode: "rollback",
     settings: {
       ambientSound: true,
-      showControls: true
+      showControls: true,
+      showCrosshair: false
     },
     state: {
       applesEaten: {},
