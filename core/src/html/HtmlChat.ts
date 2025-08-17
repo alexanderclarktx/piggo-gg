@@ -88,12 +88,12 @@ export const HtmlChat = (): Entity => {
           if (isOpen) {
             for (const message of messages) {
               message.style.visibility = "visible"
+              message.style.opacity = "1"
             }
             opened = true
           } else if (opened) {
             opened = false
             for (const message of messages) {
-              // if (messages.includes(message)) continue
               message.style.visibility = "hidden"
             }
           }
