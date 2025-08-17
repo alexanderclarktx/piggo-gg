@@ -42,7 +42,8 @@ export const HtmlChat = (): Entity => {
     flexDirection: "column-reverse",
     alignItems: "flex-start",
     pointerEvents: "auto",
-    border: ""
+    border: "",
+    scrollbarWidth: "thin"
   })
 
   const input = HtmlText({
