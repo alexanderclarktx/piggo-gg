@@ -106,7 +106,8 @@ export const HtmlChat = (): Entity => {
                   messages.prepend(HtmlText({
                     text,
                     style: {
-                      position: "relative"
+                      position: "relative",
+                      color: from ? "#ffffff": "#00eeff"
                     }
                   }))
                 }

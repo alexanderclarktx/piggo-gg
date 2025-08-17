@@ -89,8 +89,6 @@ const DDESystem = SystemBuilder({
 
         const { sound } = world.client ?? {}
 
-        // if (world.tick % 80 === 0) world.announce("asdf")
-
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {
           ambient = sound.play({ name: "birdsong1" })
