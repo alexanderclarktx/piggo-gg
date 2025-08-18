@@ -32,7 +32,6 @@ export const D3CameraSystem = () => ClientSystemBuilder({
   id: "D3CameraSystem",
   init: (world) => {
 
-    // scrollwheel callback
     window.addEventListener("wheel", (e) => {
       e.preventDefault()
       world.three!.camera.zoom += e.deltaY * 0.001
