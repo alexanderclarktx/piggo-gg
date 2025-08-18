@@ -1,10 +1,10 @@
-import { ClientSystemBuilder, cos, localAim, sin } from "@piggo-gg/core"
+import { ClientSystemBuilder, cos, sin, World } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
   c: PerspectiveCamera
   zoom: number
-  worldDirection: () => Vector3
+  worldDirection: (world: World) => Vector3
   setFov: (fov: number) => void
 }
 
@@ -16,8 +16,12 @@ export const D3Camera = (): D3Camera => {
   const d3Camera: D3Camera = {
     c: camera,
     zoom: 0.6,
-    worldDirection: () => {
+    worldDirection: (world: World) => {
+      if (!world.client) return new Vector3(0, 0, 0)
+
+      const { localAim } = world.client.controls
       const t = new Vector3(-sin(localAim.x), 0, -cos(localAim.x))
+
       return t.normalize()
     },
     setFov: (fov: number) => {
@@ -43,17 +47,15 @@ export const D3CameraSystem = () => ClientSystemBuilder({
       query: [],
       priority: 9,
       onRender: (_, delta) => {
-        if (!world.three) return
+        if (!world.three || !world.client) return
 
-        const pc = world.client?.playerCharacter()
+        const pc = world.client.playerCharacter()
         if (!pc) return
 
         const { position } = pc.components
-
         const interpolated = position.interpolate(world, delta)
 
-        const { x, y } = localAim
-
+        const { x, y } = world.client.controls.localAim
         const rotatedOffset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(world.three.camera.zoom)
 
         world.three.camera.c.position.set(

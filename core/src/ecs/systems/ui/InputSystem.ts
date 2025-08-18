@@ -1,18 +1,10 @@
 import {
-  Actions, Character, ClientSystemBuilder, Entity, Input,
-  InvokedAction, World, XY, cos, max, min, round, sin
+  Actions, Character, ClientSystemBuilder, Entity,
+  Input, InvokedAction, World, XY, cos, round, sin
 } from "@piggo-gg/core"
 
 export let mouse: XY = { x: 0, y: 0 }
 export let localAim: XY = { x: 0, y: 0 }
-
-const moveAim = ({ x, y }: XY, flying: boolean) => {
-  localAim.x = round(localAim.x - x, 3)
-  localAim.y = round(localAim.y - y, 3)
-
-  const factor = flying ? 1.1 : 0.6166
-  localAim.y = max(-factor, min(factor, localAim.y))
-}
 
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
@@ -37,7 +29,10 @@ export const InputSystem = ClientSystemBuilder({
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
-        moveAim({ x: event.movementX * 0.001, y: event.movementY * 0.001 }, pc.components.position.data.flying)
+        world.client?.controls.moveLocal({
+          x: event.movementX * 0.001,
+          y: event.movementY * 0.001
+        }, pc.components.position.data.flying)
       }
     })
 
@@ -384,7 +379,10 @@ export const InputSystem = ClientSystemBuilder({
         const delta = last ? performance.now() - last : performance.now() - active
         last = performance.now()
 
-        moveAim({ x: power * cos(angle) * delta / 400, y: power * sin(angle) * delta / 400 }, flying)
+        world.client?.controls.moveLocal({
+          x: power * cos(angle) * delta / 400,
+          y: power * sin(angle) * delta / 400
+        }, flying)
       },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         world.client!.bufferDown.updateHold(world.tick)

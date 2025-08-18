@@ -1,6 +1,6 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, localAim, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
+  hypot, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
   spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
@@ -165,8 +165,11 @@ const DDESystem = SystemBuilder({
             position.setPosition({ x: 14 + world.random.int(12, 6), y: 14 + world.random.int(12, 6), z: 6 })
             position.setVelocity({ x: 0, y: 0, z: 0 })
             position.data.flying = false
-            localAim.x = 0
-            localAim.y = -0.2
+          }
+
+          if (world.client) {
+            world.client.controls.localAim.x = 0
+            world.client.controls.localAim.y = -0.2
           }
 
           // choose who starts as eagle
@@ -338,7 +341,7 @@ const DDESystem = SystemBuilder({
 
           const { duck, eagle, mixers } = world.three?.birdAssets[character.id]
 
-          const orientation = player.id === world.client?.playerId() ? localAim : aim
+          const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
 
           duck.visible = !position.data.flying
           if (duck.visible) {

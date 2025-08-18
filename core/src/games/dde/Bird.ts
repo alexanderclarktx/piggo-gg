@@ -1,5 +1,5 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, Input, localAim,
+  abs, Action, Actions, Character, Collider, cos, Input,
   Networked, Player, Point, Position, Ready, round, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
@@ -10,7 +10,7 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
 
   const vec = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
-  const cameraWorldDirection = camera.worldDirection()
+  const cameraWorldDirection = camera.worldDirection(world)
   const dir = {
     x: round(cameraWorldDirection.x, 3),
     y: round(cameraWorldDirection.y, 3),
@@ -37,6 +37,7 @@ export const Bird = (player: Player) => Character({
       joystick: ({ world }) => {
         if (!world.client) return null
 
+        const { localAim } = world.client.controls
         const { power, angle } = world.client.controls.left
 
         let dir = { x: Math.cos(angle), y: Math.sin(angle) }

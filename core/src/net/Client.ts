@@ -1,8 +1,9 @@
 import {
   Character, LobbyCreate, LobbyJoin, NetMessageTypes, Player, RequestData,
-  RequestTypes, World, randomPlayerId, Sound, randomHash, AuthLogin, FriendsList,
-  Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet, ProfileCreate, MetaPlayers,
-  FriendsAdd, KeyBuffer, isMobile, LobbyList, BadResponse, LobbyExit, Chat, XY
+  RequestTypes, World, randomPlayerId, Sound, randomHash, AuthLogin,
+  FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet,
+  ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile, LobbyList,
+  BadResponse, LobbyExit, Chat, XY, round, max, min
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -37,6 +38,7 @@ export type Client = {
     mouse: XY
     mouseScreen: XY
     localAim: XY
+    moveLocal: (xy: XY, flying: boolean) => void
   }
   env: "dev" | "production"
   lastMessageTick: number
@@ -107,7 +109,15 @@ export const Client = ({ world }: ClientProps): Client => {
       right: { angle: 0, power: 0, active: false },
       mouse: { x: 0, y: 0 },
       mouseScreen: { x: 0, y: 0 },
-      localAim: { x: 0, y: 0 }
+      localAim: { x: 0, y: 0 },
+      moveLocal: ({ x, y }: XY, flying: boolean) => {
+
+        client.controls.localAim.x = round(client.controls.localAim.x - x, 3)
+        client.controls.localAim.y = round(client.controls.localAim.y - y, 3)
+
+        const limit = flying ? 1.1 : 0.6166
+        client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
+      }
     },
     env,
     lastMessageTick: 0,
