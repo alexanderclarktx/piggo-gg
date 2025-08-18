@@ -14,7 +14,7 @@ export const MusicBox = (): Entity => {
   let lightDirection = -1
 
   let state: "stop" | "play" = "stop"
-  let tracks: MusicSounds[] = ["track1", "track2", "track3", "track5"]
+  let tracks: MusicSounds[] = ["track2"]
   let trackIndex = 1
 
   let lastMouseY = 0
@@ -23,10 +23,7 @@ export const MusicBox = (): Entity => {
   let discHovered = false
 
   let discColors: Record<MusicSounds, number> = {
-    track1: 0x00bbdd,
-    track2: 0xccaa00,
-    track3: 0x00ccaa,
-    track5: 0xcc99cc
+    track2: 0xccaa00
   }
 
   const redraw = () => {
