@@ -1,4 +1,4 @@
-import { Action, Entity, Position } from "@piggo-gg/core"
+import { Action, Position } from "@piggo-gg/core"
 
 export const Chase = Action<{ target: string }>("chase", ({ entity, params, world }) => {
   if (!entity) return
