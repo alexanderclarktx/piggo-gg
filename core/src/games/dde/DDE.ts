@@ -1,7 +1,7 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
   hypot, localAim, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
-  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat
+  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -24,6 +24,7 @@ export type DDEState = {
 export type DDESettings = {
   ambientSound: boolean
   showControls: boolean
+  eagleCrosshair: boolean
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -33,7 +34,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     netcode: "rollback",
     settings: {
       ambientSound: true,
-      showControls: true
+      showControls: true,
+      eagleCrosshair: false
     },
     state: {
       applesEaten: {},
@@ -57,7 +59,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       DDEMenu(world),
       D3Profile(),
       Scoreboard(),
-      HtmlChat()
+      HtmlChat(),
+      Crosshair()
     ]
   })
 }

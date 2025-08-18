@@ -123,7 +123,6 @@ const Lobbies = (world: World): RefreshableDiv => {
     border: "2px solid #bbbbbb",
     borderRadius: "10px",
     overflow: "scroll",
-    scrollbarWidth: "thin",
     transform: "translate(-50%)",
     display: "flex",
     flexDirection: "column"
@@ -292,14 +291,13 @@ const Settings = (world: World): RefreshableDiv => {
         height: "40px",
         position: "relative",
         left: "10px",
-        fontSize: "16px",
+        fontSize: "18px",
         lineHeight: "40px",
         textAlign: "center"
       }
     })
 
     const button = HtmlButton({
-      text: "On",
       style: {
         width: "60px",
         height: "40px",
@@ -325,11 +323,14 @@ const Settings = (world: World): RefreshableDiv => {
 
     return { div, button }
   }
+
   const ambientSound = settingsRow("Ambient Sound", "ambientSound")
   const showControls = settingsRow("Show Controls", "showControls")
+  const eagleCrosshair = settingsRow("Eagle Crosshair", "eagleCrosshair")
 
   settings.appendChild(ambientSound.div)
   settings.appendChild(showControls.div)
+  settings.appendChild(eagleCrosshair.div)
 
   return {
     div: settings,
@@ -337,6 +338,7 @@ const Settings = (world: World): RefreshableDiv => {
       const settings = world.settings<DDESettings>()
       styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
       styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
+      styleSwitch(eagleCrosshair.button, settings.eagleCrosshair, eagleCrosshair.button.matches(":hover"))
     }
   }
 }

@@ -1,6 +1,7 @@
-import { entries, keys } from "@piggo-gg/core"
+import { entries, keys, stringify } from "@piggo-gg/core"
 
 export type TickBuffer<T extends ({} | string)> = {
+  fresh: Set<number>
   at: (tick: number, entityId: string) => T[] | undefined
   atTick: (tick: number) => Record<string, T[]> | undefined
   clearTick: (tick: number) => void
@@ -15,7 +16,8 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
 
   const buffer: Record<number, Record<string, T[]>> = {}
 
-  const TickBuffer: TickBuffer<T> = {
+  const tickBuffer: TickBuffer<T> = {
+    fresh: new Set(),
     at: (tick, entityId) => {
       return buffer[tick] ? buffer[tick][entityId] : undefined
     },
@@ -29,6 +31,7 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
       for (const key of keys(buffer)) {
         if (Number(key) < tick) {
           delete buffer[Number(key)]
+          tickBuffer.fresh.delete(Number(key))
         }
       }
     },
@@ -53,8 +56,15 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
       // empty buffer for tick if it doesn't exist
       if (!buffer[tick]) buffer[tick] = {}
 
+      const s = stringify(state)
+      const e = stringify(buffer[tick][entityId])
+      if (s === e) return
+
       // set state for entity
       buffer[tick][entityId] = state
+
+      // update fresh
+      tickBuffer.fresh.add(tick)
     },
     push: (tick, entityId, state) => {
       // empty buffer for tick if it doesn't exist
@@ -68,10 +78,13 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
         if (JSON.stringify(s) === JSON.stringify(state)) return false
       }
 
+      // update fresh
+      tickBuffer.fresh.add(tick)
+
       // push state
       buffer[tick][entityId].push(state)
       return true
     }
   }
-  return TickBuffer
+  return tickBuffer
 }

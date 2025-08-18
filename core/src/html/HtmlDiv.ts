@@ -2,7 +2,9 @@ import { CSS } from "@piggo-gg/core"
 
 const defaults: CSS = {
   position: "absolute",
-  border: "2px solid white"
+  border: "2px solid white",
+  scrollbarWidth: "none",
+  msOverflowStyle: "none"
 }
 
 export type HtmlDiv = HTMLDivElement

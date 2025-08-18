@@ -3,13 +3,16 @@ import { Entity, entries, HtmlDiv, HtmlText, NPC, Position } from "@piggo-gg/cor
 export const HtmlChat = (): Entity => {
 
   let init = false
-  let hideTimer = 0
   let inputText = ""
-  let messagesText = ""
+
+  let opened = false
+
+  const fadeStack: number[] = []
+  const messages: HtmlDiv[] = []
 
   const wrapper = HtmlDiv({
     width: "300px",
-    height: "260px",
+    height: "250px",
     right: "12px",
     bottom: "12px",
     transform: "translate(0%)",
@@ -25,22 +28,21 @@ export const HtmlChat = (): Entity => {
     borderRadius: "8px"
   })
 
-  const messages = HtmlText({
-    style: {
-      flex: 1,
-      left: "10px",
-      marginBottom: "30px",
-      position: "relative",
-      top: "10px",
-      whiteSpace: "pre-line",
-      width: "280px",
-      wordBreak: "break-all",
-      // overflowY: "auto",
-      display: "flex",
-      flexDirection: "column-reverse",
-      alignItems: "flex-start",
-      pointerEvents: "auto"
-    }
+  const chatDiv = HtmlDiv({
+    flex: 1,
+    left: "10px",
+    marginBottom: "30px",
+    position: "relative",
+    top: "10px",
+    whiteSpace: "pre-line",
+    width: "280px",
+    wordBreak: "break-all",
+    overflowY: "scroll",
+    display: "flex",
+    flexDirection: "column-reverse",
+    alignItems: "flex-start",
+    pointerEvents: "auto",
+    border: ""
   })
 
   const input = HtmlText({
@@ -62,7 +64,7 @@ export const HtmlChat = (): Entity => {
   })
 
   wrapper.appendChild(border)
-  wrapper.appendChild(messages)
+  wrapper.appendChild(chatDiv)
   wrapper.appendChild(input)
 
   const chat = Entity({
@@ -80,49 +82,74 @@ export const HtmlChat = (): Entity => {
 
           const { inputBuffer, isOpen } = world.client.chat
 
-          if (hideTimer > 0) hideTimer -= 1
-          if (isOpen) hideTimer = 100
-
           border.style.visibility = isOpen ? "visible" : "hidden"
           input.style.visibility = isOpen ? "visible" : "hidden"
 
-          const buffered = `${inputBuffer.join("")}│`
+          if (isOpen) {
+            for (const message of messages) {
+              message.style.visibility = "visible"
+              message.style.opacity = "1"
+            }
+            opened = true
+          } else if (opened) {
+            opened = false
+            for (const message of messages) {
+              message.style.visibility = "hidden"
+            }
+          }
+
+          const buffered = `${inputBuffer}│`
           if (buffered !== inputText) {
             inputText = buffered
             input.textContent = inputText
           }
 
-          let lastMessages: string[] = []
+          // get messages from this tick
+          const { fresh } = world.messages
+          for (const freshTick of fresh) {
+            const messagesThisTick = world.messages.atTick(freshTick)
+            if (messagesThisTick) {
+              for (const [id, msgs] of entries(messagesThisTick)) {
+                for (const msg of msgs) {
+                  const entity = world.entity(id)
 
-          // get recent messages
-          for (const tick of world.messages.keys().slice(0, 6)) {
-            const messagesForEntity = world.messages.atTick(tick)
-            if (messagesForEntity) {
-              for (const [entityId, messages] of entries(messagesForEntity)) {
-                const from = world.entity(entityId)?.components.pc?.data.name
-                messages.forEach((message) => {
-                  const string = from ? `${from}: ${message}` : message
-                  if (messages.length < 4) lastMessages.push(string)
-                })
+                  const from = entity ? entity.components.pc?.data.name || "noob" : null
+                  const text = from ? `${from}: ${msg}` : msg
+
+                  const message = HtmlText({
+                    text,
+                    style: {
+                      position: "relative",
+                      color: from ? "#ffffff" : "#00eeff"
+                    }
+                  })
+                  chatDiv.prepend(message)
+
+                  fadeStack.push(world.tick + 140)
+                  messages.push(message)
+                }
               }
             }
           }
 
-          // TODO append child element per message instead
-          const joined = lastMessages.reverse().join("\n")
-          if (joined !== messagesText) {
-            messagesText = joined
-            messages.textContent = messagesText
-            hideTimer = 100
-          }
+          fresh.clear()
 
-          if (hideTimer > 0 && hideTimer < 20) {
-            messages.style.opacity = (hideTimer / 20).toString()
-          } else if (hideTimer === 0) {
-            messages.style.visibility = "hidden"
-          } else {
-            messages.style.visibility = "visible"
-            messages.style.opacity = "1"
+          if (!isOpen) {
+            const len = fadeStack.length
+            for (let i = 0; i < len; i++) {
+
+              const diff = world.tick - fadeStack[i]
+              const message = messages[(messages.length - len) + i]
+
+              if (diff >= 20) {
+                message.style.visibility = "hidden"
+                message.style.opacity = "1"
+                fadeStack.shift()
+              } else {
+                message.style.visibility = "visible"
+                message.style.opacity = `${Math.max(0, 1 - diff / 20)}`
+              }
+            }
           }
         }
       })
