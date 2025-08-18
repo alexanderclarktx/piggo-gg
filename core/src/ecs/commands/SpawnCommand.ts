@@ -1,12 +1,6 @@
-import { Command, Entity, InvokedAction, Piggo, Rock, Tree, Zomi, randomHash, keys } from "@piggo-gg/core"
+import { Command, Entity, InvokedAction, randomHash, keys } from "@piggo-gg/core"
 
-const entityBuilders: Record<string, (_?: { id: string }) => Entity> = {
-  "zombie": Zomi,
-  "zomi": Zomi,
-  "piggo": Piggo,
-  "tree": Tree,
-  "rock": Rock
-}
+const entityBuilders: Record<string, (_?: { id: string }) => Entity> = {}
 
 type SpawnCommandParams = { entity: string, id: string }
 

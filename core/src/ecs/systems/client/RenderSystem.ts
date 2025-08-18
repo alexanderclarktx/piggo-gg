@@ -91,10 +91,10 @@ export const RenderSystem = ClientSystemBuilder({
           }
 
           // update position
-          const { x, y } = world.flip({
+          const { x, y } = {
             x: renderable.position.x + position.data.x,
             y: renderable.position.y + position.data.y
-          })
+          }
           renderable.c.position.set(x, y - position.data.z)
 
           // update tint
@@ -183,12 +183,12 @@ export const RenderSystem = ClientSystemBuilder({
 
             const interpolated = position.interpolate(world, delta)
 
-            const rotated = world.flip({
+            const offset = {
               x: renderable.position.x + interpolated.x,
               y: renderable.position.y + interpolated.y,
-            })
+            }
 
-            renderable.c.position.set(rotated.x, rotated.y - interpolated.z)
+            renderable.c.position.set(offset.x, offset.y - interpolated.z)
           }
         }
       }

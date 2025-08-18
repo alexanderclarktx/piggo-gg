@@ -1,6 +1,6 @@
 import { InvokedAction, SerializedEntity, World } from "@piggo-gg/core"
 
-// netcode
+// game data
 
 export type Syncer = {
   read: (_: { world: World, buffer: GameData[] }) => void

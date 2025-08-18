@@ -3,19 +3,16 @@ import { getContext, getTransport, Player as Tone } from "tone"
 
 export type BirdSounds = "steps" | "birdsong1"
 export type BubbleSounds = "bubble"
-export type MusicSounds = "track1" | "track2" | "track3" | "track5"
+export type MusicSounds = "track2"
 export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
 export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
-export type ZombiDeathSounds = "zombieDeath1" | "zombieDeath2" | "zombieDeath3" | "zombieDeath4"
-export type ZomiAttackSounds = "attack1" | "attack2" | "attack3" | "attack4"
 export type VolleySounds = "spike"
 
 export type ValidSounds =
   BirdSounds | BubbleSounds | MusicSounds | ClickSounds |
-  GunNames | WallPlaceSounds | ZombiDeathSounds |
-  ZomiAttackSounds | ToolSounds | EatSounds | VolleySounds
+  GunNames | WallPlaceSounds | ToolSounds | EatSounds | VolleySounds
 
 const load = (url: string, volume: number): Tone => {
   const player = new Tone({ url, volume: volume - 10 })
@@ -33,11 +30,14 @@ export type SoundPlayProps = {
 }
 
 export type Sound = {
-  music: { state: "stop" | "play", track: MusicSounds }
+  music: {
+    state: "stop" | "play",
+    track: MusicSounds
+  }
   muted: boolean
+  ready: boolean
   state: "closed" | "running" | "suspended"
   tones: Record<ValidSounds, Tone>
-  ready: boolean
   stop: (name: ValidSounds) => void
   stopAll: () => void
   play: (props: SoundPlayProps) => boolean
@@ -61,7 +61,7 @@ export const Sound = (world: World): Sound => {
   window.addEventListener("focus", () => sound.muted = false)
 
   const sound: Sound = {
-    music: { state: "stop", track: "track1" },
+    music: { state: "stop", track: "track2" },
     muted: false,
     state: "closed",
     ready: false,
@@ -70,11 +70,7 @@ export const Sound = (world: World): Sound => {
       steps: load("steps.mp3", 0),
       bubble: load("bubble.mp3", -10),
       // piano1: load("piano1.mp3", 5),
-      track1: load("track1.mp3", -10),
       track2: load("track2.mp3", -10),
-      track3: load("track3.mp3", -10),
-      // track4: load("track4.mp3", -10),
-      track5: load("track5.mp3", -10),
       cassettePlay: load("cassettePlay.mp3", 0),
       cassetteStop: load("cassetteStop.mp3", -5),
       click1: load("click1.mp3", -5),
@@ -85,14 +81,6 @@ export const Sound = (world: World): Sound => {
       awp: load("awp.mp3", -30),
       wallPlace1: load("wallPlace1.wav", -20),
       wallPlace2: load("wallPlace2.wav", -20),
-      zombieDeath1: load("zombieDeath1.wav", -25),
-      zombieDeath2: load("zombieDeath2.wav", -25),
-      zombieDeath3: load("zombieDeath3.wav", -25),
-      zombieDeath4: load("zombieDeath4.wav", -25),
-      attack1: load("attack1.wav", -25),
-      attack2: load("attack2.wav", -25),
-      attack3: load("attack3.wav", -25),
-      attack4: load("attack4.wav", -25),
       thud: load("thud.mp3", -15),
       clink: load("clink.mp3", -10),
       whiff: load("whiff.wav", -15),

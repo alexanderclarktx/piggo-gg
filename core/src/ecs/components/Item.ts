@@ -78,14 +78,12 @@ export const ItemSystem = SystemBuilder({
           const hyp_x = pointingDelta.x / hypotenuse
           const hyp_y = pointingDelta.y / hypotenuse
 
-          const flip = world.flipped()
-
           position.data.offset = {
             x: round(hyp_x * min(20, abs(pointingDelta.x)), 2),
-            y: round(hyp_y * min(20, abs(pointingDelta.y)) - 7 * flip, 2)
+            y: round(hyp_y * min(20, abs(pointingDelta.y)) - 7, 2)
           }
 
-          const xScale = flip * (!item.flips ? 1 : pointingDelta.x > 0 ? 1 : -1)
+          const xScale = !item.flips ? 1 : pointingDelta.x > 0 ? 1 : -1
 
           renderable.setScale({ x: xScale, y: 1 })
         }

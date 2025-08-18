@@ -153,11 +153,11 @@ export const InputSystem = ClientSystemBuilder({
       // check for actions
       const { input, actions, position, inventory } = character.components
 
-      const rotated = world.flip({ x: position.data.x, y: position.data.y })
+      const { x, y } = position.data
 
-      // update Position.pointing based on mouse
+      // update position.pointing
       if (world.renderer) {
-        const angle = Math.atan2(mouse.y - rotated.y, mouse.x - rotated.x)
+        const angle = Math.atan2(mouse.y - y, mouse.x - x)
         const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
         let pointingDelta: XY
@@ -165,30 +165,28 @@ export const InputSystem = ClientSystemBuilder({
         if (world.renderer?.camera.focus) {
           const { width, height } = world.renderer?.wh()
           pointingDelta = {
-            x: round(mouseScreen.x - (width / 2), 2) * world.flipped(),
-            y: round(mouseScreen.y - (height / 2), 2) * world.flipped()
+            x: round(mouseScreen.x - (width / 2), 2),
+            y: round(mouseScreen.y - (height / 2), 2)
           }
         } else {
           pointingDelta = {
-            x: round(mouse.x - rotated.x, 2) * world.flipped(),
-            y: round(mouse.y - (rotated.y - position.data.z), 2) * world.flipped()
+            x: round(mouse.x - x, 2),
+            y: round(mouse.y - (y - position.data.z), 2)
           }
         }
 
         if (actions.actionMap["point"]) {
-          world.actions.push(world.tick + 1, character.id,
-            { actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta, aim: position.data.aim } }
-          )
+          world.actions.push(world.tick + 1, character.id, {
+            actionId: "point", playerId: world.client?.playerId(), params: { pointing, pointingDelta, aim: position.data.aim }
+          })
         }
       } else if (world.three) {
         if (actions.actionMap["point"]) {
-          world.actions.push(world.tick + 1, character.id,
-            {
-              actionId: "point", playerId: world.client?.playerId(), params: {
-                pointing: 0, pointingDelta: 0, aim: { ...world.client?.controls.localAim }
-              }
+          world.actions.push(world.tick + 1, character.id, {
+            actionId: "point", playerId: world.client?.playerId(), params: {
+              pointing: 0, pointingDelta: 0, aim: { ...world.client?.controls.localAim }
             }
-          )
+          })
         }
       }
 

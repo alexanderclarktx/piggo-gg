@@ -150,12 +150,12 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
 
         const { x, y, z } = follow(interpolated)
 
-        const rotated = world.flip({
+        const offset = {
           x: x + renderable.position.x,
           y: y + renderable.position.y
-        })
+        }
 
-        renderer?.camera.moveTo({ x: rotated.x, y: rotated.y - z })
+        renderer?.camera.moveTo({ x: offset.x, y: offset.y - z })
       }
     }
   }
