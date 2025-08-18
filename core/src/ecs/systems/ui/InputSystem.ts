@@ -4,7 +4,7 @@ import {
 } from "@piggo-gg/core"
 
 export let mouse: XY = { x: 0, y: 0 }
-export let localAim: XY = { x: 0, y: 0 }
+// export let localAim: XY = { x: 0, y: 0 }
 
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
@@ -185,7 +185,9 @@ export const InputSystem = ClientSystemBuilder({
       } else if (world.three) {
         if (actions.actionMap["point"]) {
           world.actions.push(world.tick + 1, character.id,
-            { actionId: "point", playerId: world.client?.playerId(), params: { pointing: 0, pointingDelta: 0, aim: { ...localAim } } }
+            { actionId: "point", playerId: world.client?.playerId(), params: {
+              pointing: 0, pointingDelta: 0, aim: { ...world.client?.controls.localAim }
+            } }
           )
         }
       }
