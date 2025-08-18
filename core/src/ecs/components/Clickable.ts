@@ -1,6 +1,6 @@
 import {
   World, Component, Position, InvokedAction, XY, ClientSystemBuilder,
-  checkBounds, Entity, mouse, mouseScreen, Renderable
+  checkBounds, Entity, mouse, Renderable
 } from "@piggo-gg/core"
 import { FederatedPointerEvent } from "pixi.js"
 
@@ -117,7 +117,7 @@ export const ClickableSystem = ClientSystemBuilder({
           if (hoveredEntityId && hoveredEntityId?.zIndex > renderable.c.zIndex) break
 
           if (clickable.active && hoveredEntityId?.id !== entity.id) {
-            const hovering = checkBounds(renderer!, position, clickable, mouseScreen, mouse)
+            const hovering = checkBounds(renderer!, position, clickable, { x: 0, y: 0 }, mouse)
             if (hovering) {
               clickable.hoverOver?.(world)
 
