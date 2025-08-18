@@ -3,7 +3,7 @@ import { getContext, getTransport, Player as Tone } from "tone"
 
 export type BirdSounds = "steps" | "birdsong1"
 export type BubbleSounds = "bubble"
-export type MusicSounds = "track1" | "track2" | "track3" | "track5"
+export type MusicSounds = "track2"
 export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
@@ -30,11 +30,14 @@ export type SoundPlayProps = {
 }
 
 export type Sound = {
-  music: { state: "stop" | "play", track: MusicSounds }
+  music: {
+    state: "stop" | "play",
+    track: MusicSounds
+  }
   muted: boolean
+  ready: boolean
   state: "closed" | "running" | "suspended"
   tones: Record<ValidSounds, Tone>
-  ready: boolean
   stop: (name: ValidSounds) => void
   stopAll: () => void
   play: (props: SoundPlayProps) => boolean
@@ -58,7 +61,7 @@ export const Sound = (world: World): Sound => {
   window.addEventListener("focus", () => sound.muted = false)
 
   const sound: Sound = {
-    music: { state: "stop", track: "track1" },
+    music: { state: "stop", track: "track2" },
     muted: false,
     state: "closed",
     ready: false,
@@ -67,11 +70,7 @@ export const Sound = (world: World): Sound => {
       steps: load("steps.mp3", 0),
       bubble: load("bubble.mp3", -10),
       // piano1: load("piano1.mp3", 5),
-      track1: load("track1.mp3", -10),
       track2: load("track2.mp3", -10),
-      track3: load("track3.mp3", -10),
-      // track4: load("track4.mp3", -10),
-      track5: load("track5.mp3", -10),
       cassettePlay: load("cassettePlay.mp3", 0),
       cassetteStop: load("cassetteStop.mp3", -5),
       click1: load("click1.mp3", -5),
