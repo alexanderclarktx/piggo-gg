@@ -12,7 +12,6 @@ export const BlockMesh = () => {
   let layers: Block[][] = []
   let targets: (XYZ & { zIndex: number, id: string })[] = []
   let chunkData: Block[] = []
-  let flipped = 1
 
   const MeshChild = (i: number) => {
 
@@ -37,7 +36,7 @@ export const BlockMesh = () => {
 
         for (let j = 0; j < layer.length; j++) {
           const block = layer[j]
-          const { x: blockX, y: blockY } = world.flip(block)
+          const { x: blockX, y: blockY } = block
 
           newPosBuffer.set([blockX, blockY, block.z], j * 3)
           newColorBuffer.set(BlockColors[BlockTypeString[block.type]], j * 3)
@@ -83,12 +82,7 @@ export const BlockMesh = () => {
             }
           }
 
-          if (world.flipped() !== flipped) {
-            flipped = world.flipped()
-            world.blocks.invalidate("visibleCache")
-          }
-
-          chunkData = world.blocks.visible(chunks, flipped === -1)
+          chunkData = world.blocks.visible(chunks, false)
         },
         onRender: ({ world, delta, client }) => {
           const zoom = world.renderer!.camera.scale
@@ -99,7 +93,7 @@ export const BlockMesh = () => {
 
           // character position
           const pcPos = character?.components.position.interpolate(world, delta) ?? { x: 0, y: 0, z: 0 }
-          const pcPosFlip = world.flip(pcPos)
+          const pcPosFlip = pcPos
 
           // highlighted face
           let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
@@ -152,7 +146,7 @@ export const BlockMesh = () => {
 
           // divvy up the blocks for each mesh child
           for (const block of chunkData) {
-            const { y: blockY } = world.flip(block)
+            const { y: blockY } = block
 
             for (let i = 0; i <= targets.length; i++) {
               const target = targets[i]

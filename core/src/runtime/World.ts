@@ -36,8 +36,6 @@ export type World = {
   announce: (message: string) => void
   characters: () => Character[]
   entity: <T extends ComponentTypes>(id: string) => Entity<T> | undefined
-  flip: (xy: XY) => XY
-  flipped: () => 1 | -1
   onTick: (_: { isRollback: boolean }) => void
   onRender: () => void
   players: () => Player[]
@@ -155,23 +153,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     },
     entity: <T extends ComponentTypes>(id: string) => {
       return world.entities[id] as Entity<T>
-    },
-    flip: ({ x, y }: XY) => {
-      const angle = world.renderer?.camera.angle ?? 0
-      if (angle === 0) return { x, y }
-
-      // translate relative to center
-      const a = angle * Math.PI / 2
-      const c = Math.cos(a)
-      const s = Math.sin(a)
-
-      const rx = (x * c - y * s)
-      const ry = (x * s + y * c)
-
-      return { x: rx, y: ry }
-    },
-    flipped: () => {
-      return (world.renderer?.camera.angle ?? 0) === 0 ? 1 : -1
     },
     onTick: ({ isRollback }) => {
       const now = performance.now()

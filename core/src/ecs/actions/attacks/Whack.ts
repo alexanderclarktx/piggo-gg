@@ -13,7 +13,7 @@ export const WhackBlock = Action("whack", ({ params, world, player, entity }) =>
   const { position } = entity?.components ?? {}
   if (!position) return
 
-  const rotation = world.flipped() * (position.data.pointingDelta.x > 0 ? 1 : -1)
+  const rotation = position.data.pointingDelta.x > 0 ? 1 : -1
   position.setRotation(rotation)
 
   const xyz = world.blocks.atMouse(mouse, character.components.position.data)?.block
@@ -43,7 +43,7 @@ export const Whack = (sound: ValidSounds, damage: DamageCalculation) => Action<K
     const { position } = entity.components
     if (!position) return
 
-    const rotation = world.flipped() * (position.data.pointingDelta.x > 0 ? 1 : -1)
+    const rotation = position.data.pointingDelta.x > 0 ? 1 : -1
     position.rotate(rotation)
 
     const angle = Math.atan2(position.data.pointingDelta.y, position.data.pointingDelta.x)

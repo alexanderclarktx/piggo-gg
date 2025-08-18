@@ -32,9 +32,8 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
 
             const { x, y, z, velocity } = focus.components.position.data
 
-            const xy = world.flip({ x, y })
-            tile.tilePosition.x = 0.85 * xy.x
-            tile.tilePosition.y = 0.85 * xy.y
+            tile.tilePosition.x = 0.85 * x
+            tile.tilePosition.y = 0.85 * y
 
             position.setVelocity({
               x: velocity.x * 0.85,

@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, DebugBounds, Entity, FpsText, Component,
-  Position, Renderable, TextBox, values, keys, pixiGraphics
+  Position, Renderable, TextBox, values, pixiGraphics
 } from "@piggo-gg/core"
 import { Graphics, Text } from "pixi.js"
 
@@ -98,8 +98,8 @@ export const DebugSystem = ClientSystemBuilder({
           const { vertices } = world.physics?.debugRender() ?? { vertices: [] }
 
           for (let i = 0; i < vertices.length; i += 4) {
-            const one = world.flip({ x: vertices[i], y: vertices[i + 1] })
-            const two = world.flip({ x: vertices[i + 2], y: vertices[i + 3] })
+            const one = { x: vertices[i], y: vertices[i + 1] }
+            const two = { x: vertices[i + 2], y: vertices[i + 3] }
             g.moveTo(one.x, one.y)
             g.lineTo(two.x, two.y)
           }

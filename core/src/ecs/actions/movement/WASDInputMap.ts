@@ -20,8 +20,5 @@ const move = (entity: Entity, world: World, x: number, y: number): null | Invoke
   if (x > 0) entity.components.position.data.facing = 1
   if (x < 0) entity.components.position.data.facing = -1
 
-  x *= world.flipped()
-  y *= world.flipped()
-
   return { actionId: "move", playerId: world.client?.playerId(), params: normalize({ x, y, entity: entity as Entity<Position> }) }
 }
