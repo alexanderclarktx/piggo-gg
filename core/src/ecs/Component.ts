@@ -18,7 +18,7 @@ export type NetworkedComponentData = Record<string,
   (string[] | undefined)[] | XY
 >
 
-// a Component is an atomic unit of data that is attached to an entity
+// a Component is an atomic bundle of data attached to an entity
 export type Component<type extends string = string, D extends NetworkedComponentData | undefined = undefined> = {
   type: type
   active?: boolean
