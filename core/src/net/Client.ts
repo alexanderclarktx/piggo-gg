@@ -3,7 +3,7 @@ import {
   RequestTypes, World, randomPlayerId, Sound, randomHash, AuthLogin,
   FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet,
   ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile, LobbyList,
-  BadResponse, LobbyExit, Chat, XY, round, max, min
+  BadResponse, LobbyExit, XY, round, max, min
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -26,7 +26,10 @@ export type Client = {
   bufferDown: KeyBuffer
   bufferUp: KeyBuffer
   busy: boolean
-  chat: Chat
+  chat: {
+    inputBuffer: string
+    isOpen: boolean
+  }
   clickThisFrame: {
     value: number
     set: (value: number) => void
@@ -98,7 +101,10 @@ export const Client = ({ world }: ClientProps): Client => {
     bufferDown: KeyBuffer(),
     bufferUp: KeyBuffer(),
     busy: false,
-    chat: Chat(),
+    chat: {
+      inputBuffer: "",
+      isOpen: false
+    },
     clickThisFrame: {
       value: 0,
       set: (value: number) => client.clickThisFrame.value = value,

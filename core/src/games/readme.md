@@ -1,1 +1,1 @@
-library of Piggo game modes
+collection of game modes

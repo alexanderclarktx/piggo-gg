@@ -3,7 +3,7 @@ import {
   logDiff, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
-// TODO not generic across games (bird/spike)
+// TODO not generic across games
 export const RollbackSyncer = (world: World): Syncer => {
 
   let last = 0

@@ -6,8 +6,8 @@ export const DefaultUI = (world: World): Entity[] => {
   return isMobile() ? DefaultMobileUI() : DefaultDesktopUI()
 }
 
-export const DefaultDesktopUI = (): Entity[] => 
+const DefaultDesktopUI = (): Entity[] => 
   isMobile() ? [] : [ FullscreenButton(), Cursor(), PixiChat(), EscapeMenu() ]
 
-export const DefaultMobileUI = (): Entity[] =>
+const DefaultMobileUI = (): Entity[] =>
   isMobile() ? [] : []

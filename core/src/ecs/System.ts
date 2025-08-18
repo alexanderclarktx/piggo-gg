@@ -1,4 +1,4 @@
-import { Entity, NetworkedComponentData, ValidComponents, World } from "@piggo-gg/core"
+import { Data, Entity, Networked, NetworkedComponentData, ValidComponents, World } from "@piggo-gg/core"
 
 // a System is a function that runs on every tick
 export interface System<T extends string = string> {
@@ -23,5 +23,20 @@ export const ClientSystemBuilder = <T extends string = string>(builder: SystemBu
   ...builder,
   init: (world: World) => {
     return (world.mode === "client") ? builder.init(world) : undefined
+  }
+})
+
+export type SystemEntityProps = {
+  systemId: string
+  data: NetworkedComponentData
+}
+
+// a system entity is a special entity that stores networked system data
+export const SystemEntity = ({ systemId, data }: SystemEntityProps) => Entity({
+  id: `SystemEntity-${systemId}`,
+  persists: true,
+  components: {
+    networked: Networked(),
+    data: Data({ data }),
   }
 })
