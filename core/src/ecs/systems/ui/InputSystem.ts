@@ -1,25 +1,14 @@
 import {
-  Actions, Character, ClientSystemBuilder, Entity, Input,
-  InvokedAction, World, XY, cos, max, min, round, sin
+  Actions, Character, ClientSystemBuilder, Entity,
+  Input, InvokedAction, World, XY, cos, round, sin
 } from "@piggo-gg/core"
-
-export let mouse: XY = { x: 0, y: 0 }
-export let mouseScreen: XY = { x: 0, y: 0 }
-export let localAim: XY = { x: 0, y: 0 }
-
-const moveAim = ({ x, y }: XY, flying: boolean) => {
-  localAim.x = round(localAim.x - x, 3)
-  localAim.y = round(localAim.y - y, 3)
-
-  const factor = flying ? 1.1 : 0.6166
-  localAim.y = max(-factor, min(factor, localAim.y))
-}
 
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: (world) => {
     const renderer = world.renderer
+    let { mouse } = world.client!.controls
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])
@@ -28,7 +17,7 @@ export const InputSystem = ClientSystemBuilder({
     let mouseScreen: XY = { x: 0, y: 0 }
 
     window.addEventListener("pointermove", (event) => {
-      if (world.client?.analog.left.active || world.client?.analog.right.active) return
+      if (world.client?.controls.left.active || world.client?.controls.right.active) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
@@ -38,7 +27,10 @@ export const InputSystem = ClientSystemBuilder({
         const pc = world.client?.playerCharacter()
         if (!pc) return
 
-        moveAim({ x: event.movementX * 0.001, y: event.movementY * 0.001 }, pc.components.position.data.flying)
+        world.client?.controls.moveLocal({
+          x: event.movementX * 0.001,
+          y: event.movementY * 0.001
+        }, pc.components.position.data.flying)
       }
     })
 
@@ -191,13 +183,17 @@ export const InputSystem = ClientSystemBuilder({
       } else if (world.three) {
         if (actions.actionMap["point"]) {
           world.actions.push(world.tick + 1, character.id,
-            { actionId: "point", playerId: world.client?.playerId(), params: { pointing: 0, pointingDelta: 0, aim: { ...localAim } } }
+            {
+              actionId: "point", playerId: world.client?.playerId(), params: {
+                pointing: 0, pointingDelta: 0, aim: { ...world.client?.controls.localAim }
+              }
+            }
           )
         }
       }
 
       // handle joystick input
-      if ((world.client?.analog.left.power ?? 0) > 0.1) {
+      if ((world.client?.controls.left.power ?? 0) > 0.1) {
         const joystickAction = input.inputMap.joystick({ character, world })
         if (joystickAction) world.actions.push(world.tick + 1, character.id, joystickAction)
       }
@@ -372,7 +368,7 @@ export const InputSystem = ClientSystemBuilder({
       onRender: () => {
         if (!world.client?.mobile) return
 
-        const { power, angle, active } = world.client.analog.right
+        const { power, angle, active } = world.client.controls.right
         if (!active) {
           last = 0
           return
@@ -385,7 +381,10 @@ export const InputSystem = ClientSystemBuilder({
         const delta = last ? performance.now() - last : performance.now() - active
         last = performance.now()
 
-        moveAim({ x: power * cos(angle) * delta / 400, y: power * sin(angle) * delta / 400 }, flying)
+        world.client?.controls.moveLocal({
+          x: power * cos(angle) * delta / 400,
+          y: power * sin(angle) * delta / 400
+        }, flying)
       },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         world.client!.bufferDown.updateHold(world.tick)

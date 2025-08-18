@@ -78,9 +78,6 @@ export const NetClientReadSystem = SystemBuilder({
           // console.log(`skew:${skew} msg:${message.latency} ms:${client.ms} diff:${message.diff} buffer:${buffer.length}`)
         }
 
-        // set flag to green
-        world.tickFlag = "green"
-
         // handle new chat messages
         if (keys(message.chats).length) {
           entries(message.chats).forEach(([playerId, messages]) => {
@@ -109,8 +106,6 @@ export const NetClientReadSystem = SystemBuilder({
         // handle oldest message in buffer
         if (buffer.length > 0) {
           syncer().read({ world, buffer })
-        } else {
-          world.tickFlag = "red"
         }
       }
     }

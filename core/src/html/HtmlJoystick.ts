@@ -42,9 +42,9 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
     stick.style.transform = `translate(${x}px, ${y}px)`
 
     if (side === "left") {
-      client.analog.left = { power: pow(dist / 40, 2), angle: angle, active: client.analog.left.active || performance.now() }
+      client.controls.left = { power: pow(dist / 40, 2), angle: angle, active: client.controls.left.active || performance.now() }
     } else {
-      client.analog.right = { power: pow(dist / 40, 2), angle: angle, active: client.analog.right.active || performance.now() }
+      client.controls.right = { power: pow(dist / 40, 2), angle: angle, active: client.controls.right.active || performance.now() }
     }
   }
 
@@ -55,9 +55,9 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
     stick.style.transform = "translate(0, 0)"
 
     if (side === "left") {
-      client.analog.left = { power: 0, angle: 0, active: false }
+      client.controls.left = { power: 0, angle: 0, active: false }
     } else {
-      client.analog.right = { power: 0, angle: 0, active: false }
+      client.controls.right = { power: 0, angle: 0, active: false }
     }
   }
 
