@@ -7,6 +7,10 @@
   touch-action: none;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 html {
   background-color: #191b1c;
   border-bottom-color: rgb(115, 107, 94);
