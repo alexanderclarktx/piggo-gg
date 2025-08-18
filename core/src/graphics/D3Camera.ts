@@ -3,6 +3,7 @@ import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
   c: PerspectiveCamera
+  zoom: number
   worldDirection: () => Vector3
   setFov: (fov: number) => void
 }
@@ -14,6 +15,7 @@ export const D3Camera = (): D3Camera => {
 
   const d3Camera: D3Camera = {
     c: camera,
+    zoom: 0.6,
     worldDirection: () => {
       const t = new Vector3(-sin(localAim.x), 0, -cos(localAim.x))
       return t.normalize()
@@ -28,31 +30,40 @@ export const D3Camera = (): D3Camera => {
 
 export const D3CameraSystem = () => ClientSystemBuilder({
   id: "D3CameraSystem",
-  init: (world) => ({
-    id: "D3CameraSystem",
-    query: [],
-    priority: 9,
-    onRender: (_, delta) => {
-      if (!world.three) return
+  init: (world) => {
 
-      const pc = world.client?.playerCharacter()
-      if (!pc) return
+    window.addEventListener("wheel", (e) => {
+      e.preventDefault()
+      world.three!.camera.zoom += e.deltaY * 0.001
+      world.three!.camera.zoom = Math.min(Math.max(0.6, world.three!.camera.zoom), 0.9)
+    })
 
-      const { position } = pc.components
+    return {
+      id: "D3CameraSystem",
+      query: [],
+      priority: 9,
+      onRender: (_, delta) => {
+        if (!world.three) return
 
-      const interpolated = position.interpolate(world, delta)
+        const pc = world.client?.playerCharacter()
+        if (!pc) return
 
-      const { x, y } = localAim
+        const { position } = pc.components
 
-      const rotatedOffset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
+        const interpolated = position.interpolate(world, delta)
 
-      world.three.camera.c.position.set(
-        interpolated.x - rotatedOffset.x,
-        interpolated.z + 0.4 - rotatedOffset.y,
-        interpolated.y - rotatedOffset.z
-      )
+        const { x, y } = localAim
 
-      world.three.camera.c.lookAt(interpolated.x, interpolated.z + 0.2, interpolated.y)
+        const rotatedOffset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(world.three.camera.zoom)
+
+        world.three.camera.c.position.set(
+          interpolated.x - rotatedOffset.x,
+          interpolated.z + (world.three.camera.zoom / 3 * 2) - rotatedOffset.y,
+          interpolated.y - rotatedOffset.z
+        )
+
+        world.three.camera.c.lookAt(interpolated.x, interpolated.z + 0.2, interpolated.y)
+      }
     }
-  })
+  }
 })
