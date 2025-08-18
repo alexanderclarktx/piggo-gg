@@ -3,12 +3,10 @@ import {
   entries, keys, serializeComponent, values
 } from "@piggo-gg/core"
 
-// an Entity is a uniquely identified set of Components
-export type Entity<T extends ComponentTypes = ComponentTypes> = {
+export type SerializedEntity = Record<string, NetworkedComponentData>
+
+export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = {
   id: string
-  serialize: () => SerializedEntity
-  deserialize: (serializedEntity: SerializedEntity) => void
-  removed: boolean
   persists?: boolean
   components: ComponentTypes extends T ?
   {
@@ -21,9 +19,12 @@ export type Entity<T extends ComponentTypes = ComponentTypes> = {
   }
 }
 
-export type SerializedEntity = Record<string, NetworkedComponentData>
-
-export type ProtoEntity<T extends ComponentTypes = ComponentTypes> = Omit<Entity<T>, "serialize" | "deserialize" | "removed">
+// an Entity is a uniquely identified set of Components
+export type Entity<T extends ComponentTypes = ComponentTypes> = ProtoEntity<T> & {
+  serialize: () => SerializedEntity
+  deserialize: (serializedEntity: SerializedEntity) => void
+  removed: boolean
+}
 
 export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): Entity<T> => {
 
@@ -43,25 +44,23 @@ export const Entity = <T extends ComponentTypes>(protoEntity: ProtoEntity<T>): E
 
       return serializedEntity
     },
-    deserialize: (serializedEntity: SerializedEntity) => deserializeEntity(entity, serializedEntity)
+    deserialize: (serializedEntity: SerializedEntity) => {
+
+      // deprecated
+      for (const type of keys(serializedEntity)) {
+        if (!(type in entity.components)) {
+          console.error(`MISSING COMPONENT type=${type} entity=${entity.id}`)
+        }
+      }
+
+      entries(serializedEntity).forEach(([type, serializedComponent]) => {
+        if (type in entity.components) {
+          // @ts-expect-error
+          deserializeComponent(entity.components[type], serializedComponent)
+        }
+      })
+    }
   }
 
   return entity
-}
-
-export const deserializeEntity = (entity: ProtoEntity, serializedEntity: SerializedEntity): void => {
-
-  // deprecated
-  keys(serializedEntity).forEach((type) => {
-    if (!(type in entity.components)) {
-      console.error(`MISSING COMPONENT type=${type} entity=${entity.id}`)
-    }
-  })
-
-  entries(serializedEntity).forEach(([type, serializedComponent]) => {
-    if (type in entity.components) {
-      // @ts-expect-error
-      deserializeComponent(entity.components[type], serializedComponent)
-    }
-  })
 }
