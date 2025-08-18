@@ -4,7 +4,6 @@ import {
 } from "@piggo-gg/core"
 
 export let mouse: XY = { x: 0, y: 0 }
-// export let localAim: XY = { x: 0, y: 0 }
 
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
