@@ -4,7 +4,6 @@ import {
 } from "@piggo-gg/core"
 
 export let mouse: XY = { x: 0, y: 0 }
-export let mouseScreen: XY = { x: 0, y: 0 }
 export let localAim: XY = { x: 0, y: 0 }
 
 const moveAim = ({ x, y }: XY, flying: boolean) => {
