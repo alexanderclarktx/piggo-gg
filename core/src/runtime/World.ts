@@ -27,7 +27,6 @@ export type World = {
   tick: number
   tickFlag: "green" | "red"
   tickrate: number
-  tileMap: number[] | undefined // deprecated
   time: DOMHighResTimeStamp
   trees: XYZ[]
   addEntities: (entities: Entity[]) => void
@@ -98,7 +97,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     tick: 0,
     tickFlag: "green",
     tickrate: 25,
-    tileMap: undefined,
     time: performance.now(),
     trees: [],
     addEntity: (entity: Entity) => {
@@ -278,9 +276,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       })
       world.addEntity(gameStateEntity)
 
-      const { tileMap, bgColor, entities, systems } = world.game
-
-      world.tileMap = tileMap
+      const { bgColor, entities, systems } = world.game
 
       if (world.renderer) {
         world.renderer.camera.scaleTo(2.5)
