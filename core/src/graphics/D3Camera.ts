@@ -15,7 +15,7 @@ export const D3Camera = (): D3Camera => {
 
   const d3Camera: D3Camera = {
     c: camera,
-    zoom: 1,
+    zoom: 0.6,
     worldDirection: () => {
       const t = new Vector3(-sin(localAim.x), 0, -cos(localAim.x))
       return t.normalize()
@@ -36,7 +36,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
     window.addEventListener("wheel", (e) => {
       e.preventDefault()
       world.three!.camera.zoom += e.deltaY * 0.001
-      world.three!.camera.zoom = Math.min(Math.max(0.1, world.three!.camera.zoom), 10)
+      world.three!.camera.zoom = Math.min(Math.max(0.6, world.three!.camera.zoom), 0.9)
     })
 
     return {
@@ -59,7 +59,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
 
         world.three.camera.c.position.set(
           interpolated.x - rotatedOffset.x,
-          interpolated.z + 0.4 - rotatedOffset.y,
+          interpolated.z + (world.three.camera.zoom / 3 * 2) - rotatedOffset.y,
           interpolated.y - rotatedOffset.z
         )
 
