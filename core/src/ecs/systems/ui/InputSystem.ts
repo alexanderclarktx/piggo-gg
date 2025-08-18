@@ -28,7 +28,7 @@ export const InputSystem = ClientSystemBuilder({
     let mouseScreen: XY = { x: 0, y: 0 }
 
     window.addEventListener("pointermove", (event) => {
-      if (world.client?.analog.left.active || world.client?.analog.right.active) return
+      if (world.client?.controls.left.active || world.client?.controls.right.active) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
@@ -197,7 +197,7 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       // handle joystick input
-      if ((world.client?.analog.left.power ?? 0) > 0.1) {
+      if ((world.client?.controls.left.power ?? 0) > 0.1) {
         const joystickAction = input.inputMap.joystick({ character, world })
         if (joystickAction) world.actions.push(world.tick + 1, character.id, joystickAction)
       }
@@ -372,7 +372,7 @@ export const InputSystem = ClientSystemBuilder({
       onRender: () => {
         if (!world.client?.mobile) return
 
-        const { power, angle, active } = world.client.analog.right
+        const { power, angle, active } = world.client.controls.right
         if (!active) {
           last = 0
           return
