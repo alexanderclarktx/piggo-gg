@@ -123,7 +123,6 @@ const Lobbies = (world: World): RefreshableDiv => {
     border: "2px solid #bbbbbb",
     borderRadius: "10px",
     overflow: "scroll",
-    scrollbarWidth: "thin",
     transform: "translate(-50%)",
     display: "flex",
     flexDirection: "column"
