@@ -2,7 +2,7 @@ import {
   BlockData, Character, Client, Command, ComponentTypes, D3Renderer,
   Data, Entity, Game, GameBuilder, InvokedAction, Networked, Player,
   Random, Renderer, SerializedEntity, System, SystemBuilder, SystemEntity,
-  TickBuffer, ValidComponents, XY, XYZ, keys, logPerf, values
+  TickBuffer, ValidComponents, XYZ, keys, logPerf, values
 } from "@piggo-gg/core"
 import { World as RapierWorld } from "@dimforge/rapier2d-compat"
 

@@ -26,7 +26,7 @@ export const HealthBarSystem = ClientSystemBuilder({
     return {
       id: "HealthBarSystem",
       query: ["health", "position", "renderable"],
-      priority: 5, // todo
+      priority: 5,
       skipOnRollback: true,
       onTick: (entities: Entity<Health | Position | Renderable>[]) => {
 
