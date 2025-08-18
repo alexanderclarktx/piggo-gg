@@ -25,7 +25,6 @@ export type World = {
   systems: Record<string, System>
   three: D3Renderer | undefined
   tick: number
-  tickFlag: "green" | "red"
   tickrate: number
   time: DOMHighResTimeStamp
   trees: XYZ[]
@@ -95,7 +94,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     systems: {},
     three,
     tick: 0,
-    tickFlag: "green",
     tickrate: 25,
     time: performance.now(),
     trees: [],
