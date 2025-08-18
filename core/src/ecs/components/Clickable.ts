@@ -1,6 +1,6 @@
 import {
-  World, Component, Position, InvokedAction, XY, ClientSystemBuilder,
-  checkBounds, Entity, mouse, Renderable
+  World, Component, Position, InvokedAction, XY,
+  ClientSystemBuilder, checkBounds, Entity, Renderable
 } from "@piggo-gg/core"
 import { FederatedPointerEvent } from "pixi.js"
 
@@ -90,6 +90,7 @@ export const ClickableSystem = ClientSystemBuilder({
       skipOnRollback: true,
       onTick: (entities: Entity<Clickable | Position | Renderable>[]) => {
 
+        const { mouse } = world.client!.controls
         clickables = entities
 
         const hoveredEntity = getHoveredEntity()

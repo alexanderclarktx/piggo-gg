@@ -3,13 +3,12 @@ import {
   Input, InvokedAction, World, XY, cos, round, sin
 } from "@piggo-gg/core"
 
-export let mouse: XY = { x: 0, y: 0 }
-
 // InputSystem handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: (world) => {
     const renderer = world.renderer
+    let { mouse } = world.client!.controls
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])

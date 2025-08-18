@@ -1,6 +1,6 @@
 import {
   Block, BlockColors, BlockDimensions, BlockShader, BlockTypeString,
-  Entity, Item, mouse, Position, Renderable, round, XY, XYtoChunk, XYZ
+  Entity, Item, Position, Renderable, round, XY, XYtoChunk, XYZ
 } from "@piggo-gg/core"
 import { Buffer, BufferUsage, Geometry, Mesh } from "pixi.js"
 
@@ -90,7 +90,7 @@ export const BlockMesh = () => {
 
           chunkData = world.blocks.visible(chunks, flipped === -1)
         },
-        onRender: ({ world, delta }) => {
+        onRender: ({ world, delta, client }) => {
           const zoom = world.renderer!.camera.scale
           const offset = world.renderer!.camera.focus?.components.renderable?.c.position ?? { x: 0, y: 0, z: 0 }
           const resolution = world.renderer!.wh()
@@ -103,6 +103,7 @@ export const BlockMesh = () => {
 
           // highlighted face
           let uHighlight = { block: { x: 0, y: 0, z: 0 }, face: 0 }
+          const { mouse } = client.controls
           if (character) uHighlight = world.blocks.atMouse(mouse, character.components.position.data) ?? { block: { x: 0, y: 0, z: 0 }, face: 0 }
 
           if (shader.resources.uniforms?.uniforms?.uZoom) {
