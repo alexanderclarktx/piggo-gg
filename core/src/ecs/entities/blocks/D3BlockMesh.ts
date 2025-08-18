@@ -3,9 +3,9 @@ import {
   InstancedMeshEventMap, MeshPhysicalMaterial
 } from "three"
 
-export type TBlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial, InstancedMeshEventMap>
+export type D3BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial, InstancedMeshEventMap>
 
-export const TBlockMesh = (): TBlockMesh => {
+export const D3BlockMesh = (): D3BlockMesh => {
   const geometry = new BoxGeometry(0.3, 0.3, 0.3)
   const position = geometry.attributes.position
   const colorAttr = new Float32Array(position.count * 3)

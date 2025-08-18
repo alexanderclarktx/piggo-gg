@@ -4,14 +4,14 @@ import {
   MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
   Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { isMobile, TBlockMesh, D3Camera, World } from "@piggo-gg/core"
+import { isMobile, D3BlockMesh, D3Camera, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
-  blocks: undefined | TBlockMesh
+  blocks: undefined | D3BlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
   debug: boolean
@@ -104,7 +104,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      renderer.blocks = TBlockMesh()
+      renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
       renderer.sphere = new Mesh(
