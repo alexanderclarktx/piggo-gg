@@ -306,8 +306,10 @@ const DDESystem = SystemBuilder({
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
-            if (type === "leaf") {
-              leaf!.setColorAt(leafCount, new Color(0x00ee88))
+            if (type === "spruceLeaf") {
+              leaf!.setColorAt(leafCount, new Color(0x00eeff))
+            } else if (type === "oakLeaf") {
+              leaf!.setColorAt(leafCount, new Color(0x00ee99))
             } else if (type === "oak") {
               oak!.setColorAt(oakCount, new Color(0xffaa99))
             } else if (type === "spruce") {
@@ -322,7 +324,7 @@ const DDESystem = SystemBuilder({
             } else if (type === "oak") {
               oak?.setMatrixAt(oakCount, dummy.matrix)
               oakCount++
-            } else if (type === "leaf") {
+            } else if (type === "spruceLeaf" || type === "oakLeaf") {
               leaf?.setMatrixAt(leafCount, dummy.matrix)
               leafCount++
             } else {
