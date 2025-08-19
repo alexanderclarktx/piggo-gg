@@ -297,6 +297,7 @@ const DDESystem = SystemBuilder({
           const { blocks, spruce, oak } = world.three
 
           let spruceCount = 0
+          let oakCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z, type } = chunkData[i]
@@ -305,28 +306,31 @@ const DDESystem = SystemBuilder({
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
-            if (type === 10) {
+            if (t === "leaf") {
               blocks.setColorAt(i, new Color(0x00ee88))
-            } else if (type === 9) {
-              blocks.setColorAt(i, new Color(0x8B4513))
+            } else if (t === "oak") {
+              // oak!.setColorAt(oakCount, new Color(0x8B4513))
+              // blocks.setColorAt(i, new Color(0x8B4513))
             } else if (t === "spruce") {
-              spruce!.setColorAt(spruceCount, new Color(0xcc66ff))
+              // spruce!.setColorAt(spruceCount, new Color(0xcc66ff))
               // blocks.setColorAt(i, new Color(0x660088))
-            } else if (type === 11) {
-              blocks.setColorAt(i, new Color(0xF5F5DC))
             } else {
               blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
-            if (type === 6) {
+            if (t === "spruce") {
               spruce?.setMatrixAt(spruceCount, dummy.matrix)
               spruceCount++
+            } else if (t === "oak") {
+              oak?.setMatrixAt(oakCount, dummy.matrix)
+              oakCount++
             } else {
               blocks.setMatrixAt(i, dummy.matrix)
             }
           }
           blocks.instanceMatrix.needsUpdate = true
           spruce!.instanceMatrix.needsUpdate = true
+          oak!.instanceMatrix.needsUpdate = true
           if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
 

@@ -1,7 +1,9 @@
 import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group,
+  LinearFilter,
+  LinearMipMapLinearFilter,
   LinearMipMapNearestFilter, LinearSRGBColorSpace, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
-  MeshStandardMaterial, NearestFilter, NoColorSpace, Object3DEventMap, RepeatWrapping,
+  MeshStandardMaterial, NearestFilter, NearestMipmapNearestFilter, NoColorSpace, Object3DEventMap, RepeatWrapping,
   Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { isMobile, D3BlockMesh, D3Camera, World } from "@piggo-gg/core"
@@ -174,6 +176,17 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         renderer.blocks!.material.needsUpdate = true
         renderer.blocks!.material.visible = true
+
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
+      TL.load("oak-log.png", (texture: Texture) => {
+        renderer.oak!.material.map = texture
+        renderer.oak!.material.map.colorSpace = SRGBColorSpace
+
+        renderer.oak!.material.needsUpdate = true
+        renderer.oak!.material.visible = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
