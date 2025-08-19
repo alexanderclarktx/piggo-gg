@@ -1,7 +1,7 @@
 import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group,
-  LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
-  MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
+  LinearMipMapNearestFilter, LinearSRGBColorSpace, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
+  MeshStandardMaterial, NearestFilter, NoColorSpace, Object3DEventMap, RepeatWrapping,
   Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { isMobile, D3BlockMesh, D3Camera, World } from "@piggo-gg/core"
@@ -164,7 +164,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       // texture
       TL.load("dirt.png", (texture: Texture) => {
         renderer.blocks!.material.map = texture
-        renderer.blocks!.material.map.colorSpace = SRGBColorSpace
+        // renderer.blocks!.material.map.colorSpace = SRGBColorSpace
+        renderer.blocks!.material.map.colorSpace = LinearSRGBColorSpace
 
         renderer.blocks!.material.needsUpdate = true
         renderer.blocks!.material.visible = true
@@ -175,7 +176,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       TL.load("spruce-log.png", (texture: Texture) => {
         renderer.birch!.material.map = texture
-
         renderer.birch!.material.map.colorSpace = SRGBColorSpace
 
         renderer.birch!.material.needsUpdate = true
@@ -189,7 +189,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       TL.load("dirt_norm.png", (texture: Texture) => {
         renderer.blocks!.material.roughnessMap = texture
         renderer.blocks!.material.needsUpdate = true
+      })
 
+      // spruce roughness
+      TL.load("spruce-norm.png", (texture: Texture) => {
         renderer.birch!.material.roughnessMap = texture
         renderer.birch!.material.needsUpdate = true
       })
