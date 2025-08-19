@@ -1,5 +1,5 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group,
+  AmbientLight, AnimationMixer, CameraHelper, Color, DirectionalLight, Group,
   LinearFilter,
   LinearMipMapLinearFilter,
   LinearMipMapNearestFilter, LinearSRGBColorSpace, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
@@ -184,6 +184,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       TL.load("oak-log.png", (texture: Texture) => {
         renderer.oak!.material.map = texture
         renderer.oak!.material.map.colorSpace = SRGBColorSpace
+
+        // renderer.oak!.material.emissive = new Color(0xffffff)
+        // renderer.oak!.material.emissiveIntensity = 0.5
 
         renderer.oak!.material.needsUpdate = true
         renderer.oak!.material.visible = true
