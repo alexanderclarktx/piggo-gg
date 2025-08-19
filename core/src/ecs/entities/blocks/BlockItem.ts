@@ -14,10 +14,10 @@ const graphics: Record<BlockType, Graphics | undefined> = {
   moonrock: undefined,
   asteroid: undefined,
   saphire: undefined,
-  obsidian: undefined,
+  spruce: undefined,
   ruby: undefined,
   white: undefined,
-  wood: undefined,
+  oak: undefined,
   leaf: undefined,
   birch: undefined
 }

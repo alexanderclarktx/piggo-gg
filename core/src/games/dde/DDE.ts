@@ -1,7 +1,8 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
   hypot, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
-  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair
+  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair,
+  BlockTypeString
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -299,6 +300,7 @@ const DDESystem = SystemBuilder({
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z, type } = chunkData[i]
+            const t = BlockTypeString[type]
 
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
@@ -307,8 +309,8 @@ const DDESystem = SystemBuilder({
               blocks.setColorAt(i, new Color(0x00ee88))
             } else if (type === 9) {
               blocks.setColorAt(i, new Color(0x8B4513))
-            } else if (type === 6) {
-              birch?.setColorAt(i, new Color(0x660088))
+            } else if (t === "spruce") {
+              birch!.setColorAt(birchCount, new Color(0xcc66ff))
               // blocks.setColorAt(i, new Color(0x660088))
             } else if (type === 11) {
               blocks.setColorAt(i, new Color(0xF5F5DC))
@@ -326,6 +328,7 @@ const DDESystem = SystemBuilder({
           blocks.instanceMatrix.needsUpdate = true
           birch!.instanceMatrix.needsUpdate = true
           if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
+          if (birch?.instanceColor) birch.instanceColor.needsUpdate = true
 
           blocksRendered = true
         }

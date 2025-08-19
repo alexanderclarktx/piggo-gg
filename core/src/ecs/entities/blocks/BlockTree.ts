@@ -1,6 +1,6 @@
 import { BlockPlan, BlockTypeInt, XYZ } from "@piggo-gg/core"
 
-export const BlockTree = (xyz: XYZ, height: number, t: "wood" | "obsidian", fluffy: boolean): BlockPlan => {
+export const BlockTree = (xyz: XYZ, height: number, t: "oak" | "spruce", fluffy: boolean): BlockPlan => {
   const plan: BlockPlan = []
 
   const { x, y, z } = xyz

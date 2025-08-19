@@ -158,7 +158,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
 
-      const ambient = new AmbientLight(evening, 1)
+      const ambient = new AmbientLight(evening, 1.1)
       renderer.scene.add(ambient)
 
       // texture
