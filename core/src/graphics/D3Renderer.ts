@@ -148,7 +148,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      sun = new DirectionalLight(evening, 10)
+      sun = new DirectionalLight(evening, 9)
       renderer.scene.add(sun)
 
       sun.position.set(200, 100, 200)
