@@ -432,7 +432,7 @@ export const spawnChunk = (chunk: XY, world: World) => {
             height += world.random.int(5)
           }
 
-          const t = world.random.int(2) === 1 ? "wood" : "obsidian"
+          const t = world.random.int(2) === 1 ? "oak" : "spruce"
           const fluffy = world.random.int(2) === 1
 
           for (const block of BlockTree({ x, y, z }, height, t, fluffy)) {

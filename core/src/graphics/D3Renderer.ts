@@ -1,16 +1,18 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group,
-  LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
-  MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
-  Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
+  LinearMipMapNearestFilter, LinearSRGBColorSpace, Mesh, MeshBasicMaterial,
+  MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
+  RepeatWrapping, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { isMobile, D3BlockMesh, D3Camera, World } from "@piggo-gg/core"
+import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
+  spruce: undefined | D3BlockMesh
+  oak: undefined | D3BlockMesh
   blocks: undefined | D3BlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
@@ -50,6 +52,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     camera: D3Camera(),
     scene: new Scene(),
     sphere: undefined,
+    oak: undefined,
+    spruce: undefined,
     blocks: undefined,
     birdAssets: {},
     debug: false,
@@ -107,14 +111,15 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
+      renderer.spruce = D3BlockMesh(false, 500)
+      renderer.scene.add(renderer.spruce)
+
+      renderer.oak = D3BlockMesh(false, 500)
+      renderer.scene.add(renderer.oak)
+
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
-        new MeshPhysicalMaterial({
-          color: 0x00ffff,
-          emissiveIntensity: 0.5,
-          roughness: 0.5,
-          wireframe: true,
-        })
+        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: true })
       )
       renderer.sphere.visible = false
       renderer.scene.add(renderer.sphere)
@@ -138,7 +143,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      sun = new DirectionalLight(evening, 10)
+      sun = new DirectionalLight(evening, 9)
       renderer.scene.add(sun)
 
       sun.position.set(200, 100, 200)
@@ -153,7 +158,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
 
-      const ambient = new AmbientLight(evening, 1)
+      const ambient = new AmbientLight(evening, 1.2)
       renderer.scene.add(ambient)
 
       // texture
@@ -167,10 +172,41 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
+      TL.load("oak-log.png", (texture: Texture) => {
+        renderer.oak!.material.map = texture
+        renderer.oak!.material.map.colorSpace = SRGBColorSpace
+
+        renderer.oak!.material.needsUpdate = true
+        renderer.oak!.material.visible = true
+
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
+      TL.load("spruce-log.png", (texture: Texture) => {
+        renderer.spruce!.material.map = texture
+        renderer.spruce!.material.map.colorSpace = SRGBColorSpace
+
+        renderer.spruce!.material.needsUpdate = true
+        renderer.spruce!.material.visible = true
+
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
         renderer.blocks!.material.roughnessMap = texture
         renderer.blocks!.material.needsUpdate = true
+      })
+
+      // spruce roughness
+      TL.load("spruce-norm.png", (texture: Texture) => {
+        renderer.spruce!.material.roughnessMap = texture
+        renderer.spruce!.material.needsUpdate = true
+
+        renderer.oak!.material.roughnessMap = texture
+        renderer.oak!.material.needsUpdate = true
       })
 
       // background

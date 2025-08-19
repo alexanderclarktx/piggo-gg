@@ -1,7 +1,7 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
-  spawnTerrain, sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair
+  hypot, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain,
+  sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -293,30 +293,44 @@ const DDESystem = SystemBuilder({
           const chunkData = world.blocks.visible(neighbors, false, true)
           world.three.blocks.count = chunkData.length
 
-          const { blocks } = world.three
+          const { blocks, spruce, oak } = world.three
+
+          let spruceCount = 0
+          let oakCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
-            const { x, y, z, type } = chunkData[i]
+            const { x, y, z } = chunkData[i]
+            const type = BlockTypeString[chunkData[i].type]
 
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
-            if (type === 10) {
+            if (type === "leaf") {
               blocks.setColorAt(i, new Color(0x00ee88))
-            } else if (type === 9) {
-              blocks.setColorAt(i, new Color(0x8B4513))
-            } else if (type === 6) {
-              blocks.setColorAt(i, new Color(0x660088))
-            } else if (type === 11) {
-              blocks.setColorAt(i, new Color(0xF5F5DC))
+            } else if (type === "oak") {
+              oak!.setColorAt(oakCount, new Color(0xffaa99))
+            } else if (type === "spruce") {
+              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
             } else {
               blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
-            blocks.setMatrixAt(i, dummy.matrix)
+            if (type === "spruce") {
+              spruce?.setMatrixAt(spruceCount, dummy.matrix)
+              spruceCount++
+            } else if (type === "oak") {
+              oak?.setMatrixAt(oakCount, dummy.matrix)
+              oakCount++
+            } else {
+              blocks.setMatrixAt(i, dummy.matrix)
+            }
           }
           blocks.instanceMatrix.needsUpdate = true
+          spruce!.instanceMatrix.needsUpdate = true
+          oak!.instanceMatrix.needsUpdate = true
           if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
+          if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
+          if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
 
           blocksRendered = true
         }
