@@ -205,6 +205,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         renderer.spruce!.material.roughnessMap = texture
         renderer.spruce!.material.needsUpdate = true
 
+        // renderer.spruce!.material.transparent = true
+        // renderer.spruce!.material.alphaMap = texture
+
         renderer.oak!.material.roughnessMap = texture
         renderer.oak!.material.needsUpdate = true
       })
