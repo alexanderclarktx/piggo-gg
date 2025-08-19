@@ -213,6 +213,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       TL.load("spruce-norm.png", (texture: Texture) => {
         renderer.spruce!.material.roughnessMap = texture
         renderer.spruce!.material.needsUpdate = true
+
+        renderer.oak!.material.roughnessMap = texture
+        renderer.oak!.material.needsUpdate = true
       })
 
       // background

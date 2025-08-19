@@ -312,8 +312,7 @@ const DDESystem = SystemBuilder({
               // oak!.setColorAt(oakCount, new Color(0x8B4513))
               // blocks.setColorAt(i, new Color(0x8B4513))
             } else if (t === "spruce") {
-              // spruce!.setColorAt(spruceCount, new Color(0xcc66ff))
-              // blocks.setColorAt(i, new Color(0x660088))
+              spruce!.setColorAt(spruceCount, new Color(0xcc66ff))
             } else {
               blocks.setColorAt(i, new Color(0xFFFFFF))
             }
