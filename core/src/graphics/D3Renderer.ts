@@ -172,7 +172,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("birch.png", (texture: Texture) => {
+      TL.load("birch-log.png", (texture: Texture) => {
         renderer.birch!.material.map = texture
 
         renderer.birch!.material.needsUpdate = true

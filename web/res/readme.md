@@ -22,3 +22,7 @@ birdsong
 https://freesound.org/s/818541/
 title: blackbird in park Giesrbergen Netherlands 1213 pm 220617_0405 by klankbeeld
 license: Attribution 4.0
+
+block textures
+https://github.com/shackhornold/UwUCraft/tree/master
+license: MIT
