@@ -190,6 +190,19 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
+      TL.load("dirt.png", (texture: Texture) => {
+        for (let i = 0; i < 6; i++) {
+          renderer.leaf!.material[i].map = texture
+          renderer.leaf!.material[i].map!.colorSpace = SRGBColorSpace
+
+          renderer.leaf!.material[i].needsUpdate = true
+          renderer.leaf!.material[i].visible = true
+        }
+
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
       TL.load("oak-log.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           renderer.oak!.material[i].map = texture
@@ -221,6 +234,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         for (let i = 0; i < 6; i++) {
           renderer.blocks!.material[i].roughnessMap = texture
           renderer.blocks!.material[i].needsUpdate = true
+
+          renderer.leaf!.material[i].roughnessMap = texture
+          renderer.leaf!.material[i].needsUpdate = true
         }
       })
 
