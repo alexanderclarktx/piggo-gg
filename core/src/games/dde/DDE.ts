@@ -309,7 +309,7 @@ const DDESystem = SystemBuilder({
             if (type === "spruceLeaf") {
               leaf!.setColorAt(leafCount, new Color(0x009999))
             } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x00cc55))
+              leaf!.setColorAt(leafCount, new Color(0x00dd55))
             } else if (type === "oak") {
               oak!.setColorAt(oakCount, new Color(0xffaa99))
             } else if (type === "spruce") {
