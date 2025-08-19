@@ -44,6 +44,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   let helper: undefined | CameraHelper
   let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
 
+  let birch: undefined | D3BlockMesh
+
   const renderer: D3Renderer = {
     apple: undefined,
     canvas: c,
@@ -107,6 +109,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
+      birch = D3BlockMesh(false, 500)
+
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
         new MeshPhysicalMaterial({
@@ -157,7 +161,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.scene.add(ambient)
 
       // texture
-      TL.load("birch.png", (texture: Texture) => {
+      TL.load("dirt.png", (texture: Texture) => {
         renderer.blocks!.material.map = texture
 
         renderer.blocks!.material.needsUpdate = true
@@ -167,10 +171,23 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
+      TL.load("birch.png", (texture: Texture) => {
+        birch!.material.map = texture
+
+        birch!.material.needsUpdate = true
+        birch!.material.visible = true
+
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
         renderer.blocks!.material.roughnessMap = texture
         renderer.blocks!.material.needsUpdate = true
+
+        birch!.material.roughnessMap = texture
+        birch!.material.needsUpdate = true
       })
 
       // background
