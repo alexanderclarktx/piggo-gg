@@ -293,7 +293,9 @@ const DDESystem = SystemBuilder({
           const chunkData = world.blocks.visible(neighbors, false, true)
           world.three.blocks.count = chunkData.length
 
-          const { blocks } = world.three
+          const { blocks, birch } = world.three
+
+          let birchCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z, type } = chunkData[i]
@@ -306,16 +308,23 @@ const DDESystem = SystemBuilder({
             } else if (type === 9) {
               blocks.setColorAt(i, new Color(0x8B4513))
             } else if (type === 6) {
-              blocks.setColorAt(i, new Color(0x660088))
+              birch?.setColorAt(i, new Color(0x660088))
+              // blocks.setColorAt(i, new Color(0x660088))
             } else if (type === 11) {
               blocks.setColorAt(i, new Color(0xF5F5DC))
             } else {
               blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
-            blocks.setMatrixAt(i, dummy.matrix)
+            if (type === 6) {
+              birch?.setMatrixAt(birchCount, dummy.matrix)
+              birchCount++
+            } else {
+              blocks.setMatrixAt(i, dummy.matrix)
+            }
           }
           blocks.instanceMatrix.needsUpdate = true
+          birch!.instanceMatrix.needsUpdate = true
           if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
 
           blocksRendered = true
