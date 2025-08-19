@@ -121,12 +121,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
-        new MeshPhysicalMaterial({
-          color: 0x00ffff,
-          emissiveIntensity: 0.5,
-          roughness: 0.5,
-          wireframe: true,
-        })
+        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: true })
       )
       renderer.sphere.visible = false
       renderer.scene.add(renderer.sphere)
