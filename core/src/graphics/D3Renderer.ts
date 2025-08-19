@@ -11,7 +11,8 @@ const evening = 0xffd9c3
 
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
-  birch: undefined | D3BlockMesh
+  spruce: undefined | D3BlockMesh
+  oak: undefined | D3BlockMesh
   blocks: undefined | D3BlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
@@ -51,7 +52,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     camera: D3Camera(),
     scene: new Scene(),
     sphere: undefined,
-    birch: undefined,
+    oak: undefined,
+    spruce: undefined,
     blocks: undefined,
     birdAssets: {},
     debug: false,
@@ -109,8 +111,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
-      renderer.birch = D3BlockMesh(false, 500)
-      renderer.scene.add(renderer.birch)
+      renderer.spruce = D3BlockMesh(false, 500)
+      renderer.scene.add(renderer.spruce)
+
+      renderer.oak = D3BlockMesh(false, 500)
+      renderer.scene.add(renderer.oak)
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
@@ -175,11 +180,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       TL.load("spruce-log.png", (texture: Texture) => {
-        renderer.birch!.material.map = texture
-        renderer.birch!.material.map.colorSpace = SRGBColorSpace
+        renderer.spruce!.material.map = texture
+        renderer.spruce!.material.map.colorSpace = SRGBColorSpace
 
-        renderer.birch!.material.needsUpdate = true
-        renderer.birch!.material.visible = true
+        renderer.spruce!.material.needsUpdate = true
+        renderer.spruce!.material.visible = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
@@ -193,8 +198,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // spruce roughness
       TL.load("spruce-norm.png", (texture: Texture) => {
-        renderer.birch!.material.roughnessMap = texture
-        renderer.birch!.material.needsUpdate = true
+        renderer.spruce!.material.roughnessMap = texture
+        renderer.spruce!.material.needsUpdate = true
       })
 
       // background

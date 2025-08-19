@@ -294,9 +294,9 @@ const DDESystem = SystemBuilder({
           const chunkData = world.blocks.visible(neighbors, false, true)
           world.three.blocks.count = chunkData.length
 
-          const { blocks, birch } = world.three
+          const { blocks, spruce, oak } = world.three
 
-          let birchCount = 0
+          let spruceCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z, type } = chunkData[i]
@@ -310,7 +310,7 @@ const DDESystem = SystemBuilder({
             } else if (type === 9) {
               blocks.setColorAt(i, new Color(0x8B4513))
             } else if (t === "spruce") {
-              birch!.setColorAt(birchCount, new Color(0xcc66ff))
+              spruce!.setColorAt(spruceCount, new Color(0xcc66ff))
               // blocks.setColorAt(i, new Color(0x660088))
             } else if (type === 11) {
               blocks.setColorAt(i, new Color(0xF5F5DC))
@@ -319,16 +319,16 @@ const DDESystem = SystemBuilder({
             }
 
             if (type === 6) {
-              birch?.setMatrixAt(birchCount, dummy.matrix)
-              birchCount++
+              spruce?.setMatrixAt(spruceCount, dummy.matrix)
+              spruceCount++
             } else {
               blocks.setMatrixAt(i, dummy.matrix)
             }
           }
           blocks.instanceMatrix.needsUpdate = true
-          birch!.instanceMatrix.needsUpdate = true
+          spruce!.instanceMatrix.needsUpdate = true
           if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
-          if (birch?.instanceColor) birch.instanceColor.needsUpdate = true
+          if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
 
           blocksRendered = true
         }
