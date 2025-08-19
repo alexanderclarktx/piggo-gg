@@ -309,10 +309,9 @@ const DDESystem = SystemBuilder({
             if (t === "leaf") {
               blocks.setColorAt(i, new Color(0x00ee88))
             } else if (t === "oak") {
-              // oak!.setColorAt(oakCount, new Color(0x8B4513))
-              // blocks.setColorAt(i, new Color(0x8B4513))
+              oak!.setColorAt(oakCount, new Color(0xffaa99))
             } else if (t === "spruce") {
-              spruce!.setColorAt(spruceCount, new Color(0xcc66ff))
+              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
             } else {
               blocks.setColorAt(i, new Color(0xFFFFFF))
             }
@@ -332,6 +331,7 @@ const DDESystem = SystemBuilder({
           oak!.instanceMatrix.needsUpdate = true
           if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
+          if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
 
           blocksRendered = true
         }

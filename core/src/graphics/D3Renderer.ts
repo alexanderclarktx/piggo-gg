@@ -1,12 +1,10 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, Color, DirectionalLight, Group,
-  LinearFilter,
-  LinearMipMapLinearFilter,
-  LinearMipMapNearestFilter, LinearSRGBColorSpace, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
-  MeshStandardMaterial, NearestFilter, NearestMipmapNearestFilter, NoColorSpace, Object3DEventMap, RepeatWrapping,
-  Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
+  LinearMipMapNearestFilter, LinearSRGBColorSpace, Mesh, MeshBasicMaterial,
+  MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
+  RepeatWrapping, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { isMobile, D3BlockMesh, D3Camera, World } from "@piggo-gg/core"
+import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -145,7 +143,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      sun = new DirectionalLight(evening, 10)
+      sun = new DirectionalLight(evening, 9)
       renderer.scene.add(sun)
 
       sun.position.set(200, 100, 200)
@@ -160,7 +158,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
 
-      const ambient = new AmbientLight(evening, 1.1)
+      const ambient = new AmbientLight(evening, 1.2)
       renderer.scene.add(ambient)
 
       // texture
@@ -179,9 +177,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       TL.load("oak-log.png", (texture: Texture) => {
         renderer.oak!.material.map = texture
         renderer.oak!.material.map.colorSpace = SRGBColorSpace
-
-        // renderer.oak!.material.emissive = new Color(0xffffff)
-        // renderer.oak!.material.emissiveIntensity = 0.5
 
         renderer.oak!.material.needsUpdate = true
         renderer.oak!.material.visible = true
