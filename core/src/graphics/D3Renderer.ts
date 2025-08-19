@@ -2,7 +2,7 @@ import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
   MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
-  Scene, SphereGeometry, Texture, TextureLoader, WebGLRenderer
+  Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { isMobile, D3BlockMesh, D3Camera, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -109,7 +109,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
-      renderer.birch = D3BlockMesh(true, 500)
+      renderer.birch = D3BlockMesh(false, 500)
       renderer.scene.add(renderer.birch)
 
       renderer.sphere = new Mesh(
@@ -164,6 +164,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       // texture
       TL.load("dirt.png", (texture: Texture) => {
         renderer.blocks!.material.map = texture
+        renderer.blocks!.material.map.colorSpace = SRGBColorSpace
 
         renderer.blocks!.material.needsUpdate = true
         renderer.blocks!.material.visible = true
@@ -174,6 +175,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       TL.load("spruce-log.png", (texture: Texture) => {
         renderer.birch!.material.map = texture
+
+        renderer.birch!.material.map.colorSpace = SRGBColorSpace
 
         renderer.birch!.material.needsUpdate = true
         renderer.birch!.material.visible = true
