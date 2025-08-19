@@ -13,6 +13,7 @@ export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
   spruce: undefined | D3BlockMesh
   oak: undefined | D3BlockMesh
+  leaf: undefined | D3BlockMesh
   blocks: undefined | D3BlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
@@ -54,6 +55,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     sphere: undefined,
     oak: undefined,
     spruce: undefined,
+    leaf: undefined,
     blocks: undefined,
     birdAssets: {},
     debug: false,
@@ -108,14 +110,17 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      renderer.blocks = D3BlockMesh(false)
+      renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
-      renderer.spruce = D3BlockMesh(false, 500)
+      renderer.spruce = D3BlockMesh(500)
       renderer.scene.add(renderer.spruce)
 
-      renderer.oak = D3BlockMesh(false, 500)
+      renderer.oak = D3BlockMesh(500)
       renderer.scene.add(renderer.oak)
+
+      renderer.leaf = D3BlockMesh(500)
+      renderer.scene.add(renderer.leaf)
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
