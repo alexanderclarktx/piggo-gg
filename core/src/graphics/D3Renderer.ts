@@ -109,7 +109,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
-      renderer.birch = D3BlockMesh(false, 500)
+      renderer.birch = D3BlockMesh(true, 500)
       renderer.scene.add(renderer.birch)
 
       renderer.sphere = new Mesh(
