@@ -307,9 +307,9 @@ const DDESystem = SystemBuilder({
             dummy.updateMatrix()
 
             if (type === "spruceLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x00eeff))
+              leaf!.setColorAt(leafCount, new Color(0x00aaee))
             } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x00ee99))
+              leaf!.setColorAt(leafCount, new Color(0x00eeaa))
             } else if (type === "oak") {
               oak!.setColorAt(oakCount, new Color(0xffaa99))
             } else if (type === "spruce") {
