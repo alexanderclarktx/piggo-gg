@@ -299,26 +299,26 @@ const DDESystem = SystemBuilder({
           let oakCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
-            const { x, y, z, type } = chunkData[i]
-            const t = BlockTypeString[type]
+            const { x, y, z } = chunkData[i]
+            const type = BlockTypeString[chunkData[i].type]
 
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
-            if (t === "leaf") {
+            if (type === "leaf") {
               blocks.setColorAt(i, new Color(0x00ee88))
-            } else if (t === "oak") {
+            } else if (type === "oak") {
               oak!.setColorAt(oakCount, new Color(0xffaa99))
-            } else if (t === "spruce") {
+            } else if (type === "spruce") {
               spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
             } else {
               blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
-            if (t === "spruce") {
+            if (type === "spruce") {
               spruce?.setMatrixAt(spruceCount, dummy.matrix)
               spruceCount++
-            } else if (t === "oak") {
+            } else if (type === "oak") {
               oak?.setMatrixAt(oakCount, dummy.matrix)
               oakCount++
             } else {
