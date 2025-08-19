@@ -1,8 +1,8 @@
 import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
-  LinearMipMapNearestFilter, LinearSRGBColorSpace, Mesh, MeshBasicMaterial,
-  MeshPhysicalMaterial, MeshStandardMaterial, NearestFilter, Object3DEventMap,
-  RepeatWrapping, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
+  MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
+  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -13,6 +13,7 @@ export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
   spruce: undefined | D3BlockMesh
   oak: undefined | D3BlockMesh
+  leaf: undefined | D3BlockMesh
   blocks: undefined | D3BlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
@@ -54,6 +55,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     sphere: undefined,
     oak: undefined,
     spruce: undefined,
+    leaf: undefined,
     blocks: undefined,
     birdAssets: {},
     debug: false,
@@ -111,11 +113,14 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.blocks = D3BlockMesh()
       renderer.scene.add(renderer.blocks)
 
-      renderer.spruce = D3BlockMesh(false, 500)
+      renderer.spruce = D3BlockMesh(500)
       renderer.scene.add(renderer.spruce)
 
-      renderer.oak = D3BlockMesh(false, 500)
+      renderer.oak = D3BlockMesh(500)
       renderer.scene.add(renderer.oak)
+
+      renderer.leaf = D3BlockMesh(500)
+      renderer.scene.add(renderer.leaf)
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
@@ -162,33 +167,63 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.scene.add(ambient)
 
       // texture
-      TL.load("dirt.png", (texture: Texture) => {
-        renderer.blocks!.material.map = texture
+      TL.load("grass.png", (texture: Texture) => {
+        for (let i = 0; i < 6; i++) {
+          if (i === 2) continue
+          renderer.blocks!.material[i].map = texture
+          renderer.blocks!.material[i].map!.colorSpace = SRGBColorSpace
 
-        renderer.blocks!.material.needsUpdate = true
-        renderer.blocks!.material.visible = true
+          renderer.blocks!.material[i].visible = true
+          renderer.blocks!.material[i].needsUpdate = true
+        }
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
+      TL.load("grass-top.png", (texture: Texture) => {
+        renderer.blocks!.material[2].map = texture
+        renderer.blocks!.material[2].map.colorSpace = SRGBColorSpace
+        renderer.blocks!.material[2].visible = true
+        renderer.blocks!.material[2].needsUpdate = true
+
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
+      })
+
+      TL.load("dirt.png", (texture: Texture) => {
+        for (let i = 0; i < 6; i++) {
+          renderer.leaf!.material[i].map = texture
+          renderer.leaf!.material[i].map!.colorSpace = SRGBColorSpace
+
+          renderer.leaf!.material[i].needsUpdate = true
+          renderer.leaf!.material[i].visible = true
+        }
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
       })
 
       TL.load("oak-log.png", (texture: Texture) => {
-        renderer.oak!.material.map = texture
-        renderer.oak!.material.map.colorSpace = SRGBColorSpace
+        for (let i = 0; i < 6; i++) {
+          renderer.oak!.material[i].map = texture
+          renderer.oak!.material[i].map!.colorSpace = SRGBColorSpace
 
-        renderer.oak!.material.needsUpdate = true
-        renderer.oak!.material.visible = true
+          renderer.oak!.material[i].needsUpdate = true
+          renderer.oak!.material[i].visible = true
+        }
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
       })
 
       TL.load("spruce-log.png", (texture: Texture) => {
-        renderer.spruce!.material.map = texture
-        renderer.spruce!.material.map.colorSpace = SRGBColorSpace
+        for (let i = 0; i < 6; i++) {
+          renderer.spruce!.material[i].map = texture
+          renderer.spruce!.material[i].map!.colorSpace = SRGBColorSpace
 
-        renderer.spruce!.material.needsUpdate = true
-        renderer.spruce!.material.visible = true
+          renderer.spruce!.material[i].needsUpdate = true
+          renderer.spruce!.material[i].visible = true
+        }
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
@@ -196,17 +231,24 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
-        renderer.blocks!.material.roughnessMap = texture
-        renderer.blocks!.material.needsUpdate = true
+        for (let i = 0; i < 6; i++) {
+          renderer.blocks!.material[i].roughnessMap = texture
+          renderer.blocks!.material[i].needsUpdate = true
+
+          renderer.leaf!.material[i].roughnessMap = texture
+          renderer.leaf!.material[i].needsUpdate = true
+        }
       })
 
       // spruce roughness
       TL.load("spruce-norm.png", (texture: Texture) => {
-        renderer.spruce!.material.roughnessMap = texture
-        renderer.spruce!.material.needsUpdate = true
+        for (let i = 0; i < 6; i++) {
+          renderer.spruce!.material[i].roughnessMap = texture
+          renderer.spruce!.material[i].needsUpdate = true
 
-        renderer.oak!.material.roughnessMap = texture
-        renderer.oak!.material.needsUpdate = true
+          renderer.oak!.material[i].roughnessMap = texture
+          renderer.oak!.material[i].needsUpdate = true
+        }
       })
 
       // background

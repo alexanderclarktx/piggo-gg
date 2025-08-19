@@ -3,17 +3,13 @@ import {
   InstancedMeshEventMap, MeshPhysicalMaterial
 } from "three"
 
-export type D3BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial, InstancedMeshEventMap>
+export type D3BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial[], InstancedMeshEventMap>
 
-export const D3BlockMesh = (color = true, maxCount: number = 14000): D3BlockMesh => {
+export const D3BlockMesh = (maxCount: number = 14000): D3BlockMesh => {
   const geometry = new BoxGeometry(0.3, 0.3, 0.3)
   const { position } = geometry.attributes
 
-  const faceColors = color ? [
-    new Color(0xaaaaaa), new Color(0xaaaaaa),
-    new Color(0x00ee55), new Color(0xaaaaaa),
-    new Color(0xaaaaaa), new Color(0xaaaaaa)
-  ] : [
+  const faceColors = [
     new Color(0xffffff), new Color(0xffffff),
     new Color(0xffffff), new Color(0xffffff),
     new Color(0xffffff), new Color(0xffffff)
@@ -28,9 +24,11 @@ export const D3BlockMesh = (color = true, maxCount: number = 14000): D3BlockMesh
 
   geometry.setAttribute("color", new BufferAttribute(colorAttr, 3))
 
-  const mesh = new InstancedMesh(geometry, new MeshPhysicalMaterial({
+  const mat = () => new MeshPhysicalMaterial({
     vertexColors: true, visible: false, specularIntensity: 0.05, wireframe: false
-  }), maxCount)
+  })
+
+  const mesh = new InstancedMesh(geometry, [mat(), mat(), mat(), mat(), mat(), mat()], maxCount)
 
   mesh.castShadow = true
   mesh.receiveShadow = true

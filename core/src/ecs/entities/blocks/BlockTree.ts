@@ -9,7 +9,7 @@ export const BlockTree = (xyz: XYZ, height: number, t: "oak" | "spruce", fluffy:
     plan.push({ x, y, z: z + i, type: BlockTypeInt[t] })
   }
 
-  const type = BlockTypeInt["leaf"]
+  const type = t === "spruce" ? BlockTypeInt["spruceLeaf"] : BlockTypeInt["oakLeaf"]
 
   plan.push(
     { x: x + 1, y, z: z + height, type },

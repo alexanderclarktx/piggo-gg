@@ -293,10 +293,11 @@ const DDESystem = SystemBuilder({
           const chunkData = world.blocks.visible(neighbors, false, true)
           world.three.blocks.count = chunkData.length
 
-          const { blocks, spruce, oak } = world.three
+          const { blocks, spruce, oak, leaf } = world.three
 
           let spruceCount = 0
           let oakCount = 0
+          let leafCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z } = chunkData[i]
@@ -305,8 +306,10 @@ const DDESystem = SystemBuilder({
             dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
             dummy.updateMatrix()
 
-            if (type === "leaf") {
-              blocks.setColorAt(i, new Color(0x00ee88))
+            if (type === "spruceLeaf") {
+              leaf!.setColorAt(leafCount, new Color(0x009999))
+            } else if (type === "oakLeaf") {
+              leaf!.setColorAt(leafCount, new Color(0x00dd55))
             } else if (type === "oak") {
               oak!.setColorAt(oakCount, new Color(0xffaa99))
             } else if (type === "spruce") {
@@ -321,6 +324,9 @@ const DDESystem = SystemBuilder({
             } else if (type === "oak") {
               oak?.setMatrixAt(oakCount, dummy.matrix)
               oakCount++
+            } else if (type === "spruceLeaf" || type === "oakLeaf") {
+              leaf?.setMatrixAt(leafCount, dummy.matrix)
+              leafCount++
             } else {
               blocks.setMatrixAt(i, dummy.matrix)
             }
@@ -328,9 +334,11 @@ const DDESystem = SystemBuilder({
           blocks.instanceMatrix.needsUpdate = true
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true
+          leaf!.instanceMatrix.needsUpdate = true
           if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
           if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
+          if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
 
           blocksRendered = true
         }
