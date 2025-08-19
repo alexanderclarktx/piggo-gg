@@ -162,33 +162,43 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.scene.add(ambient)
 
       // texture
-      TL.load("dirt.png", (texture: Texture) => {
-        renderer.blocks!.material.map = texture
+      TL.load("grass.png", (texture: Texture) => {
+        for (let i = 0; i < 6; i++) {
+          if (i === 2) continue
+          renderer.blocks!.material[i].map = texture
+          renderer.blocks!.material[i].map!.colorSpace = SRGBColorSpace
 
-        renderer.blocks!.material.needsUpdate = true
-        renderer.blocks!.material.visible = true
-
+          renderer.blocks!.material[i].visible = true
+          renderer.blocks!.material[i].needsUpdate = true
+        }
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("oak-log.png", (texture: Texture) => {
-        renderer.oak!.material.map = texture
-        renderer.oak!.material.map.colorSpace = SRGBColorSpace
+      TL.load("dirt.png", (texture: Texture) => {
+        renderer.blocks!.material[2].map = texture
+        renderer.blocks!.material[2].map.colorSpace = SRGBColorSpace
+        renderer.blocks!.material[2].visible = true
+        renderer.blocks!.material[2].needsUpdate = true
+      })
 
-        renderer.oak!.material.needsUpdate = true
-        renderer.oak!.material.visible = true
+      TL.load("oak-log.png", (texture: Texture) => {
+        renderer.oak!.material[0].map = texture
+        renderer.oak!.material[0].map.colorSpace = SRGBColorSpace
+
+        renderer.oak!.material[0].needsUpdate = true
+        renderer.oak!.material[0].visible = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
       })
 
       TL.load("spruce-log.png", (texture: Texture) => {
-        renderer.spruce!.material.map = texture
-        renderer.spruce!.material.map.colorSpace = SRGBColorSpace
+        renderer.spruce!.material[0].map = texture
+        renderer.spruce!.material[0].map.colorSpace = SRGBColorSpace
 
-        renderer.spruce!.material.needsUpdate = true
-        renderer.spruce!.material.visible = true
+        renderer.spruce!.material[0].needsUpdate = true
+        renderer.spruce!.material[0].visible = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
@@ -196,20 +206,20 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
-        renderer.blocks!.material.roughnessMap = texture
-        renderer.blocks!.material.needsUpdate = true
+        renderer.blocks!.material[0].roughnessMap = texture
+        renderer.blocks!.material[0].needsUpdate = true
       })
 
       // spruce roughness
       TL.load("spruce-norm.png", (texture: Texture) => {
-        renderer.spruce!.material.roughnessMap = texture
-        renderer.spruce!.material.needsUpdate = true
+        renderer.spruce!.material[0].roughnessMap = texture
+        renderer.spruce!.material[0].needsUpdate = true
 
         // renderer.spruce!.material.transparent = true
         // renderer.spruce!.material.alphaMap = texture
 
-        renderer.oak!.material.roughnessMap = texture
-        renderer.oak!.material.needsUpdate = true
+        renderer.oak!.material[0].roughnessMap = texture
+        renderer.oak!.material[0].needsUpdate = true
       })
 
       // background
