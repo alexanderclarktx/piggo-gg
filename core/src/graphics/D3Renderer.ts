@@ -175,7 +175,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("grass-top2.png", (texture: Texture) => {
+      TL.load("grass-top4.png", (texture: Texture) => {
         renderer.blocks!.material[2].map = texture
         renderer.blocks!.material[2].map.colorSpace = SRGBColorSpace
         renderer.blocks!.material[2].visible = true
@@ -212,17 +212,21 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // roughness map
       TL.load("dirt_norm.png", (texture: Texture) => {
-        renderer.blocks!.material[0].roughnessMap = texture
-        renderer.blocks!.material[0].needsUpdate = true
+        for (let i = 0; i < 6; i++) {
+          renderer.blocks!.material[i].roughnessMap = texture
+          renderer.blocks!.material[i].needsUpdate = true
+        }
       })
 
       // spruce roughness
       TL.load("spruce-norm.png", (texture: Texture) => {
-        renderer.spruce!.material[0].roughnessMap = texture
-        renderer.spruce!.material[0].needsUpdate = true
+        for (let i = 0; i < 6; i++) {
+          renderer.spruce!.material[i].roughnessMap = texture
+          renderer.spruce!.material[i].needsUpdate = true
 
-        renderer.oak!.material[0].roughnessMap = texture
-        renderer.oak!.material[0].needsUpdate = true
+          renderer.oak!.material[i].roughnessMap = texture
+          renderer.oak!.material[i].needsUpdate = true
+        }
       })
 
       // background
