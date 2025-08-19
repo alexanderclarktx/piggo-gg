@@ -157,7 +157,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.scene.add(ambient)
 
       // texture
-      TL.load("dirt.png", (texture: Texture) => {
+      TL.load("birch.png", (texture: Texture) => {
         renderer.blocks!.material.map = texture
 
         renderer.blocks!.material.needsUpdate = true
