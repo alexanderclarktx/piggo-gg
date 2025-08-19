@@ -164,8 +164,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       // texture
       TL.load("dirt.png", (texture: Texture) => {
         renderer.blocks!.material.map = texture
-        // renderer.blocks!.material.map.colorSpace = SRGBColorSpace
-        renderer.blocks!.material.map.colorSpace = LinearSRGBColorSpace
 
         renderer.blocks!.material.needsUpdate = true
         renderer.blocks!.material.visible = true

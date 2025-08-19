@@ -24,5 +24,5 @@ title: blackbird in park Giesrbergen Netherlands 1213 pm 220617_0405 by klankbee
 license: Attribution 4.0
 
 block textures
-https://github.com/shackhornold/UwUCraft/tree/master
+https://github.com/shackhornold/UwUCraft/
 license: MIT
