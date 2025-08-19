@@ -180,7 +180,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("grass-top5.png", (texture: Texture) => {
+      TL.load("grass-top.png", (texture: Texture) => {
         renderer.blocks!.material[2].map = texture
         renderer.blocks!.material[2].map.colorSpace = SRGBColorSpace
         renderer.blocks!.material[2].visible = true
