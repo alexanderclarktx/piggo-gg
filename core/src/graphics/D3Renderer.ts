@@ -108,7 +108,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      renderer.blocks = D3BlockMesh()
+      renderer.blocks = D3BlockMesh(false)
       renderer.scene.add(renderer.blocks)
 
       renderer.spruce = D3BlockMesh(false, 500)
@@ -175,19 +175,23 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("dirt.png", (texture: Texture) => {
+      TL.load("grass_top.png", (texture: Texture) => {
         renderer.blocks!.material[2].map = texture
         renderer.blocks!.material[2].map.colorSpace = SRGBColorSpace
         renderer.blocks!.material[2].visible = true
         renderer.blocks!.material[2].needsUpdate = true
+        texture.magFilter = NearestFilter
+        texture.minFilter = LinearMipMapNearestFilter
       })
 
       TL.load("oak-log.png", (texture: Texture) => {
-        renderer.oak!.material[0].map = texture
-        renderer.oak!.material[0].map.colorSpace = SRGBColorSpace
+        for (let i = 0; i < 6; i++) {
+          renderer.oak!.material[i].map = texture
+          renderer.oak!.material[i].map!.colorSpace = SRGBColorSpace
 
-        renderer.oak!.material[0].needsUpdate = true
-        renderer.oak!.material[0].visible = true
+          renderer.oak!.material[i].needsUpdate = true
+          renderer.oak!.material[i].visible = true
+        }
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
