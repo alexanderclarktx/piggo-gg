@@ -16,6 +16,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
 
   const write = () => {
 
+    const timestamp = Date.now()
+
     // build tick data
     const tickData: NetMessageTypes = {
       actions: world.actions.fromTick(world.tick),
@@ -24,7 +26,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
       playerId: "server",
       serializedEntities: world.entitiesAtTick[world.tick] ?? {},
       tick: world.tick,
-      timestamp: Date.now(),
+      timestamp,
       type: "game"
     }
 
