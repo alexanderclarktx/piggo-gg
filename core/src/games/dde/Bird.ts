@@ -1,6 +1,10 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, Input, Networked,
-  Player, Point, Position, Ready, round, sin, Team, World, XYZ
+  abs, Action, Actions, Character, Collider, cos, hypot, Input, Networked,
+  Player, Point, Position, Ready, round, sin, sqrt, Team, World, XYZ,
+  XYZdiff,
+  XYZdistance,
+  XYZdot,
+  XYZsub
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -163,7 +167,8 @@ export const Bird = (player: Player) => Character({
           -cos(params.aim.x)
         ).normalize().multiplyScalar(10).add(camera)
 
-        const eyes = new Vector3(params.pos.x, params.pos.z + 0.13, params.pos.y)
+        const eyePos = { x: params.pos.x, y: params.pos.y, z: params.pos.z + 0.13 }
+        const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
         const dir = target.clone().sub(eyes).normalize()
 
         const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
@@ -174,11 +179,36 @@ export const Bird = (player: Player) => Character({
         laser.material.opacity = 1
         laser.visible = true
 
+        const otherDucks = world.characters().filter(c => c.id !== entity?.id)
+        for (const duck of otherDucks) {
 
-        // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
-        // for (const duck of otherDucks) {
-        //   const hit = true
-        // }
+          const duckPos = { ...duck.components.position.data }
+          duckPos.z += 0.05
+          const L = XYZsub(duckPos, eyePos)
+
+          const Ldist = XYZdistance(duckPos, eyePos)
+          const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
+
+          // console.log("tc", tc, "lDist", Ldist)
+
+          console.log(duck.id, duckPos.x.toFixed(1), duckPos.y.toFixed(1), duckPos.z.toFixed(1))
+          console.log("eyes", eyePos.x.toFixed(1), eyePos.y.toFixed(1), eyePos.z.toFixed(1))
+
+          if (tc < 0) {
+            console.log("tc", tc.toFixed(1), "lDist", Ldist.toFixed(1))
+            continue
+          }
+
+          const D = sqrt((Ldist * Ldist) - (tc * tc))
+
+          console.log("tc", tc.toFixed(1), "lDist", Ldist.toFixed(1), "D", D.toFixed(1))
+
+          if (D > 0 && D < 0.09) {
+            console.log("HIT", duck.id)
+          }
+
+          // const hit = true
+        }
       }),
       rocket: Action("rocket", ({ entity, world }) => {
         if (!entity) return
