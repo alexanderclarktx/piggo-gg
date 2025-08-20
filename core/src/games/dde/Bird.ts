@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, Input,
-  Networked, PI, Player, Point, Position, Ready, round, sin, Team, World, XYZ
+  Networked, PI, Player, Point, Position, randomInt, Ready, round, sin, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -137,6 +137,11 @@ export const Bird = (player: Player) => Character({
 
         // move the laser
         const start = new Vector3(params.pos.x, params.pos.z + 0.13, params.pos.y)
+        const horizontalDir = new Vector3(
+          -sin(params.aim.x),
+          0,
+          -cos(params.aim.x)
+        ).normalize()
 
         const dir = new Vector3(
           params.pos.x - sin(params.aim.x) * 10,
@@ -146,15 +151,14 @@ export const Bird = (player: Player) => Character({
         ).sub(start).normalize()
 
         const axis = new Vector3(0, 1, 0)
-        
-        laser.position.copy(start)
+
+        laser.scale.y = randomInt(8)
+
+        laser.position.copy(start.add(horizontalDir.multiplyScalar(.03)))
         laser.quaternion.setFromUnitVectors(axis, dir)
 
         laser.updateMatrix()
         laser.visible = true
-
-        console.log(params.aim.y)
-
 
         // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
         // for (const duck of otherDucks) {

@@ -26,7 +26,7 @@ export type D3Renderer = {
   }>
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
-  laser: undefined | Group<Object3DEventMap>
+  laser: undefined | Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   append: (...elements: HTMLElement[]) => void
@@ -277,14 +277,12 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // lasers
       const laserGeo = new CylinderGeometry(0.005, 0.005, 1, 8)
-      // laserGeo.translate(0, 0.6, 0)
+      laserGeo.translate(0, 0.5, 0)
       const material = new MeshBasicMaterial({ color: 0xff0000 })
-      const laser = new Mesh(laserGeo, material)
+      const laserMesh = new Mesh(laserGeo, material)
 
-      renderer.laser = new Group()
-      renderer.laser.add(laser)
-      renderer.scene.add(renderer.laser)
-      //
+      renderer.laser = laserMesh
+      renderer.scene.add(laserMesh)
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
