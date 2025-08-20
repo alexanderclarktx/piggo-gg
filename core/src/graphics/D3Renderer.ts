@@ -2,7 +2,8 @@ import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
   MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
-  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer,
+  CylinderGeometry
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -25,6 +26,7 @@ export type D3Renderer = {
   }>
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
+  laser: undefined | Group<Object3DEventMap>
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   append: (...elements: HTMLElement[]) => void
@@ -55,6 +57,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     sphere: undefined,
     oak: undefined,
     spruce: undefined,
+    laser: undefined,
     leaf: undefined,
     blocks: undefined,
     birdAssets: {},
@@ -271,6 +274,16 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         renderer.scene.add(background)
       })
+
+      // lasers
+      const geometry = new CylinderGeometry(0.02, 0.02, 1, 8)
+      const material = new MeshBasicMaterial({ color: 0xff0000 })
+      const laser = new Mesh(geometry, material)
+
+      renderer.laser = new Group()
+      renderer.laser.add(laser)
+      renderer.scene.add(renderer.laser)
+      //
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({

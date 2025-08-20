@@ -2,7 +2,7 @@ import {
   abs, Action, Actions, Character, Collider, cos, Input,
   Networked, Player, Point, Position, Ready, round, Team, World, XYZ
 } from "@piggo-gg/core"
-import { Vector3 } from "three"
+import { Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
@@ -131,15 +131,23 @@ export const Bird = (player: Player) => Character({
 
         position.data.flying = !position.data.flying
       }),
-      laser: Action("laser", ({ entity, world }) => {
+      laser: Action("laser", ({ entity, world, params }) => {
         world.client?.sound.playChoice(["laser1", "laser2", "laser3"])
 
-        const otherDucks = world.characters().filter(c => c.id !== entity?.id)
-        for (const duck of otherDucks) {
-          const hit = true
-          console.log("hit", duck.id)
-          return
-        }
+        // move the laser
+        const dummy = new Object3D()
+        dummy.position.set(params.pos.x, params.pos.z, params.pos.y)
+        dummy.updateMatrix()
+
+        world.three!.laser?.position.copy(dummy.position)
+        world.three!.laser?.updateMatrix()
+
+        // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
+        // for (const duck of otherDucks) {
+        //   const hit = true
+        //   console.log("hit", duck.id)
+        //   return
+        // }
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
