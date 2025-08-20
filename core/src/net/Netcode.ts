@@ -11,6 +11,7 @@ export type NetMessageTypes = GameData | LatencyData | RequestData | ResponseDat
 
 // todo use this and remove latency/diff from GameData
 export type LatencyData = {
+  type: "latency"
   latency: number
   diff: number
 }
