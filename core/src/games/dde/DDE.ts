@@ -56,11 +56,11 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       D3NametagSystem
     ],
     entities: [
+      Crosshair(),
       DDEMenu(world),
       D3Profile(),
       Scoreboard(),
-      HtmlChat(),
-      Crosshair()
+      HtmlChat()
     ]
   })
 }
