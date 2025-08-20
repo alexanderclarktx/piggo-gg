@@ -133,6 +133,13 @@ export const Bird = (player: Player) => Character({
       }),
       laser: Action("laser", ({ entity, world }) => {
         world.client?.sound.playChoice(["laser1", "laser2", "laser3"])
+
+        const otherDucks = world.characters().filter(c => c.id !== entity?.id)
+        for (const duck of otherDucks) {
+          const hit = true
+          console.log("hit", duck.id)
+          return
+        }
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return

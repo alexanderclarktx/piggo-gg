@@ -25,7 +25,7 @@ export const Crosshair = () => {
           const settings = world.settings<DDESettings>()
           const pc = world.client?.playerCharacter()
 
-          if (!settings.eagleCrosshair || !pc?.components.position.data.flying) {
+          if (!settings.showCrosshair || !document.pointerLockElement) {
             div.style.visibility = "hidden"
           } else {
             div.style.visibility = "visible"
