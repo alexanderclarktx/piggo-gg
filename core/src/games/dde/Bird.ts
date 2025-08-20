@@ -131,8 +131,8 @@ export const Bird = (player: Player) => Character({
 
         position.data.flying = !position.data.flying
       }),
-      laser: Action("laser", ({ entity, world, params }) => {
-        world.client?.sound.playChoice(["laser1", "laser2", "laser3"])
+      laser: Action("laser", ({ world, params }) => {
+        world.client?.sound.play({ name: "laser1" })
         const laser = world.three!.laser!
 
         // move the laser
