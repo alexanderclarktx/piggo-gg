@@ -135,23 +135,35 @@ export const Bird = (player: Player) => Character({
         world.client?.sound.play({ name: "laser1" })
         const laser = world.three!.laser!
 
+        // hitscan phase (from camera)
+        const origin = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
+
+        // target is fixed distance away along the aimed dir
+        const target = new Vector3(
+          -sin(params.aim.x),
+          // sin(params.aim.y),
+          -0.33 + params.aim.y,
+          -cos(params.aim.x)
+        ).normalize().multiplyScalar(10).add(origin)
+
         // move the laser
         const start = new Vector3(params.pos.x, params.pos.z + 0.13, params.pos.y)
 
-        const dir = new Vector3(
-          params.pos.x - sin(params.aim.x) * 10,
-          params.pos.z + params.aim.y,
-          // params.pos.z + (params.aim.y + 0.2) * PI * 2,
-          params.pos.y - cos(params.aim.x) * 10
-        ).sub(start).normalize()
+        const dir = target.clone().sub(start).normalize()
 
-        const axis = new Vector3(0, 1, 0)
+        // const dir = new Vector3(
+        //   params.pos.x - sin(params.aim.x) * 10,
+        //   params.pos.z + params.aim.y,
+        //   // params.pos.z + (params.aim.y + 0.2) * PI * 2,
+        //   params.pos.y - cos(params.aim.x) * 10
+        // ).sub(start).normalize()
 
-        laser.scale.y = randomInt(8)
+        laser.scale.y = 10
 
         const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
         laser.position.copy(start.add(offset.multiplyScalar(.03)))
-        laser.quaternion.setFromUnitVectors(axis, dir)
+        laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+        // laser.lookAt(target)
 
         laser.updateMatrix()
         laser.visible = true
