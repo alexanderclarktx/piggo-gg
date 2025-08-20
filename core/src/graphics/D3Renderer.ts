@@ -276,9 +276,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // lasers
-      const geometry = new CylinderGeometry(0.005, 0.005, 1, 8)
+      const laserGeo = new CylinderGeometry(0.005, 0.005, 1, 8)
+      // laserGeo.translate(0, 0.6, 0)
       const material = new MeshBasicMaterial({ color: 0xff0000 })
-      const laser = new Mesh(geometry, material)
+      const laser = new Mesh(laserGeo, material)
 
       renderer.laser = new Group()
       renderer.laser.add(laser)

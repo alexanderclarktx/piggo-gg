@@ -133,10 +133,10 @@ export const Bird = (player: Player) => Character({
       }),
       laser: Action("laser", ({ entity, world, params }) => {
         world.client?.sound.playChoice(["laser1", "laser2", "laser3"])
+        const laser = world.three!.laser!
 
         // move the laser
         const start = new Vector3(params.pos.x, params.pos.z + 0.13, params.pos.y)
-        world.three!.laser?.position.copy(start)
 
         const dir = new Vector3(
           params.pos.x - sin(params.aim.x) * 10,
@@ -146,10 +146,12 @@ export const Bird = (player: Player) => Character({
         ).sub(start).normalize()
 
         const axis = new Vector3(0, 1, 0)
-        world.three!.laser!.quaternion.setFromUnitVectors(axis, dir)
+        
+        laser.position.copy(start)
+        laser.quaternion.setFromUnitVectors(axis, dir)
 
-        world.three!.laser?.updateMatrix()
-        world.three!.laser!.visible = true
+        laser.updateMatrix()
+        laser.visible = true
 
         console.log(params.aim.y)
 
