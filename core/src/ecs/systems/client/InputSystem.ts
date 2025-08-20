@@ -34,8 +34,9 @@ export const InputSystem = ClientSystemBuilder({
       }
     })
 
-    world.three?.canvas.addEventListener("pointerdown", (event) => {
-      if (world.tick <= world.client!.clickThisFrame.value) return
+    document.addEventListener("pointerdown", (event) => {
+      // if (world.client?.busy) return
+      // if (world.tick <= world.client!.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
@@ -43,7 +44,7 @@ export const InputSystem = ClientSystemBuilder({
 
       const key = event.button === 0 ? "mb1" : "mb2"
 
-      world.client!.bufferDown.push({ key, mouse, tick: world.tick, hold: 0 })
+      world.client?.bufferDown.push({ key, mouse, tick: world.tick, hold: 0 })
     })
 
     document.addEventListener("pointerup", (event) => {
@@ -56,6 +57,7 @@ export const InputSystem = ClientSystemBuilder({
             // @ts-expect-error
             mouse, entity: pc, world, tick: world.tick, hold: 0, target: event.target?.localName ?? ""
           })
+          world.client?.bufferDown.remove(key)
           return
         }
       }

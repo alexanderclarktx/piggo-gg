@@ -67,6 +67,15 @@ export const Bird = (player: Player) => Character({
           return { actionId: "ready" }
         },
 
+        "mb1": ({ hold, character }) => {
+          console.log(character?.id, "shooting bubble")
+          if (hold || !document.pointerLockElement) return null
+
+          console.log(character?.id, "shooting laser")
+
+          return { actionId: "laser" }
+        },
+
         // transform
         "e": ({ hold }) => {
           if (hold) return null
