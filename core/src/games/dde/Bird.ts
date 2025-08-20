@@ -140,11 +140,10 @@ export const Bird = (player: Player) => Character({
 
         const dir = new Vector3(
           params.pos.x - sin(params.aim.x) * 10,
-          params.pos.z + params.aim.y * PI * 2,
+          params.pos.z + params.aim.y,
+          // params.pos.z + (params.aim.y + 0.2) * PI * 2,
           params.pos.y - cos(params.aim.x) * 10
         ).sub(start).normalize()
-        // const dir = target.clone().sub(start).normalize()
-        
 
         const axis = new Vector3(0, 1, 0)
         world.three!.laser!.quaternion.setFromUnitVectors(axis, dir)
@@ -152,6 +151,7 @@ export const Bird = (player: Player) => Character({
         world.three!.laser?.updateMatrix()
         world.three!.laser!.visible = true
 
+        console.log(params.aim.y)
 
 
         // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
