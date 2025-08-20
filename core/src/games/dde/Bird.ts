@@ -67,12 +67,14 @@ export const Bird = (player: Player) => Character({
           return { actionId: "ready" }
         },
 
-        "mb1": ({ hold, character }) => {
-          if (hold || !document.pointerLockElement) return null
+        "mb1": ({ hold, character, world }) => {
+          if (hold || !document.pointerLockElement || !character) return null
 
-          console.log(character?.id, "shooting laser")
+          const { position } = character?.components
+          const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
+          const aim = { ...world.client!.controls.localAim }
 
-          return { actionId: "laser" }
+          return { actionId: "laser", params: { pos, aim } }
         },
 
         // transform
@@ -128,6 +130,9 @@ export const Bird = (player: Player) => Character({
         if (state.phase === "play") return
 
         position.data.flying = !position.data.flying
+      }),
+      laser: Action("laser", ({ entity, world }) => {
+        world.client?.sound.playChoice(["laser1", "laser2", "laser3"])
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
