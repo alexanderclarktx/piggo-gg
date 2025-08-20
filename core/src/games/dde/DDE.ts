@@ -390,10 +390,13 @@ const DDESystem = SystemBuilder({
           }
 
           for (const mixer of mixers) {
+            const ratio = delta / 25
             if (flying) {
-              mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
+              const speed = sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z))
+              mixer.update(speed * ratio * 0.01 + 0.01)
             } else {
-              mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
+              const speed = hypot(position.data.velocity.x, position.data.velocity.y)
+              mixer.update(speed * ratio * 0.03 + 0.01)
             }
           }
         }
