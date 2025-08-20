@@ -14,6 +14,7 @@ import { Scoreboard } from "./Scoreboard"
 export type DDEState = {
   applesEaten: Record<string, number>
   doubleJumped: string[]
+  lastShot: Record<string, number>
   nextSeed: number
   phase: "warmup" | "starting" | "play"
   round: number
@@ -40,6 +41,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     state: {
       applesEaten: {},
       doubleJumped: [],
+      lastShot: {},
       nextSeed: 123456111,
       phase: "warmup",
       round: 0,

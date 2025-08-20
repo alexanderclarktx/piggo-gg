@@ -141,7 +141,15 @@ export const Bird = (player: Player) => Character({
 
         position.data.flying = !position.data.flying
       }),
-      laser: Action("laser", ({ world, params }) => {
+      laser: Action("laser", ({ world, params, entity }) => {
+        if (!entity) return
+
+        const state = world.state<DDEState>()
+        const cd = world.tick - (state.lastShot[entity.id] ?? 0)
+        if (cd < 20) return
+
+        state.lastShot[entity.id] = world.tick
+
         world.client?.sound.play({ name: "laser1" })
         const laser = world.three!.laser!
 
@@ -165,6 +173,7 @@ export const Bird = (player: Player) => Character({
         laser.updateMatrix()
         laser.material.opacity = 1
         laser.visible = true
+
 
         // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
         // for (const duck of otherDucks) {
