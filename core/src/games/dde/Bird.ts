@@ -141,6 +141,7 @@ export const Bird = (player: Player) => Character({
 
         world.three!.laser?.position.copy(dummy.position)
         world.three!.laser?.updateMatrix()
+        world.three!.laser!.visible = true
 
         // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
         // for (const duck of otherDucks) {

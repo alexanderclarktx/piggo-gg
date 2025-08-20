@@ -276,7 +276,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // lasers
-      const geometry = new CylinderGeometry(0.02, 0.02, 1, 8)
+      const geometry = new CylinderGeometry(0.01, 0.01, 1, 16)
       const material = new MeshBasicMaterial({ color: 0xff0000 })
       const laser = new Mesh(geometry, material)
 

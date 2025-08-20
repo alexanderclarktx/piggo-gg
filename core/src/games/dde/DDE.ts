@@ -282,6 +282,11 @@ const DDESystem = SystemBuilder({
           }
         }
 
+        // clean up lasers
+        if (world.three) {
+          world.three.laser!.visible = false
+        }
+
         // render blocks
         const t3 = performance.now()
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
