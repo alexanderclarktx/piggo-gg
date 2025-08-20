@@ -74,7 +74,7 @@ export const Bird = (player: Player) => Character({
           const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
           const aim = { ...world.client!.controls.localAim }
 
-          return { actionId: "rocketJump", params: { pos, aim } }
+          return { actionId: "rocket", params: { pos, aim } }
         },
 
         "mb1": ({ hold, character, world }) => {
@@ -180,11 +180,17 @@ export const Bird = (player: Player) => Character({
         //   const hit = true
         // }
       }),
-      rocketJump: Action("rocketJump", ({ entity, params }) => {
+      rocket: Action("rocket", ({ entity, world }) => {
         if (!entity) return
 
         const { position } = entity?.components ?? {}
         if (!position) return
+
+        const state = world.state<DDEState>()
+        const cd = world.tick - (state.lastRocket[entity.id] ?? 0)
+        if (cd < 80 && !position.data.standing) return
+
+        state.lastRocket[entity.id] = world.tick
 
         position.setVelocity({ z: 0.1 })
       }),

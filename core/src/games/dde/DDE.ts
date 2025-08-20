@@ -15,6 +15,7 @@ export type DDEState = {
   applesEaten: Record<string, number>
   doubleJumped: string[]
   lastShot: Record<string, number>
+  lastRocket: Record<string, number>
   nextSeed: number
   phase: "warmup" | "starting" | "play"
   round: number
@@ -42,6 +43,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       applesEaten: {},
       doubleJumped: [],
       lastShot: {},
+      lastRocket: {},
       nextSeed: 123456111,
       phase: "warmup",
       round: 0,
