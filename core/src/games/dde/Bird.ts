@@ -184,30 +184,18 @@ export const Bird = (player: Player) => Character({
 
           const duckPos = { ...duck.components.position.data }
           duckPos.z += 0.02
-          const L = XYZsub(duckPos, eyePos)
 
-          const Ldist = XYZdistance(duckPos, eyePos)
+          const L = XYZsub(duckPos, eyePos)
           const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
 
-          // console.log("tc", tc, "lDist", Ldist)
+          if (tc < 0) continue
 
-          console.log(duck.id, duckPos.x.toFixed(1), duckPos.y.toFixed(1), duckPos.z.toFixed(1))
-          console.log("eyes", eyePos.x.toFixed(1), eyePos.y.toFixed(1), eyePos.z.toFixed(1))
-
-          if (tc < 0) {
-            console.log("tc", tc.toFixed(1), "lDist", Ldist.toFixed(1))
-            continue
-          }
-
+          const Ldist = XYZdistance(duckPos, eyePos)
           const D = sqrt((Ldist * Ldist) - (tc * tc))
-
-          console.log("tc", tc.toFixed(1), "lDist", Ldist.toFixed(1), "D", D.toFixed(1))
 
           if (D > 0 && D < 0.09) {
             console.log("HIT", duck.id)
           }
-
-          // const hit = true
         }
       }),
       rocket: Action("rocket", ({ entity, world }) => {
