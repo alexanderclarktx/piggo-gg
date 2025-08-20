@@ -87,7 +87,7 @@ export const Sound = (world: World): Sound => {
       eat: load("eat.mp3", -10),
       eat2: load("eat2.mp3", -10),
       spike: load("spike.mp3", 5),
-      laser1: load("laser1.mp3", -10),
+      laser1: load("laser1.mp3", -15),
       laser2: load("laser2.mp3", -5),
       laser3: load("laser3.mp3", -10),
     },

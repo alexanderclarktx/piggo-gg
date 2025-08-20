@@ -183,7 +183,7 @@ export const Bird = (player: Player) => Character({
         for (const duck of otherDucks) {
 
           const duckPos = { ...duck.components.position.data }
-          duckPos.z += 0.05
+          duckPos.z += 0.02
           const L = XYZsub(duckPos, eyePos)
 
           const Ldist = XYZdistance(duckPos, eyePos)

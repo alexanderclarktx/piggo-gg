@@ -36,11 +36,11 @@ export const D3CameraSystem = () => ClientSystemBuilder({
   id: "D3CameraSystem",
   init: (world) => {
 
-    window.addEventListener("wheel", (e) => {
-      e.preventDefault()
-      world.three!.camera.zoom += e.deltaY * 0.001
-      world.three!.camera.zoom = Math.min(Math.max(0.6, world.three!.camera.zoom), 0.9)
-    })
+    // window.addEventListener("wheel", (e) => {
+    //   e.preventDefault()
+    //   world.three!.camera.zoom += e.deltaY * 0.001
+    //   world.three!.camera.zoom = Math.min(Math.max(0.6, world.three!.camera.zoom), 0.9)
+    // })
 
     return {
       id: "D3CameraSystem",
