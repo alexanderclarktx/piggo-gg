@@ -307,15 +307,15 @@ const DDESystem = SystemBuilder({
             dummy.updateMatrix()
 
             if (type === "spruceLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x009999))
+              leaf!.setColorAt(leafCount, new Color(0x0099aa))
             } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x00dd55))
+              leaf!.setColorAt(leafCount, new Color(0x33dd77))
             } else if (type === "oak") {
               oak!.setColorAt(oakCount, new Color(0xffaa99))
             } else if (type === "spruce") {
               spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
             } else {
-              blocks.setColorAt(i, new Color(0xFFFFFF))
+              // blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
             if (type === "spruce") {
@@ -335,7 +335,7 @@ const DDESystem = SystemBuilder({
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true
           leaf!.instanceMatrix.needsUpdate = true
-          if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
+          // if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
           if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
           if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
