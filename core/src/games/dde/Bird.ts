@@ -137,11 +137,6 @@ export const Bird = (player: Player) => Character({
 
         // move the laser
         const start = new Vector3(params.pos.x, params.pos.z + 0.13, params.pos.y)
-        const horizontalDir = new Vector3(
-          -sin(params.aim.x),
-          0,
-          -cos(params.aim.x)
-        ).normalize()
 
         const dir = new Vector3(
           params.pos.x - sin(params.aim.x) * 10,
@@ -154,7 +149,8 @@ export const Bird = (player: Player) => Character({
 
         laser.scale.y = randomInt(8)
 
-        laser.position.copy(start.add(horizontalDir.multiplyScalar(.03)))
+        const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
+        laser.position.copy(start.add(offset.multiplyScalar(.03)))
         laser.quaternion.setFromUnitVectors(axis, dir)
 
         laser.updateMatrix()
