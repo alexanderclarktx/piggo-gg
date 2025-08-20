@@ -351,7 +351,10 @@ const DDESystem = SystemBuilder({
         logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {
+        const ratio = delta / 25
         const players = world.players()
+
+        if (world.three?.laser) world.three.laser.material.opacity -= 0.05 * ratio
 
         // update player positions
         for (const player of players) {
@@ -390,7 +393,6 @@ const DDESystem = SystemBuilder({
           }
 
           for (const mixer of mixers) {
-            const ratio = delta / 25
             if (flying) {
               const speed = sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z))
               mixer.update(speed * ratio * 0.01 + 0.01)
