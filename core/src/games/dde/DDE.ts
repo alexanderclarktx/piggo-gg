@@ -284,8 +284,9 @@ const DDESystem = SystemBuilder({
 
         // clean up lasers
         if (world.three) {
-          world.three.laser!.visible = false
+          // world.three.laser!.visible = false
         }
+        console.log(world.client?.controls.localAim)
 
         // render blocks
         const t3 = performance.now()

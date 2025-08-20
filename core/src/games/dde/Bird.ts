@@ -136,12 +136,21 @@ export const Bird = (player: Player) => Character({
 
         // move the laser
         const dummy = new Object3D()
-        dummy.position.set(params.pos.x, params.pos.z, params.pos.y)
+        dummy.position.set(params.pos.x, params.pos.z + 0.13, params.pos.y)
         dummy.updateMatrix()
 
+        const target = new Vector3(params.pos.x, params.pos.z - params.aim.y * 10, params.pos.y + 1)
+
         world.three!.laser?.position.copy(dummy.position)
+
+        // world.three!.laser!.lookAt(target)
+        const axis = new Vector3(0, 1, 0); // default orientation
+        world.three!.laser!.quaternion.setFromUnitVectors(axis, target.clone().normalize());
+
         world.three!.laser?.updateMatrix()
         world.three!.laser!.visible = true
+
+
 
         // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
         // for (const duck of otherDucks) {
