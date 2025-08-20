@@ -27,7 +27,7 @@ const leap = 0.23
 export const Bird = (player: Player) => Character({
   id: `bird-${player.id}`,
   components: {
-    position: Position({ friction: true, gravity: 0.002, flying: false, z: 6, x: 25, y: 18 }),
+    position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
@@ -65,6 +65,16 @@ export const Bird = (player: Player) => Character({
         "r": ({ hold }) => {
           if (hold) return null
           return { actionId: "ready" }
+        },
+
+        "mb2": ({ hold, character, world }) => {
+          if (hold || !document.pointerLockElement || !character) return null
+
+          const { position } = character?.components
+          const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
+          const aim = { ...world.client!.controls.localAim }
+
+          return { actionId: "rocketJump", params: { pos, aim } }
         },
 
         "mb1": ({ hold, character, world }) => {
@@ -161,6 +171,14 @@ export const Bird = (player: Player) => Character({
         //   const hit = true
         // }
       }),
+      rocketJump: Action("rocketJump", ({ entity, params }) => {
+        if (!entity) return
+
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        position.setVelocity({ z: 0.1 })
+      }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
 
@@ -176,7 +194,7 @@ export const Bird = (player: Player) => Character({
         // double jumped
         if (!position.data.standing) state.doubleJumped.push(entity.id)
 
-        position.setVelocity({ z: 0.043 })
+        position.setVelocity({ z: 0.05 })
         world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
       moveAnalog: Action("moveAnalog", ({ entity, params, world }) => {
