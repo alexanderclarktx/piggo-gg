@@ -1,8 +1,8 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, Input,
-  Networked, PI, Player, Point, Position, randomInt, Ready, round, sin, Team, World, XYZ
+  abs, Action, Actions, Character, Collider, cos, Input, Networked,
+  Player, Point, Position, randomInt, Ready, round, sin, Team, World, XYZ
 } from "@piggo-gg/core"
-import { Object3D, Vector3 } from "three"
+import { Vector3 } from "three"
 import { DDEState } from "./DDE"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
