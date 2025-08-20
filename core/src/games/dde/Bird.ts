@@ -159,8 +159,6 @@ export const Bird = (player: Player) => Character({
         // const otherDucks = world.characters().filter(c => c.id !== entity?.id)
         // for (const duck of otherDucks) {
         //   const hit = true
-        //   console.log("hit", duck.id)
-        //   return
         // }
       }),
       jump: Action("jump", ({ entity, world, params }) => {
