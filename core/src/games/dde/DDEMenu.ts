@@ -84,10 +84,12 @@ export const DDEMenu = (world: World): Entity => {
           }
 
           // overall visibility
-          const hidden = Boolean(document.pointerLockElement) || world.client?.mobile
-          ddeMenu.style.visibility = hidden ? "hidden" : "visible"
+          if (world.client) {
+            const hidden = Boolean(document.pointerLockElement) || world.client.mobile
+            ddeMenu.style.visibility = hidden ? "hidden" : "visible"
 
-          if (hidden) return
+            if (hidden) return
+          }
 
           // menu buttons
           styleButton(lobbiesButton, activeMenu !== "lobbies", lobbiesButton.matches(":hover"))
