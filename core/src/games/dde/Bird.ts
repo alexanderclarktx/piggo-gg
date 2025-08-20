@@ -74,11 +74,11 @@ export const Bird = (player: Player) => Character({
         "mb2": ({ hold, character, world }) => {
           if (hold || !document.pointerLockElement || !character) return null
 
-          const { position } = character?.components
-          const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
-          const aim = { ...world.client!.controls.localAim }
+          // const { position } = character?.components
+          // const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
+          // const aim = { ...world.client!.controls.localAim }
 
-          return { actionId: "rocket", params: { pos, aim } }
+          return { actionId: "rocket" }
         },
 
         "mb1": ({ hold, character, world }) => {
@@ -136,7 +136,7 @@ export const Bird = (player: Player) => Character({
     actions: Actions({
       ready: Ready,
       point: Point,
-      transform: Action("transform", ({ entity, world, player }) => {
+      transform: Action("transform", ({ entity, world }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
