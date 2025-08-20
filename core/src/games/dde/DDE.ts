@@ -286,7 +286,7 @@ const DDESystem = SystemBuilder({
         if (world.three) {
           // world.three.laser!.visible = false
         }
-        console.log(world.client?.controls.localAim)
+        // console.log(world.client?.controls.localAim)
 
         // render blocks
         const t3 = performance.now()

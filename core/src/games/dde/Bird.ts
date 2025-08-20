@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, Input,
-  Networked, Player, Point, Position, Ready, round, Team, World, XYZ
+  Networked, PI, Player, Point, Position, Ready, round, sin, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -135,17 +135,19 @@ export const Bird = (player: Player) => Character({
         world.client?.sound.playChoice(["laser1", "laser2", "laser3"])
 
         // move the laser
-        const dummy = new Object3D()
-        dummy.position.set(params.pos.x, params.pos.z + 0.13, params.pos.y)
-        dummy.updateMatrix()
+        const start = new Vector3(params.pos.x, params.pos.z + 0.13, params.pos.y)
+        world.three!.laser?.position.copy(start)
 
-        const target = new Vector3(params.pos.x, params.pos.z - params.aim.y * 10, params.pos.y + 1)
+        const dir = new Vector3(
+          params.pos.x - sin(params.aim.x) * 10,
+          params.pos.z + params.aim.y * PI * 2,
+          params.pos.y - cos(params.aim.x) * 10
+        ).sub(start).normalize()
+        // const dir = target.clone().sub(start).normalize()
+        
 
-        world.three!.laser?.position.copy(dummy.position)
-
-        // world.three!.laser!.lookAt(target)
-        const axis = new Vector3(0, 1, 0); // default orientation
-        world.three!.laser!.quaternion.setFromUnitVectors(axis, target.clone().normalize());
+        const axis = new Vector3(0, 1, 0)
+        world.three!.laser!.quaternion.setFromUnitVectors(axis, dir)
 
         world.three!.laser?.updateMatrix()
         world.three!.laser!.visible = true
