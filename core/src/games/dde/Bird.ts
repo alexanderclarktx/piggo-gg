@@ -1,5 +1,5 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, hypot, Input, Networked,
+  abs, Action, Actions, Character, Collider, cos, hypot, Input, max, Networked,
   Player, Point, Position, Ready, round, sin, sqrt, Team, World, XYZ,
   XYZdiff,
   XYZdistance,
@@ -225,9 +225,13 @@ export const Bird = (player: Player) => Character({
         if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
 
         // double jumped
-        if (!position.data.standing) state.doubleJumped.push(entity.id)
+        if (!position.data.standing) {
+          position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
+          state.doubleJumped.push(entity.id)
+        } else {
+          position.setVelocity({ z: 0.05 })
+        }
 
-        position.setVelocity({ z: 0.05 })
         world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
       moveAnalog: Action("moveAnalog", ({ entity, params, world }) => {
