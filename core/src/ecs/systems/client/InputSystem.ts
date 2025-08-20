@@ -213,6 +213,7 @@ export const InputSystem = ClientSystemBuilder({
               const invocation = controllerInput({
                 mouse: { ...mouse },
                 entity: character,
+                character,
                 world,
                 hold: keyMouse?.hold ?? 0
               })
@@ -233,6 +234,7 @@ export const InputSystem = ClientSystemBuilder({
             const invocation = controllerInput({
               mouse: { ...mouse },
               entity: character,
+              character,
               world,
               tick: keyMouse.tick,
               hold: keyMouse.hold
