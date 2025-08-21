@@ -142,6 +142,7 @@ export const Bird = (player: Player) => Character({
 
         const state = world.game.state as DDEState
         if (state.phase === "play") return
+        if (state.hit[entity?.id ?? ""]) return
 
         position.data.flying = !position.data.flying
       }),
@@ -149,6 +150,9 @@ export const Bird = (player: Player) => Character({
         if (!entity) return
 
         const state = world.state<DDEState>()
+
+        if (state.hit[entity.id]) return
+
         const cd = world.tick - (state.lastShot[entity.id] ?? 0)
         if (cd < 20) return
 
@@ -181,6 +185,8 @@ export const Bird = (player: Player) => Character({
           laser.visible = true
         }
 
+        if (world.mode === "client") return
+
         const otherDucks = world.characters().filter(c => c.id !== entity?.id)
         for (const duck of otherDucks) {
 
@@ -196,7 +202,7 @@ export const Bird = (player: Player) => Character({
           const D = sqrt((Ldist * Ldist) - (tc * tc))
 
           if (D > 0 && D < 0.09) {
-            console.log("HIT", duck.id)
+            state.hit[duck.id] = { tick: world.tick, by: entity.id }
           }
         }
       }),
@@ -207,6 +213,9 @@ export const Bird = (player: Player) => Character({
         if (!position) return
 
         const state = world.state<DDEState>()
+
+        if (state.hit[entity.id]) return
+
         const cd = world.tick - (state.lastRocket[entity.id] ?? 0)
         if (cd < 80 && !position.data.standing) return
 
@@ -224,6 +233,7 @@ export const Bird = (player: Player) => Character({
         if (!position.data.standing && params.hold) return
 
         const state = world.game.state as DDEState
+        if (state.hit[entity.id]) return
         if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
 
         // double jumped
@@ -259,6 +269,9 @@ export const Bird = (player: Player) => Character({
       }),
       move: Action("move", ({ entity, params, world }) => {
         if (!params.vec || !params.dir) return
+
+        const state = world.state<DDEState>()
+        if (state.hit[entity?.id ?? ""]) return
 
         const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
         const dir = new Vector3(params.dir.x, params.dir.y, params.dir.z)

@@ -14,6 +14,7 @@ import { Scoreboard } from "./Scoreboard"
 export type DDEState = {
   applesEaten: Record<string, number>
   doubleJumped: string[]
+  hit: Record<string, { tick: number, by: string }>
   lastShot: Record<string, number>
   lastRocket: Record<string, number>
   nextSeed: number
@@ -42,6 +43,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     state: {
       applesEaten: {},
       doubleJumped: [],
+      hit: {},
       lastShot: {},
       lastRocket: {},
       nextSeed: 123456111,
