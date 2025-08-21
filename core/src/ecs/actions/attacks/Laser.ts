@@ -52,8 +52,8 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   }
 
   const eyeIJK = {
-    x: floor(eyePos.x / 0.3),
-    y: floor(eyePos.y / 0.3),
+    x: floor((0.15 + eyePos.x) / 0.3),
+    y: floor((0.15 + eyePos.y) / 0.3),
     z: floor(eyePos.z / 0.3)
   }
 
