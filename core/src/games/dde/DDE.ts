@@ -212,6 +212,11 @@ const DDESystem = SystemBuilder({
             position.setPosition({ x: 14, y: 14, z: 8 })
           }
 
+          if ((world.tick - state.hit[character.id]?.tick) >= 20) {
+            position.setPosition({ x: 20, y: 20, z: 6 })
+            delete state.hit[character.id]
+          }
+
           // render assets
           if (world.three && !world.three.birdAssets[character.id]) {
             if (!world.three.duck || !world.three.eagle) continue
