@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, Input, max,
-  Networked, Player, Point, Position, Ready, round, sin, sqrt,
+  Networked, Player, playerForCharacter, Point, Position, Ready, round, sin, sqrt,
   Team, World, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
@@ -152,7 +152,7 @@ export const Bird = (player: Player) => Character({
 
         position.data.flying = !position.data.flying
       }),
-      laser: Action("laser", ({ world, params, entity }) => {
+      laser: Action("laser", ({ world, params, entity, player }) => {
         if (!entity) return
 
         const state = world.state<DDEState>()
@@ -196,6 +196,9 @@ export const Bird = (player: Player) => Character({
 
         const otherDucks = params.targets as Target[]
         for (const duck of otherDucks) {
+          if (state.hit[duck.id]) continue
+          const duckEntity = world.entity<Position>(duck.id)
+          if (!duckEntity) continue
 
           duck.z += 0.02
 
@@ -209,6 +212,11 @@ export const Bird = (player: Player) => Character({
 
           if (D > 0 && D < 0.09) {
             state.hit[duck.id] = { tick: world.tick, by: entity.id }
+            const duckPlayer = playerForCharacter(world, duck.id)
+            world.announce(`${player?.components.pc.data.name} hit ${duckPlayer?.components.pc.data.name}`)
+
+            duckEntity.components.position.data.velocity.z = -0.05
+            duckEntity.components.position.data.flying = false
           }
         }
       }),

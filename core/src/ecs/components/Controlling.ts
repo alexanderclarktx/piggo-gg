@@ -1,4 +1,4 @@
-import { Actions, Collider, Component, Entity, Input, Position, SystemBuilder, Team, World } from "@piggo-gg/core"
+import { Actions, Collider, Component, Entity, Input, Player, Position, SystemBuilder, Team, World } from "@piggo-gg/core"
 
 export type Character = Entity<Position | Collider | Input | Actions | Team>
 export const Character = Entity<Position | Collider | Input | Actions | Team>
@@ -9,6 +9,17 @@ export type Controlling = Component<"controlling", { entityId: string }> & {
 
 export type ControllingProps = {
   entityId?: string
+}
+
+export const playerForCharacter = (world: World, characterId: string): Player | undefined => {
+  const players = world.players()
+  for (const player of players) {
+    const controlling = player.components.controlling.getCharacter(world)
+    if (controlling && characterId === controlling?.id) {
+      return player
+    }
+  }
+  return undefined
 }
 
 export const Controlling = (props: ControllingProps = {}): Controlling => {
