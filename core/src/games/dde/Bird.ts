@@ -67,16 +67,6 @@ export const Bird = (player: Player) => Character({
           return { actionId: "ready" }
         },
 
-        "mb2": ({ hold, character, world }) => {
-          if (hold || !document.pointerLockElement || !character) return null
-
-          // const { position } = character?.components
-          // const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
-          // const aim = { ...world.client!.controls.localAim }
-
-          return { actionId: "rocket" }
-        },
-
         "mb1": ({ hold, character, world }) => {
           if (hold || !document.pointerLockElement || !character) return null
 
@@ -150,23 +140,6 @@ export const Bird = (player: Player) => Character({
         position.data.flying = !position.data.flying
       }),
       laser: Laser,
-      rocket: Action("rocket", ({ entity, world }) => {
-        if (!entity) return
-
-        const { position } = entity?.components ?? {}
-        if (!position) return
-
-        const state = world.state<DDEState>()
-
-        if (state.hit[entity.id]) return
-
-        const cd = world.tick - (state.lastRocket[entity.id] ?? 0)
-        if (cd < 80 && !position.data.standing) return
-
-        state.lastRocket[entity.id] = world.tick
-
-        position.setVelocity({ z: 0.1 })
-      }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
 
