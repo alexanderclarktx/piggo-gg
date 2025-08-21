@@ -1,7 +1,7 @@
 import {
-  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain,
-  sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString
+  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
+  logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
+  SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -232,6 +232,9 @@ const DDESystem = SystemBuilder({
             eagle.frustumCulled = false
             eagle.scale.set(0.05, 0.05, 0.05)
 
+            const laser = cloneThree(world.three.laser!) as Laser
+            world.three.scene.add(laser)
+
             const duckMixer = new AnimationMixer(duck)
             duckMixer.clipAction(duck.animations[1]).play()
 
@@ -239,7 +242,7 @@ const DDESystem = SystemBuilder({
             eagleMixer.clipAction(eagle.animations[0]).play()
 
             world.three.birdAssets[character.id] = {
-              duck, eagle, mixers: [duckMixer, eagleMixer]
+              duck, eagle, laser, mixers: [duckMixer, eagleMixer]
             }
           }
 
@@ -358,7 +361,7 @@ const DDESystem = SystemBuilder({
         const ratio = delta / 25
         const players = world.players()
 
-        if (world.three?.laser) world.three.laser.material.opacity -= 0.05 * ratio
+        // if (world.three?.laser) world.three.laser.material.opacity -= 0.05 * ratio
 
         // update player positions
         for (const player of players) {
@@ -374,7 +377,7 @@ const DDESystem = SystemBuilder({
 
           if (!world.three?.birdAssets[character.id]) continue
 
-          const { duck, eagle, mixers } = world.three?.birdAssets[character.id]
+          const { duck, eagle, laser, mixers } = world.three?.birdAssets[character.id]
 
           const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
 
@@ -391,6 +394,8 @@ const DDESystem = SystemBuilder({
             eagle.rotation.x = orientation.y
             eagle.rotation.z = rotation - rotating * (40 - delta) / 40
           }
+
+          if (laser) laser.material.opacity -= 0.05 * ratio
 
           if (world.three?.debug && player.id === world.client?.playerId()) {
             world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)

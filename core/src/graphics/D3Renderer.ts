@@ -9,6 +9,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
+export type Laser = Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
+
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
   spruce: undefined | D3BlockMesh
@@ -21,11 +23,12 @@ export type D3Renderer = {
   birdAssets: Record<string, {
     duck: Group<Object3DEventMap>
     eagle: Group<Object3DEventMap>
+    laser: Laser
     mixers: AnimationMixer[]
   }>
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
-  laser: undefined | Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
+  laser: undefined | Laser
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   append: (...elements: HTMLElement[]) => void
@@ -283,7 +286,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       laserMesh.scale.y = 10
 
       renderer.laser = laserMesh
-      renderer.scene.add(laserMesh)
+      // renderer.scene.add(laserMesh)
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({

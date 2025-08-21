@@ -155,7 +155,7 @@ export const Bird = (player: Player) => Character({
         state.lastShot[entity.id] = world.tick
 
         world.client?.sound.play({ name: "laser1" })
-        const laser = world.three!.laser!
+        // const laser = world.three!.laser!
 
         // find target from camera
         const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
@@ -171,13 +171,17 @@ export const Bird = (player: Player) => Character({
         const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
         const dir = target.clone().sub(eyes).normalize()
 
-        const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
-        laser.position.copy(eyes.add(offset.multiplyScalar(.03)))
-        laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+        const laser = world.three?.birdAssets[entity.id]?.laser
+        if (laser) {
+          console.log("moving laser")
+          const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
+          laser.position.copy(eyes.add(offset.multiplyScalar(.03)))
+          laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
 
-        laser.updateMatrix()
-        laser.material.opacity = 1
-        laser.visible = true
+          laser.updateMatrix()
+          laser.material.opacity = 1
+          laser.visible = true
+        }
 
         const otherDucks = world.characters().filter(c => c.id !== entity?.id)
         for (const duck of otherDucks) {
