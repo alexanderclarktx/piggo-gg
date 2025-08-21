@@ -283,10 +283,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
       const laserMesh = new Mesh(laserGeo, material)
-      laserMesh.scale.y = 10
+      laserMesh.scale.y = 14
 
       renderer.laser = laserMesh
-      // renderer.scene.add(laserMesh)
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
