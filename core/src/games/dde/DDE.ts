@@ -144,7 +144,7 @@ const DDESystem = SystemBuilder({
           state.nextSeed = randomInt(1000000)
         }
 
-        if (world.tick % 200 === 0) blocksRendered = false
+        if (world.blocks.needsUpdate()) blocksRendered = false
 
         if (state.phase === "starting" && world.tick === state.willStart!) {
 
