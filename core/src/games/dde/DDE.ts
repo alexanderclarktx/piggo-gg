@@ -386,10 +386,6 @@ const DDESystem = SystemBuilder({
           if (duck.visible) {
             duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
             duck.rotation.y = orientation.x + PI / 2
-
-            // if (state.hit[character.id]) {
-              // console.log("HIT", duck.id)
-            // }
           }
 
           eagle.visible = position.data.flying
