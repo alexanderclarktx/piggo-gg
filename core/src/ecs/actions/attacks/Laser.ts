@@ -1,5 +1,5 @@
 import {
-  Action, cos, DDEState, playerForCharacter, Position,
+  Action, cos, DDEState, floor, playerForCharacter, Position,
   sin, sqrt, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
@@ -52,13 +52,19 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   }
 
   let insideBlock: XYZ = {
-    x: (eyePos.x + 1 * dir.x) / 0.3,
-    y: (eyePos.y + 1 * dir.y) / 0.3,
-    z: (eyePos.z + 1 * dir.z) / 0.3
+    // x: (eyePos.x + 1 * dir.x) / 0.3,
+    // y: (eyePos.y + 1 * dir.y) / 0.3,
+    // z: (eyePos.z + 1 * dir.z) / 0.3
+    x: floor(eyePos.x / 0.3),
+    y: floor(eyePos.y / 0.3),
+    z: floor(eyePos.z / 0.3) - 1
   }
 
   if (world.blocks.hasIJK(insideBlock)) {
     world.blocks.remove(insideBlock)
+    console.log("removed", insideBlock)
+  } else {
+    console.log("nothing at eye", eyePos, "ijk", insideBlock)
   }
 
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
