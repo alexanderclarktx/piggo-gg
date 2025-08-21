@@ -154,8 +154,7 @@ export const Bird = (player: Player) => Character({
 
         state.lastShot[entity.id] = world.tick
 
-        world.client?.sound.play({ name: "laser1" })
-        // const laser = world.three!.laser!
+        world.client?.sound.play({ name: "laser1", threshold: { pos: params.pos, distance: 5 } })
 
         // find target from camera
         const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
@@ -173,7 +172,6 @@ export const Bird = (player: Player) => Character({
 
         const laser = world.three?.birdAssets[entity.id]?.laser
         if (laser) {
-          console.log("moving laser")
           const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
           laser.position.copy(eyes.add(offset.multiplyScalar(.03)))
           laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
