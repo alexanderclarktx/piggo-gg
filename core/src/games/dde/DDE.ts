@@ -3,7 +3,7 @@ import {
   logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
   SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
 } from "@piggo-gg/core"
-import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
+import { AnimationMixer, Color, Group, Mesh, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
@@ -367,6 +367,8 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
+          const state = world.state<DDEState>()
+
           const { rotation, rotating, flying, aim } = position.data
 
           const interpolated = position.interpolate(world, delta)
@@ -381,6 +383,16 @@ const DDESystem = SystemBuilder({
           if (duck.visible) {
             duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
             duck.rotation.y = orientation.x + PI / 2
+
+            if (state.hit[character.id]) {
+              console.log("HIT", duck.id)
+              
+              // const m = duck.children[0] as Mesh
+              // m.material.opacity = 0.5
+              // duck.children[0]
+              // duck
+              // duck.rotation.x = -PI
+            }
           }
 
           eagle.visible = position.data.flying

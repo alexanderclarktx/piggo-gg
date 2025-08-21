@@ -1,13 +1,12 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, hypot, Input, max, Networked,
-  Player, Point, Position, Ready, round, sin, sqrt, Team, World, XYZ,
-  XYZdiff,
-  XYZdistance,
-  XYZdot,
-  XYZsub
+  abs, Action, Actions, Character, Collider, cos, Input, max,
+  Networked, Player, Point, Position, Ready, round, sin, sqrt,
+  Team, World, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
+
+type Target = XYZ & { id: string }
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   const camera = world.three?.camera
@@ -88,7 +87,14 @@ export const Bird = (player: Player) => Character({
           const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
           const aim = { ...world.client!.controls.localAim }
 
-          return { actionId: "laser", params: { pos, aim } }
+          const targets: Target[] = world.characters().filter(c => c.id !== character.id).map(x => ({
+            x: x.components.position.data.x,
+            y: x.components.position.data.y,
+            z: x.components.position.data.z,
+            id: x.id
+          }))
+
+          return { actionId: "laser", params: { pos, aim, targets } }
         },
 
         // transform
@@ -185,20 +191,20 @@ export const Bird = (player: Player) => Character({
           laser.visible = true
         }
 
-        if (world.mode === "client") return
+        // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
+        if (world.client) return
 
-        const otherDucks = world.characters().filter(c => c.id !== entity?.id)
+        const otherDucks = params.targets as Target[]
         for (const duck of otherDucks) {
 
-          const duckPos = { ...duck.components.position.data }
-          duckPos.z += 0.02
+          duck.z += 0.02
 
-          const L = XYZsub(duckPos, eyePos)
+          const L = XYZsub(duck, eyePos)
           const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
 
           if (tc < 0) continue
 
-          const Ldist = XYZdistance(duckPos, eyePos)
+          const Ldist = XYZdistance(duck, eyePos)
           const D = sqrt((Ldist * Ldist) - (tc * tc))
 
           if (D > 0 && D < 0.09) {
