@@ -1,7 +1,7 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
   logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
-  SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
+  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Mesh, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -302,13 +302,9 @@ const DDESystem = SystemBuilder({
         const t3 = performance.now()
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
-          console.log("rendering blocks")
 
-          const chunk = XYtoChunk({ x: 1, y: 1 })
-          const neighbors = world.blocks.neighbors(chunk, 24)
-
-          const chunkData = world.blocks.visible(neighbors, false, true)
-          // world.three.blocks.count = chunkData.length
+          const neighbors = world.blocks.neighbors({ x: 1, y: 1 }, 24)
+          const chunkData = world.blocks.visible(neighbors)
 
           const { blocks, spruce, oak, leaf } = world.three
 
