@@ -51,20 +51,22 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
     laser.visible = true
   }
 
-  let insideBlock: XYZ = {
-    // x: (eyePos.x + 1 * dir.x) / 0.3,
-    // y: (eyePos.y + 1 * dir.y) / 0.3,
-    // z: (eyePos.z + 1 * dir.z) / 0.3
+  const eyeIJK = {
     x: floor(eyePos.x / 0.3),
     y: floor(eyePos.y / 0.3),
-    z: floor(eyePos.z / 0.3) - 1
+    z: floor(eyePos.z / 0.3)
+  }
+
+  const insideBlock = {
+    ...eyeIJK,
+    y: eyeIJK.y + 1
   }
 
   if (world.blocks.hasIJK(insideBlock)) {
     world.blocks.remove(insideBlock)
     console.log("removed", insideBlock)
   } else {
-    console.log("nothing at eye", eyePos, "ijk", insideBlock)
+    console.log("nothing at eye", eyePos, "eyeIJK", eyeIJK, "insideBlock", insideBlock)
   }
 
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
