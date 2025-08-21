@@ -2,12 +2,14 @@ import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
   MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
-  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer, CylinderGeometry
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
+
+export type Laser = Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
 
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
@@ -21,10 +23,12 @@ export type D3Renderer = {
   birdAssets: Record<string, {
     duck: Group<Object3DEventMap>
     eagle: Group<Object3DEventMap>
+    laser: Laser
     mixers: AnimationMixer[]
   }>
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
+  laser: undefined | Laser
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   append: (...elements: HTMLElement[]) => void
@@ -55,6 +59,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     sphere: undefined,
     oak: undefined,
     spruce: undefined,
+    laser: undefined,
     leaf: undefined,
     blocks: undefined,
     birdAssets: {},
@@ -271,6 +276,16 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         renderer.scene.add(background)
       })
+
+      // laser
+      const laserGeo = new CylinderGeometry(0.01, 0.01, 1, 8)
+      laserGeo.translate(0, 0.5, 0)
+
+      const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
+      const laserMesh = new Mesh(laserGeo, material)
+      laserMesh.scale.y = 14
+
+      renderer.laser = laserMesh
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({

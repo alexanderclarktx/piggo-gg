@@ -1,9 +1,9 @@
 import {
-  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder,
-  hypot, logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain,
-  sqrt, SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString
+  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
+  logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
+  SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
 } from "@piggo-gg/core"
-import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
+import { AnimationMixer, Color, Group, Mesh, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
@@ -14,6 +14,9 @@ import { Scoreboard } from "./Scoreboard"
 export type DDEState = {
   applesEaten: Record<string, number>
   doubleJumped: string[]
+  hit: Record<string, { tick: number, by: string }>
+  lastShot: Record<string, number>
+  lastRocket: Record<string, number>
   nextSeed: number
   phase: "warmup" | "starting" | "play"
   round: number
@@ -24,7 +27,7 @@ export type DDEState = {
 export type DDESettings = {
   ambientSound: boolean
   showControls: boolean
-  eagleCrosshair: boolean
+  showCrosshair: boolean
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -35,11 +38,14 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     settings: {
       ambientSound: true,
       showControls: true,
-      eagleCrosshair: false
+      showCrosshair: true
     },
     state: {
       applesEaten: {},
       doubleJumped: [],
+      hit: {},
+      lastShot: {},
+      lastRocket: {},
       nextSeed: 123456111,
       phase: "warmup",
       round: 0,
@@ -56,11 +62,11 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       D3NametagSystem
     ],
     entities: [
+      Crosshair(),
       DDEMenu(world),
       D3Profile(),
       Scoreboard(),
-      HtmlChat(),
-      Crosshair()
+      HtmlChat()
     ]
   })
 }
@@ -203,7 +209,12 @@ const DDESystem = SystemBuilder({
 
           // fell off the map
           if (z < -4) {
-            position.setPosition({ x: 14, y: 14, z: 8 })
+            position.setPosition({ x: 20, y: 20, z: 8 })
+          }
+
+          if ((world.tick - state.hit[character.id]?.tick) >= 40) {
+            position.setPosition({ x: 20, y: 20, z: 8 })
+            delete state.hit[character.id]
           }
 
           // render assets
@@ -228,6 +239,9 @@ const DDESystem = SystemBuilder({
             eagle.frustumCulled = false
             eagle.scale.set(0.05, 0.05, 0.05)
 
+            const laser = cloneThree(world.three.laser!) as Laser
+            world.three.scene.add(laser)
+
             const duckMixer = new AnimationMixer(duck)
             duckMixer.clipAction(duck.animations[1]).play()
 
@@ -235,7 +249,7 @@ const DDESystem = SystemBuilder({
             eagleMixer.clipAction(eagle.animations[0]).play()
 
             world.three.birdAssets[character.id] = {
-              duck, eagle, mixers: [duckMixer, eagleMixer]
+              duck, eagle, laser, mixers: [duckMixer, eagleMixer]
             }
           }
 
@@ -307,15 +321,15 @@ const DDESystem = SystemBuilder({
             dummy.updateMatrix()
 
             if (type === "spruceLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x009999))
+              leaf!.setColorAt(leafCount, new Color(0x0099aa))
             } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x00dd55))
+              leaf!.setColorAt(leafCount, new Color(0x33dd77))
             } else if (type === "oak") {
               oak!.setColorAt(oakCount, new Color(0xffaa99))
             } else if (type === "spruce") {
               spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
             } else {
-              blocks.setColorAt(i, new Color(0xFFFFFF))
+              // blocks.setColorAt(i, new Color(0xFFFFFF))
             }
 
             if (type === "spruce") {
@@ -335,7 +349,7 @@ const DDESystem = SystemBuilder({
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true
           leaf!.instanceMatrix.needsUpdate = true
-          if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
+          // if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
           if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
           if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
@@ -345,6 +359,7 @@ const DDESystem = SystemBuilder({
         logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {
+        const ratio = delta / 25
         const players = world.players()
 
         // update player positions
@@ -355,13 +370,15 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
+          const state = world.state<DDEState>()
+
           const { rotation, rotating, flying, aim } = position.data
 
           const interpolated = position.interpolate(world, delta)
 
           if (!world.three?.birdAssets[character.id]) continue
 
-          const { duck, eagle, mixers } = world.three?.birdAssets[character.id]
+          const { duck, eagle, laser, mixers } = world.three?.birdAssets[character.id]
 
           const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
 
@@ -379,15 +396,22 @@ const DDESystem = SystemBuilder({
             eagle.rotation.z = rotation - rotating * (40 - delta) / 40
           }
 
+          if (laser) {
+            laser.material.opacity -= 0.05 * ratio
+            if (laser.material.opacity <= 0) laser.visible = false
+          }
+
           if (world.three?.debug && player.id === world.client?.playerId()) {
             world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           }
 
           for (const mixer of mixers) {
             if (flying) {
-              mixer.update(sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)) * 0.005 + 0.01)
+              const speed = sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z))
+              mixer.update(speed * ratio * 0.01 + 0.01)
             } else {
-              mixer.update(hypot(position.data.velocity.x, position.data.velocity.y) * 0.015 + 0.01)
+              const speed = hypot(position.data.velocity.x, position.data.velocity.y)
+              mixer.update(speed * ratio * 0.03 + 0.01)
             }
           }
         }

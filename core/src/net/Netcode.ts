@@ -7,7 +7,14 @@ export type Syncer = {
   write: (world: World) => GameData
 }
 
-export type NetMessageTypes = GameData | RequestData | ResponseData
+export type NetMessageTypes = GameData | LatencyData | RequestData | ResponseData
+
+// todo use this and remove latency/diff from GameData
+export type LatencyData = {
+  type: "latency"
+  latency: number
+  diff: number
+}
 
 export type GameData = {
   type: "game"

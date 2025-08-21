@@ -1,9 +1,12 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, Input,
-  Networked, Player, Point, Position, Ready, round, Team, World, XYZ
+  abs, Action, Actions, Character, Collider, cos, Input, max,
+  Networked, Player, playerForCharacter, Point, Position, Ready, round, sin, sqrt,
+  Team, World, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
+
+type Target = XYZ & { id: string }
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   const camera = world.three?.camera
@@ -27,7 +30,7 @@ const leap = 0.23
 export const Bird = (player: Player) => Character({
   id: `bird-${player.id}`,
   components: {
-    position: Position({ friction: true, gravity: 0.002, flying: false, z: 6, x: 25, y: 18 }),
+    position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
     networked: Networked(),
     collider: Collider({
       shape: "ball",
@@ -65,6 +68,33 @@ export const Bird = (player: Player) => Character({
         "r": ({ hold }) => {
           if (hold) return null
           return { actionId: "ready" }
+        },
+
+        "mb2": ({ hold, character, world }) => {
+          if (hold || !document.pointerLockElement || !character) return null
+
+          // const { position } = character?.components
+          // const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
+          // const aim = { ...world.client!.controls.localAim }
+
+          return { actionId: "rocket" }
+        },
+
+        "mb1": ({ hold, character, world }) => {
+          if (hold || !document.pointerLockElement || !character) return null
+
+          const { position } = character?.components
+          const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
+          const aim = { ...world.client!.controls.localAim }
+
+          const targets: Target[] = world.characters().filter(c => c.id !== character.id).map(x => ({
+            x: x.components.position.data.x,
+            y: x.components.position.data.y,
+            z: x.components.position.data.z,
+            id: x.id
+          }))
+
+          return { actionId: "laser", params: { pos, aim, targets } }
         },
 
         // transform
@@ -112,14 +142,100 @@ export const Bird = (player: Player) => Character({
     actions: Actions({
       ready: Ready,
       point: Point,
-      transform: Action("transform", ({ entity, world, player }) => {
+      transform: Action("transform", ({ entity, world }) => {
         const { position } = entity?.components ?? {}
         if (!position) return
 
         const state = world.game.state as DDEState
         if (state.phase === "play") return
+        if (state.hit[entity?.id ?? ""]) return
 
         position.data.flying = !position.data.flying
+      }),
+      laser: Action("laser", ({ world, params, entity, player }) => {
+        if (!entity) return
+
+        const state = world.state<DDEState>()
+
+        if (state.hit[entity.id]) return
+
+        const cd = world.tick - (state.lastShot[entity.id] ?? 0)
+        if (cd < 20) return
+
+        state.lastShot[entity.id] = world.tick
+
+        world.client?.sound.play({ name: "laser1", threshold: { pos: params.pos, distance: 5 } })
+
+        // find target from camera
+        const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
+
+        // fixed distance along dir (for now)
+        const target = new Vector3(
+          -sin(params.aim.x),
+          -0.33 + params.aim.y,
+          -cos(params.aim.x)
+        ).normalize().multiplyScalar(10).add(camera)
+
+        const eyePos = { x: params.pos.x, y: params.pos.y, z: params.pos.z + 0.13 }
+        const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
+        const dir = target.clone().sub(eyes).normalize()
+
+        const laser = world.three?.birdAssets[entity.id]?.laser
+        if (laser) {
+          const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
+          laser.position.copy(eyes.add(offset.multiplyScalar(.03)))
+          laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+
+          laser.updateMatrix()
+          laser.material.opacity = 1
+          laser.visible = true
+        }
+
+        // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
+        if (world.client) return
+
+        const otherDucks = params.targets as Target[]
+        for (const duck of otherDucks) {
+          if (state.hit[duck.id]) continue
+          const duckEntity = world.entity<Position>(duck.id)
+          if (!duckEntity) continue
+
+          duck.z += 0.02
+
+          const L = XYZsub(duck, eyePos)
+          const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
+
+          if (tc < 0) continue
+
+          const Ldist = XYZdistance(duck, eyePos)
+          const D = sqrt((Ldist * Ldist) - (tc * tc))
+
+          if (D > 0 && D < 0.09) {
+            state.hit[duck.id] = { tick: world.tick, by: entity.id }
+            const duckPlayer = playerForCharacter(world, duck.id)
+            world.announce(`${player?.components.pc.data.name} hit ${duckPlayer?.components.pc.data.name}`)
+
+            duckEntity.components.position.data.velocity.z = -0.05
+            duckEntity.components.position.data.flying = false
+          }
+        }
+      }),
+      rocket: Action("rocket", ({ entity, world }) => {
+        if (!entity) return
+
+        const { position } = entity?.components ?? {}
+        if (!position) return
+
+        const state = world.state<DDEState>()
+
+        if (state.hit[entity.id]) return
+
+        const cd = world.tick - (state.lastRocket[entity.id] ?? 0)
+        if (cd < 80 && !position.data.standing) return
+
+        state.lastRocket[entity.id] = world.tick
+
+        position.setVelocity({ z: 0.1 })
       }),
       jump: Action("jump", ({ entity, world, params }) => {
         if (!entity) return
@@ -131,12 +247,17 @@ export const Bird = (player: Player) => Character({
         if (!position.data.standing && params.hold) return
 
         const state = world.game.state as DDEState
+        if (state.hit[entity.id]) return
         if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
 
         // double jumped
-        if (!position.data.standing) state.doubleJumped.push(entity.id)
+        if (!position.data.standing) {
+          position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
+          state.doubleJumped.push(entity.id)
+        } else {
+          position.setVelocity({ z: 0.05 })
+        }
 
-        position.setVelocity({ z: 0.043 })
         world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
       }),
       moveAnalog: Action("moveAnalog", ({ entity, params, world }) => {
@@ -162,6 +283,9 @@ export const Bird = (player: Player) => Character({
       }),
       move: Action("move", ({ entity, params, world }) => {
         if (!params.vec || !params.dir) return
+
+        const state = world.state<DDEState>()
+        if (state.hit[entity?.id ?? ""]) return
 
         const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
         const dir = new Vector3(params.dir.x, params.dir.y, params.dir.z)

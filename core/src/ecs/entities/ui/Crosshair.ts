@@ -10,7 +10,7 @@ export const Crosshair = () => {
     transform: "translate(-50%, -50%)",
     width: "6px",
     height: "6px",
-    backgroundColor: "#00ffff",
+    backgroundColor: "rgba(0, 255, 255, 1)",
     border: "0px",
     borderRadius: "50%",
     pointerEvents: "none"
@@ -23,9 +23,8 @@ export const Crosshair = () => {
       npc: NPC({
         behavior: (_, world) => {
           const settings = world.settings<DDESettings>()
-          const pc = world.client?.playerCharacter()
 
-          if (!settings.eagleCrosshair || !pc?.components.position.data.flying) {
+          if (!settings.showCrosshair || !document.pointerLockElement) {
             div.style.visibility = "hidden"
           } else {
             div.style.visibility = "visible"

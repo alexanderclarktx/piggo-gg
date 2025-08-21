@@ -49,6 +49,14 @@ export const XYZdistance = (a: XYZ, b: XYZ): number => {
   return hypot(a.x - b.x, a.y - b.y, a.z - b.z)
 }
 
+export const XYZsub = (a: XYZ, b: XYZ): XYZ => {
+  return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z }
+}
+
+export const XYZdot = (a: XYZ, b: XYZ): number => {
+  return a.x * b.x + a.y * b.y + a.z * b.z
+}
+
 export const XYdiff = (a: XY, b: XY, threshold: number = 0) => {
   const distance = XYdistance(a, b)
   return distance > threshold

@@ -1,4 +1,4 @@
-import { entries, GunNames, World, XY, XYdistance } from "@piggo-gg/core"
+import { entries, GunNames, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Tone } from "tone"
 
 export type BirdSounds = "steps" | "birdsong1"
@@ -7,12 +7,12 @@ export type MusicSounds = "track2"
 export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
-export type WallPlaceSounds = "wallPlace1" | "wallPlace2"
 export type VolleySounds = "spike"
+export type LaserSounds = "laser1" | "laser2" | "laser3"
 
 export type ValidSounds =
   BirdSounds | BubbleSounds | MusicSounds | ClickSounds |
-  GunNames | WallPlaceSounds | ToolSounds | EatSounds | VolleySounds
+  GunNames | ToolSounds | EatSounds | VolleySounds | LaserSounds
 
 const load = (url: string, volume: number): Tone => {
   const player = new Tone({ url, volume: volume - 10 })
@@ -41,6 +41,7 @@ export type Sound = {
   stop: (name: ValidSounds) => void
   stopAll: () => void
   play: (props: SoundPlayProps) => boolean
+  playChoice: (options: ValidSounds[], props?: Omit<SoundPlayProps, "name">) => boolean
 }
 
 export const Sound = (world: World): Sound => {
@@ -79,8 +80,6 @@ export const Sound = (world: World): Sound => {
       deagle: load("pistol.mp3", -30),
       ak: load("ak.mp3", -25),
       awp: load("awp.mp3", -30),
-      wallPlace1: load("wallPlace1.wav", -20),
-      wallPlace2: load("wallPlace2.wav", -20),
       thud: load("thud.mp3", -15),
       clink: load("clink.mp3", -10),
       whiff: load("whiff.wav", -15),
@@ -88,6 +87,9 @@ export const Sound = (world: World): Sound => {
       eat: load("eat.mp3", -10),
       eat2: load("eat2.mp3", -10),
       spike: load("spike.mp3", 5),
+      laser1: load("laser1.mp3", -15),
+      laser2: load("laser2.mp3", -5),
+      laser3: load("laser3.mp3", -10),
     },
     stop: (name: ValidSounds) => {
       const tone = sound.tones[name]
@@ -114,6 +116,18 @@ export const Sound = (world: World): Sound => {
           }
         }
       }
+    },
+    playChoice: (options: ValidSounds[], props?: Omit<SoundPlayProps, "name">) => {
+      if (sound.muted) return false
+
+      const selected = randomChoice(options)
+
+      if (selected) {
+        sound.play({ name: selected, ...props })
+        return true
+      }
+
+      return false
     },
     play: ({ name, start = 0, fadeIn = 0, threshold }) => {
       if (sound.muted && !name.startsWith("track")) return false
