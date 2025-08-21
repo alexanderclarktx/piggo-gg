@@ -19,6 +19,7 @@ export type BlockData = {
   neighbors: (chunk: XY, dist?: number) => XY[]
   invalidate: (c?: "cache" | "visibleCache") => void
   remove: (xyz: XYZ, world?: World) => void
+  removeIJK: (ijk: XYZ, world?: World) => void
   visible: (at: XY[], flip?: boolean, ij?: boolean) => Block[]
 }
 
@@ -398,6 +399,31 @@ export const BlockData = (): BlockData => {
 
       dirty[key] = true
       visibleDirty[key] = true
+    },
+    removeIJK: (ijk: XYZ, world?: World) => {
+      const chunkX = floor(ijk.x / 4)
+      const chunkY = floor(ijk.y / 4)
+
+      if (!data[chunkX]?.[chunkY]) {
+        // console.error("CHUNK NOT FOUND", chunkX, chunkY)
+        return
+      }
+
+      const xIndex = ijk.x - chunkX * 4
+      const yIndex = ijk.y - chunkY * 4
+
+      const index = ijk.z * 16 + yIndex * 4 + xIndex
+
+      if (data[chunkX][chunkY][index] === undefined) {
+        console.error("INVALID INDEX", index, xIndex, yIndex, ijk.z)
+        return
+      }
+
+      data[chunkX][chunkY][index] = 0
+
+      const key = chunkey(chunkX, chunkY)
+
+      dirty[key] = true
     }
   }
 

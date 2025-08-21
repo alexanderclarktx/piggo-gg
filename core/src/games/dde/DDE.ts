@@ -144,6 +144,8 @@ const DDESystem = SystemBuilder({
           state.nextSeed = randomInt(1000000)
         }
 
+        if (world.tick % 200 === 0) blocksRendered = false
+
         if (state.phase === "starting" && world.tick === state.willStart!) {
 
           world.announce(`round ${state.round + 1}!`)
@@ -300,18 +302,20 @@ const DDESystem = SystemBuilder({
         const t3 = performance.now()
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
+          console.log("rendering blocks")
 
           const chunk = XYtoChunk({ x: 1, y: 1 })
           const neighbors = world.blocks.neighbors(chunk, 24)
 
           const chunkData = world.blocks.visible(neighbors, false, true)
-          world.three.blocks.count = chunkData.length
+          // world.three.blocks.count = chunkData.length
 
           const { blocks, spruce, oak, leaf } = world.three
 
           let spruceCount = 0
           let oakCount = 0
           let leafCount = 0
+          let otherCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z } = chunkData[i]
@@ -343,6 +347,7 @@ const DDESystem = SystemBuilder({
               leafCount++
             } else {
               blocks.setMatrixAt(i, dummy.matrix)
+              otherCount++
             }
           }
           blocks.instanceMatrix.needsUpdate = true
@@ -353,6 +358,11 @@ const DDESystem = SystemBuilder({
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
           if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
           if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
+
+          world.three!.blocks.count = otherCount
+          world.three!.leaf!.count = leafCount
+          world.three!.oak!.count = oakCount
+          world.three!.spruce!.count = spruceCount
 
           blocksRendered = true
         }
