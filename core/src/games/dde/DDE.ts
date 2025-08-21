@@ -209,11 +209,11 @@ const DDESystem = SystemBuilder({
 
           // fell off the map
           if (z < -4) {
-            position.setPosition({ x: 14, y: 14, z: 8 })
+            position.setPosition({ x: 20, y: 20, z: 8 })
           }
 
-          if ((world.tick - state.hit[character.id]?.tick) >= 20) {
-            position.setPosition({ x: 20, y: 20, z: 6 })
+          if ((world.tick - state.hit[character.id]?.tick) >= 40) {
+            position.setPosition({ x: 20, y: 20, z: 8 })
             delete state.hit[character.id]
           }
 
@@ -362,8 +362,6 @@ const DDESystem = SystemBuilder({
         const ratio = delta / 25
         const players = world.players()
 
-        // if (world.three?.laser) world.three.laser.material.opacity -= 0.05 * ratio
-
         // update player positions
         for (const player of players) {
           const character = player.components.controlling?.getCharacter(world)
@@ -389,15 +387,9 @@ const DDESystem = SystemBuilder({
             duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
             duck.rotation.y = orientation.x + PI / 2
 
-            if (state.hit[character.id]) {
-              console.log("HIT", duck.id)
-              
-              // const m = duck.children[0] as Mesh
-              // m.material.opacity = 0.5
-              // duck.children[0]
-              // duck
-              // duck.rotation.x = -PI
-            }
+            // if (state.hit[character.id]) {
+              // console.log("HIT", duck.id)
+            // }
           }
 
           eagle.visible = position.data.flying
