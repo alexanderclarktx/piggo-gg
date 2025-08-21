@@ -239,7 +239,7 @@ const DDESystem = SystemBuilder({
             eagle.frustumCulled = false
             eagle.scale.set(0.05, 0.05, 0.05)
 
-            const laser = cloneThree(world.three.laser!) as Laser
+            const laser = cloneThree(world.three.laser!)
             world.three.scene.add(laser)
 
             const duckMixer = new AnimationMixer(duck)

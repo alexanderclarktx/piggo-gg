@@ -1,6 +1,6 @@
 import { Mesh, Object3D } from "three"
 
-export const cloneThree = (o: Object3D): Object3D => {
+export const cloneThree = <O extends Object3D>(o: O): O => {
   const cloned = o.clone()
 
   cloned.traverse((child) => {
