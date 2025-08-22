@@ -63,14 +63,22 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
 
     // find minimum step size to go to next block
     const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
-    const yStep = dir.y > 0 ? (0.3 - yGap) / dir.y : (yGap / -dir.y)
-    const zStep = dir.z > 0 ? (0.3 - zGap) / dir.z : (zGap / -dir.z)
+    const yStep = dir.z > 0 ? (0.3 - yGap) / dir.z : (yGap / -dir.z)
+    const zStep = dir.y > 0 ? (0.3 - zGap) / dir.y : (zGap / -dir.y)
 
     const minStep = min(xStep, yStep, zStep)
+    // console.log("step", xStep.toFixed(2), yStep.toFixed(2), zStep.toFixed(2))
+    // console.log("xstep", xStep, "xGap", xGap, "current.x", current.x, "0.3 - xGap", 0.3 - xGap)
 
-    current.x += dir.x * minStep
-    current.y += dir.y * minStep
-    current.z += dir.z * minStep
+    const xDist = dir.x * minStep * 1.01
+    const yDist = dir.z * minStep * 1.01
+    const zDist = dir.y * minStep * 1.01
+
+    current.x += xDist
+    current.y += yDist
+    current.z += zDist
+
+    travelled += hypot(xDist, yDist, zDist)
 
     const insideBlock = {
       x: floor((0.15 + current.x) / 0.3),
@@ -82,14 +90,7 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
       world.blocks.remove(insideBlock)
       console.log("removed", insideBlock)
       break
-    } else {
-      console.log("checked", insideBlock)
     }
-
-    // const dist = hypot(current.x - eyePos.x, current.y - eyePos.y, current.z - eyePos.z)
-    // console.log("dist", dist, minStep)
-    // travelled += dist
-    travelled += 1
   }
 
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
