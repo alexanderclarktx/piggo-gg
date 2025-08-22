@@ -54,7 +54,7 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   const current = { ...eyePos }
 
   let travelled = 0
-  let cap = 20
+  let cap = 40
 
   while (travelled < 10 && cap > 0) {
 

@@ -248,22 +248,10 @@ export const BlockData = (): BlockData => {
       visibleDirty[key] = true
 
       // check if neighbors are also dirty
-      if (x % 4 === 0) {
-        console.log("marking left neighbor dirty")
-        visibleDirty[chunkey(chunkX - 1, chunkY)] = true
-      }
-      if (x % 4 === 3) {
-        console.log("marking right neighbor dirty")
-        visibleDirty[chunkey(chunkX + 1, chunkY)] = true
-      }
-      if (y % 4 === 0) {
-        console.log("marking top neighbor dirty")
-        visibleDirty[chunkey(chunkX, chunkY - 1)] = true
-      }
-      if (y % 4 === 3) {
-        console.log("marking bottom neighbor dirty")
-        visibleDirty[chunkey(chunkX, chunkY + 1)] = true
-      }
+      if (x % 4 === 0) visibleDirty[chunkey(chunkX - 1, chunkY)] = true
+      if (x % 4 === 3) visibleDirty[chunkey(chunkX + 1, chunkY)] = true
+      if (y % 4 === 0) visibleDirty[chunkey(chunkX, chunkY - 1)] = true
+      if (y % 4 === 3) visibleDirty[chunkey(chunkX, chunkY + 1)] = true
     }
   }
 
