@@ -7,14 +7,19 @@ const defaults: CSS = {
   pointerEvents: "auto"
 }
 
-export const HtmlInput = (style: CSS = {}): HtmlDiv => {
-  const div = HtmlText()
+export type HtmlInputProps = {
+  text?: string
+  style?: CSS
+}
+
+export const HtmlInput = (props: HtmlInputProps = {}): HtmlDiv => {
+  const div = HtmlText(props)
 
   div.contentEditable = "true"
   div.inputMode = "text"
 
   Object.assign(div.style, defaults)
-  Object.assign(div.style, style)
+  Object.assign(div.style, props.style)
 
   div.addEventListener("keydown", (e: KeyboardEvent) => {
     if (["Escape", "Enter"].includes(e.key)) {
