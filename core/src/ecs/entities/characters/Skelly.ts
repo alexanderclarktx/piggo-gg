@@ -1,6 +1,6 @@
 import {
   Actions, Character, Collider, Debug, dropItem, Effects, Element,
-  Health, Input, Inventory, Move, Networked, Player, Pickaxe, Point,
+  Health, Input, Inventory, Move, Networked, Player, Point,
   Position, Renderable, WASDInputMap, XY, setActiveItemIndex, DudeSkin,
   VolleyCharacterAnimations, VolleyCharacterDynamic, Action
 } from "@piggo-gg/core"
@@ -19,7 +19,7 @@ export const Skelly = (player: Player, pos?: XY) => Character({
     collider: Collider({ shape: "ball", radius: 4, hittable: true }),
     health: Health({ hp: 100 }),
     team: player.components.team,
-    inventory: Inventory([Pickaxe]),
+    inventory: Inventory([]),
     element: Element("flesh"),
     input: Input({
       press: {

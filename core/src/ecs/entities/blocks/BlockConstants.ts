@@ -1,7 +1,5 @@
 import { XYZ } from "@piggo-gg/core"
 
-export const BlockDimensions = { width: 18, height: 12 }
-
 export type Block = XYZ & { type: number }
 
 export type BlockPlan = Block[]

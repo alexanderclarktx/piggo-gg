@@ -1,7 +1,7 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
   logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
-  SystemBuilder, XYtoChunk, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
+  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Mesh, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -144,6 +144,8 @@ const DDESystem = SystemBuilder({
           state.nextSeed = randomInt(1000000)
         }
 
+        if (world.blocks.needsUpdate()) blocksRendered = false
+
         if (state.phase === "starting" && world.tick === state.willStart!) {
 
           world.announce(`round ${state.round + 1}!`)
@@ -239,7 +241,7 @@ const DDESystem = SystemBuilder({
             eagle.frustumCulled = false
             eagle.scale.set(0.05, 0.05, 0.05)
 
-            const laser = cloneThree(world.three.laser!) as Laser
+            const laser = cloneThree(world.three.laser!)
             world.three.scene.add(laser)
 
             const duckMixer = new AnimationMixer(duck)
@@ -301,17 +303,15 @@ const DDESystem = SystemBuilder({
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
 
-          const chunk = XYtoChunk({ x: 1, y: 1 })
-          const neighbors = world.blocks.neighbors(chunk, 24)
-
-          const chunkData = world.blocks.visible(neighbors, false, true)
-          world.three.blocks.count = chunkData.length
+          const neighbors = world.blocks.neighbors({ x: 1, y: 1 }, 24)
+          const chunkData = world.blocks.visible(neighbors)
 
           const { blocks, spruce, oak, leaf } = world.three
 
           let spruceCount = 0
           let oakCount = 0
           let leafCount = 0
+          let otherCount = 0
 
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z } = chunkData[i]
@@ -342,17 +342,23 @@ const DDESystem = SystemBuilder({
               leaf?.setMatrixAt(leafCount, dummy.matrix)
               leafCount++
             } else {
-              blocks.setMatrixAt(i, dummy.matrix)
+              blocks.setMatrixAt(otherCount, dummy.matrix)
+              otherCount++
             }
           }
           blocks.instanceMatrix.needsUpdate = true
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true
           leaf!.instanceMatrix.needsUpdate = true
-          // if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
+
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
           if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
           if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
+
+          world.three!.blocks.count = otherCount
+          world.three!.leaf!.count = leafCount
+          world.three!.oak!.count = oakCount
+          world.three!.spruce!.count = spruceCount
 
           blocksRendered = true
         }
