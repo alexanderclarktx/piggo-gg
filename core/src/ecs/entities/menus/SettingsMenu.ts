@@ -48,33 +48,10 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
     }
   })
 
-  // const input = HtmlText({
-  //   text: "1.00",
-  //   style: {
-  //     width: "60px",
-  //     height: "40px",
-  //     lineHeight: "40px",
-  //     position: "relative",
-  //     fontSize: "18px",
-  //     pointerEvents: "auto",
-  //     textAlign: "center",
-  //     outline: "none"
-  //   }
-  // })
-
   const input = HtmlInput({
     text: "1.00",
-    style: {
-      width: "60px"
-    }
+    style: { width: "60px" }
   })
-
-  // input.addEventListener("keydown", (e: KeyboardEvent) => {
-  //   if (["Escape", "Enter"].includes(e.key)) {
-  //     e.preventDefault()
-  //     input.blur()
-  //   }
-  // })
 
   input.addEventListener("beforeinput", (e: InputEvent) => {
     const key = e.data
