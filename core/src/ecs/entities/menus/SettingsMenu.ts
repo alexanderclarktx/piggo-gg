@@ -1,7 +1,7 @@
 import { DDESettings, HtmlButton, HtmlDiv, HtmlText, RefreshableDiv, styleSwitch, World } from "@piggo-gg/core"
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
-  const settings = HtmlDiv({
+  const div = HtmlDiv({
     top: "5px",
     left: "50%",
     width: "400px",
@@ -58,12 +58,12 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   const showControls = settingsRow("Show Controls", "showControls")
   const showCrosshair = settingsRow("Show Crosshair", "showCrosshair")
 
-  settings.appendChild(ambientSound.div)
-  settings.appendChild(showControls.div)
-  settings.appendChild(showCrosshair.div)
+  div.appendChild(ambientSound.div)
+  div.appendChild(showControls.div)
+  div.appendChild(showCrosshair.div)
 
   return {
-    div: settings,
+    div,
     update: () => {
       const settings = world.settings<DDESettings>()
       styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
