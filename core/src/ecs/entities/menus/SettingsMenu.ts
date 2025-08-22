@@ -51,7 +51,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
   const input = HtmlInput({
     text: "1.00",
     style: { width: "60px" },
-    validator: (value) => {
+    handler: (value) => {
       const num = parseFloat(value)
       return isNaN(num) ? "1.00" : num.toFixed(2)
     }
