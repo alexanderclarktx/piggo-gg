@@ -62,14 +62,12 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
     const yGap = (current.y + 0.15) % 0.3
     const zGap = current.z % 0.3
 
-    // find minimum step size to go to next block
+    // find step size to hit next block
     const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
     const yStep = dir.z > 0 ? (0.3 - yGap) / dir.z : (yGap / -dir.z)
     const zStep = dir.y > 0 ? (0.3 - zGap) / dir.y : (zGap / -dir.y)
 
     const minStep = min(xStep, yStep, zStep)
-    // console.log("step", xStep.toFixed(2), yStep.toFixed(2), zStep.toFixed(2))
-    // console.log("xstep", xStep, "xGap", xGap, "current.x", current.x, "0.3 - xGap", 0.3 - xGap)
 
     const xDist = dir.x * minStep * 1.01
     const yDist = dir.z * minStep * 1.01
