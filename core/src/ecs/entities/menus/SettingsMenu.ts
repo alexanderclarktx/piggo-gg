@@ -13,7 +13,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     position: "relative"
   })
 
-  const settingsRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
+  const boolRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
     const label = HtmlText({
       text,
       style: {
@@ -54,9 +54,9 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     return { div, button }
   }
 
-  const ambientSound = settingsRow("Ambient Sound", "ambientSound")
-  const showControls = settingsRow("Show Controls", "showControls")
-  const showCrosshair = settingsRow("Show Crosshair", "showCrosshair")
+  const ambientSound = boolRow("Ambient Sound", "ambientSound")
+  const showControls = boolRow("Show Controls", "showControls")
+  const showCrosshair = boolRow("Show Crosshair", "showCrosshair")
 
   div.appendChild(ambientSound.div)
   div.appendChild(showControls.div)
