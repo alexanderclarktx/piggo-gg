@@ -1,6 +1,6 @@
 import { DDESettings, HtmlButton, HtmlDiv, HtmlText, RefreshableDiv, styleSwitch, World } from "@piggo-gg/core"
 
-export const Settings = (world: World): RefreshableDiv => {
+export const SettingsMenu = (world: World): RefreshableDiv => {
   const settings = HtmlDiv({
     top: "5px",
     left: "50%",
