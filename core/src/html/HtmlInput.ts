@@ -27,12 +27,13 @@ export const HtmlInput = (props: HtmlInputProps = {}): HtmlDiv => {
   div.addEventListener("keydown", (e: KeyboardEvent) => {
     if (["Escape", "Enter"].includes(e.key)) {
       e.preventDefault()
-
-      if (props.handler) {
-        div.textContent = props.handler(div.textContent ?? "")
-      }
-
       div.blur()
+    }
+  })
+
+  div.addEventListener("blur", () => {
+    if (props.handler) {
+      div.textContent = props.handler(div.textContent ?? "")
     }
   })
 
