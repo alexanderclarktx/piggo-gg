@@ -27,9 +27,6 @@ export const BlockData = (): BlockData => {
     }
   }
 
-  let cache: Record<string, Block[]> = {}
-  // let dirty: Record<string, boolean> = {}
-
   let visibleCache: Record<string, Block[]> = {}
   let visibleDirty: Record<string, boolean> = {}
 
@@ -81,7 +78,6 @@ export const BlockData = (): BlockData => {
           data[i][j].fill(0)
         }
       }
-      cache = {}
       visibleCache = {}
       visibleDirty = {}
     },
@@ -143,13 +139,11 @@ export const BlockData = (): BlockData => {
         const chunk = chunkval(pos.x, pos.y)
         if (!chunk) continue
 
-        // read the visibleCache
+        // check cache
         const key = `${pos.x}:${pos.y}`
         if (visibleCache[key] && !visibleDirty[key]) {
           result.push(...visibleCache[key])
           continue
-        } else {
-          console.log("no cache")
         }
 
         const chunkResult: Block[] = []
