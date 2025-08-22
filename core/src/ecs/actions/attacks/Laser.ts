@@ -88,7 +88,6 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
 
     if (world.blocks.hasIJK(insideBlock)) {
       world.blocks.remove(insideBlock)
-      console.log("removed", insideBlock)
       break
     }
   }
