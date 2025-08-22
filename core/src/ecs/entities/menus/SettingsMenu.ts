@@ -63,15 +63,6 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
 
   input.contentEditable = "true"
 
-  // const input = document.createElement("input")
-  // input.type = "number"
-  // input.value = String(world.settings<DDESettings>()[key])
-  // input.style.width = "60px"
-  // input.style.height = "40px"
-  // input.style.position = "relative"
-  // input.style.fontSize = "18px"
-  // input.style.pointerEvents = "auto"
-
   const div = HtmlDiv({
     position: "relative",
     marginTop: "15px",

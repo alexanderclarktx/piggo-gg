@@ -114,6 +114,8 @@ export const InputSystem = ClientSystemBuilder({
 
         const { isOpen, inputBuffer } = world.client!.chat
 
+        // if (world.client!.busy) return
+
         // add to buffer
         if (!world.client!.bufferDown.get(keyName)) {
 
