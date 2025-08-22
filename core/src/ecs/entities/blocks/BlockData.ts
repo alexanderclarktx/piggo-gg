@@ -9,7 +9,7 @@ export type BlockData = {
   hasIJK: (ijk: XYZ) => boolean
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
-  invalidate: (c?: "cache" | "visibleCache") => void
+  invalidate: () => void
   remove: (xyz: XYZ, world?: World) => void
   needsUpdate: () => boolean
   visible: (at: XY[]) => Block[]
@@ -28,7 +28,7 @@ export const BlockData = (): BlockData => {
   }
 
   let cache: Record<string, Block[]> = {}
-  let dirty: Record<string, boolean> = {}
+  // let dirty: Record<string, boolean> = {}
 
   let visibleCache: Record<string, Block[]> = {}
   let visibleDirty: Record<string, boolean> = {}
@@ -82,7 +82,6 @@ export const BlockData = (): BlockData => {
         }
       }
       cache = {}
-      dirty = {}
       visibleCache = {}
       visibleDirty = {}
     },
@@ -125,7 +124,6 @@ export const BlockData = (): BlockData => {
 
       const key = chunkey(chunkX, chunkY)
 
-      dirty[key] = true
       visibleDirty[key] = true
 
       return true
@@ -150,6 +148,8 @@ export const BlockData = (): BlockData => {
         if (visibleCache[key] && !visibleDirty[key]) {
           result.push(...visibleCache[key])
           continue
+        } else {
+          console.log("no cache")
         }
 
         const chunkResult: Block[] = []
@@ -168,9 +168,11 @@ export const BlockData = (): BlockData => {
               // check if the block is visible
               if (
                 !val(pos.x * 4 + x + dir, pos.y * 4 + y, z) ||
+                !val(pos.x * 4 + x - dir, pos.y * 4 + y, z) ||
+
                 !val(pos.x * 4 + x, pos.y * 4 + y + dir, z) ||
                 !val(pos.x * 4 + x, pos.y * 4 + y - dir, z) ||
-                !val(pos.x * 4 + x - dir, pos.y * 4 + y, z) ||
+
                 !val(pos.x * 4 + x, pos.y * 4 + y, z + 1)
               ) {
                 const ijk = { x: x + pos.x * 4, y: y + pos.y * 4, z }
@@ -189,15 +191,9 @@ export const BlockData = (): BlockData => {
       logPerf("BlockData.visible", time)
       return result
     },
-    invalidate: (c: "cache" | "visibleCache" = "cache") => {
-      if (c === "visibleCache") {
-        for (const value of keys(visibleDirty)) {
-          visibleDirty[value] = true
-        }
-      } else {
-        for (const value of keys(dirty)) {
-          dirty[value] = true
-        }
+    invalidate: () => {
+      for (const value of keys(visibleDirty)) {
+        visibleDirty[value] = true
       }
     },
     hasIJK: (ijk: XYZ) => {
@@ -249,9 +245,25 @@ export const BlockData = (): BlockData => {
       data[chunkX][chunkY][index] = 0
 
       const key = chunkey(chunkX, chunkY)
-
-      dirty[key] = true
       visibleDirty[key] = true
+
+      // check if neighbors are also dirty
+      if (x % 4 === 0) {
+        console.log("marking left neighbor dirty")
+        visibleDirty[chunkey(chunkX - 1, chunkY)] = true
+      }
+      if (x % 4 === 3) {
+        console.log("marking right neighbor dirty")
+        visibleDirty[chunkey(chunkX + 1, chunkY)] = true
+      }
+      if (y % 4 === 0) {
+        console.log("marking top neighbor dirty")
+        visibleDirty[chunkey(chunkX, chunkY - 1)] = true
+      }
+      if (y % 4 === 3) {
+        console.log("marking bottom neighbor dirty")
+        visibleDirty[chunkey(chunkX, chunkY + 1)] = true
+      }
     }
   }
 
