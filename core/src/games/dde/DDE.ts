@@ -342,7 +342,7 @@ const DDESystem = SystemBuilder({
               leaf?.setMatrixAt(leafCount, dummy.matrix)
               leafCount++
             } else {
-              blocks.setMatrixAt(i, dummy.matrix)
+              blocks.setMatrixAt(otherCount, dummy.matrix)
               otherCount++
             }
           }
@@ -350,7 +350,7 @@ const DDESystem = SystemBuilder({
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true
           leaf!.instanceMatrix.needsUpdate = true
-          // if (blocks.instanceColor) blocks.instanceColor.needsUpdate = true
+
           if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
           if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
           if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
