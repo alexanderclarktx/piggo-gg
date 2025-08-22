@@ -16,11 +16,12 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
   const showControls = boolRow(world, "Show Controls", "showControls")
   const showCrosshair = boolRow(world, "Show Crosshair", "showCrosshair")
-  // const sensitivity = boolRow("Mouse Sensitivity", "mouseSensitivity")
+  const sensitivity = numRow(world, "Mouse Sensitivity", "mouseSensitivity")
 
   div.appendChild(ambientSound.div)
   div.appendChild(showControls.div)
   div.appendChild(showCrosshair.div)
+  div.appendChild(sensitivity.div)
 
   return {
     div,
@@ -33,7 +34,43 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   }
 }
 
-const boolRow = (world: World, text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
+const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: HtmlDiv, input: HTMLInputElement } => {
+  const label = HtmlText({
+    text,
+    style: {
+      width: "320px",
+      height: "40px",
+      position: "relative",
+      left: "10px",
+      fontSize: "18px",
+      lineHeight: "40px",
+      textAlign: "center"
+    }
+  })
+
+  const input = document.createElement("input")
+  input.type = "number"
+  input.value = String(world.settings<DDESettings>()[key])
+  input.style.width = "60px"
+  input.style.height = "40px"
+  input.style.position = "relative"
+  input.style.fontSize = "18px"
+  input.style.pointerEvents = "auto"
+
+  const div = HtmlDiv({
+    position: "relative",
+    marginTop: "15px",
+    display: "flex",
+    border: ""
+  })
+
+  div.appendChild(label)
+  div.appendChild(input)
+
+  return { div, input }
+}
+
+const boolRow = (world: World, text: string, key: "ambientSound" | "showControls" | "showCrosshair"): { div: HtmlDiv, button: HtmlButton } => {
   const label = HtmlText({
     text,
     style: {

@@ -27,6 +27,7 @@ export type DDESettings = {
   ambientSound: boolean
   showControls: boolean
   showCrosshair: boolean
+  mouseSensitivity: number
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -37,7 +38,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     settings: {
       ambientSound: true,
       showControls: true,
-      showCrosshair: true
+      showCrosshair: true,
+      mouseSensitivity: 1
     },
     state: {
       applesEaten: {},
