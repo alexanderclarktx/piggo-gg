@@ -51,19 +51,15 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
     laser.visible = true
   }
 
-  const current = {
-    x: floor((0.15 + eyePos.x) / 0.3),
-    y: floor((0.15 + eyePos.y) / 0.3),
-    z: floor(eyePos.z / 0.3)
-  }
+  const current = { ...eyePos }
 
   let travelled = 0
 
   while (travelled < 10) {
 
-    const xGap = (eyePos.x + 0.15) % 0.3
-    const yGap = (eyePos.y + 0.15) % 0.3
-    const zGap = eyePos.z % 0.3
+    const xGap = (current.x + 0.15) % 0.3
+    const yGap = (current.y + 0.15) % 0.3
+    const zGap = current.z % 0.3
 
     // find minimum step size to go to next block
     const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
@@ -90,8 +86,10 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
       console.log("checked", insideBlock)
     }
 
-    const dist = hypot(current.x - eyePos.x, current.y - eyePos.y, current.z - eyePos.z)
-    travelled += dist
+    // const dist = hypot(current.x - eyePos.x, current.y - eyePos.y, current.z - eyePos.z)
+    // console.log("dist", dist, minStep)
+    // travelled += dist
+    travelled += 1
   }
 
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
