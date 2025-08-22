@@ -1,6 +1,6 @@
 import { Actions, Entity, Renderable, Position, pixiGraphics, Input, PixiButton } from "@piggo-gg/core"
 
-export const EscapeMenu = (): Entity => {
+export const PixiMenu = (): Entity => {
 
   let visible = false
   const fontSize = 26
@@ -85,8 +85,8 @@ export const EscapeMenu = (): Entity => {
     }
   })
 
-  const escapeMenu = Entity<Position | Renderable>({
-    id: "escapeMenu",
+  const menu = Entity<Position | Renderable>({
+    id: "pixiMenu",
     components: {
       position: Position({ x: 0, y: 0, screenFixed: true }),
       input: Input({
@@ -100,7 +100,7 @@ export const EscapeMenu = (): Entity => {
       actions: Actions({
         toggleVisible: () => {
           visible = !visible
-          escapeMenu.components.renderable.visible = visible
+          menu.components.renderable.visible = visible
         }
       }),
       renderable: Renderable({
@@ -111,5 +111,5 @@ export const EscapeMenu = (): Entity => {
       })
     }
   })
-  return escapeMenu
+  return menu
 }
