@@ -11,6 +11,7 @@ const defaults: CSS = {
 export type HtmlInputProps = {
   text?: string
   style?: CSS
+  handler?: (value: string) => string
 }
 
 export const HtmlInput = (props: HtmlInputProps = {}): HtmlDiv => {
@@ -25,6 +26,7 @@ export const HtmlInput = (props: HtmlInputProps = {}): HtmlDiv => {
   div.addEventListener("keydown", (e: KeyboardEvent) => {
     if (["Escape", "Enter"].includes(e.key)) {
       e.preventDefault()
+      props.handler?.(div.textContent ?? "")
       div.blur()
     }
   })
