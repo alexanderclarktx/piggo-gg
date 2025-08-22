@@ -29,6 +29,7 @@ export type CSS = Partial<{
   minHeight: `${number}px` | `${number}%`
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
+  outline: "none"
   overflow: "visible" | "hidden" | "scroll" | "auto"
   overflowY: "visible" | "hidden" | "scroll" | "auto"
   padding: `${number}px` | `${number}%`,

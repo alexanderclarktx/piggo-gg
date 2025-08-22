@@ -15,7 +15,7 @@ const defaults: HtmlTextProps["style"] = {
   border: "none"
 }
 
-export const HtmlText = (props: HtmlTextProps): HtmlDiv => {
+export const HtmlText = (props: HtmlTextProps = {}): HtmlDiv => {
   const div = HtmlDiv()
 
   if (props.text) div.textContent = props.text

@@ -1,4 +1,7 @@
-import { colors, Entity, Friend, keys, PixiButton, pixiContainer, pixiGraphics, pixiText, Position, Renderable, values } from "@piggo-gg/core"
+import {
+  colors, Entity, Friend, keys, PixiButton, pixiContainer,
+  pixiGraphics, pixiText, Position, Renderable, values
+} from "@piggo-gg/core"
 import toast from "react-hot-toast"
 import { Container, ContainerChild } from "pixi.js"
 

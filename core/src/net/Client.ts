@@ -118,6 +118,12 @@ export const Client = ({ world }: ClientProps): Client => {
       localAim: { x: 0, y: 0 },
       moveLocal: ({ x, y }: XY, flying: boolean) => {
 
+        const mouseSensitivity = world.settings<{ mouseSensitivity: number }>().mouseSensitivity
+        if (mouseSensitivity) {
+          x *= mouseSensitivity
+          y *= mouseSensitivity
+        }
+
         client.controls.localAim.x = round(client.controls.localAim.x - x, 3)
         client.controls.localAim.y = round(client.controls.localAim.y - y, 3)
 

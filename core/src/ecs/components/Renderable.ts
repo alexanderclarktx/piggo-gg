@@ -1,4 +1,4 @@
-import { Component, Entity, Renderer, World, XY, keys, values, Position, Skins, Client } from "@piggo-gg/core"
+import { Component, Entity, Renderer, World, XY, keys, values, Position, PixiSkins, Client } from "@piggo-gg/core"
 import { AdvancedBloomFilter, BevelFilter, GlowFilter, GodrayFilter, OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from "pixi.js"
 
@@ -6,7 +6,7 @@ export type Dynamic = ((_: { container: Container, renderable: Renderable, entit
 export type DynamicDelta = ((_: { container: Container, renderable: Renderable, entity: Entity<Renderable | Position>, world: World, client: Client, delta: number }) => void)
 
 export type Renderable = Component<"renderable", {
-  desiredSkin: Skins | undefined
+  desiredSkin: PixiSkins | undefined
 }> & {
   activeAnimation: string
   anchor: XY
@@ -18,7 +18,7 @@ export type Renderable = Component<"renderable", {
   c: Container
   children: Renderable[] | undefined
   cullable: boolean
-  currentSkin: Skins | undefined
+  currentSkin: PixiSkins | undefined
   color: number
   filters: Record<string, Filter>
   interactiveChildren: boolean
@@ -71,7 +71,7 @@ export type RenderableProps = {
   rotates?: boolean
   scale?: number
   scaleMode?: "nearest" | "linear"
-  skin?: Skins
+  skin?: PixiSkins
   visible?: boolean
   zIndex?: number
   onRender?: DynamicDelta

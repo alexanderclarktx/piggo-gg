@@ -1,13 +1,12 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
   logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
-  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, Laser, cloneThree
+  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, cloneThree, EscapeMenu
 } from "@piggo-gg/core"
-import { AnimationMixer, Color, Group, Mesh, Object3D, Object3DEventMap } from "three"
+import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
-import { DDEMenu } from "./DDEMenu"
 import { DDEMobileUI } from "./DDEMobileUI"
 import { Scoreboard } from "./Scoreboard"
 
@@ -28,6 +27,7 @@ export type DDESettings = {
   ambientSound: boolean
   showControls: boolean
   showCrosshair: boolean
+  mouseSensitivity: number
 }
 
 export const DDE: GameBuilder<DDEState, DDESettings> = {
@@ -38,7 +38,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     settings: {
       ambientSound: true,
       showControls: true,
-      showCrosshair: true
+      showCrosshair: true,
+      mouseSensitivity: 1
     },
     state: {
       applesEaten: {},
@@ -63,7 +64,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
     ],
     entities: [
       Crosshair(),
-      DDEMenu(world),
+      EscapeMenu(world),
       D3Profile(),
       Scoreboard(),
       HtmlChat()

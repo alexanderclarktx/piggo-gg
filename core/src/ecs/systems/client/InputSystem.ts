@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, Entity,
-  Input, InvokedAction, World, XY, cos, round, sin
+  Input, InvokedAction, World, XY, cos, isTypingEvent, round, sin
 } from "@piggo-gg/core"
 
 // InputSystem handles keyboard/mouse/joystick inputs
@@ -113,6 +113,8 @@ export const InputSystem = ClientSystemBuilder({
         if (charactersPreventDefault.has(keyName)) event.preventDefault()
 
         const { isOpen, inputBuffer } = world.client!.chat
+
+        if (isTypingEvent(event)) return
 
         // add to buffer
         if (!world.client!.bufferDown.get(keyName)) {

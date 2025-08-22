@@ -4,7 +4,8 @@ const defaults: CSS = {
   position: "absolute",
   border: "2px solid white",
   scrollbarWidth: "none",
-  msOverflowStyle: "none"
+  msOverflowStyle: "none",
+  outline: "none"
 }
 
 export type HtmlDiv = HTMLDivElement
