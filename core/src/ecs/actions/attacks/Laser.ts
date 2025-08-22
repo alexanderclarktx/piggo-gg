@@ -54,13 +54,15 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   const current = { ...eyePos }
 
   let travelled = 0
+  let cap = 20
 
-  while (travelled < 10) {
+  while (travelled < 10 && cap > 0) {
 
     const xGap = (current.x + 0.15) % 0.3
     const yGap = (current.y + 0.15) % 0.3
     const zGap = current.z % 0.3
 
+    console.log("steps")
     // find minimum step size to go to next block
     const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
     const yStep = dir.z > 0 ? (0.3 - yGap) / dir.z : (yGap / -dir.z)
@@ -79,6 +81,7 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
     current.z += zDist
 
     travelled += hypot(xDist, yDist, zDist)
+    cap -= 1
 
     const insideBlock = {
       x: floor((0.15 + current.x) / 0.3),
@@ -86,6 +89,7 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
       z: floor(current.z / 0.3)
     }
 
+    console.log("hasIJK")
     if (world.blocks.hasIJK(insideBlock)) {
       world.blocks.remove(insideBlock)
       break

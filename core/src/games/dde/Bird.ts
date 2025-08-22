@@ -69,7 +69,13 @@ export const Bird = (player: Player) => Character({
         },
 
         "mb1": ({ hold, character, world }) => {
-          if (hold || !document.pointerLockElement || !character) return null
+          if (!document.pointerLockElement || !character) return null
+
+          if (hold) {
+            const state = world.state<DDEState>()
+            const cd = world.tick - (state.lastShot[character.id] ?? 0)
+            if (cd < 19) return null
+          }
 
           const { position } = character?.components
           const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
