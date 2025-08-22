@@ -53,6 +53,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
     style: {
       width: "60px",
       height: "40px",
+      lineHeight: "40px",
       position: "relative",
       fontSize: "18px",
       pointerEvents: "auto",
