@@ -11,11 +11,10 @@ export const isTypingEvent = (e: Event) => {
   const target = e.composedPath ? e.composedPath()[0] : e.target
   if (!(target instanceof Element)) return false
 
-  const editable = target.closest(textInputSelector)
+  const editable = target.closest<HTMLInputElement>(textInputSelector)
   if (!editable) return false
 
   if (editable.matches('input,textarea')) {
-    // @ts-expect-error
     if (editable.readOnly || editable.disabled) return false
   }
   return true
