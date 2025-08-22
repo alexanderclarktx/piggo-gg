@@ -68,9 +68,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
   input.addEventListener("keydown", (e: KeyboardEvent) => {
     if (["Escape", "Enter"].includes(e.key)) {
       e.preventDefault()
-      console.log("blur")
       input.blur()
-      return
     }
   })
 
