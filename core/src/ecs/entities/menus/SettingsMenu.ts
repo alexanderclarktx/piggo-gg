@@ -57,21 +57,10 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
       if (isNaN(num)) return "1.00"
 
       const final = min(2, max(round(num, 2), 0.1))
+      world.settings<DDESettings>().mouseSensitivity = final
       return final.toFixed(2)
     }
   })
-
-  // input.addEventListener("beforeinput", (e: InputEvent) => {
-  //   const key = e.data
-
-  //   if (isNaN(Number(key ?? ""))) {
-  //     e.preventDefault()
-  //     return
-  //   }
-
-  //   const value = parseFloat(input.textContent || "0")
-  //   world.settings<DDESettings>().mouseSensitivity = value
-  // })
 
   const div = HtmlDiv({
     position: "relative",
