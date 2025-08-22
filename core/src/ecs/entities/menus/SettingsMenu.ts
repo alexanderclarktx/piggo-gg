@@ -73,16 +73,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
   })
 
   input.addEventListener("beforeinput", (e: InputEvent) => {
-
     const key = e.data
-    console.log(key)
-
-    if (["Escape", "Enter"].includes(key ?? "")) {
-      e.preventDefault()
-      console.log("blur")
-      input.blur()
-      return
-    }
 
     if (isNaN(Number(key ?? ""))) {
       e.preventDefault()
