@@ -4,7 +4,8 @@ const defaults: CSS = {
   fontSize: "18px",
   lineHeight: "40px",
   position: "relative",
-  pointerEvents: "auto"
+  pointerEvents: "auto",
+  textAlign: "center"
 }
 
 export type HtmlInputProps = {

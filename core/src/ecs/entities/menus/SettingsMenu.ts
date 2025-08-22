@@ -1,4 +1,4 @@
-import { DDESettings, HtmlButton, HtmlDiv, HtmlText, RefreshableDiv, styleSwitch, World } from "@piggo-gg/core"
+import { DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText, RefreshableDiv, styleSwitch, World } from "@piggo-gg/core"
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
@@ -48,29 +48,33 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
     }
   })
 
-  const input = HtmlText({
+  // const input = HtmlText({
+  //   text: "1.00",
+  //   style: {
+  //     width: "60px",
+  //     height: "40px",
+  //     lineHeight: "40px",
+  //     position: "relative",
+  //     fontSize: "18px",
+  //     pointerEvents: "auto",
+  //     textAlign: "center",
+  //     outline: "none"
+  //   }
+  // })
+
+  const input = HtmlInput({
     text: "1.00",
     style: {
-      width: "60px",
-      height: "40px",
-      lineHeight: "40px",
-      position: "relative",
-      fontSize: "18px",
-      pointerEvents: "auto",
-      textAlign: "center",
-      outline: "none"
+      width: "60px"
     }
   })
 
-  input.contentEditable = "true"
-  input.inputMode = "decimal"
-
-  input.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (["Escape", "Enter"].includes(e.key)) {
-      e.preventDefault()
-      input.blur()
-    }
-  })
+  // input.addEventListener("keydown", (e: KeyboardEvent) => {
+  //   if (["Escape", "Enter"].includes(e.key)) {
+  //     e.preventDefault()
+  //     input.blur()
+  //   }
+  // })
 
   input.addEventListener("beforeinput", (e: InputEvent) => {
     const key = e.data
