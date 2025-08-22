@@ -57,16 +57,27 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
       position: "relative",
       fontSize: "18px",
       pointerEvents: "auto",
-      textAlign: "center"
+      textAlign: "center",
+      outline: "none"
     }
   })
 
   input.contentEditable = "true"
   input.inputMode = "decimal"
 
+  input.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (["Escape", "Enter"].includes(e.key)) {
+      e.preventDefault()
+      console.log("blur")
+      input.blur()
+      return
+    }
+  })
+
   input.addEventListener("beforeinput", (e: InputEvent) => {
 
     const key = e.data
+    console.log(key)
 
     if (["Escape", "Enter"].includes(key ?? "")) {
       e.preventDefault()
