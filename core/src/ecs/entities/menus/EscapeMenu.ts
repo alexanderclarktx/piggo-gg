@@ -3,7 +3,7 @@ import {
   keys, CSS, styleButton, DDESettings, styleSwitch, RefreshableDiv
 } from "@piggo-gg/core"
 
-export const HtmlMenu = (world: World): Entity => {
+export const EscapeMenu = (world: World): Entity => {
 
   let init = false
   let activeMenu: "lobbies" | "skins" | "settings" = "lobbies"
@@ -71,7 +71,7 @@ export const HtmlMenu = (world: World): Entity => {
   ddeMenu.appendChild(settings.div)
 
   const menu = Entity({
-    id: "HtmlMenu",
+    id: "EscapeMenu",
     components: {
       position: Position({ x: 0, y: 0, z: 0 }),
       npc: NPC({
