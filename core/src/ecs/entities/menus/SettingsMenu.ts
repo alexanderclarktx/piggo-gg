@@ -1,4 +1,4 @@
-import { DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText, RefreshableDiv, styleSwitch, World } from "@piggo-gg/core"
+import { DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText, max, min, RefreshableDiv, round, styleSwitch, World } from "@piggo-gg/core"
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
@@ -53,7 +53,11 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
     style: { width: "60px" },
     handler: (value) => {
       const num = parseFloat(value)
-      return isNaN(num) ? "1.00" : num.toFixed(2)
+
+      if (isNaN(num)) return "1.00"
+
+      const final = min(2, max(round(num, 2), 0.1))
+      return final.toFixed(2)
     }
   })
 

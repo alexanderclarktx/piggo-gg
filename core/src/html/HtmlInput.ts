@@ -19,6 +19,7 @@ export const HtmlInput = (props: HtmlInputProps = {}): HtmlDiv => {
 
   div.contentEditable = "true"
   div.inputMode = "text"
+  div.spellcheck = false
 
   Object.assign(div.style, defaults)
   Object.assign(div.style, props.style)
@@ -26,7 +27,11 @@ export const HtmlInput = (props: HtmlInputProps = {}): HtmlDiv => {
   div.addEventListener("keydown", (e: KeyboardEvent) => {
     if (["Escape", "Enter"].includes(e.key)) {
       e.preventDefault()
-      props.handler?.(div.textContent ?? "")
+
+      if (props.handler) {
+        div.textContent = props.handler(div.textContent ?? "")
+      }
+
       div.blur()
     }
   })
