@@ -328,7 +328,7 @@ const Settings = (world: World): RefreshableDiv => {
 
   const ambientSound = settingsRow("Ambient Sound", "ambientSound")
   const showControls = settingsRow("Show Controls", "showControls")
-  const showCrosshair = settingsRow("Eagle Crosshair", "showCrosshair")
+  const showCrosshair = settingsRow("Show Crosshair", "showCrosshair")
 
   settings.appendChild(ambientSound.div)
   settings.appendChild(showControls.div)
