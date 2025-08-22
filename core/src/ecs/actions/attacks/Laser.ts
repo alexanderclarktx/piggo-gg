@@ -1,5 +1,5 @@
 import {
-  Action, cos, DDEState, floor, playerForCharacter, Position,
+  Action, cos, DDEState, floor, hypot, min, playerForCharacter, Position,
   sin, sqrt, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
@@ -51,22 +51,47 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
     laser.visible = true
   }
 
-  const eyeIJK = {
+  const current = {
     x: floor((0.15 + eyePos.x) / 0.3),
     y: floor((0.15 + eyePos.y) / 0.3),
     z: floor(eyePos.z / 0.3)
   }
 
-  const insideBlock = {
-    ...eyeIJK,
-    y: eyeIJK.y + 1
-  }
+  let travelled = 0
 
-  if (world.blocks.hasIJK(insideBlock)) {
-    world.blocks.remove(insideBlock)
-    console.log("removed", insideBlock)
-  } else {
-    console.log("nothing at eye", eyePos, "eyeIJK", eyeIJK, "insideBlock", insideBlock)
+  while (travelled < 10) {
+
+    const xGap = (eyePos.x + 0.15) % 0.3
+    const yGap = (eyePos.y + 0.15) % 0.3
+    const zGap = eyePos.z % 0.3
+
+    // find minimum step size to go to next block
+    const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
+    const yStep = dir.y > 0 ? (0.3 - yGap) / dir.y : (yGap / -dir.y)
+    const zStep = dir.z > 0 ? (0.3 - zGap) / dir.z : (zGap / -dir.z)
+
+    const minStep = min(xStep, yStep, zStep)
+
+    current.x += dir.x * minStep
+    current.y += dir.y * minStep
+    current.z += dir.z * minStep
+
+    const insideBlock = {
+      x: floor((0.15 + current.x) / 0.3),
+      y: floor((0.15 + current.y) / 0.3),
+      z: floor(current.z / 0.3)
+    }
+
+    if (world.blocks.hasIJK(insideBlock)) {
+      world.blocks.remove(insideBlock)
+      console.log("removed", insideBlock)
+      break
+    } else {
+      console.log("checked", insideBlock)
+    }
+
+    const dist = hypot(current.x - eyePos.x, current.y - eyePos.y, current.z - eyePos.z)
+    travelled += dist
   }
 
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
