@@ -47,7 +47,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
       textAlign: "center"
     }
   })
-  
+
   const input = HtmlText({
     text: "1.00",
     style: {
@@ -62,6 +62,27 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
   })
 
   input.contentEditable = "true"
+  input.inputMode = "decimal"
+
+  input.addEventListener("beforeinput", (e: InputEvent) => {
+
+    const key = e.data
+
+    if (["Escape", "Enter"].includes(key ?? "")) {
+      e.preventDefault()
+      console.log("blur")
+      input.blur()
+      return
+    }
+
+    if (isNaN(Number(key ?? ""))) {
+      e.preventDefault()
+      return
+    }
+
+    const value = parseFloat(input.textContent || "0")
+    world.settings<DDESettings>().mouseSensitivity = value
+  })
 
   const div = HtmlDiv({
     position: "relative",
