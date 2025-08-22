@@ -1,6 +1,7 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, Input, Laser, max,
-  Networked, Player, Point, Position, Ready, round, Target, Team, World, XYZ
+  abs, Action, Actions, Character, Collider, cos,
+  Input, Laser, max, Networked, Player, Point,
+  Position, Ready, round, Target, Team, World, XYZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
