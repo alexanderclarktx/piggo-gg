@@ -34,7 +34,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   }
 }
 
-const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: HtmlDiv, input: HTMLInputElement } => {
+const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: HtmlDiv, input: HtmlDiv } => {
   const label = HtmlText({
     text,
     style: {
@@ -47,15 +47,29 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
       textAlign: "center"
     }
   })
+  
+  const input = HtmlText({
+    text: "1.00",
+    style: {
+      width: "60px",
+      height: "40px",
+      position: "relative",
+      fontSize: "18px",
+      pointerEvents: "auto",
+      textAlign: "center"
+    }
+  })
 
-  const input = document.createElement("input")
-  input.type = "number"
-  input.value = String(world.settings<DDESettings>()[key])
-  input.style.width = "60px"
-  input.style.height = "40px"
-  input.style.position = "relative"
-  input.style.fontSize = "18px"
-  input.style.pointerEvents = "auto"
+  input.contentEditable = "true"
+
+  // const input = document.createElement("input")
+  // input.type = "number"
+  // input.value = String(world.settings<DDESettings>()[key])
+  // input.style.width = "60px"
+  // input.style.height = "40px"
+  // input.style.position = "relative"
+  // input.style.fontSize = "18px"
+  // input.style.pointerEvents = "auto"
 
   const div = HtmlDiv({
     position: "relative",
