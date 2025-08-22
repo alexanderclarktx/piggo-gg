@@ -56,7 +56,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
 
       if (isNaN(num)) return "1.00"
 
-      const final = min(2, max(round(num, 2), 0.1))
+      const final = min(5, max(round(num, 2), 0.01))
       world.settings<DDESettings>().mouseSensitivity = final
       return final.toFixed(2)
     }
