@@ -13,50 +13,10 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     position: "relative"
   })
 
-  const boolRow = (text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
-    const label = HtmlText({
-      text,
-      style: {
-        width: "320px",
-        height: "40px",
-        position: "relative",
-        left: "10px",
-        fontSize: "18px",
-        lineHeight: "40px",
-        textAlign: "center"
-      }
-    })
-
-    const button = HtmlButton({
-      style: {
-        width: "60px",
-        height: "40px",
-        position: "relative",
-        fontSize: "18px",
-        pointerEvents: "auto"
-      },
-      onClick: () => {
-        const settings = world.settings<DDESettings>()
-        settings[key] = !settings[key]
-      }
-    })
-
-    const div = HtmlDiv({
-      position: "relative",
-      marginTop: "15px",
-      display: "flex",
-      border: ""
-    })
-
-    div.appendChild(label)
-    div.appendChild(button)
-
-    return { div, button }
-  }
-
-  const ambientSound = boolRow("Ambient Sound", "ambientSound")
-  const showControls = boolRow("Show Controls", "showControls")
-  const showCrosshair = boolRow("Show Crosshair", "showCrosshair")
+  const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
+  const showControls = boolRow(world, "Show Controls", "showControls")
+  const showCrosshair = boolRow(world, "Show Crosshair", "showCrosshair")
+  // const sensitivity = boolRow("Mouse Sensitivity", "mouseSensitivity")
 
   div.appendChild(ambientSound.div)
   div.appendChild(showControls.div)
@@ -71,4 +31,45 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
       styleSwitch(showCrosshair.button, settings.showCrosshair, showCrosshair.button.matches(":hover"))
     }
   }
+}
+
+const boolRow = (world: World, text: string, key: keyof DDESettings): { div: HtmlDiv, button: HtmlButton } => {
+  const label = HtmlText({
+    text,
+    style: {
+      width: "320px",
+      height: "40px",
+      position: "relative",
+      left: "10px",
+      fontSize: "18px",
+      lineHeight: "40px",
+      textAlign: "center"
+    }
+  })
+
+  const button = HtmlButton({
+    style: {
+      width: "60px",
+      height: "40px",
+      position: "relative",
+      fontSize: "18px",
+      pointerEvents: "auto"
+    },
+    onClick: () => {
+      const settings = world.settings<DDESettings>()
+      settings[key] = !settings[key]
+    }
+  })
+
+  const div = HtmlDiv({
+    position: "relative",
+    marginTop: "15px",
+    display: "flex",
+    border: ""
+  })
+
+  div.appendChild(label)
+  div.appendChild(button)
+
+  return { div, button }
 }
