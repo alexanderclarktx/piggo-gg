@@ -101,12 +101,14 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
     const duckEntity = world.entity<Position>(duck.id)
     if (!duckEntity) continue
 
-    const L = XYZsub(duck, eyePos)
+    const duckXYZ = { x: duck.x, y: duck.y, z: duck.z + 0.2 }
+
+    const L = XYZsub(duckXYZ, eyePos)
     const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
 
     if (tc < 0) continue
 
-    const Ldist = XYZdistance(duck, eyePos)
+    const Ldist = XYZdistance(duckXYZ, eyePos)
     const D = sqrt((Ldist * Ldist) - (tc * tc))
 
     if (D > 0 && D < 0.09) {
