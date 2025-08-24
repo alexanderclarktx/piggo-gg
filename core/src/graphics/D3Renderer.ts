@@ -2,7 +2,8 @@ import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
   MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
-  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer, CylinderGeometry
+  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer, CylinderGeometry,
+  Vector3
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -51,6 +52,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   // let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
+
+  let charLight: undefined | DirectionalLight
 
   const renderer: D3Renderer = {
     apple: undefined,
@@ -101,7 +104,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (!webgl || !renderer.sun) return
 
       if (renderer.debug) {
-        helper = new CameraHelper(renderer.sun.shadow.camera)
+        // helper = new CameraHelper(renderer.sun.shadow.camera)
+        helper = new CameraHelper(charLight!.shadow.camera)
         renderer.scene.add(helper)
         renderer.sphere!.visible = true
       } else if (!renderer.debug && helper) {
@@ -149,11 +153,22 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       webgl.setAnimationLoop(() => {
         world.onRender?.()
+        // const pc = world.client!.playerCharacter()?.components.position.data!
+        console.log(renderer.birdAssets)
+        const playerDuck = renderer.birdAssets[world.client?.playerCharacter()?.id ?? ""]
+        if (playerDuck) {
+          charLight?.target.position.copy(playerDuck.duck.position)
+          // charLight?.lookAt(new Vector3(pc.x, pc.z, pc.y))
+          charLight?.shadow.camera.updateProjectionMatrix()
+        }
         webgl?.render(renderer.scene, renderer.camera.c)
       })
 
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
+
+      const ambient = new AmbientLight(evening, 1.2)
+      renderer.scene.add(ambient)
 
       const sun = new DirectionalLight(evening, 9)
       renderer.sun = sun
@@ -173,8 +188,30 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.autoUpdate = false
       sun.shadow.needsUpdate = true
 
-      const ambient = new AmbientLight(evening, 1.2)
-      renderer.scene.add(ambient)
+      ///////////////////////
+      charLight = new DirectionalLight(0xffffff, 0.001) // tiny intensity to keep lighting change minimal
+      charLight.position.set(200, 100, 200) // usually same dir as sun
+      charLight.shadow.normalBias = 0.02
+      charLight.castShadow = true
+      // charLight.shadow.mapSize.set(512, 512)
+      charLight.shadow.mapSize.set(512, 512)
+
+      // charLight.shadow.camera.layers.set(1)
+
+      // charLight.shadow.camera.left = -25
+      // charLight.shadow.camera.right = 25
+      // charLight.shadow.camera.top = 10
+      // charLight.shadow.camera.bottom = -20
+      // charLight.shadow.camera.updateProjectionMatrix()
+      charLight.shadow.autoUpdate = true
+      // charLight.shadow.needsUpdate = true
+
+      // Only objects on L_CHAR are affected by this light (so its shadows apply there):
+      // charLight.layers.set(1)
+      charLight.shadow.camera.layers.enable(2)
+
+      renderer.scene.add(charLight)
+      renderer.scene.add(charLight.target)
 
       // texture
       TL.load("grass.png", (texture: Texture) => {
@@ -328,10 +365,15 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         renderer.duck.animations = duck.animations
 
+        renderer.duck.layers.enable(1)
+        renderer.duck.layers.enable(2)
+
         duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
             child.castShadow = true
             child.receiveShadow = true
+            child.layers.enable(1)
+            child.layers.enable(2)
           }
         })
       })
