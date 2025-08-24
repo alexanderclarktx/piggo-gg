@@ -71,23 +71,22 @@ export const Bird = (player: Player) => Character({
         "mb1": ({ hold, character, world }) => {
           if (!document.pointerLockElement || !character) return null
 
-          if (hold) {
-            const state = world.state<DDEState>()
-            const cd = world.tick - (state.lastShot[character.id] ?? 0)
-            if (cd < 19) return null
-          }
+          if (hold) return null
+          //   const state = world.state<DDEState>()
+          //   const cd = world.tick - (state.lastShot[character.id] ?? 0)
+          //   if (cd < 20) return null
+          // }
 
           const { position } = character?.components
-          const pos = { x: position.data.x, y: position.data.y, z: position.data.z }
+          const pos = position.xyz()
           const aim = { ...world.client!.controls.localAim }
 
           const targets: Target[] = world.characters().filter(c => c.id !== character.id).map(x => ({
-            x: x.components.position.data.x,
-            y: x.components.position.data.y,
-            z: x.components.position.data.z,
+            ...x.components.position.xyz(),
             id: x.id
           }))
 
+          // console.log("push laser action", world.tick, targets[0]?.z)
           return { actionId: "laser", params: { pos, aim, targets } }
         },
 

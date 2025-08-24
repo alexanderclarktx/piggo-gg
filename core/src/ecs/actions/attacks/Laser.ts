@@ -20,7 +20,9 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   if (state.hit[entity.id]) return
 
   const cd = world.tick - (state.lastShot[entity.id] ?? 0)
-  if (cd < 20) return
+  if (cd < 20) {
+    console.log("laser on cd", cd, world.tick)
+  }
 
   state.lastShot[entity.id] = world.tick
 
@@ -93,7 +95,9 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   }
 
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
-  if (world.client) return
+  // if (world.client) return
+
+  console.log("calculating laser", world.tick)
 
   const otherDucks = params.targets as Target[]
   for (const duck of otherDucks) {

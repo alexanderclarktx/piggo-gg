@@ -3,6 +3,8 @@ import {
   logDiff, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
+const movementActions = ["move", "moveAnalog", "jump", "point"]
+
 // TODO not generic across games
 export const RollbackSyncer = (world: World): Syncer => {
 
@@ -23,7 +25,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
         if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
           for (const action of actions) {
-            if (action.actionId !== "spike") {
+            if (movementActions.includes(action.actionId)) {
               world.actions.push(world.tick, entityId, { ...action, offline: true })
             }
           }
@@ -37,9 +39,12 @@ export const RollbackSyncer = (world: World): Syncer => {
       for (const [entityId, actions] of entries(actionSet)) {
         if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
           for (const action of actions) {
-            if (action.actionId === "spike") {
+            if (!movementActions.includes(action.actionId)) {
               const pushed = world.actions.push(Number(tick), entityId, { ...action, offline: true })
-              if (pushed) mustRollback(`spike ${tick}`)
+              if (pushed) {
+                mustRollback(`non-movement action on ${tick} id:${action.actionId}`)
+                console.log(world.actions.atTick(Number(tick)))
+              }
             }
           }
         }
