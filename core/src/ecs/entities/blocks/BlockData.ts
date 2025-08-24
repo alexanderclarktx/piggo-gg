@@ -175,10 +175,10 @@ export const BlockData = (): BlockData => {
           }
         }
         visibleCache[key] = chunkResult
-        delete visibleDirty[key]
         result.push(...chunkResult)
       }
 
+      visibleDirty = {}
       logPerf("BlockData.visible", time)
       return result
     },
