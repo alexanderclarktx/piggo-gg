@@ -154,13 +154,13 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl.setAnimationLoop(() => {
         world.onRender?.()
         // const pc = world.client!.playerCharacter()?.components.position.data!
-        console.log(renderer.birdAssets)
         const playerDuck = renderer.birdAssets[world.client?.playerCharacter()?.id ?? ""]
         if (playerDuck) {
           charLight?.target.position.copy(playerDuck.duck.position)
           // charLight?.lookAt(new Vector3(pc.x, pc.z, pc.y))
           charLight?.shadow.camera.updateProjectionMatrix()
         }
+        charLight!.shadow.needsUpdate = true
         webgl?.render(renderer.scene, renderer.camera.c)
       })
 
@@ -172,12 +172,12 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       const sun = new DirectionalLight(evening, 9)
       renderer.sun = sun
-      renderer.scene.add(sun)
+      // renderer.scene.add(sun)
 
       sun.position.set(200, 100, 200)
       sun.shadow.normalBias = 0.02
       sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
-      sun.castShadow = true
+      // sun.castShadow = true
 
       // widen the shadow
       sun.shadow.camera.left = -25
@@ -189,26 +189,21 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.needsUpdate = true
 
       ///////////////////////
-      charLight = new DirectionalLight(0xffffff, 0.001) // tiny intensity to keep lighting change minimal
+      charLight = new DirectionalLight(0xffffff, 10) // tiny intensity to keep lighting change minimal
       charLight.position.set(200, 100, 200) // usually same dir as sun
       charLight.shadow.normalBias = 0.02
       charLight.castShadow = true
-      // charLight.shadow.mapSize.set(512, 512)
       charLight.shadow.mapSize.set(512, 512)
 
-      // charLight.shadow.camera.layers.set(1)
+      charLight.shadow.camera.left = -1
+      charLight.shadow.camera.right = 1
+      charLight.shadow.camera.top = 1
+      charLight.shadow.camera.bottom = -1
+      charLight.shadow.camera.updateProjectionMatrix()
+      charLight.shadow.autoUpdate = false
 
-      // charLight.shadow.camera.left = -25
-      // charLight.shadow.camera.right = 25
-      // charLight.shadow.camera.top = 10
-      // charLight.shadow.camera.bottom = -20
-      // charLight.shadow.camera.updateProjectionMatrix()
-      charLight.shadow.autoUpdate = true
-      // charLight.shadow.needsUpdate = true
-
-      // Only objects on L_CHAR are affected by this light (so its shadows apply there):
-      // charLight.layers.set(1)
-      charLight.shadow.camera.layers.enable(2)
+      // charLight.layers.enable(1)
+      charLight.shadow.camera.layers.set(2)
 
       renderer.scene.add(charLight)
       renderer.scene.add(charLight.target)

@@ -33,7 +33,7 @@ export const D3BlockMesh = (maxCount: number = 22000): D3BlockMesh => {
   mesh.castShadow = true
   mesh.receiveShadow = true
   mesh.frustumCulled = false
-  mesh.layers.enable(1)
+  // mesh.layers.enable(1)
 
   return mesh
 }
