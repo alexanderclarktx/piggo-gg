@@ -148,13 +148,15 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.resize()
 
       webgl.setAnimationLoop(() => {
+        const t = performance.now()
         world.onRender?.()
+        
         webgl?.render(renderer.scene, renderer.camera.c)
+        console.log("render", performance.now() - t)
       })
 
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
-      // webgl.shadowMap.autoUpdate = false
 
       const sun = new DirectionalLight(evening, 9)
       renderer.sun = sun
