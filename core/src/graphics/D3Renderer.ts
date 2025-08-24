@@ -141,7 +141,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         powerPreference: "high-performance",
         precision: "highp"
       })
-
       webgl.setPixelRatio(window.devicePixelRatio)
 
       renderer.resize()
