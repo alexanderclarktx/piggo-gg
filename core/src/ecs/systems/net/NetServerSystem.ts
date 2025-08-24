@@ -28,10 +28,6 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
       type: "game"
     }
 
-    // if (world.actions.atTick(world.tick)) {
-    //   tickData.actions = world.actions.atTick(world.tick)
-    // }
-
     // send tick data to all clients
     for ( const [id, client] of entries(clients) ) {
       client.send(encode({

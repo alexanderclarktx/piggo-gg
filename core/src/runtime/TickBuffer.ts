@@ -78,7 +78,6 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
       // check if state already exists
       for (const s of buffer[tick][entityId]) {
         if (stringify(s) === stringify(state)) return false
-        // console.log(`${stringify(s)} diff from ${stringify(state)}`)
       }
 
       // update fresh

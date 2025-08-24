@@ -20,9 +20,7 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   if (state.hit[entity.id]) return
 
   const cd = world.tick - (state.lastShot[entity.id] ?? 0)
-  if (cd < 20) {
-    console.log("laser on cd", cd, world.tick)
-  }
+  if (cd < 20) return
 
   state.lastShot[entity.id] = world.tick
 

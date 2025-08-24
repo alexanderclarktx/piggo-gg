@@ -72,10 +72,6 @@ export const Bird = (player: Player) => Character({
           if (!document.pointerLockElement || !character) return null
 
           if (hold) return null
-          //   const state = world.state<DDEState>()
-          //   const cd = world.tick - (state.lastShot[character.id] ?? 0)
-          //   if (cd < 20) return null
-          // }
 
           const { position } = character?.components
           const pos = position.xyz()
@@ -86,7 +82,6 @@ export const Bird = (player: Player) => Character({
             id: x.id
           }))
 
-          // console.log("push laser action", world.tick, targets[0]?.z)
           return { actionId: "laser", params: { pos, aim, targets } }
         },
 

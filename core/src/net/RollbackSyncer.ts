@@ -41,10 +41,7 @@ export const RollbackSyncer = (world: World): Syncer => {
           for (const action of actions) {
             if (!movementActions.includes(action.actionId)) {
               const pushed = world.actions.push(Number(tick), entityId, { ...action, offline: true })
-              if (pushed) {
-                mustRollback(`non-movement action on ${tick} id:${action.actionId}`)
-                console.log(world.actions.atTick(Number(tick)))
-              }
+              if (pushed) mustRollback(`non-movement action tick:${tick} id:${action.actionId}`)
             }
           }
         }
