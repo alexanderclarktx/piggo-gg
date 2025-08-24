@@ -2,8 +2,7 @@ import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
   MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
-  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer, CylinderGeometry,
-  Vector3
+  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer, CylinderGeometry
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -150,14 +149,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       webgl.setAnimationLoop(() => {
         world.onRender?.()
-        // const pc = world.client!.playerCharacter()?.components.position.data!
-        // const playerDuck = renderer.birdAssets[world.client?.playerCharacter()?.id ?? ""]
-        // if (playerDuck) {
-        //   charLight?.target.position.copy(playerDuck.duck.position)
-        //   // charLight?.lookAt(new Vector3(pc.x, pc.z, pc.y))
-        //   charLight?.shadow.camera.updateProjectionMatrix()
-        // }
-        // charLight!.shadow.needsUpdate = true
         webgl?.render(renderer.scene, renderer.camera.c)
       })
 
@@ -184,29 +175,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.updateProjectionMatrix()
       sun.shadow.autoUpdate = false
       sun.shadow.needsUpdate = true
-
-      ///////////////////////
-      // charLight = new DirectionalLight(0xffffff, 1) // tiny intensity to keep lighting change minimal
-      // charLight.position.set(200, 100, 200) // usually same dir as sun
-      // charLight.shadow.normalBias = 0.02
-      // charLight.castShadow = true
-      // charLight.shadow.mapSize.set(512, 512)
-
-      // charLight.shadow.camera.left = -1
-      // charLight.shadow.camera.right = 1
-      // charLight.shadow.camera.top = 1
-      // charLight.shadow.camera.bottom = -1
-      // charLight.shadow.camera.updateProjectionMatrix()
-      // charLight.shadow.autoUpdate = false
-
-      // console.log(charLight.shadow.intensity)
-
-      // charLight.layers.enable(1)
-      // charLight.shadow.camera.layers.set(2)
-
-      // renderer.scene.add(charLight)
-      // renderer.scene.add(charLight.target)
-      // renderer.scene.add(sun)
 
       // texture
       TL.load("grass.png", (texture: Texture) => {
@@ -357,18 +325,12 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       GL.load("ugly-duckling.glb", (duck) => {
         renderer.duck = duck.scene
-
         renderer.duck.animations = duck.animations
-
-        renderer.duck.layers.enable(1)
-        renderer.duck.layers.enable(2)
 
         duck.scene.traverse((child) => {
           if (child instanceof Mesh) {
             child.castShadow = true
             child.receiveShadow = true
-            child.layers.enable(1)
-            child.layers.enable(2)
           }
         })
       })
