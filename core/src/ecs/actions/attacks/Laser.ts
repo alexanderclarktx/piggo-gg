@@ -116,7 +116,6 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
       const duckPlayer = playerForCharacter(world, duck.id)
       world.announce(`${player?.components.pc.data.name} hit ${duckPlayer?.components.pc.data.name}`)
 
-      duckEntity.components.position.data.velocity.z = -0.05
       duckEntity.components.position.data.flying = false
     }
   }
