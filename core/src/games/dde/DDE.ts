@@ -308,8 +308,6 @@ const DDESystem = SystemBuilder({
           const chunkData = world.blocks.visible(neighbors)
           console.log(`rendering ${chunkData.length} blocks`)
 
-          if (world.three.sun) world.three.sun.shadow.needsUpdate = true
-
           const { blocks, spruce, oak, leaf } = world.three
 
           let spruceCount = 0
@@ -365,6 +363,7 @@ const DDESystem = SystemBuilder({
           world.three!.spruce!.count = spruceCount
 
           blocksRendered = true
+          if (world.three.sun) world.three.sun.shadow.needsUpdate = true
         }
         logPerf("render blocks", t3)
       },

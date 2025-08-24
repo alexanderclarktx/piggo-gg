@@ -148,11 +148,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.resize()
 
       webgl.setAnimationLoop(() => {
-        const t = performance.now()
         world.onRender?.()
-        
         webgl?.render(renderer.scene, renderer.camera.c)
-        console.log("render", performance.now() - t)
       })
 
       webgl.shadowMap.enabled = true
@@ -174,6 +171,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
       sun.shadow.autoUpdate = false
+      sun.shadow.needsUpdate = true
 
       const ambient = new AmbientLight(evening, 1.2)
       renderer.scene.add(ambient)
