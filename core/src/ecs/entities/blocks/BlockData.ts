@@ -157,17 +157,14 @@ export const BlockData = (): BlockData => {
               const type = chunk[index]
               if (type === 0) continue
 
-              const dir = 1
+              const thisX = pos.x * 4 + x
+              const thisY = pos.y * 4 + y
 
               // check if the block is visible
               if (
-                !val(pos.x * 4 + x + dir, pos.y * 4 + y, z) ||
-                !val(pos.x * 4 + x - dir, pos.y * 4 + y, z) ||
-
-                !val(pos.x * 4 + x, pos.y * 4 + y + dir, z) ||
-                !val(pos.x * 4 + x, pos.y * 4 + y - dir, z) ||
-
-                !val(pos.x * 4 + x, pos.y * 4 + y, z + 1)
+                !val(thisX + 1, thisY, z) || !val(thisX - 1, thisY, z) ||
+                !val(thisX, thisY + 1, z) || !val(thisX, thisY - 1, z) ||
+                !val(thisX, thisY, z + 1) || !val(thisX, thisY, z - 1)
               ) {
                 const ijk = { x: x + pos.x * 4, y: y + pos.y * 4, z }
 

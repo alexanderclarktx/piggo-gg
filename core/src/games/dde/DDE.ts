@@ -306,6 +306,7 @@ const DDESystem = SystemBuilder({
 
           const neighbors = world.blocks.neighbors({ x: 1, y: 1 }, 24)
           const chunkData = world.blocks.visible(neighbors)
+          console.log(`rendering ${chunkData.length} blocks`)
 
           const { blocks, spruce, oak, leaf } = world.three
 
