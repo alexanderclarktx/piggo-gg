@@ -77,10 +77,12 @@ export const Bird = (player: Player) => Character({
           const pos = position.xyz()
           const aim = { ...world.client!.controls.localAim }
 
-          const targets: Target[] = world.characters().filter(c => c.id !== character.id).map(x => ({
-            ...x.components.position.xyz(),
-            id: x.id
-          }))
+          const targets: Target[] = world.characters()
+            .filter(c => c.id !== character.id)
+            .map(target => ({
+              ...target.components.position.xyz(),
+              id: target.id
+            }))
 
           return { actionId: "laser", params: { pos, aim, targets } }
         },
