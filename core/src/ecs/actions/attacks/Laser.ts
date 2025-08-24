@@ -93,7 +93,7 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   }
 
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
-  if (world.client) return
+  // if (world.client) return
 
   const otherDucks = params.targets as Target[]
   for (const duck of otherDucks) {
@@ -101,14 +101,14 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
     const duckEntity = world.entity<Position>(duck.id)
     if (!duckEntity) continue
 
-    duck.z += 0.02
+    const duckXYZ = { x: duck.x, y: duck.y, z: duck.z + 0.2 }
 
-    const L = XYZsub(duck, eyePos)
+    const L = XYZsub(duckXYZ, eyePos)
     const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
 
     if (tc < 0) continue
 
-    const Ldist = XYZdistance(duck, eyePos)
+    const Ldist = XYZdistance(duckXYZ, eyePos)
     const D = sqrt((Ldist * Ldist) - (tc * tc))
 
     if (D > 0 && D < 0.09) {
@@ -116,7 +116,6 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
       const duckPlayer = playerForCharacter(world, duck.id)
       world.announce(`${player?.components.pc.data.name} hit ${duckPlayer?.components.pc.data.name}`)
 
-      duckEntity.components.position.data.velocity.z = -0.05
       duckEntity.components.position.data.flying = false
     }
   }

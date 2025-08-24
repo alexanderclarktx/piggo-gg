@@ -41,7 +41,7 @@ export type Client = {
     mouse: XY
     mouseScreen: XY
     localAim: XY
-    moveLocal: (xy: XY, flying: boolean) => void
+    moveLocal: (xy: XY, flying?: boolean) => void
   }
   env: "dev" | "production"
   lastMessageTick: number
@@ -116,7 +116,7 @@ export const Client = ({ world }: ClientProps): Client => {
       mouse: { x: 0, y: 0 },
       mouseScreen: { x: 0, y: 0 },
       localAim: { x: 0, y: 0 },
-      moveLocal: ({ x, y }: XY, flying: boolean) => {
+      moveLocal: ({ x, y }: XY) => {
 
         const mouseSensitivity = world.settings<{ mouseSensitivity: number }>().mouseSensitivity
         if (mouseSensitivity) {
@@ -127,7 +127,8 @@ export const Client = ({ world }: ClientProps): Client => {
         client.controls.localAim.x = round(client.controls.localAim.x - x, 3)
         client.controls.localAim.y = round(client.controls.localAim.y - y, 3)
 
-        const limit = flying ? 1.1 : 0.6166
+        // const limit = flying ? 1.1 : 0.6166
+        const limit = 1.1
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
       }
     },

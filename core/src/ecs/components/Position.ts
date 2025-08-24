@@ -44,6 +44,7 @@ export type Position = Component<"position", {
   updateOrientation: () => Position
   updateVelocity: () => Position
   rotate: (_: number, stopAtZero?: boolean) => Position
+  xyz: () => XYZ
 }
 
 export type PositionProps = {
@@ -163,9 +164,9 @@ export const Position = (props: PositionProps = {}): Position => {
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
       }
 
-      const x = round( position.data.x + position.localVelocity.x * delta / 1000, 3)
-      const y = round( position.data.y + position.localVelocity.y * delta / 1000, 3)
-      const z = round( position.data.z + position.localVelocity.z * delta / world.tickrate, 3)
+      const x = round(position.data.x + position.localVelocity.x * delta / 1000, 3)
+      const y = round(position.data.y + position.localVelocity.y * delta / 1000, 3)
+      const z = round(position.data.z + position.localVelocity.z * delta / world.tickrate, 3)
 
       interpolatedCache.tick = world.tick
       interpolatedCache.delta = delta
@@ -229,7 +230,12 @@ export const Position = (props: PositionProps = {}): Position => {
       }
 
       return position
-    }
+    },
+    xyz: () => ({
+      x: round(position.data.x, 3),
+      y: round(position.data.y, 3),
+      z: round(position.data.z, 3)
+    })
   }
   return position
 }

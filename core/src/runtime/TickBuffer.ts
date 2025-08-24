@@ -8,7 +8,7 @@ export type TickBuffer<T extends ({} | string)> = {
   clearBeforeTick: (tick: number) => void
   fromTick: (tick: number, filter?: (state: T) => boolean) => Record<number, Record<string, T[]>>
   keys: () => number[]
-  set: (tick: number, entityId: string, state: T[]) => void
+  set: (tick: number, entityId: string, state: T[]) => boolean
   push: (tick: number, entityId: string, state: T) => boolean
 }
 
@@ -58,13 +58,15 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
 
       const s = stringify(state)
       const e = stringify(buffer[tick][entityId])
-      if (s === e) return
+      if (s === e) return false
 
       // set state for entity
       buffer[tick][entityId] = state
 
       // update fresh
       tickBuffer.fresh.add(tick)
+
+      return true
     },
     push: (tick, entityId, state) => {
       // empty buffer for tick if it doesn't exist
@@ -75,7 +77,7 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
 
       // check if state already exists
       for (const s of buffer[tick][entityId]) {
-        if (JSON.stringify(s) === JSON.stringify(state)) return false
+        if (stringify(s) === stringify(state)) return false
       }
 
       // update fresh
