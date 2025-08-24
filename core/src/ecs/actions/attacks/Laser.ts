@@ -97,15 +97,11 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
   // if (world.client) return
 
-  console.log("calculating laser", world.tick)
-
   const otherDucks = params.targets as Target[]
   for (const duck of otherDucks) {
     if (state.hit[duck.id]) continue
     const duckEntity = world.entity<Position>(duck.id)
     if (!duckEntity) continue
-
-    duck.z += 0.02
 
     const L = XYZsub(duck, eyePos)
     const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })

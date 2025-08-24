@@ -81,12 +81,6 @@ export const TickBuffer = <T extends ({} | string)>(): TickBuffer<T> => {
         // console.log(`${stringify(s)} diff from ${stringify(state)}`)
       }
 
-      // @ts-expect-error
-      if (state.actionId && state.actionId === "laser") {
-        // @ts-expect-error
-        console.log("pushing action", state.actionId, tick, stringify(state))
-      }
-
       // update fresh
       tickBuffer.fresh.add(tick)
 

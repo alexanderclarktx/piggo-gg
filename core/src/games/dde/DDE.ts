@@ -378,8 +378,6 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
-          const state = world.state<DDEState>()
-
           const { rotation, rotating, flying, aim } = position.data
 
           const interpolated = position.interpolate(world, delta)
