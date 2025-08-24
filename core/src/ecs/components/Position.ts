@@ -231,13 +231,11 @@ export const Position = (props: PositionProps = {}): Position => {
 
       return position
     },
-    xyz: () => {
-      return {
-        x: round(position.data.x, 3),
-        y: round(position.data.y, 3),
-        z: round(position.data.z, 3)
-      }
-    }
+    xyz: () => ({
+      x: round(position.data.x, 3),
+      y: round(position.data.y, 3),
+      z: round(position.data.z, 3)
+    })
   }
   return position
 }
