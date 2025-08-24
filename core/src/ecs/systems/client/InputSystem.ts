@@ -1,6 +1,6 @@
 import {
-  Actions, Character, ClientSystemBuilder, Entity,
-  Input, InvokedAction, World, XY, cos, isTypingEvent, round, sin
+  Actions, Character, ClientSystemBuilder, Entity, Input,
+  InvokedAction, World, XY, cos, isTypingEvent, round, sin
 } from "@piggo-gg/core"
 
 // InputSystem handles keyboard/mouse/joystick inputs
@@ -24,13 +24,10 @@ export const InputSystem = ClientSystemBuilder({
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (world.three && document.pointerLockElement) {
-        const pc = world.client?.playerCharacter()
-        if (!pc) return
-
         world.client?.controls.moveLocal({
           x: event.movementX * 0.001,
           y: event.movementY * 0.001
-        }, pc.components.position.data.flying)
+        })
       }
     })
 
@@ -378,17 +375,13 @@ export const InputSystem = ClientSystemBuilder({
           return
         }
 
-        const pc = world.client?.playerCharacter()
-        if (!pc) return
-        const { flying } = pc.components.position.data
-
         const delta = last ? performance.now() - last : performance.now() - active
         last = performance.now()
 
         world.client?.controls.moveLocal({
           x: power * cos(angle) * delta / 400,
           y: power * sin(angle) * delta / 400
-        }, flying)
+        })
       },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         world.client!.bufferDown.updateHold(world.tick)
