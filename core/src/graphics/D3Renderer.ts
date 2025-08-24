@@ -172,8 +172,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.top = 10
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
-      // sun.shadow.autoUpdate = false
-      // sun.shadow.needsUpdate = true
 
       // texture
       TL.load("grass.png", (texture: Texture) => {
