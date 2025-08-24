@@ -31,6 +31,7 @@ export type D3Renderer = {
   laser: undefined | laserMesh
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
+  sun: undefined | DirectionalLight
   append: (...elements: HTMLElement[]) => void
   setDebug: (state?: boolean) => void
   activate: (world: World) => void
@@ -47,7 +48,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   const GL = new GLTFLoader()
 
   let webgl: undefined | WebGLRenderer
-  let sun: undefined | DirectionalLight
+  // let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
 
@@ -66,6 +67,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     debug: false,
     duck: undefined,
     eagle: undefined,
+    sun: undefined,
     append: (...elements: HTMLElement[]) => {
       renderer.canvas.parentElement?.append(...elements)
     },
@@ -96,10 +98,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       renderer.debug = state
 
-      if (!webgl || !sun) return
+      if (!webgl || !renderer.sun) return
 
       if (renderer.debug) {
-        helper = new CameraHelper(sun.shadow.camera)
+        helper = new CameraHelper(renderer.sun.shadow.camera)
         renderer.scene.add(helper)
         renderer.sphere!.visible = true
       } else if (!renderer.debug && helper) {
@@ -152,8 +154,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
+      // webgl.shadowMap.autoUpdate = false
 
-      sun = new DirectionalLight(evening, 9)
+      const sun = new DirectionalLight(evening, 9)
+      renderer.sun = sun
       renderer.scene.add(sun)
 
       sun.position.set(200, 100, 200)
@@ -167,6 +171,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.top = 10
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
+      sun.shadow.autoUpdate = false
 
       const ambient = new AmbientLight(evening, 1.2)
       renderer.scene.add(ambient)
@@ -354,10 +359,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       screen.orientation.addEventListener("change", renderer.resize)
     },
     sunLookAt: (x: number, y: number, z: number) => {
-      if (sun) {
-        sun.shadow.camera.lookAt(x, z, y)
-        sun.shadow.camera.updateProjectionMatrix()
-        sun.shadow.camera.updateMatrixWorld()
+      if (renderer.sun) {
+        renderer.sun.shadow.camera.lookAt(x, z, y)
+        renderer.sun.shadow.camera.updateProjectionMatrix()
+        renderer.sun.shadow.camera.updateMatrixWorld()
       } else {
         console.warn("Sun not initialized")
       }
