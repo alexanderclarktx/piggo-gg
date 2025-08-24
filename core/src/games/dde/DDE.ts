@@ -363,7 +363,6 @@ const DDESystem = SystemBuilder({
           world.three!.spruce!.count = spruceCount
 
           blocksRendered = true
-          if (world.three.sun) world.three.sun.shadow.needsUpdate = true
         }
         logPerf("render blocks", t3)
       },

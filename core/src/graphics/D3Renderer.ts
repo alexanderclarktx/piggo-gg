@@ -48,7 +48,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
   const GL = new GLTFLoader()
 
   let webgl: undefined | WebGLRenderer
-  // let sun: undefined | DirectionalLight
   let helper: undefined | CameraHelper
   let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
 
@@ -173,8 +172,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.top = 10
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
-      sun.shadow.autoUpdate = false
-      sun.shadow.needsUpdate = true
+      // sun.shadow.autoUpdate = false
+      // sun.shadow.needsUpdate = true
 
       // texture
       TL.load("grass.png", (texture: Texture) => {
