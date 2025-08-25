@@ -45,7 +45,16 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
           }
 
           // update position
-          three.o?.position.set(position.data.x, position.data.y, position.data.z)
+          three.o?.position.set(position.data.x, position.data.z, position.data.y)
+        }
+      },
+      onRender: (entities: Entity<Three | Position>[], delta) => {
+        for (const entity of entities) {
+          const { three, position } = entity.components
+
+          const interpolated = position.interpolate(world, delta)
+
+          three.o?.position.set(interpolated.x, interpolated.z, interpolated.y)
         }
       }
     }

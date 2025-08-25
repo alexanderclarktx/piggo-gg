@@ -40,7 +40,6 @@ export const Bird = (player: Player) => Character({
         const { three } = entity.components
 
         world.three!.gLoader.load("eagle.glb", (eagle) => {
-          // renderer.eagle = eagle.scene
           three.o = eagle.scene
 
           three.o.animations = eagle.animations
@@ -63,13 +62,9 @@ export const Bird = (player: Player) => Character({
 
           three.o.scale.set(0.05, 0.05, 0.05)
           three.o.frustumCulled = false
+
+          world.three!.scene.add(three.o)
         })
-
-        // entity.components.three.o = clone(world.three!.eagle!)
-
-        // entity.components.three.o.visible = true
-        if (three.o) world.three!.scene.add(three.o)
-        console.log("added eagle to scene", three.o, world.three?.scene.children)
       }
     }),
     input: Input({
