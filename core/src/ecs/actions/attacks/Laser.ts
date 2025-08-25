@@ -112,7 +112,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
     const targetEntity = world.entity<Position>(target.id)
     if (!targetEntity) continue
 
-    const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.03 }
+    const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.05 }
 
     const L = XYZsub(targetXYZ, eyePos)
     const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
