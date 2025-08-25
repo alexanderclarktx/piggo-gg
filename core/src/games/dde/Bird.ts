@@ -1,12 +1,10 @@
 import {
-  abs, Action, Actions, Character, Collider, cos,
-  hypot,
-  Input, Laser, max, Networked, Player, Point,
-  Position, Ready, round, sqrt, Target, Team, Three, World, XYZ
+  abs, Action, Actions, Character, Collider, cos, hypot,
+  Input, Laser, max, Networked, Player, Point, Position,
+  Ready, round, sqrt, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Vector3 } from "three"
 import { DDEState } from "./DDE"
-import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   const camera = world.three?.camera
