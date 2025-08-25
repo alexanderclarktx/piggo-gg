@@ -32,26 +32,42 @@ export const Three = (props: ThreeProps = {}): Three => {
 
 export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
   id: "ThreeSystem",
-  init: (world) => ({
-    id: "ThreeSystem",
-    priority: 11,
-    query: ["position", "three"],
-    onTick: (entities: Entity<Three | Position>[]) => {
-      for (const entity of entities) {
-        const { three } = entity.components
+  init: (world) => {
 
-        if (three.init && !three.initialized) {
-          three.init(entity, world)
-          three.initialized = true
-          continue
+    const rendered: Record<string, string[]> = {}
+
+    return {
+      id: "ThreeSystem",
+      priority: 11,
+      query: ["position", "three"],
+      onTick: (entities: Entity<Three | Position>[]) => {
+        for (const entity of entities) {
+          const { three } = entity.components
+
+          if (three.init && !three.initialized) {
+            three.init(entity, world)
+            three.initialized = true
+            continue
+          }
+
+          if (!rendered[entity.id]) rendered[entity.id] = []
+
+          for (const o of three.o) {
+            if (!rendered[entity.id].includes(o.uuid)) {
+              rendered[entity.id].push(o.uuid)
+              world.three?.scene.add(o)
+
+              console.log(rendered, o)
+            }
+          }
+        }
+      },
+      onRender: (entities: Entity<Three | Position>[], delta) => {
+        for (const entity of entities) {
+          const { three } = entity.components
+          three.onRender?.(entity, world, delta)
         }
       }
-    },
-    onRender: (entities: Entity<Three | Position>[], delta) => {
-      for (const entity of entities) {
-        const { three } = entity.components
-        three.onRender?.(entity, world, delta)
-      }
     }
-  })
+  }
 })

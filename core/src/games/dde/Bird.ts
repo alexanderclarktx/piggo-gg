@@ -90,8 +90,8 @@ export const Bird = (player: Player): Character => {
           if (laser.material.opacity <= 0) laser.visible = false
         },
         init: async (entity, world) => {
-          entity.components.three.o.push(duck, eagle, laser)
-          world.three!.scene.add(laser)
+          entity.components.three.o.push(laser)
+          // world.three!.scene.add(laser)
 
           world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
             duck = gltf.scene
@@ -109,7 +109,8 @@ export const Bird = (player: Player): Character => {
               }
             })
 
-            world.three!.scene.add(duck)
+            entity.components.three.o.push(duck)
+            // world.three!.scene.add(duck)
           })
 
           world.three!.gLoader.load("eagle.glb", (gltf) => {
@@ -138,7 +139,8 @@ export const Bird = (player: Player): Character => {
               }
             })
 
-            world.three!.scene.add(eagle)
+            entity.components.three.o.push(eagle)
+            // world.three!.scene.add(eagle)
           })
         }
       }),
