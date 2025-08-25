@@ -34,8 +34,8 @@ export const InputSystem = ClientSystemBuilder({
     })
 
     document.addEventListener("pointerdown", (event) => {
-      // if (world.client?.busy) return
-      // if (world.tick <= world.client!.clickThisFrame.value) return
+      if (world.client?.busy) return
+      if (world.tick <= world.client!.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
