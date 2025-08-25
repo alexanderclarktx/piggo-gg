@@ -1,9 +1,9 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot,
-  Input, Laser, max, Networked, PI, Player, Point, Position,
+  Input, Laser, LaserMesh, max, Networked, PI, Player, Point, Position,
   Ready, round, sqrt, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
-import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
+import { AnimationMixer, CylinderGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
@@ -29,6 +29,8 @@ let duck: Object3D = new Object3D()
 let eagle: Object3D = new Object3D()
 let duckMixer: AnimationMixer | undefined
 let eagleMixer: AnimationMixer | undefined
+
+const laser = LaserMesh()
 
 export const Bird = (player: Player) => Character({
   id: `bird-${player.id}`,
@@ -78,6 +80,9 @@ export const Bird = (player: Player) => Character({
           const speed = hypot(position.data.velocity.x, position.data.velocity.y)
           duckMixer?.update(speed * ratio * 0.03 + 0.01)
         }
+
+        laser.material.opacity -= 0.05 * ratio
+        if (laser.material.opacity <= 0) laser.visible = false
       },
       init: async (_, world) => {
 

@@ -269,14 +269,14 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // laser
-      const laserGeo = new CylinderGeometry(0.01, 0.01, 1, 8)
-      laserGeo.translate(0, 0.5, 0)
+      // const laserGeo = new CylinderGeometry(0.01, 0.01, 1, 8)
+      // laserGeo.translate(0, 0.5, 0)
 
-      const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
-      const laserMesh = new Mesh(laserGeo, material)
-      laserMesh.scale.y = 14
+      // const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
+      // const laserMesh = new Mesh(laserGeo, material)
+      // laserMesh.scale.y = 14
 
-      renderer.laser = laserMesh
+      // renderer.laser = laserMesh
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({

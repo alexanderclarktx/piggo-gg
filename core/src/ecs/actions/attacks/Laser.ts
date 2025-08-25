@@ -2,7 +2,7 @@ import {
   Action, cos, DDEState, floor, hypot, min, playerForCharacter,
   Position, sin, sqrt, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
-import { Vector3 } from "three"
+import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
 
 export type Target = XYZ & { id: string }
 
@@ -10,6 +10,16 @@ export type LaserParams = {
   pos: XYZ
   aim: XY
   targets: Target[]
+}
+
+export const LaserMesh = (): Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap> => {
+  const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
+  const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
+
+  const mesh = new Mesh(geometry, material)
+  mesh.scale.y = 14
+
+  return mesh
 }
 
 export const Laser = Action<LaserParams>("laser", ({ world, params, entity, player }) => {
