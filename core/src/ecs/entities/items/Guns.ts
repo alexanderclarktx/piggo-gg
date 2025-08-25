@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Effects, Gun, GunBuilder, GunNames, Item, ItemBuilder,
+  Actions, Effects, Gun, GunBuilder, GunNames, Item, ItemBuilder,
   ItemEntity, Position, Reload, Renderable, Shoot, loadTexture
 } from "@piggo-gg/core"
 import { AnimatedSprite } from "pixi.js"
@@ -15,9 +15,9 @@ export const GunItem = (name: string, gun: () => Gun): ItemBuilder => ({ id, cha
     gun: gun(),
     effects: Effects(),
     item: Item({ name }),
-    clickable: Clickable({
-      width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 }
-    }),
+    // clickable: Clickable({
+    //   width: 20, height: 20, active: false, anchor: { x: 0.5, y: 0.5 }
+    // }),
     renderable: Renderable({
       scaleMode: "nearest",
       zIndex: 3,
