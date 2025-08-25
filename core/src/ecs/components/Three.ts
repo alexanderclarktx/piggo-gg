@@ -1,18 +1,23 @@
-import { ClientSystemBuilder, Component, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, Component, Entity, Position, World } from "@piggo-gg/core"
+import { Object3D } from "three"
 
 export type Three = Component<"three", {}> & {
-  init: undefined | ((three: Three, world: World) => Promise<void>)
+  initialized: boolean
+  o: Object3D
+  init: undefined | ((entity: Entity<Three>, world: World) => Promise<void>)
   cleanup: () => void
 }
 
 export type ThreeProps = {
-  init?: (three: Three, world: World) => Promise<void>
+  init?: (entity: Entity<Three>, world: World) => Promise<void>
 }
 
 export const Three = (props: ThreeProps = {}): Three => {
   const three: Three = {
     type: "three",
     data: {},
+    initialized: false,
+    o: new Object3D(),
     init: props.init,
     cleanup: () => {
 
@@ -23,13 +28,24 @@ export const Three = (props: ThreeProps = {}): Three => {
 
 export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
   id: "ThreeSystem",
-  init: () => {
+  init: (world) => {
     return {
       id: "ThreeSystem",
       priority: 11,
       query: ["position", "three"],
-      onTick: () => {
+      onTick: (entities: Entity<Three | Position>[]) => {
+        for (const entity of entities) {
+          const { three, position } = entity.components
 
+          if (three.init && !three.initialized) {
+            three.init(entity, world)
+            three.initialized = true
+            continue
+          }
+
+          // update position
+          world.three?.scene.add
+        }
       }
     }
   }
