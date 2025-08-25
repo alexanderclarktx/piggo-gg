@@ -22,7 +22,6 @@ export type D3Renderer = {
   debug: boolean
   gLoader: GLTFLoader
   tLoader: TextureLoader
-  laser: undefined | laserMesh
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   sun: undefined | DirectionalLight
@@ -50,7 +49,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     sphere: undefined,
     oak: undefined,
     spruce: undefined,
-    laser: undefined,
     leaf: undefined,
     blocks: undefined,
     debug: false,
@@ -267,16 +265,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         renderer.scene.add(background)
       })
-
-      // laser
-      // const laserGeo = new CylinderGeometry(0.01, 0.01, 1, 8)
-      // laserGeo.translate(0, 0.5, 0)
-
-      // const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
-      // const laserMesh = new Mesh(laserGeo, material)
-      // laserMesh.scale.y = 14
-
-      // renderer.laser = laserMesh
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
