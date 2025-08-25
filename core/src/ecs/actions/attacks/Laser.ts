@@ -106,28 +106,28 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
   // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
   // if (world.client) return
 
-  const otherDucks = params.targets as Target[]
-  for (const duck of otherDucks) {
-    if (state.hit[duck.id]) continue
-    const duckEntity = world.entity<Position>(duck.id)
-    if (!duckEntity) continue
+  const targets = params.targets as Target[]
+  for (const target of targets) {
+    if (state.hit[target.id]) continue
+    const targetEntity = world.entity<Position>(target.id)
+    if (!targetEntity) continue
 
-    const duckXYZ = { x: duck.x, y: duck.y, z: duck.z + 0.2 }
+    const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.2 }
 
-    const L = XYZsub(duckXYZ, eyePos)
+    const L = XYZsub(targetXYZ, eyePos)
     const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
 
     if (tc < 0) continue
 
-    const Ldist = XYZdistance(duckXYZ, eyePos)
+    const Ldist = XYZdistance(targetXYZ, eyePos)
     const D = sqrt((Ldist * Ldist) - (tc * tc))
 
     if (D > 0 && D < 0.09) {
-      state.hit[duck.id] = { tick: world.tick, by: entity.id }
-      const duckPlayer = playerForCharacter(world, duck.id)
-      world.announce(`${player?.components.pc.data.name} hit ${duckPlayer?.components.pc.data.name}`)
+      state.hit[target.id] = { tick: world.tick, by: entity.id }
+      const targetPlayer = playerForCharacter(world, target.id)
+      world.announce(`${player?.components.pc.data.name} hit ${targetPlayer?.components.pc.data.name}`)
 
-      duckEntity.components.position.data.flying = false
+      targetEntity.components.position.data.flying = false
     }
   }
 })
