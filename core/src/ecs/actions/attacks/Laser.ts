@@ -12,8 +12,12 @@ export type LaserParams = {
   targets: Target[]
 }
 
+export type LaserMesh = Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
+
 export const LaserMesh = (): Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap> => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
+  geometry.translate(0, 0.5, 0)
+
   const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
 
   const mesh = new Mesh(geometry, material)
@@ -22,7 +26,7 @@ export const LaserMesh = (): Mesh<CylinderGeometry, MeshBasicMaterial, Object3DE
   return mesh
 }
 
-export const Laser = Action<LaserParams>("laser", ({ world, params, entity, player }) => {
+export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
   if (!entity) return
 
   const state = world.state<DDEState>()
@@ -50,16 +54,13 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
   const dir = target.clone().sub(eyes).normalize()
 
-  // const laser = world.three?.birdAssets[entity.id]?.laser
-  // if (laser) {
-  //   const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
-  //   laser.position.copy(eyes.add(offset.multiplyScalar(.03)))
-  //   laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+  const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
+  mesh.position.copy(eyes.add(offset.multiplyScalar(.03)))
+  mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
 
-  //   laser.updateMatrix()
-  //   laser.material.opacity = 1
-  //   laser.visible = true
-  // }
+  mesh.updateMatrix()
+  mesh.material.opacity = 1
+  mesh.visible = true
 
   const current = { ...eyePos }
 

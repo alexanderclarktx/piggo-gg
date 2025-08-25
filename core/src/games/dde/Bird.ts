@@ -1,9 +1,9 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, hypot,
-  Input, Laser, LaserMesh, max, Networked, PI, Player, Point, Position,
+  abs, Action, Actions, Character, Collider, cos, hypot, Input,
+  Laser, LaserMesh, max, Networked, PI, Player, Point, Position,
   Ready, round, sqrt, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
-import { AnimationMixer, CylinderGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Vector3 } from "three"
+import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
@@ -84,16 +84,10 @@ export const Bird = (player: Player): Character => {
 
           laser.material.opacity -= 0.05 * ratio
           if (laser.material.opacity <= 0) laser.visible = false
-
-          const actions = world.actions.at(world.tick, bird.id)
-          const laserAction = actions?.find(a => a.actionId === "laser")
-          if (laserAction) {
-            laser.visible = true
-            laser.material.opacity = 1
-            console.log("LASER!")
-          }
         },
-        init: async (_, world) => {
+        init: async (entity, world) => {
+          entity.components.three.o.push(duck, eagle, laser)
+          world.three!.scene.add(laser)
 
           world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
             duck = gltf.scene
@@ -249,7 +243,7 @@ export const Bird = (player: Player): Character => {
 
           position.data.flying = !position.data.flying
         }),
-        laser: Laser,
+        laser: Laser(laser),
         jump: Action("jump", ({ entity, world, params }) => {
           if (!entity) return
 

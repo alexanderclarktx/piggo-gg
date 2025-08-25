@@ -221,18 +221,6 @@ const DDESystem = SystemBuilder({
             delete state.hit[character.id]
           }
 
-          // render assets
-          // if (world.three && !world.three.birdAssets[character.id]) {
-          //   if (!world.three.duck || !world.three.eagle) continue
-
-          //   const laser = cloneThree(world.three.laser!)
-          //   world.three.scene.add(laser)
-
-          //   world.three.birdAssets[character.id] = {
-          //     laser
-          //   }
-          // }
-
           // if eagle, check if eaten a duck
           if (world.mode === "server" && position.data.flying) {
             const ducks = characters.filter(c => c.components.position.data.flying === false)
