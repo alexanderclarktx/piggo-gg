@@ -1,8 +1,8 @@
 import {
-  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
-  logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
-  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, EscapeMenu,
-  ThreeSystem
+  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem,
+  logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
+  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString,
+  GameBuilder, hypot, spawnTerrain, sqrt, EscapeMenu, ThreeSystem
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
