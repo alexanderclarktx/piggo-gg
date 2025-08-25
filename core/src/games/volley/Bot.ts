@@ -103,7 +103,7 @@ export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Tea
           } else {
             if (world.tick - state.lastHitTick < 20) return
 
-            const from = { x: position.data.x, y: position.data.y, z: position.data.z }
+            const from = position.xyz()
 
             // spike
             if ((team === state.lastHitTeam && state.hit === 2) || (state.phase === "serve" && state.hit === 0)) {
