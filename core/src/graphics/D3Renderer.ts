@@ -28,6 +28,8 @@ export type D3Renderer = {
   }>
   duck: undefined | Group<Object3DEventMap>
   eagle: undefined | Group<Object3DEventMap>
+  gLoader: GLTFLoader
+  tLoader: TextureLoader
   laser: undefined | laserMesh
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
@@ -44,8 +46,8 @@ export type D3Renderer = {
 
 export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
-  const TL = new TextureLoader()
-  const GL = new GLTFLoader()
+  // const TL = new TextureLoader()
+  // const GL = new GLTFLoader()
 
   let webgl: undefined | WebGLRenderer
   let helper: undefined | CameraHelper
@@ -67,6 +69,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     duck: undefined,
     eagle: undefined,
     sun: undefined,
+    gLoader: new GLTFLoader(),
+    tLoader: new TextureLoader(),
     append: (...elements: HTMLElement[]) => {
       renderer.canvas.parentElement?.append(...elements)
     },
@@ -173,7 +177,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.updateProjectionMatrix()
 
       // texture
-      TL.load("grass.png", (texture: Texture) => {
+      renderer.tLoader.load("grass.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           if (i === 2) continue
           renderer.blocks!.material[i].map = texture
@@ -186,7 +190,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("grass-top.png", (texture: Texture) => {
+      renderer.tLoader.load("grass-top.png", (texture: Texture) => {
         renderer.blocks!.material[2].map = texture
         renderer.blocks!.material[2].map.colorSpace = SRGBColorSpace
         renderer.blocks!.material[2].visible = true
@@ -196,7 +200,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("dirt.png", (texture: Texture) => {
+      renderer.tLoader.load("dirt.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           renderer.leaf!.material[i].map = texture
           renderer.leaf!.material[i].map!.colorSpace = SRGBColorSpace
@@ -209,7 +213,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("oak-log.png", (texture: Texture) => {
+      renderer.tLoader.load("oak-log.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           renderer.oak!.material[i].map = texture
           renderer.oak!.material[i].map!.colorSpace = SRGBColorSpace
@@ -222,7 +226,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         texture.minFilter = LinearMipMapNearestFilter
       })
 
-      TL.load("spruce-log.png", (texture: Texture) => {
+      renderer.tLoader.load("spruce-log.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           renderer.spruce!.material[i].map = texture
           renderer.spruce!.material[i].map!.colorSpace = SRGBColorSpace
@@ -236,7 +240,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // roughness map
-      TL.load("dirt_norm.png", (texture: Texture) => {
+      renderer.tLoader.load("dirt_norm.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           renderer.blocks!.material[i].roughnessMap = texture
           renderer.blocks!.material[i].needsUpdate = true
@@ -247,7 +251,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // spruce roughness
-      TL.load("spruce-norm.png", (texture: Texture) => {
+      renderer.tLoader.load("spruce-norm.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           renderer.spruce!.material[i].roughnessMap = texture
           renderer.spruce!.material[i].needsUpdate = true
@@ -258,7 +262,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // background
-      TL.load("night.png", (texture: Texture) => {
+      renderer.tLoader.load("night.png", (texture: Texture) => {
         texture.magFilter = NearestFilter
         texture.minFilter = NearestFilter
 
@@ -297,29 +301,29 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sunSphere.position.copy(sun.position)
       renderer.scene.add(sunSphere)
 
-      GL.load("eagle.glb", (eagle) => {
-        renderer.eagle = eagle.scene
+      // GL.load("eagle.glb", (eagle) => {
+      //   renderer.eagle = eagle.scene
 
-        renderer.eagle.animations = eagle.animations
-        eagle.scene.rotation.order = "YXZ"
+      //   renderer.eagle.animations = eagle.animations
+      //   eagle.scene.rotation.order = "YXZ"
 
-        const colors: Record<string, number> = {
-          Cylinder: 0x5C2421,
-          Cylinder_1: 0xE7C41C,
-          Cylinder_2: 0xffffff,
-          Cylinder_3: 0x632724
-        }
+      //   const colors: Record<string, number> = {
+      //     Cylinder: 0x5C2421,
+      //     Cylinder_1: 0xE7C41C,
+      //     Cylinder_2: 0xffffff,
+      //     Cylinder_3: 0x632724
+      //   }
 
-        eagle.scene.traverse((child) => {
-          if (child instanceof Mesh) {
-            child.material = new MeshStandardMaterial({ color: colors[child.name] })
-            child.castShadow = true
-            child.receiveShadow = true
-          }
-        })
-      })
+      //   eagle.scene.traverse((child) => {
+      //     if (child instanceof Mesh) {
+      //       child.material = new MeshStandardMaterial({ color: colors[child.name] })
+      //       child.castShadow = true
+      //       child.receiveShadow = true
+      //     }
+      //   })
+      // })
 
-      GL.load("ugly-duckling.glb", (duck) => {
+      renderer.gLoader.load("ugly-duckling.glb", (duck) => {
         renderer.duck = duck.scene
         renderer.duck.animations = duck.animations
 
@@ -331,7 +335,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         })
       })
 
-      GL.load("apple.glb", (apple) => {
+      renderer.gLoader.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
 
         renderer.apple = apple.scene

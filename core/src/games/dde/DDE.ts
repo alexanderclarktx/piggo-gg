@@ -1,7 +1,8 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
   logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
-  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, cloneThree, EscapeMenu
+  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, cloneThree, EscapeMenu,
+  ThreeSystem
 } from "@piggo-gg/core"
 import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
@@ -60,7 +61,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       D3CameraSystem(),
       DDESystem,
       HUDSystem,
-      D3NametagSystem
+      D3NametagSystem,
+      ThreeSystem
     ],
     entities: [
       Crosshair(),
@@ -221,40 +223,40 @@ const DDESystem = SystemBuilder({
           }
 
           // render assets
-          if (world.three && !world.three.birdAssets[character.id]) {
-            if (!world.three.duck || !world.three.eagle) continue
+          // if (world.three && !world.three.birdAssets[character.id]) {
+          //   if (!world.three.duck || !world.three.eagle) continue
 
-            const { position } = character.components
+          //   const { position } = character.components
 
-            const duck = clone(world.three.duck) as Group<Object3DEventMap>
+          //   const duck = clone(world.three.duck) as Group<Object3DEventMap>
 
-            world.three.scene.add(duck)
+          //   world.three.scene.add(duck)
 
-            duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
-            duck.frustumCulled = false
-            duck.scale.set(0.08, 0.08, 0.08)
+          //   duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
+          //   duck.frustumCulled = false
+          //   duck.scale.set(0.08, 0.08, 0.08)
 
-            const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
+          //   const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
 
-            world.three.scene.add(eagle)
+          //   world.three.scene.add(eagle)
 
-            eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
-            eagle.frustumCulled = false
-            eagle.scale.set(0.05, 0.05, 0.05)
+          //   eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
+          //   eagle.frustumCulled = false
+          //   eagle.scale.set(0.05, 0.05, 0.05)
 
-            const laser = cloneThree(world.three.laser!)
-            world.three.scene.add(laser)
+          //   const laser = cloneThree(world.three.laser!)
+          //   world.three.scene.add(laser)
 
-            const duckMixer = new AnimationMixer(duck)
-            duckMixer.clipAction(duck.animations[1]).play()
+          //   const duckMixer = new AnimationMixer(duck)
+          //   duckMixer.clipAction(duck.animations[1]).play()
 
-            const eagleMixer = new AnimationMixer(eagle)
-            eagleMixer.clipAction(eagle.animations[0]).play()
+          //   const eagleMixer = new AnimationMixer(eagle)
+          //   eagleMixer.clipAction(eagle.animations[0]).play()
 
-            world.three.birdAssets[character.id] = {
-              duck, eagle, laser, mixers: [duckMixer, eagleMixer]
-            }
-          }
+          //   world.three.birdAssets[character.id] = {
+          //     duck, eagle, laser, mixers: [duckMixer, eagleMixer]
+          //   }
+          // }
 
           // if eagle, check if eaten a duck
           if (world.mode === "server" && position.data.flying) {

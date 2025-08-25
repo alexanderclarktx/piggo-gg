@@ -23,6 +23,9 @@ export const Three = (props: ThreeProps = {}): Three => {
 
     }
   }
+
+  three.o.rotation.order = "XYZ"
+
   return three
 }
 

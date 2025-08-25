@@ -1,10 +1,11 @@
 import {
   abs, Action, Actions, Character, Collider, cos,
   Input, Laser, max, Networked, Player, Point,
-  Position, Ready, round, Target, Team, World, XYZ
+  Position, Ready, round, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { DDEState } from "./DDE"
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   const camera = world.three?.camera
@@ -33,6 +34,16 @@ export const Bird = (player: Player) => Character({
     collider: Collider({
       shape: "ball",
       radius: 0.1
+    }),
+    three: Three({
+      init: async (entity, world) => {
+        // const o = entity.components.three.o
+
+        entity.components.three.o = clone(world.three!.eagle!)
+
+        entity.components.three.o.visible = true
+        world.three!.scene.add(entity.components.three.o)
+      }
     }),
     input: Input({
       joystick: ({ world }) => {
