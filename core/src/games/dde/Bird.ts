@@ -50,6 +50,7 @@ export const Bird = (player: Player) => Character({
         const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
 
         if (flying) {
+          duck.visible = false
           eagle.visible = true
 
           // position
@@ -64,8 +65,8 @@ export const Bird = (player: Player) => Character({
           const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
           eagleMixer?.update(speed * ratio * 0.01 + 0.01)
         } else {
-          eagle.visible = false
           duck.visible = true
+          eagle.visible = false
 
           // position
           duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
@@ -78,8 +79,7 @@ export const Bird = (player: Player) => Character({
           duckMixer?.update(speed * ratio * 0.03 + 0.01)
         }
       },
-      init: async (entity, world) => {
-        const { three } = entity.components
+      init: async (_, world) => {
 
         world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
           duck = gltf.scene
