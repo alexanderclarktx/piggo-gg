@@ -252,18 +252,6 @@ const DDESystem = SystemBuilder({
           applesSpawned = true
         }
 
-        // clean up old player assets
-        // for (const playerId in world.three?.birdAssets ?? {}) {
-        //   if (!world.three) continue
-
-        //   if (!world.entity(playerId)) {
-        //     const { duck, eagle } = world.three.birdAssets[playerId]
-        //     duck.removeFromParent()
-        //     eagle.removeFromParent()
-        //     delete world.three.birdAssets[playerId]
-        //   }
-        // }
-
         // render blocks
         const t3 = performance.now()
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
@@ -330,24 +318,6 @@ const DDESystem = SystemBuilder({
           blocksRendered = true
         }
         logPerf("render blocks", t3)
-      },
-      onRender: (_, delta) => {
-        const players = world.players()
-
-        // update player positions
-        for (const player of players) {
-          const character = player.components.controlling?.getCharacter(world)
-          if (!character) continue
-
-          const { position } = character.components
-          if (!position) continue
-
-          const interpolated = position.interpolate(world, delta)
-
-          // if (world.three?.debug && player.id === world.client?.playerId()) {
-          //   world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-          // }
-        }
       }
     }
   }

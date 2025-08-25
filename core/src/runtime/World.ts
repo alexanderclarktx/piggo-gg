@@ -97,12 +97,11 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     trees: [],
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
-      if (oldEntity?.components.renderable) {
+      if (oldEntity?.components.renderable || oldEntity?.components.three) {
         oldEntity.removed = true
-        oldEntity.components.renderable.cleanup()
+        oldEntity.components.renderable?.cleanup()
+        oldEntity.components.three?.cleanup(world)
       }
-
-      if (oldEntity) console.log("CLEANUP OLD ENTITY")
 
       world.entities[entity.id] = entity
       return entity.id
