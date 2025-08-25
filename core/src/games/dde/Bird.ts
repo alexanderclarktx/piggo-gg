@@ -3,7 +3,7 @@ import {
   Input, Laser, max, Networked, Player, Point, Position,
   Ready, round, sqrt, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
-import { AnimationMixer, Mesh, MeshStandardMaterial, Vector3 } from "three"
+import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
 
 const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
@@ -25,6 +25,8 @@ const run = 0.95
 const hop = 0.15
 const leap = 0.23
 
+let eagle: Object3D = new Object3D()
+
 export const Bird = (player: Player) => Character({
   id: `bird-${player.id}`,
   components: {
@@ -35,15 +37,19 @@ export const Bird = (player: Player) => Character({
       radius: 0.1
     }),
     three: Three({
-      position: { x: 0, y: 0, z: 0.06 },
       onRender: (entity, world, delta) => {
         const { position, three } = entity.components
         const { aim, rotation, rotating, velocity } = position.data
 
+        // position
+        const interpolated = position.interpolate(world, delta)
+        eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
+
+        // rotation
         const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
-        three.o.rotation.y = orientation.x
-        three.o.rotation.x = orientation.y
-        three.o.rotation.z = rotation - rotating * (40 - delta) / 40
+        eagle.rotation.y = orientation.x
+        eagle.rotation.x = orientation.y
+        eagle.rotation.z = rotation - rotating * (40 - delta) / 40
 
         const ratio = delta / 25
         const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
@@ -52,14 +58,14 @@ export const Bird = (player: Player) => Character({
       init: async (entity, world) => {
         const { three } = entity.components
 
-        world.three!.gLoader.load("eagle.glb", (eagle) => {
-          three.o = eagle.scene
+        world.three!.gLoader.load("eagle.glb", (gltf) => {
+          eagle = gltf.scene
+          eagle.animations = gltf.animations
 
-          three.o.animations = eagle.animations
-          three.o.rotation.order = "YXZ"
+          eagle.rotation.order = "YXZ"
 
-          three.mixer = new AnimationMixer(three.o)
-          three.mixer.clipAction(three.o.animations[0]).play()
+          three.mixer = new AnimationMixer(eagle)
+          three.mixer.clipAction(eagle.animations[0]).play()
 
           const colors: Record<string, number> = {
             Cylinder: 0x5C2421,
@@ -68,7 +74,7 @@ export const Bird = (player: Player) => Character({
             Cylinder_3: 0x632724
           }
 
-          three.o.traverse((child) => {
+          eagle.traverse((child) => {
             if (child instanceof Mesh) {
               child.material = new MeshStandardMaterial({ color: colors[child.name] })
               child.castShadow = true
@@ -76,10 +82,10 @@ export const Bird = (player: Player) => Character({
             }
           })
 
-          three.o.scale.set(0.05, 0.05, 0.05)
-          three.o.frustumCulled = false
+          eagle.scale.set(0.05, 0.05, 0.05)
+          eagle.frustumCulled = false
 
-          world.three!.scene.add(three.o)
+          world.three!.scene.add(eagle)
           console.log("added eagle to scene")
         })
       }
