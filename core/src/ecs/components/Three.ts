@@ -1,8 +1,9 @@
 import { ClientSystemBuilder, Component, Entity, Position, World, XYZ } from "@piggo-gg/core"
-import { Object3D } from "three"
+import { AnimationMixer, Object3D } from "three"
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
+  mixer: undefined | AnimationMixer
   o: Object3D
   position: XYZ
   init: undefined | ((entity: Entity<Three | Position>, world: World) => Promise<void>)
@@ -20,6 +21,7 @@ export const Three = (props: ThreeProps = {}): Three => {
     type: "three",
     data: {},
     initialized: false,
+    mixer: undefined,
     o: new Object3D(),
     position: props.position ?? { x: 0, y: 0, z: 0 },
     init: props.init,

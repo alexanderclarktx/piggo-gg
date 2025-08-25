@@ -1,9 +1,10 @@
 import {
   abs, Action, Actions, Character, Collider, cos,
+  hypot,
   Input, Laser, max, Networked, Player, Point,
-  Position, Ready, round, Target, Team, Three, World, XYZ
+  Position, Ready, round, sqrt, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
-import { Mesh, MeshStandardMaterial, Vector3 } from "three"
+import { AnimationMixer, Mesh, MeshStandardMaterial, Vector3 } from "three"
 import { DDEState } from "./DDE"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 
@@ -39,12 +40,16 @@ export const Bird = (player: Player) => Character({
       position: { x: 0, y: 0, z: 0.06 },
       onRender: (entity, world, delta) => {
         const { position, three } = entity.components
-        const { aim, rotation, rotating } = position.data
+        const { aim, rotation, rotating, velocity } = position.data
 
         const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
         three.o.rotation.y = orientation.x
         three.o.rotation.x = orientation.y
         three.o.rotation.z = rotation - rotating * (40 - delta) / 40
+
+        const ratio = delta / 25
+        const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
+        three.mixer?.update(speed * ratio * 0.01 + 0.01)
       },
       init: async (entity, world) => {
         const { three } = entity.components
@@ -54,6 +59,9 @@ export const Bird = (player: Player) => Character({
 
           three.o.animations = eagle.animations
           three.o.rotation.order = "YXZ"
+
+          three.mixer = new AnimationMixer(three.o)
+          three.mixer.clipAction(three.o.animations[0]).play()
 
           const colors: Record<string, number> = {
             Cylinder: 0x5C2421,
