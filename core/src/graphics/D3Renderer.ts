@@ -44,9 +44,6 @@ export type D3Renderer = {
 
 export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
-  // const TL = new TextureLoader()
-  // const GL = new GLTFLoader()
-
   let webgl: undefined | WebGLRenderer
   let helper: undefined | CameraHelper
   let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
@@ -296,18 +293,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
       sunSphere.position.copy(sun.position)
       renderer.scene.add(sunSphere)
-
-      // renderer.gLoader.load("ugly-duckling.glb", (duck) => {
-      //   renderer.duck = duck.scene
-      //   renderer.duck.animations = duck.animations
-
-      //   duck.scene.traverse((child) => {
-      //     if (child instanceof Mesh) {
-      //       child.castShadow = true
-      //       child.receiveShadow = true
-      //     }
-      //   })
-      // })
 
       renderer.gLoader.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
