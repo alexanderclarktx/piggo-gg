@@ -68,14 +68,9 @@ export const Bird = (player: Player) => Character({
           return { actionId: "ready" }
         },
 
-        "mb1": ({ hold, character, world }) => {
+        "mb1": ({ hold, character, world, aim }) => {
           if (!document.pointerLockElement || !character) return null
-
           if (hold) return null
-
-          const { position } = character?.components
-          const pos = position.xyz()
-          const aim = { ...world.client!.controls.localAim }
 
           const targets: Target[] = world.characters()
             .filter(c => c.id !== character.id)
@@ -83,6 +78,8 @@ export const Bird = (player: Player) => Character({
               ...target.components.position.xyz(),
               id: target.id
             }))
+
+          const pos = character.components.position.xyz()
 
           return { actionId: "laser", params: { pos, aim, targets } }
         },

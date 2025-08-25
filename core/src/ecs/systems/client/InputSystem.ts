@@ -3,12 +3,14 @@ import {
   InvokedAction, World, XY, cos, isTypingEvent, round, sin
 } from "@piggo-gg/core"
 
-// InputSystem handles keyboard/mouse/joystick inputs
+// handles keyboard/mouse/joystick inputs
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: (world) => {
     const renderer = world.renderer
     let { mouse } = world.client!.controls
+
+    const localAim = () => ({ ...world.client!.controls.localAim })
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])
@@ -41,7 +43,7 @@ export const InputSystem = ClientSystemBuilder({
 
       const key = event.button === 0 ? "mb1" : "mb2"
 
-      world.client?.bufferDown.push({ key, mouse, tick: world.tick, hold: 0 })
+      world.client?.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
     })
 
     document.addEventListener("pointerup", (event) => {
@@ -52,7 +54,7 @@ export const InputSystem = ClientSystemBuilder({
         if (pc) {
           pc.components.input.inputMap.release[key]?.({
             // @ts-expect-error
-            mouse, entity: pc, world, tick: world.tick, hold: 0, target: event.target?.localName ?? ""
+            mouse, localAim: localAim(), entity: pc, world, tick: world.tick, hold: 0, target: event.target?.localName ?? ""
           })
           world.client?.bufferDown.remove(key)
           return
@@ -60,36 +62,38 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       world.client!.bufferDown.remove(key)
-      world.client!.bufferUp.push({ key, mouse, tick: world.tick, hold: 0 })
+      world.client!.bufferUp.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
     })
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
       if (document.hasFocus()) {
-        const keyName = event.key.toLowerCase()
+        const key = event.key.toLowerCase()
 
-        if (charactersPreventDefault.has(keyName)) event.preventDefault()
+        if (charactersPreventDefault.has(key)) event.preventDefault()
 
         // handle released backspace
-        if (world.client?.chat.isOpen && keyName === "backspace") backspace = 0
+        if (world.client?.chat.isOpen && key === "backspace") backspace = 0
 
-        const down = world.client?.bufferDown.get(keyName)
+        const down = world.client?.bufferDown.get(key)
         if (!down) return
 
-        if (keyName === "escape") {
+        if (key === "escape") {
           const pc = world.client?.playerCharacter()
           if (pc) {
-            pc.components.input.inputMap.release[keyName]?.({
-              mouse, entity: pc, world, tick: world.tick, hold: down.hold
+            pc.components.input.inputMap.release[key]?.({
+              mouse, aim: localAim(), entity: pc, world, tick: world.tick, hold: down.hold
             })
             return
           }
         }
 
         // add to bufferUp
-        world.client!.bufferUp.push({ key: keyName, mouse, tick: world.tick, hold: down.hold })
+        world.client!.bufferUp.push({
+          key, mouse, aim: localAim(), tick: world.tick, hold: down.hold
+        })
 
         // remove from bufferedDown
-        world.client!.bufferDown.remove(keyName)
+        world.client!.bufferDown.remove(key)
       }
     })
 
@@ -140,7 +144,7 @@ export const InputSystem = ClientSystemBuilder({
           if (world.client?.chat.isOpen && validChatCharacters.has(keyName)) {
             world.client!.chat.inputBuffer += keyName
           } else {
-            world.client!.bufferDown.push({ key: keyName, mouse, tick: world.tick, hold: 0 })
+            world.client!.bufferDown.push({ key: keyName, mouse, aim: localAim(), tick: world.tick, hold: 0 })
           }
         }
       }
@@ -185,7 +189,7 @@ export const InputSystem = ClientSystemBuilder({
         if (actions.actionMap["point"]) {
           world.actions.push(world.tick + 1, character.id, {
             actionId: "point", playerId: world.client?.playerId(), params: {
-              pointing: 0, pointingDelta: 0, aim: { ...world.client?.controls.localAim }
+              pointing: 0, pointingDelta: 0, aim: localAim()
             }
           })
         }
@@ -211,6 +215,7 @@ export const InputSystem = ClientSystemBuilder({
             if (controllerInput != null) {
               const invocation = controllerInput({
                 mouse: { ...mouse },
+                aim: localAim(),
                 entity: character,
                 character,
                 world,
@@ -232,6 +237,7 @@ export const InputSystem = ClientSystemBuilder({
           if (controllerInput) {
             const invocation = controllerInput({
               mouse: { ...mouse },
+              aim: localAim(),
               entity: character,
               character,
               world,
@@ -258,6 +264,7 @@ export const InputSystem = ClientSystemBuilder({
           if (controllerInput != null) {
             const invocation = controllerInput({
               mouse,
+              aim: localAim(),
               entity: character,
               tick: world.tick,
               world,
@@ -318,6 +325,7 @@ export const InputSystem = ClientSystemBuilder({
           if (controllerInput != null) {
             const invocation = controllerInput({
               mouse,
+              aim: localAim(),
               entity,
               world,
               tick: keyMouse.tick,
@@ -344,6 +352,7 @@ export const InputSystem = ClientSystemBuilder({
           if (controllerInput != null) {
             const invocation = controllerInput({
               mouse,
+              aim: localAim(),
               entity,
               world,
               hold: 0

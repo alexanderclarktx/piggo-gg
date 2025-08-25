@@ -2,6 +2,7 @@ import { Character, Component, Entity, InvokedAction, World, XY } from "@piggo-g
 
 export type InputState = {
   mouse: XY
+  aim: XY
   tick?: number
   entity: Entity
   world: World
