@@ -3,7 +3,7 @@ import {
   Input, Laser, max, Networked, Player, Point,
   Position, Ready, round, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
-import { Vector3 } from "three"
+import { Mesh, MeshStandardMaterial, Vector3 } from "three"
 import { DDEState } from "./DDE"
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
 
@@ -39,10 +39,37 @@ export const Bird = (player: Player) => Character({
       init: async (entity, world) => {
         // const o = entity.components.three.o
 
-        entity.components.three.o = clone(world.three!.eagle!)
+        world.three!.gLoader.load("eagle.glb", (eagle) => {
+          // renderer.eagle = eagle.scene
 
-        entity.components.three.o.visible = true
+          eagle.scene.animations = eagle.animations
+          eagle.scene.rotation.order = "YXZ"
+
+          const colors: Record<string, number> = {
+            Cylinder: 0x5C2421,
+            Cylinder_1: 0xE7C41C,
+            Cylinder_2: 0xffffff,
+            Cylinder_3: 0x632724
+          }
+
+          eagle.scene.traverse((child) => {
+            if (child instanceof Mesh) {
+              child.material = new MeshStandardMaterial({ color: colors[child.name] })
+              child.castShadow = true
+              child.receiveShadow = true
+            }
+          })
+
+          eagle.scene.frustumCulled = false
+
+          entity.components.three.o = eagle.scene
+        })
+
+        // entity.components.three.o = clone(world.three!.eagle!)
+
+        // entity.components.three.o.visible = true
         world.three!.scene.add(entity.components.three.o)
+        console.log("added eagle to scene", entity.components.three.o)
       }
     }),
     input: Input({
