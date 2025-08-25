@@ -41,6 +41,10 @@ export const InputSystem = ClientSystemBuilder({
       if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
+      // @ts-expect-error
+      const target = event.target?.tagName
+      if (!["CANVAS", "BODY"].includes(target)) return
+
       const key = event.button === 0 ? "mb1" : "mb2"
 
       world.client?.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })

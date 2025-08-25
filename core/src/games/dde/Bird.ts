@@ -177,8 +177,9 @@ export const Bird = (player: Player): Character => {
           },
 
           "mb1": ({ hold, character, world, aim }) => {
-            if (!document.pointerLockElement || !character) return null
             if (hold) return null
+            if (!character) return null
+            if (!document.pointerLockElement && !world.client?.mobile) return null
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)

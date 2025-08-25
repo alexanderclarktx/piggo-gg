@@ -8,7 +8,7 @@ export type InputState = {
   world: World
   character?: Character
   hold: number
-  target?: string
+  target?: string | undefined
 }
 
 export type KeyHandler = (_: InputState) => null | InvokedAction<string, {}>
