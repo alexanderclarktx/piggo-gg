@@ -112,7 +112,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
     const targetEntity = world.entity<Position>(target.id)
     if (!targetEntity) continue
 
-    const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.2 }
+    const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.03 }
 
     const L = XYZsub(targetXYZ, eyePos)
     const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
@@ -122,7 +122,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
     const Ldist = XYZdistance(targetXYZ, eyePos)
     const D = sqrt((Ldist * Ldist) - (tc * tc))
 
-    if (D > 0 && D < 0.09) {
+    if (D > 0 && D < 0.08) {
       state.hit[target.id] = { tick: world.tick, by: entity.id }
       const targetPlayer = playerForCharacter(world, target.id)
       world.announce(`${player?.components.pc.data.name} hit ${targetPlayer?.components.pc.data.name}`)
