@@ -158,7 +158,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
 
-      // texture
+      // textures
+
       renderer.tLoader.load("grass.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           if (i === 2) continue

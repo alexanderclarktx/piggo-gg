@@ -25,14 +25,15 @@ const run = 0.95
 const hop = 0.15
 const leap = 0.23
 
-let duck: Object3D = new Object3D()
-let eagle: Object3D = new Object3D()
-let duckMixer: AnimationMixer | undefined
-let eagleMixer: AnimationMixer | undefined
-
-const laser = LaserMesh()
-
 export const Bird = (player: Player): Character => {
+
+  let duck: Object3D = new Object3D()
+  let eagle: Object3D = new Object3D()
+  let duckMixer: AnimationMixer | undefined
+  let eagleMixer: AnimationMixer | undefined
+
+  const laser = LaserMesh()
+
   const bird = Character({
     id: `bird-${player.id}`,
     components: {
@@ -91,7 +92,6 @@ export const Bird = (player: Player): Character => {
         },
         init: async (entity, world) => {
           entity.components.three.o.push(laser)
-          // world.three!.scene.add(laser)
 
           world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
             duck = gltf.scene
@@ -110,7 +110,6 @@ export const Bird = (player: Player): Character => {
             })
 
             entity.components.three.o.push(duck)
-            // world.three!.scene.add(duck)
           })
 
           world.three!.gLoader.load("eagle.glb", (gltf) => {
@@ -140,7 +139,6 @@ export const Bird = (player: Player): Character => {
             })
 
             entity.components.three.o.push(eagle)
-            // world.three!.scene.add(eagle)
           })
         }
       }),

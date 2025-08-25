@@ -34,7 +34,7 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
   id: "ThreeSystem",
   init: (world) => {
 
-    const rendered: Record<string, string[]> = {}
+    const rendered: Record<string, Object3D[]> = {}
 
     return {
       id: "ThreeSystem",
@@ -45,6 +45,10 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
           const { three } = entity.components
 
           if (three.init && !three.initialized) {
+            if (rendered[entity.id]) {
+              world.three?.scene.remove(...three.o)
+              rendered[entity.id] = []
+            }
             three.init(entity, world)
             three.initialized = true
             continue
@@ -53,11 +57,9 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
           if (!rendered[entity.id]) rendered[entity.id] = []
 
           for (const o of three.o) {
-            if (!rendered[entity.id].includes(o.uuid)) {
-              rendered[entity.id].push(o.uuid)
+            if (!rendered[entity.id].includes(o)) {
+              rendered[entity.id].push(o)
               world.three?.scene.add(o)
-
-              console.log(rendered, o)
             }
           }
         }
