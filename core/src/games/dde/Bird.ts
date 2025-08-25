@@ -82,6 +82,7 @@ export const Bird = (player: Player) => Character({
           three.o.frustumCulled = false
 
           world.three!.scene.add(three.o)
+          console.log("added eagle to scene")
         })
       }
     }),

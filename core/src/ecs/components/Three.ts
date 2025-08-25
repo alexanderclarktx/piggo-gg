@@ -8,6 +8,7 @@ export type Three = Component<"three", {}> & {
   position: XYZ
   init: undefined | ((entity: Entity<Three | Position>, world: World) => Promise<void>)
   onRender: undefined | ((entity: Entity<Three | Position>, world: World, delta: number) => void)
+  cleanup: (world: World) => void
 }
 
 export type ThreeProps = {
@@ -25,7 +26,10 @@ export const Three = (props: ThreeProps = {}): Three => {
     o: new Object3D(),
     position: props.position ?? { x: 0, y: 0, z: 0 },
     init: props.init,
-    onRender: props.onRender
+    onRender: props.onRender,
+    cleanup: (world) => {
+      world.three?.scene.remove(three.o)
+    }
   }
 
   return three

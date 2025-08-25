@@ -102,6 +102,8 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
         oldEntity.components.renderable.cleanup()
       }
 
+      if (oldEntity) console.log("CLEANUP OLD ENTITY")
+
       world.entities[entity.id] = entity
       return entity.id
     },
@@ -119,6 +121,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       if (entity) {
         delete world.entities[id]
         entity.components.renderable?.cleanup()
+        entity.components.three?.cleanup(world)
 
         entity.removed = true
       }

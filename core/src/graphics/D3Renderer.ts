@@ -27,7 +27,6 @@ export type D3Renderer = {
     mixers: AnimationMixer[]
   }>
   duck: undefined | Group<Object3DEventMap>
-  eagle: undefined | Group<Object3DEventMap>
   gLoader: GLTFLoader
   tLoader: TextureLoader
   laser: undefined | laserMesh
@@ -67,7 +66,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     birdAssets: {},
     debug: false,
     duck: undefined,
-    eagle: undefined,
     sun: undefined,
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
