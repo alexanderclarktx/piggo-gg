@@ -1,10 +1,10 @@
 import {
-  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, GameBuilder, hypot,
-  logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem, spawnTerrain, sqrt,
-  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString, cloneThree, EscapeMenu
+  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem,
+  logPerf, min, D3Profile, Random, randomInt, SpawnSystem,
+  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString,
+  GameBuilder, spawnTerrain, EscapeMenu, ThreeSystem
 } from "@piggo-gg/core"
-import { AnimationMixer, Color, Group, Object3D, Object3DEventMap } from "three"
-import { clone } from "three/examples/jsm/utils/SkeletonUtils.js"
+import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
 import { DDEMobileUI } from "./DDEMobileUI"
@@ -60,7 +60,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       D3CameraSystem(),
       DDESystem,
       HUDSystem,
-      D3NametagSystem
+      D3NametagSystem,
+      ThreeSystem
     ],
     entities: [
       Crosshair(),
@@ -81,8 +82,8 @@ const DDESystem = SystemBuilder({
 
     DDEMobileUI(world)
 
-    let blocksRendered = false
-    let applesSpawned = false
+    let blocksRendered = true // todo
+    let applesSpawned = true
     let ambient = false
 
     return {
@@ -220,42 +221,6 @@ const DDESystem = SystemBuilder({
             delete state.hit[character.id]
           }
 
-          // render assets
-          if (world.three && !world.three.birdAssets[character.id]) {
-            if (!world.three.duck || !world.three.eagle) continue
-
-            const { position } = character.components
-
-            const duck = clone(world.three.duck) as Group<Object3DEventMap>
-
-            world.three.scene.add(duck)
-
-            duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
-            duck.frustumCulled = false
-            duck.scale.set(0.08, 0.08, 0.08)
-
-            const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
-
-            world.three.scene.add(eagle)
-
-            eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
-            eagle.frustumCulled = false
-            eagle.scale.set(0.05, 0.05, 0.05)
-
-            const laser = cloneThree(world.three.laser!)
-            world.three.scene.add(laser)
-
-            const duckMixer = new AnimationMixer(duck)
-            duckMixer.clipAction(duck.animations[1]).play()
-
-            const eagleMixer = new AnimationMixer(eagle)
-            eagleMixer.clipAction(eagle.animations[0]).play()
-
-            world.three.birdAssets[character.id] = {
-              duck, eagle, laser, mixers: [duckMixer, eagleMixer]
-            }
-          }
-
           // if eagle, check if eaten a duck
           if (world.mode === "server" && position.data.flying) {
             const ducks = characters.filter(c => c.components.position.data.flying === false)
@@ -285,18 +250,6 @@ const DDESystem = SystemBuilder({
             world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
           }
           applesSpawned = true
-        }
-
-        // clean up old player assets
-        for (const playerId in world.three?.birdAssets ?? {}) {
-          if (!world.three) continue
-
-          if (!world.entity(playerId)) {
-            const { duck, eagle } = world.three.birdAssets[playerId]
-            duck.removeFromParent()
-            eagle.removeFromParent()
-            delete world.three.birdAssets[playerId]
-          }
         }
 
         // render blocks
@@ -365,62 +318,6 @@ const DDESystem = SystemBuilder({
           blocksRendered = true
         }
         logPerf("render blocks", t3)
-      },
-      onRender: (_, delta) => {
-        const ratio = delta / 25
-        const players = world.players()
-
-        // update player positions
-        for (const player of players) {
-          const character = player.components.controlling?.getCharacter(world)
-          if (!character) continue
-
-          const { position } = character.components
-          if (!position) continue
-
-          const { rotation, rotating, flying, aim } = position.data
-
-          const interpolated = position.interpolate(world, delta)
-
-          if (!world.three?.birdAssets[character.id]) continue
-
-          const { duck, eagle, laser, mixers } = world.three?.birdAssets[character.id]
-
-          const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
-
-          duck.visible = !position.data.flying
-          if (duck.visible) {
-            duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
-            duck.rotation.y = orientation.x + PI / 2
-          }
-
-          eagle.visible = position.data.flying
-          if (eagle.visible) {
-            eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
-            eagle.rotation.y = orientation.x
-            eagle.rotation.x = orientation.y
-            eagle.rotation.z = rotation - rotating * (40 - delta) / 40
-          }
-
-          if (laser) {
-            laser.material.opacity -= 0.05 * ratio
-            if (laser.material.opacity <= 0) laser.visible = false
-          }
-
-          if (world.three?.debug && player.id === world.client?.playerId()) {
-            world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-          }
-
-          for (const mixer of mixers) {
-            if (flying) {
-              const speed = sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z))
-              mixer.update(speed * ratio * 0.01 + 0.01)
-            } else {
-              const speed = hypot(position.data.velocity.x, position.data.velocity.y)
-              mixer.update(speed * ratio * 0.03 + 0.01)
-            }
-          }
-        }
       }
     }
   }

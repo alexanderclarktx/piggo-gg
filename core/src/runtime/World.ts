@@ -97,9 +97,10 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     trees: [],
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
-      if (oldEntity?.components.renderable) {
+      if (oldEntity?.components.renderable || oldEntity?.components.three) {
         oldEntity.removed = true
-        oldEntity.components.renderable.cleanup()
+        oldEntity.components.renderable?.cleanup()
+        oldEntity.components.three?.cleanup(world)
       }
 
       world.entities[entity.id] = entity
@@ -119,6 +120,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       if (entity) {
         delete world.entities[id]
         entity.components.renderable?.cleanup()
+        entity.components.three?.cleanup(world)
 
         entity.removed = true
       }

@@ -5,6 +5,10 @@ import {
 
 const movementActions = ["move", "moveAnalog", "jump", "point"]
 
+const otherCharacter = (id: string, world: World) => {
+  return id.startsWith("bird") && id !== world.client?.playerCharacter()?.id
+}
+
 // TODO not generic across games
 export const RollbackSyncer = (world: World): Syncer => {
 
@@ -23,7 +27,7 @@ export const RollbackSyncer = (world: World): Syncer => {
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-        if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+        if (otherCharacter(entityId, world)) {
           for (const action of actions) {
             if (movementActions.includes(action.actionId)) {
               world.actions.push(world.tick, entityId, { ...action, offline: true })
@@ -34,10 +38,10 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
     }
 
-    // spike
+    // non-movement
     for (const [tick, actionSet] of entries(message.actions)) {
       for (const [entityId, actions] of entries(actionSet)) {
-        if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+        if (otherCharacter(entityId, world)) {
           for (const action of actions) {
             if (!movementActions.includes(action.actionId)) {
               const pushed = world.actions.push(Number(tick), entityId, { ...action, offline: true })
@@ -48,9 +52,9 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
     }
 
-    // deserialize
+    // deserialize entities
     keys(message.serializedEntities).forEach((entityId) => {
-      if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+      if (otherCharacter(entityId, world)) {
         world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
       }
     })
@@ -62,7 +66,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
-        if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+        if (otherCharacter(entityId, world)) {
           continue
         }
         world.actions.set(message.tick, entityId, actions)
@@ -129,7 +133,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       if (message.actions[message.tick]) {
         for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-          if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+          if (otherCharacter(entityId, world)) {
             continue
           }
 
@@ -169,7 +173,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
       if (!rollback) {
         for (const [entityId, serializedEntity] of entries(remote)) {
-          if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+          if (otherCharacter(entityId, world)) {
             continue
           }
 
@@ -200,7 +204,7 @@ export const RollbackSyncer = (world: World): Syncer => {
         keys(message.serializedEntities).forEach((entityId) => {
 
           // ignore other players' characters
-          if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+          if (otherCharacter(entityId, world)) {
             return
           }
 
@@ -236,7 +240,7 @@ export const RollbackSyncer = (world: World): Syncer => {
         // set actions
         if (message.actions[message.tick]) {
           entries(message.actions[message.tick]).forEach(([entityId, actions]) => {
-            if (entityId.startsWith("bird") && entityId !== world.client?.playerCharacter()?.id) {
+            if (otherCharacter(entityId, world)) {
               return
             }
             world.actions.set(message.tick, entityId, actions)
