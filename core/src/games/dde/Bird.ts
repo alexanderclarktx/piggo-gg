@@ -37,13 +37,14 @@ export const Bird = (player: Player) => Character({
     }),
     three: Three({
       init: async (entity, world) => {
-        // const o = entity.components.three.o
+        const { three } = entity.components
 
         world.three!.gLoader.load("eagle.glb", (eagle) => {
           // renderer.eagle = eagle.scene
+          three.o = eagle.scene
 
-          eagle.scene.animations = eagle.animations
-          eagle.scene.rotation.order = "YXZ"
+          three.o.animations = eagle.animations
+          three.o.rotation.order = "YXZ"
 
           const colors: Record<string, number> = {
             Cylinder: 0x5C2421,
@@ -52,7 +53,7 @@ export const Bird = (player: Player) => Character({
             Cylinder_3: 0x632724
           }
 
-          eagle.scene.traverse((child) => {
+          three.o.traverse((child) => {
             if (child instanceof Mesh) {
               child.material = new MeshStandardMaterial({ color: colors[child.name] })
               child.castShadow = true
@@ -60,16 +61,15 @@ export const Bird = (player: Player) => Character({
             }
           })
 
-          eagle.scene.frustumCulled = false
-
-          entity.components.three.o = eagle.scene
+          three.o.scale.set(0.05, 0.05, 0.05)
+          three.o.frustumCulled = false
         })
 
         // entity.components.three.o = clone(world.three!.eagle!)
 
         // entity.components.three.o.visible = true
-        world.three!.scene.add(entity.components.three.o)
-        console.log("added eagle to scene", entity.components.three.o)
+        if (three.o) world.three!.scene.add(three.o)
+        console.log("added eagle to scene", three.o, world.three?.scene.children)
       }
     }),
     input: Input({

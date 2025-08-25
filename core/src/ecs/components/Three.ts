@@ -3,7 +3,7 @@ import { Object3D } from "three"
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
-  o: Object3D
+  o: undefined | Object3D
   init: undefined | ((entity: Entity<Three>, world: World) => Promise<void>)
   cleanup: () => void
 }
@@ -17,14 +17,12 @@ export const Three = (props: ThreeProps = {}): Three => {
     type: "three",
     data: {},
     initialized: false,
-    o: new Object3D(),
+    o: undefined,
     init: props.init,
     cleanup: () => {
 
     }
   }
-
-  three.o.rotation.order = "XYZ"
 
   return three
 }
@@ -47,7 +45,7 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
           }
 
           // update position
-          three.o.position.set(position.data.x, position.data.y, position.data.z)
+          three.o?.position.set(position.data.x, position.data.y, position.data.z)
         }
       }
     }
