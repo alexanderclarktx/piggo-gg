@@ -344,15 +344,8 @@ const DDESystem = SystemBuilder({
 
           const interpolated = position.interpolate(world, delta)
 
-          if (world.three?.debug && player.id === world.client?.playerId()) {
-            world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-          }
-
-          // const { laser } = world.three?.birdAssets[character.id]
-
-          // if (laser) {
-          //   laser.material.opacity -= 0.05 * ratio
-          //   if (laser.material.opacity <= 0) laser.visible = false
+          // if (world.three?.debug && player.id === world.client?.playerId()) {
+          //   world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           // }
         }
       }

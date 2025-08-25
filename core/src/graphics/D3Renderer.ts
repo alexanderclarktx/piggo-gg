@@ -1,15 +1,13 @@
 import {
   AmbientLight, CameraHelper, DirectionalLight, Group, Scene,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
-  NearestFilter, Object3DEventMap, RepeatWrapping, SphereGeometry, SRGBColorSpace,
-  Texture, TextureLoader, WebGLRenderer, CylinderGeometry
+  NearestFilter, Object3DEventMap, RepeatWrapping, SphereGeometry,
+  SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
-
-type laserMesh = Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
 
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
