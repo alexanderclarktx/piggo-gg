@@ -40,16 +40,16 @@ export const Laser = Action<LaserParams>("laser", ({ world, params, entity, play
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
   const dir = target.clone().sub(eyes).normalize()
 
-  const laser = world.three?.birdAssets[entity.id]?.laser
-  if (laser) {
-    const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
-    laser.position.copy(eyes.add(offset.multiplyScalar(.03)))
-    laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+  // const laser = world.three?.birdAssets[entity.id]?.laser
+  // if (laser) {
+  //   const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
+  //   laser.position.copy(eyes.add(offset.multiplyScalar(.03)))
+  //   laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
 
-    laser.updateMatrix()
-    laser.material.opacity = 1
-    laser.visible = true
-  }
+  //   laser.updateMatrix()
+  //   laser.material.opacity = 1
+  //   laser.visible = true
+  // }
 
   const current = { ...eyePos }
 

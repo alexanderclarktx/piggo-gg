@@ -1,5 +1,5 @@
 import {
-  AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
+  AmbientLight, CameraHelper, DirectionalLight, Group, Scene,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
   NearestFilter, Object3DEventMap, RepeatWrapping, SphereGeometry, SRGBColorSpace,
   Texture, TextureLoader, WebGLRenderer, CylinderGeometry
@@ -20,12 +20,6 @@ export type D3Renderer = {
   canvas: HTMLCanvasElement
   camera: D3Camera
   debug: boolean
-  birdAssets: Record<string, {
-    duck: Group<Object3DEventMap>
-    eagle: Group<Object3DEventMap>
-    laser: laserMesh
-    mixers: AnimationMixer[]
-  }>
   gLoader: GLTFLoader
   tLoader: TextureLoader
   laser: undefined | laserMesh
@@ -59,7 +53,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     laser: undefined,
     leaf: undefined,
     blocks: undefined,
-    birdAssets: {},
     debug: false,
     sun: undefined,
     gLoader: new GLTFLoader(),

@@ -265,16 +265,16 @@ const DDESystem = SystemBuilder({
         }
 
         // clean up old player assets
-        for (const playerId in world.three?.birdAssets ?? {}) {
-          if (!world.three) continue
+        // for (const playerId in world.three?.birdAssets ?? {}) {
+        //   if (!world.three) continue
 
-          if (!world.entity(playerId)) {
-            const { duck, eagle } = world.three.birdAssets[playerId]
-            duck.removeFromParent()
-            eagle.removeFromParent()
-            delete world.three.birdAssets[playerId]
-          }
-        }
+        //   if (!world.entity(playerId)) {
+        //     const { duck, eagle } = world.three.birdAssets[playerId]
+        //     duck.removeFromParent()
+        //     eagle.removeFromParent()
+        //     delete world.three.birdAssets[playerId]
+        //   }
+        // }
 
         // render blocks
         const t3 = performance.now()
@@ -344,7 +344,6 @@ const DDESystem = SystemBuilder({
         logPerf("render blocks", t3)
       },
       onRender: (_, delta) => {
-        const ratio = delta / 25
         const players = world.players()
 
         // update player positions
@@ -355,22 +354,18 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
-          const { aim } = position.data
-
           const interpolated = position.interpolate(world, delta)
-
-          if (!world.three?.birdAssets[character.id]) continue
-
-          const { laser } = world.three?.birdAssets[character.id]
-
-          if (laser) {
-            laser.material.opacity -= 0.05 * ratio
-            if (laser.material.opacity <= 0) laser.visible = false
-          }
 
           if (world.three?.debug && player.id === world.client?.playerId()) {
             world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           }
+
+          // const { laser } = world.three?.birdAssets[character.id]
+
+          // if (laser) {
+          //   laser.material.opacity -= 0.05 * ratio
+          //   if (laser.material.opacity <= 0) laser.visible = false
+          // }
         }
       }
     }
