@@ -39,25 +39,29 @@ export const Bird = (player: Player) => Character({
     three: Three({
       onRender: (entity, world, delta) => {
         const { position, three } = entity.components
+
         const { aim, rotation, rotating, velocity, flying } = position.data
-
-        // visibility
-        eagle.visible = flying
-
-        // position
         const interpolated = position.interpolate(world, delta)
-        eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
 
-        // rotation
-        const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
-        eagle.rotation.y = orientation.x
-        eagle.rotation.x = orientation.y
-        eagle.rotation.z = rotation - rotating * (40 - delta) / 40
+        if (flying) {
+          eagle.visible = true
 
-        // animation
-        const ratio = delta / 25
-        const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
-        three.mixer?.update(speed * ratio * 0.01 + 0.01)
+          // position
+          eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
+
+          // rotation
+          const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
+          eagle.rotation.y = orientation.x
+          eagle.rotation.x = orientation.y
+          eagle.rotation.z = rotation - rotating * (40 - delta) / 40
+
+          // animation
+          const ratio = delta / 25
+          const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
+          three.mixer?.update(speed * ratio * 0.01 + 0.01)
+        } else {
+          eagle.visible = false
+        }
       },
       init: async (entity, world) => {
         const { three } = entity.components
