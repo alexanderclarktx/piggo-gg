@@ -3,15 +3,16 @@ import { Object3D } from "three"
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
-  o: undefined | Object3D
+  o: Object3D
   position: XYZ
-  init: undefined | ((entity: Entity<Three>, world: World) => Promise<void>)
-  cleanup: () => void
+  init: undefined | ((entity: Entity<Three | Position>, world: World) => Promise<void>)
+  onRender: undefined | ((entity: Entity<Three | Position>, world: World, delta: number) => void)
 }
 
 export type ThreeProps = {
   position?: XYZ
-  init?: (entity: Entity<Three>, world: World) => Promise<void>
+  init?: (entity: Entity<Three | Position>, world: World) => Promise<void>
+  onRender?: (entity: Entity<Three | Position>, world: World, delta: number) => void
 }
 
 export const Three = (props: ThreeProps = {}): Three => {
@@ -19,12 +20,10 @@ export const Three = (props: ThreeProps = {}): Three => {
     type: "three",
     data: {},
     initialized: false,
-    o: undefined,
+    o: new Object3D(),
     position: props.position ?? { x: 0, y: 0, z: 0 },
     init: props.init,
-    cleanup: () => {
-
-    }
+    onRender: props.onRender
   }
 
   return three
@@ -66,6 +65,8 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
             interpolated.z + three.position.z,
             interpolated.y + three.position.y
           )
+
+          three.onRender?.(entity, world, delta)
         }
       }
     }

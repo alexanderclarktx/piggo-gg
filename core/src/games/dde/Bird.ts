@@ -37,6 +37,15 @@ export const Bird = (player: Player) => Character({
     }),
     three: Three({
       position: { x: 0, y: 0, z: 0.06 },
+      onRender: (entity, world, delta) => {
+        const { position, three } = entity.components
+        const { aim, rotation, rotating } = position.data
+
+        const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
+        three.o.rotation.y = orientation.x
+        three.o.rotation.x = orientation.y
+        three.o.rotation.z = rotation - rotating * (40 - delta) / 40
+      },
       init: async (entity, world) => {
         const { three } = entity.components
 
