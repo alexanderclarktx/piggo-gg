@@ -1,4 +1,4 @@
-import { Component, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, Component, World } from "@piggo-gg/core"
 
 export type Three = Component<"three", {}> & {
   init: undefined | ((three: Three, world: World) => Promise<void>)
@@ -20,3 +20,17 @@ export const Three = (props: ThreeProps = {}): Three => {
   }
   return three
 }
+
+export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
+  id: "ThreeSystem",
+  init: () => {
+    return {
+      id: "ThreeSystem",
+      priority: 11,
+      query: ["position", "three"],
+      onTick: () => {
+
+      }
+    }
+  }
+})
