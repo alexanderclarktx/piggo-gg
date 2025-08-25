@@ -86,9 +86,11 @@ export const Bird = (player: Player): Character => {
           if (laser.material.opacity <= 0) laser.visible = false
 
           const actions = world.actions.at(world.tick, bird.id)
-          if (actions && actions.some(a => a.actionId === "laser")) {
+          const laserAction = actions?.find(a => a.actionId === "laser")
+          if (laserAction) {
             laser.visible = true
             laser.material.opacity = 1
+            console.log("LASER!")
           }
         },
         init: async (_, world) => {
