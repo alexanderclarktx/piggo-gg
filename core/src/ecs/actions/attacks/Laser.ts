@@ -14,7 +14,7 @@ export type LaserParams = {
 
 export type LaserMesh = Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
 
-export const LaserMesh = (): Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap> => {
+export const LaserMesh = (): LaserMesh => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
   geometry.translate(0, 0.5, 0)
 
