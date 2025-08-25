@@ -1,8 +1,8 @@
 import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem,
-  logPerf, min, PI, D3Profile, Random, randomInt, SpawnSystem,
+  logPerf, min, D3Profile, Random, randomInt, SpawnSystem,
   SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString,
-  GameBuilder, hypot, spawnTerrain, sqrt, EscapeMenu, ThreeSystem
+  GameBuilder, spawnTerrain, EscapeMenu, ThreeSystem
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
@@ -225,26 +225,11 @@ const DDESystem = SystemBuilder({
           // if (world.three && !world.three.birdAssets[character.id]) {
           //   if (!world.three.duck || !world.three.eagle) continue
 
-          //   const { position } = character.components
-
-          //   const duck = clone(world.three.duck) as Group<Object3DEventMap>
-
-          //   world.three.scene.add(duck)
-
-          //   duck.position.set(position.data.x, position.data.z + 0.05, position.data.y)
-          //   duck.frustumCulled = false
-          //   duck.scale.set(0.08, 0.08, 0.08)
-
-          //   world.three.scene.add(eagle)
-
           //   const laser = cloneThree(world.three.laser!)
           //   world.three.scene.add(laser)
 
-          //   const duckMixer = new AnimationMixer(duck)
-          //   duckMixer.clipAction(duck.animations[1]).play()
-
           //   world.three.birdAssets[character.id] = {
-          //     duck, eagle, laser, mixers: [duckMixer, eagleMixer]
+          //     laser
           //   }
           // }
 
@@ -370,29 +355,15 @@ const DDESystem = SystemBuilder({
           const { position } = character.components
           if (!position) continue
 
-          const { rotation, rotating, flying, aim } = position.data
+          const { aim } = position.data
 
           const interpolated = position.interpolate(world, delta)
 
           if (!world.three?.birdAssets[character.id]) continue
 
-          const { duck, eagle, laser, mixers } = world.three?.birdAssets[character.id]
+          const { laser } = world.three?.birdAssets[character.id]
 
           const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
-
-          duck.visible = !position.data.flying
-          if (duck.visible) {
-            duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
-            duck.rotation.y = orientation.x + PI / 2
-          }
-
-          // eagle.visible = position.data.flying
-          // if (eagle.visible) {
-          //   eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
-          //   eagle.rotation.y = orientation.x
-          //   eagle.rotation.x = orientation.y
-          //   eagle.rotation.z = rotation - rotating * (40 - delta) / 40
-          // }
 
           if (laser) {
             laser.material.opacity -= 0.05 * ratio
@@ -401,16 +372,6 @@ const DDESystem = SystemBuilder({
 
           if (world.three?.debug && player.id === world.client?.playerId()) {
             world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
-          }
-
-          for (const mixer of mixers) {
-            if (flying) {
-              const speed = sqrt(hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z))
-              mixer.update(speed * ratio * 0.01 + 0.01)
-            } else {
-              const speed = hypot(position.data.velocity.x, position.data.velocity.y)
-              mixer.update(speed * ratio * 0.03 + 0.01)
-            }
           }
         }
       }
