@@ -1,8 +1,8 @@
 import {
   AmbientLight, AnimationMixer, CameraHelper, DirectionalLight, Group, Scene,
   LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
-  MeshStandardMaterial, NearestFilter, Object3DEventMap, RepeatWrapping,
-  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer, CylinderGeometry
+  NearestFilter, Object3DEventMap, RepeatWrapping, SphereGeometry, SRGBColorSpace,
+  Texture, TextureLoader, WebGLRenderer, CylinderGeometry
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
