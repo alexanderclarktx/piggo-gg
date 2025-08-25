@@ -363,8 +363,6 @@ const DDESystem = SystemBuilder({
 
           const { laser } = world.three?.birdAssets[character.id]
 
-          const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
-
           if (laser) {
             laser.material.opacity -= 0.05 * ratio
             if (laser.material.opacity <= 0) laser.visible = false

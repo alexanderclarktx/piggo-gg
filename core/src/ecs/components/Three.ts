@@ -1,5 +1,5 @@
 import { ClientSystemBuilder, Component, Entity, Position, World } from "@piggo-gg/core"
-import { AnimationMixer, Object3D } from "three"
+import { Object3D } from "three"
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
@@ -32,28 +32,26 @@ export const Three = (props: ThreeProps = {}): Three => {
 
 export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
   id: "ThreeSystem",
-  init: (world) => {
-    return {
-      id: "ThreeSystem",
-      priority: 11,
-      query: ["position", "three"],
-      onTick: (entities: Entity<Three | Position>[]) => {
-        for (const entity of entities) {
-          const { three } = entity.components
+  init: (world) => ({
+    id: "ThreeSystem",
+    priority: 11,
+    query: ["position", "three"],
+    onTick: (entities: Entity<Three | Position>[]) => {
+      for (const entity of entities) {
+        const { three } = entity.components
 
-          if (three.init && !three.initialized) {
-            three.init(entity, world)
-            three.initialized = true
-            continue
-          }
-        }
-      },
-      onRender: (entities: Entity<Three | Position>[], delta) => {
-        for (const entity of entities) {
-          const { three } = entity.components
-          three.onRender?.(entity, world, delta)
+        if (three.init && !three.initialized) {
+          three.init(entity, world)
+          three.initialized = true
+          continue
         }
       }
+    },
+    onRender: (entities: Entity<Three | Position>[], delta) => {
+      for (const entity of entities) {
+        const { three } = entity.components
+        three.onRender?.(entity, world, delta)
+      }
     }
-  }
+  })
 })
