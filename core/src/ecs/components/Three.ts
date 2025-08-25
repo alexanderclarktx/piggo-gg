@@ -3,7 +3,6 @@ import { AnimationMixer, Object3D } from "three"
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
-  mixer: undefined | AnimationMixer
   o: Object3D[]
   init: undefined | ((entity: Entity<Three | Position>, world: World) => Promise<void>)
   onRender: undefined | ((entity: Entity<Three | Position>, world: World, delta: number) => void)
@@ -20,7 +19,6 @@ export const Three = (props: ThreeProps = {}): Three => {
     type: "three",
     data: {},
     initialized: false,
-    mixer: undefined,
     o: [],
     init: props.init,
     onRender: props.onRender,

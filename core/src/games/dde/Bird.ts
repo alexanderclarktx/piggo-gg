@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot,
-  Input, Laser, max, Networked, Player, Point, Position,
+  Input, Laser, max, Networked, PI, Player, Point, Position,
   Ready, round, sqrt, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
@@ -25,7 +25,10 @@ const run = 0.95
 const hop = 0.15
 const leap = 0.23
 
+let duck: Object3D = new Object3D()
 let eagle: Object3D = new Object3D()
+let duckMixer: AnimationMixer | undefined
+let eagleMixer: AnimationMixer | undefined
 
 export const Bird = (player: Player) => Character({
   id: `bird-${player.id}`,
@@ -38,10 +41,13 @@ export const Bird = (player: Player) => Character({
     }),
     three: Three({
       onRender: (entity, world, delta) => {
-        const { position, three } = entity.components
+        const ratio = delta / 25
 
+        const { position, three } = entity.components
         const { aim, rotation, rotating, velocity, flying } = position.data
+
         const interpolated = position.interpolate(world, delta)
+        const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
 
         if (flying) {
           eagle.visible = true
@@ -50,30 +56,60 @@ export const Bird = (player: Player) => Character({
           eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
 
           // rotation
-          const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
           eagle.rotation.y = orientation.x
           eagle.rotation.x = orientation.y
           eagle.rotation.z = rotation - rotating * (40 - delta) / 40
 
           // animation
-          const ratio = delta / 25
           const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
-          three.mixer?.update(speed * ratio * 0.01 + 0.01)
+          eagleMixer?.update(speed * ratio * 0.01 + 0.01)
         } else {
           eagle.visible = false
+          duck.visible = true
+
+          // position
+          duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+
+          // rotation
+          duck.rotation.y = orientation.x + PI / 2
+
+          // animation
+          const speed = hypot(position.data.velocity.x, position.data.velocity.y)
+          duckMixer?.update(speed * ratio * 0.03 + 0.01)
         }
       },
       init: async (entity, world) => {
         const { three } = entity.components
 
+        world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
+          duck = gltf.scene
+          duck.animations = gltf.animations
+          duck.frustumCulled = false
+          duck.scale.set(0.08, 0.08, 0.08)
+
+          duckMixer = new AnimationMixer(duck)
+          duckMixer.clipAction(duck.animations[1]).play()
+
+          duck.traverse((child) => {
+            if (child instanceof Mesh) {
+              child.castShadow = true
+              child.receiveShadow = true
+            }
+          })
+
+          world.three!.scene.add(duck)
+        })
+
         world.three!.gLoader.load("eagle.glb", (gltf) => {
           eagle = gltf.scene
           eagle.animations = gltf.animations
+          eagle.scale.set(0.05, 0.05, 0.05)
+          eagle.frustumCulled = false
 
           eagle.rotation.order = "YXZ"
 
-          three.mixer = new AnimationMixer(eagle)
-          three.mixer.clipAction(eagle.animations[0]).play()
+          eagleMixer = new AnimationMixer(eagle)
+          eagleMixer.clipAction(eagle.animations[0]).play()
 
           const colors: Record<string, number> = {
             Cylinder: 0x5C2421,
@@ -90,11 +126,7 @@ export const Bird = (player: Player) => Character({
             }
           })
 
-          eagle.scale.set(0.05, 0.05, 0.05)
-          eagle.frustumCulled = false
-
           world.three!.scene.add(eagle)
-          console.log("added eagle to scene")
         })
       }
     }),
