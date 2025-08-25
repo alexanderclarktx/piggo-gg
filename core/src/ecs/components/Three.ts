@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Component, Entity, Position, World, XYZ } from "@piggo-gg/core"
+import { ClientSystemBuilder, Component, Entity, Position, World } from "@piggo-gg/core"
 import { AnimationMixer, Object3D } from "three"
 
 export type Three = Component<"three", {}> & {
@@ -41,34 +41,18 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
       query: ["position", "three"],
       onTick: (entities: Entity<Three | Position>[]) => {
         for (const entity of entities) {
-          const { three, position } = entity.components
+          const { three } = entity.components
 
           if (three.init && !three.initialized) {
             three.init(entity, world)
             three.initialized = true
             continue
           }
-
-          // update position
-          // three.o?.position.set(
-          //   position.data.x + three.position.x,
-          //   position.data.z + three.position.z,
-          //   position.data.y + three.position.y
-          // )
         }
       },
       onRender: (entities: Entity<Three | Position>[], delta) => {
         for (const entity of entities) {
-          const { three, position } = entity.components
-
-          // const interpolated = position.interpolate(world, delta)
-
-          // three.o?.position.set(
-          //   interpolated.x + three.position.x,
-          //   interpolated.z + three.position.z,
-          //   interpolated.y + three.position.y
-          // )
-
+          const { three } = entity.components
           three.onRender?.(entity, world, delta)
         }
       }
