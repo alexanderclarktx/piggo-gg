@@ -396,13 +396,13 @@ const DDESystem = SystemBuilder({
             duck.rotation.y = orientation.x + PI / 2
           }
 
-          eagle.visible = position.data.flying
-          if (eagle.visible) {
-            eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
-            eagle.rotation.y = orientation.x
-            eagle.rotation.x = orientation.y
-            eagle.rotation.z = rotation - rotating * (40 - delta) / 40
-          }
+          // eagle.visible = position.data.flying
+          // if (eagle.visible) {
+          //   eagle.position.set(interpolated.x, interpolated.z + 0.06, interpolated.y)
+          //   eagle.rotation.y = orientation.x
+          //   eagle.rotation.x = orientation.y
+          //   eagle.rotation.z = rotation - rotating * (40 - delta) / 40
+          // }
 
           if (laser) {
             laser.material.opacity -= 0.05 * ratio

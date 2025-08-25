@@ -36,6 +36,7 @@ export const Bird = (player: Player) => Character({
       radius: 0.1
     }),
     three: Three({
+      position: { x: 0, y: 0, z: 0.06 },
       init: async (entity, world) => {
         const { three } = entity.components
 
