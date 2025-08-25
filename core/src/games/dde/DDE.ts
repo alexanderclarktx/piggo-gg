@@ -235,22 +235,13 @@ const DDESystem = SystemBuilder({
           //   duck.frustumCulled = false
           //   duck.scale.set(0.08, 0.08, 0.08)
 
-          //   const eagle = clone(world.three.eagle) as Group<Object3DEventMap>
-
           //   world.three.scene.add(eagle)
-
-          //   eagle.position.set(position.data.x, position.data.z + 0.1, position.data.y)
-          //   eagle.frustumCulled = false
-          //   eagle.scale.set(0.05, 0.05, 0.05)
 
           //   const laser = cloneThree(world.three.laser!)
           //   world.three.scene.add(laser)
 
           //   const duckMixer = new AnimationMixer(duck)
           //   duckMixer.clipAction(duck.animations[1]).play()
-
-          //   const eagleMixer = new AnimationMixer(eagle)
-          //   eagleMixer.clipAction(eagle.animations[0]).play()
 
           //   world.three.birdAssets[character.id] = {
           //     duck, eagle, laser, mixers: [duckMixer, eagleMixer]

@@ -26,7 +26,6 @@ export type D3Renderer = {
     laser: laserMesh
     mixers: AnimationMixer[]
   }>
-  duck: undefined | Group<Object3DEventMap>
   gLoader: GLTFLoader
   tLoader: TextureLoader
   laser: undefined | laserMesh
@@ -65,7 +64,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     blocks: undefined,
     birdAssets: {},
     debug: false,
-    duck: undefined,
     sun: undefined,
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
@@ -299,17 +297,17 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sunSphere.position.copy(sun.position)
       renderer.scene.add(sunSphere)
 
-      renderer.gLoader.load("ugly-duckling.glb", (duck) => {
-        renderer.duck = duck.scene
-        renderer.duck.animations = duck.animations
+      // renderer.gLoader.load("ugly-duckling.glb", (duck) => {
+      //   renderer.duck = duck.scene
+      //   renderer.duck.animations = duck.animations
 
-        duck.scene.traverse((child) => {
-          if (child instanceof Mesh) {
-            child.castShadow = true
-            child.receiveShadow = true
-          }
-        })
-      })
+      //   duck.scene.traverse((child) => {
+      //     if (child instanceof Mesh) {
+      //       child.castShadow = true
+      //       child.receiveShadow = true
+      //     }
+      //   })
+      // })
 
       renderer.gLoader.load("apple.glb", (apple) => {
         apple.scene.scale.set(0.16, 0.16, 0.16)
