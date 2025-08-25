@@ -1,4 +1,4 @@
-import { Clickable, Entity, Position, Renderer } from "@piggo-gg/core"
+import { Entity, Position } from "@piggo-gg/core"
 import { Container } from "pixi.js"
 
 export type XY = { x: number, y: number }
@@ -200,34 +200,6 @@ export const vectorExtend = (vec: XYZ, amount: number): XYZ => {
     y: (vec.y / len) * newLen,
     z: (vec.z / len) * newLen
   }
-}
-
-export const checkBounds = (renderer: Renderer, position: Position, clickable: Clickable, click: XY, clickWorld: XY): boolean => {
-
-  let { x, y } = position.data
-  if (clickable.anchor) {
-    x -= clickable.width * clickable.anchor.x
-    y -= clickable.height * clickable.anchor.y
-  }
-  let bounds = { x, y, w: clickable.width, h: clickable.height }
-
-  if (position.screenFixed && position.data.x < 0) {
-    bounds.x += renderer.app.screen.width
-  }
-  if (position.screenFixed && position.data.y < 0) {
-    bounds.y += renderer.app.screen.height
-  }
-
-  let clicked = false
-  position.screenFixed ? clicked = (
-    click.x >= bounds.x && click.x <= bounds.x + bounds.w &&
-    click.y >= bounds.y && click.y <= bounds.y + bounds.h
-  ) : clicked = (
-    clickWorld.x >= bounds.x && clickWorld.x <= bounds.x + bounds.w &&
-    clickWorld.y >= bounds.y && clickWorld.y <= bounds.y + bounds.h
-  )
-
-  return clicked
 }
 
 export const tileIndex = (n: number, tileMap: number[]): number => {

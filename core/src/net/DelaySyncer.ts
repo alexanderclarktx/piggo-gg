@@ -1,15 +1,12 @@
 import {
-  AK, AWP, Deagle, Entity, GameData, Hitbox, Player,
-  SerializedEntity, Syncer, D3Apple, entries, keys, stringify
+  Entity, GameData, Hitbox, Player, SerializedEntity,
+  Syncer, D3Apple, entries, keys, stringify
 } from "@piggo-gg/core"
 
 export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
   "player": Player,
   "hitbox": Hitbox,
-  "d3apple": D3Apple,
-  "ak": AK,
-  "deagle": Deagle,
-  "awp": AWP
+  "d3apple": D3Apple
 }
 
 export const DelaySyncer = (): Syncer => ({

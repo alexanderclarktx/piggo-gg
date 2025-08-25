@@ -1,5 +1,5 @@
 import {
-  Actions, Clickable, Component, Effects, Entity, Networked, Position,
+  Actions, Component, Effects, Entity, Networked, Position,
   ProtoEntity, Renderable, SystemBuilder, XY, abs, hypot, min, pickupItem, round
 } from "@piggo-gg/core"
 
@@ -36,23 +36,23 @@ export const Item = ({ name, flips, dropped, equipped, stackable }: ItemProps): 
   stackable: stackable ?? false
 })
 
-export type ItemComponents = Position | Actions | Effects | Renderable | Item | Clickable
+export type ItemComponents = Position | Actions | Effects | Renderable | Item
 export type ItemEntity = Entity<ItemComponents>
 
 // override some components
 export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
 
-  const { renderable, actions, clickable } = entity.components
+  const { renderable, actions } = entity.components
 
   actions.actionMap.pickupItem = pickupItem
 
   entity.components.networked = Networked()
-  entity.components.clickable = {
-    ...clickable,
-    click: () => ({ actionId: "pickupItem" }),
-    hoverOver: () => renderable.setOutline({ color: 0xffffff, thickness: 2 }),
-    hoverOut: () => renderable.setOutline({ color: 0x000000, thickness: 1 })
-  }
+  // entity.components.clickable = {
+  //   ...clickable,
+  //   click: () => ({ actionId: "pickupItem" }),
+  //   hoverOver: () => renderable.setOutline({ color: 0xffffff, thickness: 2 }),
+  //   hoverOut: () => renderable.setOutline({ color: 0x000000, thickness: 1 })
+  // }
 
   return Entity(entity)
 }

@@ -18,7 +18,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   const { inventory } = character.components
   if (!inventory) return
 
-  const { position, actions, effects, item, collider, renderable, clickable } = entity.components
+  const { position, actions, effects, item, collider, renderable } = entity.components
   if (!position || !actions || !effects || !item || !renderable) return
 
   if (!item.dropped) return
@@ -30,7 +30,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
 
   renderable.visible = false
 
-  if (clickable) clickable.active = false
+  // if (clickable) clickable.active = false
   if (collider) collider.active = false
 
   inventory.addItem(entity as ItemEntity, world)
@@ -47,13 +47,13 @@ export const dropItem = Action("dropItem", ({ world, entity }) => {
   const activeItem = inventory.activeItem(world)
   if (!activeItem) return
 
-  const { item, position, clickable, collider } = activeItem.components
+  const { item, position, collider } = activeItem.components
 
   item.dropped = true
   position.data.follows = undefined
   position.setVelocity({ x: 0, y: 0 })
 
-  if (clickable) clickable.active = true
+  // if (clickable) clickable.active = true
   if (collider) collider.active = true
 
   inventory.dropActiveItem()

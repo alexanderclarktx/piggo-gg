@@ -28,7 +28,7 @@ export const Dude = (player: Player) => Character({
           const { position } = entity.components
           if (!position) return null
 
-          const from = { x: position.data.x, y: position.data.y, z: position.data.z }
+          const from = position.xyz()
           const target = { x: mouse.x, y: mouse.y }
           world.actions.push(world.tick + 3, entity.id, { actionId: "spike", params: { from, target } })
 
