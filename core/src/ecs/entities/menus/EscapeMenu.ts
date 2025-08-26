@@ -13,6 +13,7 @@ export const EscapeMenu = (world: World): Entity => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     // display: "block",
+    width: "404px",
     maxWidth: "94%",
     pointerEvents: "none",
     border: ""
@@ -21,7 +22,7 @@ export const EscapeMenu = (world: World): Entity => {
   const art = Art()
 
   const menuButtonStyle: CSS = {
-    width: "33%", position: "relative", top: "-10px", height: "40px", pointerEvents: "auto"
+    width: "32%", position: "relative", top: "-10px", height: "40px", pointerEvents: "auto"
   }
 
   const lobbiesButton = HtmlButton({
