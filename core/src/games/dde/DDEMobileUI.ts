@@ -18,7 +18,7 @@ export const DDEMobileUI = (world: World) => {
     },
     onClick: () => {
       world.actions.push(
-        world.tick + 1, world.client?.playerCharacter()?.id ?? "", { actionId: "transform" }
+        world.tick + 2, world.client?.playerCharacter()?.id ?? "", { actionId: "transform" }
       )
       transformButton.style.backgroundColor = "rgba(255, 150, 150, 0.9)"
     },
