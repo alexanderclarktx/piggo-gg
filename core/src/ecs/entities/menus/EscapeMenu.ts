@@ -27,25 +27,19 @@ export const EscapeMenu = (world: World): Entity => {
   const lobbiesButton = HtmlButton({
     text: "lobbies",
     style: menuButtonStyle,
-    onClick: () => {
-      activeMenu = "lobbies"
-    }
+    onClick: () => activeMenu = "lobbies"
   })
 
   const skinsButton = HtmlButton({
     text: "skins",
     style: menuButtonStyle,
-    onClick: () => {
-      activeMenu = "skins"
-    }
+    onClick: () => activeMenu = "skins"
   })
 
   const settingsButton = HtmlButton({
     text: "settings",
     style: menuButtonStyle,
-    onClick: () => {
-      activeMenu = "settings"
-    }
+    onClick: () => activeMenu = "settings"
   })
 
   const submenuButtons = HtmlDiv({
