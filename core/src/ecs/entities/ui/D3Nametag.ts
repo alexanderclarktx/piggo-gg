@@ -1,4 +1,4 @@
-import { D3Text, min, Player, SystemBuilder, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, D3Text, min, Player, World } from "@piggo-gg/core"
 import { Group } from "three"
 
 export type D3Nametag = {
@@ -51,7 +51,7 @@ export const D3Nametag = (player: Player): D3Nametag => {
   }
 }
 
-export const D3NametagSystem = SystemBuilder({
+export const D3NametagSystem = ClientSystemBuilder({
   id: "D3NametagSystem",
   init: (world) => {
 
@@ -85,6 +85,7 @@ export const D3NametagSystem = SystemBuilder({
           if (!nametags[player.id]) {
             const nametag = D3Nametag(player)
             nametags[player.id] = nametag
+
             world.three.scene.add(nametag.group)
           }
 

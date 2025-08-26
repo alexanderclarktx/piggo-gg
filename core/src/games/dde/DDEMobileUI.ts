@@ -1,20 +1,10 @@
-import { HtmlButton, HtmlJoystick, HtmlText, World } from "@piggo-gg/core"
+import { HtmlButton, HtmlJoystick, World } from "@piggo-gg/core"
 
 export const DDEMobileUI = (world: World) => {
   if (!world.client?.mobile || !world.three) return
 
-  world.three?.append(
-    HtmlJoystick(world.client, "left")
-  )
-
-  world.three?.append(
-    HtmlJoystick(world.client, "right")
-  )
-
-  // world.three?.append(HtmlText({
-  //   text: "transform",
-  //   style: { left: "60%", bottom: "24px", fontSize: "14px" }
-  // }))
+  const leftJoystick = HtmlJoystick(world.client, "left")
+  const rightJoystick = HtmlJoystick(world.client, "right")
 
   const transformButton = HtmlButton({
     style: {
@@ -22,13 +12,13 @@ export const DDEMobileUI = (world: World) => {
       left: "10%",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 150, 0.5)",
-      width: "50px",
-      height: "50px",
+      width: "54px",
+      height: "54px",
       borderRadius: "50%"
     },
     onClick: () => {
       world.actions.push(
-        world.tick + 1, world.client?.playerCharacter()?.id ?? "", { actionId: "transform" }
+        world.tick + 2, world.client?.playerCharacter()?.id ?? "", { actionId: "transform" }
       )
       transformButton.style.backgroundColor = "rgba(255, 150, 150, 0.9)"
     },
@@ -37,26 +27,19 @@ export const DDEMobileUI = (world: World) => {
     }
   })
 
-  world.three?.append(transformButton)
-
-  // world.three?.append(HtmlText({
-  //   text: "jump",
-  //   style: { left: "40%", bottom: "24px", fontSize: "14px" }
-  // }))
-
   const jumpButton = HtmlButton({
     style: {
       bottom: "140px",
       right: "10%",
       transform: "translate(50%)",
       backgroundColor: "rgba(20, 255, 60, 0.5)",
-      width: "50px",
-      height: "50px",
+      width: "54px",
+      height: "54px",
       borderRadius: "50%"
     },
     onClick: () => {
       world.actions.push(
-        world.tick + 1, world.client?.playerCharacter()?.id ?? "", { actionId: "jump" }
+        world.tick + 2, world.client?.playerCharacter()?.id ?? "", { actionId: "jump" }
       )
       jumpButton.style.backgroundColor = "rgba(20, 255, 60, 0.8)"
     },
@@ -65,5 +48,25 @@ export const DDEMobileUI = (world: World) => {
     }
   })
 
-  world.three?.append(jumpButton)
+  world.three?.append(transformButton, jumpButton, leftJoystick, rightJoystick)
+
+  const menuButton = HtmlButton({
+    text: "menu",
+    onClick: () => {
+      world.three!.mobileLock = !world.three!.mobileLock
+
+      const visibility = world.three?.mobileLock ? "visible" : "hidden"
+      jumpButton.style.visibility = visibility
+      transformButton.style.visibility = visibility
+      leftJoystick.style.visibility = visibility
+      rightJoystick.style.visibility = visibility
+    },
+    style: {
+      top: "10px",
+      left: "10px",
+      width: "80px"
+    }
+  })
+
+  world.three.append(menuButton)
 }

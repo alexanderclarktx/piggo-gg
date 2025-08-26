@@ -17,7 +17,7 @@ export type CSS = Partial<{
   fontFamily: "Courier New" | "Arial"
   fontSize: `${number}px`
   fontWeight: "normal" | "bold" | "bolder" | "lighter"
-  height: `${number}px` | `${number}%`
+  height: `${number}px` | `${number}%` | "auto" | `${number}vh`
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
   left: `${number}%` | `${number}px`
   lineHeight: `${number}px`
@@ -26,6 +26,8 @@ export type CSS = Partial<{
   marginLeft: `${number}px` | `${number}%`
   marginRight: `${number}px` | `${number}%`
   marginTop: `${number}px` | `${number}%`
+  maxHeight: `${number}%` | `${number}px`
+  maxWidth: `${number}%` | `${number}px`
   minHeight: `${number}px` | `${number}%`
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"

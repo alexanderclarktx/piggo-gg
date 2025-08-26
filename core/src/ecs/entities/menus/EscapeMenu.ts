@@ -13,6 +13,9 @@ export const EscapeMenu = (world: World): Entity => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "block",
+    width: "404px",
+    maxWidth: "94%",
+    maxHeight: "98%",
     pointerEvents: "none",
     border: ""
   })
@@ -20,37 +23,30 @@ export const EscapeMenu = (world: World): Entity => {
   const art = Art()
 
   const menuButtonStyle: CSS = {
-    width: "130px", position: "relative", top: "-10px", height: "40px", pointerEvents: "auto"
+    width: "32.5%", position: "relative", top: "-10px", height: "40px", pointerEvents: "auto"
   }
 
   const lobbiesButton = HtmlButton({
     text: "lobbies",
     style: menuButtonStyle,
-    onClick: () => {
-      activeMenu = "lobbies"
-    }
+    onClick: () => activeMenu = "lobbies"
   })
 
   const skinsButton = HtmlButton({
     text: "skins",
     style: menuButtonStyle,
-    onClick: () => {
-      activeMenu = "skins"
-    }
+    onClick: () => activeMenu = "skins"
   })
 
   const settingsButton = HtmlButton({
     text: "settings",
     style: menuButtonStyle,
-    onClick: () => {
-      activeMenu = "settings"
-    }
+    onClick: () => activeMenu = "settings"
   })
 
   const submenuButtons = HtmlDiv({
     position: "relative",
-    top: "10px",
-    width: "404px",
+    width: "100%",
     display: "flex",
     justifyContent: "space-between",
     border: ""
@@ -64,11 +60,22 @@ export const EscapeMenu = (world: World): Entity => {
   const skins = SkinsMenu()
   const settings = SettingsMenu(world)
 
+  const shell = HtmlDiv({
+    width: "100%",
+    height: "80vh",
+    maxHeight: "300px",
+    display: "block",
+    border: "none",
+    position: "relative"
+  })
+
+  shell.appendChild(lobbies.div)
+  shell.appendChild(skins.div)
+  shell.appendChild(settings.div)
+
   ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
-  ddeMenu.appendChild(lobbies.div)
-  ddeMenu.appendChild(skins.div)
-  ddeMenu.appendChild(settings.div)
+  ddeMenu.appendChild(shell)
 
   const menu = Entity({
     id: "EscapeMenu",
@@ -85,10 +92,18 @@ export const EscapeMenu = (world: World): Entity => {
 
           // overall visibility
           if (world.client) {
-            const hidden = Boolean(document.pointerLockElement) || world.client.mobile
+            const hidden = world.client.mobile ? world.three!.mobileLock : Boolean(document.pointerLockElement)
             ddeMenu.style.visibility = hidden ? "hidden" : "visible"
 
             if (hidden) return
+          }
+
+          if (world.client?.mobile && window.outerHeight < window.outerWidth) {
+            art.style.width = "0px"
+            art.style.border = "none"
+          } else {
+            art.style.width = "180px"
+            art.style.border = "2px solid white"
           }
 
           // menu buttons
@@ -112,7 +127,7 @@ export const EscapeMenu = (world: World): Entity => {
 }
 
 const Art = () => HtmlImg("dde-256.jpg", {
-  top: "-5px",
+  top: "-15px",
   left: "50%",
   width: "180px",
   transform: "translate(-50%)",

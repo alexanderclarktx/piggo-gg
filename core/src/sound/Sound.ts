@@ -1,18 +1,18 @@
 import { entries, GunNames, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Tone } from "tone"
 
-export type BirdSounds = "steps" | "birdsong1"
+export type BirdSounds = "birdsong1"
 export type BubbleSounds = "bubble"
 export type MusicSounds = "track2"
-export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
+export type ClickSounds = "click1" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
 export type VolleySounds = "spike"
-export type LaserSounds = "laser1" | "laser2" | "laser3"
+export type LaserSounds = "laser1"
 
 export type ValidSounds =
   BirdSounds | BubbleSounds | MusicSounds | ClickSounds |
-  GunNames | ToolSounds | EatSounds | VolleySounds | LaserSounds
+  GunNames | EatSounds | VolleySounds | LaserSounds
 
 const load = (url: string, volume: number): Tone => {
   const player = new Tone({ url, volume: volume - 10 })
@@ -68,28 +68,26 @@ export const Sound = (world: World): Sound => {
     ready: false,
     tones: {
       birdsong1: load("birdsong1.mp3", -20),
-      steps: load("steps.mp3", 0),
+      // steps: load("steps.mp3", 0),
       bubble: load("bubble.mp3", -10),
       // piano1: load("piano1.mp3", 5),
       track2: load("track2.mp3", -10),
       cassettePlay: load("cassettePlay.mp3", 0),
       cassetteStop: load("cassetteStop.mp3", -5),
       click1: load("click1.mp3", -5),
-      click2: load("click2.mp3", -5),
+      // click2: load("click2.mp3", -5),
       click3: load("click3.mp3", -10),
       deagle: load("pistol.mp3", -30),
       ak: load("ak.mp3", -25),
       awp: load("awp.mp3", -30),
-      thud: load("thud.mp3", -15),
-      clink: load("clink.mp3", -10),
-      whiff: load("whiff.wav", -15),
-      slash: load("slash.mp3", -20),
+      // thud: load("thud.mp3", -15),
+      // clink: load("clink.mp3", -10),
+      // whiff: load("whiff.wav", -15),
+      // slash: load("slash.mp3", -20),
       eat: load("eat.mp3", -10),
       eat2: load("eat2.mp3", -10),
       spike: load("spike.mp3", 5),
-      laser1: load("laser1.mp3", -15),
-      laser2: load("laser2.mp3", -5),
-      laser3: load("laser3.mp3", -10),
+      laser1: load("laser1.mp3", -15)
     },
     stop: (name: ValidSounds) => {
       const tone = sound.tones[name]

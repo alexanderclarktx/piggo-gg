@@ -43,7 +43,7 @@ export const Scoreboard = (): Entity => {
         behavior: (_, world) => {
           if (world.mode === "server") return
 
-          if (!world.client?.net.synced) {
+          if (!world.client?.net.synced || (world.client.mobile && !world.three?.mobileLock)) {
             container.style.visibility = "hidden"
             return
           }
@@ -77,7 +77,7 @@ export const Scoreboard = (): Entity => {
             for (const player of players) {
               const playerRow = PlayerRow(player, world)
 
-              container.append(playerRow.div)
+              container.appendChild(playerRow.div)
 
               playerRows[player.id] = playerRow
             }
@@ -137,8 +137,8 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
     }
   })
 
-  div.append(nameText)
-  div.append(statusText)
+  div.appendChild(nameText)
+  div.appendChild(statusText)
 
   return {
     div,

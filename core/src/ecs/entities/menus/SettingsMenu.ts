@@ -1,11 +1,14 @@
-import { DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText, max, min, RefreshableDiv, round, styleSwitch, World } from "@piggo-gg/core"
+import {
+  DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText,
+  max, min, RefreshableDiv, round, styleSwitch, World
+} from "@piggo-gg/core"
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
-    top: "5px",
+    top: "-3px",
     left: "50%",
-    width: "400px",
-    height: "300px",
+    width: "100%",
+    height: "100%",
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
     pointerEvents: "auto",
@@ -38,7 +41,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
   const label = HtmlText({
     text,
     style: {
-      width: "320px",
+      width: "80%",
       height: "40px",
       position: "relative",
       left: "10px",
@@ -80,7 +83,7 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
   const label = HtmlText({
     text,
     style: {
-      width: "320px",
+      width: "80%",
       height: "40px",
       position: "relative",
       left: "10px",
