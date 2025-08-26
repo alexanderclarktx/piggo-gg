@@ -14,7 +14,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     pointerEvents: "auto",
     borderRadius: "10px",
-    position: "relative"
+    position: "relative",
   })
 
   const lobbyList = HtmlDiv({
@@ -28,13 +28,26 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     overflow: "scroll",
     transform: "translate(-50%)",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    position: "relative"
+  })
+
+  const buttonsDiv = HtmlDiv({
+    position: "relative",
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    border: ""
   })
 
   const createLobby = HtmlButton({
     text: "Create Lobby",
     style: {
-      bottom: "10px", left: "10px", height: "40px", width: "46%"
+      transform: "translate(0%, 50%)",
+      position: "relative",
+      left: "10px",
+      height: "40px",
+      width: "46%"
     },
     onClick: () => {
       if (inLobby) return
@@ -49,7 +62,11 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
   const leaveLobby = HtmlButton({
     text: "Leave Lobby",
     style: {
-      bottom: "10px", right: "10px", height: "40px", width: "46%" // 186
+      transform: "translate(0%, 50%)",
+      position: "relative",
+      right: "10px",
+      height: "40px",
+      width: "46%"
     },
     onClick: () => {
       if (!inLobby) return
@@ -62,8 +79,9 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
   })
 
   lobbies.appendChild(lobbyList)
-  lobbies.appendChild(createLobby)
-  lobbies.appendChild(leaveLobby)
+  lobbies.appendChild(buttonsDiv)
+  buttonsDiv.appendChild(createLobby)
+  buttonsDiv.appendChild(leaveLobby)
 
   return {
     div: lobbies,

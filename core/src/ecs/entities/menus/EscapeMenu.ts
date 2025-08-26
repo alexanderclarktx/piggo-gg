@@ -64,7 +64,6 @@ export const EscapeMenu = (world: World): Entity => {
     width: "100%",
     height: "80vh",
     maxHeight: "300px",
-    // height: "300px",
     display: "block",
     border: "none",
     position: "relative"
@@ -74,14 +73,9 @@ export const EscapeMenu = (world: World): Entity => {
   shell.appendChild(skins.div)
   shell.appendChild(settings.div)
 
-
-
   ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
   ddeMenu.append(shell)
-  // ddeMenu.appendChild(lobbies.div)
-  // ddeMenu.appendChild(skins.div)
-  // ddeMenu.appendChild(settings.div)
 
   const menu = Entity({
     id: "EscapeMenu",
