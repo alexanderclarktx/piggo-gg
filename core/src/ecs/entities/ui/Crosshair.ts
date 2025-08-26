@@ -27,7 +27,7 @@ export const Crosshair = () => {
 
           const locked = world.client.mobile ? world.three.mobileLock : document.pointerLockElement
 
-          div.style.visibility = (locked && settings.showControls) ? "visible" : "hidden"
+          div.style.visibility = (locked && settings.showCrosshair) ? "visible" : "hidden"
 
           if (!init) {
             init = true
