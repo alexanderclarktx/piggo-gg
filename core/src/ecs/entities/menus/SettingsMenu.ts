@@ -4,7 +4,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
     top: "5px",
     left: "50%",
-    width: "400px",
+    width: "100%",
     height: "300px",
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -38,7 +38,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
   const label = HtmlText({
     text,
     style: {
-      width: "320px",
+      width: "80%",
       height: "40px",
       position: "relative",
       left: "10px",
@@ -80,7 +80,7 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
   const label = HtmlText({
     text,
     style: {
-      width: "320px",
+      width: "80%",
       height: "40px",
       position: "relative",
       left: "10px",
