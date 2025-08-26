@@ -18,7 +18,6 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
   })
 
   const lobbyList = HtmlDiv({
-    // width: "380px",
     width: "94%",
     height: "230px",
     left: "50%",
