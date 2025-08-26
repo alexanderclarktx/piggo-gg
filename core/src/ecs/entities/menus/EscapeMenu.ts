@@ -62,8 +62,8 @@ export const EscapeMenu = (world: World): Entity => {
 
   const shell = HtmlDiv({
     width: "100%",
-    height: "300px",
-    // maxHeight: "40%",
+    height: "80vh",
+    maxHeight: "300px",
     // height: "300px",
     display: "block",
     border: "none",
