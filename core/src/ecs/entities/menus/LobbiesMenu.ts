@@ -35,7 +35,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
   const createLobby = HtmlButton({
     text: "Create Lobby",
     style: {
-      bottom: "10px", left: "10px", height: "40px", width: "186px"
+      bottom: "10px", left: "10px", height: "40px", width: "46%"
     },
     onClick: () => {
       if (inLobby) return
@@ -50,7 +50,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
   const leaveLobby = HtmlButton({
     text: "Leave Lobby",
     style: {
-      bottom: "10px", right: "10px", height: "40px", width: "186px"
+      bottom: "10px", right: "10px", height: "40px", width: "46%" // 186
     },
     onClick: () => {
       if (!inLobby) return
