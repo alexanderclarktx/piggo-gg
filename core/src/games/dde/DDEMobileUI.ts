@@ -62,8 +62,8 @@ export const DDEMobileUI = (world: World) => {
       rightJoystick.style.visibility = visibility
     },
     style: {
-      top: "6px",
-      left: "6px",
+      top: "10px",
+      left: "10px",
       width: "80px"
     }
   })
