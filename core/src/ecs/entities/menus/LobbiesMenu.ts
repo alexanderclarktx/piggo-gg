@@ -5,6 +5,18 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
   let polled = -60
   let inLobby: string = ""
 
+  const lobbies = HtmlDiv({
+    top: "5px",
+    left: "50%",
+    width: "100%",
+    height: "300px",
+    transform: "translate(-50%)",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    pointerEvents: "auto",
+    borderRadius: "10px",
+    position: "relative"
+  })
+
   const lobbyList = HtmlDiv({
     width: "380px",
     height: "230px",
@@ -47,18 +59,6 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
       polled = world.tick - 70
       inLobby = ""
     }
-  })
-
-  const lobbies = HtmlDiv({
-    top: "5px",
-    left: "50%",
-    width: "400px",
-    height: "300px",
-    transform: "translate(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-    pointerEvents: "auto",
-    borderRadius: "10px",
-    position: "relative"
   })
 
   lobbies.appendChild(lobbyList)

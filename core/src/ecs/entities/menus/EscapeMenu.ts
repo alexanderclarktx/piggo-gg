@@ -13,6 +13,7 @@ export const EscapeMenu = (world: World): Entity => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "block",
+    // maxWidth: "100px",
     pointerEvents: "none",
     border: ""
   })
@@ -85,7 +86,8 @@ export const EscapeMenu = (world: World): Entity => {
 
           // overall visibility
           if (world.client) {
-            const hidden = Boolean(document.pointerLockElement) || world.client.mobile
+            // const hidden = Boolean(document.pointerLockElement) || world.client.mobile
+            const hidden = Boolean(document.pointerLockElement)
             ddeMenu.style.visibility = hidden ? "hidden" : "visible"
 
             if (hidden) return
