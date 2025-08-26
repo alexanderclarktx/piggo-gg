@@ -23,12 +23,11 @@ export const Crosshair = () => {
       npc: NPC({
         behavior: (_, world) => {
           const settings = world.settings<DDESettings>()
+          if (!world.client || !world.three) return
 
-          if (!settings.showCrosshair || !document.pointerLockElement) {
-            div.style.visibility = "hidden"
-          } else {
-            div.style.visibility = "visible"
-          }
+          const locked = world.client.mobile ? world.three.mobileLock : document.pointerLockElement
+
+          div.style.visibility = (locked && settings.showControls) ? "visible" : "hidden"
 
           if (!init) {
             init = true

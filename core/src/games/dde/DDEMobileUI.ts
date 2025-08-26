@@ -3,6 +3,21 @@ import { HtmlButton, HtmlJoystick, HtmlText, World } from "@piggo-gg/core"
 export const DDEMobileUI = (world: World) => {
   if (!world.client?.mobile || !world.three) return
 
+  // let menuOpen = false
+
+  const menuButton = HtmlButton({
+    text: ":",
+    onClick: () => {
+      world.three!.mobileLock = !world.three?.mobileLock
+    },
+    style: {
+      top: "6%",
+      right: "6%"
+    }
+  })
+
+  world.three.append(menuButton)
+
   world.three?.append(
     HtmlJoystick(world.client, "left")
   )
@@ -37,7 +52,7 @@ export const DDEMobileUI = (world: World) => {
     }
   })
 
-  world.three?.append(transformButton)
+  world.three.append(transformButton)
 
   // world.three?.append(HtmlText({
   //   text: "jump",
