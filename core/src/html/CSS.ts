@@ -17,7 +17,7 @@ export type CSS = Partial<{
   fontFamily: "Courier New" | "Arial"
   fontSize: `${number}px`
   fontWeight: "normal" | "bold" | "bolder" | "lighter"
-  height: `${number}px` | `${number}%`
+  height: `${number}px` | `${number}%` | "auto"
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
   left: `${number}%` | `${number}px`
   lineHeight: `${number}px`

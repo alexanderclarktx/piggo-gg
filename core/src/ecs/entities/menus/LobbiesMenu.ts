@@ -19,7 +19,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
 
   const lobbyList = HtmlDiv({
     width: "94%",
-    height: "230px",
+    height: "75%",
     left: "50%",
     top: "10px",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
