@@ -15,7 +15,7 @@ export const EscapeMenu = (world: World): Entity => {
     display: "block",
     width: "404px",
     maxWidth: "94%",
-    maxHeight: "94%",
+    maxHeight: "98%",
     pointerEvents: "none",
     border: ""
   })
