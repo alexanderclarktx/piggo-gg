@@ -63,7 +63,7 @@ export const DDEMobileUI = (world: World) => {
     },
     style: {
       top: "6px",
-      right: "6px",
+      left: "6px",
       width: "80px"
     }
   })
