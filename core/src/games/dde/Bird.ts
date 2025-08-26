@@ -160,7 +160,7 @@ export const Bird = (player: Player): Character => {
         },
         release: {
           "escape": ({ world }) => {
-            world.three?.pointerLock()
+            if (!world.client?.mobile) world.three?.pointerLock()
             return null
           },
           "mb1": ({ world, target }) => {
