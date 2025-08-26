@@ -1,4 +1,7 @@
-import { DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText, max, min, RefreshableDiv, round, styleSwitch, World } from "@piggo-gg/core"
+import {
+  DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText,
+  max, min, RefreshableDiv, round, styleSwitch, World
+} from "@piggo-gg/core"
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
