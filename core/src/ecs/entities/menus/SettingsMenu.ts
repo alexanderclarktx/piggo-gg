@@ -5,7 +5,7 @@ import {
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
-    top: "5px",
+    top: "-3px",
     left: "50%",
     width: "100%",
     height: "300px",

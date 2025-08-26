@@ -46,7 +46,8 @@ export const EscapeMenu = (world: World): Entity => {
 
   const submenuButtons = HtmlDiv({
     position: "relative",
-    top: "10px",
+    // top: "10px",
+    
     width: "100%",
     // width: "404px",
     display: "flex",
@@ -62,7 +63,7 @@ export const EscapeMenu = (world: World): Entity => {
   const skins = SkinsMenu()
   const settings = SettingsMenu(world)
 
-  // ddeMenu.appendChild(art)
+  ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
   ddeMenu.appendChild(lobbies.div)
   ddeMenu.appendChild(skins.div)
@@ -81,16 +82,22 @@ export const EscapeMenu = (world: World): Entity => {
             init = true
           }
 
-          console.log(world.three?.mobileLock)
-
           // overall visibility
           if (world.client) {
-            // const hidden = Boolean(document.pointerLockElement) || world.client.mobile
             const hidden = world.client.mobile ? world.three!.mobileLock : Boolean(document.pointerLockElement)
             ddeMenu.style.visibility = hidden ? "hidden" : "visible"
-            // console.log(hidden)
 
             if (hidden) return
+          }
+
+          if (world.client?.mobile && window.outerHeight < window.outerWidth) {
+            // art.style.visibility = "hidden"
+            art.style.width = "0px"
+            art.style.border = "none"
+          } else {
+            art.style.width = "180px"
+            art.style.border = "2px solid white"
+            // art.style.visibility = "inherit"
           }
 
           // menu buttons
@@ -114,7 +121,7 @@ export const EscapeMenu = (world: World): Entity => {
 }
 
 const Art = () => HtmlImg("dde-256.jpg", {
-  top: "-5px",
+  top: "-15px",
   left: "50%",
   width: "180px",
   transform: "translate(-50%)",
