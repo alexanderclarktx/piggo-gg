@@ -1,18 +1,17 @@
-import { HtmlButton, HtmlJoystick, HtmlText, World } from "@piggo-gg/core"
+import { HtmlButton, HtmlJoystick, World } from "@piggo-gg/core"
 
 export const DDEMobileUI = (world: World) => {
   if (!world.client?.mobile || !world.three) return
 
-  // let menuOpen = false
-
   const menuButton = HtmlButton({
-    text: ":",
+    text: "menu",
     onClick: () => {
-      world.three!.mobileLock = !world.three?.mobileLock
+      world.three!.mobileLock = !world.three!.mobileLock
     },
     style: {
-      top: "6%",
-      right: "6%"
+      top: "2%",
+      right: "2%",
+      width: "80px"
     }
   })
 
@@ -25,11 +24,6 @@ export const DDEMobileUI = (world: World) => {
   world.three?.append(
     HtmlJoystick(world.client, "right")
   )
-
-  // world.three?.append(HtmlText({
-  //   text: "transform",
-  //   style: { left: "60%", bottom: "24px", fontSize: "14px" }
-  // }))
 
   const transformButton = HtmlButton({
     style: {
@@ -53,11 +47,6 @@ export const DDEMobileUI = (world: World) => {
   })
 
   world.three.append(transformButton)
-
-  // world.three?.append(HtmlText({
-  //   text: "jump",
-  //   style: { left: "40%", bottom: "24px", fontSize: "14px" }
-  // }))
 
   const jumpButton = HtmlButton({
     style: {
