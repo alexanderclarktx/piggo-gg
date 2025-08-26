@@ -60,11 +60,28 @@ export const EscapeMenu = (world: World): Entity => {
   const skins = SkinsMenu()
   const settings = SettingsMenu(world)
 
+  const shell = HtmlDiv({
+    width: "100%",
+    height: "300px",
+    // maxHeight: "40%",
+    // height: "300px",
+    display: "block",
+    border: "none",
+    position: "relative"
+  })
+
+  shell.appendChild(lobbies.div)
+  shell.appendChild(skins.div)
+  shell.appendChild(settings.div)
+
+
+
   ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
-  ddeMenu.appendChild(lobbies.div)
-  ddeMenu.appendChild(skins.div)
-  ddeMenu.appendChild(settings.div)
+  ddeMenu.append(shell)
+  // ddeMenu.appendChild(lobbies.div)
+  // ddeMenu.appendChild(skins.div)
+  // ddeMenu.appendChild(settings.div)
 
   const menu = Entity({
     id: "EscapeMenu",
