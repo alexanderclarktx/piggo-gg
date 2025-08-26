@@ -46,10 +46,7 @@ export const EscapeMenu = (world: World): Entity => {
 
   const submenuButtons = HtmlDiv({
     position: "relative",
-    // top: "10px",
-    
     width: "100%",
-    // width: "404px",
     display: "flex",
     justifyContent: "space-between",
     border: ""
@@ -91,13 +88,11 @@ export const EscapeMenu = (world: World): Entity => {
           }
 
           if (world.client?.mobile && window.outerHeight < window.outerWidth) {
-            // art.style.visibility = "hidden"
             art.style.width = "0px"
             art.style.border = "none"
           } else {
             art.style.width = "180px"
             art.style.border = "2px solid white"
-            // art.style.visibility = "inherit"
           }
 
           // menu buttons
