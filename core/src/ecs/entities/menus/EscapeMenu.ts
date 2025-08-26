@@ -13,7 +13,7 @@ export const EscapeMenu = (world: World): Entity => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "block",
-    // maxWidth: "100px",
+    maxWidth: "94%",
     pointerEvents: "none",
     border: ""
   })
