@@ -12,8 +12,8 @@ export const DDEMobileUI = (world: World) => {
       left: "10%",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 150, 0.5)",
-      width: "50px",
-      height: "50px",
+      width: "54px",
+      height: "54px",
       borderRadius: "50%"
     },
     onClick: () => {
@@ -33,8 +33,8 @@ export const DDEMobileUI = (world: World) => {
       right: "10%",
       transform: "translate(50%)",
       backgroundColor: "rgba(20, 255, 60, 0.5)",
-      width: "50px",
-      height: "50px",
+      width: "54px",
+      height: "54px",
       borderRadius: "50%"
     },
     onClick: () => {

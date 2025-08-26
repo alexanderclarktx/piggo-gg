@@ -26,6 +26,7 @@ export type CSS = Partial<{
   marginLeft: `${number}px` | `${number}%`
   marginRight: `${number}px` | `${number}%`
   marginTop: `${number}px` | `${number}%`
+  maxHeight: `${number}%` | `${number}px`
   maxWidth: `${number}%` | `${number}px`
   minHeight: `${number}px` | `${number}%`
   minWidth: `${number}px` | `${number}%`

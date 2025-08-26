@@ -12,9 +12,10 @@ export const EscapeMenu = (world: World): Entity => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    // display: "block",
+    display: "block",
     width: "404px",
     maxWidth: "94%",
+    maxHeight: "94%",
     pointerEvents: "none",
     border: ""
   })
@@ -61,7 +62,7 @@ export const EscapeMenu = (world: World): Entity => {
   const skins = SkinsMenu()
   const settings = SettingsMenu(world)
 
-  ddeMenu.appendChild(art)
+  // ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
   ddeMenu.appendChild(lobbies.div)
   ddeMenu.appendChild(skins.div)
