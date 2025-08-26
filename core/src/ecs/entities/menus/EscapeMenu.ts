@@ -75,7 +75,7 @@ export const EscapeMenu = (world: World): Entity => {
 
   ddeMenu.appendChild(art)
   ddeMenu.appendChild(submenuButtons)
-  ddeMenu.append(shell)
+  ddeMenu.appendChild(shell)
 
   const menu = Entity({
     id: "EscapeMenu",
