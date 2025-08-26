@@ -46,6 +46,7 @@ export const EscapeMenu = (world: World): Entity => {
     position: "relative",
     top: "10px",
     width: "100%",
+    // width: "404px",
     display: "flex",
     justifyContent: "space-between",
     border: ""
