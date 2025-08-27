@@ -22,9 +22,9 @@ export type CSS = Partial<{
   left: `${number}%` | `${number}px` | `${number}dvh`
   lineHeight: `${number}px`
   margin: `${number}px` | `${number}%` | "0 auto"
-  marginBottom: `${number}px` | `${number}%`
-  marginLeft: `${number}px` | `${number}%`
-  marginRight: `${number}px` | `${number}%`
+  marginBottom: `${number}px` | `${number}%` | "env(safe-area-inset-bottom)"
+  marginLeft: `${number}px` | `${number}%` | "env(safe-area-inset-left)"
+  marginRight: `${number}px` | `${number}%` | "env(safe-area-inset-right)"
   marginTop: `${number}px` | `${number}%` | "env(safe-area-inset-top)"
   maxHeight: `${number}%` | `${number}px` | `${number}dvh`
   maxWidth: `${number}%` | `${number}px`

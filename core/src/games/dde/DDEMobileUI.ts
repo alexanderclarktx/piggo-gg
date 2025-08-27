@@ -68,6 +68,7 @@ export const DDEMobileUI = (world: World) => {
     },
     style: {
       marginTop: "env(safe-area-inset-top)",
+      marginLeft: "env(safe-area-inset-left)",
       top: "10px",
       left: "10px",
       width: "80px"
