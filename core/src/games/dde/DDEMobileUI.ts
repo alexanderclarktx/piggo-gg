@@ -60,6 +60,11 @@ export const DDEMobileUI = (world: World) => {
       transformButton.style.visibility = visibility
       leftJoystick.style.visibility = visibility
       rightJoystick.style.visibility = visibility
+
+      menuButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
+    },
+    onRelease: () => {
+      menuButton.style.backgroundColor = "rgba(0, 0, 0 , 0.4)"
     },
     style: {
       marginTop: "env(safe-area-inset-top)",
