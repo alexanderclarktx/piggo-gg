@@ -1,4 +1,4 @@
-import { Entity, MusicSounds, pixiGraphics, Position, Renderable, sin } from "@piggo-gg/core"
+import { BirdSounds, Entity, MusicSounds, pixiGraphics, Position, Renderable, sin } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 export const MusicBox = (): Entity => {
@@ -14,7 +14,8 @@ export const MusicBox = (): Entity => {
   let lightDirection = -1
 
   let state: "stop" | "play" = "stop"
-  let tracks: MusicSounds[] = ["track2"]
+  // let tracks: MusicSounds[] = ["track2"]
+  let tracks: BirdSounds[] = ["birdsong1"]
   let trackIndex = 1
 
   let lastMouseY = 0
@@ -22,8 +23,8 @@ export const MusicBox = (): Entity => {
   let targetVolume = -20
   let discHovered = false
 
-  let discColors: Record<MusicSounds, number> = {
-    track2: 0xccaa00
+  let discColors: Record<BirdSounds, number> = {
+    birdsong1: 0xccaa00
   }
 
   const redraw = () => {
