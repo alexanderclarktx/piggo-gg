@@ -254,6 +254,7 @@ export const Api = (): Api => {
         fetch: (r: Request, server: Server) => {
           const origin = r.headers.get("origin")
           if (!origin || !["https://piggo.gg", "http://localhost:8000"].includes(origin)) {
+            console.error("bad origin")
             return new Response("invalid origin", { status: 403 })
           }
           return server.upgrade(r, { data: { ip: r.headers.get("x-forwarded-for") } }) ? new Response() : new Response("upgrade failed", { status: 500 })
