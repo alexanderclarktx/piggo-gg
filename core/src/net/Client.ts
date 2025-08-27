@@ -10,7 +10,7 @@ import toast from "react-hot-toast"
 
 const servers = {
   // dev: "ws://localhost:3000",
-  dev: "wss://dev.piggo.gg",
+  dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 
@@ -96,7 +96,6 @@ export const Client = ({ world }: ClientProps): Client => {
   }
 
   const env = location?.hostname === "piggo.gg" ? "production" : "dev"
-  // const env = location ? (["localhost", "dev.piggo.gg"].includes(location.hostname) ? "dev" : "production") : "dev"
 
   const client: Client = {
     bufferDown: KeyBuffer(),
