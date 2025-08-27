@@ -359,5 +359,6 @@ export const Api = (): Api => {
 }
 
 const server = Api().init()
-console.log(`包 ${server.bun?.url}`)
-console.log(server.http ? `鸭 ${server.http?.url}` : "http server not started")
+console.log(`包包 ${server.bun?.url}`)
+console.log(server.http ? `包子 ${server.http?.url}` : "http server not started")
+Bun.gc(false)
