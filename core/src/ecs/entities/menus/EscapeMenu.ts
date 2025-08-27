@@ -12,18 +12,20 @@ export const EscapeMenu = (world: World): Entity => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    display: "block",
     width: "404px",
     maxWidth: "94%",
-    maxHeight: "98%",
+    // maxHeight: "98%",
+    height: "98dvh",
     pointerEvents: "none",
-    border: ""
+    border: "",
+    display: "flex",
+    flexDirection: "column"
   })
 
   const art = Art()
 
   const menuButtonStyle: CSS = {
-    width: "32.5%", position: "relative", top: "-10px", height: "40px", pointerEvents: "auto"
+    width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
   }
 
   const lobbiesButton = HtmlButton({
@@ -62,11 +64,14 @@ export const EscapeMenu = (world: World): Entity => {
 
   const shell = HtmlDiv({
     width: "100%",
-    height: "80dvh",
+    // height: "80dvh",
+    top: "10px",
+    flex: "1 1 auto",
     maxHeight: "300px",
     display: "flex",
     border: "none",
-    position: "relative"
+    position: "relative",
+    flexDirection: "column"
   })
 
   shell.appendChild(lobbies.div)

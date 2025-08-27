@@ -10,6 +10,10 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     width: "100%",
     // height: "100%",
     flex: "1 1 auto",
+    overflowY: "auto",
+    minHeight: 0,
+    // touchAction: "manipulation",
+    
     
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.4)",

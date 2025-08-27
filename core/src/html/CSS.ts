@@ -11,7 +11,7 @@ export type CSS = Partial<{
   color: `#${string}`
   cursor: "pointer" | "default" | "not-allowed"
   display: "block" | "inline-block" | "flex" | "inline-flex" | "none"
-  flex: number | "1 1 auto"
+  flex: number | `${number} ${number} auto`
   flexDirection: "row" | "column" | "row-reverse" | "column-reverse"
   float: "left" | "right" | "none"
   fontFamily: "Courier New" | "Arial"
@@ -28,7 +28,7 @@ export type CSS = Partial<{
   marginTop: `${number}px` | `${number}%`
   maxHeight: `${number}%` | `${number}px`
   maxWidth: `${number}%` | `${number}px`
-  minHeight: `${number}px` | `${number}%`
+  minHeight: `${number}px` | `${number}%` | 0
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
   outline: "none"
