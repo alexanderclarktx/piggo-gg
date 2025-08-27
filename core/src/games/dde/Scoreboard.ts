@@ -19,7 +19,8 @@ export const Scoreboard = (): Entity => {
     width: "auto",
     minWidth: "180px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: "10px"
+    borderRadius: "10px",
+    paddingTop: "env(safe-area-inset-top)"
   })
 
   const title = () => HtmlText({

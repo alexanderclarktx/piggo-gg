@@ -19,7 +19,7 @@ export type CSS = Partial<{
   fontWeight: "normal" | "bold" | "bolder" | "lighter"
   height: `${number}px` | `${number}%` | "auto" | `${number}vh`
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
-  left: `${number}%` | `${number}px`
+  left: `${number}%` | `${number}px` | `${number}dvh`
   lineHeight: `${number}px`
   margin: `${number}px` | `${number}%` | "0 auto"
   marginBottom: `${number}px` | `${number}%`
@@ -38,7 +38,7 @@ export type CSS = Partial<{
   paddingBottom: `${number}px` | `${number}%`
   paddingLeft: `${number}px` | `${number}%`
   paddingRight: `${number}px` | `${number}%`
-  paddingTop: `${number}px` | `${number}%`
+  paddingTop: `${number}px` | `${number}%` | "env(safe-area-inset-top)"
   pointerEvents: "none" | "auto"
   position: "absolute" | "relative" | "fixed" | "sticky" | "static"
   right: `${number}%` | `${number}px`
@@ -47,7 +47,7 @@ export type CSS = Partial<{
   textDecoration: "none" | "underline" | "line-through"
   textDecorationStyle: "solid" | "dashed" | "dotted"
   textShadow: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
-  top: `${number}%` | `${number}px`
+  top: `${number}%` | `${number}px` | `${number}dvh`
   touchAction: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
   transform: `translate(${number}%)` | `translate(${number}%, ${number}%)`
   userSelect: "none" | "auto" | "text" | "all"
