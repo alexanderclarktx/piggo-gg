@@ -15,8 +15,6 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
     pointerEvents: "auto"
   })
 
-  let dragging = false
-
   let center: XY = { x: 0, y: 0 }
 
   stick.onpointerdown = (e) => {
@@ -24,13 +22,10 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
 
     center = { x: stick.offsetLeft + e.offsetX, y: stick.offsetTop + e.offsetY }
 
-    dragging = true
     stick.style.backgroundColor = active
   }
 
   stick.onpointermove = (e) => {
-    if (!dragging) return
-
     const dx = e.clientX - center.x
     const dy = e.clientY - center.y
     const dist = min(40, sqrt(dx * dx + dy * dy))
@@ -49,8 +44,6 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
   }
 
   stick.onpointerup = () => {
-    dragging = false
-
     stick.style.backgroundColor = idle
     stick.style.transform = "translate(0, 0)"
 

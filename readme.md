@@ -2,7 +2,7 @@
 <div align="center" style="font:">
   <img height="110" src="web/res/piggo.svg"/>
 
-  __Piggo__ is a website for gaming with friends! Play at [piggo.gg](https://piggo.gg)
+  __Piggo__ is the best place for gaming with friends! Play at [piggo.gg](https://piggo.gg)
 </div>
 
 <p align="center">

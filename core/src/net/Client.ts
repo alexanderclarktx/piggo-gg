@@ -9,8 +9,8 @@ import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
 
 const servers = {
-  dev: "ws://localhost:3000",
-  // dev: "wss://piggo-api-staging.up.railway.app",
+  // dev: "ws://localhost:3000",
+  dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 
@@ -95,7 +95,7 @@ export const Client = ({ world }: ClientProps): Client => {
     // TODO handle timeout
   }
 
-  const env = location ? (location.hostname === "localhost" ? "dev" : "production") : "dev"
+  const env = location?.hostname === "piggo.gg" ? "production" : "dev"
 
   const client: Client = {
     bufferDown: KeyBuffer(),

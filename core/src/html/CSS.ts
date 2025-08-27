@@ -11,24 +11,24 @@ export type CSS = Partial<{
   color: `#${string}`
   cursor: "pointer" | "default" | "not-allowed"
   display: "block" | "inline-block" | "flex" | "inline-flex" | "none"
-  flex: number
+  flex: number | `${number} ${number} auto`
   flexDirection: "row" | "column" | "row-reverse" | "column-reverse"
   float: "left" | "right" | "none"
   fontFamily: "Courier New" | "Arial"
   fontSize: `${number}px`
   fontWeight: "normal" | "bold" | "bolder" | "lighter"
-  height: `${number}px` | `${number}%` | "auto" | `${number}vh`
+  height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
-  left: `${number}%` | `${number}px`
+  left: `${number}%` | `${number}px` | `${number}dvh`
   lineHeight: `${number}px`
   margin: `${number}px` | `${number}%` | "0 auto"
-  marginBottom: `${number}px` | `${number}%`
-  marginLeft: `${number}px` | `${number}%`
-  marginRight: `${number}px` | `${number}%`
-  marginTop: `${number}px` | `${number}%`
-  maxHeight: `${number}%` | `${number}px`
+  marginBottom: `${number}px` | `${number}%` | "env(safe-area-inset-bottom)"
+  marginLeft: `${number}px` | `${number}%` | "env(safe-area-inset-left)"
+  marginRight: `${number}px` | `${number}%` | "env(safe-area-inset-right)"
+  marginTop: `${number}px` | `${number}%` | "env(safe-area-inset-top)"
+  maxHeight: `${number}%` | `${number}px` | `${number}dvh`
   maxWidth: `${number}%` | `${number}px`
-  minHeight: `${number}px` | `${number}%`
+  minHeight: `${number}px` | `${number}%` | `${number}dvh` | 0
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
   outline: "none"
@@ -47,7 +47,7 @@ export type CSS = Partial<{
   textDecoration: "none" | "underline" | "line-through"
   textDecorationStyle: "solid" | "dashed" | "dotted"
   textShadow: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
-  top: `${number}%` | `${number}px`
+  top: `${number}%` | `${number}px` | `${number}dvh`
   touchAction: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
   transform: `translate(${number}%)` | `translate(${number}%, ${number}%)`
   userSelect: "none" | "auto" | "text" | "all"

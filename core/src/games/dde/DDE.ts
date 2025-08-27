@@ -82,8 +82,8 @@ const DDESystem = SystemBuilder({
 
     DDEMobileUI(world)
 
-    let blocksRendered = true // todo
-    let applesSpawned = true
+    let blocksRendered = false
+    let applesSpawned = false
     let ambient = false
 
     return {

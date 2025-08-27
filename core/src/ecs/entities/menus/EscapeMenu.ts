@@ -12,18 +12,21 @@ export const EscapeMenu = (world: World): Entity => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    display: "block",
     width: "404px",
     maxWidth: "94%",
-    maxHeight: "98%",
+    height: "80%",
+    maxHeight: "540px",
     pointerEvents: "none",
-    border: ""
+    border: "",
+    display: "flex",
+    flexDirection: "column",
+    touchAction: "pan-y"
   })
 
   const art = Art()
 
   const menuButtonStyle: CSS = {
-    width: "32.5%", position: "relative", top: "-10px", height: "40px", pointerEvents: "auto"
+    width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
   }
 
   const lobbiesButton = HtmlButton({
@@ -62,11 +65,15 @@ export const EscapeMenu = (world: World): Entity => {
 
   const shell = HtmlDiv({
     width: "100%",
-    height: "80vh",
+    top: "10px",
+    flex: "1 1 auto",
     maxHeight: "300px",
-    display: "block",
+    minHeight: 0,
+    display: "flex",
     border: "none",
-    position: "relative"
+    position: "relative",
+    flexDirection: "column",
+    touchAction: "pan-y"
   })
 
   shell.appendChild(lobbies.div)
@@ -112,9 +119,9 @@ export const EscapeMenu = (world: World): Entity => {
           styleButton(settingsButton, activeMenu !== "settings", settingsButton.matches(":hover"))
 
           // visibility of submenus
-          lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
-          skins.div.style.display = activeMenu === "skins" ? "block" : "none"
-          settings.div.style.display = activeMenu === "settings" ? "block" : "none"
+          lobbies.div.style.display = activeMenu === "lobbies" ? "flex" : "none"
+          skins.div.style.display = activeMenu === "skins" ? "flex" : "none"
+          settings.div.style.display = activeMenu === "settings" ? "flex" : "none"
 
           lobbies.update()
           skins.update()
@@ -129,7 +136,7 @@ export const EscapeMenu = (world: World): Entity => {
 const Art = () => HtmlImg("dde-256.jpg", {
   top: "-15px",
   left: "50%",
-  width: "180px",
+  width: "170px",
   transform: "translate(-50%)",
   border: "2px solid #eeeeee",
   borderRadius: "10px",

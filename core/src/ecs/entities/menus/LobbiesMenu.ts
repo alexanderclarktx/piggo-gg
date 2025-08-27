@@ -15,11 +15,13 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     pointerEvents: "auto",
     borderRadius: "10px",
     position: "relative",
+    display: "flex",
+    flexDirection: "column"
   })
 
   const lobbyList = HtmlDiv({
     width: "94%",
-    height: "75%",
+    flex: "1 1 auto",
     left: "50%",
     top: "10px",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -37,7 +39,8 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
-    border: ""
+    border: "",
+    paddingBottom: "30px"
   })
 
   const createLobby = HtmlButton({

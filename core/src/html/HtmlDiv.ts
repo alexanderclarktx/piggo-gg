@@ -5,7 +5,8 @@ const defaults: CSS = {
   border: "2px solid white",
   scrollbarWidth: "none",
   msOverflowStyle: "none",
-  outline: "none"
+  outline: "none",
+  touchAction: "none"
 }
 
 export type HtmlDiv = HTMLDivElement
@@ -14,14 +15,16 @@ export const HtmlDiv = (style: CSS = {}): HtmlDiv => {
   const div = document.createElement("div")
 
   Object.assign(div.style, defaults)
+  Object.assign(div.style, style)
 
   div.oncontextmenu = (e) => e.preventDefault()
-  div.ontouchstart = (e) => e.preventDefault()
-  div.ontouchend = (e) => e.preventDefault()
-  div.ontouchmove = (e) => e.preventDefault()
-  div.ontouchcancel = (e) => e.preventDefault()
 
-  Object.assign(div.style, style)
+  if (style.touchAction === undefined) {
+    div.ontouchstart = (e) => e.preventDefault()
+    div.ontouchend = (e) => e.preventDefault()
+    div.ontouchmove = (e) => e.preventDefault()
+    div.ontouchcancel = (e) => e.preventDefault()
+  }
 
   return div
 }

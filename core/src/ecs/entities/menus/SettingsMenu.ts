@@ -5,25 +5,29 @@ import {
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
-    top: "-3px",
-    left: "50%",
-    width: "100%",
-    height: "100%",
-    transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
-    pointerEvents: "auto",
     borderRadius: "10px",
-    position: "relative"
+    display: "flex",
+    flex: "1 1 auto",
+    flexDirection: "column",
+    left: "50%",
+    overflowY: "scroll",
+    pointerEvents: "auto",
+    position: "relative",
+    top: "-3px",
+    touchAction: "pan-y",
+    transform: "translate(-50%)",
+    width: "100%"
   })
 
   const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
-  const showControls = boolRow(world, "Show Controls", "showControls")
   const showCrosshair = boolRow(world, "Show Crosshair", "showCrosshair")
+  const showControls = boolRow(world, "Show Controls", "showControls")
   const sensitivity = numRow(world, "Mouse Sensitivity", "mouseSensitivity")
 
   div.appendChild(ambientSound.div)
-  div.appendChild(showControls.div)
   div.appendChild(showCrosshair.div)
+  div.appendChild(showControls.div)
   div.appendChild(sensitivity.div)
 
   return {
@@ -47,7 +51,8 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
       left: "10px",
       fontSize: "18px",
       lineHeight: "40px",
-      textAlign: "center"
+      textAlign: "center",
+      touchAction: "pan-y"
     }
   })
 
@@ -70,7 +75,8 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
     position: "relative",
     marginTop: "15px",
     display: "flex",
-    border: ""
+    border: "",
+    touchAction: "pan-y"
   })
 
   div.appendChild(label)
@@ -89,7 +95,8 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
       left: "10px",
       fontSize: "18px",
       lineHeight: "40px",
-      textAlign: "center"
+      textAlign: "center",
+      touchAction: "pan-y"
     }
   })
 
@@ -111,7 +118,8 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
     position: "relative",
     marginTop: "15px",
     display: "flex",
-    border: ""
+    border: "",
+    touchAction: "pan-y"
   })
 
   div.appendChild(label)

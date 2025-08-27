@@ -11,7 +11,7 @@ export type VolleySounds = "spike"
 export type LaserSounds = "laser1"
 
 export type ValidSounds =
-  BirdSounds | BubbleSounds | MusicSounds | ClickSounds |
+  BirdSounds | BubbleSounds | ClickSounds |
   GunNames | EatSounds | VolleySounds | LaserSounds
 
 const load = (url: string, volume: number): Tone => {
@@ -71,7 +71,7 @@ export const Sound = (world: World): Sound => {
       // steps: load("steps.mp3", 0),
       bubble: load("bubble.mp3", -10),
       // piano1: load("piano1.mp3", 5),
-      track2: load("track2.mp3", -10),
+      // track2: load("track2.mp3", -10),
       cassettePlay: load("cassettePlay.mp3", 0),
       cassetteStop: load("cassetteStop.mp3", -5),
       click1: load("click1.mp3", -5),
