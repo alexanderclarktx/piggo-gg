@@ -51,7 +51,8 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
       left: "10px",
       fontSize: "18px",
       lineHeight: "40px",
-      textAlign: "center"
+      textAlign: "center",
+      touchAction: "pan-y"
     }
   })
 
@@ -74,7 +75,8 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
     position: "relative",
     marginTop: "15px",
     display: "flex",
-    border: ""
+    border: "",
+    touchAction: "pan-y"
   })
 
   div.appendChild(label)
@@ -93,7 +95,8 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
       left: "10px",
       fontSize: "18px",
       lineHeight: "40px",
-      textAlign: "center"
+      textAlign: "center",
+      touchAction: "pan-y"
     }
   })
 
@@ -115,7 +118,8 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
     position: "relative",
     marginTop: "15px",
     display: "flex",
-    border: ""
+    border: "",
+    touchAction: "pan-y"
   })
 
   div.appendChild(label)

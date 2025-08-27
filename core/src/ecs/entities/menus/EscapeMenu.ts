@@ -19,7 +19,8 @@ export const EscapeMenu = (world: World): Entity => {
     pointerEvents: "none",
     border: "",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    touchAction: "pan-y"
   })
 
   const art = Art()
@@ -71,7 +72,8 @@ export const EscapeMenu = (world: World): Entity => {
     display: "flex",
     border: "none",
     position: "relative",
-    flexDirection: "column"
+    flexDirection: "column",
+    touchAction: "pan-y"
   })
 
   shell.appendChild(lobbies.div)
