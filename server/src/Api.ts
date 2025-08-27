@@ -253,7 +253,7 @@ export const Api = (): Api => {
         port: env.PORT ?? 3000,
         fetch: (r: Request, server: Server) => {
           const origin = r.headers.get("origin")
-          if (!origin || !["https://piggo.gg", "http://localhost:8000"].includes(origin)) {
+          if (!origin || !["https://piggo.gg", "https://dev.piggo.gg", "http://localhost:8000"].includes(origin)) {
             console.error("bad origin", origin)
             return new Response("invalid origin", { status: 403 })
           }
