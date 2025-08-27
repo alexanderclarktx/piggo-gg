@@ -8,7 +8,9 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     top: "-3px",
     left: "50%",
     width: "100%",
-    height: "100%",
+    // height: "100%",
+    flex: "1 1 auto",
+    
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
     pointerEvents: "auto",

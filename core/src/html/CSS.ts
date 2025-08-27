@@ -11,13 +11,13 @@ export type CSS = Partial<{
   color: `#${string}`
   cursor: "pointer" | "default" | "not-allowed"
   display: "block" | "inline-block" | "flex" | "inline-flex" | "none"
-  flex: number
+  flex: number | "1 1 auto"
   flexDirection: "row" | "column" | "row-reverse" | "column-reverse"
   float: "left" | "right" | "none"
   fontFamily: "Courier New" | "Arial"
   fontSize: `${number}px`
   fontWeight: "normal" | "bold" | "bolder" | "lighter"
-  height: `${number}px` | `${number}%` | "auto" | `${number}vh`
+  height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
   left: `${number}%` | `${number}px` | `${number}dvh`
   lineHeight: `${number}px`
