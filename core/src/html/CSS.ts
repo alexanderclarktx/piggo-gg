@@ -25,7 +25,7 @@ export type CSS = Partial<{
   marginBottom: `${number}px` | `${number}%`
   marginLeft: `${number}px` | `${number}%`
   marginRight: `${number}px` | `${number}%`
-  marginTop: `${number}px` | `${number}%`
+  marginTop: `${number}px` | `${number}%` | "env(safe-area-inset-top)"
   maxHeight: `${number}%` | `${number}px` | `${number}dvh`
   maxWidth: `${number}%` | `${number}px`
   minHeight: `${number}px` | `${number}%` | `${number}dvh` | 0
@@ -38,7 +38,7 @@ export type CSS = Partial<{
   paddingBottom: `${number}px` | `${number}%`
   paddingLeft: `${number}px` | `${number}%`
   paddingRight: `${number}px` | `${number}%`
-  paddingTop: `${number}px` | `${number}%` | "env(safe-area-inset-top)"
+  paddingTop: `${number}px` | `${number}%`
   pointerEvents: "none" | "auto"
   position: "absolute" | "relative" | "fixed" | "sticky" | "static"
   right: `${number}%` | `${number}px`
