@@ -21,13 +21,13 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   })
 
   const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
-  const showControls = boolRow(world, "Show Controls", "showControls")
   const showCrosshair = boolRow(world, "Show Crosshair", "showCrosshair")
+  const showControls = boolRow(world, "Show Controls", "showControls")
   const sensitivity = numRow(world, "Mouse Sensitivity", "mouseSensitivity")
 
   div.appendChild(ambientSound.div)
-  div.appendChild(showControls.div)
   div.appendChild(showCrosshair.div)
+  div.appendChild(showControls.div)
   div.appendChild(sensitivity.div)
 
   return {

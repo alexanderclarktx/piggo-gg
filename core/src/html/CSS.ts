@@ -26,9 +26,9 @@ export type CSS = Partial<{
   marginLeft: `${number}px` | `${number}%`
   marginRight: `${number}px` | `${number}%`
   marginTop: `${number}px` | `${number}%`
-  maxHeight: `${number}%` | `${number}px`
+  maxHeight: `${number}%` | `${number}px` | `${number}dvh`
   maxWidth: `${number}%` | `${number}px`
-  minHeight: `${number}px` | `${number}%` | 0 | 1
+  minHeight: `${number}px` | `${number}%` | `${number}dvh` | 0
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
   outline: "none"
