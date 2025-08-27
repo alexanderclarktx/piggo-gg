@@ -5,21 +5,19 @@ import {
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
-    top: "-3px",
-    left: "50%",
-    width: "100%",
-    // height: "100%",
-    flex: "1 1 auto",
-    overflowY: "auto",
-    minHeight: 0,
-    // touchAction: "manipulation",
-    
-    
-    transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
-    pointerEvents: "auto",
     borderRadius: "10px",
-    position: "relative"
+    display: "flex",
+    flex: "1 1 auto",
+    flexDirection: "column",
+    left: "50%",
+    overflowY: "scroll",
+    pointerEvents: "auto",
+    position: "relative",
+    top: "-3px",
+    touchAction: "pan-y",
+    transform: "translate(-50%)",
+    width: "100%"
   })
 
   const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
