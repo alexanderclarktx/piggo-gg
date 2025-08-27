@@ -28,7 +28,7 @@ export type CSS = Partial<{
   marginTop: `${number}px` | `${number}%`
   maxHeight: `${number}%` | `${number}px`
   maxWidth: `${number}%` | `${number}px`
-  minHeight: `${number}px` | `${number}%` | 0
+  minHeight: `${number}px` | `${number}%` | 0 | 1
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
   outline: "none"

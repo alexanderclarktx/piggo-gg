@@ -117,9 +117,9 @@ export const EscapeMenu = (world: World): Entity => {
           styleButton(settingsButton, activeMenu !== "settings", settingsButton.matches(":hover"))
 
           // visibility of submenus
-          lobbies.div.style.display = activeMenu === "lobbies" ? "block" : "none"
-          skins.div.style.display = activeMenu === "skins" ? "block" : "none"
-          settings.div.style.display = activeMenu === "settings" ? "block" : "none"
+          lobbies.div.style.display = activeMenu === "lobbies" ? "flex" : "none"
+          skins.div.style.display = activeMenu === "skins" ? "flex" : "none"
+          settings.div.style.display = activeMenu === "settings" ? "flex" : "none"
 
           lobbies.update()
           skins.update()
