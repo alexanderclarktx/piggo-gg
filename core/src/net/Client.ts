@@ -95,7 +95,8 @@ export const Client = ({ world }: ClientProps): Client => {
     // TODO handle timeout
   }
 
-  const env = location ? (location.hostname === "localhost" ? "dev" : "production") : "dev"
+  const env = location?.hostname === "piggo.gg" ? "production" : "dev"
+  // const env = location ? (["localhost", "dev.piggo.gg"].includes(location.hostname) ? "dev" : "production") : "dev"
 
   const client: Client = {
     bufferDown: KeyBuffer(),
