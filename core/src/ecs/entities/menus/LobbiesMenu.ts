@@ -98,7 +98,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
       if (world.tick - 80 > polled) {
         polled = world.tick
         world.client?.lobbyList((response) => {
-          // lobbyList.innerHTML = ""
+          lobbyList.innerHTML = ""
 
           for (const [id, meta] of entries(response.lobbies)) {
             const lobby = HtmlText({
