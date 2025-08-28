@@ -372,8 +372,6 @@ export const Bird = (player: Player): Character => {
             // world.client?.sound.play({ name: "steps", threshold: { pos: position.data, distance: 5 } })
           }
 
-          console.log("toward", toward)
-
           position.impulse({ x: toward.x * factor, y: toward.z * factor })
         })
       }),
