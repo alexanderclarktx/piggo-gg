@@ -3,6 +3,7 @@ import { Vector3 } from "three"
 import { Container } from "pixi.js"
 
 export type XY = { x: number, y: number }
+export type XZ = { x: number, z: number }
 export type XYZ = { x: number, y: number, z: number }
 export type TwoPoints = [number, number, number, number]
 export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
@@ -44,6 +45,10 @@ export const randomChoice = <T>(xs: T[]): T => {
 
 export const XY = (vec: Vector3): XY => {
   return { x: vec.x, y: vec.y }
+}
+
+export const XZ = (vec: Vector3): XZ => {
+  return { x: vec.x, z: vec.z }
 }
 
 export const XYZ = (vec: Vector3): XYZ => {

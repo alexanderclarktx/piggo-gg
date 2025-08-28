@@ -4,7 +4,8 @@ import { PerspectiveCamera, Vector3 } from "three"
 export type D3Camera = {
   c: PerspectiveCamera
   zoom: number
-  vector: (world: World) => Vector3
+  dir: (world: World) => Vector3
+  // up: () => Vector3
   setFov: (fov: number) => void
 }
 
@@ -16,13 +17,14 @@ export const D3Camera = (): D3Camera => {
   const d3Camera: D3Camera = {
     c: camera,
     zoom: 0.6,
-    vector: (world: World) => {
+    dir: (world: World) => {
       if (!world.client) return new Vector3(0, 0, 0)
 
       const { localAim } = world.client.controls
 
       return new Vector3(
-        -sin(localAim.x), -0.33 + localAim.y, -cos(localAim.x)
+        // -sin(localAim.x), -0.33 + localAim.y, -cos(localAim.x)
+        -sin(localAim.x), 0, -cos(localAim.x)
       ).normalize()
     },
     setFov: (fov: number) => {
