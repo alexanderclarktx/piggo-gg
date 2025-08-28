@@ -9,13 +9,14 @@ import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
 
 const servers = {
-  // dev: "ws://localhost:3000",
+  local: "ws://localhost:3000",
   dev: "wss://piggo-api-staging.up.railway.app",
   production: "wss://api.piggo.gg"
 } as const
 
 export const hosts = {
-  dev: "http://localhost:8000",
+  local: "http://localhost:8000",
+  dev: "https://dev.piggo.gg",
   production: "https://piggo.gg"
 }
 
@@ -43,7 +44,7 @@ export type Client = {
     localAim: XY
     moveLocal: (xy: XY, flying?: boolean) => void
   }
-  env: "dev" | "production"
+  env: "local" | "dev" | "production"
   lastMessageTick: number
   lobbyId: string | undefined
   net: {
@@ -95,7 +96,7 @@ export const Client = ({ world }: ClientProps): Client => {
     // TODO handle timeout
   }
 
-  const env = location?.hostname === "piggo.gg" ? "production" : "dev"
+  const env = location?.hostname === "piggo.gg" ? "production" : location?.hostname === "dev.piggo.gg" ? "dev" : "local"
 
   const client: Client = {
     bufferDown: KeyBuffer(),
@@ -129,7 +130,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
         const flying = client.playerCharacter()?.components.position.data.flying ?? false
 
-        const limit = flying ? 1.1 : 1.5
+        const limit = flying ? 1.1 : 3.14
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
       }
     },

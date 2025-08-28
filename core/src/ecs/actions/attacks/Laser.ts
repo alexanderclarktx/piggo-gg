@@ -54,6 +54,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
   const dir = target.clone().sub(eyes).normalize()
 
+  // update laser mesh
   const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
   mesh.position.copy(eyes.add(offset.multiplyScalar(.03)))
   mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
@@ -97,7 +98,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
       z: floor(current.z / 0.3)
     }
 
-    if (world.blocks.hasIJK(insideBlock)) {
+    if (world.blocks.atIJK(insideBlock)) {
       world.blocks.remove(insideBlock)
       break
     }

@@ -1,23 +1,18 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input,
-  Laser, LaserMesh, max, Networked, PI, Player, Point, Position,
-  Ready, round, sqrt, Target, Team, Three, World, XYZ
+  Laser, LaserMesh, max, Networked, PI, Place, Player, Point, Position,
+  Ready, round, sqrt, Target, Team, Three, World, XY, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
 
-const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
+const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
   const camera = world.three?.camera
-  if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
+  if (!camera) return { up: { x: 0, y: 0, z: 0 }, dir: { x: 0, z: 0 } }
 
-  const vec = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
-  const cameraWorldDirection = camera.worldDirection(world)
-  const dir = {
-    x: round(cameraWorldDirection.x, 3),
-    y: round(cameraWorldDirection.y, 3),
-    z: round(cameraWorldDirection.z, 3)
-  }
-  return { vec, dir }
+  const up = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
+  const dir = XZ(camera.dir(world))
+  return { up, dir }
 }
 
 const walk = 0.6
@@ -176,6 +171,17 @@ export const Bird = (player: Player): Character => {
             return { actionId: "ready" }
           },
 
+          "mb2": ({ hold, world, character }) => {
+            if (hold) return null
+            if (!character) return null
+
+            const dir = world.three!.camera.dir(world)
+
+            const pos = character.components.position.xyz()
+
+            return { actionId: "place", params: { dir, pos } }
+          },
+
           "mb1": ({ hold, character, world, aim }) => {
             if (hold) return null
             if (!character) return null
@@ -249,6 +255,7 @@ export const Bird = (player: Player): Character => {
           position.data.flying = !position.data.flying
         }),
         laser: Laser(laser),
+        place: Place,
         jump: Action("jump", ({ entity, world, params }) => {
           if (!entity) return
 
@@ -293,14 +300,14 @@ export const Bird = (player: Player): Character => {
 
           position.impulse({ x: params.dir.x * params.power * factor, y: params.dir.y * params.power * factor })
         }),
-        move: Action("move", ({ entity, params, world }) => {
-          if (!params.vec || !params.dir) return
+        move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }> ("move", ({ entity, params, world }) => {
+          if (!params.up || !params.dir) return
 
           const state = world.state<DDEState>()
           if (state.hit[entity?.id ?? ""]) return
 
-          const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
-          const dir = new Vector3(params.dir.x, params.dir.y, params.dir.z)
+          const up = new Vector3(params.up.x, params.up.y, params.up.z)
+          const dir = new Vector3(params.dir.x, 0, params.dir.z)
 
           const { position } = entity?.components ?? {}
           if (!position) return

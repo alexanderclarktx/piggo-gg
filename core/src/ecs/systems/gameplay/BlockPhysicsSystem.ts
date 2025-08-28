@@ -44,7 +44,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
-          const ySweep = world.blocks.hasIJK(ijk)
+          const ySweep = world.blocks.atIJK(ijk)
 
           if (ySweep) {
             ySwept = true
@@ -92,7 +92,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
-          const xSweep = world.blocks.hasIJK(ijk)
+          const xSweep = world.blocks.atIJK(ijk)
 
           if (xSweep) {
             xSwept = true
@@ -141,7 +141,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               z: floor((0.01 + wouldGo.z) / 0.3)
             }
 
-            const cornerSweep = world.blocks.hasIJK(ijk)
+            const cornerSweep = world.blocks.atIJK(ijk)
 
             if (cornerSweep) {
               // if (mode === "global") console.log("cornerSweep", world.tick)
@@ -249,7 +249,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
-          const zSweep = world.blocks.hasIJK(ijk)
+          const zSweep = world.blocks.atIJK(ijk)
 
           if (zSweep) {
             zSwept = true
@@ -307,7 +307,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               z: floor((0.01 + wouldGo.z) / 0.3)
             }
 
-            const zSweepExtra = world.blocks.hasIJK(ijk)
+            const zSweepExtra = world.blocks.atIJK(ijk)
 
             if (zSweepExtra) {
 

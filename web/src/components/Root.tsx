@@ -19,7 +19,7 @@ export const Root = () => {
   return (
     <div>
       <audio>
-        <source src="/silent.mp3" type="audio/mp3" />
+        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav"></source>
       </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
