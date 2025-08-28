@@ -70,8 +70,6 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   while (travelled < 10 && cap > 0) {
 
-    // console.log("current", current, "dir", dir)
-
     const xGap = (current.x + 0.15) % 0.3
     const yGap = (current.y + 0.15) % 0.3
     const zGap = current.z % 0.3
