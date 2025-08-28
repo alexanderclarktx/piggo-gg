@@ -98,7 +98,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
       z: floor(current.z / 0.3)
     }
 
-    if (world.blocks.hasIJK(insideBlock)) {
+    if (world.blocks.atIJK(insideBlock)) {
       world.blocks.remove(insideBlock)
       break
     }

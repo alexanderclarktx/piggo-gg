@@ -44,8 +44,9 @@ export const Place = Action<PlaceParams>("place", ({ params, world, entity }) =>
       z: floor(current.z / 0.3)
     }
 
-    if (world.blocks.hasIJK(insideBlock)) {
-      const added = world.blocks.add({ type: 1, ...lastBlock })
+    const type = world.blocks.atIJK(insideBlock)
+    if (type) {
+      const added = world.blocks.add({ type, ...lastBlock })
 
       // check if player is inside the block
       const playerBlock = blockFromXYZ(pos)

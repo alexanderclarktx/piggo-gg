@@ -6,7 +6,7 @@ import {
 export type BlockData = {
   add: (block: Block) => boolean
   clear: () => void
-  hasIJK: (ijk: XYZ) => boolean
+  atIJK: (ijk: XYZ) => number | undefined
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
   invalidate: () => void
@@ -187,13 +187,15 @@ export const BlockData = (): BlockData => {
         visibleDirty[value] = true
       }
     },
-    hasIJK: (ijk: XYZ) => {
+    atIJK: (ijk: XYZ) => {
       const chunkX = floor(ijk.x / 4)
       const chunkY = floor(ijk.y / 4)
 
-      const index = ijk.z * 16 + (ijk.y - chunkY * 4) * 4 + (ijk.x - chunkX * 4)
+      const indexX = ijk.z * 16 + (ijk.y - chunkY * 4) * 4 + (ijk.x - chunkX * 4)
 
-      return Boolean((data[chunkX]?.[chunkY]?.[index]))
+      if (data[chunkX]?.[chunkY]?.[indexX] === undefined) return undefined
+
+      return data[chunkX]?.[chunkY]?.[indexX]
     },
     needsUpdate: () => {
       return Boolean(keys(visibleDirty).length)
