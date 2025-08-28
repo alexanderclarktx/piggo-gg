@@ -1,14 +1,16 @@
-import { Action, floor, hypot, min, XYZ } from "@piggo-gg/core"
+import { Action, blockFromXYZ, floor, hypot, min, XYZ, XYZequal } from "@piggo-gg/core"
 
 export type PlaceParams = {
   pos: XYZ
   dir: XYZ
 }
 
-export const Place = Action<PlaceParams>("place", ({ params, world }) => {
+export const Place = Action<PlaceParams>("place", ({ params, world, entity }) => {
   const { pos, dir } = params
 
   const current = { ...pos, z: pos.z + 0.2 }
+
+  const lastBlock = blockFromXYZ(current)
 
   let travelled = 0
   let cap = 15
@@ -43,9 +45,20 @@ export const Place = Action<PlaceParams>("place", ({ params, world }) => {
     }
 
     if (world.blocks.hasIJK(insideBlock)) {
-      console.log("found block at", insideBlock)
-      world.blocks.remove(insideBlock)
+      const added = world.blocks.add({ type: 1, ...lastBlock })
+
+      // check if player is inside the block
+      const playerBlock = blockFromXYZ(pos)
+      if (added && XYZequal(playerBlock, lastBlock)) {
+        const gap = pos.z - lastBlock.z * 0.3 + 0.3
+        entity!.components.position!.data.z += gap
+      }
+
       return
     }
+
+    lastBlock.x = insideBlock.x
+    lastBlock.y = insideBlock.y
+    lastBlock.z = insideBlock.z
   }
 })
