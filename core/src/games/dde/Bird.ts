@@ -11,11 +11,11 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
 
   const vec = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
-  const cameraWorldDirection = camera.worldDirection(world)
+  const cameraVector = camera.vector(world)
   const dir = {
-    x: round(cameraWorldDirection.x, 3),
-    y: round(cameraWorldDirection.y, 3),
-    z: round(cameraWorldDirection.z, 3)
+    x: round(cameraVector.x, 3),
+    y: round(cameraVector.y, 3),
+    z: round(cameraVector.z, 3)
   }
   return { vec, dir }
 }
@@ -249,6 +249,7 @@ export const Bird = (player: Player): Character => {
           position.data.flying = !position.data.flying
         }),
         laser: Laser(laser),
+        // place: Place(),
         jump: Action("jump", ({ entity, world, params }) => {
           if (!entity) return
 
