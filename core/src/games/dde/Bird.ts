@@ -11,12 +11,13 @@ const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
   if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
 
   const vec = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
-  const cameraVector = camera.vector(world)
-  const dir = {
-    x: round(cameraVector.x, 3),
-    y: round(cameraVector.y, 3),
-    z: round(cameraVector.z, 3)
-  }
+  const dir = XYZ(camera.vector(world))
+  // const cameraVector = camera.vector(world)
+  // const dir = {
+  //   x: round(cameraVector.x, 3),
+  //   y: round(cameraVector.y, 3),
+  //   z: round(cameraVector.z, 3)
+  // }
   return { vec, dir }
 }
 
@@ -184,7 +185,7 @@ export const Bird = (player: Player): Character => {
 
             const pos = character.components.position.xyz()
 
-            return { actionId: "point", params: { dir, pos } }
+            return { actionId: "place", params: { dir, pos } }
           },
 
           "mb1": ({ hold, character, world, aim }) => {

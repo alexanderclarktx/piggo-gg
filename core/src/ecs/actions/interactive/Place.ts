@@ -8,9 +8,9 @@ export type PlaceParams = {
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   const { pos, dir } = params
 
-  console.log("looking")
-
   const current = { ...pos }
+
+  console.log("current", current, "dir", dir)
 
   let travelled = 0
   let cap = 40

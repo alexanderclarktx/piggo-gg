@@ -1,4 +1,5 @@
 import { Entity, Position } from "@piggo-gg/core"
+import { Vector3 } from "three"
 import { Container } from "pixi.js"
 
 export type XY = { x: number, y: number }
@@ -39,6 +40,10 @@ export const arrayEqual = <T>(a: T[], b: T[]): boolean => {
 
 export const randomChoice = <T>(xs: T[]): T => {
   return xs[floor(random() * xs.length)]
+}
+
+export const XYZ = (vec: Vector3): XYZ => {
+  return { x: vec.x, y: vec.y, z: vec.z }
 }
 
 export const XYdistance = (a: XY, b: XY): number => {

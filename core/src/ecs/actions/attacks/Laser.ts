@@ -64,6 +64,8 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   const current = { ...eyePos }
 
+  console.log("camera", camera, "dir", dir)
+
   let travelled = 0
   let cap = 40
 
