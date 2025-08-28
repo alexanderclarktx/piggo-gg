@@ -97,7 +97,6 @@ export const Client = ({ world }: ClientProps): Client => {
   }
 
   const env = location?.hostname === "piggo.gg" ? "production" : location?.hostname === "dev.piggo.gg" ? "dev" : "local"
-  console.log("env", env)
 
   const client: Client = {
     bufferDown: KeyBuffer(),
