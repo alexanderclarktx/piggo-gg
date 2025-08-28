@@ -50,7 +50,8 @@ export const Place = Action<PlaceParams>("place", ({ params, world, entity }) =>
       // don't place inside player
       if (XYZequal(lastBlock, playerBlock)) return
 
-      world.blocks.add({ type, ...lastBlock })
+      const added = world.blocks.add({ type, ...lastBlock })
+      if (added) world.client?.sound.play({ name: "click2" })
       return
     }
 
