@@ -1,24 +1,18 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input,
   Laser, LaserMesh, max, Networked, PI, Place, Player, Point, Position,
-  Ready, round, sqrt, Target, Team, Three, World, XYZ
+  Ready, round, sqrt, Target, Team, Three, World, XY, XYZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
 
-const upAndDir = (world: World): { vec: XYZ, dir: XYZ } => {
+const upAndDir = (world: World): { up: XYZ, dir: XY } => {
   const camera = world.three?.camera
-  if (!camera) return { vec: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0, z: 0 } }
+  if (!camera) return { up: { x: 0, y: 0, z: 0 }, dir: { x: 0, y: 0 } }
 
-  const vec = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
-  const dir = XYZ(camera.vector(world))
-  // const cameraVector = camera.vector(world)
-  // const dir = {
-  //   x: round(cameraVector.x, 3),
-  //   y: round(cameraVector.y, 3),
-  //   z: round(cameraVector.z, 3)
-  // }
-  return { vec, dir }
+  const up = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
+  const dir = XY(camera.vector(world))
+  return { up, dir }
 }
 
 const walk = 0.6
@@ -306,14 +300,15 @@ export const Bird = (player: Player): Character => {
 
           position.impulse({ x: params.dir.x * params.power * factor, y: params.dir.y * params.power * factor })
         }),
-        move: Action("move", ({ entity, params, world }) => {
-          if (!params.vec || !params.dir) return
+        move: Action<{ up: XYZ, dir: XY, key: string, sprint: boolean }> ("move", ({ entity, params, world }) => {
+          if (!params.up || !params.dir) return
+          console.log("no up")
 
           const state = world.state<DDEState>()
           if (state.hit[entity?.id ?? ""]) return
 
-          const up = new Vector3(params.vec.x, params.vec.y, params.vec.z)
-          const dir = new Vector3(params.dir.x, params.dir.y, params.dir.z)
+          const up = new Vector3(params.up.x, params.up.y, params.up.z)
+          const dir = new Vector3(params.dir.x, params.dir.y, 0)
 
           const { position } = entity?.components ?? {}
           if (!position) return

@@ -42,6 +42,10 @@ export const randomChoice = <T>(xs: T[]): T => {
   return xs[floor(random() * xs.length)]
 }
 
+export const XY = (vec: Vector3): XY => {
+  return { x: vec.x, y: vec.y }
+}
+
 export const XYZ = (vec: Vector3): XYZ => {
   return { x: vec.x, y: vec.y, z: vec.z }
 }
