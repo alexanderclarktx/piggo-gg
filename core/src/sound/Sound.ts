@@ -4,7 +4,7 @@ import { getContext, getTransport, Player as Tone } from "tone"
 export type BirdSounds = "birdsong1"
 export type BubbleSounds = "bubble"
 export type MusicSounds = "track2"
-export type ClickSounds = "click1" | "click3" | "cassettePlay" | "cassetteStop"
+export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
 export type VolleySounds = "spike"
@@ -75,7 +75,7 @@ export const Sound = (world: World): Sound => {
       cassettePlay: load("cassettePlay.mp3", 0),
       cassetteStop: load("cassetteStop.mp3", -5),
       click1: load("click1.mp3", -5),
-      // click2: load("click2.mp3", -5),
+      click2: load("click2.mp3", -5),
       click3: load("click3.mp3", -10),
       deagle: load("pistol.mp3", -30),
       ak: load("ak.mp3", -25),
