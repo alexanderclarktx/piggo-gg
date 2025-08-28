@@ -1,14 +1,14 @@
-import { Action, floor, hypot, min, XY, XYZ } from "@piggo-gg/core"
+import { Action, floor, hypot, min, XYZ } from "@piggo-gg/core"
 
 export type PlaceParams = {
   pos: XYZ
   dir: XYZ
 }
 
-export const Place = Action<PlaceParams>("place", ({ params, world, entity }) => {
+export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   const { pos, dir } = params
 
-  // find block in front of player
+  console.log("looking")
 
   const current = { ...pos }
 
@@ -47,7 +47,9 @@ export const Place = Action<PlaceParams>("place", ({ params, world, entity }) =>
     if (world.blocks.hasIJK(insideBlock)) {
       console.log("found block at", insideBlock)
       world.blocks.remove(insideBlock)
-      break
+      return
     }
   }
+
+  console.log("nothing")
 })

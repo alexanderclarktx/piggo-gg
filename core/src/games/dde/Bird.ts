@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input,
-  Laser, LaserMesh, max, Networked, PI, Player, Point, Position,
+  Laser, LaserMesh, max, Networked, PI, Place, Player, Point, Position,
   Ready, round, sqrt, Target, Team, Three, World, XYZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
@@ -176,6 +176,17 @@ export const Bird = (player: Player): Character => {
             return { actionId: "ready" }
           },
 
+          "x": ({ hold, world, character }) => {
+            if (hold) return null
+            if (!character) return null
+
+            const dir = world.three!.camera.vector(world)
+
+            const pos = character.components.position.xyz()
+
+            return { actionId: "point", params: { dir, pos } }
+          },
+
           "mb1": ({ hold, character, world, aim }) => {
             if (hold) return null
             if (!character) return null
@@ -249,7 +260,7 @@ export const Bird = (player: Player): Character => {
           position.data.flying = !position.data.flying
         }),
         laser: Laser(laser),
-        // place: Place(),
+        place: Place,
         jump: Action("jump", ({ entity, world, params }) => {
           if (!entity) return
 
