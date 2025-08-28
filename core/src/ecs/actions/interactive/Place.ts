@@ -8,12 +8,10 @@ export type PlaceParams = {
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   const { pos, dir } = params
 
-  const current = { ...pos }
-
-  console.log("current", current, "dir", dir)
+  const current = { ...pos, z: pos.z + 0.2 }
 
   let travelled = 0
-  let cap = 40
+  let cap = 15
 
   while (travelled < 10 && cap > 0) {
 
@@ -50,6 +48,4 @@ export const Place = Action<PlaceParams>("place", ({ params, world }) => {
       return
     }
   }
-
-  console.log("nothing")
 })

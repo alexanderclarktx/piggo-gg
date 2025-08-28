@@ -54,6 +54,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
   const dir = target.clone().sub(eyes).normalize()
 
+  // update laser mesh
   const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
   mesh.position.copy(eyes.add(offset.multiplyScalar(.03)))
   mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
@@ -64,12 +65,12 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   const current = { ...eyePos }
 
-  console.log("camera", camera, "dir", dir)
-
   let travelled = 0
   let cap = 40
 
   while (travelled < 10 && cap > 0) {
+
+    // console.log("current", current, "dir", dir)
 
     const xGap = (current.x + 0.15) % 0.3
     const yGap = (current.y + 0.15) % 0.3

@@ -24,7 +24,6 @@ export const D3Camera = (): D3Camera => {
 
       return new Vector3(
         -sin(localAim.x), -0.33 + localAim.y, -cos(localAim.x)
-        // -sin(localAim.x), 0, -cos(localAim.x)
       ).normalize()
     },
     setFov: (fov: number) => {
