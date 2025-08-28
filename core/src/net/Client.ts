@@ -131,7 +131,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
         const flying = client.playerCharacter()?.components.position.data.flying ?? false
 
-        const limit = flying ? 1.1 : 1.5
+        const limit = flying ? 1.1 : 3.14
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
       }
     },

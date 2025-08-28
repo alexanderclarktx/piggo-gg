@@ -171,7 +171,7 @@ export const Bird = (player: Player): Character => {
             return { actionId: "ready" }
           },
 
-          "x": ({ hold, world, character }) => {
+          "mb2": ({ hold, world, character }) => {
             if (hold) return null
             if (!character) return null
 
