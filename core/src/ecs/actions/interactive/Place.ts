@@ -10,6 +10,7 @@ export const Place = Action<PlaceParams>("place", ({ params, world, entity }) =>
 
   const current = { ...pos, z: pos.z + 0.2 }
 
+  const playerBlock = blockFromXYZ(pos)
   const lastBlock = blockFromXYZ(current)
 
   let travelled = 0
@@ -46,15 +47,10 @@ export const Place = Action<PlaceParams>("place", ({ params, world, entity }) =>
 
     const type = world.blocks.atIJK(insideBlock)
     if (type) {
-      const added = world.blocks.add({ type, ...lastBlock })
+      // don't place inside player
+      if (XYZequal(lastBlock, playerBlock)) return
 
-      // check if player is inside the block
-      const playerBlock = blockFromXYZ(pos)
-      if (added && XYZequal(playerBlock, lastBlock)) {
-        const gap = pos.z - lastBlock.z * 0.3 + 0.3
-        entity!.components.position!.data.z += gap
-      }
-
+      world.blocks.add({ type, ...lastBlock })
       return
     }
 
