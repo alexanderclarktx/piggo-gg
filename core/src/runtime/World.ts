@@ -30,7 +30,6 @@ export type World = {
   trees: XYZ[]
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string | undefined
-  addEntityBuilders: (entityBuilders: (() => Entity)[]) => void
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
   addSystems: (systems: System[]) => void
   announce: (message: string) => void
@@ -108,9 +107,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     },
     addEntities: (entities: Entity[]) => {
       entities.forEach((entity) => world.addEntity(entity))
-    },
-    addEntityBuilders: (entityBuilders: (() => Entity)[]) => {
-      entityBuilders.forEach((entityBuilder) => world.addEntity(entityBuilder()))
     },
     characters: () => {
       return world.players().map(p => p.components.controlling?.getCharacter(world)).filter(Boolean) as Character[]
