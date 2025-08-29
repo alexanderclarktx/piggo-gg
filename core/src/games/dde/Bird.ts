@@ -85,10 +85,10 @@ export const Bird = (player: Player): Character => {
           laser.material.opacity -= 0.05 * ratio
           if (laser.material.opacity <= 0) laser.visible = false
         },
-        init: async (entity, world) => {
+        init: async (entity, _, three) => {
           entity.components.three.o.push(laser)
 
-          world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
+          three.gLoader.load("ugly-duckling.glb", (gltf) => {
             duck = gltf.scene
             duck.animations = gltf.animations
             duck.frustumCulled = false
@@ -107,7 +107,7 @@ export const Bird = (player: Player): Character => {
             entity.components.three.o.push(duck)
           })
 
-          world.three!.gLoader.load("eagle.glb", (gltf) => {
+          three.gLoader.load("eagle.glb", (gltf) => {
             eagle = gltf.scene
             eagle.animations = gltf.animations
             eagle.scale.set(0.05, 0.05, 0.05)
