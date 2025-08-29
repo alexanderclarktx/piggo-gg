@@ -8,7 +8,6 @@ export type Game<State extends {} = {}, Settings extends {} = {}> = {
   settings: Settings
   state: State
   systems: SystemBuilder[]
-  tileMap?: number[]
 }
 
 export type GameBuilder<State extends {} = {}, Settings extends {} = {}> = {
