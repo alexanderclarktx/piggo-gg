@@ -2,7 +2,6 @@ import { Command, Entity, SystemBuilder, World } from "@piggo-gg/core"
 
 export type Game<State extends {} = {}, Settings extends {} = {}> = {
   id: string
-  bgColor?: number
   commands?: Command[]
   entities: Entity[]
   netcode: "rollback" | "delay"

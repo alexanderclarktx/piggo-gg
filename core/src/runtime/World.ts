@@ -257,11 +257,10 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       })
       world.addEntity(gameStateEntity)
 
-      const { bgColor, entities, systems } = world.game
+      const { entities, systems } = world.game
 
       if (world.renderer) {
         world.renderer.camera.scaleTo(2.5)
-        world.renderer.setBgColor(bgColor || 0x000000)
       }
 
       // add new entities
