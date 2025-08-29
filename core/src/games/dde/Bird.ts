@@ -1,7 +1,7 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input,
-  Laser, LaserMesh, max, Networked, PI, Place, Player, Point, Position,
-  Ready, round, sqrt, Target, Team, Three, World, XY, XYZ, XZ
+  Laser, LaserMesh, max, Networked, PI, Place, Player, Point,
+  Position, Ready, round, sqrt, Target, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
