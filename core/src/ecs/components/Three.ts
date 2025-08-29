@@ -1,18 +1,18 @@
 import { ClientSystemBuilder, Component, D3Renderer, Entity, Position, World } from "@piggo-gg/core"
 import { Object3D } from "three"
 
-type init = (entity: Entity<Three | Position>, world: World, three: D3Renderer) => Promise<void>
+type ThreeInit = (entity: Entity<Three | Position>, world: World, three: D3Renderer) => Promise<void>
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
   o: Object3D[]
-  init: undefined | init
+  init: undefined | ThreeInit
   onRender: undefined | ((entity: Entity<Three | Position>, world: World, delta: number) => void)
   cleanup: (world: World) => void
 }
 
 export type ThreeProps = {
-  init?: init
+  init?: ThreeInit
   onRender?: (entity: Entity<Three | Position>, world: World, delta: number) => void
 }
 
