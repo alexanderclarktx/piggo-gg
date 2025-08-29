@@ -1,13 +1,14 @@
-import { Command, Entity, SystemBuilder, World } from "@piggo-gg/core"
+import { Entity, SystemBuilder, World } from "@piggo-gg/core"
 
 export type Game<State extends {} = {}, Settings extends {} = {}> = {
   id: string
-  commands?: Command[]
+
   entities: Entity[]
+  systems: SystemBuilder[]
+
   netcode: "rollback" | "delay"
   settings: Settings
-  state: State
-  systems: SystemBuilder[]
+  state: State  
 }
 
 export type GameBuilder<State extends {} = {}, Settings extends {} = {}> = {
