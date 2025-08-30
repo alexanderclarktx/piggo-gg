@@ -46,7 +46,7 @@ export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
 
 export const ItemSystem = SystemBuilder({
   id: "ItemSystem",
-  init: (world) => ({
+  init: () => ({
     id: "ItemSystem",
     query: ["item", "renderable", "position"],
     priority: 5,

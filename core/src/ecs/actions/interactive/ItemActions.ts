@@ -19,7 +19,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   if (!inventory) return
 
   const { position, actions, effects, item, collider, renderable } = entity.components
-  if (!position || !actions || !effects || !item || !renderable) return
+  if (!position || !actions || !effects || !item) return
 
   if (!item.dropped) return
 
@@ -28,7 +28,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   position.data.follows = character.id
   position.setRotation(0)
 
-  renderable.visible = false
+  if (renderable) renderable.visible = false
 
   // if (clickable) clickable.active = false
   if (collider) collider.active = false

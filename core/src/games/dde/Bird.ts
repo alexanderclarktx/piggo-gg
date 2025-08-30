@@ -1,6 +1,7 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input,
-  Laser, LaserMesh, max, Networked, PI, Place, Player, Point,
+  Inventory,
+  Laser, LaserItem, LaserMesh, max, Networked, PI, Place, Player, Point,
   Position, Ready, round, sqrt, Target, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
@@ -34,6 +35,7 @@ export const Bird = (player: Player): Character => {
     components: {
       position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
+      inventory: Inventory([ LaserItem ]),
       collider: Collider({
         shape: "ball",
         radius: 0.1

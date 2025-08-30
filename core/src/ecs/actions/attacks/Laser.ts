@@ -1,5 +1,5 @@
 import {
-  Action, cos, DDEState, floor, hypot, min, playerForCharacter,
+  Action, Actions, cos, DDEState, Effects, floor, hypot, Item, ItemEntity, min, Networked, playerForCharacter,
   Position, sin, sqrt, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
@@ -25,6 +25,17 @@ export const LaserMesh = (): LaserMesh => {
 
   return mesh
 }
+
+export const LaserItem = () => ItemEntity({
+  id: "Laser",
+  components: {
+    position: Position(),
+    actions: Actions(),
+    effects: Effects(),
+    networked: Networked(),
+    item: Item({ name: "Laser", stackable: false })
+  }
+})
 
 export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
   if (!entity) return
