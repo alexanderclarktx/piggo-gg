@@ -1,7 +1,8 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input,
-  Laser, LaserMesh, max, Networked, PI, Place, Player, Point, Position,
-  Ready, round, sqrt, Target, Team, Three, World, XY, XYZ, XZ
+  Inventory,
+  Laser, LaserItem, LaserMesh, max, Networked, PI, Place, Player, Point,
+  Position, Ready, round, sqrt, Target, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -34,6 +35,7 @@ export const Bird = (player: Player): Character => {
     components: {
       position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
+      inventory: Inventory([ LaserItem ]),
       collider: Collider({
         shape: "ball",
         radius: 0.1
@@ -85,10 +87,10 @@ export const Bird = (player: Player): Character => {
           laser.material.opacity -= 0.05 * ratio
           if (laser.material.opacity <= 0) laser.visible = false
         },
-        init: async (entity, world) => {
+        init: async (entity, _, three) => {
           entity.components.three.o.push(laser)
 
-          world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
+          three.gLoader.load("ugly-duckling.glb", (gltf) => {
             duck = gltf.scene
             duck.animations = gltf.animations
             duck.frustumCulled = false
@@ -107,7 +109,7 @@ export const Bird = (player: Player): Character => {
             entity.components.three.o.push(duck)
           })
 
-          world.three!.gLoader.load("eagle.glb", (gltf) => {
+          three.gLoader.load("eagle.glb", (gltf) => {
             eagle = gltf.scene
             eagle.animations = gltf.animations
             eagle.scale.set(0.05, 0.05, 0.05)
