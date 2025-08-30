@@ -1,15 +1,18 @@
 import {
-  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder, HtmlDiv
+  HtmlButton, HtmlLabel, HtmlText,
+  ClientSystemBuilder, HtmlDiv, HtmlItems
 } from "@piggo-gg/core"
 import { DDESettings, DDEState } from "./DDE"
 
 export const HUDSystem = ClientSystemBuilder({
   id: "HUDSystem",
   init: (world) => {
+    const { three, client } = world
+    if (!three || !client) return
 
-    if (world.client?.mobile === true) return
+    if (client.mobile === true) return
 
-    const height = world.three?.canvas.clientHeight || 600
+    const height = three.canvas.clientHeight || 600
 
     const top = height / 5 * 3
     const left = 120
@@ -69,9 +72,13 @@ export const HUDSystem = ClientSystemBuilder({
     controls.appendChild(boostLabel)
     controls.appendChild(jumpLabel)
 
-    world.three?.append(controls)
-    world.three?.append(scoreText)
-    world.three?.append(posText)
+    three.append(controls)
+    three.append(scoreText)
+    three.append(posText)
+
+    const items = HtmlItems(client)
+
+    three.append(items)
 
     const active = "rgba(0, 160, 200, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
@@ -86,7 +93,7 @@ export const HUDSystem = ClientSystemBuilder({
         const settings = world.settings<DDESettings>()
         controls.style.display = settings.showControls ? "block" : "none"
 
-        const down = world.client?.bufferDown.all()?.map(key => key.key)
+        const down = client.bufferDown.all()?.map(key => key.key)
         if (down) {
           aButton.style.backgroundColor = down.includes("a") ? active : inactive
           dButton.style.backgroundColor = down.includes("d") ? active : inactive
@@ -97,7 +104,7 @@ export const HUDSystem = ClientSystemBuilder({
           jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
         }
 
-        const pc = world.client?.playerCharacter()
+        const pc = client.playerCharacter()
         if (pc) {
           const { flying, x, y, z } = pc.components.position.data
 
@@ -106,7 +113,7 @@ export const HUDSystem = ClientSystemBuilder({
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 
-          if (world.client?.env === "dev" && world.debug) {
+          if (client.env === "dev" && world.debug) {
             posText.innerHTML = `<span style='color: #00ffff'>${x.toFixed(2)}</span><span style='color: #ffff00'> ${y.toFixed(2)}</span><span style='color: #ff33cc'> ${z.toFixed(2)}</span>`
             posText.style.visibility = "visible"
           } else {
@@ -115,7 +122,7 @@ export const HUDSystem = ClientSystemBuilder({
         }
 
         const state = world.game.state as DDEState
-        const pcApplesEaten = state.applesEaten[world.client?.playerId() || ""] || 0
+        const pcApplesEaten = state.applesEaten[client.playerId() || ""] || 0
 
         const isWarmup = state.phase === "warmup"
         eButton.style.visibility = isWarmup ? "visible" : "hidden"
