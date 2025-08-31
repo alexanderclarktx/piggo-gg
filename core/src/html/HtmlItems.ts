@@ -18,7 +18,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
   })
 
   for (let i = 0; i < 7; i++) {
-    div.appendChild(cell(i))
+    div.appendChild(cell())
   }
 
   return {
@@ -44,7 +44,6 @@ const cell = () => HtmlDiv({
   height: "50px",
   backgroundColor: "rgba(255, 255, 255, 0.1)",
   border: "2px solid white",
-  display: "inline-block",
   position: "relative",
   borderRadius: "0px"
 })
