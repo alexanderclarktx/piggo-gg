@@ -1,8 +1,7 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, hypot, Input,
-  Inventory,
-  Laser, LaserItem, LaserMesh, max, Networked, PI, Place, Player, Point,
-  Position, Ready, round, setActiveItemIndex, sqrt, Target, Team, Three, World, XYZ, XZ
+  abs, Action, Actions, Character, Collider, cos, hypot, Input, Inventory,
+  LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
+  round, setActiveItemIndex, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -33,7 +32,7 @@ export const Bird = (player: Player): Character => {
     components: {
       position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
-      inventory: Inventory([ LaserItem ]),
+      inventory: Inventory([LaserItem]),
       collider: Collider({
         shape: "ball",
         radius: 0.1
@@ -185,23 +184,6 @@ export const Bird = (player: Player): Character => {
             return { actionId: "place", params: { dir, pos } }
           },
 
-          // "mb1": ({ hold, character, world, aim }) => {
-          //   if (hold) return null
-          //   if (!character) return null
-          //   if (!document.pointerLockElement && !world.client?.mobile) return null
-
-          //   const targets: Target[] = world.characters()
-          //     .filter(c => c.id !== character.id)
-          //     .map(target => ({
-          //       ...target.components.position.xyz(),
-          //       id: target.id
-          //     }))
-
-          //   const pos = character.components.position.xyz()
-
-          //   return { actionId: "laser", params: { pos, aim, targets } }
-          // },
-
           // transform
           "e": ({ hold }) => {
             if (hold) return null
@@ -304,7 +286,7 @@ export const Bird = (player: Player): Character => {
 
           position.impulse({ x: params.dir.x * params.power * factor, y: params.dir.y * params.power * factor })
         }),
-        move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }> ("move", ({ entity, params, world }) => {
+        move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }>("move", ({ entity, params, world }) => {
           if (!params.up || !params.dir) return
 
           const state = world.state<DDEState>()
