@@ -1,6 +1,6 @@
-import { Client, entries, HtmlDiv, HtmlImg, RefreshableDiv } from "@piggo-gg/core"
+import { Client, HtmlDiv, HtmlImg, RefreshableDiv } from "@piggo-gg/core"
 
-export const HtmlItems = (client: Client): RefreshableDiv => {
+export const HtmlInventory = (client: Client): RefreshableDiv => {
 
   const cells: HTMLDivElement[] = []
   const active: HTMLDivElement = activeCell()

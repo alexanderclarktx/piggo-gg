@@ -1,6 +1,5 @@
 import {
-  HtmlButton, HtmlLabel, HtmlText,
-  ClientSystemBuilder, HtmlDiv, HtmlItems
+  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory
 } from "@piggo-gg/core"
 import { DDESettings, DDEState } from "./DDE"
 
@@ -77,9 +76,9 @@ export const HUDSystem = ClientSystemBuilder({
     three.append(scoreText)
     three.append(posText)
 
-    const items = HtmlItems(client)
+    const inventory = HtmlInventory(client)
 
-    three.append(items.div)
+    three.append(inventory.div)
 
     const active = "rgba(0, 160, 200, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
@@ -122,7 +121,7 @@ export const HUDSystem = ClientSystemBuilder({
           }
         }
 
-        items.update()
+        inventory.update()
 
         const state = world.game.state as DDEState
         const pcApplesEaten = state.applesEaten[client.playerId() || ""] || 0
