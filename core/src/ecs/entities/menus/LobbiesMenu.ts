@@ -107,8 +107,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
                 lineHeight: "36px",
                 textAlign: "center",
                 backgroundColor: "rgba(0, 0, 0, 0.4)",
-                border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #aaffff",
-                borderRadius: "8px"
+                border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #aaffff"
               }
             })
 

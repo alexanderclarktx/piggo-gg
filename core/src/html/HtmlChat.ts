@@ -24,8 +24,7 @@ export const HtmlChat = (): Entity => {
   const border = HtmlDiv({
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-    borderRadius: "8px"
+    backgroundColor: "rgba(0, 0, 0, 0.2)"
   })
 
   const chatDiv = HtmlDiv({
@@ -49,7 +48,6 @@ export const HtmlChat = (): Entity => {
     style: {
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
-      borderRadius: "8px",
       bottom: "10px",
       display: "flex",
       fontSize: "18px",

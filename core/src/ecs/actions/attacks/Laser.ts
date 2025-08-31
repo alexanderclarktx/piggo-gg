@@ -1,6 +1,7 @@
 import {
-  Action, Actions, cos, DDEState, Effects, floor, hypot, Input, Item, ItemEntity, min, Networked, playerForCharacter,
-  Position, sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
+  Action, Actions, cos, DDEState, Effects, floor, hypot, Input,
+  Item, ItemEntity, min, Networked, playerForCharacter, Position,
+  sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
 
@@ -28,12 +29,18 @@ export const LaserMesh = (): LaserMesh => {
 
 export const LaserItem = () => {
 
-  const laser = LaserMesh()
+  const mesh = LaserMesh()
 
   const item = ItemEntity({
     id: "Laser",
     components: {
       position: Position(),
+      effects: Effects(),
+      networked: Networked(),
+      item: Item({ name: "Laser", stackable: false }),
+      actions: Actions({
+        laser: Laser(mesh),
+      }),
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim }) => {
@@ -55,23 +62,17 @@ export const LaserItem = () => {
           },
         }
       }),
-      actions: Actions({
-        laser: Laser(laser),
-      }),
       three: Three({
         init: async (entity) => {
-          entity.components.three.o.push(laser)
+          entity.components.three.o.push(mesh)
         },
         onRender: (_, __, delta) => {
           const ratio = delta / 25
 
-          laser.material.opacity -= 0.05 * ratio
-          if (laser.material.opacity <= 0) laser.visible = false
+          mesh.material.opacity -= 0.05 * ratio
+          if (mesh.material.opacity <= 0) mesh.visible = false
         }
-      }),
-      effects: Effects(),
-      networked: Networked(),
-      item: Item({ name: "Laser", stackable: false })
+      })
     }
   })
   return item
