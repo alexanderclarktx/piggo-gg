@@ -49,7 +49,8 @@ export const HUDSystem = ClientSystemBuilder({
         top: `${height - 100}px`,
         fontSize: "24px",
         color: "#00ffff",
-        transform: "translate(-50%)"
+        transform: "translate(-50%)",
+        visibility: "hidden"
       }
     })
 
@@ -78,7 +79,7 @@ export const HUDSystem = ClientSystemBuilder({
 
     const items = HtmlItems(client)
 
-    three.append(items)
+    three.append(items.div)
 
     const active = "rgba(0, 160, 200, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
@@ -113,13 +114,15 @@ export const HUDSystem = ClientSystemBuilder({
           jumpButton.style.visibility = visibility
           jumpLabel.style.visibility = visibility
 
-          if (client.env === "dev" && world.debug) {
+          if (client.env !== "production" && world.debug) {
             posText.innerHTML = `<span style='color: #00ffff'>${x.toFixed(2)}</span><span style='color: #ffff00'> ${y.toFixed(2)}</span><span style='color: #ff33cc'> ${z.toFixed(2)}</span>`
             posText.style.visibility = "visible"
           } else {
             posText.style.visibility = "hidden"
           }
         }
+
+        items.update()
 
         const state = world.game.state as DDEState
         const pcApplesEaten = state.applesEaten[client.playerId() || ""] || 0

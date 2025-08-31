@@ -35,7 +35,7 @@ export const Bird = (player: Player): Character => {
     components: {
       position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
-      inventory: Inventory([ LaserItem ]),
+      // inventory: Inventory([ LaserItem ]),
       collider: Collider({
         shape: "ball",
         radius: 0.1
