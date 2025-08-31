@@ -37,6 +37,7 @@ export const LaserItem = () => {
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim }) => {
+            console.log("Laser pressed")
             if (hold) return null
             if (!character) return null
             if (!document.pointerLockElement && !world.client?.mobile) return null

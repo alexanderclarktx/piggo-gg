@@ -185,22 +185,22 @@ export const Bird = (player: Player): Character => {
             return { actionId: "place", params: { dir, pos } }
           },
 
-          "mb1": ({ hold, character, world, aim }) => {
-            if (hold) return null
-            if (!character) return null
-            if (!document.pointerLockElement && !world.client?.mobile) return null
+          // "mb1": ({ hold, character, world, aim }) => {
+          //   if (hold) return null
+          //   if (!character) return null
+          //   if (!document.pointerLockElement && !world.client?.mobile) return null
 
-            const targets: Target[] = world.characters()
-              .filter(c => c.id !== character.id)
-              .map(target => ({
-                ...target.components.position.xyz(),
-                id: target.id
-              }))
+          //   const targets: Target[] = world.characters()
+          //     .filter(c => c.id !== character.id)
+          //     .map(target => ({
+          //       ...target.components.position.xyz(),
+          //       id: target.id
+          //     }))
 
-            const pos = character.components.position.xyz()
+          //   const pos = character.components.position.xyz()
 
-            return { actionId: "laser", params: { pos, aim, targets } }
-          },
+          //   return { actionId: "laser", params: { pos, aim, targets } }
+          // },
 
           // transform
           "e": ({ hold }) => {

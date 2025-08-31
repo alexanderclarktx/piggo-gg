@@ -288,10 +288,12 @@ export const InputSystem = ClientSystemBuilder({
       const activeItem = inventory?.activeItem(world)
       if (activeItem) {
         ["mb1", "mb2"].forEach((keyPress) => {
+          console.log("have active item", activeItem.id)
 
           const keyMouse = buffer.get(keyPress)
 
           if (keyMouse && activeItem.components.actions.actionMap[keyPress]) {
+            console.log("press for active item", keyPress, activeItem.id)
             const invocation: InvokedAction = {
               actionId: keyPress,
               playerId: world.client?.playerId(),
