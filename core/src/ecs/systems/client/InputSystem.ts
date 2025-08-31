@@ -287,30 +287,24 @@ export const InputSystem = ClientSystemBuilder({
       // handle character inventory
       const activeItem = inventory?.activeItem(world)
       if (activeItem) {
-        ["mb1", "mb2"].forEach((keyPress) => {
-          console.log("have active item", activeItem.id)
-
+        for (const keyPress of ["mb1", "mb2"]) {
           const keyMouse = buffer.get(keyPress)
 
-          if (keyMouse && activeItem.components.actions.actionMap[keyPress]) {
-            console.log("press for active item", keyPress, activeItem.id)
-            const invocation: InvokedAction = {
-              actionId: keyPress,
-              playerId: world.client?.playerId(),
-              entityId: activeItem.id,
-              params: {
-                mouse: { ...mouse },
-                entity: activeItem.id,
-                tick: keyMouse.tick,
-                character: character.id,
-                hold: keyMouse.hold
-              }
-            }
+          if (keyMouse && activeItem.components.input?.inputMap.press[keyPress]) {
+            const invocation = activeItem.components.input?.inputMap.press[keyPress]?.({
+              aim: localAim(),
+              character,
+              entity: activeItem,
+              hold: keyMouse.hold,
+              mouse: { ...mouse },
+              tick: keyMouse.tick,
+              world
+            })
             if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
               world.actions.push(world.tick + 1, activeItem.id, invocation)
             }
           }
-        })
+        }
       }
     }
 
