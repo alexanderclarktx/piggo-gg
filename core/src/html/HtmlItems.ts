@@ -13,8 +13,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
     visibility: "hidden",
     border: "3px solid white",
     outline: "2px solid black",
-    display: "flex",
-    // justifyContent: "space-between",
+    display: "flex"
   })
 
   for (let i = 0; i < 7; i++) {
