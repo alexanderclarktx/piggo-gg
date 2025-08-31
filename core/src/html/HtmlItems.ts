@@ -74,7 +74,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
 const cell = () => HtmlDiv({
   width: "53px",
   height: "50px",
-  backgroundColor: "rgba(0, 0, 0, 0.2)",
+  backgroundColor: "rgba(0, 0, 0, 0.3)",
   border: "2px solid white",
   position: "relative",
   borderRadius: "0px"
