@@ -56,7 +56,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
         const item = items[i]?.[0]
         if (!item) continue
 
-        const img = HtmlImg("pickaxe.png", {
+        const img = HtmlImg("revolver.png", {
           width: "46px",
           height: "46px",
           position: "relative",
