@@ -25,9 +25,10 @@ export const Crosshair = () => {
           const settings = world.settings<DDESettings>()
           if (!world.client || !world.three) return
 
-          const locked = world.client.mobile ? world.three.mobileLock : document.pointerLockElement
+          const pointerLocked = world.client.mobile ? world.three.mobileLock : document.pointerLockElement
+          const holdingItem = Boolean(world.client?.playerCharacter()?.components.inventory?.activeItem(world))
 
-          div.style.visibility = (locked && settings.showCrosshair) ? "visible" : "hidden"
+          div.style.visibility = (pointerLocked && holdingItem && settings.showCrosshair) ? "visible" : "hidden"
 
           if (!init) {
             init = true
