@@ -55,6 +55,8 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
       if (activeItemIndex !== activeItem) {
         updated = true
         activeItem = activeItemIndex
+
+        // active.style.left = `${57 * activeItem}px`
       }
 
       if (!updated) return
@@ -90,11 +92,9 @@ const cell = () => HtmlDiv({
 })
 
 const activeCell = () => HtmlDiv({
-  width: "53px",
+  width: "52px",
   height: "50px",
-  // backgroundColor: "rgba(0, 0, 0, 0.5)",
   border: "2px solid gold",
   outline: "1px solid black",
-  position: "absolute",
-  // borderRadius: "0px"
+  position: "absolute"
 })
