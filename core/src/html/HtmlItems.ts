@@ -33,7 +33,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
 
       const { items } = pc.components.inventory.data
 
-      
+      console.log(items)
     }
   }
 }
