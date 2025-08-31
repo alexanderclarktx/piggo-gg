@@ -11,7 +11,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
     left: "50%",
     transform: "translate(-50%)",
     visibility: "hidden",
-    outline: "4px solid black"
+    outline: "3px solid black"
   })
 
   return {
