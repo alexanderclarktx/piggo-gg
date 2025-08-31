@@ -96,7 +96,8 @@ const activeCell = () => HtmlDiv({
   height: "48px",
   left: "-3px",
   top: "-2px",
-  border: "5px solid rgb(0, 200, 250)",
+  // border: "5px solid rgb(0, 200, 250)",
+  border: "5px solid rgb(250, 200, 100)",
   outline: "2px solid black",
   position: "absolute"
 })
