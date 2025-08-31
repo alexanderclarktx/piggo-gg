@@ -1,6 +1,6 @@
 import {
-  Action, Actions, cos, DDEState, Effects, floor, hypot, Item, ItemEntity, min, Networked, playerForCharacter,
-  Position, sin, sqrt, XY, XYZ, XYZdistance, XYZdot, XYZsub
+  Action, Actions, cos, DDEState, Effects, floor, hypot, Input, Item, ItemEntity, min, Networked, playerForCharacter,
+  Position, sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
 
@@ -26,16 +26,55 @@ export const LaserMesh = (): LaserMesh => {
   return mesh
 }
 
-export const LaserItem = () => ItemEntity({
-  id: "Laser",
-  components: {
-    position: Position(),
-    actions: Actions(),
-    effects: Effects(),
-    networked: Networked(),
-    item: Item({ name: "Laser", stackable: false })
-  }
-})
+export const LaserItem = () => {
+
+  const laser = LaserMesh()
+
+  const item = ItemEntity({
+    id: "Laser",
+    components: {
+      position: Position(),
+      input: Input({
+        press: {
+          "mb1": ({ hold, character, world, aim }) => {
+            if (hold) return null
+            if (!character) return null
+            if (!document.pointerLockElement && !world.client?.mobile) return null
+
+            const targets: Target[] = world.characters()
+              .filter(c => c.id !== character.id)
+              .map(target => ({
+                ...target.components.position.xyz(),
+                id: target.id
+              }))
+
+            const pos = character.components.position.xyz()
+
+            return { actionId: "laser", params: { pos, aim, targets } }
+          },
+        }
+      }),
+      actions: Actions({
+        laser: Laser(laser),
+      }),
+      three: Three({
+        init: async (entity) => {
+          entity.components.three.o.push(laser)
+        },
+        onRender: (_, __, delta) => {
+          const ratio = delta / 25
+
+          laser.material.opacity -= 0.05 * ratio
+          if (laser.material.opacity <= 0) laser.visible = false
+        }
+      }),
+      effects: Effects(),
+      networked: Networked(),
+      item: Item({ name: "Laser", stackable: false })
+    }
+  })
+  return item
+}
 
 export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
   if (!entity) return

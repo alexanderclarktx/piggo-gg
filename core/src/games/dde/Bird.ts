@@ -28,8 +28,6 @@ export const Bird = (player: Player): Character => {
   let duckMixer: AnimationMixer | undefined
   let eagleMixer: AnimationMixer | undefined
 
-  const laser = LaserMesh()
-
   const bird = Character({
     id: `bird-${player.id}`,
     components: {
@@ -83,13 +81,8 @@ export const Bird = (player: Player): Character => {
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
             duckMixer?.update(speed * ratio * 0.03 + 0.01)
           }
-
-          laser.material.opacity -= 0.05 * ratio
-          if (laser.material.opacity <= 0) laser.visible = false
         },
         init: async (entity, _, three) => {
-          entity.components.three.o.push(laser)
-
           three.gLoader.load("ugly-duckling.glb", (gltf) => {
             duck = gltf.scene
             duck.animations = gltf.animations
@@ -264,7 +257,7 @@ export const Bird = (player: Player): Character => {
 
           position.data.flying = !position.data.flying
         }),
-        laser: Laser(laser),
+        // laser: Laser(laser),
         place: Place,
         setActiveItemIndex,
         jump: Action("jump", ({ entity, world, params }) => {
