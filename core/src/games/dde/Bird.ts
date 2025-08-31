@@ -239,7 +239,6 @@ export const Bird = (player: Player): Character => {
 
           position.data.flying = !position.data.flying
         }),
-        // laser: Laser(laser),
         place: Place,
         setActiveItemIndex,
         jump: Action("jump", ({ entity, world, params }) => {
