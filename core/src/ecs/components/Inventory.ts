@@ -107,7 +107,7 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
   init: (world) => ({
     id: "InventorySystem",
-    query: ["position", "input", "actions", "renderable", "inventory", "team", "collider"],
+    query: ["position", "input", "actions", "inventory", "team", "collider"],
     priority: 5,
     onTick: (entities: Entity<Position | Collider | Input | Actions | Renderable | Inventory | Team>[]) => {
       entities.forEach(entity => {
