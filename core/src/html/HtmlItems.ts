@@ -5,14 +5,21 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
   let lastSeenItems: string[] = []
 
   const div = HtmlDiv({
-    width: "400px",
-    height: "50px",
+    width: "398px",
+    height: "54px",
     bottom: "50px",
     left: "50%",
     transform: "translate(-50%)",
     visibility: "hidden",
-    outline: "3px solid black"
+    border: "3px solid white",
+    outline: "2px solid black",
+    display: "flex",
+    // justifyContent: "space-between",
   })
+
+  for (let i = 0; i < 7; i++) {
+    div.appendChild(cell(i))
+  }
 
   return {
     div,
@@ -31,3 +38,14 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
     }
   }
 }
+
+const cell = (i: number) => HtmlDiv({
+  width: "53px",
+  height: "50px",
+  backgroundColor: "rgba(255, 255, 255, 0.1)",
+  border: "2px solid white",
+  display: "inline-block",
+  position: "relative",
+  borderRadius: "0px"
+  // left: `${i * 50}px`
+})
