@@ -39,7 +39,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
   }
 }
 
-const cell = (i: number) => HtmlDiv({
+const cell = () => HtmlDiv({
   width: "53px",
   height: "50px",
   backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -47,5 +47,4 @@ const cell = (i: number) => HtmlDiv({
   display: "inline-block",
   position: "relative",
   borderRadius: "0px"
-  // left: `${i * 50}px`
 })
