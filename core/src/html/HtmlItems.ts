@@ -5,7 +5,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
   let lastSeenItems: (string | undefined)[] = []
 
   const cells: HTMLDivElement[] = []
-  let activeItemIndex = 0
+  let activeItem = 0
 
   const div = HtmlDiv({
     width: "398px",
@@ -36,7 +36,7 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
       }
       div.style.visibility = "visible"
 
-      const { items } = pc.components.inventory.data
+      const { items, activeItemIndex } = pc.components.inventory.data
 
       let updated = false
 
@@ -47,6 +47,11 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
           lastSeenItems[i] = item
           updated = true
         }
+      }
+
+      if (activeItemIndex !== activeItem) {
+        updated = true
+        activeItem = activeItemIndex
       }
 
       if (!updated) return
