@@ -20,7 +20,7 @@ export type Inventory = Component<"inventory", {
 export const Inventory = (itemBuilders: ItemBuilder[] = []): Inventory => {
   const inventory: Inventory = {
     data: {
-      activeItemIndex: 1,
+      activeItemIndex: 0,
       items: [undefined, undefined, undefined, undefined, undefined]
     },
     type: "inventory",
