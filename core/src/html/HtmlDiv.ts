@@ -6,7 +6,8 @@ const defaults: CSS = {
   scrollbarWidth: "none",
   msOverflowStyle: "none",
   outline: "none",
-  touchAction: "none"
+  touchAction: "none",
+  borderRadius: "8px"
 }
 
 export type HtmlDiv = HTMLDivElement

@@ -10,8 +10,7 @@ export const D3Profile = (): Entity => {
     minWidth: "165px",
     height: "46px",
     left: "10px",
-    top: "10px",
-    borderRadius: "10px"
+    top: "10px"
   })
 
   const name = HtmlText({

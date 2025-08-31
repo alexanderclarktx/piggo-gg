@@ -14,5 +14,6 @@ export const HtmlImg = (src: string, style: CSS): HtmlImg => {
 
 const defaults: CSS = {
   position: "absolute",
-  pointerEvents: "none"
+  pointerEvents: "none",
+  borderRadius: "10px"
 }

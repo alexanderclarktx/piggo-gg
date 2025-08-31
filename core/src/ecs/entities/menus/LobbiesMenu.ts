@@ -13,7 +13,6 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     pointerEvents: "auto",
-    borderRadius: "10px",
     position: "relative",
     display: "flex",
     flexDirection: "column"
@@ -26,7 +25,6 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     top: "10px",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
     border: "2px solid #bbbbbb",
-    borderRadius: "10px",
     overflow: "scroll",
     transform: "translate(-50%)",
     display: "flex",

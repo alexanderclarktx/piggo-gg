@@ -139,6 +139,5 @@ const Art = () => HtmlImg("dde-256.jpg", {
   width: "170px",
   transform: "translate(-50%)",
   border: "2px solid #eeeeee",
-  borderRadius: "10px",
   position: "relative"
 })
