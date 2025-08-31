@@ -1,6 +1,7 @@
 import {
-  Action, cos, DDEState, floor, hypot, min, playerForCharacter,
-  Position, sin, sqrt, XY, XYZ, XYZdistance, XYZdot, XYZsub
+  Action, Actions, cos, DDEState, Effects, floor, hypot, Input,
+  Item, ItemEntity, min, Networked, playerForCharacter, Position,
+  sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
 
@@ -24,6 +25,57 @@ export const LaserMesh = (): LaserMesh => {
   mesh.scale.y = 14
 
   return mesh
+}
+
+export const LaserItem = () => {
+
+  const mesh = LaserMesh()
+
+  const item = ItemEntity({
+    id: "Laser",
+    components: {
+      position: Position(),
+      effects: Effects(),
+      networked: Networked(),
+      item: Item({ name: "Laser", stackable: false }),
+      actions: Actions({
+        laser: Laser(mesh),
+      }),
+      input: Input({
+        press: {
+          "mb1": ({ hold, character, world, aim }) => {
+            console.log("Laser pressed")
+            if (hold) return null
+            if (!character) return null
+            if (!document.pointerLockElement && !world.client?.mobile) return null
+
+            const targets: Target[] = world.characters()
+              .filter(c => c.id !== character.id)
+              .map(target => ({
+                ...target.components.position.xyz(),
+                id: target.id
+              }))
+
+            const pos = character.components.position.xyz()
+
+            return { actionId: "laser", params: { pos, aim, targets } }
+          },
+        }
+      }),
+      three: Three({
+        init: async (entity) => {
+          entity.components.three.o.push(mesh)
+        },
+        onRender: (_, __, delta) => {
+          const ratio = delta / 25
+
+          mesh.material.opacity -= 0.05 * ratio
+          if (mesh.material.opacity <= 0) mesh.visible = false
+        }
+      })
+    }
+  })
+  return item
 }
 
 export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
@@ -104,7 +156,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
     }
   }
 
-  // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
+  // if (world.client && entity.id !== world.client.character()?.id) return
   // if (world.client) return
 
   const targets = params.targets as Target[]

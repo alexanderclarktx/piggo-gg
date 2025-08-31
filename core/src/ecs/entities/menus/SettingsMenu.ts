@@ -6,7 +6,6 @@ import {
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
     backgroundColor: "rgba(0, 0, 0, 0.4)",
-    borderRadius: "10px",
     display: "flex",
     flex: "1 1 auto",
     flexDirection: "column",

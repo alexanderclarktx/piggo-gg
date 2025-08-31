@@ -92,7 +92,7 @@ export const Ball = () => Entity({
       rotates: true,
       onTick: ({ entity: ball, world }) => {
         const { position: ballPos } = ball.components
-        const { position, actions } = world.client?.playerCharacter()?.components ?? {}
+        const { position, actions } = world.client?.character()?.components ?? {}
         if (!position || !actions) return
 
         const far = XYZdiff(position.data, ballPos.data, range)

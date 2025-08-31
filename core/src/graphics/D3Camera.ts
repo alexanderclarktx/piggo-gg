@@ -51,7 +51,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
       onRender: (_, delta) => {
         if (!world.three || !world.client) return
 
-        const pc = world.client.playerCharacter()
+        const pc = world.client.character()
         if (!pc) return
 
         const { position } = pc.components

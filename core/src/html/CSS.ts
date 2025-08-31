@@ -18,6 +18,7 @@ export type CSS = Partial<{
   fontSize: `${number}px`
   fontWeight: "normal" | "bold" | "bolder" | "lighter"
   height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
+  imageRendering: "auto" | "crisp-edges" | "pixelated"
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
   left: `${number}%` | `${number}px` | `${number}dvh`
   lineHeight: `${number}px`
@@ -31,7 +32,8 @@ export type CSS = Partial<{
   minHeight: `${number}px` | `${number}%` | `${number}dvh` | 0
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
-  outline: "none"
+  outline: "none" | `${number}px solid ${string}`
+  outlineOffset: `${number}px`
   overflow: "visible" | "hidden" | "scroll" | "auto"
   overflowY: "visible" | "hidden" | "scroll" | "auto"
   padding: `${number}px` | `${number}%`,

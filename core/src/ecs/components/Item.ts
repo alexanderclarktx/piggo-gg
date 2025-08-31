@@ -1,11 +1,10 @@
 import {
   Actions, Component, Effects, Entity, Networked, Position,
-  ProtoEntity, Renderable, SystemBuilder, XY, abs, hypot, min, pickupItem, round
+  ProtoEntity, SystemBuilder, XY, abs, hypot, min, pickupItem, round
 } from "@piggo-gg/core"
 
 export type Item = Component<"item"> & {
   name: string
-  flips: boolean
   dropped: boolean
   equipped: boolean
   stackable: boolean
@@ -27,45 +26,33 @@ export type ItemProps = {
   stackable?: boolean
 }
 
-export const Item = ({ name, flips, dropped, equipped, stackable }: ItemProps): Item => ({
+export const Item = ({ name, dropped, equipped, stackable }: ItemProps): Item => ({
   name,
   type: "item",
-  flips: flips ?? false,
   dropped: dropped ?? false,
   equipped: equipped ?? false,
   stackable: stackable ?? false
 })
 
-export type ItemComponents = Position | Actions | Effects | Renderable | Item
+export type ItemComponents = Position | Actions | Effects | Item | Networked
 export type ItemEntity = Entity<ItemComponents>
 
 // override some components
 export const ItemEntity = (entity: ProtoEntity<ItemComponents>): ItemEntity => {
-
-  const { renderable, actions } = entity.components
-
-  actions.actionMap.pickupItem = pickupItem
-
-  entity.components.networked = Networked()
-  // entity.components.clickable = {
-  //   ...clickable,
-  //   click: () => ({ actionId: "pickupItem" }),
-  //   hoverOver: () => renderable.setOutline({ color: 0xffffff, thickness: 2 }),
-  //   hoverOut: () => renderable.setOutline({ color: 0x000000, thickness: 1 })
-  // }
+  entity.components.actions.actionMap.pickupItem = pickupItem
 
   return Entity(entity)
 }
 
 export const ItemSystem = SystemBuilder({
   id: "ItemSystem",
-  init: (world) => ({
+  init: () => ({
     id: "ItemSystem",
     query: ["item", "renderable", "position"],
     priority: 5,
-    onTick: (entities: Entity<Item | Renderable | Position>[]) => {
+    onTick: (entities: Entity<Item | Position>[]) => {
       for (const entity of entities) {
-        const { position, renderable, item } = entity.components
+        const { position, item } = entity.components
         const { pointingDelta, rotation, follows } = position.data
 
         if (!follows) continue
@@ -82,10 +69,6 @@ export const ItemSystem = SystemBuilder({
             x: round(hyp_x * min(20, abs(pointingDelta.x)), 2),
             y: round(hyp_y * min(20, abs(pointingDelta.y)) - 7, 2)
           }
-
-          const xScale = !item.flips ? 1 : pointingDelta.x > 0 ? 1 : -1
-
-          renderable.setScale({ x: xScale, y: 1 })
         }
       }
     }

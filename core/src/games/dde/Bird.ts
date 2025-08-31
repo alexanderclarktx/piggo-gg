@@ -1,7 +1,7 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, hypot, Input,
-  Laser, LaserMesh, max, Networked, PI, Place, Player, Point, Position,
-  Ready, round, sqrt, Target, Team, Three, World, XY, XYZ, XZ
+  abs, Action, Actions, Character, Collider, cos, hypot, Input, Inventory,
+  LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
+  round, setActiveItemIndex, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -27,13 +27,12 @@ export const Bird = (player: Player): Character => {
   let duckMixer: AnimationMixer | undefined
   let eagleMixer: AnimationMixer | undefined
 
-  const laser = LaserMesh()
-
   const bird = Character({
     id: `bird-${player.id}`,
     components: {
       position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
+      inventory: Inventory([LaserItem]),
       collider: Collider({
         shape: "ball",
         radius: 0.1
@@ -81,14 +80,9 @@ export const Bird = (player: Player): Character => {
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
             duckMixer?.update(speed * ratio * 0.03 + 0.01)
           }
-
-          laser.material.opacity -= 0.05 * ratio
-          if (laser.material.opacity <= 0) laser.visible = false
         },
-        init: async (entity, world) => {
-          entity.components.three.o.push(laser)
-
-          world.three!.gLoader.load("ugly-duckling.glb", (gltf) => {
+        init: async (entity, _, three) => {
+          three.gLoader.load("ugly-duckling.glb", (gltf) => {
             duck = gltf.scene
             duck.animations = gltf.animations
             duck.frustumCulled = false
@@ -107,7 +101,7 @@ export const Bird = (player: Player): Character => {
             entity.components.three.o.push(duck)
           })
 
-          world.three!.gLoader.load("eagle.glb", (gltf) => {
+          three.gLoader.load("eagle.glb", (gltf) => {
             eagle = gltf.scene
             eagle.animations = gltf.animations
             eagle.scale.set(0.05, 0.05, 0.05)
@@ -166,6 +160,14 @@ export const Bird = (player: Player): Character => {
           }
         },
         press: {
+          "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
+          "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
+          "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
+          "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
+          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
+          "6": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
+          "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
+
           "r": ({ hold }) => {
             if (hold) return null
             return { actionId: "ready" }
@@ -180,23 +182,6 @@ export const Bird = (player: Player): Character => {
             const pos = character.components.position.xyz()
 
             return { actionId: "place", params: { dir, pos } }
-          },
-
-          "mb1": ({ hold, character, world, aim }) => {
-            if (hold) return null
-            if (!character) return null
-            if (!document.pointerLockElement && !world.client?.mobile) return null
-
-            const targets: Target[] = world.characters()
-              .filter(c => c.id !== character.id)
-              .map(target => ({
-                ...target.components.position.xyz(),
-                id: target.id
-              }))
-
-            const pos = character.components.position.xyz()
-
-            return { actionId: "laser", params: { pos, aim, targets } }
           },
 
           // transform
@@ -254,8 +239,8 @@ export const Bird = (player: Player): Character => {
 
           position.data.flying = !position.data.flying
         }),
-        laser: Laser(laser),
         place: Place,
+        setActiveItemIndex,
         jump: Action("jump", ({ entity, world, params }) => {
           if (!entity) return
 
@@ -300,7 +285,7 @@ export const Bird = (player: Player): Character => {
 
           position.impulse({ x: params.dir.x * params.power * factor, y: params.dir.y * params.power * factor })
         }),
-        move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }> ("move", ({ entity, params, world }) => {
+        move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }>("move", ({ entity, params, world }) => {
           if (!params.up || !params.dir) return
 
           const state = world.state<DDEState>()

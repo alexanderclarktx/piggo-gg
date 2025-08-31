@@ -1,16 +1,18 @@
-import { ClientSystemBuilder, Component, Entity, Position, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, Component, D3Renderer, Entity, Position, World } from "@piggo-gg/core"
 import { Object3D } from "three"
+
+type ThreeInit = (entity: Entity<Three | Position>, world: World, three: D3Renderer) => Promise<void>
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
   o: Object3D[]
-  init: undefined | ((entity: Entity<Three | Position>, world: World) => Promise<void>)
+  init: undefined | ThreeInit
   onRender: undefined | ((entity: Entity<Three | Position>, world: World, delta: number) => void)
   cleanup: (world: World) => void
 }
 
 export type ThreeProps = {
-  init?: (entity: Entity<Three | Position>, world: World) => Promise<void>
+  init?: ThreeInit
   onRender?: (entity: Entity<Three | Position>, world: World, delta: number) => void
 }
 
@@ -41,6 +43,8 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
       priority: 11,
       query: ["position", "three"],
       onTick: (entities: Entity<Three | Position>[]) => {
+        if (!world.three) return
+
         for (const entity of entities) {
           const { three } = entity.components
 
@@ -49,7 +53,7 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
               world.three?.scene.remove(...three.o)
               rendered[entity.id] = []
             }
-            three.init(entity, world)
+            three.init(entity, world, world.three)
             three.initialized = true
             continue
           }

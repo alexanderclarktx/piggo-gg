@@ -59,7 +59,7 @@ export type Client = {
   ws: WebSocket
   playerId: () => string
   playerName: () => string
-  playerCharacter: () => Character | undefined
+  character: () => Character | undefined
   copyInviteLink: () => void
   lobbyCreate: (callback: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
@@ -128,7 +128,7 @@ export const Client = ({ world }: ClientProps): Client => {
         client.controls.localAim.x = round(client.controls.localAim.x - x, 3)
         client.controls.localAim.y = round(client.controls.localAim.y - y, 3)
 
-        const flying = client.playerCharacter()?.components.position.data.flying ?? false
+        const flying = client.character()?.components.position.data.flying ?? false
 
         const limit = flying ? 1.1 : 3.14
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
@@ -153,7 +153,7 @@ export const Client = ({ world }: ClientProps): Client => {
     playerName: () => {
       return client.player.components.pc.data.name
     },
-    playerCharacter: () => {
+    character: () => {
       return client.player.components.controlling.getCharacter(world)
     },
     copyInviteLink: () => {

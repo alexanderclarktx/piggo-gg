@@ -26,13 +26,13 @@ export const Crosshair = () => {
           if (!world.client || !world.three) return
 
           const locked = world.client.mobile ? world.three.mobileLock : document.pointerLockElement
+          const item = world.client?.character()?.components.inventory?.activeItem(world)
 
-          div.style.visibility = (locked && settings.showCrosshair) ? "visible" : "hidden"
+          div.style.visibility = (locked && item && settings.showCrosshair) ? "visible" : "hidden"
 
           if (!init) {
-            init = true
-
             world.three?.append(div)
+            init = true
           }
         }
       })

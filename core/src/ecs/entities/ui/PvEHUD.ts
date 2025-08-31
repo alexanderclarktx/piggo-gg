@@ -41,7 +41,7 @@ export const PvEHUD = (): Entity => {
           renderable.c.addChild(...squares)
         },
         onTick: async ({ container, world }) => {
-          const playerCharacter = world.client?.playerCharacter()
+          const playerCharacter = world.client?.character()
           if (!playerCharacter) return
 
           const { inventory } = playerCharacter.components
@@ -74,7 +74,7 @@ export const PvEHUD = (): Entity => {
                 const slotSprite = new AnimatedSprite([textures["0"]])
 
                 slotSprite.position.set(start + (width / 2) + i * (width + 10), height / 2)
-                slotSprite.scale.set(2 * item.components.renderable.scale)
+                slotSprite.scale.set(2 * item.components.renderable!.scale)
                 slotSprite.anchor.set(0.5)
 
                 container.addChild(slotSprite)
@@ -88,13 +88,13 @@ export const PvEHUD = (): Entity => {
 
                 if (count) slotSprite.addChild(count)
               } else {
-                const graphic = item.components.renderable.c as Graphics
+                const graphic = item.components.renderable!.c as Graphics
                 if (!graphic.clone) return
 
                 const clone = graphic.clone()
 
                 clone.position.set(start + (width / 2) + i * (width + 10), height / 2)
-                clone.scale.set(3 * item.components.renderable.scale)
+                clone.scale.set(3 * item.components.renderable!.scale)
 
                 container.addChild(clone)
 

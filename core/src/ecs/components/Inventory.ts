@@ -107,8 +107,8 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
   id: "InventorySystem",
   init: (world) => ({
     id: "InventorySystem",
-    query: ["position", "input", "actions", "renderable", "inventory", "team", "collider"],
-    priority: 5, // todo
+    query: ["position", "input", "actions", "inventory", "team", "collider"],
+    priority: 5,
     onTick: (entities: Entity<Position | Collider | Input | Actions | Renderable | Inventory | Team>[]) => {
       entities.forEach(entity => {
         const { inventory } = entity.components
@@ -137,7 +137,7 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
                 inventory.data.items[index] = undefined
               }
             } else {
-              itemEntity.components.renderable.visible = false
+              // itemEntity.components.renderable.visible = false
               itemEntity.components.item.equipped = false
             }
           }
@@ -146,7 +146,7 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
         // update active item
         const activeItem = inventory.activeItem(world)
         if (activeItem) {
-          activeItem.components.renderable.visible = true
+          // activeItem.components.renderable.visible = true
           activeItem.components.item.equipped = true
         }
       })

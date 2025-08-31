@@ -54,7 +54,7 @@ export const InputSystem = ClientSystemBuilder({
       const key = event.button === 0 ? "mb1" : "mb2"
 
       if (key === "mb1") {
-        const pc = world.client?.playerCharacter()
+        const pc = world.client?.character()
         if (pc) {
           pc.components.input.inputMap.release[key]?.({
             // @ts-expect-error
@@ -82,7 +82,7 @@ export const InputSystem = ClientSystemBuilder({
         if (!down) return
 
         if (key === "escape") {
-          const pc = world.client?.playerCharacter()
+          const pc = world.client?.character()
           if (pc) {
             pc.components.input.inputMap.release[key]?.({
               mouse, aim: localAim(), entity: pc, world, tick: world.tick, hold: down.hold
@@ -287,28 +287,24 @@ export const InputSystem = ClientSystemBuilder({
       // handle character inventory
       const activeItem = inventory?.activeItem(world)
       if (activeItem) {
-        ["mb1", "mb2"].forEach((keyPress) => {
-
+        for (const keyPress of ["mb1", "mb2"]) {
           const keyMouse = buffer.get(keyPress)
 
-          if (keyMouse && activeItem.components.actions.actionMap[keyPress]) {
-            const invocation: InvokedAction = {
-              actionId: keyPress,
-              playerId: world.client?.playerId(),
-              entityId: activeItem.id,
-              params: {
-                mouse: { ...mouse },
-                entity: activeItem.id,
-                tick: keyMouse.tick,
-                character: character.id,
-                hold: keyMouse.hold
-              }
-            }
+          if (keyMouse && activeItem.components.input?.inputMap.press[keyPress]) {
+            const invocation = activeItem.components.input?.inputMap.press[keyPress]?.({
+              aim: localAim(),
+              character,
+              entity: activeItem,
+              hold: keyMouse.hold,
+              mouse: { ...mouse },
+              tick: keyMouse.tick,
+              world
+            })
             if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
               world.actions.push(world.tick + 1, activeItem.id, invocation)
             }
           }
-        })
+        }
       }
     }
 
@@ -410,7 +406,7 @@ export const InputSystem = ClientSystemBuilder({
         }
 
         // handle character input
-        const character = world.client?.playerCharacter()
+        const character = world.client?.character()
         if (character && !world.client?.busy) handleInputForCharacter(character, world)
 
         // handle buffered backspace
