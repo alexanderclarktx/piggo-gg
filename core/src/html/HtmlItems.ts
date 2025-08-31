@@ -53,19 +53,19 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
       }
 
       if (activeItemIndex !== activeItem) {
-        updated = true
         activeItem = activeItemIndex
-
-        // active.style.left = `${56 * activeItem}px`
+        active.style.left = `${57 * activeItem}px`
       }
 
       if (!updated) return
 
-      console.log("updating items", items)
+      console.log("updating items")
 
       for (let i = 0; i < items.length; i++) {
         const item = items[i]?.[0]
         if (!item) continue
+
+        cells[i].innerHTML = ""
 
         const img = HtmlImg("revolver.png", {
           width: "46px",

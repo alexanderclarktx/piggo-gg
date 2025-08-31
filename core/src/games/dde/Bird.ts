@@ -2,7 +2,7 @@ import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input,
   Inventory,
   Laser, LaserItem, LaserMesh, max, Networked, PI, Place, Player, Point,
-  Position, Ready, round, sqrt, Target, Team, Three, World, XYZ, XZ
+  Position, Ready, round, setActiveItemIndex, sqrt, Target, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { DDEState } from "./DDE"
@@ -168,6 +168,14 @@ export const Bird = (player: Player): Character => {
           }
         },
         press: {
+          "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
+          "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
+          "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
+          "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
+          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
+          "6": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
+          "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
+
           "r": ({ hold }) => {
             if (hold) return null
             return { actionId: "ready" }
@@ -258,6 +266,7 @@ export const Bird = (player: Player): Character => {
         }),
         laser: Laser(laser),
         place: Place,
+        setActiveItemIndex,
         jump: Action("jump", ({ entity, world, params }) => {
           if (!entity) return
 
