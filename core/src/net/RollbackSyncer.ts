@@ -6,7 +6,7 @@ import {
 const movementActions = ["move", "moveAnalog", "jump", "point"]
 
 const otherCharacter = (id: string, world: World) => {
-  return id.startsWith("bird") && id !== world.client?.playerCharacter()?.id
+  return id.startsWith("bird") && id !== world.client?.character()?.id
 }
 
 // TODO not generic across games

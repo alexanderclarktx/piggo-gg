@@ -223,7 +223,7 @@ export const BlockData = (): BlockData => {
 
       // // spawn item
       // if (blockType && world) {
-      //   const playerCharacter = world.client?.playerCharacter()
+      //   const playerCharacter = world.client?.character()
       //   if (playerCharacter) {
       //     const item = BlockItem(blockType)({ character: playerCharacter, id: randomHash() })
       //     const xy = intToXY(x, y)

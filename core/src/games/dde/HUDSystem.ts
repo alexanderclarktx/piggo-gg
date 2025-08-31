@@ -104,7 +104,7 @@ export const HUDSystem = ClientSystemBuilder({
           jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
         }
 
-        const pc = client.playerCharacter()
+        const pc = client.character()
         if (pc) {
           const { flying, x, y, z } = pc.components.position.data
 

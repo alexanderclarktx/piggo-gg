@@ -18,7 +18,7 @@ export const D3Nametag = (player: Player): D3Nametag => {
       const character = player.components.controlling.getCharacter(world)
       if (!character) return
 
-      const pc = world.client?.playerCharacter()
+      const pc = world.client?.character()
       if (pc) {
         if (pc.components.position.data.flying && !character.components.position.data.flying) {
           group.visible = false

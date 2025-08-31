@@ -156,7 +156,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
     }
   }
 
-  // if (world.client && entity.id !== world.client.playerCharacter()?.id) return
+  // if (world.client && entity.id !== world.client.character()?.id) return
   // if (world.client) return
 
   const targets = params.targets as Target[]

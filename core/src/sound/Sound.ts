@@ -132,7 +132,7 @@ export const Sound = (world: World): Sound => {
 
       // check distance
       if (threshold) {
-        const character = world.client?.playerCharacter()
+        const character = world.client?.character()
         if (character) {
           const distance = XYdistance(character.components.position.data, threshold.pos)
           if (distance > threshold.distance) return false

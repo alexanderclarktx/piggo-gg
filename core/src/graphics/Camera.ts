@@ -115,7 +115,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
       priority: 9,
       onTick: (entities: Entity<Renderable | Position>[]) => {
         // camera focus on player's character
-        const character = world.client?.playerCharacter()
+        const character = world.client?.character()
         if (character) renderer.camera.focus = character
 
         // cull far away entities

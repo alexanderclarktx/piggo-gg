@@ -18,7 +18,7 @@ export const DDEMobileUI = (world: World) => {
     },
     onClick: () => {
       world.actions.push(
-        world.tick + 2, world.client?.playerCharacter()?.id ?? "", { actionId: "transform" }
+        world.tick + 2, world.client?.character()?.id ?? "", { actionId: "transform" }
       )
       transformButton.style.backgroundColor = "rgba(255, 150, 150, 0.9)"
     },
@@ -39,7 +39,7 @@ export const DDEMobileUI = (world: World) => {
     },
     onClick: () => {
       world.actions.push(
-        world.tick + 2, world.client?.playerCharacter()?.id ?? "", { actionId: "jump" }
+        world.tick + 2, world.client?.character()?.id ?? "", { actionId: "jump" }
       )
       jumpButton.style.backgroundColor = "rgba(20, 255, 60, 0.8)"
     },

@@ -54,7 +54,7 @@ export const InputSystem = ClientSystemBuilder({
       const key = event.button === 0 ? "mb1" : "mb2"
 
       if (key === "mb1") {
-        const pc = world.client?.playerCharacter()
+        const pc = world.client?.character()
         if (pc) {
           pc.components.input.inputMap.release[key]?.({
             // @ts-expect-error
@@ -82,7 +82,7 @@ export const InputSystem = ClientSystemBuilder({
         if (!down) return
 
         if (key === "escape") {
-          const pc = world.client?.playerCharacter()
+          const pc = world.client?.character()
           if (pc) {
             pc.components.input.inputMap.release[key]?.({
               mouse, aim: localAim(), entity: pc, world, tick: world.tick, hold: down.hold
@@ -406,7 +406,7 @@ export const InputSystem = ClientSystemBuilder({
         }
 
         // handle character input
-        const character = world.client?.playerCharacter()
+        const character = world.client?.character()
         if (character && !world.client?.busy) handleInputForCharacter(character, world)
 
         // handle buffered backspace
