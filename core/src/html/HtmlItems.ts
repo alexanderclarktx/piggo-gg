@@ -2,9 +2,10 @@ import { Client, entries, HtmlDiv, HtmlImg, RefreshableDiv } from "@piggo-gg/cor
 
 export const HtmlItems = (client: Client): RefreshableDiv => {
 
-  let lastSeenItems: (string | undefined)[] = []
-
   const cells: HTMLDivElement[] = []
+  const active: HTMLDivElement = activeCell()
+
+  let lastSeenItems: (string | undefined)[] = []
   let activeItem = 0
 
   const div = HtmlDiv({
@@ -24,6 +25,8 @@ export const HtmlItems = (client: Client): RefreshableDiv => {
     cells.push(cellDiv)
     div.appendChild(cellDiv)
   }
+
+  div.appendChild(active)
 
   return {
     div,
@@ -84,4 +87,14 @@ const cell = () => HtmlDiv({
   border: "2px solid white",
   position: "relative",
   borderRadius: "0px"
+})
+
+const activeCell = () => HtmlDiv({
+  width: "53px",
+  height: "50px",
+  // backgroundColor: "rgba(0, 0, 0, 0.5)",
+  border: "2px solid gold",
+  outline: "1px solid black",
+  position: "absolute",
+  // borderRadius: "0px"
 })
