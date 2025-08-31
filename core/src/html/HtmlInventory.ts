@@ -15,7 +15,7 @@ export const HtmlInventory = (client: Client): RefreshableDiv => {
     left: "50%",
     transform: "translate(-50%)",
     visibility: "hidden",
-    border: "3px solid white",
+    border: "3px solid #eeeeee",
     outline: "2px solid black",
     display: "flex"
   })
@@ -86,7 +86,7 @@ const cell = () => HtmlDiv({
   width: "53px",
   height: "50px",
   backgroundColor: "rgba(0, 0, 0, 0.3)",
-  border: "2px solid white",
+  border: "2px solid #eeeeee",
   position: "relative",
   borderRadius: "0px"
 })
