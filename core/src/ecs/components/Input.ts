@@ -1,4 +1,4 @@
-import { Character, Component, Entity, InvokedAction, World, XY } from "@piggo-gg/core"
+import { Character, Client, Component, Entity, InvokedAction, World, XY } from "@piggo-gg/core"
 
 export type InputState = {
   mouse: XY
@@ -6,6 +6,7 @@ export type InputState = {
   tick?: number
   entity: Entity
   world: World
+  client: Client
   character?: Character
   hold: number
   target?: string
