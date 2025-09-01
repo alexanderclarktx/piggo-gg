@@ -1,6 +1,7 @@
 import { entries, HtmlButton, HtmlDiv, HtmlText, keys, RefreshableDiv, styleButton, World } from "@piggo-gg/core"
 
 export const LobbiesMenu = (world: World): RefreshableDiv => {
+  const client = world.client!
 
   let polled = -60
   let inLobby: string = ""
@@ -53,7 +54,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     onClick: () => {
       if (inLobby) return
 
-      world.client?.lobbyCreate(({ lobbyId }) => {
+      client.lobbyCreate(({ lobbyId }) => {
         inLobby = lobbyId
         polled = world.tick - 70
       })
@@ -72,7 +73,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     onClick: () => {
       if (!inLobby) return
 
-      world.client?.lobbyLeave()
+      client.lobbyLeave()
 
       polled = world.tick - 70
       inLobby = ""
@@ -88,12 +89,12 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     div: lobbies,
     update: () => {
 
-      styleButton(createLobby, Boolean(!inLobby && world.client?.net.connected), createLobby.matches(":hover"))
+      styleButton(createLobby, Boolean(!inLobby && client.net.connected), createLobby.matches(":hover"))
       styleButton(leaveLobby, Boolean(inLobby), leaveLobby.matches(":hover"))
 
       if (world.tick - 80 > polled) {
         polled = world.tick
-        world.client?.lobbyList((response) => {
+        client.lobbyList((response) => {
           lobbyList.innerHTML = ""
 
           for (const [id, meta] of entries(response.lobbies)) {
@@ -120,7 +121,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
                 button.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
               },
               onClick: () => {
-                world.client?.lobbyJoin(meta.id, () => {
+                client.lobbyJoin(meta.id, () => {
                   inLobby = meta.id
                   polled = world.tick - 70
                 })
