@@ -178,7 +178,7 @@ export const Bird = (player: Player): Character => {
             world.three?.pointerLock()
             return null
           },
-          "t": ({ world }) => {
+          "q": ({ world }) => {
             const { camera } = world.three!
             camera.mode = camera.mode === "first" ? "third" : "first"
             return null
