@@ -1,10 +1,11 @@
-import { ClientSystemBuilder, cos, sin, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, cos, sin, World, XYZdiff, XYZsub } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
   c: PerspectiveCamera
   mode: "first" | "third"
   updated: boolean
+  transition: number
   dir: (world: World) => Vector3
   // up: () => Vector3
   setFov: (fov: number) => void
@@ -19,6 +20,7 @@ export const D3Camera = (): D3Camera => {
     c: camera,
     mode: "third",
     updated: false,
+    transition: 100,
     dir: (world: World) => {
       if (!world.client) return new Vector3(0, 0, 0)
 
@@ -48,6 +50,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
       priority: 9,
       onRender: (entities, delta) => {
         if (!world.three || !world.client) return
+        const ratio = delta / 25
 
         const { camera } = world.three
 
@@ -62,9 +65,34 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         camera.updated = camera.mode !== lastMode
         lastMode = camera.mode
 
+        if (camera.updated) camera.transition = 0
+
+        if (camera.transition < 100) {
+          camera.transition += ratio * 5
+        }
+
+        const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.13 }
+
+        const thirdOffset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
+        const thirdPos = {
+          x: interpolated.x - thirdOffset.x, y: interpolated.y - thirdOffset.z, z: interpolated.z + 0.2 - thirdOffset.y
+        }
+
+        const diffPos = XYZsub(firstPos, thirdPos)
+
+        const transitionPos = {
+          x: thirdPos.x + diffPos.x * camera.transition / 100,
+          y: thirdPos.y + diffPos.y * camera.transition / 100,
+          z: thirdPos.z + diffPos.z * camera.transition / 100
+        }
+
         if (camera.mode === "first") {
-          camera.c.position.set(interpolated.x, interpolated.z + 0.13, interpolated.y)
-          camera.c.rotation.set(y, x, 0)
+          if (camera.transition < 100) {
+            camera.c.position.set(transitionPos.x, transitionPos.z, transitionPos.y)
+          } else {
+            camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
+          }
+            camera.c.rotation.set(y, x, 0)
         } else {
           const offset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
 
