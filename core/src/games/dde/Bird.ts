@@ -132,11 +132,9 @@ export const Bird = (player: Player): Character => {
         }
       }),
       input: Input({
-        joystick: ({ world }) => {
-          if (!world.client) return null
-
-          const { localAim } = world.client.controls
-          const { power, angle } = world.client.controls.left
+        joystick: ({ client }) => {
+          const { localAim } = client.controls
+          const { power, angle } = client.controls.left
 
           let dir = { x: Math.cos(angle), y: Math.sin(angle) }
 
@@ -148,8 +146,8 @@ export const Bird = (player: Player): Character => {
           return { actionId: "moveAnalog", params: { dir, power, angle } }
         },
         release: {
-          "escape": ({ world }) => {
-            if (!world.client?.mobile) world.three?.pointerLock()
+          "escape": ({ world, client }) => {
+            if (!client.mobile) world.three?.pointerLock()
             return null
           },
           "mb1": ({ world, target }) => {
@@ -256,7 +254,7 @@ export const Bird = (player: Player): Character => {
         }),
         place: Place,
         setActiveItemIndex,
-        jump: Action("jump", ({ entity, world, params }) => {
+        jump: Action("jump", ({ entity, world, params, client }) => {
           if (!entity) return
 
           const { position } = entity?.components ?? {}
@@ -277,9 +275,9 @@ export const Bird = (player: Player): Character => {
             position.setVelocity({ z: 0.05 })
           }
 
-          world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
+          client.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
         }),
-        moveAnalog: Action("moveAnalog", ({ entity, params, world }) => {
+        moveAnalog: Action("moveAnalog", ({ entity, params }) => {
           if (!params.dir.x || !params.dir.y || !params.power) return
 
           const { position } = entity?.components ?? {}

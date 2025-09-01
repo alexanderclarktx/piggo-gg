@@ -215,7 +215,7 @@ export const InputSystem = ClientSystemBuilder({
 
       // handle joystick input
       if ((client.controls.left.power ?? 0) > 0.01) {
-        const joystickAction = input.inputMap.joystick({ character, world })
+        const joystickAction = input.inputMap.joystick({ character, world, client })
         if (joystickAction) world.actions.push(world.tick + 1, character.id, joystickAction)
       }
 
