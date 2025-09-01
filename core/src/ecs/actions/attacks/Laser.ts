@@ -57,6 +57,11 @@ export const LaserItem = () => {
 
             const pos = character.components.position.xyz()
 
+            if (world.three!.camera.mode === "first") {
+              // aim.x *= 2
+              // aim.y *= 2
+            }
+
             return { actionId: "laser", params: { pos, aim, targets } }
           },
         }
@@ -91,21 +96,24 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   client.sound.play({ name: "laser1", threshold: { pos: params.pos, distance: 5 } })
 
+  const eyePos = { x: params.pos.x, y: params.pos.y, z: params.pos.z + 0.13 }
+  const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
+
   // find target from camera
-  const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
+  // const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
 
   // fixed distance along dir (for now)
   const target = new Vector3(
     -sin(params.aim.x), params.aim.y, -cos(params.aim.x)
-  ).normalize().multiplyScalar(10).add(camera)
+    
+  ).normalize().multiplyScalar(10).add(eyes)
 
-  const eyePos = { x: params.pos.x, y: params.pos.y, z: params.pos.z + 0.13 }
-  const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
   const dir = target.clone().sub(eyes).normalize()
 
   // update laser mesh
   const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
   mesh.position.copy(eyes.add(offset.multiplyScalar(.03)))
+  mesh.position.copy(eyes)
   mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
 
   mesh.updateMatrix()
