@@ -1,5 +1,6 @@
 import {
-  Action, Actions, cos, DDEState, Effects, floor, hypot, Input,
+  abs,
+  Action, Actions, Character, cos, DDEState, Effects, floor, hypot, Input,
   Item, ItemEntity, min, Networked, playerForCharacter, Position,
   sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
@@ -19,7 +20,7 @@ export const LaserMesh = (): LaserMesh => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
   geometry.translate(0, 0.5, 0)
 
-  const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true, side: 2 })
+  const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
 
   const mesh = new Mesh(geometry, material)
   mesh.scale.y = 14
@@ -27,12 +28,12 @@ export const LaserMesh = (): LaserMesh => {
   return mesh
 }
 
-export const LaserItem = () => {
+export const LaserItem = ({ character }: { character: Character }) => {
 
   const mesh = LaserMesh()
 
   const item = ItemEntity({
-    id: "Laser",
+    id: `Laser-${character.id}`,
     components: {
       position: Position(),
       effects: Effects(),
@@ -56,11 +57,6 @@ export const LaserItem = () => {
               }))
 
             const pos = character.components.position.xyz()
-
-            if (world.three!.camera.mode === "first") {
-              // aim.x *= 2
-              // aim.y *= 2
-            }
 
             return { actionId: "laser", params: { pos, aim, targets } }
           },
@@ -105,12 +101,19 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
     -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
   ).normalize().multiplyScalar(10).add(eyes)
 
-  const dir = target.clone().sub(eyes).normalize()
-
   // update laser mesh
-  const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
-  mesh.position.copy(eyes.add(offset.multiplyScalar(.03)))
-  mesh.position.copy(eyes)
+  let offsetScale = 0.03
+  if (player?.id === client.playerId()) {
+    if (world.three!.camera.mode === "first") offsetScale = 0.5
+  }
+
+  const offset = new Vector3(
+    -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
+  ).normalize().multiplyScalar(offsetScale)
+
+  mesh.position.copy(eyes.add(offset))
+
+  const dir = target.clone().sub(eyes).normalize()
   mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
 
   mesh.updateMatrix()

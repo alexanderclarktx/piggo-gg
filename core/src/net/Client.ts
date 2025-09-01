@@ -127,8 +127,6 @@ export const Client = ({ world }: ClientProps): Client => {
           y *= mouseSensitivity
         }
 
-        console.log(`localaim.y:${client.controls.localAim.y}`)
-
         client.controls.localAim.x = round(client.controls.localAim.x - x, 3)
         client.controls.localAim.y = round(client.controls.localAim.y - y, 3)
 
