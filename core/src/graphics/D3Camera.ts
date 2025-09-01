@@ -3,8 +3,8 @@ import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
   c: PerspectiveCamera
-  zoom: number
   mode: "first" | "third"
+  updated: boolean
   dir: (world: World) => Vector3
   // up: () => Vector3
   setFov: (fov: number) => void
@@ -17,8 +17,8 @@ export const D3Camera = (): D3Camera => {
 
   const d3Camera: D3Camera = {
     c: camera,
-    zoom: 0.6,
     mode: "third",
+    updated: false,
     dir: (world: World) => {
       if (!world.client) return new Vector3(0, 0, 0)
 
@@ -40,11 +40,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
   id: "D3CameraSystem",
   init: (world) => {
 
-    // window.addEventListener("wheel", (e) => {
-    //   e.preventDefault()
-    //   world.three!.camera.zoom += e.deltaY * 0.001
-    //   world.three!.camera.zoom = Math.min(Math.max(0.6, world.three!.camera.zoom), 0.9)
-    // })
+    let lastMode = "third"
 
     return {
       id: "D3CameraSystem",
@@ -62,23 +58,18 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         const interpolated = position.interpolate(world, delta)
         const { x, y } = world.client.controls.localAim
 
+        // mark if the camera mode has updated
+        camera.updated = camera.mode !== lastMode
+        lastMode = camera.mode
+
         if (camera.mode === "first") {
-          camera.c.position.set(
-            interpolated.x,
-            interpolated.z + 0.13,
-            interpolated.y
-          )
-
-          // rotate camera to the localaim
+          camera.c.position.set(interpolated.x, interpolated.z + 0.13, interpolated.y)
           camera.c.rotation.set(y, x, 0)
-
         } else {
-          const rotatedOffset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(camera.zoom)
+          const offset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
 
           camera.c.position.set(
-            interpolated.x - rotatedOffset.x,
-            interpolated.z + 0.2 - rotatedOffset.y,
-            interpolated.y - rotatedOffset.z
+            interpolated.x - offset.x, interpolated.z + 0.2 - offset.y, interpolated.y - offset.z
           )
 
           camera.c.lookAt(interpolated.x, interpolated.z + 0.2, interpolated.y)

@@ -81,9 +81,25 @@ export const Bird = (player: Player): Character => {
             duckMixer?.update(speed * ratio * 0.03 + 0.01)
           }
 
-          if (three.camera.mode === "first" && player.id === client.playerId()) {
-            // duck.visible = false
-            // eagle.visible = false
+          if (player.id === client.playerId() && three.camera.updated) {
+
+            const transparent = three.camera.mode === "first"
+            const opacity = transparent ? 0 : 1
+
+            duck.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.material.transparent = transparent
+                child.material.opacity = opacity
+              }
+            })
+
+            eagle.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.material.transparent = transparent
+                child.material.opacity = opacity
+                console.log("eagle child", transparent, opacity)
+              }
+            })
           }
         },
         init: async (entity, _, three) => {
