@@ -85,11 +85,6 @@ export const D3CameraSystem = () => ClientSystemBuilder({
             camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
           }
           camera.c.rotation.set(y, x, 0)
-          // camera.c.lookAt(
-          //   interpolated.x + offset.x * 0.01,
-          //   interpolated.z + 0.13 + (1 - percent) * 0.07 + offset.y * 0.01,
-          //   interpolated.y + offset.z * 0.01
-          // )
         } else {
           if (camera.transition < 100) {
             camera.c.position.set(
