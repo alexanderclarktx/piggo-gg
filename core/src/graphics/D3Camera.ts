@@ -12,7 +12,7 @@ export type D3Camera = {
 
 export const D3Camera = (): D3Camera => {
 
-  const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000)
+  const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000)
   camera.rotation.order = "YXZ"
 
   const d3Camera: D3Camera = {
