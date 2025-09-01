@@ -2,7 +2,9 @@ import {
   Action, Character, Hitbox, HitboxProps, KeyMouse, onHitFlat, TeamColors
 } from "@piggo-gg/core"
 
-export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot", ({ world, params, entity }) => {
+type ShootParams = KeyMouse & { id: number, character: string }
+
+export const Shoot = Action<ShootParams>("shoot", ({ world, params, entity, client }) => {
 
   if (!entity) return
 
@@ -46,7 +48,7 @@ export const Shoot = Action<KeyMouse & { id: number, character: string }>("shoot
     const bullet = Hitbox(bulletParams)
     world.addEntity(bullet)
 
-    world.client?.sound.play({ name: gun.data.name })
+    client.sound.play({ name: gun.data.name })
 
     // auto reload
     if (gun.data.clip === 0) {

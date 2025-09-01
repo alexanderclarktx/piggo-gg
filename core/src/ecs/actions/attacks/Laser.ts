@@ -43,10 +43,10 @@ export const LaserItem = () => {
       }),
       input: Input({
         press: {
-          "mb1": ({ hold, character, world, aim }) => {
+          "mb1": ({ hold, character, world, aim, client }) => {
             if (hold) return null
             if (!character) return null
-            if (!document.pointerLockElement && !world.client?.mobile) return null
+            if (!document.pointerLockElement && !client.mobile) return null
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
@@ -77,7 +77,7 @@ export const LaserItem = () => {
   return item
 }
 
-export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
+export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player, client }) => {
   if (!entity) return
 
   const state = world.state<DDEState>()
@@ -89,7 +89,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   state.lastShot[entity.id] = world.tick
 
-  world.client?.sound.play({ name: "laser1", threshold: { pos: params.pos, distance: 5 } })
+  client.sound.play({ name: "laser1", threshold: { pos: params.pos, distance: 5 } })
 
   // find target from camera
   const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
