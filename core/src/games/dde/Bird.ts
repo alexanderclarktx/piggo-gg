@@ -176,11 +176,6 @@ export const Bird = (player: Player): Character => {
             if (world.client?.mobile) return null
             world.three?.pointerLock()
             return null
-          },
-          "q": ({ world }) => {
-            const { camera } = world.three!
-            camera.mode = camera.mode === "first" ? "third" : "first"
-            return null
           }
         },
         press: {
@@ -210,6 +205,13 @@ export const Bird = (player: Player): Character => {
           "r": ({ hold }) => {
             if (hold) return null
             return { actionId: "ready" }
+          },
+
+          "q": ({ world, hold }) => {
+            if (hold) return null
+            const { camera } = world.three!
+            camera.mode = camera.mode === "first" ? "third" : "first"
+            return null
           },
 
           "mb2": ({ hold, world, character }) => {
