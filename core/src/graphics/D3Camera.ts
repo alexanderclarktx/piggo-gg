@@ -81,10 +81,12 @@ export const D3CameraSystem = () => ClientSystemBuilder({
               firstPos.z - diff.z * (1 - percent),
               firstPos.y - diff.y * (1 - percent)
             )
+            camera.c.lookAt(interpolated.x, interpolated.z + 0.13 + (1 - percent) * 0.07, interpolated.y)
           } else {
             camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
+            camera.c.rotation.set(y, x, 0)
           }
-          camera.c.rotation.set(y, x, 0)
+          // camera.c.rotation.set(y, x, 0)
         } else {
           if (camera.transition < 100) {
             camera.c.position.set(
@@ -95,8 +97,9 @@ export const D3CameraSystem = () => ClientSystemBuilder({
           } else {
             camera.c.position.set(thirdPos.x, thirdPos.z, thirdPos.y)
           }
-          camera.c.lookAt(interpolated.x, interpolated.z + percent * 0.2, interpolated.y)
+          camera.c.lookAt(interpolated.x, interpolated.z + 0.13 + percent * 0.07, interpolated.y)
         }
+        // camera.c.lookAt(interpolated.x, interpolated.z + 0.13 + percent * 0.07, interpolated.y)
       }
     }
   }
