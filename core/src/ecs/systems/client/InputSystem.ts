@@ -23,11 +23,9 @@ export const InputSystem = ClientSystemBuilder({
       const amount = event.deltaY
       if (amount > 0.5) {
         world.client!.bufferScroll += amount
-        world.client?.bufferDown.remove("scrolldown")
         world.client?.bufferDown.push({ key: "scrolldown", mouse, aim: localAim(), tick: world.tick, hold: 0 })
       } else {
         world.client!.bufferScroll += amount
-        world.client?.bufferDown.remove("scrollup")
         world.client?.bufferDown.push({ key: "scrollup", mouse, aim: localAim(), tick: world.tick, hold: 0 })
       }
     })
@@ -436,6 +434,8 @@ export const InputSystem = ClientSystemBuilder({
 
         world.client!.bufferUp.clear()
         world.client!.bufferDown.remove("capslock") // capslock doesn't emit keyup event (TODO bug on windows, have to hit capslock twice)
+        world.client!.bufferDown.remove("scrolldown")
+        world.client!.bufferDown.remove("scrollup")
       }
     }
   }
