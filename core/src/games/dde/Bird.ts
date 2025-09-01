@@ -155,6 +155,11 @@ export const Bird = (player: Player): Character => {
             if (world.client?.mobile) return null
             world.three?.pointerLock()
             return null
+          },
+          "t": ({ world }) => {
+            const { camera } = world.three!
+            camera.mode = camera.mode === "first" ? "third" : "first"
+            return null
           }
         },
         press: {
