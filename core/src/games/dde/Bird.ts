@@ -90,6 +90,7 @@ export const Bird = (player: Player): Character => {
               if (child instanceof Mesh) {
                 child.material.transparent = transparent
                 child.material.opacity = opacity
+                child.material.needsUpdate = true
               }
             })
 
@@ -97,7 +98,7 @@ export const Bird = (player: Player): Character => {
               if (child instanceof Mesh) {
                 child.material.transparent = transparent
                 child.material.opacity = opacity
-                console.log("eagle child", transparent, opacity)
+                child.material.needsUpdate = true
               }
             })
           }
