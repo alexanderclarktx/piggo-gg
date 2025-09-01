@@ -78,7 +78,7 @@ export const LaserItem = ({ character }: { character: Character }) => {
   return item
 }
 
-export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player, client }) => {
+export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
   if (!entity) return
 
   const state = world.state<DDEState>()
@@ -92,7 +92,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   const { pos, aim } = params
 
-  client.sound.play({ name: "laser1", threshold: { pos, distance: 5 } })
+  world.client?.sound.play({ name: "laser1", threshold: { pos, distance: 5 } })
 
   const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.13 }
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
@@ -103,8 +103,10 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   // update laser mesh
   let offsetScale = 0.03
-  if (player?.id === client.playerId()) {
-    if (world.three!.camera.mode === "first") offsetScale = 0.5
+  if (world.client && player?.id === world.client?.playerId() && world.three?.camera.mode === "first") {
+    const { x, y, z } = entity.components.position?.localVelocity ?? { x: 0, y: 0, z: 0 }
+    const speed = hypot(x, y, z)
+    offsetScale = min(1, (1.5 - speed))
   }
 
   const offset = new Vector3(
