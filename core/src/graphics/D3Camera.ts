@@ -18,7 +18,7 @@ export const D3Camera = (): D3Camera => {
   const d3Camera: D3Camera = {
     c: camera,
     mode: "third",
-    transition: 100,
+    transition: 125,
     dir: (world: World) => {
       if (!world.client) return new Vector3(0, 0, 0)
 
@@ -61,7 +61,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         if (camera.mode !== lastMode) camera.transition = 0
         lastMode = camera.mode
 
-        if (camera.transition < 120) {
+        if (camera.transition < 125) {
           camera.transition += ratio * 8
         }
 

@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input, Inventory,
-  LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
+  LaserItem, max, min, Networked, PI, Place, Player, Point, Position, Ready,
   round, setActiveItemIndex, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
@@ -81,14 +81,12 @@ export const Bird = (player: Player): Character => {
             duckMixer?.update(speed * ratio * 0.03 + 0.01)
           }
 
-          if ((three.camera.transition < 120) && player.id === client.playerId()) {
+          if ((three.camera.transition < 125) && player.id === client.playerId()) {
 
-            const transparent = three.camera.mode === "first"
-            const opacity = transparent ? 1 - (three.camera.transition / 100) : 1
+            const opacity = three.camera.mode === "first" ? 1 - (three.camera.transition / 100) : three.camera.transition / 100
 
             duck.traverse((child) => {
               if (child instanceof Mesh) {
-                child.material.transparent = transparent
                 child.material.opacity = opacity
                 child.material.needsUpdate = true
               }
@@ -96,7 +94,6 @@ export const Bird = (player: Player): Character => {
 
             eagle.traverse((child) => {
               if (child instanceof Mesh) {
-                child.material.transparent = transparent
                 child.material.opacity = opacity
                 child.material.needsUpdate = true
               }
@@ -115,6 +112,8 @@ export const Bird = (player: Player): Character => {
 
             duck.traverse((child) => {
               if (child instanceof Mesh) {
+                child.material.transparent = true
+                child.material.opacity = 1
                 child.castShadow = true
                 child.receiveShadow = true
               }
@@ -143,7 +142,7 @@ export const Bird = (player: Player): Character => {
 
             eagle.traverse((child) => {
               if (child instanceof Mesh) {
-                child.material = new MeshStandardMaterial({ color: colors[child.name] })
+                child.material = new MeshStandardMaterial({ color: colors[child.name], transparent: true, opacity: 1 })
                 child.castShadow = true
                 child.receiveShadow = true
               }
