@@ -169,9 +169,9 @@ export const Bird = (player: Player): Character => {
           "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
 
           "scrolldown": ({ world }) => {
-            console.log("scrolldown")
             const bufferScroll = world.client!.bufferScroll
             if (bufferScroll < 20) return null
+
             world.client!.bufferScroll = 0
             return { actionId: "setActiveItemIndex", params: { index: "down" } }
           },
