@@ -65,7 +65,7 @@ export const LaserItem = () => {
         init: async (entity) => {
           entity.components.three.o.push(mesh)
         },
-        onRender: (_, __, delta) => {
+        onRender: ({ delta }) => {
           const ratio = delta / 25
 
           mesh.material.opacity -= 0.05 * ratio

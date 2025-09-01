@@ -38,18 +38,18 @@ export const Bird = (player: Player): Character => {
         radius: 0.1
       }),
       three: Three({
-        onRender: (entity, world, delta) => {
+        onRender: ({ entity, world, delta, client, three }) => {
           const ratio = delta / 25
 
           const { position } = entity.components
           const { aim, rotation, rotating, velocity, flying } = position.data
 
           const interpolated = position.interpolate(world, delta)
-          if (world.three?.debug && player.id === world.client?.playerId()) {
-            world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+          if (three.debug && player.id === client.playerId()) {
+            three.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           }
 
-          const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
+          const orientation = player.id === client.playerId() ? client.controls.localAim : aim
 
           if (flying) {
             duck.visible = false
