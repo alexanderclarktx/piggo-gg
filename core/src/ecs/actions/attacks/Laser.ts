@@ -19,7 +19,7 @@ export const LaserMesh = (): LaserMesh => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
   geometry.translate(0, 0.5, 0)
 
-  const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
+  const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true, side: 2 })
 
   const mesh = new Mesh(geometry, material)
   mesh.scale.y = 14
@@ -96,9 +96,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   // fixed distance along dir (for now)
   const target = new Vector3(
-    -sin(params.aim.x),
-    -0.33 + params.aim.y,
-    -cos(params.aim.x)
+    -sin(params.aim.x), params.aim.y, -cos(params.aim.x)
   ).normalize().multiplyScalar(10).add(camera)
 
   const eyePos = { x: params.pos.x, y: params.pos.y, z: params.pos.z + 0.13 }

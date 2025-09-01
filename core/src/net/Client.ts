@@ -131,8 +131,9 @@ export const Client = ({ world }: ClientProps): Client => {
         client.controls.localAim.y = round(client.controls.localAim.y - y, 3)
 
         const flying = client.character()?.components.position.data.flying ?? false
+        const cameraMode = world.three?.camera.mode ?? "third"
 
-        const limit = flying ? 1.1 : 3.14
+        const limit = cameraMode === "third" ? (flying ? 1.1 : 3.14) : 1.57
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
       }
     },

@@ -80,6 +80,28 @@ export const Bird = (player: Player): Character => {
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
             duckMixer?.update(speed * ratio * 0.03 + 0.01)
           }
+
+          if (three.camera.updated && player.id === client.playerId()) {
+
+            const transparent = three.camera.mode === "first"
+            const opacity = transparent ? 0 : 1
+
+            duck.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.material.transparent = transparent
+                child.material.opacity = opacity
+                child.material.needsUpdate = true
+              }
+            })
+
+            eagle.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.material.transparent = transparent
+                child.material.opacity = opacity
+                child.material.needsUpdate = true
+              }
+            })
+          }
         },
         init: async (entity, _, three) => {
           three.gLoader.load("ugly-duckling.glb", (gltf) => {
@@ -154,6 +176,11 @@ export const Bird = (player: Player): Character => {
             if (target !== "canvas") return null
             if (world.client?.mobile) return null
             world.three?.pointerLock()
+            return null
+          },
+          "q": ({ world }) => {
+            const { camera } = world.three!
+            camera.mode = camera.mode === "first" ? "third" : "first"
             return null
           }
         },
