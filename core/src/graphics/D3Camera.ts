@@ -75,9 +75,9 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         if (camera.mode === "first") {
           if (camera.transition < 100) {
             camera.c.position.set(
-              thirdPos.x + diff.x * camera.transition / 100,
-              thirdPos.z + diff.z * camera.transition / 100,
-              thirdPos.y + diff.y * camera.transition / 100
+              firstPos.x - diff.x * (1 - camera.transition / 100),
+              firstPos.z - diff.z * (1 - camera.transition / 100),
+              firstPos.y - diff.y * (1 - camera.transition / 100)
             )
           } else {
             camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
