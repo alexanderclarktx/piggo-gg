@@ -80,6 +80,11 @@ export const Bird = (player: Player): Character => {
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
             duckMixer?.update(speed * ratio * 0.03 + 0.01)
           }
+
+          if (three.camera.mode === "first" && player.id === client.playerId()) {
+            // duck.visible = false
+            // eagle.visible = false
+          }
         },
         init: async (entity, _, three) => {
           three.gLoader.load("ugly-duckling.glb", (gltf) => {

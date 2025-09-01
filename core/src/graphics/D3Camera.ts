@@ -77,7 +77,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
 
           camera.c.position.set(
             interpolated.x - rotatedOffset.x,
-            interpolated.z + (camera.zoom / 3 * 2) - rotatedOffset.y,
+            interpolated.z + 0.2 - rotatedOffset.y,
             interpolated.y - rotatedOffset.z
           )
 

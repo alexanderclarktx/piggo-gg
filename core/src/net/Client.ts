@@ -3,7 +3,8 @@ import {
   RequestTypes, World, randomPlayerId, Sound, randomHash, AuthLogin,
   FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet,
   ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile, LobbyList,
-  BadResponse, LobbyExit, XY, round, max, min
+  BadResponse, LobbyExit, XY, round, max, min,
+  PI
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
 import toast from "react-hot-toast"
@@ -132,7 +133,7 @@ export const Client = ({ world }: ClientProps): Client => {
 
         const flying = client.character()?.components.position.data.flying ?? false
 
-        const limit = flying ? 1.1 : 3.14
+        const limit = flying ? 1.1 : PI / 2
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
       }
     },
