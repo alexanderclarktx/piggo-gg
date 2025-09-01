@@ -168,18 +168,18 @@ export const Bird = (player: Player): Character => {
           "6": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
           "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
 
-          "scrolldown": ({ world }) => {
-            const bufferScroll = world.client!.bufferScroll
+          "scrolldown": ({ client }) => {
+            const bufferScroll = client.bufferScroll
             if (bufferScroll < 20) return null
 
-            world.client!.bufferScroll = 0
+            client.bufferScroll = 0
             return { actionId: "setActiveItemIndex", params: { index: "down" } }
           },
 
-          "scrollup": ({ world }) => {
-            const bufferScroll = world.client!.bufferScroll
+          "scrollup": ({ client }) => {
+            const bufferScroll = client.bufferScroll
             if (bufferScroll > -20) return null
-            world.client!.bufferScroll = 0
+            client.bufferScroll = 0
             return { actionId: "setActiveItemIndex", params: { index: "up" } }
           },
 
