@@ -282,7 +282,7 @@ export const Bird = (player: Player): Character => {
         }),
         place: Place,
         setActiveItemIndex,
-        jump: Action("jump", ({ entity, world, params, client }) => {
+        jump: Action("jump", ({ entity, world, params }) => {
           if (!entity) return
 
           const { position } = entity?.components ?? {}
@@ -303,7 +303,7 @@ export const Bird = (player: Player): Character => {
             position.setVelocity({ z: 0.05 })
           }
 
-          client.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
+          world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
         }),
         moveAnalog: Action("moveAnalog", ({ entity, params }) => {
           if (!params.dir.x || !params.dir.y || !params.power) return

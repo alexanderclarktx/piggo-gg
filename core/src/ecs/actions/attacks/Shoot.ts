@@ -4,7 +4,7 @@ import {
 
 type ShootParams = KeyMouse & { id: number, character: string }
 
-export const Shoot = Action<ShootParams>("shoot", ({ world, params, entity, client }) => {
+export const Shoot = Action<ShootParams>("shoot", ({ world, params, entity }) => {
 
   if (!entity) return
 
@@ -48,7 +48,7 @@ export const Shoot = Action<ShootParams>("shoot", ({ world, params, entity, clie
     const bullet = Hitbox(bulletParams)
     world.addEntity(bullet)
 
-    client.sound.play({ name: gun.data.name })
+    world.client?.sound.play({ name: gun.data.name })
 
     // auto reload
     if (gun.data.clip === 0) {

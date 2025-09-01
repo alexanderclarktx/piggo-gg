@@ -19,7 +19,7 @@ export const setActiveItemIndex = Action<{ index: number | "up" | "down" }>("set
   }
 })
 
-export const pickupItem = Action("pickupItem", ({ player, entity, world, client }) => {
+export const pickupItem = Action("pickupItem", ({ player, entity, world }) => {
   if (!entity) return
 
   const character = player?.components.controlling.getCharacter(world)
@@ -45,7 +45,7 @@ export const pickupItem = Action("pickupItem", ({ player, entity, world, client 
 
   inventory.addItem(entity as ItemEntity, world)
 
-  client.sound.play({ name: "bubble" })
+  world.client?.sound.play({ name: "bubble" })
 })
 
 export const dropItem = Action("dropItem", ({ world, entity }) => {
