@@ -20,12 +20,13 @@ export const InputSystem = ClientSystemBuilder({
 
     window.addEventListener("wheel", (event) => {
       
-      const amount = sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
-      console.log("wheel", amount)
+      const amount = event.deltaY
       if (amount > 0.5) {
+        world.client!.bufferScroll += amount
         world.client?.bufferDown.remove("scrolldown")
         world.client?.bufferDown.push({ key: "scrolldown", mouse, aim: localAim(), tick: world.tick, hold: 0 })
       } else {
+        world.client!.bufferScroll += amount
         world.client?.bufferDown.remove("scrollup")
         world.client?.bufferDown.push({ key: "scrollup", mouse, aim: localAim(), tick: world.tick, hold: 0 })
       }

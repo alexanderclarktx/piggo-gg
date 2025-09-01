@@ -26,6 +26,7 @@ type Callback<R extends RequestTypes = RequestTypes> = (response: R["response"])
 export type Client = {
   bufferDown: KeyBuffer
   bufferUp: KeyBuffer
+  bufferScroll: number
   busy: boolean
   chat: {
     inputBuffer: string
@@ -101,6 +102,7 @@ export const Client = ({ world }: ClientProps): Client => {
   const client: Client = {
     bufferDown: KeyBuffer(),
     bufferUp: KeyBuffer(),
+    bufferScroll: 0,
     busy: false,
     chat: {
       inputBuffer: "",

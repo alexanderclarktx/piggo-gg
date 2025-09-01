@@ -9,9 +9,11 @@ export const setActiveItemIndex = Action<{ index: number | "up" | "down" }>("set
   const { activeItemIndex } = inventory.data
 
   if (params.index === "up") {
-    inventory.setActiveItemIndex(activeItemIndex + 1)
+    const index = activeItemIndex + 1
+    inventory.setActiveItemIndex(index > 6 ? 0 : index)
   } else if (params.index === "down") {
-    inventory.setActiveItemIndex(activeItemIndex - 1)
+    const index = activeItemIndex - 1
+    inventory.setActiveItemIndex(index < 0 ? 6 : index)
   } else {
     inventory.setActiveItemIndex(params.index)
   }
