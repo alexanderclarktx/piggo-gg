@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, Entity, Input,
-  InvokedAction, World, XY, cos, isTypingEvent, round, sin
+  InvokedAction, World, XY, cos, isTypingEvent, round, sign, sin
 } from "@piggo-gg/core"
 
 // handles keyboard/mouse/joystick inputs
@@ -17,6 +17,19 @@ export const InputSystem = ClientSystemBuilder({
 
     let backspace = 0
     let mouseScreen: XY = { x: 0, y: 0 }
+
+    window.addEventListener("wheel", (event) => {
+      
+      const amount = sign(event.deltaY) * Math.sqrt(Math.abs(event.deltaY))
+      console.log("wheel", amount)
+      if (amount > 0.5) {
+        world.client?.bufferDown.remove("scrolldown")
+        world.client?.bufferDown.push({ key: "scrolldown", mouse, aim: localAim(), tick: world.tick, hold: 0 })
+      } else {
+        world.client?.bufferDown.remove("scrollup")
+        world.client?.bufferDown.push({ key: "scrollup", mouse, aim: localAim(), tick: world.tick, hold: 0 })
+      }
+    })
 
     window.addEventListener("pointermove", (event) => {
       if (world.client?.controls.left.active || world.client?.controls.right.active) return
