@@ -5,7 +5,7 @@ export type PlaceParams = {
   dir: XYZ
 }
 
-export const Place = Action<PlaceParams>("place", ({ params, world, entity }) => {
+export const Place = Action<PlaceParams>("place", ({ params, world, client }) => {
   const { pos, dir } = params
 
   const current = { ...pos, z: pos.z + 0.2 }
@@ -51,7 +51,7 @@ export const Place = Action<PlaceParams>("place", ({ params, world, entity }) =>
       if (XYZequal(lastBlock, playerBlock)) return
 
       const added = world.blocks.add({ type, ...lastBlock })
-      if (added) world.client?.sound.play({ name: "click2" })
+      if (added) client.sound.play({ name: "click2" })
       return
     }
 

@@ -1,11 +1,11 @@
-import { Component, Entity, entries, Player, World } from "@piggo-gg/core"
+import { Client, Component, Entity, entries, Player, World } from "@piggo-gg/core"
 
 export type Action<T extends {} = any> = {
   id: string
   cooldown: number | undefined
   cdLeft?: number
   prepare: (_: { params: T, entity?: Entity, player?: Player }) => InvokedAction
-  invoke: (_: { params: T, world: World, entity?: Entity, player?: Player | undefined }) => void
+  invoke: (_: { params: T, world: World, client: Client, entity?: Entity, player?: Player | undefined }) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }
 

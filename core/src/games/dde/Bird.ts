@@ -38,18 +38,18 @@ export const Bird = (player: Player): Character => {
         radius: 0.1
       }),
       three: Three({
-        onRender: (entity, world, delta) => {
+        onRender: ({ entity, world, delta, client, three }) => {
           const ratio = delta / 25
 
           const { position } = entity.components
           const { aim, rotation, rotating, velocity, flying } = position.data
 
           const interpolated = position.interpolate(world, delta)
-          if (world.three?.debug && player.id === world.client?.playerId()) {
-            world.three?.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+          if (three.debug && player.id === client.playerId()) {
+            three.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           }
 
-          const orientation = player.id === world.client?.playerId() ? world.client.controls.localAim : aim
+          const orientation = player.id === client.playerId() ? client.controls.localAim : aim
 
           if (flying) {
             duck.visible = false
@@ -132,11 +132,9 @@ export const Bird = (player: Player): Character => {
         }
       }),
       input: Input({
-        joystick: ({ world }) => {
-          if (!world.client) return null
-
-          const { localAim } = world.client.controls
-          const { power, angle } = world.client.controls.left
+        joystick: ({ client }) => {
+          const { localAim } = client.controls
+          const { power, angle } = client.controls.left
 
           let dir = { x: Math.cos(angle), y: Math.sin(angle) }
 
@@ -148,8 +146,8 @@ export const Bird = (player: Player): Character => {
           return { actionId: "moveAnalog", params: { dir, power, angle } }
         },
         release: {
-          "escape": ({ world }) => {
-            if (!world.client?.mobile) world.three?.pointerLock()
+          "escape": ({ world, client }) => {
+            if (!client.mobile) world.three?.pointerLock()
             return null
           },
           "mb1": ({ world, target }) => {
@@ -168,18 +166,18 @@ export const Bird = (player: Player): Character => {
           "6": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
           "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
 
-          "scrolldown": ({ world }) => {
-            const bufferScroll = world.client!.bufferScroll
+          "scrolldown": ({ client }) => {
+            const bufferScroll = client.bufferScroll
             if (bufferScroll < 20) return null
 
-            world.client!.bufferScroll = 0
+            client.bufferScroll = 0
             return { actionId: "setActiveItemIndex", params: { index: "down" } }
           },
 
-          "scrollup": ({ world }) => {
-            const bufferScroll = world.client!.bufferScroll
+          "scrollup": ({ client }) => {
+            const bufferScroll = client.bufferScroll
             if (bufferScroll > -20) return null
-            world.client!.bufferScroll = 0
+            client.bufferScroll = 0
             return { actionId: "setActiveItemIndex", params: { index: "up" } }
           },
 
@@ -256,7 +254,7 @@ export const Bird = (player: Player): Character => {
         }),
         place: Place,
         setActiveItemIndex,
-        jump: Action("jump", ({ entity, world, params }) => {
+        jump: Action("jump", ({ entity, world, params, client }) => {
           if (!entity) return
 
           const { position } = entity?.components ?? {}
@@ -277,9 +275,9 @@ export const Bird = (player: Player): Character => {
             position.setVelocity({ z: 0.05 })
           }
 
-          world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
+          client.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
         }),
-        moveAnalog: Action("moveAnalog", ({ entity, params, world }) => {
+        moveAnalog: Action("moveAnalog", ({ entity, params }) => {
           if (!params.dir.x || !params.dir.y || !params.power) return
 
           const { position } = entity?.components ?? {}

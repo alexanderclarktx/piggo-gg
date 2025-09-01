@@ -1,19 +1,20 @@
-import { ClientSystemBuilder, Component, D3Renderer, Entity, Position, World } from "@piggo-gg/core"
+import { Client, ClientSystemBuilder, Component, D3Renderer, Entity, Position, World } from "@piggo-gg/core"
 import { Object3D } from "three"
 
 type ThreeInit = (entity: Entity<Three | Position>, world: World, three: D3Renderer) => Promise<void>
+type OnRenderProps = { entity: Entity<Three | Position>, world: World, client: Client, delta: number, three: D3Renderer }
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
   o: Object3D[]
   init: undefined | ThreeInit
-  onRender: undefined | ((entity: Entity<Three | Position>, world: World, delta: number) => void)
+  onRender: undefined | ((_: OnRenderProps) => void)
   cleanup: (world: World) => void
 }
 
 export type ThreeProps = {
   init?: ThreeInit
-  onRender?: (entity: Entity<Three | Position>, world: World, delta: number) => void
+  onRender?: (_: OnRenderProps) => void
 }
 
 export const Three = (props: ThreeProps = {}): Three => {
@@ -71,7 +72,7 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
       onRender: (entities: Entity<Three | Position>[], delta) => {
         for (const entity of entities) {
           const { three } = entity.components
-          three.onRender?.(entity, world, delta)
+          three.onRender?.({ entity, world, client: world.client!, delta, three: world.three! })
         }
       }
     }
