@@ -64,7 +64,6 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         lastMode = camera.mode
 
         if (camera.transition < 120) {
-          // camera.transition = min(100, camera.transition + ratio * 8)
           camera.transition += ratio * 8
         }
 
@@ -77,27 +76,31 @@ export const D3CameraSystem = () => ClientSystemBuilder({
 
         const diffPos = XYZsub(firstPos, thirdPos)
 
-        const transitionPos = {
-          x: thirdPos.x + diffPos.x * camera.transition / 100,
-          y: thirdPos.y + diffPos.y * camera.transition / 100,
-          z: thirdPos.z + diffPos.z * camera.transition / 100
-        }
+
 
         if (camera.mode === "first") {
           if (camera.transition < 100) {
+            const transitionPos = {
+              x: thirdPos.x + diffPos.x * camera.transition / 100,
+              y: thirdPos.y + diffPos.y * camera.transition / 100,
+              z: thirdPos.z + diffPos.z * camera.transition / 100
+            }
             camera.c.position.set(transitionPos.x, transitionPos.z, transitionPos.y)
           } else {
             camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
           }
-            camera.c.rotation.set(y, x, 0)
+          camera.c.rotation.set(y, x, 0)
         } else {
-          const offset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
-
-          camera.c.position.set(
-            interpolated.x - offset.x, interpolated.z + 0.2 - offset.y, interpolated.y - offset.z
-          )
-
-          camera.c.lookAt(interpolated.x, interpolated.z + 0.2, interpolated.y)
+          if (camera.transition < 100) {
+            camera.c.position.set(
+              firstPos.x - diffPos.x * camera.transition / 100,
+              firstPos.z - diffPos.z * camera.transition / 100,
+              firstPos.y - diffPos.y * camera.transition / 100
+            )
+          } else {
+            camera.c.position.set(thirdPos.x, thirdPos.z, thirdPos.y)
+            camera.c.lookAt(interpolated.x, interpolated.z + 0.2, interpolated.y)
+          }
         }
       }
     }
