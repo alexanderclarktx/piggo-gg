@@ -103,10 +103,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
   // const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
 
   const target = new Vector3(
-    // -sin(params.aim.x), params.aim.y, -cos(params.aim.x)
-    -sin(params.aim.x) * cos(params.aim.y), // X
-    sin(params.aim.y),                          // Y
-    -cos(params.aim.x) * cos(params.aim.y)  // Z
+    -sin(params.aim.x), params.aim.y, -cos(params.aim.x)
   ).normalize().multiplyScalar(10).add(eyes)
 
   const dir = target.clone().sub(eyes).normalize()
