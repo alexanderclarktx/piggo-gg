@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, cos, max, min, sin, World, XYZdiff, XYZsub } from "@piggo-gg/core"
+import { ClientSystemBuilder, cos, max, min, PI, sin, World, XYZdiff, XYZsub } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
@@ -67,7 +67,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
 
         const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.13 }
 
-        const offset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
+        const offset = new Vector3(-sin(x) * cos(y), sin(y), -cos(x) * cos(y)).multiplyScalar(0.6)
         const thirdPos = { x: interpolated.x - offset.x, y: interpolated.y - offset.z, z: interpolated.z + 0.2 - offset.y }
 
         const diff = XYZsub(firstPos, thirdPos)
@@ -84,11 +84,12 @@ export const D3CameraSystem = () => ClientSystemBuilder({
           } else {
             camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
           }
-          camera.c.lookAt(
-            interpolated.x + offset.x * 0.01,
-            interpolated.z + 0.13 + (1 - percent) * 0.07 + offset.y * 0.01,
-            interpolated.y + offset.z * 0.01
-          )
+          camera.c.rotation.set(y, x, 0)
+          // camera.c.lookAt(
+          //   interpolated.x + offset.x * 0.01,
+          //   interpolated.z + 0.13 + (1 - percent) * 0.07 + offset.y * 0.01,
+          //   interpolated.y + offset.z * 0.01
+          // )
         } else {
           if (camera.transition < 100) {
             camera.c.position.set(

@@ -127,13 +127,15 @@ export const Client = ({ world }: ClientProps): Client => {
           y *= mouseSensitivity
         }
 
+        console.log(`localaim.y:${client.controls.localAim.y}`)
+
         client.controls.localAim.x = round(client.controls.localAim.x - x, 3)
         client.controls.localAim.y = round(client.controls.localAim.y - y, 3)
 
         const flying = client.character()?.components.position.data.flying ?? false
         const cameraMode = world.three?.camera.mode ?? "third"
 
-        const limit = cameraMode === "third" ? (flying ? 1.1 : 3.14) : 1.57
+        const limit = cameraMode === "third" ? (flying ? 1.1 : 1.57) : 1.57
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
       }
     },
