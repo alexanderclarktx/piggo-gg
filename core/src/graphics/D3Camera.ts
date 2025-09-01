@@ -1,10 +1,9 @@
-import { ClientSystemBuilder, cos, sin, World, XYZdiff, XYZsub } from "@piggo-gg/core"
+import { ClientSystemBuilder, cos, min, sin, World, XYZdiff, XYZsub } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
   c: PerspectiveCamera
   mode: "first" | "third"
-  updated: boolean
   transition: number
   dir: (world: World) => Vector3
   // up: () => Vector3
@@ -19,7 +18,6 @@ export const D3Camera = (): D3Camera => {
   const d3Camera: D3Camera = {
     c: camera,
     mode: "third",
-    updated: false,
     transition: 100,
     dir: (world: World) => {
       if (!world.client) return new Vector3(0, 0, 0)
@@ -62,13 +60,12 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         const { x, y } = world.client.controls.localAim
 
         // mark if the camera mode has updated
-        camera.updated = camera.mode !== lastMode
+        if (camera.mode !== lastMode) camera.transition = 0
         lastMode = camera.mode
 
-        if (camera.updated) camera.transition = 0
-
-        if (camera.transition < 100) {
-          camera.transition += ratio * 5
+        if (camera.transition < 120) {
+          // camera.transition = min(100, camera.transition + ratio * 8)
+          camera.transition += ratio * 8
         }
 
         const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.13 }

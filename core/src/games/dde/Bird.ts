@@ -81,7 +81,7 @@ export const Bird = (player: Player): Character => {
             duckMixer?.update(speed * ratio * 0.03 + 0.01)
           }
 
-          if ((three.camera.transition < 100) && player.id === client.playerId()) {
+          if ((three.camera.transition < 120) && player.id === client.playerId()) {
 
             const transparent = three.camera.mode === "first"
             const opacity = transparent ? 1 - (three.camera.transition / 100) : 1
