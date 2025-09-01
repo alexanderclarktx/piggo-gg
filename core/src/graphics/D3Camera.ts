@@ -48,18 +48,16 @@ export const D3CameraSystem = () => ClientSystemBuilder({
       priority: 9,
       onRender: (entities, delta) => {
         if (!world.three || !world.client) return
-        const ratio = delta / 25
-
-        const { camera } = world.three
 
         const pc = world.client.character()
         if (!pc) return
 
-        const { position } = pc.components
-        const interpolated = position.interpolate(world, delta)
-        const { x, y } = world.client.controls.localAim
+        const interpolated = pc.components.position.interpolate(world, delta)
 
-        // mark if the camera mode has updated
+        const { x, y } = world.client.controls.localAim
+        const ratio = delta / 25
+        const { camera } = world.three
+
         if (camera.mode !== lastMode) camera.transition = 0
         lastMode = camera.mode
 
@@ -69,23 +67,18 @@ export const D3CameraSystem = () => ClientSystemBuilder({
 
         const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.13 }
 
-        const thirdOffset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
-        const thirdPos = {
-          x: interpolated.x - thirdOffset.x, y: interpolated.y - thirdOffset.z, z: interpolated.z + 0.2 - thirdOffset.y
-        }
+        const offset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
+        const thirdPos = { x: interpolated.x - offset.x, y: interpolated.y - offset.z, z: interpolated.z + 0.2 - offset.y }
 
-        const diffPos = XYZsub(firstPos, thirdPos)
-
-
+        const diff = XYZsub(firstPos, thirdPos)
 
         if (camera.mode === "first") {
           if (camera.transition < 100) {
-            const transitionPos = {
-              x: thirdPos.x + diffPos.x * camera.transition / 100,
-              y: thirdPos.y + diffPos.y * camera.transition / 100,
-              z: thirdPos.z + diffPos.z * camera.transition / 100
-            }
-            camera.c.position.set(transitionPos.x, transitionPos.z, transitionPos.y)
+            camera.c.position.set(
+              thirdPos.x + diff.x * camera.transition / 100,
+              thirdPos.z + diff.z * camera.transition / 100,
+              thirdPos.y + diff.y * camera.transition / 100
+            )
           } else {
             camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
           }
@@ -93,9 +86,9 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         } else {
           if (camera.transition < 100) {
             camera.c.position.set(
-              firstPos.x - diffPos.x * camera.transition / 100,
-              firstPos.z - diffPos.z * camera.transition / 100,
-              firstPos.y - diffPos.y * camera.transition / 100
+              firstPos.x - diff.x * camera.transition / 100,
+              firstPos.z - diff.z * camera.transition / 100,
+              firstPos.y - diff.y * camera.transition / 100
             )
           } else {
             camera.c.position.set(thirdPos.x, thirdPos.z, thirdPos.y)
