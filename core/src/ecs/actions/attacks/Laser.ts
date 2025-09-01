@@ -105,7 +105,6 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
   // fixed distance along dir (for now)
   const target = new Vector3(
     -sin(params.aim.x), params.aim.y, -cos(params.aim.x)
-    
   ).normalize().multiplyScalar(10).add(eyes)
 
   const dir = target.clone().sub(eyes).normalize()
