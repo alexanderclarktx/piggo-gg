@@ -11,7 +11,7 @@ export const HtmlInventory = (client: Client): RefreshableDiv => {
   const div = HtmlDiv({
     width: "398px",
     height: "54px",
-    bottom: "50px",
+    bottom: "40px",
     left: "50%",
     transform: "translate(-50%)",
     visibility: "hidden",
