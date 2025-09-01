@@ -94,16 +94,15 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   state.lastShot[entity.id] = world.tick
 
-  client.sound.play({ name: "laser1", threshold: { pos: params.pos, distance: 5 } })
+  const { pos, aim } = params
 
-  const eyePos = { x: params.pos.x, y: params.pos.y, z: params.pos.z + 0.13 }
+  client.sound.play({ name: "laser1", threshold: { pos, distance: 5 } })
+
+  const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.13 }
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
 
-  // find target from camera
-  // const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
-
   const target = new Vector3(
-    -sin(params.aim.x), params.aim.y, -cos(params.aim.x)
+    -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
   ).normalize().multiplyScalar(10).add(eyes)
 
   const dir = target.clone().sub(eyes).normalize()

@@ -135,7 +135,7 @@ export const Client = ({ world }: ClientProps): Client => {
         const flying = client.character()?.components.position.data.flying ?? false
         const cameraMode = world.three?.camera.mode ?? "third"
 
-        const limit = cameraMode === "third" ? (flying ? 1.1 : 1.57) : 1.57
+        const limit = cameraMode === "third" ? (flying ? 1.1 : 0.335) : 1.57
         client.controls.localAim.y = max(-limit, min(limit, client.controls.localAim.y))
       }
     },
