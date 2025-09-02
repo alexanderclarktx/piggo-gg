@@ -390,12 +390,16 @@ export const InputSystem = ClientSystemBuilder({
         if (!client.mobile) return
 
         const { power, angle, active } = client.controls.right
+
         if (!active) {
           last = 0
           return
+        } else if (last === 0) {
+          last = performance.now()
+          return
         }
 
-        const delta = last ? performance.now() - last : performance.now() - active
+        const delta = performance.now() - last
         last = performance.now()
 
         client.controls.moveLocal({
