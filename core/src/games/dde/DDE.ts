@@ -9,7 +9,7 @@ import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
 import { DDEMobileUI } from "./DDEMobileUI"
 import { Scoreboard } from "./Scoreboard"
-import { createStarfieldSky } from "./Stars"
+import { Starfield } from "./Starfield"
 
 export type DDEState = {
   applesEaten: Record<string, number>
@@ -82,7 +82,7 @@ const DDESystem = SystemBuilder({
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    const sky = createStarfieldSky(world.three!.scene)
+    const starfield = Starfield(world.three!.scene)
 
     DDEMobileUI(world)
 
@@ -100,7 +100,7 @@ const DDESystem = SystemBuilder({
 
         const { sound } = world.client ?? {}
 
-        sky.update()
+        starfield.update()
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {
