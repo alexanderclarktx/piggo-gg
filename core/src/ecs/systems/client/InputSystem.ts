@@ -319,6 +319,7 @@ export const InputSystem = ClientSystemBuilder({
               world
             })
             if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
+              invocation.playerId = client.playerId()
               world.actions.push(world.tick + 1, activeItem.id, invocation)
             }
           }

@@ -115,12 +115,12 @@ export const InventorySystem: SystemBuilder<"InventorySystem"> = {
 
         // build items
         if (inventory.itemBuilders.length) {
-          inventory.itemBuilders.forEach((builder, index) => {
+          for (const [index, builder] of inventory.itemBuilders.entries()) {
             const item = builder({ character: entity })
 
             inventory.data.items[index] = [item.id]
             world.addEntity(item)
-          })
+          }
           inventory.itemBuilders = []
         }
 

@@ -1,5 +1,5 @@
 import {
-  Action, Actions, cos, DDEState, Effects, floor, hypot, Input,
+  Action, Actions, Character, cos, DDEState, Effects, floor, hypot, Input,
   Item, ItemEntity, min, Networked, playerForCharacter, Position,
   sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
@@ -19,7 +19,7 @@ export const LaserMesh = (): LaserMesh => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
   geometry.translate(0, 0.5, 0)
 
-  const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true, side: 2 })
+  const material = new MeshBasicMaterial({ color: 0xff0000, transparent: true })
 
   const mesh = new Mesh(geometry, material)
   mesh.scale.y = 14
@@ -27,12 +27,12 @@ export const LaserMesh = (): LaserMesh => {
   return mesh
 }
 
-export const LaserItem = () => {
+export const LaserItem = ({ character }: { character: Character }) => {
 
   const mesh = LaserMesh()
 
   const item = ItemEntity({
-    id: "Laser",
+    id: `Laser-${character.id}`,
     components: {
       position: Position(),
       effects: Effects(),
@@ -77,7 +77,7 @@ export const LaserItem = () => {
   return item
 }
 
-export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player, client }) => {
+export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
   if (!entity) return
 
   const state = world.state<DDEState>()
@@ -89,23 +89,32 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   state.lastShot[entity.id] = world.tick
 
-  client.sound.play({ name: "laser1", threshold: { pos: params.pos, distance: 5 } })
+  const { pos, aim } = params
 
-  // find target from camera
-  const camera = new Vector3(params.pos.x, params.pos.z + 0.2, params.pos.y)
+  world.client?.sound.play({ name: "laser1", threshold: { pos, distance: 5 } })
 
-  // fixed distance along dir (for now)
-  const target = new Vector3(
-    -sin(params.aim.x), params.aim.y, -cos(params.aim.x)
-  ).normalize().multiplyScalar(10).add(camera)
-
-  const eyePos = { x: params.pos.x, y: params.pos.y, z: params.pos.z + 0.13 }
+  const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.13 }
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
-  const dir = target.clone().sub(eyes).normalize()
+
+  const target = new Vector3(
+    -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
+  ).normalize().multiplyScalar(10).add(eyes)
 
   // update laser mesh
-  const offset = new Vector3(-sin(params.aim.x), 0, -cos(params.aim.x)).normalize()
-  mesh.position.copy(eyes.add(offset.multiplyScalar(.03)))
+  let offsetScale = 0.03
+  if (world.client && player?.id === world.client?.playerId() && world.three?.camera.mode === "first") {
+    const { x, y, z } = entity.components.position?.localVelocity ?? { x: 0, y: 0, z: 0 }
+    const speed = hypot(x, y, z)
+    offsetScale = min(1, (1.5 - speed))
+  }
+
+  const offset = new Vector3(
+    -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
+  ).normalize().multiplyScalar(offsetScale)
+
+  mesh.position.copy(eyes.add(offset))
+
+  const dir = target.clone().sub(eyes).normalize()
   mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
 
   mesh.updateMatrix()

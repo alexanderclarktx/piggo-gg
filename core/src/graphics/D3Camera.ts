@@ -1,10 +1,10 @@
-import { ClientSystemBuilder, cos, sin, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, cos, max, min, PI, sin, World, XYZdiff, XYZsub } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
   c: PerspectiveCamera
   mode: "first" | "third"
-  updated: boolean
+  transition: number
   dir: (world: World) => Vector3
   // up: () => Vector3
   setFov: (fov: number) => void
@@ -18,7 +18,7 @@ export const D3Camera = (): D3Camera => {
   const d3Camera: D3Camera = {
     c: camera,
     mode: "third",
-    updated: false,
+    transition: 125,
     dir: (world: World) => {
       if (!world.client) return new Vector3(0, 0, 0)
 
@@ -49,30 +49,53 @@ export const D3CameraSystem = () => ClientSystemBuilder({
       onRender: (entities, delta) => {
         if (!world.three || !world.client) return
 
-        const { camera } = world.three
-
         const pc = world.client.character()
         if (!pc) return
 
-        const { position } = pc.components
-        const interpolated = position.interpolate(world, delta)
-        const { x, y } = world.client.controls.localAim
+        const interpolated = pc.components.position.interpolate(world, delta)
 
-        // mark if the camera mode has updated
-        camera.updated = camera.mode !== lastMode
+        const { x, y } = world.client.controls.localAim
+        const ratio = delta / 25
+        const { camera } = world.three
+
+        if (camera.mode !== lastMode) camera.transition = 0
         lastMode = camera.mode
 
+        if (camera.transition < 125) {
+          camera.transition += ratio * 8
+        }
+
+        const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.13 }
+
+        const offset = new Vector3(-sin(x) * cos(y), sin(y), -cos(x) * cos(y)).multiplyScalar(0.6)
+        const thirdPos = { x: interpolated.x - offset.x, y: interpolated.y - offset.z, z: interpolated.z + 0.2 - offset.y }
+
+        const diff = XYZsub(firstPos, thirdPos)
+
+        const percent = max(0, min(1, camera.transition / 100))
+
         if (camera.mode === "first") {
-          camera.c.position.set(interpolated.x, interpolated.z + 0.13, interpolated.y)
+          if (camera.transition < 100) {
+            camera.c.position.set(
+              firstPos.x - diff.x * (1 - percent),
+              firstPos.z - diff.z * (1 - percent),
+              firstPos.y - diff.y * (1 - percent)
+            )
+          } else {
+            camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
+          }
           camera.c.rotation.set(y, x, 0)
         } else {
-          const offset = new Vector3(-sin(x), y, -cos(x)).multiplyScalar(0.6)
-
-          camera.c.position.set(
-            interpolated.x - offset.x, interpolated.z + 0.2 - offset.y, interpolated.y - offset.z
-          )
-
-          camera.c.lookAt(interpolated.x, interpolated.z + 0.2, interpolated.y)
+          if (camera.transition < 100) {
+            camera.c.position.set(
+              thirdPos.x + diff.x * (1 - percent),
+              thirdPos.z + diff.z * (1 - percent),
+              thirdPos.y + diff.y * (1 - percent)
+            )
+          } else {
+            camera.c.position.set(thirdPos.x, thirdPos.z, thirdPos.y)
+          }
+          camera.c.lookAt(interpolated.x, interpolated.z + 0.13 + percent * 0.07, interpolated.y)
         }
       }
     }
