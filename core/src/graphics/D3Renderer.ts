@@ -247,25 +247,25 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       })
 
       // background
-      renderer.tLoader.load("night.png", (texture: Texture) => {
-        texture.magFilter = NearestFilter
-        texture.minFilter = NearestFilter
+      // renderer.tLoader.load("night.png", (texture: Texture) => {
+      //   texture.magFilter = NearestFilter
+      //   texture.minFilter = NearestFilter
 
-        texture.mapping = 301
-        texture.colorSpace = "srgb"
+      //   texture.mapping = 301
+      //   texture.colorSpace = "srgb"
 
-        texture.wrapS = RepeatWrapping
-        texture.wrapT = RepeatWrapping
-        texture.repeat.set(3.5, 2.5)
+      //   texture.wrapS = RepeatWrapping
+      //   texture.wrapT = RepeatWrapping
+      //   texture.repeat.set(3.5, 2.5)
 
-        const sphere = new SphereGeometry(500, 60, 40)
+      //   const sphere = new SphereGeometry(500, 60, 40)
 
-        const material = new MeshBasicMaterial({ map: texture, side: 1 })
+      //   const material = new MeshBasicMaterial({ map: texture, side: 1 })
 
-        background = new Mesh(sphere, material)
+      //   background = new Mesh(sphere, material)
 
-        renderer.scene.add(background)
-      })
+      //   renderer.scene.add(background)
+      // })
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
