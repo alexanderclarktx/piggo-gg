@@ -9,13 +9,13 @@ export const createStarfieldSky = (scene: Scene) => {
       uTime: { value: 0 },
       uDensity: { value: 0.002 },               // overall star density
       uBrightness: { value: 0.8 },                // how bright the stars read
-      uTwinkle: { value: 0.35 },               // 0 = static stars
+      uTwinkle: { value: 0.15 },               // 0 = static stars
       uHorizon: { value: new Color(0x02040a).toArray().slice(0, 3) }, // deep navy
       uZenith: { value: new Color(0x000107).toArray().slice(0, 3) }, // nearly black
-      // A nice diagonal Milky Way; try different vectors
-      uMWNormal: { value: new Vector3(0.0, 0.25, 1.0).normalize() },
-      uMWWidth: { value: 0.07 },
-      uMWStrength: { value: 0.9 },
+
+      uMWNormal: { value: new Vector3(0.0, 1, 1.0).normalize() },
+      uMWWidth: { value: 0.2 },
+      uMWStrength: { value: 3 },
     },
     vertexShader,
     fragmentShader,
@@ -174,7 +174,7 @@ vec3 starLayers(vec3 dir, vec2 uv){
         vec3 cDir = octaUnproject(fract(centerUV));
 
         // slight per-star size variance
-        float r = radius * mix(0.7, 1.3, hash12(cell + 91.0));
+        float r = radius * mix(0.7, 1.1, hash12(cell + 91.0));
 
         // boost density/brightness if THIS STAR lies near MW band
         float starBand = exp(-pow(abs(dot(cDir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
