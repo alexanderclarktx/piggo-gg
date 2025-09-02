@@ -34,7 +34,6 @@ export const createStarfieldSky = (scene: Scene) => {
   // Keep the sky centered on the camera so it behaves like a skybox
   const clock = new Clock();
   const update = () => {
-    //   skyMesh.position.copy(camera.position);
     skyMat.uniforms.uTime.value = clock.getElapsedTime();
   }
 

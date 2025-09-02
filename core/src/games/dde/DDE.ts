@@ -82,7 +82,7 @@ const DDESystem = SystemBuilder({
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    createStarfieldSky(world.three!.scene)
+    const sky = createStarfieldSky(world.three!.scene)
 
     DDEMobileUI(world)
 
@@ -99,6 +99,8 @@ const DDESystem = SystemBuilder({
         const settings = world.settings<DDESettings>()
 
         const { sound } = world.client ?? {}
+
+        sky.update()
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {
