@@ -38,8 +38,8 @@ export type Client = {
     reset: () => void
   }
   controls: {
-    left: { angle: number, power: number, active: false | number }
-    right: { angle: number, power: number, active: false | number }
+    left: { angle: number, power: number, active: boolean }
+    right: { angle: number, power: number, active: boolean }
     mouse: XY
     mouseScreen: XY
     localAim: XY

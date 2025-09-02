@@ -18,19 +18,15 @@ export const Root = () => {
 
   return (
     <div>
-      <audio>
-        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav"></source>
+      <audio id="sound">
+        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=" type="audio/wav" />
       </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world) return
 
-        if (world.client!.sound.ready) return
-
-        const audioElement = document.querySelector("audio") as HTMLAudioElement
-        audioElement.play()
-
-        world.client!.sound.ready = true
+        const audioElement = document.getElementById("sound") as HTMLAudioElement
+        audioElement.play().catch(() => { })
       }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
