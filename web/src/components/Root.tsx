@@ -11,6 +11,8 @@ export const Root = () => {
   const [world, setWorld] = useState<World | undefined>()
   const [loginState, setLoginState] = useState<LoginState>("")
 
+  const ctx = new AudioContext()
+
   // expose World to the console
   useEffect(() => {
     (window as any).world = world
@@ -18,16 +20,10 @@ export const Root = () => {
 
   return (
     <div>
-      <audio id="sound">
-        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav"></source>
-      </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world || world.client?.sound.ready) return
-
-        const audioElement = document.getElementById("sound") as HTMLAudioElement
-        audioElement.play()
-
+        ctx.resume()
         world.client!.sound.ready = true
       }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
