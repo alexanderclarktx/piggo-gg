@@ -22,16 +22,16 @@ export const Root = () => {
         <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=" type="audio/wav" />
       </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
-      <div onPointerDown={async () => {
+      <div onPointerDown={() => {
         if (!world) return
-        if (world.client?.sound.ready) return
+        // if (world.client?.sound.ready) return
 
-        await world.client!.sound.context().resume()
+        // await world.client!.sound.context().resume()
 
         const audioElement = document.getElementById("sound") as HTMLAudioElement
         audioElement.play().catch(() => { })
 
-        world.client!.sound.ready = true
+        // world.client!.sound.ready = true
       }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
