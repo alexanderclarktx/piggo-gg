@@ -23,7 +23,14 @@ export const Root = () => {
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world || world.client?.sound.ready) return
+
+        // play a silent buffer
+        const source = ctx.createBufferSource()
+        source.buffer = ctx.createBuffer(1, 1, ctx.sampleRate)
+        source.connect(ctx.destination)
+        source.start(0)
         ctx.resume()
+
         world.client!.sound.ready = true
       }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
