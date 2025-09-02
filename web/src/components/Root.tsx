@@ -26,10 +26,10 @@ export const Root = () => {
         if (!world) return
         // if (!world || world.client?.sound.ready) return
 
-        audioCtx().resume()
+        // audioCtx().resume()
 
-        // const audioElement = document.getElementById("sound") as HTMLAudioElement
-        // audioElement.play().catch(() => { })
+        const audioElement = document.getElementById("sound") as HTMLAudioElement
+        audioElement.play().catch(() => { })
 
         world.client!.sound.ready = true
       }}>
