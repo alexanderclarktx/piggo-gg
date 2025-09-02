@@ -1,5 +1,5 @@
 import { entries, GunNames, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
-import { BaseContext, getContext, getTransport, Player as Tone } from "tone"
+import { getContext, getTransport, Player as Tone } from "tone"
 
 export type BirdSounds = "birdsong1"
 export type BubbleSounds = "bubble"
