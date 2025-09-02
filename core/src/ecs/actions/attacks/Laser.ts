@@ -1,5 +1,4 @@
 import {
-  abs,
   Action, Actions, Character, cos, DDEState, Effects, floor, hypot, Input,
   Item, ItemEntity, min, Networked, playerForCharacter, Position,
   sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
