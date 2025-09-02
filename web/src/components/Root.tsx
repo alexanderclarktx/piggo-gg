@@ -24,6 +24,7 @@ export const Root = () => {
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world) return
+        if (world.client?.sound.ready) return
 
         const audioElement = document.getElementById("sound") as HTMLAudioElement
         audioElement.play().catch(() => { })
