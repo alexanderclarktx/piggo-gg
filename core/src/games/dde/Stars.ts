@@ -10,10 +10,11 @@ export const createStarfieldSky = (scene: Scene) => {
       uDensity: { value: 0.002 },               // overall star density
       uBrightness: { value: 0.8 },                // how bright the stars read
       uTwinkle: { value: 0.15 },               // 0 = static stars
-      uHorizon: { value: new Color(0x02040a).toArray().slice(0, 3) }, // deep navy
-      uZenith: { value: new Color(0x000107).toArray().slice(0, 3) }, // nearly black
+      // uHorizon: { value: new Color(0x02040a).toArray().slice(0, 3) }, // deep navy
+      uHorizon: { value: new Color(0x02045a).toArray().slice(0, 3) }, // deep navy
+      uZenith: { value: new Color(0x000137).toArray().slice(0, 3) }, // nearly black
 
-      uMWNormal: { value: new Vector3(0.0, 1, 1.0).normalize() },
+      uMWNormal: { value: new Vector3(0, 1, 1).normalize() },
       uMWWidth: { value: 0.2 },
       uMWStrength: { value: 3 },
     },
@@ -119,7 +120,7 @@ vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float seed){
   float tw = 1.0 + uTwinkle * (0.5 * sin(uTime * f + ph) + 0.5 * sin(uTime * (f*0.63) + ph*1.7));
 
   float m = starDiscAngular(dir, cDir, baseR);
-  return tint * (m * tw * uBrightness);
+  return cool * (m * tw * uBrightness);
 }
 
 // -------------------- starfield --------------------
@@ -197,7 +198,7 @@ void main(){
 
   // Soft Milky Way glow on background
   float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-  bg += vec3(0.06, 0.07, 0.09) * band * uMWStrength;
+  bg += vec3(0.08, 0.03, 0.15) * band * uMWStrength;
 
   // Stars via true angular SDF discs
   vec2 uv = octaProject(dir);
