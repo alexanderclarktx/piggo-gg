@@ -18,25 +18,27 @@ export const Root = () => {
     (window as any).world = world
   }, [world])
 
+  const playAudio = () => {
+    if (!world || world.client?.sound.ready) return
+
+    // play a silent buffer
+    const source = ctx.createBufferSource()
+    source.buffer = ctx.createBuffer(1, 1, ctx.sampleRate)
+    source.connect(ctx.destination)
+    source.start(0)
+    ctx.resume()
+
+    world.client!.sound.ready = true
+  }
+
+  document.addEventListener("pointerdown", playAudio, {once: true})
+
   return (
     <div>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
-      <div onPointerDown={() => {
-        if (!world || world.client?.sound.ready) return
-
-        // play a silent buffer
-        const source = ctx.createBufferSource()
-        source.buffer = ctx.createBuffer(1, 1, ctx.sampleRate)
-        source.connect(ctx.destination)
-        source.start(0)
-        ctx.resume()
-
-        world.client!.sound.ready = true
-      }}>
-        <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
-          {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
-          <Canvas setWorld={setWorld} />
-        </div>
+      <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
+        {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
+        <Canvas setWorld={setWorld} />
       </div>
       {/* {window.location.hostname === "localhost" && (
         <FPSCounter visible={true} position="bottom-left" targetFrameRate={120} />
