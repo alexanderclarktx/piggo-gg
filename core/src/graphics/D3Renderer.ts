@@ -1,8 +1,7 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, Group, Scene,
-  LinearMipMapNearestFilter, Mesh, MeshBasicMaterial, MeshPhysicalMaterial,
-  NearestFilter, Object3DEventMap, RepeatWrapping, SphereGeometry,
-  SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, CameraHelper, DirectionalLight, Group, LinearMipMapNearestFilter,
+  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, Object3DEventMap,
+  Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -245,27 +244,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
           renderer.oak!.material[i].needsUpdate = true
         }
       })
-
-      // background
-      // renderer.tLoader.load("night.png", (texture: Texture) => {
-      //   texture.magFilter = NearestFilter
-      //   texture.minFilter = NearestFilter
-
-      //   texture.mapping = 301
-      //   texture.colorSpace = "srgb"
-
-      //   texture.wrapS = RepeatWrapping
-      //   texture.wrapT = RepeatWrapping
-      //   texture.repeat.set(3.5, 2.5)
-
-      //   const sphere = new SphereGeometry(500, 60, 40)
-
-      //   const material = new MeshBasicMaterial({ map: texture, side: 1 })
-
-      //   background = new Mesh(sphere, material)
-
-      //   renderer.scene.add(background)
-      // })
 
       const sunSphereGeometry = new SphereGeometry(10, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
