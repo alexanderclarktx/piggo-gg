@@ -11,8 +11,6 @@ export const Root = () => {
   const [world, setWorld] = useState<World | undefined>()
   const [loginState, setLoginState] = useState<LoginState>("")
 
-  const ctx = new AudioContext()
-
   // expose World to the console
   useEffect(() => {
     (window as any).world = world
@@ -21,20 +19,19 @@ export const Root = () => {
   const playAudio = () => {
     if (!world || world.client?.sound.ready) return
 
-    // play a silent buffer
-    const source = ctx.createBufferSource()
-    source.buffer = ctx.createBuffer(1, 1, ctx.sampleRate)
-    source.connect(ctx.destination)
-    source.start(0)
-    ctx.resume()
+    const audioElement = document.getElementById("sound") as HTMLAudioElement
+    audioElement.play().catch(() => {})
 
     world.client!.sound.ready = true
   }
 
-  document.addEventListener("pointerdown", playAudio, {once: true})
+  document.addEventListener("pointerdown", playAudio, { once: true })
 
   return (
     <div>
+      <audio id="sound">
+        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=" type="audio/wav" />
+      </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
         {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
