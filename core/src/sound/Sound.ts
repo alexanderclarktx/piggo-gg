@@ -10,10 +10,6 @@ export type EatSounds = "eat" | "eat2"
 export type VolleySounds = "spike"
 export type LaserSounds = "laser1"
 
-export const audioCtx = () => {
-  return getContext()
-}
-
 export type ValidSounds =
   BirdSounds | BubbleSounds | ClickSounds |
   GunNames | EatSounds | VolleySounds | LaserSounds

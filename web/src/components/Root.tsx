@@ -1,4 +1,4 @@
-import { World, audioCtx, isMobile } from "@piggo-gg/core"
+import { World, isMobile } from "@piggo-gg/core"
 import { Canvas, Title } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
@@ -24,9 +24,6 @@ export const Root = () => {
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world) return
-        // if (!world || world.client?.sound.ready) return
-
-        // audioCtx().resume()
 
         const audioElement = document.getElementById("sound") as HTMLAudioElement
         audioElement.play().catch(() => { })
