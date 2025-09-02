@@ -11,8 +11,8 @@ export const createStarfieldSky = (scene: Scene) => {
       uBrightness: { value: 0.8 },                // how bright the stars read
       uTwinkle: { value: 0.15 },               // 0 = static stars
       // uHorizon: { value: new Color(0x02040a).toArray().slice(0, 3) }, // deep navy
-      uHorizon: { value: new Color(0x02045a).toArray().slice(0, 3) }, // deep navy
-      uZenith: { value: new Color(0x000137).toArray().slice(0, 3) }, // nearly black
+      uHorizon: { value: new Color(0x02046a).toArray().slice(0, 3) }, // deep navy
+      uZenith: { value: new Color(0x000147).toArray().slice(0, 3) }, // nearly black
 
       uMWNormal: { value: new Vector3(0, 1, 1).normalize() },
       uMWWidth: { value: 0.2 },
