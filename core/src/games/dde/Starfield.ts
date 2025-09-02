@@ -5,16 +5,16 @@ import {
 type Starfield = { mesh: Mesh, material: ShaderMaterial, update: () => void }
 
 export const Starfield = (scene: Scene): Starfield => {
-  const skyGeo = new SphereGeometry(500, 60, 40)
-  const skyMat = new ShaderMaterial({
+  const geo = new SphereGeometry(500, 60, 40)
+
+  const material = new ShaderMaterial({
     uniforms: {
       uTime: { value: 0 },
-      uDensity: { value: 0.0015 },               // overall star density
-      uBrightness: { value: 0.9 },                // how bright the stars read
-      uTwinkle: { value: 0.15 },               // 0 = static stars
-      // uHorizon: { value: new Color(0x02040a).toArray().slice(0, 3) }, // deep navy
-      uHorizon: { value: new Color(0x02045a).toArray().slice(0, 3) }, // deep navy
-      uZenith: { value: new Color(0x000147).toArray().slice(0, 3) }, // nearly black
+      uDensity: { value: 0.0015 },
+      uBrightness: { value: 0.9 },
+      uTwinkle: { value: 0.15 },
+      uHorizon: { value: new Color(0x02045a).toArray().slice(0, 3) },
+      uZenith: { value: new Color(0x000147).toArray().slice(0, 3) },
 
       uMWNormal: { value: new Vector3(0, 1, 1).normalize() },
       uMWWidth: { value: 0.16 },
@@ -26,21 +26,20 @@ export const Starfield = (scene: Scene): Starfield => {
     depthWrite: false,
     depthTest: true,
     fog: false,
-    toneMapped: false,          // keep stars crisp; let the scene be tonemapped separately
-    // extensions: { derivatives: true }
+    toneMapped: true
   })
 
-  const skyMesh = new Mesh(skyGeo, skyMat)
-  skyMesh.frustumCulled = false // always render
-  scene.add(skyMesh)
+  const mesh = new Mesh(geo, material)
+  mesh.frustumCulled = false
 
-  // Keep the sky centered on the camera so it behaves like a skybox
-  const clock = new Clock();
+  scene.add(mesh)
+
+  const clock = new Clock()
   const update = () => {
-    skyMat.uniforms.uTime.value = clock.getElapsedTime();
+    material.uniforms.uTime.value = clock.getElapsedTime()
   }
 
-  return { mesh: skyMesh, material: skyMat, update }
+  return { mesh, material, update }
 }
 
 const vertexShader = /* glsl */`
