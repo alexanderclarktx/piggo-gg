@@ -1,6 +1,5 @@
 import {
-  BackSide, BoxGeometry, Clock, Color, Mesh, Scene,
-  ShaderMaterial, SphereGeometry, Vector3
+  Clock, Color, Mesh, Scene, ShaderMaterial, SphereGeometry, Vector3
 } from "three"
 
 export const createStarfieldSky = (scene: Scene) => {
