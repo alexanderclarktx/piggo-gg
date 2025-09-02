@@ -7,8 +7,8 @@ export const createStarfieldSky = (scene: Scene) => {
   const skyMat = new ShaderMaterial({
     uniforms: {
       uTime: { value: 0 },
-      uDensity: { value: 0.02 },               // overall star density
-      uBrightness: { value: 1.4 },                // how bright the stars read
+      uDensity: { value: 0.002 },               // overall star density
+      uBrightness: { value: 0.8 },                // how bright the stars read
       uTwinkle: { value: 0.35 },               // 0 = static stars
       uHorizon: { value: new Color(0x02040a).toArray().slice(0, 3) }, // deep navy
       uZenith: { value: new Color(0x000107).toArray().slice(0, 3) }, // nearly black
@@ -53,113 +53,157 @@ const fragmentShader = /* glsl */`
 precision highp float;
 
 uniform float uTime;
-uniform float uDensity;
-uniform float uBrightness;
-uniform float uTwinkle;
+uniform float uDensity;     // 0..1
+uniform float uBrightness;  // overall star brightness
+uniform float uTwinkle;     // 0 = static
 uniform vec3  uHorizon;
 uniform vec3  uZenith;
 
-uniform vec3  uMWNormal;
-uniform float uMWWidth;
-uniform float uMWStrength;
+uniform vec3  uMWNormal;    // Milky Way great-circle normal
+uniform float uMWWidth;     // angular width
+uniform float uMWStrength;  // band strength
 
 varying vec3 vWorldPosition;
 
-// ----------------- utilities -----------------
 const float PI = 3.141592653589793;
 
+// -------------------- hash utils --------------------
 float hash12(vec2 p){
-  // pseuodorandom in [0,1)
-  vec3 p3  = fract(vec3(p.xyx) * 0.1031);
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
   p3 += dot(p3, p3.yzx + 33.33);
   return fract((p3.x + p3.y) * p3.z);
 }
-
 vec2 hash22(vec2 p){
-  // 2D random
   float n = hash12(p);
-  float m = hash12(p + n + 19.19);
+  float m = hash12(p + 19.19);
   return vec2(n, m);
 }
 
-// equirectangular map of direction to [0,1]^2
-vec2 dirToUV(vec3 d){
-  d = normalize(d);
-  float u = atan(d.z, d.x) / (2.0*PI) + 0.5; // [-pi,pi] -> [0,1]
-  float v = asin(clamp(d.y, -1.0, 1.0)) / PI + 0.5; // [-pi/2,pi/2] -> [0,1]
-  return vec2(u, v);
+// -------------------- octahedral mapping --------------------
+// Less distortion than equirectangular for distributing points.
+vec2 octaProject(vec3 v){
+  v = normalize(v);
+  v /= (abs(v.x) + abs(v.y) + abs(v.z));
+  vec2 uv = v.xz;
+  if (v.y < 0.0) uv = (1.0 - abs(uv.yx)) * sign(uv);
+  return uv * 0.5 + 0.5; // [0,1]^2
+}
+vec3 octaUnproject(vec2 e){
+  e = e * 2.0 - 1.0;
+  vec3 v = vec3(e.x, 1.0 - abs(e.x) - abs(e.y), e.y);
+  float t = clamp(-v.y, 0.0, 1.0);
+  v.x += v.x >= 0.0 ? -t :  t;
+  v.z += v.z >= 0.0 ? -t :  t;
+  return normalize(v);
 }
 
-// Soft circular star (anti-aliased with smoothstep only)
-float starDisc(vec2 p, vec2 c, float r){
-  float d = distance(p, c);
-  // core then halo
-  float core  = 1.0 - smoothstep(r*0.5, r, d);
-  float halo  = 1.0 - smoothstep(r, r*1.8, d);
+// -------------------- SDF disc on the sphere --------------------
+// Use true angular distance for perfectly round stars.
+float starDiscAngular(vec3 dir, vec3 centerDir, float r){
+  float ang = acos(clamp(dot(dir, centerDir), -1.0, 1.0)); // radians
+  float core = 1.0 - smoothstep(r*0.55, r, ang);
+  float halo = 1.0 - smoothstep(r, r*1.9, ang);
   return core + 0.35 * halo;
 }
 
-// One starfield layer; returns rgb contribution
-vec3 starLayer(vec2 uv, float scale, float density, float bandBoost, float time){
-  // grid in uv-space
-  vec2 g      = uv * scale;
-  vec2 cell   = floor(g);
-  vec2 f      = fract(g);
+// Single star stamp (SDF circle) with tint and twinkle
+vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float seed){
+  // per-star color temperature
+  vec3 cool = vec3(0.82, 0.92, 1.00);
+  vec3 warm = vec3(1.00, 0.93, 0.86);
+  vec3 tint = mix(cool, warm, seed);
 
-  // whether this cell spawns a star
-  float choose = hash12(cell);
-  float thresh = 1.0 - clamp(density * bandBoost, 0.0, 0.995);
-  float present = step(thresh, choose);
+  // twinkle
+  float f = 2.0 + 7.0 * fract(seed * 13.7);
+  float ph = 6.2831853 * fract(seed * 5.3);
+  float tw = 1.0 + uTwinkle * (0.5 * sin(uTime * f + ph) + 0.5 * sin(uTime * (f*0.63) + ph*1.7));
 
-  // random center and radius inside the cell
-  vec2  rnd2   = hash22(cell + 17.0);
-  vec2  center = rnd2;                // random center inside the cell
-  float rCell  = mix(0.10, 0.30, rnd2.x*rnd2.x); // radius in *cell* units (tiny)
-  float disc   = starDisc(f, center, rCell);
+  float m = starDiscAngular(dir, cDir, baseR);
+  return tint * (m * tw * uBrightness);
+}
 
-  // color temperature: cool->warm
-  vec3 cool = vec3(0.80, 0.90, 1.00);
-  vec3 warm = vec3(1.00, 0.92, 0.85);
-  vec3 tint = mix(cool, warm, hash12(cell + 3.7));
+// -------------------- starfield --------------------
+// We place SDF circles using octahedral UV, but avoid visible grid artifacts by:
+//  - using octa mapping (no pole streaking)
+//  - sampling only a tiny 3x3 neighborhood per scale (cheap)
+//  - layering multiple incommensurate scales and slight rotations
+// This keeps stars fixed in space while remaining efficient.
+mat2 rot(float a){ float s=sin(a), c=cos(a); return mat2(c,-s,s,c); }
 
-  // twinkle (per-cell frequency & phase)
-  float twF   = 2.0 + 6.0 * rnd2.y;
-  float twP   = 6.2831853 * rnd2.x;
-  float tw    = 1.0 + uTwinkle * (0.5 * sin(time * twF + twP) + 0.5 * sin(time * (twF*0.67) + twP*1.7));
+vec3 starLayers(vec3 dir, vec2 uv){
+  vec3 acc = vec3(0.0);
 
-  float intensity = present * disc * tw * uBrightness;
+  // Milky Way boosts local density near the band
+  float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
+  float bandBoost = 1.0 + uMWStrength * band;
 
-  return tint * intensity;
+  // Three layers: big (sparse), medium, tiny (dense)
+  // Scales chosen irrational-ish and rotated to kill repetition.
+  const int R = 1; // neighborhood radius (3x3)
+  for (int layer = 0; layer < 3; ++layer){
+    float scale   = (layer==0) ? 420.0 : (layer==1) ? 1111.0 : 2777.0;
+    float densMul = (layer==0) ? 0.55 : (layer==1) ? 0.35   : 0.18;
+    float radius  = (layer==0) ? 0.0040: (layer==1)? 0.0024 : 0.0016; // in radians
+
+    vec2 uvr = (layer==0) ? (uv * rot(0.32)) :
+               (layer==1) ? (uv * rot(1.13)) :
+                            (uv * rot(2.07));
+
+    vec2 g = uvr * scale;           // into tile space
+    vec2 c0 = floor(g);
+
+    // check a tiny neighborhood; at most a few stars light up
+    for (int j = -R; j <= R; ++j){
+      for (int i = -R; i <= R; ++i){
+        vec2 cell = c0 + vec2(float(i), float(j));
+        // decide if this tile spawns a star
+        float h = hash12(cell + float(layer)*17.0);
+        float threshold = 1.0 - clamp(uDensity * densMul * bandBoost, 0.0, 0.995);
+        float present = step(threshold, h);
+        if (present < 0.5) continue;
+
+        // random center in this tile + slight per-layer jitter
+        vec2 r2 = hash22(cell + 7.0);
+        vec2 centerUV = (cell + r2) / scale;
+        // undo layer rotation
+        centerUV = (layer==0) ? (centerUV * rot(-0.32)) :
+                   (layer==1) ? (centerUV * rot(-1.13)) :
+                                (centerUV * rot(-2.07));
+
+        // center direction on the sphere
+        vec3 cDir = octaUnproject(fract(centerUV));
+
+        // slight per-star size variance
+        float r = radius * mix(0.7, 1.3, hash12(cell + 91.0));
+
+        // boost density/brightness if THIS STAR lies near MW band
+        float starBand = exp(-pow(abs(dot(cDir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
+        float boost = 1.0 + uMWStrength * starBand;
+
+        acc += stampStar(dir, cDir, r, h) * boost;
+      }
+    }
+  }
+
+  return acc;
 }
 
 void main(){
-  // view direction
-  vec3 dir = normalize(vWorldPosition);
+  vec3 dir = normalize(vWorldPosition - cameraPosition);
 
-  // vertical gradient background
+  // Background vertical gradient
   float t = smoothstep(-0.1, 0.9, dir.y);
   vec3 bg = mix(uHorizon, uZenith, t);
 
-  // Milky Way band factor (gaussian around great-circle defined by uMWNormal)
-  float invW = 1.0 / max(uMWWidth, 1e-4);
-  float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) * invW, 2.0));
-
-  // subtle milky way glow on the background
+  // Soft Milky Way glow on background
+  float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
   bg += vec3(0.06, 0.07, 0.09) * band * uMWStrength;
 
-  // convert direction to [0,1]^2 for star placement
-  vec2 uv = dirToUV(dir);
+  // Stars via true angular SDF discs
+  vec2 uv = octaProject(dir);
+  vec3 stars = starLayers(dir, uv);
 
-  // star layers (different scales -> sizes)
-  float baseDensity = clamp(uDensity, 0.0, 0.995);
-  float bandBoost   = 1.0 + uMWStrength * band;
-
-  vec3 stars = vec3(0.0);
-  stars += starLayer(uv, 650.0,  baseDensity * 0.70, bandBoost, uTime); // larger, sparser
-  stars += starLayer(uv, 1800.0, baseDensity * 0.45, bandBoost, uTime); // smaller, denser
-  stars += starLayer(uv, 4200.0, baseDensity * 0.20, bandBoost, uTime); // tiniest specks
-
-  // final color with a tiny bit of dithering to reduce banding
+  // tiny dithering to reduce gradient banding
   float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
   vec3 color = bg + stars + dither;
 
