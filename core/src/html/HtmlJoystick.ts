@@ -3,7 +3,7 @@ import { Client, HtmlDiv, min, pow, sqrt, XY } from "@piggo-gg/core"
 export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv => {
 
   const idle = side === "left" ? "rgba(200, 60, 200, 0.5)" : "rgba(0, 100, 200, 0.5)"
-  const active = side === "left" ? "rgba(200, 250, 200, 0.8)" : "rgba(0, 100, 200, 0.8)"
+  const active = side === "left" ? "rgba(200, 60, 200, 0.8)" : "rgba(0, 100, 200, 0.8)"
 
   const stick = HtmlDiv({
     ...side === "left" ? { left: "15%" } : { right: "15%" },
