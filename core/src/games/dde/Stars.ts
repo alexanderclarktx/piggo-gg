@@ -110,8 +110,8 @@ float starDiscAngular(vec3 dir, vec3 centerDir, float r){
 // Single star stamp (SDF circle) with tint and twinkle
 vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float seed){
   // per-star color temperature
-  vec3 cool = vec3(0.82, 0.92, 1.00);
-  vec3 warm = vec3(1.00, 0.93, 0.86);
+  vec3 cool = vec3(0.2, 0.3, 1.00);
+  vec3 warm = vec3(1.00, 0.2, 0.3);
   vec3 tint = mix(cool, warm, seed);
 
   // twinkle
@@ -120,7 +120,7 @@ vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float seed){
   float tw = 1.0 + uTwinkle * (0.5 * sin(uTime * f + ph) + 0.5 * sin(uTime * (f*0.63) + ph*1.7));
 
   float m = starDiscAngular(dir, cDir, baseR);
-  return cool * (m * tw * uBrightness);
+  return tint * (m * tw * uBrightness);
 }
 
 // -------------------- starfield --------------------
@@ -157,8 +157,10 @@ vec3 starLayers(vec3 dir, vec2 uv){
     for (int j = -R; j <= R; ++j){
       for (int i = -R; i <= R; ++i){
         vec2 cell = c0 + vec2(float(i), float(j));
+
         // decide if this tile spawns a star
         float h = hash12(cell + float(layer)*17.0);
+
         float threshold = 1.0 - clamp(uDensity * densMul * bandBoost, 0.0, 0.995);
         float present = step(threshold, h);
         if (present < 0.5) continue;
