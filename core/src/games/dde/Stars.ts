@@ -64,16 +64,40 @@ float hash3(vec3 p) {
   return fract(p.x * p.y * p.z);
 }
 
+vec2 hash2(vec3 p) {
+  return vec2(hash3(p+1.0), hash3(p+2.0));
+}
+
 void main() {
   vec3 dir = normalize(vWorldPosition - cameraPosition);
 
-  // Random per direction cell
-  vec3 cell = floor(dir * 128.0);  // quantize direction space
-  float rnd = hash3(cell);
+  // Quantize into a 2D grid on sphere direction (XZ for simplicity)
+  vec2 uv = normalize(dir.xz);
+  vec2 cell = floor(uv * 64.0);      // controls density
+  float rnd = hash3(vec3(cell, 0.0));
 
-  float star = step(0.997, rnd); // density
-  vec3 color = vec3(star);
+  // Gate: only some cells have stars
+  if (rnd < 0.995) {
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    return;
+  }
 
-  gl_FragColor = vec4(color, 1.0);
+  // Random offset inside cell
+  vec2 jitter = hash2(vec3(cell, 1.0));
+  vec2 f = fract(uv * 64.0) - jitter;
+
+  // Distance from star center
+  float d = length(f);
+  float radius = 0.02; // star size
+  float edge = 0.005;  // softness
+  float shape = 1.0 - smoothstep(radius - edge, radius + edge, d);
+
+  // Color tint
+  float tint = hash3(vec3(cell, 2.0));
+  vec3 warm = vec3(1.0, 0.92, 0.78);
+  vec3 cool = vec3(0.78, 0.90, 1.0);
+  vec3 starColor = mix(warm, cool, tint);
+
+  gl_FragColor = vec4(starColor * shape, 1.0);
 }
 `
