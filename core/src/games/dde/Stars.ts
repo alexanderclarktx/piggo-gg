@@ -59,33 +59,21 @@ varying vec3 vWorldPosition;
 const float PI = 3.141592653589793;
 
 // --- simple hash function for repeatable randomness ---
-float hash(vec2 p) {
-  p = fract(p * vec2(123.34, 456.21));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
+float hash3(vec3 p) {
+  p = fract(p * 0.3183099 + vec3(0.1,0.2,0.3));
+  p += dot(p, p.yzx + 19.19);
+  return fract(p.x * p.y * p.z);
 }
 
 void main() {
-  // direction from camera to fragment (on inside of sphere)
   vec3 dir = normalize(vWorldPosition - cameraPosition);
 
-  // equirectangular UV from direction
-  float u = atan(dir.z, dir.x) / (2.0*PI) + 0.5;
-  float v = asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5;
-  vec2 uv = vec2(u, v);
+  // Random per direction cell
+  vec3 cell = floor(dir * 128.0);  // quantize direction space
+  float rnd = hash3(cell);
 
-  // scale up to a grid (controls star density)
-  vec2 grid = floor(uv * 200.0);   // 200x200 grid of possible stars
-  float rnd = hash(grid);
-
-  // only some cells contain stars
-  float star = step(0.995, rnd);   // about 0.5% of cells become stars
-
-  // brightness: fade edges with fwidth for AA
-  float brightness = star;
-
-  vec3 color = vec3(0.0);
-  color += vec3(brightness);
+  float star = step(0.997, rnd); // density
+  vec3 color = vec3(star);
 
   gl_FragColor = vec4(color, 1.0);
 }
