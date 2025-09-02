@@ -1,5 +1,5 @@
 import { entries, GunNames, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
-import { getContext, getTransport, Player as Tone } from "tone"
+import { BaseContext, getContext, getTransport, Player as Tone } from "tone"
 
 export type BirdSounds = "birdsong1"
 export type BubbleSounds = "bubble"
@@ -38,6 +38,7 @@ export type Sound = {
   ready: boolean
   state: "closed" | "running" | "suspended"
   tones: Record<ValidSounds, Tone>
+  context: () => BaseContext
   stop: (name: ValidSounds) => void
   stopAll: () => void
   play: (props: SoundPlayProps) => boolean
@@ -89,6 +90,7 @@ export const Sound = (world: World): Sound => {
       spike: load("spike.mp3", 5),
       laser1: load("laser1.mp3", -15)
     },
+    context: () => getContext(),
     stop: (name: ValidSounds) => {
       const tone = sound.tones[name]
       if (tone) {

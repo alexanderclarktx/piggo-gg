@@ -22,9 +22,11 @@ export const Root = () => {
         <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=" type="audio/wav" />
       </audio>
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
-      <div onPointerDown={() => {
+      <div onPointerDown={async () => {
         if (!world) return
         if (world.client?.sound.ready) return
+
+        await world.client!.sound.context().resume()
 
         const audioElement = document.getElementById("sound") as HTMLAudioElement
         audioElement.play().catch(() => { })
