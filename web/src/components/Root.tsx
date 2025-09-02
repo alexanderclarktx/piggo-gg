@@ -18,9 +18,9 @@ export const Root = () => {
 
   return (
     <div>
-      <audio id="sound">
+      {/* <audio id="sound">
         <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=" type="audio/wav" />
-      </audio>
+      </audio> */}
       <Toaster position="bottom-center" containerStyle={{ fontFamily: "sans-serif" }} />
       <div onPointerDown={() => {
         if (!world) return
@@ -28,8 +28,8 @@ export const Root = () => {
 
         audioCtx().resume()
 
-        const audioElement = document.getElementById("sound") as HTMLAudioElement
-        audioElement.play().catch(() => { })
+        // const audioElement = document.getElementById("sound") as HTMLAudioElement
+        // audioElement.play().catch(() => { })
 
         world.client!.sound.ready = true
       }}>
