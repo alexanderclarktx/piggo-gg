@@ -1,7 +1,7 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input, Inventory,
   LaserItem, max, min, Networked, PI, Place, Player, Point, Position, Ready,
-  round, setActiveItemIndex, sqrt, Team, Three, World, XYZ, XZ
+  round, setActiveItemIndex, sin, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { VillagersSettings, VillagersState } from "./Villagers"
@@ -157,11 +157,11 @@ export const Bird = (player: Player): Character => {
           const { localAim } = client.controls
           const { power, angle } = client.controls.left
 
-          let dir = { x: Math.cos(angle), y: Math.sin(angle) }
+          let dir = { x: cos(angle), y: sin(angle) }
 
           dir = {
-            x: dir.x * Math.cos(-localAim.x) - dir.y * Math.sin(-localAim.x),
-            y: dir.x * Math.sin(-localAim.x) + dir.y * Math.cos(-localAim.x)
+            x: dir.x * cos(-localAim.x) - dir.y * sin(-localAim.x),
+            y: dir.x * sin(-localAim.x) + dir.y * cos(-localAim.x)
           }
 
           return { actionId: "moveAnalog", params: { dir, power, angle } }
