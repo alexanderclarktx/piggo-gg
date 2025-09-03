@@ -235,7 +235,7 @@ export const RollbackSyncer = (world: World): Syncer => {
           }
         }
 
-        if (added || removed) console.log(`tick:${world.tick} AVillagersD:${added} REMOVED:${removed}`)
+        if (added || removed) console.log(`tick:${world.tick} ADDED:${added} REMOVED:${removed}`)
 
         // set actions
         if (message.actions[message.tick]) {
