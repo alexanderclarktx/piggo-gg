@@ -12,16 +12,16 @@ export const MobileUI = (world: World): MobileUI => {
     style: {
       bottom: "170px", left: "calc(15% + 40px)",
       transform: "translate(-50%)",
-      backgroundColor: "rgba(55, 150, 250, 0.5)",
+      backgroundColor: "rgba(255, 150, 50, 0.5)",
       width: "36px", height: "36px", borderRadius: "50%"
     },
     onClick: () => {
       const { camera } = world.three!
       camera.mode = camera.mode === "first" ? "third" : "first"
-      povButton.style.backgroundColor = "rgba(55, 150, 250, 0.9)"
+      povButton.style.backgroundColor = "rgba(255, 200, 50, 0.9)"
     },
     onRelease: () => {
-      povButton.style.backgroundColor = "rgba(55, 150, 250, 0.5)"
+      povButton.style.backgroundColor = "rgba(255, 150, 50, 0.5)"
     }
   })
 
