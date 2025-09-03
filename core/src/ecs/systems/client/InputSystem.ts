@@ -200,7 +200,9 @@ export const InputSystem = ClientSystemBuilder({
 
         if (actions.actionMap["point"]) {
           world.actions.push(world.tick + 1, character.id, {
-            actionId: "point", playerId: client.playerId(), params: { pointing, pointingDelta, aim: position.data.aim }
+            actionId: "point", playerId: client.playerId(), params: {
+              pointing, pointingDelta, aim: localAim()
+            }
           })
         }
       } else if (world.three) {
