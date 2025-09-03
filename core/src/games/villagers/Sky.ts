@@ -12,7 +12,6 @@ export const Sky = (scene: Scene): Sky => {
       uTime: { value: 0 },
       uDensity: { value: 0.0015 },
       uBrightness: { value: 0.9 },
-      uTwinkle: { value: 0.15 },
       uHorizon: { value: new Color(0x02045a).toArray().slice(0, 3) },
       uZenith: { value: new Color(0x000147).toArray().slice(0, 3) },
 
@@ -57,7 +56,6 @@ precision highp float;
 uniform float uTime;
 uniform float uDensity;     // 0..1
 uniform float uBrightness;  // overall star brightness
-uniform float uTwinkle;     // 0 = static
 uniform vec3  uHorizon;
 uniform vec3  uZenith;
 
@@ -107,21 +105,15 @@ float starDiscAngular(vec3 dir, vec3 centerDir, float r){
 }
 
 // -------------------- star stamp --------------------
-vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float colorSeed, float twinkleSeed){
-  // color tint (cool → warm)
+vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float colorSeed){
   vec3 cool = vec3(0.8, 0.7, 1.00);
   vec3 warm = vec3(1.00, 1, 0.6);
+
   float t = smoothstep(0.15, 0.85, colorSeed);
   vec3 tint = mix(cool, warm, t);
 
-  // twinkle
-  float f  = 2.0 + 7.0 * fract(twinkleSeed * 13.7);
-  float ph = 6.2831853 * fract(twinkleSeed * 5.3);
-  float tw = 1.0 + uTwinkle * (0.5 * sin(uTime * f + ph)
-                             + 0.5 * sin(uTime * (f*0.63) + ph*1.7));
-
   float m = starDiscAngular(dir, cDir, baseR);
-  return tint * (m * tw * uBrightness);
+  return tint * (m * uBrightness);
 }
 
 // -------------------- starfield --------------------
@@ -156,7 +148,6 @@ vec3 starLayers(vec3 dir, vec2 uv){
 
         // independent seeds
         float colorSeed   = hash12(cell + 113.0 + float(layer)*7.0);
-        float twinkleSeed = hash12(cell + 53.0  + float(layer)*11.0);
         float sizeSeed    = hash12(cell + 91.0  + float(layer)*5.0);
 
         vec2 r2 = hash22(cell + 7.0);
@@ -171,7 +162,7 @@ vec3 starLayers(vec3 dir, vec2 uv){
         float starBand = exp(-pow(abs(dot(cDir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
         float boost = 1.0 + uMWStrength * starBand;
 
-        acc += stampStar(dir, cDir, r, colorSeed, twinkleSeed) * boost;
+        acc += stampStar(dir, cDir, r, colorSeed) * boost;
       }
     }
   }
