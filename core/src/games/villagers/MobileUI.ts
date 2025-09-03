@@ -68,11 +68,6 @@ export const MobileUI = (world: World): MobileUI => {
     onClick: () => {
       world.client!.mobileLock = !world.client!.mobileLock
 
-      // const visibility = world.client!.mobileLock ? "hidden" : "visible"
-      // transformButton.style.visibility = visibility
-      // leftJoystick.style.visibility = visibility
-      // rightJoystick.style.visibility = visibility
-
       menuButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
     },
     onRelease: () => {
