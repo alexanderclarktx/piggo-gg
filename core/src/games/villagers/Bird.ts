@@ -157,11 +157,12 @@ export const Bird = (player: Player): Character => {
           const { localAim } = client.controls
           const { power, angle } = client.controls.left
 
-          let dir = { x: cos(angle), y: sin(angle) }
+          const x = cos(angle)
+          const y = sin(angle)
 
-          dir = {
-            x: dir.x * cos(-localAim.x) - dir.y * sin(-localAim.x),
-            y: dir.x * sin(-localAim.x) + dir.y * cos(-localAim.x)
+          const dir = {
+            x: x * cos(-localAim.x) - y * sin(-localAim.x),
+            y: x * sin(-localAim.x) + y * cos(-localAim.x)
           }
 
           return { actionId: "moveAnalog", params: { dir, power, angle } }

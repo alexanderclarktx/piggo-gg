@@ -19,7 +19,7 @@ export type JoystickHandler = (_: { character: Character, world: World, client: 
 export type InputMap = {
   press: Record<string, KeyHandler>
   release: Record<string, KeyHandler>
-  joystick: JoystickHandler
+  joystick: JoystickHandler // TODO separate left/right handlers
 }
 
 export type Input = Component<"input"> & {
