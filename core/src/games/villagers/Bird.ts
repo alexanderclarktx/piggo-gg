@@ -171,9 +171,16 @@ export const Bird = (player: Player): Character => {
             if (!client.mobile) world.three?.pointerLock()
             return null
           },
-          "mb1": ({ world, target }) => {
+          "mb1": ({ world, target, client }) => {
             if (target !== "canvas") return null
-            if (world.client?.mobile) return null
+
+            if (client.mobile && client.mobileLock) {
+              client.mobileLock = false
+              return null
+            }
+
+            if (client.mobile) return null
+
             world.three?.pointerLock()
             return null
           }

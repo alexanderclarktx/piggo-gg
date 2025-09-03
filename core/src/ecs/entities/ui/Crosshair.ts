@@ -8,8 +8,8 @@ export const Crosshair = () => {
     left: "50%",
     top: "50%",
     transform: "translate(-50%, -50%)",
-    width: "6px",
-    height: "6px",
+    width: "5px",
+    height: "5px",
     backgroundColor: "rgba(0, 255, 255, 1)",
     border: "0px",
     borderRadius: "50%",
@@ -25,7 +25,7 @@ export const Crosshair = () => {
           const settings = world.settings<VillagersSettings>()
           if (!world.client || !world.three) return
 
-          const locked = world.client.mobile ? world.three.mobileLock : document.pointerLockElement
+          const locked = world.client.mobile ? !world.client.mobileLock : document.pointerLockElement
           const item = world.client?.character()?.components.inventory?.activeItem(world)
 
           div.style.visibility = (locked && item && settings.showCrosshair) ? "visible" : "hidden"

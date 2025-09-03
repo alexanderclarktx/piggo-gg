@@ -86,7 +86,7 @@ const VillagersSystem = SystemBuilder({
 
     world.three?.scene.add(Sky().mesh)
 
-    MobileUI(world)
+    const mobileUI = MobileUI(world)
 
     let blocksRendered = false
     let applesSpawned = false
@@ -101,6 +101,8 @@ const VillagersSystem = SystemBuilder({
         const settings = world.settings<VillagersSettings>()
 
         const { sound } = world.client ?? {}
+
+        mobileUI?.update()
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {
