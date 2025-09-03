@@ -58,7 +58,6 @@ export const MobileUI = (world: World): MobileUI => {
       world.client!.mobileLock = !world.client!.mobileLock
 
       const visibility = world.client!.mobileLock ? "hidden" : "visible"
-      jumpButton.style.visibility = visibility
       transformButton.style.visibility = visibility
       leftJoystick.style.visibility = visibility
       rightJoystick.style.visibility = visibility
@@ -85,7 +84,7 @@ export const MobileUI = (world: World): MobileUI => {
 
       const { flying } = world.client.character()?.components.position.data ?? {}
 
-      jumpButton.style.visibility = flying ? "hidden" : "visible"
+      jumpButton.style.visibility = (flying || world.client?.mobileLock) ? "hidden" : "visible"
     }
   }
 }
