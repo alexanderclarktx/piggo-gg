@@ -123,7 +123,7 @@ vec3 starLayers(vec3 dir, vec2 uv){
   vec3 acc = vec3(0.0);
 
   float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-  float bandBoost = 1.0 + uMWStrength * band;
+  // float bandBoost = 1.0 + uMWStrength * band;
 
   const int R = 1;
   for (int layer = 0; layer < 3; ++layer){
@@ -143,7 +143,7 @@ vec3 starLayers(vec3 dir, vec2 uv){
         vec2 cell = c0 + vec2(float(i), float(j));
 
         float selSeed = hash12(cell + float(layer)*17.0);
-        float threshold = 1.0 - clamp(uDensity * densMul * bandBoost, 0.0, 0.995);
+        float threshold = 1.0 - clamp(uDensity * densMul, 0.0, 0.995);
         if (selSeed < threshold) continue;
 
         // independent seeds
@@ -159,10 +159,7 @@ vec3 starLayers(vec3 dir, vec2 uv){
         vec3 cDir = octaUnproject(fract(centerUV));
         float r = radius * mix(0.7, 1.3, sizeSeed);
 
-        float starBand = exp(-pow(abs(dot(cDir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-        float boost = 1.0 + uMWStrength * starBand;
-
-        acc += stampStar(dir, cDir, r, colorSeed) * boost;
+        acc += stampStar(dir, cDir, r, colorSeed);
       }
     }
   }
@@ -175,8 +172,8 @@ void main(){
   float t = smoothstep(-0.1, 0.9, dir.y);
   vec3 bg = mix(uHorizon, uZenith, t);
 
-  float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-  bg += vec3(0.08, 0.03, 0.15) * band * uMWStrength;
+  // float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
+  // bg += vec3(0.08, 0.03, 0.15) * band * uMWStrength;
 
   vec2 uv = octaProject(dir);
   vec3 stars = starLayers(dir, uv);
