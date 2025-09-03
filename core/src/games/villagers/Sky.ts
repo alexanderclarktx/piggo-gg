@@ -59,10 +59,6 @@ uniform float uBrightness;  // overall star brightness
 uniform vec3  uHorizon;
 uniform vec3  uZenith;
 
-uniform vec3  uMWNormal;    // Milky Way great-circle normal
-uniform float uMWWidth;     // angular width
-uniform float uMWStrength;  // band strength
-
 varying vec3 vWorldPosition;
 
 const float PI = 3.141592653589793;
@@ -122,9 +118,6 @@ mat2 rot(float a){ float s=sin(a), c=cos(a); return mat2(c,-s,s,c); }
 vec3 starLayers(vec3 dir, vec2 uv){
   vec3 acc = vec3(0.0);
 
-  float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-  // float bandBoost = 1.0 + uMWStrength * band;
-
   const int R = 1;
   for (int layer = 0; layer < 3; ++layer){
     float scale   = (layer==0) ? 420.0 : (layer==1) ? 1111.0 : 2777.0;
@@ -157,7 +150,7 @@ vec3 starLayers(vec3 dir, vec2 uv){
                                 (centerUV * rot(-2.07));
 
         vec3 cDir = octaUnproject(fract(centerUV));
-        float r = radius * mix(0.7, 1.3, sizeSeed);
+        float r = radius * mix(0.7, 1.8, sizeSeed);
 
         acc += stampStar(dir, cDir, r, colorSeed);
       }
@@ -171,9 +164,6 @@ void main(){
 
   float t = smoothstep(-0.1, 0.9, dir.y);
   vec3 bg = mix(uHorizon, uZenith, t);
-
-  // float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-  // bg += vec3(0.08, 0.03, 0.15) * band * uMWStrength;
 
   vec2 uv = octaProject(dir);
   vec3 stars = starLayers(dir, uv);
