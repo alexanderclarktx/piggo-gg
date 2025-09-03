@@ -3,7 +3,6 @@ import { Action, blockFromXYZ, floor, hypot, min, XYZ, XYZequal } from "@piggo-g
 export type PlaceParams = {
   pos: XYZ
   dir: XYZ
-  // aim: XYZ
 }
 
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
@@ -16,8 +15,6 @@ export const Place = Action<PlaceParams>("place", ({ params, world }) => {
 
   let travelled = 0
   let cap = 15
-
-  // const dir = { ... aim }
 
   while (travelled < 10 && cap > 0) {
 

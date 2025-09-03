@@ -223,7 +223,7 @@ export const Bird = (player: Player): Character => {
             return null
           },
 
-          "mb2": ({ hold, world, character, aim }) => {
+          "mb2": ({ hold, world, character }) => {
             if (hold) return null
             if (!character) return null
 
@@ -231,7 +231,7 @@ export const Bird = (player: Player): Character => {
 
             const pos = character.components.position.xyz()
 
-            return { actionId: "place", params: { aim, dir, pos } }
+            return { actionId: "place", params: { dir, pos } }
           },
 
           // transform
