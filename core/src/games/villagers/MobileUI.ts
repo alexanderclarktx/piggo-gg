@@ -67,7 +67,6 @@ export const MobileUI = (world: World): MobileUI => {
     text: "menu",
     onClick: () => {
       world.client!.mobileLock = !world.client!.mobileLock
-
       menuButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
     },
     onRelease: () => {
