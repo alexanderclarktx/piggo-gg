@@ -27,7 +27,7 @@ export type D3Renderer = {
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
-  pointerLock: () => void
+  pointerLock: () => void // TODO move to Client
   pointerUnlock: () => void
   sunLookAt: (x: number, y: number, z: number) => void
 }
