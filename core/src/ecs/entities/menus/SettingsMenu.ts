@@ -20,13 +20,15 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   })
 
   const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
-  const showCrosshair = boolRow(world, "Show Crosshair", "showCrosshair")
   const showControls = boolRow(world, "Show Controls", "showControls")
+  const showCrosshair = boolRow(world, "Show Crosshair", "showCrosshair")
+  const showNametags = boolRow(world, "Show Nametags", "showNametags")
   const sensitivity = numRow(world, "Mouse Sensitivity", "mouseSensitivity")
 
   div.appendChild(ambientSound.div)
-  div.appendChild(showCrosshair.div)
   div.appendChild(showControls.div)
+  div.appendChild(showCrosshair.div)
+  div.appendChild(showNametags.div)
   div.appendChild(sensitivity.div)
 
   return {
@@ -36,6 +38,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
       styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
       styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
       styleSwitch(showCrosshair.button, settings.showCrosshair, showCrosshair.button.matches(":hover"))
+      styleSwitch(showNametags.button, settings.showNametags, showNametags.button.matches(":hover"))
     }
   }
 }
@@ -84,7 +87,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
   return { div, input }
 }
 
-const boolRow = (world: World, text: string, key: "ambientSound" | "showControls" | "showCrosshair"): { div: HtmlDiv, button: HtmlButton } => {
+const boolRow = (world: World, text: string, key: "ambientSound" | "showControls" | "showCrosshair" | "showNametags"): { div: HtmlDiv, button: HtmlButton } => {
   const label = HtmlText({
     text,
     style: {
