@@ -1,12 +1,12 @@
-import { ClientSystemBuilder, cos, max, min, PI, sin, World, XYZdiff, XYZsub } from "@piggo-gg/core"
+import { ClientSystemBuilder, cos, max, min, sin, World, XYZ, XYZsub } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
 export type D3Camera = {
   c: PerspectiveCamera
   mode: "first" | "third"
   transition: number
-  dir: (world: World) => Vector3
-  // up: () => Vector3
+  dir: (world: World) => XYZ
+  pos: () => XYZ
   setFov: (fov: number) => void
 }
 
@@ -24,9 +24,14 @@ export const D3Camera = (): D3Camera => {
 
       const { localAim } = world.client.controls
 
-      return new Vector3(
-        -sin(localAim.x) * cos(localAim.y), sin(localAim.y), -cos(localAim.x) * cos(localAim.y)
-      ).normalize()
+      return XYZ(new Vector3(
+        -sin(localAim.x) * cos(localAim.y),
+        -cos(localAim.x) * cos(localAim.y),
+        sin(localAim.y),
+      ).normalize())
+    },
+    pos: () => {
+      return XYZ(d3Camera.c.position)
     },
     setFov: (fov: number) => {
       camera.fov = fov

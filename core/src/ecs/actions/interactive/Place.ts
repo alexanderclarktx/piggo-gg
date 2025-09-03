@@ -8,7 +8,7 @@ export type PlaceParams = {
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   const { pos, dir } = params
 
-  const current = { ...pos, z: pos.z + 0.13 }
+  const current = { ...pos }
 
   const playerBlock = blockFromXYZ(pos)
   const lastBlock = blockFromXYZ(current)
