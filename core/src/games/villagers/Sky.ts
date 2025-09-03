@@ -1,10 +1,10 @@
 import {
-  Clock, Color, Mesh, Scene, ShaderMaterial, SphereGeometry, Vector3
+  Clock, Color, Mesh, ShaderMaterial, SphereGeometry
 } from "three"
 
-type Starfield = { mesh: Mesh, material: ShaderMaterial, update: () => void }
+type Sky = { mesh: Mesh, material: ShaderMaterial, update: () => void }
 
-export const Starfield = (scene: Scene): Starfield => {
+export const Sky = (): Sky => {
   const geo = new SphereGeometry(500, 60, 40)
 
   const material = new ShaderMaterial({
@@ -12,13 +12,8 @@ export const Starfield = (scene: Scene): Starfield => {
       uTime: { value: 0 },
       uDensity: { value: 0.0015 },
       uBrightness: { value: 0.9 },
-      uTwinkle: { value: 0.15 },
-      uHorizon: { value: new Color(0x02045a).toArray().slice(0, 3) },
-      uZenith: { value: new Color(0x000147).toArray().slice(0, 3) },
-
-      uMWNormal: { value: new Vector3(0, 1, 1).normalize() },
-      uMWWidth: { value: 0.16 },
-      uMWStrength: { value: 2.5 },
+      uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
+      uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
     },
     vertexShader,
     fragmentShader,
@@ -31,8 +26,6 @@ export const Starfield = (scene: Scene): Starfield => {
 
   const mesh = new Mesh(geo, material)
   mesh.frustumCulled = false
-
-  scene.add(mesh)
 
   const clock = new Clock()
   const update = () => {
@@ -57,13 +50,8 @@ precision highp float;
 uniform float uTime;
 uniform float uDensity;     // 0..1
 uniform float uBrightness;  // overall star brightness
-uniform float uTwinkle;     // 0 = static
 uniform vec3  uHorizon;
 uniform vec3  uZenith;
-
-uniform vec3  uMWNormal;    // Milky Way great-circle normal
-uniform float uMWWidth;     // angular width
-uniform float uMWStrength;  // band strength
 
 varying vec3 vWorldPosition;
 
@@ -107,21 +95,15 @@ float starDiscAngular(vec3 dir, vec3 centerDir, float r){
 }
 
 // -------------------- star stamp --------------------
-vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float colorSeed, float twinkleSeed){
-  // color tint (cool → warm)
+vec3 stampStar(vec3 dir, vec3 cDir, float baseR, float colorSeed){
   vec3 cool = vec3(0.8, 0.7, 1.00);
   vec3 warm = vec3(1.00, 1, 0.6);
+
   float t = smoothstep(0.15, 0.85, colorSeed);
   vec3 tint = mix(cool, warm, t);
 
-  // twinkle
-  float f  = 2.0 + 7.0 * fract(twinkleSeed * 13.7);
-  float ph = 6.2831853 * fract(twinkleSeed * 5.3);
-  float tw = 1.0 + uTwinkle * (0.5 * sin(uTime * f + ph)
-                             + 0.5 * sin(uTime * (f*0.63) + ph*1.7));
-
   float m = starDiscAngular(dir, cDir, baseR);
-  return tint * (m * tw * uBrightness);
+  return tint * (m * uBrightness);
 }
 
 // -------------------- starfield --------------------
@@ -129,9 +111,6 @@ mat2 rot(float a){ float s=sin(a), c=cos(a); return mat2(c,-s,s,c); }
 
 vec3 starLayers(vec3 dir, vec2 uv){
   vec3 acc = vec3(0.0);
-
-  float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-  float bandBoost = 1.0 + uMWStrength * band;
 
   const int R = 1;
   for (int layer = 0; layer < 3; ++layer){
@@ -151,12 +130,11 @@ vec3 starLayers(vec3 dir, vec2 uv){
         vec2 cell = c0 + vec2(float(i), float(j));
 
         float selSeed = hash12(cell + float(layer)*17.0);
-        float threshold = 1.0 - clamp(uDensity * densMul * bandBoost, 0.0, 0.995);
+        float threshold = 1.0 - clamp(uDensity * densMul, 0.0, 0.995);
         if (selSeed < threshold) continue;
 
         // independent seeds
         float colorSeed   = hash12(cell + 113.0 + float(layer)*7.0);
-        float twinkleSeed = hash12(cell + 53.0  + float(layer)*11.0);
         float sizeSeed    = hash12(cell + 91.0  + float(layer)*5.0);
 
         vec2 r2 = hash22(cell + 7.0);
@@ -166,12 +144,9 @@ vec3 starLayers(vec3 dir, vec2 uv){
                                 (centerUV * rot(-2.07));
 
         vec3 cDir = octaUnproject(fract(centerUV));
-        float r = radius * mix(0.7, 1.3, sizeSeed);
+        float r = radius * mix(0.7, 1.8, sizeSeed);
 
-        float starBand = exp(-pow(abs(dot(cDir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-        float boost = 1.0 + uMWStrength * starBand;
-
-        acc += stampStar(dir, cDir, r, colorSeed, twinkleSeed) * boost;
+        acc += stampStar(dir, cDir, r, colorSeed);
       }
     }
   }
@@ -183,9 +158,6 @@ void main(){
 
   float t = smoothstep(-0.1, 0.9, dir.y);
   vec3 bg = mix(uHorizon, uZenith, t);
-
-  float band = exp(-pow(abs(dot(dir, normalize(uMWNormal))) / max(uMWWidth, 1e-4), 2.0));
-  bg += vec3(0.08, 0.03, 0.15) * band * uMWStrength;
 
   vec2 uv = octaProject(dir);
   vec3 stars = starLayers(dir, uv);

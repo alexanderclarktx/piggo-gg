@@ -341,7 +341,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.07
           } else {
             position.data.velocity.z -= position.data.gravity
-            position.data.velocity.z = max(position.data.velocity.z, -0.25)
+            position.data.velocity.z = max(position.data.velocity.z, -0.2)
           }
 
           // x/y movement

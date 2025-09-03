@@ -1,4 +1,4 @@
-import { DDEState, Entity, Networked, NPC, Position, World, XYZ, XYZdistance, XYZequal } from "@piggo-gg/core"
+import { VillagersState, Entity, Networked, NPC, Position, World, XYZ, XYZdistance, XYZequal } from "@piggo-gg/core"
 import { Group } from "three"
 
 export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
@@ -69,7 +69,7 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
               if (position.data.flying) return
 
               // update state
-              const state = world.game.state as DDEState
+              const state = world.game.state as VillagersState
 
               if (!state.applesEaten[player.id]) {
                 state.applesEaten[player.id] = 1

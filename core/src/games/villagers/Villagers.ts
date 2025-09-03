@@ -7,11 +7,11 @@ import {
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
-import { DDEMobileUI } from "./DDEMobileUI"
+import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
-import { Starfield } from "./Starfield"
+import { Sky } from "./Sky"
 
-export type DDEState = {
+export type VillagersState = {
   applesEaten: Record<string, number>
   doubleJumped: string[]
   hit: Record<string, { tick: number, by: string }>
@@ -24,14 +24,14 @@ export type DDEState = {
   willStart: undefined | number
 }
 
-export type DDESettings = {
+export type VillagersSettings = {
   ambientSound: boolean
   showControls: boolean
   showCrosshair: boolean
   mouseSensitivity: number
 }
 
-export const DDE: GameBuilder<DDEState, DDESettings> = {
+export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
   id: "Duck Duck Eagle",
   init: (world) => ({
     id: "Duck Duck Eagle",
@@ -59,7 +59,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       BlockPhysicsSystem("global"),
       BlockPhysicsSystem("local"),
       D3CameraSystem(),
-      DDESystem,
+      VillagersSystem,
       HUDSystem,
       D3NametagSystem,
       ThreeSystem,
@@ -75,32 +75,30 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
   })
 }
 
-const DDESystem = SystemBuilder({
-  id: "DDESystem",
+const VillagersSystem = SystemBuilder({
+  id: "VillagersSystem",
   init: (world) => {
 
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    const starfield = Starfield(world.three!.scene)
+    world.three!.scene.add(Sky().mesh)
 
-    DDEMobileUI(world)
+    MobileUI(world)
 
     let blocksRendered = false
     let applesSpawned = false
     let ambient = false
 
     return {
-      id: "DDESystem",
+      id: "VillagersSystem",
       query: [],
       priority: 3,
       onTick: () => {
-        const state = world.state<DDEState>()
-        const settings = world.settings<DDESettings>()
+        const state = world.state<VillagersState>()
+        const settings = world.settings<VillagersSettings>()
 
         const { sound } = world.client ?? {}
-
-        starfield.update()
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {

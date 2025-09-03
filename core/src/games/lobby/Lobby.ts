@@ -1,5 +1,5 @@
 import {
-  Actions, arrayEqual, Background, colors, Cursor, DDE, DudeSkin, Entity,
+  Actions, arrayEqual, Background, colors, Cursor, Villagers, DudeSkin, Entity,
   GameBuilder, Ghost, loadTexture, MusicBox, Networked, NPC, PC, PixiButton,
   PixiChat, pixiContainer, pixiGraphics, pixiRect, pixiText, Position,
   randomInt, Renderable, RenderSystem, Team, TeamColors, World, XY
@@ -472,7 +472,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [DDE]
+  const list: GameBuilder[] = [Villagers]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({
