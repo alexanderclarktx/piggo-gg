@@ -28,6 +28,7 @@ export type VillagersSettings = {
   ambientSound: boolean
   showControls: boolean
   showCrosshair: boolean
+  showNametags: boolean
   mouseSensitivity: number
 }
 
@@ -40,6 +41,7 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
       ambientSound: true,
       showControls: true,
       showCrosshair: true,
+      showNametags: true,
       mouseSensitivity: 1
     },
     state: {
@@ -82,7 +84,7 @@ const VillagersSystem = SystemBuilder({
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    world.three!.scene.add(Sky().mesh)
+    world.three?.scene.add(Sky().mesh)
 
     MobileUI(world)
 
