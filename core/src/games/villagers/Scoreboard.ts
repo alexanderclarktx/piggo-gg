@@ -1,5 +1,5 @@
 import {
-  DDEState, Entity, HtmlDiv, HtmlText, NPC,
+  VillagersState, Entity, HtmlDiv, HtmlText, NPC,
   Player, Position, RefreshableDiv, World
 } from "@piggo-gg/core"
 
@@ -56,7 +56,7 @@ export const Scoreboard = (): Entity => {
             world.three?.append(container)
           }
 
-          const state = world.state<DDEState>()
+          const state = world.state<VillagersState>()
           const players = world.players()
 
           let pointsChanged = false
@@ -117,7 +117,7 @@ const PlayerRow = (player: Player, world: World): RefreshableDiv => {
   })
 
   const status = (): string => {
-    const state = world.state<DDEState>()
+    const state = world.state<VillagersState>()
     if (state.phase === "warmup") {
       return player.components.pc.data.ready ? "🟢" : "🔴"
     } else {

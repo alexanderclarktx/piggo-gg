@@ -11,7 +11,7 @@ import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
 import { Starfield } from "./Starfield"
 
-export type DDEState = {
+export type VillagersState = {
   applesEaten: Record<string, number>
   doubleJumped: string[]
   hit: Record<string, { tick: number, by: string }>
@@ -24,14 +24,14 @@ export type DDEState = {
   willStart: undefined | number
 }
 
-export type DDESettings = {
+export type VillagersSettings = {
   ambientSound: boolean
   showControls: boolean
   showCrosshair: boolean
   mouseSensitivity: number
 }
 
-export const DDE: GameBuilder<DDEState, DDESettings> = {
+export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
   id: "Duck Duck Eagle",
   init: (world) => ({
     id: "Duck Duck Eagle",
@@ -59,7 +59,7 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
       BlockPhysicsSystem("global"),
       BlockPhysicsSystem("local"),
       D3CameraSystem(),
-      DDESystem,
+      VillagersSystem,
       HUDSystem,
       D3NametagSystem,
       ThreeSystem,
@@ -75,8 +75,8 @@ export const DDE: GameBuilder<DDEState, DDESettings> = {
   })
 }
 
-const DDESystem = SystemBuilder({
-  id: "DDESystem",
+const VillagersSystem = SystemBuilder({
+  id: "VillagersSystem",
   init: (world) => {
 
     world.three?.activate(world)
@@ -91,12 +91,12 @@ const DDESystem = SystemBuilder({
     let ambient = false
 
     return {
-      id: "DDESystem",
+      id: "VillagersSystem",
       query: [],
       priority: 3,
       onTick: () => {
-        const state = world.state<DDEState>()
-        const settings = world.settings<DDESettings>()
+        const state = world.state<VillagersState>()
+        const settings = world.settings<VillagersSettings>()
 
         const { sound } = world.client ?? {}
 

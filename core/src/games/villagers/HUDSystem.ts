@@ -1,7 +1,7 @@
 import {
   HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory
 } from "@piggo-gg/core"
-import { DDESettings, DDEState } from "./Villagers"
+import { VillagersSettings, VillagersState } from "./Villagers"
 
 export const HUDSystem = ClientSystemBuilder({
   id: "HUDSystem",
@@ -90,7 +90,7 @@ export const HUDSystem = ClientSystemBuilder({
       query: [],
       priority: 10,
       onTick: () => {
-        const settings = world.settings<DDESettings>()
+        const settings = world.settings<VillagersSettings>()
         controls.style.display = settings.showControls ? "block" : "none"
 
         const down = client.bufferDown.all()?.map(key => key.key)
@@ -123,7 +123,7 @@ export const HUDSystem = ClientSystemBuilder({
 
         inventory.update()
 
-        const state = world.game.state as DDEState
+        const state = world.game.state as VillagersState
         const pcApplesEaten = state.applesEaten[client.playerId() || ""] || 0
 
         const isWarmup = state.phase === "warmup"

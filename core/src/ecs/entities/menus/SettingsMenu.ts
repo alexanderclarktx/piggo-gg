@@ -1,5 +1,5 @@
 import {
-  DDESettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText,
+  VillagersSettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText,
   max, min, RefreshableDiv, round, styleSwitch, World
 } from "@piggo-gg/core"
 
@@ -32,7 +32,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   return {
     div,
     update: () => {
-      const settings = world.settings<DDESettings>()
+      const settings = world.settings<VillagersSettings>()
       styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
       styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
       styleSwitch(showCrosshair.button, settings.showCrosshair, showCrosshair.button.matches(":hover"))
@@ -65,7 +65,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
 
       const final = min(5, max(round(num, 2), 0.01))
 
-      world.settings<DDESettings>().mouseSensitivity = final
+      world.settings<VillagersSettings>().mouseSensitivity = final
       return final.toFixed(2)
     }
   })
@@ -108,7 +108,7 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
       pointerEvents: "auto"
     },
     onClick: () => {
-      const settings = world.settings<DDESettings>()
+      const settings = world.settings<VillagersSettings>()
       settings[key] = !settings[key]
     }
   })
