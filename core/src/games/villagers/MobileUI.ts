@@ -8,15 +8,29 @@ export const MobileUI = (world: World): MobileUI => {
   const leftJoystick = HtmlJoystick(world.client, "left")
   const rightJoystick = HtmlJoystick(world.client, "right")
 
+  const povButton = HtmlButton({
+    style: {
+      bottom: "220px", left: "10%",
+      transform: "translate(-50%)",
+      backgroundColor: "rgba(55, 150, 250, 0.5)",
+      width: "36px", height: "36px", borderRadius: "50%"
+    },
+    onClick: () => {
+      const { camera } = world.three!
+      camera.mode = camera.mode === "first" ? "third" : "first"
+      povButton.style.backgroundColor = "rgba(55, 150, 250, 0.9)"
+    },
+    onRelease: () => {
+      povButton.style.backgroundColor = "rgba(55, 150, 250, 0.5)"
+    }
+  })
+
   const transformButton = HtmlButton({
     style: {
-      bottom: "140px",
-      left: "10%",
+      bottom: "140px", left: "10%",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 150, 0.5)",
-      width: "54px",
-      height: "54px",
-      borderRadius: "50%"
+      width: "54px", height: "54px", borderRadius: "50%"
     },
     onClick: () => {
       world.actions.push(
@@ -31,13 +45,10 @@ export const MobileUI = (world: World): MobileUI => {
 
   const jumpButton = HtmlButton({
     style: {
-      bottom: "140px",
-      right: "10%",
+      bottom: "140px", right: "10%",
       transform: "translate(50%)",
       backgroundColor: "rgba(20, 255, 60, 0.5)",
-      width: "54px",
-      height: "54px",
-      borderRadius: "50%"
+      width: "54px", height: "54px", borderRadius: "50%"
     },
     onClick: () => {
       world.actions.push(
@@ -50,7 +61,7 @@ export const MobileUI = (world: World): MobileUI => {
     }
   })
 
-  world.three?.append(transformButton, jumpButton, leftJoystick, rightJoystick)
+  world.three?.append(povButton, transformButton, jumpButton, leftJoystick, rightJoystick)
 
   const menuButton = HtmlButton({
     text: "menu",
