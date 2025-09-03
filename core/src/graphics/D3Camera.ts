@@ -60,14 +60,13 @@ export const D3CameraSystem = () => ClientSystemBuilder({
         const interpolated = pc.components.position.interpolate(world, delta)
 
         const { x, y } = world.client.controls.localAim
-        const ratio = delta / 25
         const { camera } = world.three
 
         if (camera.mode !== lastMode) camera.transition = 0
         lastMode = camera.mode
 
         if (camera.transition < 125) {
-          camera.transition += ratio * 8
+          camera.transition += delta / 25 * 8
         }
 
         const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.13 }
