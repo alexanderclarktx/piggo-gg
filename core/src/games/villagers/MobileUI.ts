@@ -68,10 +68,10 @@ export const MobileUI = (world: World): MobileUI => {
     onClick: () => {
       world.client!.mobileLock = !world.client!.mobileLock
 
-      const visibility = world.client!.mobileLock ? "hidden" : "visible"
-      transformButton.style.visibility = visibility
-      leftJoystick.style.visibility = visibility
-      rightJoystick.style.visibility = visibility
+      // const visibility = world.client!.mobileLock ? "hidden" : "visible"
+      // transformButton.style.visibility = visibility
+      // leftJoystick.style.visibility = visibility
+      // rightJoystick.style.visibility = visibility
 
       menuButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
     },
@@ -96,6 +96,12 @@ export const MobileUI = (world: World): MobileUI => {
       const { flying } = world.client.character()?.components.position.data ?? {}
 
       jumpButton.style.visibility = (flying || world.client?.mobileLock) ? "hidden" : "visible"
+
+      const visibility = world.client!.mobileLock ? "hidden" : "visible"
+      povButton.style.visibility = visibility
+      transformButton.style.visibility = visibility
+      leftJoystick.style.visibility = visibility
+      rightJoystick.style.visibility = visibility
     }
   }
 }
