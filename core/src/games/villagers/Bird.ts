@@ -4,7 +4,7 @@ import {
   round, setActiveItemIndex, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
-import { VillagersState } from "./Villagers"
+import { VillagersSettings, VillagersState } from "./Villagers"
 
 const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
   const camera = world.three?.camera
@@ -211,6 +211,15 @@ export const Bird = (player: Player): Character => {
             if (hold) return null
             const { camera } = world.three!
             camera.mode = camera.mode === "first" ? "third" : "first"
+            return null
+          },
+
+          "n": ({ world, hold }) => {
+            if (hold) return null
+
+            const settings = world.settings<VillagersSettings>()
+            settings.showNametags = !settings.showNametags
+
             return null
           },
 
