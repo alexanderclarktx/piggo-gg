@@ -10,7 +10,7 @@ export const MobileUI = (world: World): MobileUI => {
 
   const povButton = HtmlButton({
     style: {
-      bottom: "220px", left: "10%",
+      bottom: "170px", left: "calc(15% + 40px)",
       transform: "translate(-50%)",
       backgroundColor: "rgba(55, 150, 250, 0.5)",
       width: "36px", height: "36px", borderRadius: "50%"
@@ -30,7 +30,7 @@ export const MobileUI = (world: World): MobileUI => {
       bottom: "140px", left: "10%",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 150, 0.5)",
-      width: "54px", height: "54px", borderRadius: "50%"
+      width: "36px", height: "36px", borderRadius: "50%"
     },
     onClick: () => {
       world.actions.push(

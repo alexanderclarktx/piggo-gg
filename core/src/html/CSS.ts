@@ -20,7 +20,7 @@ export type CSS = Partial<{
   height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
   imageRendering: "auto" | "crisp-edges" | "pixelated"
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
-  left: `${number}%` | `${number}px` | `${number}dvh`
+  left: `${number}%` | `${number}px` | `${number}dvh` | `calc(${string})`
   lineHeight: `${number}px`
   margin: `${number}px` | `${number}%` | "0 auto"
   marginBottom: `${number}px` | `${number}%` | "env(safe-area-inset-bottom)"
