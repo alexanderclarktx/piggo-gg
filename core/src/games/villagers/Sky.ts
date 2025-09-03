@@ -2,9 +2,9 @@ import {
   Clock, Color, Mesh, Scene, ShaderMaterial, SphereGeometry, Vector3
 } from "three"
 
-type Starfield = { mesh: Mesh, material: ShaderMaterial, update: () => void }
+type Sky = { mesh: Mesh, material: ShaderMaterial, update: () => void }
 
-export const Starfield = (scene: Scene): Starfield => {
+export const Sky = (scene: Scene): Sky => {
   const geo = new SphereGeometry(500, 60, 40)
 
   const material = new ShaderMaterial({

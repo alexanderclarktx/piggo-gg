@@ -9,7 +9,7 @@ import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
 import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
-import { Starfield } from "./Starfield"
+import { Sky } from "./Sky"
 
 export type VillagersState = {
   applesEaten: Record<string, number>
@@ -82,7 +82,7 @@ const VillagersSystem = SystemBuilder({
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    const starfield = Starfield(world.three!.scene)
+    const starfield = Sky(world.three!.scene)
 
     MobileUI(world)
 
