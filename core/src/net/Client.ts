@@ -54,6 +54,7 @@ export type Client = {
   },
   ms: number
   mobile: boolean
+  mobileLock: boolean
   player: Player
   sound: Sound
   token: string | undefined
@@ -149,6 +150,7 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     ms: 0,
     mobile: isMobile(),
+    mobileLock: true,
     player,
     sound: Sound(world),
     token: undefined,

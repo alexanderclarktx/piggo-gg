@@ -22,7 +22,6 @@ export type D3Renderer = {
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   sun: undefined | DirectionalLight
-  mobileLock: boolean
   append: (...elements: HTMLElement[]) => void
   setDebug: (state?: boolean) => void
   activate: (world: World) => void
@@ -53,7 +52,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     sun: undefined,
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
-    mobileLock: true,
     append: (...elements: HTMLElement[]) => {
       renderer.canvas.parentElement?.append(...elements)
     },

@@ -55,9 +55,9 @@ export const MobileUI = (world: World): MobileUI => {
   const menuButton = HtmlButton({
     text: "menu",
     onClick: () => {
-      world.three!.mobileLock = !world.three!.mobileLock
+      world.client!.mobileLock = !world.client!.mobileLock
 
-      const visibility = world.three?.mobileLock ? "visible" : "hidden"
+      const visibility = world.client!.mobileLock ? "visible" : "hidden"
       jumpButton.style.visibility = visibility
       transformButton.style.visibility = visibility
       leftJoystick.style.visibility = visibility

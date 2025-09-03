@@ -25,7 +25,7 @@ export const Crosshair = () => {
           const settings = world.settings<VillagersSettings>()
           if (!world.client || !world.three) return
 
-          const locked = world.client.mobile ? world.three.mobileLock : document.pointerLockElement
+          const locked = world.client.mobile ? world.client.mobileLock : document.pointerLockElement
           const item = world.client?.character()?.components.inventory?.activeItem(world)
 
           div.style.visibility = (locked && item && settings.showCrosshair) ? "visible" : "hidden"
