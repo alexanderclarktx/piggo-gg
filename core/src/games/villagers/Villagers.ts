@@ -82,7 +82,7 @@ const VillagersSystem = SystemBuilder({
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    const starfield = Sky(world.three!.scene)
+    world.three!.scene.add(Sky().mesh)
 
     MobileUI(world)
 
@@ -99,8 +99,6 @@ const VillagersSystem = SystemBuilder({
         const settings = world.settings<VillagersSettings>()
 
         const { sound } = world.client ?? {}
-
-        starfield.update()
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {

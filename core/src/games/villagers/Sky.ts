@@ -1,10 +1,10 @@
 import {
-  Clock, Color, Mesh, Scene, ShaderMaterial, SphereGeometry, Vector3
+  Clock, Color, Mesh, ShaderMaterial, SphereGeometry
 } from "three"
 
 type Sky = { mesh: Mesh, material: ShaderMaterial, update: () => void }
 
-export const Sky = (scene: Scene): Sky => {
+export const Sky = (): Sky => {
   const geo = new SphereGeometry(500, 60, 40)
 
   const material = new ShaderMaterial({
@@ -26,8 +26,6 @@ export const Sky = (scene: Scene): Sky => {
 
   const mesh = new Mesh(geo, material)
   mesh.frustumCulled = false
-
-  scene.add(mesh)
 
   const clock = new Clock()
   const update = () => {
