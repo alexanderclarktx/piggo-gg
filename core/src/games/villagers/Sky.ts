@@ -12,7 +12,7 @@ export const Sky = (): Sky => {
       uTime: { value: 0 },
       uDensity: { value: 0.0015 },
       uBrightness: { value: 0.9 },
-      uHorizon: { value: new Color(0x000055).toArray().slice(0, 3) },
+      uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
       uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
     },
     vertexShader,
