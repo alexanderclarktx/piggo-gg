@@ -223,15 +223,15 @@ export const Bird = (player: Player): Character => {
             return null
           },
 
-          "mb2": ({ hold, world, character }) => {
+          "mb2": ({ hold, world, character, aim }) => {
             if (hold) return null
             if (!character) return null
 
-            const dir = world.three!.camera.dir(world)
+            const dir = XYZ(world.three!.camera.dir(world))
 
             const pos = character.components.position.xyz()
 
-            return { actionId: "place", params: { dir, pos } }
+            return { actionId: "place", params: { aim, dir, pos } }
           },
 
           // transform

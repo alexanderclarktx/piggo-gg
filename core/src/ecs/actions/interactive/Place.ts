@@ -3,18 +3,21 @@ import { Action, blockFromXYZ, floor, hypot, min, XYZ, XYZequal } from "@piggo-g
 export type PlaceParams = {
   pos: XYZ
   dir: XYZ
+  // aim: XYZ
 }
 
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   const { pos, dir } = params
 
-  const current = { ...pos, z: pos.z + 0.2 }
+  const current = { ...pos, z: pos.z + 0.13 }
 
   const playerBlock = blockFromXYZ(pos)
   const lastBlock = blockFromXYZ(current)
 
   let travelled = 0
   let cap = 15
+
+  // const dir = { ... aim }
 
   while (travelled < 10 && cap > 0) {
 
