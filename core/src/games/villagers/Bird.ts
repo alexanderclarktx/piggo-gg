@@ -4,7 +4,7 @@ import {
   round, setActiveItemIndex, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
-import { DDEState } from "./DDE"
+import { DDEState } from "./Villagers"
 
 const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
   const camera = world.three?.camera

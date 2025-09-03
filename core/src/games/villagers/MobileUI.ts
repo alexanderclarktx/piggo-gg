@@ -1,6 +1,6 @@
 import { HtmlButton, HtmlJoystick, World } from "@piggo-gg/core"
 
-export const DDEMobileUI = (world: World) => {
+export const MobileUI = (world: World) => {
   if (!world.client?.mobile || !world.three) return
 
   const leftJoystick = HtmlJoystick(world.client, "left")

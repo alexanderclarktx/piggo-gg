@@ -7,7 +7,7 @@ import {
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
-import { DDEMobileUI } from "./DDEMobileUI"
+import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
 import { Starfield } from "./Starfield"
 
@@ -84,7 +84,7 @@ const DDESystem = SystemBuilder({
 
     const starfield = Starfield(world.three!.scene)
 
-    DDEMobileUI(world)
+    MobileUI(world)
 
     let blocksRendered = false
     let applesSpawned = false

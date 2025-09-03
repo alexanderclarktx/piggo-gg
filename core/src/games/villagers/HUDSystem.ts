@@ -1,7 +1,7 @@
 import {
   HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory
 } from "@piggo-gg/core"
-import { DDESettings, DDEState } from "./DDE"
+import { DDESettings, DDEState } from "./Villagers"
 
 export const HUDSystem = ClientSystemBuilder({
   id: "HUDSystem",
