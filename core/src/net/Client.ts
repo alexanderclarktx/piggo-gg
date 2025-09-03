@@ -150,7 +150,7 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     ms: 0,
     mobile: isMobile(),
-    mobileLock: true,
+    mobileLock: false,
     player,
     sound: Sound(world),
     token: undefined,

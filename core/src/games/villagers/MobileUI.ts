@@ -57,7 +57,7 @@ export const MobileUI = (world: World): MobileUI => {
     onClick: () => {
       world.client!.mobileLock = !world.client!.mobileLock
 
-      const visibility = world.client!.mobileLock ? "visible" : "hidden"
+      const visibility = world.client!.mobileLock ? "hidden" : "visible"
       jumpButton.style.visibility = visibility
       transformButton.style.visibility = visibility
       leftJoystick.style.visibility = visibility
