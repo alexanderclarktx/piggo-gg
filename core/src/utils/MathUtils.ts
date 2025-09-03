@@ -47,12 +47,12 @@ export const XY = (vec: Vector3): XY => {
   return { x: vec.x, y: vec.y }
 }
 
-export const XZ = (vec: Vector3): XZ => {
-  return { x: vec.x, z: vec.z }
+export const XZ = (xyz: XYZ): XZ => {
+  return { x: xyz.x, z: xyz.z }
 }
 
 export const XYZ = (vec: Vector3): XYZ => {
-  return { x: vec.x, y: vec.y, z: vec.z }
+  return { x: vec.x, y: vec.z, z: vec.y }
 }
 
 export const XYdistance = (a: XY, b: XY): number => {
