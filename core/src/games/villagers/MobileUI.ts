@@ -1,7 +1,9 @@
 import { HtmlButton, HtmlJoystick, World } from "@piggo-gg/core"
 
-export const MobileUI = (world: World) => {
-  if (!world.client?.mobile || !world.three) return
+type MobileUI = null | { update: () => void }
+
+export const MobileUI = (world: World): MobileUI => {
+  if (!world.client?.mobile || !world.three) return null
 
   const leftJoystick = HtmlJoystick(world.client, "left")
   const rightJoystick = HtmlJoystick(world.client, "right")
@@ -76,4 +78,14 @@ export const MobileUI = (world: World) => {
   })
 
   world.three.append(menuButton)
+
+  return {
+    update: () => {
+      if (!world.client?.mobile) return
+
+      const { flying } = world.client.character()?.components.position.data ?? {}
+
+      jumpButton.style.visibility = flying ? "hidden" : "visible"
+    }
+  }
 }
