@@ -200,7 +200,9 @@ export const InputSystem = ClientSystemBuilder({
 
         if (actions.actionMap["point"]) {
           world.actions.push(world.tick + 1, character.id, {
-            actionId: "point", playerId: client.playerId(), params: { pointing, pointingDelta, aim: position.data.aim }
+            actionId: "point", playerId: client.playerId(), params: {
+              pointing, pointingDelta, aim: localAim()
+            }
           })
         }
       } else if (world.three) {
@@ -414,7 +416,7 @@ export const InputSystem = ClientSystemBuilder({
         if (renderer) mouse = renderer?.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
-        if (!document.hasFocus()) {
+        if (!document.hasFocus() && !client.mobile) {
           client.bufferDown.clear()
           client.bufferUp.clear()
           return

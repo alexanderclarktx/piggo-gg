@@ -63,7 +63,7 @@ export const Login = ({ world, setLoginState, loginState }: LoginProps) => {
   }
 
   setInterval(() => {
-    if (!googleSetUp) setupGoogle()
+    if (!googleSetUp && !world?.client?.mobile) setupGoogle()
 
     if (!world?.client) return
 

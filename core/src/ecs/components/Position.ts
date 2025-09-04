@@ -35,7 +35,6 @@ export type Position = Component<"position", {
   setRotation: (_: number) => Position
   setVelocity: (_: { x?: number, y?: number, z?: number }) => Position
   scaleVelocity: (factor: number) => Position
-  moveAim: (_: XY) => Position
   impulse: (_: { x?: number, y?: number, z?: number }) => Position
   interpolate: (world: World, delta: number) => XYZ
   setSpeed: (_: number) => void
@@ -131,14 +130,6 @@ export const Position = (props: PositionProps = {}): Position => {
       if (abs(position.data.velocity.x) < 0.02) position.data.velocity.x = 0
       if (abs(position.data.velocity.y) < 0.02) position.data.velocity.y = 0
 
-      return position
-    },
-    moveAim: ({ x, y }: XY) => {
-      position.data.aim.x = round(position.data.aim.x - x, 3)
-      position.data.aim.y = round(position.data.aim.y - y, 3)
-
-      const factor = position.data.flying ? 1.1 : 0.6166
-      position.data.aim.y = max(-factor, min(factor, position.data.aim.y))
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
