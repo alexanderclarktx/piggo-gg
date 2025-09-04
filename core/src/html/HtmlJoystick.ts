@@ -1,4 +1,4 @@
-import { Client, HtmlDiv, min, sqrt, XY } from "@piggo-gg/core"
+import { Client, HtmlDiv, min, pow, sqrt, XY } from "@piggo-gg/core"
 
 export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv => {
 
@@ -37,9 +37,9 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
     stick.style.transform = `translate(${x}px, ${y}px)`
 
     if (side === "left") {
-      client.controls.left = { power: dist / 40, angle: angle, active: true }
+      client.controls.left = { power: pow(dist / 40, 2), angle: angle, active: true }
     } else {
-      client.controls.right = { power: dist / 40, angle: angle, active: true }
+      client.controls.right = { power: pow(dist / 40, 2), angle: angle, active: true }
     }
   }
 
