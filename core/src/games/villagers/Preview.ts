@@ -63,53 +63,15 @@ export const Preview = (world: World): null | Preview => {
           z: floor(current.z / 0.3)
         }
 
-        type Face = "bottom" | "top" | "front" | "back" | "left" | "right"
         const type = world.blocks.atIJK(insideBlock)
         if (type) {
-          // find which face
-          // const face: face
 
-          let hitFace: Face | null = null
-
-          if (minStep === xStep) {
-            hitFace = dir.x > 0 ? "front" : "back"
-          } else if (minStep === yStep) {
-            hitFace = dir.z > 0 ? "left" : "right"
-          } else if (minStep === zStep) {
-            hitFace = dir.y > 0 ? "bottom" : "top"
-          }
-          if (!hitFace) return
-
-          // console.log("face", hitFace)
-
-          switch (hitFace) {
-            case "right":
-              mesh.position.x = insideBlock.x * 0.3
-              mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3
-              mesh.rotation.set(0, 0, 0)
-              break
-            case "left":
-              mesh.position.x = insideBlock.x * 0.3
-              mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3
-              mesh.rotation.set(0, 0, 0)
-              break
-            case "back":
-              mesh.position.x = insideBlock.x * 0.3
-              mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3
-              mesh.rotation.set(0, PI / 2, 0)
-              break
-            case "front":
-              mesh.position.x = insideBlock.x * 0.3
-              mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3
-              mesh.rotation.set(0, PI / 2, 0)
-          }
+          mesh.position.x = insideBlock.x * 0.3
+          mesh.position.y = insideBlock.z * 0.3 + 0.15
+          mesh.position.z = insideBlock.y * 0.3
+          mesh.rotation.set(0, 0, 0)
 
           mesh.visible = true
-          mesh.updateMatrixWorld()
           return
         }
       }
