@@ -92,17 +92,17 @@ export const Preview = (world: World): null | Preview => {
             case "left":
               mesh.position.x = insideBlock.x * 0.3
               mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3 - 0.151
+              mesh.position.z = insideBlock.y * 0.3
               mesh.rotation.set(0, 0, 0)
               break
             case "back":
-              mesh.position.x = insideBlock.x * 0.3 + 0.151
+              mesh.position.x = insideBlock.x * 0.3
               mesh.position.y = insideBlock.z * 0.3 + 0.15
               mesh.position.z = insideBlock.y * 0.3
               mesh.rotation.set(0, PI / 2, 0)
               break
             case "front":
-              mesh.position.x = insideBlock.x * 0.3 - 0.151
+              mesh.position.x = insideBlock.x * 0.3
               mesh.position.y = insideBlock.z * 0.3 + 0.15
               mesh.position.z = insideBlock.y * 0.3
               mesh.rotation.set(0, PI / 2, 0)
@@ -132,21 +132,19 @@ const fragmentShader = `
   
   varying vec2 vUv;
   uniform float thickness;
-  
+
   float edgeFactor(vec2 p){
-    vec2 grid = abs(fract(p - 0.5) - 0.5) / fwidth(p) / thickness;
-    return min(grid.x, grid.y);
+    vec2 grid = abs(fract(p - 0.5) - 0.5) / fwidth(p);
+    float d = min(grid.x, grid.y);
+    return step(d, 1.0/thickness);
   }
   
   void main() {
-    
-    float a = edgeFactor(vUv);
-
-    vec3 c = mix(vec3(0), vec3(1), a);
-
-    gl_FragColor = vec4(c, 1.0 - a);
+    float edge = edgeFactor(vUv);
+    vec3 c = mix(vec3(0.9, 0.9, 1.0), vec3(0), edge);
+    gl_FragColor = vec4(c, edge);
   }
-`;
+`
 
 const OutlinesMaterial = new ShaderMaterial(
   {
@@ -154,7 +152,7 @@ const OutlinesMaterial = new ShaderMaterial(
     opacity: 1,
     uniforms: {
       thickness: {
-        value: 5
+        value: 0.6
       }
     },
     vertexShader,
