@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input, Inventory,
-  LaserItem, max, min, Networked, PI, Place, Player, Point, Position, Ready,
+  LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
   round, setActiveItemIndex, sin, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
