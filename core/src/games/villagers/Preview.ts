@@ -70,9 +70,9 @@ export const Preview = (world: World): null | Preview => {
           let hitFace: Face | null = null
 
           if (minStep === xStep) {
-            hitFace = dir.x > 0 ? "left" : "right"
+            hitFace = dir.x > 0 ? "front" : "right"
           } else if (minStep === yStep) {
-            hitFace = dir.z > 0 ? "back" : "front"
+            hitFace = dir.z > 0 ? "left" : "back"
           } else if (minStep === zStep) {
             hitFace = dir.y > 0 ? "bottom" : "top"
           }
@@ -80,18 +80,18 @@ export const Preview = (world: World): null | Preview => {
 
           console.log("face", hitFace)
 
-          switch (hitFace) {
-            case "left":
-              mesh.position.x = insideBlock.x * 0.3
-              mesh.position.y = 0.1 + insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3 + 0.15
-              break
-            case "right":
-              mesh.position.x = insideBlock.x * 0.3 + 0.15
-              mesh.position.y = 0.1 + insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3 + 0.15
-              break
-          }
+          // switch (hitFace) {
+          //   case "left":
+          //     mesh.position.x = insideBlock.x * 0.3
+          //     mesh.position.y = 0.1 + insideBlock.z * 0.3 + 0.15
+          //     mesh.position.z = insideBlock.y * 0.3 + 0.15
+          //     break
+          //   case "right":
+          //     mesh.position.x = insideBlock.x * 0.3 + 0.15
+          //     mesh.position.y = 0.1 + insideBlock.z * 0.3 + 0.15
+          //     mesh.position.z = insideBlock.y * 0.3 + 0.15
+          //     break
+          // }
 
           // console.log(`mesh pos x:${mesh.position.x}, y:${mesh.position.y}, z:${mesh.position.z}`)
 
