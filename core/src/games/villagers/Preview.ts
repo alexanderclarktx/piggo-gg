@@ -105,15 +105,10 @@ export const Preview = (world: World): null | Preview => {
               mesh.position.x = insideBlock.x * 0.3 - 0.151
               mesh.position.y = insideBlock.z * 0.3 + 0.15
               mesh.position.z = insideBlock.y * 0.3
-              // rotate
               mesh.rotation.set(0, PI / 2, 0)
           }
 
-          // console.log(`mesh pos x:${mesh.position.x}, y:${mesh.position.y}, z:${mesh.position.z}`)
-
           mesh.visible = true
-          // needs update
-          // mesh.material.needsUpdate = true
           mesh.updateMatrixWorld()
           return
         }
