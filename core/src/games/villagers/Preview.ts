@@ -12,10 +12,9 @@ export const Preview = (world: World): null | Preview => {
   if (!world.client) return null
 
   // const geometry = new PlaneGeometry(0.3, 0.3)
-  const geometry = new BoxGeometry(0.301, 0.301, 0.301)
+  const geometry = new BoxGeometry(0.3001, 0.3001, 0.3001)
   // const edgeGeo = new EdgesGeometry(geometry, 80)
-  const material = new MeshBasicMaterial({ color: 0xffffff, side: 2 })
-  const mat = OutlinesMaterial
+  const mat = OutlineMaterial
 
   const mesh = new Mesh(geometry, mat)
   mesh.position.set(10, 10, 10)
@@ -80,44 +79,3 @@ export const Preview = (world: World): null | Preview => {
     }
   }
 }
-
-const vertexShader = `
-  varying vec2 vUv;
-  void main()	{
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-  }
-`
-
-const fragmentShader = `
-  //#extension GL_OES_standard_derivatives : enable
-  
-  varying vec2 vUv;
-  uniform float thickness;
-
-  float edgeFactor(vec2 p){
-    vec2 grid = abs(fract(p - 0.5) - 0.5) / fwidth(p);
-    float d = min(grid.x, grid.y);
-    return step(d, 1.0/thickness);
-  }
-  
-  void main() {
-    float edge = edgeFactor(vUv);
-    vec3 c = mix(vec3(0.9, 0.9, 1.0), vec3(0), edge);
-    gl_FragColor = vec4(c, edge);
-  }
-`
-
-const OutlinesMaterial = new ShaderMaterial(
-  {
-    transparent: true,
-    opacity: 1,
-    uniforms: {
-      thickness: {
-        value: 0.6
-      }
-    },
-    vertexShader,
-    fragmentShader
-  }
-)
