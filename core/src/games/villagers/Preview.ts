@@ -1,21 +1,23 @@
-import { blockFromXYZ, floor, hypot, min, World, XYZ } from "@piggo-gg/core"
-import { Mesh, MeshBasicMaterial, Object3DEventMap, PlaneGeometry, SphereGeometry } from "three"
+import { blockFromXYZ, floor, hypot, min, PI, World, XYZ } from "@piggo-gg/core"
+import { BoxGeometry, Color, EdgesGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, PlaneGeometry, ShaderMaterial, SphereGeometry, Vector2 } from "three"
 
 
 // Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
 export type Preview = {
-  mesh: Mesh<PlaneGeometry, MeshBasicMaterial, Object3DEventMap>
+  mesh: Mesh
   update: (pos: XYZ, dir: XYZ) => void
 }
 
 export const Preview = (world: World): null | Preview => {
   if (!world.client) return null
 
-  const geometry = new PlaneGeometry(0.3, 0.3)
-  // const geometry = new SphereGeometry(3, 16, 16)
+  // const geometry = new PlaneGeometry(0.3, 0.3)
+  const geometry = new BoxGeometry(0.3, 0.3, 0.3)
+  // const edgeGeo = new EdgesGeometry(geometry, 80)
   const material = new MeshBasicMaterial({ color: 0xffffff, side: 2 })
+  const mat = OutlinesMaterial
 
-  const mesh = new Mesh(geometry, material)
+  const mesh = new Mesh(geometry, mat)
   mesh.position.set(10, 10, 10)
   return {
     mesh,
@@ -84,13 +86,27 @@ export const Preview = (world: World): null | Preview => {
             case "right":
               mesh.position.x = insideBlock.x * 0.3
               mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3 + 0.15 + 0.001
+              mesh.position.z = insideBlock.y * 0.3 + 0.151
+              mesh.rotation.set(0, 0, 0)
               break
             case "left":
               mesh.position.x = insideBlock.x * 0.3
               mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3 - 0.15 - 0.001
+              mesh.position.z = insideBlock.y * 0.3 - 0.151
+              mesh.rotation.set(0, 0, 0)
               break
+            case "back":
+              mesh.position.x = insideBlock.x * 0.3 + 0.151
+              mesh.position.y = insideBlock.z * 0.3 + 0.15
+              mesh.position.z = insideBlock.y * 0.3
+              mesh.rotation.set(0, PI / 2, 0)
+              break
+            case "front":
+              mesh.position.x = insideBlock.x * 0.3 - 0.151
+              mesh.position.y = insideBlock.z * 0.3 + 0.15
+              mesh.position.z = insideBlock.y * 0.3
+              // rotate
+              mesh.rotation.set(0, PI / 2, 0)
           }
 
           // console.log(`mesh pos x:${mesh.position.x}, y:${mesh.position.y}, z:${mesh.position.z}`)
@@ -102,6 +118,51 @@ export const Preview = (world: World): null | Preview => {
           return
         }
       }
+
+      mesh.visible = false
     }
   }
 }
+
+const vertexShader = `
+  varying vec2 vUv;
+  void main()	{
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+  }
+`
+
+const fragmentShader = `
+  //#extension GL_OES_standard_derivatives : enable
+  
+  varying vec2 vUv;
+  uniform float thickness;
+  
+  float edgeFactor(vec2 p){
+    vec2 grid = abs(fract(p - 0.5) - 0.5) / fwidth(p) / thickness;
+    return min(grid.x, grid.y);
+  }
+  
+  void main() {
+    
+    float a = edgeFactor(vUv);
+
+    vec3 c = mix(vec3(1), vec3(0), a);
+    
+    gl_FragColor = vec4(c, 1.0 - a);
+  }
+`;
+
+const OutlinesMaterial = new ShaderMaterial(
+  {
+    transparent: true,
+    opacity: 1,
+    uniforms: {
+      thickness: {
+        value: 10
+      }
+    },
+    vertexShader,
+    fragmentShader
+  }
+)
