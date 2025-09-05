@@ -5,19 +5,23 @@ import { Mesh, MeshBasicMaterial, Object3DEventMap, PlaneGeometry } from "three"
 // Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
 export type Preview = {
   mesh: Mesh<PlaneGeometry, MeshBasicMaterial, Object3DEventMap>
-  update: (world: World, pos: XYZ, dir: XYZ) => void
+  update: (pos: XYZ, dir: XYZ) => void
 }
 
-export const Preview = (): Preview => {
+export const Preview = (world: World): null | Preview => {
+  if (!world.client) return null
+
   const geometry = new PlaneGeometry(0.3, 0.3)
   const material = new MeshBasicMaterial({ color: 0xffffff, side: 2 })
 
   const mesh = new Mesh(geometry, material)
   return {
     mesh,
-    update: (world: World, pos: XYZ, dir: XYZ) => {
+    update: (pos: XYZ, dir: XYZ) => {
       // mesh.position.copy(pos)
       // mesh.lookAt(aim)
+
+      // console.log("update from", pos, dir)
 
       const current = { ...pos }
 
@@ -57,6 +61,28 @@ export const Preview = (): Preview => {
 
         const type = world.blocks.atIJK(insideBlock)
         if (type) {
+          // find which face
+          const face = {
+            x: dir.x > 0 ? "right" : dir.x < 0 ? "left" : undefined,
+            y: dir.y > 0 ? "top" : dir.y < 0 ? "bottom" : undefined,
+            z: dir.z > 0 ? "front" : dir.z < 0 ? "back" : undefined
+          }
+
+          // move preview to that face
+          if (face.x) {
+            mesh.position.x = insideBlock.x * 0.3 + (face.x === "right" ? 0.15 : 0)
+          }
+          if (face.y) {
+            mesh.position.y = 0.1 + insideBlock.z * 0.3 + (face.z === "front" ? 0.15 : 0)
+          }
+          if (face.z) {
+            mesh.position.z = insideBlock.y * 0.3 + (face.y === "top" ? 0.15 : 0)
+          }
+
+          console.log("updated mesh pos", mesh.position)
+
+          mesh.visible = true
+          return
         }
       }
     }

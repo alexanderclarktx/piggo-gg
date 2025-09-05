@@ -10,6 +10,7 @@ import { HUDSystem } from "./HUDSystem"
 import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
 import { Sky } from "./Sky"
+import { Preview } from "./Preview"
 
 export type VillagersState = {
   applesEaten: Record<string, number>
@@ -88,6 +89,8 @@ const VillagersSystem = SystemBuilder({
 
     const mobileUI = MobileUI(world)
 
+    const preview = Preview(world)
+
     let blocksRendered = false
     let applesSpawned = false
     let ambient = false
@@ -103,6 +106,9 @@ const VillagersSystem = SystemBuilder({
         const { sound } = world.client ?? {}
 
         mobileUI?.update()
+
+        const pc = world.client?.character()
+        if (pc && preview) preview.update(world.three!.camera.pos(), world.three!.camera.dir(world))
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {
