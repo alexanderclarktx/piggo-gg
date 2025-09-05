@@ -194,13 +194,6 @@ export const Bird = (player: Player): Character => {
           "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
           "6": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
           "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
-          // "!": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
-          // "@": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
-          // "#": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
-          // "$": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
-          // "%": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
-          // "^": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
-          // "&": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
 
           "scrolldown": ({ client }) => {
             const bufferScroll = client.bufferScroll
