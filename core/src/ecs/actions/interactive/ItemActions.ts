@@ -1,6 +1,7 @@
 import { Action, ItemEntity } from "@piggo-gg/core"
 
 export const setActiveItemIndex = Action<{ index: number | "up" | "down" }>("setActiveItemIndex", ({ params, entity }) => {
+  console.log("setActiveItemIndex", params.index)
   if (params.index === null || params.index === undefined) return
 
   const inventory = entity?.components.inventory

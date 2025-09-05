@@ -16,6 +16,9 @@ export const InputSystem = ClientSystemBuilder({
 
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])
+    const mappedKeys: Record<string, string> = {
+      "!": "1", "@": "2", "#": "3", "$": "4", "%": "5", "^": "6", "&": "7"
+    }
 
     let backspace = 0
     let mouseScreen: XY = { x: 0, y: 0 }
@@ -123,24 +126,24 @@ export const InputSystem = ClientSystemBuilder({
 
     document.addEventListener("keydown", (event) => {
       if (document.hasFocus()) {
-        const keyName = event.key.toLowerCase()
+        let key = event.key.toLowerCase()
 
         // ignore noisy capslock events
-        if (keyName === "capslock" && !event.getModifierState("CapsLock")) return
+        if (key === "capslock" && !event.getModifierState("CapsLock")) return
 
         // prevent defaults
-        if (charactersPreventDefault.has(keyName)) event.preventDefault()
+        if (charactersPreventDefault.has(key)) event.preventDefault()
 
         const { isOpen, inputBuffer } = client.chat
 
         if (isTypingEvent(event)) return
 
         // add to buffer
-        if (!client.bufferDown.get(keyName)) {
+        if (!client.bufferDown.get(key)) {
 
           // toggle chat
-          if (keyName === "enter" && !isOpen) client.chat.isOpen = true
-          else if (isOpen && (keyName === "enter" || keyName === "escape")) {
+          if (key === "enter" && !isOpen) client.chat.isOpen = true
+          else if (isOpen && (key === "enter" || key === "escape")) {
 
             // push the message to messages
             if (inputBuffer.length > 0) {
@@ -153,16 +156,21 @@ export const InputSystem = ClientSystemBuilder({
           }
 
           // handle backspace
-          if (client.chat.isOpen && keyName === "backspace") {
+          if (client.chat.isOpen && key === "backspace") {
             client.chat.inputBuffer = client.chat.inputBuffer.slice(0, -1)
             backspace = world.tick + 3
           }
 
+          // map some keys
+          if (mappedKeys[key]) {
+            key = mappedKeys[key]
+          }
+
           // push to chatBuffer or bufferedDown
-          if (client.chat.isOpen && validChatCharacters.has(keyName)) {
-            client.chat.inputBuffer += keyName
+          if (client.chat.isOpen && validChatCharacters.has(key)) {
+            client.chat.inputBuffer += key
           } else {
-            client.bufferDown.push({ key: keyName, mouse, aim: localAim(), tick: world.tick, hold: 0 })
+            client.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
           }
         }
       }
@@ -276,6 +284,7 @@ export const InputSystem = ClientSystemBuilder({
           buffer.remove(keyPress)
         }
       }
+      console.log("remaining", buffer.all().join(","))
 
       // handle key releases
       for (const keyUp in input.inputMap.release) {
