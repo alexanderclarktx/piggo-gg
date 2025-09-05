@@ -54,7 +54,6 @@ export const BlockPreview = (world: World): null | Preview => {
           mesh.position.x = insideBlock.x * 0.3
           mesh.position.y = insideBlock.z * 0.3 + 0.15
           mesh.position.z = insideBlock.y * 0.3
-          mesh.rotation.set(0, 0, 0)
 
           mesh.visible = true
           return

@@ -1,6 +1,6 @@
 import {
   abs, Action, Actions, Character, Collider, cos, hypot, Input, Inventory,
-  LaserItem, max, min, Networked, PI, Place, Player, Point, Position, Ready,
+  LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
   round, setActiveItemIndex, sin, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
@@ -236,9 +236,10 @@ export const Bird = (player: Player): Character => {
             if (!character) return null
 
             const dir = world.three!.camera.dir(world)
-            const pos = world.three!.camera.pos()
+            const camera = world.three!.camera.pos()
+            const pos = character.components.position.xyz()
 
-            return { actionId: "place", params: { dir, pos } }
+            return { actionId: "place", params: { dir, camera, pos } }
           },
 
           // transform
