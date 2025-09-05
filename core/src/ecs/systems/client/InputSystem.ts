@@ -289,7 +289,6 @@ export const InputSystem = ClientSystemBuilder({
           buffer.remove(keyPress)
         }
       }
-      // console.log("remaining", client.bufferDown.all().map((b) => b.key))
 
       // handle key releases
       for (const keyUp in input.inputMap.release) {
