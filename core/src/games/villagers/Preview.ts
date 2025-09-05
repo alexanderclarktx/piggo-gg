@@ -38,7 +38,7 @@ export const Preview = (world: World): null | Preview => {
 
         const xGap = (current.x + 0.15) % 0.3
         const yGap = (current.y + 0.15) % 0.3
-        const zGap = (current.z + 0.15) % 0.3
+        const zGap = current.z % 0.3
 
         const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
         const yStep = dir.z > 0 ? (0.3 - yGap) / dir.z : (yGap / -dir.z)
