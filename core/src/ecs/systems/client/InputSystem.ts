@@ -17,7 +17,7 @@ export const InputSystem = ClientSystemBuilder({
     const validChatCharacters: Set<string> = new Set("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=[]{}\\|:'\",./<>?`~ ")
     const charactersPreventDefault = new Set(["'", "/", " ", "escape", "tab", "enter", "capslock"])
     const mappedKeys: Record<string, string> = {
-      "!": "1", "@": "2", "#": "3", "$": "4", "%": "5", "^": "6", "&": "7"
+      "!": "1", "@": "2", "#": "3", "$": "4", "%": "5", "^": "6", "&": "7", "*": "8", "(": "9", ")": "0"
     }
 
     let backspace = 0
@@ -88,12 +88,17 @@ export const InputSystem = ClientSystemBuilder({
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
       if (document.hasFocus()) {
-        const key = event.key.toLowerCase()
+        let key = event.key.toLowerCase()
 
         if (charactersPreventDefault.has(key)) event.preventDefault()
 
         // handle released backspace
         if (client.chat.isOpen && key === "backspace") backspace = 0
+
+        // mapped keys
+        if (mappedKeys[key]) {
+          key = mappedKeys[key]
+        }
 
         const down = client.bufferDown.get(key)
         if (!down) return
@@ -161,7 +166,7 @@ export const InputSystem = ClientSystemBuilder({
             backspace = world.tick + 3
           }
 
-          // map some keys
+          // mapped keys
           if (mappedKeys[key]) {
             key = mappedKeys[key]
           }
@@ -284,7 +289,7 @@ export const InputSystem = ClientSystemBuilder({
           buffer.remove(keyPress)
         }
       }
-      console.log("remaining", buffer.all().join(","))
+      // console.log("remaining", client.bufferDown.all().map((b) => b.key))
 
       // handle key releases
       for (const keyUp in input.inputMap.release) {
