@@ -14,7 +14,7 @@ export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   const lastBlock = blockFromXYZ(current)
 
   let travelled = 0
-  let cap = 15
+  let cap = 10
 
   while (travelled < 10 && cap > 0) {
 

@@ -50,9 +50,7 @@ export const BlockPreview = (world: World): null | Preview => {
           z: floor(pos.z / 0.3)
         }
 
-        const type = world.blocks.atIJK(insideBlock)
-        if (type) {
-
+        if (world.blocks.atIJK(insideBlock)) {
           mesh.position.x = insideBlock.x * 0.3
           mesh.position.y = insideBlock.z * 0.3 + 0.15
           mesh.position.z = insideBlock.y * 0.3
