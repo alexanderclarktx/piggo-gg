@@ -166,15 +166,16 @@ export const InputSystem = ClientSystemBuilder({
             backspace = world.tick + 3
           }
 
-          // mapped keys
-          if (mappedKeys[key]) {
-            key = mappedKeys[key]
-          }
-
           // push to chatBuffer or bufferedDown
           if (client.chat.isOpen && validChatCharacters.has(key)) {
             client.chat.inputBuffer += key
           } else {
+
+            // mapped keys
+            if (mappedKeys[key]) {
+              key = mappedKeys[key]
+            }
+
             client.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
           }
         }
