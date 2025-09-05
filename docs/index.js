@@ -5301,13 +5301,11 @@ void main(){
 }
 `;var Mn=()=>new w5({transparent:!0,uniforms:{thickness:{value:0.6}},vertexShader:fG0,fragmentShader:xG0}),fG0=`
   varying vec2 vUv;
-  void main()	{
+  void main() {
     vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
   }
 `,xG0=`
-  //#extension GL_OES_standard_derivatives : enable
-  
   varying vec2 vUv;
   uniform float thickness;
 
@@ -5316,7 +5314,7 @@ void main(){
     float d = min(grid.x, grid.y);
     return step(d, 1.0/thickness);
   }
-  
+
   void main() {
     float edge = edgeFactor(vUv);
     vec3 c = mix(vec3(0.9, 0.9, 1.0), vec3(0), edge);

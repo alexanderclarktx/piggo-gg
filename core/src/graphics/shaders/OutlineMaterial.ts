@@ -4,9 +4,7 @@ export const OutlineMaterial = () => new ShaderMaterial(
   {
     transparent: true,
     uniforms: {
-      thickness: {
-        value: 0.6
-      }
+      thickness: { value: 0.6 }
     },
     vertexShader,
     fragmentShader
@@ -15,15 +13,13 @@ export const OutlineMaterial = () => new ShaderMaterial(
 
 const vertexShader = `
   varying vec2 vUv;
-  void main()	{
+  void main() {
     vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
   }
 `
 
 const fragmentShader = `
-  //#extension GL_OES_standard_derivatives : enable
-  
   varying vec2 vUv;
   uniform float thickness;
 
@@ -32,7 +28,7 @@ const fragmentShader = `
     float d = min(grid.x, grid.y);
     return step(d, 1.0/thickness);
   }
-  
+
   void main() {
     float edge = edgeFactor(vUv);
     vec3 c = mix(vec3(0.9, 0.9, 1.0), vec3(0), edge);
