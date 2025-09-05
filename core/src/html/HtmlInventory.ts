@@ -59,8 +59,6 @@ export const HtmlInventory = (client: Client): RefreshableDiv => {
 
       if (!updated) return
 
-      console.log("updating items")
-
       for (let i = 0; i < items.length; i++) {
         const item = items[i]?.[0]
         if (!item) continue
