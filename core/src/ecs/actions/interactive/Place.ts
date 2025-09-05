@@ -1,14 +1,15 @@
 import { Action, blockFromXYZ, floor, hypot, min, XYZ, XYZequal } from "@piggo-gg/core"
 
 export type PlaceParams = {
-  pos: XYZ
+  camera: XYZ
   dir: XYZ
+  pos: XYZ
 }
 
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
-  const { pos, dir } = params
+  const { pos, dir, camera } = params
 
-  const current = { ...pos }
+  const current = { ...camera }
 
   const playerBlock = blockFromXYZ(pos)
   const lastBlock = blockFromXYZ(current)
@@ -47,7 +48,8 @@ export const Place = Action<PlaceParams>("place", ({ params, world }) => {
 
     const type = world.blocks.atIJK(insideBlock)
     if (type) {
-      // don't place inside player
+
+      // don't place block onto the player
       if (XYZequal(lastBlock, playerBlock)) return
 
       const added = world.blocks.add({ type, ...lastBlock })
