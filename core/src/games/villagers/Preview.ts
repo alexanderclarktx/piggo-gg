@@ -1,20 +1,22 @@
 import { blockFromXYZ, floor, hypot, min, World, XYZ } from "@piggo-gg/core"
-import { Mesh, MeshBasicMaterial, Object3DEventMap, PlaneGeometry } from "three"
+import { Mesh, MeshBasicMaterial, Object3DEventMap, PlaneGeometry, SphereGeometry } from "three"
 
 
 // Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
 export type Preview = {
-  mesh: Mesh<PlaneGeometry, MeshBasicMaterial, Object3DEventMap>
+  mesh: Mesh<SphereGeometry, MeshBasicMaterial, Object3DEventMap>
   update: (pos: XYZ, dir: XYZ) => void
 }
 
 export const Preview = (world: World): null | Preview => {
   if (!world.client) return null
 
-  const geometry = new PlaneGeometry(0.3, 0.3)
+  // const geometry = new PlaneGeometry(0.3, 0.3)
+  const geometry = new SphereGeometry(3, 16, 16)
   const material = new MeshBasicMaterial({ color: 0xffffff, side: 2 })
 
   const mesh = new Mesh(geometry, material)
+  mesh.position.set(10, 10, 10)
   return {
     mesh,
     update: (pos: XYZ, dir: XYZ) => {
@@ -59,7 +61,8 @@ export const Preview = (world: World): null | Preview => {
           z: floor(current.z / 0.3)
         }
 
-        const type = world.blocks.atIJK(insideBlock)
+        // const type = world.blocks.atIJK(insideBlock)
+        const type = 0
         if (type) {
           // find which face
           const face = {
@@ -73,15 +76,18 @@ export const Preview = (world: World): null | Preview => {
             mesh.position.x = insideBlock.x * 0.3 + (face.x === "right" ? 0.15 : 0)
           }
           if (face.y) {
-            mesh.position.y = 0.1 + insideBlock.z * 0.3 + (face.z === "front" ? 0.15 : 0)
+            mesh.position.y = 2 + insideBlock.z * 0.3 + (face.z === "front" ? 0.15 : 0)
           }
           if (face.z) {
             mesh.position.z = insideBlock.y * 0.3 + (face.y === "top" ? 0.15 : 0)
           }
 
-          console.log("updated mesh pos", mesh.position)
+          console.log(`mesh pos x:${mesh.position.x}, y:${mesh.position.y}, z:${mesh.position.z}`)
 
           mesh.visible = true
+          // needs update
+          mesh.material.needsUpdate = true
+          mesh.updateMatrixWorld()
           return
         }
       }

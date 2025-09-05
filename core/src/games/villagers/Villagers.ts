@@ -90,6 +90,7 @@ const VillagersSystem = SystemBuilder({
     const mobileUI = MobileUI(world)
 
     const preview = Preview(world)
+    if (preview) world.three?.scene.add(preview.mesh)
 
     let blocksRendered = false
     let applesSpawned = false
