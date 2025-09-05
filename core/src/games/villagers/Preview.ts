@@ -12,7 +12,7 @@ export const Preview = (world: World): null | Preview => {
   if (!world.client) return null
 
   // const geometry = new PlaneGeometry(0.3, 0.3)
-  const geometry = new BoxGeometry(0.3, 0.3, 0.3)
+  const geometry = new BoxGeometry(0.301, 0.301, 0.301)
   // const edgeGeo = new EdgesGeometry(geometry, 80)
   const material = new MeshBasicMaterial({ color: 0xffffff, side: 2 })
   const mat = OutlinesMaterial
@@ -86,7 +86,7 @@ export const Preview = (world: World): null | Preview => {
             case "right":
               mesh.position.x = insideBlock.x * 0.3
               mesh.position.y = insideBlock.z * 0.3 + 0.15
-              mesh.position.z = insideBlock.y * 0.3 + 0.151
+              mesh.position.z = insideBlock.y * 0.3
               mesh.rotation.set(0, 0, 0)
               break
             case "left":
@@ -147,8 +147,8 @@ const fragmentShader = `
     
     float a = edgeFactor(vUv);
 
-    vec3 c = mix(vec3(1), vec3(0), a);
-    
+    vec3 c = mix(vec3(0), vec3(1), a);
+
     gl_FragColor = vec4(c, 1.0 - a);
   }
 `;
@@ -159,7 +159,7 @@ const OutlinesMaterial = new ShaderMaterial(
     opacity: 1,
     uniforms: {
       thickness: {
-        value: 10
+        value: 5
       }
     },
     vertexShader,
