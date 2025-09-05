@@ -1,15 +1,14 @@
 import {
-  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem,
-  logPerf, min, D3Profile, Random, randomInt, SpawnSystem,
-  SystemBuilder, XYZdistance, HtmlChat, Crosshair, BlockTypeString,
-  GameBuilder, spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem
+  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, logPerf,
+  min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
+  XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
+  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
 import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
-import { Sky } from "./Sky"
 
 export type VillagersState = {
   applesEaten: Record<string, number>
@@ -88,6 +87,9 @@ const VillagersSystem = SystemBuilder({
 
     const mobileUI = MobileUI(world)
 
+    const preview = BlockPreview(world)
+    if (preview) world.three?.scene.add(preview.mesh)
+
     let blocksRendered = false
     let applesSpawned = false
     let ambient = false
@@ -103,6 +105,9 @@ const VillagersSystem = SystemBuilder({
         const { sound } = world.client ?? {}
 
         mobileUI?.update()
+
+        const pc = world.client?.character()
+        if (pc && preview) preview.update(world.three!.camera.pos(), world.three!.camera.dir(world))
 
         // ambient sound
         if (!ambient && sound?.ready && settings.ambientSound) {

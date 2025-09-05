@@ -45,8 +45,8 @@ export const HUDSystem = ClientSystemBuilder({
       text: "0|0|0",
       style: {
         left: `50%`,
-        top: `${height - 100}px`,
-        fontSize: "24px",
+        top: `20px`,
+        fontSize: "22px",
         color: "#00ffff",
         transform: "translate(-50%)",
         visibility: "hidden"

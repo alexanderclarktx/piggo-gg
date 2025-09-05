@@ -3,9 +3,9 @@ import {
   InstancedMeshEventMap, MeshPhysicalMaterial
 } from "three"
 
-export type D3BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial[], InstancedMeshEventMap>
+export type BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial[], InstancedMeshEventMap>
 
-export const D3BlockMesh = (maxCount: number = 22000): D3BlockMesh => {
+export const BlockMesh = (maxCount: number = 22000): BlockMesh => {
   const geometry = new BoxGeometry(0.3, 0.3, 0.3)
   const { position } = geometry.attributes
 

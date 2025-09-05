@@ -3,17 +3,17 @@ import {
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, Object3DEventMap,
   Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { D3BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
+import { BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
 export type D3Renderer = {
   apple: undefined | Group<Object3DEventMap>
-  spruce: undefined | D3BlockMesh
-  oak: undefined | D3BlockMesh
-  leaf: undefined | D3BlockMesh
-  blocks: undefined | D3BlockMesh
+  spruce: undefined | BlockMesh
+  oak: undefined | BlockMesh
+  leaf: undefined | BlockMesh
+  blocks: undefined | BlockMesh
   canvas: HTMLCanvasElement
   camera: D3Camera
   debug: boolean
@@ -101,16 +101,16 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      renderer.blocks = D3BlockMesh()
+      renderer.blocks = BlockMesh()
       renderer.scene.add(renderer.blocks)
 
-      renderer.spruce = D3BlockMesh(500)
+      renderer.spruce = BlockMesh(500)
       renderer.scene.add(renderer.spruce)
 
-      renderer.oak = D3BlockMesh(500)
+      renderer.oak = BlockMesh(500)
       renderer.scene.add(renderer.oak)
 
-      renderer.leaf = D3BlockMesh(500)
+      renderer.leaf = BlockMesh(500)
       renderer.scene.add(renderer.leaf)
 
       renderer.sphere = new Mesh(
