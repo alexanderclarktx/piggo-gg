@@ -4,15 +4,15 @@ import { Mesh, MeshBasicMaterial, Object3DEventMap, PlaneGeometry, SphereGeometr
 
 // Mesh<CylinderGeometry, MeshBasicMaterial, Object3DEventMap>
 export type Preview = {
-  mesh: Mesh<SphereGeometry, MeshBasicMaterial, Object3DEventMap>
+  mesh: Mesh<PlaneGeometry, MeshBasicMaterial, Object3DEventMap>
   update: (pos: XYZ, dir: XYZ) => void
 }
 
 export const Preview = (world: World): null | Preview => {
   if (!world.client) return null
 
-  // const geometry = new PlaneGeometry(0.3, 0.3)
-  const geometry = new SphereGeometry(3, 16, 16)
+  const geometry = new PlaneGeometry(0.3, 0.3)
+  // const geometry = new SphereGeometry(3, 16, 16)
   const material = new MeshBasicMaterial({ color: 0xffffff, side: 2 })
 
   const mesh = new Mesh(geometry, material)
@@ -61,32 +61,43 @@ export const Preview = (world: World): null | Preview => {
           z: floor(current.z / 0.3)
         }
 
-        // const type = world.blocks.atIJK(insideBlock)
-        const type = 0
+        type Face = "bottom" | "top" | "front" | "back" | "left" | "right"
+        const type = world.blocks.atIJK(insideBlock)
         if (type) {
           // find which face
-          const face = {
-            x: dir.x > 0 ? "right" : dir.x < 0 ? "left" : undefined,
-            y: dir.y > 0 ? "top" : dir.y < 0 ? "bottom" : undefined,
-            z: dir.z > 0 ? "front" : dir.z < 0 ? "back" : undefined
+          // const face: face
+
+          let hitFace: Face | null = null
+
+          if (minStep === xStep) {
+            hitFace = dir.x > 0 ? "left" : "right"
+          } else if (minStep === yStep) {
+            hitFace = dir.z > 0 ? "back" : "front"
+          } else if (minStep === zStep) {
+            hitFace = dir.y > 0 ? "bottom" : "top"
+          }
+          if (!hitFace) return
+
+          console.log("face", hitFace)
+
+          switch (hitFace) {
+            case "left":
+              mesh.position.x = insideBlock.x * 0.3
+              mesh.position.y = 0.1 + insideBlock.z * 0.3 + 0.15
+              mesh.position.z = insideBlock.y * 0.3 + 0.15
+              break
+            case "right":
+              mesh.position.x = insideBlock.x * 0.3 + 0.15
+              mesh.position.y = 0.1 + insideBlock.z * 0.3 + 0.15
+              mesh.position.z = insideBlock.y * 0.3 + 0.15
+              break
           }
 
-          // move preview to that face
-          if (face.x) {
-            mesh.position.x = insideBlock.x * 0.3 + (face.x === "right" ? 0.15 : 0)
-          }
-          if (face.y) {
-            mesh.position.y = 2 + insideBlock.z * 0.3 + (face.z === "front" ? 0.15 : 0)
-          }
-          if (face.z) {
-            mesh.position.z = insideBlock.y * 0.3 + (face.y === "top" ? 0.15 : 0)
-          }
-
-          console.log(`mesh pos x:${mesh.position.x}, y:${mesh.position.y}, z:${mesh.position.z}`)
+          // console.log(`mesh pos x:${mesh.position.x}, y:${mesh.position.y}, z:${mesh.position.z}`)
 
           mesh.visible = true
           // needs update
-          mesh.material.needsUpdate = true
+          // mesh.material.needsUpdate = true
           mesh.updateMatrixWorld()
           return
         }
