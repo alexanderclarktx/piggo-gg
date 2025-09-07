@@ -74,7 +74,7 @@ export const Bird = (player: Player): Character => {
             duck.position.set(interpolated.x, interpolated.z - 0.0, interpolated.y)
 
             // rotation
-            duck.rotation.y = orientation.x
+            duck.rotation.y = orientation.x + PI
 
             // animation
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
