@@ -17,7 +17,7 @@ export const D3Camera = (): D3Camera => {
 
   const d3Camera: D3Camera = {
     c: camera,
-    mode: "third",
+    mode: "first",
     transition: 125,
     dir: (world: World) => {
       if (!world.client) return new Vector3(0, 0, 0)
@@ -45,7 +45,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
   id: "D3CameraSystem",
   init: (world) => {
 
-    let lastMode = "third"
+    let lastMode = world.three?.camera.mode || "first"
 
     return {
       id: "D3CameraSystem",
