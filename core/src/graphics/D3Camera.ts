@@ -99,7 +99,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
           } else {
             camera.c.position.set(thirdPos.x, thirdPos.z, thirdPos.y)
           }
-          camera.c.lookAt(interpolated.x, interpolated.z + 0.13 + percent * 0.07, interpolated.y)
+          camera.c.lookAt(interpolated.x, interpolated.z + 0.13 + percent * 0.27, interpolated.y)
         }
       }
     }
