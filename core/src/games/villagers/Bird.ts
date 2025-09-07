@@ -24,7 +24,9 @@ export const Bird = (player: Player): Character => {
 
   let duck: Object3D = new Object3D()
   let eagle: Object3D = new Object3D()
-  let duckMixer: AnimationMixer | undefined
+  let pig: Object3D = new Object3D()
+
+  let pigMixer: AnimationMixer | undefined
   let eagleMixer: AnimationMixer | undefined
 
   const bird = Character({
@@ -52,7 +54,7 @@ export const Bird = (player: Player): Character => {
           const orientation = player.id === client.playerId() ? client.controls.localAim : aim
 
           if (flying) {
-            duck.visible = false
+            pig.visible = false
             eagle.visible = true
 
             // position
@@ -67,25 +69,25 @@ export const Bird = (player: Player): Character => {
             const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
             eagleMixer?.update(speed * ratio * 0.01 + 0.01)
           } else {
-            duck.visible = true
+            pig.visible = true
             eagle.visible = false
 
             // position
-            duck.position.set(interpolated.x, interpolated.z - 0.0, interpolated.y)
+            pig.position.set(interpolated.x, interpolated.z - 0.0, interpolated.y)
 
             // rotation
-            duck.rotation.y = orientation.x + PI
+            pig.rotation.y = orientation.x + PI
 
             // animation
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
-            duckMixer?.update(speed * ratio * 0.005 + 0.005)
+            pigMixer?.update(speed * ratio * 0.005 + 0.005)
           }
 
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
 
             const opacity = three.camera.mode === "first" ? 1 - (three.camera.transition / 100) : three.camera.transition / 100
 
-            duck.traverse((child) => {
+            pig.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.opacity = opacity
                 child.material.needsUpdate = true
@@ -102,15 +104,15 @@ export const Bird = (player: Player): Character => {
         },
         init: async (entity, _, three) => {
           three.gLoader.load("character-k.glb", (gltf) => {
-            duck = gltf.scene
-            duck.animations = gltf.animations
-            duck.frustumCulled = false
-            duck.scale.set(0.16, 0.2, 0.16)
+            pig = gltf.scene
+            pig.animations = gltf.animations
+            pig.frustumCulled = false
+            pig.scale.set(0.16, 0.2, 0.16)
 
-            duckMixer = new AnimationMixer(duck)
-            duckMixer.clipAction(duck.animations[2]).play()
+            pigMixer = new AnimationMixer(pig)
+            pigMixer.clipAction(pig.animations[2]).play()
 
-            duck.traverse((child) => {
+            pig.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.transparent = true
                 child.material.opacity = 1
@@ -119,7 +121,7 @@ export const Bird = (player: Player): Character => {
               }
             })
 
-            entity.components.three.o.push(duck)
+            entity.components.three.o.push(pig)
           })
 
           three.gLoader.load("eagle.glb", (gltf) => {
