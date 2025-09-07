@@ -71,14 +71,14 @@ export const Bird = (player: Player): Character => {
             eagle.visible = false
 
             // position
-            duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+            duck.position.set(interpolated.x, interpolated.z - 0.0, interpolated.y)
 
             // rotation
-            duck.rotation.y = orientation.x + PI / 2
+            duck.rotation.y = orientation.x
 
             // animation
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
-            duckMixer?.update(speed * ratio * 0.03 + 0.01)
+            duckMixer?.update(speed * ratio * 0.005 + 0.005)
           }
 
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
@@ -101,14 +101,14 @@ export const Bird = (player: Player): Character => {
           }
         },
         init: async (entity, _, three) => {
-          three.gLoader.load("ugly-duckling.glb", (gltf) => {
+          three.gLoader.load("character-k.glb", (gltf) => {
             duck = gltf.scene
             duck.animations = gltf.animations
             duck.frustumCulled = false
-            duck.scale.set(0.08, 0.08, 0.08)
+            duck.scale.set(0.16, 0.2, 0.16)
 
             duckMixer = new AnimationMixer(duck)
-            duckMixer.clipAction(duck.animations[1]).play()
+            duckMixer.clipAction(duck.animations[2]).play()
 
             duck.traverse((child) => {
               if (child instanceof Mesh) {
