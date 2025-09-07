@@ -69,10 +69,10 @@ export const D3CameraSystem = () => ClientSystemBuilder({
           camera.transition += delta / 25 * 8
         }
 
-        const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.13 }
+        const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.5 }
 
-        const offset = new Vector3(-sin(x) * cos(y), sin(y), -cos(x) * cos(y)).multiplyScalar(0.6)
-        const thirdPos = { x: interpolated.x - offset.x, y: interpolated.y - offset.z, z: interpolated.z + 0.5 - offset.y }
+        const offset = new Vector3(-sin(x) * cos(y), sin(y), -cos(x) * cos(y)).multiplyScalar(0.8)
+        const thirdPos = { x: interpolated.x - offset.x, y: interpolated.y - offset.z, z: interpolated.z + 0.4 - offset.y }
 
         const diff = XYZsub(firstPos, thirdPos)
 
@@ -99,7 +99,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
           } else {
             camera.c.position.set(thirdPos.x, thirdPos.z, thirdPos.y)
           }
-          camera.c.lookAt(interpolated.x, interpolated.z + 0.13 + percent * 0.27, interpolated.y)
+          camera.c.lookAt(interpolated.x, interpolated.z + 0.5 + percent * -0.1, interpolated.y)
         }
       }
     }

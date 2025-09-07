@@ -20,7 +20,7 @@ export const HUDSystem = ClientSystemBuilder({
     const dButton = KeyButton({ text: "D", left: left + 50, top })
     const sButton = KeyButton({ text: "S", left, top })
     const wButton = KeyButton({ text: "W", left, top: top - 50 })
-    const eButton = KeyButton({ text: "E", left, top: top - 150 })
+    // const eButton = KeyButton({ text: "E", left, top: top - 150 })
 
     const boostButton = KeyButton({ text: "shift", left, top: top + 100, width: 120 })
     const jumpButton = KeyButton({ text: "spacebar", left, top: top + 200, width: 160, visible: false })
@@ -64,10 +64,10 @@ export const HUDSystem = ClientSystemBuilder({
     controls.appendChild(dButton)
     controls.appendChild(sButton)
     controls.appendChild(wButton)
-    controls.appendChild(eButton)
+    // controls.appendChild(eButton)
     controls.appendChild(boostButton)
     controls.appendChild(jumpButton)
-    controls.appendChild(transformLabel)
+    // controls.appendChild(transformLabel)
     controls.appendChild(moveLabel)
     controls.appendChild(boostLabel)
     controls.appendChild(jumpLabel)
@@ -99,7 +99,7 @@ export const HUDSystem = ClientSystemBuilder({
           dButton.style.backgroundColor = down.includes("d") ? active : inactive
           sButton.style.backgroundColor = down.includes("s") ? active : inactive
           wButton.style.backgroundColor = down.includes("w") ? active : inactive
-          eButton.style.backgroundColor = down.includes("e") ? active : inactive
+          // eButton.style.backgroundColor = down.includes("e") ? active : inactive
           boostButton.style.backgroundColor = down.includes("shift") ? active : inactive
           jumpButton.style.backgroundColor = down.includes(" ") ? active : inactive
         }
@@ -127,7 +127,7 @@ export const HUDSystem = ClientSystemBuilder({
         const pcApplesEaten = state.applesEaten[client.playerId() || ""] || 0
 
         const isWarmup = state.phase === "warmup"
-        eButton.style.visibility = isWarmup ? "visible" : "hidden"
+        // eButton.style.visibility = isWarmup ? "visible" : "hidden"
         transformLabel.style.visibility = isWarmup ? "visible" : "hidden"
 
         if (pcApplesEaten !== currentApplesEaten) {

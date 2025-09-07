@@ -243,10 +243,10 @@ export const Bird = (player: Player): Character => {
           },
 
           // transform
-          "e": ({ hold }) => {
-            if (hold) return null
-            return { actionId: "transform" }
-          },
+          // "e": ({ hold }) => {
+          //   if (hold) return null
+          //   return { actionId: "transform" }
+          // },
 
           // debug
           "g": ({ world, hold }) => {
