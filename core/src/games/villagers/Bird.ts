@@ -3,7 +3,7 @@ import {
   LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
   round, setActiveItemIndex, sin, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
-import { AnimationAction, AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
+import { AnimationAction, AnimationMixer, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { VillagersSettings, VillagersState } from "./Villagers"
 
 const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
@@ -131,8 +131,13 @@ export const Bird = (player: Player): Character => {
 
             pig.traverse((child) => {
               if (child instanceof Mesh) {
-                child.material.transparent = true
-                child.material.opacity = 0
+                const oldMat = child.material
+                child.material = new MeshPhysicalMaterial({
+                  map: oldMat.map,
+                  roughness: 1,
+                  transparent: true,
+                  opacity: 1
+                })
                 child.castShadow = true
                 child.receiveShadow = true
               }
