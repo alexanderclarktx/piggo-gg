@@ -12,6 +12,8 @@ lofi music | https://freemusicarchive.org/music/holiznacc0/
 
 ### assets
 
+character mesh | https://opengameart.org/content/blocky-characters | license: CC0
+
 block textures | https://github.com/shackhornold/UwUCraft/ | license: MIT
 
 eagle mesh | https://opengameart.org/content/animated-animales-low-poly
