@@ -3,7 +3,7 @@ import {
   LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
   round, setActiveItemIndex, sin, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
-import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
+import { AnimationAction, AnimationMixer, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { VillagersSettings, VillagersState } from "./Villagers"
 
 const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
@@ -15,17 +15,23 @@ const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
   return { up, dir }
 }
 
-const walk = 0.6
-const run = 0.95
-const hop = 0.15
-const leap = 0.23
+const walk = 0.78
+const run = 1.2
+const hop = 0.18
+const leap = 0.3
 
 export const Bird = (player: Player): Character => {
 
   let duck: Object3D = new Object3D()
   let eagle: Object3D = new Object3D()
-  let duckMixer: AnimationMixer | undefined
+  let pig: Object3D = new Object3D()
+
+  let pigMixer: AnimationMixer | undefined
   let eagleMixer: AnimationMixer | undefined
+
+  let idleAnimation: AnimationAction | undefined
+  let runAnimation: AnimationAction | undefined
+  let animation: "idle" | "run" = "idle"
 
   const bird = Character({
     id: `bird-${player.id}`,
@@ -52,7 +58,7 @@ export const Bird = (player: Player): Character => {
           const orientation = player.id === client.playerId() ? client.controls.localAim : aim
 
           if (flying) {
-            duck.visible = false
+            // pig.visible = false
             eagle.visible = true
 
             // position
@@ -67,59 +73,76 @@ export const Bird = (player: Player): Character => {
             const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
             eagleMixer?.update(speed * ratio * 0.01 + 0.01)
           } else {
-            duck.visible = true
+            // pig.visible = true
             eagle.visible = false
 
             // position
-            duck.position.set(interpolated.x, interpolated.z - 0.025, interpolated.y)
+            pig.position.set(interpolated.x, interpolated.z - 0.0, interpolated.y)
 
             // rotation
-            duck.rotation.y = orientation.x + PI / 2
+            pig.rotation.y = orientation.x + PI
 
             // animation
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
-            duckMixer?.update(speed * ratio * 0.03 + 0.01)
+
+            if (runAnimation && idleAnimation && pigMixer) {
+              if (speed === 0 && animation === "run") {
+                animation = "idle"
+                runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+              } else if (speed > 0 && animation === "idle") {
+                animation = "run"
+                idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+              }
+
+              pigMixer?.update(speed * ratio * 0.005 + 0.005)
+            }
           }
 
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
 
             const opacity = three.camera.mode === "first" ? 1 - (three.camera.transition / 100) : three.camera.transition / 100
 
-            duck.traverse((child) => {
+            pig.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.opacity = opacity
-                child.material.needsUpdate = true
               }
             })
 
             eagle.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.opacity = opacity
-                child.material.needsUpdate = true
               }
             })
           }
         },
         init: async (entity, _, three) => {
-          three.gLoader.load("ugly-duckling.glb", (gltf) => {
-            duck = gltf.scene
-            duck.animations = gltf.animations
-            duck.frustumCulled = false
-            duck.scale.set(0.08, 0.08, 0.08)
+          three.gLoader.load("character-k.glb", (gltf) => {
+            pig = gltf.scene
+            pig.animations = gltf.animations
+            pig.frustumCulled = false
+            pig.scale.set(0.16, 0.2, 0.16)
 
-            duckMixer = new AnimationMixer(duck)
-            duckMixer.clipAction(duck.animations[1]).play()
+            pigMixer = new AnimationMixer(pig)
+            pigMixer.clipAction(pig.animations[0]).play()
 
-            duck.traverse((child) => {
+            idleAnimation = pigMixer.clipAction(pig.animations[0])
+            runAnimation = pigMixer.clipAction(pig.animations[2])
+
+            pig.traverse((child) => {
               if (child instanceof Mesh) {
-                child.material.transparent = true
-                child.material.opacity = 1
+                const oldMat = child.material
+                child.material = new MeshPhysicalMaterial({
+                  map: oldMat.map,
+                  roughness: 1,
+                  transparent: true,
+                  opacity: 1
+                })
                 child.castShadow = true
                 child.receiveShadow = true
               }
             })
 
-            entity.components.three.o.push(duck)
+            entity.components.three.o.push(pig)
           })
 
           three.gLoader.load("eagle.glb", (gltf) => {
@@ -243,10 +266,10 @@ export const Bird = (player: Player): Character => {
           },
 
           // transform
-          "e": ({ hold }) => {
-            if (hold) return null
-            return { actionId: "transform" }
-          },
+          // "e": ({ hold }) => {
+          //   if (hold) return null
+          //   return { actionId: "transform" }
+          // },
 
           // debug
           "g": ({ world, hold }) => {

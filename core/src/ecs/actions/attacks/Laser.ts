@@ -1,6 +1,6 @@
 import {
-  Action, Actions, Character, cos, VillagersState, Effects, floor, hypot, Input,
-  Item, ItemEntity, min, Networked, playerForCharacter, Position,
+  Action, Actions, Character, cos, VillagersState, Effects, floor, hypot,
+  Input, Item, ItemEntity, min, Networked, playerForCharacter, Position,
   sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
@@ -94,7 +94,7 @@ export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world,
 
   world.client?.sound.play({ name: "laser1", threshold: { pos, distance: 5 } })
 
-  const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.13 }
+  const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
   const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
 
   const target = new Vector3(

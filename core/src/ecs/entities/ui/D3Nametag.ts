@@ -30,7 +30,7 @@ export const D3Nametag = (player: Player): D3Nametag => {
       const { position } = character.components
       const interpolated = position.interpolate(world, delta)
 
-      group.position.set(interpolated.x, interpolated.z + 0.2, interpolated.y)
+      group.position.set(interpolated.x, interpolated.z + 0.63, interpolated.y)
 
       // update text if needed
       const { name } = player.components.pc.data
