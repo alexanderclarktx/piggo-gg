@@ -89,7 +89,6 @@ export const Bird = (player: Player): Character => {
               if (speed === 0 && animation === "run") {
                 animation = "idle"
                 runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
-                console.log("idle")
               } else if (speed > 0 && animation === "idle") {
                 animation = "run"
                 idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
