@@ -3,7 +3,7 @@ import {
   LaserItem, max, Networked, PI, Place, Player, Point, Position, Ready,
   round, setActiveItemIndex, sin, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
-import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
+import { AnimationAction, AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { VillagersSettings, VillagersState } from "./Villagers"
 
 const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
@@ -28,6 +28,10 @@ export const Bird = (player: Player): Character => {
 
   let pigMixer: AnimationMixer | undefined
   let eagleMixer: AnimationMixer | undefined
+
+  let idleAnimation: AnimationAction | undefined
+  let runAnimation: AnimationAction | undefined
+  let animation: "idle" | "run" = "idle"
 
   const bird = Character({
     id: `bird-${player.id}`,
@@ -54,7 +58,7 @@ export const Bird = (player: Player): Character => {
           const orientation = player.id === client.playerId() ? client.controls.localAim : aim
 
           if (flying) {
-            pig.visible = false
+            // pig.visible = false
             eagle.visible = true
 
             // position
@@ -69,7 +73,7 @@ export const Bird = (player: Player): Character => {
             const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
             eagleMixer?.update(speed * ratio * 0.01 + 0.01)
           } else {
-            pig.visible = true
+            // pig.visible = true
             eagle.visible = false
 
             // position
@@ -80,7 +84,19 @@ export const Bird = (player: Player): Character => {
 
             // animation
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
-            pigMixer?.update(speed * ratio * 0.005 + 0.005)
+
+            if (runAnimation && idleAnimation && pigMixer) {
+              if (speed === 0 && animation === "run") {
+                animation = "idle"
+                runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+                console.log("idle")
+              } else if (speed > 0 && animation === "idle") {
+                animation = "run"
+                idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+              }
+
+              pigMixer?.update(speed * ratio * 0.005 + 0.005)
+            }
           }
 
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
@@ -90,14 +106,12 @@ export const Bird = (player: Player): Character => {
             pig.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.opacity = opacity
-                child.material.needsUpdate = true
               }
             })
 
             eagle.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.opacity = opacity
-                child.material.needsUpdate = true
               }
             })
           }
@@ -110,12 +124,15 @@ export const Bird = (player: Player): Character => {
             pig.scale.set(0.16, 0.2, 0.16)
 
             pigMixer = new AnimationMixer(pig)
-            pigMixer.clipAction(pig.animations[2]).play()
+            pigMixer.clipAction(pig.animations[0]).play()
+
+            idleAnimation = pigMixer.clipAction(pig.animations[0])
+            runAnimation = pigMixer.clipAction(pig.animations[2])
 
             pig.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.transparent = true
-                child.material.opacity = 1
+                child.material.opacity = 0
                 child.castShadow = true
                 child.receiveShadow = true
               }
