@@ -71,7 +71,7 @@ export const D3CameraSystem = () => ClientSystemBuilder({
 
         const firstPos = { x: interpolated.x, y: interpolated.y, z: interpolated.z + 0.5 }
 
-        const offset = new Vector3(-sin(x) * cos(y), sin(y), -cos(x) * cos(y)).multiplyScalar(0.8)
+        const offset = new Vector3(-sin(x) * cos(y), sin(y), -cos(x) * cos(y)).multiplyScalar(1)
         const thirdPos = { x: interpolated.x - offset.x, y: interpolated.y - offset.z, z: interpolated.z + 0.4 - offset.y }
 
         const diff = XYZsub(firstPos, thirdPos)
