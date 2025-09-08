@@ -15,10 +15,10 @@ const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
   return { up, dir }
 }
 
-const walk = 0.6
-const run = 0.95
-const hop = 0.15
-const leap = 0.23
+const walk = 0.78
+const run = 1.2
+const hop = 0.18
+const leap = 0.3
 
 export const Bird = (player: Player): Character => {
 
