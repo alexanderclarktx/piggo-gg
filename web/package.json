@@ -4,12 +4,13 @@
   "scripts": {
     "build": "rm -rf ./dist && NODE_ENV=production bun x webpack",
     "bbuild": "rm -rf ./dist && bun build src/index.tsx --outdir dist --minify && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
-    "dev": "bun x webpack serve --port 8000"
+    "dev": "bun dev-compile & bun dev-serve",
+    "dev-compile": "bun build src/index.ts --outdir ../docs --minify --watch",
+    "dev-serve": "bun run --port 8000 --hot ../docs/index.html "
   },
   "dependencies": {
-    "@sethwebster/react-fps-counter": "^0.0.19",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@piggo-gg/lex": "1.0.4",
+    "@sethwebster/react-fps-counter": "^0.0.19"
   },
   "devDependencies": {
     "@types/google.accounts": "^0.0.15",
