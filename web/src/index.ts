@@ -1,6 +1,8 @@
 import { Lex, LexCanvas, LexDiv } from "@piggo-gg/lex"
 import { D3Renderer, DefaultWorld, isMobile, Villagers } from "@piggo-gg/core"
 
+console.log("index.ts", performance.now())
+
 const Title = () => {
 
   const title = LexDiv({

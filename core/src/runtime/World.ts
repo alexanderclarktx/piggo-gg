@@ -155,6 +155,8 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     onTick: ({ isRollback }) => {
       const now = performance.now()
 
+      if (world.tick === 1) console.log("first tick", now)
+
       if (world.tick > 120 && world.players().length === 0) return
 
       // check if it's time to run the next tick
