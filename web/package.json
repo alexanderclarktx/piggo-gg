@@ -2,8 +2,7 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "build": "rm -rf ./dist && NODE_ENV=production bun x webpack",
-    "bbuild": "rm -rf ./dist && bun build src/index.tsx --outdir dist --minify && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
+    "bbuild": "rm -rf ./dist && bun build src/index.ts --outdir dist --minify && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
     "dev": "bun dev-compile & bun dev-serve",
     "dev-compile": "bun build src/index.ts --outdir ../docs --minify --watch",
     "dev-serve": "bun run --port 8000 --hot ../docs/index.html "
