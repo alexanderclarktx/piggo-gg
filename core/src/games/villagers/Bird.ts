@@ -135,7 +135,7 @@ export const Bird = (player: Player): Character => {
                   map: oldMat.map,
                   roughness: 1,
                   transparent: true,
-                  opacity: 1
+                  opacity: 0
                 })
                 child.castShadow = true
                 child.receiveShadow = true
