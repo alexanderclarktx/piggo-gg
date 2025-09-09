@@ -7,13 +7,10 @@
     "webdev-serve": "bunx serve -L -p 8000 res"
   },
   "dependencies": {
-    "@piggo-gg/lex": "1.0.4",
-    "@sethwebster/react-fps-counter": "^0.0.19"
+    "@piggo-gg/lex": "1.0.4"
   },
   "devDependencies": {
     "@types/google.accounts": "^0.0.15",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "webpack": "^5.75.0"
+    "serve": "14.2.5"
   }
 }

@@ -8,12 +8,12 @@
   ],
   "scripts": {
     "prod": "bun gen && bun --cwd server start",
-    "compile": "rm -rf ./dist && bun build web/src/index.ts --outdir dist --minify && cp -r web/res/* dist/",
+    "compile": "rm -rf ./dist && bun build web/src/index.ts --outdir docs --minify && cp -r web/res/* docs/",
     "dev": "bun --cwd web dev & bun --cwd server dev && fg",
     "gen": "bun --cwd server prisma:generate",
     "db": "bun --cwd server prisma:local",
     "branch": "git checkout main && git pull && git branch -D $(whoami) ; git checkout -b $(whoami)",
-    "pages": "ENV=production bun compile && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME",
+    "pages": "rm -r ./docs && mkdir docs && git restore docs/CNAME && ENV=production bun compile",
     "ship": "bun pages && git add . && git commit -m 'ship' && git push",
     "b": "bun branch",
     "s": "bun ship 2>/dev/null"
