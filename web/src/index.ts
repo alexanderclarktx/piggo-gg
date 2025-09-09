@@ -1,8 +1,4 @@
-import { Lex, LexCanvas, LexDiv, LexElement } from "@piggo-gg/lex"
-
-// const LexSvg = LexElement<SVGElement>("svg", {
-
-// })
+import { Lex, LexCanvas, LexDiv } from "@piggo-gg/lex"
 
 const Title = () => {
 
