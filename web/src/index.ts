@@ -16,4 +16,5 @@ import { Canvas, Title } from "@piggo-gg/web"
 const App = Lex({
   state: {},
   elements: [Title(), Canvas()],
+  backgroundColor: "#191b1c"
 })

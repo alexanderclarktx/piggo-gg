@@ -8,7 +8,14 @@ export const Title = () => {
   console.log("title")
 
   const h1 = LexDiv({
-    style: { fontFamily: "Courier New", color: "blue", fontSize: "80px", marginLeft: "10px", marginRight: "10px" }
+    style: {
+      fontFamily: "Courier New",
+      color: "blue",
+      fontSize: "80px",
+      // marginLeft: "10px",
+      // marginRight: "10px",
+      transform: "translate(0%, 50%)",
+    }
   })
   h1.e.textContent = "Piggo"
 
@@ -17,6 +24,7 @@ export const Title = () => {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      left: "50%",
       margin: "0px",
       marginBottom: "5px"
     },
