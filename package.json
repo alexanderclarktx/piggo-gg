@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "prod": "bun gen && bun --cwd server start",
-    "dev": "bun --cwd web dev & bun --cwd server dev && fg",
+    "dev": "bun webdev & bun --cwd server dev && fg",
     "gen": "bun --cwd server prisma:generate",
     "db": "bun --cwd server prisma:local",
     "branch": "git checkout main && git pull && git branch -D $(whoami) ; git checkout -b $(whoami)",
@@ -18,7 +18,7 @@
     "s": "bun ship 2>/dev/null",
     "webdev": "bun dev-compile & bun dev-serve",
     "dev-compile": "bun build --watch web/src/index.ts --outdir docs",
-    "dev-serve": "bun run --port 8000 --hot docs/index.html "
+    "dev-serve": "bunx serve -L -p 8000 docs"
   },
   "license": "MIT+CC",
   "dependencies": {
