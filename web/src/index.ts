@@ -1,5 +1,4 @@
-import { Lex, LexDiv } from "@piggo-gg/lex"
-import { Canvas } from "@piggo-gg/web"
+import { Lex, LexCanvas, LexDiv } from "@piggo-gg/lex"
 
 const Title = () => {
   const title = LexDiv({
@@ -14,6 +13,23 @@ const Title = () => {
   title.e.textContent = "Piggo"
 
   return title
+}
+
+const Canvas = () => {
+
+  const canvas = LexCanvas({
+    style: {
+      left: "50%",
+      top: "48px",
+      transform: "translate(-50%)",
+      width: "98%",
+      height: "91%"
+    }
+  })
+
+  canvas.e.id = "canvas"
+
+  return canvas
 }
 
 const App = Lex({

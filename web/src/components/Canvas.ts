@@ -2,20 +2,6 @@ import { DefaultWorld, isMobile, D3Renderer, World, Villagers } from "@piggo-gg/
 import { useEffect } from "react"
 import { LexCanvas } from "@piggo-gg/lex"
 
-export const Canvas = () => {
-
-  const canvas = LexCanvas({
-    style: {
-      position: "relative",
-      border: "none"
-    }
-  })
-
-  canvas.e.id = "canvas"
-
-  return canvas
-}
-
 // export type CanvasProps = {
 //   setWorld: (_: World) => void
 // }
