@@ -10,6 +10,9 @@ out/
 generated/
 server/Api
 
+# dev server
+web/res/index.js
+
 # bun
 bun.lockb
 

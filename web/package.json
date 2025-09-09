@@ -2,7 +2,9 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-
+    "dev": "bun webdev-compile & bun webdev-serve",
+    "webdev-compile": "bun build --watch --minify src/index.ts --outdir res",
+    "webdev-serve": "bunx serve -L -p 8000 res"
   },
   "dependencies": {
     "@piggo-gg/lex": "1.0.4",
