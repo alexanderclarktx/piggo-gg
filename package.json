@@ -15,7 +15,10 @@
     "pages": "ENV=production bun --cwd web bbuild && rm -r ./docs && mkdir docs && cp -r ./web/dist/* ./docs/ && git restore docs/CNAME",
     "ship": "bun pages && git add . && git commit -m 'ship' && git push",
     "b": "bun branch",
-    "s": "bun ship 2>/dev/null"
+    "s": "bun ship 2>/dev/null",
+    "webdev": "bun dev-compile & bun dev-serve",
+    "dev-compile": "bun build --watch web/src/index.ts --outdir docs",
+    "dev-serve": "bun run --port 8000 --hot docs/index.html "
   },
   "license": "MIT+CC",
   "dependencies": {

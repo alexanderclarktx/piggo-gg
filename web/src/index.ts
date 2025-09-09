@@ -1,4 +1,5 @@
 import { Ball, Lex } from "@piggo-gg/lex"
+import { Canvas, Title } from "@piggo-gg/web"
 
 // import { Root } from "./components/Root"
 // import { createRoot } from "react-dom/client"
@@ -14,5 +15,5 @@ import { Ball, Lex } from "@piggo-gg/lex"
 
 const App = Lex({
   state: {},
-  elements: [Ball("blue")]
+  elements: [Title(), Canvas()],
 })
