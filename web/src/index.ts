@@ -1,4 +1,5 @@
 import { Lex, LexCanvas, LexDiv } from "@piggo-gg/lex"
+import { D3Renderer, DefaultWorld, isMobile, Villagers } from "@piggo-gg/core"
 
 const Title = () => {
 
@@ -82,7 +83,10 @@ const Canvas = () => {
     }
   })
 
-  canvas.e.id = "canvas"
+  if (isMobile()) canvas.e.style.border = "none"
+
+  const three = D3Renderer(canvas.e)
+  DefaultWorld({ games: [ Villagers ], three })
 
   return canvas
 }

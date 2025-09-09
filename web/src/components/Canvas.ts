@@ -12,11 +12,11 @@ import { LexCanvas } from "@piggo-gg/lex"
 //     const canvas = document.getElementById("canvas") as HTMLCanvasElement
 //     canvas.ontouchend = (e) => e.preventDefault()
 
-//     const mobile = isMobile()
-//     if (mobile) canvas.style.border = "none"
+    // const mobile = isMobile()
+    // if (mobile) canvas.style.border = "none"
 
-//     const three = D3Renderer(canvas)
-//     setWorld(DefaultWorld({ games: [ Villagers ], three }))
+    // const three = D3Renderer(canvas)
+    // setWorld(DefaultWorld({ games: [ Villagers ], three }))
 //   }, [])
 
 //   return (
