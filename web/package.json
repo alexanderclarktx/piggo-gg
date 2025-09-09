@@ -2,7 +2,7 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "bbuild": "rm -rf ./dist && bun build src/index.ts --outdir dist --minify && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/"
+
   },
   "dependencies": {
     "@piggo-gg/lex": "1.0.4",
