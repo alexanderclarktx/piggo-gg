@@ -63,9 +63,9 @@ const Version = () => {
       right: "5px",
       // top: "14.5px",
       top: "28px",
-      verticalAlign: "-70%",
+      // verticalAlign: "-70%",
       fontWeight: "bold",
-      fontFamily: "sans-serif",
+      // fontFamily: "sans-serif",
     }
   })
   version.e.textContent = 'v0.34.2 D GH'
