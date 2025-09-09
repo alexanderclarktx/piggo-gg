@@ -1989,7 +1989,7 @@ var Canvas = () => {
 };
 // web/src/index.ts
 var Title2 = () => {
-  const h1 = LexDiv({
+  const title = LexDiv({
     style: {
       fontFamily: "Courier New",
       fontSize: "38px",
@@ -1998,8 +1998,8 @@ var Title2 = () => {
       left: "50%"
     }
   });
-  h1.e.textContent = "Piggo";
-  return h1;
+  title.e.textContent = "Piggo";
+  return title;
 };
 var App = Lex({
   state: {},

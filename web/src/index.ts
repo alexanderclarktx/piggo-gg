@@ -2,8 +2,7 @@ import { Lex, LexDiv } from "@piggo-gg/lex"
 import { Canvas } from "@piggo-gg/web"
 
 const Title = () => {
-
-  const h1 = LexDiv({
+  const title = LexDiv({
     style: {
       fontFamily: "Courier New",
       fontSize: "38px",
@@ -12,9 +11,9 @@ const Title = () => {
       left: "50%",
     }
   })
-  h1.e.textContent = "Piggo"
+  title.e.textContent = "Piggo"
 
-  return h1
+  return title
 }
 
 const App = Lex({
