@@ -159,6 +159,22 @@ var Title = () => {
   title.e.textContent = "Piggo";
   return title;
 };
+var Version = () => {
+  const version = LexDiv({
+    style: {
+      fontSize: "14px",
+      marginRight: "5px",
+      position: "absolute",
+      right: "5px",
+      top: "28px",
+      verticalAlign: "-70%",
+      fontWeight: "bold",
+      fontFamily: "sans-serif"
+    }
+  });
+  version.e.textContent = "v0.34.2 D GH";
+  return version;
+};
 var Canvas = () => {
   const canvas = LexCanvas({
     style: {
@@ -174,6 +190,6 @@ var Canvas = () => {
 };
 var App = Lex({
   state: {},
-  elements: [Title(), Canvas()],
+  elements: [Title(), Version(), Canvas()],
   backgroundColor: "#191b1c"
 });

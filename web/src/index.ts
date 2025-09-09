@@ -15,6 +15,25 @@ const Title = () => {
   return title
 }
 
+const Version = () => {
+  const version = LexDiv({
+    style: {
+      fontSize: "14px",
+      marginRight: "5px",
+      position: "absolute",
+      right: "5px",
+      // top: "14.5px",
+      top: "28px",
+      verticalAlign: "-70%",
+      fontWeight: "bold",
+      fontFamily: "sans-serif",
+    }
+  })
+  version.e.textContent = 'v0.34.2 D GH'
+
+  return version
+}
+
 const Canvas = () => {
 
   const canvas = LexCanvas({
@@ -34,6 +53,6 @@ const Canvas = () => {
 
 const App = Lex({
   state: {},
-  elements: [Title(), Canvas()],
+  elements: [Title(), Version(), Canvas()],
   backgroundColor: "#191b1c"
 })
