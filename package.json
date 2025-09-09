@@ -18,7 +18,7 @@
     "b": "bun branch",
     "s": "bun ship 2>/dev/null",
     "webdev": "bun webdev-compile & bun webdev-serve",
-    "webdev-compile": "bun build --watch web/src/index.ts --outdir docs",
+    "webdev-compile": "bun build --watch --minify web/src/index.ts --outdir docs",
     "webdev-serve": "bunx serve -L -p 8000 docs"
   },
   "license": "MIT+CC",
