@@ -3,42 +3,6 @@ import { LoginProps } from "@piggo-gg/web"
 
 export type TitleProps = LoginProps & {}
 
-export const Title = () => {
-
-  console.log("title")
-
-  const h1 = LexDiv({
-    style: {
-      fontFamily: "Courier New",
-      color: "blue",
-      fontSize: "80px",
-      // marginLeft: "10px",
-      // marginRight: "10px",
-      transform: "translate(0%, 50%)",
-    }
-  })
-  h1.e.textContent = "Piggo"
-
-  const wrapper = LexDiv({
-    style: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      left: "50%",
-      margin: "0px",
-      marginBottom: "5px"
-    },
-    children: [
-      // LexDiv({
-      //   style: { position: "absolute", left: "0px", bottom: "0px" },
-      // }),
-      h1
-    ]
-  })
-
-  return wrapper
-
-}
 
 // export const Title = ({ world, loginState, setLoginState }: TitleProps) => (
 //   <div style={{

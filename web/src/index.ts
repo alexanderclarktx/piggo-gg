@@ -1,17 +1,21 @@
-import { Ball, Lex } from "@piggo-gg/lex"
-import { Canvas, Title } from "@piggo-gg/web"
+import { Lex, LexDiv } from "@piggo-gg/lex"
+import { Canvas } from "@piggo-gg/web"
 
-// import { Root } from "./components/Root"
-// import { createRoot } from "react-dom/client"
+const Title = () => {
 
-// const App = () => (
-//   <div className="App">
-//     <Root />
-//   </div>
-// )
+  const h1 = LexDiv({
+    style: {
+      fontFamily: "Courier New",
+      fontSize: "38px",
+      fontWeight: "bold",
+      transform: "translate(-50%)",
+      left: "50%",
+    }
+  })
+  h1.e.textContent = "Piggo"
 
-// const domContainer = document.querySelector("#root")
-// createRoot(domContainer!).render(<App />)
+  return h1
+}
 
 const App = Lex({
   state: {},

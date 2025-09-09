@@ -1987,36 +1987,22 @@ var Canvas = () => {
   canvas.e.id = "canvas";
   return canvas;
 };
-// web/src/components/Title.ts
-var Title = () => {
-  console.log("title");
+// web/src/index.ts
+var Title2 = () => {
   const h1 = LexDiv({
     style: {
       fontFamily: "Courier New",
-      color: "blue",
-      fontSize: "80px",
-      transform: "translate(0%, 50%)"
+      fontSize: "38px",
+      fontWeight: "bold",
+      transform: "translate(-50%)",
+      left: "50%"
     }
   });
   h1.e.textContent = "Piggo";
-  const wrapper = LexDiv({
-    style: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      left: "50%",
-      margin: "0px",
-      marginBottom: "5px"
-    },
-    children: [
-      h1
-    ]
-  });
-  return wrapper;
+  return h1;
 };
-// web/src/index.ts
 var App = Lex({
   state: {},
-  elements: [Title(), Canvas()],
+  elements: [Title2(), Canvas()],
   backgroundColor: "#191b1c"
 });
