@@ -130,7 +130,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      const ambient = new AmbientLight(0x808080, 6)
+      const ambient = new AmbientLight(0x707080, 6)
       renderer.scene.add(ambient)
 
       const sun = new DirectionalLight(evening, 9)
@@ -294,7 +294,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         const bright = max(0, 2 - pow(daytime / 6, 2))
         ambient.intensity = 6 + bright * 3
 
-        sun.intensity = 9 - bright * 3.5
+        sun.intensity = 9 - bright * 3
 
         // console.log(sun.intensity.toFixed(1), ambient.intensity.toFixed(1))
       })
