@@ -290,9 +290,13 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         sunSphere.visible = sun.visible
 
         // ambient light
-        const daytime = abs(hour - 13)
-        const bright = max(0, 1.5 - pow(daytime / 6, 2))
+        const daytime = abs(hour - 12)
+        const bright = max(0, 2 - pow(daytime / 6, 2))
         ambient.intensity = 1.2 + bright
+
+        sun.intensity = 9 - bright * 3
+
+        console.log("sun", sun.intensity.toFixed(1), "ambient", ambient.intensity.toFixed(1))
       })
     }
   }
