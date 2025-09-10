@@ -20,7 +20,7 @@ export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
 
-  const chunks = 24
+  const chunks = 48 // TODO dynamic?
   for (let i = 0; i < chunks; i++) {
     data[i] = []
     for (let j = 0; j < chunks; j++) {
@@ -312,10 +312,12 @@ export const spawnChunk = (chunk: XY, world: World) => {
 // }
 
 export const spawnTerrain = (world: World, num: number = 10) => {
+  const time = performance.now()
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
       const chunk = { x: i, y: j }
       spawnChunk(chunk, world)
     }
   }
+  console.log("spawnTerrain", performance.now() - time)
 }

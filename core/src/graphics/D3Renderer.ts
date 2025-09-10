@@ -101,16 +101,16 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      renderer.blocks = BlockMesh()
+      renderer.blocks = BlockMesh(88000)
       renderer.scene.add(renderer.blocks)
 
-      renderer.spruce = BlockMesh(500)
+      renderer.spruce = BlockMesh(5000)
       renderer.scene.add(renderer.spruce)
 
-      renderer.oak = BlockMesh(500)
+      renderer.oak = BlockMesh(5000)
       renderer.scene.add(renderer.oak)
 
-      renderer.leaf = BlockMesh(500)
+      renderer.leaf = BlockMesh(5000)
       renderer.scene.add(renderer.leaf)
 
       renderer.sphere = new Mesh(

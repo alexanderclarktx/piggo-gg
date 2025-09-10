@@ -81,7 +81,7 @@ const VillagersSystem = SystemBuilder({
   init: (world) => {
 
     world.three?.activate(world)
-    spawnTerrain(world, 24)
+    spawnTerrain(world, 48)
 
     world.three?.scene.add(Sky().mesh)
 
@@ -270,9 +270,9 @@ const VillagersSystem = SystemBuilder({
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
 
-          const neighbors = world.blocks.neighbors({ x: 1, y: 1 }, 24)
+          const neighbors = world.blocks.neighbors({ x: 1, y: 1 }, 48)
           const chunkData = world.blocks.visible(neighbors)
-          // console.log(`rendering ${chunkData.length} blocks`)
+          console.log(`rendering ${chunkData.length} blocks`)
 
           const { blocks, spruce, oak, leaf } = world.three
 

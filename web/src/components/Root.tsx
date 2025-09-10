@@ -3,6 +3,7 @@ import { Canvas, Title } from "@piggo-gg/web"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
 import FPSCounter from "@sethwebster/react-fps-counter"
+import { FpsView } from "react-fps/build"
 
 export type LoginState = "not logged in" | "🟢 Logged In" | ""
 
@@ -33,9 +34,9 @@ export const Root = () => {
           <Canvas setWorld={setWorld} />
         </div>
       </div>
-      {/* {window.location.hostname === "localhost" && (
-        <FPSCounter visible={true} position="bottom-left" targetFrameRate={120} />
-      )} */}
+      {window.location.hostname === "localhost" && (
+        <FpsView left="84%" top="84%"/>
+      )}
     </div>
   )
 }
