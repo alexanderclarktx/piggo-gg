@@ -58,7 +58,7 @@ export const Bird = (player: Player): Character => {
           const orientation = player.id === client.playerId() ? client.controls.localAim : aim
 
           if (flying) {
-            // pig.visible = false
+            pig.visible = false
             eagle.visible = true
 
             // position
@@ -73,7 +73,7 @@ export const Bird = (player: Player): Character => {
             const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
             eagleMixer?.update(speed * ratio * 0.01 + 0.01)
           } else {
-            // pig.visible = true
+            pig.visible = true
             eagle.visible = false
 
             // position
