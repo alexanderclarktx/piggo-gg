@@ -14,8 +14,8 @@ export const Sky = (): Sky => {
       uBrightness: { value: 0.9 },
       uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
       uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
-      uCloudDensity: { value: 1.0 }, // 0 = no clouds, 1 = overcast
-      uCloudSpeed: { value: 0.1 },  // movement speed
+      uCloudDensity: { value: 0.9 },
+      uCloudSpeed: { value: 0.05 },
     },
     vertexShader,
     fragmentShader,
@@ -229,8 +229,7 @@ void main(){
   float w = worley(cloudUV * 3.0);
 
   // Invert so blobs are solid inside, soft outside
-  // float clouds = 1.0 - smoothstep(0.25, 0.5, w);
-  float clouds = 0.0;
+  float clouds = 1.0 - smoothstep(0.25, 0.5, w);
 
   // blend clouds on top (white tinted)
   vec3 cloudColor = mix(vec3(1.0), daySky, 0.2);

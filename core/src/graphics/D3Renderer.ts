@@ -294,7 +294,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         const bright = max(0, 2 - pow(daytime / 6, 2))
         ambient.intensity = 1.2 + bright
 
-        sun.intensity = 9 - bright * 3
+        sun.intensity = 9 - bright * 2
+
+        // console.log(ambient.intensity.toFixed(1))
       })
     }
   }
