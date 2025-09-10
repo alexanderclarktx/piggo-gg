@@ -108,7 +108,7 @@ const VillagersSystem = SystemBuilder({
         mobileUI?.update()
 
         // 0 to 24
-        sky.material.uniforms.uTime.value = (world.tick / 10) % 24
+        sky.material.uniforms.uTime.value = (world.tick / 100) % 24
         // console.log("uTime", sky.material.uniforms.uTime.value)
 
         const pc = world.client?.character()
