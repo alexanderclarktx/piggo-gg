@@ -214,7 +214,7 @@ void main(){
   float dayFactor = smoothstep(5.0, 8.0, uTime) * (1.0 - smoothstep(17.0, 20.0, uTime));
   vec3 daySky = vec3(0.4, 0.7, 1.0); // light blue
 
-  bg = mix(bg, daySky, dayFactor);
+  bg = mix(bg, 0.0, dayFactor);
 
   
   // project dir onto XZ plane for clouds

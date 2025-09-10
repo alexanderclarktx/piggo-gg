@@ -1,7 +1,7 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, DirectionalLightHelper, Group, LinearMipMapNearestFilter,
-  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, Object3DEventMap,
-  Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  AmbientLight, CameraHelper, DirectionalLight, Group, LinearMipMapNearestFilter,
+  Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
+  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
 import { abs, BlockMesh, cos, D3Camera, isMobile, max, PI, pow, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -29,14 +29,12 @@ export type D3Renderer = {
   resize: () => void
   pointerLock: () => void // TODO move to Client
   pointerUnlock: () => void
-  sunLookAt: (x: number, y: number, z: number) => void
 }
 
 export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
   let webgl: undefined | WebGLRenderer
   let helper: undefined | CameraHelper
-  let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
 
   const renderer: D3Renderer = {
     apple: undefined,
@@ -146,11 +144,17 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
       sun.castShadow = true
 
+      renderer.sun.target = renderer.sphere
+
       // widen the shadow
-      sun.shadow.camera.left = -25
-      sun.shadow.camera.right = 25
-      sun.shadow.camera.top = 10
-      sun.shadow.camera.bottom = -20
+      sun.shadow.camera.left = -20
+      sun.shadow.camera.right = 20
+      sun.shadow.camera.top = 60
+      sun.shadow.camera.bottom = -5
+      // sun.shadow.camera.left = -25
+      // sun.shadow.camera.right = 25
+      // sun.shadow.camera.top = 10
+      // sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
 
       // textures
@@ -279,13 +283,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         // move sun
         const sunHeight = cos((hour - 12) / 12 * PI) * 100
         const sunArc = cos((hour - 6) / 12 * PI) * 100
-        // const sunArc = 100
-        // console.log(sunHeight.toFixed(0), sunArc.toFixed(0))
 
         sun.position.set(sunArc, sunHeight, sunArc)
         sunSphere.position.copy(sun.position)
-
-        renderer.sunLookAt(30, 30, 5)
 
         sun.visible = sunHeight > -10
         sunSphere.visible = sun.visible
@@ -295,19 +295,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         const bright = max(0, 1.5 - pow(daytime / 6, 2))
         ambient.intensity = 1.2 + bright
       })
-    },
-    sunLookAt: (x: number, y: number, z: number) => {
-      if (renderer.sun) {
-        // renderer.sun.shadow.camera.lookAt(x, z, y)
-
-        renderer.sun.lookAt(x, z, y)
-        renderer.sun.updateMatrixWorld()
-
-        // renderer.sun.shadow.camera.updateProjectionMatrix()
-        // renderer.sun.shadow.camera.updateMatrixWorld()
-      } else {
-        console.warn("Sun not initialized")
-      }
     }
   }
   return renderer
