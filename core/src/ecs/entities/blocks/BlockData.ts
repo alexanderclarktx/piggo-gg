@@ -1,10 +1,11 @@
 import {
-  Block, BlockTree, BlockType, BlockTypeInt,
+  Block, BlockPlan, BlockTree, BlockType, BlockTypeInt,
   floor, keys, logPerf, World, XY, XYZ
 } from "@piggo-gg/core"
 
 export type BlockData = {
   add: (block: Block) => boolean
+  addPlan: (plan: BlockPlan) => boolean
   clear: () => void
   atIJK: (ijk: XYZ) => number | undefined
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
@@ -123,6 +124,14 @@ export const BlockData = (): BlockData => {
       visibleDirty[key] = true
 
       return true
+    },
+    addPlan: (plan: BlockPlan) => {
+      let success = true
+      for (const block of plan) {
+        const result = blocks.add(block)
+        if (!result) success = false
+      }
+      return success
     },
     visible: (at: XY[]) => {
       const result: Block[] = []
@@ -282,9 +291,7 @@ export const spawnChunk = (chunk: XY, world: World) => {
           const t = world.random.int(2) === 1 ? "oak" : "spruce"
           const fluffy = world.random.int(2) === 1
 
-          for (const block of BlockTree({ x, y, z }, height, t, fluffy)) {
-            world.blocks.add(block)
-          }
+          world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
 
           world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
         }
