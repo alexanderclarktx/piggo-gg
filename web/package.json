@@ -2,7 +2,6 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "compile": "rm -rf ./dist && bun build src/index.tsx --outdir dist --minify && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
     "dev": "bun dev-compile & bun dev-serve",
     "dev-compile": "bun build --watch --minify src/index.tsx --outdir res",
     "dev-serve": "bunx serve -L -p 8000 res"
