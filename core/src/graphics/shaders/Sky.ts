@@ -14,6 +14,8 @@ export const Sky = (): Sky => {
       uBrightness: { value: 0.9 },
       uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
       uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
+      uCloudDensity: { value: 1.0 }, // 0 = no clouds, 1 = overcast
+      uCloudSpeed: { value: 0.1 },  // movement speed
     },
     vertexShader,
     fragmentShader,
@@ -52,6 +54,8 @@ uniform float uDensity;     // 0..1
 uniform float uBrightness;  // overall star brightness
 uniform vec3  uHorizon;
 uniform vec3  uZenith;
+uniform float uCloudDensity;
+uniform float uCloudSpeed;
 
 float uHour = 12.0;
 
@@ -155,6 +159,32 @@ vec3 starLayers(vec3 dir, vec2 uv){
   return acc;
 }
 
+// -------------------- simple noise from hash12 --------------------
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+
+  // corners
+  float a = hash12(i);
+  float b = hash12(i + vec2(1.0, 0.0));
+  float c = hash12(i + vec2(0.0, 1.0));
+  float d = hash12(i + vec2(1.0, 1.0));
+
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(a, b, u.x) +
+         (c - a) * u.y * (1.0 - u.x) +
+         (d - b) * u.x * u.y;
+}
+
+// fractal noise (fbm)
+float fbm(vec2 p) {
+  float f = 0.0;
+  f += 0.5   * noise(p);   p *= 2.02;
+  f += 0.25  * noise(p);   p *= 2.03;
+  f += 0.125 * noise(p);
+  return f;
+}
+
 void main(){
   vec3 dir = normalize(vWorldPosition - cameraPosition);
 
@@ -169,15 +199,27 @@ void main(){
 
   bg = mix(bg, daySky, dayFactor);
 
-  // ---------------- stars ----------------
+  
+  // project dir onto XZ plane for clouds
+  vec2 cloudUV = normalize(dir).xz * 0.5;
+  cloudUV += uTime * uCloudSpeed;
+
+  // sample cloud fbm
+  float c = fbm(cloudUV * 4.0);
+  c = pow(c, 2.0);
+  float clouds = smoothstep(0.2, 0.5, c);
+
+  // blend clouds on top (white tinted)
+  vec3 cloudColor = mix(vec3(1.0), daySky, 0.2);
+  bg = mix(bg, cloudColor, clouds * clouds * uCloudDensity * dayFactor);
+
+  // stars (your existing starLayers + octaProject)
   vec2 uv = octaProject(dir);
   vec3 stars = starLayers(dir, uv);
-
-  // Fade stars out during the day
   stars *= (1.0 - dayFactor);
 
-  // Dither noise
-  float dither = (hash12(uv + uHour*0.123) - 0.5) * 0.003;
+  // dither using hash12
+  float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
   vec3 color = bg + stars + dither;
 
   gl_FragColor = vec4(color, 1.0);
