@@ -276,11 +276,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         const hour = (world.tick / 10) % 24
 
         // move sun
-
-        // move shadow
         const sunHeight = cos(hour / 12 * PI) * 100
         sun.position.set(sun.position.x, sunHeight, sun.position.z)
-
         sunSphere.position.copy(sun.position)
 
         // ambient light
