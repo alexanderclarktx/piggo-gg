@@ -9,7 +9,7 @@ export const Sky = (): Sky => {
 
   const material = new ShaderMaterial({
     uniforms: {
-      uTime: { value: 0 },
+      uTime: { value: 12.0 },
       uDensity: { value: 0.0015 },
       uBrightness: { value: 0.9 },
       uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
@@ -56,8 +56,6 @@ uniform vec3  uHorizon;
 uniform vec3  uZenith;
 uniform float uCloudDensity;
 uniform float uCloudSpeed;
-
-float uHour = 12.0;
 
 varying vec3 vWorldPosition;
 
@@ -185,6 +183,25 @@ float fbm(vec2 p) {
   return f;
 }
 
+// Worley / cellular noise, returns distance to nearest random feature point
+float worley(vec2 uv) {
+  vec2 i = floor(uv);
+  vec2 f = fract(uv);
+
+  float minDist = 1.0;
+  // check 3x3 neighborhood of cells
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 cell = i + vec2(x, y);
+      vec2 rand = hash22(cell);       // random feature point in cell
+      vec2 diff = (vec2(x, y) + rand) - f;
+      float d = length(diff);
+      minDist = min(minDist, d);
+    }
+  }
+  return minDist;
+}
+
 void main(){
   vec3 dir = normalize(vWorldPosition - cameraPosition);
 
@@ -194,7 +211,7 @@ void main(){
 
   // ---------------- day/night blending ----------------
   // Define "day" between 6h and 18h
-  float dayFactor = smoothstep(5.0, 8.0, uHour) * (1.0 - smoothstep(17.0, 20.0, uHour));
+  float dayFactor = smoothstep(5.0, 8.0, uTime) * (1.0 - smoothstep(17.0, 20.0, uTime));
   vec3 daySky = vec3(0.4, 0.7, 1.0); // light blue
 
   bg = mix(bg, daySky, dayFactor);
@@ -205,9 +222,15 @@ void main(){
   cloudUV += uTime * uCloudSpeed;
 
   // sample cloud fbm
-  float c = fbm(cloudUV * 4.0);
-  c = pow(c, 2.0);
-  float clouds = smoothstep(0.2, 0.5, c);
+  // float c = fbm(cloudUV * 3.0);
+  // c = pow(c, 2.0);
+  // float clouds = smoothstep(0.2, 0.5, c);
+
+  // Smaller scale = bigger puffs, larger scale = smaller puffs
+  float w = worley(cloudUV * 3.0);
+
+  // Invert so blobs are solid inside, soft outside
+  float clouds = 1.0 - smoothstep(0.25, 0.5, w);
 
   // blend clouds on top (white tinted)
   vec3 cloudColor = mix(vec3(1.0), daySky, 0.2);
