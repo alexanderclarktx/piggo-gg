@@ -58,7 +58,7 @@ export const Bird = (player: Player): Character => {
           const orientation = player.id === client.playerId() ? client.controls.localAim : aim
 
           if (flying) {
-            // pig.visible = false
+            pig.visible = false
             eagle.visible = true
 
             // position
@@ -73,7 +73,7 @@ export const Bird = (player: Player): Character => {
             const speed = sqrt(hypot(velocity.x, velocity.y, velocity.z))
             eagleMixer?.update(speed * ratio * 0.01 + 0.01)
           } else {
-            // pig.visible = true
+            pig.visible = true
             eagle.visible = false
 
             // position
@@ -135,7 +135,7 @@ export const Bird = (player: Player): Character => {
                   map: oldMat.map,
                   roughness: 1,
                   transparent: true,
-                  opacity: 1
+                  opacity: 0
                 })
                 child.castShadow = true
                 child.receiveShadow = true
@@ -266,10 +266,10 @@ export const Bird = (player: Player): Character => {
           },
 
           // transform
-          // "e": ({ hold }) => {
-          //   if (hold) return null
-          //   return { actionId: "transform" }
-          // },
+          "e": ({ hold }) => {
+            if (hold) return null
+            return { actionId: "transform" }
+          },
 
           // debug
           "g": ({ world, hold }) => {

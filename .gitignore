@@ -9,6 +9,7 @@ dist/
 out/
 generated/
 server/Api
+web/res/index.js
 
 # bun
 bun.lockb

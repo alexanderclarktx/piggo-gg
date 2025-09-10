@@ -2,9 +2,9 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "build": "rm -rf ./dist && NODE_ENV=production bun x webpack",
-    "bbuild": "rm -rf ./dist && bun build src/index.tsx --outdir dist --minify && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
-    "dev": "bun x webpack serve --port 8000"
+    "dev": "bun dev-compile & bun dev-serve",
+    "dev-compile": "bun build --watch --minify src/index.tsx --outdir res",
+    "dev-serve": "bunx serve -L -p 8000 res"
   },
   "dependencies": {
     "@sethwebster/react-fps-counter": "^0.0.19",
@@ -16,7 +16,6 @@
     "@types/google.accounts": "^0.0.15",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@types/react-modal": "3.16.1",
-    "webpack": "^5.75.0"
+    "@types/react-modal": "3.16.1"
   }
 }
