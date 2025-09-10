@@ -20,13 +20,18 @@ export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
 
+  let length = 0
+
   const chunks = 48 // TODO dynamic?
   for (let i = 0; i < chunks; i++) {
     data[i] = []
     for (let j = 0; j < chunks; j++) {
       data[i][j] = new Int8Array(4 * 4 * 32)
+      length += data[i][j].byteLength
     }
   }
+
+  console.log("arr.byteLength", length)
 
   let visibleCache: Record<string, Block[]> = {}
   let visibleDirty: Record<string, boolean> = {}
