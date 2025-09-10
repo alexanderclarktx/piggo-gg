@@ -15,7 +15,7 @@ export const Sky = (): Sky => {
       uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
       uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
       uCloudDensity: { value: 0.9 },
-      uCloudSpeed: { value: 0.05 },
+      uCloudSpeed: { value: 0.05 }
     },
     vertexShader,
     fragmentShader,

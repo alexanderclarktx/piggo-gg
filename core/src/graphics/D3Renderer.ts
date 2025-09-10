@@ -130,7 +130,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      const ambient = new AmbientLight(evening, 1.2)
+      const ambient = new AmbientLight(0x808080, 6)
       renderer.scene.add(ambient)
 
       const sun = new DirectionalLight(evening, 9)
@@ -277,7 +277,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         world.onRender?.()
         webgl?.render(renderer.scene, renderer.camera.c)
 
-        const hour = (world.tick / 20) % 24
+        const hour = (world.tick / 30) % 24
 
         // move sun
         const sunHeight = cos((hour - 12) / 12 * PI) * 100
@@ -292,11 +292,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         // ambient light
         const daytime = abs(hour - 12)
         const bright = max(0, 2 - pow(daytime / 6, 2))
-        ambient.intensity = 1.2 + bright
+        ambient.intensity = 6 + bright * 3
 
-        sun.intensity = 9 - bright * 2
+        sun.intensity = 9 - bright * 3.5
 
-        // console.log(ambient.intensity.toFixed(1))
+        // console.log(sun.intensity.toFixed(1), ambient.intensity.toFixed(1))
       })
     }
   }
