@@ -3,7 +3,7 @@ import {
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, Object3DEventMap,
   Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
+import { abs, BlockMesh, D3Camera, isMobile, max, pow, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -130,16 +130,26 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       renderer.resize()
 
-      webgl.setAnimationLoop(() => {
-        world.onRender?.()
-        webgl?.render(renderer.scene, renderer.camera.c)
-      })
-
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
       const ambient = new AmbientLight(evening, 1.2)
       renderer.scene.add(ambient)
+
+
+      webgl.setAnimationLoop(() => {
+        world.onRender?.()
+        webgl?.render(renderer.scene, renderer.camera.c)
+
+        const hour = (world.tick / 10) % 24
+
+        // move sun
+
+        // ambient light
+        const daytime = abs(hour - 13)
+        const bright = max(0, 1.5 - pow(daytime / 6, 2))
+        ambient.intensity = 1.2 + bright
+      })
 
       const sun = new DirectionalLight(evening, 9)
       renderer.sun = sun
