@@ -85,11 +85,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (renderer.debug) {
         helper = new CameraHelper(renderer.sun.shadow.camera)
         renderer.scene.add(helper)
-        renderer.sphere!.visible = true
+        renderer.sphere!.material.opacity = 1
       } else if (!renderer.debug && helper) {
         renderer.scene.remove(helper)
         helper = undefined
-        renderer.sphere!.visible = false
+        renderer.sphere!.material.opacity = 0
       }
     },
     pointerLock: () => {
@@ -113,9 +113,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
-        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: true })
+        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0 }),
       )
-      renderer.sphere.visible = false
       renderer.scene.add(renderer.sphere)
 
       webgl = new WebGLRenderer({

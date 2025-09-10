@@ -51,7 +51,7 @@ export const Bird = (player: Player): Character => {
           const { aim, rotation, rotating, velocity, flying } = position.data
 
           const interpolated = position.interpolate(world, delta)
-          if (three.debug && player.id === client.playerId()) {
+          if (player.id === client.playerId()) {
             three.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           }
 
