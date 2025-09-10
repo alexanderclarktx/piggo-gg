@@ -281,7 +281,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
         // move sun
         const sunHeight = cos((hour - 12) / 12 * PI) * 100
-        const sunArc = cos((hour - 6) / 12 * PI) * 100
+        const sunArc = cos((hour - 6) / 12 * PI) * -100
 
         sun.position.set(sunArc, sunHeight, sunArc)
         sunSphere.position.copy(sun.position)
@@ -295,8 +295,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         ambient.intensity = 1.2 + bright
 
         sun.intensity = 9 - bright * 3
-
-        console.log("sun", sun.intensity.toFixed(1), "ambient", ambient.intensity.toFixed(1))
       })
     }
   }
