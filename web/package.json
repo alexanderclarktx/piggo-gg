@@ -2,15 +2,21 @@
   "name": "@piggo-gg/web",
   "main": "./main.ts",
   "scripts": {
-    "dev": "bun webdev-compile & bun webdev-serve",
-    "webdev-compile": "bun build --watch --minify src/index.ts --outdir res",
-    "webdev-serve": "bunx serve -L -p 8000 res"
+    "compile": "rm -rf ./dist && bun build src/index.tsx --outdir dist --minify && cp -r res/* dist/ && cp src/index.html dist/ && cp src/index.css dist/",
+    "dev": "bun dev-compile & bun dev-serve",
+    "dev-compile": "bun build --watch --minify src/index.tsx --outdir res",
+    "dev-serve": "bunx serve -L -p 8000 res"
   },
   "dependencies": {
-    "@piggo-gg/lex": "1.0.4"
+    "@sethwebster/react-fps-counter": "^0.0.19",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-modal": "3.16.1"
   },
   "devDependencies": {
     "@types/google.accounts": "^0.0.15",
-    "serve": "14.2.5"
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-modal": "3.16.1"
   }
 }
