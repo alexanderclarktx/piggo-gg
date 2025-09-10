@@ -53,6 +53,8 @@ uniform float uBrightness;  // overall star brightness
 uniform vec3  uHorizon;
 uniform vec3  uZenith;
 
+float uHour = 12.0;
+
 varying vec3 vWorldPosition;
 
 const float PI = 3.141592653589793;
@@ -156,15 +158,43 @@ vec3 starLayers(vec3 dir, vec2 uv){
 void main(){
   vec3 dir = normalize(vWorldPosition - cameraPosition);
 
+  // Horizon → Zenith gradient
   float t = smoothstep(-0.1, 0.9, dir.y);
   vec3 bg = mix(uHorizon, uZenith, t);
 
+  // ---------------- day/night blending ----------------
+  // Define "day" between 6h and 18h
+  float dayFactor = smoothstep(5.0, 8.0, uHour) * (1.0 - smoothstep(17.0, 20.0, uHour));
+  vec3 daySky = vec3(0.4, 0.7, 1.0); // light blue
+
+  bg = mix(bg, daySky, dayFactor);
+
+  // ---------------- stars ----------------
   vec2 uv = octaProject(dir);
   vec3 stars = starLayers(dir, uv);
 
-  float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
+  // Fade stars out during the day
+  stars *= (1.0 - dayFactor);
+
+  // Dither noise
+  float dither = (hash12(uv + uHour*0.123) - 0.5) * 0.003;
   vec3 color = bg + stars + dither;
 
   gl_FragColor = vec4(color, 1.0);
 }
+
+// void main(){
+//   vec3 dir = normalize(vWorldPosition - cameraPosition);
+
+//   float t = smoothstep(-0.1, 0.9, dir.y);
+//   vec3 bg = mix(uHorizon, uZenith, t);
+
+//   vec2 uv = octaProject(dir);
+//   vec3 stars = starLayers(dir, uv);
+
+//   float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
+//   vec3 color = bg + stars + dither;
+
+//   gl_FragColor = vec4(color, 1.0);
+// }
 `;
