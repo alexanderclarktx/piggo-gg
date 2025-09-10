@@ -230,7 +230,8 @@ void main(){
   float w = worley(cloudUV * 3.0);
 
   // Invert so blobs are solid inside, soft outside
-  float clouds = 1.0 - smoothstep(0.25, 0.5, w);
+  // float clouds = 1.0 - smoothstep(0.25, 0.5, w);
+  float clouds = 0.0;
 
   // blend clouds on top (white tinted)
   vec3 cloudColor = mix(vec3(1.0), daySky, 0.2);

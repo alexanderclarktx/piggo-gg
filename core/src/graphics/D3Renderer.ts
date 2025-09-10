@@ -1,5 +1,5 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, Group, LinearMipMapNearestFilter,
+  AmbientLight, CameraHelper, DirectionalLight, DirectionalLightHelper, Group, LinearMipMapNearestFilter,
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, Object3DEventMap,
   Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -137,6 +137,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.scene.add(ambient)
 
       const sun = new DirectionalLight(evening, 9)
+
       renderer.sun = sun
       renderer.scene.add(sun)
 
@@ -273,16 +274,18 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         world.onRender?.()
         webgl?.render(renderer.scene, renderer.camera.c)
 
-        const hour = (world.tick / 100) % 24
+        const hour = (world.tick / 20) % 24
 
         // move sun
         const sunHeight = cos((hour - 12) / 12 * PI) * 100
         const sunArc = cos((hour - 6) / 12 * PI) * 100
         // const sunArc = 100
-        console.log(sunHeight.toFixed(0), sunArc.toFixed(0))
+        // console.log(sunHeight.toFixed(0), sunArc.toFixed(0))
 
         sun.position.set(sunArc, sunHeight, sunArc)
         sunSphere.position.copy(sun.position)
+
+        renderer.sunLookAt(30, 30, 5)
 
         sun.visible = sunHeight > -10
         sunSphere.visible = sun.visible
@@ -295,9 +298,13 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     },
     sunLookAt: (x: number, y: number, z: number) => {
       if (renderer.sun) {
-        renderer.sun.shadow.camera.lookAt(x, z, y)
-        renderer.sun.shadow.camera.updateProjectionMatrix()
-        renderer.sun.shadow.camera.updateMatrixWorld()
+        // renderer.sun.shadow.camera.lookAt(x, z, y)
+
+        renderer.sun.lookAt(x, z, y)
+        renderer.sun.updateMatrixWorld()
+
+        // renderer.sun.shadow.camera.updateProjectionMatrix()
+        // renderer.sun.shadow.camera.updateMatrixWorld()
       } else {
         console.warn("Sun not initialized")
       }
