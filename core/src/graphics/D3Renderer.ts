@@ -3,7 +3,7 @@ import {
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, Object3DEventMap,
   Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { abs, BlockMesh, D3Camera, isMobile, max, pow, World } from "@piggo-gg/core"
+import { abs, BlockMesh, cos, D3Camera, isMobile, max, PI, pow, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -278,7 +278,10 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         // move sun
 
         // move shadow
-        
+        const sunHeight = cos(hour / 12 * PI) * 100
+        sun.position.set(sun.position.x, sunHeight, sun.position.z)
+
+        sunSphere.position.copy(sun.position)
 
         // ambient light
         const daytime = abs(hour - 13)
