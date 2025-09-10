@@ -136,21 +136,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       const ambient = new AmbientLight(evening, 1.2)
       renderer.scene.add(ambient)
 
-
-      webgl.setAnimationLoop(() => {
-        world.onRender?.()
-        webgl?.render(renderer.scene, renderer.camera.c)
-
-        const hour = (world.tick / 10) % 24
-
-        // move sun
-
-        // ambient light
-        const daytime = abs(hour - 13)
-        const bright = max(0, 1.5 - pow(daytime / 6, 2))
-        ambient.intensity = 1.2 + bright
-      })
-
       const sun = new DirectionalLight(evening, 9)
       renderer.sun = sun
       renderer.scene.add(sun)
@@ -283,6 +268,23 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // handle orientation change
       screen.orientation.addEventListener("change", renderer.resize)
+
+      webgl.setAnimationLoop(() => {
+        world.onRender?.()
+        webgl?.render(renderer.scene, renderer.camera.c)
+
+        const hour = (world.tick / 10) % 24
+
+        // move sun
+
+        // move shadow
+        
+
+        // ambient light
+        const daytime = abs(hour - 13)
+        const bright = max(0, 1.5 - pow(daytime / 6, 2))
+        ambient.intensity = 1.2 + bright
+      })
     },
     sunLookAt: (x: number, y: number, z: number) => {
       if (renderer.sun) {
