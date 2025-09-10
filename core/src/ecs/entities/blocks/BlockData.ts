@@ -319,5 +319,5 @@ export const spawnTerrain = (world: World, num: number = 10) => {
       spawnChunk(chunk, world)
     }
   }
-  console.log("spawnTerrain", performance.now() - time)
+  logPerf("spawnTerrain", time)
 }
