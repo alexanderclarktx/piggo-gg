@@ -1,5 +1,5 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, Group, HemisphereLight, LinearMipMapNearestFilter,
+  CameraHelper, DirectionalLight, Group, HemisphereLight, LinearMipMapNearestFilter,
   Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
   SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
