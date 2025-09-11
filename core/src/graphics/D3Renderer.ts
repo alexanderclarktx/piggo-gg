@@ -242,7 +242,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         }
       })
 
-      const sunSphereGeometry = new SphereGeometry(10, 32, 32)
+      const sunSphereGeometry = new SphereGeometry(8, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
         emissive: evening,
         emissiveIntensity: 1
@@ -280,8 +280,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         const hour = (world.tick / 30) % 24
 
         // move sun
-        const sunHeight = cos((hour - 12) / 12 * PI) * 100
-        const sunArc = cos((hour - 6) / 12 * PI) * -100
+        const sunHeight = cos((hour - 12) / 12 * PI) * 200
+        const sunArc = cos((hour - 6) / 12 * PI) * -100 + 29
 
         sun.position.set(sunArc, sunHeight, sunArc)
         sunSphere.position.copy(sun.position)
