@@ -275,15 +275,27 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         webgl?.render(renderer.scene, renderer.camera.c)
 
         const hour = (world.tick / 30) % 24
+        const angle = ((hour - 6) / 24) * Math.PI * 2 // full 24h cycle
 
-        // move sun
-        const sunHeight = cos((hour - 12) / 12 * PI) * 200
-        const sunArc = cos((hour - 6) / 12 * PI) * -100 + 29
+        const radius = 200
 
-        sun.position.set(sunArc, sunHeight, sunArc)
+        // height goes up and down
+        const sunY = Math.sin(angle) * radius
+
+        // arc is projected onto diagonal axis (X=Z)
+        const arc = Math.cos(angle) * radius
+        sun.position.set(arc, sunY, arc)
+
+        // const hour = (world.tick / 30) % 24
+
+        // // move sun
+        // const sunHeight = cos((hour - 12) / 12 * PI) * 200
+        // const sunArc = cos((hour - 6) / 12 * PI) * -100 + 29
+
+        // sun.position.set(sunArc, sunHeight, sunArc)
         sunSphere.position.copy(sun.position)
 
-        sun.visible = sunHeight > -10
+        sun.visible = sunY > -10
         sunSphere.visible = sun.visible
 
         // ambient light

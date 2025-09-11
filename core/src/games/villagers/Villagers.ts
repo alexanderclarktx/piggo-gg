@@ -110,7 +110,6 @@ const VillagersSystem = SystemBuilder({
 
         // 0 to 24
         sky.material.uniforms.uTime.value = (world.tick / 30) % 24
-        // console.log("uTime", sky.material.uniforms.uTime.value)
 
         const pc = world.client?.character()
         if (pc && preview) preview.update(world.three!.camera.pos(), world.three!.camera.dir(world))

@@ -174,15 +174,6 @@ float noise(vec2 p) {
          (d - b) * u.x * u.y;
 }
 
-// fractal noise (fbm)
-float fbm(vec2 p) {
-  float f = 0.0;
-  f += 0.5   * noise(p);   p *= 2.02;
-  f += 0.25  * noise(p);   p *= 2.03;
-  f += 0.125 * noise(p);
-  return f;
-}
-
 // Worley / cellular noise, returns distance to nearest random feature point
 float worley(vec2 uv) {
   vec2 i = floor(uv);
@@ -212,7 +203,7 @@ void main(){
   // ---------------- day/night blending ----------------
   // Define "day" between 6h and 18h
   float dayFactor = smoothstep(5.0, 8.0, uTime) * (1.0 - smoothstep(17.0, 20.0, uTime));
-  vec3 daySky = vec3(0.4, 0.7, 1.0); // light blue
+  vec3 daySky = vec3(0.5, 0.75, 1.0); // light blue
 
   bg = mix(bg, daySky, dayFactor);
   
@@ -220,20 +211,16 @@ void main(){
   vec2 cloudUV = normalize(dir).xz * 0.5;
   cloudUV += uTime * uCloudSpeed;
 
-  // sample cloud fbm
-  // float c = fbm(cloudUV * 3.0);
-  // c = pow(c, 2.0);
-  // float clouds = smoothstep(0.2, 0.5, c);
-
   // Smaller scale = bigger puffs, larger scale = smaller puffs
   float w = worley(cloudUV * 3.0);
 
   // Invert so blobs are solid inside, soft outside
-  float clouds = 1.0 - smoothstep(0.25, 0.5, w);
+  // float clouds = 1.0 - smoothstep(0.25, 0.5, w);
+  float clouds = 0.0;
 
   // blend clouds on top (white tinted)
   vec3 cloudColor = mix(vec3(1.0), daySky, 0.2);
-  bg = mix(bg, cloudColor, clouds * clouds * uCloudDensity * dayFactor);
+  // bg = mix(bg, cloudColor, clouds * clouds * uCloudDensity * dayFactor);
 
   // stars (your existing starLayers + octaProject)
   vec2 uv = octaProject(dir);
@@ -241,24 +228,9 @@ void main(){
   stars *= (1.0 - dayFactor);
 
   // dither using hash12
-  float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
-  vec3 color = bg + stars + dither;
+  // float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
+  vec3 color = bg + stars;
 
   gl_FragColor = vec4(color, 1.0);
 }
-
-// void main(){
-//   vec3 dir = normalize(vWorldPosition - cameraPosition);
-
-//   float t = smoothstep(-0.1, 0.9, dir.y);
-//   vec3 bg = mix(uHorizon, uZenith, t);
-
-//   vec2 uv = octaProject(dir);
-//   vec3 stars = starLayers(dir, uv);
-
-//   float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
-//   vec3 color = bg + stars + dither;
-
-//   gl_FragColor = vec4(color, 1.0);
-// }
 `;
