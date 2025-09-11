@@ -1,5 +1,5 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, Group, LinearMipMapNearestFilter,
+  AmbientLight, CameraHelper, DirectionalLight, Group, HemisphereLight, LinearMipMapNearestFilter,
   Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
   SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -130,8 +130,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      const ambient = new AmbientLight(0x707080, 6)
-      renderer.scene.add(ambient)
+      // hemisphere light
+      const hemi = new HemisphereLight(0xaaaabb, evening, 3)
+      renderer.scene.add(hemi)
 
       const sun = new DirectionalLight(evening, 9)
 
@@ -150,10 +151,6 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.camera.right = 20
       sun.shadow.camera.top = 60
       sun.shadow.camera.bottom = -5
-      // sun.shadow.camera.left = -25
-      // sun.shadow.camera.right = 25
-      // sun.shadow.camera.top = 10
-      // sun.shadow.camera.bottom = -20
       sun.shadow.camera.updateProjectionMatrix()
 
       // textures
@@ -292,11 +289,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         // ambient light
         const daytime = abs(hour - 12)
         const bright = max(0, 2 - pow(daytime / 6, 2))
-        ambient.intensity = 6 + bright * 3
+        hemi.intensity = 3 + bright * 2
 
         sun.intensity = 9 - bright * 3
 
-        // console.log(sun.intensity.toFixed(1), ambient.intensity.toFixed(1))
+        // console.log(sun.intensity.toFixed(1), hemi.intensity.toFixed(1))
       })
     }
   }
