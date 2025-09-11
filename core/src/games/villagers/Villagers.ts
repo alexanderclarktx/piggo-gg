@@ -278,7 +278,7 @@ const VillagersSystem = SystemBuilder({
           playerChunk = atChunk
         }
 
-        // render blocks (TODO slow)
+        // render blocks (TODO slow) (possible to update just parts sections of the instance matrix?)
         const t3 = performance.now()
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
@@ -293,6 +293,7 @@ const VillagersSystem = SystemBuilder({
           let leafCount = 0
           let otherCount = 0
 
+          // for each block
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z } = chunkData[i]
             const type = BlockTypeString[chunkData[i].type]
@@ -302,30 +303,27 @@ const VillagersSystem = SystemBuilder({
 
             if (type === "spruceLeaf") {
               leaf!.setColorAt(leafCount, new Color(0x0099aa))
-            } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x33dd77))
-            } else if (type === "oak") {
-              oak!.setColorAt(oakCount, new Color(0xffaa99))
-            } else if (type === "spruce") {
-              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
-            } else {
-              // blocks.setColorAt(i, new Color(0xFFFFFF))
-            }
-
-            if (type === "spruce") {
-              spruce?.setMatrixAt(spruceCount, dummy.matrix)
-              spruceCount++
-            } else if (type === "oak") {
-              oak?.setMatrixAt(oakCount, dummy.matrix)
-              oakCount++
-            } else if (type === "spruceLeaf" || type === "oakLeaf") {
               leaf?.setMatrixAt(leafCount, dummy.matrix)
               leafCount++
+            } else if (type === "oakLeaf") {
+              leaf!.setColorAt(leafCount, new Color(0x33dd77))
+              leaf?.setMatrixAt(leafCount, dummy.matrix)
+              leafCount++
+            } else if (type === "oak") {
+              oak!.setColorAt(oakCount, new Color(0xffaa99))
+              oak?.setMatrixAt(oakCount, dummy.matrix)
+              oakCount++
+            } else if (type === "spruce") {
+              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
+              spruce?.setMatrixAt(spruceCount, dummy.matrix)
+              spruceCount++
             } else {
+              // blocks.setColorAt(i, new Color(0xFFFFFF))
               blocks.setMatrixAt(otherCount, dummy.matrix)
               otherCount++
             }
           }
+
           blocks.instanceMatrix.needsUpdate = true
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true
