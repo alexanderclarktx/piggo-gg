@@ -82,7 +82,7 @@ const VillagersSystem = SystemBuilder({
   init: (world) => {
 
     world.three?.activate(world)
-    spawnTerrain(world, 48)
+    spawnTerrain(world, 256)
 
     const sky = Sky()
     world.three?.scene.add(sky.mesh)
@@ -279,7 +279,7 @@ const VillagersSystem = SystemBuilder({
           playerChunk = atChunk
         }
 
-        // render blocks
+        // render blocks (TODO slow)
         const t3 = performance.now()
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()

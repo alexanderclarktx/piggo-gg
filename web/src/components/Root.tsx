@@ -34,7 +34,7 @@ export const Root = () => {
           <Canvas setWorld={setWorld} />
         </div>
       </div>
-      {/* <FpsView left="84%" top="84%" /> */}
+      <FpsView left="84%" top="84%" />
     </div>
   )
 }

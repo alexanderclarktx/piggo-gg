@@ -20,7 +20,7 @@ export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
 
-  const chunks = 48 // TODO dynamic?
+  const chunks = 256 // TODO dynamic?
   for (let i = 0; i < chunks; i++) {
     data[i] = []
     for (let j = 0; j < chunks; j++) {
