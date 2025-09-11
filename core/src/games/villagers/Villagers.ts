@@ -95,6 +95,7 @@ const VillagersSystem = SystemBuilder({
     let blocksRendered = false
     let applesSpawned = false
     let ambient = false
+    let playerChunk = { x: 0, y: 0 }
 
     return {
       id: "VillagersSystem",
@@ -271,15 +272,19 @@ const VillagersSystem = SystemBuilder({
           applesSpawned = true
         }
 
+        const xyz = pc?.components.position.xyz() ?? { x: 0, y: 0 }
+        const atChunk = { x: floor(xyz.x / 1.2), y: floor(xyz.y / 1.2) }
+        if (atChunk.x !== playerChunk.x || atChunk.y !== playerChunk.y) {
+          blocksRendered = false
+          playerChunk = atChunk
+        }
+
         // render blocks
         const t3 = performance.now()
-        if (!blocksRendered && world.mode === "client" && world.three?.blocks && pc) {
+        if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
 
-          const xyz = pc.components.position.xyz()
-          const playerChunk = { x: floor(xyz.x / 1.2), y: floor(xyz.y / 1.2) }
-
-          const neighbors = world.blocks.neighbors(playerChunk, 12)
+          const neighbors = world.blocks.neighbors(playerChunk, 24)
           const chunkData = world.blocks.visible(neighbors)
 
           const { blocks, spruce, oak, leaf } = world.three
