@@ -9,7 +9,7 @@
     "prisma:deploy": "bun x prisma migrate deploy --schema=src/db/schema.prisma"
   },
   "dependencies": {
-    "@prisma/client": "6.9.0",
+    "@prisma/client": "6.16.0",
     "google-auth-library": "9.15.1",
     "jsonwebtoken": "9.0.2",
     "mock-browser": "0.92.14"
@@ -17,6 +17,6 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.8",
     "bun-types": "1.2.2",
-    "prisma": "6.9.0"
+    "prisma": "6.16.0"
   }
 }
