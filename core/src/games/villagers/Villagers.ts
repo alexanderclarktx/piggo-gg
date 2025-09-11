@@ -2,7 +2,8 @@ import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
-  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
+  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview,
+  floor
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
@@ -272,12 +273,14 @@ const VillagersSystem = SystemBuilder({
 
         // render blocks
         const t3 = performance.now()
-        if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
+        if (!blocksRendered && world.mode === "client" && world.three?.blocks && pc) {
           const dummy = new Object3D()
 
-          const neighbors = world.blocks.neighbors({ x: 1, y: 1 }, 48)
+          const xyz = pc.components.position.xyz()
+          const playerChunk = { x: floor(xyz.x / 1.2), y: floor(xyz.y / 1.2) }
+
+          const neighbors = world.blocks.neighbors(playerChunk, 12)
           const chunkData = world.blocks.visible(neighbors)
-          console.log(`rendering ${chunkData.length} blocks`)
 
           const { blocks, spruce, oak, leaf } = world.three
 
