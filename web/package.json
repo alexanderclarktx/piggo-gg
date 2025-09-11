@@ -3,16 +3,16 @@
   "main": "./main.ts",
   "scripts": {
     "dev": "bun dev-compile & bun dev-serve",
-    "dev-compile": "bun build --watch --minify src/index.tsx --outdir res",
+    "dev-compile": "bun build --watch src/index.tsx --outdir res",
     "dev-serve": "bunx serve -L -p 8000 res"
   },
   "dependencies": {
-    "@sethwebster/react-fps-counter": "^0.0.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "3.16.1"
   },
   "devDependencies": {
+    "react-fps": "^1.0.6",
     "@types/google.accounts": "^0.0.15",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",

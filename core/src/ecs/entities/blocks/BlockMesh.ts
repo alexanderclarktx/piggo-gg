@@ -1,31 +1,14 @@
 import {
-  BoxGeometry, BufferAttribute, Color, InstancedMesh,
-  InstancedMeshEventMap, MeshPhysicalMaterial
+  BoxGeometry, InstancedMesh, InstancedMeshEventMap, MeshPhysicalMaterial
 } from "three"
 
 export type BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial[], InstancedMeshEventMap>
 
-export const BlockMesh = (maxCount: number = 22000): BlockMesh => {
+export const BlockMesh = (maxCount: number): BlockMesh => {
   const geometry = new BoxGeometry(0.3, 0.3, 0.3)
-  const { position } = geometry.attributes
-
-  const faceColors = [
-    new Color(0xffffff), new Color(0xffffff),
-    new Color(0xffffff), new Color(0xffffff),
-    new Color(0xffffff), new Color(0xffffff)
-  ]
-
-  const colorAttr = new Float32Array(position.count * 3)
-  for (let i = 0; i < position.count; i++) {
-    const faceIndex = Math.floor(i / 4)
-    const color = faceColors[faceIndex]
-    colorAttr.set([color.r, color.g, color.b], i * 3)
-  }
-
-  geometry.setAttribute("color", new BufferAttribute(colorAttr, 3))
 
   const mat = () => new MeshPhysicalMaterial({
-    vertexColors: true, visible: false, specularIntensity: 0.05, wireframe: false
+    vertexColors: false, visible: false, specularIntensity: 0.05, wireframe: false
   })
 
   const mesh = new InstancedMesh(geometry, [mat(), mat(), mat(), mat(), mat(), mat()], maxCount)
