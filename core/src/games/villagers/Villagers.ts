@@ -2,7 +2,7 @@ import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
-  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview, floor
+  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
@@ -81,7 +81,7 @@ const VillagersSystem = SystemBuilder({
   init: (world) => {
 
     world.three?.activate(world)
-    spawnTerrain(world, 256)
+    spawnTerrain(world, 24)
 
     const sky = Sky()
     world.three?.scene.add(sky.mesh)
@@ -109,7 +109,7 @@ const VillagersSystem = SystemBuilder({
         mobileUI?.update()
 
         // 0 to 24
-        sky.material.uniforms.uTime.value = (world.tick / 30) % 24
+        // sky.material.uniforms.uTime.value = (world.tick / 30) % 24
 
         const pc = world.client?.character()
         if (pc && preview) preview.update(world.three!.camera.pos(), world.three!.camera.dir(world))
@@ -270,12 +270,13 @@ const VillagersSystem = SystemBuilder({
           applesSpawned = true
         }
 
-        const xyz = pc?.components.position.xyz() ?? { x: 0, y: 0 }
-        const atChunk = { x: floor(xyz.x / 1.2), y: floor(xyz.y / 1.2) }
-        if (atChunk.x !== playerChunk.x || atChunk.y !== playerChunk.y) {
-          blocksRendered = false
-          playerChunk = atChunk
-        }
+        // rerender as player character moves
+        // const xyz = pc?.components.position.xyz() ?? { x: 0, y: 0 }
+        // const atChunk = { x: floor(xyz.x / 1.2), y: floor(xyz.y / 1.2) }
+        // if (atChunk.x !== playerChunk.x || atChunk.y !== playerChunk.y) {
+        //   blocksRendered = false
+        //   playerChunk = atChunk
+        // }
 
         // render blocks (TODO slow) (possible to update just parts sections of the instance matrix?)
         const t3 = performance.now()
@@ -317,7 +318,6 @@ const VillagersSystem = SystemBuilder({
               spruce?.setMatrixAt(spruceCount, dummy.matrix)
               spruceCount++
             } else {
-              // blocks.setColorAt(i, new Color(0xFFFFFF))
               blocks.setMatrixAt(otherCount, dummy.matrix)
               otherCount++
             }

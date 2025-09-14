@@ -9,7 +9,7 @@ export const Sky = (): Sky => {
 
   const material = new ShaderMaterial({
     uniforms: {
-      uTime: { value: 12.0 },
+      uTime: { value: 0.0 },
       uDensity: { value: 0.0015 },
       uBrightness: { value: 0.9 },
       uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },

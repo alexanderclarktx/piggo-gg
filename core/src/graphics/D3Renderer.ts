@@ -149,8 +149,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       // widen the shadow
       sun.shadow.camera.left = -20
       sun.shadow.camera.right = 20
-      sun.shadow.camera.top = 60
-      sun.shadow.camera.bottom = -5
+      sun.shadow.camera.top = 30
+      sun.shadow.camera.bottom = -30
       sun.shadow.camera.updateProjectionMatrix()
 
       // textures
@@ -274,17 +274,17 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         world.onRender?.()
         webgl?.render(renderer.scene, renderer.camera.c)
 
-        const hour = (world.tick / 30) % 24
-        const angle = ((hour - 6) / 24) * Math.PI * 2 // full 24h cycle
+        // const hour = (world.tick / 30) % 24
+        // const angle = ((hour - 6) / 24) * Math.PI * 2 // full 24h cycle
 
         const radius = 200
 
         // height goes up and down
-        const sunY = Math.sin(angle) * radius
+        // const sunY = Math.sin(angle) * radius
 
         // arc is projected onto diagonal axis (X=Z)
-        const arc = Math.cos(angle) * radius
-        sun.position.set(arc, sunY, arc)
+        // const arc = Math.cos(angle) * radius
+        // sun.position.set(arc, sunY, arc)
 
         // const hour = (world.tick / 30) % 24
 
@@ -293,17 +293,17 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         // const sunArc = cos((hour - 6) / 12 * PI) * -100 + 29
 
         // sun.position.set(sunArc, sunHeight, sunArc)
-        sunSphere.position.copy(sun.position)
+        // sunSphere.position.copy(sun.position)
 
-        sun.visible = sunY > -10
-        sunSphere.visible = sun.visible
+        // sun.visible = sunY > -10
+        // sunSphere.visible = sun.visible
 
         // ambient light
-        const daytime = abs(hour - 12)
-        const bright = max(0, 2 - pow(daytime / 6, 2))
-        hemi.intensity = 3 + bright * 2
+        // const daytime = abs(hour - 12)
+        // const bright = max(0, 2 - pow(daytime / 6, 2))
+        // hemi.intensity = 3 + bright * 2
 
-        sun.intensity = 9 - bright * 3
+        // sun.intensity = 9 - bright * 3
 
         // console.log(sun.intensity.toFixed(1), hemi.intensity.toFixed(1))
       })
