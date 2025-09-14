@@ -26,6 +26,8 @@ export const Root = () => {
 
         const audioElement = document.getElementById("sound") as HTMLAudioElement
         audioElement.play().catch(() => { })
+
+        if (world.client) world.client.sound.ready = true
       }}>
         <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
