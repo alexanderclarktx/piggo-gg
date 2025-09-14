@@ -83,7 +83,8 @@ const VillagersSystem = SystemBuilder({
     world.three?.activate(world)
     spawnTerrain(world, 24)
 
-    world.three?.scene.add(Sky().mesh)
+    const sky = Sky()
+    world.three?.scene.add(sky.mesh)
 
     const mobileUI = MobileUI(world)
 
@@ -93,6 +94,7 @@ const VillagersSystem = SystemBuilder({
     let blocksRendered = false
     let applesSpawned = false
     let ambient = false
+    let playerChunk = { x: 0, y: 0 }
 
     return {
       id: "VillagersSystem",
@@ -105,6 +107,9 @@ const VillagersSystem = SystemBuilder({
         const { sound } = world.client ?? {}
 
         mobileUI?.update()
+
+        // 0 to 24
+        // sky.material.uniforms.uTime.value = (world.tick / 30) % 24
 
         const pc = world.client?.character()
         if (pc && preview) preview.update(world.three!.camera.pos(), world.three!.camera.dir(world))
@@ -265,14 +270,21 @@ const VillagersSystem = SystemBuilder({
           applesSpawned = true
         }
 
-        // render blocks
+        // rerender as player character moves
+        // const xyz = pc?.components.position.xyz() ?? { x: 0, y: 0 }
+        // const atChunk = { x: floor(xyz.x / 1.2), y: floor(xyz.y / 1.2) }
+        // if (atChunk.x !== playerChunk.x || atChunk.y !== playerChunk.y) {
+        //   blocksRendered = false
+        //   playerChunk = atChunk
+        // }
+
+        // render blocks (TODO slow) (possible to update just parts sections of the instance matrix?)
         const t3 = performance.now()
         if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
           const dummy = new Object3D()
 
-          const neighbors = world.blocks.neighbors({ x: 1, y: 1 }, 24)
+          const neighbors = world.blocks.neighbors(playerChunk, 24)
           const chunkData = world.blocks.visible(neighbors)
-          // console.log(`rendering ${chunkData.length} blocks`)
 
           const { blocks, spruce, oak, leaf } = world.three
 
@@ -281,6 +293,7 @@ const VillagersSystem = SystemBuilder({
           let leafCount = 0
           let otherCount = 0
 
+          // for each block
           for (let i = 0; i < chunkData.length; i++) {
             const { x, y, z } = chunkData[i]
             const type = BlockTypeString[chunkData[i].type]
@@ -290,30 +303,26 @@ const VillagersSystem = SystemBuilder({
 
             if (type === "spruceLeaf") {
               leaf!.setColorAt(leafCount, new Color(0x0099aa))
-            } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x33dd77))
-            } else if (type === "oak") {
-              oak!.setColorAt(oakCount, new Color(0xffaa99))
-            } else if (type === "spruce") {
-              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
-            } else {
-              // blocks.setColorAt(i, new Color(0xFFFFFF))
-            }
-
-            if (type === "spruce") {
-              spruce?.setMatrixAt(spruceCount, dummy.matrix)
-              spruceCount++
-            } else if (type === "oak") {
-              oak?.setMatrixAt(oakCount, dummy.matrix)
-              oakCount++
-            } else if (type === "spruceLeaf" || type === "oakLeaf") {
               leaf?.setMatrixAt(leafCount, dummy.matrix)
               leafCount++
+            } else if (type === "oakLeaf") {
+              leaf!.setColorAt(leafCount, new Color(0x33dd77))
+              leaf?.setMatrixAt(leafCount, dummy.matrix)
+              leafCount++
+            } else if (type === "oak") {
+              oak!.setColorAt(oakCount, new Color(0xffaa99))
+              oak?.setMatrixAt(oakCount, dummy.matrix)
+              oakCount++
+            } else if (type === "spruce") {
+              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
+              spruce?.setMatrixAt(spruceCount, dummy.matrix)
+              spruceCount++
             } else {
               blocks.setMatrixAt(otherCount, dummy.matrix)
               otherCount++
             }
           }
+
           blocks.instanceMatrix.needsUpdate = true
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true

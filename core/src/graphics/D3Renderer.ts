@@ -1,9 +1,9 @@
 import {
-  AmbientLight, CameraHelper, DirectionalLight, Group, LinearMipMapNearestFilter,
-  Mesh, MeshBasicMaterial, MeshPhysicalMaterial, NearestFilter, Object3DEventMap,
-  Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  CameraHelper, DirectionalLight, Group, HemisphereLight, LinearMipMapNearestFilter,
+  Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
+  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { BlockMesh, D3Camera, isMobile, World } from "@piggo-gg/core"
+import { abs, BlockMesh, cos, D3Camera, isMobile, max, PI, pow, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
@@ -29,14 +29,12 @@ export type D3Renderer = {
   resize: () => void
   pointerLock: () => void // TODO move to Client
   pointerUnlock: () => void
-  sunLookAt: (x: number, y: number, z: number) => void
 }
 
 export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
   let webgl: undefined | WebGLRenderer
   let helper: undefined | CameraHelper
-  let background: undefined | Mesh<SphereGeometry, MeshBasicMaterial>
 
   const renderer: D3Renderer = {
     apple: undefined,
@@ -87,11 +85,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (renderer.debug) {
         helper = new CameraHelper(renderer.sun.shadow.camera)
         renderer.scene.add(helper)
-        renderer.sphere!.visible = true
+        renderer.sphere!.material.opacity = 1
       } else if (!renderer.debug && helper) {
         renderer.scene.remove(helper)
         helper = undefined
-        renderer.sphere!.visible = false
+        renderer.sphere!.material.opacity = 0
       }
     },
     pointerLock: () => {
@@ -101,23 +99,22 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      renderer.blocks = BlockMesh()
+      renderer.blocks = BlockMesh(88000)
       renderer.scene.add(renderer.blocks)
 
-      renderer.spruce = BlockMesh(500)
+      renderer.spruce = BlockMesh(5000)
       renderer.scene.add(renderer.spruce)
 
-      renderer.oak = BlockMesh(500)
+      renderer.oak = BlockMesh(5000)
       renderer.scene.add(renderer.oak)
 
-      renderer.leaf = BlockMesh(500)
+      renderer.leaf = BlockMesh(5000)
       renderer.scene.add(renderer.leaf)
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
-        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: true })
+        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0 }),
       )
-      renderer.sphere.visible = false
       renderer.scene.add(renderer.sphere)
 
       webgl = new WebGLRenderer({
@@ -130,18 +127,15 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       renderer.resize()
 
-      webgl.setAnimationLoop(() => {
-        world.onRender?.()
-        webgl?.render(renderer.scene, renderer.camera.c)
-      })
-
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      const ambient = new AmbientLight(evening, 1.2)
-      renderer.scene.add(ambient)
+      // hemisphere light
+      const hemi = new HemisphereLight(0xaaaabb, evening, 3)
+      renderer.scene.add(hemi)
 
       const sun = new DirectionalLight(evening, 9)
+
       renderer.sun = sun
       renderer.scene.add(sun)
 
@@ -150,11 +144,13 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
       sun.castShadow = true
 
+      renderer.sun.target = renderer.sphere
+
       // widen the shadow
-      sun.shadow.camera.left = -25
-      sun.shadow.camera.right = 25
-      sun.shadow.camera.top = 10
-      sun.shadow.camera.bottom = -20
+      sun.shadow.camera.left = -20
+      sun.shadow.camera.right = 20
+      sun.shadow.camera.top = 30
+      sun.shadow.camera.bottom = -30
       sun.shadow.camera.updateProjectionMatrix()
 
       // textures
@@ -243,7 +239,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
         }
       })
 
-      const sunSphereGeometry = new SphereGeometry(10, 32, 32)
+      const sunSphereGeometry = new SphereGeometry(8, 32, 32)
       const sunSphereMaterial = new MeshPhysicalMaterial({
         emissive: evening,
         emissiveIntensity: 1
@@ -273,15 +269,44 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       // handle orientation change
       screen.orientation.addEventListener("change", renderer.resize)
-    },
-    sunLookAt: (x: number, y: number, z: number) => {
-      if (renderer.sun) {
-        renderer.sun.shadow.camera.lookAt(x, z, y)
-        renderer.sun.shadow.camera.updateProjectionMatrix()
-        renderer.sun.shadow.camera.updateMatrixWorld()
-      } else {
-        console.warn("Sun not initialized")
-      }
+
+      webgl.setAnimationLoop(() => {
+        world.onRender?.()
+        webgl?.render(renderer.scene, renderer.camera.c)
+
+        // const hour = (world.tick / 30) % 24
+        // const angle = ((hour - 6) / 24) * Math.PI * 2 // full 24h cycle
+
+        const radius = 200
+
+        // height goes up and down
+        // const sunY = Math.sin(angle) * radius
+
+        // arc is projected onto diagonal axis (X=Z)
+        // const arc = Math.cos(angle) * radius
+        // sun.position.set(arc, sunY, arc)
+
+        // const hour = (world.tick / 30) % 24
+
+        // // move sun
+        // const sunHeight = cos((hour - 12) / 12 * PI) * 200
+        // const sunArc = cos((hour - 6) / 12 * PI) * -100 + 29
+
+        // sun.position.set(sunArc, sunHeight, sunArc)
+        // sunSphere.position.copy(sun.position)
+
+        // sun.visible = sunY > -10
+        // sunSphere.visible = sun.visible
+
+        // ambient light
+        // const daytime = abs(hour - 12)
+        // const bright = max(0, 2 - pow(daytime / 6, 2))
+        // hemi.intensity = 3 + bright * 2
+
+        // sun.intensity = 9 - bright * 3
+
+        // console.log(sun.intensity.toFixed(1), hemi.intensity.toFixed(1))
+      })
     }
   }
   return renderer

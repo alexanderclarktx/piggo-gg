@@ -9,11 +9,13 @@ export const Sky = (): Sky => {
 
   const material = new ShaderMaterial({
     uniforms: {
-      uTime: { value: 0 },
+      uTime: { value: 0.0 },
       uDensity: { value: 0.0015 },
       uBrightness: { value: 0.9 },
       uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
       uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
+      uCloudDensity: { value: 0.9 },
+      uCloudSpeed: { value: 0.05 }
     },
     vertexShader,
     fragmentShader,
@@ -52,6 +54,8 @@ uniform float uDensity;     // 0..1
 uniform float uBrightness;  // overall star brightness
 uniform vec3  uHorizon;
 uniform vec3  uZenith;
+uniform float uCloudDensity;
+uniform float uCloudSpeed;
 
 varying vec3 vWorldPosition;
 
@@ -153,17 +157,79 @@ vec3 starLayers(vec3 dir, vec2 uv){
   return acc;
 }
 
+// -------------------- simple noise from hash12 --------------------
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+
+  // corners
+  float a = hash12(i);
+  float b = hash12(i + vec2(1.0, 0.0));
+  float c = hash12(i + vec2(0.0, 1.0));
+  float d = hash12(i + vec2(1.0, 1.0));
+
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(a, b, u.x) +
+         (c - a) * u.y * (1.0 - u.x) +
+         (d - b) * u.x * u.y;
+}
+
+// Worley / cellular noise, returns distance to nearest random feature point
+float worley(vec2 uv) {
+  vec2 i = floor(uv);
+  vec2 f = fract(uv);
+
+  float minDist = 1.0;
+  // check 3x3 neighborhood of cells
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 cell = i + vec2(x, y);
+      vec2 rand = hash22(cell);       // random feature point in cell
+      vec2 diff = (vec2(x, y) + rand) - f;
+      float d = length(diff);
+      minDist = min(minDist, d);
+    }
+  }
+  return minDist;
+}
+
 void main(){
   vec3 dir = normalize(vWorldPosition - cameraPosition);
 
+  // Horizon → Zenith gradient
   float t = smoothstep(-0.1, 0.9, dir.y);
   vec3 bg = mix(uHorizon, uZenith, t);
 
+  // ---------------- day/night blending ----------------
+  // Define "day" between 6h and 18h
+  float dayFactor = smoothstep(5.0, 8.0, uTime) * (1.0 - smoothstep(17.0, 20.0, uTime));
+  vec3 daySky = vec3(0.5, 0.75, 1.0); // light blue
+
+  bg = mix(bg, daySky, dayFactor);
+  
+  // project dir onto XZ plane for clouds
+  vec2 cloudUV = normalize(dir).xz * 0.5;
+  cloudUV += uTime * uCloudSpeed;
+
+  // Smaller scale = bigger puffs, larger scale = smaller puffs
+  float w = worley(cloudUV * 3.0);
+
+  // Invert so blobs are solid inside, soft outside
+  // float clouds = 1.0 - smoothstep(0.25, 0.5, w);
+  float clouds = 0.0;
+
+  // blend clouds on top (white tinted)
+  vec3 cloudColor = mix(vec3(1.0), daySky, 0.2);
+  // bg = mix(bg, cloudColor, clouds * clouds * uCloudDensity * dayFactor);
+
+  // stars (your existing starLayers + octaProject)
   vec2 uv = octaProject(dir);
   vec3 stars = starLayers(dir, uv);
+  stars *= (1.0 - dayFactor);
 
-  float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
-  vec3 color = bg + stars + dither;
+  // dither using hash12
+  // float dither = (hash12(uv + uTime*0.123) - 0.5) * 0.003;
+  vec3 color = bg + stars;
 
   gl_FragColor = vec4(color, 1.0);
 }
