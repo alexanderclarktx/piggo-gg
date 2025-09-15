@@ -25,7 +25,7 @@ export const HookItem = ({ character }: { character: Character }) => {
       networked: Networked(),
       item: Item({ name: "hook", stackable: false }),
       actions: Actions({
-        // hook: Hook(mesh),
+        hook: Hook(mesh),
       }),
       input: Input({
         press: {
@@ -35,7 +35,10 @@ export const HookItem = ({ character }: { character: Character }) => {
             if (!document.pointerLockElement && !client.mobile) return null
             if (world.client?.mobileLock) return null
 
-            return null
+            return {
+              actionId: "hook",
+              params: { pos: character.components.position.xyz(), aim }
+            }
           }
         }
       }),
@@ -57,5 +60,7 @@ export const HookItem = ({ character }: { character: Character }) => {
 }
 
 const Hook = (mesh: Mesh) => Action("hook", ({ world, params, entity, player }) => {
-  
+  if (!entity) return
+
+  console.log("hook", params)
 })
