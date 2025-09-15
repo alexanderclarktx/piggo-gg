@@ -32,12 +32,12 @@ export const LaserItem = ({ character }: { character: Character }) => {
   const mesh = LaserMesh()
 
   const item = ItemEntity({
-    id: `Laser-${character.id}`,
+    id: `laser-${character.id}`,
     components: {
       position: Position(),
       effects: Effects(),
       networked: Networked(),
-      item: Item({ name: "Laser", stackable: false }),
+      item: Item({ name: "laser", stackable: false }),
       actions: Actions({
         laser: Laser(mesh),
       }),
