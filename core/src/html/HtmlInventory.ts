@@ -65,8 +65,6 @@ export const HtmlInventory = (client: Client): RefreshableDiv => {
 
         cells[i].innerHTML = ""
 
-        console.log("rendering item", item)
-
         const img = HtmlImg(`${item.split("-")[0]}.png`, {
           width: "46px",
           height: "46px",
