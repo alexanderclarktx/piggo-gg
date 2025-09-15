@@ -78,7 +78,7 @@ export const LaserItem = ({ character }: { character: Character }) => {
   return item
 }
 
-export const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
+const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
   if (!entity) return
 
   const state = world.state<VillagersState>()

@@ -1,8 +1,21 @@
-import { Actions, Character, Effects, Input, Item, ItemEntity, Networked, Position } from "@piggo-gg/core"
+import { Action, Actions, Character, Effects, Input, Item, ItemEntity, Networked, Position, Three } from "@piggo-gg/core"
+import { CylinderGeometry, Mesh, MeshBasicMaterial } from "three"
+
+const HookMesh = (): Mesh => {
+  const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
+  geometry.translate(0, 0.5, 0)
+
+  const material = new MeshBasicMaterial({ color: 0x964B00 })
+
+  const mesh = new Mesh(geometry, material)
+  mesh.scale.y = 14
+
+  return mesh
+}
 
 export const HookItem = ({ character }: { character: Character }) => {
 
-  // const mesh =
+  const mesh = HookMesh()
 
   const item = ItemEntity({
     id: `hook-${character.id}`,
@@ -25,9 +38,24 @@ export const HookItem = ({ character }: { character: Character }) => {
             return null
           }
         }
+      }),
+      three: Three({
+        init: async (entity) => {
+          entity.components.three.o.push(mesh)
+        },
+        onRender: ({ delta }) => {
+          // const ratio = delta / 25
+
+          // mesh.material.opacity -= 0.05 * ratio
+          // if (mesh.material.opacity <= 0) mesh.visible = false
+        }
       })
     }
   })
 
   return item
 }
+
+const Hook = (mesh: Mesh) => Action("hook", ({ world, params, entity, player }) => {
+  
+})
