@@ -4,13 +4,10 @@ import { CylinderGeometry, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from "
 const HookMesh = (): Mesh => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
   geometry.translate(0, 0.5, 0)
-
+  
   const material = new MeshBasicMaterial({ color: 0x964B00 })
 
-  const mesh = new Mesh(geometry, material)
-  // mesh.scale.y = 14
-
-  return mesh
+  return new Mesh(geometry, material)
 }
 
 export const HookItem = ({ character }: { character: Character }) => {
@@ -47,23 +44,25 @@ export const HookItem = ({ character }: { character: Character }) => {
         init: async (entity) => {
           entity.components.three.o.push(mesh)
         },
-        onRender: ({ delta }) => {
+        onRender: ({ world, delta }) => {
           // mesh needs to be between tether position and player
-          const characterPos = character.components.position.data
-          if (!characterPos.tether) {
+          const characterPos = character.components.position
+          const xyz = characterPos.interpolate(world, delta)
+
+          if (!characterPos.data.tether) {
             mesh.visible = false
             return
           }
           mesh.visible = true
 
-          const dx = characterPos.tether.x - characterPos.x
-          const dy = characterPos.tether.y - characterPos.y
-          const dz = characterPos.tether.z - characterPos.z
+          const dx = characterPos.data.tether.x - xyz.x
+          const dy = characterPos.data.tether.y - xyz.y
+          const dz = characterPos.data.tether.z - xyz.z
 
-          const dist = XYZdistance(characterPos, characterPos.tether)
+          const dist = XYZdistance(xyz, characterPos.data.tether)
           mesh.scale.y = dist
 
-          mesh.position.set(characterPos.x, characterPos.z, characterPos.y)
+          mesh.position.set(xyz.x, xyz.z, xyz.y)
 
           const up = new Vector3(0, 1, 0)
           const dir = new Vector3(dx, dz, dy).normalize()
