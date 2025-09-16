@@ -43,40 +43,6 @@ export const HookItem = ({ character }: { character: Character }) => {
           }
         }
       }),
-      npc: NPC({
-        behavior: (_, world) => {
-          if (hooked && world.tick - launched < 50) {
-            const { position } = character.components
-
-            const zDiff = hooked.z * 0.3 + 0.15 - position.data.z
-            const xDiff = hooked.x * 0.3 + 0.15 - position.data.x
-            const yDiff = hooked.y * 0.3 + 0.15 - position.data.y
-
-            // console.log("zDiff", zDiff)
-            // console.log("xDiff", xDiff)
-            // console.log("yDiff", yDiff)
-
-            // const normal = XYZnormal({ x: xDiff, y: yDiff, z: zDiff })
-
-            // console.log("normal", normal)
-
-            // const zDiff = hooked.z > position.data.z ? 0.05 : 0
-
-            // console.log("IMPULSE")
-
-            // position.data.tether = 
-
-            // position.setVelocity({
-            //   z: normal.z * 0.05,
-            //   x: normal.x * 0.5,
-            //   y: normal.y * 0.5
-            // })
-            // position.impulse({
-            //   z: zDiff
-            // })
-          }
-        }
-      }),
       three: Three({
         init: async (entity) => {
           entity.components.three.o.push(mesh)
@@ -100,8 +66,7 @@ type HookParams = {
   pos: XYZ
 }
 
-let hooked: false | XYZ = false
-let launched = 0
+let hooked = false
 
 const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, character }) => {
   const { pos, dir, camera } = params
@@ -113,11 +78,17 @@ const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, charac
 
   console.log(character?.id)
 
+
   const beamResult = blockInLine({ from: camera, dir, world, cap: 40 })
   if (beamResult) {
     console.log(beamResult.inside)
 
-    hooked = beamResult.inside
-    launched = world.tick
+    hooked = true
+
+    if (character) character.components.position.data.tether = {
+      x: beamResult.inside.x,
+      y: beamResult.inside.y,
+      z: beamResult.inside.z
+    }
   }
 })
