@@ -1,6 +1,5 @@
 import {
-  abs, Collider, Entity, floor, max, Position, round, sign, SystemBuilder,
-  XYZdistance
+  abs, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
 } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
@@ -349,19 +348,19 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
 
-            if (dist < 1 || dist > 40) {
+            if (dist < 0.7 || dist > 10) {
               position.data.tether = undefined
             } else {
               if (mode === "local") {
-                position.localVelocity.x -= (dx / dist) * 0.1
-                position.localVelocity.y -= (dy / dist) * 0.1
-                position.localVelocity.z -= (dz / dist) * 0.3 * 0.025
+                position.localVelocity.x -= dx / 200
+                position.localVelocity.y -= dy / 200
+                position.localVelocity.z -= dz / 400
               }
 
               // move player toward tether
-              position.data.velocity.x -= (dx / dist) * 0.1
-              position.data.velocity.y -= (dy / dist) * 0.1
-              position.data.velocity.z -= (dz / dist) * 0.3 * 0.025
+              position.data.velocity.x -= dx / 200
+              position.data.velocity.y -= dy / 200
+              position.data.velocity.z -= dz / 400
             }
           }
 
