@@ -356,7 +356,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             const dist = XYZdistance(position.data, position.data.tether)
 
             if (dist > tetherStartingDist) {
-              console.log("tether", dist - tetherStartingDist)
+              // console.log("tether", dist - tetherStartingDist)
               // direction from tether point to player
               const dx = position.data.x - position.data.tether.x
               const dy = position.data.y - position.data.tether.y
@@ -370,18 +370,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               position.data.x = position.data.tether.x + nx * tetherStartingDist
               position.data.y = position.data.tether.y + ny * tetherStartingDist
               position.data.z = position.data.tether.z + nz * tetherStartingDist
-
-              // project velocity: remove outward component
-              const vdotn =
-                position.data.velocity.x * nx +
-                position.data.velocity.y * ny +
-                position.data.velocity.z * nz
-
-              if (vdotn > 0) {
-                position.data.velocity.x -= vdotn * nx
-                position.data.velocity.y -= vdotn * ny
-                position.data.velocity.z -= vdotn * nz
-              }
             }
           }
 
