@@ -65,9 +65,9 @@ export const HookItem = ({ character }: { character: Character }) => {
 
           mesh.position.set(characterPos.x, characterPos.z, characterPos.y)
 
-          const up = new Vector3(0, 1, 0) // rope's default orientation is Y-up
-          const dir = new Vector3(dx, dz, dy)
-          const quat = new Quaternion().setFromUnitVectors(up, dir.clone().normalize())
+          const up = new Vector3(0, 1, 0)
+          const dir = new Vector3(dx, dz, dy).normalize()
+          const quat = new Quaternion().setFromUnitVectors(up, dir)
           mesh.quaternion.copy(quat)
         }
       })
