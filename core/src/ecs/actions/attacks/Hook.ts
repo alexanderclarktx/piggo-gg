@@ -1,4 +1,4 @@
-import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, NPC, Position, Three, XYZ } from "@piggo-gg/core"
+import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, NPC, Position, Three, XYZ, XYZnormal } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial } from "three"
 
 const HookMesh = (): Mesh => {
@@ -45,15 +45,32 @@ export const HookItem = ({ character }: { character: Character }) => {
       }),
       npc: NPC({
         behavior: (_, world) => {
-          if (hooked && world.tick - launched < 1) {
+          if (hooked && world.tick - launched < 50) {
             const { position } = character.components
 
             const zDiff = hooked.z * 0.3 + 0.15 - position.data.z
+            const xDiff = hooked.x * 0.3 + 0.15 - position.data.x
+            const yDiff = hooked.y * 0.3 + 0.15 - position.data.y
+
+            console.log("zDiff", zDiff)
+            console.log("xDiff", xDiff)
+            console.log("yDiff", yDiff)
+
+            const normal = XYZnormal({ x: xDiff, y: yDiff, z: zDiff })
+
+            console.log("normal", normal)
+
+            // const zDiff = hooked.z > position.data.z ? 0.05 : 0
 
             console.log("IMPULSE")
-            position.impulse({
-              z: zDiff
-            })
+            // position.setVelocity({
+            //   z: normal.z * 0.05,
+            //   x: normal.x * 0.5,
+            //   y: normal.y * 0.5
+            // })
+            // position.impulse({
+            //   z: zDiff
+            // })
           }
         }
       }),

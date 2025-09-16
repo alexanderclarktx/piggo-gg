@@ -89,6 +89,14 @@ export const XYZequal = (a: XYZ, b: XYZ) => {
   return a.x === b.x && a.y === b.y && a.z === b.z
 }
 
+export const XYZnormal = (xyz: XYZ) => {
+  const total = abs(xyz.x) + abs(xyz.y) + abs(xyz.z)
+
+  return {
+    x: xyz.x / total, y: xyz.y / total, z: xyz.z / total
+  }
+}
+
 export const middle = (a: XY, b: XY): XY => {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
 }
