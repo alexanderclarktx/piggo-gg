@@ -100,10 +100,17 @@ const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, charac
 
     hooked = true
 
+    if (world.client?.sound) world.client.sound.play({ name: "click3" })
+
     if (character) character.components.position.data.tether = {
       x: beamResult.inside.x * 0.3,
       y: beamResult.inside.y * 0.3,
-      z: beamResult.inside.z * 0.3 + 0.15
+      z: beamResult.inside.z * 0.3 + 0.15,
+      dist: XYZdistance(pos, {
+        x: beamResult.inside.x * 0.3,
+        y: beamResult.inside.y * 0.3,
+        z: beamResult.inside.z * 0.3 + 0.15
+      })
     }
   }
 })

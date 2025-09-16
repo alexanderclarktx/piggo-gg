@@ -338,8 +338,6 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           if (mode === "local") continue
 
-          const tetherStartingDist = position.data.tether ? XYZdistance(position.data, position.data.tether) : 0
-
           if (position.data.flying) {
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.07
           } else {
@@ -351,25 +349,27 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           position.data.x += position.data.velocity.x / 40
           position.data.y += position.data.velocity.y / 40
 
-          // constrain movement along the tether
-          if (position.data.tether && tetherStartingDist) {
-            const dist = XYZdistance(position.data, position.data.tether)
+          const { tether } = position.data
 
-            if (dist > tetherStartingDist) {
+          // constrain movement along the tether
+          if (tether) {
+            const dist = XYZdistance(position.data, tether)
+
+            if (dist > tether.dist) {
               // console.log("tether", dist - tetherStartingDist)
               // direction from tether point to player
-              const dx = position.data.x - position.data.tether.x
-              const dy = position.data.y - position.data.tether.y
-              const dz = position.data.z - position.data.tether.z
+              const dx = position.data.x - tether.x
+              const dy = position.data.y - tether.y
+              const dz = position.data.z - tether.z
 
               const nx = dx / dist
               const ny = dy / dist
               const nz = dz / dist
 
               // snap player back onto the rope length
-              position.data.x = position.data.tether.x + nx * tetherStartingDist
-              position.data.y = position.data.tether.y + ny * tetherStartingDist
-              position.data.z = position.data.tether.z + nz * tetherStartingDist
+              position.data.x = tether.x + nx * tether.dist
+              position.data.y = tether.y + ny * tether.dist
+              position.data.z = tether.z + nz * tether.dist
             }
           }
 

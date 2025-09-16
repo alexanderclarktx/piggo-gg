@@ -22,7 +22,7 @@ export type Position = Component<"position", {
   speed: number
   standing: boolean
   stop: number
-  tether: undefined | XYZ
+  tether: undefined | XYZ & { dist: number }
   velocity: XYZ
   velocityResets: number
 }> & {
