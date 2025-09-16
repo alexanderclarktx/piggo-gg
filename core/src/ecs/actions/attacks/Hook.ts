@@ -25,7 +25,7 @@ export const HookItem = ({ character }: { character: Character }) => {
       networked: Networked(),
       item: Item({ name: "hook", stackable: false }),
       actions: Actions({
-        hook: Hook(mesh),
+        hook: Hook(),
       }),
       input: Input({
         press: {
@@ -83,13 +83,14 @@ type HookParams = {
   pos: XYZ
 }
 
-let hooked = false
-
-const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, character }) => {
+const Hook = () => Action<HookParams>("hook", ({ world, params, character }) => {
   const { pos, dir, camera } = params
 
-  if (hooked) {
-    hooked = false
+  const characterPos = character?.components.position.data
+  if (!characterPos) return
+
+  if (characterPos.tether) {
+    characterPos.tether = undefined
     if (character) character.components.position.data.tether = undefined
     return
   }
@@ -98,11 +99,9 @@ const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, charac
   if (beamResult) {
     console.log(beamResult.inside)
 
-    hooked = true
-
     if (world.client?.sound) world.client.sound.play({ name: "click3" })
 
-    if (character) character.components.position.data.tether = {
+    characterPos.tether = {
       x: beamResult.inside.x * 0.3,
       y: beamResult.inside.y * 0.3,
       z: beamResult.inside.z * 0.3 + 0.15,

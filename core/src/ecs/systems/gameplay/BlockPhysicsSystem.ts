@@ -250,6 +250,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             z: floor((0.01 + wouldGo.z) / 0.3)
           }
 
+          let applyZ = false
+
           const zSweep = world.blocks.atIJK(ijk)
 
           if (zSweep) {
@@ -285,11 +287,13 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
               }
             } else if (mode !== "local") {
               position.data.standing = false
-              position.data.z += position.data.velocity.z
+              applyZ = true
+              // position.data.z += position.data.velocity.z
             }
           } else if (mode !== "local") {
             position.data.standing = false
-            position.data.z += position.data.velocity.z
+            applyZ = true
+            // position.data.z += position.data.velocity.z
           }
 
           // enhanced zSweep
@@ -336,7 +340,34 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             }
           }
 
+          const { tether } = position.data
+
+          if (tether) {
+            const dx = position.data.x - tether.x
+            const dy = position.data.y - tether.y
+            const dz = position.data.z - tether.z
+
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+
+            if (dist < 1 || dist > 40) {
+              position.data.tether = undefined
+            } else {
+              if (mode === "local") {
+                position.localVelocity.x -= (dx / dist) * 0.1
+                position.localVelocity.y -= (dy / dist) * 0.1
+                position.localVelocity.z -= (dz / dist) * 0.3 * 0.025
+              }
+
+              // move player toward tether
+              position.data.velocity.x -= (dx / dist) * 0.1
+              position.data.velocity.y -= (dy / dist) * 0.1
+              position.data.velocity.z -= (dz / dist) * 0.3 * 0.025
+            }
+          }
+
           if (mode === "local") continue
+
+          if (applyZ) position.data.z += position.data.velocity.z
 
           if (position.data.flying) {
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.07
@@ -349,32 +380,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           position.data.x += position.data.velocity.x / 40
           position.data.y += position.data.velocity.y / 40
 
-          const { tether } = position.data
-
-          // constrain movement along the tether
-          if (tether) {
-            const dist = XYZdistance(position.data, tether)
-
-            if (dist > tether.dist) {
-              // console.log("tether", dist - tetherStartingDist)
-              // direction from tether point to player
-              const dx = position.data.x - tether.x
-              const dy = position.data.y - tether.y
-              const dz = position.data.z - tether.z
-
-              const nx = dx / dist
-              const ny = dy / dist
-              const nz = dz / dist
-
-              // snap player back onto the rope length
-              position.data.x = tether.x + nx * tether.dist
-              position.data.y = tether.y + ny * tether.dist
-              position.data.z = tether.z + nz * tether.dist
-            }
-          }
-
           // friction
-          if (position.data.friction) {
+          if (position.data.friction && !tether) {
             const { flying, standing } = position.data
 
             const scale = flying ? 0.98 : (standing ? 0.7 : 0.94)
