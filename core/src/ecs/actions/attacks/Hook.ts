@@ -48,10 +48,45 @@ export const HookItem = ({ character }: { character: Character }) => {
           entity.components.three.o.push(mesh)
         },
         onRender: ({ delta }) => {
-          // const ratio = delta / 25
+          // mesh needs to be between tether position and player
+          const position = item.components.position.data
+          const characterPos = character.components.position.data
+          if (!characterPos.tether) {
+            mesh.visible = false
+            return
+          }
+          mesh.visible = true
 
-          // mesh.material.opacity -= 0.05 * ratio
-          // if (mesh.material.opacity <= 0) mesh.visible = false
+          const dx = characterPos.tether.x - position.x
+          const dy = characterPos.tether.y - position.y
+          const dz = characterPos.tether.z - position.z
+
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+          // mesh.scale.y = dist / 2
+          mesh.scale.y = 2
+
+          mesh.position.set(
+            (characterPos.tether.x),
+            (characterPos.tether.z),
+            (characterPos.tether.y),
+          )
+
+          // const midx = (characterPos.tether.x + position.x) / 2
+          // const midy = (characterPos.tether.y + position.y) / 2
+          // const midz = (characterPos.tether.z + position.z) / 2
+          // mesh.position.set(midx, midy, midz)
+
+          // const { x: nx, y: ny, z: nz } = XYZnormal({ x: dx, y: dy, z: dz })
+          // const phi = Math.acos(ny)
+          // let theta = Math.atan2(nz, nx)
+          // if (theta < 0) theta += Math.PI * 2
+          // mesh.rotation.set(0, 0, 0)
+          // mesh.rotateY(theta)
+          // mesh.rotateZ(phi + Math.PI / 2)
+
+          // rotate to face player
+          // mesh.lookAt(characterPos.x, characterPos.y, characterPos.z)
+          // mesh.rotateX(Math.PI / 2)
         }
       })
     }
@@ -87,9 +122,9 @@ const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, charac
     hooked = true
 
     if (character) character.components.position.data.tether = {
-      x: beamResult.inside.x * 0.3 + 0.15,
-      y: beamResult.inside.y * 0.3 + 0.15,
-      z: beamResult.inside.z * 0.3
+      x: beamResult.inside.x * 0.3,
+      y: beamResult.inside.y * 0.3,
+      z: beamResult.inside.z * 0.3 + 0.15
     }
   }
 })

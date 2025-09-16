@@ -8,7 +8,7 @@ export const BlockMesh = (maxCount: number): BlockMesh => {
   const geometry = new BoxGeometry(0.3, 0.3, 0.3)
 
   const mat = () => new MeshPhysicalMaterial({
-    vertexColors: false, visible: false, specularIntensity: 0.05, wireframe: false
+    vertexColors: false, visible: false, specularIntensity: 0.05, wireframe: true
   })
 
   const mesh = new InstancedMesh(geometry, [mat(), mat(), mat(), mat(), mat(), mat()], maxCount)
