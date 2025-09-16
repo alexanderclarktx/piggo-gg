@@ -1,4 +1,4 @@
-import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, Position, Three, XYZ } from "@piggo-gg/core"
+import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, NPC, Position, Three, XYZ } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial } from "three"
 
 const HookMesh = (): Mesh => {
@@ -28,12 +28,6 @@ export const HookItem = ({ character }: { character: Character }) => {
         hook: Hook(mesh),
       }),
       input: Input({
-        release: {
-          "mb1": () => {
-            console.log("mb1 release")
-            return null
-          }
-        },
         press: {
           "mb1": ({ hold, character, world, client }) => {
             if (hold) return null
@@ -46,6 +40,20 @@ export const HookItem = ({ character }: { character: Character }) => {
             const pos = character.components.position.xyz()
 
             return { actionId: "hook", params: { dir, camera, pos } }
+          }
+        }
+      }),
+      npc: NPC({
+        behavior: (_, world) => {
+          if (hooked && world.tick - launched < 1) {
+            const { position } = character.components
+
+            const zDiff = hooked.z * 0.3 + 0.15 - position.data.z
+
+            console.log("IMPULSE")
+            position.impulse({
+              z: zDiff
+            })
           }
         }
       }),
@@ -73,14 +81,16 @@ type HookParams = {
 }
 
 let hooked: false | XYZ = false
+let launched = 0
 
 const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params }) => {
   const { pos, dir, camera } = params
 
-  const beamResult = blockInLine({ from: camera, dir, world })
+  const beamResult = blockInLine({ from: camera, dir, world, cap: 40 })
   if (beamResult) {
     console.log(beamResult.inside)
 
     hooked = beamResult.inside
+    launched = world.tick
   }
 })
