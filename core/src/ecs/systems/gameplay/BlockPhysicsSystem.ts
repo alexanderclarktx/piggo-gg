@@ -338,6 +338,8 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           if (mode === "local") continue
 
+          const tetherStartingDist = position.data.tether ? XYZdistance(position.data, position.data.tether) : 0
+
           if (position.data.flying) {
             position.data.velocity.z = (position.data.aim.y + 0.2) * 0.07
           } else {
@@ -345,15 +347,42 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             position.data.velocity.z = max(position.data.velocity.z, -0.2)
           }
 
-          if (position.data.tether) {
-            const dist = XYZdistance(position.data, position.data.tether)
-
-            console.log("tether dist", dist)
-          }
-
           // x/y movement
           position.data.x += position.data.velocity.x / 40
           position.data.y += position.data.velocity.y / 40
+
+          // constrain movement along the tether
+          if (position.data.tether) {
+            const dist = XYZdistance(position.data, position.data.tether)
+
+            if (dist > tetherStartingDist) {
+              // direction from tether point to player
+              const dx = position.data.x - position.data.tether.x
+              const dy = position.data.y - position.data.tether.y
+              const dz = position.data.z - position.data.tether.z
+
+              const nx = dx / dist
+              const ny = dy / dist
+              const nz = dz / dist
+
+              // snap player back onto the rope length
+              position.data.x = position.data.tether.x + nx * tetherStartingDist
+              position.data.y = position.data.tether.y + ny * tetherStartingDist
+              position.data.z = position.data.tether.z + nz * tetherStartingDist
+
+              // project velocity: remove outward component
+              const vdotn =
+                position.data.velocity.x * nx +
+                position.data.velocity.y * ny +
+                position.data.velocity.z * nz
+
+              if (vdotn > 0) {
+                position.data.velocity.x -= vdotn * nx
+                position.data.velocity.y -= vdotn * ny
+                position.data.velocity.z -= vdotn * nz
+              }
+            }
+          }
 
           // friction
           if (position.data.friction) {

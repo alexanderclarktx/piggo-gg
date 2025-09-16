@@ -73,6 +73,7 @@ const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, charac
 
   if (hooked) {
     hooked = false
+    if (character) character.components.position.data.tether = undefined
     return
   }
 
@@ -87,8 +88,8 @@ const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, charac
 
     if (character) character.components.position.data.tether = {
       x: beamResult.inside.x,
-      y: beamResult.inside.y,
-      z: beamResult.inside.z
+      y: beamResult.inside.z,
+      z: beamResult.inside.y
     }
   }
 })
