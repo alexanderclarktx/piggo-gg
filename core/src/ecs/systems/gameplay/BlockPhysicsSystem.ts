@@ -352,10 +352,11 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           position.data.y += position.data.velocity.y / 40
 
           // constrain movement along the tether
-          if (position.data.tether) {
+          if (position.data.tether && tetherStartingDist) {
             const dist = XYZdistance(position.data, position.data.tether)
 
             if (dist > tetherStartingDist) {
+              console.log("tether", dist - tetherStartingDist)
               // direction from tether point to player
               const dx = position.data.x - position.data.tether.x
               const dy = position.data.y - position.data.tether.y
