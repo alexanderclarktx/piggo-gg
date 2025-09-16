@@ -60,14 +60,9 @@ export const HookItem = ({ character }: { character: Character }) => {
           const dy = characterPos.tether.y - characterPos.y
           const dz = characterPos.tether.z - characterPos.z
 
-          // const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
           const dist = XYZdistance(characterPos, characterPos.tether)
           mesh.scale.y = dist
 
-          const midx = (characterPos.tether.x + characterPos.x) / 2
-          const midy = (characterPos.tether.y + characterPos.y) / 2
-          const midz = (characterPos.tether.z + characterPos.z) / 2
-          // mesh.position.set(midx, midz, midy)
           mesh.position.set(characterPos.x, characterPos.z, characterPos.y)
 
           const up = new Vector3(0, 1, 0) // rope's default orientation is Y-up
