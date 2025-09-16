@@ -1,5 +1,6 @@
 import {
-  abs, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
+  abs, Collider, Entity, floor, max, Position, round, sign, SystemBuilder,
+  XYZdistance
 } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
@@ -342,6 +343,12 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           } else {
             position.data.velocity.z -= position.data.gravity
             position.data.velocity.z = max(position.data.velocity.z, -0.2)
+          }
+
+          if (position.data.tether) {
+            const dist = XYZdistance(position.data, position.data.tether)
+
+            console.log("tether dist", dist)
           }
 
           // x/y movement

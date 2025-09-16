@@ -52,17 +52,20 @@ export const HookItem = ({ character }: { character: Character }) => {
             const xDiff = hooked.x * 0.3 + 0.15 - position.data.x
             const yDiff = hooked.y * 0.3 + 0.15 - position.data.y
 
-            console.log("zDiff", zDiff)
-            console.log("xDiff", xDiff)
-            console.log("yDiff", yDiff)
+            // console.log("zDiff", zDiff)
+            // console.log("xDiff", xDiff)
+            // console.log("yDiff", yDiff)
 
-            const normal = XYZnormal({ x: xDiff, y: yDiff, z: zDiff })
+            // const normal = XYZnormal({ x: xDiff, y: yDiff, z: zDiff })
 
-            console.log("normal", normal)
+            // console.log("normal", normal)
 
             // const zDiff = hooked.z > position.data.z ? 0.05 : 0
 
-            console.log("IMPULSE")
+            // console.log("IMPULSE")
+
+            // position.data.tether = 
+
             // position.setVelocity({
             //   z: normal.z * 0.05,
             //   x: normal.x * 0.5,
@@ -100,8 +103,15 @@ type HookParams = {
 let hooked: false | XYZ = false
 let launched = 0
 
-const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params }) => {
+const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, character }) => {
   const { pos, dir, camera } = params
+
+  if (hooked) {
+    hooked = false
+    return
+  }
+
+  console.log(character?.id)
 
   const beamResult = blockInLine({ from: camera, dir, world, cap: 40 })
   if (beamResult) {

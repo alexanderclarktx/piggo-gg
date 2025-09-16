@@ -260,6 +260,7 @@ export const InputSystem = ClientSystemBuilder({
               })
               if (invocation && actions.actionMap[invocation.actionId]) {
                 invocation.playerId = client.playerId()
+                invocation.characterId = character.id
                 world.actions.push(world.tick + 1, character.id, invocation)
               }
             }
@@ -284,6 +285,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()
+              invocation.characterId = character.id
               world.actions.push(world.tick + 1, character.id, invocation)
             }
           }
@@ -311,6 +313,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()
+              invocation.characterId = character.id
               world.actions.push(world.tick + 1, character.id, invocation)
             }
           }
@@ -338,6 +341,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()
+              invocation.characterId = character.id
               world.actions.push(world.tick + 1, activeItem.id, invocation)
             }
           }
