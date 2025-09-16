@@ -72,8 +72,10 @@ export const InputSystem = ClientSystemBuilder({
 
       if (key === "mb1") {
         const pc = client.character()
-        if (pc) {
-          pc.components.input.inputMap.release[key]?.({
+        const release = pc?.components.input.inputMap.release[key]
+
+        if (pc && release) {
+          release({
             // @ts-expect-error
             mouse, aim: localAim(), client, entity: pc, world, tick: world.tick, hold: 0, target: event.target?.localName ?? ""
           })
@@ -320,11 +322,11 @@ export const InputSystem = ClientSystemBuilder({
       // handle character inventory
       const activeItem = inventory?.activeItem(world)
       if (activeItem) {
-        for (const keyPress of ["mb1", "mb2"]) {
-          const keyMouse = buffer.get(keyPress)
+        for (const key of ["mb1", "mb2"]) {
+          const keyMouse = buffer.get(key)
 
-          if (keyMouse && activeItem.components.input?.inputMap.press[keyPress]) {
-            const invocation = activeItem.components.input?.inputMap.press[keyPress]?.({
+          if (keyMouse && activeItem.components.input?.inputMap.press[key]) {
+            const invocation = activeItem.components.input?.inputMap.press[key]?.({
               aim: localAim(),
               character,
               entity: activeItem,
@@ -338,6 +340,30 @@ export const InputSystem = ClientSystemBuilder({
               invocation.playerId = client.playerId()
               world.actions.push(world.tick + 1, activeItem.id, invocation)
             }
+          }
+
+          const keyUp = bufferUp.get(key)
+
+          if (keyUp) {
+            console.log("keyUp item", key)
+            const controllerInput = input.inputMap.release[key]
+            if (controllerInput != null) {
+              const invocation = controllerInput({
+                mouse,
+                aim: localAim(),
+                entity: character,
+                tick: world.tick,
+                world,
+                client,
+                hold: keyUp.hold
+              })
+              if (invocation && actions.actionMap[invocation.actionId]) {
+                invocation.playerId = client.playerId()
+                world.actions.push(world.tick + 1, character.id, invocation)
+              }
+            }
+
+            bufferUp.remove(key)
           }
         }
       }

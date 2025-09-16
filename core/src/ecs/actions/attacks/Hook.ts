@@ -1,4 +1,4 @@
-import { Action, Actions, Character, Effects, Input, Item, ItemEntity, Networked, Position, Three } from "@piggo-gg/core"
+import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, Position, Three, XYZ } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial } from "three"
 
 const HookMesh = (): Mesh => {
@@ -28,17 +28,24 @@ export const HookItem = ({ character }: { character: Character }) => {
         hook: Hook(mesh),
       }),
       input: Input({
+        release: {
+          "mb1": () => {
+            console.log("mb1 release")
+            return null
+          }
+        },
         press: {
-          "mb1": ({ hold, character, world, aim, client }) => {
+          "mb1": ({ hold, character, world, client }) => {
             if (hold) return null
             if (!character) return null
             if (!document.pointerLockElement && !client.mobile) return null
             if (world.client?.mobileLock) return null
 
-            return {
-              actionId: "hook",
-              params: { pos: character.components.position.xyz(), aim }
-            }
+            const dir = world.three!.camera.dir(world)
+            const camera = world.three!.camera.pos()
+            const pos = character.components.position.xyz()
+
+            return { actionId: "hook", params: { dir, camera, pos } }
           }
         }
       }),
@@ -59,8 +66,21 @@ export const HookItem = ({ character }: { character: Character }) => {
   return item
 }
 
-const Hook = (mesh: Mesh) => Action("hook", ({ world, params, entity, player }) => {
-  if (!entity) return
+type HookParams = {
+  camera: XYZ
+  dir: XYZ
+  pos: XYZ
+}
 
-  console.log("hook", params)
+let hooked: false | XYZ = false
+
+const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params }) => {
+  const { pos, dir, camera } = params
+
+  const beamResult = blockInLine({ from: camera, dir, world })
+  if (beamResult) {
+    console.log(beamResult.inside)
+
+    hooked = beamResult.inside
+  }
 })
