@@ -26,7 +26,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           actions.forEach((invokedAction) => {
             const command = world.commands[invokedAction.actionId]
 
-            const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Player : undefined
+            const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
             if (command) command.invoke({ params: invokedAction.params ?? {}, world, player })
           })
           return
@@ -61,7 +61,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
 
           // execute the action
           const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
-          const character = invokedAction.characterId ? world.entities[invokedAction.characterId] as Character : undefined
+          const character = invokedAction.characterId ? world.entity(invokedAction.characterId) as Character : undefined
           action.invoke({ params: invokedAction.params ?? {}, entity, world, player, character })
         }
       }

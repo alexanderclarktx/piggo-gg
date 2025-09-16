@@ -345,29 +345,6 @@ export const InputSystem = ClientSystemBuilder({
               world.actions.push(world.tick + 1, activeItem.id, invocation)
             }
           }
-
-          // const keyUp = bufferUp.get(key)
-
-          // if (keyUp) {
-          //   const controllerInput = input.inputMap.release[key]
-          //   if (controllerInput != null) {
-          //     const invocation = controllerInput({
-          //       mouse,
-          //       aim: localAim(),
-          //       entity: character,
-          //       tick: world.tick,
-          //       world,
-          //       client,
-          //       hold: keyUp.hold
-          //     })
-          //     if (invocation && actions.actionMap[invocation.actionId]) {
-          //       invocation.playerId = client.playerId()
-          //       world.actions.push(world.tick + 1, character.id, invocation)
-          //     }
-          //   }
-
-          //   bufferUp.remove(key)
-          // }
         }
       }
     }

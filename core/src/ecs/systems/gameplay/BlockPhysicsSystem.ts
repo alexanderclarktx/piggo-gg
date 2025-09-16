@@ -287,12 +287,10 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             } else if (mode !== "local") {
               position.data.standing = false
               applyZ = true
-              // position.data.z += position.data.velocity.z
             }
           } else if (mode !== "local") {
             position.data.standing = false
             applyZ = true
-            // position.data.z += position.data.velocity.z
           }
 
           // enhanced zSweep

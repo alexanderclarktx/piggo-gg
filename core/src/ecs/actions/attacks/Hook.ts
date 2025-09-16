@@ -1,10 +1,13 @@
-import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, NPC, Position, Three, XYZ, XYZdistance, XYZnormal } from "@piggo-gg/core"
+import {
+  Action, Actions, blockInLine, Character, Effects, Input,
+  Item, ItemEntity, Networked, Position, Three, XYZ, XYZdistance
+} from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from "three"
 
 const HookMesh = (): Mesh => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
   geometry.translate(0, 0.5, 0)
-  
+
   const material = new MeshBasicMaterial({ color: 0x964B00 })
 
   return new Mesh(geometry, material)
