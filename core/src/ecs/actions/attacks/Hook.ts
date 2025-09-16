@@ -1,5 +1,5 @@
-import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, NPC, Position, Three, XYZ, XYZnormal } from "@piggo-gg/core"
-import { CylinderGeometry, Mesh, MeshBasicMaterial } from "three"
+import { Action, Actions, blockInLine, Character, Effects, Input, Item, ItemEntity, Networked, NPC, Position, Three, XYZ, XYZdistance, XYZnormal } from "@piggo-gg/core"
+import { CylinderGeometry, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from "three"
 
 const HookMesh = (): Mesh => {
   const geometry = new CylinderGeometry(0.01, 0.01, 1, 8)
@@ -8,7 +8,7 @@ const HookMesh = (): Mesh => {
   const material = new MeshBasicMaterial({ color: 0x964B00 })
 
   const mesh = new Mesh(geometry, material)
-  mesh.scale.y = 14
+  // mesh.scale.y = 14
 
   return mesh
 }
@@ -49,7 +49,6 @@ export const HookItem = ({ character }: { character: Character }) => {
         },
         onRender: ({ delta }) => {
           // mesh needs to be between tether position and player
-          const position = item.components.position.data
           const characterPos = character.components.position.data
           if (!characterPos.tether) {
             mesh.visible = false
@@ -57,36 +56,24 @@ export const HookItem = ({ character }: { character: Character }) => {
           }
           mesh.visible = true
 
-          const dx = characterPos.tether.x - position.x
-          const dy = characterPos.tether.y - position.y
-          const dz = characterPos.tether.z - position.z
+          const dx = characterPos.tether.x - characterPos.x
+          const dy = characterPos.tether.y - characterPos.y
+          const dz = characterPos.tether.z - characterPos.z
 
-          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
-          // mesh.scale.y = dist / 2
-          mesh.scale.y = 2
+          // const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+          const dist = XYZdistance(characterPos, characterPos.tether)
+          mesh.scale.y = dist
 
-          mesh.position.set(
-            (characterPos.tether.x),
-            (characterPos.tether.z),
-            (characterPos.tether.y),
-          )
+          const midx = (characterPos.tether.x + characterPos.x) / 2
+          const midy = (characterPos.tether.y + characterPos.y) / 2
+          const midz = (characterPos.tether.z + characterPos.z) / 2
+          // mesh.position.set(midx, midz, midy)
+          mesh.position.set(characterPos.x, characterPos.z, characterPos.y)
 
-          // const midx = (characterPos.tether.x + position.x) / 2
-          // const midy = (characterPos.tether.y + position.y) / 2
-          // const midz = (characterPos.tether.z + position.z) / 2
-          // mesh.position.set(midx, midy, midz)
-
-          // const { x: nx, y: ny, z: nz } = XYZnormal({ x: dx, y: dy, z: dz })
-          // const phi = Math.acos(ny)
-          // let theta = Math.atan2(nz, nx)
-          // if (theta < 0) theta += Math.PI * 2
-          // mesh.rotation.set(0, 0, 0)
-          // mesh.rotateY(theta)
-          // mesh.rotateZ(phi + Math.PI / 2)
-
-          // rotate to face player
-          // mesh.lookAt(characterPos.x, characterPos.y, characterPos.z)
-          // mesh.rotateX(Math.PI / 2)
+          const up = new Vector3(0, 1, 0) // rope's default orientation is Y-up
+          const dir = new Vector3(dx, dz, dy)
+          const quat = new Quaternion().setFromUnitVectors(up, dir.clone().normalize())
+          mesh.quaternion.copy(quat)
         }
       })
     }
@@ -111,9 +98,6 @@ const Hook = (mesh: Mesh) => Action<HookParams>("hook", ({ world, params, charac
     if (character) character.components.position.data.tether = undefined
     return
   }
-
-  console.log(character?.id)
-
 
   const beamResult = blockInLine({ from: camera, dir, world, cap: 40 })
   if (beamResult) {
