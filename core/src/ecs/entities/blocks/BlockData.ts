@@ -11,7 +11,7 @@ export type BlockData = {
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
   invalidate: () => void
-  remove: (xyz: XYZ, world?: World) => void
+  remove: (xyz: XYZ) => void
   needsUpdate: () => boolean
   visible: (at: XY[]) => Block[]
 }
@@ -209,7 +209,7 @@ export const BlockData = (): BlockData => {
     needsUpdate: () => {
       return Boolean(keys(visibleDirty).length)
     },
-    remove: ({ x, y, z }, world) => {
+    remove: ({ x, y, z }) => {
       const chunkX = floor(x / 4)
       const chunkY = floor(y / 4)
 

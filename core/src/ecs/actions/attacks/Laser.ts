@@ -1,7 +1,8 @@
 import {
   Action, Actions, Character, cos, VillagersState, Effects, floor, hypot,
   Input, Item, ItemEntity, min, Networked, playerForCharacter, Position,
-  sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
+  sin, sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub,
+  blockInLine
 } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
 
@@ -122,46 +123,51 @@ const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params
   mesh.material.opacity = 1
   mesh.visible = true
 
-  const current = { ...eyePos }
+  // const current = { ...eyePos }
 
-  let travelled = 0
-  let cap = 40
+  // let travelled = 0
+  // let cap = 40
 
-  while (travelled < 10 && cap > 0) {
-
-    const xGap = (current.x + 0.15) % 0.3
-    const yGap = (current.y + 0.15) % 0.3
-    const zGap = current.z % 0.3
-
-    // find step size to hit next block
-    const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
-    const yStep = dir.z > 0 ? (0.3 - yGap) / dir.z : (yGap / -dir.z)
-    const zStep = dir.y > 0 ? (0.3 - zGap) / dir.y : (zGap / -dir.y)
-
-    const minStep = min(xStep, yStep, zStep)
-
-    const xDist = dir.x * minStep * 1.01
-    const yDist = dir.z * minStep * 1.01
-    const zDist = dir.y * minStep * 1.01
-
-    current.x += xDist
-    current.y += yDist
-    current.z += zDist
-
-    travelled += hypot(xDist, yDist, zDist)
-    cap -= 1
-
-    const insideBlock = {
-      x: floor((0.15 + current.x) / 0.3),
-      y: floor((0.15 + current.y) / 0.3),
-      z: floor(current.z / 0.3)
-    }
-
-    if (world.blocks.atIJK(insideBlock)) {
-      world.blocks.remove(insideBlock)
-      break
-    }
+  const beamResult = blockInLine({ from: eyePos, dir, world, cap: 40 })
+  if (beamResult) {
+    world.blocks.remove(beamResult.inside)
   }
+
+  // while (travelled < 10 && cap > 0) {
+
+  //   const xGap = (current.x + 0.15) % 0.3
+  //   const yGap = (current.y + 0.15) % 0.3
+  //   const zGap = current.z % 0.3
+
+  //   // find step size to hit next block
+  //   const xStep = dir.x > 0 ? (0.3 - xGap) / dir.x : (xGap / -dir.x)
+  //   const yStep = dir.z > 0 ? (0.3 - yGap) / dir.z : (yGap / -dir.z)
+  //   const zStep = dir.y > 0 ? (0.3 - zGap) / dir.y : (zGap / -dir.y)
+
+  //   const minStep = min(xStep, yStep, zStep)
+
+  //   const xDist = dir.x * minStep * 1.01
+  //   const yDist = dir.z * minStep * 1.01
+  //   const zDist = dir.y * minStep * 1.01
+
+  //   current.x += xDist
+  //   current.y += yDist
+  //   current.z += zDist
+
+  //   travelled += hypot(xDist, yDist, zDist)
+  //   cap -= 1
+
+  //   const insideBlock = {
+  //     x: floor((0.15 + current.x) / 0.3),
+  //     y: floor((0.15 + current.y) / 0.3),
+  //     z: floor(current.z / 0.3)
+  //   }
+
+  //   if (world.blocks.atIJK(insideBlock)) {
+  //     world.blocks.remove(insideBlock)
+  //     break
+  //   }
+  // }
 
   // if (world.client && entity.id !== world.client.character()?.id) return
   // if (world.client) return
