@@ -9,7 +9,7 @@ export type PlaceParams = {
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   const { pos, dir, camera } = params
 
-  const beamResult = blockInLine(camera, dir, world)
+  const beamResult = blockInLine({ from: camera, dir, world })
   if (!beamResult) return undefined
 
   const { outside, inside } = beamResult

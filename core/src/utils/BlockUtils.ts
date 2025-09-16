@@ -6,18 +6,24 @@ export const blockFromXYZ = (xyz: XYZ) => ({
   z: floor(xyz.z / 0.3)
 })
 
+type BlockInLineProps = {
+  from: XYZ
+  dir: XYZ
+  world: World
+  cap?: number
+}
+
 type BlockInLine = undefined | {
   inside: Block
   outside: XYZ
 }
 
-export const blockInLine = (from: XYZ, dir: XYZ, world: World): BlockInLine => {
+export const blockInLine = ({ from, dir, world, cap = 10 }: BlockInLineProps): BlockInLine => {
   const current = { ...from }
 
   const outside = blockFromXYZ(current)
 
   let travelled = 0
-  let cap = 10
 
   while (travelled < 10 && cap > 0) {
 
