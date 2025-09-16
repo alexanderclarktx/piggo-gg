@@ -1,4 +1,4 @@
-import { Entity, Player, SystemBuilder, entries, keys, stringify, Position } from "@piggo-gg/core"
+import { Entity, Player, SystemBuilder, entries, keys, stringify, Position, Character } from "@piggo-gg/core"
 
 export const ActionSystem: SystemBuilder<"ActionSystem"> = {
   id: "ActionSystem",
@@ -26,7 +26,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           actions.forEach((invokedAction) => {
             const command = world.commands[invokedAction.actionId]
 
-            const player = invokedAction.playerId ? world.entities[invokedAction.playerId] as Player : undefined
+            const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
             if (command) command.invoke({ params: invokedAction.params ?? {}, world, player })
           })
           return
@@ -61,7 +61,8 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
 
           // execute the action
           const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
-          action.invoke({ params: invokedAction.params ?? {}, entity, world, player })
+          const character = invokedAction.characterId ? world.entity(invokedAction.characterId) as Character : undefined
+          action.invoke({ params: invokedAction.params ?? {}, entity, world, player, character })
         }
       }
     }

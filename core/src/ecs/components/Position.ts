@@ -22,6 +22,7 @@ export type Position = Component<"position", {
   speed: number
   standing: boolean
   stop: number
+  tether: undefined | XYZ & { dist: number }
   velocity: XYZ
   velocityResets: number
 }> & {
@@ -93,6 +94,7 @@ export const Position = (props: PositionProps = {}): Position => {
       speed: props.speed ?? 0,
       standing: true,
       stop: props.stop ?? 0,
+      tether: undefined,
       velocity: props.velocity ? { ...props.velocity, z: 0 } : { x: 0, y: 0, z: 0 },
       velocityResets: props.velocityResets ?? 0
     },

@@ -85,11 +85,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (renderer.debug) {
         helper = new CameraHelper(renderer.sun.shadow.camera)
         renderer.scene.add(helper)
-        renderer.sphere!.material.opacity = 1
+        // renderer.sphere!.material.opacity = 1
       } else if (!renderer.debug && helper) {
         renderer.scene.remove(helper)
         helper = undefined
-        renderer.sphere!.material.opacity = 0
+        // renderer.sphere!.material.opacity = 0
       }
     },
     pointerLock: () => {
@@ -113,9 +113,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
-        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0 }),
+        new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: false, transparent: true, opacity: 0 }),
       )
-      renderer.scene.add(renderer.sphere)
+      // renderer.scene.add(renderer.sphere)
 
       webgl = new WebGLRenderer({
         antialias: true,
@@ -144,7 +144,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
       sun.castShadow = true
 
-      renderer.sun.target = renderer.sphere
+      // renderer.sun.target = renderer.sphere
 
       // widen the shadow
       sun.shadow.camera.left = -20
