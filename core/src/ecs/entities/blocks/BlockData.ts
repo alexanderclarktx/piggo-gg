@@ -273,12 +273,66 @@ type Biome = "hills" | "mountains"
 //   mountains: { factor: 15, octaves: 3, exp: 1.5 }
 // }
 
-const spawnHills = () => {
+const spawnPlains = (x: number, y: number, world: World) => {
+  let height = world.random.noise({ x, y, factor: 15, octaves: 1 })
 
+  for (let z = 0; z < height; z++) {
+
+    const type = world.random.range<BlockType>(z, [
+      [0, "saphire"],
+      [1, "saphire"],
+      [7, "grass"]
+    ])
+
+    world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
+
+    if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
+
+      let height = world.random.int(2) + 4
+      if (world.random.int(4) === 1) {
+        height += world.random.int(5)
+      }
+
+      const t = world.random.int(2) === 1 ? "oak" : "spruce"
+      const fluffy = world.random.int(2) === 1
+
+      world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
+
+      world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
+    }
+  }
 }
 
-const spawnMountains = () => {
+const spawnMountains = (x: number, y: number, world: World) => {
+  let height = world.random.noise({ x, y, factor: 20, octaves: 2 })
 
+  for (let z = 0; z < height; z++) {
+
+    const type = world.random.range<BlockType>(z, [
+      [0, "saphire"],
+      [1, "saphire"],
+      [7, "grass"]
+    ])
+
+    world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
+
+    if (height > 10) continue
+
+    if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
+
+      let height = world.random.int(2) + 4
+      if (world.random.int(4) === 1) {
+        height += world.random.int(5)
+      }
+
+      const t = world.random.int(2) === 1 ? "oak" : "spruce"
+      const fluffy = world.random.int(2) === 1
+
+      world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
+
+      world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
+    }
+  }
 }
 
 export const spawnChunk = (chunk: XY, biome: Biome, world: World) => {
@@ -289,33 +343,10 @@ export const spawnChunk = (chunk: XY, biome: Biome, world: World) => {
       const x = i + chunk.x * size
       const y = j + chunk.y * size
 
-      let height = world.random.noise({ x, y, factor: 15, octaves: 3 })
-
-      for (let z = 0; z < height; z++) {
-
-        const type = world.random.range<BlockType>(z, [
-          [0, "saphire"],
-          [1, "saphire"],
-          [7, "grass"],
-          [32, "asteroid"]
-        ])
-
-        world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
-
-        if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
-
-          let height = world.random.int(2) + 4
-          if (world.random.int(4) === 1) {
-            height += world.random.int(5)
-          }
-
-          const t = world.random.int(2) === 1 ? "oak" : "spruce"
-          const fluffy = world.random.int(2) === 1
-
-          world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
-
-          world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
-        }
+      if (biome === "mountains") {
+        spawnMountains(x, y, world)
+      } else {
+        spawnPlains(x, y, world)
       }
     }
   }

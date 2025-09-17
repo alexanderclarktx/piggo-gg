@@ -10,7 +10,10 @@ const HookMesh = (): Mesh => {
 
   const material = new MeshBasicMaterial({ color: 0x964B00 })
 
-  return new Mesh(geometry, material)
+  const mesh = new Mesh(geometry, material)
+  mesh.castShadow = true
+
+  return mesh
 }
 
 export const HookItem = ({ character }: { character: Character }) => {
@@ -65,7 +68,7 @@ export const HookItem = ({ character }: { character: Character }) => {
           const dist = XYZdistance(xyz, characterPos.data.tether)
           mesh.scale.y = dist
 
-          mesh.position.set(xyz.x, xyz.z, xyz.y)
+          mesh.position.set(xyz.x, xyz.z + 0.3, xyz.y)
 
           const up = new Vector3(0, 1, 0)
           const dir = new Vector3(dx, dz, dy).normalize()
