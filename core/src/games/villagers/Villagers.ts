@@ -2,8 +2,7 @@ import {
   BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
-  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview,
-  floor
+  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"

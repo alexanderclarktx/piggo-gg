@@ -20,7 +20,7 @@ export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
 
-  const chunks = 24 // TODO dynamic?
+  const chunks = 48 // TODO dynamic?
   for (let i = 0; i < chunks; i++) {
     data[i] = []
     for (let j = 0; j < chunks; j++) {
@@ -260,69 +260,7 @@ export const BlockData = (): BlockData => {
   return blocks
 }
 
-type Biome = "plains" | "mountains"
-
-const spawnPlains = (x: number, y: number, world: World) => {
-  let height = world.random.noise({ x, y, factor: 15, octaves: 3 })
-
-  for (let z = 0; z < height; z++) {
-
-    const type = world.random.range<BlockType>(z, [
-      [0, "saphire"],
-      [1, "saphire"],
-      [7, "grass"]
-    ])
-
-    world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
-
-    if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
-
-      let height = world.random.int(2) + 4
-      if (world.random.int(4) === 1) {
-        height += world.random.int(5)
-      }
-
-      const t = world.random.int(2) === 1 ? "oak" : "spruce"
-      const fluffy = world.random.int(2) === 1
-
-      world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
-
-      world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
-    }
-  }
-}
-
-const spawnMountains = (x: number, y: number, world: World) => {
-  let height = world.random.noise({ x, y, factor: 20, octaves: 3 })
-
-  for (let z = 0; z < height; z++) {
-
-    const type = world.random.range<BlockType>(z, [
-      [0, "saphire"],
-      [1, "saphire"],
-      [7, "grass"]
-    ])
-
-    world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
-
-    // if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
-
-    //   let height = world.random.int(2) + 4
-    //   if (world.random.int(4) === 1) {
-    //     height += world.random.int(5)
-    //   }
-
-    //   const t = world.random.int(2) === 1 ? "oak" : "spruce"
-    //   const fluffy = world.random.int(2) === 1
-
-    //   world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
-
-    //   world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
-    // }
-  }
-}
-
-export const spawnChunk = (chunk: XY, biome: Biome, world: World) => {
+export const spawnChunk = (chunk: XY, world: World) => {
   const size = 4
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
@@ -330,28 +268,55 @@ export const spawnChunk = (chunk: XY, biome: Biome, world: World) => {
       const x = i + chunk.x * size
       const y = j + chunk.y * size
 
-      if (biome === "mountains") {
-        spawnMountains(x, y, world)
-      } else {
-        spawnPlains(x, y, world)
+      let height = world.random.noise({ x, y, factor: 15, octaves: 3 })
+
+      for (let z = 0; z < height; z++) {
+
+        const type = world.random.range<BlockType>(z, [
+          [0, "saphire"],
+          [1, "saphire"],
+          [7, "grass"],
+          [32, "asteroid"]
+        ])
+
+        world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
+
+        if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
+
+          let height = world.random.int(2) + 4
+          if (world.random.int(4) === 1) {
+            height += world.random.int(5)
+          }
+
+          const t = world.random.int(2) === 1 ? "oak" : "spruce"
+          const fluffy = world.random.int(2) === 1
+
+          world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
+
+          world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
+        }
       }
     }
   }
 }
 
-export const spawnTerrain = (world: World, num: number = 10) => {
+// export const spawnTiny = () => {
+//   const num = 8
+//   for (let i = 0; i < num; i++) {
+//     for (let j = 0; j < num; j++) {
+//       blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
+//     }
+//   }
 
+//   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
+// }
+
+export const spawnTerrain = (world: World, num: number = 10) => {
   const time = performance.now()
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
-
-      const biomeNoise = world.random.noise({ x: i, y: j, factor: 10, octaves: 1 })
-
-      // const biome = biomeNoise < 3 ? "plains" : "mountains"
-      const biome = "plains"
-
       const chunk = { x: i, y: j }
-      spawnChunk(chunk, biome, world)
+      spawnChunk(chunk, world)
     }
   }
   logPerf("spawnTerrain", time)
