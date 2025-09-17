@@ -6,6 +6,7 @@ export type sampleProps = {
   y: number
   factor: number
   octaves: number
+  dist?: number
 }
 
 export type Random = {
@@ -23,7 +24,7 @@ export const Random = (startingSeed: number): Random => {
 
   const random: Random = {
     index: 0,
-    noise: ({ x, y, factor, octaves }: sampleProps): number => {
+    noise: ({ x, y, factor, octaves, dist = 100 }: sampleProps): number => {
 
       let value = 0
 
@@ -31,7 +32,7 @@ export const Random = (startingSeed: number): Random => {
         const frequency = Math.pow(2, octave)
         const amplitude = Math.pow(0.5, octave)
 
-        const sampled = (1 + simplex(x / 100 * frequency, y / 100 * frequency)) / 2
+        const sampled = (1 + simplex(x / dist * frequency, y / dist * frequency)) / 2
         value += sampled * amplitude
       }
 

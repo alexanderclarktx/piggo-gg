@@ -1,6 +1,6 @@
 import {
   Block, BlockPlan, BlockTree, BlockType, BlockTypeInt,
-  floor, keys, logPerf, World, XY, XYZ
+  floor, keys, logPerf, pow, World, XY, XYZ
 } from "@piggo-gg/core"
 
 export type BlockData = {
@@ -260,7 +260,28 @@ export const BlockData = (): BlockData => {
   return blocks
 }
 
-export const spawnChunk = (chunk: XY, world: World) => {
+type Biome = "hills" | "mountains"
+
+// type BiomeParams = {
+//   factor: number
+//   octaves: number
+//   exp?: number
+// }
+
+// const biomes: Record<Biome, BiomeParams> = {
+//   hills: { factor: 15, octaves: 4 },
+//   mountains: { factor: 15, octaves: 3, exp: 1.5 }
+// }
+
+const spawnHills = () => {
+
+}
+
+const spawnMountains = () => {
+
+}
+
+export const spawnChunk = (chunk: XY, biome: Biome, world: World) => {
   const size = 4
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
@@ -300,23 +321,20 @@ export const spawnChunk = (chunk: XY, world: World) => {
   }
 }
 
-// export const spawnTiny = () => {
-//   const num = 8
-//   for (let i = 0; i < num; i++) {
-//     for (let j = 0; j < num; j++) {
-//       blocks.add({ x: i + 5, y: j + 5, z: 0, type: 1 })
-//     }
-//   }
-
-//   blocks.add({ x: 9, y: 9, z: 1, type: 2 })
-// }
-
 export const spawnTerrain = (world: World, num: number = 10) => {
+
+  const biomeNoise = world.random.noise({ x: 0, y: 0, factor: 1, octaves: 4 })
+
   const time = performance.now()
   for (let i = 0; i < num; i++) {
     for (let j = 0; j < num; j++) {
+
+      // const biome = biomeNoise < 0.5 ? "hills" : "mountains"
+
+      const biome = i < num / 2 ? "hills" : "mountains"
+
       const chunk = { x: i, y: j }
-      spawnChunk(chunk, world)
+      spawnChunk(chunk, biome, world)
     }
   }
   logPerf("spawnTerrain", time)
