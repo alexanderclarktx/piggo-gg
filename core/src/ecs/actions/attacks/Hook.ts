@@ -102,19 +102,17 @@ const Hook = () => Action<HookParams>("hook", ({ world, params, character }) => 
 
   const beamResult = blockInLine({ from: camera, dir, world, cap: 40 })
   if (beamResult) {
-    console.log(beamResult.inside)
-
     if (world.client?.sound) world.client.sound.play({ name: "click3" })
 
-    characterPos.tether = {
+    const hookPos = {
       x: beamResult.inside.x * 0.3,
       y: beamResult.inside.y * 0.3,
-      z: beamResult.inside.z * 0.3 + 0.15,
-      dist: XYZdistance(pos, {
-        x: beamResult.inside.x * 0.3,
-        y: beamResult.inside.y * 0.3,
-        z: beamResult.inside.z * 0.3 + 0.15
-      })
+      z: beamResult.inside.z * 0.3 + 0.15
+    }
+
+    characterPos.tether = {
+      ...hookPos,
+      dist: XYZdistance(pos, hookPos)
     }
   }
 })
