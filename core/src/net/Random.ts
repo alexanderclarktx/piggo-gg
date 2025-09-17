@@ -6,7 +6,6 @@ export type sampleProps = {
   y: number
   factor: number
   octaves: number
-  dist?: number
 }
 
 export type Random = {
