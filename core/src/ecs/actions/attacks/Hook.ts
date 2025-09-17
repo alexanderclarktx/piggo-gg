@@ -63,7 +63,7 @@ export const HookItem = ({ character }: { character: Character }) => {
 
           const dx = characterPos.data.tether.x - xyz.x
           const dy = characterPos.data.tether.y - xyz.y
-          const dz = characterPos.data.tether.z - xyz.z
+          const dz = characterPos.data.tether.z - xyz.z - 0.3
 
           const dist = XYZdistance(xyz, characterPos.data.tether)
           mesh.scale.y = dist
