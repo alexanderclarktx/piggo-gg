@@ -102,14 +102,12 @@ export const LaserItem = ({ character }: { character: Character }) => {
           const { localAim } = world.client!.controls
 
           const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
-
-          // right offset for gun
-          const right = new Vector3(cos(localAim.x), 0, -sin(localAim.x)).multiplyScalar(0.05)
+          const right = {x: cos(localAim.x), y: -sin(localAim.x) }
 
           const gunPos = {
-            x: xyz.x - dir.x * 0.05 + right.x,
+            x: xyz.x - dir.x * 0.05 + right.x * 0.05,
             y: xyz.z + 0.45 + dir.z * 0.02,
-            z: xyz.y - dir.y * 0.05 + right.z,
+            z: xyz.y - dir.y * 0.05 + right.y * 0.05,
           }
 
           gun.position.copy(gunPos)
