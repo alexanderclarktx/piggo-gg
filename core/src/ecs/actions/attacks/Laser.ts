@@ -33,6 +33,8 @@ export const LaserItem = ({ character }: { character: Character }) => {
 
   let gun: undefined | Object3D = undefined
 
+  const { inventory } = character.components
+
   const item = ItemEntity({
     id: `laser-${character.id}`,
     components: {
@@ -82,6 +84,13 @@ export const LaserItem = ({ character }: { character: Character }) => {
           })
         },
         onRender: ({ world, delta }) => {
+
+          if (inventory!.activeItem(world)?.id !== item.id || world.three?.camera.mode === "third") {
+            if (gun) gun.visible = false
+          } else {
+            if (gun) gun.visible = true
+          }
+
           const ratio = delta / 25
 
           mesh.material.opacity -= 0.05 * ratio
@@ -90,20 +99,23 @@ export const LaserItem = ({ character }: { character: Character }) => {
           if (!gun) return
           const xyz = character.components.position.interpolate(world, delta)
 
-          const dir = world.three!.camera.dir(world)
-
           const { localAim } = world.client!.controls
 
+          const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
+
+          // right offset for gun
+          const right = new Vector3(cos(localAim.x), 0, -sin(localAim.x)).multiplyScalar(0.05)
+
           const gunPos = {
-            x: xyz.x + 0.1,
-            y: xyz.z + 0.45,
-            z: xyz.y
+            x: xyz.x - dir.x * 0.05 + right.x,
+            y: xyz.z + 0.45 + dir.z * 0.02,
+            z: xyz.y - dir.y * 0.05 + right.z,
           }
 
           gun.position.copy(gunPos)
 
           gun.rotation.y = localAim.x
-          console.log(localAim.x, gun.rotation.y)
+          gun.rotation.x = localAim.y
         }
       })
     }
