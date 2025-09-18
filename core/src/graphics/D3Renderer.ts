@@ -5,6 +5,7 @@ import {
 } from "three"
 import { abs, BlockMesh, cos, D3Camera, isMobile, max, PI, pow, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 
 const evening = 0xffd9c3
 
@@ -17,6 +18,7 @@ export type D3Renderer = {
   canvas: HTMLCanvasElement
   camera: D3Camera
   debug: boolean
+  fLoader: FBXLoader
   gLoader: GLTFLoader
   tLoader: TextureLoader
   scene: Scene
@@ -48,6 +50,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     blocks: undefined,
     debug: false,
     sun: undefined,
+    fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
     append: (...elements: HTMLElement[]) => {
@@ -85,11 +88,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (renderer.debug) {
         helper = new CameraHelper(renderer.sun.shadow.camera)
         renderer.scene.add(helper)
-        // renderer.sphere!.material.opacity = 1
+        renderer.sphere!.material.opacity = 1
       } else if (!renderer.debug && helper) {
         renderer.scene.remove(helper)
         helper = undefined
-        // renderer.sphere!.material.opacity = 0
+        renderer.sphere!.material.opacity = 0
       }
     },
     pointerLock: () => {

@@ -10,7 +10,10 @@ const HookMesh = (): Mesh => {
 
   const material = new MeshBasicMaterial({ color: 0x964B00 })
 
-  return new Mesh(geometry, material)
+  const mesh = new Mesh(geometry, material)
+  mesh.castShadow = true
+
+  return mesh
 }
 
 export const HookItem = ({ character }: { character: Character }) => {
@@ -60,12 +63,12 @@ export const HookItem = ({ character }: { character: Character }) => {
 
           const dx = characterPos.data.tether.x - xyz.x
           const dy = characterPos.data.tether.y - xyz.y
-          const dz = characterPos.data.tether.z - xyz.z
+          const dz = characterPos.data.tether.z - xyz.z - 0.3
 
           const dist = XYZdistance(xyz, characterPos.data.tether)
           mesh.scale.y = dist
 
-          mesh.position.set(xyz.x, xyz.z, xyz.y)
+          mesh.position.set(xyz.x, xyz.z + 0.3, xyz.y)
 
           const up = new Vector3(0, 1, 0)
           const dir = new Vector3(dx, dz, dy).normalize()
@@ -99,19 +102,17 @@ const Hook = () => Action<HookParams>("hook", ({ world, params, character }) => 
 
   const beamResult = blockInLine({ from: camera, dir, world, cap: 40 })
   if (beamResult) {
-    console.log(beamResult.inside)
-
     if (world.client?.sound) world.client.sound.play({ name: "click3" })
 
-    characterPos.tether = {
+    const hookPos = {
       x: beamResult.inside.x * 0.3,
       y: beamResult.inside.y * 0.3,
-      z: beamResult.inside.z * 0.3 + 0.15,
-      dist: XYZdistance(pos, {
-        x: beamResult.inside.x * 0.3,
-        y: beamResult.inside.y * 0.3,
-        z: beamResult.inside.z * 0.3 + 0.15
-      })
+      z: beamResult.inside.z * 0.3 + 0.15
+    }
+
+    characterPos.tether = {
+      ...hookPos,
+      dist: XYZdistance(pos, hookPos)
     }
   }
 })
