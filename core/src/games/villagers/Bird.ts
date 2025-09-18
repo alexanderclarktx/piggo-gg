@@ -78,7 +78,7 @@ export const Bird = (player: Player): Character => {
             eagle.visible = false
 
             // position
-            pig.position.set(interpolated.x, interpolated.z - 0.0, interpolated.y)
+            pig.position.set(interpolated.x, interpolated.z + 0, interpolated.y)
 
             // rotation
             pig.rotation.y = orientation.x + PI
@@ -123,7 +123,7 @@ export const Bird = (player: Player): Character => {
             pig = gltf.scene
             pig.animations = gltf.animations
             pig.frustumCulled = false
-            pig.scale.set(0.16, 0.2, 0.16)
+            pig.scale.set(0.16, 0.18, 0.16)
 
             pigMixer = new AnimationMixer(pig)
 
