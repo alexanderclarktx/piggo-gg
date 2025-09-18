@@ -27,6 +27,27 @@ export const LaserMesh = (): LaserMesh => {
   return mesh
 }
 
+const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
+  const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
+  const right = { x: cos(localAim.x), y: -sin(localAim.x) }
+
+  const offset = {
+    x: -dir.x * 0.05 + right.x * 0.05,
+    y: 0,
+    z: -dir.y * 0.05 + right.y * 0.05,
+  }
+
+  if (tip) {
+    offset.x -= dir.x * 0.1
+    offset.y -= 0.035,
+    offset.z -= dir.y * 0.1
+
+    console.log(offset, localAim)
+  }
+
+  return offset
+}
+
 export const LaserItem = ({ character }: { character: Character }) => {
 
   const mesh = LaserMesh()
@@ -101,14 +122,12 @@ export const LaserItem = ({ character }: { character: Character }) => {
           const pos = character.components.position.interpolate(world, delta)
 
           const { localAim } = world.client!.controls
-
-          const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
-          const right = { x: cos(localAim.x), y: -sin(localAim.x) }
+          const offset = modelOffset(localAim)
 
           gun.position.copy({
-            x: pos.x - dir.x * 0.05 + right.x * 0.05,
-            y: pos.z + 0.45 + dir.z * 0.02,
-            z: pos.y - dir.y * 0.05 + right.y * 0.05,
+            x: pos.x + offset.x,
+            y: pos.z + 0.45 + offset.y,
+            z: pos.y + offset.z
           })
 
           gun.rotation.y = localAim.x
@@ -151,9 +170,10 @@ const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params
     offsetScale = min(1, (1.5 - speed))
   }
 
-  const offset = new Vector3(
-    -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
-  ).normalize().multiplyScalar(offsetScale)
+  // const offset = new Vector3(
+  //   -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
+  // ).normalize().multiplyScalar(offsetScale)
+  const offset = modelOffset(aim, true)
 
   mesh.position.copy(eyes.add(offset))
 
