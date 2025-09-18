@@ -1,6 +1,6 @@
 import {
-  Action, Actions, Character, cos, VillagersState, Effects, hypot, Input,
-  Item, ItemEntity, min, Networked, playerForCharacter, Position, sin,
+  Action, Actions, Character, cos, VillagersState, Effects, Input,
+  Item, ItemEntity, Networked, playerForCharacter, Position, sin,
   sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub, blockInLine
 } from "@piggo-gg/core"
 import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3D, Object3DEventMap, Vector3 } from "three"
@@ -102,19 +102,15 @@ export const LaserItem = ({ character }: { character: Character }) => {
           })
         },
         onRender: ({ world, delta }) => {
-
-          if (inventory!.activeItem(world)?.id !== item.id || world.three?.camera.mode === "third") {
-            if (gun) gun.visible = false
-          } else {
-            if (gun) gun.visible = true
-          }
-
           const ratio = delta / 25
 
           mesh.material.opacity -= 0.05 * ratio
           if (mesh.material.opacity <= 0) mesh.visible = false
 
           if (!gun) return
+
+          gun.visible = inventory?.activeItem(world)?.id === item.id &&
+            world.three?.camera.mode === "first" && world.three?.camera.transition >= 100
 
           const pos = character.components.position.interpolate(world, delta)
 
@@ -159,19 +155,7 @@ const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params
     -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
   ).normalize().multiplyScalar(10).add(eyes)
 
-  // update laser mesh
-  let offsetScale = 0.03
-  if (world.client && player?.id === world.client?.playerId() && world.three?.camera.mode === "first") {
-    const { x, y, z } = entity.components.position?.localVelocity ?? { x: 0, y: 0, z: 0 }
-    const speed = hypot(x, y, z)
-    offsetScale = min(1, (1.5 - speed))
-  }
-
-  // const offset = new Vector3(
-  //   -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
-  // ).normalize().multiplyScalar(offsetScale)
   const offset = modelOffset(aim, true)
-
   mesh.position.copy(eyes.add(offset))
 
   const dir = target.clone().sub(eyes).normalize()
