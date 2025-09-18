@@ -3,7 +3,7 @@ import {
   Item, ItemEntity, min, Networked, playerForCharacter, Position, sin,
   sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub, blockInLine
 } from "@piggo-gg/core"
-import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
+import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3D, Object3DEventMap, Vector3 } from "three"
 
 export type Target = XYZ & { id: string }
 
@@ -30,6 +30,8 @@ export const LaserMesh = (): LaserMesh => {
 export const LaserItem = ({ character }: { character: Character }) => {
 
   const mesh = LaserMesh()
+
+  let gun: undefined | Object3D = undefined
 
   const item = ItemEntity({
     id: `laser-${character.id}`,
@@ -63,14 +65,37 @@ export const LaserItem = ({ character }: { character: Character }) => {
         }
       }),
       three: Three({
-        init: async (entity) => {
+        init: async (entity, _, three) => {
           entity.components.three.o.push(mesh)
+
+          three.gLoader.load("laser-gun.glb", (gltf) => {
+            gun = gltf.scene
+            gun.scale.set(0.05, 0.05, 0.05)
+            // gun.rotation.y = Math.PI
+            // gun.position.set(0.1, -0.15, -0.25)
+            // mesh.add(gun)
+
+            three.scene.add(gun)
+          })
         },
-        onRender: ({ delta }) => {
+        onRender: ({ world, delta }) => {
           const ratio = delta / 25
 
           mesh.material.opacity -= 0.05 * ratio
           if (mesh.material.opacity <= 0) mesh.visible = false
+
+          if (!gun) return
+          const xyz = character.components.position.interpolate(world, delta)
+
+          const dir = world.three!.camera.dir(world)
+
+          const gunPos = {
+            x: xyz.x + dir.x * 0.1,
+            y: xyz.z + 0.5,
+            z: xyz.y + dir.y * 0.1
+          }
+
+          gun.position.copy(gunPos)
         }
       })
     }

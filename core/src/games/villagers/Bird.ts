@@ -119,7 +119,7 @@ export const Bird = (player: Player): Character => {
           }
         },
         init: async (entity, _, three) => {
-          three.gLoader.load("laser-gun.glb", (gltf) => {
+          three.gLoader.load("cowboy.glb", (gltf) => {
             pig = gltf.scene
             pig.animations = gltf.animations
             pig.frustumCulled = false
