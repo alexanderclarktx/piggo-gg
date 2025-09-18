@@ -97,20 +97,19 @@ export const LaserItem = ({ character }: { character: Character }) => {
           if (mesh.material.opacity <= 0) mesh.visible = false
 
           if (!gun) return
-          const xyz = character.components.position.interpolate(world, delta)
+
+          const pos = character.components.position.interpolate(world, delta)
 
           const { localAim } = world.client!.controls
 
           const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
-          const right = {x: cos(localAim.x), y: -sin(localAim.x) }
+          const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
-          const gunPos = {
-            x: xyz.x - dir.x * 0.05 + right.x * 0.05,
-            y: xyz.z + 0.45 + dir.z * 0.02,
-            z: xyz.y - dir.y * 0.05 + right.y * 0.05,
-          }
-
-          gun.position.copy(gunPos)
+          gun.position.copy({
+            x: pos.x - dir.x * 0.05 + right.x * 0.05,
+            y: pos.z + 0.45 + dir.z * 0.02,
+            z: pos.y - dir.y * 0.05 + right.y * 0.05,
+          })
 
           gun.rotation.y = localAim.x
           gun.rotation.x = localAim.y
