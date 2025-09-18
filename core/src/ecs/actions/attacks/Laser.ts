@@ -1,9 +1,9 @@
 import {
-  Action, Actions, Character, cos, VillagersState, Effects, hypot, Input,
-  Item, ItemEntity, min, Networked, playerForCharacter, Position, sin,
+  Action, Actions, Character, cos, VillagersState, Effects, Input,
+  Item, ItemEntity, Networked, playerForCharacter, Position, sin,
   sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub, blockInLine
 } from "@piggo-gg/core"
-import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3DEventMap, Vector3 } from "three"
+import { CylinderGeometry, Mesh, MeshBasicMaterial, Object3D, Object3DEventMap, Vector3 } from "three"
 
 export type Target = XYZ & { id: string }
 
@@ -27,9 +27,32 @@ export const LaserMesh = (): LaserMesh => {
   return mesh
 }
 
+const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
+  const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
+  const right = { x: cos(localAim.x), y: -sin(localAim.x) }
+
+  const offset = {
+    x: -dir.x * 0.05 + right.x * 0.05,
+    y: 0,
+    z: -dir.y * 0.05 + right.y * 0.05,
+  }
+
+  if (tip) {
+    offset.x -= dir.x * 0.1
+    offset.y -= 0.035 - localAim.y * 0.1,
+    offset.z -= dir.y * 0.1
+  }
+
+  return offset
+}
+
 export const LaserItem = ({ character }: { character: Character }) => {
 
   const mesh = LaserMesh()
+
+  let gun: undefined | Object3D = undefined
+
+  const { inventory } = character.components
 
   const item = ItemEntity({
     id: `laser-${character.id}`,
@@ -63,14 +86,45 @@ export const LaserItem = ({ character }: { character: Character }) => {
         }
       }),
       three: Three({
-        init: async (entity) => {
+        init: async (entity, _, three) => {
           entity.components.three.o.push(mesh)
+
+          three.gLoader.load("laser-gun.glb", (gltf) => {
+            gun = gltf.scene
+            gun.scale.set(0.03, 0.03, 0.03)
+
+            gun.receiveShadow = true
+            gun.castShadow = true
+
+            gun.rotation.order = "YXZ"
+
+            three.scene.add(gun)
+          })
         },
-        onRender: ({ delta }) => {
+        onRender: ({ world, delta }) => {
           const ratio = delta / 25
 
           mesh.material.opacity -= 0.05 * ratio
           if (mesh.material.opacity <= 0) mesh.visible = false
+
+          if (!gun) return
+
+          gun.visible = inventory?.activeItem(world)?.id === item.id &&
+            world.three?.camera.mode === "first" && world.three?.camera.transition >= 100
+
+          const pos = character.components.position.interpolate(world, delta)
+
+          const { localAim } = world.client!.controls
+          const offset = modelOffset(localAim)
+
+          gun.position.copy({
+            x: pos.x + offset.x,
+            y: pos.z + 0.45 + offset.y,
+            z: pos.y + offset.z
+          })
+
+          gun.rotation.y = localAim.x
+          gun.rotation.x = localAim.y
         }
       })
     }
@@ -101,18 +155,7 @@ const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params
     -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
   ).normalize().multiplyScalar(10).add(eyes)
 
-  // update laser mesh
-  let offsetScale = 0.03
-  if (world.client && player?.id === world.client?.playerId() && world.three?.camera.mode === "first") {
-    const { x, y, z } = entity.components.position?.localVelocity ?? { x: 0, y: 0, z: 0 }
-    const speed = hypot(x, y, z)
-    offsetScale = min(1, (1.5 - speed))
-  }
-
-  const offset = new Vector3(
-    -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
-  ).normalize().multiplyScalar(offsetScale)
-
+  const offset = modelOffset(aim, true)
   mesh.position.copy(eyes.add(offset))
 
   const dir = target.clone().sub(eyes).normalize()
