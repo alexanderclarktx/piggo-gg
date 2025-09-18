@@ -70,11 +70,14 @@ export const LaserItem = ({ character }: { character: Character }) => {
 
           three.gLoader.load("laser-gun.glb", (gltf) => {
             gun = gltf.scene
-            gun.scale.set(0.05, 0.05, 0.05)
+            gun.scale.set(0.03, 0.03, 0.03)
+            gun.rotation.order = "YXZ"
             // gun.rotation.y = Math.PI
             // gun.position.set(0.1, -0.15, -0.25)
             // mesh.add(gun)
 
+            gun.receiveShadow = true
+            gun.castShadow = true
             three.scene.add(gun)
           })
         },
@@ -89,13 +92,18 @@ export const LaserItem = ({ character }: { character: Character }) => {
 
           const dir = world.three!.camera.dir(world)
 
+          const { localAim } = world.client!.controls
+
           const gunPos = {
-            x: xyz.x + dir.x * 0.1,
-            y: xyz.z + 0.5,
-            z: xyz.y + dir.y * 0.1
+            x: xyz.x + 0.1,
+            y: xyz.z + 0.45,
+            z: xyz.y
           }
 
           gun.position.copy(gunPos)
+
+          gun.rotation.y = localAim.x
+          console.log(localAim.x, gun.rotation.y)
         }
       })
     }
