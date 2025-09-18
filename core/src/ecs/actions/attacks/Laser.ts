@@ -39,10 +39,8 @@ const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
 
   if (tip) {
     offset.x -= dir.x * 0.1
-    offset.y -= 0.035,
+    offset.y -= 0.035 - localAim.y * 0.1,
     offset.z -= dir.y * 0.1
-
-    console.log(offset, localAim)
   }
 
   return offset
@@ -94,13 +92,12 @@ export const LaserItem = ({ character }: { character: Character }) => {
           three.gLoader.load("laser-gun.glb", (gltf) => {
             gun = gltf.scene
             gun.scale.set(0.03, 0.03, 0.03)
-            gun.rotation.order = "YXZ"
-            // gun.rotation.y = Math.PI
-            // gun.position.set(0.1, -0.15, -0.25)
-            // mesh.add(gun)
 
             gun.receiveShadow = true
             gun.castShadow = true
+
+            gun.rotation.order = "YXZ"
+
             three.scene.add(gun)
           })
         },
