@@ -88,11 +88,11 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       if (renderer.debug) {
         helper = new CameraHelper(renderer.sun.shadow.camera)
         renderer.scene.add(helper)
-        // renderer.sphere!.material.opacity = 1
+        renderer.sphere!.material.opacity = 1
       } else if (!renderer.debug && helper) {
         renderer.scene.remove(helper)
         helper = undefined
-        // renderer.sphere!.material.opacity = 0
+        renderer.sphere!.material.opacity = 0
       }
     },
     pointerLock: () => {

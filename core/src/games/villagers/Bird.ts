@@ -87,14 +87,16 @@ export const Bird = (player: Player): Character => {
             const speed = hypot(position.data.velocity.x, position.data.velocity.y)
 
             if (runAnimation && idleAnimation && pigMixer) {
-              if (speed === 0 && animation === "run") {
-                animation = "idle"
-                runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
-              } else if (speed > 0 && animation === "idle") {
-                animation = "run"
-                idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
-              }
+              // if (speed === 0 && animation === "run") {
+              //   animation = "idle"
+              //   runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+              // } else if (speed > 0 && animation === "idle") {
+              //   animation = "run"
+              //   idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+              // }
 
+              pigMixer?.update(speed * ratio * 0.005 + 0.005)
+            } else {
               pigMixer?.update(speed * ratio * 0.005 + 0.005)
             }
           }
@@ -117,27 +119,29 @@ export const Bird = (player: Player): Character => {
           }
         },
         init: async (entity, _, three) => {
-          three.gLoader.load("character-k.glb", (gltf) => {
+          three.gLoader.load("Zombie_Male.glb", (gltf) => {
             pig = gltf.scene
             pig.animations = gltf.animations
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.2, 0.16)
 
             pigMixer = new AnimationMixer(pig)
-            pigMixer.clipAction(pig.animations[0]).play()
+            pigMixer.clipAction(pig.animations[8]).play()
 
-            idleAnimation = pigMixer.clipAction(pig.animations[0])
-            runAnimation = pigMixer.clipAction(pig.animations[2])
+            console.log(pig.animations)
+
+            // idleAnimation = pigMixer.clipAction(pig.animations[0])
+            // runAnimation = pigMixer.clipAction(pig.animations[2])
 
             pig.traverse((child) => {
               if (child instanceof Mesh) {
-                const oldMat = child.material
-                child.material = new MeshPhysicalMaterial({
-                  map: oldMat.map,
-                  roughness: 1,
-                  transparent: true,
-                  opacity: 0
-                })
+                // const oldMat = child.material
+                // child.material = new MeshPhysicalMaterial({
+                //   map: oldMat.map,
+                //   roughness: 1,
+                //   transparent: true,
+                //   opacity: 0
+                // })
                 child.castShadow = true
                 child.receiveShadow = true
               }
