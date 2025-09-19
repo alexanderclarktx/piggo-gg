@@ -292,8 +292,6 @@ export const spawnChunk = (chunk: XY, world: World) => {
           const fluffy = world.random.int(2) === 1
 
           world.blocks.addPlan(BlockTree({ x, y, z }, height, t, fluffy))
-
-          world.trees.push({ x: x * 0.3, y: y * 0.3, z: (z + height) * 0.3 + 0.15 })
         }
       }
     }
