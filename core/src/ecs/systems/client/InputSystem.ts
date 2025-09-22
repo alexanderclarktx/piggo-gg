@@ -7,7 +7,7 @@ import {
 export const InputSystem = ClientSystemBuilder({
   id: "InputSystem",
   init: (world) => {
-    const renderer = world.renderer
+    const pixi = world.pixi
     const client = world.client!
 
     let { mouse } = client.controls
@@ -39,7 +39,7 @@ export const InputSystem = ClientSystemBuilder({
       if (client.controls.left.active || client.controls.right.active) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
+      if (pixi) mouse = pixi.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       if (world.three && document.pointerLockElement) {
@@ -55,7 +55,7 @@ export const InputSystem = ClientSystemBuilder({
       if (world.tick <= client.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (renderer) mouse = renderer.camera.toWorldCoords(mouseScreen)
+      if (pixi) mouse = pixi.camera.toWorldCoords(mouseScreen)
       mouseScreen = { x: event.offsetX, y: event.offsetY }
 
       // @ts-expect-error
@@ -195,14 +195,14 @@ export const InputSystem = ClientSystemBuilder({
       const { x, y } = position.data
 
       // update position.pointing
-      if (world.renderer) {
+      if (world.pixi) {
         const angle = Math.atan2(mouse.y - y, mouse.x - x)
         const pointing = round((angle + Math.PI) / (Math.PI / 4)) % 8
 
         let pointingDelta: XY
 
-        if (world.renderer?.camera.focus) {
-          const { width, height } = world.renderer?.wh()
+        if (world.pixi?.camera.focus) {
+          const { width, height } = world.pixi?.wh()
           pointingDelta = {
             x: round(mouseScreen.x - (width / 2), 2),
             y: round(mouseScreen.y - (height / 2), 2)
@@ -433,7 +433,7 @@ export const InputSystem = ClientSystemBuilder({
         client.bufferDown.updateHold(world.tick)
 
         // update mouse position, the camera might have moved
-        if (renderer) mouse = renderer?.camera.toWorldCoords(mouseScreen)
+        if (pixi) mouse = pixi?.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus() && !client.mobile) {
