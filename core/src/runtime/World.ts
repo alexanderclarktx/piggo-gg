@@ -25,7 +25,7 @@ export type World = {
   tick: number
   tickrate: number
   time: DOMHighResTimeStamp
-  // trees: XYZ[] // TODO rm
+  trees: XYZ[] // TODO rm
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string | undefined
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
@@ -80,7 +80,7 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
     tick: 0,
     tickrate: 25,
     time: performance.now(),
-    // trees: [],
+    trees: [],
     addEntity: (entity: Entity) => {
       const oldEntity = world.entities[entity.id]
       if (oldEntity?.components.renderable || oldEntity?.components.three) {

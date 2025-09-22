@@ -184,7 +184,7 @@ const VillagersSystem = SystemBuilder({
 
           // reset world state
           world.blocks.clear()
-          // world.trees = []
+          world.trees = []
           blocksRendered = false
 
           // rebuild the world
