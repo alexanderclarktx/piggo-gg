@@ -150,16 +150,6 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
         return
       }
 
-      // check game's renderer is ready
-      if (world.game.renderer === "pixi" && !world.pixi?.ready) {
-        console.log("WAITING ON PIXI")
-        scheduleOnTick()
-        return
-      } else if (world.game.renderer === "three" && !world.three?.ready) {
-        scheduleOnTick()
-        return
-      }
-
       // update lastTick
       if (!isRollback) {
         if ((now - world.tickrate - world.tickrate) > world.lastTick) {
