@@ -36,7 +36,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
     deactivate: (world: World) => {
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
 
-      world.renderer = undefined
+      world.pixi = undefined
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {

@@ -9,7 +9,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 
 const evening = 0xffd9c3
 
-export type D3Renderer = {
+export type Renderer = {
   apple: undefined | Group<Object3DEventMap>
   spruce: undefined | BlockMesh
   oak: undefined | BlockMesh
@@ -33,12 +33,12 @@ export type D3Renderer = {
   pointerUnlock: () => void
 }
 
-export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
+export const Renderer = (c: HTMLCanvasElement): Renderer => {
 
   let webgl: undefined | WebGLRenderer
   let helper: undefined | CameraHelper
 
-  const renderer: D3Renderer = {
+  const renderer: Renderer = {
     apple: undefined,
     canvas: c,
     camera: D3Camera(),

@@ -1,5 +1,5 @@
 import {
-  BlockData, Character, Client, Command, ComponentTypes, D3Renderer,
+  BlockData, Character, Client, Command, ComponentTypes, Renderer,
   Data, Entity, Game, GameBuilder, InvokedAction, Networked, Player,
   Random, PixiRenderer, SerializedEntity, System, SystemBuilder, SystemEntity,
   TickBuffer, ValidComponents, XYZ, keys, logPerf, values
@@ -20,10 +20,10 @@ export type World = {
   messages: TickBuffer<string>
   mode: "client" | "server"
   physics: RapierWorld | undefined
+  pixi: PixiRenderer | undefined
   random: Random
-  renderer: PixiRenderer | undefined
   systems: Record<string, System>
-  three: D3Renderer | undefined
+  three: Renderer | undefined
   tick: number
   tickrate: number
   time: DOMHighResTimeStamp
@@ -52,13 +52,13 @@ export type WorldProps = {
   commands?: Command[]
   games?: GameBuilder[]
   systems?: SystemBuilder[]
-  three?: D3Renderer
-  renderer?: PixiRenderer | undefined
+  three?: Renderer
+  pixi?: PixiRenderer | undefined
   mode?: "client" | "server"
 }
 
 // World manages all runtime state
-export const World = ({ commands, games, systems, renderer, mode, three }: WorldProps): World => {
+export const World = ({ commands, games, systems, pixi, mode, three }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
 
@@ -86,8 +86,8 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     lastTick: 0,
     mode: mode ?? "client",
     physics: undefined,
+    pixi,
     random: Random(123456111),
-    renderer,
     systems: {},
     three,
     tick: 0,
@@ -209,7 +209,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       })
     },
     onRender: () => {
-      if (world.renderer || world.three) {
+      if (world.pixi || world.three) {
         const now = performance.now()
         values(world.systems).forEach((system) => {
           system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
@@ -255,8 +255,8 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
 
       const { entities, systems } = world.game
 
-      if (world.renderer) {
-        world.renderer.camera.scaleTo(2.5)
+      if (world.pixi) {
+        world.pixi.camera.scaleTo(2.5)
       }
 
       // add new entities
@@ -287,8 +287,8 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
   scheduleOnTick()
 
   // schedule onRender
-  if (renderer) {
-    renderer.app.ticker.add(() => {
+  if (pixi) {
+    pixi.app.ticker.add(() => {
       const now = performance.now()
       values(world.systems).forEach((system) => {
         system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
