@@ -1,5 +1,5 @@
 import {
-  Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round, sign
+  Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, max, round, sign
 } from "@piggo-gg/core"
 import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
@@ -15,7 +15,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
     let colliders: Map<Entity<Collider | Position>, Collider> = new Map()
 
 
-      // set up physics
+    // set up physics
     RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
 
     const resetPhysics = () => {
@@ -143,9 +143,24 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             position.data.y = round(translation.y, 3)
             position.data.velocity.x = round(linvel.x, 3)
             position.data.velocity.y = round(linvel.y, 3)
+
+            position.data.z = max(0, position.data.z + position.data.velocity.z)
+
+            if (position.data.z + position.data.velocity.z <= 0) {
+              position.data.standing = true
+            } else {
+              position.data.standing = false
+              position.data.velocity.z -= position.data.gravity
+            }
           } else {
             position.localVelocity.x = round(linvel.x, 3)
             position.localVelocity.y = round(linvel.y, 3)
+
+            if (position.data.standing) {
+              position.localVelocity.z = 0
+            } else {
+              position.localVelocity.z = position.data.velocity.z
+            }
           }
         }
 
