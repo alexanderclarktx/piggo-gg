@@ -32,9 +32,9 @@ export type VillagersSettings = {
 }
 
 export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
-  id: "Duck Duck Eagle",
+  id: "villagers",
   init: (world) => ({
-    id: "Duck Duck Eagle",
+    id: "villagers",
     netcode: "rollback",
     renderer: "three",
     settings: {
