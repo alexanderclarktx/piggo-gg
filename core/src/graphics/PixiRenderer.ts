@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, Entity, PixiCamera, Position, Renderable, World, filterEntities, isMobile, logPerf, values } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, PixiCamera, Position, Renderable, World, isMobile, logPerf } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
 export type PixiRenderer = {
