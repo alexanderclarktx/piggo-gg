@@ -1,9 +1,9 @@
-import { Camera, Renderable, World, isMobile } from "@piggo-gg/core"
+import { PixiCamera, Renderable, World, isMobile } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
 export type Renderer = {
   app: Application
-  camera: Camera
+  camera: PixiCamera
   guiRenderables: Renderable[]
   resizedFlag: boolean
   addGui: (renderable: Renderable) => void
@@ -22,7 +22,7 @@ export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
 
   const renderer: Renderer = {
     app,
-    camera: Camera(app),
+    camera: PixiCamera(app),
     guiRenderables: [],
     resizedFlag: false,
     addGui: (renderable: Renderable) => {

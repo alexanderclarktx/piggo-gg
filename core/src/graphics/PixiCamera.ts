@@ -4,7 +4,7 @@ import {
 } from "@piggo-gg/core"
 import { Application, Container } from "pixi.js"
 
-export type Camera = {
+export type PixiCamera = {
   angle: 0 | 1 | 2 | 3
   root: Container
   focus: Character | undefined
@@ -20,13 +20,13 @@ export type Camera = {
   toCameraCoords: (_: XY) => XY
 }
 
-// Camera handles the viewport of the game
-export const Camera = (app: Application): Camera => {
+// PixiCamera handles the viewport of the game
+export const PixiCamera = (app: Application): PixiCamera => {
 
   const root: Container = new Container({ sortableChildren: true, zIndex: 0, alpha: 1, cullableChildren: false })
   const renderables: Set<Renderable> = new Set()
 
-  const camera: Camera = {
+  const camera: PixiCamera = {
     angle: 0,
     root,
     focus: undefined,
@@ -94,8 +94,8 @@ export const Camera = (app: Application): Camera => {
 
 type Follow = (_: XYZ) => XYZ
 
-export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) => ClientSystemBuilder({
-  id: "CameraSystem",
+export const PixiCameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) => ClientSystemBuilder({
+  id: "PixiCameraSystem",
   init: (world) => {
     const { renderer } = world
     if (!renderer) return
@@ -110,7 +110,7 @@ export const CameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) =>
     })
 
     return {
-      id: "CameraSystem",
+      id: "PixiCameraSystem",
       query: ["renderable", "position"],
       priority: 9,
       onTick: (entities: Entity<Renderable | Position>[]) => {

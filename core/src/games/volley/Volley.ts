@@ -1,5 +1,5 @@
 import {
-  Background, CameraSystem, Cursor, Entity, PixiMenu, GameBuilder, LagText,
+  Background, PixiCameraSystem, Cursor, Entity, PixiMenu, GameBuilder, LagText,
   PhysicsSystem, Position, RenderSystem, Renderable, ScorePanel, ShadowSystem,
   SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
 } from "@piggo-gg/core"
@@ -50,7 +50,7 @@ export const Volley: GameBuilder<VolleyState> = {
       ShadowSystem,
       TargetSystem,
       RenderSystem,
-      CameraSystem(() => ({ x: 225, y: 0, z: 0 }))
+      PixiCameraSystem(() => ({ x: 225, y: 0, z: 0 }))
     ],
     entities: [
       Background({ rays: true }),
