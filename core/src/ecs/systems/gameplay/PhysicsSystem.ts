@@ -1,7 +1,7 @@
 import {
   Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round, sign
 } from "@piggo-gg/core"
-import { World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat"
+import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
 export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
   id: mode === "global" ? "PhysicsSystem" : "LocalPhysicsSystem",
@@ -12,13 +12,15 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
     let bodies: Record<string, RigidBody> = {}
     let colliders: Map<Entity<Collider | Position>, Collider> = new Map()
 
+
+      // set up physics
+    RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
+
     const resetPhysics = () => {
       for (const id of keys(bodies)) delete bodies[id]
       colliders.clear()
 
-      if (!world.physics) return
-
-      world.physics.free()
+      world.physics?.free()
 
       world.physics = new RapierWorld({ x: 0, y: 0 })
       world.physics.timestep = 0.00625 // 25 / 1000 / 4

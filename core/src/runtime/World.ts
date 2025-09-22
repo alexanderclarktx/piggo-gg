@@ -237,10 +237,10 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
       world.game.systems.forEach((system) => world.removeSystem(system.id))
 
       // reset physics
-      if (world.physics) {
-        world.physics.free()
-        world.physics = new RapierWorld({ x: 0, y: 0 })
-      }
+      // if (world.physics) {
+      //   world.physics.free()
+      //   world.physics = new RapierWorld({ x: 0, y: 0 })
+      // }
 
       // set new game
       world.game = game.init(world)
@@ -277,9 +277,6 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
       return world.game.state as S
     }
   }
-
-  // set up physics
-  // RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
 
   // set up client
   if (world.mode === "client") world.client = Client({ world })
