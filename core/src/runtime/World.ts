@@ -131,7 +131,6 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
     addSystemBuilders: (systemBuilders: SystemBuilder[]) => {
       systemBuilders.forEach((systemBuilder) => {
         if (!world.systems[systemBuilder.id]) {
-          console.log("adding system", systemBuilder.id)
           const system = systemBuilder.init(world)
           if (system) world.addSystems([system])
         }
