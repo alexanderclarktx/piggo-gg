@@ -11,7 +11,6 @@ export type PixiRenderer = {
   addWorld: (renderable: Renderable) => void
   deactivate: (world: World) => void
   handleResize: () => void
-  init: () => void
   setBgColor: (color: number) => void
   wh: () => { width: number, height: number }
 }
@@ -27,17 +26,6 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
     camera: PixiCamera(app),
     guiRenderables: [],
     resizedFlag: false,
-    activate: (world: World) => {
-      if (activated) return
-      activated = true
-
-      world.pixi = renderer
-
-      renderer.init()
-
-      // renderer.handleResize()
-      // renderer.app.start()
-    },
     addGui: (renderable: Renderable) => {
       if (renderable) {
         renderer.app.stage.addChild(renderable.c)
@@ -63,7 +51,11 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       }
       renderer.resizedFlag = true
     },
-    init: () => {
+    activate: (world: World) => {
+      if (activated) return
+      activated = true
+
+      world.pixi = renderer
 
       // create the pixi.js application
       app.init({
