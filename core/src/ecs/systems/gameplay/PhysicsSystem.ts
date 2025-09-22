@@ -7,6 +7,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
   id: mode === "global" ? "PhysicsSystem" : "LocalPhysicsSystem",
   init: (world) => {
 
+    // todo world.physics
     let physics: undefined | RapierWorld = undefined
 
     if (mode === "local" && world.mode === "server") return undefined
