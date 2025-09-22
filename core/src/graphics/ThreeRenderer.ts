@@ -3,7 +3,7 @@ import {
   Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
   SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { abs, BlockMesh, cos, ThreeCamera, isMobile, max, PI, pow, World, entries } from "@piggo-gg/core"
+import { BlockMesh, ThreeCamera, isMobile, World, values } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 
@@ -81,8 +81,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       webgl?.dispose()
 
       // document.querySelectorAll("lex")
-      for (const el of entries(document.getElementsByClassName("lex"))) {
-        el[1].remove()
+      for (const el of values(document.getElementsByClassName("lex"))) {
+        el.remove()
       }
     },
     setDebug: (state?: boolean) => {
