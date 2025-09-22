@@ -220,7 +220,6 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
-              console.log("playbutton onclick")
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
               world.client?.sound.play({ name: "click1" })
