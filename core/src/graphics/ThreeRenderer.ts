@@ -276,7 +276,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       screen.orientation.addEventListener("change", renderer.resize)
 
       webgl.setAnimationLoop(() => {
-        world.onRender?.()
+        world.onRender()
+
         webgl?.render(renderer.scene, renderer.camera.c)
 
         // const hour = (world.tick / 30) % 24

@@ -88,14 +88,9 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
       // schedule onRender
-      // if (renderer.pixi) {
-        app.ticker.add(() => {
-          const now = performance.now()
-          values(world.systems).forEach((system) => {
-            system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
-          })
-        })
-      // }
+      app.ticker.add(() => {
+        world.onRender()
+      })
 
       renderer.ready = true
     },
