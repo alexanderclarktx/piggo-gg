@@ -4,7 +4,6 @@ import {
   SerializedEntity, System, SystemBuilder, SystemEntity, TickBuffer,
   ValidComponents, XYZ, keys, logPerf, values, ThreeRenderer, filterEntities
 } from "@piggo-gg/core"
-import { World as RapierWorld } from "@dimforge/rapier2d-compat"
 
 export type World = {
   actions: TickBuffer<InvokedAction>
@@ -19,7 +18,6 @@ export type World = {
   lastTick: DOMHighResTimeStamp
   messages: TickBuffer<string>
   mode: "client" | "server"
-  physics: RapierWorld | undefined
   pixi: PixiRenderer | undefined
   random: Random
   systems: Record<string, System>
@@ -75,7 +73,6 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
     games: {},
     lastTick: 0,
     mode: mode ?? "client",
-    physics: undefined,
     pixi,
     random: Random(123456111),
     systems: {},
@@ -276,16 +273,6 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
 
   // schedule onTick
   scheduleOnTick()
-
-  // schedule onRender
-  // if (pixi) {
-  //   pixi.app.ticker.add(() => {
-  //     const now = performance.now()
-  //     values(world.systems).forEach((system) => {
-  //       system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
-  //     })
-  //   })
-  // }
 
   if (systems) world.addSystemBuilders(systems)
 

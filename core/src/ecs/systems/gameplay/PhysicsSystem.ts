@@ -7,6 +7,8 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
   id: mode === "global" ? "PhysicsSystem" : "LocalPhysicsSystem",
   init: (world) => {
 
+    let physics: undefined | RapierWorld = undefined
+
     if (mode === "local" && world.mode === "server") return undefined
 
     let bodies: Record<string, RigidBody> = {}
@@ -14,16 +16,16 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
 
       // set up physics
-    RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
+    RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
 
     const resetPhysics = () => {
       for (const id of keys(bodies)) delete bodies[id]
       colliders.clear()
 
-      world.physics?.free()
+      physics?.free()
 
-      world.physics = new RapierWorld({ x: 0, y: 0 })
-      world.physics.timestep = 0.00625 // 25 / 1000 / 4
+      physics = new RapierWorld({ x: 0, y: 0 })
+      physics.timestep = 0.00625 // 25 / 1000 / 4
     }
 
     return {
@@ -34,12 +36,10 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
       onTick: (entities: Entity<Collider | Position>[], isRollback: false) => {
 
         // wait until rapier is ready
-        if (!world.physics) return
+        if (!physics) return
 
         // reset physics if not rollback
         if (!isRollback && mode === "global") resetPhysics()
-
-        const { physics } = world
 
         // remove old bodies (TODO does this matter)
         for (const id of keys(bodies)) {
