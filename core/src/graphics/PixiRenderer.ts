@@ -1,10 +1,11 @@
-import { ClientSystemBuilder, Entity, PixiCamera, Position, Renderable, World, isMobile, logPerf } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, PixiCamera, Position, Renderable, World, filterEntities, isMobile, logPerf, values } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
 export type PixiRenderer = {
   app: Application
   camera: PixiCamera
   guiRenderables: Renderable[]
+  ready: boolean
   resizedFlag: boolean
   activate: (world: World) => Promise<void>
   addGui: (renderable: Renderable) => void
@@ -17,14 +18,13 @@ export type PixiRenderer = {
 
 export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
 
-  let activated = false
-
   const app = new Application()
 
   const renderer: PixiRenderer = {
     app,
     camera: PixiCamera(app),
     guiRenderables: [],
+    ready: false,
     resizedFlag: false,
     addGui: (renderable: Renderable) => {
       if (renderable) {
@@ -36,8 +36,8 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       if (renderable) renderer.camera?.add(renderable)
     },
     deactivate: (world: World) => {
-      if (!activated) return
-      activated = false
+      if (!renderer.ready) return
+      renderer.ready = false
 
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
 
@@ -52,7 +52,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       renderer.resizedFlag = true
     },
     activate: async (world: World) => {
-      if (activated) return
+      if (renderer.ready) return
 
       world.pixi = renderer
 
@@ -87,7 +87,17 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
-      activated = true
+      // schedule onRender
+      // if (renderer.pixi) {
+        app.ticker.add(() => {
+          const now = performance.now()
+          values(world.systems).forEach((system) => {
+            system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
+          })
+        })
+      // }
+
+      renderer.ready = true
     },
     setBgColor: (color: number) => {
       if (app.renderer) app.renderer.background.color = color

@@ -1,4 +1,4 @@
-import { Entity, Position, Renderable, Renderer, round } from "@piggo-gg/core"
+import { Entity, Position, Renderable, PixiRenderer, round } from "@piggo-gg/core"
 import { Graphics } from "pixi.js"
 
 export const Cursor = (): Entity => {
@@ -9,7 +9,7 @@ export const Cursor = (): Entity => {
       position: Position({ x: 2000, y: 2000, screenFixed: true }),
       renderable: Renderable({
         interpolate: true,
-        setContainer: async (r: Renderer) => {
+        setContainer: async (r: PixiRenderer) => {
           r.app.canvas.addEventListener("mousemove", (event) => {
             const rect = r.app.canvas.getBoundingClientRect()
 

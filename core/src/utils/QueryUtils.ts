@@ -1,4 +1,14 @@
-import { Entity, Team, World, Position } from "@piggo-gg/core"
+import { Entity, Team, World, Position, keys, ValidComponents } from "@piggo-gg/core"
+
+export const filterEntities = (query: ValidComponents[], entities: Entity[]): Entity[] => {
+    return entities.filter(e => {
+      for (const componentType of query) {
+        if (!keys(e.components).includes(componentType)) return false
+        if (e.components[componentType]?.active === false) return false
+      }
+      return true
+    })
+  }
 
 export const sameTeam = (entity: Entity<Team>) => (x: Entity<Team>) =>
   x.components.team.data.team === entity.components.team.data.team

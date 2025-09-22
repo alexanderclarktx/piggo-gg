@@ -21,6 +21,7 @@ export type ThreeRenderer = {
   fLoader: FBXLoader
   gLoader: GLTFLoader
   tLoader: TextureLoader
+  ready: boolean
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   sun: undefined | DirectionalLight
@@ -49,6 +50,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     leaf: undefined,
     blocks: undefined,
     debug: false,
+    ready: true,
     sun: undefined,
     fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),

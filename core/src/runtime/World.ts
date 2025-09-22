@@ -1,8 +1,8 @@
 import {
   BlockData, Character, Client, Command, ComponentTypes, Data, Entity,
-  Game, GameBuilder, InvokedAction, Networked, Player, Random,
-  PixiRenderer, SerializedEntity, System, SystemBuilder, SystemEntity,
-  TickBuffer, ValidComponents, XYZ, keys, logPerf, values, ThreeRenderer
+  Game, GameBuilder, InvokedAction, Networked, Player, Random, PixiRenderer,
+  SerializedEntity, System, SystemBuilder, SystemEntity, TickBuffer,
+  ValidComponents, XYZ, keys, logPerf, values, ThreeRenderer, filterEntities
 } from "@piggo-gg/core"
 import { World as RapierWorld } from "@dimforge/rapier2d-compat"
 
@@ -61,16 +61,6 @@ export type WorldProps = {
 export const World = ({ commands, games, systems, pixi, mode, three }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
-
-  const filterEntities = (query: ValidComponents[], entities: Entity[]): Entity[] => {
-    return entities.filter(e => {
-      for (const componentType of query) {
-        if (!keys(e.components).includes(componentType)) return false
-        if (e.components[componentType]?.active === false) return false
-      }
-      return true
-    })
-  }
 
   const world: World = {
     actions: TickBuffer(),
@@ -160,6 +150,16 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
 
       // check if it's time to run the next tick
       if (!isRollback && ((world.lastTick + world.tickrate) > now)) {
+        scheduleOnTick()
+        return
+      }
+
+      // check game's renderer is ready
+      if (world.game.renderer === "pixi" && !world.pixi?.ready) {
+        console.log("WAITING ON PIXI")
+        scheduleOnTick()
+        return
+      } else if (world.game.renderer === "three" && !world.three?.ready) {
         scheduleOnTick()
         return
       }
