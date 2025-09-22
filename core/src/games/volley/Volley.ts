@@ -75,9 +75,10 @@ const VolleySystem = SystemBuilder({
   id: "VolleySystem",
   init: (world) => {
 
-    console.log("activating", world.pixi)
     world.three?.deactivate()
+    console.log("three deactivated")
     world.pixi?.activate(world)
+    console.log("pixi activated")
 
     const bots: Record<string, Entity<Position | Team>> = {}
 

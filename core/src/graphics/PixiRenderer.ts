@@ -11,7 +11,7 @@ export type PixiRenderer = {
   addWorld: (renderable: Renderable) => void
   deactivate: (world: World) => void
   handleResize: () => void
-  init: () => Promise<void>
+  init: () => void
   setBgColor: (color: number) => void
   wh: () => { width: number, height: number }
 }
@@ -63,10 +63,10 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       }
       renderer.resizedFlag = true
     },
-    init: async () => {
+    init: () => {
 
       // create the pixi.js application
-      await app.init({
+      app.init({
         canvas,
         resolution: 1,
         antialias: true,
