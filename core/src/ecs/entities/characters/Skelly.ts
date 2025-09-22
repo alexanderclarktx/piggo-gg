@@ -51,9 +51,10 @@ export const Skelly = (player: Player, pos?: XY) => Character({
         entity.components.position.setVelocity({ z: 5 })
       }),
       changeAngle: Action("changeAngle", ({ world }) => {
-        if (!world.renderer) return
-        world.renderer.camera.angle += 2
-        if (world.renderer.camera.angle >= 4) world.renderer.camera.angle = 0
+        if (!world.pixi) return
+
+        world.pixi.camera.angle += 2
+        if (world.pixi.camera.angle >= 4) world.pixi.camera.angle = 0
       })
     }),
     effects: Effects(),

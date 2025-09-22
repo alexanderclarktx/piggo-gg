@@ -146,6 +146,8 @@ export const PixiRenderSystem = ClientSystemBuilder({
         const { pixi, client } = world
         if (!pixi || !client) return
 
+        if (!pixi.ready) return
+
         if (pixi.resizedFlag) {
           pixi.guiRenderables.forEach((renderable) => {
             pixi.app.stage.removeChild(renderable.c)

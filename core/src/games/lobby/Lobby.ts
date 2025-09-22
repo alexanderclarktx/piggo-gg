@@ -7,7 +7,7 @@ import {
 import { Container, Text } from "pixi.js"
 
 type LobbyState = {
-  gameId: "volley" | "craft" | "Duck Duck Eagle"
+  gameId: "volley" | "villagers"
 }
 
 export const Lobby: GameBuilder = {
@@ -17,7 +17,7 @@ export const Lobby: GameBuilder = {
     renderer: "pixi",
     settings: {},
     state: {
-      gameId: "Duck Duck Eagle"
+      gameId: "villagers"
     },
     systems: [PixiRenderSystem],
     entities: [
@@ -220,6 +220,7 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
+              console.log("playbutton onclick")
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
               world.client?.sound.play({ name: "click1" })

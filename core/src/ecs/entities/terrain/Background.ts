@@ -27,8 +27,8 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
         if (follow) {
           const { position } = entity.components
 
-          const { focus } = world.renderer?.camera ?? {}
-          if (focus && world.renderer) {
+          const { focus } = world.pixi?.camera ?? {}
+          if (focus && world.pixi) {
 
             const { x, y, z, velocity } = focus.components.position.data
 

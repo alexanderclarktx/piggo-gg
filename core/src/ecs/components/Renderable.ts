@@ -241,6 +241,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       // renderable.c.destroy() // TODO disabled because it breaks debug mode
     },
     _init: async (renderer: PixiRenderer | undefined, world: World) => {
+      console.log("_init", renderer)
       if (!renderer) return
       renderable.renderer = renderer
 
