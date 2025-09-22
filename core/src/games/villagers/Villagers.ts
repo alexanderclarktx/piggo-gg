@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, logPerf,
+  BlockPhysicsSystem, D3Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
   spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
@@ -59,7 +59,7 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
       SpawnSystem(Bird),
       BlockPhysicsSystem("global"),
       BlockPhysicsSystem("local"),
-      D3CameraSystem(),
+      ThreeCameraSystem(),
       VillagersSystem,
       HUDSystem,
       D3NametagSystem,
@@ -80,6 +80,7 @@ const VillagersSystem = SystemBuilder({
   id: "VillagersSystem",
   init: (world) => {
 
+    world.pixi?.deactivate(world)
     world.three?.activate(world)
     spawnTerrain(world, 24)
 

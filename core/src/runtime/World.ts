@@ -1,8 +1,8 @@
 import {
-  BlockData, Character, Client, Command, ComponentTypes, Renderer,
-  Data, Entity, Game, GameBuilder, InvokedAction, Networked, Player,
-  Random, PixiRenderer, SerializedEntity, System, SystemBuilder, SystemEntity,
-  TickBuffer, ValidComponents, XYZ, keys, logPerf, values
+  BlockData, Character, Client, Command, ComponentTypes, Data, Entity,
+  Game, GameBuilder, InvokedAction, Networked, Player, Random,
+  PixiRenderer, SerializedEntity, System, SystemBuilder, SystemEntity,
+  TickBuffer, ValidComponents, XYZ, keys, logPerf, values, ThreeRenderer
 } from "@piggo-gg/core"
 import { World as RapierWorld } from "@dimforge/rapier2d-compat"
 
@@ -23,7 +23,7 @@ export type World = {
   pixi: PixiRenderer | undefined
   random: Random
   systems: Record<string, System>
-  three: Renderer | undefined
+  three: ThreeRenderer | undefined
   tick: number
   tickrate: number
   time: DOMHighResTimeStamp
@@ -52,7 +52,7 @@ export type WorldProps = {
   commands?: Command[]
   games?: GameBuilder[]
   systems?: SystemBuilder[]
-  three?: Renderer
+  three?: ThreeRenderer
   pixi?: PixiRenderer | undefined
   mode?: "client" | "server"
 }
@@ -287,16 +287,19 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
   scheduleOnTick()
 
   // schedule onRender
-  if (pixi) {
-    pixi.app.ticker.add(() => {
-      const now = performance.now()
-      values(world.systems).forEach((system) => {
-        system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
-      })
-    })
-  }
+  // if (pixi) {
+  //   pixi.app.ticker.add(() => {
+  //     const now = performance.now()
+  //     values(world.systems).forEach((system) => {
+  //       system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
+  //     })
+  //   })
+  // }
 
-  if (systems) world.addSystemBuilders(systems)
+  if (systems) {
+    console.log("adding", systems)
+    world.addSystemBuilders(systems)
+  }
 
   // setup games
   if (games) {

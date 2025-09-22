@@ -97,13 +97,13 @@ type Follow = (_: XYZ) => XYZ
 export const PixiCameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })) => ClientSystemBuilder({
   id: "PixiCameraSystem",
   init: (world) => {
-    const { renderer } = world
-    if (!renderer) return
+    const { pixi } = world
+    if (!pixi) return
 
-    let targetScale = renderer.camera.scale
+    let targetScale = pixi.camera.scale
 
     // scroll to zoom
-    renderer.app.canvas.addEventListener("wheel", (event) => {
+    pixi.app.canvas.addEventListener("wheel", (event) => {
       targetScale += -0.01 * sign(event.deltaY) * sqrt(abs(event.deltaY))
       targetScale = min(targetScale, 5)
       targetScale = max(targetScale, 1)
@@ -116,7 +116,7 @@ export const PixiCameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })
       onTick: (entities: Entity<Renderable | Position>[]) => {
         // camera focus on player's character
         const character = world.client?.character()
-        if (character) renderer.camera.focus = character
+        if (character) pixi.camera.focus = character
 
         // cull far away entities
         let numHidden = 0
@@ -125,7 +125,7 @@ export const PixiCameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })
 
           if (renderable.cullable) {
             const { x, y } = renderable.c.position
-            if (!renderer.camera.inFrame({ x, y })) {
+            if (!pixi.camera.inFrame({ x, y })) {
               renderable.visible = false
               numHidden++
             } else {
@@ -136,14 +136,14 @@ export const PixiCameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })
         // console.log(`hidden ${numHidden} entities`)
       },
       onRender: (_, delta) => {
-        if (!renderer.camera.focus) return
+        if (!pixi.camera.focus) return
 
-        if (targetScale !== renderer.camera.scale) {
-          const diff = targetScale - renderer.camera.scale
-          renderer.camera.scaleBy(diff * 0.1)
+        if (targetScale !== pixi.camera.scale) {
+          const diff = targetScale - pixi.camera.scale
+          pixi.camera.scaleBy(diff * 0.1)
         }
 
-        const { position, renderable } = renderer.camera.focus.components
+        const { position, renderable } = pixi.camera.focus.components
         if (!position || !renderable) return
 
         const interpolated = position.interpolate(world, delta)
@@ -155,7 +155,7 @@ export const PixiCameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })
           y: y + renderable.position.y
         }
 
-        renderer?.camera.moveTo({ x: offset.x, y: offset.y - z })
+        pixi?.camera.moveTo({ x: offset.x, y: offset.y - z })
       }
     }
   }

@@ -3,20 +3,20 @@ import {
   Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
   SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { abs, BlockMesh, cos, D3Camera, isMobile, max, PI, pow, World } from "@piggo-gg/core"
+import { abs, BlockMesh, cos, ThreeCamera, isMobile, max, PI, pow, World } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 
 const evening = 0xffd9c3
 
-export type Renderer = {
+export type ThreeRenderer = {
   apple: undefined | Group<Object3DEventMap>
   spruce: undefined | BlockMesh
   oak: undefined | BlockMesh
   leaf: undefined | BlockMesh
   blocks: undefined | BlockMesh
   canvas: HTMLCanvasElement
-  camera: D3Camera
+  camera: ThreeCamera
   debug: boolean
   fLoader: FBXLoader
   gLoader: GLTFLoader
@@ -33,15 +33,15 @@ export type Renderer = {
   pointerUnlock: () => void
 }
 
-export const Renderer = (c: HTMLCanvasElement): Renderer => {
+export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
 
   let webgl: undefined | WebGLRenderer
   let helper: undefined | CameraHelper
 
-  const renderer: Renderer = {
+  const renderer: ThreeRenderer = {
     apple: undefined,
     canvas: c,
-    camera: D3Camera(),
+    camera: ThreeCamera(),
     scene: new Scene(),
     sphere: undefined,
     oak: undefined,

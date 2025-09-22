@@ -6,6 +6,7 @@ export type PixiRenderer = {
   camera: PixiCamera
   guiRenderables: Renderable[]
   resizedFlag: boolean
+  activate: (world: World) => void
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
   deactivate: (world: World) => void
@@ -17,6 +18,8 @@ export type PixiRenderer = {
 
 export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
 
+  let activated = false
+
   const app = new Application()
 
   const renderer: PixiRenderer = {
@@ -24,6 +27,17 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
     camera: PixiCamera(app),
     guiRenderables: [],
     resizedFlag: false,
+    activate: (world: World) => {
+      if (activated) return
+      activated = true
+
+      world.pixi = renderer
+
+      renderer.init()
+
+      // renderer.handleResize()
+      // renderer.app.start()
+    },
     addGui: (renderable: Renderable) => {
       if (renderable) {
         renderer.app.stage.addChild(renderable.c)
@@ -34,6 +48,9 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       if (renderable) renderer.camera?.add(renderable)
     },
     deactivate: (world: World) => {
+      if (!activated) return
+      activated = false
+
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
 
       world.pixi = undefined
