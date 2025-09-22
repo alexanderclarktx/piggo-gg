@@ -257,8 +257,6 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
       } else if (world.game.renderer === "three" && !world.three?.ready) {
         world.pixi?.deactivate(world)
         world.three?.activate(world)
-
-        console.log("activating three")
       }
     },
     settings: <S extends {}>(): S => {
