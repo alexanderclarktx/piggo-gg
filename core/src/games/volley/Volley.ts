@@ -75,10 +75,6 @@ export const Volley: GameBuilder<VolleyState> = {
 const VolleySystem = SystemBuilder({
   id: "VolleySystem",
   init: (world) => {
-
-    // world.three?.deactivate()
-    // world.pixi?.activate(world)
-
     const bots: Record<string, Entity<Position | Team>> = {}
 
     // spawn bots

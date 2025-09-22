@@ -80,10 +80,6 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
 const VillagersSystem = SystemBuilder({
   id: "VillagersSystem",
   init: (world) => {
-
-    // world.pixi?.deactivate(world)
-    // world.three?.activate(world)
-
     spawnTerrain(world, 24)
 
     const sky = Sky()

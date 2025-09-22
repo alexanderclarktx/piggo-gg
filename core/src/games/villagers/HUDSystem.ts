@@ -56,7 +56,7 @@ export const HUDSystem = ClientSystemBuilder({
       bottom: "0px",
       left: "0px",
       pointerEvents: "none",
-      border: "1px solid red"
+      border: ""
     })
 
     controls.appendChild(aButton)
