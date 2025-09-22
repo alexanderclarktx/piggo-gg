@@ -1,6 +1,6 @@
 import {
-  Background, CameraSystem, Cursor, Entity, PixiMenu, GameBuilder, LagText,
-  PhysicsSystem, Position, RenderSystem, Renderable, ScorePanel, ShadowSystem,
+  Background, PixiCameraSystem, Cursor, Entity, PixiMenu, GameBuilder, LagText,
+  PhysicsSystem, Position, PixiRenderSystem, Renderable, ScorePanel, ShadowSystem,
   SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
 } from "@piggo-gg/core"
 import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
@@ -28,6 +28,7 @@ export const Volley: GameBuilder<VolleyState> = {
   init: () => ({
     id: "volley",
     netcode: "rollback",
+    renderer: "pixi",
     settings: {},
     state: {
       hit: 0,
@@ -49,8 +50,8 @@ export const Volley: GameBuilder<VolleyState> = {
       VolleySystem,
       ShadowSystem,
       TargetSystem,
-      RenderSystem,
-      CameraSystem(() => ({ x: 225, y: 0, z: 0 }))
+      PixiRenderSystem,
+      PixiCameraSystem(() => ({ x: 225, y: 0, z: 0 }))
     ],
     entities: [
       Background({ rays: true }),
@@ -74,7 +75,6 @@ export const Volley: GameBuilder<VolleyState> = {
 const VolleySystem = SystemBuilder({
   id: "VolleySystem",
   init: (world) => {
-
     const bots: Record<string, Entity<Position | Team>> = {}
 
     // spawn bots
@@ -104,10 +104,10 @@ const VolleySystem = SystemBuilder({
       for (const bot of values(bots)) world.addEntity(bot)
     }
 
-    // scale camera to fit the court
-    const desiredScale = world.renderer?.app.screen.width! / 500
-    const scaleBy = desiredScale - world.renderer?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
-    world.renderer?.camera.scaleBy(scaleBy)
+    // scale camera to fit the court (TODO MOVE)
+    // const desiredScale = world.pixi?.app.screen.width! / 500
+    // const scaleBy = desiredScale - world.pixi?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
+    // world.pixi?.camera.scaleBy(scaleBy)
 
     return {
       id: "VolleySystem",

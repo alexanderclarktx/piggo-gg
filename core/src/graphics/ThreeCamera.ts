@@ -1,7 +1,7 @@
 import { ClientSystemBuilder, cos, max, min, sin, World, XYZ, XYZsub } from "@piggo-gg/core"
 import { PerspectiveCamera, Vector3 } from "three"
 
-export type D3Camera = {
+export type ThreeCamera = {
   c: PerspectiveCamera
   mode: "first" | "third"
   transition: number
@@ -10,12 +10,12 @@ export type D3Camera = {
   setFov: (fov: number) => void
 }
 
-export const D3Camera = (): D3Camera => {
+export const ThreeCamera = (): ThreeCamera => {
 
   const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000)
   camera.rotation.order = "YXZ"
 
-  const d3Camera: D3Camera = {
+  const ThreeCamera: ThreeCamera = {
     c: camera,
     mode: "first",
     transition: 125,
@@ -31,24 +31,24 @@ export const D3Camera = (): D3Camera => {
       ).normalize())
     },
     pos: () => {
-      return XYZ(d3Camera.c.position)
+      return XYZ(ThreeCamera.c.position)
     },
     setFov: (fov: number) => {
       camera.fov = fov
       camera.updateProjectionMatrix()
     }
   }
-  return d3Camera
+  return ThreeCamera
 }
 
-export const D3CameraSystem = () => ClientSystemBuilder({
-  id: "D3CameraSystem",
+export const ThreeCameraSystem = () => ClientSystemBuilder({
+  id: "ThreeCameraSystem",
   init: (world) => {
 
     let lastMode = world.three?.camera.mode || "first"
 
     return {
-      id: "D3CameraSystem",
+      id: "ThreeCameraSystem",
       query: [],
       priority: 9,
       onRender: (_, delta) => {

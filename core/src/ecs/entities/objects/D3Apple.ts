@@ -35,7 +35,6 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
       networked: Networked(),
       npc: NPC({
         behavior: (_, world) => {
-
           // relocate the apple
           if (treeIndex === -1 || eaten || !world.trees[treeIndex] || !XYZequal(world.trees[treeIndex], tree)) {
             apple.components.position.setPosition(randomSpot(world))

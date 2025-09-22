@@ -1,17 +1,122 @@
-import { Entity, Position, Renderable, ClientSystemBuilder, logPerf } from "@piggo-gg/core"
+import { ClientSystemBuilder, Entity, PixiCamera, Position, Renderable, World, isMobile, logPerf } from "@piggo-gg/core"
+import { Application } from "pixi.js"
 
-export const RenderSystem = ClientSystemBuilder({
-  id: "RenderSystem",
+export type PixiRenderer = {
+  app: Application
+  canvas: HTMLCanvasElement
+  camera: PixiCamera
+  guiRenderables: Renderable[]
+  ready: boolean
+  resizedFlag: boolean
+  activate: (world: World) => Promise<void>
+  addGui: (renderable: Renderable) => void
+  addWorld: (renderable: Renderable) => void
+  deactivate: (world: World) => void
+  handleResize: () => void
+  setBgColor: (color: number) => void
+  wh: () => { width: number, height: number }
+}
+
+export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
+
+  const app = new Application()
+
+  const renderer: PixiRenderer = {
+    app,
+    canvas,
+    camera: PixiCamera(app),
+    guiRenderables: [],
+    ready: false,
+    resizedFlag: false,
+    addGui: (renderable: Renderable) => {
+      if (renderable) {
+        renderer.app.stage.addChild(renderable.c)
+        renderer.guiRenderables.push(renderable)
+      }
+    },
+    addWorld: (renderable: Renderable) => {
+      if (renderable) renderer.camera?.add(renderable)
+    },
+    deactivate: (world: World) => {
+      if (!renderer.ready) return
+      renderer.ready = false
+
+      app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
+
+      world.pixi = undefined
+    },
+    handleResize: () => {
+      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
+        renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
+      } else {
+        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+      }
+      renderer.resizedFlag = true
+    },
+    activate: async (world: World) => {
+      if (renderer.ready) return
+
+      world.pixi = renderer
+
+      // create the pixi.js application
+      await app.init({
+        canvas,
+        resolution: 1,
+        antialias: true,
+        autoDensity: true,
+        backgroundColor: 0x000000,
+        preference: "webgl",
+        preferWebGLVersion: 2
+      })
+
+      renderer.handleResize()
+
+      // set up the camera
+      app.stage.addChild(renderer.camera.root)
+
+      // hide the cursor
+      app.renderer.events.cursorStyles.default = "none"
+
+      // handle screen resize
+      window.addEventListener("resize", renderer.handleResize)
+
+      // handle fullscreen change
+      document.addEventListener("fullscreenchange", renderer.handleResize)
+
+      // handle orientation change
+      screen?.orientation?.addEventListener("change", () => renderer.handleResize)
+
+      // prevent right-click
+      canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+
+      // schedule onRender
+      app.ticker.add(world.onRender)
+
+      renderer.ready = true
+    },
+    setBgColor: (color: number) => {
+      if (app.renderer) app.renderer.background.color = color
+    },
+    wh: () => ({
+      width: app.screen.width,
+      height: app.screen.height
+    })
+  }
+  return renderer
+}
+
+export const PixiRenderSystem = ClientSystemBuilder({
+  id: "PixiRenderSystem",
   init: (world) => {
     const renderNewEntity = async (entity: Entity<Renderable | Position>) => {
       const { renderable, position } = entity.components
 
-      await renderable._init(world.renderer, world)
+      await renderable._init(world.pixi, world)
 
       if (position.screenFixed) {
-        world.renderer?.addGui(renderable)
+        world.pixi?.addGui(renderable)
       } else {
-        world.renderer?.addWorld(renderable)
+        world.pixi?.addWorld(renderable)
       }
     }
 
@@ -21,33 +126,35 @@ export const RenderSystem = ClientSystemBuilder({
       if (!position.screenFixed) return
 
       if (position.data.x < 0) {
-        renderable.c.x = world.renderer!.app.screen.width + position.data.x
+        renderable.c.x = world.pixi!.app.screen.width + position.data.x
       } else {
         renderable.c.x = position.data.x
       }
 
       if (position.data.y < 0) {
-        renderable.c.y = world.renderer!.app.screen.height + position.data.y
+        renderable.c.y = world.pixi!.app.screen.height + position.data.y
       } else {
         renderable.c.y = position.data.y
       }
     }
 
     return {
-      id: "RenderSystem",
+      id: "PixiRenderSystem",
       query: ["renderable", "position"],
       priority: 11,
       onTick: (entities: Entity<Renderable | Position>[]) => {
-        const { renderer, client } = world
-        if (!renderer || !client) return
+        const { pixi, client } = world
+        if (!pixi || !client) return
 
-        if (renderer.resizedFlag) {
-          renderer.guiRenderables.forEach((renderable) => {
-            renderer.app.stage.removeChild(renderable.c)
+        if (!pixi.ready) return
+
+        if (pixi.resizedFlag) {
+          pixi.guiRenderables.forEach((renderable) => {
+            pixi.app.stage.removeChild(renderable.c)
             renderable.rendered = false
           })
 
-          renderer.resizedFlag = false
+          pixi.resizedFlag = false
         }
 
         const time = performance.now()
@@ -76,7 +183,7 @@ export const RenderSystem = ClientSystemBuilder({
             for (const child of renderable.children) {
               if (!child.rendered) {
                 if (!child.obedient) {
-                  position.screenFixed ? renderer?.addGui(child) : renderer?.addWorld(child)
+                  position.screenFixed ? pixi?.addGui(child) : pixi?.addWorld(child)
                 }
                 child.rendered = true
               } else {
@@ -153,8 +260,8 @@ export const RenderSystem = ClientSystemBuilder({
         }
       },
       onRender(entities: Entity<Renderable | Position>[], delta) {
-        const { renderer, client } = world
-        if (!renderer || !client) return
+        const { pixi, client } = world
+        if (!pixi || !client) return
 
         for (const entity of entities) {
           const { position, renderable } = entity.components

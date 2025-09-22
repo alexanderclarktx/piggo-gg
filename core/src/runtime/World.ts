@@ -1,10 +1,9 @@
 import {
-  BlockData, Character, Client, Command, ComponentTypes, D3Renderer,
-  Data, Entity, Game, GameBuilder, InvokedAction, Networked, Player,
-  Random, Renderer, SerializedEntity, System, SystemBuilder, SystemEntity,
-  TickBuffer, ValidComponents, XYZ, keys, logPerf, values
+  BlockData, Character, Client, Command, ComponentTypes, Data, Entity,
+  Game, GameBuilder, InvokedAction, Networked, Player, Random, PixiRenderer,
+  SerializedEntity, System, SystemBuilder, SystemEntity, TickBuffer,
+  ValidComponents, XYZ, keys, logPerf, values, ThreeRenderer, filterEntities
 } from "@piggo-gg/core"
-import { World as RapierWorld } from "@dimforge/rapier2d-compat"
 
 export type World = {
   actions: TickBuffer<InvokedAction>
@@ -19,11 +18,10 @@ export type World = {
   lastTick: DOMHighResTimeStamp
   messages: TickBuffer<string>
   mode: "client" | "server"
-  physics: RapierWorld | undefined
+  pixi: PixiRenderer | undefined
   random: Random
-  renderer: Renderer | undefined
   systems: Record<string, System>
-  three: D3Renderer | undefined
+  three: ThreeRenderer | undefined
   tick: number
   tickrate: number
   time: DOMHighResTimeStamp
@@ -52,25 +50,15 @@ export type WorldProps = {
   commands?: Command[]
   games?: GameBuilder[]
   systems?: SystemBuilder[]
-  three?: D3Renderer
-  renderer?: Renderer | undefined
+  three?: ThreeRenderer
+  pixi?: PixiRenderer | undefined
   mode?: "client" | "server"
 }
 
 // World manages all runtime state
-export const World = ({ commands, games, systems, renderer, mode, three }: WorldProps): World => {
+export const World = ({ commands, games, systems, pixi, mode, three }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
-
-  const filterEntities = (query: ValidComponents[], entities: Entity[]): Entity[] => {
-    return entities.filter(e => {
-      for (const componentType of query) {
-        if (!keys(e.components).includes(componentType)) return false
-        if (e.components[componentType]?.active === false) return false
-      }
-      return true
-    })
-  }
 
   const world: World = {
     actions: TickBuffer(),
@@ -81,13 +69,12 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     debug: false,
     entities: {},
     entitiesAtTick: {},
-    game: { id: "", entities: [], settings: {}, systems: [], netcode: "delay", state: {} },
+    game: { id: "", renderer: "three", entities: [], settings: {}, systems: [], netcode: "delay", state: {} },
     games: {},
     lastTick: 0,
     mode: mode ?? "client",
-    physics: undefined,
+    pixi,
     random: Random(123456111),
-    renderer,
     systems: {},
     three,
     tick: 0,
@@ -209,7 +196,7 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       })
     },
     onRender: () => {
-      if (world.renderer || world.three) {
+      if (world.pixi || world.three) {
         const now = performance.now()
         values(world.systems).forEach((system) => {
           system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
@@ -235,12 +222,6 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))
 
-      // reset physics
-      if (world.physics) {
-        world.physics.free()
-        world.physics = new RapierWorld({ x: 0, y: 0 })
-      }
-
       // set new game
       world.game = game.init(world)
 
@@ -255,8 +236,8 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
 
       const { entities, systems } = world.game
 
-      if (world.renderer) {
-        world.renderer.camera.scaleTo(2.5)
+      if (world.pixi) {
+        world.pixi.camera.scaleTo(2.5)
       }
 
       // add new entities
@@ -268,6 +249,15 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
       world.addSystemBuilders(systems)
 
       commands?.forEach((command) => world.commands[command.id] = command)
+
+      // update renderer
+      if (world.game.renderer === "pixi" && !world.pixi?.ready) {
+        world.three?.deactivate()
+        world.pixi?.activate(world)
+      } else if (world.game.renderer === "three" && !world.three?.ready) {
+        world.pixi?.deactivate(world)
+        world.three?.activate(world)
+      }
     },
     settings: <S extends {}>(): S => {
       return world.game.settings as S
@@ -277,24 +267,11 @@ export const World = ({ commands, games, systems, renderer, mode, three }: World
     }
   }
 
-  // set up physics
-  // RapierInit().then(() => world.physics = new RapierWorld({ x: 0, y: 0 }))
-
   // set up client
   if (world.mode === "client") world.client = Client({ world })
 
   // schedule onTick
   scheduleOnTick()
-
-  // schedule onRender
-  if (renderer) {
-    renderer.app.ticker.add(() => {
-      const now = performance.now()
-      values(world.systems).forEach((system) => {
-        system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
-      })
-    })
-  }
 
   if (systems) world.addSystemBuilders(systems)
 

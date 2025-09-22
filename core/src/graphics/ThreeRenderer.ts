@@ -3,24 +3,25 @@ import {
   Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
   SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { abs, BlockMesh, cos, D3Camera, isMobile, max, PI, pow, World } from "@piggo-gg/core"
+import { BlockMesh, ThreeCamera, isMobile, World, values } from "@piggo-gg/core"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 
 const evening = 0xffd9c3
 
-export type D3Renderer = {
+export type ThreeRenderer = {
   apple: undefined | Group<Object3DEventMap>
   spruce: undefined | BlockMesh
   oak: undefined | BlockMesh
   leaf: undefined | BlockMesh
   blocks: undefined | BlockMesh
   canvas: HTMLCanvasElement
-  camera: D3Camera
+  camera: ThreeCamera
   debug: boolean
   fLoader: FBXLoader
   gLoader: GLTFLoader
   tLoader: TextureLoader
+  ready: boolean
   scene: Scene
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
   sun: undefined | DirectionalLight
@@ -33,15 +34,15 @@ export type D3Renderer = {
   pointerUnlock: () => void
 }
 
-export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
+export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
 
   let webgl: undefined | WebGLRenderer
   let helper: undefined | CameraHelper
 
-  const renderer: D3Renderer = {
+  const renderer: ThreeRenderer = {
     apple: undefined,
     canvas: c,
-    camera: D3Camera(),
+    camera: ThreeCamera(),
     scene: new Scene(),
     sphere: undefined,
     oak: undefined,
@@ -49,6 +50,7 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
     leaf: undefined,
     blocks: undefined,
     debug: false,
+    ready: false,
     sun: undefined,
     fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),
@@ -73,9 +75,14 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       renderer.camera.c.updateProjectionMatrix()
     },
     deactivate: () => {
+      renderer.scene.clear()
+
       webgl?.setAnimationLoop(null)
       webgl?.dispose()
-      renderer.scene.clear()
+
+      for (const el of values(document.getElementsByClassName("lex"))) {
+        el.remove()
+      }
     },
     setDebug: (state?: boolean) => {
       if (state === undefined) state = !renderer.debug
@@ -102,6 +109,9 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
+      if (renderer.ready) return
+      renderer.ready = true
+
       renderer.blocks = BlockMesh(88000)
       renderer.scene.add(renderer.blocks)
 
@@ -274,7 +284,8 @@ export const D3Renderer = (c: HTMLCanvasElement): D3Renderer => {
       screen.orientation.addEventListener("change", renderer.resize)
 
       webgl.setAnimationLoop(() => {
-        world.onRender?.()
+        world.onRender()
+
         webgl?.render(renderer.scene, renderer.camera.c)
 
         // const hour = (world.tick / 30) % 24

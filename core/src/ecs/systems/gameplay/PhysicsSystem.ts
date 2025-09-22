@@ -1,27 +1,32 @@
 import {
-  Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, round, sign
+  Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, max, round, sign
 } from "@piggo-gg/core"
-import { World as RapierWorld, RigidBody } from "@dimforge/rapier2d-compat"
+import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
 export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
   id: mode === "global" ? "PhysicsSystem" : "LocalPhysicsSystem",
   init: (world) => {
+
+    // todo world.physics
+    let physics: undefined | RapierWorld = undefined
 
     if (mode === "local" && world.mode === "server") return undefined
 
     let bodies: Record<string, RigidBody> = {}
     let colliders: Map<Entity<Collider | Position>, Collider> = new Map()
 
+
+    // set up physics
+    RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
+
     const resetPhysics = () => {
       for (const id of keys(bodies)) delete bodies[id]
       colliders.clear()
 
-      if (!world.physics) return
+      physics?.free()
 
-      world.physics.free()
-
-      world.physics = new RapierWorld({ x: 0, y: 0 })
-      world.physics.timestep = 0.00625 // 25 / 1000 / 4
+      physics = new RapierWorld({ x: 0, y: 0 })
+      physics.timestep = 0.00625 // 25 / 1000 / 4
     }
 
     return {
@@ -32,12 +37,10 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
       onTick: (entities: Entity<Collider | Position>[], isRollback: false) => {
 
         // wait until rapier is ready
-        if (!world.physics) return
+        if (!physics) return
 
         // reset physics if not rollback
         if (!isRollback && mode === "global") resetPhysics()
-
-        const { physics } = world
 
         // remove old bodies (TODO does this matter)
         for (const id of keys(bodies)) {
@@ -141,9 +144,24 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             position.data.y = round(translation.y, 3)
             position.data.velocity.x = round(linvel.x, 3)
             position.data.velocity.y = round(linvel.y, 3)
+
+            position.data.z = max(0, position.data.z + position.data.velocity.z)
+
+            if (position.data.z + position.data.velocity.z <= 0) {
+              position.data.standing = true
+            } else {
+              position.data.standing = false
+              position.data.velocity.z -= position.data.gravity
+            }
           } else {
             position.localVelocity.x = round(linvel.x, 3)
             position.localVelocity.y = round(linvel.y, 3)
+
+            if (position.data.standing) {
+              position.localVelocity.z = 0
+            } else {
+              position.localVelocity.z = position.data.velocity.z
+            }
           }
         }
 

@@ -93,7 +93,7 @@ export const Friends = (): Entity => {
         zIndex: 10,
         interactiveChildren: true,
         onTick: ({ world, client }) => {
-          if (!world.renderer) return
+          if (!world.pixi) return
 
           const h = world.client?.token ? 200 : 290
 
@@ -103,8 +103,8 @@ export const Friends = (): Entity => {
             drawOutline()
           }
 
-          if (screenHeight !== world.renderer.app.screen.height) {
-            screenHeight = world.renderer.app.screen.height
+          if (screenHeight !== world.pixi.app.screen.height) {
+            screenHeight = world.pixi.app.screen.height
             drawOutline()
           }
 

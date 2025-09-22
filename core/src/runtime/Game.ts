@@ -4,6 +4,7 @@ export type Game<State extends {} = {}, Settings extends {} = {}> = {
   id: string
   entities: Entity[]
   netcode: "rollback" | "delay"
+  renderer: "three" | "pixi"
   settings: Settings
   state: State
   systems: SystemBuilder[]

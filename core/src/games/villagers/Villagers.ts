@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, D3Apple, D3CameraSystem, D3NametagSystem, logPerf,
+  BlockPhysicsSystem, D3Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
   spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
@@ -32,10 +32,11 @@ export type VillagersSettings = {
 }
 
 export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
-  id: "Duck Duck Eagle",
+  id: "villagers",
   init: (world) => ({
-    id: "Duck Duck Eagle",
+    id: "villagers",
     netcode: "rollback",
+    renderer: "three",
     settings: {
       ambientSound: true,
       showControls: true,
@@ -59,7 +60,7 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
       SpawnSystem(Bird),
       BlockPhysicsSystem("global"),
       BlockPhysicsSystem("local"),
-      D3CameraSystem(),
+      ThreeCameraSystem(),
       VillagersSystem,
       HUDSystem,
       D3NametagSystem,
@@ -79,8 +80,6 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
 const VillagersSystem = SystemBuilder({
   id: "VillagersSystem",
   init: (world) => {
-
-    world.three?.activate(world)
     spawnTerrain(world, 24)
 
     const sky = Sky()

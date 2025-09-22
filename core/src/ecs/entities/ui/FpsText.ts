@@ -19,7 +19,7 @@ export const FpsText = ({ x, y }: FpsTextProps = {}) => Entity<Position | Render
 
         const t = container as Text
         if (t) {
-          const fps = round(world.renderer?.app.ticker.FPS ?? 0)
+          const fps = round(world.pixi?.app.ticker.FPS ?? 0)
           // if (t.style) t.style.fill = fps > 100 ? "#00ff00" : fps > 60 ? "yellow" : "red"
           t.text = `fps: ${fps}`
         }
