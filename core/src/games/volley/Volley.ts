@@ -28,6 +28,7 @@ export const Volley: GameBuilder<VolleyState> = {
   init: () => ({
     id: "volley",
     netcode: "rollback",
+    renderer: "pixi",
     settings: {},
     state: {
       hit: 0,

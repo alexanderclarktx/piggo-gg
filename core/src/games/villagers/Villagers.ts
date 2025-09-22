@@ -36,6 +36,7 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
   init: (world) => ({
     id: "Duck Duck Eagle",
     netcode: "rollback",
+    renderer: "three",
     settings: {
       ambientSound: true,
       showControls: true,

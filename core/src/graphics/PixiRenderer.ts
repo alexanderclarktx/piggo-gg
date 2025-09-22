@@ -6,7 +6,7 @@ export type PixiRenderer = {
   camera: PixiCamera
   guiRenderables: Renderable[]
   resizedFlag: boolean
-  activate: (world: World) => void
+  activate: (world: World) => Promise<void>
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
   deactivate: (world: World) => void
@@ -51,14 +51,13 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       }
       renderer.resizedFlag = true
     },
-    activate: (world: World) => {
+    activate: async (world: World) => {
       if (activated) return
-      activated = true
 
       world.pixi = renderer
 
       // create the pixi.js application
-      app.init({
+      await app.init({
         canvas,
         resolution: 1,
         antialias: true,
@@ -87,6 +86,8 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
 
       // prevent right-click
       canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+
+      activated = true
     },
     setBgColor: (color: number) => {
       if (app.renderer) app.renderer.background.color = color

@@ -81,7 +81,7 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
     debug: false,
     entities: {},
     entitiesAtTick: {},
-    game: { id: "", entities: [], settings: {}, systems: [], netcode: "delay", state: {} },
+    game: { id: "", renderer: "three", entities: [], settings: {}, systems: [], netcode: "delay", state: {} },
     games: {},
     lastTick: 0,
     mode: mode ?? "client",
