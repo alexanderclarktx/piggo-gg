@@ -1,4 +1,4 @@
-import { Component, Entity, Renderer, World, XY, keys, values, Position, PixiSkins, Client } from "@piggo-gg/core"
+import { Component, Entity, PixiRenderer, World, XY, keys, values, Position, PixiSkins, Client } from "@piggo-gg/core"
 import { AdvancedBloomFilter, BevelFilter, GlowFilter, GodrayFilter, OutlineFilter } from "pixi-filters"
 import { AnimatedSprite, BlurFilter, Container, Filter, Graphics, Sprite } from "pixi.js"
 
@@ -28,23 +28,23 @@ export type Renderable = Component<"renderable", {
   position: XY
   r: Renderable | undefined
   rendered: boolean
-  renderer: Renderer
+  renderer: PixiRenderer
   rotates: boolean
   scale: number
   scaleMode: "nearest" | "linear"
   visible: boolean
   zIndex: number
 
-  setContainer: ((r: Renderer) => Promise<Container>) | undefined
-  setChildren: ((r: Renderer, w: World) => Promise<Renderable[]>) | undefined
-  setup: ((renderable: Renderable, renderer: Renderer, w: World) => Promise<void>) | undefined
+  setContainer: ((r: PixiRenderer) => Promise<Container>) | undefined
+  setChildren: ((r: PixiRenderer, w: World) => Promise<Renderable[]>) | undefined
+  setup: ((renderable: Renderable, renderer: PixiRenderer, w: World) => Promise<void>) | undefined
 
   onRender: DynamicDelta | undefined
   onTick: Dynamic | undefined
 
   prepareAnimations: (color?: number, alpha?: number) => void
   setScale: (xy: XY) => void
-  _init: (renderer: Renderer | undefined, world: World) => Promise<void>
+  _init: (renderer: PixiRenderer | undefined, world: World) => Promise<void>
   setAnimation: (animationKey: string) => void
   setBevel: (_?: { rotation?: number, lightAlpha?: number, shadowAlpha?: number }) => void
   setBloom: (_?: { threshold?: number, bloomScale?: number }) => void
@@ -76,9 +76,9 @@ export type RenderableProps = {
   zIndex?: number
   onRender?: DynamicDelta
   onTick?: Dynamic
-  setChildren?: (r: Renderer, w: World) => Promise<Renderable[]>
-  setContainer?: (r: Renderer) => Promise<Container>
-  setup?: (renderable: Renderable, renderer: Renderer, w: World) => Promise<void> // todo single arg
+  setChildren?: (r: PixiRenderer, w: World) => Promise<Renderable[]>
+  setContainer?: (r: PixiRenderer) => Promise<Container>
+  setup?: (renderable: Renderable, renderer: PixiRenderer, w: World) => Promise<void> // todo single arg
 }
 
 export const Renderable = (props: RenderableProps): Renderable => {
@@ -110,7 +110,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
     obedient: props.obedient ?? true,
     position: props.position ?? { x: 0, y: 0 },
     rendered: false,
-    renderer: undefined as unknown as Renderer,
+    renderer: undefined as unknown as PixiRenderer,
     rotates: props.rotates ?? false,
     scale: props.scale ?? 1,
     scaleMode: props.scaleMode ?? "linear",
@@ -240,7 +240,7 @@ export const Renderable = (props: RenderableProps): Renderable => {
       // remove from the world
       // renderable.c.destroy() // TODO disabled because it breaks debug mode
     },
-    _init: async (renderer: Renderer | undefined, world: World) => {
+    _init: async (renderer: PixiRenderer | undefined, world: World) => {
       if (!renderer) return
       renderable.renderer = renderer
 

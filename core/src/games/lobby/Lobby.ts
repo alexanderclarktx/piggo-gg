@@ -2,7 +2,7 @@ import {
   Actions, arrayEqual, Background, colors, Cursor, Villagers, DudeSkin, Entity,
   GameBuilder, Ghost, loadTexture, MusicBox, Networked, NPC, PC, PixiButton,
   PixiChat, pixiContainer, pixiGraphics, pixiRect, pixiText, Position,
-  randomInt, Renderable, RenderSystem, Team, TeamColors, World, XY
+  randomInt, Renderable, PixiRenderSystem, Team, TeamColors, World, XY
 } from "@piggo-gg/core"
 import { Container, Text } from "pixi.js"
 
@@ -18,7 +18,7 @@ export const Lobby: GameBuilder = {
     state: {
       gameId: "Duck Duck Eagle"
     },
-    systems: [RenderSystem],
+    systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
       Cursor(),
@@ -93,8 +93,8 @@ const Players = (): Entity => {
       position: Position({ x: 300, y: 100, screenFixed: true }),
       npc: NPC({
         behavior: (_, world) => {
-          if (!world.renderer) return
-          const { width } = world.renderer.wh()
+          if (!world.pixi) return
+          const { width } = world.pixi.wh()
           const offset = { x: 220 + ((width - 230) / 2), y: 250 }
 
           const players = world.queryEntities<PC | Team>(["pc"]).sort((a, b) => a.components.pc.data.name > b.components.pc.data.name ? 1 : -1)
@@ -203,10 +203,10 @@ const PlayButton = () => {
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        setup: async (r, renderer, world) => {
+        setup: async (r, pixi, world) => {
           const state = world.game.state as LobbyState
 
-          const { width } = renderer.wh()
+          const { width } = pixi.wh()
           playButton.components.position.setPosition({ x: width / 2 })
 
           r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
@@ -248,14 +248,15 @@ const CreateLobbyButton = () => {
         zIndex: 10,
         interactiveChildren: true,
         anchor: { x: 0.5, y: 0.5 },
-        onTick: ({ world }) => {
+        onTick: () => {
           // const ready = (world.client?.ws.readyState ?? 0) === 1
           const ready = false
+
           createLobbyButton.components.renderable.c.alpha = ready ? 1 : 0.6
           createLobbyButton.components.renderable.c.interactiveChildren = ready
         },
-        setup: async (r, renderer, world) => {
-          const { width } = renderer.app.screen
+        setup: async (r, pixi, world) => {
+          const { width } = pixi.app.screen
           createLobbyButton.components.position.setPosition({ x: width / 2 })
 
           r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
@@ -295,8 +296,8 @@ const SettingsButton = () => {
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
-        setup: async (r, renderer, world) => {
-          const { width } = renderer.wh()
+        setup: async (r, pixi, world) => {
+          const { width } = pixi.wh()
           settingsButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
 
           r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
@@ -346,7 +347,7 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
         onTick: ({ world }) => {
           if (!player.components.pc.data.name.startsWith("noob") && skin !== "ghost") {
             skin = "ghost"
-            if (world.renderer) world.renderer.resizedFlag = true
+            if (world.pixi) world.pixi.resizedFlag = true
           }
         },
         setup: async (r, _, world) => {
@@ -489,8 +490,8 @@ const GameLobby = (): Entity => {
       }),
       npc: NPC({
         behavior: (_, world) => {
-          if (!world.renderer) return
-          const { height, width } = world.renderer.app.screen
+          if (!world.pixi) return
+          const { height, width } = world.pixi.app.screen
 
           if (gameButtons.length === 0) {
             for (const g of list) {
