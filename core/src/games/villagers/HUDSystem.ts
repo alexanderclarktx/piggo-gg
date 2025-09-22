@@ -1,5 +1,5 @@
 import {
-  HtmlButton, HtmlLabel, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory
+  HtmlButton, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory
 } from "@piggo-gg/core"
 import { VillagersSettings, VillagersState } from "./Villagers"
 
@@ -11,30 +11,29 @@ export const HUDSystem = ClientSystemBuilder({
 
     if (client.mobile === true) return
 
-    const height = three.canvas.clientHeight || 600
-
-    const top = height / 5 * 3
+    const bottom = 100
     const left = 120
 
-    const aButton = KeyButton({ text: "A", left: left - 50, top })
-    const dButton = KeyButton({ text: "D", left: left + 50, top })
-    const sButton = KeyButton({ text: "S", left, top })
-    const wButton = KeyButton({ text: "W", left, top: top - 50 })
+    const aButton = KeyButton({ text: "A", left: left - 50, bottom: bottom + 200 })
+    const dButton = KeyButton({ text: "D", left: left + 50, bottom: bottom + 200 })
+    const sButton = KeyButton({ text: "S", left, bottom: bottom + 200 })
+
+    const wButton = KeyButton({ text: "W", left, bottom: bottom + 250 })
     // const eButton = KeyButton({ text: "E", left, top: top - 150 })
 
-    const boostButton = KeyButton({ text: "shift", left, top: top + 100, width: 120 })
-    const jumpButton = KeyButton({ text: "spacebar", left, top: top + 200, width: 160, visible: false })
+    const boostButton = KeyButton({ text: "shift", left, bottom: bottom + 100, width: 120 })
+    const jumpButton = KeyButton({ text: "spacebar", left, bottom, width: 160, visible: false })
 
-    const transformLabel = HtmlLabel("transform", left, top - 100)
-    const moveLabel = HtmlLabel("move", left, top + 50)
-    const boostLabel = HtmlLabel("boost", left, top + 150)
-    const jumpLabel = HtmlLabel("jump", left, top + 250, false)
+    const transformLabel = KeyLabel("transform", left, bottom - 100)
+    const moveLabel = KeyLabel("move", left, bottom + 170)
+    const boostLabel = KeyLabel("boost", left, bottom + 70)
+    const jumpLabel = KeyLabel("jump", left, bottom - 30, false)
 
     const scoreText = HtmlText({
       text: "",
       style: {
         left: `50%`,
-        top: `${height - 50}px`,
+        bottom: "50px",
         fontSize: "28px",
         color: "#ffffff",
         transform: "translate(-50%)",
@@ -54,10 +53,10 @@ export const HUDSystem = ClientSystemBuilder({
     })
 
     const controls = HtmlDiv({
-      top: "0px",
+      bottom: "0px",
       left: "0px",
       pointerEvents: "none",
-      border: ""
+      border: "1px solid red"
     })
 
     controls.appendChild(aButton)
@@ -144,7 +143,7 @@ export const HUDSystem = ClientSystemBuilder({
 type KeyButtonProps = {
   text: string
   left: number
-  top: number
+  bottom: number
   visible?: boolean
   width?: number
 }
@@ -153,11 +152,21 @@ const KeyButton = (props: KeyButtonProps) => HtmlButton({
   text: props.text,
   style: {
     left: `${props.left}px`,
-    top: `${props.top}px`,
+    bottom: `${props.bottom}px`,
     width: `${props.width ?? 40}px`,
     height: "40px",
     fontSize: "26px",
     visibility: props.visible === false ? "hidden" : "visible",
+    transform: "translate(-50%)"
+  }
+})
+
+const KeyLabel = (text: string, left: number, bottom: number, visible = true) => HtmlText({
+  text,
+  style: {
+    left: `${left}px`,
+    bottom: `${bottom}px`,
+    visibility: visible ? "visible" : "hidden",
     transform: "translate(-50%)"
   }
 })

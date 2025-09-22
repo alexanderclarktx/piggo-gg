@@ -76,10 +76,8 @@ const VolleySystem = SystemBuilder({
   id: "VolleySystem",
   init: (world) => {
 
-    world.three?.deactivate()
-    console.log("three deactivated")
-    world.pixi?.activate(world)
-    console.log("pixi activated")
+    // world.three?.deactivate()
+    // world.pixi?.activate(world)
 
     const bots: Record<string, Entity<Position | Team>> = {}
 
@@ -111,9 +109,9 @@ const VolleySystem = SystemBuilder({
     }
 
     // scale camera to fit the court
-    // const desiredScale = world.pixi?.app.screen.width! / 500
-    // const scaleBy = desiredScale - world.pixi?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
-    // world.pixi?.camera.scaleBy(scaleBy)
+    const desiredScale = world.pixi?.app.screen.width! / 500
+    const scaleBy = desiredScale - world.pixi?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
+    world.pixi?.camera.scaleBy(scaleBy)
 
     return {
       id: "VolleySystem",

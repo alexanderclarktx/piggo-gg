@@ -81,10 +81,9 @@ const VillagersSystem = SystemBuilder({
   id: "VillagersSystem",
   init: (world) => {
 
-    console.log("deactivating", world.pixi)
-    world.pixi?.deactivate(world)
+    // world.pixi?.deactivate(world)
+    // world.three?.activate(world)
 
-    world.three?.activate(world)
     spawnTerrain(world, 24)
 
     const sky = Sky()

@@ -50,7 +50,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     leaf: undefined,
     blocks: undefined,
     debug: false,
-    ready: true,
+    ready: false,
     sun: undefined,
     fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),
@@ -80,7 +80,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       webgl?.setAnimationLoop(null)
       webgl?.dispose()
 
-      // document.querySelectorAll("lex")
       for (const el of values(document.getElementsByClassName("lex"))) {
         el.remove()
       }
@@ -110,6 +109,9 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
+      if (renderer.ready) return
+      renderer.ready = true
+
       renderer.blocks = BlockMesh(88000)
       renderer.scene.add(renderer.blocks)
 

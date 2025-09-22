@@ -259,6 +259,17 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
       world.addSystemBuilders(systems)
 
       commands?.forEach((command) => world.commands[command.id] = command)
+
+      // update renderer
+      if (world.game.renderer === "pixi" && !world.pixi?.ready) {
+        world.three?.deactivate()
+        world.pixi?.activate(world)
+      } else if (world.game.renderer === "three" && !world.three?.ready) {
+        // world.pixi?.deactivate(world)
+        world.three?.activate(world)
+
+        console.log("activating three")
+      }
     },
     settings: <S extends {}>(): S => {
       return world.game.settings as S
