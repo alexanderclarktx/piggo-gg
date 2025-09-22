@@ -1,8 +1,8 @@
-import { Client, ClientSystemBuilder, Component, D3Renderer, Entity, Position, World } from "@piggo-gg/core"
+import { Client, ClientSystemBuilder, Component, Renderer, Entity, Position, World } from "@piggo-gg/core"
 import { Object3D } from "three"
 
-type ThreeInit = (entity: Entity<Three | Position>, world: World, three: D3Renderer) => Promise<void>
-type OnRenderProps = { entity: Entity<Three | Position>, world: World, client: Client, delta: number, three: D3Renderer }
+type ThreeInit = (entity: Entity<Three | Position>, world: World, three: Renderer) => Promise<void>
+type OnRenderProps = { entity: Entity<Three | Position>, world: World, client: Client, delta: number, three: Renderer }
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
