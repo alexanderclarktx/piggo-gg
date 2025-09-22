@@ -1,7 +1,7 @@
 import { PixiCamera, Renderable, World, isMobile } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
-export type Renderer = {
+export type PixiRenderer = {
   app: Application
   camera: PixiCamera
   guiRenderables: Renderable[]
@@ -15,12 +15,11 @@ export type Renderer = {
   wh: () => { width: number, height: number }
 }
 
-// Renderer draws the game to a canvas
-export const Renderer = (canvas: HTMLCanvasElement): Renderer => {
+export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
 
   const app = new Application()
 
-  const renderer: Renderer = {
+  const renderer: PixiRenderer = {
     app,
     camera: PixiCamera(app),
     guiRenderables: [],
