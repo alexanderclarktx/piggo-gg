@@ -3,6 +3,7 @@ import { Application } from "pixi.js"
 
 export type PixiRenderer = {
   app: Application
+  canvas: HTMLCanvasElement
   camera: PixiCamera
   guiRenderables: Renderable[]
   ready: boolean
@@ -22,6 +23,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
 
   const renderer: PixiRenderer = {
     app,
+    canvas,
     camera: PixiCamera(app),
     guiRenderables: [],
     ready: false,
