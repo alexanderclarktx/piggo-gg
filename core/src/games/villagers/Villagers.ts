@@ -1,10 +1,9 @@
 import {
-  BlockPhysicsSystem, D3Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
+  BlockPhysicsSystem, Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
-  XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
-  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
+  XYZdistance, HtmlChat, Crosshair, GameBuilder, spawnTerrain, EscapeMenu,
+  ThreeSystem, InventorySystem, BlockPreview, Sun, BlockMeshSysten
 } from "@piggo-gg/core"
-import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
 import { HUDSystem } from "./HUDSystem"
 import { MobileUI } from "./MobileUI"
@@ -65,14 +64,17 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
       HUDSystem,
       D3NametagSystem,
       ThreeSystem,
-      InventorySystem
+      InventorySystem,
+      BlockMeshSysten
     ],
     entities: [
       Crosshair(),
       EscapeMenu(world),
       D3Profile(),
       Scoreboard(),
-      HtmlChat()
+      HtmlChat(),
+      Sun(),
+      Sky()
     ]
   })
 }
@@ -82,18 +84,13 @@ const VillagersSystem = SystemBuilder({
   init: (world) => {
     spawnTerrain(world, 24)
 
-    const sky = Sky()
-    world.three?.scene.add(sky.mesh)
-
     const mobileUI = MobileUI(world)
 
     const preview = BlockPreview(world)
     if (preview) world.three?.scene.add(preview.mesh)
 
-    let blocksRendered = false
     let applesSpawned = false
     let ambient = false
-    let playerChunk = { x: 0, y: 0 }
 
     return {
       id: "VillagersSystem",
@@ -106,9 +103,6 @@ const VillagersSystem = SystemBuilder({
         const { sound } = world.client ?? {}
 
         mobileUI?.update()
-
-        // 0 to 24
-        // sky.material.uniforms.uTime.value = (world.tick / 30) % 24
 
         const pc = world.client?.character()
         if (pc && preview) preview.update(world.three!.camera.pos(), world.three!.camera.dir(world))
@@ -163,8 +157,6 @@ const VillagersSystem = SystemBuilder({
           state.nextSeed = randomInt(1000000)
         }
 
-        if (world.blocks.needsUpdate()) blocksRendered = false
-
         if (state.phase === "starting" && world.tick === state.willStart!) {
 
           world.announce(`round ${state.round + 1}!`)
@@ -180,7 +172,6 @@ const VillagersSystem = SystemBuilder({
           // reset world state
           world.blocks.clear()
           world.trees = []
-          blocksRendered = false
 
           // rebuild the world
           spawnTerrain(world, 24)
@@ -264,81 +255,10 @@ const VillagersSystem = SystemBuilder({
         // spawn apples
         if (!applesSpawned) {
           for (let i = 0; i < 25; i++) {
-            world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
+            world.addEntity(Apple({ id: `d3apple-${1 + i}` }))
           }
           applesSpawned = true
         }
-
-        // rerender as player character moves
-        // const xyz = pc?.components.position.xyz() ?? { x: 0, y: 0 }
-        // const atChunk = { x: floor(xyz.x / 1.2), y: floor(xyz.y / 1.2) }
-        // if (atChunk.x !== playerChunk.x || atChunk.y !== playerChunk.y) {
-        //   blocksRendered = false
-        //   playerChunk = atChunk
-        // }
-
-        // render blocks (TODO slow) (possible to update just parts sections of the instance matrix?)
-        const t3 = performance.now()
-        if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
-          const dummy = new Object3D()
-
-          const neighbors = world.blocks.neighbors(playerChunk, 24)
-          const chunkData = world.blocks.visible(neighbors)
-
-          const { blocks, spruce, oak, leaf } = world.three
-
-          let spruceCount = 0
-          let oakCount = 0
-          let leafCount = 0
-          let otherCount = 0
-
-          // for each block
-          for (let i = 0; i < chunkData.length; i++) {
-            const { x, y, z } = chunkData[i]
-            const type = BlockTypeString[chunkData[i].type]
-
-            dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
-            dummy.updateMatrix()
-
-            if (type === "spruceLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x0099aa))
-              leaf?.setMatrixAt(leafCount, dummy.matrix)
-              leafCount++
-            } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x33dd77))
-              leaf?.setMatrixAt(leafCount, dummy.matrix)
-              leafCount++
-            } else if (type === "oak") {
-              oak!.setColorAt(oakCount, new Color(0xffaa99))
-              oak?.setMatrixAt(oakCount, dummy.matrix)
-              oakCount++
-            } else if (type === "spruce") {
-              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
-              spruce?.setMatrixAt(spruceCount, dummy.matrix)
-              spruceCount++
-            } else {
-              blocks.setMatrixAt(otherCount, dummy.matrix)
-              otherCount++
-            }
-          }
-
-          blocks.instanceMatrix.needsUpdate = true
-          spruce!.instanceMatrix.needsUpdate = true
-          oak!.instanceMatrix.needsUpdate = true
-          leaf!.instanceMatrix.needsUpdate = true
-
-          if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
-          if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
-          if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
-
-          world.three!.blocks.count = otherCount
-          world.three!.leaf!.count = leafCount
-          world.three!.oak!.count = oakCount
-          world.three!.spruce!.count = spruceCount
-
-          blocksRendered = true
-        }
-        logPerf("render blocks", t3)
       }
     }
   }

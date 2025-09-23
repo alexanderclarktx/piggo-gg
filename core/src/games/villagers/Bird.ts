@@ -53,7 +53,7 @@ export const Bird = (player: Player): Character => {
 
           const interpolated = position.interpolate(world, delta)
           if (player.id === client.playerId()) {
-            three.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
+            // three.sphere?.position.set(interpolated.x, interpolated.z + 0.05, interpolated.y)
           }
 
           const orientation = player.id === client.playerId() ? client.controls.localAim : aim
@@ -275,7 +275,6 @@ export const Bird = (player: Player): Character => {
           "g": ({ world, hold }) => {
             if (hold === 40) {
               world.debug = !world.debug
-              world.three?.setDebug()
             }
             return null
           },
