@@ -280,13 +280,13 @@ const VillagersSystem = SystemBuilder({
 
         // render blocks (TODO slow) (possible to update just parts sections of the instance matrix?)
         const t3 = performance.now()
-        if (!blocksRendered && world.mode === "client" && world.three?.blocks) {
+        if (!blocksRendered && world.mode === "client" && world.three?.grass) {
           const dummy = new Object3D()
 
           const neighbors = world.blocks.neighbors(playerChunk, 24)
           const chunkData = world.blocks.visible(neighbors)
 
-          const { blocks, spruce, oak, leaf } = world.three
+          const { grass, spruce, oak, leaf } = world.three
 
           let spruceCount = 0
           let oakCount = 0
@@ -318,12 +318,12 @@ const VillagersSystem = SystemBuilder({
               spruce?.setMatrixAt(spruceCount, dummy.matrix)
               spruceCount++
             } else {
-              blocks.setMatrixAt(otherCount, dummy.matrix)
+              grass.setMatrixAt(otherCount, dummy.matrix)
               otherCount++
             }
           }
 
-          blocks.instanceMatrix.needsUpdate = true
+          grass.instanceMatrix.needsUpdate = true
           spruce!.instanceMatrix.needsUpdate = true
           oak!.instanceMatrix.needsUpdate = true
           leaf!.instanceMatrix.needsUpdate = true
@@ -332,7 +332,7 @@ const VillagersSystem = SystemBuilder({
           if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
           if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
 
-          world.three!.blocks.count = otherCount
+          world.three!.grass.count = otherCount
           world.three!.leaf!.count = leafCount
           world.three!.oak!.count = oakCount
           world.three!.spruce!.count = spruceCount

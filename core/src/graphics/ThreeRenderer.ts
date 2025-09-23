@@ -11,7 +11,7 @@ export type ThreeRenderer = {
   spruce: undefined | BlockMesh
   oak: undefined | BlockMesh
   leaf: undefined | BlockMesh
-  blocks: undefined | BlockMesh
+  grass: undefined | BlockMesh
 
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
 
@@ -46,7 +46,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     oak: undefined,
     spruce: undefined,
     leaf: undefined,
-    blocks: undefined,
+    grass: undefined,
     debug: false,
     ready: false,
     fLoader: new FBXLoader(),
@@ -109,8 +109,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       if (renderer.ready) return
       renderer.ready = true
 
-      renderer.blocks = BlockMesh(88000)
-      renderer.scene.add(renderer.blocks)
+      renderer.grass = BlockMesh(88000)
+      renderer.scene.add(renderer.grass)
 
       renderer.spruce = BlockMesh(5000)
       renderer.scene.add(renderer.spruce)
@@ -145,21 +145,21 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       renderer.tLoader.load("grass.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
           if (i === 2) continue
-          renderer.blocks!.material[i].map = texture
-          renderer.blocks!.material[i].map!.colorSpace = SRGBColorSpace
+          renderer.grass!.material[i].map = texture
+          renderer.grass!.material[i].map!.colorSpace = SRGBColorSpace
 
-          renderer.blocks!.material[i].visible = true
-          renderer.blocks!.material[i].needsUpdate = true
+          renderer.grass!.material[i].visible = true
+          renderer.grass!.material[i].needsUpdate = true
         }
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
       })
 
       renderer.tLoader.load("grass-top.png", (texture: Texture) => {
-        renderer.blocks!.material[2].map = texture
-        renderer.blocks!.material[2].map.colorSpace = SRGBColorSpace
-        renderer.blocks!.material[2].visible = true
-        renderer.blocks!.material[2].needsUpdate = true
+        renderer.grass!.material[2].map = texture
+        renderer.grass!.material[2].map.colorSpace = SRGBColorSpace
+        renderer.grass!.material[2].visible = true
+        renderer.grass!.material[2].needsUpdate = true
 
         texture.magFilter = NearestFilter
         texture.minFilter = LinearMipMapNearestFilter
@@ -207,8 +207,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       // roughness map
       renderer.tLoader.load("dirt_norm.png", (texture: Texture) => {
         for (let i = 0; i < 6; i++) {
-          renderer.blocks!.material[i].roughnessMap = texture
-          renderer.blocks!.material[i].needsUpdate = true
+          renderer.grass!.material[i].roughnessMap = texture
+          renderer.grass!.material[i].needsUpdate = true
 
           renderer.leaf!.material[i].roughnessMap = texture
           renderer.leaf!.material[i].needsUpdate = true
