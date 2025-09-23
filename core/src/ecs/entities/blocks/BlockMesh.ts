@@ -1,4 +1,4 @@
-import { BlockTypeString, ClientSystemBuilder, logPerf } from "@piggo-gg/core"
+import { BlockTypeString, ClientSystemBuilder, GrassTexture, logPerf } from "@piggo-gg/core"
 import {
   BoxGeometry, Color, InstancedMesh, InstancedMeshEventMap, LinearMipMapNearestFilter,
   MeshPhysicalMaterial, NearestFilter, Object3D, SRGBColorSpace, Texture
@@ -19,30 +19,28 @@ export const BlockMeshSysten = ClientSystemBuilder({
 
     three.scene.add(grass, leaf, oak, spruce)
 
-    console.log("ADDED")
+    // three.tLoader.load("grass.png", (texture: Texture) => {
+    //   for (let i = 0; i < 6; i++) {
+    //     if (i === 2) continue
+    //     grass.material[i].map = texture
+    //     grass.material[i].map!.colorSpace = SRGBColorSpace
 
-    three.tLoader.load("grass.png", (texture: Texture) => {
-      for (let i = 0; i < 6; i++) {
-        if (i === 2) continue
-        grass.material[i].map = texture
-        grass.material[i].map!.colorSpace = SRGBColorSpace
+    //     grass.material[i].visible = true
+    //     grass.material[i].needsUpdate = true
+    //   }
+    //   texture.magFilter = NearestFilter
+    //   texture.minFilter = LinearMipMapNearestFilter
+    // })
 
-        grass.material[i].visible = true
-        grass.material[i].needsUpdate = true
-      }
-      texture.magFilter = NearestFilter
-      texture.minFilter = LinearMipMapNearestFilter
-    })
+    // three.tLoader.load("grass-top.png", (texture: Texture) => {
+    //   grass.material[2].map = texture
+    //   grass.material[2].map.colorSpace = SRGBColorSpace
+    //   grass.material[2].visible = true
+    //   grass.material[2].needsUpdate = true
 
-    three.tLoader.load("grass-top.png", (texture: Texture) => {
-      grass.material[2].map = texture
-      grass.material[2].map.colorSpace = SRGBColorSpace
-      grass.material[2].visible = true
-      grass.material[2].needsUpdate = true
-
-      texture.magFilter = NearestFilter
-      texture.minFilter = LinearMipMapNearestFilter
-    })
+    //   texture.magFilter = NearestFilter
+    //   texture.minFilter = LinearMipMapNearestFilter
+    // })
 
     return {
       id: "BlockMeshSystem",
@@ -59,8 +57,6 @@ export const BlockMeshSysten = ClientSystemBuilder({
 
           const neighbors = world.blocks.neighbors(playerChunk, 24)
           const chunkData = world.blocks.visible(neighbors)
-
-          // const { grass, spruce, oak, leaf } = world.three
 
           let spruceCount = 0
           let oakCount = 0
@@ -122,9 +118,15 @@ export const BlockMeshSysten = ClientSystemBuilder({
 export type BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial[], InstancedMeshEventMap>
 
 export const BlockMesh = (maxCount: number): BlockMesh => {
-  const mat = () => new MeshPhysicalMaterial({
-    vertexColors: false, visible: false, specularIntensity: 0.05, wireframe: false
-  })
+  const mat = () => {
+    const material = new MeshPhysicalMaterial({
+      vertexColors: false, visible: false, specularIntensity: 0.05, wireframe: false
+    })
+
+    GrassTexture(material)
+
+    return material
+  }
 
   const mesh = new InstancedMesh(
     new BoxGeometry(0.3, 0.3, 0.3),
