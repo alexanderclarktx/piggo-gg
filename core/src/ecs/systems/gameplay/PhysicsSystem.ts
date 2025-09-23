@@ -15,7 +15,6 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
     let bodies: Record<string, RigidBody> = {}
     let colliders: Map<Entity<Collider | Position>, Collider> = new Map()
 
-
     // set up physics
     RapierInit().then(() => physics = new RapierWorld({ x: 0, y: 0 }))
 
