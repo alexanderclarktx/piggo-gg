@@ -3,29 +3,28 @@ import { LinearMipMapNearestFilter, NearestFilter, SRGBColorSpace, Texture } fro
 
 export const GrassTexture = (mesh: BlockMesh, three: ThreeRenderer) => {
 
-  const materials = mesh.material
+  const { material } = mesh
 
   three.tLoader.load("grass.png", (texture: Texture) => {
     for (let i = 0; i < 6; i++) {
       if (i === 2) continue
-      materials[i].map = texture
-      materials[i].map!.colorSpace = SRGBColorSpace
+      material[i].map = texture
+      material[i].map!.colorSpace = SRGBColorSpace
 
-      materials[i].visible = true
-      materials[i].needsUpdate = true
+      material[i].visible = true
+      material[i].needsUpdate = true
     }
     texture.magFilter = NearestFilter
     texture.minFilter = LinearMipMapNearestFilter
   })
 
   three.tLoader.load("grass-top.png", (texture: Texture) => {
-    materials[2].map = texture
-    materials[2].map.colorSpace = SRGBColorSpace
-    materials[2].visible = true
-    materials[2].needsUpdate = true
+    material[2].map = texture
+    material[2].map.colorSpace = SRGBColorSpace
+    material[2].visible = true
+    material[2].needsUpdate = true
 
     texture.magFilter = NearestFilter
     texture.minFilter = LinearMipMapNearestFilter
   })
-
 }
