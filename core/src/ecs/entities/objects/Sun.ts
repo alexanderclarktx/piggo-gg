@@ -1,5 +1,5 @@
 import { colors, Entity, Position, Three } from "@piggo-gg/core"
-import { DirectionalLight, Mesh, MeshPhysicalMaterial, SphereGeometry } from "three"
+import { DirectionalLight, HemisphereLight, Mesh, MeshPhysicalMaterial, SphereGeometry } from "three"
 
 export const Sun = () => {
   const sun = Entity<Three>({
@@ -28,7 +28,9 @@ export const Sun = () => {
             })
           )
 
-          sun.components.three.o.push(light, sphere)
+          const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
+
+          sun.components.three.o.push(light, sphere, hemi)
         }
       })
     }

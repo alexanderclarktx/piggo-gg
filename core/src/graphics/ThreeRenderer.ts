@@ -1,9 +1,8 @@
 import {
-  CameraHelper, HemisphereLight, LinearMipMapNearestFilter,
-  Mesh, MeshPhysicalMaterial, NearestFilter, Scene, SphereGeometry,
-  SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  CameraHelper, LinearMipMapNearestFilter, Mesh, MeshPhysicalMaterial,
+  NearestFilter, Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { BlockMesh, colors, isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
+import { BlockMesh, isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
@@ -140,10 +139,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      // hemisphere light
-      const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
-      renderer.scene.add(hemi)
-
       // textures
 
       renderer.tLoader.load("grass.png", (texture: Texture) => {
@@ -243,39 +238,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
         world.onRender()
 
         webgl?.render(renderer.scene, renderer.camera.c)
-
-        // const hour = (world.tick / 30) % 24
-        // const angle = ((hour - 6) / 24) * Math.PI * 2 // full 24h cycle
-
-        const radius = 200
-
-        // height goes up and down
-        // const sunY = Math.sin(angle) * radius
-
-        // arc is projected onto diagonal axis (X=Z)
-        // const arc = Math.cos(angle) * radius
-        // sun.position.set(arc, sunY, arc)
-
-        // const hour = (world.tick / 30) % 24
-
-        // // move sun
-        // const sunHeight = cos((hour - 12) / 12 * PI) * 200
-        // const sunArc = cos((hour - 6) / 12 * PI) * -100 + 29
-
-        // sun.position.set(sunArc, sunHeight, sunArc)
-        // sunSphere.position.copy(sun.position)
-
-        // sun.visible = sunY > -10
-        // sunSphere.visible = sun.visible
-
-        // ambient light
-        // const daytime = abs(hour - 12)
-        // const bright = max(0, 2 - pow(daytime / 6, 2))
-        // hemi.intensity = 3 + bright * 2
-
-        // sun.intensity = 9 - bright * 3
-
-        // console.log(sun.intensity.toFixed(1), hemi.intensity.toFixed(1))
       })
     }
   }
