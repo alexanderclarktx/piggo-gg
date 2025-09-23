@@ -5,7 +5,7 @@ export const Sun = () => {
   const sun = Entity<Three>({
     id: "sun",
     components: {
-      position: Position({ x: 200, y: 200, z: 100}),
+      position: Position({ x: 200, y: 200, z: 100 }),
       three: Three({
         init: async () => {
           const light = new DirectionalLight(colors.evening, 9)
@@ -19,17 +19,16 @@ export const Sun = () => {
           light.shadow.camera.right = 20
           light.shadow.camera.top = 30
           light.shadow.camera.bottom = -30
-          // light.shadow.camera.updateProjectionMatrix()
 
-          const geometry = new SphereGeometry(8, 32, 32)
-          const sunSphereMaterial = new MeshPhysicalMaterial({
-            emissive: colors.evening,
-            emissiveIntensity: 1
-          })
-          const sunSphere = new Mesh(geometry, sunSphereMaterial)
-          sunSphere.position.copy(light.position)
+          const sphere = new Mesh(
+            new SphereGeometry(8, 32, 32),
+            new MeshPhysicalMaterial({
+              emissive: colors.evening,
+              emissiveIntensity: 1
+            })
+          )
 
-          sun.components.three.o.push(light, sunSphere)
+          sun.components.three.o.push(light, sphere)
         }
       })
     }
