@@ -26,6 +26,8 @@ export const BlockMeshSysten = ClientSystemBuilder({
       onTick: () => {
         let playerChunk = { x: 0, y: 0 }
 
+        if (world.blocks.needsUpdate()) rendered = false
+
         // todo chunk
 
         const t3 = performance.now()
