@@ -2,7 +2,8 @@ import {
   BlockPhysicsSystem, Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
-  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview, Sun
+  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview, Sun,
+  BlockMeshSysten
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
@@ -65,7 +66,8 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
       HUDSystem,
       D3NametagSystem,
       ThreeSystem,
-      InventorySystem
+      InventorySystem,
+      BlockMeshSysten
     ],
     entities: [
       Crosshair(),
@@ -279,67 +281,67 @@ const VillagersSystem = SystemBuilder({
         // }
 
         // render blocks (TODO slow) (possible to update just parts sections of the instance matrix?)
-        const t3 = performance.now()
-        if (!blocksRendered && world.mode === "client" && world.three?.grass) {
-          const dummy = new Object3D()
+        // const t3 = performance.now()
+        // if (!blocksRendered && world.mode === "client" && world.three?.grass) {
+        //   const dummy = new Object3D()
 
-          const neighbors = world.blocks.neighbors(playerChunk, 24)
-          const chunkData = world.blocks.visible(neighbors)
+        //   const neighbors = world.blocks.neighbors(playerChunk, 24)
+        //   const chunkData = world.blocks.visible(neighbors)
 
-          const { grass, spruce, oak, leaf } = world.three
+        //   const { grass, spruce, oak, leaf } = world.three
 
-          let spruceCount = 0
-          let oakCount = 0
-          let leafCount = 0
-          let otherCount = 0
+        //   let spruceCount = 0
+        //   let oakCount = 0
+        //   let leafCount = 0
+        //   let otherCount = 0
 
-          // for each block
-          for (let i = 0; i < chunkData.length; i++) {
-            const { x, y, z } = chunkData[i]
-            const type = BlockTypeString[chunkData[i].type]
+        //   // for each block
+        //   for (let i = 0; i < chunkData.length; i++) {
+        //     const { x, y, z } = chunkData[i]
+        //     const type = BlockTypeString[chunkData[i].type]
 
-            dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
-            dummy.updateMatrix()
+        //     dummy.position.set(x * 0.3, z * 0.3 + 0.15, y * 0.3)
+        //     dummy.updateMatrix()
 
-            if (type === "spruceLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x0099aa))
-              leaf?.setMatrixAt(leafCount, dummy.matrix)
-              leafCount++
-            } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x33dd77))
-              leaf?.setMatrixAt(leafCount, dummy.matrix)
-              leafCount++
-            } else if (type === "oak") {
-              oak!.setColorAt(oakCount, new Color(0xffaa99))
-              oak?.setMatrixAt(oakCount, dummy.matrix)
-              oakCount++
-            } else if (type === "spruce") {
-              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
-              spruce?.setMatrixAt(spruceCount, dummy.matrix)
-              spruceCount++
-            } else {
-              grass.setMatrixAt(otherCount, dummy.matrix)
-              otherCount++
-            }
-          }
+        //     if (type === "spruceLeaf") {
+        //       leaf!.setColorAt(leafCount, new Color(0x0099aa))
+        //       leaf?.setMatrixAt(leafCount, dummy.matrix)
+        //       leafCount++
+        //     } else if (type === "oakLeaf") {
+        //       leaf!.setColorAt(leafCount, new Color(0x33dd77))
+        //       leaf?.setMatrixAt(leafCount, dummy.matrix)
+        //       leafCount++
+        //     } else if (type === "oak") {
+        //       oak!.setColorAt(oakCount, new Color(0xffaa99))
+        //       oak?.setMatrixAt(oakCount, dummy.matrix)
+        //       oakCount++
+        //     } else if (type === "spruce") {
+        //       spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
+        //       spruce?.setMatrixAt(spruceCount, dummy.matrix)
+        //       spruceCount++
+        //     } else {
+        //       grass.setMatrixAt(otherCount, dummy.matrix)
+        //       otherCount++
+        //     }
+        //   }
 
-          grass.instanceMatrix.needsUpdate = true
-          spruce!.instanceMatrix.needsUpdate = true
-          oak!.instanceMatrix.needsUpdate = true
-          leaf!.instanceMatrix.needsUpdate = true
+        //   grass.instanceMatrix.needsUpdate = true
+        //   spruce!.instanceMatrix.needsUpdate = true
+        //   oak!.instanceMatrix.needsUpdate = true
+        //   leaf!.instanceMatrix.needsUpdate = true
 
-          if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
-          if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
-          if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
+        //   if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
+        //   if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
+        //   if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
 
-          world.three!.grass.count = otherCount
-          world.three!.leaf!.count = leafCount
-          world.three!.oak!.count = oakCount
-          world.three!.spruce!.count = spruceCount
+        //   world.three!.grass.count = otherCount
+        //   world.three!.leaf!.count = leafCount
+        //   world.three!.oak!.count = oakCount
+        //   world.three!.spruce!.count = spruceCount
 
-          blocksRendered = true
-        }
-        logPerf("render blocks", t3)
+        //   blocksRendered = true
+        // }
+        // logPerf("render blocks", t3)
       }
     }
   }

@@ -109,17 +109,17 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       if (renderer.ready) return
       renderer.ready = true
 
-      renderer.grass = BlockMesh(88000)
-      renderer.scene.add(renderer.grass)
+      // renderer.grass = BlockMesh(88000)
+      // renderer.scene.add(renderer.grass)
 
-      renderer.spruce = BlockMesh(5000)
-      renderer.scene.add(renderer.spruce)
+      // renderer.spruce = BlockMesh(5000)
+      // renderer.scene.add(renderer.spruce)
 
-      renderer.oak = BlockMesh(5000)
-      renderer.scene.add(renderer.oak)
+      // renderer.oak = BlockMesh(5000)
+      // renderer.scene.add(renderer.oak)
 
-      renderer.leaf = BlockMesh(5000)
-      renderer.scene.add(renderer.leaf)
+      // renderer.leaf = BlockMesh(5000)
+      // renderer.scene.add(renderer.leaf)
 
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
@@ -142,89 +142,66 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
 
       // textures
 
-      renderer.tLoader.load("grass.png", (texture: Texture) => {
-        for (let i = 0; i < 6; i++) {
-          if (i === 2) continue
-          renderer.grass!.material[i].map = texture
-          renderer.grass!.material[i].map!.colorSpace = SRGBColorSpace
+      // renderer.tLoader.load("dirt.png", (texture: Texture) => {
+      //   for (let i = 0; i < 6; i++) {
+      //     renderer.leaf!.material[i].map = texture
+      //     renderer.leaf!.material[i].map!.colorSpace = SRGBColorSpace
 
-          renderer.grass!.material[i].visible = true
-          renderer.grass!.material[i].needsUpdate = true
-        }
-        texture.magFilter = NearestFilter
-        texture.minFilter = LinearMipMapNearestFilter
-      })
+      //     renderer.leaf!.material[i].needsUpdate = true
+      //     renderer.leaf!.material[i].visible = true
+      //   }
 
-      renderer.tLoader.load("grass-top.png", (texture: Texture) => {
-        renderer.grass!.material[2].map = texture
-        renderer.grass!.material[2].map.colorSpace = SRGBColorSpace
-        renderer.grass!.material[2].visible = true
-        renderer.grass!.material[2].needsUpdate = true
+      //   texture.magFilter = NearestFilter
+      //   texture.minFilter = LinearMipMapNearestFilter
+      // })
 
-        texture.magFilter = NearestFilter
-        texture.minFilter = LinearMipMapNearestFilter
-      })
+      // renderer.tLoader.load("oak-log.png", (texture: Texture) => {
+      //   for (let i = 0; i < 6; i++) {
+      //     renderer.oak!.material[i].map = texture
+      //     renderer.oak!.material[i].map!.colorSpace = SRGBColorSpace
 
-      renderer.tLoader.load("dirt.png", (texture: Texture) => {
-        for (let i = 0; i < 6; i++) {
-          renderer.leaf!.material[i].map = texture
-          renderer.leaf!.material[i].map!.colorSpace = SRGBColorSpace
+      //     renderer.oak!.material[i].needsUpdate = true
+      //     renderer.oak!.material[i].visible = true
+      //   }
 
-          renderer.leaf!.material[i].needsUpdate = true
-          renderer.leaf!.material[i].visible = true
-        }
+      //   texture.magFilter = NearestFilter
+      //   texture.minFilter = LinearMipMapNearestFilter
+      // })
 
-        texture.magFilter = NearestFilter
-        texture.minFilter = LinearMipMapNearestFilter
-      })
+      // renderer.tLoader.load("spruce-log.png", (texture: Texture) => {
+      //   for (let i = 0; i < 6; i++) {
+      //     renderer.spruce!.material[i].map = texture
+      //     renderer.spruce!.material[i].map!.colorSpace = SRGBColorSpace
 
-      renderer.tLoader.load("oak-log.png", (texture: Texture) => {
-        for (let i = 0; i < 6; i++) {
-          renderer.oak!.material[i].map = texture
-          renderer.oak!.material[i].map!.colorSpace = SRGBColorSpace
+      //     renderer.spruce!.material[i].needsUpdate = true
+      //     renderer.spruce!.material[i].visible = true
+      //   }
 
-          renderer.oak!.material[i].needsUpdate = true
-          renderer.oak!.material[i].visible = true
-        }
+      //   texture.magFilter = NearestFilter
+      //   texture.minFilter = LinearMipMapNearestFilter
+      // })
 
-        texture.magFilter = NearestFilter
-        texture.minFilter = LinearMipMapNearestFilter
-      })
+      // // roughness map
+      // renderer.tLoader.load("dirt_norm.png", (texture: Texture) => {
+      //   for (let i = 0; i < 6; i++) {
+      //     renderer.grass!.material[i].roughnessMap = texture
+      //     renderer.grass!.material[i].needsUpdate = true
 
-      renderer.tLoader.load("spruce-log.png", (texture: Texture) => {
-        for (let i = 0; i < 6; i++) {
-          renderer.spruce!.material[i].map = texture
-          renderer.spruce!.material[i].map!.colorSpace = SRGBColorSpace
+      //     renderer.leaf!.material[i].roughnessMap = texture
+      //     renderer.leaf!.material[i].needsUpdate = true
+      //   }
+      // })
 
-          renderer.spruce!.material[i].needsUpdate = true
-          renderer.spruce!.material[i].visible = true
-        }
+      // // spruce roughness
+      // renderer.tLoader.load("spruce-norm.png", (texture: Texture) => {
+      //   for (let i = 0; i < 6; i++) {
+      //     renderer.spruce!.material[i].roughnessMap = texture
+      //     renderer.spruce!.material[i].needsUpdate = true
 
-        texture.magFilter = NearestFilter
-        texture.minFilter = LinearMipMapNearestFilter
-      })
-
-      // roughness map
-      renderer.tLoader.load("dirt_norm.png", (texture: Texture) => {
-        for (let i = 0; i < 6; i++) {
-          renderer.grass!.material[i].roughnessMap = texture
-          renderer.grass!.material[i].needsUpdate = true
-
-          renderer.leaf!.material[i].roughnessMap = texture
-          renderer.leaf!.material[i].needsUpdate = true
-        }
-      })
-
-      // spruce roughness
-      renderer.tLoader.load("spruce-norm.png", (texture: Texture) => {
-        for (let i = 0; i < 6; i++) {
-          renderer.spruce!.material[i].roughnessMap = texture
-          renderer.spruce!.material[i].needsUpdate = true
-
-          renderer.oak!.material[i].roughnessMap = texture
-          renderer.oak!.material[i].needsUpdate = true
-        }
-      })
+      //     renderer.oak!.material[i].roughnessMap = texture
+      //     renderer.oak!.material[i].needsUpdate = true
+      //   }
+      // })
 
       // prevent right-click
       renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
