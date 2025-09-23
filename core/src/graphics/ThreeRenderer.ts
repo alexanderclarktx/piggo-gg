@@ -3,7 +3,7 @@ import {
   Mesh, MeshPhysicalMaterial, NearestFilter, Scene, SphereGeometry,
   SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { BlockMesh, isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
+import { BlockMesh, colors, isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
@@ -143,8 +143,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       webgl.shadowMap.type = 2
 
       // hemisphere light
-      // const hemi = new HemisphereLight(0xaaaabb, evening, 3)
-      // renderer.scene.add(hemi)
+      const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
+      renderer.scene.add(hemi)
 
       // const sun = new DirectionalLight(evening, 9)
 

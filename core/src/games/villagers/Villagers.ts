@@ -2,7 +2,7 @@ import {
   BlockPhysicsSystem, Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
-  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
+  spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview, Sun
 } from "@piggo-gg/core"
 import { Color, Object3D } from "three"
 import { Bird } from "./Bird"
@@ -72,7 +72,8 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
       EscapeMenu(world),
       D3Profile(),
       Scoreboard(),
-      HtmlChat()
+      HtmlChat(),
+      Sun()
     ]
   })
 }
