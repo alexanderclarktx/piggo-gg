@@ -1,11 +1,11 @@
 import {
-  CameraHelper, DirectionalLight, Group, HemisphereLight, LinearMipMapNearestFilter,
-  Mesh, MeshPhysicalMaterial, NearestFilter, Object3DEventMap, Scene,
-  SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
+  CameraHelper, DirectionalLight, HemisphereLight, LinearMipMapNearestFilter,
+  Mesh, MeshPhysicalMaterial, NearestFilter, Scene, SphereGeometry,
+  SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { BlockMesh, ThreeCamera, isMobile, World, values } from "@piggo-gg/core"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { BlockMesh, isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const evening = 0xffd9c3
 
