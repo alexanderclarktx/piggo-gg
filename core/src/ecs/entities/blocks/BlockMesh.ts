@@ -80,9 +80,9 @@ export const BlockMeshSysten = ClientSystemBuilder({
           if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
 
           grass.count = otherCount
-          // world.three!.leaf!.count = leafCount
-          // world.three!.oak!.count = oakCount
-          // world.three!.spruce!.count = spruceCount
+          leaf.count = leafCount
+          oak.count = oakCount
+          spruce.count = spruceCount
 
           rendered = true
         }

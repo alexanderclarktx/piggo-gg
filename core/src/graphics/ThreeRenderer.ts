@@ -140,47 +140,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
-      // textures
-
-      // renderer.tLoader.load("dirt.png", (texture: Texture) => {
-      //   for (let i = 0; i < 6; i++) {
-      //     renderer.leaf!.material[i].map = texture
-      //     renderer.leaf!.material[i].map!.colorSpace = SRGBColorSpace
-
-      //     renderer.leaf!.material[i].needsUpdate = true
-      //     renderer.leaf!.material[i].visible = true
-      //   }
-
-      //   texture.magFilter = NearestFilter
-      //   texture.minFilter = LinearMipMapNearestFilter
-      // })
-
-      // renderer.tLoader.load("oak-log.png", (texture: Texture) => {
-      //   for (let i = 0; i < 6; i++) {
-      //     renderer.oak!.material[i].map = texture
-      //     renderer.oak!.material[i].map!.colorSpace = SRGBColorSpace
-
-      //     renderer.oak!.material[i].needsUpdate = true
-      //     renderer.oak!.material[i].visible = true
-      //   }
-
-      //   texture.magFilter = NearestFilter
-      //   texture.minFilter = LinearMipMapNearestFilter
-      // })
-
-      // renderer.tLoader.load("spruce-log.png", (texture: Texture) => {
-      //   for (let i = 0; i < 6; i++) {
-      //     renderer.spruce!.material[i].map = texture
-      //     renderer.spruce!.material[i].map!.colorSpace = SRGBColorSpace
-
-      //     renderer.spruce!.material[i].needsUpdate = true
-      //     renderer.spruce!.material[i].visible = true
-      //   }
-
-      //   texture.magFilter = NearestFilter
-      //   texture.minFilter = LinearMipMapNearestFilter
-      // })
-
       // // roughness map
       // renderer.tLoader.load("dirt_norm.png", (texture: Texture) => {
       //   for (let i = 0; i < 6; i++) {
