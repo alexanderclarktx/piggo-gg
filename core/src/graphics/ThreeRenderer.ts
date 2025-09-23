@@ -12,6 +12,7 @@ export type ThreeRenderer = {
   oak: undefined | BlockMesh
   leaf: undefined | BlockMesh
   blocks: undefined | BlockMesh
+
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
 
   canvas: HTMLCanvasElement
