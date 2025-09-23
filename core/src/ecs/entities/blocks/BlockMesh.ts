@@ -7,6 +7,11 @@ export const BlockMeshSysten = ClientSystemBuilder({
   id: "BlockMeshSystem",
   init: () => {
 
+    let spruce: undefined | BlockMesh = undefined
+    let oak: undefined | BlockMesh = undefined
+    let leaf: undefined | BlockMesh = undefined
+    let grass: undefined | BlockMesh = undefined
+
     return {
       id: "BlockMeshSystem",
       query: [],
