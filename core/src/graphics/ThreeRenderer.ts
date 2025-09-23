@@ -7,8 +7,6 @@ import { BlockMesh, isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
-const evening = 0xffd9c3
-
 export type ThreeRenderer = {
 
   spruce: undefined | BlockMesh
@@ -16,7 +14,7 @@ export type ThreeRenderer = {
   leaf: undefined | BlockMesh
   blocks: undefined | BlockMesh
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
-  sun: undefined | DirectionalLight
+  // sun: undefined | DirectionalLight
 
   canvas: HTMLCanvasElement
   camera: ThreeCamera
@@ -52,7 +50,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     blocks: undefined,
     debug: false,
     ready: false,
-    sun: undefined,
+    // sun: undefined,
     fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
@@ -91,11 +89,11 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
 
       renderer.debug = state
 
-      if (!webgl || !renderer.sun) return
+      if (!webgl) return
 
       if (renderer.debug) {
-        helper = new CameraHelper(renderer.sun.shadow.camera)
-        renderer.scene.add(helper)
+        // helper = new CameraHelper(renderer.sun.shadow.camera)
+        // renderer.scene.add(helper)
         renderer.sphere!.material.opacity = 1
       } else if (!renderer.debug && helper) {
         renderer.scene.remove(helper)
@@ -145,27 +143,27 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       webgl.shadowMap.type = 2
 
       // hemisphere light
-      const hemi = new HemisphereLight(0xaaaabb, evening, 3)
-      renderer.scene.add(hemi)
+      // const hemi = new HemisphereLight(0xaaaabb, evening, 3)
+      // renderer.scene.add(hemi)
 
-      const sun = new DirectionalLight(evening, 9)
+      // const sun = new DirectionalLight(evening, 9)
 
-      renderer.sun = sun
-      renderer.scene.add(sun)
+      // renderer.sun = sun
+      // renderer.scene.add(sun)
 
-      sun.position.set(200, 100, 200)
-      sun.shadow.normalBias = 0.02
-      sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
-      sun.castShadow = true
+      // sun.position.set(200, 100, 200)
+      // sun.shadow.normalBias = 0.02
+      // sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
+      // sun.castShadow = true
 
-      // renderer.sun.target = renderer.sphere
+      // // renderer.sun.target = renderer.sphere
 
-      // widen the shadow
-      sun.shadow.camera.left = -20
-      sun.shadow.camera.right = 20
-      sun.shadow.camera.top = 30
-      sun.shadow.camera.bottom = -30
-      sun.shadow.camera.updateProjectionMatrix()
+      // // widen the shadow
+      // sun.shadow.camera.left = -20
+      // sun.shadow.camera.right = 20
+      // sun.shadow.camera.top = 30
+      // sun.shadow.camera.bottom = -30
+      // sun.shadow.camera.updateProjectionMatrix()
 
       // textures
 
@@ -253,14 +251,14 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
         }
       })
 
-      const sunSphereGeometry = new SphereGeometry(8, 32, 32)
-      const sunSphereMaterial = new MeshPhysicalMaterial({
-        emissive: evening,
-        emissiveIntensity: 1
-      })
-      const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
-      sunSphere.position.copy(sun.position)
-      renderer.scene.add(sunSphere)
+      // const sunSphereGeometry = new SphereGeometry(8, 32, 32)
+      // const sunSphereMaterial = new MeshPhysicalMaterial({
+      //   emissive: evening,
+      //   emissiveIntensity: 1
+      // })
+      // const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
+      // sunSphere.position.copy(sun.position)
+      // renderer.scene.add(sunSphere)
 
       // prevent right-click
       renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
