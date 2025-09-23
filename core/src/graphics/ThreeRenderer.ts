@@ -11,7 +11,6 @@ export type ThreeRenderer = {
 
   canvas: HTMLCanvasElement
   camera: ThreeCamera
-  debug: boolean
   fLoader: FBXLoader
   gLoader: GLTFLoader
   tLoader: TextureLoader
@@ -19,7 +18,6 @@ export type ThreeRenderer = {
   scene: Scene
 
   append: (...elements: HTMLElement[]) => void
-  setDebug: (state?: boolean) => void
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
@@ -37,7 +35,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     camera: ThreeCamera(),
     scene: new Scene(),
     // sphere: undefined,
-    debug: false,
     ready: false,
     fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),
@@ -71,13 +68,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
         el.remove()
       }
     },
-    setDebug: (state?: boolean) => {
-      if (state === undefined) state = !renderer.debug
-      if (renderer.debug === state) return
-
-      renderer.debug = state
-
-      if (!webgl) return
+    // setDebug: (state?: boolean) => {
 
       // if (renderer.debug) {
       //   // helper = new CameraHelper(renderer.sun.shadow.camera)
@@ -88,7 +79,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       //   helper = undefined
       //   renderer.sphere!.material.opacity = 0
       // }
-    },
+    // },
     pointerLock: () => {
       document.body.requestPointerLock({ unadjustedMovement: true })
     },
