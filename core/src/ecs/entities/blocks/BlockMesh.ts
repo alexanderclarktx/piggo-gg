@@ -1,4 +1,4 @@
-import { BlockTypeString, ClientSystemBuilder, GrassTexture, logPerf } from "@piggo-gg/core"
+import { BlockTypeString, ClientSystemBuilder, GrassTexture, logPerf, ThreeRenderer } from "@piggo-gg/core"
 import {
   BoxGeometry, Color, InstancedMesh, InstancedMeshEventMap, LinearMipMapNearestFilter,
   MeshPhysicalMaterial, NearestFilter, Object3D, SRGBColorSpace, Texture
@@ -10,10 +10,10 @@ export const BlockMeshSysten = ClientSystemBuilder({
     const { three } = world
     if (!three) return
 
-    let grass = BlockMesh(88000)
-    let leaf = BlockMesh(5000)
-    let oak = BlockMesh(5000)
-    let spruce = BlockMesh(5000)
+    let grass = BlockMesh(88000, three)
+    let leaf = BlockMesh(5000, three)
+    let oak = BlockMesh(5000, three)
+    let spruce = BlockMesh(5000, three)
 
     let rendered = false
 
@@ -117,22 +117,18 @@ export const BlockMeshSysten = ClientSystemBuilder({
 
 export type BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial[], InstancedMeshEventMap>
 
-export const BlockMesh = (maxCount: number): BlockMesh => {
-  const mat = () => {
-    const material = new MeshPhysicalMaterial({
-      vertexColors: false, visible: false, specularIntensity: 0.05, wireframe: false
-    })
-
-    GrassTexture(material)
-
-    return material
-  }
+export const BlockMesh = (maxCount: number, renderer: ThreeRenderer): BlockMesh => {
+  const mat = () => new MeshPhysicalMaterial({
+    vertexColors: false, visible: false, specularIntensity: 0.05, wireframe: false
+  })
 
   const mesh = new InstancedMesh(
     new BoxGeometry(0.3, 0.3, 0.3),
     [mat(), mat(), mat(), mat(), mat(), mat()],
     maxCount
   )
+
+  GrassTexture(mesh.material, renderer)
 
   mesh.castShadow = true
   mesh.receiveShadow = true
