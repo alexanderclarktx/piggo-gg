@@ -84,9 +84,6 @@ const VillagersSystem = SystemBuilder({
   init: (world) => {
     spawnTerrain(world, 24)
 
-    // const sky = Sky()
-    // world.three?.scene.add(sky.mesh)
-
     const mobileUI = MobileUI(world)
 
     const preview = BlockPreview(world)
@@ -106,9 +103,6 @@ const VillagersSystem = SystemBuilder({
         const { sound } = world.client ?? {}
 
         mobileUI?.update()
-
-        // 0 to 24
-        // sky.material.uniforms.uTime.value = (world.tick / 30) % 24
 
         const pc = world.client?.character()
         if (pc && preview) preview.update(world.three!.camera.pos(), world.three!.camera.dir(world))
