@@ -128,7 +128,7 @@ export const BlockMesh = (maxCount: number, renderer: ThreeRenderer): BlockMesh 
     maxCount
   )
 
-  GrassTexture(mesh.material, renderer)
+  GrassTexture(mesh, renderer)
 
   mesh.castShadow = true
   mesh.receiveShadow = true
