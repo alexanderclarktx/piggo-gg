@@ -47,7 +47,7 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
         if (!world.three) return
 
         for (const entity of entities) {
-          const { three, position } = entity.components
+          const { three } = entity.components
 
           if (three.init && !three.initialized) {
             if (rendered[entity.id]) {
@@ -66,8 +66,6 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
               rendered[entity.id].push(o)
               world.three?.scene.add(o)
             }
-
-            // o.position.set(position.data.x, position.data.z, position.data.y)
           }
         }
       },
