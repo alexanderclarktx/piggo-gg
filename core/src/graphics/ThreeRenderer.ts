@@ -1,17 +1,12 @@
-import {
-  CameraHelper, LinearMipMapNearestFilter, Mesh, MeshPhysicalMaterial,
-  NearestFilter, Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
-} from "three"
 import { isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
+import {
+  CameraHelper, Mesh, MeshPhysicalMaterial, Scene,
+  SphereGeometry, TextureLoader, WebGLRenderer
+} from "three"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 export type ThreeRenderer = {
-
-  // spruce: undefined | BlockMesh
-  // oak: undefined | BlockMesh
-  // leaf: undefined | BlockMesh
-  // grass: undefined | BlockMesh
 
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
 
@@ -43,10 +38,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     camera: ThreeCamera(),
     scene: new Scene(),
     sphere: undefined,
-    // oak: undefined,
-    // spruce: undefined,
-    // leaf: undefined,
-    // grass: undefined,
     debug: false,
     ready: false,
     fLoader: new FBXLoader(),
@@ -109,18 +100,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       if (renderer.ready) return
       renderer.ready = true
 
-      // renderer.grass = BlockMesh(88000)
-      // renderer.scene.add(renderer.grass)
-
-      // renderer.spruce = BlockMesh(5000)
-      // renderer.scene.add(renderer.spruce)
-
-      // renderer.oak = BlockMesh(5000)
-      // renderer.scene.add(renderer.oak)
-
-      // renderer.leaf = BlockMesh(5000)
-      // renderer.scene.add(renderer.leaf)
-
       renderer.sphere = new Mesh(
         new SphereGeometry(0.05),
         new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: false, transparent: true, opacity: 0 }),
@@ -148,17 +127,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
 
       //     renderer.leaf!.material[i].roughnessMap = texture
       //     renderer.leaf!.material[i].needsUpdate = true
-      //   }
-      // })
-
-      // // spruce roughness
-      // renderer.tLoader.load("spruce-norm.png", (texture: Texture) => {
-      //   for (let i = 0; i < 6; i++) {
-      //     renderer.spruce!.material[i].roughnessMap = texture
-      //     renderer.spruce!.material[i].needsUpdate = true
-
-      //     renderer.oak!.material[i].roughnessMap = texture
-      //     renderer.oak!.material[i].needsUpdate = true
       //   }
       // })
 
