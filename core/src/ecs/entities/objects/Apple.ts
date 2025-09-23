@@ -2,16 +2,14 @@ import {
   VillagersState, Entity, Networked, NPC, Position,
   World, XYZ, XYZdistance, XYZequal, Three
 } from "@piggo-gg/core"
-import { Group, Mesh } from "three"
+import { Mesh } from "three"
 
-export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
+export const Apple = ({ id }: { id: string }): Entity<Position> => {
 
   let eaten = false
 
   let treeIndex: number = -1
   let tree: XYZ = { x: 0, y: 0, z: 0 }
-
-  let mesh: Group | undefined = undefined
 
   const randomSpot = (world: World): XYZ => {
     treeIndex = world.random.int(world.trees.length - 1)

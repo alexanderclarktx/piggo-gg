@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, D3Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
+  BlockPhysicsSystem, Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, BlockTypeString, GameBuilder,
   spawnTerrain, EscapeMenu, ThreeSystem, InventorySystem, BlockPreview
@@ -264,7 +264,7 @@ const VillagersSystem = SystemBuilder({
         // spawn apples
         if (!applesSpawned) {
           for (let i = 0; i < 25; i++) {
-            world.addEntity(D3Apple({ id: `d3apple-${1 + i}` }))
+            world.addEntity(Apple({ id: `d3apple-${1 + i}` }))
           }
           applesSpawned = true
         }
