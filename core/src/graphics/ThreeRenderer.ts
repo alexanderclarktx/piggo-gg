@@ -10,7 +10,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 const evening = 0xffd9c3
 
 export type ThreeRenderer = {
-  apple: undefined | Group<Object3DEventMap>
+  // apple: undefined | Group<Object3DEventMap>
   spruce: undefined | BlockMesh
   oak: undefined | BlockMesh
   leaf: undefined | BlockMesh
@@ -40,7 +40,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
   let helper: undefined | CameraHelper
 
   const renderer: ThreeRenderer = {
-    apple: undefined,
+    // apple: undefined,
     canvas: c,
     camera: ThreeCamera(),
     scene: new Scene(),
@@ -261,18 +261,18 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       sunSphere.position.copy(sun.position)
       renderer.scene.add(sunSphere)
 
-      renderer.gLoader.load("apple.glb", (apple) => {
-        apple.scene.scale.set(0.16, 0.16, 0.16)
+      // renderer.gLoader.load("apple.glb", (apple) => {
+      //   apple.scene.scale.set(0.16, 0.16, 0.16)
 
-        renderer.apple = apple.scene
+      //   // renderer.apple = apple.scene
 
-        apple.scene.traverse((child) => {
-          if (child instanceof Mesh) {
-            child.castShadow = true
-            child.receiveShadow = true
-          }
-        })
-      })
+      //   apple.scene.traverse((child) => {
+      //     if (child instanceof Mesh) {
+      //       child.castShadow = true
+      //       child.receiveShadow = true
+      //     }
+      //   })
+      // })
 
       // prevent right-click
       renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())

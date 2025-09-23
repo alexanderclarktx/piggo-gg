@@ -1,5 +1,8 @@
-import { VillagersState, Entity, Networked, NPC, Position, World, XYZ, XYZdistance, XYZequal } from "@piggo-gg/core"
-import { Group } from "three"
+import {
+  VillagersState, Entity, Networked, NPC, Position,
+  World, XYZ, XYZdistance, XYZequal, Three
+} from "@piggo-gg/core"
+import { Group, Mesh } from "three"
 
 export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
 
@@ -28,11 +31,27 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
     return { x: tree.x + randomSpot.x, y: tree.y + randomSpot.y, z: tree.z + randomSpot.z }
   }
 
-  const apple = Entity<Position>({
+  const apple = Entity<Position | Three>({
     id,
     components: {
       position: Position(),
       networked: Networked(),
+      three: Three({
+        init: async (entity, __, renderer) => {
+          renderer.gLoader.load("apple.glb", (apple) => {
+            apple.scene.scale.set(0.16, 0.16, 0.16)
+
+            entity.components.three.o.push(apple.scene)
+
+            apple.scene.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.castShadow = true
+                child.receiveShadow = true
+              }
+            })
+          })
+        }
+      }),
       npc: NPC({
         behavior: (_, world) => {
           // relocate the apple
@@ -41,15 +60,8 @@ export const D3Apple = ({ id }: { id: string }): Entity<Position> => {
             eaten = false
           }
 
-          // render the apple
-          if (!mesh && world.three?.apple) {
-            mesh = world.three.apple.clone(true)
-            world.three.scene.add(mesh)
-          }
-
           // set mesh position
           const { x, y, z } = apple.components.position.data
-          mesh?.position.set(x, z, y)
 
           // check if eaten
           for (const player of world.players()) {
