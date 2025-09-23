@@ -111,6 +111,7 @@ export const InputSystem = ClientSystemBuilder({
             pc.components.input.inputMap.release[key]?.({
               mouse, aim: localAim(), entity: pc, world, tick: world.tick, hold: down.hold, client
             })
+            client.bufferDown.remove(key)
             return
           }
         }
