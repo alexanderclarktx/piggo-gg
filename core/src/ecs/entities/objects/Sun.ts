@@ -28,6 +28,9 @@ export const Sun = () => {
             })
           )
 
+          light.position.set(200, 100, 200)
+          sphere.position.set(200, 100, 200)
+
           const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
 
           sun.components.three.o.push(light, sphere, hemi)

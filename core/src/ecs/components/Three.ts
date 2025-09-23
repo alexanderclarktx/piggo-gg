@@ -67,7 +67,7 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
               world.three?.scene.add(o)
             }
 
-            o.position.set(position.data.x, position.data.z, position.data.y)
+            // o.position.set(position.data.x, position.data.z, position.data.y)
           }
         }
       },
