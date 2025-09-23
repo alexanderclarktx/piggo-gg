@@ -1,40 +1,50 @@
-import {
-  Clock, Color, Mesh, ShaderMaterial, SphereGeometry
-} from "three"
+import { Entity, Position, Three } from "@piggo-gg/core"
+import { Clock, Color, Mesh, ShaderMaterial, SphereGeometry } from "three"
 
-type Sky = { mesh: Mesh, material: ShaderMaterial, update: () => void }
+export const Sky = () => {
 
-export const Sky = (): Sky => {
-  const geo = new SphereGeometry(500, 60, 40)
+  const sky = Entity<Three>({
+    id: "sky",
+    components: {
+      position: Position(),
+      three: Three({
+        init: async () => {
+          const geo = new SphereGeometry(500, 60, 40)
 
-  const material = new ShaderMaterial({
-    uniforms: {
-      uTime: { value: 0.0 },
-      uDensity: { value: 0.0015 },
-      uBrightness: { value: 0.9 },
-      uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
-      uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
-      uCloudDensity: { value: 0.9 },
-      uCloudSpeed: { value: 0.05 }
-    },
-    vertexShader,
-    fragmentShader,
-    side: 1,
-    depthWrite: false,
-    depthTest: true,
-    fog: false,
-    toneMapped: true
+          const material = new ShaderMaterial({
+            uniforms: {
+              uTime: { value: 0.0 },
+              uDensity: { value: 0.0015 },
+              uBrightness: { value: 0.9 },
+              uHorizon: { value: new Color(0x000044).toArray().slice(0, 3) },
+              uZenith: { value: new Color(0x000000).toArray().slice(0, 3) },
+              uCloudDensity: { value: 0.9 },
+              uCloudSpeed: { value: 0.05 }
+            },
+            vertexShader,
+            fragmentShader,
+            side: 1,
+            depthWrite: false,
+            depthTest: true,
+            fog: false,
+            toneMapped: true
+          })
+
+          const mesh = new Mesh(geo, material)
+          mesh.frustumCulled = false
+
+          const clock = new Clock()
+          const update = () => {
+            material.uniforms.uTime.value = clock.getElapsedTime()
+          }
+
+          sky.components.three.o.push(mesh)
+        }
+      })
+    }
   })
 
-  const mesh = new Mesh(geo, material)
-  mesh.frustumCulled = false
-
-  const clock = new Clock()
-  const update = () => {
-    material.uniforms.uTime.value = clock.getElapsedTime()
-  }
-
-  return { mesh, material, update }
+  return sky
 }
 
 const vertexShader = /* glsl */`
