@@ -2,16 +2,16 @@ import {
   CameraHelper, LinearMipMapNearestFilter, Mesh, MeshPhysicalMaterial,
   NearestFilter, Scene, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
-import { BlockMesh, isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
+import { isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 export type ThreeRenderer = {
 
-  spruce: undefined | BlockMesh
-  oak: undefined | BlockMesh
-  leaf: undefined | BlockMesh
-  grass: undefined | BlockMesh
+  // spruce: undefined | BlockMesh
+  // oak: undefined | BlockMesh
+  // leaf: undefined | BlockMesh
+  // grass: undefined | BlockMesh
 
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
 
@@ -43,10 +43,10 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     camera: ThreeCamera(),
     scene: new Scene(),
     sphere: undefined,
-    oak: undefined,
-    spruce: undefined,
-    leaf: undefined,
-    grass: undefined,
+    // oak: undefined,
+    // spruce: undefined,
+    // leaf: undefined,
+    // grass: undefined,
     debug: false,
     ready: false,
     fLoader: new FBXLoader(),

@@ -1,6 +1,22 @@
+import { ClientSystemBuilder } from "@piggo-gg/core"
 import {
   BoxGeometry, InstancedMesh, InstancedMeshEventMap, MeshPhysicalMaterial
 } from "three"
+
+export const BlockMeshSysten = ClientSystemBuilder({
+  id: "BlockMeshSystem",
+  init: () => {
+
+    return {
+      id: "BlockMeshSystem",
+      query: [],
+      priority: 10,
+      onTick: () => {
+
+      }
+    }
+  }
+})
 
 export type BlockMesh = InstancedMesh<BoxGeometry, MeshPhysicalMaterial[], InstancedMeshEventMap>
 
