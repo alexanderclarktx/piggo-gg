@@ -1,8 +1,8 @@
-import { BlockTypeString, ClientSystemBuilder, GrassTexture, LeafTexture, logPerf, OakTexture, SpruceTexture, ThreeRenderer } from "@piggo-gg/core"
 import {
-  BoxGeometry, Color, InstancedMesh, InstancedMeshEventMap,
-  MeshPhysicalMaterial, Object3D
-} from "three"
+  BlockTypeString, ClientSystemBuilder, GrassTexture,
+  LeafTexture, logPerf, OakTexture, SpruceTexture
+} from "@piggo-gg/core"
+import { BoxGeometry, Color, InstancedMesh, InstancedMeshEventMap, MeshPhysicalMaterial, Object3D } from "three"
 
 export const BlockMeshSysten = ClientSystemBuilder({
   id: "BlockMeshSystem",
