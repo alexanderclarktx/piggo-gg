@@ -1,5 +1,5 @@
 import {
-  CameraHelper, DirectionalLight, HemisphereLight, LinearMipMapNearestFilter,
+  CameraHelper, HemisphereLight, LinearMipMapNearestFilter,
   Mesh, MeshPhysicalMaterial, NearestFilter, Scene, SphereGeometry,
   SRGBColorSpace, Texture, TextureLoader, WebGLRenderer
 } from "three"
@@ -14,7 +14,6 @@ export type ThreeRenderer = {
   leaf: undefined | BlockMesh
   blocks: undefined | BlockMesh
   sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
-  // sun: undefined | DirectionalLight
 
   canvas: HTMLCanvasElement
   camera: ThreeCamera
@@ -50,7 +49,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     blocks: undefined,
     debug: false,
     ready: false,
-    // sun: undefined,
     fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
@@ -146,25 +144,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
       renderer.scene.add(hemi)
 
-      // const sun = new DirectionalLight(evening, 9)
-
-      // renderer.sun = sun
-      // renderer.scene.add(sun)
-
-      // sun.position.set(200, 100, 200)
-      // sun.shadow.normalBias = 0.02
-      // sun.shadow.mapSize.set(2048 * 2, 2048 * 2)
-      // sun.castShadow = true
-
-      // // renderer.sun.target = renderer.sphere
-
-      // // widen the shadow
-      // sun.shadow.camera.left = -20
-      // sun.shadow.camera.right = 20
-      // sun.shadow.camera.top = 30
-      // sun.shadow.camera.bottom = -30
-      // sun.shadow.camera.updateProjectionMatrix()
-
       // textures
 
       renderer.tLoader.load("grass.png", (texture: Texture) => {
@@ -250,15 +229,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
           renderer.oak!.material[i].needsUpdate = true
         }
       })
-
-      // const sunSphereGeometry = new SphereGeometry(8, 32, 32)
-      // const sunSphereMaterial = new MeshPhysicalMaterial({
-      //   emissive: evening,
-      //   emissiveIntensity: 1
-      // })
-      // const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
-      // sunSphere.position.copy(sun.position)
-      // renderer.scene.add(sunSphere)
 
       // prevent right-click
       renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
