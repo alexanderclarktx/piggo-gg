@@ -1,22 +1,16 @@
 import { isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
-import {
-  CameraHelper, Scene, TextureLoader, WebGLRenderer
-} from "three"
+import { Scene, TextureLoader, WebGLRenderer } from "three"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 export type ThreeRenderer = {
-
-  // sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
-
-  canvas: HTMLCanvasElement
   camera: ThreeCamera
+  canvas: HTMLCanvasElement
   fLoader: FBXLoader
   gLoader: GLTFLoader
-  tLoader: TextureLoader
   ready: boolean
   scene: Scene
-
+  tLoader: TextureLoader
   append: (...elements: HTMLElement[]) => void
   activate: (world: World) => void
   deactivate: () => void
@@ -28,13 +22,11 @@ export type ThreeRenderer = {
 export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
 
   let webgl: undefined | WebGLRenderer
-  let helper: undefined | CameraHelper
 
   const renderer: ThreeRenderer = {
     canvas: c,
     camera: ThreeCamera(),
     scene: new Scene(),
-    // sphere: undefined,
     ready: false,
     fLoader: new FBXLoader(),
     gLoader: new GLTFLoader(),
@@ -68,18 +60,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
         el.remove()
       }
     },
-    // setDebug: (state?: boolean) => {
-
-      // if (renderer.debug) {
-      //   // helper = new CameraHelper(renderer.sun.shadow.camera)
-      //   // renderer.scene.add(helper)
-      //   renderer.sphere!.material.opacity = 1
-      // } else if (!renderer.debug && helper) {
-      //   renderer.scene.remove(helper)
-      //   helper = undefined
-      //   renderer.sphere!.material.opacity = 0
-      // }
-    // },
     pointerLock: () => {
       document.body.requestPointerLock({ unadjustedMovement: true })
     },
@@ -89,24 +69,14 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     activate: (world: World) => {
       if (renderer.ready) return
 
-      renderer.ready = true
-
-      // renderer.sphere = new Mesh(
-      //   new SphereGeometry(0.05),
-      //   new MeshPhysicalMaterial({ color: 0x00ffff, wireframe: false, transparent: true, opacity: 0 }),
-      // )
-      // renderer.scene.add(renderer.sphere)
-
       webgl = new WebGLRenderer({
         antialias: true,
         canvas: renderer.canvas,
         powerPreference: "high-performance",
         precision: "highp"
       })
+
       webgl.setPixelRatio(window.devicePixelRatio)
-
-      renderer.resize()
-
       webgl.shadowMap.enabled = true
       webgl.shadowMap.type = 2
 
@@ -124,6 +94,10 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
 
         webgl?.render(renderer.scene, renderer.camera.c)
       })
+
+      renderer.resize()
+
+      renderer.ready = true
     }
   }
   return renderer
