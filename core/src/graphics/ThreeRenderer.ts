@@ -10,11 +10,14 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 const evening = 0xffd9c3
 
 export type ThreeRenderer = {
-  // apple: undefined | Group<Object3DEventMap>
+
   spruce: undefined | BlockMesh
   oak: undefined | BlockMesh
   leaf: undefined | BlockMesh
   blocks: undefined | BlockMesh
+  sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
+  sun: undefined | DirectionalLight
+
   canvas: HTMLCanvasElement
   camera: ThreeCamera
   debug: boolean
@@ -23,8 +26,7 @@ export type ThreeRenderer = {
   tLoader: TextureLoader
   ready: boolean
   scene: Scene
-  sphere: undefined | Mesh<SphereGeometry, MeshPhysicalMaterial>
-  sun: undefined | DirectionalLight
+
   append: (...elements: HTMLElement[]) => void
   setDebug: (state?: boolean) => void
   activate: (world: World) => void
@@ -40,7 +42,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
   let helper: undefined | CameraHelper
 
   const renderer: ThreeRenderer = {
-    // apple: undefined,
     canvas: c,
     camera: ThreeCamera(),
     scene: new Scene(),
@@ -260,19 +261,6 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       const sunSphere = new Mesh(sunSphereGeometry, sunSphereMaterial)
       sunSphere.position.copy(sun.position)
       renderer.scene.add(sunSphere)
-
-      // renderer.gLoader.load("apple.glb", (apple) => {
-      //   apple.scene.scale.set(0.16, 0.16, 0.16)
-
-      //   // renderer.apple = apple.scene
-
-      //   apple.scene.traverse((child) => {
-      //     if (child instanceof Mesh) {
-      //       child.castShadow = true
-      //       child.receiveShadow = true
-      //     }
-      //   })
-      // })
 
       // prevent right-click
       renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
