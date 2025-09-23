@@ -1,7 +1,9 @@
-import { ThreeRenderer } from "@piggo-gg/core"
-import { LinearMipMapNearestFilter, MeshPhysicalMaterial, NearestFilter, SRGBColorSpace, Texture } from "three"
+import { BlockMesh, ThreeRenderer } from "@piggo-gg/core"
+import { LinearMipMapNearestFilter, NearestFilter, SRGBColorSpace, Texture } from "three"
 
-export const GrassTexture = (materials: MeshPhysicalMaterial[], three: ThreeRenderer) => {
+export const GrassTexture = (mesh: BlockMesh, three: ThreeRenderer) => {
+
+  const materials = mesh.material
 
   three.tLoader.load("grass.png", (texture: Texture) => {
     for (let i = 0; i < 6; i++) {
