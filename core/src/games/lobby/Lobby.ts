@@ -23,7 +23,7 @@ export const Lobby: GameBuilder = {
     entities: [
       Background({ moving: true, rays: true }),
       Cursor(),
-      PixiChat(),
+      // PixiChat(),
       // Friends(),
       Profile(),
       // SignupCTA(),

@@ -19,7 +19,7 @@ export type PixiRenderer = {
 
 export const PixiRenderer = (): PixiRenderer => {
 
-  const app = new Application()
+  let app = new Application()
 
   const renderer: PixiRenderer = {
     app,
@@ -41,8 +41,7 @@ export const PixiRenderer = (): PixiRenderer => {
       if (!renderer.ready) return
       renderer.ready = false
 
-      app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
-
+      app.destroy({ removeView: false }, { children: true, texture: true, context: true, style: true, textureSource: true })
       // world.pixi = undefined
     },
     handleResize: () => {
@@ -67,6 +66,11 @@ export const PixiRenderer = (): PixiRenderer => {
       newCanvas.id = "canvas"
       canvas.replaceWith(newCanvas)
       renderer.canvas = newCanvas
+
+      app = new Application()
+      renderer.app = app
+
+      renderer.camera = PixiCamera(app)
 
       // create the pixi.js application
       await app.init({
@@ -99,11 +103,12 @@ export const PixiRenderer = (): PixiRenderer => {
       screen?.orientation?.addEventListener("change", () => renderer.handleResize)
 
       // prevent right-click
-      renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+      renderer.canvas?.addEventListener("contextmenu", (event) => event.preventDefault())
 
       // schedule onRender
       app.ticker.add(world.onRender)
 
+      console.log("PIXI ACTIVATED")
       renderer.ready = true
     },
     setBgColor: (color: number) => {
