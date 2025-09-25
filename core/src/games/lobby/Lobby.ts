@@ -7,7 +7,7 @@ import {
 import { Container, Sprite, Text } from "pixi.js"
 
 type LobbyState = {
-  gameId: "volley" | "villagers"
+  gameId: "volley" | "craft"
 }
 
 export const Lobby: GameBuilder = {
@@ -17,7 +17,7 @@ export const Lobby: GameBuilder = {
     renderer: "pixi",
     settings: {},
     state: {
-      gameId: "villagers"
+      gameId: "craft"
     },
     systems: [PixiRenderSystem],
     entities: [
@@ -176,17 +176,14 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
 
         let icon: Container = pixiContainer()
 
-        if (game.id === "craft") {
-          const textures = await loadTexture("pickaxe.json")
-          // icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
-        } else if (game.id === "volley") {
+        if (game.id === "volley") {
           const textures = await loadTexture("vball.json")
           const sprite = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.5 } })
           sprite.texture.source.scaleMode = "nearest"
           icon = sprite
         } else {
           const textures = await loadTexture("dde-art.json")
-          const g = pixiRect({ rounded: 10, x: -50, y: -50, w: 100, h: 100, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
+          const g = pixiRect({ rounded: 10, x: -55, y: -50, w: 110, h: 110, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
           g.position.set(0, -20)
           icon = g
         }
