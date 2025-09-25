@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, D3Text, min, Player, values, VillagersSettings, VillagersState, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, D3Text, min, Player, values, CraftSettings, CraftState, World } from "@piggo-gg/core"
 import { Group } from "three"
 
 export type D3Nametag = {
@@ -57,7 +57,7 @@ export const D3NametagSystem = ClientSystemBuilder({
 
     const nametags: Record<string, D3Nametag> = {}
 
-    const settings = world.settings<VillagersSettings>()
+    const settings = world.settings<CraftSettings>()
 
     return {
       id: "D3NametagSystem",

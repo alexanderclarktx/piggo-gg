@@ -1,5 +1,5 @@
 import {
-  VillagersSettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText,
+  CraftSettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText,
   max, min, RefreshableDiv, round, styleSwitch, World
 } from "@piggo-gg/core"
 
@@ -34,7 +34,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
   return {
     div,
     update: () => {
-      const settings = world.settings<VillagersSettings>()
+      const settings = world.settings<CraftSettings>()
       styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
       styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
       styleSwitch(showCrosshair.button, settings.showCrosshair, showCrosshair.button.matches(":hover"))
@@ -68,7 +68,7 @@ const numRow = (world: World, text: string, key: "mouseSensitivity"): { div: Htm
 
       const final = min(5, max(round(num, 2), 0.01))
 
-      world.settings<VillagersSettings>().mouseSensitivity = final
+      world.settings<CraftSettings>().mouseSensitivity = final
       return final.toFixed(2)
     }
   })
@@ -111,7 +111,7 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
       pointerEvents: "auto"
     },
     onClick: () => {
-      const settings = world.settings<VillagersSettings>()
+      const settings = world.settings<CraftSettings>()
       settings[key] = !settings[key]
     }
   })

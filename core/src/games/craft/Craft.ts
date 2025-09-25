@@ -9,7 +9,7 @@ import { HUDSystem } from "./HUDSystem"
 import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
 
-export type VillagersState = {
+export type CraftState = {
   applesEaten: Record<string, number>
   doubleJumped: string[]
   hit: Record<string, { tick: number, by: string }>
@@ -22,7 +22,7 @@ export type VillagersState = {
   willStart: undefined | number
 }
 
-export type VillagersSettings = {
+export type CraftSettings = {
   ambientSound: boolean
   showControls: boolean
   showCrosshair: boolean
@@ -30,10 +30,10 @@ export type VillagersSettings = {
   mouseSensitivity: number
 }
 
-export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
-  id: "villagers",
+export const Craft: GameBuilder<CraftState, CraftSettings> = {
+  id: "craft",
   init: (world) => ({
-    id: "villagers",
+    id: "craft",
     netcode: "rollback",
     renderer: "three",
     settings: {
@@ -60,7 +60,7 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
       BlockPhysicsSystem("global"),
       BlockPhysicsSystem("local"),
       ThreeCameraSystem(),
-      VillagersSystem,
+      CraftSystem,
       HUDSystem,
       D3NametagSystem,
       ThreeSystem,
@@ -79,8 +79,8 @@ export const Villagers: GameBuilder<VillagersState, VillagersSettings> = {
   })
 }
 
-const VillagersSystem = SystemBuilder({
-  id: "VillagersSystem",
+const CraftSystem = SystemBuilder({
+  id: "CraftSystem",
   init: (world) => {
     spawnTerrain(world, 24)
 
@@ -93,12 +93,12 @@ const VillagersSystem = SystemBuilder({
     let ambient = false
 
     return {
-      id: "VillagersSystem",
+      id: "CraftSystem",
       query: [],
       priority: 3,
       onTick: () => {
-        const state = world.state<VillagersState>()
-        const settings = world.settings<VillagersSettings>()
+        const state = world.state<CraftState>()
+        const settings = world.settings<CraftSettings>()
 
         const { sound } = world.client ?? {}
 

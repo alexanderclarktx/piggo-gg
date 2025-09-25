@@ -1,4 +1,4 @@
-import { VillagersSettings, Entity, HtmlDiv, NPC, Position } from "@piggo-gg/core"
+import { CraftSettings, Entity, HtmlDiv, NPC, Position } from "@piggo-gg/core"
 
 export const Crosshair = () => {
 
@@ -22,7 +22,7 @@ export const Crosshair = () => {
       position: Position(),
       npc: NPC({
         behavior: (_, world) => {
-          const settings = world.settings<VillagersSettings>()
+          const settings = world.settings<CraftSettings>()
           if (!world.client || !world.three) return
 
           const locked = world.client.mobile ? !world.client.mobileLock : document.pointerLockElement
