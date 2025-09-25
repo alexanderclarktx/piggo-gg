@@ -3,7 +3,7 @@ import { Application } from "pixi.js"
 
 export type PixiRenderer = {
   app: Application
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement | undefined
   camera: PixiCamera
   guiRenderables: Renderable[]
   ready: boolean
@@ -17,13 +17,13 @@ export type PixiRenderer = {
   wh: () => { width: number, height: number }
 }
 
-export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
+export const PixiRenderer = (): PixiRenderer => {
 
   const app = new Application()
 
   const renderer: PixiRenderer = {
     app,
-    canvas,
+    canvas: undefined,
     camera: PixiCamera(app),
     guiRenderables: [],
     ready: false,
@@ -43,7 +43,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
 
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
 
-      world.pixi = undefined
+      // world.pixi = undefined
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
@@ -58,9 +58,19 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
 
       world.pixi = renderer
 
+      console.log("PIXI PRE INIT", app)
+
+      const canvas = document.getElementById("canvas") as HTMLCanvasElement
+      if (!canvas) throw new Error("Canvas element not found")
+
+      const newCanvas = document.createElement("canvas")
+      newCanvas.id = "canvas"
+      canvas.replaceWith(newCanvas)
+      renderer.canvas = newCanvas
+
       // create the pixi.js application
       await app.init({
-        canvas,
+        canvas: renderer.canvas,
         resolution: 1,
         antialias: true,
         autoDensity: true,
@@ -68,6 +78,8 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
         preference: "webgl",
         preferWebGLVersion: 2
       })
+
+      console.log("PIXI INIT", app)
 
       renderer.handleResize()
 
@@ -87,7 +99,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       screen?.orientation?.addEventListener("change", () => renderer.handleResize)
 
       // prevent right-click
-      canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+      renderer.canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
       // schedule onRender
       app.ticker.add(world.onRender)

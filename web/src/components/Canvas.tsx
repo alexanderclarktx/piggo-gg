@@ -16,8 +16,8 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
 
     setWorld(DefaultWorld({
       games: [ Lobby, Craft, Volley ],
-      three: ThreeRenderer(canvas),
-      pixi: PixiRenderer(canvas)
+      three: ThreeRenderer(),
+      pixi: PixiRenderer()
     }))
   }, [])
 

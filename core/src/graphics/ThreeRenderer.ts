@@ -5,7 +5,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 export type ThreeRenderer = {
   camera: ThreeCamera
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement | undefined
   fLoader: FBXLoader
   gLoader: GLTFLoader
   ready: boolean
@@ -19,12 +19,12 @@ export type ThreeRenderer = {
   pointerUnlock: () => void
 }
 
-export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
+export const ThreeRenderer = (): ThreeRenderer => {
 
   let webgl: undefined | WebGLRenderer
 
   const renderer: ThreeRenderer = {
-    canvas: c,
+    canvas: undefined,
     camera: ThreeCamera(),
     scene: new Scene(),
     ready: false,
@@ -32,7 +32,7 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
     append: (...elements: HTMLElement[]) => {
-      renderer.canvas.parentElement?.append(...elements)
+      renderer.canvas?.parentElement?.append(...elements)
     },
     resize: () => {
       if (!webgl) return
@@ -59,6 +59,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       for (const el of values(document.getElementsByClassName("lex"))) {
         el.remove()
       }
+
+      console.log("WEBGL DEACTIVATED")
     },
     pointerLock: () => {
       document.body.requestPointerLock({ unadjustedMovement: true })
@@ -68,6 +70,14 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     },
     activate: (world: World) => {
       if (renderer.ready) return
+
+      const canvas = document.getElementById("canvas") as HTMLCanvasElement
+      if (!canvas) throw new Error("Canvas element not found")
+
+      const newCanvas = document.createElement("canvas")
+      newCanvas.id = "canvas"
+      canvas.replaceWith(newCanvas)
+      renderer.canvas = newCanvas
 
       webgl = new WebGLRenderer({
         antialias: true,
