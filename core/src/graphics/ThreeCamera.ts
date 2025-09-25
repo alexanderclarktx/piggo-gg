@@ -7,7 +7,6 @@ export type ThreeCamera = {
   transition: number
   dir: (world: World) => XYZ
   pos: () => XYZ
-  setFov: (fov: number) => void
 }
 
 export const ThreeCamera = (): ThreeCamera => {
@@ -32,10 +31,6 @@ export const ThreeCamera = (): ThreeCamera => {
     },
     pos: () => {
       return XYZ(ThreeCamera.c.position)
-    },
-    setFov: (fov: number) => {
-      camera.fov = fov
-      camera.updateProjectionMatrix()
     }
   }
   return ThreeCamera
