@@ -1,4 +1,7 @@
-import { ClientSystemBuilder, Entity, PixiCamera, Position, Renderable, World, isMobile, logPerf } from "@piggo-gg/core"
+import {
+  ClientSystemBuilder, Entity, PixiCamera, Position, Renderable,
+  World, isMobile, logPerf, replaceCanvas
+} from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
 export type PixiRenderer = {
@@ -11,7 +14,7 @@ export type PixiRenderer = {
   activate: (world: World) => Promise<void>
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
-  deactivate: (world: World) => void
+  deactivate: () => void
   handleResize: () => void
   setBgColor: (color: number) => void
   wh: () => { width: number, height: number }
@@ -37,7 +40,7 @@ export const PixiRenderer = (): PixiRenderer => {
     addWorld: (renderable: Renderable) => {
       if (renderable) renderer.camera?.add(renderable)
     },
-    deactivate: (world: World) => {
+    deactivate: () => {
       if (!renderer.ready) return
       renderer.ready = false
 
@@ -55,24 +58,14 @@ export const PixiRenderer = (): PixiRenderer => {
     activate: async (world: World) => {
       if (renderer.ready) return
 
-      world.pixi = renderer
-
-      console.log("PIXI PRE INIT", app)
-
-      const canvas = document.getElementById("canvas") as HTMLCanvasElement
-      if (!canvas) throw new Error("Canvas element not found")
-
-      const newCanvas = document.createElement("canvas")
-      newCanvas.id = "canvas"
-      canvas.replaceWith(newCanvas)
-      renderer.canvas = newCanvas
+      renderer.canvas = replaceCanvas()
 
       app = new Application()
       renderer.app = app
 
       renderer.camera = PixiCamera(app)
 
-      // create the pixi.js application
+      // init pixi.js application
       await app.init({
         canvas: renderer.canvas,
         resolution: 1,
@@ -83,8 +76,7 @@ export const PixiRenderer = (): PixiRenderer => {
         preferWebGLVersion: 2
       })
 
-      console.log("PIXI INIT", app)
-
+      // resize once
       renderer.handleResize()
 
       // set up the camera
@@ -114,10 +106,7 @@ export const PixiRenderer = (): PixiRenderer => {
     setBgColor: (color: number) => {
       if (app.renderer) app.renderer.background.color = color
     },
-    wh: () => ({
-      width: app.screen.width,
-      height: app.screen.height
-    })
+    wh: () => renderer.ready ? { width: app.screen.width, height: app.screen.height} : { width: 0, height: 0 }
   }
   return renderer
 }

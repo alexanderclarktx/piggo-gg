@@ -60,6 +60,7 @@ export const ThreeRenderer = (): ThreeRenderer => {
         el.remove()
       }
 
+      renderer.ready = false
       console.log("WEBGL DEACTIVATED")
     },
     pointerLock: () => {
