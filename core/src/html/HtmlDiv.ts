@@ -12,13 +12,15 @@ const defaults: CSS = {
 
 export type HtmlDiv = HTMLDivElement
 
-export const HtmlDiv = (style: CSS = {}): HtmlDiv => {
+export const HtmlDiv = (style: CSS = {}, id?: string): HtmlDiv => {
   const div = document.createElement("div")
 
   div.classList.add("lex")
 
   Object.assign(div.style, defaults)
   Object.assign(div.style, style)
+
+  if (id) div.id = id
 
   div.oncontextmenu = (e) => e.preventDefault()
 

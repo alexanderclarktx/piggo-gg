@@ -5,7 +5,7 @@ import {
   sin, sqrt, Team, Three, World, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
-import { VillagersSettings, VillagersState } from "./Villagers"
+import { CraftSettings, CraftState } from "./Craft"
 
 const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
   const camera = world.three?.camera
@@ -248,7 +248,7 @@ export const Bird = (player: Player): Character => {
           "n": ({ world, hold }) => {
             if (hold) return null
 
-            const settings = world.settings<VillagersSettings>()
+            const settings = world.settings<CraftSettings>()
             settings.showNametags = !settings.showNametags
 
             return null
@@ -313,7 +313,7 @@ export const Bird = (player: Player): Character => {
           const { position } = entity?.components ?? {}
           if (!position) return
 
-          const state = world.game.state as VillagersState
+          const state = world.game.state as CraftState
           if (state.phase === "play") return
           if (state.hit[entity?.id ?? ""]) return
 
@@ -330,7 +330,7 @@ export const Bird = (player: Player): Character => {
           if (position.data.flying) return
           if (!position.data.standing && params.hold) return
 
-          const state = world.game.state as VillagersState
+          const state = world.game.state as CraftState
           if (state.hit[entity.id]) return
           if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
 
@@ -368,7 +368,7 @@ export const Bird = (player: Player): Character => {
         move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }>("move", ({ entity, params, world }) => {
           if (!params.up || !params.dir) return
 
-          const state = world.state<VillagersState>()
+          const state = world.state<CraftState>()
           if (state.hit[entity?.id ?? ""]) return
 
           const up = new Vector3(params.up.x, params.up.y, params.up.z)

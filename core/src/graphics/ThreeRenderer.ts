@@ -1,11 +1,11 @@
-import { isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
+import { isMobile, replaceCanvas, ThreeCamera, values, World } from "@piggo-gg/core"
 import { Scene, TextureLoader, WebGLRenderer } from "three"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 export type ThreeRenderer = {
   camera: ThreeCamera
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement | undefined
   fLoader: FBXLoader
   gLoader: GLTFLoader
   ready: boolean
@@ -19,12 +19,12 @@ export type ThreeRenderer = {
   pointerUnlock: () => void
 }
 
-export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
+export const ThreeRenderer = (): ThreeRenderer => {
 
   let webgl: undefined | WebGLRenderer
 
   const renderer: ThreeRenderer = {
-    canvas: c,
+    canvas: undefined,
     camera: ThreeCamera(),
     scene: new Scene(),
     ready: false,
@@ -32,7 +32,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
     append: (...elements: HTMLElement[]) => {
-      renderer.canvas.parentElement?.append(...elements)
+      const parent = document.getElementById("canvas-parent")
+      if (parent) parent.append(...elements)
     },
     resize: () => {
       if (!webgl) return
@@ -59,6 +60,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
       for (const el of values(document.getElementsByClassName("lex"))) {
         el.remove()
       }
+
+      renderer.ready = false
     },
     pointerLock: () => {
       document.body.requestPointerLock({ unadjustedMovement: true })
@@ -68,6 +71,8 @@ export const ThreeRenderer = (c: HTMLCanvasElement): ThreeRenderer => {
     },
     activate: (world: World) => {
       if (renderer.ready) return
+
+      renderer.canvas = replaceCanvas()
 
       webgl = new WebGLRenderer({
         antialias: true,

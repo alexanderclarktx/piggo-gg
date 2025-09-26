@@ -19,3 +19,20 @@ export const isTypingEvent = (e: Event) => {
   }
   return true
 }
+
+export const replaceCanvas = () => {
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement | undefined
+
+  const newCanvas = document.createElement("canvas")
+  newCanvas.id = "canvas"
+
+  if (isMobile()) newCanvas.style.border = "none"
+
+  if (canvas) {
+    canvas.replaceWith(newCanvas)
+  } else {
+    document.body.appendChild(newCanvas)
+  }
+
+  return newCanvas
+}

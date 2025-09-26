@@ -1,5 +1,5 @@
 import {
-  Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, max, round, sign
+  Collider, Entity, Position, SystemBuilder, XYdistance, abs, keys, logPerf, max, round, sign
 } from "@piggo-gg/core"
 import { RigidBody, World as RapierWorld, init as RapierInit } from "@dimforge/rapier2d-compat"
 
@@ -41,6 +41,10 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
         // reset physics if not rollback
         if (!isRollback && mode === "global") resetPhysics()
 
+        // if (mode === "global") {
+        //   console.log("num physics entities", entities.length)
+        // }
+
         // remove old bodies (TODO does this matter)
         for (const id of keys(bodies)) {
           if (!world.entities[id]) {
@@ -49,6 +53,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           }
         }
 
+        const t1 = performance.now()
         if (mode === "global") {
 
           const groups: Set<string> = new Set()
@@ -100,7 +105,9 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             bodies[entity.id].setTranslation({ x: position.data.x, y: position.data.y }, true)
           }
         }
+        logPerf("prepare physics", t1)
 
+        const t2 = performance.now()
         // update body velocities
         for (const entity of entities) {
           const { collider, position } = entity.components
@@ -110,13 +117,19 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
           collider.body.setLinvel(position.data.velocity, true)
         }
+        logPerf("update velocities", t2)
 
+        // console.log("num physics bodies", physics.bodies.len(), physics.colliders.len())
+
+        const t3 = performance.now()
         // run physics
         physics.step()
         physics.step()
         physics.step()
         physics.step()
+        logPerf("step physics", t3)
 
+        const t4 = performance.now()
         // update entity positions
         for (const entity of entities) {
           const { collider, position } = entity.components
@@ -163,9 +176,11 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             }
           }
         }
+        logPerf("update positions", t4)
 
         if (mode === "local") return
 
+        const t5 = performance.now()
         // sensor callbacks
         for (const [entity, collider] of colliders.entries()) {
           if (collider.sensor && collider.rapierCollider) {
@@ -189,6 +204,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
             })
           }
         }
+        logPerf("sensor callbacks", t5)
 
         // clear heading if arrived
         entities.forEach((entity) => {

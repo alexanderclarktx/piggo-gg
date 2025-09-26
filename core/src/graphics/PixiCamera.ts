@@ -103,7 +103,7 @@ export const PixiCameraSystem = (follow: Follow = ({ x, y }) => ({ x, y, z: 0 })
     let targetScale = pixi.camera.scale
 
     // scroll to zoom
-    pixi.canvas.addEventListener("wheel", (event) => {
+    pixi.canvas?.addEventListener("wheel", (event) => {
       targetScale += -0.01 * sign(event.deltaY) * sqrt(abs(event.deltaY))
       targetScale = min(targetScale, 5)
       targetScale = max(targetScale, 1)

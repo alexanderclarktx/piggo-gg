@@ -18,7 +18,7 @@ export const HtmlInventory = (client: Client): RefreshableDiv => {
     border: "3px solid #eeeeee",
     outline: "2px solid black",
     display: "flex"
-  })
+  }, "inventory")
 
   for (let i = 0; i < 7; i++) {
     const cellDiv = cell()

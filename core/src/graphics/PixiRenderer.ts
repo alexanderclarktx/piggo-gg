@@ -1,9 +1,12 @@
-import { ClientSystemBuilder, Entity, PixiCamera, Position, Renderable, World, isMobile, logPerf } from "@piggo-gg/core"
+import {
+  ClientSystemBuilder, Entity, PixiCamera, Position, Renderable,
+  World, isMobile, logPerf, replaceCanvas
+} from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
 export type PixiRenderer = {
   app: Application
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement | undefined
   camera: PixiCamera
   guiRenderables: Renderable[]
   ready: boolean
@@ -11,19 +14,19 @@ export type PixiRenderer = {
   activate: (world: World) => Promise<void>
   addGui: (renderable: Renderable) => void
   addWorld: (renderable: Renderable) => void
-  deactivate: (world: World) => void
+  deactivate: () => void
   handleResize: () => void
   setBgColor: (color: number) => void
   wh: () => { width: number, height: number }
 }
 
-export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
+export const PixiRenderer = (): PixiRenderer => {
 
-  const app = new Application()
+  let app = new Application()
 
   const renderer: PixiRenderer = {
     app,
-    canvas,
+    canvas: undefined,
     camera: PixiCamera(app),
     guiRenderables: [],
     ready: false,
@@ -37,13 +40,11 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
     addWorld: (renderable: Renderable) => {
       if (renderable) renderer.camera?.add(renderable)
     },
-    deactivate: (world: World) => {
+    deactivate: () => {
       if (!renderer.ready) return
       renderer.ready = false
 
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
-
-      world.pixi = undefined
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
@@ -56,11 +57,16 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
     activate: async (world: World) => {
       if (renderer.ready) return
 
-      world.pixi = renderer
+      renderer.canvas = replaceCanvas()
 
-      // create the pixi.js application
+      app = new Application()
+      renderer.app = app
+
+      renderer.camera = PixiCamera(app)
+
+      // init pixi.js application
       await app.init({
-        canvas,
+        canvas: renderer.canvas,
         resolution: 1,
         antialias: true,
         autoDensity: true,
@@ -69,6 +75,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
         preferWebGLVersion: 2
       })
 
+      // resize once
       renderer.handleResize()
 
       // set up the camera
@@ -87,7 +94,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
       screen?.orientation?.addEventListener("change", () => renderer.handleResize)
 
       // prevent right-click
-      canvas.addEventListener("contextmenu", (event) => event.preventDefault())
+      renderer.canvas?.addEventListener("contextmenu", (event) => event.preventDefault())
 
       // schedule onRender
       app.ticker.add(world.onRender)
@@ -97,10 +104,7 @@ export const PixiRenderer = (canvas: HTMLCanvasElement): PixiRenderer => {
     setBgColor: (color: number) => {
       if (app.renderer) app.renderer.background.color = color
     },
-    wh: () => ({
-      width: app.screen.width,
-      height: app.screen.height
-    })
+    wh: () => renderer.ready ? { width: app.screen.width, height: app.screen.height} : { width: 0, height: 0 }
   }
   return renderer
 }

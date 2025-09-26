@@ -1,5 +1,5 @@
 import {
-  Action, Actions, Character, cos, VillagersState, Effects, Input,
+  Action, Actions, Character, cos, CraftState, Effects, Input,
   Item, ItemEntity, Networked, playerForCharacter, Position, sin,
   sqrt, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub, blockInLine
 } from "@piggo-gg/core"
@@ -135,7 +135,7 @@ export const LaserItem = ({ character }: { character: Character }) => {
 const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params, entity, player }) => {
   if (!entity) return
 
-  const state = world.state<VillagersState>()
+  const state = world.state<CraftState>()
 
   if (state.hit[entity.id]) return
 

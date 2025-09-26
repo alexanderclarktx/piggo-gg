@@ -1,13 +1,13 @@
 import {
-  Actions, arrayEqual, Background, colors, Cursor, Villagers, DudeSkin, Entity,
-  GameBuilder, Ghost, loadTexture, MusicBox, Networked, NPC, PC, PixiButton,
-  PixiChat, pixiContainer, pixiGraphics, pixiRect, pixiText, Position,
-  randomInt, Renderable, PixiRenderSystem, Team, TeamColors, World, XY
+  Actions, arrayEqual, Background, colors, Cursor, Craft, DudeSkin, Entity,
+  GameBuilder, Ghost, loadTexture, Networked, NPC, PC, PixiButton,
+  pixiContainer, pixiGraphics, pixiRect, pixiText, Position, randomInt,
+  Renderable, PixiRenderSystem, Team, TeamColors, World, XY, Volley
 } from "@piggo-gg/core"
-import { Container, Text } from "pixi.js"
+import { Container, Sprite, Text } from "pixi.js"
 
 type LobbyState = {
-  gameId: "volley" | "villagers"
+  gameId: "volley" | "craft"
 }
 
 export const Lobby: GameBuilder = {
@@ -17,13 +17,13 @@ export const Lobby: GameBuilder = {
     renderer: "pixi",
     settings: {},
     state: {
-      gameId: "villagers"
+      gameId: "craft"
     },
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
       Cursor(),
-      PixiChat(),
+      // PixiChat(),
       // Friends(),
       Profile(),
       // SignupCTA(),
@@ -34,7 +34,7 @@ export const Lobby: GameBuilder = {
       CreateLobbyButton(),
       // SettingsButton(),
       PlayersOnline(),
-      MusicBox()
+      // MusicBox()
     ],
     netcode: "delay"
   })
@@ -153,42 +153,40 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
 
         const button = PixiButton({
           content: () => ({
-            text: game.id,
-            textAnchor: { x: 0.5, y: 0.5 },
-            textPos: { x: 0, y: 90 },
+            text: "",
+            textAnchor: { x: 0.5, y: -0.2 },
+            textPos: { x: 0, y: 60 },
             style: { fontSize: 24 },
             rounded: 14,
-            height: 240,
-            width: 270
+            height: 160,
+            width: 180
           }),
-          // onClick: () => {
-          //   world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-          //   world.client?.sound.play("click1")
-          // },
-          // onEnter: () => {
-          //   r.setGlow({ outerStrength: 2 })
-          //   world.client?.sound.play("click3")
-          // },
-          // onLeave: () => r.setGlow()
+          onClick: () => {
+            world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
+            world.client?.sound.play({ name: "click1" })
+          },
+          onEnter: () => {
+            r.setGlow({ outerStrength: 2 })
+            world.client?.sound.play({ name: "click3" })
+          },
+          onLeave: () => r.setGlow()
         })
 
         r.c.addChild(button.c)
 
         let icon: Container = pixiContainer()
 
-        if (game.id === "craft") {
-          const textures = await loadTexture("pickaxe.json")
-          // icon = new Sprite({ texture: textures["0"], scale: 10, anchor: { x: 0.5, y: 0.3 } })
-        } else if (game.id === "volley") {
+        if (game.id === "volley") {
           const textures = await loadTexture("vball.json")
-          // icon = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.2 } })
+          const sprite = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.5 } })
+          sprite.texture.source.scaleMode = "nearest"
+          icon = sprite
         } else {
           const textures = await loadTexture("dde-art.json")
-          const g = pixiRect({ rounded: 10, x: -80, y: -80, w: 160, h: 160, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
+          const g = pixiRect({ rounded: 10, x: -60, y: -40, w: 120, h: 120, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
           g.position.set(0, -20)
           icon = g
         }
-        // icon.texture.source.scaleMode = "nearest"
 
         r.c.addChild(icon)
       }
@@ -474,7 +472,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Villagers]
+  const list: GameBuilder[] = [Craft, Volley]
   let gameButtons: Entity<Position | Renderable>[] = []
 
   const gameLobby = Entity<Position>({

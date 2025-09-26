@@ -1,5 +1,5 @@
 import {
-  VillagersState, Entity, Networked, NPC, Position,
+  CraftState, Entity, Networked, NPC, Position,
   World, XYZ, XYZdistance, XYZequal, Three
 } from "@piggo-gg/core"
 import { Mesh } from "three"
@@ -78,7 +78,7 @@ export const Apple = ({ id }: { id: string }): Entity<Position> => {
               if (position.data.flying) return
 
               // update state
-              const state = world.game.state as VillagersState
+              const state = world.game.state as CraftState
 
               if (!state.applesEaten[player.id]) {
                 state.applesEaten[player.id] = 1
