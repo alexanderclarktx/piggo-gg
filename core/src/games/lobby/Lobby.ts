@@ -140,7 +140,7 @@ const Players = (): Entity => {
 const HtmlGameButton = (game: GameBuilder, world: World) => {
   const label = HtmlText({
     text: game.id,
-    style: { fontSize: "24px", fontWeight: "bold", left: "50%", transform: "translate(-50%)", bottom: "-30px" }
+    style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
   })
 
   const imgSrc = game.id === "volley" ? "vball.png" : "dde-256.jpg"
@@ -174,67 +174,6 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
   button.appendChild(image)
   return button
 }
-
-const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
-  id: `gamebutton-${game.id}`,
-  components: {
-    position: Position({ x: 0, y: 160, screenFixed: true }),
-    renderable: Renderable({
-      zIndex: 10,
-      interactiveChildren: true,
-      onTick: ({ world, renderable }) => {
-        const state = world.game.state as LobbyState
-        if (state.gameId === game.id) {
-          renderable.setOutline({ color: 0x00ff88, thickness: 1 })
-        } else {
-          renderable.setOutline()
-        }
-      },
-      setup: async (r, _, world) => {
-        r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
-
-        const button = PixiButton({
-          content: () => ({
-            text: "",
-            textAnchor: { x: 0.5, y: -0.2 },
-            textPos: { x: 0, y: 60 },
-            style: { fontSize: 24 },
-            rounded: 14,
-            height: 160,
-            width: 180
-          }),
-          onClick: () => {
-            world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-            world.client?.sound.play({ name: "click1" })
-          },
-          onEnter: () => {
-            r.setGlow({ outerStrength: 2 })
-            world.client?.sound.play({ name: "click3" })
-          },
-          onLeave: () => r.setGlow()
-        })
-
-        r.c.addChild(button.c)
-
-        let icon: Container = pixiContainer()
-
-        if (game.id === "volley") {
-          const textures = await loadTexture("vball.json")
-          const sprite = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.5 } })
-          sprite.texture.source.scaleMode = "nearest"
-          icon = sprite
-        } else {
-          const textures = await loadTexture("dde-art.json")
-          const g = pixiRect({ rounded: 10, x: -60, y: -40, w: 120, h: 120, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
-          g.position.set(0, -20)
-          icon = g
-        }
-
-        r.c.addChild(icon)
-      }
-    })
-  }
-})
 
 const PlayButton = () => {
   const playButton = Entity<Position>({
