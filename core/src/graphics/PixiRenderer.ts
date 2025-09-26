@@ -99,7 +99,6 @@ export const PixiRenderer = (): PixiRenderer => {
       // schedule onRender
       app.ticker.add(world.onRender)
 
-      console.log("PIXI ACTIVATED")
       renderer.ready = true
     },
     setBgColor: (color: number) => {

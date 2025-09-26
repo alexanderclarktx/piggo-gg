@@ -33,10 +33,7 @@ export const ThreeRenderer = (): ThreeRenderer => {
     tLoader: new TextureLoader(),
     append: (...elements: HTMLElement[]) => {
       const parent = document.getElementById("canvas-parent")
-      if (parent) {
-        // console.log("APPENDING ELEMENTS", elements.map(e => e.id), parent)
-        parent.append(...elements)
-      }
+      if (parent) parent.append(...elements)
     },
     resize: () => {
       if (!webgl) return
@@ -65,7 +62,6 @@ export const ThreeRenderer = (): ThreeRenderer => {
       }
 
       renderer.ready = false
-      console.log("WEBGL DEACTIVATED")
     },
     pointerLock: () => {
       document.body.requestPointerLock({ unadjustedMovement: true })
