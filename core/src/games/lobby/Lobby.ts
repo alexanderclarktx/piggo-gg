@@ -139,8 +139,8 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
     style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
   })
 
-  const imgSrc = game.id === "volley" ? "vball.png" : "dde-256.jpg"
-  const scale = game.id === "volley" ? "24%" : "100%"
+  const imgSrc = game.id === "volley" ? "volley-256.png" : "dde-256.jpg"
+  const scale = game.id === "volley" ? "100%" : "100%"
 
   const image = HtmlImg(imgSrc, { width: scale, height: scale, imageRendering: "pixelated", transform: "translate(-50%, -50%)" })
 
@@ -151,7 +151,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       fontSize: "24px",
       position: "relative",
       transition: "box-shadow 0.2s ease",
-      width: "170px", height: "160px",
+      width: "180px", height: "170px",
       touchAction: "manipulation"
     },
     onClick: () => {
