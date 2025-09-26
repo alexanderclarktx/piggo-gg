@@ -1,4 +1,4 @@
-import { Collider, Entity, Position, Renderable } from "@piggo-gg/core"
+import { Entity, Position, Renderable } from "@piggo-gg/core"
 import { Assets, Sprite, Texture, TilingSprite } from "pixi.js"
 import { GodrayFilter } from "pixi-filters"
 
@@ -27,19 +27,13 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
         const godRayFilter = renderable.filters["rays"] as GodrayFilter
         if (rays && godRayFilter) godRayFilter.time += 0.008
 
-        // const tile = renderable.c as TilingSprite
-        // if (moving) tile.tilePosition.x += 0.5
-
         const { position } = entity.components
 
         if (follow) {
           const { focus } = world.pixi?.camera ?? {}
           if (focus && world.pixi) {
 
-            const { x, y, z, velocity } = focus.components.position.data
-
-            // tile.tilePosition.x = 0.85 * x
-            // tile.tilePosition.y = 0.85 * y
+            const { z, velocity } = focus.components.position.data
 
             position.setVelocity({
               x: velocity.x * 0.85,
@@ -51,10 +45,11 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
             position.setPosition({ z })
 
             position.lastCollided = focus.components.position.lastCollided
-            position.localVelocity = { ...position.data.velocity }
-              // x: focus.components.position.localVelocity.x * 0.85,
-              // y: focus.components.position.localVelocity.y * 0.85,
-              // z: velocity.z
+            position.localVelocity = {
+              x: focus.components.position.localVelocity.x * 0.85,
+              y: focus.components.position.localVelocity.y * 0.85,
+              z: velocity.z
+            }
           }
         }
       },

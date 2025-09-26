@@ -1,10 +1,12 @@
 export type CSS = Partial<{
   alignItems: "center" | "flex-start" | "flex-end" | "stretch"
+  background: string
   backgroundColor: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
   border: string
   borderBottom: string
   borderImage: `linear-gradient(${string}) ${number}`
   borderRadius: `${number}px` | `${number}%`
+  borderStyle: "solid" | "dashed" | "dotted"
   bottom: `${number}%` | `${number}px`
   boxSizing: "border-box" | "content-box"
   clipPath: string

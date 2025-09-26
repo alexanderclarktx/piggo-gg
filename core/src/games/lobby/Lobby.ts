@@ -1,14 +1,10 @@
 import {
-  Actions, arrayEqual, Background, colors, Cursor, Craft, DudeSkin, Entity,
-  GameBuilder, Ghost, loadTexture, Networked, NPC, PC, PixiButton,
-  pixiContainer, pixiGraphics, pixiRect, pixiText, Position, randomInt,
-  Renderable, PixiRenderSystem, Team, TeamColors, World, XY, Volley,
-  HtmlButton,
-  HtmlDiv,
-  HtmlText,
-  HtmlImg
+  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity,
+  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, Networked,
+  NPC, PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
+  randomInt, Renderable, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
-import { Container, Sprite, Text } from "pixi.js"
+import { Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley" | "craft"
@@ -155,7 +151,8 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       fontSize: "24px",
       position: "relative",
       transition: "box-shadow 0.2s ease",
-      width: "170px", height: "160px"
+      width: "170px", height: "160px",
+      touchAction: "manipulation"
     },
     onClick: () => {
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -492,11 +489,7 @@ const GameLobby = (): Entity => {
           // make border green for selected game
           const state = world.game.state as LobbyState
           for (const button of gameButtons) {
-            if (button.innerText === state.gameId) {
-              button.style.border = "2px solid #00ff88"
-            } else {
-              button.style.border = "2px solid white"
-            }
+            button.style.outline = (button.innerText === state.gameId) ? "2px solid #00cc88" : "none"
           }
         }
       })
