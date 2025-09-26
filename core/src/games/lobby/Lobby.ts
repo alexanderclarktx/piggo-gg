@@ -1,10 +1,10 @@
 import {
-  Actions, arrayEqual, Background, colors, Cursor, Craft, DudeSkin, Entity,
-  GameBuilder, Ghost, loadTexture, Networked, NPC, PC, PixiButton,
-  pixiContainer, pixiGraphics, pixiRect, pixiText, Position, randomInt,
-  Renderable, PixiRenderSystem, Team, TeamColors, World, XY, Volley
+  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity,
+  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, Networked,
+  NPC, PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
+  randomInt, Renderable, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
-import { Container, Sprite, Text } from "pixi.js"
+import { Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley" | "craft"
@@ -22,7 +22,7 @@ export const Lobby: GameBuilder = {
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
-      Cursor(),
+      // Cursor(),
       // PixiChat(),
       // Friends(),
       Profile(),
@@ -133,66 +133,44 @@ const Players = (): Entity => {
   })
 }
 
-const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
-  id: `gamebutton-${game.id}`,
-  components: {
-    position: Position({ x: 0, y: 160, screenFixed: true }),
-    renderable: Renderable({
-      zIndex: 10,
-      interactiveChildren: true,
-      onTick: ({ world, renderable }) => {
-        const state = world.game.state as LobbyState
-        if (state.gameId === game.id) {
-          renderable.setOutline({ color: 0x00ff88, thickness: 1 })
-        } else {
-          renderable.setOutline()
-        }
-      },
-      setup: async (r, _, world) => {
-        r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+const HtmlGameButton = (game: GameBuilder, world: World) => {
+  const label = HtmlText({
+    text: game.id,
+    style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
+  })
 
-        const button = PixiButton({
-          content: () => ({
-            text: "",
-            textAnchor: { x: 0.5, y: -0.2 },
-            textPos: { x: 0, y: 60 },
-            style: { fontSize: 24 },
-            rounded: 14,
-            height: 160,
-            width: 180
-          }),
-          onClick: () => {
-            world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-            world.client?.sound.play({ name: "click1" })
-          },
-          onEnter: () => {
-            r.setGlow({ outerStrength: 2 })
-            world.client?.sound.play({ name: "click3" })
-          },
-          onLeave: () => r.setGlow()
-        })
+  const imgSrc = game.id === "volley" ? "volley-256.png" : "dde-256.jpg"
+  const scale = game.id === "volley" ? "100%" : "100%"
 
-        r.c.addChild(button.c)
+  const image = HtmlImg(imgSrc, { width: scale, height: scale, imageRendering: "pixelated", transform: "translate(-50%, -50%)" })
 
-        let icon: Container = pixiContainer()
+  const button = HtmlButton({
+    style: {
+      backgroundColor: "rgba(0, 0, 0, 1)",
+      borderRadius: "12px",
+      fontSize: "24px",
+      position: "relative",
+      transition: "box-shadow 0.2s ease",
+      width: "180px", height: "170px",
+      touchAction: "manipulation"
+    },
+    onClick: () => {
+      world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
+      world.client?.sound.play({ name: "click1" })
+    },
+    onHover: () => {
+      button.style.boxShadow = "0 0 12px white"
+      world.client?.sound.play({ name: "click3" })
+    },
+    onHoverOut: () => {
+      button.style.boxShadow = "none"
+    }
+  })
 
-        if (game.id === "volley") {
-          const textures = await loadTexture("vball.json")
-          const sprite = new Sprite({ texture: textures["0"], scale: 2, anchor: { x: 0.5, y: 0.5 } })
-          sprite.texture.source.scaleMode = "nearest"
-          icon = sprite
-        } else {
-          const textures = await loadTexture("dde-art.json")
-          const g = pixiRect({ rounded: 10, x: -60, y: -40, w: 120, h: 120, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
-          g.position.set(0, -20)
-          icon = g
-        }
-
-        r.c.addChild(icon)
-      }
-    })
-  }
-})
+  button.appendChild(label)
+  button.appendChild(image)
+  return button
+}
 
 const PlayButton = () => {
   const playButton = Entity<Position>({
@@ -473,7 +451,7 @@ const PlayersOnline = () => {
 const GameLobby = (): Entity => {
 
   const list: GameBuilder[] = [Craft, Volley]
-  let gameButtons: Entity<Position | Renderable>[] = []
+  let gameButtons: HTMLButtonElement[] = []
 
   const gameLobby = Entity<Position>({
     id: "gameLobby",
@@ -489,27 +467,29 @@ const GameLobby = (): Entity => {
       }),
       npc: NPC({
         behavior: (_, world) => {
-          if (!world.pixi) return
-          const { height, width } = world.pixi.app.screen
-
           if (gameButtons.length === 0) {
+            const shell = HtmlDiv({
+              left: "50%",
+              top: "24%",
+              transform: "translate(-50%, -50%)",
+              display: "flex",
+              border: "none",
+              gap: "20px"
+            })
+
             for (const g of list) {
-              const gameButton = GameButton(g)
-              world.addEntity(gameButton)
-              gameButtons.push(gameButton)
+              const htmlButton = HtmlGameButton(g, world)
+              shell.appendChild(htmlButton)
+              gameButtons.push(htmlButton)
             }
+
+            document.body.appendChild(shell)
           }
 
-          const offset = { x: width / 2, y: height / 2 - 60 }
-
-          // align the game buttons
-          const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
-          let x = -totalWidth / 2
-          for (const gb of gameButtons) {
-            const { width } = gb.components.renderable.c
-
-            gb.components.position.data.x = offset.x + x + width / 2
-            x += width + 20
+          // make border green for selected game
+          const state = world.game.state as LobbyState
+          for (const button of gameButtons) {
+            button.style.outline = (button.innerText === state.gameId) ? "2px solid #00cc88" : "none"
           }
         }
       })

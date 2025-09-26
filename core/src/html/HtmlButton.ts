@@ -6,6 +6,8 @@ export const HtmlButton = (props: HtmlButtonProps): HtmlButton => {
   const b = document.createElement("button")
   Object.assign(b.style, defaults)
 
+  b.classList.add("lex")
+
   if (props.text) b.textContent = props.text
 
   if (props.onClick || props.onRelease) b.style.pointerEvents = "auto"

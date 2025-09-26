@@ -1,10 +1,12 @@
 export type CSS = Partial<{
   alignItems: "center" | "flex-start" | "flex-end" | "stretch"
+  background: string
   backgroundColor: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
   border: string
   borderBottom: string
   borderImage: `linear-gradient(${string}) ${number}`
   borderRadius: `${number}px` | `${number}%`
+  borderStyle: "solid" | "dashed" | "dotted"
   bottom: `${number}%` | `${number}px`
   boxSizing: "border-box" | "content-box"
   clipPath: string
@@ -17,6 +19,7 @@ export type CSS = Partial<{
   fontFamily: "Courier New" | "Arial"
   fontSize: `${number}px`
   fontWeight: "normal" | "bold" | "bolder" | "lighter"
+  gap: `${number}px` | `${number}%`
   height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
   imageRendering: "auto" | "crisp-edges" | "pixelated"
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
@@ -52,6 +55,7 @@ export type CSS = Partial<{
   top: `${number}%` | `${number}px` | `${number}dvh`
   touchAction: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
   transform: `translate(${number}%)` | `translate(${number}%, ${number}%)`
+  transition: string
   userSelect: "none" | "auto" | "text" | "all"
   visibility: "visible" | "hidden"
   whiteSpace: "normal" | "nowrap" | "pre" | "pre-wrap" | "pre-line"

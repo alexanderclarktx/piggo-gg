@@ -17,23 +17,23 @@ export const Background = ({ img, json, rays, moving, follow }: BackgroundProps 
     renderable: Renderable({
       zIndex: -2,
       interpolate: true,
+      onRender: ({ renderable, delta, world }) => {
+        if (moving) {
+          const tile = renderable.c as TilingSprite
+          tile.tilePosition.x = (world.tick + delta / 25) * 0.5
+        }
+      },
       onTick: ({ renderable, world, entity }) => {
         const godRayFilter = renderable.filters["rays"] as GodrayFilter
         if (rays && godRayFilter) godRayFilter.time += 0.008
 
-        const tile = renderable.c as TilingSprite
-        if (moving) tile.tilePosition.x += 0.5
+        const { position } = entity.components
 
         if (follow) {
-          const { position } = entity.components
-
           const { focus } = world.pixi?.camera ?? {}
           if (focus && world.pixi) {
 
-            const { x, y, z, velocity } = focus.components.position.data
-
-            tile.tilePosition.x = 0.85 * x
-            tile.tilePosition.y = 0.85 * y
+            const { z, velocity } = focus.components.position.data
 
             position.setVelocity({
               x: velocity.x * 0.85,

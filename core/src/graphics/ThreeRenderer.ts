@@ -1,4 +1,4 @@
-import { isMobile, replaceCanvas, ThreeCamera, values, World } from "@piggo-gg/core"
+import { isMobile, replaceCanvas, ThreeCamera, World } from "@piggo-gg/core"
 import { Scene, TextureLoader, WebGLRenderer } from "three"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -56,10 +56,6 @@ export const ThreeRenderer = (): ThreeRenderer => {
 
       webgl?.setAnimationLoop(null)
       webgl?.dispose()
-
-      for (const el of values(document.getElementsByClassName("lex"))) {
-        el.remove()
-      }
 
       renderer.ready = false
     },
