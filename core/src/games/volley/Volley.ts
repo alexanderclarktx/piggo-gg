@@ -77,6 +77,8 @@ const VolleySystem = SystemBuilder({
   init: (world) => {
     const bots: Record<string, Entity<Position | Team>> = {}
 
+    document.body.style.cursor = "none"
+
     // spawn bots
     const players = world.queryEntities<Team>(["pc", "team"])
     if (players.length < 4) {

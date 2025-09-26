@@ -150,7 +150,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
 
   const button = HtmlButton({
     style: {
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      backgroundColor: "rgba(0, 0, 0, 1)",
       borderRadius: "12px",
       fontSize: "24px",
       position: "relative",

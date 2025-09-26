@@ -223,6 +223,8 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
         el.remove()
       }
 
+      document.body.style.cursor = "auto"
+
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))
 
