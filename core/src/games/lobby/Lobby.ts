@@ -150,10 +150,12 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
 
   const button = HtmlButton({
     style: {
-      fontSize: "24px", position: "relative", width: "160px", height: "160px",
-      transition: "box-shadow 0.2s ease",
       backgroundColor: "rgba(0, 0, 0, 0.8)",
       borderRadius: "12px",
+      fontSize: "24px",
+      position: "relative",
+      transition: "box-shadow 0.2s ease",
+      width: "170px", height: "160px"
     },
     onClick: () => {
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -513,7 +515,7 @@ const PlayersOnline = () => {
 const GameLobby = (): Entity => {
 
   const list: GameBuilder[] = [Craft, Volley]
-  let gameButtons: Entity<Position | Renderable>[] = []
+  let gameButtons: HTMLButtonElement[] = []
 
   const gameLobby = Entity<Position>({
     id: "gameLobby",
@@ -529,49 +531,33 @@ const GameLobby = (): Entity => {
       }),
       npc: NPC({
         behavior: (_, world) => {
-          if (!world.pixi) return
-          const { height, width } = world.pixi.app.screen
-
           if (gameButtons.length === 0) {
             const shell = HtmlDiv({
-              // position: "relative",
               left: "50%",
-              top: "40%",
+              top: "24%",
               transform: "translate(-50%, -50%)",
               display: "flex",
               border: "none",
               gap: "20px"
             })
 
-            document.body.appendChild(shell)
-
-
             for (const g of list) {
-              const gameButton = GameButton(g)
-
               const htmlButton = HtmlGameButton(g, world)
               shell.appendChild(htmlButton)
-
-
-              world.addEntity(gameButton)
-              gameButtons.push(gameButton)
+              gameButtons.push(htmlButton)
             }
 
-
-
-
+            document.body.appendChild(shell)
           }
 
-          const offset = { x: width / 2, y: height / 2 - 60 }
-
-          // align the game buttons
-          const totalWidth = gameButtons.reduce((acc, b) => acc + b.components.renderable.c.width, 0) + 20 * (gameButtons.length - 1)
-          let x = -totalWidth / 2
-          for (const gb of gameButtons) {
-            const { width } = gb.components.renderable.c
-
-            gb.components.position.data.x = offset.x + x + width / 2
-            x += width + 20
+          // make border green for selected game
+          const state = world.game.state as LobbyState
+          for (const button of gameButtons) {
+            if (button.innerText === state.gameId) {
+              button.style.border = "2px solid #00ff88"
+            } else {
+              button.style.border = "2px solid white"
+            }
           }
         }
       })

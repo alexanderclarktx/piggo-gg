@@ -219,6 +219,10 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
         if (!entity.persists) world.removeEntity(entity.id)
       })
 
+      for (const el of values(document.getElementsByClassName("lex"))) {
+        el.remove()
+      }
+
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))
 
