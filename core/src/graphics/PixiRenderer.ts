@@ -82,7 +82,7 @@ export const PixiRenderer = (): PixiRenderer => {
       app.stage.addChild(renderer.camera.root)
 
       // hide the cursor
-      app.renderer.events.cursorStyles.default = "none"
+      // app.renderer.events.cursorStyles.default = "none"
 
       // handle screen resize
       window.addEventListener("resize", renderer.handleResize)

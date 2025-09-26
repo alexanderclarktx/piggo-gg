@@ -2,7 +2,11 @@ import {
   Actions, arrayEqual, Background, colors, Cursor, Craft, DudeSkin, Entity,
   GameBuilder, Ghost, loadTexture, Networked, NPC, PC, PixiButton,
   pixiContainer, pixiGraphics, pixiRect, pixiText, Position, randomInt,
-  Renderable, PixiRenderSystem, Team, TeamColors, World, XY, Volley
+  Renderable, PixiRenderSystem, Team, TeamColors, World, XY, Volley,
+  HtmlButton,
+  HtmlDiv,
+  HtmlText,
+  HtmlImg
 } from "@piggo-gg/core"
 import { Container, Sprite, Text } from "pixi.js"
 
@@ -22,7 +26,7 @@ export const Lobby: GameBuilder = {
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
-      Cursor(),
+      // Cursor(),
       // PixiChat(),
       // Friends(),
       Profile(),
@@ -131,6 +135,42 @@ const Players = (): Entity => {
       })
     }
   })
+}
+
+const HtmlGameButton = (game: GameBuilder, world: World) => {
+  const label = HtmlText({
+    text: game.id,
+    style: { fontSize: "24px", fontWeight: "bold", left: "50%", transform: "translate(-50%)", bottom: "-30px" }
+  })
+
+  const imgSrc = game.id === "volley" ? "vball.png" : "dde-256.jpg"
+  const scale = game.id === "volley" ? "24%" : "100%"
+
+  const image = HtmlImg(imgSrc, { width: scale, height: scale, imageRendering: "pixelated", transform: "translate(-50%, -50%)" })
+
+  const button = HtmlButton({
+    style: {
+      fontSize: "24px", position: "relative", width: "160px", height: "160px",
+      transition: "box-shadow 0.2s ease",
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      borderRadius: "12px",
+    },
+    onClick: () => {
+      world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
+      world.client?.sound.play({ name: "click1" })
+    },
+    onHover: () => {
+      button.style.boxShadow = "0 0 12px white"
+      world.client?.sound.play({ name: "click3" })
+    },
+    onHoverOut: () => {
+      button.style.boxShadow = "none"
+    }
+  })
+
+  button.appendChild(label)
+  button.appendChild(image)
+  return button
 }
 
 const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
@@ -493,11 +533,33 @@ const GameLobby = (): Entity => {
           const { height, width } = world.pixi.app.screen
 
           if (gameButtons.length === 0) {
+            const shell = HtmlDiv({
+              // position: "relative",
+              left: "50%",
+              top: "40%",
+              transform: "translate(-50%, -50%)",
+              display: "flex",
+              border: "none",
+              gap: "20px"
+            })
+
+            document.body.appendChild(shell)
+
+
             for (const g of list) {
               const gameButton = GameButton(g)
+
+              const htmlButton = HtmlGameButton(g, world)
+              shell.appendChild(htmlButton)
+
+
               world.addEntity(gameButton)
               gameButtons.push(gameButton)
             }
+
+
+
+
           }
 
           const offset = { x: width / 2, y: height / 2 - 60 }
