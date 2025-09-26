@@ -29,7 +29,7 @@ export const Root = () => {
 
         if (world.client) world.client.sound.ready = true
       }}>
-        <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
+        <div id="canvas-parent" style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}>
           {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />}
           <Canvas setWorld={setWorld} />
         </div>

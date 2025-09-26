@@ -32,7 +32,11 @@ export const ThreeRenderer = (): ThreeRenderer => {
     gLoader: new GLTFLoader(),
     tLoader: new TextureLoader(),
     append: (...elements: HTMLElement[]) => {
-      renderer.canvas?.parentElement?.append(...elements)
+      const parent = document.getElementById("canvas-parent")
+      if (parent) {
+        console.log("APPENDING ELEMENTS", elements.map(e => e.id), parent)
+        parent.append(...elements)
+      }
     },
     resize: () => {
       if (!webgl) return
