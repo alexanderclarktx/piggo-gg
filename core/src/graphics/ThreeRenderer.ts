@@ -34,7 +34,7 @@ export const ThreeRenderer = (): ThreeRenderer => {
     append: (...elements: HTMLElement[]) => {
       const parent = document.getElementById("canvas-parent")
       if (parent) {
-        console.log("APPENDING ELEMENTS", elements.map(e => e.id), parent)
+        // console.log("APPENDING ELEMENTS", elements.map(e => e.id), parent)
         parent.append(...elements)
       }
     },

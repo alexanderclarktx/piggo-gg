@@ -1,6 +1,6 @@
 import {
   BlockPhysicsSystem, Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
-  min, D3Profile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
+  min, UIProfile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, GameBuilder, spawnTerrain, EscapeMenu,
   ThreeSystem, InventorySystem, BlockPreview, Sun, BlockMeshSysten
 } from "@piggo-gg/core"
@@ -70,7 +70,7 @@ export const Craft: GameBuilder<CraftState, CraftSettings> = {
     entities: [
       Crosshair(),
       EscapeMenu(world),
-      D3Profile(),
+      UIProfile(),
       Scoreboard(),
       HtmlChat(),
       Sun(),

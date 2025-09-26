@@ -153,13 +153,13 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
 
         const button = PixiButton({
           content: () => ({
-            text: game.id,
-            textAnchor: { x: 0.5, y: 0.5 },
+            text: "",
+            textAnchor: { x: 0.5, y: -0.2 },
             textPos: { x: 0, y: 60 },
             style: { fontSize: 24 },
             rounded: 14,
-            height: 180,
-            width: 200
+            height: 160,
+            width: 180
           }),
           onClick: () => {
             world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -183,7 +183,7 @@ const GameButton = (game: GameBuilder) => Entity<Position | Renderable>({
           icon = sprite
         } else {
           const textures = await loadTexture("dde-art.json")
-          const g = pixiRect({ rounded: 10, x: -55, y: -50, w: 110, h: 110, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
+          const g = pixiRect({ rounded: 10, x: -60, y: -40, w: 120, h: 120, style: { strokeWidth: 0 } }).fill({ texture: textures["0"] })
           g.position.set(0, -20)
           icon = g
         }
