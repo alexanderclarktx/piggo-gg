@@ -44,8 +44,7 @@ export const PixiRenderer = (): PixiRenderer => {
       if (!renderer.ready) return
       renderer.ready = false
 
-      app.destroy({ removeView: false }, { children: true, texture: true, context: true, style: true, textureSource: true })
-      // world.pixi = undefined
+      app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
     },
     handleResize: () => {
       if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {

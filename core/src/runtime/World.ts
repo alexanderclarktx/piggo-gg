@@ -25,7 +25,7 @@ export type World = {
   tick: number
   tickrate: number
   time: DOMHighResTimeStamp
-  trees: XYZ[] // TODO rm
+  trees: XYZ[] // TODO rm !!
   addEntities: (entities: Entity[]) => void
   addEntity: (entity: Entity, timeout?: number) => string | undefined
   addSystemBuilders: (systemBuilders: SystemBuilder[]) => void
