@@ -1,4 +1,4 @@
-import { isMobile, ThreeCamera, values, World } from "@piggo-gg/core"
+import { isMobile, replaceCanvas, ThreeCamera, values, World } from "@piggo-gg/core"
 import { Scene, TextureLoader, WebGLRenderer } from "three"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -76,13 +76,7 @@ export const ThreeRenderer = (): ThreeRenderer => {
     activate: (world: World) => {
       if (renderer.ready) return
 
-      const canvas = document.getElementById("canvas") as HTMLCanvasElement
-      if (!canvas) throw new Error("Canvas element not found")
-
-      const newCanvas = document.createElement("canvas")
-      newCanvas.id = "canvas"
-      canvas.replaceWith(newCanvas)
-      renderer.canvas = newCanvas
+      renderer.canvas = replaceCanvas()
 
       webgl = new WebGLRenderer({
         antialias: true,

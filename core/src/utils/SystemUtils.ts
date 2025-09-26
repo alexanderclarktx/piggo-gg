@@ -26,6 +26,8 @@ export const replaceCanvas = () => {
   const newCanvas = document.createElement("canvas")
   newCanvas.id = "canvas"
 
+  if (isMobile()) newCanvas.style.border = "none"
+
   if (canvas) {
     canvas.replaceWith(newCanvas)
   } else {
