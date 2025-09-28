@@ -53,7 +53,7 @@ export const MusicBox = (): Entity => {
       renderable: Renderable({
         zIndex: 11,
         interactiveChildren: true,
-        onTick: ({ renderable, world, client }) => {
+        onTick: ({ renderable, world }) => {
           if (!world.client) return
 
           const { sound } = world.client
