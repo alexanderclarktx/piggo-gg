@@ -32,10 +32,10 @@ body, html {
 canvas {
   margin: 0px;
   display: block;
-  border-width: 2px;
-  border-color: darkgray;
+  border-width: 0px;
+  /* border-color: darkgray;
   border-style: ridge;
-  border-radius: 3px;
+  border-radius: 3px; */
   top: 0;
   left: 0;
   width: auto;
