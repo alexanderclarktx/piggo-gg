@@ -1,6 +1,6 @@
 import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity,
-  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, Networked,
+  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked,
   NPC, PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, Renderable, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
@@ -34,7 +34,7 @@ export const Lobby: GameBuilder = {
       CreateLobbyButton(),
       // SettingsButton(),
       PlayersOnline(),
-      // MusicBox()
+      MusicBox()
     ],
     netcode: "delay"
   })

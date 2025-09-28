@@ -1,4 +1,4 @@
-import { BirdSounds, Entity, MusicSounds, pixiGraphics, Position, Renderable, sin } from "@piggo-gg/core"
+import { Entity, MusicSounds, pixiGraphics, Position, Renderable, sin } from "@piggo-gg/core"
 import { Graphics } from "pixi.js/lib"
 
 export const MusicBox = (): Entity => {
@@ -8,23 +8,22 @@ export const MusicBox = (): Entity => {
   let disc: Graphics | null = null
   let light: Graphics | null = null
 
-  let timeout = 40
+  let timeout = 0
   let animation = 0
   let lightColor = 1
   let lightDirection = -1
 
   let state: "stop" | "play" = "stop"
-  // let tracks: MusicSounds[] = ["track2"]
-  let tracks: BirdSounds[] = ["birdsong1"]
-  let trackIndex = 1
+  let tracks: MusicSounds[] = ["track2"]
+  let trackIndex = 0
 
   let lastMouseY = 0
   let dialDragging = false
   let targetVolume = -20
   let discHovered = false
 
-  let discColors: Record<BirdSounds, number> = {
-    birdsong1: 0xccaa00
+  let discColors: Record<MusicSounds, number> = {
+    track2: 0xccaa00
   }
 
   const redraw = () => {
@@ -50,11 +49,11 @@ export const MusicBox = (): Entity => {
     id: "musicbox",
     persists: true,
     components: {
-      position: Position({ x: 400, y: 570, screenFixed: true }),
+      position: Position({ x: 400, y: 650, screenFixed: true }),
       renderable: Renderable({
         zIndex: 11,
         interactiveChildren: true,
-        onTick: ({ renderable, world }) => {
+        onTick: ({ renderable, world, client }) => {
           if (!world.client) return
 
           const { sound } = world.client
@@ -75,7 +74,7 @@ export const MusicBox = (): Entity => {
             currentSong?.set({ volume: targetVolume })
           }
 
-          if (world.entity("escapeMenu")?.components.renderable?.visible === true) {
+          if (world.entity("pixiMenu")?.components.renderable?.visible === true) {
             renderable.visible = true
             const { width, height } = world.pixi!.wh()
 
@@ -84,7 +83,7 @@ export const MusicBox = (): Entity => {
           } else if (world.game.id === "lobby") {
             renderable.visible = true
             const { width } = world.pixi!.wh()
-            musicbox.components.position.setPosition({ x: width / 2, y: 570 })
+            musicbox.components.position.setPosition({ x: width / 2, y: 650 })
           } else {
             renderable.visible = false
           }

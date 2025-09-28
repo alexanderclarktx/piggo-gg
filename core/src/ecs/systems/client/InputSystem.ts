@@ -39,8 +39,7 @@ export const InputSystem = ClientSystemBuilder({
       if (client.controls.left.active || client.controls.right.active) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (pixi) mouse = pixi.camera.toWorldCoords(mouseScreen)
-      mouseScreen = { x: event.offsetX, y: event.offsetY }
+      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
       if (world.three && document.pointerLockElement) {
         client.controls.moveLocal({
@@ -55,8 +54,7 @@ export const InputSystem = ClientSystemBuilder({
       if (world.tick <= client.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (pixi) mouse = pixi.camera.toWorldCoords(mouseScreen)
-      mouseScreen = { x: event.offsetX, y: event.offsetY }
+      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
       // @ts-expect-error
       const target = event.target?.tagName
@@ -251,7 +249,7 @@ export const InputSystem = ClientSystemBuilder({
             const controllerInput = input.inputMap.press[keyPress]
             if (controllerInput != null) {
               const invocation = controllerInput({
-                mouse: { ...mouse },
+                mouse: { ...client.controls.mouse },
                 aim: localAim(),
                 entity: character,
                 character,
@@ -275,7 +273,7 @@ export const InputSystem = ClientSystemBuilder({
           const controllerInput = input.inputMap.press[keyPress]
           if (controllerInput) {
             const invocation = controllerInput({
-              mouse: { ...mouse },
+              mouse: { ...client.controls.mouse },
               aim: localAim(),
               entity: character,
               character,
@@ -335,7 +333,7 @@ export const InputSystem = ClientSystemBuilder({
               character,
               entity: activeItem,
               hold: keyMouse.hold,
-              mouse: { ...mouse },
+              mouse: { ...client.controls.mouse },
               client,
               tick: keyMouse.tick,
               world
@@ -434,7 +432,7 @@ export const InputSystem = ClientSystemBuilder({
         client.bufferDown.updateHold(world.tick)
 
         // update mouse position, the camera might have moved
-        if (pixi) mouse = pixi?.camera.toWorldCoords(mouseScreen)
+        if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus() && !client.mobile) {
