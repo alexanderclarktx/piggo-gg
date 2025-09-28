@@ -243,7 +243,8 @@ const CreateLobbyButton = () => {
               text: "Invite Friends",
               width: 300,
               height: 40,
-              style: { fontSize: 26 }
+              style: { fontSize: 26 },
+              fillAlpha: 1
             }),
             onClick: () => {
               world.client?.copyInviteLink()
