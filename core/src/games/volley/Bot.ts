@@ -2,7 +2,8 @@ import {
   Action, Actions, Chase, closestEntity, Collider, Debug, Entity, middle,
   Move, Networked, NPC, Position, PositionProps, Renderable, Shadow,
   Team, teammates, TeamNumber, XYdiff, XYZdiff, DudeSkin,
-  VolleyCharacterAnimations, VolleyCharacterDynamic, range, VolleyState
+  VolleyCharacterAnimations, VolleyCharacterDynamic, range, VolleyState,
+  randomInt
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
 
@@ -107,9 +108,11 @@ export const Bot = (team: TeamNumber, pos: PositionProps): Entity<Position | Tea
 
             // spike
             if ((team === state.lastHitTeam && state.hit === 2) || (state.phase === "serve" && state.hit === 0)) {
+              const randomFunc = (world.mode === "server" || world.client?.net.synced) ? world.random.int : randomInt
+
               const target = {
-                x: 225 + (team === 1 ? 1 : -1) * (world.random.int(225) + 40),
-                y: world.random.int(150, 75)
+                x: 225 + (team === 1 ? 1 : -1) * (randomFunc(225) + 40),
+                y: randomFunc(150, 75)
               }
               return { actionId: "spike", entityId: bot.id, params: { target, from } }
             }
