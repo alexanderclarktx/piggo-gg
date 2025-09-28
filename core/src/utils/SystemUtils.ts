@@ -20,6 +20,14 @@ export const isTypingEvent = (e: Event) => {
   return true
 }
 
+export const screenWH = () => {
+  // @ts-expect-error
+  const standalone = window.navigator.standalone ?? false
+  const height = (document.fullscreenElement || standalone) ? window.outerHeight : window.innerHeight
+
+  return { w: window.innerWidth, h: height }
+}
+
 export const replaceCanvas = () => {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement | undefined
 

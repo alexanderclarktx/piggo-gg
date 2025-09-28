@@ -33,7 +33,7 @@ export const Root = () => {
         {/* <div style={{ width: "fit-content", display: "block", marginLeft: "auto", marginRight: "auto" }}> */}
         {/* {isMobile() ? null : <Title loginState={loginState} setLoginState={setLoginState} world={world} />} */}
 
-        <div style={{
+        {/* <div style={{
           display: "flex", position: "absolute", left: "50%", top: "50px", transform: "translate(-50%, -50%)", alignItems: "center"
         }}>
           <h1 style={{
@@ -61,7 +61,7 @@ export const Root = () => {
             <path d="m107.6,117.17c6.98,-10.28 -4.43,31.08 -21.41,31.08c-17,0 -33.16,-30.69 -24.33,-25.04c8.83,5.64 38.77,4.25 45.74,-6.03z" fill="#000000" stroke="#000000" strokeWidth="3" />
             <path d="m76.82,141.95c0,-2.54 9.32,-6.11 14.45,-6.11c5.14,0 6.73,0.59 6.73,3.13c0,2.54 -6.25,7.42 -11.39,7.42c-5.14,0 -9.79,-1.89 -9.79,-4.43l0,-0.01z" fill="#ff909b" stroke="null" transform="matrix(1, 0, 0, 1, 0, 0)" />
           </svg>
-        </div>
+        </div> */}
       </div>
     </div>
   )
