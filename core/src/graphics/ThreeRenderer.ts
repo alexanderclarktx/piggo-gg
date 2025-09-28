@@ -36,7 +36,7 @@ export const ThreeRenderer = (): ThreeRenderer => {
       if (parent) parent.append(...elements)
     },
     resize: () => {
-      if (!webgl) return
+      if (!webgl || !renderer.ready) return
 
       const { w, h } = screenWH()
       webgl.setSize(w, h)
@@ -59,7 +59,8 @@ export const ThreeRenderer = (): ThreeRenderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      if (renderer.ready) return
+      if (renderer.ready) return      
+      renderer.ready = true
 
       renderer.canvas = replaceCanvas()
 
@@ -90,8 +91,6 @@ export const ThreeRenderer = (): ThreeRenderer => {
       })
 
       renderer.resize()
-
-      renderer.ready = true
     }
   }
   return renderer

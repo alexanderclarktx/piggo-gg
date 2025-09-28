@@ -47,6 +47,8 @@ export const PixiRenderer = (): PixiRenderer => {
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
     },
     handleResize: () => {
+      if (!renderer.ready) return
+
       const { w, h } = screenWH()
       renderer.app.renderer.resize(w, h)
 
@@ -54,6 +56,7 @@ export const PixiRenderer = (): PixiRenderer => {
     },
     activate: async (world: World) => {
       if (renderer.ready) return
+      renderer.ready = true
 
       renderer.canvas = replaceCanvas()
 
@@ -96,8 +99,6 @@ export const PixiRenderer = (): PixiRenderer => {
 
       // schedule onRender
       app.ticker.add(world.onRender)
-
-      renderer.ready = true
     },
     setBgColor: (color: number) => {
       if (app.renderer) app.renderer.background.color = color
