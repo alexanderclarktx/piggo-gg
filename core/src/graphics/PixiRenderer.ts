@@ -1,6 +1,6 @@
 import {
   ClientSystemBuilder, Entity, PixiCamera, Position, Renderable,
-  World, isMobile, logPerf, replaceCanvas
+  World, logPerf, replaceCanvas, screenWH
 } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
@@ -47,15 +47,16 @@ export const PixiRenderer = (): PixiRenderer => {
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
     },
     handleResize: () => {
-      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
-        renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
-      } else {
-        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
-      }
+      if (!renderer.ready) return
+
+      const { w, h } = screenWH()
+      renderer.app.renderer.resize(w, h)
+
       renderer.resizedFlag = true
     },
     activate: async (world: World) => {
       if (renderer.ready) return
+      renderer.ready = true
 
       renderer.canvas = replaceCanvas()
 
@@ -98,13 +99,11 @@ export const PixiRenderer = (): PixiRenderer => {
 
       // schedule onRender
       app.ticker.add(world.onRender)
-
-      renderer.ready = true
     },
     setBgColor: (color: number) => {
       if (app.renderer) app.renderer.background.color = color
     },
-    wh: () => renderer.ready ? { width: app.screen.width, height: app.screen.height} : { width: 0, height: 0 }
+    wh: () => renderer.ready ? { width: app.screen.width, height: app.screen.height } : { width: 0, height: 0 }
   }
   return renderer
 }

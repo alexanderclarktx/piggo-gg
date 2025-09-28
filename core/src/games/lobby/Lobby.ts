@@ -1,6 +1,6 @@
 import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity,
-  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, Networked,
+  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked,
   NPC, PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, Renderable, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
@@ -34,7 +34,7 @@ export const Lobby: GameBuilder = {
       CreateLobbyButton(),
       // SettingsButton(),
       PlayersOnline(),
-      // MusicBox()
+      MusicBox()
     ],
     netcode: "delay"
   })
@@ -176,7 +176,7 @@ const PlayButton = () => {
   const playButton = Entity<Position>({
     id: "playButton",
     components: {
-      position: Position({ x: 300, y: 380, screenFixed: true }),
+      position: Position({ x: 300, y: 450, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -196,8 +196,11 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
+              if (state.gameId === "craft") world.three?.pointerLock()
+
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
+
               world.client?.sound.play({ name: "click1" })
             },
             onEnter: () => {
@@ -220,7 +223,7 @@ const CreateLobbyButton = () => {
   const createLobbyButton = Entity<Position | Renderable>({
     id: "createLobbyButton",
     components: {
-      position: Position({ x: 300, y: 440, screenFixed: true }),
+      position: Position({ x: 300, y: 510, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         interactiveChildren: true,
@@ -243,7 +246,8 @@ const CreateLobbyButton = () => {
               text: "Invite Friends",
               width: 300,
               height: 40,
-              style: { fontSize: 26 }
+              style: { fontSize: 26 },
+              fillAlpha: 1
             }),
             onClick: () => {
               world.client?.copyInviteLink()

@@ -1,4 +1,4 @@
-import { isMobile, replaceCanvas, ThreeCamera, World } from "@piggo-gg/core"
+import { replaceCanvas, screenWH, ThreeCamera, World } from "@piggo-gg/core"
 import { Scene, TextureLoader, WebGLRenderer } from "three"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -36,18 +36,11 @@ export const ThreeRenderer = (): ThreeRenderer => {
       if (parent) parent.append(...elements)
     },
     resize: () => {
-      if (!webgl) return
+      if (!webgl || !renderer.ready) return
 
-      if (isMobile()) {
-        // @ts-expect-error
-        const height = (document.fullscreenElement || window.navigator.standalone) ? window.outerHeight : window.innerHeight
-
-        webgl.setSize(window.innerWidth, height)
-        renderer.camera.c.aspect = window.innerWidth / height
-      } else {
-        webgl.setSize(window.innerWidth * 0.98, window.innerHeight * 0.91)
-        renderer.camera.c.aspect = window.innerWidth / window.innerHeight
-      }
+      const { w, h } = screenWH()
+      webgl.setSize(w, h)
+      renderer.camera.c.aspect = w / h
 
       renderer.camera.c.updateProjectionMatrix()
     },
@@ -66,7 +59,8 @@ export const ThreeRenderer = (): ThreeRenderer => {
       document.exitPointerLock()
     },
     activate: (world: World) => {
-      if (renderer.ready) return
+      if (renderer.ready) return      
+      renderer.ready = true
 
       renderer.canvas = replaceCanvas()
 
@@ -97,8 +91,6 @@ export const ThreeRenderer = (): ThreeRenderer => {
       })
 
       renderer.resize()
-
-      renderer.ready = true
     }
   }
   return renderer
