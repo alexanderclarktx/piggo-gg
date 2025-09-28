@@ -1,9 +1,8 @@
 import {
   Action, Actions, Chase, closestEntity, Collider, Debug, Entity, middle,
   Move, Networked, NPC, Position, PositionProps, Renderable, Shadow,
-  Team, teammates, TeamNumber, XYdiff, XYZdiff, DudeSkin,
+  Team, teammates, TeamNumber, XYdiff, XYZdiff, DudeSkin, randomInt,
   VolleyCharacterAnimations, VolleyCharacterDynamic, range, VolleyState,
-  randomInt
 } from "@piggo-gg/core"
 import { Spike } from "./Spike"
 
