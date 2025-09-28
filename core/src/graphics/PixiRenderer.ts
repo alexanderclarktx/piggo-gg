@@ -47,11 +47,12 @@ export const PixiRenderer = (): PixiRenderer => {
       app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
     },
     handleResize: () => {
-      if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
-        renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
-      } else {
-        renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
-      }
+      renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
+      // if (isMobile() || (document.fullscreenElement && renderer.app.renderer)) {
+      //   renderer.app.renderer.resize(window.innerWidth, window.outerHeight)
+      // } else {
+      //   renderer.app.renderer.resize(window.innerWidth * 0.98, window.innerHeight * 0.91)
+      // }
       renderer.resizedFlag = true
     },
     activate: async (world: World) => {
