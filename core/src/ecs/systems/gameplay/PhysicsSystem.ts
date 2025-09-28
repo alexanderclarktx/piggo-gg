@@ -41,10 +41,6 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
         // reset physics if not rollback
         if (!isRollback && mode === "global") resetPhysics()
 
-        // if (mode === "global") {
-        //   console.log("num physics entities", entities.length)
-        // }
-
         // remove old bodies (TODO does this matter)
         for (const id of keys(bodies)) {
           if (!world.entities[id]) {
@@ -119,9 +115,8 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
         }
         logPerf("update velocities", t2)
 
-        // console.log("num physics bodies", physics.bodies.len(), physics.colliders.len())
-
         const t3 = performance.now()
+
         // run physics
         physics.step()
         physics.step()
@@ -130,6 +125,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
         logPerf("step physics", t3)
 
         const t4 = performance.now()
+
         // update entity positions
         for (const entity of entities) {
           const { collider, position } = entity.components
@@ -146,7 +142,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           if (position.data.velocityResets && (abs(diffX) > 1 || abs(diffY) > 1)) {
             if (sign(linvel.y) !== sign(position.data.velocity.y) && sign(linvel.x) !== sign(position.data.velocity.x)) {
               position.lastCollided = world.tick
-              continue
+              // continue
             }
           }
 
@@ -181,6 +177,7 @@ export const PhysicsSystem = (mode: "global" | "local") => SystemBuilder({
         if (mode === "local") return
 
         const t5 = performance.now()
+
         // sensor callbacks
         for (const [entity, collider] of colliders.entries()) {
           if (collider.sensor && collider.rapierCollider) {

@@ -107,9 +107,9 @@ const VolleySystem = SystemBuilder({
     }
 
     // scale camera to fit the court (TODO MOVE)
-    // const desiredScale = world.pixi?.app.screen.width! / 500
-    // const scaleBy = desiredScale - world.pixi?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
-    // world.pixi?.camera.scaleBy(scaleBy)
+    const desiredScale = world.pixi?.app.screen.width! / 500
+    const scaleBy = desiredScale - world.pixi?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
+    world.pixi?.camera.scaleBy(scaleBy)
 
     return {
       id: "VolleySystem",
