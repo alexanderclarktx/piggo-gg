@@ -20,7 +20,8 @@ export const EscapeMenu = (world: World): Entity => {
     border: "",
     display: "flex",
     flexDirection: "column",
-    touchAction: "pan-y"
+    touchAction: "pan-y",
+    visibility: "hidden"
   })
 
   const art = Art()

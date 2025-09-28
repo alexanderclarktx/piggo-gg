@@ -196,8 +196,11 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
+              if (state.gameId === "craft") world.three?.pointerLock()
+
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
+
               world.client?.sound.play({ name: "click1" })
             },
             onEnter: () => {
