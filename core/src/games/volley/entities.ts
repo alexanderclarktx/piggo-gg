@@ -22,12 +22,12 @@ export const Dude = (player: Player) => Character({
     input: Input({
       release: {
         "escape": ({ client }) => {
-          client.mobileLock = !client.mobileLock
+          client.mobileMenu = !client.mobileMenu
         },
         "mb1": ({ target, client }) => {
           if (target !== "canvas") return
 
-          if (client.mobileLock) client.mobileLock = false
+          if (client.mobileMenu) client.mobileMenu = false
         }
       },
       press: {

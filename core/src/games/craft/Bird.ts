@@ -197,8 +197,8 @@ export const Bird = (player: Player): Character => {
           "mb1": ({ world, target, client }) => {
             if (target !== "canvas") return
 
-            if (client.mobile && client.mobileLock) {
-              client.mobileLock = false
+            if (client.mobile && client.mobileMenu) {
+              client.mobileMenu = false
               return
             }
 

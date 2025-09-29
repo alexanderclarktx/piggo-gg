@@ -70,7 +70,7 @@ export const LaserItem = ({ character }: { character: Character }) => {
             if (hold) return
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
-            if (world.client?.mobileLock) return
+            if (world.client?.mobileMenu) return
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)

@@ -223,7 +223,11 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
         el.remove()
       }
 
+      // reset cursor style
       document.body.style.cursor = "auto"
+
+      // mobile menu
+      if (world.client) world.client.mobileMenu = false
 
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))

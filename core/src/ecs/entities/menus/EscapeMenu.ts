@@ -119,10 +119,12 @@ export const EscapeMenu = (world: World): Entity => {
 
           // overall visibility
           if (world.client) {
-            const hidden = !world.client.mobileLock || Boolean(document.pointerLockElement)
-            ddeMenu.style.visibility = hidden ? "hidden" : "visible"
+            const visible = world.client.mobileMenu || !Boolean(document.pointerLockElement)
+            ddeMenu.style.visibility = visible ? "visible" : "hidden"
 
-            if (hidden) return
+            console.log("visible", !visible, "mobileMenu", world.client.mobileMenu, "pointerLockElement", document.pointerLockElement)
+
+            if (!visible) return
           }
 
           if (world.client?.mobile && window.outerHeight < window.outerWidth) {
