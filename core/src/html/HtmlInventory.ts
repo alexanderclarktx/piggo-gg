@@ -32,7 +32,7 @@ export const HtmlInventory = (client: Client): RefreshableDiv => {
     div,
     update: () => {
       const pc = client.character()
-      if (!pc || !pc.components.inventory) {
+      if (!pc || !pc.components.inventory || !document.pointerLockElement) {
         lastSeenItems = []
         div.style.visibility = "hidden"
         return

@@ -56,6 +56,24 @@ export const EscapeMenu = (world: World): Entity => {
     border: ""
   })
 
+  const returnToHomescreen = HtmlButton({
+    text: "return to homescreen",
+    style: {
+      position: "relative",
+      transform: "translate(-50%)",
+      width: "300px",
+      left: "50%",
+      marginBottom: "10px",
+      height: "40px",
+      pointerEvents: "auto",
+      fontSize: "18px",
+    },
+    onClick: () => {
+      world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
+      // world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
+    }
+  })
+
   submenuButtons.appendChild(lobbiesButton)
   submenuButtons.appendChild(skinsButton)
   submenuButtons.appendChild(settingsButton)
@@ -82,6 +100,7 @@ export const EscapeMenu = (world: World): Entity => {
   shell.appendChild(settings.div)
 
   ddeMenu.appendChild(art)
+  ddeMenu.appendChild(returnToHomescreen)
   ddeMenu.appendChild(submenuButtons)
   ddeMenu.appendChild(shell)
 
