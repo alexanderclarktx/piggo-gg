@@ -21,7 +21,7 @@ export const InputSystem = ClientSystemBuilder({
     }
 
     let backspace = 0
-    let mouseScreen: XY = { x: 0, y: 0 }
+    // let mouseScreen: XY = { x: 0, y: 0 }
 
     window.addEventListener("wheel", (event) => {
 
@@ -38,9 +38,6 @@ export const InputSystem = ClientSystemBuilder({
     window.addEventListener("pointermove", (event) => {
       if (client.controls.left.active || client.controls.right.active) return
 
-      mouseScreen = { x: event.offsetX, y: event.offsetY }
-      // if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
-
       if (document.pointerLockElement) {
         client.controls.moveLocal({
           x: event.movementX * 0.001,
@@ -48,16 +45,22 @@ export const InputSystem = ClientSystemBuilder({
         })
 
         const { w, h } = screenWH()
-        client.controls.mouse.x = min(max(0, client.controls.mouse.x + event.movementX), w)
-        client.controls.mouse.y = min(max(0, client.controls.mouse.y + event.movementY), h)
+        client.controls.mouseScreen = {
+          x: min(max(0, client.controls.mouseScreen.x + event.movementX), w),
+          y: min(max(0, client.controls.mouseScreen.y + event.movementY), h)
+        }
+      } else {
+        client.controls.mouseScreen = { x: event.offsetX, y: event.offsetY }
       }
+
+      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(client.controls.mouseScreen)
     })
 
     document.addEventListener("pointerdown", (event) => {
       if (client.busy) return
       if (world.tick <= client.clickThisFrame.value) return
 
-      mouseScreen = { x: event.offsetX, y: event.offsetY }
+      // client.controls.mouseScreen = { x: event.offsetX, y: event.offsetY }
       // if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
       // @ts-expect-error
@@ -207,8 +210,8 @@ export const InputSystem = ClientSystemBuilder({
         if (world.pixi?.camera.focus) {
           const { width, height } = world.pixi?.wh()
           pointingDelta = {
-            x: round(mouseScreen.x - (width / 2), 2),
-            y: round(mouseScreen.y - (height / 2), 2)
+            x: round(client.controls.mouseScreen.x - (width / 2), 2),
+            y: round(client.controls.mouseScreen.y - (height / 2), 2)
           }
         } else {
           pointingDelta = {
