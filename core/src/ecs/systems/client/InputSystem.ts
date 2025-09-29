@@ -1,6 +1,6 @@
 import {
   Actions, Character, ClientSystemBuilder, Entity,
-  Input, World, XY, cos, isTypingEvent, round, sin
+  Input, World, XY, cos, isTypingEvent, max, min, round, screenWH, sin
 } from "@piggo-gg/core"
 
 // handles keyboard/mouse/joystick inputs
@@ -39,13 +39,17 @@ export const InputSystem = ClientSystemBuilder({
       if (client.controls.left.active || client.controls.right.active) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
+      // if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
-      if (world.three && document.pointerLockElement) {
+      if (document.pointerLockElement) {
         client.controls.moveLocal({
           x: event.movementX * 0.001,
           y: event.movementY * 0.001
         })
+
+        const { w, h } = screenWH()
+        client.controls.mouse.x = min(max(0, client.controls.mouse.x + event.movementX), w)
+        client.controls.mouse.y = min(max(0, client.controls.mouse.y + event.movementY), h)
       }
     })
 
@@ -54,7 +58,7 @@ export const InputSystem = ClientSystemBuilder({
       if (world.tick <= client.clickThisFrame.value) return
 
       mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
+      // if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
       // @ts-expect-error
       const target = event.target?.tagName
@@ -432,7 +436,7 @@ export const InputSystem = ClientSystemBuilder({
         client.bufferDown.updateHold(world.tick)
 
         // update mouse position, the camera might have moved
-        if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
+        // if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus() && !client.mobile) {

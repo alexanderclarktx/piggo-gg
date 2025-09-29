@@ -193,7 +193,8 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
-              if (state.gameId === "craft") world.client?.pointerLock()
+              // if (state.gameId === "craft") world.client?.pointerLock()
+              world.client?.pointerLock()
 
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
