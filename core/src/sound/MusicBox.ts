@@ -39,15 +39,17 @@ export const MusicBox = (): Entity => {
   }
 
   const drawLight = (color?: number) => {
-    if (light === null) light = pixiGraphics()
-    light.clear()
-      .circle(0, 0, 6)
-      .fill(color ? color : state === "play" ? 0x00ee00 : 0xff0000)
+    if (light === null) {
+      light = pixiGraphics()
+    } else {
+      if (light.context) light.clear()
+    }
+    light.circle(0, 0, 6).fill(color ? color : state === "play" ? 0x00ee00 : 0xff0000)
   }
 
   const musicbox = Entity<Position>({
     id: "musicbox",
-    persists: true,
+    // persists: true,
     components: {
       position: Position({ x: 400, y: 650, screenFixed: true }),
       renderable: Renderable({

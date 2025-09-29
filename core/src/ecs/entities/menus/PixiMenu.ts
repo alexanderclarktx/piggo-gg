@@ -92,7 +92,7 @@ export const PixiMenu = (): Entity => {
       input: Input({
         press: {
           "escape": ({ hold }) => {
-            if (hold) return null
+            if (hold) return
             return { actionId: "toggleVisible", offline: true }
           }
         }

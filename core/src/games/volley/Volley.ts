@@ -1,10 +1,10 @@
 import {
-  Background, PixiCameraSystem, Cursor, Entity, PixiMenu, GameBuilder, LagText,
-  PhysicsSystem, Position, PixiRenderSystem, Renderable, ScorePanel, ShadowSystem,
+  Background, Cursor, Entity, EscapeMenu, GameBuilder, LagText, PhysicsSystem,
+  PixiCameraSystem, PixiRenderSystem, Position, Renderable, ScorePanel, ShadowSystem,
   SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
 } from "@piggo-gg/core"
-import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
 import { Bot } from "./Bot"
+import { Ball, Bounds, Centerline, Court, Dude, Net, PostBottom, PostTop } from "./entities"
 import { TargetSystem } from "./Target"
 
 export const range = 32
@@ -25,7 +25,7 @@ export type VolleyState = {
 
 export const Volley: GameBuilder<VolleyState> = {
   id: "volley",
-  init: () => ({
+  init: (world) => ({
     id: "volley",
     netcode: "rollback",
     renderer: "pixi",
@@ -55,7 +55,9 @@ export const Volley: GameBuilder<VolleyState> = {
     ],
     entities: [
       Background({ rays: true }),
-      PixiMenu(), Cursor(),
+      // PixiMenu(),
+      EscapeMenu(world),
+      Cursor(),
       Ball(),
       Court(),
       Centerline(),
@@ -76,8 +78,6 @@ const VolleySystem = SystemBuilder({
   id: "VolleySystem",
   init: (world) => {
     const bots: Record<string, Entity<Position | Team>> = {}
-
-    document.body.style.cursor = "none"
 
     // spawn bots
     const players = world.queryEntities<Team>(["pc", "team"])

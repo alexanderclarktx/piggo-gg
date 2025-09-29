@@ -1,7 +1,7 @@
 import {
-  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity,
-  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked,
-  NPC, PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
+  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
+  Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked, NPC,
+  PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, Renderable, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
@@ -22,7 +22,6 @@ export const Lobby: GameBuilder = {
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
-      // Cursor(),
       // PixiChat(),
       // Friends(),
       Profile(),
@@ -30,6 +29,7 @@ export const Lobby: GameBuilder = {
       ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
       GameLobby(),
       Players(),
+      Version(),
       PlayButton(),
       CreateLobbyButton(),
       // SettingsButton(),
@@ -139,10 +139,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
     style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
   })
 
-  const imgSrc = game.id === "volley" ? "volley-256.png" : "dde-256.jpg"
-  const scale = game.id === "volley" ? "100%" : "100%"
-
-  const image = HtmlImg(imgSrc, { width: scale, height: scale, imageRendering: "pixelated", transform: "translate(-50%, -50%)" })
+  const image = HtmlImg(`${game.id}-256.jpg`, { width: "100%", height: "100%", imageRendering: "pixelated", transform: "translate(-50%, -50%)" })
 
   const button = HtmlButton({
     style: {
@@ -196,7 +193,7 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
-              if (state.gameId === "craft") world.three?.pointerLock()
+              if (state.gameId === "craft") world.client?.pointerLock()
 
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
@@ -361,7 +358,7 @@ const Profile = (): Entity => {
   const profile = Entity<Position | Renderable>({
     id: "profile",
     components: {
-      position: Position({ x: 110, y: 85, screenFixed: true }),
+      position: Position({ x: 115, y: 90, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         onTick: ({ world }) => {
@@ -419,6 +416,26 @@ const SignupCTA = () => Entity<Position | Renderable>({
   }
 })
 
+const Version = () => {
+  return Entity({
+    id: "version",
+    components: {
+      position: Position({ x: -15, y: -30, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        setup: async (r) => {
+          const text = pixiText({
+            text: "v0.36.1",
+            style: { fontSize: 16, alpha: 0.7 },
+            anchor: { x: 1, y: 0 }
+          })
+          r.c.addChild(text)
+        }
+      })
+    }
+  })
+}
+
 const PlayersOnline = () => {
 
   let text: Text | undefined = undefined
@@ -433,7 +450,7 @@ const PlayersOnline = () => {
   return Entity({
     id: "playersOnline",
     components: {
-      position: Position({ x: -10, y: 10, screenFixed: true }),
+      position: Position({ x: -15, y: 15, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable) => {
@@ -442,6 +459,7 @@ const PlayersOnline = () => {
             style: { fontSize: 18, alpha: 0.7 },
             anchor: { x: 1, y: 0 }
           })
+
           renderable.c.addChild(text)
         },
         onTick: ({ world }) => {

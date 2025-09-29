@@ -20,19 +20,29 @@ export const Dude = (player: Player) => Character({
     collider: Collider({ shape: "ball", radius: 4, group: "notself" }),
     team: Team(player.components.team.data.team),
     input: Input({
+      release: {
+        "escape": ({ client }) => {
+          client.mobileMenu = !client.mobileMenu
+        },
+        "mb1": ({ target, client }) => {
+          if (target !== "canvas") return
+
+          if (client.mobileMenu) client.mobileMenu = false
+        }
+      },
       press: {
         ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),
         "mb1": ({ hold, mouse, world, entity }) => {
-          if (hold) return null
+          if (hold) return
           const { position } = entity.components
-          if (!position) return null
+          if (!position) return
 
           const from = position.xyz()
           const target = { x: mouse.x, y: mouse.y }
           world.actions.push(world.tick + 3, entity.id, { actionId: "spike", params: { from, target } })
 
-          return null
+          return
         }
       }
     }),

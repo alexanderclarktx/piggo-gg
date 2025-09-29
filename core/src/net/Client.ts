@@ -54,7 +54,7 @@ export type Client = {
   },
   ms: number
   mobile: boolean
-  mobileLock: boolean
+  mobileMenu: boolean
   player: Player
   sound: Sound
   token: string | undefined
@@ -71,6 +71,8 @@ export type Client = {
   authLogin: (jwt: string, callback?: Callback<AuthLogin>) => void
   logout: () => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
+  pointerLock: () => void
+  pointerUnlock: () => void
   profileCreate: (name: string, callback: Callback) => void
   profileGet: (callback?: Callback) => void
   friendsAdd: (name: string, callback: Callback) => void
@@ -150,7 +152,7 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     ms: 0,
     mobile: isMobile(),
-    mobileLock: false,
+    mobileMenu: false,
     player,
     sound: Sound(world),
     token: undefined,
@@ -163,6 +165,12 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     character: () => {
       return client.player.components.controlling.getCharacter(world)
+    },
+    pointerLock: () => {
+      document.body.requestPointerLock({ unadjustedMovement: true })
+    },
+    pointerUnlock: () => {
+      document.exitPointerLock()
     },
     copyInviteLink: () => {
       let url = ""

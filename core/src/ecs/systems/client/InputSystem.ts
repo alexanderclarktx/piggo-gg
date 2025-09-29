@@ -1,6 +1,6 @@
 import {
-  Actions, Character, ClientSystemBuilder, Entity,
-  Input, World, XY, cos, isTypingEvent, round, sin
+  Actions, Character, ClientSystemBuilder, Entity, Input, World,
+  XY, cos, isTypingEvent, max, min, round, screenWH, sin
 } from "@piggo-gg/core"
 
 // handles keyboard/mouse/joystick inputs
@@ -21,7 +21,6 @@ export const InputSystem = ClientSystemBuilder({
     }
 
     let backspace = 0
-    let mouseScreen: XY = { x: 0, y: 0 }
 
     window.addEventListener("wheel", (event) => {
 
@@ -38,23 +37,33 @@ export const InputSystem = ClientSystemBuilder({
     window.addEventListener("pointermove", (event) => {
       if (client.controls.left.active || client.controls.right.active) return
 
-      mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
-
-      if (world.three && document.pointerLockElement) {
+      if (document.pointerLockElement) {
+        // localAim
         client.controls.moveLocal({
           x: event.movementX * 0.001,
           y: event.movementY * 0.001
         })
+
+        // mouseScreen
+        const { w, h } = screenWH()
+        client.controls.mouseScreen = {
+          x: min(max(0, client.controls.mouseScreen.x + event.movementX), w),
+          y: min(max(0, client.controls.mouseScreen.y + event.movementY), h)
+        }
+      } else {
+        client.controls.mouseScreen = {
+          x: event.offsetX,
+          y: event.offsetY
+        }
       }
+
+      // mouse
+      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(client.controls.mouseScreen)
     })
 
     document.addEventListener("pointerdown", (event) => {
       if (client.busy) return
       if (world.tick <= client.clickThisFrame.value) return
-
-      mouseScreen = { x: event.offsetX, y: event.offsetY }
-      if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
       // @ts-expect-error
       const target = event.target?.tagName
@@ -203,8 +212,8 @@ export const InputSystem = ClientSystemBuilder({
         if (world.pixi?.camera.focus) {
           const { width, height } = world.pixi?.wh()
           pointingDelta = {
-            x: round(mouseScreen.x - (width / 2), 2),
-            y: round(mouseScreen.y - (height / 2), 2)
+            x: round(client.controls.mouseScreen.x - (width / 2), 2),
+            y: round(client.controls.mouseScreen.y - (height / 2), 2)
           }
         } else {
           pointingDelta = {
@@ -430,9 +439,6 @@ export const InputSystem = ClientSystemBuilder({
       },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         client.bufferDown.updateHold(world.tick)
-
-        // update mouse position, the camera might have moved
-        if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus() && !client.mobile) {

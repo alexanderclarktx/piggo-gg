@@ -67,10 +67,10 @@ export const LaserItem = ({ character }: { character: Character }) => {
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim, client }) => {
-            if (hold) return null
-            if (!character) return null
-            if (!document.pointerLockElement && !client.mobile) return null
-            if (world.client?.mobileLock) return null
+            if (hold) return
+            if (!character) return
+            if (!document.pointerLockElement && !client.mobile) return
+            if (world.client?.mobileMenu) return
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)

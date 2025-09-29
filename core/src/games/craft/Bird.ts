@@ -192,21 +192,20 @@ export const Bird = (player: Player): Character => {
         },
         release: {
           "escape": ({ world, client }) => {
-            if (!client.mobile) world.three?.pointerLock()
-            return null
+            if (!client.mobile) world.client?.pointerLock()
           },
           "mb1": ({ world, target, client }) => {
-            if (target !== "canvas") return null
+            if (target !== "canvas") return
 
-            if (client.mobile && client.mobileLock) {
-              client.mobileLock = false
-              return null
+            if (client.mobile && client.mobileMenu) {
+              client.mobileMenu = false
+              return
             }
 
-            if (client.mobile) return null
+            if (client.mobile) return
 
-            world.three?.pointerLock()
-            return null
+            world.client?.pointerLock()
+            return
           }
         },
         press: {
@@ -220,7 +219,7 @@ export const Bird = (player: Player): Character => {
 
           "scrolldown": ({ client }) => {
             const bufferScroll = client.bufferScroll
-            if (bufferScroll < 20) return null
+            if (bufferScroll < 20) return
 
             client.bufferScroll = 0
             return { actionId: "setActiveItemIndex", params: { index: "down" } }
@@ -228,35 +227,35 @@ export const Bird = (player: Player): Character => {
 
           "scrollup": ({ client }) => {
             const bufferScroll = client.bufferScroll
-            if (bufferScroll > -20) return null
+            if (bufferScroll > -20) return
             client.bufferScroll = 0
             return { actionId: "setActiveItemIndex", params: { index: "up" } }
           },
 
           "r": ({ hold }) => {
-            if (hold) return null
+            if (hold) return
             return { actionId: "ready" }
           },
 
           "q": ({ world, hold }) => {
-            if (hold) return null
+            if (hold) return
             const { camera } = world.three!
             camera.mode = camera.mode === "first" ? "third" : "first"
-            return null
+            return
           },
 
           "n": ({ world, hold }) => {
-            if (hold) return null
+            if (hold) return
 
             const settings = world.settings<CraftSettings>()
             settings.showNametags = !settings.showNametags
 
-            return null
+            return
           },
 
           "mb2": ({ hold, world, character }) => {
-            if (hold) return null
-            if (!character) return null
+            if (hold) return
+            if (!character) return
 
             const dir = world.three!.camera.dir(world)
             const camera = world.three!.camera.pos()
@@ -267,7 +266,7 @@ export const Bird = (player: Player): Character => {
 
           // transform
           "e": ({ hold }) => {
-            if (hold) return null
+            if (hold) return
             return { actionId: "transform" }
           },
 
@@ -276,7 +275,6 @@ export const Bird = (player: Player): Character => {
             if (hold === 40) {
               world.debug = !world.debug
             }
-            return null
           },
 
           // jump

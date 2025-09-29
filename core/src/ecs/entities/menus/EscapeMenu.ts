@@ -24,7 +24,7 @@ export const EscapeMenu = (world: World): Entity => {
     visibility: "hidden"
   })
 
-  const art = Art()
+  const art = Art(world.game.id)
 
   const menuButtonStyle: CSS = {
     width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
@@ -56,6 +56,24 @@ export const EscapeMenu = (world: World): Entity => {
     border: ""
   })
 
+  const returnToHomescreen = HtmlButton({
+    text: "return to homescreen",
+    style: {
+      position: "relative",
+      transform: "translate(-50%)",
+      width: "260px",
+      left: "50%",
+      marginBottom: "10px",
+      height: "40px",
+      pointerEvents: "auto",
+      fontSize: "18px",
+    },
+    onClick: () => {
+      world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
+      // world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
+    }
+  })
+
   submenuButtons.appendChild(lobbiesButton)
   submenuButtons.appendChild(skinsButton)
   submenuButtons.appendChild(settingsButton)
@@ -82,6 +100,7 @@ export const EscapeMenu = (world: World): Entity => {
   shell.appendChild(settings.div)
 
   ddeMenu.appendChild(art)
+  if (!world.client?.mobile) ddeMenu.appendChild(returnToHomescreen)
   ddeMenu.appendChild(submenuButtons)
   ddeMenu.appendChild(shell)
 
@@ -100,10 +119,10 @@ export const EscapeMenu = (world: World): Entity => {
 
           // overall visibility
           if (world.client) {
-            const hidden = world.client.mobile ? !world.client.mobileLock : Boolean(document.pointerLockElement)
-            ddeMenu.style.visibility = hidden ? "hidden" : "visible"
+            const visible = world.client.mobileMenu
+            ddeMenu.style.visibility = visible ? "visible" : "hidden"
 
-            if (hidden) return
+            if (!visible) return
           }
 
           if (world.client?.mobile && window.outerHeight < window.outerWidth) {
@@ -115,6 +134,7 @@ export const EscapeMenu = (world: World): Entity => {
           }
 
           // menu buttons
+          styleButton(returnToHomescreen, true, returnToHomescreen.matches(":hover"))
           styleButton(lobbiesButton, activeMenu !== "lobbies", lobbiesButton.matches(":hover"))
           styleButton(skinsButton, activeMenu !== "skins", skinsButton.matches(":hover"))
           styleButton(settingsButton, activeMenu !== "settings", settingsButton.matches(":hover"))
@@ -134,7 +154,7 @@ export const EscapeMenu = (world: World): Entity => {
   return menu
 }
 
-const Art = () => HtmlImg("dde-256.jpg", {
+const Art = (gameId: string) => HtmlImg(`${gameId}-256.jpg`, {
   top: "-15px",
   left: "50%",
   width: "170px",
