@@ -100,6 +100,8 @@ const CraftSystem = SystemBuilder({
         const state = world.state<CraftState>()
         const settings = world.settings<CraftSettings>()
 
+        if (world.client && !world.client.mobile) world.client.mobileMenu = document.pointerLockElement === null
+
         const { sound } = world.client ?? {}
 
         mobileUI?.update()

@@ -100,7 +100,7 @@ export const EscapeMenu = (world: World): Entity => {
   shell.appendChild(settings.div)
 
   ddeMenu.appendChild(art)
-  ddeMenu.appendChild(returnToHomescreen)
+  if (!world.client?.mobile) ddeMenu.appendChild(returnToHomescreen)
   ddeMenu.appendChild(submenuButtons)
   ddeMenu.appendChild(shell)
 
@@ -119,10 +119,8 @@ export const EscapeMenu = (world: World): Entity => {
 
           // overall visibility
           if (world.client) {
-            const visible = world.client.mobileMenu || !Boolean(document.pointerLockElement)
+            const visible = world.client.mobileMenu
             ddeMenu.style.visibility = visible ? "visible" : "hidden"
-
-            console.log("visible", !visible, "mobileMenu", world.client.mobileMenu, "pointerLockElement", document.pointerLockElement)
 
             if (!visible) return
           }
