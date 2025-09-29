@@ -9,7 +9,9 @@ export const Cursor = (): Entity => {
       position: Position({ x: 2000, y: 2000, screenFixed: true }),
       renderable: Renderable({
         interpolate: true,
-        onRender: ({ client, world }) => {
+        onRender: ({ client, renderable }) => {
+          renderable.visible = document.pointerLockElement ? true : false
+
           const { x, y } = client.controls.mouseScreen
 
           cursor.components.position.data.x = x

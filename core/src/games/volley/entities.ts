@@ -20,6 +20,21 @@ export const Dude = (player: Player) => Character({
     collider: Collider({ shape: "ball", radius: 4, group: "notself" }),
     team: Team(player.components.team.data.team),
     input: Input({
+      release: {
+        "mb1": ({ world, target, client }) => {
+          if (target !== "canvas") return null
+
+          if (client.mobile && client.mobileLock) {
+            client.mobileLock = false
+            return null
+          }
+
+          if (client.mobile) return null
+
+          world.client?.pointerLock()
+          return null
+        }
+      },
       press: {
         ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),

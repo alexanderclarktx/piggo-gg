@@ -38,21 +38,29 @@ export const InputSystem = ClientSystemBuilder({
     window.addEventListener("pointermove", (event) => {
       if (client.controls.left.active || client.controls.right.active) return
 
+      console.log(client.controls.mouseScreen)
+
       if (document.pointerLockElement) {
+        // localAim
         client.controls.moveLocal({
           x: event.movementX * 0.001,
           y: event.movementY * 0.001
         })
 
+        // mouseScreen
         const { w, h } = screenWH()
         client.controls.mouseScreen = {
           x: min(max(0, client.controls.mouseScreen.x + event.movementX), w),
           y: min(max(0, client.controls.mouseScreen.y + event.movementY), h)
         }
       } else {
-        client.controls.mouseScreen = { x: event.offsetX, y: event.offsetY }
+        client.controls.mouseScreen = {
+          x: event.offsetX,
+          y: event.offsetY
+        }
       }
 
+      // mouse
       if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(client.controls.mouseScreen)
     })
 
