@@ -1,7 +1,7 @@
 import {
-  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity,
-  GameBuilder, Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked,
-  NPC, PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
+  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
+  Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked, NPC,
+  PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, Renderable, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
@@ -22,7 +22,6 @@ export const Lobby: GameBuilder = {
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
-      // Cursor(),
       // PixiChat(),
       // Friends(),
       Profile(),
@@ -194,7 +193,6 @@ const PlayButton = () => {
             }),
             onClick: () => {
               if (state.gameId === "craft") world.client?.pointerLock()
-              // world.client?.pointerLock()
 
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })

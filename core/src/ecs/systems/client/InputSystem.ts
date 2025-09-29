@@ -1,6 +1,6 @@
 import {
-  Actions, Character, ClientSystemBuilder, Entity,
-  Input, World, XY, cos, isTypingEvent, max, min, round, screenWH, sin
+  Actions, Character, ClientSystemBuilder, Entity, Input, World,
+  XY, cos, isTypingEvent, max, min, round, screenWH, sin
 } from "@piggo-gg/core"
 
 // handles keyboard/mouse/joystick inputs
@@ -21,7 +21,6 @@ export const InputSystem = ClientSystemBuilder({
     }
 
     let backspace = 0
-    // let mouseScreen: XY = { x: 0, y: 0 }
 
     window.addEventListener("wheel", (event) => {
 
@@ -65,9 +64,6 @@ export const InputSystem = ClientSystemBuilder({
     document.addEventListener("pointerdown", (event) => {
       if (client.busy) return
       if (world.tick <= client.clickThisFrame.value) return
-
-      // client.controls.mouseScreen = { x: event.offsetX, y: event.offsetY }
-      // if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
       // @ts-expect-error
       const target = event.target?.tagName
@@ -443,9 +439,6 @@ export const InputSystem = ClientSystemBuilder({
       },
       onTick: (enitities: Entity<Input | Actions>[]) => {
         client.bufferDown.updateHold(world.tick)
-
-        // update mouse position, the camera might have moved
-        // if (pixi) client.controls.mouse = pixi.camera.toWorldCoords(mouseScreen)
 
         // clear buffer if the window is not focused
         if (!document.hasFocus() && !client.mobile) {

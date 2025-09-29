@@ -1,11 +1,10 @@
 import {
-  Background, PixiCameraSystem, Cursor, Entity, PixiMenu, GameBuilder, LagText,
-  PhysicsSystem, Position, PixiRenderSystem, Renderable, ScorePanel, ShadowSystem,
-  SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values,
-  EscapeMenu
+  Background, Cursor, Entity, EscapeMenu, GameBuilder, LagText, PhysicsSystem,
+  PixiCameraSystem, PixiRenderSystem, Position, Renderable, ScorePanel, ShadowSystem,
+  SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
 } from "@piggo-gg/core"
-import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
 import { Bot } from "./Bot"
+import { Ball, Bounds, Centerline, Court, Dude, Net, PostBottom, PostTop } from "./entities"
 import { TargetSystem } from "./Target"
 
 export const range = 32
