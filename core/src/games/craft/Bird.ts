@@ -192,7 +192,7 @@ export const Bird = (player: Player): Character => {
         },
         release: {
           "escape": ({ world, client }) => {
-            if (!client.mobile) world.three?.pointerLock()
+            if (!client.mobile) world.client?.pointerLock()
             return null
           },
           "mb1": ({ world, target, client }) => {
@@ -205,7 +205,7 @@ export const Bird = (player: Player): Character => {
 
             if (client.mobile) return null
 
-            world.three?.pointerLock()
+            world.client?.pointerLock()
             return null
           }
         },

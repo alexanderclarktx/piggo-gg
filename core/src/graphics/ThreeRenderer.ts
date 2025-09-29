@@ -15,8 +15,6 @@ export type ThreeRenderer = {
   activate: (world: World) => void
   deactivate: () => void
   resize: () => void
-  pointerLock: () => void // TODO move to Client
-  pointerUnlock: () => void
 }
 
 export const ThreeRenderer = (): ThreeRenderer => {
@@ -51,12 +49,6 @@ export const ThreeRenderer = (): ThreeRenderer => {
       webgl?.dispose()
 
       renderer.ready = false
-    },
-    pointerLock: () => {
-      document.body.requestPointerLock({ unadjustedMovement: true })
-    },
-    pointerUnlock: () => {
-      document.exitPointerLock()
     },
     activate: (world: World) => {
       if (renderer.ready) return      

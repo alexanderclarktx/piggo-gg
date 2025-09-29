@@ -71,6 +71,8 @@ export type Client = {
   authLogin: (jwt: string, callback?: Callback<AuthLogin>) => void
   logout: () => void
   aiPls: (prompt: string, callback: Callback<Pls>) => void
+  pointerLock: () => void
+  pointerUnlock: () => void
   profileCreate: (name: string, callback: Callback) => void
   profileGet: (callback?: Callback) => void
   friendsAdd: (name: string, callback: Callback) => void
@@ -163,6 +165,12 @@ export const Client = ({ world }: ClientProps): Client => {
     },
     character: () => {
       return client.player.components.controlling.getCharacter(world)
+    },
+    pointerLock: () => {
+      document.body.requestPointerLock({ unadjustedMovement: true })
+    },
+    pointerUnlock: () => {
+      document.exitPointerLock()
     },
     copyInviteLink: () => {
       let url = ""
