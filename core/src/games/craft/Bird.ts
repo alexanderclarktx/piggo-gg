@@ -193,7 +193,6 @@ export const Bird = (player: Player): Character => {
         release: {
           "escape": ({ world, client }) => {
             if (!client.mobile) world.client?.pointerLock()
-            return null
           },
           "mb1": ({ world, target, client }) => {
             if (target !== "canvas") return null
@@ -276,7 +275,6 @@ export const Bird = (player: Player): Character => {
             if (hold === 40) {
               world.debug = !world.debug
             }
-            return null
           },
 
           // jump

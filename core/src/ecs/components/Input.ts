@@ -12,9 +12,8 @@ export type InputState = {
   target?: string
 }
 
-export type KeyHandler = (_: InputState) => null | InvokedAction<string, {}>
-export type JoystickHandler = (_: { character: Character, world: World, client: Client }) => null | InvokedAction<string, {}>
-
+export type KeyHandler = (_: InputState) => void | undefined | null | InvokedAction<string, {}>
+export type JoystickHandler = (_: { character: Character, world: World, client: Client }) => void | undefined | null | InvokedAction<string, {}>
 // "" is always allowed to clear the input buffer
 export type InputMap = {
   press: Record<string, KeyHandler>
@@ -31,7 +30,7 @@ export const Input = (inputMap: Partial<InputMap> = {}): Input => ({
   inputMap: {
     press: {},
     release: {},
-    joystick: () => null,
+    joystick: () => undefined,
     ...inputMap
   }
 })

@@ -38,8 +38,6 @@ export const InputSystem = ClientSystemBuilder({
     window.addEventListener("pointermove", (event) => {
       if (client.controls.left.active || client.controls.right.active) return
 
-      console.log(client.controls.mouseScreen)
-
       if (document.pointerLockElement) {
         // localAim
         client.controls.moveLocal({
