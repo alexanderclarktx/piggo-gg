@@ -228,6 +228,9 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))
 
+      // set game id
+      world.game.id = game.id
+
       // set new game
       world.game = game.init(world)
 

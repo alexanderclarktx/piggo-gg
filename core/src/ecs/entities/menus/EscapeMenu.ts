@@ -24,7 +24,7 @@ export const EscapeMenu = (world: World): Entity => {
     visibility: "hidden"
   })
 
-  const art = Art()
+  const art = Art(world.game.id)
 
   const menuButtonStyle: CSS = {
     width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
@@ -134,6 +134,7 @@ export const EscapeMenu = (world: World): Entity => {
           }
 
           // menu buttons
+          styleButton(returnToHomescreen, true, returnToHomescreen.matches(":hover"))
           styleButton(lobbiesButton, activeMenu !== "lobbies", lobbiesButton.matches(":hover"))
           styleButton(skinsButton, activeMenu !== "skins", skinsButton.matches(":hover"))
           styleButton(settingsButton, activeMenu !== "settings", settingsButton.matches(":hover"))
@@ -153,7 +154,7 @@ export const EscapeMenu = (world: World): Entity => {
   return menu
 }
 
-const Art = () => HtmlImg("dde-256.jpg", {
+const Art = (gameId: string) => HtmlImg(`${gameId}-256.jpg`, {
   top: "-15px",
   left: "50%",
   width: "170px",
