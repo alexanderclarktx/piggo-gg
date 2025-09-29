@@ -139,10 +139,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
     style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
   })
 
-  const imgSrc = game.id === "volley" ? "volley-256.png" : "craft-256.jpg"
-  const scale = game.id === "volley" ? "100%" : "100%"
-
-  const image = HtmlImg(imgSrc, { width: scale, height: scale, imageRendering: "pixelated", transform: "translate(-50%, -50%)" })
+  const image = HtmlImg(`${game.id}-256.jpg`, { width: "100%", height: "100%", imageRendering: "pixelated", transform: "translate(-50%, -50%)" })
 
   const button = HtmlButton({
     style: {

@@ -1,7 +1,8 @@
 import {
   Background, PixiCameraSystem, Cursor, Entity, PixiMenu, GameBuilder, LagText,
   PhysicsSystem, Position, PixiRenderSystem, Renderable, ScorePanel, ShadowSystem,
-  SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
+  SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values,
+  EscapeMenu
 } from "@piggo-gg/core"
 import { Ball, Court, Dude, Centerline, Net, PostTop, PostBottom, Bounds } from "./entities"
 import { Bot } from "./Bot"
@@ -25,7 +26,7 @@ export type VolleyState = {
 
 export const Volley: GameBuilder<VolleyState> = {
   id: "volley",
-  init: () => ({
+  init: (world) => ({
     id: "volley",
     netcode: "rollback",
     renderer: "pixi",
@@ -55,7 +56,9 @@ export const Volley: GameBuilder<VolleyState> = {
     ],
     entities: [
       Background({ rays: true }),
-      PixiMenu(), Cursor(),
+      // PixiMenu(),
+      EscapeMenu(world),
+      Cursor(),
       Ball(),
       Court(),
       Centerline(),
