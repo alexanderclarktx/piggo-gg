@@ -25,7 +25,7 @@ export const Dude = (player: Player) => Character({
           client.mobileLock = !client.mobileLock
         },
         "mb1": ({ target, client }) => {
-          if (target !== "canvas") return null
+          if (target !== "canvas") return
 
           if (client.mobileLock) client.mobileLock = false
         }
@@ -34,15 +34,15 @@ export const Dude = (player: Player) => Character({
         ...WASDInputMap.press,
         " ": () => ({ actionId: "jump" }),
         "mb1": ({ hold, mouse, world, entity }) => {
-          if (hold) return null
+          if (hold) return
           const { position } = entity.components
-          if (!position) return null
+          if (!position) return
 
           const from = position.xyz()
           const target = { x: mouse.x, y: mouse.y }
           world.actions.push(world.tick + 3, entity.id, { actionId: "spike", params: { from, target } })
 
-          return null
+          return
         }
       }
     }),
