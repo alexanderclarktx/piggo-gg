@@ -24,6 +24,11 @@ export const Dude = (player: Player) => Character({
         "escape": ({ client }) => {
           client.mobileLock = !client.mobileLock
         },
+        "mb1": ({ target, client }) => {
+          if (target !== "canvas") return null
+
+          if (client.mobileLock) client.mobileLock = false
+        }
       },
       press: {
         ...WASDInputMap.press,
