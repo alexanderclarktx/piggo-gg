@@ -29,6 +29,7 @@ export const Lobby: GameBuilder = {
       ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
       GameLobby(),
       Players(),
+      Version(),
       PlayButton(),
       CreateLobbyButton(),
       // SettingsButton(),
@@ -357,7 +358,7 @@ const Profile = (): Entity => {
   const profile = Entity<Position | Renderable>({
     id: "profile",
     components: {
-      position: Position({ x: 110, y: 85, screenFixed: true }),
+      position: Position({ x: 115, y: 90, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         onTick: ({ world }) => {
@@ -415,6 +416,26 @@ const SignupCTA = () => Entity<Position | Renderable>({
   }
 })
 
+const Version = () => {
+  return Entity({
+    id: "version",
+    components: {
+      position: Position({ x: -15, y: -30, screenFixed: true }),
+      renderable: Renderable({
+        zIndex: 10,
+        setup: async (r) => {
+          const text = pixiText({
+            text: "v0.36.1",
+            style: { fontSize: 16, alpha: 0.7 },
+            anchor: { x: 1, y: 0 }
+          })
+          r.c.addChild(text)
+        }
+      })
+    }
+  })
+}
+
 const PlayersOnline = () => {
 
   let text: Text | undefined = undefined
@@ -429,7 +450,7 @@ const PlayersOnline = () => {
   return Entity({
     id: "playersOnline",
     components: {
-      position: Position({ x: -10, y: 10, screenFixed: true }),
+      position: Position({ x: -15, y: 15, screenFixed: true }),
       renderable: Renderable({
         zIndex: 10,
         setup: async (renderable) => {
@@ -438,6 +459,7 @@ const PlayersOnline = () => {
             style: { fontSize: 18, alpha: 0.7 },
             anchor: { x: 1, y: 0 }
           })
+
           renderable.c.addChild(text)
         },
         onTick: ({ world }) => {
