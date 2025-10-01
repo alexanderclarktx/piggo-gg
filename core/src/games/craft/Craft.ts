@@ -259,6 +259,7 @@ const CraftSystem = SystemBuilder({
           for (let i = 0; i < 25; i++) {
             world.addEntity(Apple({ id: `d3apple-${1 + i}` }))
           }
+          console.log("spawned apples")
           applesSpawned = true
         }
       }
