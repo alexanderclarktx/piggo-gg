@@ -36,12 +36,13 @@ export const Apple = ({ id }: { id: string }): Entity<Position> => {
       networked: Networked(),
       three: Three({
         init: async (entity, __, renderer) => {
-          renderer.gLoader.load("apple.glb", (apple) => {
-            apple.scene.scale.set(0.16, 0.16, 0.16)
+          renderer.gLoader.load("apple.glb", (glb) => {
+            glb.scene.scale.set(0.16, 0.16, 0.16)
+            glb.scene.position.set(apple.components.position.data.x, apple.components.position.data.z, apple.components.position.data.y)
 
-            entity.components.three.o.push(apple.scene)
+            entity.components.three.o.push(glb.scene)
 
-            apple.scene.traverse((child) => {
+            glb.scene.traverse((child) => {
               if (child instanceof Mesh) {
                 child.castShadow = true
                 child.receiveShadow = true
