@@ -1,7 +1,7 @@
 import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
   Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked, NPC,
-  PC, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
+  PC, piggoVersion, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, Renderable, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
@@ -425,7 +425,7 @@ const Version = () => {
         zIndex: 10,
         setup: async (r) => {
           const text = pixiText({
-            text: "v0.36.1",
+            text: `v${piggoVersion}`,
             style: { fontSize: 16, alpha: 0.7 },
             anchor: { x: 1, y: 0 }
           })
