@@ -28,7 +28,7 @@ export const Lobby: GameBuilder = {
       // SignupCTA(),
       ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
       GameLobby(),
-      Players(),
+      // Players(),
       Version(),
       PlayButton(),
       CreateLobbyButton(),

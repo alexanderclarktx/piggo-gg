@@ -414,7 +414,7 @@ export const InputSystem = ClientSystemBuilder({
     return {
       id: "InputSystem",
       query: ["input", "actions", "position"],
-      priority: 4,
+      priority: 1,
       skipOnRollback: true,
       onRender: () => {
         if (!client.mobile) return
