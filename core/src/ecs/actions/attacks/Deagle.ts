@@ -1,5 +1,5 @@
-import { Action, Actions, Character, cos, Effects, Input, Item, ItemEntity, max, min, Networked, Position, sin, StrikeState, Target, Three, XY, XYZ } from "@piggo-gg/core"
-import { Object3D } from "three"
+import { Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity, max, min, Networked, playerForCharacter, Position, sin, sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub } from "@piggo-gg/core"
+import { Object3D, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -76,6 +76,48 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           const { pos, aim, targets } = params
+
+          const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
+            const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
+          
+            const target = new Vector3(
+              -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
+            ).normalize().multiplyScalar(10).add(eyes)
+          
+            const dir = target.clone().sub(eyes).normalize()
+          
+            const beamResult = blockInLine({ from: eyePos, dir, world, cap: 40 })
+            if (beamResult) {
+              world.blocks.remove(beamResult.inside)
+            }
+          
+            // if (world.client && entity.id !== world.client.character()?.id) return
+            // if (world.client) return
+          
+            for (const target of targets) {
+              const targetEntity = world.entity<Position>(target.id)
+              if (!targetEntity) continue
+          
+              const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.05 }
+          
+              const L = XYZsub(targetXYZ, eyePos)
+              const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
+          
+              if (tc < 0) continue
+          
+              const Ldist = XYZdistance(targetXYZ, eyePos)
+              const D = sqrt((Ldist * Ldist) - (tc * tc))
+          
+              if (D > 0 && D < 0.08) {
+                // state.hit[target.id] = { tick: world.tick, by: entity.id }
+                const targetPlayer = playerForCharacter(world, target.id)
+
+                console.log("hit", targetPlayer?.id)
+                // world.announce(`${player?.components.pc.data.name} hit ${targetPlayer?.components.pc.data.name}`)
+          
+                // targetEntity.components.position.data.flying = false
+              }
+            }
         }),
       }),
       three: Three({
