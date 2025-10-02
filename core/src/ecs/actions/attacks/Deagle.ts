@@ -1,4 +1,4 @@
-import { Action, Actions, Character, cos, Effects, Input, Item, ItemEntity, max, Networked, Position, sin, StrikeState, Target, Three, XY, XYZ } from "@piggo-gg/core"
+import { Action, Actions, Character, cos, Effects, Input, Item, ItemEntity, max, min, Networked, Position, sin, StrikeState, Target, Three, XY, XYZ } from "@piggo-gg/core"
 import { Object3D } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
@@ -71,12 +71,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
-          console.log("DEAGLE SOUND", params)
-          const { pos, aim, targets } = params
-
           if (gun) {
-            recoil = 0.5
+            recoil = min(0.8, recoil + 0.5)
           }
+
+          const { pos, aim, targets } = params
         }),
       }),
       three: Three({
