@@ -186,6 +186,7 @@ export const InputSystem = ClientSystemBuilder({
               key = mappedKeys[key]
             }
 
+            console.log("buffer keydown", key, event.key, Date.now())
             client.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
           }
         }
