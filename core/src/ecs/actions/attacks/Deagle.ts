@@ -121,20 +121,20 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // tracer
           if (tracer) {
-            tracer.position.copy({ x: eyes.x + offset.x, y: eyes.y + offset.y, z: eyes.z + offset.z })
-            tracer.visible = true
-            tracer.rotation.x = localAim.y
-            tracer.rotation.y = localAim.x - Math.PI / 2
+            const tracerPos = { x: eyes.x + offset.x, y: eyes.y + offset.y, z: eyes.z + offset.z }
+            tracer.position.copy(tracerPos)
 
-            tracer.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+            const tracerDir = target.clone().sub(tracerPos).normalize()
+
+            tracer.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), tracerDir)
 
             tracerState.tick = world.tick
-            tracerState.velocity = dir.clone().multiplyScalar(0.5)
-            tracerState.pos = { x: tracer.position.x, y: tracer.position.y, z: tracer.position.z }
+            tracerState.velocity = tracerDir.clone().multiplyScalar(1.5)
+            tracerState.pos = tracerPos
           }
 
           // raycast against blocks
-          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 40 })
+          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
           if (beamResult) {
             // world.blocks.remove(beamResult.inside)
 
@@ -171,9 +171,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         init: async (_, __, three) => {
 
           // tracer
-          const tracerGeometry = new CylinderGeometry(0.005, 0.005, 0.02, 8)
-          // tracerGeometry.translate(0, 0.5, 0)
-          tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffff00, visible: true }))
+          const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.04, 8)
+          tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffffff, visible: true }))
           three.scene.add(tracer)
 
           // particles
@@ -207,7 +206,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // tracer
           if (tracer) {
-            if (world.tick - tracerState.tick < 5) {
+            if (world.tick - tracerState.tick < 2) {
               tracer.visible = true
               tracer.position.set(
                 tracerState.pos.x + tracerState.velocity.x * (world.tick - tracerState.tick + ratio),

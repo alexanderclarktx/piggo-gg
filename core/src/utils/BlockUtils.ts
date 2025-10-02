@@ -11,6 +11,7 @@ type BlockInLineProps = {
   dir: XYZ
   world: World
   cap?: number
+  maxDist?: number
 }
 
 type BlockInLine = undefined | {
@@ -19,14 +20,14 @@ type BlockInLine = undefined | {
   edge: XYZ
 }
 
-export const blockInLine = ({ from, dir, world, cap = 10 }: BlockInLineProps): BlockInLine => {
+export const blockInLine = ({ from, dir, world, maxDist = 10, cap = 10 }: BlockInLineProps): BlockInLine => {
   const current = { ...from }
 
   const outside = blockFromXYZ(current)
 
   let travelled = 0
 
-  while (travelled < 10 && cap > 0) {
+  while (travelled < maxDist && cap > 0) {
 
     const xGap = (current.x + 0.15) % 0.3
     const yGap = (current.y + 0.15) % 0.3
