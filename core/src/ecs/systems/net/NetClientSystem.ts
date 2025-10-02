@@ -17,7 +17,7 @@ export const NetClientWriteSystem = SystemBuilder({
 
     return {
       id: "NetClientWriteSystem",
-      priority: 20,
+      priority: 2,
       query: [],
       skipOnRollback: true,
       onTick: () => {
