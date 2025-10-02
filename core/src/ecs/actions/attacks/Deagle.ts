@@ -1,6 +1,6 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity,
-  max, min, Networked, playerForCharacter, Position, random, randomInt, sin,
+  max, min, Networked, NPC, playerForCharacter, Position, random, randomInt, sin,
   sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Color, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
@@ -33,6 +33,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const { inventory } = character.components
 
   let recoil = 0
+  const recoilRate = 0.05
 
   const spawnParticles = (pos: XYZ, tick: number) => {
     const proto = particles[0]
@@ -79,6 +80,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             return { actionId: "deagle", params: { pos, aim, targets } }
           },
+        }
+      }),
+      npc: NPC({
+        behavior: () => {
+          if (recoil > 0) recoil = max(0, recoil - recoilRate)
         }
       }),
       actions: Actions({
@@ -191,10 +197,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          gun.rotation.y = localAim.x
-          gun.rotation.x = localAim.y + recoil
+          const localRecoil = recoil ? recoil - recoilRate * delta / 25 : 0
 
-          if (recoil >= 0) recoil = max(0, recoil - 0.025)
+          gun.rotation.y = localAim.x
+          gun.rotation.x = localAim.y + localRecoil
         }
       })
     },

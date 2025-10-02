@@ -11,6 +11,10 @@ export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
 export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, cos, PI } = Math
 
+export const minmax = (n: number, minValue: number, maxValue: number) => {
+  return min(max(n, minValue), maxValue)
+}
+
 export const round = (n: number, places = 0) => {
   const factor = pow(10, places)
   return Math.round((n + Number.EPSILON) * factor) / factor
