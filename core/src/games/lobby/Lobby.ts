@@ -156,7 +156,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       world.client?.sound.play({ name: "click1" })
     },
     onHover: () => {
-      button.style.boxShadow = "0 0 12px white"
+      button.style.boxShadow = "0 0 10px 4px white"
       world.client?.sound.play({ name: "click3" })
     },
     onHoverOut: () => {
@@ -511,7 +511,8 @@ const GameLobby = (): Entity => {
           // make border green for selected game
           const state = world.game.state as LobbyState
           for (const button of gameButtons) {
-            button.style.outline = (button.innerText === state.gameId) ? "2px solid #00cc88" : "none"
+            const selected = button.innerText === state.gameId
+            button.style.outline = selected ? "2px solid #00cc88" : "none"
           }
         }
       })
