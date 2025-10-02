@@ -2,12 +2,12 @@ import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
   Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked, NPC,
   PC, piggoVersion, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
-  randomInt, Renderable, Team, TeamColors, Volley, World, XY
+  randomInt, Renderable, Strike, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
 type LobbyState = {
-  gameId: "volley" | "craft"
+  gameId: "volley" | "craft" | "strike"
 }
 
 export const Lobby: GameBuilder = {
@@ -472,7 +472,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Craft, Volley]
+  const list: GameBuilder[] = [Volley, Craft, Strike]
   let gameButtons: HTMLButtonElement[] = []
 
   const gameLobby = Entity<Position>({
