@@ -223,6 +223,9 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
         el.remove()
       }
 
+      // clear blocks
+      world.blocks.clear()
+
       // reset cursor style
       document.body.style.cursor = "auto"
 

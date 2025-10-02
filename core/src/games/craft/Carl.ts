@@ -1,27 +1,18 @@
 import {
   abs, Action, Actions, Character, Collider, cos, HookItem,
   hypot, Input, Inventory, LaserItem, max, Networked, PI,
-  Place, Player, Point, Position, Ready, round, setActiveItemIndex,
-  sin, sqrt, Team, Three, World, XYZ, XZ
+  Place, Player, Point, Position, Ready, setActiveItemIndex,
+  sin, sqrt, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { CraftSettings, CraftState } from "./Craft"
-
-const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
-  const camera = world.three?.camera
-  if (!camera) return { up: { x: 0, y: 0, z: 0 }, dir: { x: 0, z: 0 } }
-
-  const up = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
-  const dir = XZ(camera.dir(world))
-  return { up, dir }
-}
 
 const walk = 0.78
 const run = 1.2
 const hop = 0.18
 const leap = 0.3
 
-export const Bird = (player: Player): Character => {
+export const Carl = (player: Player): Character => {
 
   let duck: Object3D = new Object3D()
   let eagle: Object3D = new Object3D()
@@ -34,8 +25,8 @@ export const Bird = (player: Player): Character => {
   let runAnimation: AnimationAction | undefined
   let animation: "idle" | "run" = "idle"
 
-  const bird = Character({
-    id: `bird-${player.id}`,
+  const carl = Character({
+    id: `carl-${player.id}`,
     components: {
       position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
@@ -441,5 +432,5 @@ export const Bird = (player: Player): Character => {
       team: Team(1)
     }
   })
-  return bird
+  return carl
 }

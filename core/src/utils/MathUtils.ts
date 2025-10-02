@@ -1,4 +1,4 @@
-import { Entity, Position } from "@piggo-gg/core"
+import { Entity, Position, World } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { Container } from "pixi.js"
 
@@ -10,6 +10,10 @@ export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
 export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, cos, PI } = Math
+
+export const minmax = (n: number, minValue: number, maxValue: number) => {
+  return min(max(n, minValue), maxValue)
+}
 
 export const round = (n: number, places = 0) => {
   const factor = pow(10, places)
@@ -95,6 +99,15 @@ export const XYZnormal = (xyz: XYZ) => {
   return {
     x: xyz.x / total, y: xyz.y / total, z: xyz.z / total
   }
+}
+
+export const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
+  const camera = world.three?.camera
+  if (!camera) return { up: { x: 0, y: 0, z: 0 }, dir: { x: 0, z: 0 } }
+
+  const up = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
+  const dir = XZ(camera.dir(world))
+  return { up, dir }
 }
 
 export const middle = (a: XY, b: XY): XY => {

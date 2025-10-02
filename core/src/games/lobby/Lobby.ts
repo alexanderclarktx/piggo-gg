@@ -2,12 +2,12 @@ import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
   Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked, NPC,
   PC, piggoVersion, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
-  randomInt, Renderable, Team, TeamColors, Volley, World, XY
+  randomInt, Renderable, Strike, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
 type LobbyState = {
-  gameId: "volley" | "craft"
+  gameId: "volley" | "craft" | "strike"
 }
 
 export const Lobby: GameBuilder = {
@@ -17,7 +17,7 @@ export const Lobby: GameBuilder = {
     renderer: "pixi",
     settings: {},
     state: {
-      gameId: "craft"
+      gameId: "volley"
     },
     systems: [PixiRenderSystem],
     entities: [
@@ -156,7 +156,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       world.client?.sound.play({ name: "click1" })
     },
     onHover: () => {
-      button.style.boxShadow = "0 0 12px white"
+      button.style.boxShadow = "0 0 10px 4px white"
       world.client?.sound.play({ name: "click3" })
     },
     onHoverOut: () => {
@@ -193,7 +193,7 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
-              if (state.gameId === "craft") world.client?.pointerLock()
+              if (["craft", "strike"].includes(state.gameId)) world.client?.pointerLock()
 
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
@@ -472,7 +472,7 @@ const PlayersOnline = () => {
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Craft, Volley]
+  const list: GameBuilder[] = [Volley, Craft, Strike]
   let gameButtons: HTMLButtonElement[] = []
 
   const gameLobby = Entity<Position>({
@@ -511,7 +511,8 @@ const GameLobby = (): Entity => {
           // make border green for selected game
           const state = world.game.state as LobbyState
           for (const button of gameButtons) {
-            button.style.outline = (button.innerText === state.gameId) ? "2px solid #00cc88" : "none"
+            const selected = button.innerText === state.gameId
+            button.style.outline = selected ? "2px solid #00cc88" : "none"
           }
         }
       })

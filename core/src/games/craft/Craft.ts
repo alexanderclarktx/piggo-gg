@@ -4,7 +4,7 @@ import {
   XYZdistance, HtmlChat, Crosshair, GameBuilder, spawnTerrain, EscapeMenu,
   ThreeSystem, InventorySystem, BlockPreview, Sun, BlockMeshSysten
 } from "@piggo-gg/core"
-import { Bird } from "./Bird"
+import { Carl } from "./Carl"
 import { HUDSystem } from "./HUDSystem"
 import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
@@ -56,7 +56,7 @@ export const Craft: GameBuilder<CraftState, CraftSettings> = {
       willStart: undefined
     },
     systems: [
-      SpawnSystem(Bird),
+      SpawnSystem(Carl),
       BlockPhysicsSystem("global"),
       BlockPhysicsSystem("local"),
       ThreeCameraSystem(),
