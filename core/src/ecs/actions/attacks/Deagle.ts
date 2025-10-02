@@ -3,7 +3,7 @@ import {
   max, min, Networked, NPC, playerForCharacter, Position, random, randomInt, sin,
   sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
-import { Color, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
+import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -26,11 +26,12 @@ const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
 
 export const DeagleItem = ({ character }: { character: Character }) => {
 
-  let gun: undefined | Object3D = undefined
+  let gun: Object3D | undefined = undefined
+  let tracer: Object3D | undefined = undefined
+
+  let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
-
-  const { inventory } = character.components
 
   let recoil = 0
   const recoilRate = 0.05
@@ -115,7 +116,25 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           const dir = target.clone().sub(eyes).normalize()
 
-          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 40 })
+          const { localAim } = world.client!.controls
+          const offset = modelOffset(localAim, true)
+
+          // tracer
+          if (tracer) {
+            const tracerPos = { x: eyes.x + offset.x, y: eyes.y + offset.y, z: eyes.z + offset.z }
+            tracer.position.copy(tracerPos)
+
+            const tracerDir = target.clone().sub(tracerPos).normalize()
+
+            tracer.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), tracerDir)
+
+            tracerState.tick = world.tick
+            tracerState.velocity = tracerDir.clone().multiplyScalar(1.5)
+            tracerState.pos = tracerPos
+          }
+
+          // raycast against blocks
+          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
           if (beamResult) {
             // world.blocks.remove(beamResult.inside)
 
@@ -127,6 +146,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
+          // raycast against characters
           for (const target of targets) {
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
@@ -150,6 +170,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       three: Three({
         init: async (_, __, three) => {
 
+          // tracer
+          const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.04, 8)
+          tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffff99, emissive: 0xffff99 }))
+          three.scene.add(tracer)
+
           // particles
           const particleMesh = new Mesh(new SphereGeometry(0.008, 6, 6))
           particleMesh.castShadow = true
@@ -172,13 +197,26 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         onRender: ({ world, delta }) => {
           if (!gun) return
 
-          gun.visible = inventory?.activeItem(world)?.id === item.id &&
-            world.three?.camera.mode === "first" && world.three?.camera.transition >= 100
+          const ratio = delta / 25
 
           const pos = character.components.position.interpolate(world, delta)
 
           const { localAim } = world.client!.controls
           const offset = modelOffset(localAim)
+
+          // tracer
+          if (tracer) {
+            if (world.tick - tracerState.tick < 2) {
+              tracer.visible = true
+              tracer.position.set(
+                tracerState.pos.x + tracerState.velocity.x * (world.tick - tracerState.tick + ratio),
+                tracerState.pos.y + tracerState.velocity.y * (world.tick - tracerState.tick + ratio),
+                tracerState.pos.z + tracerState.velocity.z * (world.tick - tracerState.tick + ratio)
+              )
+            } else {
+              tracer.visible = false
+            }
+          }
 
           gun.position.copy({
             x: pos.x + offset.x,
@@ -197,7 +235,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          const localRecoil = recoil ? recoil - recoilRate * delta / 25 : 0
+          const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
           gun.rotation.y = localAim.x
           gun.rotation.x = localAim.y + localRecoil
