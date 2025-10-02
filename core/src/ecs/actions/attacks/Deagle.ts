@@ -1,9 +1,10 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Input, Item,
+  Action, Actions, blockInLine, Character, cos, Effects, Input, isArray, Item,
   ItemEntity, max, min, Networked, playerForCharacter, Position, random,
+  randomInt,
   sin, sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
-import { Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, Object3D, SphereGeometry, Vector3 } from "three"
+import { Color, Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -40,7 +41,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
     for (let i = 0; i < 10; i++) {
       const mesh = proto.mesh.clone()
-      const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.02)
+      const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
+
+      // vary the color
+      const green = Math.floor(randomInt(256))
+      const color = new Color(`rgb(255, ${green}, 0)`)
+      mesh.material = new MeshPhongMaterial({ color, emissive: color })
 
       mesh.position.set(pos.x, pos.z, pos.y)
 
@@ -142,8 +148,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         init: async (_, __, three) => {
 
           // particles
-          const particleGeometry = new SphereGeometry(0.01, 6, 6)
-          const particleMaterial = new MeshPhongMaterial({ color: 0xff3333, emissive: 0xff3333, emissiveIntensity: 2 })
+          const particleGeometry = new SphereGeometry(0.008, 6, 6)
+          const particleMaterial = new MeshBasicMaterial()
 
           const particleMesh = new Mesh(particleGeometry, particleMaterial)
           particleMesh.receiveShadow = true
@@ -185,7 +191,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const p = particles[i]
             p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
 
-            if (world.tick - p.tick >= 4) {
+            if (world.tick - p.tick >= 5) {
               if (p.mesh.parent) world.three?.scene.remove(p.mesh)
               particles.splice(i, 1)
               i--
