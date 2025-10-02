@@ -163,7 +163,7 @@ export const InputSystem = ClientSystemBuilder({
             // push the message to messages
             if (inputBuffer.length > 0) {
               const message = inputBuffer
-              world.messages.push(world.tick + 1, client.playerId() ?? "", message)
+              world.messages.push(world.tick, client.playerId() ?? "", message)
             }
 
             client.chat.inputBuffer = ""
@@ -223,7 +223,7 @@ export const InputSystem = ClientSystemBuilder({
         }
 
         if (actions.actionMap["point"]) {
-          world.actions.push(world.tick + 1, character.id, {
+          world.actions.push(world.tick, character.id, {
             actionId: "point", playerId: client.playerId(), params: {
               pointing, pointingDelta, aim: localAim()
             }
@@ -231,7 +231,7 @@ export const InputSystem = ClientSystemBuilder({
         }
       } else if (world.three) {
         if (actions.actionMap["point"]) {
-          world.actions.push(world.tick + 1, character.id, {
+          world.actions.push(world.tick, character.id, {
             actionId: "point", playerId: client.playerId(), params: {
               pointing: 0, pointingDelta: 0, aim: localAim()
             }
@@ -242,7 +242,7 @@ export const InputSystem = ClientSystemBuilder({
       // handle joystick input
       if ((client.controls.left.power ?? 0) > 0.01) {
         const joystickAction = input.inputMap.joystick({ character, world, client })
-        if (joystickAction) world.actions.push(world.tick + 1, character.id, joystickAction)
+        if (joystickAction) world.actions.push(world.tick, character.id, joystickAction)
       }
 
       // handle standalone and composite (a,b) input controls
@@ -269,7 +269,7 @@ export const InputSystem = ClientSystemBuilder({
               if (invocation && actions.actionMap[invocation.actionId]) {
                 invocation.playerId = client.playerId()
                 invocation.characterId = character.id
-                world.actions.push(world.tick + 1, character.id, invocation)
+                world.actions.push(world.tick, character.id, invocation)
               }
             }
 
@@ -294,7 +294,7 @@ export const InputSystem = ClientSystemBuilder({
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()
               invocation.characterId = character.id
-              world.actions.push(world.tick + 1, character.id, invocation)
+              world.actions.push(world.tick, character.id, invocation)
             }
           }
 
@@ -322,7 +322,7 @@ export const InputSystem = ClientSystemBuilder({
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()
               invocation.characterId = character.id
-              world.actions.push(world.tick + 1, character.id, invocation)
+              world.actions.push(world.tick, character.id, invocation)
             }
           }
 
@@ -350,7 +350,7 @@ export const InputSystem = ClientSystemBuilder({
             if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()
               invocation.characterId = character.id
-              world.actions.push(world.tick + 1, activeItem.id, invocation)
+              world.actions.push(world.tick, activeItem.id, invocation)
             }
           }
         }
@@ -381,7 +381,7 @@ export const InputSystem = ClientSystemBuilder({
               if (invocation.offline) {
                 world.actions.push(world.tick, entity.id, invocation)
               } else {
-                world.actions.push(world.tick + 1, entity.id, invocation)
+                world.actions.push(world.tick, entity.id, invocation)
               }
             }
           }
@@ -400,7 +400,7 @@ export const InputSystem = ClientSystemBuilder({
             })
             if (invocation && actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()
-              world.actions.push(world.tick + 1, entity.id, invocation)
+              world.actions.push(world.tick, entity.id, invocation)
             }
           }
 
@@ -414,7 +414,7 @@ export const InputSystem = ClientSystemBuilder({
     return {
       id: "InputSystem",
       query: ["input", "actions", "position"],
-      priority: 4,
+      priority: 1,
       skipOnRollback: true,
       onRender: () => {
         if (!client.mobile) return

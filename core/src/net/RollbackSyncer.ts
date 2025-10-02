@@ -76,12 +76,12 @@ export const RollbackSyncer = (world: World): Syncer => {
 
   return {
     write: (world) => ({
-      actions: world.actions.fromTick(world.tick + 1, s => s.offline !== true),
+      actions: world.actions.fromTick(world.tick, s => s.offline !== true),
       chats: world.messages.atTick(world.tick) ?? {},
       game: world.game.id,
       playerId: world.client?.playerId() ?? "",
       serializedEntities: {},
-      tick: world.tick + 1,
+      tick: world.tick,
       timestamp: Date.now(),
       type: "game"
     }),
