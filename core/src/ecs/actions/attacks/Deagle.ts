@@ -3,7 +3,7 @@ import {
   ItemEntity, max, min, Networked, playerForCharacter, Position, random,
   sin, sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
-import { Mesh, MeshBasicMaterial, Object3D, SphereGeometry, Vector3 } from "three"
+import { Mesh, MeshBasicMaterial, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -140,14 +140,15 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       }),
       three: Three({
         init: async (_, __, three) => {
+
           // particles
-          const particleGeometry = new SphereGeometry(0.01, 6, 6);
-          const particleMaterial = new MeshBasicMaterial({ color: 0xff7733 });
+          const particleGeometry = new SphereGeometry(0.01, 6, 6)
+          const particleMaterial = new MeshPhongMaterial({ color: 0xff3333, emissive: 0xff3333, emissiveIntensity: 2 })
           const particleMesh = new Mesh(particleGeometry, particleMaterial)
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
 
           // gun
-          three.gLoader.load("laser-gun.glb", (gltf) => {
+          three.gLoader.load("deagle.glb", (gltf) => {
             gun = gltf.scene
             gun.scale.set(0.03, 0.03, 0.03)
 
@@ -180,7 +181,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const p = particles[i]
             p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
 
-            if (world.tick - p.tick >= 5) {
+            if (world.tick - p.tick >= 4) {
               if (p.mesh.parent) world.three?.scene.remove(p.mesh)
               particles.splice(i, 1)
               i--
