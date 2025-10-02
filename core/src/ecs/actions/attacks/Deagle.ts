@@ -3,7 +3,7 @@ import {
   ItemEntity, max, min, Networked, playerForCharacter, Position, random,
   sin, sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
-import { Mesh, MeshBasicMaterial, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
+import { Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -40,7 +40,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
     for (let i = 0; i < 10; i++) {
       const mesh = proto.mesh.clone()
-      const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.05)
+      const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.02)
 
       mesh.position.set(pos.x, pos.z, pos.y)
 
@@ -106,7 +106,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 40 })
           if (beamResult) {
-            world.blocks.remove(beamResult.inside)
+            // world.blocks.remove(beamResult.inside)
 
             spawnParticles(beamResult.edge, world.tick)
 
@@ -144,7 +144,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // particles
           const particleGeometry = new SphereGeometry(0.01, 6, 6)
           const particleMaterial = new MeshPhongMaterial({ color: 0xff3333, emissive: 0xff3333, emissiveIntensity: 2 })
+
           const particleMesh = new Mesh(particleGeometry, particleMaterial)
+          particleMesh.receiveShadow = true
+          particleMesh.castShadow = true
+
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
 
           // gun
