@@ -3,7 +3,7 @@ import {
   max, min, Networked, NPC, playerForCharacter, Position, random, randomInt, sin,
   sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
-import { Color, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
+import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -26,8 +26,10 @@ const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
 
 export const DeagleItem = ({ character }: { character: Character }) => {
 
-  let gun = new Object3D()
-  let tracer = new Object3D()
+  let gun: Object3D | undefined = undefined
+  let tracer: Object3D | undefined = undefined
+
+  let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 } }
 
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
@@ -114,6 +116,20 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           const dir = target.clone().sub(eyes).normalize()
 
+          const { localAim } = world.client!.controls
+          const offset = modelOffset(localAim, true)
+
+          // tracer
+          if (tracer) {
+            tracer.position.copy({ x: eyes.x + offset.x, y: eyes.y + offset.y, z: eyes.z + offset.z })
+            tracer.visible = true
+            tracer.rotation.x = localAim.y
+            tracer.rotation.y = localAim.x - Math.PI / 2
+
+            tracer.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+          }
+
+          // raycast against blocks
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 40 })
           if (beamResult) {
             // world.blocks.remove(beamResult.inside)
@@ -126,6 +142,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
+          // raycast against characters
           for (const target of targets) {
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
@@ -148,6 +165,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       }),
       three: Three({
         init: async (_, __, three) => {
+
+          // tracer
+          const tracerGeometry = new CylinderGeometry(0.005, 0.005, 0.02, 8)
+          // tracerGeometry.translate(0, 0.5, 0)
+          tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffff00, visible: true }))
+          three.scene.add(tracer)
 
           // particles
           const particleMesh = new Mesh(new SphereGeometry(0.008, 6, 6))
