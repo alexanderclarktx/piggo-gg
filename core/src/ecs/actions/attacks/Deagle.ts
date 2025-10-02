@@ -1,4 +1,4 @@
-import { Action, Actions, Character, cos, Effects, Input, Item, ItemEntity, Networked, Position, sin, StrikeState, Target, Three, XY, XYZ } from "@piggo-gg/core"
+import { Action, Actions, Character, cos, Effects, Input, Item, ItemEntity, max, Networked, Position, sin, StrikeState, Target, Three, XY, XYZ } from "@piggo-gg/core"
 import { Object3D } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
@@ -25,6 +25,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let gun: undefined | Object3D = undefined
 
   const { inventory } = character.components
+
+  let recoil = 0
 
   const item = ItemEntity({
     id: `deagle-${character.id}`,
@@ -62,9 +64,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           const state = world.state<StrikeState>()
 
-          // if (state.hit[entity.id]) return
           const cd = world.tick - (state.lastShot[entity.id] ?? 0)
-          if (cd < 20) return
+          if (cd < 5) return
 
           state.lastShot[entity.id] = world.tick
 
@@ -74,8 +75,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const { pos, aim, targets } = params
 
           if (gun) {
-            // recoil
-            gun.rotation.x -= 0.5
+            recoil = 0.5
           }
         }),
       }),
@@ -111,7 +111,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           })
 
           gun.rotation.y = localAim.x
-          gun.rotation.x = localAim.y
+          gun.rotation.x = localAim.y + recoil
+
+          if (recoil >= 0) recoil = max(0, recoil - 0.025)
         }
       })
     },
