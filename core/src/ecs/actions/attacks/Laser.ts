@@ -144,7 +144,7 @@ const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params
 
   state.lastShot[entity.id] = world.tick
 
-  const { pos, aim } = params
+  const { pos, aim, targets } = params
 
   world.client?.sound.play({ name: "laser1", threshold: { pos, distance: 5 } })
 
@@ -173,7 +173,6 @@ const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params
   // if (world.client && entity.id !== world.client.character()?.id) return
   // if (world.client) return
 
-  const targets = params.targets as Target[]
   for (const target of targets) {
     if (state.hit[target.id]) continue
     const targetEntity = world.entity<Position>(target.id)
