@@ -1,10 +1,9 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Input, isArray, Item,
-  ItemEntity, max, min, Networked, playerForCharacter, Position, random,
-  randomInt,
-  sin, sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
+  Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity,
+  max, min, Networked, playerForCharacter, Position, random, randomInt, sin,
+  sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
-import { Color, Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, Object3D, SphereGeometry, Vector3 } from "three"
+import { Color, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -39,7 +38,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     const proto = particles[0]
     if (!proto) return
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       const mesh = proto.mesh.clone()
       const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
 
@@ -138,8 +137,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             if (D > 0 && D < 0.08) {
               const targetPlayer = playerForCharacter(world, target.id)
-
-              console.log("hit", targetPlayer?.id)
             }
           }
         }),
@@ -148,11 +145,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         init: async (_, __, three) => {
 
           // particles
-          const particleGeometry = new SphereGeometry(0.008, 6, 6)
-          const particleMaterial = new MeshBasicMaterial()
-
-          const particleMesh = new Mesh(particleGeometry, particleMaterial)
-          particleMesh.receiveShadow = true
+          const particleMesh = new Mesh(new SphereGeometry(0.008, 6, 6))
           particleMesh.castShadow = true
 
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })

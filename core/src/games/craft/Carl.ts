@@ -12,7 +12,7 @@ const run = 1.2
 const hop = 0.18
 const leap = 0.3
 
-export const Bird = (player: Player): Character => {
+export const Carl = (player: Player): Character => {
 
   let duck: Object3D = new Object3D()
   let eagle: Object3D = new Object3D()
@@ -25,8 +25,8 @@ export const Bird = (player: Player): Character => {
   let runAnimation: AnimationAction | undefined
   let animation: "idle" | "run" = "idle"
 
-  const bird = Character({
-    id: `bird-${player.id}`,
+  const carl = Character({
+    id: `carl-${player.id}`,
     components: {
       position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
@@ -432,5 +432,5 @@ export const Bird = (player: Player): Character => {
       team: Team(1)
     }
   })
-  return bird
+  return carl
 }
