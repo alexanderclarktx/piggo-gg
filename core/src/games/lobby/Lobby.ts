@@ -30,7 +30,6 @@ export const Lobby: GameBuilder = {
       GameLobby(),
       // Players(),
       Version(),
-      // PlayButton(),
       CreateLobbyButton(),
       // SettingsButton(),
       PlayersOnline(),
@@ -144,12 +143,19 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
   const button = HtmlButton({
     style: {
       backgroundColor: "rgba(0, 0, 0, 1)",
-      borderRadius: "12px",
+      borderRadius: "14px",
       fontSize: "24px",
       position: "relative",
       transition: "box-shadow 0.2s ease",
       width: "180px", height: "170px",
-      touchAction: "manipulation"
+      touchAction: "manipulation",
+
+      border: "3px solid transparent",
+      padding: "0px",
+      // borderRadius: "6px",
+      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 60%, #777777)",
+      backgroundOrigin: "border-box",
+      backgroundClip: "content-box, border-box"
     },
     onClick: () => {
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -207,53 +213,6 @@ const HtmlPlayButton = (world: World) => {
   })
 
   return button
-}
-
-const PlayButton = () => {
-  const playButton = Entity<Position>({
-    id: "playButton",
-    components: {
-      position: Position({ x: 300, y: 450, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        interactiveChildren: true,
-        setup: async (r, pixi, world) => {
-          const state = world.game.state as LobbyState
-
-          const { width } = pixi.wh()
-          playButton.components.position.setPosition({ x: width / 2 })
-
-          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
-
-          const button = PixiButton({
-            content: () => ({
-              text: "Play",
-              width: 300,
-              height: 40,
-              style: { fontSize: 26 }
-            }),
-            onClick: () => {
-              if (["craft", "strike"].includes(state.gameId)) world.client?.pointerLock()
-
-              world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
-              world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
-
-              world.client?.sound.play({ name: "click1" })
-            },
-            onEnter: () => {
-              r.setGlow({ outerStrength: 2 })
-              world.client?.sound.play({ name: "click3" })
-            },
-            onLeave: () => {
-              r.setGlow()
-            }
-          })
-          r.c.addChild(button.c)
-        }
-      })
-    }
-  })
-  return playButton
 }
 
 const CreateLobbyButton = () => {
