@@ -1,7 +1,6 @@
 import {
-  Action, Actions, Character, Collider, DeagleItem, Input,
-  Inventory, LaserItem, max, Networked, Player,
-  Point, Position, Team, upAndDir, XYZ, XZ
+  Action, Actions, Character, Collider, DeagleItem, Input, Inventory,
+  max, Networked, Player, Point, Position, Team, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { StrikeSettings, StrikeState } from "./Strike"
