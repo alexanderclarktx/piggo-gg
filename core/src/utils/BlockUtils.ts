@@ -16,6 +16,7 @@ type BlockInLineProps = {
 type BlockInLine = undefined | {
   inside: Block
   outside: XYZ
+  edge: XYZ
 }
 
 export const blockInLine = ({ from, dir, world, cap = 10 }: BlockInLineProps): BlockInLine => {
@@ -56,7 +57,7 @@ export const blockInLine = ({ from, dir, world, cap = 10 }: BlockInLineProps): B
 
     const type = world.blocks.atIJK(insideBlock)
     if (type) return {
-      outside, inside: { type, ...insideBlock }
+      outside, inside: { type, ...insideBlock }, edge: { ...current }
     }
 
     outside.x = insideBlock.x

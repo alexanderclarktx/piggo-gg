@@ -1,5 +1,9 @@
-import { Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity, max, min, Networked, playerForCharacter, Position, sin, sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub } from "@piggo-gg/core"
-import { Mesh, MeshBasicMaterial, Object3D, Scene, SphereGeometry, Vector3 } from "three"
+import {
+  Action, Actions, blockInLine, Character, cos, Effects, Input, Item,
+  ItemEntity, max, min, Networked, playerForCharacter, Position, random,
+  sin, sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
+} from "@piggo-gg/core"
+import { Mesh, MeshBasicMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -24,47 +28,23 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   let gun: undefined | Object3D = undefined
 
-  const particles: { mesh: Mesh, velocity: XYZ }[] = []
+  const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   const { inventory } = character.components
 
   let recoil = 0
 
-  const spawnParticles = (pos: XYZ, normal: Vector3) => {
+  const spawnParticles = (pos: XYZ, tick: number) => {
     const proto = particles[0]
     if (!proto) return
 
     for (let i = 0; i < 10; i++) {
-      const clone = proto.mesh.clone()
-      // const material = proto.material
-      // material.transparent = true;
+      const mesh = proto.mesh.clone()
+      const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.05)
 
-      // const mesh = new Mesh(particleGeometry, material) as Particle;
-      // mesh.position.copy(position);
+      mesh.position.set(pos.x, pos.z, pos.y)
 
-      // random direction around the normal
-      const dir = normal
-        .clone()
-        .add(
-          new Vector3(
-            (Math.random() - 0.5) * 0.5,
-            (Math.random() - 0.5) * 0.5,
-            (Math.random() - 0.5) * 0.5
-          )
-        )
-        .normalize();
-      
-      clone.position.set(pos.x, pos.y, pos.z)
-
-      particles.push({ mesh: clone, velocity: dir.multiplyScalar(0.1 + Math.random() * 0.3) })
-
-      // mesh.userData = {
-      //   velocity: dir.multiplyScalar(0.1 + Math.random() * 0.3),
-      //   life: 0.5 + Math.random() * 0.5, // seconds
-      // };
-
-      // scene.add(mesh);
-      // particles.push(mesh);
+      particles.push({ mesh, tick, velocity })
     }
   }
 
@@ -82,8 +62,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
-
-            console.log("DEAGLE SHOOT", { hold, character, world, aim, client })
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
@@ -129,6 +107,20 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 40 })
           if (beamResult) {
             world.blocks.remove(beamResult.inside)
+
+            const pos = beamResult.edge
+            // const normal = new Vector3(
+            //   beamResult.outside.x - beamResult.inside.x,
+            //   beamResult.outside.z - beamResult.inside.z,
+            //   beamResult.outside.y - beamResult.inside.y
+            // ).normalize()
+            spawnParticles(pos, world.tick)
+
+            for (let i = 1; i < particles.length; i++) {
+              const p = particles[i]
+              if (!p.mesh.parent) world.three?.scene.add(p.mesh)
+            }
+            // world.three?.scene.add(...particles.map(p => p.mesh))
           }
 
           // if (world.client && entity.id !== world.client.character()?.id) return
@@ -163,8 +155,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       three: Three({
         init: async (_, __, three) => {
           // particles
-          const particleGeometry = new SphereGeometry(0.02, 6, 6);
-          const particleMaterial = new MeshBasicMaterial({ color: 0xffaa00 });
+          const particleGeometry = new SphereGeometry(0.01, 6, 6);
+          const particleMaterial = new MeshBasicMaterial({ color: 0xff7733 });
+          const particleMesh = new Mesh(particleGeometry, particleMaterial)
+          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
 
           // gun
           three.gLoader.load("laser-gun.glb", (gltf) => {
@@ -195,6 +189,17 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             y: pos.z + 0.45 + offset.y,
             z: pos.y + offset.z
           })
+
+          for (let i = 1; i < particles.length; i++) {
+            const p = particles[i]
+            p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
+
+            if (world.tick - p.tick >= 5) {
+              if (p.mesh.parent) world.three?.scene.remove(p.mesh)
+              particles.splice(i, 1)
+              i--
+            }
+          }
 
           gun.rotation.y = localAim.x
           gun.rotation.x = localAim.y + recoil
