@@ -1,7 +1,7 @@
 import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
   Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked, NPC,
-  PC, piggoVersion, PixiButton, pixiGraphics, PixiRenderSystem, pixiText, Position,
+  PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, Renderable, Strike, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
@@ -22,18 +22,17 @@ export const Lobby: GameBuilder = {
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
-      // PixiChat(),
-      // Friends(),
       Profile(),
-      // SignupCTA(),
       ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
       GameLobby(),
-      // Players(),
       Version(),
-      CreateLobbyButton(),
-      // SettingsButton(),
       PlayersOnline(),
       MusicBox()
+
+      // PixiChat(),
+      // Friends(),
+      // SignupCTA(),
+      // Players(),
     ],
     netcode: "delay"
   })
@@ -197,8 +196,8 @@ const HtmlPlayButton = (world: World) => {
       const state = world.state<LobbyState>()
       if (["craft", "strike"].includes(state.gameId)) world.client?.pointerLock()
 
-      // world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
-      // world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
+      world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
+      world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
 
       world.client?.sound.play({ name: "click1" })
     },
@@ -214,93 +213,46 @@ const HtmlPlayButton = (world: World) => {
   return button
 }
 
-const CreateLobbyButton = () => {
-  const createLobbyButton = Entity<Position | Renderable>({
-    id: "createLobbyButton",
-    components: {
-      position: Position({ x: 300, y: 510, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        interactiveChildren: true,
-        anchor: { x: 0.5, y: 0.5 },
-        onTick: () => {
-          // const ready = (world.client?.ws.readyState ?? 0) === 1
-          const ready = false
+const HtmlCreateLobbyButton = (world: World) => {
+  const button = HtmlButton({
+    text: "Invite Friends",
+    style: {
+      left: "50%",
+      top: "336px",
+      width: "300px",
+      height: "42px",
+      fontSize: "26px",
+      transform: "translate(-50%)",
+      textShadow: "none",
 
-          createLobbyButton.components.renderable.c.alpha = ready ? 1 : 0.6
-          createLobbyButton.components.renderable.c.interactiveChildren = ready
-        },
-        setup: async (r, pixi, world) => {
-          const { width } = pixi.app.screen
-          createLobbyButton.components.position.setPosition({ x: width / 2 })
+      // disabled for now
+      pointerEvents: "none",
+      touchAction: "none",
+      opacity: 0.6,
+      color: "#cccccc",
 
-          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+      border: "2px solid transparent",
+      padding: "0px",
+      borderRadius: "6px",
+      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
+      backgroundOrigin: "border-box",
+      backgroundClip: "content-box, border-box"
+    },
+    onClick: () => {
+      world.client?.copyInviteLink()
 
-          const button = PixiButton({
-            content: () => ({
-              text: "Invite Friends",
-              width: 300,
-              height: 40,
-              style: { fontSize: 26 },
-              fillAlpha: 1
-            }),
-            onClick: () => {
-              world.client?.copyInviteLink()
-
-              world.client?.sound.play({ name: "click1" })
-            },
-            onEnter: () => {
-              r.setGlow({ outerStrength: 2 })
-              world.client?.sound.play({ name: "click3" })
-            },
-            onLeave: () => r.setGlow()
-          })
-
-          r.c.addChild(button.c)
-        }
-      })
+      world.client?.sound.play({ name: "click1" })
+    },
+    onHover: () => {
+      button.style.boxShadow = "0 0 6px 2px white"
+      world.client?.sound.play({ name: "click3" })
+    },
+    onHoverOut: () => {
+      button.style.boxShadow = "none"
     }
   })
-  return createLobbyButton
-}
 
-const SettingsButton = () => {
-  const settingsButton = Entity<Position>({
-    id: "settingsButton",
-    components: {
-      position: Position({ x: 300, y: 480, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        interactiveChildren: true,
-        setup: async (r, pixi, world) => {
-          const { width } = pixi.wh()
-          settingsButton.components.position.setPosition({ x: 220 + (width - 230) / 2 })
-
-          r.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
-
-          const button = PixiButton({
-            content: () => ({
-              text: "Settings",
-              width: 300,
-              height: 40,
-              style: { fontSize: 26 }
-            }),
-            onClick: () => {
-              console.log("Settings")
-              world.client?.sound.play({ name: "click1" })
-            },
-            onEnter: () => {
-              r.setGlow({ outerStrength: 2 })
-              world.client?.sound.play({ name: "click3" })
-            },
-            onLeave: () => r.setGlow()
-          })
-          r.c.addChild(button.c)
-        }
-      })
-    }
-  })
-  return settingsButton
+  return button
 }
 
 // todo player param optional ?
@@ -507,6 +459,9 @@ const GameLobby = (): Entity => {
 
             const htmlPlayButton = HtmlPlayButton(world)
             shell.appendChild(htmlPlayButton)
+
+            const htmlCreateLobbyButton = HtmlCreateLobbyButton(world)
+            shell.appendChild(htmlCreateLobbyButton)
           }
 
           // make border green for selected game
