@@ -29,7 +29,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let gun: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
 
-  let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 } }
+  let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
@@ -127,6 +127,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             tracer.rotation.y = localAim.x - Math.PI / 2
 
             tracer.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+
+            tracerState.tick = world.tick
+            tracerState.velocity = dir.clone().multiplyScalar(0.5)
+            tracerState.pos = { x: tracer.position.x, y: tracer.position.y, z: tracer.position.z }
           }
 
           // raycast against blocks
@@ -194,10 +198,26 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         onRender: ({ world, delta }) => {
           if (!gun) return
 
+          const ratio = delta / 25
+
           const pos = character.components.position.interpolate(world, delta)
 
           const { localAim } = world.client!.controls
           const offset = modelOffset(localAim)
+
+          // tracer
+          if (tracer) {
+            if (world.tick - tracerState.tick < 5) {
+              tracer.visible = true
+              tracer.position.set(
+                tracerState.pos.x + tracerState.velocity.x * (world.tick - tracerState.tick + ratio),
+                tracerState.pos.y + tracerState.velocity.y * (world.tick - tracerState.tick + ratio),
+                tracerState.pos.z + tracerState.velocity.z * (world.tick - tracerState.tick + ratio)
+              )
+            } else {
+              tracer.visible = false
+            }
+          }
 
           gun.position.copy({
             x: pos.x + offset.x,
@@ -216,7 +236,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          const localRecoil = recoil ? recoil - recoilRate * delta / 25 : 0
+          const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
           gun.rotation.y = localAim.x
           gun.rotation.x = localAim.y + localRecoil
