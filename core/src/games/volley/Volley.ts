@@ -4,8 +4,9 @@ import {
   SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
 } from "@piggo-gg/core"
 import { Bot } from "./Bot"
-import { Ball, Bounds, Centerline, Court, Dude, Net, PostBottom, PostTop } from "./entities"
+import { Ball, Bounds, Centerline, Court, Net, PostBottom, PostTop } from "./entities"
 import { TargetSystem } from "./Target"
+import { Vince } from "./Vince"
 
 export const range = 32
 
@@ -46,7 +47,7 @@ export const Volley: GameBuilder<VolleyState> = {
     systems: [
       PhysicsSystem("local"),
       PhysicsSystem("global"),
-      SpawnSystem(Dude),
+      SpawnSystem(Vince),
       VolleySystem,
       ShadowSystem,
       TargetSystem,
