@@ -108,23 +108,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           if (beamResult) {
             world.blocks.remove(beamResult.inside)
 
-            const pos = beamResult.edge
-            // const normal = new Vector3(
-            //   beamResult.outside.x - beamResult.inside.x,
-            //   beamResult.outside.z - beamResult.inside.z,
-            //   beamResult.outside.y - beamResult.inside.y
-            // ).normalize()
-            spawnParticles(pos, world.tick)
+            spawnParticles(beamResult.edge, world.tick)
 
             for (let i = 1; i < particles.length; i++) {
               const p = particles[i]
               if (!p.mesh.parent) world.three?.scene.add(p.mesh)
             }
-            // world.three?.scene.add(...particles.map(p => p.mesh))
           }
-
-          // if (world.client && entity.id !== world.client.character()?.id) return
-          // if (world.client) return
 
           for (const target of targets) {
             const targetEntity = world.entity<Position>(target.id)
@@ -141,13 +131,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const D = sqrt((Ldist * Ldist) - (tc * tc))
 
             if (D > 0 && D < 0.08) {
-              // state.hit[target.id] = { tick: world.tick, by: entity.id }
               const targetPlayer = playerForCharacter(world, target.id)
 
               console.log("hit", targetPlayer?.id)
-              // world.announce(`${player?.components.pc.data.name} hit ${targetPlayer?.components.pc.data.name}`)
-
-              // targetEntity.components.position.data.flying = false
             }
           }
         }),
