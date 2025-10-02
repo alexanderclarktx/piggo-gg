@@ -17,7 +17,7 @@ export const Lobby: GameBuilder = {
     renderer: "pixi",
     settings: {},
     state: {
-      gameId: "craft"
+      gameId: "strike"
     },
     systems: [PixiRenderSystem],
     entities: [
@@ -193,7 +193,7 @@ const PlayButton = () => {
               style: { fontSize: 26 }
             }),
             onClick: () => {
-              if (state.gameId === "craft") world.client?.pointerLock()
+              if (["craft", "strike"].includes(state.gameId)) world.client?.pointerLock()
 
               world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
               world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })

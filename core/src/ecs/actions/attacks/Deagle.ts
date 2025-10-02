@@ -14,7 +14,7 @@ const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
   if (tip) {
     offset.x -= dir.x * 0.1
     offset.y -= 0.035 - localAim.y * 0.1,
-    offset.z -= dir.y * 0.1
+      offset.z -= dir.y * 0.1
   }
 
   return offset
@@ -40,7 +40,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
-            
+
             console.log("DEAGLE SHOOT", { hold, character, world, aim, client })
 
             const targets: Target[] = world.characters()
@@ -57,7 +57,27 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }
       }),
       actions: Actions({
-        deagle: Deagle(),
+        deagle: Action<DeagleParams>("deagle", ({ world, entity, params }) => {
+          if (!entity) return
+
+          const state = world.state<StrikeState>()
+
+          // if (state.hit[entity.id]) return
+          const cd = world.tick - (state.lastShot[entity.id] ?? 0)
+          if (cd < 20) return
+
+          state.lastShot[entity.id] = world.tick
+
+          world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
+
+          console.log("DEAGLE SOUND", params)
+          const { pos, aim, targets } = params
+
+          if (gun) {
+            // recoil
+            gun.rotation.x -= 0.5
+          }
+        }),
       }),
       three: Three({
         init: async (_, __, three) => {
@@ -105,20 +125,3 @@ type DeagleParams = {
   aim: XY
   targets: Target[]
 }
-
-const Deagle = () => Action<DeagleParams>("deagle", ({ world, entity, params }) => {
-  if (!entity) return
-
-  const state = world.state<StrikeState>()
-
-  // if (state.hit[entity.id]) return
-  const cd = world.tick - (state.lastShot[entity.id] ?? 0)
-  if (cd < 20) return
-
-  state.lastShot[entity.id] = world.tick
-
-  world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
-
-  console.log("DEAGLE SOUND", params)
-  const { pos, aim, targets } = params
-})
