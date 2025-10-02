@@ -17,7 +17,7 @@ export const Lobby: GameBuilder = {
     renderer: "pixi",
     settings: {},
     state: {
-      gameId: "lobby"
+      gameId: "volley"
     },
     systems: [PixiRenderSystem],
     entities: [
