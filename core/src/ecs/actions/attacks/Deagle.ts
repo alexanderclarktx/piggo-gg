@@ -26,11 +26,10 @@ const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
 
 export const DeagleItem = ({ character }: { character: Character }) => {
 
-  let gun: undefined | Object3D = undefined
+  let gun = new Object3D()
+  let tracer = new Object3D()
 
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
-
-  const { inventory } = character.components
 
   let recoil = 0
   const recoilRate = 0.05
@@ -171,9 +170,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         },
         onRender: ({ world, delta }) => {
           if (!gun) return
-
-          gun.visible = inventory?.activeItem(world)?.id === item.id &&
-            world.three?.camera.mode === "first" && world.three?.camera.transition >= 100
 
           const pos = character.components.position.interpolate(world, delta)
 
