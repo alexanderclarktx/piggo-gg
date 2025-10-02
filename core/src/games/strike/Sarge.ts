@@ -1,8 +1,8 @@
 import {
-  Action, Actions, Character, Collider, DeagleItem, Input, Inventory,
-  max, Networked, Player, Point, Position, Team, upAndDir, XYZ, XZ
+  Action, Actions, Character, Collider, DeagleItem, hypot, Input, Inventory,
+  max, Networked, PI, Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
-import { Vector3 } from "three"
+import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
 import { StrikeSettings, StrikeState } from "./Strike"
 
 const walk = 0.78
@@ -11,6 +11,14 @@ const hop = 0.18
 const leap = 0.3
 
 export const Sarge = (player: Player): Character => {
+
+  let pig: Object3D = new Object3D()
+
+  let pigMixer: AnimationMixer | undefined
+
+  let idleAnimation: AnimationAction | undefined
+  let runAnimation: AnimationAction | undefined
+  let animation: "idle" | "run" = "idle"
 
   const sarge = Character({
     id: `sarge-${player.id}`,
@@ -189,10 +197,76 @@ export const Sarge = (player: Player): Character => {
           position.impulse({ x: toward.x * factor, y: toward.z * factor })
         })
       }),
-      team: Team(1)
-      // three: Three({
+      team: Team(1),
+      three: Three({
+        onRender: ({ entity, world, delta, client, three }) => {
+          const ratio = delta / 25
 
-      // }),
+          const { position } = entity.components
+          const interpolated = position.interpolate(world, delta)
+
+          const orientation = player.id === client.playerId() ? client.controls.localAim : position.data.aim
+
+          // position
+          pig.position.set(interpolated.x, interpolated.z + 0, interpolated.y)
+
+          // rotation
+          pig.rotation.y = orientation.x + PI
+
+          // animation
+          const speed = hypot(position.data.velocity.x, position.data.velocity.y)
+
+          if (runAnimation && idleAnimation && pigMixer) {
+            if (speed === 0 && animation === "run") {
+              animation = "idle"
+              runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+            } else if (speed > 0 && animation === "idle") {
+              animation = "run"
+              idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+            }
+          }
+
+          pigMixer?.update(speed * ratio * 0.005 + 0.005)
+
+          if ((three.camera.transition < 125) && player.id === client.playerId()) {
+
+            const opacity = three.camera.mode === "first" ? 1 - (three.camera.transition / 100) : three.camera.transition / 100
+
+            pig.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.material.opacity = opacity
+              }
+            })
+          }
+        },
+        init: async (entity, _, three) => {
+          three.gLoader.load("cowboy.glb", (gltf) => {
+            pig = gltf.scene
+            pig.animations = gltf.animations
+            pig.frustumCulled = false
+            pig.scale.set(0.16, 0.18, 0.16)
+
+            pigMixer = new AnimationMixer(pig)
+
+            idleAnimation = pigMixer.clipAction(pig.animations[2])
+            runAnimation = pigMixer.clipAction(pig.animations[8])
+
+            idleAnimation?.play()
+
+            pig.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.material.transparent = true
+                child.material.opacity = 0
+
+                child.castShadow = true
+                child.receiveShadow = true
+              }
+            })
+
+            entity.components.three.o.push(pig)
+          })
+        }
+      })
     }
   })
 
