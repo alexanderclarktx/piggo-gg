@@ -1,5 +1,5 @@
 import {
-  Action, Actions, Character, Collider, Input,
+  Action, Actions, Character, Collider, DeagleItem, Input,
   Inventory, LaserItem, max, Networked, Player,
   Point, Position, Team, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
@@ -16,9 +16,9 @@ export const Sarge = (player: Player): Character => {
   const sarge = Character({
     id: `sarge-${player.id}`,
     components: {
-      position: Position({ friction: true, gravity: 0.0024 }),
+      position: Position({ friction: true, gravity: 0.0024, x: 10, y: 10, z: 8 }),
       networked: Networked(),
-      inventory: Inventory([LaserItem]),
+      inventory: Inventory([DeagleItem]),
       collider: Collider({ shape: "ball", radius: 0.1 }),
       input: Input({
         release: {

@@ -77,7 +77,7 @@ export const Sound = (world: World): Sound => {
       click1: load("click1.mp3", -5),
       click2: load("click2.mp3", -5),
       click3: load("click3.mp3", -10),
-      deagle: load("pistol.mp3", -30),
+      deagle: load("deagle.mp3", -10),
       ak: load("ak.mp3", -25),
       awp: load("awp.mp3", -30),
       // thud: load("thud.mp3", -15),
