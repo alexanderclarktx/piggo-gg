@@ -172,7 +172,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // tracer
           const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.04, 8)
-          tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffffff, visible: true }))
+          tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffff99, emissive: 0xffff99 }))
           three.scene.add(tracer)
 
           // particles
