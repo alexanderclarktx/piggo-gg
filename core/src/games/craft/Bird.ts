@@ -1,20 +1,11 @@
 import {
   abs, Action, Actions, Character, Collider, cos, HookItem,
   hypot, Input, Inventory, LaserItem, max, Networked, PI,
-  Place, Player, Point, Position, Ready, round, setActiveItemIndex,
-  sin, sqrt, Team, Three, World, XYZ, XZ
+  Place, Player, Point, Position, Ready, setActiveItemIndex,
+  sin, sqrt, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { CraftSettings, CraftState } from "./Craft"
-
-const upAndDir = (world: World): { up: XYZ, dir: XZ } => {
-  const camera = world.three?.camera
-  if (!camera) return { up: { x: 0, y: 0, z: 0 }, dir: { x: 0, z: 0 } }
-
-  const up = { x: round(camera.c.up.x, 3), y: round(camera.c.up.y, 3), z: round(camera.c.up.z, 3) }
-  const dir = XZ(camera.dir(world))
-  return { up, dir }
-}
 
 const walk = 0.78
 const run = 1.2
