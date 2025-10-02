@@ -152,8 +152,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
 
       border: "3px solid transparent",
       padding: "0px",
-      // borderRadius: "6px",
-      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 60%, #777777)",
+      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
       backgroundOrigin: "border-box",
       backgroundClip: "content-box, border-box"
     },
@@ -514,7 +513,7 @@ const GameLobby = (): Entity => {
           const state = world.game.state as LobbyState
           for (const button of gameButtons) {
             const selected = button.innerText === state.gameId
-            button.style.outline = selected ? "2px solid #00cc88" : "none"
+            button.style.outline = selected ? "2px solid #00dd88" : "none"
           }
         }
       })
