@@ -1,7 +1,13 @@
+type PrimaryColor = "red" | "green" | "blue" | "yellow" | "purple" | "orange" | "black" | "white" | "gray" | "lightgray" | "darkgray"
+export type LexColor = PrimaryColor | `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
+
 export type CSS = Partial<{
   alignItems: "center" | "flex-start" | "flex-end" | "stretch"
   background: string
-  backgroundColor: `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
+  backgroundClip: "border-box" | "content-box" | "padding-box" | "text" | "content-box, border-box"
+  backgroundColor: LexColor
+  backgroundImage: string
+  backgroundOrigin: "border-box" | "content-box" | "padding-box"
   border: string
   borderBottom: string
   borderImage: `linear-gradient(${string}) ${number}`
@@ -18,7 +24,7 @@ export type CSS = Partial<{
   float: "left" | "right" | "none"
   fontFamily: "Courier New" | "Arial"
   fontSize: `${number}px`
-  fontWeight: "normal" | "bold" | "bolder" | "lighter"
+  fontWeight: "normal" | "bold" | "bolder" | "lighter" | number
   gap: `${number}px` | `${number}%`
   height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
   imageRendering: "auto" | "crisp-edges" | "pixelated"
@@ -35,6 +41,7 @@ export type CSS = Partial<{
   minHeight: `${number}px` | `${number}%` | `${number}dvh` | 0
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
+  opacity: number
   outline: "none" | `${number}px solid ${string}`
   outlineOffset: `${number}px`
   overflow: "visible" | "hidden" | "scroll" | "auto"
@@ -51,7 +58,7 @@ export type CSS = Partial<{
   textAlign: "left" | "center" | "right" | "justify"
   textDecoration: "none" | "underline" | "line-through"
   textDecorationStyle: "solid" | "dashed" | "dotted"
-  textShadow: `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
+  textShadow: "none" | `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
   top: `${number}%` | `${number}px` | `${number}dvh`
   touchAction: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
   transform: `translate(${number}%)` | `translate(${number}%, ${number}%)`
