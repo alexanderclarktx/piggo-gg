@@ -30,7 +30,7 @@ export const Lobby: GameBuilder = {
       GameLobby(),
       // Players(),
       Version(),
-      PlayButton(),
+      // PlayButton(),
       CreateLobbyButton(),
       // SettingsButton(),
       PlayersOnline(),
@@ -174,31 +174,19 @@ const HtmlPlayButton = (world: World) => {
     text: "Play",
     style: {
       left: "50%",
-      top: "37%",
+      top: "276px",
       width: "300px",
       height: "42px",
       fontSize: "26px",
       transform: "translate(-50%)",
-      backgroundColor: "black",
-      // borderRadius: "6px",
       textShadow: "none",
-      fontWeight: "bold",
 
       border: "2px solid transparent",
-      // borderImage: "linear-gradient(180deg, white, #aaaaaa) 1",
-
-      // background: "linear-gradient(to right, white, gray)",
-      padding: "0px", // thickness of border
-      borderRadius: "8px", // outer rounding
-      // padding:
-
-      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, #999999)",
+      padding: "0px",
+      borderRadius: "6px",
+      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
       backgroundOrigin: "border-box",
-      backgroundClip: "content-box, border-box",
-
-      // inner fill
-      boxSizing: "border-box",
-      // color: "white",
+      backgroundClip: "content-box, border-box"
     },
     onClick: () => {
       const state = world.state<LobbyState>()
@@ -217,12 +205,6 @@ const HtmlPlayButton = (world: World) => {
       button.style.boxShadow = "none"
     }
   })
-
-  // button.style.backgroundClip = "padding-box, border-box"
-  // button.style.backgroundOrigin = "padding-box, border-box"
-
-  // button.style.backgroundOrigin = "border-box"
-  // button.style.backgroundClip = "content-box, border-box"
 
   return button
 }
@@ -566,7 +548,7 @@ const GameLobby = (): Entity => {
             document.body.appendChild(shell)
 
             const htmlPlayButton = HtmlPlayButton(world)
-            document.body.appendChild(htmlPlayButton)
+            shell.appendChild(htmlPlayButton)
           }
 
           // make border green for selected game

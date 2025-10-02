@@ -24,7 +24,7 @@ export type CSS = Partial<{
   float: "left" | "right" | "none"
   fontFamily: "Courier New" | "Arial"
   fontSize: `${number}px`
-  fontWeight: "normal" | "bold" | "bolder" | "lighter"
+  fontWeight: "normal" | "bold" | "bolder" | "lighter" | number
   gap: `${number}px` | `${number}%`
   height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
   imageRendering: "auto" | "crisp-edges" | "pixelated"
