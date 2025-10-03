@@ -27,6 +27,13 @@ export const HtmlButton = (props: HtmlButtonProps): HtmlButton => {
   return b
 }
 
+export const ogButtonStyle: CSS = {
+  backgroundImage: "",
+  backgroundOrigin: "padding-box",
+  backgroundClip: "border-box",
+  border: "2px solid white"
+}
+
 const defaults: CSS = {
   position: "absolute",
   fontFamily: "Courier New",
@@ -38,9 +45,9 @@ const defaults: CSS = {
   pointerEvents: "none",
   borderRadius: "8px",
   flexShrink: 0,
+  padding: "0px",
 
   border: "2px solid transparent",
-  padding: "0px",
   backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
   backgroundOrigin: "border-box",
   backgroundClip: "content-box, border-box"
