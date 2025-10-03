@@ -1,9 +1,8 @@
 import { entries, GunNames, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
 import { getContext, getTransport, Player as Tone } from "tone"
 
-export type CarlSounds = "birdsong1"
 export type BubbleSounds = "bubble"
-export type MusicSounds = "track2"
+export type MusicSounds = "track2" | "birdsong1"
 export type ClickSounds = "click1" | "click2" | "click3" | "cassettePlay" | "cassetteStop"
 export type ToolSounds = "whiff" | "thud" | "clink" | "slash"
 export type EatSounds = "eat" | "eat2"
@@ -11,7 +10,7 @@ export type VolleySounds = "spike"
 export type LaserSounds = "laser1"
 
 export type ValidSounds =
-  CarlSounds | BubbleSounds | ClickSounds | MusicSounds |
+  BubbleSounds | ClickSounds | MusicSounds |
   GunNames | EatSounds | VolleySounds | LaserSounds
 
 const load = (url: string, volume: number): Tone => {
@@ -39,6 +38,7 @@ export type Sound = {
   state: "closed" | "running" | "suspended"
   tones: Record<ValidSounds, Tone>
   stop: (name: ValidSounds) => void
+  stopMusic: () => void
   stopAll: () => void
   play: (props: SoundPlayProps) => boolean
   playChoice: (options: ValidSounds[], props?: Omit<SoundPlayProps, "name">) => boolean
@@ -99,6 +99,10 @@ export const Sound = (world: World): Sound => {
           console.error(`error while stopping sound ${tone}`)
         }
       }
+    },
+    stopMusic: () => {
+      const musicSounds: MusicSounds[] = ["birdsong1", "track2"]
+      for (const name of musicSounds) sound.stop(name)
     },
     stopAll: () => {
       for (const [name, tone] of entries(sound.tones)) {
