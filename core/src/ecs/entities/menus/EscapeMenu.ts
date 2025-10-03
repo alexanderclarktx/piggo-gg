@@ -131,13 +131,7 @@ export const EscapeMenu = (world: World): Entity => {
             if (!visible) return
           }
 
-          if (world.client?.mobile && window.outerHeight < window.outerWidth) {
-            art.style.width = "0px"
-            // art.style.border = "none"
-          } else {
-            art.style.width = "180px"
-            // art.style.border = "2px solid white"
-          }
+          art.style.width = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "180px"
 
           // menu buttons
           styleButton(returnToHomescreen, true, returnToHomescreen.matches(":hover"))
