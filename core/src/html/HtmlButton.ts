@@ -58,17 +58,8 @@ export type HtmlButtonProps = {
 }
 
 export const styleButton = (button: HtmlButton, active: boolean, hovered: boolean): void => {
-  if (active) {
-    button.style.border = "2px solid transparent"
-    button.style.color = "#ffffff"
-    // if (hovered)
-    button.style.boxShadow = hovered ? "0 0 6px 2px white" : "none"
-    // button.style.backgroundColor = hovered ? "rgba(0, 50, 150, 0.7)" : "rgba(0, 0, 0, 0.4)"
-  } else {
-    button.style.border = "2px solid transparent"
-    button.style.color = "#cccccc"
-    // button.style.backgroundColor = "rgba(0, 0, 0, 0)"
-  }
+  button.style.boxShadow = active && hovered ? "0 0 6px 2px white" : "none"
+  button.style.opacity = active ? "1" : "0.7"
 }
 
 export const styleSwitch = (button: HtmlButton, enabled: boolean, hovered: boolean): void => {
