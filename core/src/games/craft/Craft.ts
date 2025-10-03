@@ -2,10 +2,9 @@ import {
   BlockPhysicsSystem, Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, UIProfile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, GameBuilder, spawnTerrain, EscapeMenu,
-  ThreeSystem, InventorySystem, BlockPreview, Sun, BlockMeshSysten
+  ThreeSystem, InventorySystem, BlockPreview, Sun, BlockMeshSysten, HUDSystem
 } from "@piggo-gg/core"
 import { Carl } from "./Carl"
-import { HUDSystem } from "./HUDSystem"
 import { MobileUI } from "./MobileUI"
 import { Scoreboard } from "./Scoreboard"
 

@@ -5,13 +5,13 @@ import {
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
-const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
+const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
   const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
   const offset = {
     x: -dir.x * 0.05 + right.x * 0.05,
-    y: 0,
+    y: recoil * 0.03,
     z: -dir.y * 0.05 + right.y * 0.05,
   }
 
@@ -34,7 +34,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   let recoil = 0
-  const recoilRate = 0.05
+  const recoilRate = 0.04
 
   const spawnParticles = (pos: XYZ, tick: number) => {
     const proto = particles[0]
@@ -101,14 +101,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
-          if (gun) {
-            recoil = min(0.8, recoil + 0.5)
-          }
-
           const { pos, aim, targets } = params
 
           const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
+
+          aim.y += recoil * 0.1
+          if (recoil) aim.x += recoil * (world.random.next() - 0.5) * 0.1
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
@@ -117,7 +116,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const dir = target.clone().sub(eyes).normalize()
 
           const { localAim } = world.client!.controls
-          const offset = modelOffset(localAim, true)
+          const offset = modelOffset(localAim, true, recoil)
+
+          // apply recoil
+          if (gun) {
+            recoil = min(1, recoil + 0.5)
+          }
 
           // tracer
           if (tracer) {
@@ -136,7 +140,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // raycast against blocks
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
           if (beamResult) {
-            // world.blocks.remove(beamResult.inside)
+            if (beamResult.inside.type === 1) world.blocks.remove(beamResult.inside)
 
             spawnParticles(beamResult.edge, world.tick)
 
@@ -184,7 +188,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // gun
           three.gLoader.load("deagle.glb", (gltf) => {
             gun = gltf.scene
-            gun.scale.set(0.03, 0.03, 0.03)
+            gun.scale.set(0.025, 0.025, 0.025)
 
             gun.receiveShadow = true
             gun.castShadow = true
@@ -238,7 +242,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
           gun.rotation.y = localAim.x
-          gun.rotation.x = localAim.y + localRecoil
+          gun.rotation.x = localAim.y + localRecoil * 0.5
         }
       })
     },

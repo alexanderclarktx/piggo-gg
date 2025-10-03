@@ -1,7 +1,6 @@
 import {
   HtmlButton, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory, ogButtonStyle
 } from "@piggo-gg/core"
-import { CraftSettings, CraftState } from "./Craft"
 
 export const HUDSystem = ClientSystemBuilder({
   id: "HUDSystem",
@@ -77,7 +76,10 @@ export const HUDSystem = ClientSystemBuilder({
 
     const inventory = HtmlInventory(client)
 
-    three.append(inventory.div)
+    // TODO tech debt
+    if (world.game.id === "craft") {
+      three.append(inventory.div)
+    }
 
     const active = "rgba(0, 160, 200, 0.6)"
     const inactive = "rgba(0, 0, 0, 0.3)"
@@ -89,7 +91,7 @@ export const HUDSystem = ClientSystemBuilder({
       query: [],
       priority: 10,
       onTick: () => {
-        const settings = world.settings<CraftSettings>()
+        const settings = world.settings<{ showControls: boolean }>()
         controls.style.display = settings.showControls ? "block" : "none"
 
         const down = client.bufferDown.all()?.map(key => key.key)
@@ -122,19 +124,19 @@ export const HUDSystem = ClientSystemBuilder({
 
         inventory.update()
 
-        const state = world.game.state as CraftState
-        const pcApplesEaten = state.applesEaten[client.playerId() || ""] || 0
+        // const state = world.game.state as CraftState
+        // const pcApplesEaten = state.applesEaten[client.playerId() || ""] || 0
 
-        const isWarmup = state.phase === "warmup"
+        // const isWarmup = state.phase === "warmup"
         // eButton.style.visibility = isWarmup ? "visible" : "hidden"
-        transformLabel.style.visibility = isWarmup ? "visible" : "hidden"
+        // transformLabel.style.visibility = isWarmup ? "visible" : "hidden"
 
-        if (pcApplesEaten !== currentApplesEaten) {
-          currentApplesEaten = pcApplesEaten
-          scoreText.innerHTML = `<span>apples: </span><span style='color: #ffc0cb'>${currentApplesEaten}/10</span>`
-        }
+        // if (pcApplesEaten !== currentApplesEaten) {
+        //   currentApplesEaten = pcApplesEaten
+        //   scoreText.innerHTML = `<span>apples: </span><span style='color: #ffc0cb'>${currentApplesEaten}/10</span>`
+        // }
 
-        scoreText.style.visibility = state.phase === "play" && !pc?.components.position.data.flying ? "visible" : "hidden"
+        // scoreText.style.visibility = state.phase === "play" && !pc?.components.position.data.flying ? "visible" : "hidden"
       }
     }
   }

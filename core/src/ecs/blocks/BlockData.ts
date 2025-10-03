@@ -1,6 +1,5 @@
 import {
-  Block, BlockPlan, BlockTree, BlockType, BlockTypeInt,
-  floor, keys, logPerf, World, XY, XYZ
+  Block, BlockPlan, BlockTree, floor, keys, logPerf, World, XY, XYZ
 } from "@piggo-gg/core"
 
 export type BlockData = {
@@ -272,16 +271,9 @@ export const spawnChunk = (chunk: XY, world: World) => {
 
       for (let z = 0; z < height; z++) {
 
-        const type = world.random.range<BlockType>(z, [
-          [0, "saphire"],
-          [1, "saphire"],
-          [7, "grass"],
-          [32, "asteroid"]
-        ])
+        world.blocks.add({ x, y, z, type: 1 })
 
-        world.blocks.add({ x, y, z, type: BlockTypeInt[type] })
-
-        if (z === height - 1 && type === "grass" && world.random.int(200) === 1) {
+        if (z === height - 1 && world.random.int(200) === 1) {
 
           let height = world.random.int(2) + 4
           if (world.random.int(4) === 1) {
