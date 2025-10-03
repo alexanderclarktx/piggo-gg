@@ -34,7 +34,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   let recoil = 0
-  const recoilRate = 0.05
+  const recoilRate = 0.04
 
   const spawnParticles = (pos: XYZ, tick: number) => {
     const proto = particles[0]
@@ -101,14 +101,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
-          if (gun) {
-            recoil = min(0.8, recoil + 0.5)
-          }
-
           const { pos, aim, targets } = params
 
           const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
+
+          aim.y += recoil * 0.1
+          if (recoil) aim.x += recoil * (world.random.next() - 0.5) * 0.1
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
@@ -118,6 +117,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           const { localAim } = world.client!.controls
           const offset = modelOffset(localAim, true)
+
+          // apply recoil
+          if (gun) {
+            recoil = min(1, recoil + 0.5)
+          }
 
           // tracer
           if (tracer) {
@@ -238,7 +242,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
           gun.rotation.y = localAim.x
-          gun.rotation.x = localAim.y + localRecoil
+          gun.rotation.x = localAim.y + localRecoil * 0.5
         }
       })
     },
