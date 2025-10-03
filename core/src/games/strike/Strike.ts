@@ -2,7 +2,7 @@ import {
   BlockPhysicsSystem, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, UIProfile, SpawnSystem, Sky, SystemBuilder, HtmlChat,
   Crosshair, GameBuilder, spawnTerrain, EscapeMenu, ThreeSystem,
-  InventorySystem, BlockPreview, Sun, BlockMeshSysten
+  InventorySystem, Sun, BlockMeshSysten, HUDSystem
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 
@@ -56,7 +56,8 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       D3NametagSystem,
       ThreeSystem,
       InventorySystem,
-      BlockMeshSysten
+      BlockMeshSysten,
+      HUDSystem
     ],
     entities: [
       Crosshair(),
