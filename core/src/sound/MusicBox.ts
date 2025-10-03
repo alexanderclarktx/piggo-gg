@@ -23,7 +23,8 @@ export const MusicBox = (): Entity => {
   let discHovered = false
 
   let discColors: Record<MusicSounds, number> = {
-    track2: 0xccaa00
+    track2: 0xccaa00,
+    birdsong1: 0x00aa00
   }
 
   const redraw = () => {

@@ -223,6 +223,9 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
         el.remove()
       }
 
+      // stop music
+      world.client?.sound.stopMusic()
+
       // clear blocks
       world.blocks.clear()
 
