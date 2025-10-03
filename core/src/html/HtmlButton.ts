@@ -36,13 +36,11 @@ const defaults: CSS = {
   backgroundColor: "rgba(0, 0, 0, 0.4)",
   color: "#ffffff",
   pointerEvents: "none",
-  // border: "2px solid #ffffff",
   borderRadius: "8px",
   flexShrink: 0,
 
   border: "2px solid transparent",
   padding: "0px",
-  // borderRadius: "6px",
   backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
   backgroundOrigin: "border-box",
   backgroundClip: "content-box, border-box"
