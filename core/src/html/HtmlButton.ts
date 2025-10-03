@@ -36,8 +36,15 @@ const defaults: CSS = {
   backgroundColor: "rgba(0, 0, 0, 0.4)",
   color: "#ffffff",
   pointerEvents: "none",
-  border: "2px solid #ffffff",
-  borderRadius: "8px"
+  // border: "2px solid #ffffff",
+  borderRadius: "8px",
+
+  border: "2px solid transparent",
+  padding: "0px",
+  // borderRadius: "6px",
+  backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
+  backgroundOrigin: "border-box",
+  backgroundClip: "content-box, border-box"
 }
 
 export type HtmlButtonProps = {
@@ -51,13 +58,15 @@ export type HtmlButtonProps = {
 
 export const styleButton = (button: HtmlButton, active: boolean, hovered: boolean): void => {
   if (active) {
-    button.style.border = "2px solid #ffffff"
+    button.style.border = "2px solid transparent"
     button.style.color = "#ffffff"
-    button.style.backgroundColor = hovered ? "rgba(0, 50, 150, 0.7)" : "rgba(0, 0, 0, 0.4)"
+    // if (hovered)
+    button.style.boxShadow = hovered ? "0 0 6px 2px white" : "none"
+    // button.style.backgroundColor = hovered ? "rgba(0, 50, 150, 0.7)" : "rgba(0, 0, 0, 0.4)"
   } else {
-    button.style.border = "2px solid #cccccc"
+    button.style.border = "2px solid transparent"
     button.style.color = "#cccccc"
-    button.style.backgroundColor = "rgba(0, 0, 0, 0)"
+    // button.style.backgroundColor = "rgba(0, 0, 0, 0)"
   }
 }
 

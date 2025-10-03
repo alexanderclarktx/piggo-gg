@@ -127,10 +127,10 @@ export const EscapeMenu = (world: World): Entity => {
 
           if (world.client?.mobile && window.outerHeight < window.outerWidth) {
             art.style.width = "0px"
-            art.style.border = "none"
+            // art.style.border = "none"
           } else {
             art.style.width = "180px"
-            art.style.border = "2px solid white"
+            // art.style.border = "2px solid white"
           }
 
           // menu buttons
