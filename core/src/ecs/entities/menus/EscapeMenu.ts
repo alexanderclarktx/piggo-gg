@@ -25,6 +25,12 @@ export const EscapeMenu = (world: World): Entity => {
   })
 
   const art = Art(world.game.id)
+  let rotation = 0
+
+  art.onclick = () => {
+    rotation += 540
+    art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
+  }
 
   const menuButtonStyle: CSS = {
     width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
@@ -69,7 +75,7 @@ export const EscapeMenu = (world: World): Entity => {
       fontSize: "18px",
     },
     onClick: () => {
-      // world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
+      world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
       // world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
     }
   })
@@ -159,6 +165,13 @@ const Art = (gameId: string) => HtmlImg(`${gameId}-256.jpg`, {
   left: "50%",
   width: "170px",
   transform: "translate(-50%)",
-  border: "2px solid #eeeeee",
-  position: "relative"
+  transition: "transform 1.2s ease",
+  position: "relative",
+
+  border: "3px solid transparent",
+  padding: "0px",
+  backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
+  backgroundOrigin: "border-box",
+  backgroundClip: "content-box, border-box",
+  pointerEvents: "auto"
 })
