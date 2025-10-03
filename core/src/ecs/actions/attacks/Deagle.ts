@@ -5,13 +5,13 @@ import {
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
-const modelOffset = (localAim: XY, tip: boolean = false): XYZ => {
+const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
   const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
   const offset = {
     x: -dir.x * 0.05 + right.x * 0.05,
-    y: 0,
+    y: recoil * 0.05,
     z: -dir.y * 0.05 + right.y * 0.05,
   }
 
@@ -116,7 +116,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const dir = target.clone().sub(eyes).normalize()
 
           const { localAim } = world.client!.controls
-          const offset = modelOffset(localAim, true)
+          const offset = modelOffset(localAim, true, recoil)
 
           // apply recoil
           if (gun) {
