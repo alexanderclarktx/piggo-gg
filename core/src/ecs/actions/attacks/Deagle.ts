@@ -188,7 +188,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // gun
           three.gLoader.load("deagle.glb", (gltf) => {
             gun = gltf.scene
-            gun.scale.set(0.03, 0.03, 0.03)
+            gun.scale.set(0.025, 0.025, 0.025)
 
             gun.receiveShadow = true
             gun.castShadow = true
