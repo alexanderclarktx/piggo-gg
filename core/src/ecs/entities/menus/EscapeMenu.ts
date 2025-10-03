@@ -69,7 +69,7 @@ export const EscapeMenu = (world: World): Entity => {
       fontSize: "18px",
     },
     onClick: () => {
-      world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
+      // world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: "lobby" } })
       // world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: "lobby" } })
     }
   })

@@ -38,6 +38,7 @@ const defaults: CSS = {
   pointerEvents: "none",
   // border: "2px solid #ffffff",
   borderRadius: "8px",
+  flexShrink: 0,
 
   border: "2px solid transparent",
   padding: "0px",
