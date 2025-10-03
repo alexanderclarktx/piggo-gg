@@ -1,5 +1,5 @@
 import {
-  HtmlButton, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory
+  HtmlButton, HtmlText, ClientSystemBuilder, HtmlDiv, HtmlInventory, ogButtonStyle
 } from "@piggo-gg/core"
 import { CraftSettings, CraftState } from "./Craft"
 
@@ -157,7 +157,8 @@ const KeyButton = (props: KeyButtonProps) => HtmlButton({
     height: "40px",
     fontSize: "26px",
     visibility: props.visible === false ? "hidden" : "visible",
-    transform: "translate(-50%)"
+    transform: "translate(-50%)",
+    ...ogButtonStyle
   }
 })
 

@@ -27,6 +27,13 @@ export const HtmlButton = (props: HtmlButtonProps): HtmlButton => {
   return b
 }
 
+export const ogButtonStyle: CSS = {
+  backgroundImage: "",
+  backgroundOrigin: "padding-box",
+  backgroundClip: "border-box",
+  border: "2px solid white"
+}
+
 const defaults: CSS = {
   position: "absolute",
   fontFamily: "Courier New",
@@ -36,8 +43,14 @@ const defaults: CSS = {
   backgroundColor: "rgba(0, 0, 0, 0.4)",
   color: "#ffffff",
   pointerEvents: "none",
-  border: "2px solid #ffffff",
-  borderRadius: "8px"
+  borderRadius: "8px",
+  flexShrink: 0,
+  padding: "0px",
+
+  border: "2px solid transparent",
+  backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
+  backgroundOrigin: "border-box",
+  backgroundClip: "content-box, border-box"
 }
 
 export type HtmlButtonProps = {
@@ -50,15 +63,8 @@ export type HtmlButtonProps = {
 }
 
 export const styleButton = (button: HtmlButton, active: boolean, hovered: boolean): void => {
-  if (active) {
-    button.style.border = "2px solid #ffffff"
-    button.style.color = "#ffffff"
-    button.style.backgroundColor = hovered ? "rgba(0, 50, 150, 0.7)" : "rgba(0, 0, 0, 0.4)"
-  } else {
-    button.style.border = "2px solid #cccccc"
-    button.style.color = "#cccccc"
-    button.style.backgroundColor = "rgba(0, 0, 0, 0)"
-  }
+  button.style.boxShadow = active && hovered ? "0 0 6px 2px white" : "none"
+  button.style.opacity = active ? "1" : "0.7"
 }
 
 export const styleSwitch = (button: HtmlButton, enabled: boolean, hovered: boolean): void => {

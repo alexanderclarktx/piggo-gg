@@ -25,6 +25,12 @@ export const EscapeMenu = (world: World): Entity => {
   })
 
   const art = Art(world.game.id)
+  let rotation = 0
+
+  art.onclick = () => {
+    rotation += 540
+    art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
+  }
 
   const menuButtonStyle: CSS = {
     width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
@@ -125,13 +131,7 @@ export const EscapeMenu = (world: World): Entity => {
             if (!visible) return
           }
 
-          if (world.client?.mobile && window.outerHeight < window.outerWidth) {
-            art.style.width = "0px"
-            art.style.border = "none"
-          } else {
-            art.style.width = "180px"
-            art.style.border = "2px solid white"
-          }
+          art.style.width = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "180px"
 
           // menu buttons
           styleButton(returnToHomescreen, true, returnToHomescreen.matches(":hover"))
@@ -159,6 +159,13 @@ const Art = (gameId: string) => HtmlImg(`${gameId}-256.jpg`, {
   left: "50%",
   width: "170px",
   transform: "translate(-50%)",
-  border: "2px solid #eeeeee",
-  position: "relative"
+  transition: "transform 1.2s ease",
+  position: "relative",
+
+  border: "3px solid transparent",
+  padding: "0px",
+  backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
+  backgroundOrigin: "border-box",
+  backgroundClip: "content-box, border-box",
+  pointerEvents: "auto"
 })

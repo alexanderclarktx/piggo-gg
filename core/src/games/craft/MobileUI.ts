@@ -13,7 +13,9 @@ export const MobileUI = (world: World): MobileUI => {
       bottom: "170px", left: "calc(15% + 40px)",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 50, 0.5)",
-      width: "36px", height: "36px", borderRadius: "50%"
+      width: "36px", height: "36px", borderRadius: "50%",
+      backgroundImage: "none",
+      border: "2px solid white"
     },
     onClick: () => {
       const { camera } = world.three!
@@ -30,7 +32,9 @@ export const MobileUI = (world: World): MobileUI => {
       bottom: "140px", left: "10%",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 150, 0.5)",
-      width: "36px", height: "36px", borderRadius: "50%"
+      width: "36px", height: "36px", borderRadius: "50%",
+      backgroundImage: "none",
+      border: "2px solid white"
     },
     onClick: () => {
       world.actions.push(
@@ -48,7 +52,9 @@ export const MobileUI = (world: World): MobileUI => {
       bottom: "140px", right: "10%",
       transform: "translate(50%)",
       backgroundColor: "rgba(20, 255, 60, 0.5)",
-      width: "54px", height: "54px", borderRadius: "50%"
+      width: "54px", height: "54px", borderRadius: "50%",
+      backgroundImage: "none",
+      border: "2px solid white"
     },
     onClick: () => {
       world.actions.push(
