@@ -27,7 +27,7 @@ export const Lobby: GameBuilder = {
       GameLobby(),
       Version(),
       PlayersOnline(),
-      MusicBox()
+      // MusicBox()
 
       // PixiChat(),
       // Friends(),
