@@ -20,7 +20,7 @@ export type GameData = {
   type: "game"
   actions: Record<number, Record<string, InvokedAction[]>>
   chats: Record<string, string[]>
-  game: string
+  game: GameTitle
   playerId: string
   serializedEntities: Record<string, SerializedEntity>
   tick: number

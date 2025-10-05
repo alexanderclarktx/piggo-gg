@@ -74,7 +74,7 @@ export const Api = (): Api => {
         const lobbyId = randomHash()
 
         // create world
-        api.worlds[lobbyId] = ServerWorld({ creator: ws })
+        api.worlds[lobbyId] = ServerWorld({ creator: ws, game: data.game })
         api.worlds[lobbyId].world.setGame(data.game)
 
         // set world id for this client
@@ -84,7 +84,8 @@ export const Api = (): Api => {
       },
       "lobby/join": async ({ ws, data }) => {
         if (!api.worlds[data.join]) {
-          api.worlds[data.join] = ServerWorld({ creator: ws })
+          return { id: data.id, error: "world not found" }
+          // api.worlds[data.join] = ServerWorld({ creator: ws })
         }
 
         ws.data.worldId = data.join

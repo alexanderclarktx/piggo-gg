@@ -123,7 +123,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       const gap = world.tick - message.tick
       const framesForward = (gap >= 2 && gap <= 5) ?
         gap :
-        ceil(world.client!.ms * 2 / world.tickrate) + 2
+        ceil(world.client!.net.ms * 2 / world.tickrate) + 2
 
       const localActions = world.actions.atTick(message.tick) ?? {}
 
@@ -192,7 +192,7 @@ export const RollbackSyncer = (world: World): Syncer => {
         const was = world.tick
 
         if (message.game !== world.game.id) {
-          world.setGame(world.games[message.game])
+          world.setGame(message.game)
         }
 
         world.tick = message.tick - 1

@@ -1,6 +1,5 @@
 import {
-  DefaultWorld, isMobile, ThreeRenderer, World,
-  Craft, Volley, PixiRenderer, Lobby, Strike
+  DefaultWorld, isMobile, ThreeRenderer, World, PixiRenderer
 } from "@piggo-gg/core"
 import { useEffect } from "react"
 
@@ -18,7 +17,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
     if (mobile) canvas.style.border = "none"
 
     setWorld(DefaultWorld({
-      games: mobile ? [ Craft ] : [ Lobby, Craft, Volley, Strike ],
+      game: mobile ? "craft" : "lobby",
       three: ThreeRenderer(),
       pixi: PixiRenderer()
     }))

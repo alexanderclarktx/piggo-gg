@@ -50,8 +50,8 @@ export type Client = {
   net: {
     synced: boolean
     connected: boolean
+    ms: number
   },
-  ms: number
   mobile: boolean
   mobileMenu: boolean
   player: Player
@@ -147,9 +147,9 @@ export const Client = ({ world }: ClientProps): Client => {
     lobbyId: undefined,
     net: {
       synced: false,
-      connected: false
+      connected: false,
+      ms: 0
     },
-    ms: 0,
     mobile: isMobile(),
     mobileMenu: false,
     player,
@@ -354,16 +354,16 @@ export const Client = ({ world }: ClientProps): Client => {
       console.log("connected to server")
       client.net.connected = true
 
-      const joinString: string | null = new URLSearchParams(window.location.search).get("join")
-      if (joinString) {
-        client.lobbyJoin(joinString, () => { })
-        return
-      }
+      // const joinString: string | null = new URLSearchParams(window.location.search).get("join")
+      // if (joinString) {
+      //   client.lobbyJoin(joinString, () => { })
+      //   return
+      // }
 
-      const gameString: string | null = new URLSearchParams(window.location.search).get("game")
-      if (gameString && world.games[gameString]) {
-        world.setGame(gameString)
-      }
+      // const gameString: string | null = new URLSearchParams(window.location.search).get("game")
+      // if (gameString && world.games[gameString]) {
+      //   world.setGame(gameString)
+      // }
 
       if (localStorage) {
         const token = localStorage.getItem("token")
