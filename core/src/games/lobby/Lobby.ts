@@ -239,7 +239,7 @@ const HtmlCreateLobbyButton = (world: World) => {
       backgroundClip: "content-box, border-box"
     },
     onClick: () => {
-      world.client?.copyInviteLink()
+      world.client?.lobbyCreate("lobby")
 
       world.client?.sound.play({ name: "click1" })
     },

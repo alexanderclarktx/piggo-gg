@@ -62,8 +62,8 @@ export type Client = {
   playerId: () => string
   playerName: () => string
   character: () => Character | undefined
-  copyInviteLink: () => void
-  lobbyCreate: (callback: Callback<LobbyCreate>) => void
+  // copyInviteLink: () => void
+  lobbyCreate: (game: string, callback?: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   lobbyLeave: () => void
   lobbyList: (callback: Callback<LobbyList>) => void
@@ -172,24 +172,24 @@ export const Client = ({ world }: ClientProps): Client => {
     pointerUnlock: () => {
       document.exitPointerLock()
     },
-    copyInviteLink: () => {
-      let url = ""
-      if (client.lobbyId) {
-        url = `${hosts[env]}/?join=${client.lobbyId}`
-        navigator.clipboard.writeText(url)
-        toast.success(`Copied Invite Link`)
-      } else {
-        client.lobbyCreate((response) => {
-          if ("error" in response) return
+    // copyInviteLink: () => {
+    //   let url = ""
+    //   if (client.lobbyId) {
+    //     url = `${hosts[env]}/?join=${client.lobbyId}`
+    //     navigator.clipboard.writeText(url)
+    //     toast.success(`Copied Invite Link`)
+    //   } else {
+    //     client.lobbyCreate((response) => {
+    //       if ("error" in response) return
 
-          url = `${hosts[env]}/?join=${response.lobbyId}`
-          navigator.clipboard.writeText(url)
-          toast.success(`Copied Invite Link`)
-        })
-      }
-    },
-    lobbyCreate: (callback) => {
-      request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash() }, (response) => {
+    //       url = `${hosts[env]}/?join=${response.lobbyId}`
+    //       navigator.clipboard.writeText(url)
+    //       toast.success(`Copied Invite Link`)
+    //     })
+    //   }
+    // },
+    lobbyCreate: (game: string, callback) => {
+      request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash(), game }, (response) => {
         if ("error" in response) {
           console.error("failed to create lobby:", response.error)
         } else {
@@ -197,7 +197,7 @@ export const Client = ({ world }: ClientProps): Client => {
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
           world.messages.clearBeforeTick(world.tick)
           world.tick = -100
-          callback(response)
+          callback?.(response)
         }
       })
     },
