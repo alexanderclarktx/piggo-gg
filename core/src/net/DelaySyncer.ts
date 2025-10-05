@@ -97,11 +97,10 @@ export const DelaySyncer = (): Syncer => ({
       }
     }
 
-    if (rollback) {
+    if (rollback && message.tick > world.game.started) {
       world.tick = message.tick
 
       if (message.game !== world.game.id && message.tick > world.game.started) {
-        console.log("DELAY SYNCER SETTING GAME", message.game, message.tick, world.game.started)
         world.setGame(message.game)
       }
 

@@ -44,6 +44,7 @@ export const serializeComponent = (c: Component<string, NetworkedComponentData>)
 }
 
 export const deserializeComponent = (c: Component<string, NetworkedComponentData>, data: NetworkedComponentData): void => {
+  c.data = {}
   for (const [key, value] of entries(data)) {
     if (Array.isArray(value)) {
       // @ts-expect-error
