@@ -1,4 +1,4 @@
-import { Command, InvokedAction } from "@piggo-gg/core"
+import { Command, GameTitle, InvokedAction } from "@piggo-gg/core"
 
 type GameCommandParams = { game: string }
 type GameCommandAction = InvokedAction<"game", GameCommandParams>
@@ -8,14 +8,16 @@ export const GameCommand: Command<GameCommandParams> = {
   regex: /^\/game (\w+)/,
   prepare: () => ({ actionId: "game" }),
   parse: ({ world, match }): GameCommandAction | undefined => {
-    if (world.games[match[1]] && world.game.id !== match[1]) return {
+    const gameId = match[1] as GameTitle
+    if (world.games[gameId] && world.game.id !== gameId) return {
       actionId: "game",
-      params: { game: match[1] }
+      params: { game: gameId }
     }
   },
   invoke: ({ params, world }) => {
-    if (world.games[params.game] && world.game.id !== params.game) {
-      world.setGame(world.games[params.game])
+    const gameId = params.game as GameTitle
+    if (world.games[gameId] && world.game.id !== gameId) {
+      world.setGame(gameId)
     }
   },
   cooldown: 0
