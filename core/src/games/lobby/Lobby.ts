@@ -403,7 +403,7 @@ const GameLobby = (): Entity => {
           if (gameButtons.length === 0) {
             const shell = HtmlDiv({
               left: "50%",
-              top: "15%",
+              top: "14%",
               transform: "translate(-50%)",
               display: "flex",
               border: "none",
@@ -436,7 +436,7 @@ const GameLobby = (): Entity => {
               transform: "translate(-50%)",
               left: "50%",
               width: "404px",
-              height: "200px",
+              height: "220px",
               marginTop: "40px",
               border: "none",
               position: "relative"
