@@ -179,7 +179,6 @@ const HtmlPlayButton = (world: World) => {
       position: "relative",
       left: "50%",
       marginTop: "80px",
-      // top: "276px",
       width: "300px",
       height: "42px",
       fontSize: "26px",
