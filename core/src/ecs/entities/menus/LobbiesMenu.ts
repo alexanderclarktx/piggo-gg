@@ -54,7 +54,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     onClick: () => {
       if (inLobby) return
 
-      client.lobbyCreate(({ lobbyId }) => {
+      client.lobbyCreate(world.game.id, ({ lobbyId }) => {
         inLobby = lobbyId
         polled = world.tick - 70
       })

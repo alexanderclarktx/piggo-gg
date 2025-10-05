@@ -99,7 +99,7 @@ export const DelaySyncer = (): Syncer => ({
       world.tick = message.tick
 
       if (message.game && message.game !== world.game.id) {
-        world.setGame(world.games[message.game])
+        world.setGame(message.game)
       }
 
       keys(message.serializedEntities).forEach((entityId) => {
