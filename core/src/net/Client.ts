@@ -196,6 +196,7 @@ export const Client = ({ world }: ClientProps): Client => {
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
           world.messages.clearBeforeTick(world.tick)
           world.tick = -100
+          world.game.started = -100
           callback?.(response)
         }
       })

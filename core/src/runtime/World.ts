@@ -230,6 +230,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
 
       // clear blocks
       world.blocks.clear()
+      world.trees = []
 
       // reset cursor style
       document.body.style.cursor = "auto"
@@ -244,7 +245,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
       world.game.id = game.id
 
       // set new game
-      world.game = { ... game.init(world), started: world.tick + 1 }
+      world.game = { ... game.init(world), started: world.tick + 2 }
 
       console.log("NEW GAMESTATE", world.game.state)
 

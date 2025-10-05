@@ -31,6 +31,8 @@ export const DelaySyncer = (): Syncer => ({
 
     const message = buffer.shift() as GameData
 
+    if (!(message.tick > world.game.started)) return
+
     // remove old local entities
     keys(world.entities).forEach((entityId) => {
       if (world.entities[entityId]?.components.networked) {
@@ -97,10 +99,10 @@ export const DelaySyncer = (): Syncer => ({
       }
     }
 
-    if (rollback && message.tick > world.game.started) {
+    if (rollback) {
       world.tick = message.tick
 
-      if (message.game !== world.game.id && message.tick > world.game.started) {
+      if (message.game !== world.game.id) {
         world.setGame(message.game)
       }
 

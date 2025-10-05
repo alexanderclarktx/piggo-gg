@@ -118,6 +118,8 @@ export const RollbackSyncer = (world: World): Syncer => {
         return
       }
 
+      if (!(message.tick > world.game.started)) return
+
       last = message.tick
 
       const gap = world.tick - message.tick
