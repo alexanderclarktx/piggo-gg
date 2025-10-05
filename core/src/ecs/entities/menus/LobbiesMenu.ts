@@ -1,4 +1,7 @@
-import { entries, HtmlButton, HtmlDiv, HtmlText, keys, RefreshableDiv, styleButton, World } from "@piggo-gg/core"
+import {
+  entries, HtmlButton, HtmlDiv, HtmlText, keys,
+  RefreshableDiv, styleButton, World
+} from "@piggo-gg/core"
 
 export const LobbiesMenu = (world: World): RefreshableDiv => {
   const client = world.client!
@@ -117,11 +120,9 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
               text: "Join",
               onHover: () => {
                 styleButton(button, meta.id !== inLobby, true)
-                // button.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
               },
               onHoverOut: () => {
                 styleButton(button, meta.id !== inLobby, false)
-                // button.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
               },
               onClick: () => {
                 client.lobbyJoin(meta.id, () => {
@@ -134,10 +135,6 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
                 height: "40px",
                 fontSize: "16px",
                 right: "5px",
-                // border: meta.id === inLobby ? "2px solid #bbbbbb" : "2px solid #ffffff",
-                // color: meta.id === inLobby ? "#bbbbbb" : "#ffffff",
-                // backgroundColor: meta.id === inLobby ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.4)",
-                // pointerEvents: meta.id === inLobby ? "none" : "auto",
                 position: "relative",
                 float: "right"
               }
