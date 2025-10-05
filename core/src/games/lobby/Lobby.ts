@@ -1,6 +1,6 @@
 import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
-  Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, LobbiesMenu, MusicBox, Networked, NPC,
+  Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, LobbiesMenu, Networked, NPC,
   PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, RefreshableDiv, Renderable, Strike, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
@@ -27,7 +27,6 @@ export const Lobby: GameBuilder = {
       GameLobby(),
       Version(),
       PlayersOnline(),
-      // MusicBox()
 
       // PixiChat(),
       // Friends(),
@@ -200,48 +199,6 @@ const HtmlPlayButton = (world: World) => {
 
       world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
       world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
-
-      world.client?.sound.play({ name: "click1" })
-    },
-    onHover: () => {
-      button.style.boxShadow = "0 0 6px 2px white"
-      world.client?.sound.play({ name: "click3" })
-    },
-    onHoverOut: () => {
-      button.style.boxShadow = "none"
-    }
-  })
-
-  return button
-}
-
-const HtmlCreateLobbyButton = (world: World) => {
-  const button = HtmlButton({
-    text: "Invite Friends",
-    style: {
-      left: "50%",
-      top: "336px",
-      width: "300px",
-      height: "42px",
-      fontSize: "26px",
-      transform: "translate(-50%)",
-      textShadow: "none",
-
-      // disabled for now
-      // pointerEvents: "none",
-      // touchAction: "none",
-      // opacity: 0.6,
-      // color: "#cccccc",
-
-      border: "2px solid transparent",
-      padding: "0px",
-      borderRadius: "6px",
-      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
-      backgroundOrigin: "border-box",
-      backgroundClip: "content-box, border-box"
-    },
-    onClick: () => {
-      world.client?.lobbyCreate("lobby")
 
       world.client?.sound.play({ name: "click1" })
     },
@@ -475,20 +432,14 @@ const GameLobby = (): Entity => {
             const htmlPlayButton = HtmlPlayButton(world)
             shell.appendChild(htmlPlayButton)
 
-            // const htmlCreateLobbyButton = HtmlCreateLobbyButton(world)
-            // shell.appendChild(htmlCreateLobbyButton)
-
             const lobbiesWrapper = HtmlDiv({
               transform: "translate(-50%)",
-              // top: "336px",
               left: "50%",
               width: "404px",
               height: "200px",
               marginTop: "40px",
-              // flex: "1 1 auto",
-              display: "flex",
-              position: "relative",
-              // flexDirection: "column",
+              border: "none",
+              position: "relative"
             })
 
             lobbiesMenu = LobbiesMenu(world)
@@ -496,7 +447,7 @@ const GameLobby = (): Entity => {
             shell.appendChild(lobbiesWrapper)
           }
 
-          lobbiesMenu?.update()
+          if (world.client) lobbiesMenu?.update()
 
           // make border green for selected game
           const state = world.game.state as LobbyState
