@@ -244,7 +244,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
       world.game.id = game.id
 
       // set new game
-      world.game = { ... game.init(world), started: world.tick }
+      world.game = { ... game.init(world), started: world.tick + 1 }
 
       console.log("NEW GAMESTATE", world.game.state)
 
