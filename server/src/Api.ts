@@ -75,7 +75,6 @@ export const Api = (): Api => {
 
         // create world
         api.worlds[lobbyId] = ServerWorld({ creator: ws, game: data.game })
-        api.worlds[lobbyId].world.setGame(data.game)
 
         // set world id for this client
         ws.data.worldId = lobbyId

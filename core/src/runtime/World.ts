@@ -247,8 +247,6 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
       // set new game
       world.game = { ... game.init(world), started: world.tick + 2 }
 
-      console.log("NEW GAMESTATE", world.game.state)
-
       const gameStateEntity = Entity({
         id: "gameState",
         components: {

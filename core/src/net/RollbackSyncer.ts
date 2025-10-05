@@ -4,6 +4,7 @@ import {
 } from "@piggo-gg/core"
 
 const movementActions = ["move", "moveAnalog", "jump", "point"]
+// const playerCharacters = ["carl", "vince", "sarge"]
 
 const otherCharacter = (id: string, world: World) => {
   return id.startsWith("carl") && id !== world.client?.character()?.id
