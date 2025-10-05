@@ -3,10 +3,9 @@ import {
   RequestTypes, World, randomPlayerId, Sound, randomHash, AuthLogin,
   FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet,
   ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile, LobbyList,
-  BadResponse, LobbyExit, XY, round, max, min
+  BadResponse, LobbyExit, XY, round, max, min, GameTitle
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
-import toast from "react-hot-toast"
 
 const servers = {
   local: "ws://localhost:3000",
@@ -63,7 +62,7 @@ export type Client = {
   playerName: () => string
   character: () => Character | undefined
   // copyInviteLink: () => void
-  lobbyCreate: (game: string, callback?: Callback<LobbyCreate>) => void
+  lobbyCreate: (game: GameTitle, callback?: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   lobbyLeave: () => void
   lobbyList: (callback: Callback<LobbyList>) => void
@@ -188,7 +187,7 @@ export const Client = ({ world }: ClientProps): Client => {
     //     })
     //   }
     // },
-    lobbyCreate: (game: string, callback) => {
+    lobbyCreate: (game, callback) => {
       request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash(), game }, (response) => {
         if ("error" in response) {
           console.error("failed to create lobby:", response.error)

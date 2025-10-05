@@ -1,7 +1,9 @@
 import { Entity, SystemBuilder, World } from "@piggo-gg/core"
 
+export type GameTitle = "lobby" | "volley" | "craft" | "strike" | "volley3d"
+
 export type Game<State extends {} = {}, Settings extends {} = {}> = {
-  id: string
+  id: GameTitle
   entities: Entity[]
   netcode: "rollback" | "delay"
   renderer: "three" | "pixi"
@@ -11,6 +13,6 @@ export type Game<State extends {} = {}, Settings extends {} = {}> = {
 }
 
 export type GameBuilder<State extends {} = {}, Settings extends {} = {}> = {
-  id: string
+  id: GameTitle
   init: (world: World) => Game<State, Settings>
 }

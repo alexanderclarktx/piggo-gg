@@ -226,10 +226,10 @@ const HtmlCreateLobbyButton = (world: World) => {
       textShadow: "none",
 
       // disabled for now
-      pointerEvents: "none",
-      touchAction: "none",
-      opacity: 0.6,
-      color: "#cccccc",
+      // pointerEvents: "none",
+      // touchAction: "none",
+      // opacity: 0.6,
+      // color: "#cccccc",
 
       border: "2px solid transparent",
       padding: "0px",
