@@ -1,8 +1,8 @@
 import {
   Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
-  Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, MusicBox, Networked, NPC,
+  Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, LobbiesMenu, MusicBox, Networked, NPC,
   PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
-  randomInt, Renderable, Strike, Team, TeamColors, Volley, World, XY
+  randomInt, RefreshableDiv, Renderable, Strike, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
@@ -177,8 +177,10 @@ const HtmlPlayButton = (world: World) => {
   const button = HtmlButton({
     text: "Play",
     style: {
+      position: "relative",
       left: "50%",
-      top: "276px",
+      marginTop: "80px",
+      // top: "276px",
       width: "300px",
       height: "42px",
       fontSize: "26px",
@@ -425,6 +427,8 @@ const GameLobby = (): Entity => {
   const list: GameBuilder[] = [Volley, Craft, Strike]
   let gameButtons: HTMLButtonElement[] = []
 
+  let lobbiesMenu: RefreshableDiv | undefined = undefined
+
   const gameLobby = Entity<Position>({
     id: "gameLobby",
     components: {
@@ -442,16 +446,27 @@ const GameLobby = (): Entity => {
           if (gameButtons.length === 0) {
             const shell = HtmlDiv({
               left: "50%",
-              top: "24%",
-              transform: "translate(-50%, -50%)",
+              top: "15%",
+              transform: "translate(-50%)",
               display: "flex",
               border: "none",
-              gap: "20px"
+              // gap: "20px",
+              flexDirection: "column"
             })
+
+            const gameButtonsShell = HtmlDiv({
+              position: "relative",
+              display: "flex",
+              // transform: "translate(-50%, -50%)",
+              gap: "20px",
+              flexDirection: "row",
+              border: "none",
+            })
+            shell.appendChild(gameButtonsShell)
 
             for (const g of list) {
               const htmlButton = HtmlGameButton(g, world)
-              shell.appendChild(htmlButton)
+              gameButtonsShell.appendChild(htmlButton)
               gameButtons.push(htmlButton)
             }
 
@@ -460,9 +475,28 @@ const GameLobby = (): Entity => {
             const htmlPlayButton = HtmlPlayButton(world)
             shell.appendChild(htmlPlayButton)
 
-            const htmlCreateLobbyButton = HtmlCreateLobbyButton(world)
-            shell.appendChild(htmlCreateLobbyButton)
+            // const htmlCreateLobbyButton = HtmlCreateLobbyButton(world)
+            // shell.appendChild(htmlCreateLobbyButton)
+
+            const lobbiesWrapper = HtmlDiv({
+              transform: "translate(-50%)",
+              // top: "336px",
+              left: "50%",
+              width: "404px",
+              height: "200px",
+              marginTop: "40px",
+              // flex: "1 1 auto",
+              display: "flex",
+              position: "relative",
+              // flexDirection: "column",
+            })
+
+            lobbiesMenu = LobbiesMenu(world)
+            lobbiesWrapper.appendChild(lobbiesMenu.div)
+            shell.appendChild(lobbiesWrapper)
           }
+
+          lobbiesMenu?.update()
 
           // make border green for selected game
           const state = world.game.state as LobbyState

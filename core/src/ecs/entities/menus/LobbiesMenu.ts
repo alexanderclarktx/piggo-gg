@@ -80,10 +80,11 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     }
   })
 
-  lobbies.appendChild(lobbyList)
-  lobbies.appendChild(buttonsDiv)
   buttonsDiv.appendChild(createLobby)
   buttonsDiv.appendChild(leaveLobby)
+
+  lobbies.appendChild(lobbyList)
+  lobbies.appendChild(buttonsDiv)
 
   return {
     div: lobbies,
