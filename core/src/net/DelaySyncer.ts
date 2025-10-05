@@ -34,7 +34,7 @@ export const DelaySyncer = (): Syncer => ({
     keys(world.entities).forEach((entityId) => {
       if (world.entities[entityId]?.components.networked) {
 
-        if (!message.serializedEntities[entityId]) {
+        if (!message.serializedEntities[entityId] && message.game === world.game.id) {
           console.log("DELETE ENTITY", entityId)
           world.removeEntity(entityId)
         }
@@ -98,7 +98,8 @@ export const DelaySyncer = (): Syncer => ({
     if (rollback) {
       world.tick = message.tick
 
-      if (message.game && message.game !== world.game.id) {
+      if (message.game !== world.game.id && message.tick > world.game.started) {
+        console.log("DELAY SYNCER SETTING GAME", message.game, message.tick, world.game.started)
         world.setGame(message.game)
       }
 

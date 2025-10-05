@@ -14,7 +14,7 @@ export type World = {
   debug: boolean
   entities: Record<string, Entity>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
-  game: Game
+  game: Game & { started: number }
   games: Record<GameTitle, GameBuilder>
   lastTick: DOMHighResTimeStamp
   messages: TickBuffer<string>
@@ -70,7 +70,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
     debug: false,
     entities: {},
     entitiesAtTick: {},
-    game: { id: "", renderer: "three", entities: [], settings: {}, systems: [], netcode: "delay", state: {} },
+    game: { id: "", renderer: "three", entities: [], settings: {}, systems: [], netcode: "delay", state: {}, started: 0 },
     games: { "craft": Craft, "lobby": Lobby, "strike": Strike, "volley": Volley, "volley3d": Volley3d, "": Lobby },
     lastTick: 0,
     mode: mode ?? "client",
@@ -214,6 +214,8 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
     setGame: (gameTitle: GameTitle) => {
       const game = world.games[gameTitle]
 
+      console.log("SETTING GAME", gameTitle)
+
       // remove old entities
       values(world.entities).forEach((entity) => {
         if (!entity.persists) world.removeEntity(entity.id)
@@ -242,7 +244,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
       world.game.id = game.id
 
       // set new game
-      world.game = game.init(world)
+      world.game = { ... game.init(world), started: world.tick }
 
       const gameStateEntity = Entity({
         id: "gameState",

@@ -191,7 +191,8 @@ export const RollbackSyncer = (world: World): Syncer => {
       if (rollback) {
         const was = world.tick
 
-        if (message.game !== world.game.id) {
+        if (message.game !== world.game.id && message.tick > world.game.started) {
+          console.log("ROLLBACK SYNCER SETTING GAME", message.game, message.tick, world.game.started)
           world.setGame(message.game)
         }
 
