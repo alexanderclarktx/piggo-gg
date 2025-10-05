@@ -1,6 +1,7 @@
 import {
   Entity, GameData, Hitbox, Player, SerializedEntity,
-  Syncer, Apple, entries, keys, stringify
+  Syncer, Apple, entries, keys, stringify,
+  logDiff
 } from "@piggo-gg/core"
 
 export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
@@ -86,7 +87,8 @@ export const DelaySyncer = (): Syncer => ({
         const localEntity = localEntities[entityId]
         if (localEntity) {
           if (stringify(localEntity) !== stringify(msgEntity)) {
-            mustRollback(`entity state ${entityId} ${stringify(localEntity)} ${stringify(msgEntity)}`)
+            mustRollback(`entity: ${entityId} mismatch ${message.tick}`)
+            logDiff(localEntity, msgEntity)
             break
           }
         } else {
