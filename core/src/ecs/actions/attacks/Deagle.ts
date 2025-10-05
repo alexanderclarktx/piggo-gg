@@ -79,7 +79,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             const pos = character.components.position.xyz()
 
-            return { actionId: "deagle", params: { pos, aim, targets } }
+            const rng = (random() - 0.5) * 0.1
+
+            return { actionId: "deagle", params: { pos, aim, targets, rng } }
           },
         }
       }),
@@ -107,7 +109,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
 
           aim.y += recoil * 0.1
-          if (recoil) aim.x += recoil * (world.random.next() - 0.5) * 0.1 // TODO
+          // if (recoil) aim.x += recoil * (world.random.next() - 0.5) * 0.1 // TODO
+          if (recoil) aim.x += recoil * params.rng
 
           // apply recoil
           if (gun) {
@@ -258,4 +261,5 @@ type DeagleParams = {
   pos: XYZ
   aim: XY
   targets: Target[]
+  rng: number
 }
