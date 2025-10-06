@@ -103,7 +103,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
 
           for (const [id, meta] of entries(response.lobbies)) {
             const lobby = HtmlText({
-              text: `(${meta.players}) [${id}] ${meta.creator}`,
+              text: `(${meta.players}) [${id.substring(0, 3)}] ${meta.creator} - ${meta.game}`,
               style: {
                 width: "75%",
                 height: "36px",

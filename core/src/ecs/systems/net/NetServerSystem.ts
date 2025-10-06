@@ -14,6 +14,8 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
 
   let lastSent = 0
 
+  const lastMessageTick: Record<string, number> = {}
+
   const write = () => {
 
     // build tick data
@@ -29,7 +31,7 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
     }
 
     // send tick data to all clients
-    for ( const [id, client] of entries(clients) ) {
+    for (const [id, client] of entries(clients)) {
       client.send(encode({
         ...tickData,
         latency: latestClientLag[id],
@@ -58,6 +60,17 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
           console.error(`old message client:${clientId} msg:${message.tick} server: ${world.tick}`)
           continue
         }
+
+        if (lastMessageTick[clientId]) {
+          if (message.tick <= lastMessageTick[clientId]) {
+            console.error(`OUT OF ORDER client:${clientId} last:${lastMessageTick[clientId]} msg:${message.tick} server: ${world.tick}`)
+            continue
+          } else if (message.tick > lastMessageTick[clientId] + 1) {
+            console.error(`DROPPED MESSAGE client:${clientId} last:${lastMessageTick[clientId]} msg:${message.tick} server: ${world.tick}`)
+          }
+        }
+
+        lastMessageTick[clientId] = message.tick
 
         // process message actions
         if (message.actions[message.tick]) {

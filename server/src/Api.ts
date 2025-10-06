@@ -1,6 +1,6 @@
 import {
   ExtractedRequestTypes, Friend, NetMessageTypes, RequestTypes, ResponseData,
-  entries, randomHash, keys, round, stringify, values, BadResponse
+  entries, randomHash, keys, round, stringify, values, BadResponse, GameTitle
 } from "@piggo-gg/core"
 import { ServerWorld, PrismaClient } from "@piggo-gg/server"
 import { Server, ServerWebSocket, env } from "bun"
@@ -61,11 +61,14 @@ export const Api = (): Api => {
     worlds: {},
     handlers: {
       "lobby/list": async ({ data }) => {
-        const lobbies: Record<string, { id: string, players: number, creator: string }> = {}
+        const lobbies: Record<string, { id: string, players: number, creator: string, game: GameTitle }> = {}
         for (const [id, world] of entries(api.worlds)) {
           if (world.numClients() === 0) continue
           lobbies[id] = {
-            id, players: keys(world.clients).length, creator: world.creator.data.playerName ?? "noob"
+            id,
+            players: keys(world.clients).length,
+            creator: world.creator.data.playerName ?? "noob",
+            game: world.world.game.id
           }
         }
         return { id: data.id, lobbies }
