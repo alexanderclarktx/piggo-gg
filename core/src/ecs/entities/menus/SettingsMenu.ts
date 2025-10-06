@@ -5,7 +5,6 @@ import {
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
-    // backgroundColor: "rgba(0, 0, 0, 0.4)",
     display: "flex",
     flex: "1 1 auto",
     flexDirection: "column",
@@ -16,8 +15,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     top: "-3px",
     touchAction: "pan-y",
     transform: "translate(-50%)",
-    width: "100%",
-    backgroundImage: ""
+    width: "100%"
   })
 
   const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")

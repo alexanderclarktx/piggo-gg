@@ -13,13 +13,31 @@ type LobbyState = {
 type HParams = {
   style?: CSS
   src?: string
+  text?: string
   onClick?: () => void
+  onHover?: () => void
+  onHoverOut?: () => void
 }
 
-const HButton = ({ style, onClick }: HParams = {}, child1?: HTMLElement): HTMLButtonElement => {
-  const b = HtmlButton({ style: style ?? {}, onClick: onClick ?? (() => { }), onHover: () => { }, onHoverOut: () => { } })
+const HText = ({ style, text }: HParams = {}, child1?: HTMLElement): HTMLDivElement => {
+  const d = HtmlText({
+    text: text ?? "",
+    style: style ?? {}
+  })
+  if (child1) d.appendChild(child1)
+  return d
+}
+
+const HButton = ({ style, onClick, onHover, onHoverOut }: HParams = {}, child1?: HTMLElement, child2?: HTMLElement): HTMLButtonElement => {
+  const b = HtmlButton({
+    style: style ?? {},
+    onClick: onClick ?? (() => { }),
+    onHover: onHover ?? (() => { }),
+    onHoverOut: onHoverOut ?? (() => { })
+  })
 
   if (child1) b.appendChild(child1)
+  if (child2) b.appendChild(child2)
 
   return b
 }
@@ -151,30 +169,7 @@ const Players = (): Entity => {
 }
 
 const HtmlGameButton = (game: GameBuilder, world: World) => {
-  const label = HtmlText({
-    text: game.id,
-    style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
-  })
-
-  const image = HtmlImg(`${game.id}-256.jpg`, {
-    width: "100%", height: "100%",
-    pointerEvents: "auto",
-    imageRendering: "auto",
-    transform: "translate(-50%, -50%)",
-    transition: "transform 1.2s ease",
-  })
-
-  // art.onclick = () => {
-  //   rotation += 540
-  //   art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
-  // }
-
   let rotation = 0
-
-  image.onclick = () => {
-    rotation += 360
-    button.style.transform = `translate(-50%, -50%) rotateY(${rotation}deg)`
-  }
 
   const button = HButton({
     style: {
@@ -182,13 +177,10 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       borderRadius: "14px",
       fontSize: "24px",
       position: "relative",
-      // transition: "box-shadow 0.2s ease",
-      left: "25%",
       width: "180px",
       height: "170px",
       touchAction: "manipulation",
       transition: "transform 0.8s ease, box-shadow 0.2s ease",
-      transform: "translate(-50%, -50%)",
 
       border: "3px solid transparent",
       padding: "0px",
@@ -201,32 +193,32 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       world.client?.sound.play({ name: "click1" })
 
       rotation += 360
-      button.style.transform = `translate(-50%, -50%) rotateY(${rotation}deg)`
-    }},
+      button.style.transform = `translate(0%, 0%) rotateY(${rotation}deg)`
+    },
+    onHover: () => {
+      button.style.boxShadow = "0 0 10px 4px white"
+      world.client?.sound.play({ name: "click3" })
+    },
+    onHoverOut: () => {
+      button.style.boxShadow = "none"
+    }
+  },
     HImg({
       src: `${game.id}-256.jpg`,
       style: {
-        position: "absolute",
         top: "50%",
-        left: "50%",
-        width: "160px",
-        height: "160px",
+        width: "174px",
+        height: "164px",
         pointerEvents: "auto",
         imageRendering: "auto",
         transform: "translate(-50%, -50%)"
       }
+    }),
+    HText({
+      text: game.id,
+      style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold" }
     })
-    // onHover: () => {
-    //   button.style.boxShadow = "0 0 10px 4px white"
-    //   world.client?.sound.play({ name: "click3" })
-    // },
-    // onHoverOut: () => {
-    //   button.style.boxShadow = "none"
-    // }
   )
-
-  // button.appendChild(label)
-  // button.appendChild(image)
   return button
 }
 
@@ -455,24 +447,6 @@ const GameLobby = (): Entity => {
         behavior: (_, world) => {
 
           if (gameButtons.length === 0) {
-
-            document.getElementById("canvas-parent")?.appendChild(
-              HButton({
-                style: {
-                  border: "none",
-                  bottom: "10%",
-                  left: "50%",
-                  pointerEvents: "auto",
-                  display: "flex",
-                },
-                onClick: () => { console.log("hello world") }
-              },
-                HImg({
-                  style: { transform: "translate(-50%, -100%)", pointerEvents: "auto" },
-                  src: "dde-256.jpg"
-                })
-              ))
-
             const shell = HtmlDiv({
               left: "50%",
               top: "14%",
@@ -487,6 +461,8 @@ const GameLobby = (): Entity => {
               display: "flex",
               gap: "20px",
               flexDirection: "row",
+              transform: "translate(-50%)",
+              left: "50%",
               border: "none"
             })
             shell.appendChild(gameButtonsShell)
@@ -514,7 +490,7 @@ const GameLobby = (): Entity => {
 
             lobbiesMenu = LobbiesMenu(world)
             lobbiesShell.appendChild(lobbiesMenu.div)
-            // shell.appendChild(lobbiesShell)
+            shell.appendChild(lobbiesShell)
           }
 
           if (world.client) lobbiesMenu?.update()
