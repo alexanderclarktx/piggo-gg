@@ -1,5 +1,5 @@
 import {
-  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
+  Actions, arrayEqual, Background, colors, Craft, CSS, DudeSkin, Entity, GameBuilder,
   Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, LobbiesMenu, Networked, NPC,
   PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, RefreshableDiv, Renderable, Strike, Team, TeamColors, Volley, World, XY
@@ -395,7 +395,46 @@ const GameLobby = (): Entity => {
       }),
       npc: NPC({
         behavior: (_, world) => {
+
+          type HParams = {
+            style?: CSS
+            src?: string
+            onClick?: () => void
+          }
+
+          const HButton = ({ style, onClick }: HParams = {}, child1?: HTMLElement): HTMLButtonElement => {
+            const b = HtmlButton({ style: style ?? {}, onClick: onClick ?? (() => { }), onHover: () => { }, onHoverOut: () => { } })
+
+            if (child1) b.appendChild(child1)
+
+            return b
+          }
+
+          const HImg = ({ style, src }: HParams = {}, child1?: HTMLElement): HTMLImageElement => {
+            const i = HtmlImg(src ?? "", style ?? {})
+            if (child1) i.appendChild(child1)
+            return i
+          }
+
           if (gameButtons.length === 0) {
+
+            document.getElementById("canvas-parent")?.appendChild(
+              HButton({
+                style: {
+                  border: "none",
+                  bottom: "10%",
+                  left: "50%",
+                  pointerEvents: "auto",
+                  display: "flex",
+                },
+                onClick: () => { console.log("hello world") }
+              },
+                HImg({
+                  style: { transform: "translate(-50%, -100%)", pointerEvents: "auto" },
+                  src: "dde-256.jpg"
+                })
+              ))
+
             const shell = HtmlDiv({
               left: "50%",
               top: "14%",
@@ -437,7 +476,7 @@ const GameLobby = (): Entity => {
 
             lobbiesMenu = LobbiesMenu(world)
             lobbiesShell.appendChild(lobbiesMenu.div)
-            shell.appendChild(lobbiesShell)
+            // shell.appendChild(lobbiesShell)
           }
 
           if (world.client) lobbiesMenu?.update()
