@@ -40,7 +40,7 @@ export const logDiff = (local: object, remote: object) => {
 
   if (Object.keys(diff).length) {
     for (const key in diff) {
-      console.error(`${key}\n< ${stringify(diff[key].local)}\n> ${stringify(diff[key].remote)}`)
+      console.error(`${key}\nL> ${stringify(diff[key].local)}\nR> ${stringify(diff[key].remote)}`)
     }
   }
 }

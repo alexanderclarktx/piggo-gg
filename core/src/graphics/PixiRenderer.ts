@@ -1,6 +1,6 @@
 import {
-  ClientSystemBuilder, Entity, PixiCamera, Position, Renderable,
-  World, logPerf, replaceCanvas, screenWH
+  ClientSystemBuilder, Entity, PixiCamera, Position,
+  Renderable, World, logPerf, replaceCanvas, screenWH
 } from "@piggo-gg/core"
 import { Application } from "pixi.js"
 
@@ -126,16 +126,18 @@ export const PixiRenderSystem = ClientSystemBuilder({
     // updates the position of screenFixed entities
     const updateScreenFixed = (entity: Entity<Renderable | Position>) => {
       const { position, renderable } = entity.components
-      if (!position.screenFixed) return
+      if (!position.screenFixed || !world.pixi?.ready) return
+
+      const { w, h } = screenWH()
 
       if (position.data.x < 0) {
-        renderable.c.x = world.pixi!.app.screen.width + position.data.x
+        renderable.c.x = w + position.data.x
       } else {
         renderable.c.x = position.data.x
       }
 
       if (position.data.y < 0) {
-        renderable.c.y = world.pixi!.app.screen.height + position.data.y
+        renderable.c.y = h + position.data.y
       } else {
         renderable.c.y = position.data.y
       }

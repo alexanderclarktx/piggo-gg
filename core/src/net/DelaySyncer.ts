@@ -1,6 +1,6 @@
 import {
   Entity, GameData, Hitbox, Player, SerializedEntity,
-  Syncer, Apple, entries, keys, stringify
+  Syncer, Apple, entries, keys, stringify, logDiff
 } from "@piggo-gg/core"
 
 export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {
@@ -30,11 +30,13 @@ export const DelaySyncer = (): Syncer => ({
 
     const message = buffer.shift() as GameData
 
+    if (!(message.tick > world.game.started)) return
+
     // remove old local entities
     keys(world.entities).forEach((entityId) => {
       if (world.entities[entityId]?.components.networked) {
 
-        if (!message.serializedEntities[entityId]) {
+        if (!message.serializedEntities[entityId] && message.game === world.game.id) {
           console.log("DELETE ENTITY", entityId)
           world.removeEntity(entityId)
         }
@@ -86,7 +88,8 @@ export const DelaySyncer = (): Syncer => ({
         const localEntity = localEntities[entityId]
         if (localEntity) {
           if (stringify(localEntity) !== stringify(msgEntity)) {
-            mustRollback(`entity state ${entityId} ${stringify(localEntity)} ${stringify(msgEntity)}`)
+            mustRollback(`entity: ${entityId} mismatch ${message.tick}`)
+            logDiff(localEntity, msgEntity)
             break
           }
         } else {
@@ -98,8 +101,8 @@ export const DelaySyncer = (): Syncer => ({
     if (rollback) {
       world.tick = message.tick
 
-      if (message.game && message.game !== world.game.id) {
-        world.setGame(world.games[message.game])
+      if (message.game !== world.game.id) {
+        world.setGame(message.game)
       }
 
       keys(message.serializedEntities).forEach((entityId) => {

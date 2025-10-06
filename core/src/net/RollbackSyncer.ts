@@ -5,6 +5,7 @@ import {
 
 const movementActions = ["move", "moveAnalog", "jump", "point"]
 
+// TODO not generic
 const otherCharacter = (id: string, world: World) => {
   return id.startsWith("carl") && id !== world.client?.character()?.id
 }
@@ -118,12 +119,14 @@ export const RollbackSyncer = (world: World): Syncer => {
         return
       }
 
+      if (!(message.tick > world.game.started)) return
+
       last = message.tick
 
       const gap = world.tick - message.tick
       const framesForward = (gap >= 2 && gap <= 5) ?
         gap :
-        ceil(world.client!.ms * 2 / world.tickrate) + 2
+        ceil(world.client!.net.ms * 2 / world.tickrate) + 2
 
       const localActions = world.actions.atTick(message.tick) ?? {}
 
@@ -188,11 +191,11 @@ export const RollbackSyncer = (world: World): Syncer => {
       }
 
       // rollback
-      if (rollback) {
+      if (rollback && message.tick > world.game.started) {
         const was = world.tick
 
-        if (message.game !== world.game.id) {
-          world.setGame(world.games[message.game])
+        if (message.game !== world.game.id && message.tick > world.game.started) {
+          world.setGame(message.game)
         }
 
         world.tick = message.tick - 1

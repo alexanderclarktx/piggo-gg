@@ -1,4 +1,4 @@
-import { InvokedAction, SerializedEntity, World } from "@piggo-gg/core"
+import { GameTitle, InvokedAction, SerializedEntity, World } from "@piggo-gg/core"
 
 // game data
 
@@ -20,7 +20,7 @@ export type GameData = {
   type: "game"
   actions: Record<number, Record<string, InvokedAction[]>>
   chats: Record<string, string[]>
-  game: string
+  game: GameTitle
   playerId: string
   serializedEntities: Record<string, SerializedEntity>
   tick: number
@@ -64,8 +64,9 @@ export type ResponseData = {
 }
 
 // lobby endpoints
-export type LobbyList = Request<"lobby/list", { lobbies: Record<string, { id: string, creator: string, players: number }> }>
-export type LobbyCreate = Request<"lobby/create", { lobbyId: string }>
+export type LobbyList = Request<"lobby/list", { lobbies: Record<string,
+  { id: string, creator: string, players: number, game: GameTitle }> }>
+export type LobbyCreate = Request<"lobby/create", { lobbyId: string }> & { game: GameTitle }
 export type LobbyJoin = Request<"lobby/join"> & { join: string }
 export type LobbyExit = Request<"lobby/exit">
 

@@ -43,7 +43,7 @@ export const LagText = ({ x, y }: FpsTextProps = {}) => {
         onTick: ({ container, world }) => {
           lagText.components.renderable.visible = world.client?.net.synced ?? false
 
-          const lag = round(world.client?.ms ?? 0)
+          const lag = round(world.client?.net.ms ?? 0)
 
           if (lag > last || world.tick - lastTick > 60) {
             last = lag

@@ -1,10 +1,12 @@
-import { entries, HtmlButton, HtmlDiv, HtmlText, keys, RefreshableDiv, styleButton, World } from "@piggo-gg/core"
+import {
+  entries, HtmlButton, HtmlDiv, HtmlText, keys,
+  RefreshableDiv, styleButton, World
+} from "@piggo-gg/core"
 
 export const LobbiesMenu = (world: World): RefreshableDiv => {
   const client = world.client!
 
   let polled = -60
-  let inLobby: string = ""
 
   const lobbies = HtmlDiv({
     top: "-3px",
@@ -52,10 +54,10 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
       width: "46%"
     },
     onClick: () => {
-      if (inLobby) return
+      if (client.net.lobbyId) return
 
-      client.lobbyCreate(({ lobbyId }) => {
-        inLobby = lobbyId
+      client.lobbyCreate(world.game.id, ({ lobbyId }) => {
+        client.net.lobbyId = lobbyId
         polled = world.tick - 70
       })
     }
@@ -71,26 +73,27 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
       width: "46%"
     },
     onClick: () => {
-      if (!inLobby) return
+      if (!client.net.lobbyId) return
 
       client.lobbyLeave()
 
       polled = world.tick - 70
-      inLobby = ""
+      client.net.lobbyId = undefined
     }
   })
 
-  lobbies.appendChild(lobbyList)
-  lobbies.appendChild(buttonsDiv)
   buttonsDiv.appendChild(createLobby)
   buttonsDiv.appendChild(leaveLobby)
+
+  lobbies.appendChild(lobbyList)
+  lobbies.appendChild(buttonsDiv)
 
   return {
     div: lobbies,
     update: () => {
 
-      styleButton(createLobby, Boolean(!inLobby && client.net.connected), createLobby.matches(":hover"))
-      styleButton(leaveLobby, Boolean(inLobby), leaveLobby.matches(":hover"))
+      styleButton(createLobby, Boolean(!client.net.lobbyId && client.net.connected), createLobby.matches(":hover"))
+      styleButton(leaveLobby, Boolean(client.net.lobbyId), leaveLobby.matches(":hover"))
 
       if (world.tick - 80 > polled) {
         polled = world.tick
@@ -99,7 +102,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
 
           for (const [id, meta] of entries(response.lobbies)) {
             const lobby = HtmlText({
-              text: `(${meta.players}) [${id}] ${meta.creator}`,
+              text: `(${meta.players}) [${id.substring(0, 3)}] ${meta.creator} - ${meta.game}`,
               style: {
                 width: "75%",
                 height: "36px",
@@ -108,21 +111,21 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
                 lineHeight: "36px",
                 textAlign: "center",
                 backgroundColor: "rgba(0, 0, 0, 0.4)",
-                border: meta.id === inLobby ? "2px solid #aaffaa" : "2px solid #aaffff"
+                border: meta.id === client.net.lobbyId ? "2px solid #aaffaa" : "2px solid #aaffff"
               }
             })
 
             const button = HtmlButton({
               text: "Join",
               onHover: () => {
-                button.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
+                styleButton(button, meta.id !== client.net.lobbyId, true)
               },
               onHoverOut: () => {
-                button.style.backgroundColor = "rgba(0, 0, 0, 0.4)"
+                styleButton(button, meta.id !== client.net.lobbyId, false)
               },
               onClick: () => {
                 client.lobbyJoin(meta.id, () => {
-                  inLobby = meta.id
+                  client.net.lobbyId = meta.id
                   polled = world.tick - 70
                 })
               },
@@ -131,14 +134,11 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
                 height: "40px",
                 fontSize: "16px",
                 right: "5px",
-                border: meta.id === inLobby ? "2px solid #bbbbbb" : "2px solid #ffffff",
-                color: meta.id === inLobby ? "#bbbbbb" : "#ffffff",
-                backgroundColor: meta.id === inLobby ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.4)",
-                pointerEvents: meta.id === inLobby ? "none" : "auto",
                 position: "relative",
                 float: "right"
               }
             })
+            styleButton(button, meta.id !== client.net.lobbyId, false)
 
             const lobbyWrapper = HtmlDiv({
               position: "relative",
@@ -153,7 +153,7 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
           }
 
           if (keys(response.lobbies).length === 0) {
-            inLobby = ""
+            client.net.lobbyId = undefined
           }
         })
       }

@@ -3,10 +3,9 @@ import {
   RequestTypes, World, randomPlayerId, Sound, randomHash, AuthLogin,
   FriendsList, Pls, NetClientReadSystem, NetClientWriteSystem, ProfileGet,
   ProfileCreate, MetaPlayers, FriendsAdd, KeyBuffer, isMobile, LobbyList,
-  BadResponse, LobbyExit, XY, round, max, min
+  BadResponse, LobbyExit, XY, round, max, min, GameTitle
 } from "@piggo-gg/core"
 import { decode, encode } from "@msgpack/msgpack"
-import toast from "react-hot-toast"
 
 const servers = {
   local: "ws://localhost:3000",
@@ -51,8 +50,9 @@ export type Client = {
   net: {
     synced: boolean
     connected: boolean
+    ms: number
+    lobbyId: string | undefined
   },
-  ms: number
   mobile: boolean
   mobileMenu: boolean
   player: Player
@@ -62,8 +62,7 @@ export type Client = {
   playerId: () => string
   playerName: () => string
   character: () => Character | undefined
-  copyInviteLink: () => void
-  lobbyCreate: (callback: Callback<LobbyCreate>) => void
+  lobbyCreate: (game: GameTitle, callback?: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   lobbyLeave: () => void
   lobbyList: (callback: Callback<LobbyList>) => void
@@ -148,9 +147,10 @@ export const Client = ({ world }: ClientProps): Client => {
     lobbyId: undefined,
     net: {
       synced: false,
-      connected: false
+      connected: false,
+      ms: 0,
+      lobbyId: undefined
     },
-    ms: 0,
     mobile: isMobile(),
     mobileMenu: false,
     player,
@@ -172,24 +172,8 @@ export const Client = ({ world }: ClientProps): Client => {
     pointerUnlock: () => {
       document.exitPointerLock()
     },
-    copyInviteLink: () => {
-      let url = ""
-      if (client.lobbyId) {
-        url = `${hosts[env]}/?join=${client.lobbyId}`
-        navigator.clipboard.writeText(url)
-        toast.success(`Copied Invite Link`)
-      } else {
-        client.lobbyCreate((response) => {
-          if ("error" in response) return
-
-          url = `${hosts[env]}/?join=${response.lobbyId}`
-          navigator.clipboard.writeText(url)
-          toast.success(`Copied Invite Link`)
-        })
-      }
-    },
-    lobbyCreate: (callback) => {
-      request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash() }, (response) => {
+    lobbyCreate: (game, callback) => {
+      request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash(), game }, (response) => {
         if ("error" in response) {
           console.error("failed to create lobby:", response.error)
         } else {
@@ -197,7 +181,8 @@ export const Client = ({ world }: ClientProps): Client => {
           world.addSystemBuilders([NetClientReadSystem, NetClientWriteSystem])
           world.messages.clearBeforeTick(world.tick)
           world.tick = -100
-          callback(response)
+          world.game.started = -100
+          callback?.(response)
         }
       })
     },
@@ -354,17 +339,6 @@ export const Client = ({ world }: ClientProps): Client => {
     client.ws.onopen = () => {
       console.log("connected to server")
       client.net.connected = true
-
-      const joinString: string | null = new URLSearchParams(window.location.search).get("join")
-      if (joinString) {
-        client.lobbyJoin(joinString, () => { })
-        return
-      }
-
-      const gameString: string | null = new URLSearchParams(window.location.search).get("game")
-      if (gameString && world.games[gameString]) {
-        world.setGame(gameString)
-      }
 
       if (localStorage) {
         const token = localStorage.getItem("token")

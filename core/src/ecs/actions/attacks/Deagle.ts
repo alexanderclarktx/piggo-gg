@@ -79,7 +79,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             const pos = character.components.position.xyz()
 
-            return { actionId: "deagle", params: { pos, aim, targets } }
+            const rng = (random() - 0.5) * 0.1
+
+            return { actionId: "deagle", params: { pos, aim, targets, rng } }
           },
         }
       }),
@@ -106,8 +108,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
 
-          aim.y += recoil * 0.1
-          if (recoil) aim.x += recoil * (world.random.next() - 0.5) * 0.1
+          if (recoil) {
+            aim.y += recoil * 0.1
+            aim.x += recoil * params.rng
+          }
+
+          // apply recoil
+          if (gun) recoil = min(1, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
@@ -115,26 +122,24 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           const dir = target.clone().sub(eyes).normalize()
 
-          const { localAim } = world.client!.controls
-          const offset = modelOffset(localAim, true, recoil)
+          // update tracer
+          if (world.client) {
+            const { localAim } = world.client.controls
+            const offset = modelOffset(localAim, true, recoil)
 
-          // apply recoil
-          if (gun) {
-            recoil = min(1, recoil + 0.5)
-          }
+            // tracer
+            if (tracer) {
+              const tracerPos = { x: eyes.x + offset.x, y: eyes.y + offset.y, z: eyes.z + offset.z }
+              tracer.position.copy(tracerPos)
 
-          // tracer
-          if (tracer) {
-            const tracerPos = { x: eyes.x + offset.x, y: eyes.y + offset.y, z: eyes.z + offset.z }
-            tracer.position.copy(tracerPos)
+              const tracerDir = target.clone().sub(tracerPos).normalize()
 
-            const tracerDir = target.clone().sub(tracerPos).normalize()
+              tracer.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), tracerDir)
 
-            tracer.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), tracerDir)
-
-            tracerState.tick = world.tick
-            tracerState.velocity = tracerDir.clone().multiplyScalar(1.5)
-            tracerState.pos = tracerPos
+              tracerState.tick = world.tick
+              tracerState.velocity = tracerDir.clone().multiplyScalar(1.5)
+              tracerState.pos = tracerPos
+            }
           }
 
           // raycast against blocks
@@ -255,4 +260,5 @@ type DeagleParams = {
   pos: XYZ
   aim: XY
   targets: Target[]
+  rng: number
 }

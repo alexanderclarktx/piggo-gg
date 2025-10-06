@@ -2,7 +2,8 @@ import {
   BlockData, Character, Client, Command, ComponentTypes, Data, Entity,
   Game, GameBuilder, InvokedAction, Networked, Player, Random, PixiRenderer,
   SerializedEntity, System, SystemBuilder, SystemEntity, TickBuffer,
-  ValidComponents, XYZ, keys, logPerf, values, ThreeRenderer, filterEntities
+  ValidComponents, XYZ, keys, logPerf, values, ThreeRenderer, filterEntities,
+  Lobby, Volley, Craft, Strike, GameTitle, Volley3d
 } from "@piggo-gg/core"
 
 export type World = {
@@ -13,8 +14,8 @@ export type World = {
   debug: boolean
   entities: Record<string, Entity>
   entitiesAtTick: Record<number, Record<string, SerializedEntity>>
-  game: Game
-  games: Record<string, GameBuilder>
+  game: Game & { started: number }
+  games: Record<GameTitle, GameBuilder>
   lastTick: DOMHighResTimeStamp
   messages: TickBuffer<string>
   mode: "client" | "server"
@@ -39,7 +40,7 @@ export type World = {
   queryEntities: <T extends ComponentTypes>(query: ValidComponents[], filter?: (entity: Entity<T>) => boolean) => Entity<T>[]
   removeEntity: (id: string) => void
   removeSystem: (id: string) => void
-  setGame: (game: GameBuilder | string) => void
+  setGame: (game: GameTitle) => void
   settings: <S extends {}>() => S
   state: <S extends {}>() => S
 }
@@ -48,7 +49,7 @@ export type WorldBuilder = (_: WorldProps) => World
 
 export type WorldProps = {
   commands?: Command[]
-  games?: GameBuilder[]
+  game: GameTitle
   systems?: SystemBuilder[]
   three?: ThreeRenderer
   pixi?: PixiRenderer | undefined
@@ -56,7 +57,7 @@ export type WorldProps = {
 }
 
 // World manages all runtime state
-export const World = ({ commands, games, systems, pixi, mode, three }: WorldProps): World => {
+export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps): World => {
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
 
@@ -69,8 +70,8 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
     debug: false,
     entities: {},
     entitiesAtTick: {},
-    game: { id: "", renderer: "three", entities: [], settings: {}, systems: [], netcode: "delay", state: {} },
-    games: {},
+    game: { id: "", renderer: "three", entities: [], settings: {}, systems: [], netcode: "delay", state: {}, started: 0 },
+    games: { "craft": Craft, "lobby": Lobby, "strike": Strike, "volley": Volley, "volley3d": Volley3d, "": Lobby },
     lastTick: 0,
     mode: mode ?? "client",
     pixi,
@@ -210,9 +211,10 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
       const entities = filterEntities(query, values(world.entities)) as Entity<T>[]
       return entities.filter(filter).sort((a, b) => a.id.localeCompare(b.id))
     },
-    setGame: (game: GameBuilder | string) => {
-      if (typeof game === "string") game = world.games[game]
-      if (!game) return
+    setGame: (gameTitle: GameTitle) => {
+      const game = world.games[gameTitle]
+
+      console.log("SETTING GAME", gameTitle)
 
       // remove old entities
       values(world.entities).forEach((entity) => {
@@ -228,6 +230,7 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
 
       // clear blocks
       world.blocks.clear()
+      world.trees = []
 
       // reset cursor style
       document.body.style.cursor = "auto"
@@ -242,7 +245,7 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
       world.game.id = game.id
 
       // set new game
-      world.game = game.init(world)
+      world.game = { ... game.init(world), started: world.tick + 2 }
 
       const gameStateEntity = Entity({
         id: "gameState",
@@ -294,11 +297,7 @@ export const World = ({ commands, games, systems, pixi, mode, three }: WorldProp
 
   if (systems) world.addSystemBuilders(systems)
 
-  // setup games
-  if (games) {
-    games.forEach((game) => world.games[game.id] = game)
-    if (games[0]) world.setGame(games[0])
-  }
+  world.setGame(game)
 
   // setup commands
   if (commands) {

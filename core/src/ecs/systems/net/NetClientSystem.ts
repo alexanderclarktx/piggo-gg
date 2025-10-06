@@ -71,7 +71,7 @@ export const NetClientReadSystem = SystemBuilder({
         // record latency
         const skew = Date.now() - message.timestamp
         if (message.latency !== undefined) {
-          client.ms = (skew + message.latency) / 2
+          client.net.ms = (skew + message.latency) / 2
         }
 
         if (world.tick % 100 === 0) {
