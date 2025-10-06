@@ -164,21 +164,85 @@ const HtmlPlayButton = (world: World) => {
   return button
 }
 
-const Profile = () => {
-  const button = HButton({
-    style: {
-      position: "absolute",
-      bottom: "100px",
-      left: "50px",
-      transform: "translate(-100%, 0%)",
-    }},
-    HImg({
-      id: "",
-      src: "dude-white.png",
-      style: { width: "64px", height: "64px", borderRadius: "8px" }
+const Profile = (): RefreshableDiv => {
+
+  let tick = 0
+  let frame = -2
+
+  const update = () => {
+    tick += 1
+    if (tick == 7) {
+      frame = (frame + 1) % 4
+      tick = 0
+    }
+
+    const f1 = document.getElementById("f1") as HTMLImageElement
+    const f2 = document.getElementById("f2") as HTMLImageElement
+    const f3 = document.getElementById("f3") as HTMLImageElement
+    const f4 = document.getElementById("f4") as HTMLImageElement
+
+    const frames = [f1, f2, f3, f4]
+
+    frames.forEach((f, i) => {
+      f.style.visibility = i === frame ? "visible" : "hidden"
     })
+  }
+
+  const profile = HButton({
+    style: {
+      top: "40px",
+      left: "50px",
+      display: "inline-block",
+      backgroundImage: ""
+    }
+  },
+    HImg({
+      style: {
+        width: "82px",
+        borderRadius: "8px",
+        imageRendering: "pixelated",
+        pointerEvents: "auto",
+        visibility: "hidden"
+      },
+      id: "f1",
+      src: "f1.png"
+    }),
+    HImg({
+      style: {
+        width: "82px",
+        borderRadius: "8px",
+        imageRendering: "pixelated",
+        pointerEvents: "auto",
+        visibility: "hidden"
+      },
+      id: "f2",
+      src: "f2.png"
+    }),
+    HImg({
+      style: {
+        width: "82px",
+        borderRadius: "8px",
+        imageRendering: "pixelated",
+        pointerEvents: "auto",
+        visibility: "hidden"
+      },
+      id: "f3",
+      src: "f3.png"
+    }),
+    HImg({
+      style: {
+        width: "82px",
+        borderRadius: "8px",
+        imageRendering: "pixelated",
+        pointerEvents: "auto",
+        visibility: "hidden"
+      },
+      id: "f4",
+      src: "f4.png"
+    })
+
   )
-  return button
+  return { div: profile, update }
 }
 
 // todo player param optional ?
@@ -345,9 +409,12 @@ const PlayersOnline = () => {
 const GameLobby = (): Entity => {
 
   const list: GameBuilder[] = [Volley, Craft, Strike]
+
   let gameButtons: HTMLButtonElement[] = []
 
   let lobbiesMenu: RefreshableDiv | undefined = undefined
+
+  let profile: RefreshableDiv | undefined = undefined
 
   const gameLobby = Entity<Position>({
     id: "gameLobby",
@@ -366,7 +433,9 @@ const GameLobby = (): Entity => {
 
           if (gameButtons.length === 0) {
 
-            document.body.appendChild(Profile())
+            profile = Profile()
+
+            document.body.appendChild(profile.div)
 
             const shell = HtmlDiv({
               left: "50%",
@@ -414,7 +483,10 @@ const GameLobby = (): Entity => {
             shell.appendChild(lobbiesShell)
           }
 
-          if (world.client) lobbiesMenu?.update()
+          if (world.client) {
+            lobbiesMenu?.update()
+            profile?.update()
+          }
 
           // make border green for selected game
           const state = world.game.state as LobbyState

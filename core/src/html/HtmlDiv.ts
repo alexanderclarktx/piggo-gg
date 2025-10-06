@@ -34,4 +34,4 @@ export const HtmlDiv = (style: CSS = {}, id?: string): HtmlDiv => {
   return div
 }
 
-export type RefreshableDiv = { div: HtmlDiv, update: () => void }
+export type RefreshableDiv = { div: HTMLElement, update: () => void }
