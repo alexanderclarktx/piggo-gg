@@ -108,14 +108,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
 
-          aim.y += recoil * 0.1
-          // if (recoil) aim.x += recoil * (world.random.next() - 0.5) * 0.1 // TODO
-          if (recoil) aim.x += recoil * params.rng
+          if (recoil) {
+            aim.y += recoil * 0.1
+            aim.x += recoil * params.rng
+          }
 
           // apply recoil
-          if (gun) {
-            recoil = min(1, recoil + 0.5)
-          }
+          if (gun) recoil = min(1, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)

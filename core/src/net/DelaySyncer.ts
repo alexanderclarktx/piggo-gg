@@ -1,7 +1,6 @@
 import {
   Entity, GameData, Hitbox, Player, SerializedEntity,
-  Syncer, Apple, entries, keys, stringify,
-  logDiff
+  Syncer, Apple, entries, keys, stringify, logDiff
 } from "@piggo-gg/core"
 
 export const entityConstructors: Record<string, (_: { id?: string }) => Entity> = {

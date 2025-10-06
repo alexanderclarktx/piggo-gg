@@ -87,7 +87,6 @@ export const Api = (): Api => {
       "lobby/join": async ({ ws, data }) => {
         if (!api.worlds[data.join]) {
           return { id: data.id, error: "world not found" }
-          // api.worlds[data.join] = ServerWorld({ creator: ws })
         }
 
         ws.data.worldId = data.join

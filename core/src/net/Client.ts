@@ -62,7 +62,6 @@ export type Client = {
   playerId: () => string
   playerName: () => string
   character: () => Character | undefined
-  // copyInviteLink: () => void
   lobbyCreate: (game: GameTitle, callback?: Callback<LobbyCreate>) => void
   lobbyJoin: (lobbyId: string, callback: Callback<LobbyJoin>) => void
   lobbyLeave: () => void
@@ -173,22 +172,6 @@ export const Client = ({ world }: ClientProps): Client => {
     pointerUnlock: () => {
       document.exitPointerLock()
     },
-    // copyInviteLink: () => {
-    //   let url = ""
-    //   if (client.lobbyId) {
-    //     url = `${hosts[env]}/?join=${client.lobbyId}`
-    //     navigator.clipboard.writeText(url)
-    //     toast.success(`Copied Invite Link`)
-    //   } else {
-    //     client.lobbyCreate((response) => {
-    //       if ("error" in response) return
-
-    //       url = `${hosts[env]}/?join=${response.lobbyId}`
-    //       navigator.clipboard.writeText(url)
-    //       toast.success(`Copied Invite Link`)
-    //     })
-    //   }
-    // },
     lobbyCreate: (game, callback) => {
       request<LobbyCreate>({ route: "lobby/create", type: "request", id: randomHash(), game }, (response) => {
         if ("error" in response) {
@@ -356,17 +339,6 @@ export const Client = ({ world }: ClientProps): Client => {
     client.ws.onopen = () => {
       console.log("connected to server")
       client.net.connected = true
-
-      // const joinString: string | null = new URLSearchParams(window.location.search).get("join")
-      // if (joinString) {
-      //   client.lobbyJoin(joinString, () => { })
-      //   return
-      // }
-
-      // const gameString: string | null = new URLSearchParams(window.location.search).get("game")
-      // if (gameString && world.games[gameString]) {
-      //   world.setGame(gameString)
-      // }
 
       if (localStorage) {
         const token = localStorage.getItem("token")

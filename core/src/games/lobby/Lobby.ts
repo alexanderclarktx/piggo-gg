@@ -236,17 +236,13 @@ const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
             if (world.pixi) world.pixi.resizedFlag = true
           }
         },
-        setup: async (r, _, world) => {
+        setup: async (r) => {
           await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
 
           if (callback) {
             r.c.interactive = true
             r.c.onpointerdown = callback
           }
-
-          // if (!world.client?.token && pos.y === 85) {
-          //   avatar.components.position.setPosition({ x: 110, y: 175 })
-          // }
         }
       })
     }
@@ -406,17 +402,15 @@ const GameLobby = (): Entity => {
               transform: "translate(-50%)",
               display: "flex",
               border: "none",
-              // gap: "20px",
               flexDirection: "column"
             })
 
             const gameButtonsShell = HtmlDiv({
               position: "relative",
               display: "flex",
-              // transform: "translate(-50%, -50%)",
               gap: "20px",
               flexDirection: "row",
-              border: "none",
+              border: "none"
             })
             shell.appendChild(gameButtonsShell)
 
@@ -431,7 +425,7 @@ const GameLobby = (): Entity => {
             const htmlPlayButton = HtmlPlayButton(world)
             shell.appendChild(htmlPlayButton)
 
-            const lobbiesWrapper = HtmlDiv({
+            const lobbiesShell = HtmlDiv({
               transform: "translate(-50%)",
               left: "50%",
               width: "404px",
@@ -442,8 +436,8 @@ const GameLobby = (): Entity => {
             })
 
             lobbiesMenu = LobbiesMenu(world)
-            lobbiesWrapper.appendChild(lobbiesMenu.div)
-            shell.appendChild(lobbiesWrapper)
+            lobbiesShell.appendChild(lobbiesMenu.div)
+            shell.appendChild(lobbiesShell)
           }
 
           if (world.client) lobbiesMenu?.update()

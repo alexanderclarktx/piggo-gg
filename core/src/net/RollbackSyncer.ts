@@ -4,8 +4,8 @@ import {
 } from "@piggo-gg/core"
 
 const movementActions = ["move", "moveAnalog", "jump", "point"]
-// const playerCharacters = ["carl", "vince", "sarge"]
 
+// TODO not generic
 const otherCharacter = (id: string, world: World) => {
   return id.startsWith("carl") && id !== world.client?.character()?.id
 }
@@ -195,7 +195,6 @@ export const RollbackSyncer = (world: World): Syncer => {
         const was = world.tick
 
         if (message.game !== world.game.id && message.tick > world.game.started) {
-          console.log("ROLLBACK SYNCER SETTING GAME", message.game, message.tick, world.game.started)
           world.setGame(message.game)
         }
 
