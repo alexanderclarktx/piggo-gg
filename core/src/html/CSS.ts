@@ -42,7 +42,7 @@ export type CSS = Partial<{
   minHeight: `${number}px` | `${number}%` | `${number}dvh` | 0
   minWidth: `${number}px` | `${number}%`
   msOverflowStyle: "none"
-  opacity: number
+  opacity: number | `${number}`
   outline: "none" | `${number}px solid ${string}`
   outlineOffset: `${number}px`
   overflow: "visible" | "hidden" | "scroll" | "auto"
@@ -67,7 +67,7 @@ export type CSS = Partial<{
   userSelect: "none" | "auto" | "text" | "all"
   visibility: "visible" | "hidden"
   whiteSpace: "normal" | "nowrap" | "pre" | "pre-wrap" | "pre-line"
-  width: `${number}px` | `${number}%` | "auto"
+  width: `${number}px` | `${number}%` | "auto" | "inherit"
   wordBreak: "normal" | "break-word" | "break-all"
   zIndex: number
 }>

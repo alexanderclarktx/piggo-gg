@@ -140,7 +140,7 @@ const Laser = (mesh: LaserMesh) => Action<LaserParams>("laser", ({ world, params
   if (state.hit[entity.id]) return
 
   const cd = world.tick - (state.lastShot[entity.id] ?? 0)
-  if (cd < 20) return
+  if (cd < 10) return
 
   state.lastShot[entity.id] = world.tick
 

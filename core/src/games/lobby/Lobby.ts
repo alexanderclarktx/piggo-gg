@@ -1,5 +1,5 @@
 import {
-  Actions, arrayEqual, Background, colors, Craft, DudeSkin, Entity, GameBuilder,
+  Actions, Background, colors, Craft, CSS, DudeSkin, Entity, GameBuilder,
   Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, LobbiesMenu, Networked, NPC,
   PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, RefreshableDiv, Renderable, Strike, Team, TeamColors, Volley, World, XY
@@ -8,6 +8,44 @@ import { Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley" | "craft" | "strike"
+}
+
+type HParams = {
+  style?: CSS
+  src?: string
+  text?: string
+  onClick?: () => void
+  onHover?: () => void
+  onHoverOut?: () => void
+}
+
+const HText = ({ style, text }: HParams = {}, child1?: HTMLElement): HTMLDivElement => {
+  const d = HtmlText({
+    text: text ?? "",
+    style: style ?? {}
+  })
+  if (child1) d.appendChild(child1)
+  return d
+}
+
+const HButton = ({ style, onClick, onHover, onHoverOut }: HParams = {}, child1?: HTMLElement, child2?: HTMLElement): HTMLButtonElement => {
+  const b = HtmlButton({
+    style: style ?? {},
+    onClick: onClick ?? (() => { }),
+    onHover: onHover ?? (() => { }),
+    onHoverOut: onHoverOut ?? (() => { })
+  })
+
+  if (child1) b.appendChild(child1)
+  if (child2) b.appendChild(child2)
+
+  return b
+}
+
+const HImg = ({ style, src }: HParams = {}, child1?: HTMLElement): HTMLImageElement => {
+  const i = HtmlImg(src ?? "", style ?? {})
+  if (child1) i.appendChild(child1)
+  return i
 }
 
 export const Lobby: GameBuilder = {
@@ -30,8 +68,7 @@ export const Lobby: GameBuilder = {
 
       // PixiChat(),
       // Friends(),
-      // SignupCTA(),
-      // Players(),
+      // SignupCTA()
     ],
     netcode: "delay"
   })
@@ -78,83 +115,24 @@ const PlayerName = (player: Entity<PC | Team>, y: number) => {
   })
 }
 
-// aligns all the player icons in the center of the screen
-const Players = (): Entity => {
-
-  let playerNames: string[] = []
-  let icons: Entity<Position | Renderable>[] = []
-  let avatars: Entity<Position | Renderable>[] = []
-
-  return Entity({
-    id: "players",
-    components: {
-      position: Position({ x: 300, y: 100, screenFixed: true }),
-      npc: NPC({
-        behavior: (_, world) => {
-          if (!world.pixi) return
-          const { width } = world.pixi.wh()
-          const offset = { x: 220 + ((width - 230) / 2), y: 250 }
-
-          const players = world.queryEntities<PC | Team>(["pc"]).sort((a, b) => a.components.pc.data.name > b.components.pc.data.name ? 1 : -1)
-
-          // recreate the icons if the player names have changed
-          if (icons.length === 0 || !arrayEqual(players.map(p => p.components.pc.data.name), playerNames)) {
-            icons.forEach(i => world.removeEntity(i.id))
-            avatars.forEach(a => world.removeEntity(a.id))
-
-            icons = players.map(p => PlayerName(p, offset.y))
-            avatars = players.map(p => Avatar(p, { x: 0, y: offset.y }, () => {
-              world.actions.push(world.tick + 2, p.id, { actionId: "switchTeam" })
-            }))
-            world.addEntities(icons)
-            world.addEntities(avatars)
-
-            playerNames = players.map(p => p.components.pc.data.name)
-          }
-
-          // align the icons
-          const totalWidth = icons.reduce((acc, icon) => acc + icon.components.renderable.c.width, 0) + 20 * (icons.length - 1)
-          let x = -totalWidth / 2
-          for (const [index, icon] of icons.entries()) {
-            icon.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
-
-            const avatar = avatars[index]
-            avatar.components.renderable.visible = world.client?.net.synced === true
-            avatar.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
-
-            x += icon.components.renderable.c.width + 20
-          }
-        }
-      })
-    }
-  })
-}
-
 const HtmlGameButton = (game: GameBuilder, world: World) => {
-  const label = HtmlText({
-    text: game.id,
-    style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
-  })
+  let rotation = 0
 
-  const image = HtmlImg(`${game.id}-256.jpg`, { width: "100%", height: "100%", imageRendering: "auto", transform: "translate(-50%, -50%)" })
-
-  const button = HtmlButton({
+  const button = HButton({
     style: {
-      backgroundColor: "rgba(0, 0, 0, 1)",
-      borderRadius: "14px",
+      borderRadius: "12px",
       fontSize: "24px",
       position: "relative",
-      transition: "box-shadow 0.2s ease",
-      width: "180px", height: "170px",
-      touchAction: "manipulation",
+      width: "180px",
+      height: "170px",
+      transition: "transform 0.8s ease, box-shadow 0.2s ease",
 
       border: "3px solid transparent",
-      padding: "0px",
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
-      backgroundOrigin: "border-box",
-      backgroundClip: "content-box, border-box"
     },
     onClick: () => {
+      button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
+
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
       world.client?.sound.play({ name: "click1" })
     },
@@ -165,10 +143,21 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
     onHoverOut: () => {
       button.style.boxShadow = "none"
     }
-  })
-
-  button.appendChild(label)
-  button.appendChild(image)
+  },
+    HImg({
+      src: `${game.id}-256.jpg`,
+      style: {
+        top: "50%",
+        width: "176px",
+        height: "166px",
+        transform: "translate(-50%, -50%)"
+      }
+    }),
+    HText({
+      text: game.id,
+      style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold" }
+    })
+  )
   return button
 }
 
@@ -395,6 +384,7 @@ const GameLobby = (): Entity => {
       }),
       npc: NPC({
         behavior: (_, world) => {
+
           if (gameButtons.length === 0) {
             const shell = HtmlDiv({
               left: "50%",
@@ -410,6 +400,8 @@ const GameLobby = (): Entity => {
               display: "flex",
               gap: "20px",
               flexDirection: "row",
+              transform: "translate(-50%)",
+              left: "50%",
               border: "none"
             })
             shell.appendChild(gameButtonsShell)

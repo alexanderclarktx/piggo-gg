@@ -1,11 +1,10 @@
 import {
   CraftSettings, HtmlButton, HtmlDiv, HtmlInput, HtmlText,
-  max, min, RefreshableDiv, round, styleSwitch, World
+  max, min, ogButtonStyle, RefreshableDiv, round, styleSwitch, World
 } from "@piggo-gg/core"
 
 export const SettingsMenu = (world: World): RefreshableDiv => {
   const div = HtmlDiv({
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
     display: "flex",
     flex: "1 1 auto",
     flexDirection: "column",
@@ -108,7 +107,8 @@ const boolRow = (world: World, text: string, key: "ambientSound" | "showControls
       height: "40px",
       position: "relative",
       fontSize: "18px",
-      pointerEvents: "auto"
+      pointerEvents: "auto",
+      ...ogButtonStyle
     },
     onClick: () => {
       const settings = world.settings<CraftSettings>()
