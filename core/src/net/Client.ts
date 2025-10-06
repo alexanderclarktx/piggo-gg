@@ -51,6 +51,7 @@ export type Client = {
     synced: boolean
     connected: boolean
     ms: number
+    lobbyId: string | undefined
   },
   mobile: boolean
   mobileMenu: boolean
@@ -148,7 +149,8 @@ export const Client = ({ world }: ClientProps): Client => {
     net: {
       synced: false,
       connected: false,
-      ms: 0
+      ms: 0,
+      lobbyId: undefined
     },
     mobile: isMobile(),
     mobileMenu: false,
