@@ -1,8 +1,8 @@
 import {
-  Actions, Background, colors, Craft, DudeSkin, Entity, GameBuilder, Ghost,
-  HButton, HImg, HText, HtmlButton, HtmlDiv, LobbiesMenu, Networked, NPC,
-  PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
-  randomInt, RefreshableDiv, Renderable, Strike, Team, TeamColors, Volley, World, XY
+  Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText,
+  HtmlButton, HtmlDiv, LobbiesMenu, Networked, NPC, PC, piggoVersion,
+  pixiGraphics, PixiRenderSystem, pixiText, Position, RefreshableDiv,
+  Renderable, Strike, Team, TeamColors, Volley, World
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
@@ -244,80 +244,6 @@ const Profile = (): RefreshableDiv => {
   )
   return { div: profile, update }
 }
-
-// todo player param optional ?
-// const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
-//   const { pc } = player.components
-
-//   let skin: "dude" | "ghost" = pc.data.name.startsWith("noob") ? "dude" : "ghost"
-
-//   const avatar = Entity<Position | Renderable>({
-//     id: `avatar-${randomInt(1000)}`,
-//     components: {
-//       position: Position({ ...pos, screenFixed: true }),
-//       renderable: Renderable({
-//         zIndex: 11,
-//         anchor: { x: 0.55, y: 0.5 },
-//         scale: 3.5,
-//         scaleMode: "nearest",
-//         animationSelect: () => "idle",
-//         interactiveChildren: true,
-//         onTick: ({ world }) => {
-//           if (!player.components.pc.data.name.startsWith("noob") && skin !== "ghost") {
-//             skin = "ghost"
-//             if (world.pixi) world.pixi.resizedFlag = true
-//           }
-//         },
-//         setup: async (r) => {
-//           await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
-
-//           if (callback) {
-//             r.c.interactive = true
-//             r.c.onpointerdown = callback
-//           }
-//         }
-//       })
-//     }
-//   })
-//   return avatar
-// }
-
-// const Profile = (): Entity => {
-
-//   const playerName = pixiText({
-//     text: "Profile",
-//     style: { fontSize: 34, fill: colors.piggo },
-//     pos: { x: 0, y: 50 },
-//     anchor: { x: 0.5, y: 0 }
-//   })
-
-//   const profile = Entity<Position | Renderable>({
-//     id: "profile",
-//     components: {
-//       position: Position({ x: 115, y: -90, screenFixed: true }),
-//       renderable: Renderable({
-//         zIndex: 10,
-//         onTick: ({ world }) => {
-//           const name = world.client?.playerName()
-//           if (name && playerName.text !== name) {
-//             playerName.text = name
-//           }
-//         },
-//         setup: async (renderable) => {
-//           const outline = pixiGraphics()
-//             .roundRect(-100, -75, 200, 170, 10)
-//             .fill({ color: 0x000000, alpha: 1 })
-//             .stroke({ color: 0xffffff, width: 2 })
-
-//           renderable.c.addChild(outline, playerName)
-
-//           renderable.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
-//         }
-//       })
-//     }
-//   })
-//   return profile
-// }
 
 const SignupCTA = () => Entity<Position | Renderable>({
   id: "signupCTA",
