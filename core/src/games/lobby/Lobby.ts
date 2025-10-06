@@ -1,5 +1,5 @@
 import {
-  Actions, arrayEqual, Background, colors, Craft, CSS, DudeSkin, Entity, GameBuilder,
+  Actions, Background, colors, Craft, CSS, DudeSkin, Entity, GameBuilder,
   Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, LobbiesMenu, Networked, NPC,
   PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, RefreshableDiv, Renderable, Strike, Team, TeamColors, Volley, World, XY
@@ -68,8 +68,7 @@ export const Lobby: GameBuilder = {
 
       // PixiChat(),
       // Friends(),
-      // SignupCTA(),
-      // Players(),
+      // SignupCTA()
     ],
     netcode: "delay"
   })
@@ -132,11 +131,10 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
     },
     onClick: () => {
+      button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
+
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
       world.client?.sound.play({ name: "click1" })
-
-      rotation += 360
-      button.style.transform = `translate(0%, 0%) rotateY(${rotation}deg)`
     },
     onHover: () => {
       button.style.boxShadow = "0 0 10px 4px white"
