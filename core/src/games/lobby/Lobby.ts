@@ -1,6 +1,6 @@
 import {
-  Actions, Background, colors, Craft, CSS, DudeSkin, Entity, GameBuilder,
-  Ghost, HtmlButton, HtmlDiv, HtmlImg, HtmlText, LobbiesMenu, Networked, NPC,
+  Actions, Background, colors, Craft, DudeSkin, Entity, GameBuilder, Ghost,
+  HButton, HImg, HText, HtmlButton, HtmlDiv, LobbiesMenu, Networked, NPC,
   PC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText, Position,
   randomInt, RefreshableDiv, Renderable, Strike, Team, TeamColors, Volley, World, XY
 } from "@piggo-gg/core"
@@ -8,44 +8,6 @@ import { Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley" | "craft" | "strike"
-}
-
-type HParams = {
-  style?: CSS
-  src?: string
-  text?: string
-  onClick?: () => void
-  onHover?: () => void
-  onHoverOut?: () => void
-}
-
-const HText = ({ style, text }: HParams = {}, child1?: HTMLElement): HTMLDivElement => {
-  const d = HtmlText({
-    text: text ?? "",
-    style: style ?? {}
-  })
-  if (child1) d.appendChild(child1)
-  return d
-}
-
-const HButton = ({ style, onClick, onHover, onHoverOut }: HParams = {}, child1?: HTMLElement, child2?: HTMLElement): HTMLButtonElement => {
-  const b = HtmlButton({
-    style: style ?? {},
-    onClick: onClick ?? (() => { }),
-    onHover: onHover ?? (() => { }),
-    onHoverOut: onHoverOut ?? (() => { })
-  })
-
-  if (child1) b.appendChild(child1)
-  if (child2) b.appendChild(child2)
-
-  return b
-}
-
-const HImg = ({ style, src }: HParams = {}, child1?: HTMLElement): HTMLImageElement => {
-  const i = HtmlImg(src ?? "", style ?? {})
-  if (child1) i.appendChild(child1)
-  return i
 }
 
 export const Lobby: GameBuilder = {
@@ -60,8 +22,8 @@ export const Lobby: GameBuilder = {
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
-      Profile(),
-      ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
+      // Profile(),
+      // ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
       GameLobby(),
       Version(),
       PlayersOnline(),
@@ -202,79 +164,96 @@ const HtmlPlayButton = (world: World) => {
   return button
 }
 
+const Profile = () => {
+  const button = HButton({
+    style: {
+      position: "absolute",
+      bottom: "100px",
+      left: "50px",
+      transform: "translate(-100%, 0%)",
+    }},
+    HImg({
+      id: "",
+      src: "dude-white.png",
+      style: { width: "64px", height: "64px", borderRadius: "8px" }
+    })
+  )
+  return button
+}
+
 // todo player param optional ?
-const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
-  const { pc } = player.components
+// const Avatar = (player: Entity<PC>, pos: XY, callback?: () => void) => {
+//   const { pc } = player.components
 
-  let skin: "dude" | "ghost" = pc.data.name.startsWith("noob") ? "dude" : "ghost"
+//   let skin: "dude" | "ghost" = pc.data.name.startsWith("noob") ? "dude" : "ghost"
 
-  const avatar = Entity<Position | Renderable>({
-    id: `avatar-${randomInt(1000)}`,
-    components: {
-      position: Position({ ...pos, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 11,
-        anchor: { x: 0.55, y: 0.5 },
-        scale: 3.5,
-        scaleMode: "nearest",
-        animationSelect: () => "idle",
-        interactiveChildren: true,
-        onTick: ({ world }) => {
-          if (!player.components.pc.data.name.startsWith("noob") && skin !== "ghost") {
-            skin = "ghost"
-            if (world.pixi) world.pixi.resizedFlag = true
-          }
-        },
-        setup: async (r) => {
-          await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
+//   const avatar = Entity<Position | Renderable>({
+//     id: `avatar-${randomInt(1000)}`,
+//     components: {
+//       position: Position({ ...pos, screenFixed: true }),
+//       renderable: Renderable({
+//         zIndex: 11,
+//         anchor: { x: 0.55, y: 0.5 },
+//         scale: 3.5,
+//         scaleMode: "nearest",
+//         animationSelect: () => "idle",
+//         interactiveChildren: true,
+//         onTick: ({ world }) => {
+//           if (!player.components.pc.data.name.startsWith("noob") && skin !== "ghost") {
+//             skin = "ghost"
+//             if (world.pixi) world.pixi.resizedFlag = true
+//           }
+//         },
+//         setup: async (r) => {
+//           await (skin === "dude" ? DudeSkin("white")(r) : Ghost(r))
 
-          if (callback) {
-            r.c.interactive = true
-            r.c.onpointerdown = callback
-          }
-        }
-      })
-    }
-  })
-  return avatar
-}
+//           if (callback) {
+//             r.c.interactive = true
+//             r.c.onpointerdown = callback
+//           }
+//         }
+//       })
+//     }
+//   })
+//   return avatar
+// }
 
-const Profile = (): Entity => {
+// const Profile = (): Entity => {
 
-  const playerName = pixiText({
-    text: "Profile",
-    style: { fontSize: 34, fill: colors.piggo },
-    pos: { x: 0, y: 50 },
-    anchor: { x: 0.5, y: 0 }
-  })
+//   const playerName = pixiText({
+//     text: "Profile",
+//     style: { fontSize: 34, fill: colors.piggo },
+//     pos: { x: 0, y: 50 },
+//     anchor: { x: 0.5, y: 0 }
+//   })
 
-  const profile = Entity<Position | Renderable>({
-    id: "profile",
-    components: {
-      position: Position({ x: 115, y: 90, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        onTick: ({ world }) => {
-          const name = world.client?.playerName()
-          if (name && playerName.text !== name) {
-            playerName.text = name
-          }
-        },
-        setup: async (renderable) => {
-          const outline = pixiGraphics()
-            .roundRect(-100, -75, 200, 170, 10)
-            .fill({ color: 0x000000, alpha: 1 })
-            .stroke({ color: 0xffffff, width: 2 })
+//   const profile = Entity<Position | Renderable>({
+//     id: "profile",
+//     components: {
+//       position: Position({ x: 115, y: -90, screenFixed: true }),
+//       renderable: Renderable({
+//         zIndex: 10,
+//         onTick: ({ world }) => {
+//           const name = world.client?.playerName()
+//           if (name && playerName.text !== name) {
+//             playerName.text = name
+//           }
+//         },
+//         setup: async (renderable) => {
+//           const outline = pixiGraphics()
+//             .roundRect(-100, -75, 200, 170, 10)
+//             .fill({ color: 0x000000, alpha: 1 })
+//             .stroke({ color: 0xffffff, width: 2 })
 
-          renderable.c.addChild(outline, playerName)
+//           renderable.c.addChild(outline, playerName)
 
-          renderable.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
-        }
-      })
-    }
-  })
-  return profile
-}
+//           renderable.setBevel({ rotation: 90, lightAlpha: 1, shadowAlpha: 0.3 })
+//         }
+//       })
+//     }
+//   })
+//   return profile
+// }
 
 const SignupCTA = () => Entity<Position | Renderable>({
   id: "signupCTA",
@@ -386,6 +365,9 @@ const GameLobby = (): Entity => {
         behavior: (_, world) => {
 
           if (gameButtons.length === 0) {
+
+            document.body.appendChild(Profile())
+
             const shell = HtmlDiv({
               left: "50%",
               top: "14%",
