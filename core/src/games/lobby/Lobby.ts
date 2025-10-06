@@ -148,8 +148,8 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       src: `${game.id}-256.jpg`,
       style: {
         top: "50%",
-        width: "175px",
-        height: "165px",
+        width: "176px",
+        height: "166px",
         transform: "translate(-50%, -50%)"
       }
     }),
