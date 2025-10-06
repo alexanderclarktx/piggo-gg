@@ -116,77 +116,20 @@ const PlayerName = (player: Entity<PC | Team>, y: number) => {
   })
 }
 
-// aligns all the player icons in the center of the screen
-const Players = (): Entity => {
-
-  let playerNames: string[] = []
-  let icons: Entity<Position | Renderable>[] = []
-  let avatars: Entity<Position | Renderable>[] = []
-
-  return Entity({
-    id: "players",
-    components: {
-      position: Position({ x: 300, y: 100, screenFixed: true }),
-      npc: NPC({
-        behavior: (_, world) => {
-          if (!world.pixi) return
-          const { width } = world.pixi.wh()
-          const offset = { x: 220 + ((width - 230) / 2), y: 250 }
-
-          const players = world.queryEntities<PC | Team>(["pc"]).sort((a, b) => a.components.pc.data.name > b.components.pc.data.name ? 1 : -1)
-
-          // recreate the icons if the player names have changed
-          if (icons.length === 0 || !arrayEqual(players.map(p => p.components.pc.data.name), playerNames)) {
-            icons.forEach(i => world.removeEntity(i.id))
-            avatars.forEach(a => world.removeEntity(a.id))
-
-            icons = players.map(p => PlayerName(p, offset.y))
-            avatars = players.map(p => Avatar(p, { x: 0, y: offset.y }, () => {
-              world.actions.push(world.tick + 2, p.id, { actionId: "switchTeam" })
-            }))
-            world.addEntities(icons)
-            world.addEntities(avatars)
-
-            playerNames = players.map(p => p.components.pc.data.name)
-          }
-
-          // align the icons
-          const totalWidth = icons.reduce((acc, icon) => acc + icon.components.renderable.c.width, 0) + 20 * (icons.length - 1)
-          let x = -totalWidth / 2
-          for (const [index, icon] of icons.entries()) {
-            icon.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
-
-            const avatar = avatars[index]
-            avatar.components.renderable.visible = world.client?.net.synced === true
-            avatar.components.position.setPosition({ x: offset.x + x + icon.components.renderable.c.width / 2 })
-
-            x += icon.components.renderable.c.width + 20
-          }
-        }
-      })
-    }
-  })
-}
-
 const HtmlGameButton = (game: GameBuilder, world: World) => {
   let rotation = 0
 
   const button = HButton({
     style: {
-      backgroundColor: "rgba(0, 0, 0, 1)",
-      borderRadius: "14px",
+      borderRadius: "12px",
       fontSize: "24px",
       position: "relative",
       width: "180px",
       height: "170px",
-      touchAction: "manipulation",
       transition: "transform 0.8s ease, box-shadow 0.2s ease",
 
       border: "3px solid transparent",
-      padding: "0px",
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
-      backgroundOrigin: "border-box",
-      backgroundClip: "content-box, border-box"
     },
     onClick: () => {
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
@@ -207,10 +150,8 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       src: `${game.id}-256.jpg`,
       style: {
         top: "50%",
-        width: "174px",
-        height: "164px",
-        pointerEvents: "auto",
-        imageRendering: "auto",
+        width: "175px",
+        height: "165px",
         transform: "translate(-50%, -50%)"
       }
     }),
