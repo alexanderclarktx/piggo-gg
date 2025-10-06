@@ -10,6 +10,26 @@ type LobbyState = {
   gameId: "volley" | "craft" | "strike"
 }
 
+type HParams = {
+  style?: CSS
+  src?: string
+  onClick?: () => void
+}
+
+const HButton = ({ style, onClick }: HParams = {}, child1?: HTMLElement): HTMLButtonElement => {
+  const b = HtmlButton({ style: style ?? {}, onClick: onClick ?? (() => { }), onHover: () => { }, onHoverOut: () => { } })
+
+  if (child1) b.appendChild(child1)
+
+  return b
+}
+
+const HImg = ({ style, src }: HParams = {}, child1?: HTMLElement): HTMLImageElement => {
+  const i = HtmlImg(src ?? "", style ?? {})
+  if (child1) i.appendChild(child1)
+  return i
+}
+
 export const Lobby: GameBuilder = {
   id: "lobby",
   init: (world) => ({
@@ -136,17 +156,39 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
     style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold", }
   })
 
-  const image = HtmlImg(`${game.id}-256.jpg`, { width: "100%", height: "100%", imageRendering: "auto", transform: "translate(-50%, -50%)" })
+  const image = HtmlImg(`${game.id}-256.jpg`, {
+    width: "100%", height: "100%",
+    pointerEvents: "auto",
+    imageRendering: "auto",
+    transform: "translate(-50%, -50%)",
+    transition: "transform 1.2s ease",
+  })
 
-  const button = HtmlButton({
+  // art.onclick = () => {
+  //   rotation += 540
+  //   art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
+  // }
+
+  let rotation = 0
+
+  image.onclick = () => {
+    rotation += 360
+    button.style.transform = `translate(-50%, -50%) rotateY(${rotation}deg)`
+  }
+
+  const button = HButton({
     style: {
       backgroundColor: "rgba(0, 0, 0, 1)",
       borderRadius: "14px",
       fontSize: "24px",
       position: "relative",
-      transition: "box-shadow 0.2s ease",
-      width: "180px", height: "170px",
+      // transition: "box-shadow 0.2s ease",
+      left: "25%",
+      width: "180px",
+      height: "170px",
       touchAction: "manipulation",
+      transition: "transform 0.8s ease, box-shadow 0.2s ease",
+      transform: "translate(-50%, -50%)",
 
       border: "3px solid transparent",
       padding: "0px",
@@ -157,18 +199,34 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
     onClick: () => {
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
       world.client?.sound.play({ name: "click1" })
-    },
-    onHover: () => {
-      button.style.boxShadow = "0 0 10px 4px white"
-      world.client?.sound.play({ name: "click3" })
-    },
-    onHoverOut: () => {
-      button.style.boxShadow = "none"
-    }
-  })
 
-  button.appendChild(label)
-  button.appendChild(image)
+      rotation += 360
+      button.style.transform = `translate(-50%, -50%) rotateY(${rotation}deg)`
+    }},
+    HImg({
+      src: `${game.id}-256.jpg`,
+      style: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        width: "160px",
+        height: "160px",
+        pointerEvents: "auto",
+        imageRendering: "auto",
+        transform: "translate(-50%, -50%)"
+      }
+    })
+    // onHover: () => {
+    //   button.style.boxShadow = "0 0 10px 4px white"
+    //   world.client?.sound.play({ name: "click3" })
+    // },
+    // onHoverOut: () => {
+    //   button.style.boxShadow = "none"
+    // }
+  )
+
+  // button.appendChild(label)
+  // button.appendChild(image)
   return button
 }
 
@@ -395,26 +453,6 @@ const GameLobby = (): Entity => {
       }),
       npc: NPC({
         behavior: (_, world) => {
-
-          type HParams = {
-            style?: CSS
-            src?: string
-            onClick?: () => void
-          }
-
-          const HButton = ({ style, onClick }: HParams = {}, child1?: HTMLElement): HTMLButtonElement => {
-            const b = HtmlButton({ style: style ?? {}, onClick: onClick ?? (() => { }), onHover: () => { }, onHoverOut: () => { } })
-
-            if (child1) b.appendChild(child1)
-
-            return b
-          }
-
-          const HImg = ({ style, src }: HParams = {}, child1?: HTMLElement): HTMLImageElement => {
-            const i = HtmlImg(src ?? "", style ?? {})
-            if (child1) i.appendChild(child1)
-            return i
-          }
 
           if (gameButtons.length === 0) {
 
