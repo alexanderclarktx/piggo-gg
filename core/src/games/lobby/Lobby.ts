@@ -1,10 +1,9 @@
 import {
-  Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText,
-  HtmlButton, HtmlDiv, LobbiesMenu, Networked, NPC, PC, piggoVersion,
-  pixiGraphics, PixiRenderSystem, pixiText, Position, RefreshableDiv,
-  Renderable, Strike, Team, TeamColors, Volley, World
+  Actions, Background, Craft, Entity, GameBuilder, HButton,
+  HImg, HText, HtmlDiv, HtmlText, LobbiesMenu, Networked,
+  NPC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText,
+  Position, RefreshableDiv, Renderable, Strike, Volley, World
 } from "@piggo-gg/core"
-import { Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley" | "craft" | "strike"
@@ -12,7 +11,7 @@ type LobbyState = {
 
 export const Lobby: GameBuilder = {
   id: "lobby",
-  init: (world) => ({
+  init: () => ({
     id: "lobby",
     renderer: "pixi",
     settings: {},
@@ -23,8 +22,6 @@ export const Lobby: GameBuilder = {
     entities: [
       Background({ moving: true, rays: true }),
       GameLobby(),
-      Version(),
-      PlayersOnline(),
 
       // PixiChat(),
       // Friends(),
@@ -34,108 +31,53 @@ export const Lobby: GameBuilder = {
   })
 }
 
-const PlayerName = (player: Entity<PC | Team>, y: number) => {
+const GameButton = (game: GameBuilder, world: World) => {
 
-  const { pc, team } = player.components
-
-  let lastName = ""
-  let lastTeam = 0
-
-  const text = () => pixiText({
-    text: pc.data.name,
-    pos: { x: 0, y: 60 },
-    anchor: { x: 0.5, y: 0.5 },
-    style: { fontSize: 24, fill: TeamColors[team.data.team] }
-  })
-
-  return Entity<Position | Renderable>({
-    id: `playerName-${player.id}`,
-    components: {
-      position: Position({ screenFixed: true, y }),
-      renderable: Renderable({
-        zIndex: 12,
-        interactiveChildren: true,
-        visible: false,
-        onTick: async ({ renderable, world }) => {
-          if (pc.data.name !== lastName || team.data.team !== lastTeam) {
-            renderable.c.removeChildren()
-            renderable.c.addChild(text())
-
-            lastName = pc.data.name
-            lastTeam = team.data.team
-          }
-
-          renderable.visible = world.client?.net.synced === true
-        },
-        setup: async (renderable) => {
-          renderable.c.addChild(text())
-        }
-      })
-    }
-  })
-}
-
-const HtmlGameButton = (game: GameBuilder, world: World) => {
   let rotation = 0
 
-  const button = HButton({
+  return HButton({
     style: {
-      borderRadius: "12px",
-      fontSize: "24px",
-      position: "relative",
-      width: "180px",
-      height: "170px",
+      width: "180px", height: "170px", borderRadius: "12px", fontSize: "24px", position: "relative",
       transition: "transform 0.8s ease, box-shadow 0.2s ease",
-
       border: "3px solid transparent",
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
     },
-    onClick: () => {
+    onClick: (button) => {
       button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
 
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
       world.client?.sound.play({ name: "click1" })
     },
-    onHover: () => {
+    onHover: (button) => {
       button.style.boxShadow = "0 0 10px 4px white"
       world.client?.sound.play({ name: "click3" })
     },
-    onHoverOut: () => {
+    onHoverOut: (button) => {
       button.style.boxShadow = "none"
     }
   },
     HImg({
       src: `${game.id}-256.jpg`,
-      style: {
-        top: "50%",
-        width: "176px",
-        height: "166px",
-        transform: "translate(-50%, -50%)"
-      }
+      style: { top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)" }
     }),
     HText({
       text: game.id,
       style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold" }
     })
   )
-  return button
 }
 
-const HtmlPlayButton = (world: World) => {
-  const button = HtmlButton({
+const PlayButton = (world: World) => {
+  const button = HButton({
     text: "Play",
     style: {
-      position: "relative",
-      left: "50%",
+      position: "relative", left: "50%", width: "300px", height: "42px", transform: "translate(-50%)",
+
       marginTop: "80px",
-      width: "300px",
-      height: "42px",
       fontSize: "26px",
-      transform: "translate(-50%)",
       textShadow: "none",
 
       border: "2px solid transparent",
-      padding: "0px",
       borderRadius: "6px",
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
       backgroundOrigin: "border-box",
@@ -150,11 +92,11 @@ const HtmlPlayButton = (world: World) => {
 
       world.client?.sound.play({ name: "click1" })
     },
-    onHover: () => {
+    onHover: (button) => {
       button.style.boxShadow = "0 0 6px 2px white"
       world.client?.sound.play({ name: "click3" })
     },
-    onHoverOut: () => {
+    onHoverOut: (button) => {
       button.style.boxShadow = "none"
     }
   })
@@ -217,19 +159,19 @@ const Profile = (world: World): RefreshableDiv => {
         button.style.boxShadow = "none"
       }
     },
-    ProfileFrame(1),
-    ProfileFrame(2),
-    ProfileFrame(3),
-    ProfileFrame(4),
-    HText({
-      id: "profile-name",
-      text: "noob",
-      style: {
-        fontSize: "32px", color: "#ffc0cb", left: "50%", top: "120px", transform: "translate(-50%)"
-      }
-    })
-  )
-}
+      ProfileFrame(1),
+      ProfileFrame(2),
+      ProfileFrame(3),
+      ProfileFrame(4),
+      HText({
+        id: "profile-name",
+        text: "noob",
+        style: {
+          fontSize: "32px", color: "#ffc0cb", left: "50%", top: "120px", transform: "translate(-50%)"
+        }
+      })
+    )
+  }
 }
 
 const SignupCTA = () => Entity<Position | Renderable>({
@@ -265,59 +207,31 @@ const SignupCTA = () => Entity<Position | Renderable>({
   }
 })
 
-const Version = () => {
-  return Entity({
-    id: "version",
-    components: {
-      position: Position({ x: -15, y: -30, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        setup: async (r) => {
-          const text = pixiText({
-            text: `v${piggoVersion}`,
-            style: { fontSize: 16, alpha: 0.7 },
-            anchor: { x: 1, y: 0 }
-          })
-          r.c.addChild(text)
-        }
-      })
+const Version = () => HtmlText({
+  text: `v${piggoVersion}`,
+  style: {
+    position: "fixed", right: "15px", bottom: "15px", fontSize: "16px", color: "white", opacity: "0.7",
+    userSelect: "none", pointerEvents: "none"
+  }
+})
+
+const PlayersOnline = (world: World): RefreshableDiv => ({
+  div: HText({
+    id: "playersOnline",
+    style: {
+      position: "fixed", right: "15px", top: "15px", fontSize: "18px", color: "white", opacity: "0.7",
+      userSelect: "none", pointerEvents: "none"
     }
-  })
-}
+  }),
+  update: () => {
+    const div = document.getElementById("playersOnline")
+    if (!div) return
 
-const PlayersOnline = () => {
-
-  let text: Text | undefined = undefined
-
-  const refresh = (world: World) => {
-    world.client?.metaPlayers((response) => {
-      if ("error" in response) return
-      if (text) text.text = `players online: ${response.online}`
+    if (world.tick === 40 || world.tick % 200 === 0) world.client?.metaPlayers((response) => {
+      div.textContent = `players online: ${response.online}`
     })
   }
-
-  return Entity({
-    id: "playersOnline",
-    components: {
-      position: Position({ x: -15, y: 15, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        setup: async (renderable) => {
-          text = pixiText({
-            text: "",
-            style: { fontSize: 18, alpha: 0.7 },
-            anchor: { x: 1, y: 0 }
-          })
-
-          renderable.c.addChild(text)
-        },
-        onTick: ({ world }) => {
-          if (world.tick === 40 || world.tick % 200 === 0) refresh(world)
-        }
-      })
-    }
-  })
-}
+})
 
 const GameLobby = (): Entity => {
 
@@ -326,8 +240,8 @@ const GameLobby = (): Entity => {
   let gameButtons: HTMLButtonElement[] = []
 
   let lobbiesMenu: RefreshableDiv | undefined = undefined
-
   let profile: RefreshableDiv | undefined = undefined
+  let playersOnline: RefreshableDiv | undefined = undefined
 
   const gameLobby = Entity<Position>({
     id: "gameLobby",
@@ -346,8 +260,12 @@ const GameLobby = (): Entity => {
 
           if (gameButtons.length === 0) {
 
-            profile = Profile(world)
+            playersOnline = PlayersOnline(world)
 
+            document.body.appendChild(Version())
+            document.body.appendChild(playersOnline.div)
+
+            profile = Profile(world)
             document.body.appendChild(profile.div)
 
             const shell = HtmlDiv({
@@ -371,15 +289,15 @@ const GameLobby = (): Entity => {
             shell.appendChild(gameButtonsShell)
 
             for (const g of list) {
-              const htmlButton = HtmlGameButton(g, world)
-              gameButtonsShell.appendChild(htmlButton)
-              gameButtons.push(htmlButton)
+              const gameButton = GameButton(g, world)
+              gameButtonsShell.appendChild(gameButton)
+              gameButtons.push(gameButton)
             }
 
             document.body.appendChild(shell)
 
-            const htmlPlayButton = HtmlPlayButton(world)
-            shell.appendChild(htmlPlayButton)
+            const playButton = PlayButton(world)
+            shell.appendChild(playButton)
 
             const lobbiesShell = HtmlDiv({
               transform: "translate(-50%)",
@@ -399,6 +317,7 @@ const GameLobby = (): Entity => {
           if (world.client) {
             lobbiesMenu?.update()
             profile?.update()
+            playersOnline?.update()
           }
 
           // make border green for selected game

@@ -22,7 +22,7 @@ export const HText = ({ id, style, text }: HParams = {}, child1?: HTMLElement): 
   return d
 }
 
-export const HButton = ({ id, style, onClick, onHover, onHoverOut }: HParams = {},
+export const HButton = ({ id, style, onClick, onHover, onHoverOut, text }: HParams = {},
   child1?: HTMLElement, child2?: HTMLElement, child3?: HTMLElement, child4?: HTMLElement, child5?: HTMLElement
 ): HTMLButtonElement => {
   const b = HtmlButton({
@@ -31,6 +31,8 @@ export const HButton = ({ id, style, onClick, onHover, onHoverOut }: HParams = {
     onHover: () => { onHover?.(b) },
     onHoverOut: () => { onHoverOut?.(b) }
   })
+
+  if (text) b.textContent = text
 
   if (id) b.id = id
 
