@@ -69,7 +69,7 @@ export const Volley: GameBuilder<VolleyState> = {
       Bounds("2"),
       Bounds("3"),
       ScorePanel(),
-      LagText({ y: 5 }),
+      LagText({ y: 5, x: -70 }),
       switchTeamButton(),
       Tooltip("controls", " move: WASD\n jump: SPACE\n  aim: MOUSE\n  hit: LEFT CLICK "),
     ]
