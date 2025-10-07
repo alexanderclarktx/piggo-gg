@@ -75,7 +75,7 @@ const PlayerName = (player: Entity<PC | Team>, y: number) => {
   })
 }
 
-const HtmlGameButton = (game: GameBuilder, world: World) => {
+const GameButton = (game: GameBuilder, world: World) => {
 
   let rotation = 0
 
@@ -113,7 +113,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
   )
 }
 
-const HtmlPlayButton = (world: World) => {
+const PlayButton = (world: World) => {
   const button = HtmlButton({
     text: "Play",
     style: {
@@ -363,15 +363,15 @@ const GameLobby = (): Entity => {
             shell.appendChild(gameButtonsShell)
 
             for (const g of list) {
-              const htmlButton = HtmlGameButton(g, world)
-              gameButtonsShell.appendChild(htmlButton)
-              gameButtons.push(htmlButton)
+              const gameButton = GameButton(g, world)
+              gameButtonsShell.appendChild(gameButton)
+              gameButtons.push(gameButton)
             }
 
             document.body.appendChild(shell)
 
-            const htmlPlayButton = HtmlPlayButton(world)
-            shell.appendChild(htmlPlayButton)
+            const playButton = PlayButton(world)
+            shell.appendChild(playButton)
 
             const lobbiesShell = HtmlDiv({
               transform: "translate(-50%)",
