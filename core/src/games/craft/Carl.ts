@@ -1,11 +1,12 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, HookItem,
+  abs, Action, Actions, Character, cloneThree, Collider, cos, HookItem,
   hypot, Input, Inventory, LaserItem, max, Networked, PI,
   Place, Player, Point, Position, Ready, setActiveItemIndex,
   sin, sqrt, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
 import { CraftSettings, CraftState } from "./Craft"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils';
 
 const walk = 0.78
 const run = 1.2
@@ -111,7 +112,8 @@ export const Carl = (player: Player): Character => {
         },
         init: async (entity, _, three) => {
           three.gLoader.load("cowboy.glb", (gltf) => {
-            pig = gltf.scene
+
+            pig = clone(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)
@@ -200,13 +202,34 @@ export const Carl = (player: Player): Character => {
           }
         },
         press: {
-          "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
-          "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
-          "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
-          "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
-          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
-          "6": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
-          "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
+          "1": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 0 } }
+          },
+          "2": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 1 } }
+          },
+          "3": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 2 } }
+          },
+          "4": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 3 } }
+          },
+          "5": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 4 } }
+          },
+          "6": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 5 } }
+          },
+          "7": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 6 } }
+          },
 
           "scrolldown": ({ client }) => {
             const bufferScroll = client.bufferScroll

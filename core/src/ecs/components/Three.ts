@@ -65,6 +65,7 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
             if (!rendered[entity.id].includes(o)) {
               rendered[entity.id].push(o)
               world.three?.scene.add(o)
+              console.log("ADDING OBJECT3D TO SCENE", entity.id)
             }
           }
         }
