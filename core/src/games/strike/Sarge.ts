@@ -4,7 +4,7 @@ import {
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
 import { StrikeSettings, StrikeState } from "./Strike"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils'
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 const walk = 0.78
 const run = 1.2
