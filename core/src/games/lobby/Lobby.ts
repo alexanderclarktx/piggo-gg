@@ -91,7 +91,6 @@ const PlayButton = (world: World) => {
     },
     onHover: (button) => {
       button.style.boxShadow = "0 0 6px 2px white"
-      // world.client?.sound.play({ name: "click3" })
     },
     onHoverOut: (button) => {
       button.style.boxShadow = "none"
