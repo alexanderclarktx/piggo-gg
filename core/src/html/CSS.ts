@@ -67,7 +67,7 @@ export type CSS = Partial<{
   userSelect: "none" | "auto" | "text" | "all"
   visibility: "visible" | "hidden"
   whiteSpace: "normal" | "nowrap" | "pre" | "pre-wrap" | "pre-line"
-  width: `${number}px` | `${number}%` | "auto" | "inherit"
+  width: `${number}px` | `${number}%` | "auto" | "inherit" | "fit-content"
   wordBreak: "normal" | "break-word" | "break-all"
   zIndex: number
 }>
