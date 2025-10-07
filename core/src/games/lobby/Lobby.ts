@@ -1,5 +1,5 @@
 import {
-  Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText,
+  Actions, Background, colors, Craft, Entity, GameBuilder, HButton, HImg, HText,
   HtmlButton, HtmlDiv, LobbiesMenu, Networked, NPC, PC, piggoVersion,
   pixiGraphics, PixiRenderSystem, pixiText, Position, RefreshableDiv,
   Renderable, Strike, Team, TeamColors, Volley, World
@@ -162,10 +162,10 @@ const HtmlPlayButton = (world: World) => {
   return button
 }
 
-const Profile = (): RefreshableDiv => {
+const Profile = (world: World): RefreshableDiv => {
 
   let tick = 0
-  let frame = -2
+  let frame = -1
 
   return {
     update: () => {
@@ -182,17 +182,24 @@ const Profile = (): RefreshableDiv => {
 
       const frames = [f1, f2, f3, f4]
 
+
       frames.forEach((f, i) => {
+        if (frame === -1) f.decode() // prevents flicker
         f.style.visibility = i === frame ? "visible" : "hidden"
       })
+
+      const playerName = world.client?.playerName()
+      if (playerName && playerName !== "noob") {
+        const name = document.getElementById("profile-name") as HTMLDivElement
+        if (name) name.innerText = playerName
+      }
     },
     div: HButton({
-      id: "profile",
       style: {
         top: "16px",
         left: "16px",
         width: "200px",
-        height: "170px",
+        height: "170px"
       }
     },
       HImg({
@@ -238,10 +245,21 @@ const Profile = (): RefreshableDiv => {
           imageRendering: "pixelated",
           pointerEvents: "auto",
           visibility: "hidden",
-          transform: "translate(-50%, -60%)"
+          transform: "translate(-50%, -62%)"
         },
         id: "f4",
         src: "f4.png"
+      }),
+      HText({
+        id: "profile-name",
+        text: "noob",
+        style: {
+          fontSize: "32px",
+          color: "#ffc0cb",
+          left: "50%",
+          top: "120px",
+          transform: "translate(-50%)"
+        }
       })
     )
   }
@@ -361,7 +379,7 @@ const GameLobby = (): Entity => {
 
           if (gameButtons.length === 0) {
 
-            profile = Profile()
+            profile = Profile(world)
 
             document.body.appendChild(profile.div)
 
