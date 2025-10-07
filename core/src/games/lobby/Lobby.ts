@@ -201,7 +201,8 @@ const Profile = (): RefreshableDiv => {
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
-          visibility: "hidden"
+          visibility: "hidden",
+          transform: "translate(-50%, -60%)"
         },
         id: "f1",
         src: "f1.png"
@@ -212,7 +213,8 @@ const Profile = (): RefreshableDiv => {
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
-          visibility: "hidden"
+          visibility: "hidden",
+          transform: "translate(-50%, -60%)"
         },
         id: "f2",
         src: "f2.png"
@@ -223,7 +225,8 @@ const Profile = (): RefreshableDiv => {
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
-          visibility: "hidden"
+          visibility: "hidden",
+          transform: "translate(-50%, -60%)"
         },
         id: "f3",
         src: "f3.png"
@@ -234,7 +237,8 @@ const Profile = (): RefreshableDiv => {
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
-          visibility: "hidden"
+          visibility: "hidden",
+          transform: "translate(-50%, -60%)"
         },
         id: "f4",
         src: "f4.png"
