@@ -167,6 +167,8 @@ const Profile = (world: World): RefreshableDiv => {
   let tick = 0
   let frame = -1
 
+  let rotation = 0
+
   return {
     update: () => {
       tick += 1
@@ -199,8 +201,12 @@ const Profile = (world: World): RefreshableDiv => {
         top: "16px",
         left: "16px",
         width: "200px",
-        height: "170px"
-      }
+        height: "170px",
+        transition: "transform 0.8s ease"
+      },
+      onClick: (button) => {
+        button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
+      },
     },
       HImg({
         style: {
