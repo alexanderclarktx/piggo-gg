@@ -1,5 +1,5 @@
 import {
-  Actions, Background, colors, Craft, Entity, GameBuilder, HButton, HImg, HText,
+  Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText,
   HtmlButton, HtmlDiv, LobbiesMenu, Networked, NPC, PC, piggoVersion,
   pixiGraphics, PixiRenderSystem, pixiText, Position, RefreshableDiv,
   Renderable, Strike, Team, TeamColors, Volley, World
@@ -166,8 +166,15 @@ const Profile = (world: World): RefreshableDiv => {
 
   let tick = 0
   let frame = -1
-
   let rotation = 0
+
+  const ProfileFrame = (frame: number) => HImg({
+    style: {
+      width: "94px", borderRadius: "8px", imageRendering: "pixelated", pointerEvents: "auto", visibility: "hidden", transform: "translate(-50%, -62%)"
+    },
+    id: `f${frame}`,
+    src: `f${frame}.png`
+  })
 
   return {
     update: () => {
@@ -184,7 +191,6 @@ const Profile = (world: World): RefreshableDiv => {
 
       const frames = [f1, f2, f3, f4]
 
-
       frames.forEach((f, i) => {
         if (frame === -1) f.decode() // prevents flicker
         f.style.visibility = i === frame ? "visible" : "hidden"
@@ -198,77 +204,32 @@ const Profile = (world: World): RefreshableDiv => {
     },
     div: HButton({
       style: {
-        top: "16px",
-        left: "16px",
-        width: "200px",
-        height: "170px",
-        transition: "transform 0.8s ease"
+        top: "16px", left: "16px", width: "200px", height: "170px",
+        transition: "transform 0.8s ease, box-shadow 0.2s ease"
       },
       onClick: (button) => {
         button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
       },
+      onHover: (button) => {
+        button.style.boxShadow = "0 0 10px 4px white"
+      },
+      onHoverOut: (button) => {
+        button.style.boxShadow = "none"
+      }
     },
-      HImg({
-        style: {
-          width: "92px",
-          borderRadius: "8px",
-          imageRendering: "pixelated",
-          pointerEvents: "auto",
-          visibility: "hidden",
-          transform: "translate(-50%, -60%)"
-        },
-        id: "f1",
-        src: "f1.png"
-      }),
-      HImg({
-        style: {
-          width: "92px",
-          borderRadius: "8px",
-          imageRendering: "pixelated",
-          pointerEvents: "auto",
-          visibility: "hidden",
-          transform: "translate(-50%, -60%)"
-        },
-        id: "f2",
-        src: "f2.png"
-      }),
-      HImg({
-        style: {
-          width: "92px",
-          borderRadius: "8px",
-          imageRendering: "pixelated",
-          pointerEvents: "auto",
-          visibility: "hidden",
-          transform: "translate(-50%, -60%)"
-        },
-        id: "f3",
-        src: "f3.png"
-      }),
-      HImg({
-        style: {
-          width: "92px",
-          borderRadius: "8px",
-          imageRendering: "pixelated",
-          pointerEvents: "auto",
-          visibility: "hidden",
-          transform: "translate(-50%, -62%)"
-        },
-        id: "f4",
-        src: "f4.png"
-      }),
-      HText({
-        id: "profile-name",
-        text: "noob",
-        style: {
-          fontSize: "32px",
-          color: "#ffc0cb",
-          left: "50%",
-          top: "120px",
-          transform: "translate(-50%)"
-        }
-      })
-    )
-  }
+    ProfileFrame(1),
+    ProfileFrame(2),
+    ProfileFrame(3),
+    ProfileFrame(4),
+    HText({
+      id: "profile-name",
+      text: "noob",
+      style: {
+        fontSize: "32px", color: "#ffc0cb", left: "50%", top: "120px", transform: "translate(-50%)"
+      }
+    })
+  )
+}
 }
 
 const SignupCTA = () => Entity<Position | Renderable>({
