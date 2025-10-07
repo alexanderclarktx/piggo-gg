@@ -1,7 +1,7 @@
 import {
   Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText,
-  HtmlButton, HtmlDiv, LobbiesMenu, Networked, NPC, PC, piggoVersion,
-  pixiGraphics, PixiRenderSystem, pixiText, Position, RefreshableDiv,
+  HtmlDiv, LobbiesMenu, Networked, NPC, PC, piggoVersion, pixiGraphics,
+  PixiRenderSystem, pixiText, Position, RefreshableDiv,
   Renderable, Strike, Team, TeamColors, Volley, World
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
@@ -12,7 +12,7 @@ type LobbyState = {
 
 export const Lobby: GameBuilder = {
   id: "lobby",
-  init: (world) => ({
+  init: () => ({
     id: "lobby",
     renderer: "pixi",
     settings: {},
