@@ -114,20 +114,16 @@ const GameButton = (game: GameBuilder, world: World) => {
 }
 
 const PlayButton = (world: World) => {
-  const button = HtmlButton({
+  const button = HButton({
     text: "Play",
     style: {
-      position: "relative",
-      left: "50%",
+      position: "relative", left: "50%", width: "300px", height: "42px", transform: "translate(-50%)",
+
       marginTop: "80px",
-      width: "300px",
-      height: "42px",
       fontSize: "26px",
-      transform: "translate(-50%)",
       textShadow: "none",
 
       border: "2px solid transparent",
-      padding: "0px",
       borderRadius: "6px",
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
       backgroundOrigin: "border-box",
@@ -142,11 +138,11 @@ const PlayButton = (world: World) => {
 
       world.client?.sound.play({ name: "click1" })
     },
-    onHover: () => {
+    onHover: (button) => {
       button.style.boxShadow = "0 0 6px 2px white"
       world.client?.sound.play({ name: "click3" })
     },
-    onHoverOut: () => {
+    onHoverOut: (button) => {
       button.style.boxShadow = "none"
     }
   })
