@@ -1,5 +1,6 @@
 import {
   Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText, HtmlDiv,
+  HtmlText,
   LobbiesMenu, Networked, NPC, piggoVersion, pixiGraphics, PixiRenderSystem,
   pixiText, Position, RefreshableDiv, Renderable, Strike, Volley, World
 } from "@piggo-gg/core"
@@ -22,7 +23,7 @@ export const Lobby: GameBuilder = {
     entities: [
       Background({ moving: true, rays: true }),
       GameLobby(),
-      Version(),
+      // Version(),
       PlayersOnline(),
 
       // PixiChat(),
@@ -209,25 +210,13 @@ const SignupCTA = () => Entity<Position | Renderable>({
   }
 })
 
-const Version = () => {
-  return Entity({
-    id: "version",
-    components: {
-      position: Position({ x: -15, y: -30, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        setup: async (r) => {
-          const text = pixiText({
-            text: `v${piggoVersion}`,
-            style: { fontSize: 16, alpha: 0.7 },
-            anchor: { x: 1, y: 0 }
-          })
-          r.c.addChild(text)
-        }
-      })
-    }
-  })
-}
+const Version = () => HtmlText({
+  text: `v${piggoVersion}`,
+  style: {
+    position: "fixed", right: "15px", bottom: "15px", fontSize: "16px", color: "white", opacity: "0.7",
+    userSelect: "none", pointerEvents: "none"
+  }
+})
 
 const PlayersOnline = () => {
 
@@ -290,8 +279,9 @@ const GameLobby = (): Entity => {
 
           if (gameButtons.length === 0) {
 
-            profile = Profile(world)
+            document.body.appendChild(Version())
 
+            profile = Profile(world)
             document.body.appendChild(profile.div)
 
             const shell = HtmlDiv({

@@ -16,7 +16,7 @@ export type CSS = Partial<{
   bottom: `${number}%` | `${number}px`
   boxSizing: "border-box" | "content-box"
   clipPath: string
-  color: `#${string}`
+  color: LexColor
   cursor: "pointer" | "default" | "not-allowed"
   display: "block" | "inline-block" | "flex" | "inline-flex" | "none"
   flex: number | `${number} ${number} auto`
