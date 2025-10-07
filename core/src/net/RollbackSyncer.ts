@@ -10,7 +10,6 @@ const otherCharacter = (id: string, world: World) => {
   if (id === world.client?.character()?.id) return false
   if (id.startsWith("carl") || id.startsWith("vince")) return true
   return false
-  // return id.startsWith("carl") && id !== world.client?.character()?.id
 }
 
 // TODO not generic across games
