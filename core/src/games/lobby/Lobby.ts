@@ -219,7 +219,7 @@ const PlayersOnline = (world: World): RefreshableDiv => ({
   div: HText({
     id: "playersOnline",
     style: {
-      position: "fixed", right: "15px", top: "15px", fontSize: "16px", color: "white", opacity: "0.7",
+      position: "fixed", right: "15px", top: "15px", fontSize: "18px", color: "white", opacity: "0.7",
       userSelect: "none", pointerEvents: "none"
     }
   }),
