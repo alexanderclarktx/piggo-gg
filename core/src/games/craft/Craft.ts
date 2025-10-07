@@ -69,7 +69,7 @@ export const Craft: GameBuilder<CraftState, CraftSettings> = {
     entities: [
       Crosshair(),
       EscapeMenu(world),
-      UIProfile(),
+      // UIProfile(),
       Scoreboard(),
       HtmlChat(),
       Sun(),
