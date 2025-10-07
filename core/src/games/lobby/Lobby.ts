@@ -46,7 +46,7 @@ const GameButton = (game: GameBuilder, world: World) => {
       button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
 
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-      world.client?.sound.play({ name: "bubble" })
+      world.client?.sound.play({ name: "click1" })
     },
     onHover: (button) => {
       button.style.boxShadow = "0 0 10px 4px white"
