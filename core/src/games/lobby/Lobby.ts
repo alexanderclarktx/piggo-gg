@@ -24,7 +24,6 @@ export const Lobby: GameBuilder = {
       GameLobby(),
 
       // PixiChat(),
-      // Friends(),
       // SignupCTA()
     ],
     netcode: "delay"
