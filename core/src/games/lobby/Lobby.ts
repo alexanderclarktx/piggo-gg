@@ -81,13 +81,8 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
 
   return HButton({
     style: {
-      borderRadius: "12px",
-      fontSize: "24px",
-      position: "relative",
-      width: "180px",
-      height: "170px",
+      width: "180px", height: "170px", borderRadius: "12px", fontSize: "24px", position: "relative",
       transition: "transform 0.8s ease, box-shadow 0.2s ease",
-
       border: "3px solid transparent",
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
     },
@@ -108,10 +103,7 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
     HImg({
       src: `${game.id}-256.jpg`,
       style: {
-        top: "50%",
-        width: "176px",
-        height: "166px",
-        transform: "translate(-50%, -50%)"
+        top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)"
       }
     }),
     HText({
