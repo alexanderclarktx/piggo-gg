@@ -13,8 +13,6 @@ const run = 1.2
 const hop = 0.18
 const leap = 0.3
 
-let pigProto: Object3D | undefined = undefined
-
 export const Carl = (player: Player): Character => {
 
   let duck: Object3D = new Object3D()
@@ -116,15 +114,12 @@ export const Carl = (player: Player): Character => {
         init: async (entity, world, three) => {
           three.gLoader.load("cowboy.glb", (gltf) => {
 
-            if (!pigProto) {
-              pigProto = gltf.scene
-              pigProto.animations = gltf.animations
-              pigProto.frustumCulled = false
-              pigProto.scale.set(0.16, 0.18, 0.16)
-            }
+            pig = clone(gltf.scene)
+            pig.animations = gltf.animations
+            pig.frustumCulled = false
+            pig.scale.set(0.16, 0.18, 0.16)
 
-            pig = clone(pigProto)
-            copyMaterials(pigProto, pig)
+            copyMaterials(gltf.scene, pig)
 
             pigMixer = new AnimationMixer(pig)
 
