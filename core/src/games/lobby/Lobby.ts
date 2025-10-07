@@ -22,8 +22,6 @@ export const Lobby: GameBuilder = {
     systems: [PixiRenderSystem],
     entities: [
       Background({ moving: true, rays: true }),
-      // Profile(),
-      // ...[world.client?.player ? [Avatar(world.client.player, { x: 110, y: 80 })] : []].flat(),
       GameLobby(),
       Version(),
       PlayersOnline(),
@@ -169,80 +167,79 @@ const Profile = (): RefreshableDiv => {
   let tick = 0
   let frame = -2
 
-  const update = () => {
-    tick += 1
-    if (tick == 7) {
-      frame = (frame + 1) % 4
-      tick = 0
-    }
+  return {
+    update: () => {
+      tick += 1
+      if (tick == 7) {
+        frame = (frame + 1) % 4
+        tick = 0
+      }
 
-    const f1 = document.getElementById("f1") as HTMLImageElement
-    const f2 = document.getElementById("f2") as HTMLImageElement
-    const f3 = document.getElementById("f3") as HTMLImageElement
-    const f4 = document.getElementById("f4") as HTMLImageElement
+      const f1 = document.getElementById("f1") as HTMLImageElement
+      const f2 = document.getElementById("f2") as HTMLImageElement
+      const f3 = document.getElementById("f3") as HTMLImageElement
+      const f4 = document.getElementById("f4") as HTMLImageElement
 
-    const frames = [f1, f2, f3, f4]
+      const frames = [f1, f2, f3, f4]
 
-    frames.forEach((f, i) => {
-      f.style.visibility = i === frame ? "visible" : "hidden"
-    })
+      frames.forEach((f, i) => {
+        f.style.visibility = i === frame ? "visible" : "hidden"
+      })
+    },
+    div: HButton({
+      style: {
+        top: "40px",
+        left: "50px",
+        display: "inline-block",
+        backgroundImage: ""
+      }
+    },
+      HImg({
+        style: {
+          width: "82px",
+          borderRadius: "8px",
+          imageRendering: "pixelated",
+          pointerEvents: "auto",
+          visibility: "hidden"
+        },
+        id: "f1",
+        src: "f1.png"
+      }),
+      HImg({
+        style: {
+          width: "82px",
+          borderRadius: "8px",
+          imageRendering: "pixelated",
+          pointerEvents: "auto",
+          visibility: "hidden"
+        },
+        id: "f2",
+        src: "f2.png"
+      }),
+      HImg({
+        style: {
+          width: "82px",
+          borderRadius: "8px",
+          imageRendering: "pixelated",
+          pointerEvents: "auto",
+          visibility: "hidden"
+        },
+        id: "f3",
+        src: "f3.png"
+      }),
+      HImg({
+        style: {
+          width: "82px",
+          borderRadius: "8px",
+          imageRendering: "pixelated",
+          pointerEvents: "auto",
+          visibility: "hidden"
+        },
+        id: "f4",
+        src: "f4.png"
+      })
+    )
   }
-
-  const profile = HButton({
-    style: {
-      top: "40px",
-      left: "50px",
-      display: "inline-block",
-      backgroundImage: ""
-    }
-  },
-    HImg({
-      style: {
-        width: "82px",
-        borderRadius: "8px",
-        imageRendering: "pixelated",
-        pointerEvents: "auto",
-        visibility: "hidden"
-      },
-      id: "f1",
-      src: "f1.png"
-    }),
-    HImg({
-      style: {
-        width: "82px",
-        borderRadius: "8px",
-        imageRendering: "pixelated",
-        pointerEvents: "auto",
-        visibility: "hidden"
-      },
-      id: "f2",
-      src: "f2.png"
-    }),
-    HImg({
-      style: {
-        width: "82px",
-        borderRadius: "8px",
-        imageRendering: "pixelated",
-        pointerEvents: "auto",
-        visibility: "hidden"
-      },
-      id: "f3",
-      src: "f3.png"
-    }),
-    HImg({
-      style: {
-        width: "82px",
-        borderRadius: "8px",
-        imageRendering: "pixelated",
-        pointerEvents: "auto",
-        visibility: "hidden"
-      },
-      id: "f4",
-      src: "f4.png"
-    })
-
-  )
-  return { div: profile, update }
 }
 
 const SignupCTA = () => Entity<Position | Renderable>({
