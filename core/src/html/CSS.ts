@@ -27,7 +27,7 @@ export type CSS = Partial<{
   fontSize: `${number}px`
   fontWeight: "normal" | "bold" | "bolder" | "lighter" | number
   gap: `${number}px` | `${number}%`
-  height: `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
+  height: "inherit" | `${number}px` | `${number}%` | "auto" | `${number}vh` | `${number}dvh`
   imageRendering: "auto" | "crisp-edges" | "pixelated"
   justifyContent: "center" | "flex-start" | "flex-end" | "space-between" | "space-around"
   left: `${number}%` | `${number}px` | `${number}dvh` | `calc(${string})`
@@ -67,7 +67,7 @@ export type CSS = Partial<{
   userSelect: "none" | "auto" | "text" | "all"
   visibility: "visible" | "hidden"
   whiteSpace: "normal" | "nowrap" | "pre" | "pre-wrap" | "pre-line"
-  width: `${number}px` | `${number}%` | "auto" | "inherit"
+  width: `${number}px` | `${number}%` | "auto" | "inherit" | "fit-content"
   wordBreak: "normal" | "break-word" | "break-all"
   zIndex: number
 }>
