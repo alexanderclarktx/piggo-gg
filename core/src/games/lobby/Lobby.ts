@@ -90,7 +90,7 @@ const GameButton = (game: GameBuilder, world: World) => {
       button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
 
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-      world.client?.sound.play({ name: "click1" })
+      world.client?.sound.play({ name: "bubble" })
     },
     onHover: (button) => {
       button.style.boxShadow = "0 0 10px 4px white"
@@ -102,9 +102,7 @@ const GameButton = (game: GameBuilder, world: World) => {
   },
     HImg({
       src: `${game.id}-256.jpg`,
-      style: {
-        top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)"
-      }
+      style: { top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)" }
     }),
     HText({
       text: game.id,
