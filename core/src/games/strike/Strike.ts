@@ -62,7 +62,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
     entities: [
       Crosshair(),
       EscapeMenu(world),
-      UIProfile(),
+      // UIProfile(),
       // Scoreboard(),
       HtmlChat(),
       Sun(),

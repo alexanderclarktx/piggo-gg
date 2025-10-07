@@ -1,5 +1,5 @@
 import {
-  CSS, Entity, HtmlButton, HtmlDiv, HtmlImg, LobbiesMenu,
+  CSS, Entity, HButton, HImg, HtmlButton, HtmlDiv, HtmlImg, LobbiesMenu,
   NPC, Position, SettingsMenu, SkinsMenu, World, styleButton
 } from "@piggo-gg/core"
 
@@ -16,7 +16,7 @@ export const EscapeMenu = (world: World): Entity => {
     maxWidth: "94%",
     height: "80%",
     maxHeight: "540px",
-    pointerEvents: "none",
+    pointerEvents: "auto",
     border: "",
     display: "flex",
     flexDirection: "column",
@@ -24,13 +24,43 @@ export const EscapeMenu = (world: World): Entity => {
     visibility: "hidden"
   })
 
-  const art = Art(world.game.id)
   let rotation = 0
 
-  art.onclick = () => {
-    rotation += 540
-    art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
-  }
+  const art = HButton({
+    style: {
+      left: "50%",
+      transform: "translate(-50%)",
+      marginBottom: "20px",
+      width: "180px", height: "170px", borderRadius: "12px", fontSize: "24px", position: "relative",
+      transition: "transform 0.8s ease, box-shadow 0.2s ease",
+      border: "3px solid transparent",
+      backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
+    },
+    onClick: (button) => {
+      button.style.transform = `translate(-50%, 0%) rotateY(${rotation += 360}deg)`
+    },
+    onHover: (button) => {
+      button.style.boxShadow = "0 0 10px 4px white"
+    },
+    onHoverOut: (button) => {
+      button.style.boxShadow = "none"
+    }
+  },
+    HImg({
+      style: { top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)" },
+      src: `${world.game.id}-256.jpg`,
+      onClick: () => {
+        rotation += 540
+        art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
+      },
+      onHover: () => {
+        art.style.boxShadow = "0 0 10px 4px white"
+      },
+      onHoverOut: () => {
+        art.style.boxShadow = "none"
+      }
+    })
+  )
 
   const menuButtonStyle: CSS = {
     width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"

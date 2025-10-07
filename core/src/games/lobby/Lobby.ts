@@ -44,11 +44,10 @@ const GameButton = (game: GameBuilder, world: World) => {
       button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
 
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
-      world.client?.sound.play({ name: "click1" })
+      world.client?.sound.play({ name: "bubble" })
     },
     onHover: (button) => {
       button.style.boxShadow = "0 0 10px 4px white"
-      world.client?.sound.play({ name: "click3" })
     },
     onHoverOut: (button) => {
       button.style.boxShadow = "none"
@@ -88,11 +87,10 @@ const PlayButton = (world: World) => {
       world.actions.push(world.tick + 1, "world", { actionId: "game", params: { game: state.gameId } })
       world.actions.push(world.tick + 2, "world", { actionId: "game", params: { game: state.gameId } })
 
-      world.client?.sound.play({ name: "click1" })
+      world.client?.sound.play({ name: "bubble" })
     },
     onHover: (button) => {
       button.style.boxShadow = "0 0 6px 2px white"
-      world.client?.sound.play({ name: "click3" })
     },
     onHoverOut: (button) => {
       button.style.boxShadow = "none"
@@ -149,6 +147,7 @@ const Profile = (world: World): RefreshableDiv => {
       },
       onClick: (button) => {
         button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
+        world.client?.sound.play({ name: "bubble" })
       },
       onHover: (button) => {
         button.style.boxShadow = "0 0 10px 4px white"
