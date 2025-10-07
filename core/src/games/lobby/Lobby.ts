@@ -1,10 +1,9 @@
 import {
-  Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText, HtmlDiv,
-  HtmlText,
-  LobbiesMenu, Networked, NPC, piggoVersion, pixiGraphics, PixiRenderSystem,
-  pixiText, Position, RefreshableDiv, Renderable, Strike, Volley, World
+  Actions, Background, Craft, Entity, GameBuilder, HButton,
+  HImg, HText, HtmlDiv, HtmlText, LobbiesMenu, Networked,
+  NPC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText,
+  Position, RefreshableDiv, Renderable, Strike, Volley, World
 } from "@piggo-gg/core"
-import { Text } from "pixi.js"
 
 type LobbyState = {
   gameId: "volley" | "craft" | "strike"
@@ -23,8 +22,6 @@ export const Lobby: GameBuilder = {
     entities: [
       Background({ moving: true, rays: true }),
       GameLobby(),
-      // Version(),
-      PlayersOnline(),
 
       // PixiChat(),
       // Friends(),
@@ -218,39 +215,23 @@ const Version = () => HtmlText({
   }
 })
 
-const PlayersOnline = () => {
+const PlayersOnline = (world: World): RefreshableDiv => ({
+  div: HText({
+    id: "playersOnline",
+    style: {
+      position: "fixed", right: "15px", top: "15px", fontSize: "16px", color: "white", opacity: "0.7",
+      userSelect: "none", pointerEvents: "none"
+    }
+  }),
+  update: () => {
+    const div = document.getElementById("playersOnline")
+    if (!div) return
 
-  let text: Text | undefined = undefined
-
-  const refresh = (world: World) => {
-    world.client?.metaPlayers((response) => {
-      if ("error" in response) return
-      if (text) text.text = `players online: ${response.online}`
+    if (world.tick === 40 || world.tick % 200 === 0) world.client?.metaPlayers((response) => {
+      div.textContent = `players online: ${response.online}`
     })
   }
-
-  return Entity({
-    id: "playersOnline",
-    components: {
-      position: Position({ x: -15, y: 15, screenFixed: true }),
-      renderable: Renderable({
-        zIndex: 10,
-        setup: async (renderable) => {
-          text = pixiText({
-            text: "",
-            style: { fontSize: 18, alpha: 0.7 },
-            anchor: { x: 1, y: 0 }
-          })
-
-          renderable.c.addChild(text)
-        },
-        onTick: ({ world }) => {
-          if (world.tick === 40 || world.tick % 200 === 0) refresh(world)
-        }
-      })
-    }
-  })
-}
+})
 
 const GameLobby = (): Entity => {
 
@@ -259,8 +240,8 @@ const GameLobby = (): Entity => {
   let gameButtons: HTMLButtonElement[] = []
 
   let lobbiesMenu: RefreshableDiv | undefined = undefined
-
   let profile: RefreshableDiv | undefined = undefined
+  let playersOnline: RefreshableDiv | undefined = undefined
 
   const gameLobby = Entity<Position>({
     id: "gameLobby",
@@ -279,7 +260,10 @@ const GameLobby = (): Entity => {
 
           if (gameButtons.length === 0) {
 
+            playersOnline = PlayersOnline(world)
+
             document.body.appendChild(Version())
+            document.body.appendChild(playersOnline.div)
 
             profile = Profile(world)
             document.body.appendChild(profile.div)
@@ -333,6 +317,7 @@ const GameLobby = (): Entity => {
           if (world.client) {
             lobbiesMenu?.update()
             profile?.update()
+            playersOnline?.update()
           }
 
           // make border green for selected game
