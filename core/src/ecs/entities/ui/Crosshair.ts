@@ -14,7 +14,7 @@ export const Crosshair = () => {
     border: "0px",
     borderRadius: "50%",
     pointerEvents: "none"
-  })
+  }, "crosshair")
 
   const crosshair = Entity({
     id: "crosshair",

@@ -213,6 +213,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const { localAim } = world.client!.controls
           const offset = modelOffset(localAim)
 
+          // crosshair displacement
+          const crosshair = document.getElementById("crosshair")
+          if (crosshair) {
+            crosshair.style.top = `calc(50% - ${recoil * 20}px)`
+            crosshair.style.left = `calc(50% + ${recoil * 10}px)`
+          }
+
           // tracer
           if (tracer) {
             if (world.tick - tracerState.tick < 2) {
