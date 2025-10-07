@@ -8,7 +8,7 @@ const movementActions = ["move", "moveAnalog", "jump", "point"]
 // TODO not generic
 const otherCharacter = (id: string, world: World) => {
   if (id === world.client?.character()?.id) return false
-  if (id.startsWith("carl") || id.startsWith("vince")) return true
+  if (id.startsWith("carl") || id.startsWith("vince") || id.startsWith("sarge")) return true
   return false
 }
 
