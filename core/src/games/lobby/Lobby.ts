@@ -48,7 +48,6 @@ const GameButton = (game: GameBuilder, world: World) => {
     },
     onHover: (button) => {
       button.style.boxShadow = "0 0 10px 4px white"
-      // world.client?.sound.play({ name: "click3" })
     },
     onHoverOut: (button) => {
       button.style.boxShadow = "none"
