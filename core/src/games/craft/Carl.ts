@@ -1,7 +1,7 @@
 import {
-  abs, Action, Actions, Character, Collider, copyMaterials, cos, HookItem,
-  hypot, Input, Inventory, LaserItem, max, Networked, PI,
-  Place, Player, Point, Position, Ready, setActiveItemIndex,
+  abs, Action, Actions, Character, Collider, copyMaterials, cos,
+  HookItem, hypot, Input, Inventory, LaserItem, max, Networked,
+  PI, Place, Player, Point, Position, Ready, setActiveItemIndex,
   sin, sqrt, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
