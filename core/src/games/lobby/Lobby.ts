@@ -1,8 +1,7 @@
 import {
-  Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText,
-  HtmlDiv, LobbiesMenu, Networked, NPC, PC, piggoVersion, pixiGraphics,
-  PixiRenderSystem, pixiText, Position, RefreshableDiv,
-  Renderable, Strike, Team, TeamColors, Volley, World
+  Actions, Background, Craft, Entity, GameBuilder, HButton, HImg, HText, HtmlDiv,
+  LobbiesMenu, Networked, NPC, piggoVersion, pixiGraphics, PixiRenderSystem,
+  pixiText, Position, RefreshableDiv, Renderable, Strike, Volley, World
 } from "@piggo-gg/core"
 import { Text } from "pixi.js"
 
@@ -31,47 +30,6 @@ export const Lobby: GameBuilder = {
       // SignupCTA()
     ],
     netcode: "delay"
-  })
-}
-
-const PlayerName = (player: Entity<PC | Team>, y: number) => {
-
-  const { pc, team } = player.components
-
-  let lastName = ""
-  let lastTeam = 0
-
-  const text = () => pixiText({
-    text: pc.data.name,
-    pos: { x: 0, y: 60 },
-    anchor: { x: 0.5, y: 0.5 },
-    style: { fontSize: 24, fill: TeamColors[team.data.team] }
-  })
-
-  return Entity<Position | Renderable>({
-    id: `playerName-${player.id}`,
-    components: {
-      position: Position({ screenFixed: true, y }),
-      renderable: Renderable({
-        zIndex: 12,
-        interactiveChildren: true,
-        visible: false,
-        onTick: async ({ renderable, world }) => {
-          if (pc.data.name !== lastName || team.data.team !== lastTeam) {
-            renderable.c.removeChildren()
-            renderable.c.addChild(text())
-
-            lastName = pc.data.name
-            lastTeam = team.data.team
-          }
-
-          renderable.visible = world.client?.net.synced === true
-        },
-        setup: async (renderable) => {
-          renderable.c.addChild(text())
-        }
-      })
-    }
   })
 }
 
