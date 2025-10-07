@@ -157,6 +157,7 @@ const Art = (gameId: string) => HtmlImg(`${gameId}-256.jpg`, {
   top: "-15px",
   left: "50%",
   width: "170px",
+  transform: "translate(-50%, 0%)",
   transition: "transform 1.2s ease",
   position: "relative",
 

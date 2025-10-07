@@ -185,19 +185,14 @@ const Profile = (): RefreshableDiv => {
       frames.forEach((f, i) => {
         f.style.visibility = i === frame ? "visible" : "hidden"
       })
-
-      const profile = document.getElementById("profile") as HTMLDivElement
-      profile.style.width = f1.width + "px"
     },
     div: HButton({
       id: "profile",
       style: {
-        top: "40px",
-        left: "50px",
-        border: "1px solid white",
-        width: "fit-content",
-        display: "inline-block"
-        // backgroundImage: ""
+        top: "16px",
+        left: "16px",
+        width: "200px",
+        height: "170px",
       }
     },
       HImg({

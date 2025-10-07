@@ -16,5 +16,5 @@ const defaults: CSS = {
   position: "absolute",
   pointerEvents: "none",
   borderRadius: "10px",
-  transform: "translate(-50%)"
+  transform: "translate(-50%, -50%)"
 }
