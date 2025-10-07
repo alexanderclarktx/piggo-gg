@@ -76,9 +76,10 @@ const PlayerName = (player: Entity<PC | Team>, y: number) => {
 }
 
 const HtmlGameButton = (game: GameBuilder, world: World) => {
+
   let rotation = 0
 
-  const button = HButton({
+  return HButton({
     style: {
       borderRadius: "12px",
       fontSize: "24px",
@@ -90,17 +91,17 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       border: "3px solid transparent",
       backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #aaaaaa)",
     },
-    onClick: () => {
+    onClick: (button) => {
       button.style.transform = `translate(0%, 0%) rotateY(${rotation += 360}deg)`
 
       world.actions.push(world.tick + 2, "gameLobby", { actionId: "selectGame", params: { gameId: game.id } })
       world.client?.sound.play({ name: "click1" })
     },
-    onHover: () => {
+    onHover: (button) => {
       button.style.boxShadow = "0 0 10px 4px white"
       world.client?.sound.play({ name: "click3" })
     },
-    onHoverOut: () => {
+    onHoverOut: (button) => {
       button.style.boxShadow = "none"
     }
   },
@@ -118,7 +119,6 @@ const HtmlGameButton = (game: GameBuilder, world: World) => {
       style: { fontSize: "24px", left: "50%", transform: "translate(-50%)", bottom: "-34px", fontWeight: "bold" }
     })
   )
-  return button
 }
 
 const HtmlPlayButton = (world: World) => {
@@ -217,19 +217,19 @@ const Profile = (world: World): RefreshableDiv => {
         button.style.boxShadow = "none"
       }
     },
-    ProfileFrame(1),
-    ProfileFrame(2),
-    ProfileFrame(3),
-    ProfileFrame(4),
-    HText({
-      id: "profile-name",
-      text: "noob",
-      style: {
-        fontSize: "32px", color: "#ffc0cb", left: "50%", top: "120px", transform: "translate(-50%)"
-      }
-    })
-  )
-}
+      ProfileFrame(1),
+      ProfileFrame(2),
+      ProfileFrame(3),
+      ProfileFrame(4),
+      HText({
+        id: "profile-name",
+        text: "noob",
+        style: {
+          fontSize: "32px", color: "#ffc0cb", left: "50%", top: "120px", transform: "translate(-50%)"
+        }
+      })
+    )
+  }
 }
 
 const SignupCTA = () => Entity<Position | Renderable>({
