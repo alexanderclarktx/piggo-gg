@@ -202,9 +202,6 @@ export const Position = (props: PositionProps = {}): Position => {
 
       position.setVelocity({ x: Vx, y: Vy })
 
-      if (Vx > 0) position.data.facing = 1
-      if (Vx < 0) position.data.facing = -1
-
       return position
     },
     rotate: (amount: number, stopAtZero: boolean = false) => {

@@ -1,9 +1,10 @@
 import {
-  Action, Actions, Character, Collider, DeagleItem, hypot, Input, Inventory,
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem, hypot, Input, Inventory,
   max, Networked, PI, Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
 import { StrikeSettings, StrikeState } from "./Strike"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 const walk = 0.78
 const run = 1.2
@@ -239,12 +240,15 @@ export const Sarge = (player: Player): Character => {
             })
           }
         },
-        init: async (entity, _, three) => {
+        init: async (entity, world, three) => {
           three.gLoader.load("cowboy.glb", (gltf) => {
-            pig = gltf.scene
+
+            pig = clone(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)
+
+            copyMaterials(gltf.scene, pig)
 
             pigMixer = new AnimationMixer(pig)
 
@@ -256,7 +260,7 @@ export const Sarge = (player: Player): Character => {
             pig.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.transparent = true
-                child.material.opacity = 0
+                child.material.opacity = player.id === world.client!.playerId() ? 0 : 1
 
                 child.castShadow = true
                 child.receiveShadow = true

@@ -23,8 +23,6 @@ export const Lobby: GameBuilder = {
       Background({ moving: true, rays: true }),
       GameLobby(),
 
-      // PixiChat(),
-      // Friends(),
       // SignupCTA()
     ],
     netcode: "delay"

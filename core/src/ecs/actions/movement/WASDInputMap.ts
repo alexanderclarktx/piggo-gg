@@ -17,8 +17,5 @@ export const WASDInputMap: Partial<InputMap> = {
 const move = (entity: Entity, client: Client, x: number, y: number): null | InvokedAction<"move", XY> => {
   if (!entity.components.position) return null
 
-  if (x > 0) entity.components.position.data.facing = 1
-  if (x < 0) entity.components.position.data.facing = -1
-
   return { actionId: "move", playerId: client.playerId(), params: normalize({ x, y, entity: entity as Entity<Position> }) }
 }

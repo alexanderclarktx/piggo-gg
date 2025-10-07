@@ -29,7 +29,10 @@ export const Vince = (player: Player) => Character({
       },
       press: {
         ...WASDInputMap.press,
-        " ": () => ({ actionId: "jump" }),
+        " ": ({ hold }) => {
+          if (hold) return
+          return { actionId: "jump" }
+        },
         "mb1": ({ hold, mouse, world, entity }) => {
           if (hold) return
           const { position } = entity.components

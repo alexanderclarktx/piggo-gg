@@ -1,11 +1,12 @@
 import {
-  abs, Action, Actions, Character, Collider, cos, HookItem,
-  hypot, Input, Inventory, LaserItem, max, Networked, PI,
-  Place, Player, Point, Position, Ready, setActiveItemIndex,
+  abs, Action, Actions, Character, Collider, copyMaterials, cos,
+  HookItem, hypot, Input, Inventory, LaserItem, max, Networked,
+  PI, Place, Player, Point, Position, Ready, setActiveItemIndex,
   sin, sqrt, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
-import { AnimationAction, AnimationMixer, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three"
+import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
 import { CraftSettings, CraftState } from "./Craft"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 const walk = 0.78
 const run = 1.2
@@ -93,6 +94,7 @@ export const Carl = (player: Player): Character => {
           }
 
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
+            console.log(three.camera.mode, player.id === client.playerId())
 
             const opacity = three.camera.mode === "first" ? 1 - (three.camera.transition / 100) : three.camera.transition / 100
 
@@ -102,19 +104,22 @@ export const Carl = (player: Player): Character => {
               }
             })
 
-            eagle.traverse((child) => {
-              if (child instanceof Mesh) {
-                child.material.opacity = opacity
-              }
-            })
+            // eagle.traverse((child) => {
+            //   if (child instanceof Mesh) {
+            //     child.material.opacity = opacity
+            //   }
+            // })
           }
         },
-        init: async (entity, _, three) => {
+        init: async (entity, world, three) => {
           three.gLoader.load("cowboy.glb", (gltf) => {
-            pig = gltf.scene
+
+            pig = clone(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)
+
+            copyMaterials(gltf.scene, pig)
 
             pigMixer = new AnimationMixer(pig)
 
@@ -126,7 +131,8 @@ export const Carl = (player: Player): Character => {
             pig.traverse((child) => {
               if (child instanceof Mesh) {
                 child.material.transparent = true
-                child.material.opacity = 0
+                child.material.opacity = player.id === world.client!.playerId() ? 0 : 1
+                console.log(child.material.opacity)
 
                 child.castShadow = true
                 child.receiveShadow = true
@@ -136,34 +142,34 @@ export const Carl = (player: Player): Character => {
             entity.components.three.o.push(pig)
           })
 
-          three.gLoader.load("eagle.glb", (gltf) => {
-            eagle = gltf.scene
-            eagle.animations = gltf.animations
-            eagle.scale.set(0.05, 0.05, 0.05)
-            eagle.frustumCulled = false
+          // three.gLoader.load("eagle.glb", (gltf) => {
+          //   eagle = gltf.scene
+          //   eagle.animations = gltf.animations
+          //   eagle.scale.set(0.05, 0.05, 0.05)
+          //   eagle.frustumCulled = false
 
-            eagle.rotation.order = "YXZ"
+          //   eagle.rotation.order = "YXZ"
 
-            eagleMixer = new AnimationMixer(eagle)
-            eagleMixer.clipAction(eagle.animations[0]).play()
+          //   eagleMixer = new AnimationMixer(eagle)
+          //   eagleMixer.clipAction(eagle.animations[0]).play()
 
-            const colors: Record<string, number> = {
-              Cylinder: 0x5C2421,
-              Cylinder_1: 0xE7C41C,
-              Cylinder_2: 0xffffff,
-              Cylinder_3: 0x632724
-            }
+          //   const colors: Record<string, number> = {
+          //     Cylinder: 0x5C2421,
+          //     Cylinder_1: 0xE7C41C,
+          //     Cylinder_2: 0xffffff,
+          //     Cylinder_3: 0x632724
+          //   }
 
-            eagle.traverse((child) => {
-              if (child instanceof Mesh) {
-                child.material = new MeshStandardMaterial({ color: colors[child.name], transparent: true, opacity: 1 })
-                child.castShadow = true
-                child.receiveShadow = true
-              }
-            })
+          //   eagle.traverse((child) => {
+          //     if (child instanceof Mesh) {
+          //       child.material = new MeshStandardMaterial({ color: colors[child.name], transparent: true, opacity: 1 })
+          //       child.castShadow = true
+          //       child.receiveShadow = true
+          //     }
+          //   })
 
-            entity.components.three.o.push(eagle)
-          })
+          //   entity.components.three.o.push(eagle)
+          // })
         }
       }),
       input: Input({
@@ -200,13 +206,34 @@ export const Carl = (player: Player): Character => {
           }
         },
         press: {
-          "1": () => ({ actionId: "setActiveItemIndex", params: { index: 0 } }),
-          "2": () => ({ actionId: "setActiveItemIndex", params: { index: 1 } }),
-          "3": () => ({ actionId: "setActiveItemIndex", params: { index: 2 } }),
-          "4": () => ({ actionId: "setActiveItemIndex", params: { index: 3 } }),
-          "5": () => ({ actionId: "setActiveItemIndex", params: { index: 4 } }),
-          "6": () => ({ actionId: "setActiveItemIndex", params: { index: 5 } }),
-          "7": () => ({ actionId: "setActiveItemIndex", params: { index: 6 } }),
+          "1": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 0 } }
+          },
+          "2": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 1 } }
+          },
+          "3": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 2 } }
+          },
+          "4": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 3 } }
+          },
+          "5": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 4 } }
+          },
+          "6": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 5 } }
+          },
+          "7": ({ hold }) => {
+            if (hold) return
+            return { actionId: "setActiveItemIndex", params: { index: 6 } }
+          },
 
           "scrolldown": ({ client }) => {
             const bufferScroll = client.bufferScroll
@@ -256,10 +283,10 @@ export const Carl = (player: Player): Character => {
           },
 
           // transform
-          "e": ({ hold }) => {
-            if (hold) return
-            return { actionId: "transform" }
-          },
+          // "e": ({ hold }) => {
+          //   if (hold) return
+          //   return { actionId: "transform" }
+          // },
 
           // debug
           "g": ({ world, hold }) => {
@@ -298,16 +325,16 @@ export const Carl = (player: Player): Character => {
       actions: Actions({
         ready: Ready,
         point: Point,
-        transform: Action("transform", ({ entity, world }) => {
-          const { position } = entity?.components ?? {}
-          if (!position) return
+        // transform: Action("transform", ({ entity, world }) => {
+        //   const { position } = entity?.components ?? {}
+        //   if (!position) return
 
-          const state = world.game.state as CraftState
-          if (state.phase === "play") return
-          if (state.hit[entity?.id ?? ""]) return
+        //   const state = world.game.state as CraftState
+        //   if (state.phase === "play") return
+        //   if (state.hit[entity?.id ?? ""]) return
 
-          position.data.flying = !position.data.flying
-        }),
+        //   position.data.flying = !position.data.flying
+        // }),
         place: Place,
         setActiveItemIndex,
         jump: Action("jump", ({ entity, world, params }) => {
