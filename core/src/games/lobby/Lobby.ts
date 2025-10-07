@@ -197,7 +197,7 @@ const Profile = (): RefreshableDiv => {
     },
       HImg({
         style: {
-          width: "82px",
+          width: "92px",
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
@@ -208,7 +208,7 @@ const Profile = (): RefreshableDiv => {
       }),
       HImg({
         style: {
-          width: "82px",
+          width: "92px",
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
@@ -219,7 +219,7 @@ const Profile = (): RefreshableDiv => {
       }),
       HImg({
         style: {
-          width: "82px",
+          width: "92px",
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
@@ -230,7 +230,7 @@ const Profile = (): RefreshableDiv => {
       }),
       HImg({
         style: {
-          width: "82px",
+          width: "92px",
           borderRadius: "8px",
           imageRendering: "pixelated",
           pointerEvents: "auto",
