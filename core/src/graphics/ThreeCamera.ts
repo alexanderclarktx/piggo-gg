@@ -75,6 +75,8 @@ export const ThreeCameraSystem = () => ClientSystemBuilder({
 
         const percent = max(0, min(1, camera.transition / 100))
 
+        const { recoil } = pc.components.position.data
+
         if (camera.mode === "first") {
           if (camera.transition < 100) {
             camera.c.position.set(
@@ -85,7 +87,7 @@ export const ThreeCameraSystem = () => ClientSystemBuilder({
           } else {
             camera.c.position.set(firstPos.x, firstPos.z, firstPos.y)
           }
-          camera.c.rotation.set(y, x, 0)
+          camera.c.rotation.set(y + recoil * 0.03, x, 0)
         } else {
           if (camera.transition < 100) {
             camera.c.position.set(
@@ -97,7 +99,12 @@ export const ThreeCameraSystem = () => ClientSystemBuilder({
             camera.c.position.set(thirdPos.x, thirdPos.z, thirdPos.y)
             // camera.c.position.set(thirdPos.x + right.x * 0.8, thirdPos.z, thirdPos.y + right.z * 0.8)
           }
-          camera.c.lookAt(interpolated.x + offset.x * 0.2, interpolated.z + 0.5 + percent * -0.1, interpolated.y + offset.z * 0.2)
+
+          camera.c.lookAt(
+            interpolated.x + offset.x * 0.2,
+            interpolated.z + 0.5 + percent * -0.1,
+            interpolated.y + offset.z * 0.2
+          )
         }
       }
     }
