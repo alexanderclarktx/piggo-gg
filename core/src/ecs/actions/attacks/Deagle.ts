@@ -33,7 +33,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
-  let recoil = 0
+  // let recoil = 0
   const recoilRate = 0.04
 
   const spawnParticles = (pos: XYZ, tick: number) => {
@@ -87,7 +87,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       }),
       npc: NPC({
         behavior: () => {
-          if (recoil > 0) recoil = max(0, recoil - recoilRate)
+          const { position } = character.components
+          
+          if (position.data.recoil > 0) {
+            position.data.recoil = max(0, position.data.recoil - recoilRate)
+          }
         }
       }),
       actions: Actions({
@@ -108,13 +112,15 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
 
+          const { recoil } = character.components.position.data
+
           if (recoil) {
             aim.y += recoil * 0.1
             aim.x += recoil * params.rng
           }
 
           // apply recoil
-          if (gun) recoil = min(1, recoil + 0.5)
+          if (gun) character.components.position.data.recoil = min(1, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
@@ -216,8 +222,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // crosshair displacement
           const crosshair = document.getElementById("crosshair")
           if (crosshair) {
-            crosshair.style.top = `calc(50% - ${recoil * 20}px)`
-            crosshair.style.left = `calc(50% + ${recoil * 10}px)`
+            // crosshair.style.top = `calc(50% - ${recoil * 20}px)`
+            // crosshair.style.left = `calc(50% + ${recoil * 10}px)`
           }
 
           // tracer
@@ -251,6 +257,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
+          const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
           gun.rotation.y = localAim.x

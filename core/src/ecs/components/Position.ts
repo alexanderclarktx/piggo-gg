@@ -17,6 +17,7 @@ export type Position = Component<"position", {
   offset: XY
   pointing: Oct
   pointingDelta: XY
+  recoil: number
   rotation: number
   rotating: number
   speed: number
@@ -89,6 +90,7 @@ export const Position = (props: PositionProps = {}): Position => {
       offset: props.offset ?? { x: 0, y: 0 },
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
+      recoil: 0,
       rotation: props.rotation ?? 0,
       rotating: 0,
       speed: props.speed ?? 0,
