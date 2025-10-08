@@ -1,9 +1,7 @@
 import {
-  BlockPhysicsSystem, ThreeCameraSystem, D3NametagSystem, logPerf,
-  min, UIProfile, SpawnSystem, Sky, SystemBuilder, HtmlChat,
-  Crosshair, GameBuilder, spawnTerrain, EscapeMenu, ThreeSystem,
-  InventorySystem, Sun, BlockMeshSysten, HUDSystem,
-  spawnFlat
+  BlockMeshSysten, BlockPhysicsSystem, Crosshair, D3NametagSystem, EscapeMenu,
+  GameBuilder, HtmlChat, HUDSystem, InventorySystem, logPerf, min, Sky,
+  spawnFlat, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 
@@ -76,9 +74,6 @@ const StrikeSystem = SystemBuilder({
   id: "StrikeSystem",
   init: (world) => {
     spawnFlat(world)
-
-    // const preview = BlockPreview(world)
-    // if (preview) world.three?.scene.add(preview.mesh)
 
     return {
       id: "StrikeSystem",
