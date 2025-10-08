@@ -33,7 +33,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
-  // let recoil = 0
   const recoilRate = 0.04
 
   const spawnParticles = (pos: XYZ, tick: number) => {
