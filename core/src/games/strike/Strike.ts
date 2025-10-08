@@ -2,7 +2,8 @@ import {
   BlockPhysicsSystem, ThreeCameraSystem, D3NametagSystem, logPerf,
   min, UIProfile, SpawnSystem, Sky, SystemBuilder, HtmlChat,
   Crosshair, GameBuilder, spawnTerrain, EscapeMenu, ThreeSystem,
-  InventorySystem, Sun, BlockMeshSysten, HUDSystem
+  InventorySystem, Sun, BlockMeshSysten, HUDSystem,
+  spawnFlat
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 
@@ -74,7 +75,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
 const StrikeSystem = SystemBuilder({
   id: "StrikeSystem",
   init: (world) => {
-    spawnTerrain(world, 24)
+    spawnFlat(world)
 
     // const preview = BlockPreview(world)
     // if (preview) world.three?.scene.add(preview.mesh)
@@ -111,7 +112,7 @@ const StrikeSystem = SystemBuilder({
 
           // fell off the map
           if (z < -4) {
-            position.setPosition({ x: 20, y: 20, z: 8 })
+            position.setPosition({ x: 5, y: 5, z: 2 })
           }
 
           // if ((world.tick - state.hit[character.id]?.tick) >= 40) {

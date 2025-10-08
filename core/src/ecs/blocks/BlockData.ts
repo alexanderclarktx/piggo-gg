@@ -313,3 +313,21 @@ export const spawnTerrain = (world: World, num: number = 10) => {
   }
   logPerf("spawnTerrain", time)
 }
+
+export const spawnFlat = (world: World) => {
+  const time = performance.now()
+
+  const blocks = 12
+
+  for (let i = 0; i < blocks; i++) {
+    for (let j = 0; j < blocks; j++) {
+      for (let z = 0; z < 1; z++) {
+        for (let x = 0; x < 4; x++) {
+          for (let y = 0; y < 4; y++) {
+            world.blocks.add({ x: i * 4 + x, y: j * 4 + y, z, type: 1 })
+          }
+        }
+      }
+    }
+  }
+}

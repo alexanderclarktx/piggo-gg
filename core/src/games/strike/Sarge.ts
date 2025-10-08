@@ -24,7 +24,7 @@ export const Sarge = (player: Player): Character => {
   const sarge = Character({
     id: `sarge-${player.id}`,
     components: {
-      position: Position({ friction: true, gravity: 0.0024, x: 25, y: 25, z: 6 }),
+      position: Position({ friction: true, gravity: 0.0024, x: 5, y: 5, z: 2 }),
       networked: Networked(),
       inventory: Inventory([DeagleItem]),
       collider: Collider({ shape: "ball", radius: 0.1 }),
