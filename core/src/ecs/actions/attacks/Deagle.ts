@@ -86,10 +86,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       }),
       npc: NPC({
         behavior: () => {
-          const { position } = character.components
-          
-          if (position.data.recoil > 0) {
-            position.data.recoil = max(0, position.data.recoil - recoilRate)
+          const { recoil } = character.components.position.data
+
+          // TODO move this to a system
+          if (recoil > 0) {
+            character.components.position.data.recoil = max(0, recoil - recoilRate)
           }
         }
       }),
