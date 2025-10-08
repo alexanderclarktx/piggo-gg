@@ -33,7 +33,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
-  let recoil = 0
   const recoilRate = 0.04
 
   const spawnParticles = (pos: XYZ, tick: number) => {
@@ -87,7 +86,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       }),
       npc: NPC({
         behavior: () => {
-          if (recoil > 0) recoil = max(0, recoil - recoilRate)
+          const { recoil } = character.components.position.data
+
+          // TODO move this to a system
+          if (recoil > 0) {
+            character.components.position.data.recoil = max(0, recoil - recoilRate)
+          }
         }
       }),
       actions: Actions({
@@ -108,13 +112,15 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
 
+          const { recoil } = character.components.position.data
+
           if (recoil) {
             aim.y += recoil * 0.1
             aim.x += recoil * params.rng
           }
 
           // apply recoil
-          if (gun) recoil = min(1, recoil + 0.5)
+          if (gun) character.components.position.data.recoil = min(1, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
@@ -244,6 +250,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
+          const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
           gun.rotation.y = localAim.x
