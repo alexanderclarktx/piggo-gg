@@ -35,8 +35,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   const recoilRate = 0.04
 
-  let playSoundAt = 0
-
   const spawnParticles = (pos: XYZ, tick: number) => {
     const proto = particles[0]
     if (!proto) return
