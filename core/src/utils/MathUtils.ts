@@ -5,6 +5,7 @@ import { Container } from "pixi.js"
 export type XY = { x: number, y: number }
 export type XZ = { x: number, z: number }
 export type XYZ = { x: number, y: number, z: number }
+export type Bounds = { left: number, right: number, top: number, bottom: number }
 export type TwoPoints = [number, number, number, number]
 export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"

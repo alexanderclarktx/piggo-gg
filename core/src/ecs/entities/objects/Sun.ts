@@ -1,8 +1,8 @@
-import { colors, Entity, Position, Three } from "@piggo-gg/core"
+import { Bounds, colors, Entity, Position, Three } from "@piggo-gg/core"
 import { CameraHelper, DirectionalLight, HemisphereLight, Mesh, MeshPhysicalMaterial, SphereGeometry } from "three"
 
 export type SunProps = {
-  bounds?: { left: number, right: number, top: number, bottom: number }
+  bounds?: Bounds
 }
 
 export const Sun = (props: SunProps = {}) => {
