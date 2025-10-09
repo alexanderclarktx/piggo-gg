@@ -1,6 +1,6 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity,
-  max, min, Networked, NPC, playerForCharacter, Position, random, randomInt, sin,
+  max, min, Networked, NPC, playerForCharacter, Position, random, randomInt, rayCapsuleIntersect, sin,
   sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
@@ -120,7 +120,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           // apply recoil
-          if (gun) character.components.position.data.recoil = min(1, recoil + 0.5)
+          character.components.position.data.recoil = min(1, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
@@ -169,19 +169,28 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
-            const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.05 }
+            const A = { x: target.x, y: target.y, z: target.z }        // feet
+            const B = { x: target.x, y: target.y, z: target.z + 0.5 }  // head (example)
+            const radius = 0.08
 
-            const L = XYZsub(targetXYZ, eyePos)
-            const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
-
-            if (tc < 0) continue
-
-            const Ldist = XYZdistance(targetXYZ, eyePos)
-            const D = sqrt((Ldist * Ldist) - (tc * tc))
-
-            if (D > 0 && D < 0.08) {
+            if (rayCapsuleIntersect(eyePos, dir, A, B, radius)) {
               const targetPlayer = playerForCharacter(world, target.id)
+              console.log("HIT", targetPlayer?.components.pc.data.name || target.id)
             }
+
+            // const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.05 }
+
+            // const L = XYZsub(targetXYZ, eyePos)
+            // const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
+
+            // if (tc < 0) continue
+
+            // const Ldist = XYZdistance(targetXYZ, eyePos)
+            // const D = sqrt((Ldist * Ldist) - (tc * tc))
+
+            // if (D > 0 && D < 0.08) {
+            //   const targetPlayer = playerForCharacter(world, target.id)
+            // }
           }
         }),
       }),
