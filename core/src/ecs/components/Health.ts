@@ -10,7 +10,7 @@ export type Health = Component<"health", { hp: number, maxHp: number }> & {
 }
 
 export type HealthProps = {
-  hp: number,
+  hp?: number,
   maxHp?: number,
   showHealthBar?: boolean
   deathSounds?: ValidSounds[]
@@ -18,12 +18,17 @@ export type HealthProps = {
 }
 
 export const Health = (
-  { hp, maxHp, showHealthBar = true, deathSounds, onDamage }: HealthProps
+  { hp, maxHp, showHealthBar = true, deathSounds, onDamage }: HealthProps = {}
 ): Health => {
+
+  if (hp === undefined) hp = 100
 
   const health: Health = {
     type: "health",
-    data: { hp, maxHp: maxHp ?? hp },
+    data: {
+      hp,
+      maxHp: maxHp ?? hp
+    },
     showHealthBar,
     deathSounds: deathSounds ?? [],
     onDamage: onDamage ?? null,

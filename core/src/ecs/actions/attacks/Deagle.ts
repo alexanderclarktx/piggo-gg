@@ -174,6 +174,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
+            if (!targetEntity.components.health) continue
+            if (targetEntity.components.health.data.hp <= 0) continue
+
             // head
             let A = { x: target.x, y: target.y, z: target.z + 0.435 }
             let B = { x: target.x, y: target.y, z: target.z + 0.485 }
@@ -201,6 +204,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (character.id === world.client?.character()?.id) {
               console.log("HIT", hit.components.pc.data.name)
               world.client.controls.localHit = { tick: world.tick, headshot }
+            }
+            const hitCharacter = hit.components.controlling.getCharacter(world)
+            if (hitCharacter && hitCharacter.components.health) {
+              const damage = headshot ? 100 : 35
+              hitCharacter.components.health.data.hp -= damage
             }
           }
         }),

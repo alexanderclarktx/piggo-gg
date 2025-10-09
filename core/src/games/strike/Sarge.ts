@@ -1,5 +1,5 @@
 import {
-  Action, Actions, Character, Collider, copyMaterials, DeagleItem, hypot, Input, Inventory,
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, hypot, Input, Inventory,
   max, Networked, PI, Place, Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, Vector3 } from "three"
@@ -21,7 +21,9 @@ export const Sarge = (player: Player): Character => {
 
   let idleAnimation: AnimationAction | undefined
   let runAnimation: AnimationAction | undefined
-  let animation: "idle" | "run" = "idle"
+  let deathAnimation: AnimationAction | undefined
+
+  let animation: "idle" | "run" | "hit" = "idle"
 
   const sarge = Character({
     id: `sarge-${player.id}`,
@@ -111,6 +113,7 @@ export const Sarge = (player: Player): Character => {
           "d": ({ world }) => ({ actionId: "move", params: { key: "d", ...upAndDir(world) } })
         }
       }),
+      health: Health(),
       actions: Actions({
         place: Place,
         point: Point,
@@ -235,7 +238,15 @@ export const Sarge = (player: Player): Character => {
           // animation
           const speed = hypot(position.data.velocity.x, position.data.velocity.y)
 
-          if (runAnimation && idleAnimation && pigMixer) {
+          if (runAnimation && idleAnimation && deathAnimation && pigMixer) {
+            const hp = sarge.components.health?.data.hp ?? 100
+            if (hp <= 0 && animation === "run") {
+              animation = "hit"
+              runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
+            } else if (hp <= 0 && animation === "idle") {
+              animation = "hit"
+              idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
+            } else
             if (speed === 0 && animation === "run") {
               animation = "idle"
               runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
@@ -286,6 +297,9 @@ export const Sarge = (player: Player): Character => {
 
             idleAnimation = pigMixer.clipAction(pig.animations[2])
             runAnimation = pigMixer.clipAction(pig.animations[8])
+            deathAnimation = pigMixer.clipAction(pig.animations[0])
+            deathAnimation.loop = 2200
+            deathAnimation.clampWhenFinished = true
 
             idleAnimation?.play()
 

@@ -27,7 +27,13 @@ export const ThreeNametag = (player: Player): ThreeNametag => {
         }
       }
 
-      const { position } = character.components
+      const { position, health } = character.components
+
+      if (health && health.data.hp <= 0) {
+        group.visible = false
+        return
+      }
+
       const interpolated = position.interpolate(world, delta)
 
       group.position.set(interpolated.x, interpolated.z + 0.66, interpolated.y)
