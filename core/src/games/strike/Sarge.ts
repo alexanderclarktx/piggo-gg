@@ -2,7 +2,7 @@ import {
   Action, Actions, Character, Collider, copyMaterials, DeagleItem, hypot, Input, Inventory,
   max, Networked, PI, Place, Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
-import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
+import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, Vector3 } from "three"
 import { StrikeSettings, StrikeState } from "./Strike"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
@@ -12,6 +12,14 @@ const hop = 0.18
 const leap = 0.3
 
 export const Sarge = (player: Player): Character => {
+
+  let hitboxes: {
+    body: undefined | Mesh
+    head: undefined | Mesh
+  } = { body: undefined, head: undefined }
+
+  // let bodyHitbox: Mesh | undefined
+  // let headHitbox: Mesh | undefined
 
   let pig: Object3D = new Object3D()
 
@@ -222,6 +230,8 @@ export const Sarge = (player: Player): Character => {
 
           // position
           pig.position.set(interpolated.x, interpolated.z + 0, interpolated.y)
+          hitboxes.body?.position.set(interpolated.x, interpolated.z + 0.2, interpolated.y)
+          hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.45, interpolated.y)
 
           // rotation
           pig.rotation.y = orientation.x + PI
@@ -253,6 +263,20 @@ export const Sarge = (player: Player): Character => {
           }
         },
         init: async (entity, world, three) => {
+
+          // body
+          const bodyGeo = new CapsuleGeometry(0.09, 0.18)
+          const bodyMat = new MeshPhongMaterial({ color: 0x0000ff, transparent: true, opacity: 0.5 })
+          hitboxes.body = new Mesh(bodyGeo, bodyMat)
+
+          // head
+          const headGeo = new CapsuleGeometry(0.08, 0.06)
+          const headMat = new MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })
+          hitboxes.head = new Mesh(headGeo, headMat)
+
+          entity.components.three.o.push(hitboxes.body, hitboxes.head)
+
+          // character model
           three.gLoader.load("cowboy.glb", (gltf) => {
 
             pig = clone(gltf.scene)

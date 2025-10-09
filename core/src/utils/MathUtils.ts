@@ -12,6 +12,27 @@ export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
 export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, cos, PI } = Math
 
+export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius: number) => {
+  // Segment direction and length
+  const AB = XYZsub(B, A)
+  const AO = XYZsub(from, A)
+  const ABdotAB = XYZdot(AB, AB)
+  const ABdotAO = XYZdot(AB, AO)
+  const ABdotDir = XYZdot(AB, dir)
+
+  // Build quadratic coefficients for t (ray distance)
+  const a = ABdotAB - ABdotDir * ABdotDir
+  const b = ABdotAB * XYZdot(AO, dir) - ABdotAO * ABdotDir
+  const c = ABdotAB * XYZdot(AO, AO) - ABdotAO * ABdotAO - (radius * radius * ABdotAB)
+
+  const disc = b * b - a * c
+  if (disc < 0) return false // no intersection
+
+  // For hitscan, we just need to know if intersection is ahead (t > 0)
+  const t = (-b - sqrt(disc)) / a
+  return t > 0
+}
+
 export const minmax = (n: number, minValue: number, maxValue: number) => {
   return min(max(n, minValue), maxValue)
 }
