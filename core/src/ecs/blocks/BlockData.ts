@@ -6,6 +6,8 @@ export type BlockData = {
   add: (block: Block) => boolean
   addPlan: (plan: BlockPlan) => boolean
   clear: () => void
+  dump: () => void
+  setChunk: (chunk: XY, data: string) => void
   atIJK: (ijk: XYZ) => number | undefined
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
@@ -80,6 +82,38 @@ export const BlockData = (): BlockData => {
       }
       visibleCache = {}
       visibleDirty = {}
+    },
+    // base64 encoded data
+    dump: () => {
+      // console.log(data)
+
+      const dump: Record<string, string> = {}
+
+      // const dump: string[] = []
+      for (let i = 0; i < chunks; i++) {
+        for (let j = 0; j < chunks; j++) {
+          const chunk = data[i][j]
+          if (chunk) {
+            const filled = chunk.some(v => v !== 0)
+            if (filled) {
+              const b64 = btoa(String.fromCharCode(...chunk))
+              // dump.push(`${i},${j},${b64}`)
+              dump[`${i}|${j}`] = b64
+            }
+          }
+        }
+      }
+      console.log(dump)
+    },
+    setChunk: (chunk: XY, chunkData: string) => {
+      if (!data[chunk.x]) data[chunk.x] = []
+
+      visibleDirty[chunkey(chunk.x, chunk.y)] = true
+
+      // data[chunk.x][chunk.y] = chunkData
+      // decode
+      const decoded = new Int8Array(atob(chunkData as unknown as string).split("").map(c => c.charCodeAt(0)))
+      data[chunk.x][chunk.y] = decoded
     },
     neighbors: (chunk: XY, dist: number = 1) => {
       const neighbors: XY[] = []

@@ -1,7 +1,7 @@
 import {
   BlockMeshSysten, BlockPhysicsSystem, Crosshair, D3NametagSystem, EscapeMenu,
-  GameBuilder, HtmlChat, HUDSystem, InventorySystem, logPerf, min, Sky,
-  spawnFlat, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
+  GameBuilder, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min, Sky,
+  SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { StrikeMap } from "./StrikeMap"
@@ -74,10 +74,13 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
 const StrikeSystem = SystemBuilder({
   id: "StrikeSystem",
   init: (world) => {
-    // spawnFlat(world)
-    for (const place of StrikeMap) {
-      world.blocks.add(place)
+    const time = performance.now()
+    for (const chunk of keys(StrikeMap)) {
+      const [x, y] = chunk.split("|").map(Number)
+
+      world.blocks.setChunk({ x, y }, StrikeMap[chunk])
     }
+    logPerf("loaded map", time)
 
     return {
       id: "StrikeSystem",
