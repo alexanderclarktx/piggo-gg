@@ -78,7 +78,7 @@ export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius:
   const closestVec = XYZsub(
     XYZadd(w, XYZscale(u, sc)),
     XYZscale(v, tc)
-  );
+  )
 
   const dist2 = XYZdot(closestVec, closestVec)
   return dist2 <= radius * radius
