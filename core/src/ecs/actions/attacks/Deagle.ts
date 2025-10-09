@@ -1,7 +1,8 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity,
-  max, min, Networked, NPC, Player, playerForCharacter, Position, random, randomInt, rayCapsuleIntersect, sin,
-  sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
+  Action, Actions, blockInLine, Character, cos, Effects, Input, Item,
+  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter,
+  Position, random, randomInt, rayCapsuleIntersect, sin,
+  StrikeState, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -28,9 +29,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   let gun: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
-
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
-
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   const recoilRate = 0.04
@@ -212,7 +211,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }),
       }),
       three: Three({
-        init: async (_, __, three) => {
+        init: async (_, world, three) => {
 
           // tracer
           const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.04, 8)
@@ -226,17 +225,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
 
           // gun
-          three.gLoader.load("deagle.glb", (gltf) => {
-            gun = gltf.scene
-            gun.scale.set(0.025, 0.025, 0.025)
+          if (character.id === world.client?.character()?.id) {
+            three.gLoader.load("deagle.glb", (gltf) => {
+              gun = gltf.scene
+              gun.scale.set(0.025, 0.025, 0.025)
 
-            gun.receiveShadow = true
-            gun.castShadow = true
+              gun.receiveShadow = true
+              gun.castShadow = true
 
-            gun.rotation.order = "YXZ"
+              gun.rotation.order = "YXZ"
 
-            three.scene.add(gun)
-          })
+              three.scene.add(gun)
+            })
+          }
         },
         onRender: ({ world, delta }) => {
           if (!gun) return
