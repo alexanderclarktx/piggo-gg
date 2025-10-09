@@ -37,9 +37,9 @@ export const Sun = (props: SunProps = {}) => {
 
           const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
 
-          const helper = new CameraHelper(light.shadow.camera)
+          // const helper = new CameraHelper(light.shadow.camera)
 
-          sun.components.three.o.push(light, sphere, hemi, helper)
+          sun.components.three.o.push(light, sphere, hemi)
         }
       })
     }
