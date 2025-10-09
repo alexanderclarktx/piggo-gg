@@ -4,6 +4,7 @@ import {
   spawnFlat, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
+import { StrikeMap } from "./StrikeMap"
 
 export type StrikeState = {
   doubleJumped: string[]
@@ -73,7 +74,10 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
 const StrikeSystem = SystemBuilder({
   id: "StrikeSystem",
   init: (world) => {
-    spawnFlat(world)
+    // spawnFlat(world)
+    for (const place of StrikeMap) {
+      world.blocks.add(place)
+    }
 
     return {
       id: "StrikeSystem",

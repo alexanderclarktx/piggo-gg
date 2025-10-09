@@ -4,6 +4,7 @@ export type PlaceParams = {
   camera: XYZ
   dir: XYZ
   pos: XYZ
+  type?: number
 }
 
 export const Place = Action<PlaceParams>("place", ({ params, world }) => {
@@ -18,6 +19,6 @@ export const Place = Action<PlaceParams>("place", ({ params, world }) => {
   if (XYZequal(outside, blockFromXYZ(pos))) return
 
   // place the block
-  const placed = world.blocks.add({ type: inside.type, ...outside })
+  const placed = world.blocks.add({ type: params.type ?? inside.type, ...outside })
   if (placed) world.client?.sound.play({ name: "click2" })
 })

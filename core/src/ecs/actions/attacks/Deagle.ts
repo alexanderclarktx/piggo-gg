@@ -151,7 +151,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // raycast against blocks
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
           if (beamResult) {
-            if (beamResult.inside.type === 1) world.blocks.remove(beamResult.inside)
+            if (beamResult.inside.type === 6) world.blocks.remove(beamResult.inside)
 
             spawnParticles(beamResult.edge, world.tick)
 
