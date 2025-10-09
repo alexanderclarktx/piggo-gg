@@ -238,7 +238,7 @@ export const Sarge = (player: Player): Character => {
 
             const dead = sarge.components.health?.dead() ?? false
 
-            if (sarge.components.health?.dead() && player.id === client.playerId() && three.camera.mode !== "third") {
+            if (dead && player.id === client.playerId() && three.camera.mode !== "third") {
               three.camera.mode = "third"
             }
 
