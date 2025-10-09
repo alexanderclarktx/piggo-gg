@@ -44,7 +44,7 @@ export const PixiRenderer = (): PixiRenderer => {
       if (!renderer.ready) return
       renderer.ready = false
 
-      app.destroy({ removeView: false }, { children: true, texture: true, context: false, style: true, textureSource: true })
+      app.destroy({ removeView: false }, { children: true, texture: true, context: true, style: true, textureSource: true })
     },
     handleResize: () => {
       if (!renderer.ready) return
