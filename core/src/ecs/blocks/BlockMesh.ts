@@ -1,6 +1,6 @@
 import {
   BlockTypeString, ClientSystemBuilder, GrassTexture,
-  LeafTexture, logPerf, OakTexture, SpruceTexture
+  LeafTexture, logPerf, MarbleTexture, OakTexture, SpruceTexture
 } from "@piggo-gg/core"
 import { BoxGeometry, Color, InstancedMesh, InstancedMeshEventMap, MeshPhysicalMaterial, Object3D } from "three"
 
@@ -10,14 +10,15 @@ export const BlockMeshSysten = ClientSystemBuilder({
     const { three } = world
     if (!three) return
 
-    let grass = GrassTexture(BlockMesh(88000), three)
+    let grass = GrassTexture(BlockMesh(32000), three)
     let leaf = LeafTexture(BlockMesh(5000), three)
     let oak = OakTexture(BlockMesh(5000), three)
     let spruce = SpruceTexture(BlockMesh(5000), three)
+    let marble = MarbleTexture(BlockMesh(1000), three)
 
     let rendered = false
 
-    three.scene.add(grass, leaf, oak, spruce)
+    three.scene.add(grass, leaf, oak, spruce, marble)
 
     return {
       id: "BlockMeshSystem",
@@ -40,6 +41,7 @@ export const BlockMeshSysten = ClientSystemBuilder({
           let spruceCount = 0
           let oakCount = 0
           let leafCount = 0
+          let marbleCount = 0
           let otherCount = 0
 
           // for each block
@@ -66,25 +68,33 @@ export const BlockMeshSysten = ClientSystemBuilder({
               spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
               spruce?.setMatrixAt(spruceCount, dummy.matrix)
               spruceCount++
-            } else {
+            } else if (type === "marble") {
+              marble!.setColorAt(marbleCount, new Color(0xcccccc))
+              marble?.setMatrixAt(marbleCount, dummy.matrix)
+              marbleCount++
+            }
+            else {
               grass.setMatrixAt(otherCount, dummy.matrix)
               otherCount++
             }
           }
 
           grass.instanceMatrix.needsUpdate = true
-          spruce!.instanceMatrix.needsUpdate = true
-          oak!.instanceMatrix.needsUpdate = true
-          leaf!.instanceMatrix.needsUpdate = true
+          spruce.instanceMatrix.needsUpdate = true
+          oak.instanceMatrix.needsUpdate = true
+          leaf.instanceMatrix.needsUpdate = true
+          marble.instanceMatrix.needsUpdate = true
 
-          if (spruce?.instanceColor) spruce.instanceColor.needsUpdate = true
-          if (oak?.instanceColor) oak.instanceColor.needsUpdate = true
-          if (leaf?.instanceColor) leaf.instanceColor.needsUpdate = true
+          if (spruce.instanceColor) spruce.instanceColor.needsUpdate = true
+          if (oak.instanceColor) oak.instanceColor.needsUpdate = true
+          if (leaf.instanceColor) leaf.instanceColor.needsUpdate = true
+          if (marble.instanceColor) marble.instanceColor.needsUpdate = true
 
           grass.count = otherCount
           leaf.count = leafCount
           oak.count = oakCount
           spruce.count = spruceCount
+          marble.count = marbleCount
 
           rendered = true
         }
