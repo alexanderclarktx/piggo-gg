@@ -140,7 +140,7 @@ export const Sarge = (player: Player): Character => {
 
           world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
         }),
-        move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }>("move", ({ entity, params, world }) => {
+        move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }>("move", ({ entity, params }) => {
           if (!params.up || !params.dir) return
 
           if (sarge.components.health?.dead()) return
