@@ -240,7 +240,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             })
           }
         },
-        onRender: ({ world, delta }) => {
+        onRender: ({ world, delta, three }) => {
           if (!gun) return
 
           const ratio = delta / 25
@@ -264,12 +264,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          gun.position.copy({
-            x: pos.x + offset.x,
-            y: pos.z + 0.45 + offset.y,
-            z: pos.y + offset.z
-          })
-
+          // particles
           for (let i = 1; i < particles.length; i++) {
             const p = particles[i]
             p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
@@ -280,6 +275,18 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               i--
             }
           }
+
+          if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
+            gun.visible = false
+            return
+          }
+
+          // gun
+          gun.position.copy({
+            x: pos.x + offset.x,
+            y: pos.z + 0.45 + offset.y,
+            z: pos.y + offset.z
+          })
 
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
