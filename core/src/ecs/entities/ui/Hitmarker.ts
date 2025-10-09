@@ -19,8 +19,7 @@ export const Hitmarker = () => {
     border: "",
     backgroundColor: "rgba(255, 255, 255, 0.8)",
     backgroundImage: "none",
-    transform: `rotate(${rotate}deg)`,
-    // opacity: "0.8"
+    transform: `rotate(${rotate}deg)`
   })
 
   const topLeft = marker("-14px", "-10px", 45)
