@@ -324,7 +324,7 @@ export const spawnFlat = (world: World) => {
       for (let z = 0; z < 1; z++) {
         for (let x = 0; x < 4; x++) {
           for (let y = 0; y < 4; y++) {
-            world.blocks.add({ x: i * 4 + x, y: j * 4 + y, z, type: 1 })
+            world.blocks.add({ x: i * 4 + x, y: j * 4 + y, z, type: 4 })
           }
         }
       }
