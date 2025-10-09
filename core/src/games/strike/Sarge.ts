@@ -146,7 +146,7 @@ export const Sarge = (player: Player): Character => {
           const state = world.state<StrikeState>()
           // if (state.hit[entity?.id ?? ""]) return
 
-          if (sarge.components.health!.data.hp <= 0) return
+          if (sarge.components.health?.dead()) return
 
           const up = new Vector3(params.up.x, params.up.y, params.up.z)
           const dir = new Vector3(params.dir.x, 0, params.dir.z)
