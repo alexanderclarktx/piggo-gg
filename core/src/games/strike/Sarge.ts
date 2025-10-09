@@ -124,6 +124,8 @@ export const Sarge = (player: Player): Character => {
           if (position.data.flying) return
           if (!position.data.standing && params.hold) return
 
+          if (sarge.components.health?.dead()) return
+
           const state = world.state<StrikeState>()
           if (!position.data.standing && state.doubleJumped.includes(sarge.id)) return
 
