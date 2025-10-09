@@ -53,23 +53,23 @@ export const BlockMeshSysten = ClientSystemBuilder({
             dummy.updateMatrix()
 
             if (type === "spruceLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x0099aa))
+              leaf.setColorAt(leafCount, new Color(0x0099aa))
               leaf?.setMatrixAt(leafCount, dummy.matrix)
               leafCount++
             } else if (type === "oakLeaf") {
-              leaf!.setColorAt(leafCount, new Color(0x33dd77))
+              leaf.setColorAt(leafCount, new Color(0x33dd77))
               leaf?.setMatrixAt(leafCount, dummy.matrix)
               leafCount++
             } else if (type === "oak") {
-              oak!.setColorAt(oakCount, new Color(0xffaa99))
+              oak.setColorAt(oakCount, new Color(0xffaa99))
               oak?.setMatrixAt(oakCount, dummy.matrix)
               oakCount++
             } else if (type === "spruce") {
-              spruce!.setColorAt(spruceCount, new Color(0xbb66ff))
+              spruce.setColorAt(spruceCount, new Color(0xbb66ff))
               spruce?.setMatrixAt(spruceCount, dummy.matrix)
               spruceCount++
             } else if (type === "marble") {
-              marble!.setColorAt(marbleCount, new Color(0xcccccc))
+              marble.setColorAt(marbleCount, new Color(0xbbbbbb))
               marble?.setMatrixAt(marbleCount, dummy.matrix)
               marbleCount++
             }
