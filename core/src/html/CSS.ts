@@ -62,7 +62,7 @@ export type CSS = Partial<{
   textShadow: "none" | `${number}px ${number}px ${number}px rgba(${number}, ${number}, ${number}, ${number})`
   top: `${number}%` | `${number}px` | `${number}dvh`
   touchAction: "none" | "pan-x" | "pan-y" | "pan-x pan-y" | "manipulation"
-  transform: `translate(${number}%)` | `translate(${number}%, ${number}%)`
+  transform: `translate(${number}%)` | `translate(${number}%, ${number}%)` | `rotate(${number}deg)`
   transition: string
   userSelect: "none" | "auto" | "text" | "all"
   visibility: "visible" | "hidden"
