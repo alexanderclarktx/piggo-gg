@@ -8,8 +8,6 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
 
     const spawned: Record<string, string> = {}
 
-    const dead: Record<string, number> = {}
-
     return {
       id: "SpawnSystem",
       query: ["pc"],
@@ -34,20 +32,26 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
 
             world.addEntity(character)
             spawned[player.id] = character.id
+
+            return
           }
 
-          if (character?.components.health?.dead() && !dead[player.id]) {
-            dead[player.id] = world.tick
-          }
+          if (!character.components.health) return
 
-          if (character && dead[player.id] && dead[player.id] + 120 < world.tick) {
+          const { died } = character.components.health.data
+          if (died === undefined) return
+
+          if (died + 120 < world.tick) {
+            console.log("respawning", player.id, character.id, world.tick)
+
             // reset health
-            character.components.health!.data.hp = character.components.health!.data.maxHp
+            character.components.health.data.hp = character.components.health.data.maxHp
+
+            // reset died
+            character.components.health.data.died = undefined
 
             // reset position
             character.components.position.setPosition({ x: 7.45, y: 12, z: 2 })
-
-            delete dead[player.id]
           }
         })
       }

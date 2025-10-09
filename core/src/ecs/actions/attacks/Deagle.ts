@@ -189,7 +189,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const hitCharacter = hit.components.controlling.getCharacter(world)
             if (hitCharacter && hitCharacter.components.health) {
               const damage = headshot ? 100 : 35
-              hitCharacter.components.health.data.hp -= damage
+              hitCharacter.components.health.damage(damage, world)
             }
           } else {
 

@@ -242,10 +242,16 @@ export const Sarge = (player: Player): Character => {
               three.camera.mode = "third"
             }
 
+            if (animation === "dead" && !dead) {
+              three.camera.mode = "first"
+            }
+
             if (dead) {
               if (animation === "run") {
+                console.log("set animation to dead", world.tick, animation)
                 runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
               } else if (animation === "idle") {
+                console.log("set animation to dead", world.tick, animation)
                 idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
               }
               animation = "dead"
