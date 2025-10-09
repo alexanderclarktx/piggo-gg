@@ -167,15 +167,29 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           let hit: Player | undefined = undefined
+          let headshot = false
 
           // raycast against characters
           for (const target of targets) {
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
-            const A = { x: target.x, y: target.y, z: target.z + 0.11 }
-            const B = { x: target.x, y: target.y, z: target.z + 0.29 }
-            const radius = 0.08
+            // head
+            let A = { x: target.x, y: target.y, z: target.z + 0.435 }
+            let B = { x: target.x, y: target.y, z: target.z + 0.485 }
+            let radius = 0.08
+
+            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
+              hit = playerForCharacter(world, target.id)
+              headshot = true
+              break
+            }
+
+            // body
+
+            A = { x: target.x, y: target.y, z: target.z + 0.11 }
+            B = { x: target.x, y: target.y, z: target.z + 0.29 }
+            radius = 0.08
 
             if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
               hit = playerForCharacter(world, target.id)
@@ -186,7 +200,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           if (hit) {
             if (character.id === world.client?.character()?.id) {
               console.log("HIT", hit.components.pc.data.name)
-              world.client.controls.localHit = world.tick
+              world.client.controls.localHit = { tick: world.tick, headshot }
             }
           }
         }),

@@ -17,7 +17,7 @@ export const Hitmarker = () => {
     width: "10px",
     height: "2px",
     border: "",
-    backgroundColor: "red",
+    backgroundColor: "white",
     backgroundImage: "none",
     transform: `rotate(${rotate}deg)`
   })
@@ -27,7 +27,9 @@ export const Hitmarker = () => {
   const bottomLeft = marker("-14px", "8px", -45)
   const bottomRight = marker("4px", "8px", 45)
 
-  const fadeRate = 0.05
+  const markers = [topLeft, topRight, bottomLeft, bottomRight]
+
+  const fadeRate = 0.07
 
   const hitmarker = Entity({
     id: "hitmarker",
@@ -50,11 +52,13 @@ export const Hitmarker = () => {
 
           const { localHit } = client.controls
 
-          const opacity = Math.max(0, 1 - (world.tick - localHit + ratio) * fadeRate)
-          topLeft.style.opacity = String(opacity)
-          topRight.style.opacity = String(opacity)
-          bottomLeft.style.opacity = String(opacity)
-          bottomRight.style.opacity = String(opacity)
+          const opacity = Math.max(0, 1.2 - (world.tick - localHit.tick + ratio) * fadeRate)
+
+          for (const m of markers) {
+            m.style.opacity = String(opacity)
+            m.style.backgroundColor = localHit.headshot ? "red" : "white"
+            m.style.height = localHit.headshot ? "3px" : "2px"
+          }
         }
       })
     }
