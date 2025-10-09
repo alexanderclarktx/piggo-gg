@@ -114,7 +114,7 @@ const StrikeSystem = SystemBuilder({
 
           // fell off the map
           if (z < -4) {
-            position.setPosition({ x: 5, y: 5, z: 2 })
+            position.setPosition({ x: 7.45, y: 12, z: 2 })
           }
 
           // if ((world.tick - state.hit[character.id]?.tick) >= 40) {

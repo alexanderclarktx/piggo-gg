@@ -52,3 +52,4 @@ export const SpruceTexture = BlockTexture({ side: "spruce-log", norm: "spruce-no
 export const OakTexture = BlockTexture({ side: "oak-log", norm: "spruce-norm" })
 export const LeafTexture = BlockTexture({ side: "dirt", norm: "dirt-norm" })
 export const GrassTexture = BlockTexture({ side: "grass", top: "grass-top", norm: "dirt-norm" })
+export const MarbleTexture = BlockTexture({ side: "marble", norm: "dirt-norm" })

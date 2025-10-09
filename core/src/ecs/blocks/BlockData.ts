@@ -8,6 +8,7 @@ export type BlockData = {
   clear: () => void
   dump: () => void
   setChunk: (chunk: XY, data: string) => void
+  setType: (ijk: XYZ, type: number) => void
   atIJK: (ijk: XYZ) => number | undefined
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
@@ -108,6 +109,17 @@ export const BlockData = (): BlockData => {
 
       const decoded = new Int8Array(atob(chunkData as unknown as string).split("").map(c => c.charCodeAt(0)))
       data[chunk.x][chunk.y] = decoded
+    },
+    setType: ({ x, y, z }: XYZ, type: number) => {
+      const chunkX = floor(x / 4)
+      const chunkY = floor(y / 4)
+
+      if (data[chunkX]?.[chunkY]) {
+        const offset = z * 16 + (y - chunkY * 4) * 4 + (x - chunkX * 4)
+        data[chunkX][chunkY][offset] = type
+      }
+
+      visibleDirty[chunkey(chunkX, chunkY)] = true
     },
     neighbors: (chunk: XY, dist: number = 1) => {
       const neighbors: XY[] = []
