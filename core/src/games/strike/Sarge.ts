@@ -1,6 +1,7 @@
 import {
-  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, hypot, Input, Inventory,
-  max, Networked, PI, Place, Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem,
+  Health, hypot, Input, Inventory, max, Networked, PI, Place,
+  Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, Vector3 } from "three"
 import { StrikeSettings, StrikeState } from "./Strike"
@@ -252,13 +253,13 @@ export const Sarge = (player: Player): Character => {
               animation = "hit"
               idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
             } else
-            if (speed === 0 && animation === "run") {
-              animation = "idle"
-              runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
-            } else if (speed > 0 && animation === "idle") {
-              animation = "run"
-              idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
-            }
+              if (speed === 0 && animation === "run") {
+                animation = "idle"
+                runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+              } else if (speed > 0 && animation === "idle") {
+                animation = "run"
+                idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+              }
           }
 
           pigMixer?.update(speed * ratio * 0.005 + 0.005)
