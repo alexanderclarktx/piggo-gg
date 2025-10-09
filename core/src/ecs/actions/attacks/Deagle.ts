@@ -147,22 +147,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          // raycast against blocks
-          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
-          if (beamResult) {
-            if (beamResult.inside.type === 6) {
-              world.blocks.remove(beamResult.inside)
-              // world.blocks.setType(beamResult.inside, 12)
-            }
-
-            spawnParticles(beamResult.edge, world.tick)
-
-            for (let i = 1; i < particles.length; i++) {
-              const p = particles[i]
-              if (!p.mesh.parent) world.three?.scene.add(p.mesh)
-            }
-          }
-
           let hit: Player | undefined = undefined
           let headshot = false
 
@@ -206,6 +190,23 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (hitCharacter && hitCharacter.components.health) {
               const damage = headshot ? 100 : 35
               hitCharacter.components.health.data.hp -= damage
+            }
+          } else {
+
+            // raycast against blocks
+            const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
+            if (beamResult) {
+              if (beamResult.inside.type === 6) {
+                world.blocks.remove(beamResult.inside)
+                // world.blocks.setType(beamResult.inside, 12)
+              }
+
+              spawnParticles(beamResult.edge, world.tick)
+
+              for (let i = 1; i < particles.length; i++) {
+                const p = particles[i]
+                if (!p.mesh.parent) world.three?.scene.add(p.mesh)
+              }
             }
           }
         }),
