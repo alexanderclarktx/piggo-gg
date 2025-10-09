@@ -118,23 +118,19 @@ export const Sarge = (player: Player): Character => {
       actions: Actions({
         place: Place,
         point: Point,
-        jump: Action("jump", ({ entity, world, params }) => {
-          if (!entity) return
-
-          const { position } = entity?.components ?? {}
-          if (!position) return
+        jump: Action("jump", ({ world, params }) => {
+          const { position } = sarge.components
 
           if (position.data.flying) return
           if (!position.data.standing && params.hold) return
 
-          const state = world.game.state as StrikeState
-          // if (state.hit[entity.id]) return
-          if (!position.data.standing && state.doubleJumped.includes(entity.id)) return
+          const state = world.state<StrikeState>()
+          if (!position.data.standing && state.doubleJumped.includes(sarge.id)) return
 
           // double jumped
           if (!position.data.standing) {
             position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
-            state.doubleJumped.push(entity.id)
+            state.doubleJumped.push(sarge.id)
           } else {
             position.setVelocity({ z: 0.05 })
           }
