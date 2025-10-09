@@ -1,5 +1,5 @@
 import {
-  BlockPhysicsSystem, Apple, ThreeCameraSystem, D3NametagSystem, logPerf,
+  BlockPhysicsSystem, Apple, ThreeCameraSystem, ThreeNametagSystem, logPerf,
   min, UIProfile, Random, randomInt, SpawnSystem, Sky, SystemBuilder,
   XYZdistance, HtmlChat, Crosshair, GameBuilder, spawnTerrain, EscapeMenu,
   ThreeSystem, InventorySystem, BlockPreview, Sun, BlockMeshSysten, HUDSystem
@@ -61,7 +61,7 @@ export const Craft: GameBuilder<CraftState, CraftSettings> = {
       ThreeCameraSystem(),
       CraftSystem,
       HUDSystem,
-      D3NametagSystem,
+      ThreeNametagSystem,
       ThreeSystem,
       InventorySystem,
       BlockMeshSysten

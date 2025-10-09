@@ -1,4 +1,4 @@
-import { CraftSettings, Entity, HtmlDiv, NPC, Position } from "@piggo-gg/core"
+import { CraftSettings, Entity, HtmlDiv, NPC, ogButtonStyle, Position } from "@piggo-gg/core"
 
 export const Crosshair = () => {
 
@@ -11,9 +11,11 @@ export const Crosshair = () => {
     width: "5px",
     height: "5px",
     backgroundColor: "rgba(0, 255, 255, 1)",
-    border: "0px",
+    backgroundImage: "",
+    outline: "none",
+    border: "none",
     borderRadius: "50%",
-    pointerEvents: "none"
+    pointerEvents: "none",
   })
 
   const crosshair = Entity({

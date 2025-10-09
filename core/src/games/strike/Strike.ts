@@ -1,6 +1,6 @@
 import {
-  BlockMeshSysten, BlockPhysicsSystem, Crosshair, D3NametagSystem, EscapeMenu,
-  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min, Sky,
+  BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem, EscapeMenu,
+  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min, Player, Sky,
   SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
@@ -53,7 +53,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       ThreeCameraSystem(),
       StrikeSystem,
       // HUDSystem,
-      D3NametagSystem,
+      ThreeNametagSystem,
       ThreeSystem,
       InventorySystem,
       BlockMeshSysten,
@@ -67,7 +67,8 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       // Scoreboard(),
       HtmlChat(),
       Sun({ bounds: { left: -10, right: 10, top: 10, bottom: -10 } }),
-      Sky()
+      Sky(),
+      Player({ id: "player-dummy", name: "dummy" })
     ]
   })
 }
