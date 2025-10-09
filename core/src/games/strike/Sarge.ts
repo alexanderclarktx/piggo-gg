@@ -143,9 +143,6 @@ export const Sarge = (player: Player): Character => {
         move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }>("move", ({ entity, params, world }) => {
           if (!params.up || !params.dir) return
 
-          const state = world.state<StrikeState>()
-          // if (state.hit[entity?.id ?? ""]) return
-
           if (sarge.components.health?.dead()) return
 
           const up = new Vector3(params.up.x, params.up.y, params.up.z)
