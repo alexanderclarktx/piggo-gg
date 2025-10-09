@@ -242,11 +242,6 @@ export const Sarge = (player: Player): Character => {
               three.camera.mode = "third"
             }
 
-            if (animation === "dead") {
-              // log how far through the death animation we are
-              console.log(deathAnimation.time)
-            }
-
             if (dead) {
               if (animation === "run") {
                 runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
