@@ -1,10 +1,10 @@
 import {
-  BlockPhysicsSystem, ThreeCameraSystem, D3NametagSystem, logPerf,
-  min, UIProfile, SpawnSystem, Sky, SystemBuilder, HtmlChat,
-  Crosshair, GameBuilder, spawnTerrain, EscapeMenu, ThreeSystem,
-  InventorySystem, Sun, BlockMeshSysten, HUDSystem
+  BlockMeshSysten, BlockPhysicsSystem, Crosshair, D3NametagSystem, EscapeMenu,
+  GameBuilder, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min, Sky,
+  SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
+import { StrikeMap } from "./StrikeMap"
 
 export type StrikeState = {
   doubleJumped: string[]
@@ -74,10 +74,13 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
 const StrikeSystem = SystemBuilder({
   id: "StrikeSystem",
   init: (world) => {
-    spawnTerrain(world, 24)
+    const time = performance.now()
+    for (const chunk of keys(StrikeMap)) {
+      const [x, y] = chunk.split("|").map(Number)
 
-    // const preview = BlockPreview(world)
-    // if (preview) world.three?.scene.add(preview.mesh)
+      world.blocks.setChunk({ x, y }, StrikeMap[chunk])
+    }
+    logPerf("loaded map", time)
 
     return {
       id: "StrikeSystem",
@@ -111,7 +114,7 @@ const StrikeSystem = SystemBuilder({
 
           // fell off the map
           if (z < -4) {
-            position.setPosition({ x: 20, y: 20, z: 8 })
+            position.setPosition({ x: 5, y: 5, z: 2 })
           }
 
           // if ((world.tick - state.hit[character.id]?.tick) >= 40) {

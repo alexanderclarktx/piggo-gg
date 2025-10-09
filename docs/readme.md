@@ -12,6 +12,8 @@ lofi music | https://freemusicarchive.org/music/holiznacc0/
 
 ### assets
 
+sci-fi guns | https://quaternius.com/packs/scifigun.html | license: CC0
+
 character mesh | https://opengameart.org/content/animated-characters-pack | license: CC0
 
 block textures | https://github.com/shackhornold/UwUCraft/ | license: MIT

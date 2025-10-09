@@ -30,7 +30,7 @@ export const EscapeMenu = (world: World): Entity => {
     style: {
       left: "50%",
       transform: "translate(-50%)",
-      marginBottom: "20px",
+      marginBottom: "12px",
       width: "180px", height: "170px", borderRadius: "12px", fontSize: "24px", position: "relative",
       transition: "transform 0.8s ease, box-shadow 0.2s ease",
       border: "3px solid transparent",

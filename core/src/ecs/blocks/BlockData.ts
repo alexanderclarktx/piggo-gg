@@ -6,6 +6,8 @@ export type BlockData = {
   add: (block: Block) => boolean
   addPlan: (plan: BlockPlan) => boolean
   clear: () => void
+  dump: () => void
+  setChunk: (chunk: XY, data: string) => void
   atIJK: (ijk: XYZ) => number | undefined
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
@@ -80,6 +82,32 @@ export const BlockData = (): BlockData => {
       }
       visibleCache = {}
       visibleDirty = {}
+    },
+    dump: () => {
+      const dump: Record<string, string> = {}
+
+      // const dump: string[] = []
+      for (let i = 0; i < chunks; i++) {
+        for (let j = 0; j < chunks; j++) {
+          const chunk = data[i][j]
+          if (chunk) {
+            const filled = chunk.some(v => v !== 0)
+            if (filled) {
+              const b64 = btoa(String.fromCharCode(...chunk))
+              dump[`${i}|${j}`] = b64
+            }
+          }
+        }
+      }
+      console.log(dump)
+    },
+    setChunk: (chunk: XY, chunkData: string) => {
+      if (!data[chunk.x]) data[chunk.x] = []
+
+      visibleDirty[chunkey(chunk.x, chunk.y)] = true
+
+      const decoded = new Int8Array(atob(chunkData as unknown as string).split("").map(c => c.charCodeAt(0)))
+      data[chunk.x][chunk.y] = decoded
     },
     neighbors: (chunk: XY, dist: number = 1) => {
       const neighbors: XY[] = []
@@ -312,4 +340,22 @@ export const spawnTerrain = (world: World, num: number = 10) => {
     }
   }
   logPerf("spawnTerrain", time)
+}
+
+export const spawnFlat = (world: World) => {
+  const time = performance.now()
+
+  const blocks = 12
+
+  for (let i = 0; i < blocks; i++) {
+    for (let j = 0; j < blocks; j++) {
+      for (let z = 0; z < 1; z++) {
+        for (let x = 0; x < 4; x++) {
+          for (let y = 0; y < 4; y++) {
+            world.blocks.add({ x: i * 4 + x, y: j * 4 + y, z, type: 4 })
+          }
+        }
+      }
+    }
+  }
 }
