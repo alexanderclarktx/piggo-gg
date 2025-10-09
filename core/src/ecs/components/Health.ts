@@ -7,6 +7,7 @@ export type Health = Component<"health", { hp: number, maxHp: number }> & {
   deathSounds: ValidSounds[]
   onDamage: null | ((damage: number, world: World) => void)
   damage: (damage: number, world: World) => void
+  dead: () => boolean
 }
 
 export type HealthProps = {
@@ -35,7 +36,8 @@ export const Health = (
     damage: (damage: number, world: World) => {
       health.data.hp -= damage
       if (health.onDamage) health.onDamage(damage, world)
-    }
+    },
+    dead: () => health.data.hp <= 0
   }
   return health
 }

@@ -146,6 +146,8 @@ export const Sarge = (player: Player): Character => {
           const state = world.state<StrikeState>()
           // if (state.hit[entity?.id ?? ""]) return
 
+          if (sarge.components.health!.data.hp <= 0) return
+
           const up = new Vector3(params.up.x, params.up.y, params.up.z)
           const dir = new Vector3(params.dir.x, 0, params.dir.z)
 
@@ -239,16 +241,17 @@ export const Sarge = (player: Player): Character => {
           const speed = hypot(position.data.velocity.x, position.data.velocity.y)
 
           if (runAnimation && idleAnimation && deathAnimation && pigMixer) {
-            const hp = sarge.components.health?.data.hp ?? 100
 
-            if (hp <= 0 && player.id === client.playerId() && three.camera.mode !== "third") {
+            const dead = sarge.components.health?.dead() ?? false
+
+            if (sarge.components.health?.dead() && player.id === client.playerId() && three.camera.mode !== "third") {
               three.camera.mode = "third"
             }
 
-            if (hp <= 0 && animation === "run") {
+            if (dead && animation === "run") {
               animation = "hit"
               runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
-            } else if (hp <= 0 && animation === "idle") {
+            } else if (dead && animation === "idle") {
               animation = "hit"
               idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
             } else
