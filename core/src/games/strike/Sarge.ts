@@ -240,6 +240,11 @@ export const Sarge = (player: Player): Character => {
 
           if (runAnimation && idleAnimation && deathAnimation && pigMixer) {
             const hp = sarge.components.health?.data.hp ?? 100
+
+            if (hp <= 0 && player.id === client.playerId() && three.camera.mode !== "third") {
+              three.camera.mode = "third"
+            }
+
             if (hp <= 0 && animation === "run") {
               animation = "hit"
               runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)

@@ -236,7 +236,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
               gun.rotation.order = "YXZ"
 
-              three.scene.add(gun)
+              item.components.three?.o.push(gun)
             })
           }
         },
