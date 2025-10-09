@@ -1,6 +1,6 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity,
-  max, min, Networked, NPC, playerForCharacter, Position, random, randomInt, rayCapsuleIntersect, sin,
+  max, min, Networked, NPC, Player, playerForCharacter, Position, random, randomInt, rayCapsuleIntersect, sin,
   sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
@@ -164,6 +164,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
+          let hit: Player | undefined = undefined
+
           // raycast against characters
           for (const target of targets) {
             const targetEntity = world.entity<Position>(target.id)
@@ -174,23 +176,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const radius = 0.08
 
             if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
-              const targetPlayer = playerForCharacter(world, target.id)
-              console.log("HIT", targetPlayer?.components.pc.data.name || target.id)
+              hit = playerForCharacter(world, target.id)
+              break
             }
+          }
 
-            // const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.05 }
-
-            // const L = XYZsub(targetXYZ, eyePos)
-            // const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
-
-            // if (tc < 0) continue
-
-            // const Ldist = XYZdistance(targetXYZ, eyePos)
-            // const D = sqrt((Ldist * Ldist) - (tc * tc))
-
-            // if (D > 0 && D < 0.08) {
-            //   const targetPlayer = playerForCharacter(world, target.id)
-            // }
+          if (hit) {
+            console.log("HIT", hit.components.pc.data.name)
           }
         }),
       }),
