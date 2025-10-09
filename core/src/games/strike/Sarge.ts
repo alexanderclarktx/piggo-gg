@@ -24,7 +24,7 @@ export const Sarge = (player: Player): Character => {
   let runAnimation: AnimationAction | undefined
   let deathAnimation: AnimationAction | undefined
 
-  let animation: "idle" | "run" | "hit" = "idle"
+  let animation: "idle" | "run" | "dead" = "idle"
 
   const sarge = Character({
     id: `sarge-${player.id}`,
@@ -242,20 +242,35 @@ export const Sarge = (player: Player): Character => {
               three.camera.mode = "third"
             }
 
-            if (dead && animation === "run") {
-              animation = "hit"
-              runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
-            } else if (dead && animation === "idle") {
-              animation = "hit"
-              idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
-            } else
-              if (speed === 0 && animation === "run") {
-                animation = "idle"
-                runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
-              } else if (speed > 0 && animation === "idle") {
-                animation = "run"
-                idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+            if (animation === "dead") {
+              // log how far through the death animation we are
+              console.log(deathAnimation.time)
+            }
+
+            if (dead) {
+              if (animation === "run") {
+                runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
+              } else if (animation === "idle") {
+                idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
               }
+              animation = "dead"
+            } else {
+              if (speed === 0) {
+                if (animation === "run") {
+                  runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+                } else if (animation === "dead") {
+                  deathAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+                }
+                animation = "idle"
+              } else {
+                if (animation === "idle") {
+                  idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+                } else if (animation === "dead") {
+                  deathAnimation.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+                }
+                animation = "run"
+              }
+            }
           }
 
           pigMixer?.update(speed * ratio * 0.005 + 0.005)
