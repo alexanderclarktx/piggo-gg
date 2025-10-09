@@ -68,9 +68,9 @@ export type PositionProps = {
 // the entity's position in the world
 export const Position = (props: PositionProps = {}): Position => {
 
-  const x = props.x ? round(props.x, 3) : 0
-  const y = props.y ? round(props.y, 3) : 0
-  const z = props.z ? round(props.z, 3) : 0
+  const x = props.x ? round(props.x, 5) : 0
+  const y = props.y ? round(props.y, 5) : 0
+  const z = props.z ? round(props.z, 5) : 0
 
   const interpolatedCache = {
     tick: 0, delta: 0, xyz: { x: 0, y: 0, z: 0 }
@@ -106,18 +106,18 @@ export const Position = (props: PositionProps = {}): Position => {
     orientation: "r",
     orientationRads: 0,
     setGravity: (gravity: number) => {
-      position.data.gravity = round(gravity, 3)
+      position.data.gravity = round(gravity, 5)
       return position
     },
     setPosition: ({ x, y, z }: XYZ) => {
-      if (x !== undefined) position.data.x = round(x, 3)
-      if (y !== undefined) position.data.y = round(y, 3)
-      if (z !== undefined) position.data.z = round(z, 3)
+      if (x !== undefined) position.data.x = round(x, 5)
+      if (y !== undefined) position.data.y = round(y, 5)
+      if (z !== undefined) position.data.z = round(z, 5)
 
       return position
     },
     setRotation: (rotation: number) => {
-      position.data.rotation = round(rotation, 3)
+      position.data.rotation = round(rotation, 5)
       return position
     },
     setVelocity: ({ x, y, z }) => {
@@ -137,9 +137,9 @@ export const Position = (props: PositionProps = {}): Position => {
       return position
     },
     impulse: ({ x, y, z }: XYZ) => {
-      if (x !== undefined) position.data.velocity.x = round(position.data.velocity.x + x, 3)
-      if (y !== undefined) position.data.velocity.y = round(position.data.velocity.y + y, 3)
-      if (z !== undefined) position.data.velocity.z = round(position.data.velocity.z + z, 3)
+      if (x !== undefined) position.data.velocity.x = round(position.data.velocity.x + x, 5)
+      if (y !== undefined) position.data.velocity.y = round(position.data.velocity.y + y, 5)
+      if (z !== undefined) position.data.velocity.z = round(position.data.velocity.z + z, 5)
       return position
     },
     interpolate: (world: World, delta: number) => {
@@ -159,9 +159,9 @@ export const Position = (props: PositionProps = {}): Position => {
         return { x: position.data.x, y: position.data.y, z: position.data.z + dz }
       }
 
-      const x = round(position.data.x + position.localVelocity.x * delta / 1000, 3)
-      const y = round(position.data.y + position.localVelocity.y * delta / 1000, 3)
-      const z = round(position.data.z + position.localVelocity.z * delta / world.tickrate, 3)
+      const x = round(position.data.x + position.localVelocity.x * delta / 1000, 5)
+      const y = round(position.data.y + position.localVelocity.y * delta / 1000, 5)
+      const z = round(position.data.z + position.localVelocity.z * delta / world.tickrate, 5)
 
       interpolatedCache.tick = world.tick
       interpolatedCache.delta = delta
@@ -227,9 +227,9 @@ export const Position = (props: PositionProps = {}): Position => {
       return position
     },
     xyz: () => ({
-      x: round(position.data.x, 3),
-      y: round(position.data.y, 3),
-      z: round(position.data.z, 3)
+      x: round(position.data.x, 5),
+      y: round(position.data.y, 5),
+      z: round(position.data.z, 5)
     })
   }
   return position
