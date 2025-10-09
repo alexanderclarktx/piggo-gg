@@ -87,16 +87,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }
       }),
       npc: NPC({
-        behavior: (_, world) => {
+        behavior: () => {
           const { recoil } = character.components.position.data
 
           // TODO move this to a system
           if (recoil > 0) {
             character.components.position.data.recoil = max(0, recoil - recoilRate)
-          }
-
-          if (world.tick === playSoundAt) {
-            world.client?.sound.play({ name: "clink" })
           }
         }
       }),
@@ -189,10 +185,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (hit) {
             if (character.id === world.client?.character()?.id) {
-              playSoundAt = world.tick + 2
-              // world.client?.sound.play({ name: "hitmarker", threshold: { pos: eyePos, distance: 5 } })
+              console.log("HIT", hit.components.pc.data.name)
+              world.client.controls.localHit = world.tick
             }
-            console.log("HIT", hit.components.pc.data.name)
           }
         }),
       }),
