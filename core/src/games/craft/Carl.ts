@@ -132,7 +132,6 @@ export const Carl = (player: Player): Character => {
               if (child instanceof Mesh) {
                 child.material.transparent = true
                 child.material.opacity = player.id === world.client!.playerId() ? 0 : 1
-                console.log(child.material.opacity)
 
                 child.castShadow = true
                 child.receiveShadow = true
