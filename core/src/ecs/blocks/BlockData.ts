@@ -83,10 +83,7 @@ export const BlockData = (): BlockData => {
       visibleCache = {}
       visibleDirty = {}
     },
-    // base64 encoded data
     dump: () => {
-      // console.log(data)
-
       const dump: Record<string, string> = {}
 
       // const dump: string[] = []
@@ -97,7 +94,6 @@ export const BlockData = (): BlockData => {
             const filled = chunk.some(v => v !== 0)
             if (filled) {
               const b64 = btoa(String.fromCharCode(...chunk))
-              // dump.push(`${i},${j},${b64}`)
               dump[`${i}|${j}`] = b64
             }
           }
@@ -110,8 +106,6 @@ export const BlockData = (): BlockData => {
 
       visibleDirty[chunkey(chunk.x, chunk.y)] = true
 
-      // data[chunk.x][chunk.y] = chunkData
-      // decode
       const decoded = new Int8Array(atob(chunkData as unknown as string).split("").map(c => c.charCodeAt(0)))
       data[chunk.x][chunk.y] = decoded
     },
