@@ -52,6 +52,18 @@ export const Hitmarker = () => {
     transform: "translate(-50%, -50%)"
   })
 
+  const marker = (left: `${number}px`, top: `${number}px`, rotate: number) => HtmlDiv({
+    position: "absolute",
+    left,
+    top,
+    width: "10px",
+    height: "2px",
+    border: "",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    backgroundImage: "none",
+    transform: `rotate(${rotate}deg)`
+  })
+
   const topLeft = HtmlDiv({
     position: "absolute",
     left: "-14px",
@@ -64,7 +76,19 @@ export const Hitmarker = () => {
     transform: "rotate(45deg)"
   })
 
-  wrapper.append(topLeft)
+  const topRight = HtmlDiv({
+    position: "absolute",
+    left: "4px",
+    top: "-10px",
+    width: "10px",
+    height: "2px",
+    border: "",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    backgroundImage: "none",
+    transform: "rotate(-45deg)"
+  })
+
+  wrapper.append(topLeft, topRight)
 
   const hitmarker = Entity({
     id: "hitmarker",
