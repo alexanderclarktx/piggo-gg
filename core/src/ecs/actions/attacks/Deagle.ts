@@ -279,6 +279,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
             gun.visible = false
             return
+          } else {
+            gun.visible = true
           }
 
           // gun
