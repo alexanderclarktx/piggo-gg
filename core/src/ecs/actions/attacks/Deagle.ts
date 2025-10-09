@@ -169,11 +169,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
-            const A = { x: target.x, y: target.y, z: target.z }        // feet
-            const B = { x: target.x, y: target.y, z: target.z + 0.5 }  // head (example)
+            const A = { x: target.x, y: target.y, z: target.z + 0 }
+            const B = { x: target.x, y: target.y, z: target.z + 0.18 }
             const radius = 0.08
 
-            if (rayCapsuleIntersect(eyePos, dir, A, B, radius)) {
+            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
               const targetPlayer = playerForCharacter(world, target.id)
               console.log("HIT", targetPlayer?.components.pc.data.name || target.id)
             }
