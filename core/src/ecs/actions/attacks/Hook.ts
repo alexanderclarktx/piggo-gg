@@ -88,7 +88,7 @@ type HookParams = {
   pos: XYZ
 }
 
-const Hook = () => Action<HookParams>("hook", ({ world, params, character }) => {
+export const Hook = () => Action<HookParams>("hook", ({ world, params, character }) => {
   const { pos, dir, camera } = params
 
   const characterPos = character?.components.position.data

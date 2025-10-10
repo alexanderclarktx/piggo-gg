@@ -1,6 +1,6 @@
 import {
   Action, Actions, Character, Collider, copyMaterials, DeagleItem,
-  Health, hypot, Input, Inventory, max, Networked, PI, Place,
+  Health, Hook, hypot, Input, Inventory, max, Networked, PI, Place,
   Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, Vector3 } from "three"
@@ -33,13 +33,14 @@ export const Sarge = (player: Player): Character => {
     components: {
       position: Position({
         friction: true,
-        gravity: 0.0024,
+        gravity: 0.0032,
         x: 7.45, y: isDummy ? 10.3 : 12, z: 2,
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),
       inventory: Inventory([DeagleItem]),
       collider: Collider({ shape: "ball", radius: 0.1 }),
+      health: Health(),
       input: Input({
         release: {
           "escape": ({ world, client }) => {
@@ -71,6 +72,18 @@ export const Sarge = (player: Player): Character => {
             return { actionId: "place", params: { dir, camera, pos, type: 6 } }
           },
 
+          "e" : ({ hold, world, character }) => {
+            if (hold) return
+
+            const pos = character?.components.position.data
+            const dir = world.three?.camera.dir(world)
+            const camera = world.three?.camera.pos()
+
+            if (!pos || !dir || !camera) return
+
+            return { actionId: "hook", params: { pos, dir, camera } }
+          },
+
           "q": ({ world, hold }) => {
             if (hold) return
             const { camera } = world.three!
@@ -100,16 +113,6 @@ export const Sarge = (player: Player): Character => {
           // no movement
           "w,s": () => null, "a,d": () => null,
 
-          // sprint
-          // "shift,w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", sprint: true, ...upAndDir(world) } }),
-          // "shift,w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", sprint: true, ...upAndDir(world) } }),
-          // "shift,a,s": ({ world }) => ({ actionId: "move", params: { key: "as", sprint: true, ...upAndDir(world) } }),
-          // "shift,d,s": ({ world }) => ({ actionId: "move", params: { key: "ds", sprint: true, ...upAndDir(world) } }),
-          // "shift,w": ({ world }) => ({ actionId: "move", params: { key: "w", sprint: true, ...upAndDir(world) } }),
-          // "shift,a": ({ world }) => ({ actionId: "move", params: { key: "a", sprint: true, ...upAndDir(world) } }),
-          // "shift,s": ({ world }) => ({ actionId: "move", params: { key: "s", sprint: true, ...upAndDir(world) } }),
-          // "shift,d": ({ world }) => ({ actionId: "move", params: { key: "d", sprint: true, ...upAndDir(world) } }),
-
           // move
           "w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", ...upAndDir(world) } }),
           "w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", ...upAndDir(world) } }),
@@ -121,10 +124,10 @@ export const Sarge = (player: Player): Character => {
           "d": ({ world }) => ({ actionId: "move", params: { key: "d", ...upAndDir(world) } })
         }
       }),
-      health: Health(),
       actions: Actions({
         place: Place,
         point: Point,
+        hook: Hook(),
         jump: Action("jump", ({ world, params }) => {
           const { position } = sarge.components
 
