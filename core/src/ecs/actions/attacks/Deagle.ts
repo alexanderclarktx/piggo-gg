@@ -183,30 +183,31 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (hit) {
             if (character.id === world.client?.character()?.id) {
-              console.log("HIT", hit.components.pc.data.name)
               world.client.controls.localHit = { tick: world.tick, headshot }
             }
+
             const hitCharacter = hit.components.controlling.getCharacter(world)
-            if (hitCharacter && hitCharacter.components.health) {
+            if (hitCharacter?.components.health) {
               const damage = headshot ? 100 : 35
               hitCharacter.components.health.damage(damage, world)
             }
-          } else {
 
-            // raycast against blocks
-            const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
-            if (beamResult) {
-              if (beamResult.inside.type === 6) {
-                world.blocks.remove(beamResult.inside)
-                // world.blocks.setType(beamResult.inside, 12)
-              }
+            return
+          }
 
-              spawnParticles(beamResult.edge, world.tick)
+          // raycast against blocks
+          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
+          if (beamResult) {
+            if (beamResult.inside.type === 6) {
+              world.blocks.remove(beamResult.inside)
+              // world.blocks.setType(beamResult.inside, 12)
+            }
 
-              for (let i = 1; i < particles.length; i++) {
-                const p = particles[i]
-                if (!p.mesh.parent) world.three?.scene.add(p.mesh)
-              }
+            spawnParticles(beamResult.edge, world.tick)
+
+            for (let i = 1; i < particles.length; i++) {
+              const p = particles[i]
+              if (!p.mesh.parent) world.three?.scene.add(p.mesh)
             }
           }
         }),
