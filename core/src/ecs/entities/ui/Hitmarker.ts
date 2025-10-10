@@ -16,9 +16,7 @@ export const Hitmarker = () => {
     top,
     width: "10px",
     height: "2px",
-    border: "",
     backgroundColor: "white",
-    backgroundImage: "none",
     transform: `rotate(${rotate}deg)`
   })
 

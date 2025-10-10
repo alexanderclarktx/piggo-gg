@@ -1,7 +1,7 @@
 import {
   BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem, EscapeMenu,
-  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min, Player, Sky,
-  SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
+  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min,
+  Player, Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { StrikeMap } from "./StrikeMap"
@@ -14,9 +14,8 @@ export type StrikeState = {
 }
 
 export type StrikeSettings = {
-  //   ambientSound: boolean
   showControls: boolean
-  //   showCrosshair: boolean
+  showCrosshair: boolean
   showNametags: boolean
   mouseSensitivity: number
 }
@@ -118,11 +117,6 @@ const StrikeSystem = SystemBuilder({
           if (z < -4) {
             position.setPosition({ x: 7.45, y: 12, z: 2 })
           }
-
-          // if ((world.tick - state.hit[character.id]?.tick) >= 40) {
-          //   position.setPosition({ x: 20, y: 20, z: 8 })
-          //   delete state.hit[character.id]
-          // }
         }
         logPerf("player positions", t1)
       }

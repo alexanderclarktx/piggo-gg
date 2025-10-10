@@ -26,10 +26,14 @@ export const Sarge = (player: Player): Character => {
 
   let animation: "idle" | "run" | "dead" = "idle"
 
+  const isDummy = player.id === "player-dummy"
+
   const sarge = Character({
     id: `sarge-${player.id}`,
     components: {
-      position: Position({ friction: true, gravity: 0.0024, x: 7.45, y: 12, z: 2 }),
+      position: Position({
+        friction: true, gravity: 0.0024, x: 7.45, y: isDummy ? 10.3 : 12, z: 2, aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
+      }),
       networked: Networked(),
       inventory: Inventory([DeagleItem]),
       collider: Collider({ shape: "ball", radius: 0.1 }),

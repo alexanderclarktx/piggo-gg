@@ -52,6 +52,7 @@ export type PositionProps = {
   x?: number
   y?: number
   z?: number
+  aim?: XY
   velocity?: { x: number, y: number }
   gravity?: number
   friction?: boolean
@@ -86,7 +87,7 @@ export const Position = (props: PositionProps = {}): Position => {
       flying: props.flying ?? false,
       gravity: props.gravity ?? 0,
       heading: { x: NaN, y: NaN },
-      aim: { x: 0, y: 0 },
+      aim: props.aim ?? { x: 0, y: 0 },
       offset: props.offset ?? { x: 0, y: 0 },
       pointing: 0,
       pointingDelta: { x: NaN, y: NaN },
