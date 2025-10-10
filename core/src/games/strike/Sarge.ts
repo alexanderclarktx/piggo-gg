@@ -34,7 +34,7 @@ export const Sarge = (player: Player): Character => {
       position: Position({
         friction: true,
         gravity: 0.003,
-        x: 9.9, y: isDummy ? 10.3 : 15, z: isDummy ? 0.6 : 2,
+        x: 9.9, y: isDummy ? 12.6 : 17, z: isDummy ? 0.6 : 2,
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),
@@ -72,22 +72,22 @@ export const Sarge = (player: Player): Character => {
             return { actionId: "place", params: { dir, camera, pos, type: 3 } }
           },
 
-          "t": ({ hold, world, client }) => {
-            if (hold) return
-            sarge.components.position.data.flying = !sarge.components.position.data.flying
-          },
+          // "t": ({ hold }) => {
+          //   if (hold) return
+          //   sarge.components.position.data.flying = !sarge.components.position.data.flying
+          // },
 
-          "e" : ({ hold, world, character }) => {
-            if (hold) return
+          // "e" : ({ hold, world, character }) => {
+          //   if (hold) return
 
-            const pos = character?.components.position.data
-            const dir = world.three?.camera.dir(world)
-            const camera = world.three?.camera.pos()
+          //   const pos = character?.components.position.data
+          //   const dir = world.three?.camera.dir(world)
+          //   const camera = world.three?.camera.pos()
 
-            if (!pos || !dir || !camera) return
+          //   if (!pos || !dir || !camera) return
 
-            return { actionId: "hook", params: { pos, dir, camera } }
-          },
+          //   return { actionId: "hook", params: { pos, dir, camera } }
+          // },
 
           "q": ({ world, hold }) => {
             if (hold) return

@@ -50,7 +50,7 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
             character.components.health.data.died = undefined
 
             // reset position
-            character.components.position.setPosition({ x: 9.9, y: player.id === "player-dummy" ? 10.3 : 12, z: 2 })
+            character.components.position.setPosition({ x: 9.9, y: player.id === "player-dummy" ? 12.6 : 12, z: 2 })
           }
         })
       }
