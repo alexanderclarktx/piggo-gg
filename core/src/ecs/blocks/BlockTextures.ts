@@ -6,9 +6,10 @@ type BlockTextureProps = {
   top?: string
   bottom?: string
   norm?: string
+  roughness?: number
 }
 
-export const BlockTexture = ({ side, top, bottom, norm }: BlockTextureProps) => (mesh: BlockMesh, three: ThreeRenderer) => {
+export const BlockTexture = ({ side, top, bottom, norm, roughness }: BlockTextureProps) => (mesh: BlockMesh, three: ThreeRenderer) => {
 
   const { material } = mesh
 
@@ -45,6 +46,12 @@ export const BlockTexture = ({ side, top, bottom, norm }: BlockTextureProps) => 
     }
   })
 
+  if (roughness !== undefined) {
+    for (let i = 0; i < 6; i++) {
+      material[i].roughness = roughness
+    }
+  }
+
   return mesh
 }
 
@@ -52,4 +59,4 @@ export const SpruceTexture = BlockTexture({ side: "spruce-log", norm: "spruce-no
 export const OakTexture = BlockTexture({ side: "oak-log", norm: "spruce-norm" })
 export const LeafTexture = BlockTexture({ side: "dirt", norm: "dirt-norm" })
 export const GrassTexture = BlockTexture({ side: "grass", top: "grass-top", norm: "dirt-norm" })
-export const MarbleTexture = BlockTexture({ side: "marble", norm: "dirt-norm" })
+export const MarbleTexture = BlockTexture({ side: "marble", roughness: 0.45 })

@@ -18,3 +18,5 @@ export const Player = ({ id, name }: PlayerProps): Player => Entity<PC | Control
     team: Team(1)
   }
 })
+
+export const DummyPlayer = () => Player({ id: "player-dummy", name: "dummy" })

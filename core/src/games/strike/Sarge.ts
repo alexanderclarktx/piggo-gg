@@ -7,9 +7,9 @@ import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMateri
 import { StrikeSettings, StrikeState } from "./Strike"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
-const walk = 0.78
+const walk = 0.6
 const run = 1.2
-const hop = 0.18
+const hop = 0.16
 const leap = 0.3
 
 export const Sarge = (player: Player): Character => {
@@ -101,14 +101,14 @@ export const Sarge = (player: Player): Character => {
           "w,s": () => null, "a,d": () => null,
 
           // sprint
-          "shift,w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", sprint: true, ...upAndDir(world) } }),
-          "shift,w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", sprint: true, ...upAndDir(world) } }),
-          "shift,a,s": ({ world }) => ({ actionId: "move", params: { key: "as", sprint: true, ...upAndDir(world) } }),
-          "shift,d,s": ({ world }) => ({ actionId: "move", params: { key: "ds", sprint: true, ...upAndDir(world) } }),
-          "shift,w": ({ world }) => ({ actionId: "move", params: { key: "w", sprint: true, ...upAndDir(world) } }),
-          "shift,a": ({ world }) => ({ actionId: "move", params: { key: "a", sprint: true, ...upAndDir(world) } }),
-          "shift,s": ({ world }) => ({ actionId: "move", params: { key: "s", sprint: true, ...upAndDir(world) } }),
-          "shift,d": ({ world }) => ({ actionId: "move", params: { key: "d", sprint: true, ...upAndDir(world) } }),
+          // "shift,w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", sprint: true, ...upAndDir(world) } }),
+          // "shift,w,d": ({ world }) => ({ actionId: "move", params: { key: "wd", sprint: true, ...upAndDir(world) } }),
+          // "shift,a,s": ({ world }) => ({ actionId: "move", params: { key: "as", sprint: true, ...upAndDir(world) } }),
+          // "shift,d,s": ({ world }) => ({ actionId: "move", params: { key: "ds", sprint: true, ...upAndDir(world) } }),
+          // "shift,w": ({ world }) => ({ actionId: "move", params: { key: "w", sprint: true, ...upAndDir(world) } }),
+          // "shift,a": ({ world }) => ({ actionId: "move", params: { key: "a", sprint: true, ...upAndDir(world) } }),
+          // "shift,s": ({ world }) => ({ actionId: "move", params: { key: "s", sprint: true, ...upAndDir(world) } }),
+          // "shift,d": ({ world }) => ({ actionId: "move", params: { key: "d", sprint: true, ...upAndDir(world) } }),
 
           // move
           "w,a": ({ world }) => ({ actionId: "move", params: { key: "wa", ...upAndDir(world) } }),
@@ -130,19 +130,13 @@ export const Sarge = (player: Player): Character => {
 
           if (position.data.flying) return
           if (!position.data.standing && params.hold) return
-
           if (sarge.components.health?.dead()) return
 
           const state = world.state<StrikeState>()
-          if (!position.data.standing && state.doubleJumped.includes(sarge.id)) return
+          if (!position.data.standing && state.jumped.includes(sarge.id)) return
 
-          // double jumped
-          if (!position.data.standing) {
-            position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
-            state.doubleJumped.push(sarge.id)
-          } else {
-            position.setVelocity({ z: 0.05 })
-          }
+          state.jumped.push(sarge.id)
+          position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
 
           world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
         }),

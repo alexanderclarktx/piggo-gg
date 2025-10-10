@@ -57,16 +57,16 @@ export const NetServerSystem = ({ world, clients, latestClientMessages, latestCl
         if (message.type !== "game") continue
 
         if (message.tick < world.tick) {
-          console.error(`old message client:${clientId} msg:${message.tick} server: ${world.tick}`)
+          console.error(`OLD MESSAGE client:${clientId} msg:${message.tick} server: ${world.tick}`)
           continue
         }
 
         if (lastMessageTick[clientId]) {
           if (message.tick <= lastMessageTick[clientId]) {
-            console.error(`OUT OF ORDER client:${clientId} last:${lastMessageTick[clientId]} msg:${message.tick} server: ${world.tick}`)
+            console.error(`OUT OF ORDER    client:${clientId} last:${lastMessageTick[clientId]} msg:${message.tick} server: ${world.tick}`)
             continue
           } else if (message.tick > lastMessageTick[clientId] + 1) {
-            console.error(`DROPPED MESSAGE client:${clientId} last:${lastMessageTick[clientId]} msg:${message.tick} server: ${world.tick}`)
+            console.error(`MISSED MESSAGES client:${clientId} last:${lastMessageTick[clientId]} msg:${message.tick} server: ${world.tick}`)
           }
         }
 
