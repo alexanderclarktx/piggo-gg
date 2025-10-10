@@ -1,7 +1,7 @@
 import {
   BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem, EscapeMenu,
   GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min,
-  Player, Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem
+  Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem, DummyPlayer
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { StrikeMap } from "./StrikeMap"
@@ -67,7 +67,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       HtmlChat(),
       Sun({ bounds: { left: -10, right: 10, top: 10, bottom: -10 } }),
       Sky(),
-      Player({ id: "player-dummy", name: "dummy" })
+      DummyPlayer()
     ]
   })
 }

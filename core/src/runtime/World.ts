@@ -225,6 +225,9 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
         el.remove()
       }
 
+      // remove dummies
+      delete world.entities["player-dummy"]
+
       // stop music
       world.client?.sound.stopMusic()
 
