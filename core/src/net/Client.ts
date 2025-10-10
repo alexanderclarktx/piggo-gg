@@ -131,8 +131,10 @@ export const Client = ({ world }: ClientProps): Client => {
           y *= mouseSensitivity
         }
 
-        client.controls.localAim.x = round(client.controls.localAim.x - x, 5)
-        client.controls.localAim.y = round(client.controls.localAim.y - y, 5)
+        client.controls.localAim.x = client.controls.localAim.x - x
+        client.controls.localAim.y = client.controls.localAim.y - y
+        // client.controls.localAim.x = round(client.controls.localAim.x - x, 5)
+        // client.controls.localAim.y = round(client.controls.localAim.y - y, 5)
 
         const flying = client.character()?.components.position.data.flying ?? false
         const cameraMode = world.three?.camera.mode ?? "third"
