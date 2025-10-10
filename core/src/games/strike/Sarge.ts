@@ -69,7 +69,7 @@ export const Sarge = (player: Player): Character => {
             const camera = world.three!.camera.pos()
             const pos = character.components.position.xyz()
 
-            return { actionId: "place", params: { dir, camera, pos, type: 6 } }
+            return { actionId: "place", params: { dir, camera, pos, type: 3 } }
           },
 
           "e" : ({ hold, world, character }) => {
