@@ -7,7 +7,7 @@ import { Sarge } from "./Sarge"
 import { StrikeMap } from "./StrikeMap"
 
 export type StrikeState = {
-  doubleJumped: string[]
+  jumped: string[]
   //   hit: Record<string, { tick: number, by: string }>
   lastShot: Record<string, number>
   //   phase: "warmup" | "starting" | "play"
@@ -35,7 +35,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
     },
     state: {
       applesEaten: {},
-      doubleJumped: [],
+      jumped: [],
       hit: {},
       lastShot: {},
       lastRocket: {},
@@ -103,9 +103,9 @@ const StrikeSystem = SystemBuilder({
           const { position } = character.components
           const { z, rotation, standing, velocity } = position.data
 
-          // double-jump state cleanup
+          // jump state cleanup
           if (standing && velocity.z <= 0) {
-            state.doubleJumped = state.doubleJumped.filter(id => id !== character.id)
+            state.jumped = state.jumped.filter(id => id !== character.id)
           }
 
           // reset rotation

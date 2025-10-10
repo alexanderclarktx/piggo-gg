@@ -130,23 +130,13 @@ export const Sarge = (player: Player): Character => {
 
           if (position.data.flying) return
           if (!position.data.standing && params.hold) return
-
           if (sarge.components.health?.dead()) return
 
           const state = world.state<StrikeState>()
-          if (!position.data.standing && state.doubleJumped.includes(sarge.id)) return
+          if (!position.data.standing && state.jumped.includes(sarge.id)) return
 
-          state.doubleJumped.push(sarge.id)
+          state.jumped.push(sarge.id)
           position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
-          console.log("jump", state.doubleJumped)
-
-          // double jumped
-          // if (!position.data.standing) {
-          //   position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
-          //   state.doubleJumped.push(sarge.id)
-          // } else {
-          //   position.setVelocity({ z: 0.05 })
-          // }
 
           world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
         }),
