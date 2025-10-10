@@ -198,16 +198,18 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // raycast against blocks
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
           if (beamResult) {
-            // if (beamResult.inside.type === 6) {
-            if (world.debug) {
-              if (beamResult.inside.type === 12) {
-                world.blocks.setType(beamResult.inside, 3)
-              } else {
-                world.blocks.remove(beamResult.inside)
-              }
-            } else {
-              world.blocks.setType(beamResult.inside, 12)
+            if (beamResult.inside.type === 6) {
+              world.blocks.remove(beamResult.inside)
             }
+            // if (world.debug) {
+            //   if (beamResult.inside.type === 12) {
+            //     world.blocks.setType(beamResult.inside, 3)
+            //   } else {
+            //     world.blocks.remove(beamResult.inside)
+            //   }
+            // } else {
+            //   world.blocks.setType(beamResult.inside, 12)
+            // }
             // }
 
             spawnParticles(beamResult.edge, world.tick)
