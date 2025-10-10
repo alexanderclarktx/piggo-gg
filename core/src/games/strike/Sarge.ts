@@ -9,7 +9,7 @@ import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 const walk = 0.6
 const run = 1.2
-const hop = 0.18
+const hop = 0.16
 const leap = 0.3
 
 export const Sarge = (player: Player): Character => {
@@ -136,13 +136,17 @@ export const Sarge = (player: Player): Character => {
           const state = world.state<StrikeState>()
           if (!position.data.standing && state.doubleJumped.includes(sarge.id)) return
 
+          state.doubleJumped.push(sarge.id)
+          position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
+          console.log("jump", state.doubleJumped)
+
           // double jumped
-          if (!position.data.standing) {
-            position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
-            state.doubleJumped.push(sarge.id)
-          } else {
-            position.setVelocity({ z: 0.05 })
-          }
+          // if (!position.data.standing) {
+          //   position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
+          //   state.doubleJumped.push(sarge.id)
+          // } else {
+          //   position.setVelocity({ z: 0.05 })
+          // }
 
           world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
         }),

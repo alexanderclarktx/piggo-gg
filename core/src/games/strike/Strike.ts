@@ -101,10 +101,10 @@ const StrikeSystem = SystemBuilder({
           if (!character) continue
 
           const { position } = character.components
-          const { z, rotation, standing } = position.data
+          const { z, rotation, standing, velocity } = position.data
 
           // double-jump state cleanup
-          if (standing) {
+          if (standing && velocity.z <= 0) {
             state.doubleJumped = state.doubleJumped.filter(id => id !== character.id)
           }
 

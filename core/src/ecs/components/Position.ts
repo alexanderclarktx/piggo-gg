@@ -247,9 +247,9 @@ export const PositionSystem = SystemBuilder<"PositionSystem">({
 
         const { position } = entity.components
 
-        if (entity.id === world.client?.character()?.id) {
-          console.log("position", position.data.velocity.x, world.tick)
-        }
+        // if (entity.id === world.client?.character()?.id) {
+        //   console.log("position", position.data.velocity.x, world.tick)
+        // }
 
         // rotation
         if (position.data.rotating) {
