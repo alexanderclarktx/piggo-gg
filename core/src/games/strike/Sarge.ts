@@ -33,7 +33,7 @@ export const Sarge = (player: Player): Character => {
     components: {
       position: Position({
         friction: true,
-        gravity: 0.0032,
+        gravity: 0.003,
         x: 7.45, y: isDummy ? 10.3 : 12, z: 2,
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
