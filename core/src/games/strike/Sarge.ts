@@ -34,7 +34,7 @@ export const Sarge = (player: Player): Character => {
       position: Position({
         friction: true,
         gravity: 0.003,
-        x: 9.9, y: isDummy ? 10.3 : 15, z: 2,
+        x: 9.9, y: isDummy ? 10.3 : 15, z: isDummy ? 0.6 : 2,
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),
