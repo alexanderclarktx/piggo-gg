@@ -210,7 +210,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             // } else {
             //   world.blocks.setType(beamResult.inside, 12)
             // }
-            // }
 
             spawnParticles(beamResult.edge, world.tick)
 
