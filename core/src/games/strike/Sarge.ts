@@ -32,7 +32,10 @@ export const Sarge = (player: Player): Character => {
     id: `sarge-${player.id}`,
     components: {
       position: Position({
-        friction: true, gravity: 0.0024, x: 7.45, y: isDummy ? 10.3 : 12, z: 2, aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
+        friction: true,
+        gravity: 0.0024,
+        x: 7.45, y: isDummy ? 10.3 : 12, z: 2,
+        aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),
       inventory: Inventory([DeagleItem]),
@@ -305,7 +308,7 @@ export const Sarge = (player: Player): Character => {
           const headMat = new MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })
           hitboxes.head = new Mesh(headGeo, headMat)
 
-          entity.components.three.o.push(hitboxes.body, hitboxes.head)
+          // entity.components.three.o.push(hitboxes.body, hitboxes.head)
 
           // character model
           three.gLoader.load("cowboy.glb", (gltf) => {
