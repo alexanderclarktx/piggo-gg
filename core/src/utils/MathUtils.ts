@@ -12,88 +12,6 @@ export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
 
 export const { abs, floor, ceil, hypot, max, min, pow, random, sign, sqrt, sin, cos, PI } = Math
 
-export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius: number) => {
-  const u = dir // ray direction
-  const v = XYZsub(B, A) // segment direction
-  const w = XYZsub(from, A) // origin to A
-
-  const a = XYZdot(u, u) // always >= 0
-  const b = XYZdot(u, v)
-  const c = XYZdot(v, v) // segment length^2
-  const d = XYZdot(u, w)
-  const e = XYZdot(v, w)
-
-  const EPS = 1e-8
-
-  // Degenerate capsule -> sphere at A (or very short segment)
-  if (c < EPS) {
-    return raySphereIntersect(from, dir, A, radius)
-  }
-
-  const D = a * c - b * b     // denominator for the unconstrained solution
-
-  // Numerators and denominators for sc (ray param) and tc (segment param)
-  let sN: number, sD: number = D
-  let tN: number, tD: number = D
-
-  // Default (unconstrained) solution
-  if (D > EPS) {
-    sN = (b * e - c * d)
-    tN = (a * e - b * d)
-
-    // Enforce ray constraint s >= 0
-    if (sN < 0) {              // closest is behind origin; clamp s=0
-      sN = 0
-      tN = e
-      tD = c
-    }
-  } else {
-    // Ray and segment are almost parallel
-    sN = 0
-    sD = 1
-    tN = e
-    tD = c
-  }
-
-  // Clamp t to [0,1]
-  if (tN < 0) {
-    tN = 0
-    // Recompute s for t=0 (closest to endpoint A)
-    sN = -d
-    sD = a
-    if (sN < 0) sN = 0 // still must be in front of the ray
-  } else if (tN > tD) {
-    tN = tD
-    // Recompute s for t=1 (closest to endpoint B)
-    sN = b - d
-    sD = a
-    if (sN < 0) sN = 0
-  }
-
-  // Final params
-  const sc = (Math.abs(sN) < EPS ? 0 : sN / sD) // ray parameter  (>= 0)
-  const tc = (Math.abs(tN) < EPS ? 0 : tN / tD) // segment param  (in [0,1])
-
-  // Vector between closest points: w + sc*u - tc*v
-  const closestVec = XYZsub(
-    XYZadd(w, XYZscale(u, sc)),
-    XYZscale(v, tc)
-  )
-
-  const dist2 = XYZdot(closestVec, closestVec)
-  return dist2 <= radius * radius
-}
-
-// Minimal robust ray-sphere fallback used above
-function raySphereIntersect(from: XYZ, dir: XYZ, C: XYZ, r: number): boolean {
-  const m = XYZsub(from, C)
-  const b = XYZdot(m, dir)
-  const c = XYZdot(m, m) - r * r
-  if (c > 0 && b > 0) return false // origin outside and pointing away
-  const discr = b * b - XYZdot(dir, dir) * c // works even if dir not unit
-  return discr >= 0
-}
-
 export const minmax = (n: number, minValue: number, maxValue: number) => {
   return min(max(n, minValue), maxValue)
 }
@@ -327,6 +245,93 @@ export const vectorExtend = (vec: XYZ, amount: number): XYZ => {
     z: (vec.z / len) * newLen
   }
 }
+
+export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius: number) => {
+  const u = dir // ray direction
+  const v = XYZsub(B, A) // segment direction
+  const w = XYZsub(from, A) // origin to A
+
+  const a = XYZdot(u, u) // always >= 0
+  const b = XYZdot(u, v)
+  const c = XYZdot(v, v) // segment length^2
+  const d = XYZdot(u, w)
+  const e = XYZdot(v, w)
+
+  const EPS = 1e-8
+
+  // Degenerate capsule -> sphere at A (or very short segment)
+  if (c < EPS) {
+    return raySphereIntersect(from, dir, A, radius)
+  }
+
+  const D = a * c - b * b     // denominator for the unconstrained solution
+
+  // Numerators and denominators for sc (ray param) and tc (segment param)
+  let sN: number, sD: number = D
+  let tN: number, tD: number = D
+
+  // Default (unconstrained) solution
+  if (D > EPS) {
+    sN = (b * e - c * d)
+    tN = (a * e - b * d)
+
+    // Enforce ray constraint s >= 0
+    if (sN < 0) {              // closest is behind origin; clamp s=0
+      sN = 0
+      tN = e
+      tD = c
+    }
+  } else {
+    // Ray and segment are almost parallel
+    sN = 0
+    sD = 1
+    tN = e
+    tD = c
+  }
+
+  // Clamp t to [0,1]
+  if (tN < 0) {
+    tN = 0
+    // Recompute s for t=0 (closest to endpoint A)
+    sN = -d
+    sD = a
+    if (sN < 0) sN = 0 // still must be in front of the ray
+  } else if (tN > tD) {
+    tN = tD
+    // Recompute s for t=1 (closest to endpoint B)
+    sN = b - d
+    sD = a
+    if (sN < 0) sN = 0
+  }
+
+  // Final params
+  const sc = (Math.abs(sN) < EPS ? 0 : sN / sD) // ray parameter  (>= 0)
+  const tc = (Math.abs(tN) < EPS ? 0 : tN / tD) // segment param  (in [0,1])
+
+  // Vector between closest points: w + sc*u - tc*v
+  const closestVec = XYZsub(
+    XYZadd(w, XYZscale(u, sc)),
+    XYZscale(v, tc)
+  )
+
+  const dist2 = XYZdot(closestVec, closestVec)
+
+  return dist2 <= radius * radius
+}
+
+// Minimal robust ray-sphere fallback used above
+export const raySphereIntersect = (from: XYZ, dir: XYZ, C: XYZ, r: number) => {
+  const m = XYZsub(from, C)
+  const b = XYZdot(m, dir)
+  const c = XYZdot(m, m) - r * r
+
+  if (c > 0 && b > 0) return false
+
+  const discr = b * b - XYZdot(dir, dir) * c
+  return discr >= 0
+}
+
+// DEPRECATED
 
 export const tileIndex = (n: number, tileMap: number[]): number => {
   let numZeros = 0
