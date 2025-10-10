@@ -162,7 +162,8 @@ export const Position = (props: PositionProps = {}): Position => {
 
       const x = round(position.data.x + position.localVelocity.x * delta / 1000, 5)
       const y = round(position.data.y + position.localVelocity.y * delta / 1000, 5)
-      const z = round(position.data.z + position.localVelocity.z * delta / world.tickrate, 5)
+      const z = position.data.z + position.localVelocity.z * delta / world.tickrate
+      console.log("interpolated", position.localVelocity.z, z, world.tick, delta)
 
       interpolatedCache.tick = world.tick
       interpolatedCache.delta = delta

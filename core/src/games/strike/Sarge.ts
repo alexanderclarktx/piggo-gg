@@ -1,6 +1,6 @@
 import {
   Action, Actions, Character, Collider, copyMaterials, DeagleItem,
-  Health, Hook, hypot, Input, Inventory, max, Networked, PI, Place,
+  Health, Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place,
   Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, Vector3 } from "three"
@@ -38,7 +38,7 @@ export const Sarge = (player: Player): Character => {
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),
-      inventory: Inventory([DeagleItem]),
+      inventory: Inventory([DeagleItem, HookItem]),
       collider: Collider({ shape: "ball", radius: 0.1 }),
       health: Health(),
       input: Input({
