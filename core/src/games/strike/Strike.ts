@@ -115,7 +115,7 @@ const StrikeSystem = SystemBuilder({
 
           // fell off the map
           if (z < -4) {
-            position.setPosition({ x: 7.45, y: 12, z: 2 })
+            position.setPosition({ x: 9.9, y: 15, z: 2 })
           }
         }
         logPerf("player positions", t1)
