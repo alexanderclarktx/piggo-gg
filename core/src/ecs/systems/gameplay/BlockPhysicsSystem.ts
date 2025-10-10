@@ -63,16 +63,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.y > 0 && wouldGo.y > blockMin.y) {
               if (mode === "local") {
-                position.localVelocity.y = 40 * (round(blockMin.y - radius, 3) - position.data.y)
+                position.localVelocity.y = 40 * (round(blockMin.y - radius, 5) - position.data.y)
               } else {
-                position.data.y = round(blockMin.y - radius, 3)
+                position.data.y = round(blockMin.y - radius, 5)
                 position.data.velocity.y = 0
               }
             } else if (velocity.y < 0 && wouldGo.y < blockMax.y) {
               if (mode === "local") {
-                position.localVelocity.y = 40 * (round(blockMax.y + radius, 3) - position.data.y)
+                position.localVelocity.y = 40 * (round(blockMax.y + radius, 5) - position.data.y)
               } else {
-                position.data.y = round(blockMax.y + radius, 3)
+                position.data.y = round(blockMax.y + radius, 5)
                 position.data.velocity.y = 0
               }
             }
@@ -111,16 +111,16 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.x > 0) {
               if (mode === "local") {
-                position.localVelocity.x = 40 * (round(blockMin.x - radius, 3) - position.data.x)
+                position.localVelocity.x = 40 * (round(blockMin.x - radius, 5) - position.data.x)
               } else {
-                position.data.x = round(blockMin.x - radius, 3)
+                position.data.x = round(blockMin.x - radius, 5)
                 position.data.velocity.x = 0
               }
             } else if (velocity.x < 0) {
               if (mode === "local") {
-                position.localVelocity.x = 40 * (round(blockMax.x + radius, 3) - position.data.x)
+                position.localVelocity.x = 40 * (round(blockMax.x + radius, 5) - position.data.x)
               } else {
-                position.data.x = round(blockMax.x + radius, 3)
+                position.data.x = round(blockMax.x + radius, 5)
                 position.data.velocity.x = 0
               }
             }
@@ -165,7 +165,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   if (mode === "local") {
                     // position.localVelocity.x = 0
                   } else {
-                    position.data.x = round(blockMin.x - radius, 3)
+                    position.data.x = round(blockMin.x - radius, 5)
                     position.data.velocity.x = 0
                   }
                 } else {
@@ -173,7 +173,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                     // position.localVelocity.y = 0
                   }
                   else {
-                    position.data.y = round(blockMin.y - radius, 3)
+                    position.data.y = round(blockMin.y - radius, 5)
                     position.data.velocity.y = 0
                   }
                 }
@@ -185,14 +185,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   if (mode === "local") {
                     // position.localVelocity.x = 0
                   } else {
-                    position.data.x = round(blockMax.x + radius, 3)
+                    position.data.x = round(blockMax.x + radius, 5)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
                     // position.localVelocity.y = 0
                   } else {
-                    position.data.y = round(blockMin.y - radius, 3)
+                    position.data.y = round(blockMin.y - radius, 5)
                     position.data.velocity.y = 0
                   }
                 }
@@ -204,14 +204,14 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                   if (mode === "local") {
                     // position.localVelocity.x = 0
                   } else {
-                    position.data.x = round(blockMin.x - radius, 3)
+                    position.data.x = round(blockMin.x - radius, 5)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
                     // position.localVelocity.y = 0
                   } else {
-                    position.data.y = round(blockMax.y + radius, 3)
+                    position.data.y = round(blockMax.y + radius, 5)
                     position.data.velocity.y = 0
                   }
                 }
@@ -222,13 +222,13 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
                 if (distY > distX) {
                   if (mode === "local") {
                   } else {
-                    position.data.x = round(blockMax.x + radius, 3)
+                    position.data.x = round(blockMax.x + radius, 5)
                     position.data.velocity.x = 0
                   }
                 } else {
                   if (mode === "local") {
                   } else {
-                    position.data.y = round(blockMax.y + radius, 3)
+                    position.data.y = round(blockMax.y + radius, 5)
                     position.data.velocity.y = 0
                   }
                 }
@@ -270,17 +270,17 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
             if (velocity.z > 0 && wouldGo.z > blockMin.z) {
               if (mode === "local") {
-                position.localVelocity.z = round(blockMin.z - 0.1 - position.data.z, 3)
+                position.localVelocity.z = round(blockMin.z - 0.1 - position.data.z, 5)
               } else {
-                position.data.z = round(blockMin.z - 0.1, 3)
+                position.data.z = round(blockMin.z - 0.1, 5)
                 position.data.velocity.z = 0
                 position.data.standing = false
               }
             } else if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
               if (mode === "local") {
-                position.localVelocity.z = round(blockMax.z - position.data.z, 3)
+                position.localVelocity.z = round(blockMax.z - position.data.z, 5)
               } else {
-                position.data.z = round(blockMax.z, 3)
+                position.data.z = round(blockMax.z, 5)
                 position.data.velocity.z = 0
                 position.data.standing = true
               }
@@ -327,9 +327,9 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
 
               if (velocity.z < 0 && wouldGo.z + 0.1 < blockMax.z) {
                 if (mode === "local") {
-                  position.localVelocity.z = round(blockMax.z - position.data.z, 3)
+                  position.localVelocity.z = round(blockMax.z - position.data.z, 5)
                 } else {
-                  position.data.z = round(blockMax.z, 3)
+                  position.data.z = round(blockMax.z, 5)
                   position.data.velocity.z = 0
                   position.data.standing = true
                 }
