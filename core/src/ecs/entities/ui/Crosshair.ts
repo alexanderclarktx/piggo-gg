@@ -11,7 +11,6 @@ export const Crosshair = () => {
     width: "5px",
     height: "5px",
     backgroundColor: "rgba(0, 255, 255, 1)",
-    border: "0px",
     borderRadius: "50%",
     pointerEvents: "none"
   })
@@ -28,7 +27,9 @@ export const Crosshair = () => {
           const locked = world.client.mobile ? !world.client.mobileMenu : document.pointerLockElement
           const item = world.client?.character()?.components.inventory?.activeItem(world)
 
-          div.style.visibility = (locked && item && settings.showCrosshair) ? "visible" : "hidden"
+          const fpsCamera = world.three?.camera.mode === "first"
+
+          div.style.visibility = (locked && item && settings.showCrosshair && fpsCamera) ? "visible" : "hidden"
 
           if (!init) {
             world.three?.append(div)

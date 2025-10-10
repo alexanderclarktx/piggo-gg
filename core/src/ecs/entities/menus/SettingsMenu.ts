@@ -15,7 +15,8 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     top: "-3px",
     touchAction: "pan-y",
     transform: "translate(-50%)",
-    width: "100%"
+    width: "100%",
+    border: "2px solid white"
   })
 
   const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")

@@ -1,7 +1,11 @@
-import { colors, Entity, Position, Three } from "@piggo-gg/core"
-import { DirectionalLight, HemisphereLight, Mesh, MeshPhysicalMaterial, SphereGeometry } from "three"
+import { Bounds, colors, Entity, Position, Three } from "@piggo-gg/core"
+import { CameraHelper, DirectionalLight, HemisphereLight, Mesh, MeshPhysicalMaterial, SphereGeometry } from "three"
 
-export const Sun = () => {
+export type SunProps = {
+  bounds?: Bounds
+}
+
+export const Sun = (props: SunProps = {}) => {
   const sun = Entity<Three>({
     id: "sun",
     components: {
@@ -15,10 +19,10 @@ export const Sun = () => {
           light.castShadow = true
 
           // widen the shadow
-          light.shadow.camera.left = -20
-          light.shadow.camera.right = 20
-          light.shadow.camera.top = 30
-          light.shadow.camera.bottom = -30
+          light.shadow.camera.left = props.bounds?.left ?? -20
+          light.shadow.camera.right = props.bounds?.right ?? 20
+          light.shadow.camera.top = props.bounds?.top ?? 30
+          light.shadow.camera.bottom = props.bounds?.bottom ?? -30
 
           const sphere = new Mesh(
             new SphereGeometry(8, 32, 32),
@@ -32,6 +36,8 @@ export const Sun = () => {
           sphere.position.set(200, 100, 200)
 
           const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
+
+          // const helper = new CameraHelper(light.shadow.camera)
 
           sun.components.three.o.push(light, sphere, hemi)
         }

@@ -9,7 +9,8 @@ export const SkinsMenu = (): RefreshableDiv => {
     transform: "translate(-50%)",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     pointerEvents: "auto",
-    position: "relative"
+    position: "relative",
+    border: "2px solid white"
   })
 
   return {

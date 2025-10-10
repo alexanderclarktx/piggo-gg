@@ -1,7 +1,8 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Input, Item, ItemEntity,
-  max, min, Networked, NPC, playerForCharacter, Position, random, randomInt, sin,
-  sqrt, StrikeState, Target, Three, XY, XYZ, XYZdistance, XYZdot, XYZsub
+  Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
+  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter,
+  Position, random, randomInt, rayCapsuleIntersect, sin,
+  StrikeState, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -28,9 +29,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   let gun: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
-
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
-
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   const recoilRate = 0.04
@@ -44,7 +43,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
 
       // vary the color
-      const green = Math.floor(randomInt(256))
+      const green = floor(randomInt(256))
       const color = new Color(`rgb(255, ${green}, 0)`)
       mesh.material = new MeshPhongMaterial({ color, emissive: color })
 
@@ -120,7 +119,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           // apply recoil
-          if (gun) character.components.position.data.recoil = min(1, recoil + 0.5)
+          character.components.position.data.recoil = min(1, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
@@ -148,6 +147,54 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
+          let hit: Player | undefined = undefined
+          let headshot = false
+
+          // raycast against characters
+          for (const target of targets) {
+            const targetEntity = world.entity<Position>(target.id)
+            if (!targetEntity) continue
+
+            if (!targetEntity.components.health) continue
+            if (targetEntity.components.health.data.hp <= 0) continue
+
+            // head
+            let A = { x: target.x, y: target.y, z: target.z + 0.435 }
+            let B = { x: target.x, y: target.y, z: target.z + 0.485 }
+            let radius = 0.08
+
+            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
+              hit = playerForCharacter(world, target.id)
+              headshot = true
+              break
+            }
+
+            // body
+
+            A = { x: target.x, y: target.y, z: target.z + 0.11 }
+            B = { x: target.x, y: target.y, z: target.z + 0.29 }
+            radius = 0.08
+
+            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
+              hit = playerForCharacter(world, target.id)
+              break
+            }
+          }
+
+          if (hit) {
+            if (character.id === world.client?.character()?.id) {
+              world.client.controls.localHit = { tick: world.tick, headshot }
+            }
+
+            const hitCharacter = hit.components.controlling.getCharacter(world)
+            if (hitCharacter?.components.health) {
+              const damage = headshot ? 100 : 35
+              hitCharacter.components.health.damage(damage, world)
+            }
+
+            return
+          }
+
           // raycast against blocks
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
           if (beamResult) {
@@ -163,30 +210,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               if (!p.mesh.parent) world.three?.scene.add(p.mesh)
             }
           }
-
-          // raycast against characters
-          for (const target of targets) {
-            const targetEntity = world.entity<Position>(target.id)
-            if (!targetEntity) continue
-
-            const targetXYZ = { x: target.x, y: target.y, z: target.z + 0.05 }
-
-            const L = XYZsub(targetXYZ, eyePos)
-            const tc = XYZdot(L, { x: dir.x, y: dir.z, z: dir.y })
-
-            if (tc < 0) continue
-
-            const Ldist = XYZdistance(targetXYZ, eyePos)
-            const D = sqrt((Ldist * Ldist) - (tc * tc))
-
-            if (D > 0 && D < 0.08) {
-              const targetPlayer = playerForCharacter(world, target.id)
-            }
-          }
         }),
       }),
       three: Three({
-        init: async (_, __, three) => {
+        init: async (_, world, three) => {
 
           // tracer
           const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.04, 8)
@@ -200,19 +227,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
 
           // gun
-          three.gLoader.load("deagle.glb", (gltf) => {
-            gun = gltf.scene
-            gun.scale.set(0.025, 0.025, 0.025)
+          if (character.id === world.client?.character()?.id) {
+            three.gLoader.load("deagle.glb", (gltf) => {
+              gun = gltf.scene
+              gun.scale.set(0.025, 0.025, 0.025)
 
-            gun.receiveShadow = true
-            gun.castShadow = true
+              gun.receiveShadow = true
+              gun.castShadow = true
 
-            gun.rotation.order = "YXZ"
+              gun.rotation.order = "YXZ"
 
-            three.scene.add(gun)
-          })
+              item.components.three?.o.push(gun)
+            })
+          }
         },
-        onRender: ({ world, delta }) => {
+        onRender: ({ world, delta, three }) => {
           if (!gun) return
 
           const ratio = delta / 25
@@ -236,12 +265,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          gun.position.copy({
-            x: pos.x + offset.x,
-            y: pos.z + 0.45 + offset.y,
-            z: pos.y + offset.z
-          })
-
+          // particles
           for (let i = 1; i < particles.length; i++) {
             const p = particles[i]
             p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
@@ -252,6 +276,20 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               i--
             }
           }
+
+          if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
+            gun.visible = false
+            return
+          } else {
+            gun.visible = true
+          }
+
+          // gun
+          gun.position.copy({
+            x: pos.x + offset.x,
+            y: pos.z + 0.45 + offset.y,
+            z: pos.y + offset.z
+          })
 
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0

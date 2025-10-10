@@ -1,14 +1,14 @@
-import { ClientSystemBuilder, D3Text, min, Player, values, CraftSettings, CraftState, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, ThreeText, min, Player, values, CraftSettings, CraftState, World } from "@piggo-gg/core"
 import { Group } from "three"
 
-export type D3Nametag = {
+export type ThreeNametag = {
   group: Group
   update: (world: World, delta: number) => void
 }
 
-export const D3Nametag = (player: Player): D3Nametag => {
+export const ThreeNametag = (player: Player): ThreeNametag => {
   const group = new Group()
-  const text = D3Text()
+  const text = ThreeText()
 
   group.add(text)
 
@@ -27,10 +27,16 @@ export const D3Nametag = (player: Player): D3Nametag => {
         }
       }
 
-      const { position } = character.components
+      const { position, health } = character.components
+
+      if (health?.dead()) {
+        group.visible = false
+        return
+      }
+
       const interpolated = position.interpolate(world, delta)
 
-      group.position.set(interpolated.x, interpolated.z + 0.63, interpolated.y)
+      group.position.set(interpolated.x, interpolated.z + 0.66, interpolated.y)
 
       // update text if needed
       const { name } = player.components.pc.data
@@ -51,16 +57,16 @@ export const D3Nametag = (player: Player): D3Nametag => {
   }
 }
 
-export const D3NametagSystem = ClientSystemBuilder({
-  id: "D3NametagSystem",
+export const ThreeNametagSystem = ClientSystemBuilder({
+  id: "ThreeNametagSystem",
   init: (world) => {
 
-    const nametags: Record<string, D3Nametag> = {}
+    const nametags: Record<string, ThreeNametag> = {}
 
     const settings = world.settings<CraftSettings>()
 
     return {
-      id: "D3NametagSystem",
+      id: "ThreeNametagSystem",
       query: [],
       priority: 10,
       onTick: () => {
@@ -92,7 +98,7 @@ export const D3NametagSystem = ClientSystemBuilder({
 
           // new player
           if (!nametags[player.id]) {
-            const nametag = D3Nametag(player)
+            const nametag = ThreeNametag(player)
             nametags[player.id] = nametag
 
             world.three.scene.add(nametag.group)

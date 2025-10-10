@@ -18,7 +18,8 @@ export const LobbiesMenu = (world: World): RefreshableDiv => {
     pointerEvents: "auto",
     position: "relative",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    border: "2px solid white"
   })
 
   const lobbyList = HtmlDiv({

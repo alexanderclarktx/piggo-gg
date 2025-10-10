@@ -5,6 +5,7 @@ import { Container } from "pixi.js"
 export type XY = { x: number, y: number }
 export type XZ = { x: number, z: number }
 export type XYZ = { x: number, y: number, z: number }
+export type Bounds = { left: number, right: number, top: number, bottom: number }
 export type TwoPoints = [number, number, number, number]
 export type Oct = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type OctString = "u" | "ur" | "r" | "dr" | "d" | "dl" | "l" | "ul"
@@ -65,6 +66,14 @@ export const XYdistance = (a: XY, b: XY): number => {
 
 export const XYZdistance = (a: XYZ, b: XYZ): number => {
   return hypot(a.x - b.x, a.y - b.y, a.z - b.z)
+}
+
+export const XYZadd = (a: XYZ, b: XYZ): XYZ => {
+  return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z }
+}
+
+export const XYZscale = (a: XYZ, scale: number): XYZ => {
+  return { x: a.x * scale, y: a.y * scale, z: a.z * scale }
 }
 
 export const XYZsub = (a: XYZ, b: XYZ): XYZ => {
@@ -236,6 +245,93 @@ export const vectorExtend = (vec: XYZ, amount: number): XYZ => {
     z: (vec.z / len) * newLen
   }
 }
+
+export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius: number) => {
+  const u = dir // ray direction
+  const v = XYZsub(B, A) // segment direction
+  const w = XYZsub(from, A) // origin to A
+
+  const a = XYZdot(u, u) // always >= 0
+  const b = XYZdot(u, v)
+  const c = XYZdot(v, v) // segment length^2
+  const d = XYZdot(u, w)
+  const e = XYZdot(v, w)
+
+  const EPS = 1e-8
+
+  // Degenerate capsule -> sphere at A (or very short segment)
+  if (c < EPS) {
+    return raySphereIntersect(from, dir, A, radius)
+  }
+
+  const D = a * c - b * b     // denominator for the unconstrained solution
+
+  // Numerators and denominators for sc (ray param) and tc (segment param)
+  let sN: number, sD: number = D
+  let tN: number, tD: number = D
+
+  // Default (unconstrained) solution
+  if (D > EPS) {
+    sN = (b * e - c * d)
+    tN = (a * e - b * d)
+
+    // Enforce ray constraint s >= 0
+    if (sN < 0) {              // closest is behind origin; clamp s=0
+      sN = 0
+      tN = e
+      tD = c
+    }
+  } else {
+    // Ray and segment are almost parallel
+    sN = 0
+    sD = 1
+    tN = e
+    tD = c
+  }
+
+  // Clamp t to [0,1]
+  if (tN < 0) {
+    tN = 0
+    // Recompute s for t=0 (closest to endpoint A)
+    sN = -d
+    sD = a
+    if (sN < 0) sN = 0 // still must be in front of the ray
+  } else if (tN > tD) {
+    tN = tD
+    // Recompute s for t=1 (closest to endpoint B)
+    sN = b - d
+    sD = a
+    if (sN < 0) sN = 0
+  }
+
+  // Final params
+  const sc = (Math.abs(sN) < EPS ? 0 : sN / sD) // ray parameter  (>= 0)
+  const tc = (Math.abs(tN) < EPS ? 0 : tN / tD) // segment param  (in [0,1])
+
+  // Vector between closest points: w + sc*u - tc*v
+  const closestVec = XYZsub(
+    XYZadd(w, XYZscale(u, sc)),
+    XYZscale(v, tc)
+  )
+
+  const dist2 = XYZdot(closestVec, closestVec)
+
+  return dist2 <= radius * radius
+}
+
+// Minimal robust ray-sphere fallback used above
+export const raySphereIntersect = (from: XYZ, dir: XYZ, C: XYZ, r: number) => {
+  const m = XYZsub(from, C)
+  const b = XYZdot(m, dir)
+  const c = XYZdot(m, m) - r * r
+
+  if (c > 0 && b > 0) return false
+
+  const discr = b * b - XYZdot(dir, dir) * c
+  return discr >= 0
+}
+
+// DEPRECATED
 
 export const tileIndex = (n: number, tileMap: number[]): number => {
   let numZeros = 0

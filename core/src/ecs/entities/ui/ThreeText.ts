@@ -1,6 +1,6 @@
 import { Text } from "troika-three-text"
 
-export type D3TextProps = {
+export type ThreeTextProps = {
   text?: string
   fontSize?: number
   font?: string
@@ -10,7 +10,7 @@ export type D3TextProps = {
   anchorY?: "middle" | "top" | "bottom"
 }
 
-export const D3Text = (props: D3TextProps = {}) => {
+export const ThreeText = (props: ThreeTextProps = {}) => {
   const text = new Text()
 
   text.text = props.text || ""

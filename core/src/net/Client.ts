@@ -42,6 +42,7 @@ export type Client = {
     mouse: XY
     mouseScreen: XY
     localAim: XY
+    localHit: { tick: number, headshot: boolean }
     moveLocal: (xy: XY, flying?: boolean) => void
   }
   env: "local" | "dev" | "production"
@@ -121,6 +122,7 @@ export const Client = ({ world }: ClientProps): Client => {
       mouse: { x: 0, y: 0 },
       mouseScreen: { x: 0, y: 0 },
       localAim: { x: 0, y: 0 },
+      localHit: { tick: -100, headshot: false },
       moveLocal: ({ x, y }: XY) => {
 
         const mouseSensitivity = world.settings<{ mouseSensitivity: number }>().mouseSensitivity
