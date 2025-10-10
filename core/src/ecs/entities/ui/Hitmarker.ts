@@ -1,4 +1,4 @@
-import { Entity, HtmlDiv, NPC, Position, Three } from "@piggo-gg/core"
+import { Entity, HtmlDiv, max, NPC, Position, Three } from "@piggo-gg/core"
 
 export const Hitmarker = () => {
   let init = false
@@ -50,7 +50,7 @@ export const Hitmarker = () => {
 
           const { localHit } = client.controls
 
-          const opacity = Math.max(0, 1.2 - (world.tick - localHit.tick + ratio) * fadeRate)
+          const opacity = max(0, 1.2 - (world.tick - localHit.tick + ratio) * fadeRate)
 
           for (const m of markers) {
             m.style.opacity = String(opacity)

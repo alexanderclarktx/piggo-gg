@@ -29,7 +29,7 @@ export const ThreeNametag = (player: Player): ThreeNametag => {
 
       const { position, health } = character.components
 
-      if (health && health.data.hp <= 0) {
+      if (health?.dead()) {
         group.visible = false
         return
       }

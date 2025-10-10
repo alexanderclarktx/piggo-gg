@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Input, Item,
+  Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter,
   Position, random, randomInt, rayCapsuleIntersect, sin,
   StrikeState, Target, Three, XY, XYZ
@@ -43,7 +43,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
 
       // vary the color
-      const green = Math.floor(randomInt(256))
+      const green = floor(randomInt(256))
       const color = new Color(`rgb(255, ${green}, 0)`)
       mesh.material = new MeshPhongMaterial({ color, emissive: color })
 
