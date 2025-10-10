@@ -42,7 +42,6 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
           if (died === undefined) return
 
           if (died + 120 < world.tick) {
-            console.log("respawning", player.id, character.id, world.tick)
 
             // reset health
             character.components.health.data.hp = character.components.health.data.maxHp
@@ -50,10 +49,8 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
             // reset died
             character.components.health.data.died = undefined
 
-            const isDummy = player.id === "player-dummy"
-
             // reset position
-            character.components.position.setPosition({ x: 7.45, y: isDummy ? 10.3 : 12, z: 2 })
+            character.components.position.setPosition({ x: 7.45, y: player.id === "player-dummy" ? 10.3 : 12, z: 2 })
           }
         })
       }
