@@ -75,6 +75,7 @@ export const Sound = (world: World): Sound => {
       track2: load("track2.mp3", -10),
       cassettePlay: load("cassettePlay.mp3", 0),
       cassetteStop: load("cassetteStop.mp3", -5),
+      // whoosh: load("whoosh.mp3", 0),
       click1: load("click1.mp3", -5),
       click2: load("click2.mp3", -5),
       click3: load("click3.mp3", -10),

@@ -20,13 +20,14 @@ export const HUDSystem = ClientSystemBuilder({
     const wButton = KeyButton({ text: "W", left, bottom: bottom + 250 })
     // const eButton = KeyButton({ text: "E", left, top: top - 150 })
 
-    const boostButton = KeyButton({ text: "shift", left, bottom: bottom + 100, width: 120 })
-    const jumpButton = KeyButton({ text: "spacebar", left, bottom, width: 160, visible: false })
+    const boostButton = KeyButton({ text: "shift", left, bottom, width: 120 })
+    const jumpButton = KeyButton({ text: "spacebar", left, bottom: bottom + 100, width: 160, visible: false })
 
     const transformLabel = KeyLabel("transform", left, bottom - 100)
     const moveLabel = KeyLabel("move", left, bottom + 170)
-    const boostLabel = KeyLabel("boost", left, bottom + 70)
-    const jumpLabel = KeyLabel("jump", left, bottom - 30, false)
+
+    const boostLabel = KeyLabel("boost", left, bottom - 30)
+    const jumpLabel = KeyLabel("jump", left, bottom + 70, false)
 
     const scoreText = HtmlText({
       text: "",
@@ -63,12 +64,15 @@ export const HUDSystem = ClientSystemBuilder({
     controls.appendChild(sButton)
     controls.appendChild(wButton)
     // controls.appendChild(eButton)
-    controls.appendChild(boostButton)
     controls.appendChild(jumpButton)
     // controls.appendChild(transformLabel)
     controls.appendChild(moveLabel)
-    controls.appendChild(boostLabel)
     controls.appendChild(jumpLabel)
+
+    if (world.game.id === "craft") {
+      controls.appendChild(boostButton)
+      controls.appendChild(boostLabel)
+    }
 
     three.append(controls)
     three.append(scoreText)
