@@ -72,6 +72,11 @@ export const Sarge = (player: Player): Character => {
             return { actionId: "place", params: { dir, camera, pos, type: 3 } }
           },
 
+          "t": ({ hold, world, client }) => {
+            if (hold) return
+            sarge.components.position.data.flying = !sarge.components.position.data.flying
+          },
+
           "e" : ({ hold, world, character }) => {
             if (hold) return
 
