@@ -9,7 +9,7 @@ import { StrikeMap } from "./StrikeMap"
 export type StrikeState = {
   jumped: string[]
   //   hit: Record<string, { tick: number, by: string }>
-  lastShot: Record<string, number>
+  // lastShot: Record<string, number>
   //   phase: "warmup" | "starting" | "play"
 }
 
@@ -37,7 +37,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       applesEaten: {},
       jumped: [],
       hit: {},
-      lastShot: {},
+      // lastShot: {},
       lastRocket: {},
       nextSeed: 123456111,
       phase: "warmup",
