@@ -1,8 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
-  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter,
-  Position, random, randomInt, rayCapsuleIntersect, sin,
-  StrikeState, Target, Three, XY, XYZ
+  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
+  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -149,7 +148,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           let headshot = false
 
           // raycast against characters
-          for (const target of targets) {
+          for (const target of targets) { // TODO sort by distance
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
