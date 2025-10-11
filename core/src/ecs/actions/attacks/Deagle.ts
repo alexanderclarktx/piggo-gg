@@ -26,6 +26,8 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
 
 export const DeagleItem = ({ character }: { character: Character }) => {
 
+  console.log("adding deagle to", character.id)
+
   let gun: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
@@ -234,27 +236,31 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
 
           // gun
-          if (character.id === world.client?.character()?.id) {
-            three.gLoader.load("deagle.glb", (gltf) => {
-              gun = gltf.scene
-              gun.scale.set(0.025, 0.025, 0.025)
+          // if (character.id === world.client?.character()?.id) {
+          three.gLoader.load("deagle.glb", (gltf) => {
+            gun = gltf.scene
+            gun.scale.set(0.025, 0.025, 0.025)
 
-              gun.receiveShadow = true
-              gun.castShadow = true
+            gun.receiveShadow = true
+            gun.castShadow = true
 
-              gun.rotation.order = "YXZ"
+            gun.rotation.order = "YXZ"
 
-              item.components.three?.o.push(gun)
-            })
-          }
+            item.components.three?.o.push(gun)
+          })
+          // }
         },
-        onRender: ({ world, delta, three }) => {
+        onRender: ({ world, delta, client }) => {
           const ratio = delta / 25
 
           const pos = character.components.position.interpolate(world, delta)
 
-          const { localAim } = world.client!.controls
-          const offset = modelOffset(localAim)
+          let { aim } = character.components.position.data
+          if (character.id === world.client?.character()?.id) {
+            aim = client.controls.localAim
+          }
+
+          const offset = modelOffset(aim)
 
           // tracer
           if (tracer) {
@@ -287,12 +293,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (!gun) return
 
-          if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
-            gun.visible = false
-            return
-          } else {
-            gun.visible = true
-          }
+          // if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
+          //   gun.visible = false
+          //   return
+          // } else {
+          //   gun.visible = true
+          // }
 
           // gun
           gun.position.copy({
@@ -304,8 +310,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
-          gun.rotation.y = localAim.x
-          gun.rotation.x = localAim.y + localRecoil * 0.5
+          gun.rotation.y = aim.x
+          gun.rotation.x = aim.y + localRecoil * 0.5
         }
       })
     },
