@@ -105,6 +105,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
         delete world.entities[id]
         entity.components.renderable?.cleanup()
         entity.components.three?.cleanup(world)
+        entity.components.inventory?.cleanup(world)
 
         entity.removed = true
       }

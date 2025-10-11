@@ -98,7 +98,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }
       }),
       actions: Actions({
-        deagle: Action<DeagleParams>("deagle", ({ world, entity, params }) => {
+        deagle: Action<DeagleParams>("deagle", ({ world, entity, params, offline }) => {
           if (!entity) return
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
@@ -149,6 +149,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // raycast against characters
           for (const target of targets) { // TODO sort by distance
+            if (offline) continue
+
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
