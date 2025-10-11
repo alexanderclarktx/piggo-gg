@@ -34,8 +34,6 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       applesEaten: {},
       jumped: [],
       hit: {},
-      // lastShot: {},
-      lastRocket: {},
       nextSeed: 123456111,
       phase: "warmup",
       round: 0,

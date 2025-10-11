@@ -13,7 +13,6 @@ export type CraftState = {
   doubleJumped: string[]
   hit: Record<string, { tick: number, by: string }>
   lastShot: Record<string, number>
-  lastRocket: Record<string, number>
   nextSeed: number
   phase: "warmup" | "starting" | "play"
   round: number
@@ -47,7 +46,6 @@ export const Craft: GameBuilder<CraftState, CraftSettings> = {
       doubleJumped: [],
       hit: {},
       lastShot: {},
-      lastRocket: {},
       nextSeed: 123456111,
       phase: "warmup",
       round: 0,
