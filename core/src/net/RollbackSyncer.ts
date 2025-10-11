@@ -41,7 +41,6 @@ export const RollbackSyncer = (world: World): Syncer => {
         if (otherCharacter(entityId, world) || otherPlayer(actions, world)) {
           for (const action of actions) {
             if (movementActions.includes(action.actionId)) {
-              // console.log("ADDING OFFLINE", entityId, action)
               world.actions.push(world.tick, entityId, { ...action, offline: true })
             }
           }
@@ -78,7 +77,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
-        if (otherCharacter(entityId, world)) {
+        if (otherCharacter(entityId, world) || otherPlayer(actions, world)) {
           continue
         }
         world.actions.set(message.tick, entityId, actions)
@@ -147,12 +146,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       if (message.actions[message.tick]) {
         for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-          if (otherPlayer(actions, world)) {
-            // console.log("OTHER PLAYER", entityId, actions)
-            continue
-          }
-
-          if (otherCharacter(entityId, world)) {
+          if (otherCharacter(entityId, world) || otherPlayer(actions, world)) {
             continue
           }
 

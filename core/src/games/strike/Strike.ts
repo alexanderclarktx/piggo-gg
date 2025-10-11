@@ -8,9 +8,6 @@ import { StrikeMap } from "./StrikeMap"
 
 export type StrikeState = {
   jumped: string[]
-  //   hit: Record<string, { tick: number, by: string }>
-  // lastShot: Record<string, number>
-  //   phase: "warmup" | "starting" | "play"
 }
 
 export type StrikeSettings = {
