@@ -97,12 +97,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         deagle: Action<DeagleParams>("deagle", ({ world, entity, params }) => {
           if (!entity) return
 
-          const state = world.state<StrikeState>()
-
-          const cd = world.tick - (state.lastShot[entity.id] ?? 0)
+          const cd = world.tick - item.components.item.data.lastShot
           if (cd < 5) return
 
-          state.lastShot[entity.id] = world.tick
+          item.components.item.data.lastShot = world.tick
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
@@ -276,12 +274,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // particles
           for (let i = 1; i < particles.length; i++) {
             const p = particles[i]
-            p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
 
             if (world.tick - p.tick >= 5) {
               if (p.mesh.parent) world.three?.scene.remove(p.mesh)
               particles.splice(i, 1)
               i--
+            } else {
+              p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
             }
           }
 
