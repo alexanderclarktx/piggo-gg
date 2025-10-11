@@ -38,7 +38,7 @@ export const RollbackSyncer = (world: World): Syncer => {
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-        if (otherCharacter(entityId, world)) {
+        if (otherCharacter(entityId, world) || otherPlayer(actions, world)) {
           for (const action of actions) {
             if (movementActions.includes(action.actionId)) {
               // console.log("ADDING OFFLINE", entityId, action)

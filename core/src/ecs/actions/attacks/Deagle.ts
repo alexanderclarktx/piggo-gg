@@ -32,6 +32,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
+  let cd = -100
+
   const recoilRate = 0.04
 
   const spawnParticles = (pos: XYZ, tick: number) => {
@@ -68,6 +70,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
 
+            if (cd + 5 > world.tick) return
+            cd = world.tick
+
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
               .map(target => ({
@@ -97,10 +102,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         deagle: Action<DeagleParams>("deagle", ({ world, entity, params }) => {
           if (!entity) return
 
-          const cd = world.tick - item.components.item.data.lastShot
-          if (cd < 5) return
+          console.log("DEAGLE SHOOT")
 
-          item.components.item.data.lastShot = world.tick
+          // const cd = world.tick - item.components.item.data.cd
+          // if (cd < 5) return
+
+          // item.components.item.data.cd = world.tick
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 

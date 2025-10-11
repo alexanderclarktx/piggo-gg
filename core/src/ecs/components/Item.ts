@@ -3,10 +3,7 @@ import {
   ProtoEntity, SystemBuilder, XY, abs, hypot, min, pickupItem, round
 } from "@piggo-gg/core"
 
-export type Item = Component<"item", {
-  lastShot: number
-  holder: string | undefined
-}> & {
+export type Item = Component<"item"> & {
   name: string
   dropped: boolean
   equipped: boolean
@@ -32,10 +29,6 @@ export type ItemProps = {
 export const Item = ({ name, dropped, equipped, stackable }: ItemProps): Item => ({
   name,
   type: "item",
-  data: {
-    lastShot: -100,
-    holder: undefined
-  },
   dropped: dropped ?? false,
   equipped: equipped ?? false,
   stackable: stackable ?? false
