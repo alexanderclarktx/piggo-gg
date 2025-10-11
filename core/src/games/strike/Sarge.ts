@@ -290,28 +290,14 @@ export const Sarge = (player: Player): Character => {
 
           helper?.update?.()
 
-          // const gun = entity.components.inventory?.activeItem(world)
-          // if (gun) {
-          //   // move the hand bone to the gun position
-          //   // const hand = pig.getObjectByName("FistR")
-          //   const hand = pig.getObjectByName("UpperArmR")
-          //   if (hand) {
-          //     const gunPos = gun.components.position.xyz()
-          //     // hand.position.set(-0.1, 0, 0)
-          //     console.log(hand.position)
-          //     // console.log("hand", hand.position, gunPos)
-          //   }
-          // }
-
           if (!movedHand) {
             const hand = pig.getObjectByName("UpperArmR")
             if (hand) {
-              // hand.position.set(-0.1, 0, 0)
-              console.log(hand.position)
+              console.log("before", hand.position)
+
               hand.position.x -= 0.5
-              // hand.position.y += 1
-              hand.updateMatrixWorld()
-              console.log("hand", hand.position)
+
+              console.log("after", hand.position)
               movedHand = true
             }
           }
