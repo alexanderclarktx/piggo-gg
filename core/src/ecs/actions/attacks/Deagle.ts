@@ -53,6 +53,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
       particles.push({ mesh, tick, velocity })
     }
+
+    console.log("SPAWN PARTICLES", particles.length, particles.at(-1))
   }
 
   const item = ItemEntity({
@@ -255,7 +257,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
         },
         onRender: ({ world, delta, three }) => {
-          if (!gun) return
+          // if (!gun) {
+          //   console.log("NO GUN")
+          //   return
+          // }
 
           const ratio = delta / 25
 
@@ -283,13 +288,20 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const p = particles[i]
 
             if (world.tick - p.tick >= 5) {
-              if (p.mesh.parent) world.three?.scene.remove(p.mesh)
+              console.log("REMOVE PARTICLE", particles.length)
+              if (p.mesh.parent) {
+                world.three?.scene.remove(p.mesh)
+              } else {
+                console.log("PARENT MISSING", p)
+              }
               particles.splice(i, 1)
               i--
             } else {
               p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
             }
           }
+
+          if (!gun) return
 
           if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
             gun.visible = false
