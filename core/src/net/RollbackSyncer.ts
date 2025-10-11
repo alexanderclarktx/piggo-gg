@@ -1,14 +1,22 @@
 import {
-  ceil, entityConstructors, entries, GameData, keys,
+  ceil, entityConstructors, entries, GameData, InvokedAction, keys,
   logDiff, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
-const movementActions = ["move", "moveAnalog", "jump", "point"]
+const movementActions = ["move", "moveAnalog", "jump", "point", "deagle"]
 
-// TODO not generic
 const otherCharacter = (id: string, world: World) => {
   if (id === world.client?.character()?.id) return false
   if (id.startsWith("carl") || id.startsWith("vince") || id.startsWith("sarge")) return true
+  return false
+}
+
+const otherPlayer = (actions: InvokedAction[], world: World) => {
+  for (const action of actions) {
+    if (action.playerId && action.playerId !== world.client?.playerId()) {
+      return true
+    }
+  }
   return false
 }
 
@@ -30,7 +38,7 @@ export const RollbackSyncer = (world: World): Syncer => {
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-        if (otherCharacter(entityId, world)) {
+        if (otherCharacter(entityId, world) || otherPlayer(actions, world)) {
           for (const action of actions) {
             if (movementActions.includes(action.actionId)) {
               world.actions.push(world.tick, entityId, { ...action, offline: true })
@@ -69,7 +77,7 @@ export const RollbackSyncer = (world: World): Syncer => {
 
     if (message.actions[message.tick]) {
       for (const [entityId, actions] of entries(message.actions[message.tick])) {
-        if (otherCharacter(entityId, world)) {
+        if (otherCharacter(entityId, world) || otherPlayer(actions, world)) {
           continue
         }
         world.actions.set(message.tick, entityId, actions)
@@ -138,19 +146,19 @@ export const RollbackSyncer = (world: World): Syncer => {
       if (message.actions[message.tick]) {
         for (const [entityId, actions] of entries(message.actions[message.tick])) {
 
-          if (otherCharacter(entityId, world)) {
+          if (otherCharacter(entityId, world) || otherPlayer(actions, world)) {
             continue
           }
 
           if (!localActions[entityId]) {
-            mustRollback(`action not found locally ${actions[0].actionId}`)
+            mustRollback(`no actions locally for entity:${entityId} action:${actions[0].actionId}`)
             break
           }
 
           // check local has each action
           for (const action of actions) {
             if (localActions[entityId].find((a) => a.actionId === action.actionId) === undefined) {
-              mustRollback(`action not found locally ${action.actionId}`)
+              mustRollback(`action not found locally entity:${entityId} action:${action.actionId}`)
               break
             }
           }
@@ -158,7 +166,7 @@ export const RollbackSyncer = (world: World): Syncer => {
           // check remote has each action
           for (const action of localActions[entityId]) {
             if (actions.find((a) => a.actionId === action.actionId) === undefined) {
-              mustRollback(`action not found remotely ${action.actionId}`)
+              mustRollback(`action not found remotely entity:${entityId} action:${action.actionId}`)
               break
             }
           }

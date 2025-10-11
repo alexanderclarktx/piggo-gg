@@ -62,7 +62,7 @@ export const ActionSystem: SystemBuilder<"ActionSystem"> = {
           // execute the action
           const player = invokedAction.playerId ? world.entity(invokedAction.playerId) as Player : undefined
           const character = invokedAction.characterId ? world.entity(invokedAction.characterId) as Character : undefined
-          action.invoke({ params: invokedAction.params ?? {}, entity, world, player, character })
+          action.invoke({ params: invokedAction.params ?? {}, entity, world, player, character, offline: invokedAction.offline ?? false } )
         }
       }
     }

@@ -10,7 +10,9 @@ export type Action<T extends {} = any> = {
     world: World,
     entity?: Entity,
     player?: Player | undefined,
-    character?: Character | undefined }
+    character?: Character | undefined,
+    offline?: boolean
+  }
   ) => void
   // validate: (entity: Entity, world: World, player?: string) => boolean
 }

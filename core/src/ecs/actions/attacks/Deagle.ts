@@ -1,8 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
-  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter,
-  Position, random, randomInt, rayCapsuleIntersect, sin,
-  StrikeState, Target, Three, XY, XYZ
+  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
+  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -31,6 +30,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
+
+  let cd = -100
 
   const recoilRate = 0.04
 
@@ -68,6 +69,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
 
+            if (cd + 5 > world.tick) return
+            cd = world.tick
+
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
               .map(target => ({
@@ -94,15 +98,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }
       }),
       actions: Actions({
-        deagle: Action<DeagleParams>("deagle", ({ world, entity, params }) => {
+        deagle: Action<DeagleParams>("deagle", ({ world, entity, params, offline }) => {
           if (!entity) return
-
-          const state = world.state<StrikeState>()
-
-          const cd = world.tick - (state.lastShot[entity.id] ?? 0)
-          if (cd < 5) return
-
-          state.lastShot[entity.id] = world.tick
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
@@ -151,7 +148,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           let headshot = false
 
           // raycast against characters
-          for (const target of targets) {
+          for (const target of targets) { // TODO sort by distance
+            if (offline) continue
+
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
@@ -224,7 +223,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         init: async (_, world, three) => {
 
           // tracer
-          const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.04, 8)
+          const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.1, 8)
           tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffff99, emissive: 0xffff99 }))
           three.scene.add(tracer)
 
@@ -250,8 +249,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
         },
         onRender: ({ world, delta, three }) => {
-          if (!gun) return
-
           const ratio = delta / 25
 
           const pos = character.components.position.interpolate(world, delta)
@@ -276,14 +273,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // particles
           for (let i = 1; i < particles.length; i++) {
             const p = particles[i]
-            p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
 
             if (world.tick - p.tick >= 5) {
-              if (p.mesh.parent) world.three?.scene.remove(p.mesh)
+              if (p.mesh.parent) {
+                world.three?.scene.remove(p.mesh)
+              }
               particles.splice(i, 1)
               i--
+            } else {
+              p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
             }
           }
+
+          if (!gun) return
 
           if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
             gun.visible = false
