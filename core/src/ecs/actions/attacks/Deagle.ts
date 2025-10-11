@@ -97,16 +97,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         deagle: Action<DeagleParams>("deagle", ({ world, entity, params }) => {
           if (!entity) return
 
-          // const state = world.state<StrikeState>()
-          // const { lastShot } = item.components.item.data
-
           const cd = world.tick - item.components.item.data.lastShot
           if (cd < 5) return
 
-          console.log("SHOOT", world.tick, item.components.item.data.lastShot, cd)
-
           item.components.item.data.lastShot = world.tick
-          console.log("set last shot", item.components.item.data.lastShot)
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
