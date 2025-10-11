@@ -53,8 +53,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
       particles.push({ mesh, tick, velocity })
     }
-
-    console.log("SPAWN PARTICLES", particles.length, particles.at(-1))
   }
 
   const item = ItemEntity({
@@ -103,13 +101,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       actions: Actions({
         deagle: Action<DeagleParams>("deagle", ({ world, entity, params }) => {
           if (!entity) return
-
-          console.log("DEAGLE SHOOT")
-
-          // const cd = world.tick - item.components.item.data.cd
-          // if (cd < 5) return
-
-          // item.components.item.data.cd = world.tick
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
@@ -231,7 +222,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         init: async (_, world, three) => {
 
           // tracer
-          const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.04, 8)
+          const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.1, 8)
           tracer = new Mesh(tracerGeometry, new MeshPhongMaterial({ color: 0xffff99, emissive: 0xffff99 }))
           three.scene.add(tracer)
 
@@ -257,11 +248,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
         },
         onRender: ({ world, delta, three }) => {
-          // if (!gun) {
-          //   console.log("NO GUN")
-          //   return
-          // }
-
           const ratio = delta / 25
 
           const pos = character.components.position.interpolate(world, delta)
@@ -288,11 +274,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const p = particles[i]
 
             if (world.tick - p.tick >= 5) {
-              console.log("REMOVE PARTICLE", particles.length)
               if (p.mesh.parent) {
                 world.three?.scene.remove(p.mesh)
-              } else {
-                console.log("PARENT MISSING", p)
               }
               particles.splice(i, 1)
               i--
