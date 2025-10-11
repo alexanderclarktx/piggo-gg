@@ -96,7 +96,7 @@ const StrikeSystem = SystemBuilder({
           if (!character) continue
 
           if (player.id === "player-dummy") {
-            character.components.position.data.aim.x += 0.01
+            // character.components.position.data.aim.x += 0.01
           }
 
           const { position } = character.components

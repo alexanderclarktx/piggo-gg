@@ -3,7 +3,7 @@ import {
   Health, Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place,
   Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
-import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, Vector3 } from "three"
+import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, Vector3 } from "three"
 import { StrikeSettings, StrikeState } from "./Strike"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
@@ -17,6 +17,7 @@ export const Sarge = (player: Player): Character => {
   let hitboxes: { body: undefined | Mesh, head: undefined | Mesh } = { body: undefined, head: undefined }
 
   let pig: Object3D = new Object3D()
+  let helper: SkeletonHelper | undefined = undefined
 
   let pigMixer: AnimationMixer | undefined
 
@@ -27,6 +28,8 @@ export const Sarge = (player: Player): Character => {
   let animation: "idle" | "run" | "dead" = "idle"
 
   const isDummy = player.id === "player-dummy"
+
+  let movedHand = false
 
   const sarge = Character({
     id: `sarge-${player.id}`,
@@ -285,6 +288,34 @@ export const Sarge = (player: Player): Character => {
 
           pigMixer?.update(speed * ratio * 0.005 + 0.005)
 
+          helper?.update?.()
+
+          // const gun = entity.components.inventory?.activeItem(world)
+          // if (gun) {
+          //   // move the hand bone to the gun position
+          //   // const hand = pig.getObjectByName("FistR")
+          //   const hand = pig.getObjectByName("UpperArmR")
+          //   if (hand) {
+          //     const gunPos = gun.components.position.xyz()
+          //     // hand.position.set(-0.1, 0, 0)
+          //     console.log(hand.position)
+          //     // console.log("hand", hand.position, gunPos)
+          //   }
+          // }
+
+          if (!movedHand) {
+            const hand = pig.getObjectByName("UpperArmR")
+            if (hand) {
+              // hand.position.set(-0.1, 0, 0)
+              console.log(hand.position)
+              hand.position.x -= 0.5
+              // hand.position.y += 1
+              hand.updateMatrixWorld()
+              console.log("hand", hand.position)
+              movedHand = true
+            }
+          }
+
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
 
             const opacity = three.camera.mode === "first" ? 1 - (three.camera.transition / 100) : three.camera.transition / 100
@@ -318,6 +349,9 @@ export const Sarge = (player: Player): Character => {
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)
 
+            console.log(pig.children, pig.children[0].children[1].type)
+            helper = new SkeletonHelper(pig.children[0].children[1])
+
             copyMaterials(gltf.scene, pig)
 
             pigMixer = new AnimationMixer(pig)
@@ -340,7 +374,7 @@ export const Sarge = (player: Player): Character => {
               }
             })
 
-            entity.components.three.o.push(pig)
+            entity.components.three.o.push(pig, helper)
           })
         }
       })

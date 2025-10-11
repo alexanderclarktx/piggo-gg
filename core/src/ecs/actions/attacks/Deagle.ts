@@ -3,16 +3,18 @@ import {
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
   random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
-import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
+import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
   const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
   const offset = {
-    x: -dir.x * 0.05 + right.x * 0.05,
+    x: -dir.x * 0.1 + right.x * 0.05,
+    // x: -dir.x * 0.1,
     y: recoil * 0.03,
-    z: -dir.y * 0.05 + right.y * 0.05,
+    z: -dir.y * 0.1 + right.y * 0.05,
+    // z: -dir.y * 0.1,
   }
 
   if (tip) {
@@ -34,6 +36,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   let cd = -100
+  let offset: XYZ = { x: 0, y: 0, z: 0 }
 
   const recoilRate = 0.04
 
@@ -92,6 +95,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       npc: NPC({
         behavior: () => {
           const { recoil } = character.components.position.data
+
+          if (gun && offset) {
+            const OFFSET = modelOffset(offset)
+            item.components.position.setPosition({ 
+              x: -OFFSET.x,
+              y: -OFFSET.y - 2,
+              z: -OFFSET.z
+             })
+            // item.components.position.setPosition({
+            //   x: gun.position.x,
+            //   y: gun.position.z - 0.45,
+            //   z: gun.position.y
+            // })
+          }
+
 
           // TODO move this to a system
           if (recoil > 0) {
@@ -260,7 +278,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             aim = client.controls.localAim
           }
 
-          const offset = modelOffset(aim)
+          offset = modelOffset(aim)
 
           // tracer
           if (tracer) {
