@@ -102,7 +102,10 @@ export const DefuseMapColoring: Record<XYZstring, string> = {
   "33,60,4": "slategray",
   "33,59,4": "slategray",
   "33,58,4": "slategray",
-  "36,61,4": "slategray"
+  "36,61,4": "slategray",
+  "36,60,4": "slategray",
+  "36,59,4": "slategray",
+  "36,58,4": "slategray"
 }
 
 export const DefuseMap: Record<string, string> = {
