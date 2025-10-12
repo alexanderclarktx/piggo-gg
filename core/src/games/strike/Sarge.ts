@@ -1,10 +1,9 @@
 import {
   Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, Hook,
   HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point,
-  Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState
+  Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, Vector3 } from "three"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 const walk = 0.6
 const run = 1.2
@@ -315,7 +314,7 @@ export const Sarge = (player: Player): Character => {
           // character model
           three.gLoader.load("cowboy.glb", (gltf) => {
 
-            pig = clone(gltf.scene)
+            pig = cloneSkeleton(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)

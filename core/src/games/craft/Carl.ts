@@ -1,12 +1,11 @@
 import {
-  abs, Action, Actions, Character, Collider, copyMaterials, cos,
+  abs, Action, Actions, Character, cloneSkeleton, Collider, copyMaterials, cos,
   HookItem, hypot, Input, Inventory, LaserItem, max, Networked,
   PI, Place, Player, Point, Position, Ready, setActiveItemIndex,
   sin, sqrt, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
 import { CraftSettings, CraftState } from "./Craft"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 const walk = 0.78
 const run = 1.2
@@ -114,7 +113,7 @@ export const Carl = (player: Player): Character => {
         init: async (entity, world, three) => {
           three.gLoader.load("cowboy.glb", (gltf) => {
 
-            pig = clone(gltf.scene)
+            pig = cloneSkeleton(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)

@@ -1,4 +1,5 @@
 import { Mesh, Object3D } from "three"
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 export const copyMaterials = (from: Object3D, to: Object3D) => {
   const fromMap: Record<string, Object3D> = {}
@@ -17,6 +18,8 @@ export const copyMaterials = (from: Object3D, to: Object3D) => {
     }
   })
 }
+
+export const cloneSkeleton = clone
 
 export const cloneThree = <O extends Object3D>(o: O): O => {
   const cloned = o.clone()
