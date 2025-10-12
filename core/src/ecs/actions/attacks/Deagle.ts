@@ -12,7 +12,7 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const offset = {
     x: -dir.x * 0.05 + right.x * 0.05,
     y: recoil * 0.03,
-    z: -dir.y * 0.05 + right.y * 0.05,
+    z: -dir.y * 0.05 + right.y * 0.05
   }
 
   if (tip) {
@@ -203,11 +203,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             // if (world.debug) {
             //   if (beamResult.inside.type === 12) {
             //     world.blocks.setType(beamResult.inside, 3)
+            //     delete world.blocks.coloring[`${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`]
             //   } else {
             //     world.blocks.remove(beamResult.inside)
             //   }
+            // } else if (beamResult.inside.type !== 12) {
+            //   world.blocks.setType(beamResult.inside, 12)
             // } else {
             //   world.blocks.setType(beamResult.inside, 12)
+            //   const xyzstr: XYZstring = `${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`
+            //   if (world.blocks.coloring[xyzstr]) {
+            //     const color = nextColor(world.blocks.coloring[xyzstr] as BlockColor)
+            //     world.blocks.coloring[xyzstr] = color
+            //   } else {
+            //     world.blocks.coloring[xyzstr] = `slategray`
+            //   }
             // }
 
             spawnParticles(beamResult.edge, world.tick)
@@ -248,13 +258,17 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             })
           }
         },
-        onRender: ({ world, delta, three }) => {
+        onRender: ({ world, delta, client, three }) => {
           const ratio = delta / 25
 
           const pos = character.components.position.interpolate(world, delta)
 
-          const { localAim } = world.client!.controls
-          const offset = modelOffset(localAim)
+          let { aim } = character.components.position.data
+          if (character.id === world.client?.character()?.id) {
+            aim = client.controls.localAim
+          }
+
+          const offset = modelOffset(aim)
 
           // tracer
           if (tracer) {
@@ -304,8 +318,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
-          gun.rotation.y = localAim.x
-          gun.rotation.x = localAim.y + localRecoil * 0.5
+          gun.rotation.y = aim.x
+          gun.rotation.x = aim.y + localRecoil * 0.5
         }
       })
     },

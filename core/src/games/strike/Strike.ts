@@ -4,7 +4,7 @@ import {
   Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem, DummyPlayer
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
-import { StrikeMap } from "./StrikeMap"
+import { DefuseMap, DefuseMapColoring } from "./DefuseMap"
 
 export type StrikeState = {
   jumped: string[]
@@ -70,13 +70,9 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
 const StrikeSystem = SystemBuilder({
   id: "StrikeSystem",
   init: (world) => {
-    const time = performance.now()
-    for (const chunk of keys(StrikeMap)) {
-      const [x, y] = chunk.split("|").map(Number)
 
-      world.blocks.setChunk({ x, y }, StrikeMap[chunk])
-    }
-    logPerf("loaded map", time)
+    world.blocks.loadMap(DefuseMap)
+    world.blocks.coloring = DefuseMapColoring
 
     return {
       id: "StrikeSystem",

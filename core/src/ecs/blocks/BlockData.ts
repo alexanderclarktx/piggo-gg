@@ -1,8 +1,29 @@
 import {
-  Block, BlockPlan, BlockTree, floor, keys, logPerf, World, XY, XYZ
+  Block, BlockPlan, BlockTree, floor, keys, logPerf, World, XY, XYZ, XYZstring
 } from "@piggo-gg/core"
 
+export type BlockColor = "rebeccapurple" | "slategray" |
+  "chocolate" | "saddlebrown" | "cadetblue" | "cornflowerblue" |
+  "rosybrown" | "sandybrown" | "tan" | "palevioletred" | "mediumseagreen"
+
+export const nextColor = (current: BlockColor): BlockColor => {
+  switch (current) {
+    case "tan": return "slategray"
+    case "slategray": return "mediumseagreen"
+    case "mediumseagreen": return "chocolate"
+    case "chocolate": return "saddlebrown"
+    case "saddlebrown": return "cadetblue"
+    case "cadetblue": return "rebeccapurple"
+    case "rebeccapurple": return "cornflowerblue"
+    case "cornflowerblue": return "rosybrown"
+    case "rosybrown": return "palevioletred"
+    case "palevioletred": return "sandybrown"
+    case "sandybrown": return "tan"
+  }
+}
+
 export type BlockData = {
+  coloring: Record<XYZstring, string>
   add: (block: Block) => boolean
   addPlan: (plan: BlockPlan) => boolean
   clear: () => void
@@ -13,6 +34,7 @@ export type BlockData = {
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
   invalidate: () => void
+  loadMap: (map: Record<string, string>) => void
   remove: (xyz: XYZ) => void
   needsUpdate: () => boolean
   visible: (at: XY[]) => Block[]
@@ -51,6 +73,9 @@ export const BlockData = (): BlockData => {
   }
 
   const blocks: BlockData = {
+    coloring: {
+      // "34,49,3": "mediumseagreen"
+    },
     highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0
 
@@ -248,6 +273,13 @@ export const BlockData = (): BlockData => {
     needsUpdate: () => {
       return Boolean(keys(visibleDirty).length)
     },
+    loadMap: (map: Record<string, string>) => {
+      for (const chunk in map) {
+        const [x, y] = chunk.split("|").map(Number)
+
+        blocks.setChunk({ x, y }, map[chunk])
+      }
+    },
     remove: ({ x, y, z }) => {
       const chunkX = floor(x / 4)
       const chunkY = floor(y / 4)
@@ -354,13 +386,9 @@ export const spawnTerrain = (world: World, num: number = 10) => {
   logPerf("spawnTerrain", time)
 }
 
-export const spawnFlat = (world: World) => {
-  const time = performance.now()
-
-  const blocks = 12
-
-  for (let i = 0; i < blocks; i++) {
-    for (let j = 0; j < blocks; j++) {
+export const spawnFlat = (world: World, chunks = 12) => {
+  for (let i = 2; i < chunks + 2; i++) {
+    for (let j = 2; j < chunks + 2; j++) {
       for (let z = 0; z < 1; z++) {
         for (let x = 0; x < 4; x++) {
           for (let y = 0; y < 4; y++) {

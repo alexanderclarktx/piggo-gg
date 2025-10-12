@@ -1,5 +1,5 @@
 import {
-  Actions, Background, Craft, Entity, GameBuilder, HButton,
+  Actions, Background, Craft, Entity, GameBuilder, getBrowser, HButton,
   HImg, HText, HtmlDiv, HtmlText, LobbiesMenu, Networked,
   NPC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText,
   Position, RefreshableDiv, Renderable, Strike, Volley, World
@@ -239,6 +239,15 @@ const GameLobby = (): Entity => {
   let lobbiesMenu: RefreshableDiv | undefined = undefined
   let profile: RefreshableDiv | undefined = undefined
   let playersOnline: RefreshableDiv | undefined = undefined
+
+  if (getBrowser() === "safari") {
+    document.body.appendChild(HText({
+      text: "please use Chrome or Firefox",
+      style: {
+        color: "red", bottom: "4%", left: "50%", transform: "translate(-50%)", fontSize: "24px"
+      }
+    }))
+  }
 
   const gameLobby = Entity<Position>({
     id: "gameLobby",

@@ -1,5 +1,5 @@
 import {
-  BlockTypeString, ClientSystemBuilder, GrassTexture,
+  BlockTypeString, ClientSystemBuilder, entries, GrassTexture,
   LeafTexture, logPerf, MarbleTexture, OakTexture, SpruceTexture
 } from "@piggo-gg/core"
 import { BoxGeometry, Color, InstancedMesh, InstancedMeshEventMap, MeshPhysicalMaterial, Object3D } from "three"
@@ -34,7 +34,7 @@ export const BlockMeshSysten = ClientSystemBuilder({
     let leaf = LeafTexture(BlockMesh(5000), three)
     let oak = OakTexture(BlockMesh(5000), three)
     let spruce = SpruceTexture(BlockMesh(5000), three)
-    let marble = MarbleTexture(BlockMesh(3000), three)
+    let marble = MarbleTexture(BlockMesh(4000), three)
 
     let rendered = false
 
@@ -87,7 +87,14 @@ export const BlockMeshSysten = ClientSystemBuilder({
               spruce.setMatrixAt(spruceCount, dummy.matrix)
               spruceCount++
             } else if (type === "marble") {
-              marble.setColorAt(marbleCount, new Color(0xbbbbbb))
+
+              if (world.blocks.coloring[`${x},${y},${z}`]) {
+                const color = new Color(world.blocks.coloring[`${x},${y},${z}`])
+                marble.setColorAt(marbleCount, color)
+              } else {
+                marble.setColorAt(marbleCount, new Color(z === 0 ? 0xd2b48c : 0xbbbbbb))
+              }
+
               marble.setMatrixAt(marbleCount, dummy.matrix)
               marbleCount++
             } else {

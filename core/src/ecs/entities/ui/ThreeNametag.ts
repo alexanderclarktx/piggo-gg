@@ -47,7 +47,7 @@ export const ThreeNametag = (player: Player): ThreeNametag => {
 
       // scale the size
       const dist = world.three?.camera.c.position.distanceTo(group.position) || 1
-      const scale = 0.5 + min(5, dist * 0.5)
+      const scale = 0.5 + min(5, dist * 0.4)
       group.scale.set(scale, scale, scale)
 
       // orient toward camera

@@ -1,13 +1,14 @@
 import {
-  Action, Actions, Character, Collider, copyMaterials, DeagleItem,
-  Health, Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place,
-  Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, Hook,
+  HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point,
+  Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton
 } from "@piggo-gg/core"
-import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, Vector3 } from "three"
-import { StrikeSettings, StrikeState } from "./Strike"
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import {
+  AnimationAction, AnimationMixer, CapsuleGeometry, Mesh,
+  MeshPhongMaterial, Object3D, SkeletonHelper, Vector3
+} from "three"
 
-const walk = 0.6
+const walk = 0.56
 const run = 1.2
 const hop = 0.16
 const leap = 0.3
@@ -17,6 +18,7 @@ export const Sarge = (player: Player): Character => {
   let hitboxes: { body: undefined | Mesh, head: undefined | Mesh } = { body: undefined, head: undefined }
 
   let pig: Object3D = new Object3D()
+  let helper: SkeletonHelper | undefined = undefined
 
   let pigMixer: AnimationMixer | undefined
 
@@ -34,7 +36,7 @@ export const Sarge = (player: Player): Character => {
       position: Position({
         friction: true,
         gravity: 0.003,
-        x: 9.9, y: isDummy ? 12.6 : 17, z: isDummy ? 0.6 : 2,
+        x: 8, y: isDummy ? 6 : 8, z: 2,
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),
@@ -64,6 +66,7 @@ export const Sarge = (player: Player): Character => {
           "mb2": ({ hold, world, character }) => {
             if (hold) return
             if (!character) return
+            if (!world.debug) return
 
             const dir = world.three!.camera.dir(world)
             const camera = world.three!.camera.pos()
@@ -107,7 +110,7 @@ export const Sarge = (player: Player): Character => {
 
           // debug
           "g": ({ world, hold }) => {
-            if (hold === 40) {
+            if (hold === 5) {
               world.debug = !world.debug
             }
           },
@@ -285,6 +288,8 @@ export const Sarge = (player: Player): Character => {
 
           pigMixer?.update(speed * ratio * 0.005 + 0.005)
 
+          // helper?.update?.()
+
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
 
             const opacity = three.camera.mode === "first" ? 1 - (three.camera.transition / 100) : three.camera.transition / 100
@@ -313,10 +318,12 @@ export const Sarge = (player: Player): Character => {
           // character model
           three.gLoader.load("cowboy.glb", (gltf) => {
 
-            pig = clone(gltf.scene)
+            pig = cloneSkeleton(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)
+
+            // helper = new SkeletonHelper(pig.children[0].children[1])
 
             copyMaterials(gltf.scene, pig)
 

@@ -1,4 +1,4 @@
-export const piggoVersion: `0.${number}.${number}` = "0.39.4"
+export const piggoVersion: `0.${number}.${number}` = "0.40.1"
 
 export const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
@@ -28,6 +28,14 @@ export const screenWH = () => {
   const height = (document.fullscreenElement || standalone) ? window.outerHeight : window.innerHeight
 
   return { w: window.innerWidth, h: height }
+}
+
+export const getBrowser = () => {
+  const userAgent = navigator.userAgent
+  if (userAgent.indexOf("Chrome") > -1) return "chrome"
+  if (userAgent.indexOf("Safari") > -1) return "safari"
+  if (userAgent.indexOf("Firefox") > -1) return "firefox"
+  return undefined
 }
 
 export const replaceCanvas = () => {
