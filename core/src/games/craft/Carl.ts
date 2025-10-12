@@ -7,10 +7,10 @@ import {
 import { AnimationAction, AnimationMixer, Mesh, Object3D, Vector3 } from "three"
 import { CraftSettings, CraftState } from "./Craft"
 
-const walk = 0.78
-const run = 1.2
-const hop = 0.18
-const leap = 0.3
+const walk = 0.8
+const run = 1.1
+const hop = 0.2
+const leap = 0.26
 
 export const Carl = (player: Player): Character => {
 
@@ -28,9 +28,9 @@ export const Carl = (player: Player): Character => {
   const carl = Character({
     id: `carl-${player.id}`,
     components: {
-      position: Position({ friction: true, gravity: 0.0024, flying: false, z: 6, x: 25, y: 18 }),
+      position: Position({ friction: true, gravity: 0.003, flying: false, z: 6, x: 25, y: 18 }),
       networked: Networked(),
-      inventory: Inventory([LaserItem, HookItem]),
+      inventory: Inventory([HookItem, LaserItem]),
       collider: Collider({
         shape: "ball",
         radius: 0.1

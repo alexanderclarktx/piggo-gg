@@ -5,7 +5,7 @@ import {
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, Vector3 } from "three"
 
-const walk = 0.6
+const walk = 0.56
 const run = 1.2
 const hop = 0.16
 const leap = 0.3
