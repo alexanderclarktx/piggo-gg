@@ -213,12 +213,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             } else {
               world.blocks.setType(beamResult.inside, 12)
               const xyzstr: XYZstring = `${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`
-              // if (world.blocks.coloring[xyzstr]) {
-              //   const color = nextColor(world.blocks.coloring[xyzstr] as BlockColor)
-              //   world.blocks.coloring[xyzstr] = color
-              // } else {
-                world.blocks.coloring[xyzstr] = `tan`
-              // }
+              if (world.blocks.coloring[xyzstr]) {
+                const color = nextColor(world.blocks.coloring[xyzstr] as BlockColor)
+                world.blocks.coloring[xyzstr] = color
+              } else {
+                world.blocks.coloring[xyzstr] = `rosybrown`
+              }
             }
 
             spawnParticles(beamResult.edge, world.tick)
