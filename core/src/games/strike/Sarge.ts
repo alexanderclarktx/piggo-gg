@@ -1,10 +1,9 @@
 import {
-  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health,
-  Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place,
-  Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, Hook,
+  HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point,
+  Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, Vector3 } from "three"
-import { StrikeSettings, StrikeState } from "./Strike"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 const walk = 0.6
