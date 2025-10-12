@@ -204,6 +204,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (world.debug) {
               if (beamResult.inside.type === 12) {
                 world.blocks.setType(beamResult.inside, 3)
+                delete world.blocks.coloring[`${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`]
               } else {
                 world.blocks.remove(beamResult.inside)
               }
