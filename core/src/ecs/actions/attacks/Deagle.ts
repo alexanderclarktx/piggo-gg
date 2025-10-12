@@ -217,7 +217,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
                 const color = nextColor(world.blocks.coloring[xyzstr] as BlockColor)
                 world.blocks.coloring[xyzstr] = color
               } else {
-                world.blocks.coloring[xyzstr] = `slategray`
+                world.blocks.coloring[xyzstr] = `tan`
               }
             }
 
