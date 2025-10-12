@@ -92,7 +92,7 @@ export const BlockMeshSysten = ClientSystemBuilder({
                 const color = new Color(world.blocks.coloring[`${x},${y},${z}`])
                 marble.setColorAt(marbleCount, color)
               } else {
-                marble.setColorAt(marbleCount, new Color(0xbbbbbb))
+                marble.setColorAt(marbleCount, new Color(z === 0 ? 0xd2b48c : 0xbbbbbb))
               }
 
               marble.setMatrixAt(marbleCount, dummy.matrix)
