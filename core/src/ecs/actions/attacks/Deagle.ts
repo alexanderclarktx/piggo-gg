@@ -32,7 +32,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   let cd = -100
-  let offset: XYZ = { x: 0, y: 0, z: 0 }
 
   const recoilRate = 0.04
 
@@ -259,7 +258,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             aim = client.controls.localAim
           }
 
-          offset = modelOffset(aim)
+          const offset = modelOffset(aim)
 
           // tracer
           if (tracer) {
