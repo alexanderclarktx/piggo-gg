@@ -31,6 +31,8 @@ export const Sarge = (player: Player): Character => {
 
   let movedHand = false
 
+  let maxed = 0
+
   const sarge = Character({
     id: `sarge-${player.id}`,
     components: {
@@ -288,19 +290,57 @@ export const Sarge = (player: Player): Character => {
 
           pigMixer?.update(speed * ratio * 0.005 + 0.005)
 
-          helper?.update?.()
+          // helper?.update?.()
 
-          if (!movedHand) {
-            const hand = pig.getObjectByName("UpperArmR")
-            if (hand) {
-              console.log("before", hand.position)
+          // if (!movedHand) {
+          //   const upper = pig.getObjectByName("UpperArmR")
+          //   const lower = pig.getObjectByName("LowerArmR")
+          //   const hand = pig.getObjectByName("FistR")
 
-              hand.position.x -= 0.5
+          //   // console.log(upper, lower, hand)
 
-              console.log("after", hand.position)
-              movedHand = true
-            }
-          }
+          //   if (upper && lower && hand) {
+          //     // player.id === "player-dummy"
+
+          //     upper.rotation.x = -8.5
+          //     lower.rotation.x = -1.8
+          //     hand.rotation.y = 0
+
+          //     // console.log("before", upper.position)
+
+          //     // hand.position.x -= 0.5
+          //     // upper.position.y += 0.1
+          //     // lower.position.y += 0.1
+          //     // hand.position.y += 0.1
+
+          //     // hand.position.y -= 1
+          //     // hand.position.x -= 0.5
+          //     // hand.position.z += 0.5
+          //     if (maxed > 6.28) {
+          //       // lower.rotation.x = 0
+          //       // lower.rotation.x = 0
+
+          //       // hand.rotation.y = 0
+
+          //       // lower.position.z = 0
+          //       maxed = 0
+          //     } else {
+          //       // lower.position.z += 0.01
+
+
+          //       // console.log(hand.rotation.y += 0.01)
+          //       // console.log(lower.rotation.x)
+
+          //       // lower.rotation.x -= 0.01
+                
+          //       // lower.rotation.x += 0.01
+          //       maxed += 0.01
+          //     }
+
+          //     // console.log("after", upper.position)
+          //     // movedHand = true
+          //   }
+          // }
 
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
 
@@ -336,7 +376,7 @@ export const Sarge = (player: Player): Character => {
             pig.scale.set(0.16, 0.18, 0.16)
 
             console.log(pig.children, pig.children[0].children[1].type)
-            helper = new SkeletonHelper(pig.children[0].children[1])
+            // helper = new SkeletonHelper(pig.children[0].children[1])
 
             copyMaterials(gltf.scene, pig)
 
@@ -360,7 +400,7 @@ export const Sarge = (player: Player): Character => {
               }
             })
 
-            entity.components.three.o.push(pig, helper)
+            entity.components.three.o.push(pig)
           })
         }
       })

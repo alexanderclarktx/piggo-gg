@@ -98,11 +98,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (gun && offset) {
             const OFFSET = modelOffset(offset)
-            item.components.position.setPosition({ 
+            item.components.position.setPosition({
               x: -OFFSET.x,
               y: -OFFSET.y - 2,
               z: -OFFSET.z
-             })
+            })
             // item.components.position.setPosition({
             //   x: gun.position.x,
             //   y: gun.position.z - 0.45,
@@ -254,21 +254,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
 
           // gun
-          // if (character.id === world.client?.character()?.id) {
-          three.gLoader.load("deagle.glb", (gltf) => {
-            gun = gltf.scene
-            gun.scale.set(0.025, 0.025, 0.025)
+          if (character.id === world.client?.character()?.id) {
+            three.gLoader.load("deagle.glb", (gltf) => {
+              gun = gltf.scene
+              gun.scale.set(0.025, 0.025, 0.025)
 
-            gun.receiveShadow = true
-            gun.castShadow = true
+              gun.receiveShadow = true
+              gun.castShadow = true
 
-            gun.rotation.order = "YXZ"
+              gun.rotation.order = "YXZ"
 
-            item.components.three?.o.push(gun)
-          })
-          // }
+              item.components.three?.o.push(gun)
+            })
+          }
         },
-        onRender: ({ world, delta, client }) => {
+        onRender: ({ world, delta, client, three }) => {
           const ratio = delta / 25
 
           const pos = character.components.position.interpolate(world, delta)
