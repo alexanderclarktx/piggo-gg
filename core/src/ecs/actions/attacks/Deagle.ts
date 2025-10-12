@@ -10,11 +10,9 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
   const offset = {
-    x: -dir.x * 0.1 + right.x * 0.05,
-    // x: -dir.x * 0.1,
+    x: -dir.x * 0.05 + right.x * 0.05,
     y: recoil * 0.03,
-    z: -dir.y * 0.1 + right.y * 0.05,
-    // z: -dir.y * 0.1,
+    z: -dir.y * 0.05 + right.y * 0.05
   }
 
   if (tip) {
@@ -27,8 +25,6 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
 }
 
 export const DeagleItem = ({ character }: { character: Character }) => {
-
-  console.log("adding deagle to", character.id)
 
   let gun: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
