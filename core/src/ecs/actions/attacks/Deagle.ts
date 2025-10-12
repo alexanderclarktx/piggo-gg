@@ -1,7 +1,7 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
+  Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
+  random, randomInt, rayCapsuleIntersect, round, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -32,6 +32,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
 
   let cd = -100
+
+  const mvtError = 0.03
 
   const recoilRate = 0.04
 
@@ -72,6 +74,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (cd + 5 > world.tick) return
             cd = world.tick
 
+            const { position } = character.components
+
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
               .map(target => ({
@@ -79,11 +83,17 @@ export const DeagleItem = ({ character }: { character: Character }) => {
                 id: target.id
               }))
 
-            const pos = character.components.position.xyz()
+            const pos = position.xyz()
 
             const rng = (random() - 0.5) * 0.1
 
-            return { actionId: "deagle", params: { pos, aim, targets, rng } }
+            const velocity = hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)
+
+            const error = { x: (random() - 0.49) * mvtError * velocity, y: (random() - 0.49) * mvtError * velocity }
+
+            const params: DeagleParams = { pos, aim, targets, rng, error }
+
+            return { actionId: "deagle", params }
           },
         }
       }),
@@ -103,7 +113,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
-          const { pos, aim, targets } = params
+          const { pos, aim, targets, error } = params
 
           const eyePos = { x: pos.x, y: pos.y, z: pos.z + 0.5 }
           const eyes = new Vector3(eyePos.x, eyePos.z, eyePos.y)
@@ -112,7 +122,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (recoil) {
             aim.y += recoil * 0.1
-            aim.x += recoil * params.rng
+            aim.x += recoil * params.rng * 0.5
+          }
+
+          if (error) {
+            aim.x += error.x
+            aim.y += error.y
           }
 
           // apply recoil
@@ -333,4 +348,5 @@ type DeagleParams = {
   aim: XY
   targets: Target[]
   rng: number
+  error: XY
 }
