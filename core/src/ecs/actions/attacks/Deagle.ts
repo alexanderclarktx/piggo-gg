@@ -1,8 +1,7 @@
 import {
-  Action, Actions, BlockColor, blockInLine, Character, cos, Effects, floor, Input, Item,
-  ItemEntity, max, min, Networked, nextColor, NPC, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ,
-  XYZstring
+  Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
+  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
+  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -65,7 +64,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim, client }) => {
-            // if (hold) return
+            if (hold) return
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
@@ -198,28 +197,28 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // raycast against blocks
           const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
           if (beamResult) {
-            // if (beamResult.inside.type === 6) {
-            //   world.blocks.remove(beamResult.inside)
-            // }
-            if (world.debug) {
-              if (beamResult.inside.type === 12) {
-                world.blocks.setType(beamResult.inside, 3)
-                delete world.blocks.coloring[`${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`]
-              } else {
-                world.blocks.remove(beamResult.inside)
-              }
-            } else if (beamResult.inside.type !== 12) {
-              world.blocks.setType(beamResult.inside, 12)
-            } else {
-              world.blocks.setType(beamResult.inside, 12)
-              const xyzstr: XYZstring = `${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`
-              if (world.blocks.coloring[xyzstr]) {
-                const color = nextColor(world.blocks.coloring[xyzstr] as BlockColor)
-                world.blocks.coloring[xyzstr] = color
-              } else {
-                world.blocks.coloring[xyzstr] = `slategray`
-              }
+            if (beamResult.inside.type === 6) {
+              world.blocks.remove(beamResult.inside)
             }
+            // if (world.debug) {
+            //   if (beamResult.inside.type === 12) {
+            //     world.blocks.setType(beamResult.inside, 3)
+            //     delete world.blocks.coloring[`${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`]
+            //   } else {
+            //     world.blocks.remove(beamResult.inside)
+            //   }
+            // } else if (beamResult.inside.type !== 12) {
+            //   world.blocks.setType(beamResult.inside, 12)
+            // } else {
+            //   world.blocks.setType(beamResult.inside, 12)
+            //   const xyzstr: XYZstring = `${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`
+            //   if (world.blocks.coloring[xyzstr]) {
+            //     const color = nextColor(world.blocks.coloring[xyzstr] as BlockColor)
+            //     world.blocks.coloring[xyzstr] = color
+            //   } else {
+            //     world.blocks.coloring[xyzstr] = `slategray`
+            //   }
+            // }
 
             spawnParticles(beamResult.edge, world.tick)
 

@@ -3,8 +3,8 @@ import {
 } from "@piggo-gg/core"
 
 export type BlockColor = "rebeccapurple" | "slategray" |
-"chocolate" | "saddlebrown" | "cadetblue" | "cornflowerblue" |
-"rosybrown" | "sandybrown" | "tan" | "palevioletred" | "mediumseagreen"
+  "chocolate" | "saddlebrown" | "cadetblue" | "cornflowerblue" |
+  "rosybrown" | "sandybrown" | "tan" | "palevioletred" | "mediumseagreen"
 
 export const nextColor = (current: BlockColor): BlockColor => {
   switch (current) {
@@ -73,7 +73,7 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     coloring: {
-      "34,49,3": "mediumseagreen",
+      // "34,49,3": "mediumseagreen"
     },
     highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0
@@ -379,8 +379,6 @@ export const spawnTerrain = (world: World, num: number = 10) => {
 }
 
 export const spawnFlat = (world: World, chunks = 12) => {
-  const time = performance.now()
-
   for (let i = 2; i < chunks + 2; i++) {
     for (let j = 2; j < chunks + 2; j++) {
       for (let z = 0; z < 1; z++) {
@@ -392,5 +390,4 @@ export const spawnFlat = (world: World, chunks = 12) => {
       }
     }
   }
-  logPerf("spawnFlat", time)
 }
