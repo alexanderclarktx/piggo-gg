@@ -64,7 +64,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim, client }) => {
-            if (hold) return
+            // if (hold) return
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
