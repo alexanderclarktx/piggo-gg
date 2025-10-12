@@ -3,7 +3,10 @@ import {
   HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point,
   Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton
 } from "@piggo-gg/core"
-import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, Vector3 } from "three"
+import {
+  AnimationAction, AnimationMixer, CapsuleGeometry, Mesh,
+  MeshPhongMaterial, Object3D, SkeletonHelper, Vector3
+} from "three"
 
 const walk = 0.56
 const run = 1.2
@@ -63,6 +66,7 @@ export const Sarge = (player: Player): Character => {
           "mb2": ({ hold, world, character }) => {
             if (hold) return
             if (!character) return
+            if (!world.debug) return
 
             const dir = world.three!.camera.dir(world)
             const camera = world.three!.camera.pos()
@@ -71,10 +75,10 @@ export const Sarge = (player: Player): Character => {
             return { actionId: "place", params: { dir, camera, pos, type: 3 } }
           },
 
-          "t": ({ hold }) => {
-            if (hold) return
-            sarge.components.position.data.flying = !sarge.components.position.data.flying
-          },
+          // "t": ({ hold }) => {
+          //   if (hold) return
+          //   sarge.components.position.data.flying = !sarge.components.position.data.flying
+          // },
 
           // "e" : ({ hold, world, character }) => {
           //   if (hold) return

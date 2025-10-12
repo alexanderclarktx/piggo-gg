@@ -34,6 +34,7 @@ export type BlockData = {
   highestBlockIJ: (pos: XY, max?: number) => XYZ | undefined
   neighbors: (chunk: XY, dist?: number) => XY[]
   invalidate: () => void
+  loadMap: (map: Record<string, string>) => void
   remove: (xyz: XYZ) => void
   needsUpdate: () => boolean
   visible: (at: XY[]) => Block[]
@@ -271,6 +272,13 @@ export const BlockData = (): BlockData => {
     },
     needsUpdate: () => {
       return Boolean(keys(visibleDirty).length)
+    },
+    loadMap: (map: Record<string, string>) => {
+      for (const chunk in map) {
+        const [x, y] = chunk.split("|").map(Number)
+
+        blocks.setChunk({ x, y }, map[chunk])
+      }
     },
     remove: ({ x, y, z }) => {
       const chunkX = floor(x / 4)
