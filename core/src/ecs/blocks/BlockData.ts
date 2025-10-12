@@ -2,7 +2,10 @@ import {
   Block, BlockPlan, BlockTree, floor, keys, logPerf, World, XY, XYZ
 } from "@piggo-gg/core"
 
+type XYZstring = `${number},${number},${number}`
+
 export type BlockData = {
+  coloring: Record<XYZstring, string>
   add: (block: Block) => boolean
   addPlan: (plan: BlockPlan) => boolean
   clear: () => void
@@ -21,6 +24,8 @@ export type BlockData = {
 export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
+
+  // const coloring: Record<XYZstring, string> = {}
 
   const chunks = 48 // TODO dynamic?
   for (let i = 0; i < chunks; i++) {
@@ -51,6 +56,9 @@ export const BlockData = (): BlockData => {
   }
 
   const blocks: BlockData = {
+    coloring: {
+      "34,49,3": "darkorchid"
+    },
     highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0
 

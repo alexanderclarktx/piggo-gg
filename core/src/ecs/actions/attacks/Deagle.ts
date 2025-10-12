@@ -203,6 +203,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (world.debug) {
               if (beamResult.inside.type === 12) {
                 world.blocks.setType(beamResult.inside, 3)
+
+                console.log("hit marble", beamResult.inside)
+
+                // find the instance#
+                // const instance = world.blocks.getInstance(beamResult.inside)
               } else {
                 world.blocks.remove(beamResult.inside)
               }
