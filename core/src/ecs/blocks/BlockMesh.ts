@@ -34,7 +34,7 @@ export const BlockMeshSysten = ClientSystemBuilder({
     let leaf = LeafTexture(BlockMesh(5000), three)
     let oak = OakTexture(BlockMesh(5000), three)
     let spruce = SpruceTexture(BlockMesh(5000), three)
-    let marble = MarbleTexture(BlockMesh(3000), three)
+    let marble = MarbleTexture(BlockMesh(4000), three)
 
     let rendered = false
 
