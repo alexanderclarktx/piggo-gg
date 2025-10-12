@@ -1,6 +1,6 @@
 import {
-  Action, Actions, Character, Collider, copyMaterials, DeagleItem,
-  Health, Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place,
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health,
+  Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place,
   Player, Point, Position, Team, Three, upAndDir, XYZ, XZ
 } from "@piggo-gg/core"
 import { AnimationAction, AnimationMixer, CapsuleGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, Vector3 } from "three"
@@ -28,10 +28,6 @@ export const Sarge = (player: Player): Character => {
   let animation: "idle" | "run" | "dead" = "idle"
 
   const isDummy = player.id === "player-dummy"
-
-  let movedHand = false
-
-  let maxed = 0
 
   const sarge = Character({
     id: `sarge-${player.id}`,
@@ -291,56 +287,6 @@ export const Sarge = (player: Player): Character => {
           pigMixer?.update(speed * ratio * 0.005 + 0.005)
 
           // helper?.update?.()
-
-          // if (!movedHand) {
-          //   const upper = pig.getObjectByName("UpperArmR")
-          //   const lower = pig.getObjectByName("LowerArmR")
-          //   const hand = pig.getObjectByName("FistR")
-
-          //   // console.log(upper, lower, hand)
-
-          //   if (upper && lower && hand) {
-          //     // player.id === "player-dummy"
-
-          //     upper.rotation.x = -8.5
-          //     lower.rotation.x = -1.8
-          //     hand.rotation.y = 0
-
-          //     // console.log("before", upper.position)
-
-          //     // hand.position.x -= 0.5
-          //     // upper.position.y += 0.1
-          //     // lower.position.y += 0.1
-          //     // hand.position.y += 0.1
-
-          //     // hand.position.y -= 1
-          //     // hand.position.x -= 0.5
-          //     // hand.position.z += 0.5
-          //     if (maxed > 6.28) {
-          //       // lower.rotation.x = 0
-          //       // lower.rotation.x = 0
-
-          //       // hand.rotation.y = 0
-
-          //       // lower.position.z = 0
-          //       maxed = 0
-          //     } else {
-          //       // lower.position.z += 0.01
-
-
-          //       // console.log(hand.rotation.y += 0.01)
-          //       // console.log(lower.rotation.x)
-
-          //       // lower.rotation.x -= 0.01
-                
-          //       // lower.rotation.x += 0.01
-          //       maxed += 0.01
-          //     }
-
-          //     // console.log("after", upper.position)
-          //     // movedHand = true
-          //   }
-          // }
 
           if ((three.camera.transition < 125) && player.id === client.playerId()) {
 
