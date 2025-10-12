@@ -4,18 +4,20 @@ import {
 
 export type BlockColor = "rebeccapurple" | "slategray" |
 "chocolate" | "saddlebrown" | "cadetblue" | "cornflowerblue" |
-"rosybrown" | "sandybrown" | "tan"
+"rosybrown" | "sandybrown" | "tan" | "palevioletred" | "mediumseagreen"
 
 export const nextColor = (current: BlockColor): BlockColor => {
   switch (current) {
     case "tan": return "slategray"
-    case "slategray": return "chocolate"
+    case "slategray": return "mediumseagreen"
+    case "mediumseagreen": return "chocolate"
     case "chocolate": return "saddlebrown"
     case "saddlebrown": return "cadetblue"
     case "cadetblue": return "rebeccapurple"
     case "rebeccapurple": return "cornflowerblue"
     case "cornflowerblue": return "rosybrown"
-    case "rosybrown": return "sandybrown"
+    case "rosybrown": return "palevioletred"
+    case "palevioletred": return "sandybrown"
     case "sandybrown": return "tan"
   }
 }
@@ -71,7 +73,7 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     coloring: {
-      // "34,49,3": "tan"
+      "34,49,3": "mediumseagreen",
     },
     highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0
