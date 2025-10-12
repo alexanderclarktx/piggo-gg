@@ -3,7 +3,7 @@ import {
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
   random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
-import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SkeletonHelper, SphereGeometry, Vector3 } from "three"
+import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
 const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
@@ -91,21 +91,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       npc: NPC({
         behavior: () => {
           const { recoil } = character.components.position.data
-
-          if (gun && offset) {
-            const OFFSET = modelOffset(offset)
-            item.components.position.setPosition({
-              x: -OFFSET.x,
-              y: -OFFSET.y - 2,
-              z: -OFFSET.z
-            })
-            // item.components.position.setPosition({
-            //   x: gun.position.x,
-            //   y: gun.position.z - 0.45,
-            //   z: gun.position.y
-            // })
-          }
-
 
           // TODO move this to a system
           if (recoil > 0) {
@@ -307,12 +292,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (!gun) return
 
-          // if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
-          //   gun.visible = false
-          //   return
-          // } else {
-          //   gun.visible = true
-          // }
+          if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
+            gun.visible = false
+            return
+          } else {
+            gun.visible = true
+          }
 
           // gun
           gun.position.copy({
