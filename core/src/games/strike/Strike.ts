@@ -65,7 +65,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       HtmlChat(),
       Sun({ bounds: { left: -10, right: 12, top: 10, bottom: -10 } }),
       Sky(),
-      DummyPlayer()
+      // DummyPlayer()
     ]
   })
 }
