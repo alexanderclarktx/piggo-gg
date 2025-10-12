@@ -1,7 +1,6 @@
 import { XYZstring } from "@piggo-gg/core"
 
 export const DefuseMapColoring: Record<XYZstring, string> = {
-  "34,49,3": "tan",
   "41,19,4": "chocolate",
   "41,20,4": "chocolate",
   "41,20,5": "chocolate",

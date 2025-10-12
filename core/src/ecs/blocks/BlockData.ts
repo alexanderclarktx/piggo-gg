@@ -71,7 +71,7 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     coloring: {
-      "34,49,3": "tan"
+      // "34,49,3": "tan"
     },
     highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0
