@@ -244,7 +244,7 @@ const GameLobby = (): Entity => {
     document.body.appendChild(HText({
       text: "please use Chrome or Firefox",
       style: {
-        color: "red", bottom: "4%", left: "50%", transform: "translate(-50%)"
+        color: "red", bottom: "4%", left: "50%", transform: "translate(-50%)", fontSize: "24px"
       }
     }))
   }
