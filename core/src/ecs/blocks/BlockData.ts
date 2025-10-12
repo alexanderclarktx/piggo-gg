@@ -1,12 +1,11 @@
 import {
-  Block, BlockPlan, BlockTree, floor, keys, logPerf, World, XY, XYZ
+  Block, BlockPlan, BlockTree, floor, keys, logPerf, World, XY, XYZ, XYZstring
 } from "@piggo-gg/core"
 
-type XYZstring = `${number},${number},${number}`
-type BlockColor = "chocolate"
+type BlockColor = "chocolate" | "cadetblue" | "cornflowerblue"
 
 export type BlockData = {
-  coloring: Record<XYZstring, BlockColor>
+  coloring: Record<XYZstring, string>
   add: (block: Block) => boolean
   addPlan: (plan: BlockPlan) => boolean
   clear: () => void
@@ -58,7 +57,7 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     coloring: {
-      "34,49,3": "chocolate"
+      // "34,49,3": "cornflowerblue"
     },
     highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0

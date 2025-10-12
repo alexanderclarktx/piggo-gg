@@ -1,7 +1,8 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
+  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ,
+  XYZstring
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -203,16 +204,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (world.debug) {
               if (beamResult.inside.type === 12) {
                 world.blocks.setType(beamResult.inside, 3)
-
-                console.log("hit marble", beamResult.inside)
-
-                // find the instance#
-                // const instance = world.blocks.getInstance(beamResult.inside)
               } else {
                 world.blocks.remove(beamResult.inside)
               }
             } else {
               world.blocks.setType(beamResult.inside, 12)
+              const xyzstr: XYZstring = `${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`
+              if (world.blocks.coloring[xyzstr]) {
+                delete world.blocks.coloring[xyzstr]
+              } else {
+                world.blocks.coloring[xyzstr] = `chocolate`
+                console.log("coloring")
+              }
+              world.blocks.invalidate()
             }
 
             spawnParticles(beamResult.edge, world.tick)
