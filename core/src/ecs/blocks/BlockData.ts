@@ -2,13 +2,14 @@ import {
   Block, BlockPlan, BlockTree, floor, keys, logPerf, World, XY, XYZ, XYZstring
 } from "@piggo-gg/core"
 
-export type BlockColor = "chocolate" | "saddlebrown" | "cadetblue" | "cornflowerblue"
+export type BlockColor = "slategray" | "chocolate" | "saddlebrown" | "cadetblue" | "cornflowerblue"
 export const nextColor = (current: BlockColor): BlockColor => {
   switch (current) {
+    case "slategray": return "chocolate"
     case "chocolate": return "saddlebrown"
     case "saddlebrown": return "cadetblue"
     case "cadetblue": return "cornflowerblue"
-    case "cornflowerblue": return "chocolate"
+    case "cornflowerblue": return "slategray"
   }
 }
 
@@ -63,7 +64,7 @@ export const BlockData = (): BlockData => {
 
   const blocks: BlockData = {
     coloring: {
-      "34,49,3": "saddlebrown"
+      "34,49,3": "slategray"
     },
     highestBlockIJ: (pos: XY, max?: number): XYZ | undefined => {
       let level = 0
