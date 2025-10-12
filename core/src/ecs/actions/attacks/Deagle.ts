@@ -207,6 +207,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               } else {
                 world.blocks.remove(beamResult.inside)
               }
+            } else if (beamResult.inside.type !== 12) {
+              world.blocks.setType(beamResult.inside, 12)
             } else {
               world.blocks.setType(beamResult.inside, 12)
               const xyzstr: XYZstring = `${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`
@@ -214,9 +216,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
                 delete world.blocks.coloring[xyzstr]
               } else {
                 world.blocks.coloring[xyzstr] = `chocolate`
-                console.log("coloring")
               }
-              world.blocks.invalidate()
             }
 
             spawnParticles(beamResult.edge, world.tick)

@@ -2,11 +2,12 @@ import {
   BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem, EscapeMenu,
   GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min,
   Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem, DummyPlayer,
-  spawnFlat
+  spawnFlat,
+  XYZstring
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { StrikeMap } from "./StrikeMap"
-import { DefuseMap } from "./DefuseMap"
+import { DefuseMap, DefuseMapColoring } from "./DefuseMap"
 
 export type StrikeState = {
   jumped: string[]
@@ -77,6 +78,10 @@ const StrikeSystem = SystemBuilder({
       const [x, y] = chunk.split("|").map(Number)
 
       world.blocks.setChunk({ x, y }, DefuseMap[chunk])
+    }
+    for (const coloration in DefuseMapColoring) {
+      // @ts-expect-error
+      world.blocks.coloring[coloration as XYZstring] = DefuseMapColoring[coloration]
     }
     // spawnFlat(world, 14)
     logPerf("loaded map", time)

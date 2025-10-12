@@ -25,8 +25,6 @@ export const BlockData = (): BlockData => {
 
   const data: Int8Array[][] = []
 
-  // const coloring: Record<XYZstring, string> = {}
-
   const chunks = 48 // TODO dynamic?
   for (let i = 0; i < chunks; i++) {
     data[i] = []
