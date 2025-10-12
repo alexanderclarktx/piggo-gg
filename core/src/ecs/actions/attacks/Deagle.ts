@@ -91,8 +91,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             const error = { x: (random() - 0.49) * mvtError * velocity, y: (random() - 0.49) * mvtError * velocity }
 
-            console.log("vel", round(velocity, 3), error)
-
             const params: DeagleParams = { pos, aim, targets, rng, error }
 
             return { actionId: "deagle", params }
@@ -124,7 +122,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (recoil) {
             aim.y += recoil * 0.1
-            aim.x += recoil * params.rng
+            aim.x += recoil * params.rng * 0.5
           }
 
           if (error) {
