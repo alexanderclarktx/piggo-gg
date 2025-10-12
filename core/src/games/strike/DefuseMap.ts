@@ -1,6 +1,7 @@
 import { XYZstring } from "@piggo-gg/core"
 
 export const DefuseMapColoring: Record<XYZstring, string> = {
+  "34,49,3": "saddlebrown",
   "41,19,4": "chocolate",
   "41,20,4": "chocolate",
   "41,20,5": "chocolate",
@@ -8,7 +9,35 @@ export const DefuseMapColoring: Record<XYZstring, string> = {
   "42,19,5": "chocolate",
   "42,19,4": "chocolate",
   "42,20,5": "chocolate",
-  "42,20,4": "chocolate"
+  "42,20,4": "chocolate",
+  "49,13,4": "saddlebrown",
+  "48,13,4": "saddlebrown",
+  "58,26,1": "cornflowerblue",
+  "58,27,1": "cornflowerblue",
+  "58,28,1": "cornflowerblue",
+  "58,27,2": "cornflowerblue",
+  "56,59,1": "chocolate",
+  "55,59,1": "chocolate",
+  "55,59,2": "chocolate",
+  "54,59,1": "chocolate",
+  "53,59,1": "chocolate",
+  "52,59,1": "chocolate",
+  "52,59,2": "chocolate",
+  "51,59,2": "chocolate",
+  "51,59,1": "chocolate",
+  "56,59,2": "chocolate",
+  "27,17,4": "cadetblue",
+  "30,14,4": "saddlebrown",
+  "31,14,4": "saddlebrown",
+  "31,14,5": "saddlebrown",
+  "30,14,5": "saddlebrown",
+  "30,14,6": "saddlebrown",
+  "31,14,6": "saddlebrown",
+  "30,15,5": "saddlebrown",
+  "30,15,4": "saddlebrown",
+  "30,15,6": "saddlebrown",
+  "36,56,1": "cadetblue",
+  "37,63,0": "saddlebrown"
 }
 
 export const DefuseMap: Record<string, string> = {

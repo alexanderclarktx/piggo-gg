@@ -1,6 +1,6 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, floor, Input, Item,
-  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
+  Action, Actions, BlockColor, blockInLine, Character, cos, Effects, floor, Input, Item,
+  ItemEntity, max, min, Networked, nextColor, NPC, Player, playerForCharacter, Position,
   random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ,
   XYZstring
 } from "@piggo-gg/core"
@@ -213,7 +213,10 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               world.blocks.setType(beamResult.inside, 12)
               const xyzstr: XYZstring = `${beamResult.inside.x},${beamResult.inside.y},${beamResult.inside.z}`
               if (world.blocks.coloring[xyzstr]) {
-                delete world.blocks.coloring[xyzstr]
+                const color = nextColor(world.blocks.coloring[xyzstr] as BlockColor)
+                world.blocks.coloring[xyzstr] = color
+                // delete world.blocks.coloring[xyzstr]
+                // const nextColor = 
               } else {
                 world.blocks.coloring[xyzstr] = `chocolate`
               }
