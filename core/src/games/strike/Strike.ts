@@ -65,7 +65,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       HtmlChat(),
       Sun({ bounds: { left: -10, right: 12, top: 10, bottom: -10 } }),
       Sky(),
-      // DummyPlayer()
+      DummyPlayer()
     ]
   })
 }
@@ -81,7 +81,7 @@ const StrikeSystem = SystemBuilder({
     }
     for (const coloration in DefuseMapColoring) {
       // @ts-expect-error
-      world.blocks.coloring[coloration as XYZstring] = DefuseMapColoring[coloration]
+      world.blocks.coloring[coloration] = DefuseMapColoring[coloration]
     }
     // spawnFlat(world, 14)
     logPerf("loaded map", time)
