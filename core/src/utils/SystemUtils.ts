@@ -30,6 +30,14 @@ export const screenWH = () => {
   return { w: window.innerWidth, h: height }
 }
 
+export const getBrowser = () => {
+  const userAgent = navigator.userAgent
+  if (userAgent.indexOf("Chrome") > -1) return "chrome"
+  if (userAgent.indexOf("Safari") > -1) return "safari"
+  if (userAgent.indexOf("Firefox") > -1) return "firefox"
+  return undefined
+}
+
 export const replaceCanvas = () => {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement | undefined
 
