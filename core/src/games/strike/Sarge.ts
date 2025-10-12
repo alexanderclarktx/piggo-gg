@@ -319,7 +319,6 @@ export const Sarge = (player: Player): Character => {
             pig.frustumCulled = false
             pig.scale.set(0.16, 0.18, 0.16)
 
-            console.log(pig.children, pig.children[0].children[1].type)
             // helper = new SkeletonHelper(pig.children[0].children[1])
 
             copyMaterials(gltf.scene, pig)
