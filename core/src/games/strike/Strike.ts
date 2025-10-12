@@ -4,7 +4,7 @@ import {
   Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem, DummyPlayer
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
-import { DefuseMap, DefuseMapColoring } from "./DefuseMap"
+import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
 
 export type StrikeState = {
   jumped: string[]
@@ -71,8 +71,8 @@ const StrikeSystem = SystemBuilder({
   id: "StrikeSystem",
   init: (world) => {
 
-    world.blocks.loadMap(DefuseMap)
-    world.blocks.coloring = DefuseMapColoring
+    world.blocks.loadMap(RetakeMap)
+    world.blocks.coloring = RetakeMapColoring
 
     return {
       id: "StrikeSystem",
