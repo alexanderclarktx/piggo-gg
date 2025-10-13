@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
-  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, round, sin, Target, Three, XY, XYZ
+  ItemEntity, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
+  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -10,9 +10,9 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
   const offset = {
-    x: -dir.x * 0.05 + right.x * 0.05,
+    x: -dir.x * 0.05 + right.x * 0.02,
     y: recoil * 0.03,
-    z: -dir.y * 0.05 + right.y * 0.05
+    z: -dir.y * 0.05 + right.y * 0.02
   }
 
   if (tip) {
@@ -260,9 +260,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // gun
           if (character.id === world.client?.character()?.id) {
-            three.gLoader.load("deagle.glb", (gltf) => {
+            three.gLoader.load("pistol.glb", (gltf) => {
               gun = gltf.scene
-              gun.scale.set(0.025, 0.025, 0.025)
+              gun.scale.set(0.0025, 0.0025, 0.0025)
 
               gun.receiveShadow = true
               gun.castShadow = true
@@ -316,25 +316,28 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (!gun) return
 
-          if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
-            gun.visible = false
-            return
-          } else {
-            gun.visible = true
-          }
+          // if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
+          //   gun.visible = false
+          //   return
+          // } else {
+          //   gun.visible = true
+          // }
 
           // gun
           gun.position.copy({
             x: pos.x + offset.x,
-            y: pos.z + 0.45 + offset.y,
+            y: pos.z + 0.48 + offset.y,
             z: pos.y + offset.z
           })
 
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
+          // gun.rotation.y = PI/2 + aim.x
+          // gun.rotation.x = aim.y + localRecoil * 0.5
+
           gun.rotation.y = aim.x
-          gun.rotation.x = aim.y + localRecoil * 0.5
+          // gun.rotation.x = aim.y + PI / 2
         }
       })
     },
