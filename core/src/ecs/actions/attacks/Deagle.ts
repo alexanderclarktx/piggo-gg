@@ -141,7 +141,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           // apply recoil
-          character.components.position.data.recoil = min(1, recoil + 0.5)
+          character.components.position.data.recoil = min(1.4, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
