@@ -10,15 +10,15 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
   const offset = {
-    x: -dir.x * 0.05 + right.x * 0.02,
+    x: -dir.x * 0.04 + right.x * 0.02,
     y: recoil * 0.03,
-    z: -dir.y * 0.05 + right.y * 0.02
+    z: -dir.y * 0.04 + right.y * 0.02
   }
 
   if (tip) {
     offset.x -= dir.x * 0.1
-    offset.y -= 0.035 - localAim.y * 0.1,
-      offset.z -= dir.y * 0.1
+    offset.y -= 0.035 - localAim.y * 0.1
+    offset.z -= dir.y * 0.1
   }
 
   return offset
