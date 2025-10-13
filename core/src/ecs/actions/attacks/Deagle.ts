@@ -29,7 +29,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let gun: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
+
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
+  const decalColor = new Color("#333333")
 
   let cd = -100
 
@@ -42,10 +44,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     if (!proto) return
 
     // decal particle
-    const color = new Color("#333333")
     const mesh = proto.mesh.clone()
-    mesh.material = new MeshPhongMaterial({ color, emissive: color })
-
+    mesh.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
     mesh.position.set(pos.x, pos.z, pos.y)
 
     particles.push({ mesh, tick: tick + 240, velocity: { x: 0, y: 0, z: 0 } })
