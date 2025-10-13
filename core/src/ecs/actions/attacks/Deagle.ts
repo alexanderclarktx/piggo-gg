@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, round, sin, Target, Three, XY, XYZ
+  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -30,7 +30,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
-  const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
+  const particles: { mesh: Mesh, velocity: XYZ, start: XYZ, duration: number, tick: number }[] = []
   const decalColor = new Color("#333333")
 
   let cd = -100
@@ -48,12 +48,16 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     mesh.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
     mesh.position.set(pos.x, pos.z, pos.y)
 
-    particles.push({ mesh, tick: tick + 240, velocity: { x: 0, y: 0, z: 0 } })
+    particles.push({ mesh, tick, velocity: { x: 0, y: 0, z: 0 }, start: { ...pos }, duration: 240 })
 
     // explosion particles
     for (let i = 0; i < 20; i++) {
       const mesh = proto.mesh.clone()
-      const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
+      const velocity = new Vector3(
+        (random() - 0.5) * 0.5,
+        (random() - 0.5) * 0.5,
+        (random() - 0.5) * 0.5
+      ).normalize().multiplyScalar(0.03)
 
       // vary the color
       const green = floor(randomInt(256))
@@ -62,7 +66,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
       mesh.position.set(pos.x, pos.z, pos.y)
 
-      particles.push({ mesh, tick, velocity })
+      particles.push({ mesh, tick, velocity, start: { ...pos }, duration: 5 })
     }
   }
 
@@ -266,7 +270,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const particleMesh = new Mesh(new SphereGeometry(0.008, 6, 6))
           particleMesh.castShadow = true
 
-          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
+          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
 
           // gun
           if (character.id === world.client?.character()?.id) {
@@ -313,14 +317,18 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           for (let i = 1; i < particles.length; i++) {
             const p = particles[i]
 
-            if (world.tick - p.tick >= 5) {
+            if (world.tick - p.tick >= p.duration) {
               if (p.mesh.parent) {
                 world.three?.scene.remove(p.mesh)
               }
               particles.splice(i, 1)
               i--
             } else {
-              p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
+              p.mesh.position.set(
+                p.start.x + p.velocity.x * (world.tick - p.tick + ratio),
+                p.start.z + p.velocity.z * (world.tick - p.tick + ratio),
+                p.start.y + p.velocity.y * (world.tick - p.tick + ratio)
+              )
             }
           }
 
