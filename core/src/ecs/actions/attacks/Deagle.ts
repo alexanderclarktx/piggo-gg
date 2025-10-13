@@ -29,7 +29,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let gun: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
+
   const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
+  const decalColor = new Color("#333333")
 
   let cd = -100
 
@@ -41,6 +43,14 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     const proto = particles[0]
     if (!proto) return
 
+    // decal particle
+    const mesh = proto.mesh.clone()
+    mesh.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
+    mesh.position.set(pos.x, pos.z, pos.y)
+
+    particles.push({ mesh, tick: tick + 240, velocity: { x: 0, y: 0, z: 0 } })
+
+    // explosion particles
     for (let i = 0; i < 20; i++) {
       const mesh = proto.mesh.clone()
       const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
@@ -131,7 +141,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           // apply recoil
-          character.components.position.data.recoil = min(1, recoil + 0.5)
+          character.components.position.data.recoil = min(1.4, recoil + 0.5)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
