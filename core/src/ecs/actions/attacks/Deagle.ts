@@ -336,7 +336,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // gun.rotation.y = PI/2 + aim.x
           // gun.rotation.x = aim.y + localRecoil * 0.5
 
-          gun.rotation.y = aim.x
+          gun.rotation.y = aim.x + PI / 2
+          gun.rotation.z = aim.y + localRecoil * 0.5
+          // gun.rotation.z = sin(world.tick * 0.5) * 0.005 + localRecoil * 0.2
           // gun.rotation.x = aim.y + PI / 2
         }
       })
