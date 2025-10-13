@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
-  ItemEntity, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
+  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
+  random, randomInt, rayCapsuleIntersect, round, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -10,15 +10,15 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
   const right = { x: cos(localAim.x), y: -sin(localAim.x) }
 
   const offset = {
-    x: -dir.x * 0.04 + right.x * 0.02,
+    x: -dir.x * 0.05 + right.x * 0.05,
     y: recoil * 0.03,
-    z: -dir.y * 0.04 + right.y * 0.02
+    z: -dir.y * 0.05 + right.y * 0.05
   }
 
   if (tip) {
     offset.x -= dir.x * 0.1
-    offset.y -= 0.035 - localAim.y * 0.1
-    offset.z -= dir.y * 0.1
+    offset.y -= 0.035 - localAim.y * 0.1,
+      offset.z -= dir.y * 0.1
   }
 
   return offset
@@ -41,6 +41,16 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     const proto = particles[0]
     if (!proto) return
 
+    // decal particle
+    const color = new Color("#333333")
+    const mesh = proto.mesh.clone()
+    mesh.material = new MeshPhongMaterial({ color, emissive: color })
+
+    mesh.position.set(pos.x, pos.z, pos.y)
+
+    particles.push({ mesh, tick: tick + 240, velocity: { x: 0, y: 0, z: 0 } })
+
+    // explosion particles
     for (let i = 0; i < 20; i++) {
       const mesh = proto.mesh.clone()
       const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
@@ -260,9 +270,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // gun
           if (character.id === world.client?.character()?.id) {
-            three.gLoader.load("pistol.glb", (gltf) => {
+            three.gLoader.load("deagle.glb", (gltf) => {
               gun = gltf.scene
-              gun.scale.set(0.0025, 0.0025, 0.0025)
+              gun.scale.set(0.025, 0.025, 0.025)
 
               gun.receiveShadow = true
               gun.castShadow = true
@@ -316,25 +326,25 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (!gun) return
 
-          // if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
-          //   gun.visible = false
-          //   return
-          // } else {
-          //   gun.visible = true
-          // }
+          if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
+            gun.visible = false
+            return
+          } else {
+            gun.visible = true
+          }
 
           // gun
           gun.position.copy({
             x: pos.x + offset.x,
-            y: pos.z + 0.48 + offset.y,
+            y: pos.z + 0.45 + offset.y,
             z: pos.y + offset.z
           })
 
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
-          gun.rotation.y = aim.x + PI / 2
-          gun.rotation.z = aim.y + localRecoil * 0.5
+          gun.rotation.y = aim.x
+          gun.rotation.x = aim.y + localRecoil * 0.5
         }
       })
     },
