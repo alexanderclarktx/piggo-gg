@@ -66,13 +66,30 @@ export const Sarge = (player: Player): Character => {
           "mb2": ({ hold, world, character }) => {
             if (hold) return
             if (!character) return
-            if (!world.debug) return
+            if (world.debug) {
 
-            const dir = world.three!.camera.dir(world)
-            const camera = world.three!.camera.pos()
-            const pos = character.components.position.xyz()
+              const dir = world.three!.camera.dir(world)
+              const camera = world.three!.camera.pos()
+              const pos = character.components.position.xyz()
 
-            return { actionId: "place", params: { dir, camera, pos, type: 3 } }
+              return { actionId: "place", params: { dir, camera, pos, type: 3 } }
+            } else if (!world.client?.net.synced) {
+              const dummy = world.entity<Position>(`sarge-player-dummy`)
+              if (dummy) {
+                const dir = world.three!.camera.dir(world)
+                const camera = world.three!.camera.pos()
+
+                const { position } = dummy.components
+
+                position.setPosition({
+                  x: camera.x + dir.x,
+                  y: camera.y + dir.z,
+                  z: camera.z,
+                })
+
+                position.data.aim = { x: -Math.atan2(dir.z, dir.x) + PI / 2, y: Math.asin(dir.y) }
+              }
+            }
           },
 
           // "t": ({ hold }) => {
@@ -238,8 +255,8 @@ export const Sarge = (player: Player): Character => {
           // position
           pig.position.set(interpolated.x, interpolated.z + 0, interpolated.y)
           // if (world.debug) {
-            hitboxes.body?.position.set(interpolated.x, interpolated.z + 0.22, interpolated.y)
-            hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.48, interpolated.y)
+          hitboxes.body?.position.set(interpolated.x, interpolated.z + 0.22, interpolated.y)
+          hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.48, interpolated.y)
           // }
 
           // rotation
