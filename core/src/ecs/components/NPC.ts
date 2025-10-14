@@ -1,11 +1,11 @@
 import { Component, Entity, InvokedAction, Position, SystemBuilder, World } from "@piggo-gg/core"
 
 export type NPC = Component<"npc"> & {
-  behavior: (entity: Entity<NPC | Position>, world: World) => InvokedAction | null | void
+  behavior: (entity: Entity<NPC>, world: World) => InvokedAction | null | void
 }
 
 export type NPCProps<T extends string> = {
-  behavior: (entity: Entity<NPC | Position>, world: World) => InvokedAction<T> | null | void
+  behavior: (entity: Entity<NPC>, world: World) => InvokedAction<T> | null | void
 }
 
 export const NPC = <T extends string>(props: NPCProps<T>): NPC => ({
@@ -17,9 +17,9 @@ export const NPCSystem: SystemBuilder<"NPCSystem"> = {
   id: "NPCSystem",
   init: (world) => ({
     id: "NPCSystem",
-    query: ["npc", "position"],
+    query: ["npc"],
     priority: 6,
-    onTick: (entities: Entity<NPC | Position>[]) => {
+    onTick: (entities: Entity<NPC>[]) => {
       entities.forEach((entity) => {
         const action = entity.components.npc.behavior(entity, world)
         if (action) {

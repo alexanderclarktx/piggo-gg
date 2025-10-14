@@ -13,8 +13,8 @@ export const HtmlChat = (): Entity => {
   const wrapper = HtmlDiv({
     width: "300px",
     height: "250px",
-    right: "12px",
-    bottom: "12px",
+    right: "15px",
+    bottom: "15px",
     transform: "translate(0%)",
     display: "flex",
     flexDirection: "column",

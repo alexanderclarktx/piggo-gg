@@ -1,7 +1,8 @@
 import {
-  BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem, EscapeMenu,
-  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, logPerf, min,
-  Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem, DummyPlayer
+  BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem,
+  EscapeMenu, GameBuilder, Hitmarker, HtmlChat, HUDSystem,
+  InventorySystem, logPerf, min, Sky, SpawnSystem, Sun, SystemBuilder,
+  ThreeCameraSystem, ThreeSystem, DummyPlayer, HtmlFeed
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
@@ -60,6 +61,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       // UIProfile(),
       // Scoreboard(),
       HtmlChat(),
+      HtmlFeed(),
       Sun({ bounds: { left: -10, right: 12, top: 10, bottom: -10 } }),
       Sky(),
       DummyPlayer()
