@@ -1,4 +1,4 @@
-import { Entity, entries, HButton, HDiv, HImg, HText, NPC, Player } from "@piggo-gg/core"
+import { Entity, entries, HButton, HDiv, HImg, HText, NPC, Player, Position, Three } from "@piggo-gg/core"
 
 export const HtmlFeed = (): Entity => {
   let init = false
@@ -21,11 +21,11 @@ export const HtmlFeed = (): Entity => {
   return Entity({
     id: "htmlFeed",
     components: {
+      position: Position(),
       npc: NPC({
         behavior: (_, world) => {
           if (!init) {
             document.body.appendChild(wrapper)
-            console.log("HtmlFeed mounted")
             init = true
           }
 
@@ -50,13 +50,18 @@ export const HtmlFeed = (): Entity => {
               wrapper.appendChild(item)
             }
           }
+        }
+      }),
+      three: Three({
+        onRender: ({ world, delta }) => {
+          const ratio = delta / 25
 
           // Remove old items
           for (const [key, tick] of entries(feedRecord)) {
 
-            const timer = world.tick - tick
+            const timer = world.tick + ratio - tick
 
-            if (timer > 360) {
+            if (timer > 340) {
               delete feedRecord[key as FeedKey]
               if (wrapper.children.length > 0) {
                 wrapper.removeChild(wrapper.children[0])
@@ -66,8 +71,8 @@ export const HtmlFeed = (): Entity => {
 
               const item = wrapper.children[index] as HTMLElement
               if (item) {
-                item.style.opacity = `${1 - (timer - 300) / 60}`
-                // item.style.marginTop = `-${(timer - 300) / 10 * 7}px`
+                item.style.opacity = `${1 - (timer - 300) / 40}`
+                item.style.marginTop = `-${(timer - 300) / 40 * 36}px`
               }
             }
           }
@@ -85,16 +90,13 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean, localPlayer: string
       height: "36px",
       display: "flex",
       alignItems: "center",
-      marginTop: "8px",
-      // backgroundImage: [p1.id, p2.id].includes(localPlayer || "") ?
-      //   "linear-gradient(black, black), linear-gradient(180deg, #aaffaa, 90%, #aaccaa)" :
-      //   "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
+      marginTop: "6px"
     }
   },
     HText({
       style: {
         position: "relative",
-        color: p1.id === localPlayer ? "gold" : "white",
+        color: p1.id === localPlayer ? "#77ee99" : "white",
         fontSize: "22px",
         marginRight: "8px",
         marginLeft: "10px"
@@ -107,7 +109,7 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean, localPlayer: string
         width: "32px",
         position: "relative",
         transform: "translate(0%, 0%)",
-        marginRight: headshot ? "2px" : "8px",
+        marginRight: headshot ? "2px" : "8px"
       }
     }),
     headshot ? HImg({
@@ -116,7 +118,7 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean, localPlayer: string
         width: "28px",
         position: "relative",
         transform: "translate(0%, 0%)",
-        marginRight: "6px",
+        marginRight: "6px"
       }
     }) : undefined,
     HText({
