@@ -232,7 +232,7 @@ const PlayersOnline = (world: World): RefreshableDiv => ({
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Strike, Craft, Volley]
+  const list: GameBuilder[] = [Strike, Volley]
 
   let gameButtons: HTMLButtonElement[] = []
 
