@@ -217,7 +217,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (hitCharacter?.components.health) {
               const damage = headshot ? 100 : 35
               hitCharacter.components.health.damage(
-                damage, world, playerForCharacter(world, character.id)?.id
+                damage, world, playerForCharacter(world, character.id)?.id, headshot ? "headshot" : "body"
               )
             }
 

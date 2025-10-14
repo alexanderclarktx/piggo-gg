@@ -7,11 +7,12 @@ export type Health = Component<"health", {
   maxHp: number,
   died: undefined | number,
   diedFrom: undefined | string
+  diedReason: undefined | string
 }> & {
   showHealthBar: boolean
   deathSounds: ValidSounds[]
   onDamage: null | ((damage: number, world: World) => void)
-  damage: (damage: number, world: World, from?: string) => void
+  damage: (damage: number, world: World, from?: string, reason?: string) => void
   dead: () => boolean
 }
 
@@ -33,12 +34,13 @@ export const Health = (
       hp: hp ?? 100,
       maxHp: maxHp ?? hp ?? 100,
       died: undefined,
-      diedFrom: undefined
+      diedFrom: undefined,
+      diedReason: undefined
     },
     showHealthBar,
     deathSounds: deathSounds ?? [],
     onDamage: onDamage ?? null,
-    damage: (damage: number, world: World, from?: string) => {
+    damage: (damage: number, world: World, from?: string, reason?: string) => {
       health.data.hp = max(0, health.data.hp - damage)
 
       if (health.onDamage) health.onDamage(damage, world)
@@ -46,6 +48,7 @@ export const Health = (
       if (health.data.hp <= 0 && health.data.died === undefined) {
         health.data.died = world.tick
         if (from) health.data.diedFrom = from
+        if (reason) health.data.diedReason = reason
       }
     },
     dead: () => health.data.hp <= 0
