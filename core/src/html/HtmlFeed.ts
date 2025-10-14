@@ -1,4 +1,4 @@
-import { Entity, HButton, HDiv, HImg, HSVG, HText, NPC, Player } from "@piggo-gg/core"
+import { Entity, HButton, HDiv, HImg, HText, NPC, Player } from "@piggo-gg/core"
 
 export const HtmlFeed = (): Entity => {
   let init = false
