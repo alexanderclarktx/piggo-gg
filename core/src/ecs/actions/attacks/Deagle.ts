@@ -186,9 +186,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (targetEntity.components.health.data.hp <= 0) continue
 
             // head
-            let A = { x: target.x, y: target.y, z: target.z + 0.435 }
-            let B = { x: target.x, y: target.y, z: target.z + 0.485 }
-            let radius = 0.08
+            let A = { x: target.x, y: target.y, z: target.z + 0.465 }
+            let B = { x: target.x, y: target.y, z: target.z + 0.495 }
+            let radius = 0.05
 
             if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
               hit = playerForCharacter(world, target.id)
@@ -198,9 +198,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             // body
 
-            A = { x: target.x, y: target.y, z: target.z + 0.11 }
-            B = { x: target.x, y: target.y, z: target.z + 0.29 }
-            radius = 0.08
+            A = { x: target.x, y: target.y, z: target.z + 0.09 }
+            B = { x: target.x, y: target.y, z: target.z + 0.35 }
+            radius = 0.07
 
             if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
               hit = playerForCharacter(world, target.id)
