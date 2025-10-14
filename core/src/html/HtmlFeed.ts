@@ -63,8 +63,11 @@ export const HtmlFeed = (): Entity => {
               }
             } else if (timer > 300) {
               const index = Object.keys(feedRecord).indexOf(key)
-              if (wrapper.children[index]) {
-                (wrapper.children[index] as HTMLElement).style.opacity = `${1 - (timer - 300) / 60}`
+
+              const item = wrapper.children[index] as HTMLElement
+              if (item) {
+                item.style.opacity = `${1 - (timer - 300) / 60}`
+                // item.style.marginTop = `-${(timer - 300) / 10 * 7}px`
               }
             }
           }
@@ -77,16 +80,11 @@ export const HtmlFeed = (): Entity => {
 const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
   return HButton({
     style: {
-      // right: "0px",
-      // transform: "translate(100%)",
       position: "relative",
       width: "fit-content",
       height: "36px",
       display: "flex",
-      flexDirection: "row",
       alignItems: "center",
-      justifyContent: "center",
-      borderBottom: "1px solid gray",
       marginTop: "8px"
     }
   },
@@ -96,7 +94,7 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
         color: "white",
         fontSize: "22px",
         marginRight: "8px",
-        marginLeft: "8px"
+        marginLeft: "10px"
       },
       text: p1.components.pc.data.name,
     }),
@@ -106,7 +104,7 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
         width: "32px",
         position: "relative",
         transform: "translate(0%, 0%)",
-        marginRight: "8px",
+        marginRight: headshot ? "2px" : "8px",
       }
     }),
     headshot ? HImg({
@@ -115,7 +113,7 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
         width: "28px",
         position: "relative",
         transform: "translate(0%, 0%)",
-        marginRight: "8px",
+        marginRight: "6px",
       }
     }) : undefined,
     HText({
