@@ -54,16 +54,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     // explosion particles
     for (let i = 0; i < 20; i++) {
       const mesh = proto.mesh.clone()
-      const velocity = randomVector3(0.03)
+      mesh.position.set(pos.x, pos.z, pos.y)
 
       // vary the color
       const green = floor(randomInt(256))
       const color = new Color(`rgb(255, ${green}, 0)`)
       mesh.material = new MeshPhongMaterial({ color, emissive: color })
 
-      mesh.position.set(pos.x, pos.z, pos.y)
-
-      particles.push({ mesh, tick, velocity, start: { ...pos }, duration: 6 })
+      particles.push({
+        mesh, tick,
+        velocity: randomVector3(0.03),
+        start: { ...pos },
+        duration: 6
+      })
     }
   }
 
