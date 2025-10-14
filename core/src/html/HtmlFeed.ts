@@ -1,4 +1,4 @@
-import { Entity, HDiv, HImg, HSVG, HText, NPC, Player } from "@piggo-gg/core"
+import { Entity, HButton, HDiv, HImg, HSVG, HText, NPC, Player } from "@piggo-gg/core"
 
 export const HtmlFeed = (): Entity => {
   let init = false
@@ -12,8 +12,6 @@ export const HtmlFeed = (): Entity => {
       height: "150px",
       right: "15px",
       top: "15px",
-      backgroundImage: "",
-      border: "2px solid white",
       flexDirection: "column",
       display: "flex"
     }
@@ -58,7 +56,7 @@ export const HtmlFeed = (): Entity => {
 }
 
 const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
-  return HDiv({
+  return HButton({
     style: {
       position: "relative",
       width: "100%",
@@ -67,7 +65,8 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      borderBottom: "1px solid gray"
+      borderBottom: "1px solid gray",
+      marginTop: "8px"
     }
   },
     HText({
