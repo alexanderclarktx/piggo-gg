@@ -13,8 +13,8 @@ export const HtmlChat = (): Entity => {
   const wrapper = HtmlDiv({
     width: "300px",
     height: "250px",
-    right: "12px",
-    bottom: "12px",
+    right: "15px",
+    bottom: "15px",
     transform: "translate(0%)",
     display: "flex",
     flexDirection: "column",
@@ -24,7 +24,8 @@ export const HtmlChat = (): Entity => {
   const border = HtmlDiv({
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.2)"
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    border: "2px solid white"
   })
 
   const chatDiv = HtmlDiv({
@@ -48,6 +49,7 @@ export const HtmlChat = (): Entity => {
     style: {
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
+      border: "1px solid white",
       bottom: "10px",
       display: "flex",
       fontSize: "18px",
@@ -123,7 +125,7 @@ export const HtmlChat = (): Entity => {
                   })
                   chatDiv.prepend(message)
 
-                  fadeStack.push(world.tick + 140)
+                  fadeStack.push(world.tick + 160)
                   messages.push(message)
                 }
               }

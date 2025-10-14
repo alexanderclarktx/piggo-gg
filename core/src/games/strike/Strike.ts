@@ -1,7 +1,8 @@
 import {
-  BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem, EscapeMenu,
-  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min,
-  Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem, DummyPlayer
+  BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem,
+  EscapeMenu, GameBuilder, Hitmarker, HtmlChat, HUDSystem,
+  InventorySystem, logPerf, min, Sky, SpawnSystem, Sun, SystemBuilder,
+  ThreeCameraSystem, ThreeSystem, DummyPlayer, HtmlFeed
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
@@ -60,6 +61,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       // UIProfile(),
       // Scoreboard(),
       HtmlChat(),
+      HtmlFeed(),
       Sun({ bounds: { left: -10, right: 12, top: 10, bottom: -10 } }),
       Sky(),
       DummyPlayer()
@@ -91,7 +93,7 @@ const StrikeSystem = SystemBuilder({
           const character = player.components.controlling?.getCharacter(world)
           if (!character) continue
 
-          const { position } = character.components
+          const { position, health } = character.components
           const { z, rotation, standing, velocity } = position.data
 
           // jump state cleanup

@@ -1,4 +1,6 @@
-import { CSS, HtmlButton, HtmlImg, HtmlText } from "@piggo-gg/core"
+import { CSS, HtmlButton, HtmlDiv, HtmlImg, HtmlText } from "@piggo-gg/core"
+
+type HChild = HTMLElement | SVGSVGElement
 
 type HParams = {
   id?: string
@@ -52,4 +54,33 @@ export const HImg = ({ id, style, src }: HParams = {}, child1?: HTMLElement): HT
   if (child1) i.appendChild(child1)
 
   return i
+}
+
+export const HDiv = ({ id, style, text }: HParams = {},
+  child1?: HChild, child2?: HChild, child3?: HChild, child4?: HChild, child5?: HChild
+): HTMLDivElement => {
+  const d = HtmlDiv(style ?? {})
+
+  if (text) d.textContent = text
+
+  if (id) d.id = id
+
+  if (child1) d.appendChild(child1)
+  if (child2) d.appendChild(child2)
+  if (child3) d.appendChild(child3)
+  if (child4) d.appendChild(child4)
+  if (child5) d.appendChild(child5)
+
+  return d
+}
+
+export const HSVG = (viewBox: `0 ${number} ${number} ${number}`, content: string): SVGSVGElement => {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+  svg.setAttribute("viewBox", viewBox)
+  svg.setAttribute("fill", "white")
+  svg.setAttribute("width", "24px")
+  svg.setAttribute("height", "24px")
+  svg.innerHTML = content
+  return svg
 }
