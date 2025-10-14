@@ -66,7 +66,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
       mesh.position.set(pos.x, pos.z, pos.y)
 
-      particles.push({ mesh, tick, velocity, start: { ...pos }, duration: 5 })
+      particles.push({ mesh, tick, velocity, start: { ...pos }, duration: 6 })
     }
   }
 
