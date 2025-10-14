@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  random, randomInt, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
+  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -57,8 +57,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       mesh.position.set(pos.x, pos.z, pos.y)
 
       // vary the color
-      const green = floor(randomInt(256))
-      const color = new Color(`rgb(255, ${green}, 0)`)
+      const color = new Color(`rgb(255, ${randomInt(256)}, 0)`)
       mesh.material = new MeshPhongMaterial({ color, emissive: color })
 
       particles.push({
@@ -99,12 +98,12 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             const velocity = hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)
             const errorFactor = mvtError * velocity + (position.data.standing ? 0 : jmpError)
-            const error = { x: (random() - 0.49) * errorFactor, y: (random() - 0.49) * errorFactor }
+            const error = { x: randomLR(errorFactor), y: randomLR(errorFactor) }
 
             const params: DeagleParams = {
               aim, targets, error,
               pos: position.xyz(),
-              rng: (random() - 0.5) * 0.1
+              rng: randomLR(0.1)
             }
 
             return { actionId: "deagle", params }
