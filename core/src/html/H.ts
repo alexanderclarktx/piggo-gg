@@ -1,5 +1,7 @@
 import { CSS, HtmlButton, HtmlDiv, HtmlImg, HtmlText } from "@piggo-gg/core"
 
+type HChild = HTMLElement | SVGSVGElement
+
 type HParams = {
   id?: string
   style?: CSS
@@ -55,7 +57,7 @@ export const HImg = ({ id, style, src }: HParams = {}, child1?: HTMLElement): HT
 }
 
 export const HDiv = ({ id, style, text }: HParams = {},
-  child1?: HTMLElement, child2?: HTMLElement, child3?: HTMLElement, child4?: HTMLElement, child5?: HTMLElement
+  child1?: HChild, child2?: HChild, child3?: HChild, child4?: HChild, child5?: HChild
 ): HTMLDivElement => {
   const d = HtmlDiv(style ?? {})
 
@@ -70,4 +72,15 @@ export const HDiv = ({ id, style, text }: HParams = {},
   if (child5) d.appendChild(child5)
 
   return d
+}
+
+export const HSVG = (viewBox: `0 ${number} ${number} ${number}`, content: string): SVGSVGElement => {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+  svg.setAttribute("viewBox", viewBox)
+  svg.setAttribute("fill", "white")
+  svg.setAttribute("width", "24px")
+  svg.setAttribute("height", "24px")
+  svg.innerHTML = content
+  return svg
 }

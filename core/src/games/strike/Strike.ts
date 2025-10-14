@@ -93,7 +93,7 @@ const StrikeSystem = SystemBuilder({
           const character = player.components.controlling?.getCharacter(world)
           if (!character) continue
 
-          const { position } = character.components
+          const { position, health } = character.components
           const { z, rotation, standing, velocity } = position.data
 
           // jump state cleanup
