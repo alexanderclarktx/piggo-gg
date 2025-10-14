@@ -27,10 +27,10 @@ export const InputSystem = ClientSystemBuilder({
       const amount = event.deltaY
       if (amount > 0.5) {
         client.bufferScroll += amount
-        client.bufferDown.push({ key: "scrolldown", mouse, aim: localAim(), tick: world.tick, hold: 0 })
+        client.bufferDown.push({ key: "scrolldown", mouse, aim: localAim(), tick: world.tick, hold: 0, delta: 0 })
       } else {
         client.bufferScroll += amount
-        client.bufferDown.push({ key: "scrollup", mouse, aim: localAim(), tick: world.tick, hold: 0 })
+        client.bufferDown.push({ key: "scrollup", mouse, aim: localAim(), tick: world.tick, hold: 0, delta: 0 })
       }
     })
 
@@ -71,7 +71,7 @@ export const InputSystem = ClientSystemBuilder({
 
       const key = event.button === 0 ? "mb1" : "mb2"
 
-      client.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
+      client.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0, delta: performance.now() - world.time })
     })
 
     document.addEventListener("pointerup", (event) => {
@@ -92,7 +92,7 @@ export const InputSystem = ClientSystemBuilder({
       }
 
       client.bufferDown.remove(key)
-      client.bufferUp.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
+      client.bufferUp.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0, delta: 0 })
     })
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
@@ -125,7 +125,7 @@ export const InputSystem = ClientSystemBuilder({
 
         // add to bufferUp
         client.bufferUp.push({
-          key, mouse, aim: localAim(), tick: world.tick, hold: down.hold
+          key, mouse, aim: localAim(), tick: world.tick, hold: down.hold, delta: 0
         })
 
         // remove from bufferedDown
@@ -186,7 +186,7 @@ export const InputSystem = ClientSystemBuilder({
               key = mappedKeys[key]
             }
 
-            client.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0 })
+            client.bufferDown.push({ key, mouse, aim: localAim(), tick: world.tick, hold: 0, delta: 0 })
           }
         }
       }
@@ -345,7 +345,8 @@ export const InputSystem = ClientSystemBuilder({
               mouse: { ...client.controls.mouse },
               client,
               tick: keyMouse.tick,
-              world
+              world,
+              delta: keyMouse.delta
             })
             if (invocation && activeItem.components.actions.actionMap[invocation.actionId]) {
               invocation.playerId = client.playerId()

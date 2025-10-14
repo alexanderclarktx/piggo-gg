@@ -1,5 +1,5 @@
 import {
-  Actions, Background, Craft, Entity, GameBuilder, getBrowser, HButton,
+  Actions, Background, Entity, GameBuilder, getBrowser, HButton,
   HImg, HText, HtmlDiv, HtmlText, LobbiesMenu, Networked,
   NPC, piggoVersion, pixiGraphics, PixiRenderSystem, pixiText,
   Position, RefreshableDiv, Renderable, Strike, Volley, World
@@ -232,7 +232,7 @@ const PlayersOnline = (world: World): RefreshableDiv => ({
 
 const GameLobby = (): Entity => {
 
-  const list: GameBuilder[] = [Strike, Craft, Volley]
+  const list: GameBuilder[] = [Strike, Volley]
 
   let gameButtons: HTMLButtonElement[] = []
 

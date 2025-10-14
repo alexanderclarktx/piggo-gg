@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, round, sin, Target, Three, XY, XYZ
+  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -30,12 +30,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
-  const particles: { mesh: Mesh, velocity: XYZ, tick: number }[] = []
+  const particles: { mesh: Mesh, velocity: XYZ, start: XYZ, duration: number, tick: number }[] = []
   const decalColor = new Color("#333333")
 
   let cd = -100
 
   const mvtError = 0.03
+  const jmpError = 0.12
 
   const recoilRate = 0.04
 
@@ -48,21 +49,23 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     mesh.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
     mesh.position.set(pos.x, pos.z, pos.y)
 
-    particles.push({ mesh, tick: tick + 240, velocity: { x: 0, y: 0, z: 0 } })
+    particles.push({ mesh, tick, velocity: { x: 0, y: 0, z: 0 }, start: { ...pos }, duration: 240 })
 
     // explosion particles
     for (let i = 0; i < 20; i++) {
       const mesh = proto.mesh.clone()
-      const velocity = new Vector3((random() - 0.5) * 0.5, (random() - 0.5) * 0.5, (random() - 0.5) * 0.5).normalize().multiplyScalar(0.012)
-
-      // vary the color
-      const green = floor(randomInt(256))
-      const color = new Color(`rgb(255, ${green}, 0)`)
-      mesh.material = new MeshPhongMaterial({ color, emissive: color })
-
       mesh.position.set(pos.x, pos.z, pos.y)
 
-      particles.push({ mesh, tick, velocity })
+      // vary the color
+      const color = new Color(`rgb(255, ${randomInt(256)}, 0)`)
+      mesh.material = new MeshPhongMaterial({ color, emissive: color })
+
+      particles.push({
+        mesh, tick,
+        velocity: randomVector3(0.03),
+        start: { ...pos },
+        duration: 6
+      })
     }
   }
 
@@ -75,7 +78,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       item: Item({ name: "deagle", stackable: false }),
       input: Input({
         press: {
-          "mb1": ({ hold, character, world, aim, client }) => {
+          "mb1": ({ hold, character, world, aim, client, delta }) => {
             if (hold) return
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
@@ -89,19 +92,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
               .map(target => ({
-                ...target.components.position.xyz(),
+                ...target.components.position.interpolate(world, delta ?? 0),
                 id: target.id
               }))
 
-            const pos = position.xyz()
-
-            const rng = (random() - 0.5) * 0.1
-
             const velocity = hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)
+            const errorFactor = mvtError * velocity + (position.data.standing ? 0 : jmpError)
+            const error = { x: randomLR(errorFactor), y: randomLR(errorFactor) }
 
-            const error = { x: (random() - 0.49) * mvtError * velocity, y: (random() - 0.49) * mvtError * velocity }
-
-            const params: DeagleParams = { pos, aim, targets, rng, error }
+            const params: DeagleParams = {
+              aim, targets, error,
+              pos: position.xyz(),
+              rng: randomLR(0.1)
+            }
 
             return { actionId: "deagle", params }
           },
@@ -266,7 +269,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const particleMesh = new Mesh(new SphereGeometry(0.008, 6, 6))
           particleMesh.castShadow = true
 
-          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0 })
+          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
 
           // gun
           if (character.id === world.client?.character()?.id) {
@@ -313,14 +316,18 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           for (let i = 1; i < particles.length; i++) {
             const p = particles[i]
 
-            if (world.tick - p.tick >= 5) {
+            if (world.tick - p.tick >= p.duration) {
               if (p.mesh.parent) {
                 world.three?.scene.remove(p.mesh)
               }
               particles.splice(i, 1)
               i--
             } else {
-              p.mesh.position.add(new Vector3(p.velocity.x, p.velocity.z, p.velocity.y))
+              p.mesh.position.set(
+                p.start.x + p.velocity.x * (world.tick - p.tick + ratio),
+                p.start.z + p.velocity.z * (world.tick - p.tick + ratio),
+                p.start.y + p.velocity.y * (world.tick - p.tick + ratio)
+              )
             }
           }
 

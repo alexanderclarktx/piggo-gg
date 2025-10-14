@@ -1,4 +1,5 @@
-import { Mesh, Object3D } from "three"
+import { randomLR } from "@piggo-gg/core"
+import { Mesh, Object3D, Vector3 } from "three"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
 export const copyMaterials = (from: Object3D, to: Object3D) => {
@@ -35,4 +36,8 @@ export const cloneThree = <O extends Object3D>(o: O): O => {
   })
 
   return cloned
+}
+
+export const randomVector3 = (scale = 1) => {
+  return new Vector3(randomLR(), randomLR(), randomLR()).normalize().multiplyScalar(scale)
 }
