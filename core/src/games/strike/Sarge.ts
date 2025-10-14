@@ -313,7 +313,7 @@ export const Sarge = (player: Player): Character => {
           const headMat = new MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })
           hitboxes.head = new Mesh(headGeo, headMat)
 
-          entity.components.three.o.push(hitboxes.body, hitboxes.head)
+          // entity.components.three.o.push(hitboxes.body, hitboxes.head)
 
           // character model
           three.gLoader.load("cowboy_smol.glb", (gltf) => {
