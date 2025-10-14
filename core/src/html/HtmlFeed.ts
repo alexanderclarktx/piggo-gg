@@ -1,4 +1,4 @@
-import { Entity, HButton, HDiv, HImg, HText, NPC, Player } from "@piggo-gg/core"
+import { Entity, entries, HButton, HDiv, HImg, HText, NPC, Player } from "@piggo-gg/core"
 
 export const HtmlFeed = (): Entity => {
   let init = false
@@ -8,12 +8,13 @@ export const HtmlFeed = (): Entity => {
 
   const wrapper = HDiv({
     style: {
-      width: "300px",
+      width: "fit-content",
       height: "150px",
       right: "15px",
       top: "15px",
       flexDirection: "column",
-      display: "flex"
+      display: "flex",
+      alignItems: "flex-end"
     }
   })
 
@@ -49,6 +50,24 @@ export const HtmlFeed = (): Entity => {
               wrapper.appendChild(item)
             }
           }
+
+          // Remove old items
+          for (const [key, tick] of entries(feedRecord)) {
+
+            const timer = world.tick - tick
+
+            if (timer > 360) {
+              delete feedRecord[key as FeedKey]
+              if (wrapper.children.length > 0) {
+                wrapper.removeChild(wrapper.children[0])
+              }
+            } else if (timer > 300) {
+              const index = Object.keys(feedRecord).indexOf(key)
+              if (wrapper.children[index]) {
+                (wrapper.children[index] as HTMLElement).style.opacity = `${1 - (timer - 300) / 60}`
+              }
+            }
+          }
         }
       })
     }
@@ -58,9 +77,11 @@ export const HtmlFeed = (): Entity => {
 const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
   return HButton({
     style: {
+      // right: "0px",
+      // transform: "translate(100%)",
       position: "relative",
-      width: "100%",
-      height: "30px",
+      width: "fit-content",
+      height: "36px",
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
@@ -74,7 +95,8 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
         position: "relative",
         color: "white",
         fontSize: "22px",
-        marginRight: "8px"
+        marginRight: "8px",
+        marginLeft: "8px"
       },
       text: p1.components.pc.data.name,
     }),
