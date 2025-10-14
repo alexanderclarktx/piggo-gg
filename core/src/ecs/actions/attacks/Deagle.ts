@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  random, randomInt, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
+  random, randomInt, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -54,11 +54,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     // explosion particles
     for (let i = 0; i < 20; i++) {
       const mesh = proto.mesh.clone()
-      const velocity = new Vector3(
-        (random() - 0.5) * 0.5,
-        (random() - 0.5) * 0.5,
-        (random() - 0.5) * 0.5
-      ).normalize().multiplyScalar(0.03)
+      const velocity = randomVector3(0.03)
 
       // vary the color
       const green = floor(randomInt(256))

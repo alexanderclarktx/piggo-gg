@@ -26,6 +26,10 @@ export const randomInt = (n: number, s: number = 0) => {
   return round(random() * n - s)
 }
 
+export const randomLR = (scale = 1) => {
+  return (random() - 0.5) * scale
+}
+
 // reduces toward zero
 export const reduce = (n: number, by: number): number => {
   if (n > 0) return max(0, n - by)
