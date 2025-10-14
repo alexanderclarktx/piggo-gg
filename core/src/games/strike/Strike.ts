@@ -1,6 +1,6 @@
 import {
   BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem, EscapeMenu,
-  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, keys, logPerf, min,
+  GameBuilder, Hitmarker, HtmlChat, HUDSystem, InventorySystem, logPerf, min,
   Sky, SpawnSystem, Sun, SystemBuilder, ThreeCameraSystem, ThreeSystem, DummyPlayer
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
