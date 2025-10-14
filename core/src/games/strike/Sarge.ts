@@ -256,7 +256,7 @@ export const Sarge = (player: Player): Character => {
               three.camera.mode = "third"
             }
 
-            if (animation === "dead" && !dead) {
+            if (animation === "dead" && !dead && player.id === client.playerId() && three.camera.mode === "third") {
               three.camera.mode = "first"
             }
 
