@@ -1,4 +1,4 @@
-type PrimaryColor = "red" | "green" | "blue" | "yellow" | "purple" | "orange" | "black" | "white" | "gray" | "lightgray" | "darkgray"
+type PrimaryColor = "red" | "green" | "blue" | "yellow" | "purple" | "orange" | "black" | "white" | "gray" | "lightgray" | "darkgray" | "silver" | "gold" | "pink" | "cyan" | "magenta" | "lime" | "teal" | "navy" | "maroon" | "olive" | "brown"
 export type LexColor = PrimaryColor | `#${string}` | `rgba(${number}, ${number}, ${number}, ${number})`
 
 export type CSS = Partial<{

@@ -46,7 +46,7 @@ export const HtmlFeed = (): Entity => {
               const p1 = world.players().find(p => diedFrom.includes(p.id))
               if (!p1) continue
 
-              const item = FeedItem(p1, player, headshot)
+              const item = FeedItem(p1, player, headshot, world.client?.playerId())
               wrapper.appendChild(item)
             }
           }
@@ -77,7 +77,7 @@ export const HtmlFeed = (): Entity => {
   })
 }
 
-const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
+const FeedItem = (p1: Player, p2: Player, headshot: boolean, localPlayer: string | undefined) => {
   return HButton({
     style: {
       position: "relative",
@@ -85,13 +85,16 @@ const FeedItem = (p1: Player, p2: Player, headshot: boolean) => {
       height: "36px",
       display: "flex",
       alignItems: "center",
-      marginTop: "8px"
+      marginTop: "8px",
+      // backgroundImage: [p1.id, p2.id].includes(localPlayer || "") ?
+      //   "linear-gradient(black, black), linear-gradient(180deg, #aaffaa, 90%, #aaccaa)" :
+      //   "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
     }
   },
     HText({
       style: {
         position: "relative",
-        color: "white",
+        color: p1.id === localPlayer ? "gold" : "white",
         fontSize: "22px",
         marginRight: "8px",
         marginLeft: "10px"
