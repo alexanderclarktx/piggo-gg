@@ -9,6 +9,7 @@ export type InputState = {
   client: Client
   character?: Character
   hold: number
+  delta?: number
   target?: string
 }
 

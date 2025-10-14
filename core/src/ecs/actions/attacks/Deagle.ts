@@ -36,6 +36,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let cd = -100
 
   const mvtError = 0.03
+  const jmpError = 0.12
 
   const recoilRate = 0.04
 
@@ -79,7 +80,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       item: Item({ name: "deagle", stackable: false }),
       input: Input({
         press: {
-          "mb1": ({ hold, character, world, aim, client }) => {
+          "mb1": ({ hold, character, world, aim, client, delta }) => {
             if (hold) return
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
@@ -93,19 +94,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
               .map(target => ({
-                ...target.components.position.xyz(),
+                ...target.components.position.interpolate(world, delta ?? 0),
                 id: target.id
               }))
 
-            const pos = position.xyz()
-
-            const rng = (random() - 0.5) * 0.1
-
             const velocity = hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)
+            const errorFactor = mvtError * velocity + (position.data.standing ? 0 : jmpError)
+            const error = { x: (random() - 0.49) * errorFactor, y: (random() - 0.49) * errorFactor }
 
-            const error = { x: (random() - 0.49) * mvtError * velocity, y: (random() - 0.49) * mvtError * velocity }
-
-            const params: DeagleParams = { pos, aim, targets, rng, error }
+            const params: DeagleParams = {
+              aim, targets, error,
+              pos: position.xyz(),
+              rng: (random() - 0.5) * 0.1
+            }
 
             return { actionId: "deagle", params }
           },
