@@ -72,7 +72,7 @@ export const HtmlFeed = (): Entity => {
               const item = wrapper.children[index] as HTMLElement
               if (item) {
                 item.style.opacity = `${1 - (timer - 300) / 40}`
-                item.style.marginTop = `-${(timer - 300) / 40 * 36}px`
+                item.style.marginTop = `${6 - (timer - 300) / 40 * 42}px`
               }
             }
           }

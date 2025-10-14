@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "bun dev-compile & bun dev-serve",
     "dev-compile": "bun build --watch src/index.tsx --outdir res",
-    "dev-serve": "bunx serve -L -p 8000 res"
+    "dev-serve": "bun x serve -L -p 8000 res"
   },
   "dependencies": {
     "react": "^18.2.0",
