@@ -237,10 +237,10 @@ export const Sarge = (player: Player): Character => {
 
           // position
           pig.position.set(interpolated.x, interpolated.z + 0, interpolated.y)
-          if (world.debug) {
+          // if (world.debug) {
             hitboxes.body?.position.set(interpolated.x, interpolated.z + 0.2, interpolated.y)
             hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.46, interpolated.y)
-          }
+          // }
 
           // rotation
           pig.rotation.y = orientation.x + PI
@@ -313,15 +313,15 @@ export const Sarge = (player: Player): Character => {
           const headMat = new MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })
           hitboxes.head = new Mesh(headGeo, headMat)
 
-          // entity.components.three.o.push(hitboxes.body, hitboxes.head)
+          entity.components.three.o.push(hitboxes.body, hitboxes.head)
 
           // character model
-          three.gLoader.load("cowboy.glb", (gltf) => {
+          three.gLoader.load("cowboy_smol.glb", (gltf) => {
 
             pig = cloneSkeleton(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
-            pig.scale.set(0.16, 0.18, 0.16)
+            pig.scale.set(0.18, 0.2, 0.18)
 
             // helper = new SkeletonHelper(pig.children[0].children[1])
 
