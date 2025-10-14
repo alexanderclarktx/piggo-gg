@@ -238,8 +238,8 @@ export const Sarge = (player: Player): Character => {
           // position
           pig.position.set(interpolated.x, interpolated.z + 0, interpolated.y)
           // if (world.debug) {
-            hitboxes.body?.position.set(interpolated.x, interpolated.z + 0.2, interpolated.y)
-            hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.46, interpolated.y)
+            hitboxes.body?.position.set(interpolated.x, interpolated.z + 0.22, interpolated.y)
+            hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.48, interpolated.y)
           // }
 
           // rotation
@@ -304,12 +304,12 @@ export const Sarge = (player: Player): Character => {
         init: async (entity, world, three) => {
 
           // body
-          const bodyGeo = new CapsuleGeometry(0.08, 0.18)
+          const bodyGeo = new CapsuleGeometry(0.07, 0.26)
           const bodyMat = new MeshPhongMaterial({ color: 0x0000ff, transparent: true, opacity: 0.5 })
           hitboxes.body = new Mesh(bodyGeo, bodyMat)
 
           // head
-          const headGeo = new CapsuleGeometry(0.08, 0.05)
+          const headGeo = new CapsuleGeometry(0.05, 0.03)
           const headMat = new MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })
           hitboxes.head = new Mesh(headGeo, headMat)
 
