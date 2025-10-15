@@ -4,8 +4,8 @@ export type GunNames = "deagle" | "ak" | "awp"
 
 export type GunProps = {
   automatic: boolean
-  ammo: number
-  bulletSize: number
+  ammo?: number
+  bulletSize?: number
   clipSize: number
   damage: number
   fireRate: number
@@ -30,9 +30,9 @@ export const Gun = (props: GunProps): Gun => {
     type: "gun",
     data: {
       clip: props.clipSize,
-      ammo: props.ammo,
+      ammo: props.ammo ?? props.clipSize,
       automatic: props.automatic,
-      bulletSize: props.bulletSize,
+      bulletSize: props.bulletSize ?? 0,
       clipSize: props.clipSize,
       damage: props.damage,
       fireRate: props.fireRate,

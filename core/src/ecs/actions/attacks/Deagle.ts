@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
+  Action, Actions, blockInLine, Character, cos, Effects, floor, Gun, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
   randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
@@ -76,6 +76,14 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       effects: Effects(),
       networked: Networked(),
       item: Item({ name: "deagle", stackable: false }),
+      gun: Gun({
+        automatic: false,
+        clipSize: 7,
+        damage: 35,
+        fireRate: 10,
+        name: "deagle",
+        reloadTime: 90
+      }),
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim, client, delta }) => {
