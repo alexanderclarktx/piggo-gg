@@ -41,7 +41,7 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
           const { died } = character.components.health.data
           if (died === undefined) return
 
-          if (died + 120 < world.tick) {
+          if (died + 60 < world.tick) {
 
             // reset health
             character.components.health.data.hp = character.components.health.data.maxHp

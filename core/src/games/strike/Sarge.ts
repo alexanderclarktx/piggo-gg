@@ -256,14 +256,14 @@ export const Sarge = (player: Player): Character => {
           pig.position.set(interpolated.x, interpolated.z + 0, interpolated.y)
           // if (world.debug) {
           hitboxes.body?.position.set(interpolated.x, interpolated.z + 0.22, interpolated.y)
-          hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.48, interpolated.y)
+          hitboxes.head?.position.set(interpolated.x, interpolated.z + 0.53, interpolated.y)
           // }
 
           // rotation
           pig.rotation.y = orientation.x + PI
 
           // animation
-          const speed = hypot(position.data.velocity.x, position.data.velocity.y)
+          let speed = hypot(position.data.velocity.x, position.data.velocity.y)
 
           if (runAnimation && idleAnimation && deathAnimation && pigMixer) {
 
@@ -283,6 +283,7 @@ export const Sarge = (player: Player): Character => {
               } else if (animation === "idle") {
                 idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.10, false)
               }
+              speed = 2
               animation = "dead"
             } else {
               if (speed === 0) {
@@ -326,14 +327,14 @@ export const Sarge = (player: Player): Character => {
           hitboxes.body = new Mesh(bodyGeo, bodyMat)
 
           // head
-          const headGeo = new CapsuleGeometry(0.05, 0.03)
+          const headGeo = new CapsuleGeometry(0.04, 0.03)
           const headMat = new MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })
           hitboxes.head = new Mesh(headGeo, headMat)
 
           entity.components.three.o.push(hitboxes.body, hitboxes.head)
 
           // character model
-          three.gLoader.load("swat.gltf", (gltf) => {
+          three.gLoader.load("swat.glb", (gltf) => {
 
             pig = cloneSkeleton(gltf.scene)
             pig.animations = gltf.animations
@@ -346,7 +347,7 @@ export const Sarge = (player: Player): Character => {
 
             pigMixer = new AnimationMixer(pig)
 
-            idleAnimation = pigMixer.clipAction(pig.animations[8])
+            idleAnimation = pigMixer.clipAction(pig.animations[22])
             runAnimation = pigMixer.clipAction(pig.animations[22])
             deathAnimation = pigMixer.clipAction(pig.animations[0])
             deathAnimation.loop = 2200
