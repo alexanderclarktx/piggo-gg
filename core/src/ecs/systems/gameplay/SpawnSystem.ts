@@ -43,14 +43,17 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
 
           if (died + 60 < world.tick) {
 
+            const { position, health } = character.components
+
             // reset health
-            character.components.health.data.hp = character.components.health.data.maxHp
+            health.data.hp = health.data.maxHp
 
             // reset died
-            character.components.health.data.died = undefined
+            health.data.died = undefined
 
             // reset position
-            character.components.position.setPosition({ x: 8, y: player.id === "player-dummy" ? 6 : 8, z: 2 })
+            if (player.id !== "player-dummy") position.setPosition({ x: 8, y: 8 })
+            position.setPosition({ z: 2 })
           }
         })
       }
