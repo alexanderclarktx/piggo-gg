@@ -76,14 +76,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       effects: Effects(),
       networked: Networked(),
       item: Item({ name: "deagle", stackable: false }),
-      gun: Gun({
-        automatic: false,
-        clipSize: 7,
-        damage: 35,
-        fireRate: 10,
-        name: "deagle",
-        reloadTime: 90
-      }),
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim, client, delta }) => {
@@ -282,7 +274,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
 
           // gun
-          if (character.id === world.client?.character()?.id) {
+          // if (character.id === world.client?.character()?.id) {
             three.gLoader.load("deagle.glb", (gltf) => {
               gun = gltf.scene
               gun.scale.set(0.025, 0.025, 0.025)
@@ -294,7 +286,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
               item.components.three?.o.push(gun)
             })
-          }
+          // }
         },
         onRender: ({ world, delta, client, three }) => {
           const ratio = delta / 25

@@ -279,24 +279,24 @@ export const Sarge = (player: Player): Character => {
 
             if (dead) {
               if (animation === "run") {
-                runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
+                runAnimation.crossFadeTo(deathAnimation.reset().play(), 0.10, false)
               } else if (animation === "idle") {
-                idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.2, false)
+                idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.10, false)
               }
               animation = "dead"
             } else {
               if (speed === 0) {
                 if (animation === "run") {
-                  runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+                  runAnimation.crossFadeTo(idleAnimation.reset().play(), 0.10, false)
                 } else if (animation === "dead") {
-                  deathAnimation.crossFadeTo(idleAnimation.reset().play(), 0.2, false)
+                  deathAnimation.crossFadeTo(idleAnimation.reset().play(), 0.10, false)
                 }
                 animation = "idle"
               } else {
                 if (animation === "idle") {
-                  idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+                  idleAnimation?.crossFadeTo(runAnimation.reset().play(), 0.10, false)
                 } else if (animation === "dead") {
-                  deathAnimation.crossFadeTo(runAnimation.reset().play(), 0.2, false)
+                  deathAnimation.crossFadeTo(runAnimation.reset().play(), 0.10, false)
                 }
                 animation = "run"
               }
@@ -330,15 +330,15 @@ export const Sarge = (player: Player): Character => {
           const headMat = new MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })
           hitboxes.head = new Mesh(headGeo, headMat)
 
-          // entity.components.three.o.push(hitboxes.body, hitboxes.head)
+          entity.components.three.o.push(hitboxes.body, hitboxes.head)
 
           // character model
-          three.gLoader.load("cowboy_smol.glb", (gltf) => {
+          three.gLoader.load("swat.gltf", (gltf) => {
 
             pig = cloneSkeleton(gltf.scene)
             pig.animations = gltf.animations
             pig.frustumCulled = false
-            pig.scale.set(0.18, 0.2, 0.18)
+            pig.scale.set(0.32, 0.32, 0.32)
 
             // helper = new SkeletonHelper(pig.children[0].children[1])
 
@@ -346,8 +346,8 @@ export const Sarge = (player: Player): Character => {
 
             pigMixer = new AnimationMixer(pig)
 
-            idleAnimation = pigMixer.clipAction(pig.animations[2])
-            runAnimation = pigMixer.clipAction(pig.animations[8])
+            idleAnimation = pigMixer.clipAction(pig.animations[8])
+            runAnimation = pigMixer.clipAction(pig.animations[22])
             deathAnimation = pigMixer.clipAction(pig.animations[0])
             deathAnimation.loop = 2200
             deathAnimation.clampWhenFinished = true

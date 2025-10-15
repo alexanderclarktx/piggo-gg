@@ -11,7 +11,7 @@ export type GunProps = {
   fireRate: number
   name: GunNames
   reloadTime: number
-  speed: number
+  speed?: number
 }
 
 // TODO some properties don't need to be networked
@@ -41,7 +41,7 @@ export const Gun = (props: GunProps): Gun => {
       name: props.name,
       reloading: false,
       reloadTime: props.reloadTime,
-      speed: props.speed
+      speed: props.speed ?? 1
     },
     canShoot: (world: World, tick: number, hold: number) => {
 
