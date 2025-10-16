@@ -30,7 +30,7 @@ export const HtmlAmmo = (): Entity => {
 
           const pc = world.client?.character()
           const activeItem = pc?.components.inventory?.activeItem(world)
-          const ammo = activeItem?.components.gun?.data.ammo
+          const ammo = activeItem?.components.gun?.ammo
 
           if (ammo === undefined) {
             wrapper.style.display = "none"
