@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
   ItemComponents,
-  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
+  ItemEntity, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
   randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
@@ -27,7 +27,7 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
 
 export const DeagleItem = ({ character }: { character: Character }) => {
 
-  let gun: Object3D | undefined = undefined
+  let mesh: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
@@ -311,15 +311,15 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // gun
           if (character.id === world.client?.character()?.id) {
             three.gLoader.load("deagle.glb", (gltf) => {
-              gun = gltf.scene
-              gun.scale.set(0.025, 0.025, 0.025)
+              mesh = gltf.scene
+              mesh.scale.set(0.025, 0.025, 0.025)
 
-              gun.receiveShadow = true
-              gun.castShadow = true
+              mesh.receiveShadow = true
+              mesh.castShadow = true
 
-              gun.rotation.order = "YXZ"
+              mesh.rotation.order = "YXZ"
 
-              item.components.three?.o.push(gun)
+              item.components.three?.o.push(mesh)
             })
           }
         },
@@ -368,17 +368,17 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          if (!gun) return
+          if (!mesh) return
 
           if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
-            gun.visible = false
+            mesh.visible = false
             return
           } else {
-            gun.visible = true
+            mesh.visible = true
           }
 
           // gun
-          gun.position.copy({
+          mesh.position.copy({
             x: pos.x + offset.x,
             y: pos.z + 0.45 + offset.y,
             z: pos.y + offset.z
@@ -387,8 +387,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
-          gun.rotation.y = aim.x
-          gun.rotation.x = aim.y + localRecoil * 0.5
+          mesh.rotation.y = aim.x
+          mesh.rotation.x = aim.y + localRecoil * 0.5
+
+          if (item.components.gun.data.reloading) {
+            const delta = item.components.gun.data.reloading - world.tick - ratio
+            mesh.rotation.x = -(PI * 6) / 40 * delta
+          }
         }
       })
     },
