@@ -81,16 +81,15 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       input: Input({
         press: {
 
-          "r": ({ hold }) => {
+          "r": ({ hold, client }) => {
             if (hold) return
-            console.log("r")
 
             const { gun } = item.components
-            if (gun.data.ammo >= 7) return
 
+            if (gun.data.ammo >= 7) return
             if (gun.data.reloading) return
 
-            console.log("reload input")
+            client.sound.play({ name: "reload" })
 
             return { actionId: "reload" }
           },
@@ -146,8 +145,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           if (world.tick === gun.data.reloading) {
             gun.data.ammo = 7
             gun.data.reloading = undefined
-
-            console.log("reload complete")
           }
         }
       }),
@@ -155,8 +152,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         reload: Action("reload", ({ world }) => {
           const { gun } = item.components
           if (!gun) return
-
-          console.log("reload action")
 
           gun.data.reloading = world.tick + 40
         }),
