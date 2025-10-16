@@ -349,7 +349,7 @@ export const Sarge = (player: Player): Character => {
 
             // helper = new SkeletonHelper(pig.children[0].children[1])
 
-            copyMaterials(gltf.scene, pig)
+            copyMaterials(gltf.scene, pig, player.components.team.data.team)
 
             pigMixer = new AnimationMixer(pig)
 
