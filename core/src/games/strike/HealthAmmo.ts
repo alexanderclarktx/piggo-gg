@@ -12,7 +12,7 @@ export const HealthAmmo = (): Entity => {
   })
 
   const wrapper = HDiv({
-    style: { left: "50%", bottom: "20px", display: "flex", alignItems: "center", transform: "translate(-50%, 0%)"}
+    style: { left: "50%", bottom: "20px", display: "flex", alignItems: "center", transform: "translate(-50%, 0%)" }
   },
     HImg({
       src: "health.svg",

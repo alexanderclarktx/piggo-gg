@@ -10,7 +10,7 @@ export const HUDSystem = ClientSystemBuilder({
 
     if (client.mobile === true) return
 
-    const bottom = 100
+    const bottom = 40
     const left = 120
 
     const aButton = KeyButton({ text: "A", left: left - 50, bottom: bottom + 200 })
