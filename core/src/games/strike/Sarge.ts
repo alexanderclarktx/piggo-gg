@@ -1,7 +1,7 @@
 import {
   Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, Hook,
-  HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point,
-  Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton
+  HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point, Position,
+  Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton, Ready
 } from "@piggo-gg/core"
 import {
   AnimationAction, AnimationMixer, CapsuleGeometry, Mesh,
@@ -92,6 +92,11 @@ export const Sarge = (player: Player): Character => {
             }
           },
 
+          "z": ({ hold }) => {
+            if (hold) return
+            return { actionId: "ready" }
+          },
+
           // "t": ({ hold }) => {
           //   if (hold) return
           //   sarge.components.position.data.flying = !sarge.components.position.data.flying
@@ -152,6 +157,7 @@ export const Sarge = (player: Player): Character => {
       actions: Actions({
         place: Place,
         point: Point,
+        ready: Ready,
         hook: Hook(),
         jump: Action("jump", ({ world, params }) => {
           const { position } = sarge.components
