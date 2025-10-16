@@ -7,6 +7,7 @@ import {
 import { Sarge } from "./Sarge"
 import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
 import { HealthAmmo } from "./HealthAmmo"
+import { PhaseBanner } from "./PhaseBanner"
 
 export type StrikeState = {
   jumped: string[]
@@ -64,7 +65,8 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
         // pos: { x: 200, y: 200, z: 200 }
       }),
       Sky(),
-      DummyPlayer()
+      DummyPlayer(),
+      PhaseBanner()
     ]
   })
 }
