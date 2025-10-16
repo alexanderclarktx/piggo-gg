@@ -87,7 +87,7 @@ export const Sarge = (player: Player): Character => {
                   z: camera.z,
                 })
 
-                position.data.aim = { x: -Math.atan2(dir.z, dir.x) + PI / 2, y: Math.asin(dir.y) }
+                position.data.aim = { x: -Math.atan2(dir.z, dir.x) + PI / 2, y: 0 }
               }
             }
           },

@@ -4,23 +4,23 @@ export type GunNames = "deagle" | "ak" | "awp"
 
 export type GunProps = {
   automatic: boolean
-  ammo?: number
-  bulletSize?: number
+  bulletSize: number
   clipSize: number
   damage: number
   fireRate: number
   name: GunNames
   reloadTime: number
-  speed?: number
+  speed: number
 }
 
 // TODO some properties don't need to be networked
 export type Gun = Component<"gun", GunProps & {
   clip: number
   lastShot: number
-  reloading: boolean
+  reloading: undefined | number
   outlineColor: number
 }> & {
+  ammo: number
   canShoot: (world: World, tick: number, hold: number) => boolean
   didShoot: (world: World) => void
 }
@@ -28,9 +28,9 @@ export type Gun = Component<"gun", GunProps & {
 export const Gun = (props: GunProps): Gun => {
   const gun: Gun = {
     type: "gun",
+    ammo: props.clipSize,
     data: {
       clip: props.clipSize,
-      ammo: props.ammo ?? props.clipSize,
       automatic: props.automatic,
       bulletSize: props.bulletSize ?? 0,
       clipSize: props.clipSize,
@@ -39,7 +39,7 @@ export const Gun = (props: GunProps): Gun => {
       lastShot: 0,
       outlineColor: 0x000000,
       name: props.name,
-      reloading: false,
+      reloading: undefined,
       reloadTime: props.reloadTime,
       speed: props.speed ?? 1
     },

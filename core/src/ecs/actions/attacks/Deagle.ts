@@ -1,7 +1,7 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, hypot, Input, Item,
-  ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
-  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
+  Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
+  ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
+  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -26,7 +26,7 @@ const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
 
 export const DeagleItem = ({ character }: { character: Character }) => {
 
-  let gun: Object3D | undefined = undefined
+  let mesh: Object3D | undefined = undefined
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
@@ -69,20 +69,40 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     }
   }
 
-  const item = ItemEntity({
+  const item = Entity<ItemComponents | Gun>({
     id: `deagle-${character.id}`,
     components: {
       position: Position(),
       effects: Effects(),
       networked: Networked(),
       item: Item({ name: "deagle", stackable: false }),
+      gun: Gun({ name: "deagle", clipSize: 7, automatic: false, reloadTime: 60, damage: 35, fireRate: 5, bulletSize: 0.02, speed: 3 }),
       input: Input({
         press: {
+
+          "r": ({ hold, client, world }) => {
+            if (hold) return
+
+            const { gun } = item.components
+
+            if (gun.ammo >= 7) return
+            if (gun.data.reloading) return
+
+            client.sound.play({ name: "reload" })
+
+            return { actionId: "reload", params: { value: world.tick + 40 } }
+          },
+
           "mb1": ({ hold, character, world, aim, client, delta }) => {
             if (hold) return
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
+
+            if (item.components.gun!.ammo <= 0) {
+              world.client?.sound.play({ name: "clink" })
+              return
+            }
 
             if (cd + 5 > world.tick) return
             cd = world.tick
@@ -111,20 +131,56 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }
       }),
       npc: NPC({
-        behavior: () => {
+        behavior: (_, world) => {
           const { recoil } = character.components.position.data
 
           // TODO move this to a system
           if (recoil > 0) {
             character.components.position.data.recoil = max(0, recoil - recoilRate)
           }
+
+          const { gun } = item.components
+
+          if (world.tick === gun.data.reloading) {
+            gun.ammo = 7
+            gun.data.reloading = undefined
+          }
+
+          if (character.id.includes("dummy")) {
+            // if (world.tick % 20 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
+            //   world.actions.push(world.tick + 1, item.id, {
+            //     actionId: "deagle", params: {
+            //       pos: character.components.position.xyz(),
+            //       aim: character.components.position.data.aim,
+            //       targets: []
+            //     }
+            //   })
+            // }
+            if (world.tick % 120 === 0) {
+              world.actions.push(world.tick + 1, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
+            }
+          }
         }
       }),
       actions: Actions({
-        deagle: Action<DeagleParams>("deagle", ({ world, entity, params, offline }) => {
-          if (!entity) return
+        reload: Action<{ value: number }>("reload", ({ params }) => {
+          const { gun } = item.components
+          if (!gun) return
 
-          world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
+          gun.data.reloading = params.value
+        }),
+        deagle: Action<DeagleParams>("deagle", ({ world, params, offline }) => {
+
+          const pc = world.client?.character()
+          if (pc && character.id !== pc.id) {
+
+            const distance = XYZdistance(pc.components.position.xyz(), character.components.position.xyz())
+            const volume = max(0, 1 - distance / 20)
+
+            world.client?.sound.play({ name: "deagle", volume })
+          } else {
+            world.client?.sound.play({ name: "deagle" })
+          }
 
           const { pos, aim, targets, error } = params
 
@@ -143,6 +199,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             aim.y += error.y
           }
 
+          if (!offline) item.components.gun!.ammo -= 1
+
           // apply recoil
           character.components.position.data.recoil = min(1.4, recoil + 0.5)
 
@@ -155,7 +213,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // update tracer
           if (world.client) {
             const { localAim } = world.client.controls
-            const offset = modelOffset(localAim, true, recoil)
+            const offset = modelOffset(character.id === world.client.character()?.id ? localAim : aim, true, recoil)
 
             // tracer
             if (tracer) {
@@ -274,19 +332,17 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
 
           // gun
-          if (character.id === world.client?.character()?.id) {
-            three.gLoader.load("deagle.glb", (gltf) => {
-              gun = gltf.scene
-              gun.scale.set(0.025, 0.025, 0.025)
+          three.gLoader.load("deagle.glb", (gltf) => {
+            mesh = gltf.scene
+            mesh.scale.set(0.025, 0.025, 0.025)
 
-              gun.receiveShadow = true
-              gun.castShadow = true
+            mesh.receiveShadow = true
+            mesh.castShadow = true
 
-              gun.rotation.order = "YXZ"
+            mesh.rotation.order = "YXZ"
 
-              item.components.three?.o.push(gun)
-            })
-          }
+            item.components.three?.o.push(mesh)
+          })
         },
         onRender: ({ world, delta, client, three }) => {
           const ratio = delta / 25
@@ -333,17 +389,22 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          if (!gun) return
+          if (!mesh) return
 
           if (three.camera.mode === "third" && character.id === world.client?.character()?.id) {
-            gun.visible = false
+            mesh.visible = false
             return
           } else {
-            gun.visible = true
+            mesh.visible = true
+          }
+
+          if (character.components.health?.dead()) {
+            mesh.visible = false
+            return
           }
 
           // gun
-          gun.position.copy({
+          mesh.position.copy({
             x: pos.x + offset.x,
             y: pos.z + 0.45 + offset.y,
             z: pos.y + offset.z
@@ -352,8 +413,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const { recoil } = character.components.position.data
           const localRecoil = recoil ? recoil - recoilRate * ratio : 0
 
-          gun.rotation.y = aim.x
-          gun.rotation.x = aim.y + localRecoil * 0.5
+          mesh.rotation.y = aim.x
+          mesh.rotation.x = aim.y + localRecoil * 0.5
+
+          if (item.components.gun.data.reloading) {
+            const delta = item.components.gun.data.reloading - world.tick - ratio
+            mesh.rotation.x = -(PI * 6) / 40 * delta
+          }
         }
       })
     },
