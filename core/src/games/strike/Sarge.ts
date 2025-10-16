@@ -8,7 +8,7 @@ import {
   MeshPhongMaterial, Object3D, SkeletonHelper, Vector3
 } from "three"
 
-const walk = 0.56
+const walk = 0.5
 const run = 1.2
 const hop = 0.16
 const leap = 0.3
@@ -234,6 +234,14 @@ export const Sarge = (player: Player): Character => {
           } else {
             factor = params.sprint ? leap : hop
           }
+
+          const speed = hypot(position.data.velocity.x, position.data.velocity.y)
+          // if (speed < 1) {
+          //   factor *= 0.7
+            // console.log(speed, factor)
+          // } else {
+          //   console.log("full speed")
+          // }
 
           if (position.data.standing) {
             // world.client?.sound.play({ name: "steps", threshold: { pos: position.data, distance: 5 } })

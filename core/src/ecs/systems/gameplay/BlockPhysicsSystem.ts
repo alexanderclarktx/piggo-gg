@@ -381,7 +381,7 @@ export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({
           if (position.data.friction && !tether) {
             const { flying, standing } = position.data
 
-            const scale = flying ? 0.98 : (standing ? 0.78 : 0.94)
+            const scale = flying ? 0.98 : (standing ? 0.82 : 0.94)
             entity.components.position.scaleVelocity(scale)
           }
         }
