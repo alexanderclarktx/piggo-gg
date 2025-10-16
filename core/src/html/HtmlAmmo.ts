@@ -3,14 +3,14 @@ import { Entity, HDiv, HText, NPC, Position } from "@piggo-gg/core"
 export const HtmlAmmo = (): Entity => {
   let init = false
 
-  const clipText = HText({
+  const ammoText = HText({
     style: { width: "400px" }
   })
 
   const wrapper = HDiv({
     style: { left: "50%", bottom: "40px" }
   },
-    clipText
+    ammoText
   )
 
   return Entity({
@@ -33,7 +33,7 @@ export const HtmlAmmo = (): Entity => {
             return
           }
 
-          clipText.textContent = `${ammo} / 0`
+          ammoText.textContent = `${ammo} / 0`
         }
       }),
     }
