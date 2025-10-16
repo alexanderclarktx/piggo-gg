@@ -199,7 +199,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             aim.y += error.y
           }
 
-          item.components.gun!.data.ammo -= 1
+          if (!offline) item.components.gun!.data.ammo -= 1
 
           // apply recoil
           character.components.position.data.recoil = min(1.4, recoil + 0.5)
