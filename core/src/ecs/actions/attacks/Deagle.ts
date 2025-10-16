@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
   ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
-  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
+  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -146,8 +146,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             gun.data.reloading = undefined
           }
 
-          if (character !== world.client?.character()) {
-            if (world.tick % 50 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
+          if (character.id.includes("dummy")) {
+            if (world.tick % 80 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
               world.actions.push(world.tick + 1, item.id, {
                 actionId: "deagle", params: {
                   pos: character.components.position.xyz(),
@@ -171,7 +171,16 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }),
         deagle: Action<DeagleParams>("deagle", ({ world, params, offline }) => {
 
-          world.client?.sound.play({ name: "deagle" })
+          const pc = world.client?.character()
+          if (pc && character.id !== pc.id) {
+
+            const distance = XYZdistance(pc.components.position.xyz(), character.components.position.xyz())
+            const volume = max(0, 1 - distance / 20)
+
+            world.client?.sound.play({ name: "deagle", volume })
+          } else {
+            world.client?.sound.play({ name: "deagle" })
+          }
 
           const { pos, aim, targets, error } = params
 

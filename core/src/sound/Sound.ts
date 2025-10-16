@@ -1,5 +1,5 @@
 import { entries, GunNames, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
-import { Gain, getContext, getTransport, Player, Player as Tone } from "tone"
+import { dbToGain, Gain, getContext, getTransport, Player, Player as Tone } from "tone"
 
 export type BubbleSounds = "bubble" | "hitmarker"
 export type MusicSounds = "track2" | "birdsong1"
@@ -155,10 +155,9 @@ export const Sound = (world: World): Sound => {
 
         const tone = sound.tones[name]
         if (tone && tone.loaded) {
-          const player = new Player(tone.buffer).toDestination()
-          player.volume.value = tone.volume.value
 
-          if (volume) player.volume.value *= volume
+          const gain = new Gain(dbToGain(tone.volume.value) * (volume ?? 1)).toDestination()
+          const player = new Player(tone.buffer).connect(gain)
 
           player.start(fadeIn, start)
           return true
