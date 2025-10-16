@@ -22,11 +22,10 @@ export const colorMaterials = (obj: Object3D, mapping: ColorMapping, team: TeamN
 
 export const copyMaterials = (from: Object3D, to: Object3D) => {
   const fromMap: Record<string, Object3D> = {}
+
   from.traverse((child) => {
     fromMap[child.name] = child
   })
-
-  const fromColors = new Set<string>()
 
   to.traverse((child) => {
     if (fromMap[child.name] && child instanceof Mesh && fromMap[child.name] instanceof Mesh) {
@@ -38,8 +37,6 @@ export const copyMaterials = (from: Object3D, to: Object3D) => {
       }
     }
   })
-
-  console.log("from colors", [...fromColors])
 }
 
 export const cloneSkeleton = clone
