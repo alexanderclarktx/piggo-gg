@@ -235,14 +235,6 @@ export const Sarge = (player: Player): Character => {
             factor = params.sprint ? leap : hop
           }
 
-          const speed = hypot(position.data.velocity.x, position.data.velocity.y)
-          // if (speed < 1) {
-          //   factor *= 0.7
-            // console.log(speed, factor)
-          // } else {
-          //   console.log("full speed")
-          // }
-
           if (position.data.standing) {
             // world.client?.sound.play({ name: "steps", threshold: { pos: position.data, distance: 5 } })
           }
@@ -291,7 +283,7 @@ export const Sarge = (player: Player): Character => {
               } else if (animation === "idle") {
                 idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.10, false)
               }
-              // speed = 2
+              speed = 2
               animation = "dead"
             } else {
               if (speed === 0) {
