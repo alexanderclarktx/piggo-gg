@@ -34,7 +34,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const decalColor = new Color("#333333")
 
   let cd = -100
-  // let ammo = 7
 
   const mvtError = 0.03
   const jmpError = 0.12

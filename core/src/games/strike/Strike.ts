@@ -2,8 +2,7 @@ import {
   BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem,
   EscapeMenu, GameBuilder, Hitmarker, HtmlChat, HUDSystem,
   InventorySystem, logPerf, min, Sky, SpawnSystem, Sun, SystemBuilder,
-  ThreeCameraSystem, ThreeSystem, DummyPlayer, HtmlFeed,
-  HtmlAmmo
+  ThreeCameraSystem, ThreeSystem, DummyPlayer, HtmlFeed, HtmlAmmo
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
