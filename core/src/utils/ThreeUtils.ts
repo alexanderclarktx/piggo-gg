@@ -20,7 +20,7 @@ export const colorMaterials = (obj: Object3D, mapping: ColorMapping, team: TeamN
   })
 }
 
-export const copyMaterials = (from: Object3D, to: Object3D, team: TeamNumber = 2) => {
+export const copyMaterials = (from: Object3D, to: Object3D) => {
   const fromMap: Record<string, Object3D> = {}
   from.traverse((child) => {
     fromMap[child.name] = child
