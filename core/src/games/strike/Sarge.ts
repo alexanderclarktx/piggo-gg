@@ -8,7 +8,7 @@ import {
   MeshPhongMaterial, Object3D, SkeletonHelper, Vector3
 } from "three"
 
-const walk = 0.5
+const walk = 0.48
 const run = 1.2
 const hop = 0.16
 const leap = 0.3
@@ -92,10 +92,10 @@ export const Sarge = (player: Player): Character => {
             }
           },
 
-          "t": ({ hold }) => {
-            if (hold) return
-            sarge.components.position.data.flying = !sarge.components.position.data.flying
-          },
+          // "t": ({ hold }) => {
+          //   if (hold) return
+          //   sarge.components.position.data.flying = !sarge.components.position.data.flying
+          // },
 
           // "e" : ({ hold, world, character }) => {
           //   if (hold) return
@@ -291,7 +291,7 @@ export const Sarge = (player: Player): Character => {
               } else if (animation === "idle") {
                 idleAnimation.crossFadeTo(deathAnimation.reset().play(), 0.10, false)
               }
-              speed = 2
+              // speed = 2
               animation = "dead"
             } else {
               if (speed === 0) {
@@ -355,7 +355,7 @@ export const Sarge = (player: Player): Character => {
 
             pigMixer = new AnimationMixer(pig)
 
-            idleAnimation = pigMixer.clipAction(pig.animations[22])
+            idleAnimation = pigMixer.clipAction(pig.animations[8])
             runAnimation = pigMixer.clipAction(pig.animations[22])
             deathAnimation = pigMixer.clipAction(pig.animations[0])
             deathAnimation.loop = 2200
