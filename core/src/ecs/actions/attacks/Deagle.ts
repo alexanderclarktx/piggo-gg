@@ -147,7 +147,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           if (character.id.includes("dummy")) {
-            if (world.tick % 80 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
+            if (world.tick % 20 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
               world.actions.push(world.tick + 1, item.id, {
                 actionId: "deagle", params: {
                   pos: character.components.position.xyz(),
@@ -213,7 +213,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           // update tracer
           if (world.client) {
             const { localAim } = world.client.controls
-            const offset = modelOffset(localAim, true, recoil)
+            const offset = modelOffset(character.id === world.client.character()?.id ? localAim : aim, true, recoil)
 
             // tracer
             if (tracer) {
