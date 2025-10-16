@@ -4,7 +4,6 @@ export type GunNames = "deagle" | "ak" | "awp"
 
 export type GunProps = {
   automatic: boolean
-  ammo: number
   bulletSize: number
   clipSize: number
   damage: number
@@ -21,6 +20,7 @@ export type Gun = Component<"gun", GunProps & {
   reloading: undefined | number
   outlineColor: number
 }> & {
+  ammo: number
   canShoot: (world: World, tick: number, hold: number) => boolean
   didShoot: (world: World) => void
 }
@@ -28,9 +28,9 @@ export type Gun = Component<"gun", GunProps & {
 export const Gun = (props: GunProps): Gun => {
   const gun: Gun = {
     type: "gun",
+    ammo: props.clipSize,
     data: {
       clip: props.clipSize,
-      ammo: props.ammo ?? props.clipSize,
       automatic: props.automatic,
       bulletSize: props.bulletSize ?? 0,
       clipSize: props.clipSize,

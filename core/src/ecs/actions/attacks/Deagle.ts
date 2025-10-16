@@ -76,7 +76,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       effects: Effects(),
       networked: Networked(),
       item: Item({ name: "deagle", stackable: false }),
-      gun: Gun({ name: "deagle", clipSize: 7, automatic: false, reloadTime: 60, damage: 35, fireRate: 5, ammo: 7, bulletSize: 0.02, speed: 3 }),
+      gun: Gun({ name: "deagle", clipSize: 7, automatic: false, reloadTime: 60, damage: 35, fireRate: 5, bulletSize: 0.02, speed: 3 }),
       input: Input({
         press: {
 
@@ -85,7 +85,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             const { gun } = item.components
 
-            if (gun.data.ammo >= 7) return
+            if (gun.ammo >= 7) return
             if (gun.data.reloading) return
 
             client.sound.play({ name: "reload" })
@@ -99,7 +99,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
 
-            if (item.components.gun!.data.ammo <= 0) {
+            if (item.components.gun!.ammo <= 0) {
               world.client?.sound.play({ name: "clink" })
               return
             }
@@ -142,7 +142,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const { gun } = item.components
 
           if (world.tick === gun.data.reloading) {
-            gun.data.ammo = 7
+            gun.ammo = 7
             gun.data.reloading = undefined
           }
 
@@ -199,7 +199,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             aim.y += error.y
           }
 
-          if (!offline) item.components.gun!.data.ammo -= 1
+          if (!offline) item.components.gun!.ammo -= 1
 
           // apply recoil
           character.components.position.data.recoil = min(1.4, recoil + 0.5)
