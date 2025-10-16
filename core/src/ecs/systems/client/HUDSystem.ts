@@ -43,8 +43,8 @@ export const HUDSystem = ClientSystemBuilder({
     const posText = HtmlText({
       text: "0|0|0",
       style: {
-        left: `50%`,
-        top: `20px`,
+        left: `25%`,
+        bottom: `20px`,
         fontSize: "22px",
         color: "#00ffff",
         transform: "translate(-50%)",

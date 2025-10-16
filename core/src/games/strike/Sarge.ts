@@ -28,7 +28,7 @@ export const Sarge = (player: Player): Character => {
 
   let animation: "idle" | "run" | "dead" = "idle"
 
-  const isDummy = player.id === "player-dummy"
+  const isDummy = player.id.includes("dummy")
 
   const sarge = Character({
     id: `sarge-${player.id}`,
@@ -36,7 +36,7 @@ export const Sarge = (player: Player): Character => {
       position: Position({
         friction: true,
         gravity: 0.003,
-        x: 8, y: isDummy ? 6 : 8, z: 2,
+        x: isDummy ? 7.2 + player.components.team.data.team * 0.6 : 8.12, y: isDummy ? 5.3 : 8, z: 2,
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),

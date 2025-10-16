@@ -52,7 +52,7 @@ export const SpawnSystem = (spawner: CharacterSpawner) => SystemBuilder<"SpawnSy
             health.data.died = undefined
 
             // reset position
-            if (player.id !== "player-dummy") position.setPosition({ x: 8, y: 8 })
+            if (!player.id.includes("dummy")) position.setPosition({ x: 8, y: 8 })
             position.setPosition({ z: 2 })
           }
         })

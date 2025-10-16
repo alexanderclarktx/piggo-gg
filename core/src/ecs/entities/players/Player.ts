@@ -20,4 +20,5 @@ export const Player = ({ id, name, team }: PlayerProps): Player => Entity<PC | C
   }
 })
 
-export const DummyPlayer = () => Player({ id: "player-dummy", name: "dummy", team: 2 })
+export const DummyPlayer = () => Player({ id: "player-dummy", name: "dummy1", team: 1 })
+export const DummyPlayer2 = () => Player({ id: "player-dummy-2", name: "dummy2", team: 2 })
