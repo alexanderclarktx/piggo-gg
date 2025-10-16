@@ -1,9 +1,8 @@
 import {
-  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, Hook,
-  HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point, Position,
-  Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton, Ready,
-  ColorMapping,
-  colorMaterials
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health,
+  Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player,
+  Point, Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState,
+  cloneSkeleton, Ready, ColorMapping, colorMaterials
 } from "@piggo-gg/core"
 import {
   AnimationAction, AnimationMixer, CapsuleGeometry, Mesh,
