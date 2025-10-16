@@ -4,14 +4,14 @@ export type GunNames = "deagle" | "ak" | "awp"
 
 export type GunProps = {
   automatic: boolean
-  ammo?: number
-  bulletSize?: number
+  ammo: number
+  bulletSize: number
   clipSize: number
   damage: number
   fireRate: number
   name: GunNames
   reloadTime: number
-  speed?: number
+  speed: number
 }
 
 // TODO some properties don't need to be networked

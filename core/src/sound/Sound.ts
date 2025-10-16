@@ -83,7 +83,7 @@ export const Sound = (world: World): Sound => {
       ak: load("ak.mp3", -25),
       awp: load("awp.mp3", -30),
       // thud: load("thud.mp3", -15),
-      // clink: load("clink.mp3", -10),
+      clink: load("clink.mp3", -10),
       // whiff: load("whiff.wav", -15),
       // slash: load("slash.mp3", -20),
       eat: load("eat.mp3", -10),

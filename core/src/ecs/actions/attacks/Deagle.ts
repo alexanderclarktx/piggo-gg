@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, hypot, Input, Item,
+  Action, Actions, blockInLine, Character, cos, Effects, Gun, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
   randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
@@ -34,6 +34,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   const decalColor = new Color("#333333")
 
   let cd = -100
+  // let ammo = 7
 
   const mvtError = 0.03
   const jmpError = 0.12
@@ -76,6 +77,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       effects: Effects(),
       networked: Networked(),
       item: Item({ name: "deagle", stackable: false }),
+      gun: Gun({ name: "deagle", clipSize: 7, automatic: false, reloadTime: 60, damage: 35, fireRate: 5, ammo: 7, bulletSize: 0.02, speed: 3 }),
       input: Input({
         press: {
           "mb1": ({ hold, character, world, aim, client, delta }) => {
@@ -83,6 +85,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
+
+            if (item.components.gun!.data.ammo <= 0) {
+              world.client?.sound.play({ name: "clink" })
+              return
+            }
 
             if (cd + 5 > world.tick) return
             cd = world.tick
@@ -142,6 +149,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             aim.x += error.x
             aim.y += error.y
           }
+
+          item.components.gun!.data.ammo -= 1
 
           // apply recoil
           character.components.position.data.recoil = min(1.4, recoil + 0.5)
