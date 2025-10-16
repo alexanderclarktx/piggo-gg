@@ -1,7 +1,6 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
-  ItemComponents,
-  ItemEntity, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
+  ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
   randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"

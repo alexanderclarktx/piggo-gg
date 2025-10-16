@@ -1,4 +1,4 @@
-import { ClientSystemBuilder, ThreeText, min, Player, values, CraftSettings, CraftState, World } from "@piggo-gg/core"
+import { ClientSystemBuilder, ThreeText, min, Player, values, CraftSettings, World } from "@piggo-gg/core"
 import { Group } from "three"
 
 export type ThreeNametag = {

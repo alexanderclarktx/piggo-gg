@@ -4,11 +4,11 @@ export const HtmlAmmo = (): Entity => {
   let init = false
 
   const ammoText = HText({
-    style: { width: "400px" }
+    style: { width: "400px", fontSize: "32px" }
   })
 
   const wrapper = HDiv({
-    style: { left: "50%", bottom: "40px" }
+    style: { left: "60%", bottom: "40px" }
   },
     ammoText
   )
@@ -33,7 +33,7 @@ export const HtmlAmmo = (): Entity => {
             return
           }
 
-          ammoText.textContent = `${ammo} / 0`
+          // ammoText.textContent = `${ammo} ⦿`
         }
       }),
     }
