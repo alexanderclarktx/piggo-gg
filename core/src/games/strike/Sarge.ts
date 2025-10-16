@@ -1,7 +1,9 @@
 import {
   Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, Hook,
   HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point, Position,
-  Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton, Ready
+  Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton, Ready,
+  ColorMapping,
+  colorMaterials
 } from "@piggo-gg/core"
 import {
   AnimationAction, AnimationMixer, CapsuleGeometry, Mesh,
@@ -350,6 +352,7 @@ export const Sarge = (player: Player): Character => {
             // helper = new SkeletonHelper(pig.children[0].children[1])
 
             copyMaterials(gltf.scene, pig, player.components.team.data.team)
+            colorMaterials(pig, SargeColors, player.components.team.data.team)
 
             pigMixer = new AnimationMixer(pig)
 
@@ -379,4 +382,11 @@ export const Sarge = (player: Player): Character => {
   })
 
   return sarge
+}
+
+const SargeColors: ColorMapping = {
+  "cead86": { 1: "#be9393", 2: "#be9393" },
+  "4f535a": { 1: "#4f535a", 2: "#7e4f19" },
+  "312e2b": { 1: "#312e2b", 2: "#2b1608" },
+  "161616": { 1: "#453089", 2: "#671029" }
 }

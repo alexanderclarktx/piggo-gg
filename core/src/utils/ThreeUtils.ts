@@ -1,26 +1,26 @@
-import { randomLR } from "@piggo-gg/core"
+import { randomLR, TeamNumber } from "@piggo-gg/core"
 import { Color, Mesh, Object3D, Vector3 } from "three"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 
-type SkinComponent = "armor" | "helmet" | "suit" | "skin"
+export type ColorMapping = Record<string, Record<TeamNumber, `#${string}`>>
 
-const TeamSkins: Record<number, Record<SkinComponent, `#${string}`>> = {
-  1: {
-    armor: "#312e2b",
-    helmet: "#453089",
-    suit: "#4f535a",
-    skin: "#be9393"
-  },
-  2: {
-    armor: "#2b1608",
-    helmet: "#671029",
-    suit: "#7e4f19",
-    skin: "#be9393"
-  }
+export const colorMaterials = (obj: Object3D, mapping: ColorMapping, team: TeamNumber) => {
+  obj.traverse((child) => {
+    if (child instanceof Mesh) {
+      if (!Array.isArray(child.material)) {
+        const color = child.material.color as Color
+
+        const hex = color.getHexString()
+
+        if (mapping[hex]) {
+          child.material.color = new Color(mapping[hex][team])
+        }
+      }
+    }
+  })
 }
 
-
-export const copyMaterials = (from: Object3D, to: Object3D, team = 2) => {
+export const copyMaterials = (from: Object3D, to: Object3D, team: TeamNumber = 2) => {
   const fromMap: Record<string, Object3D> = {}
   from.traverse((child) => {
     fromMap[child.name] = child
@@ -34,24 +34,7 @@ export const copyMaterials = (from: Object3D, to: Object3D, team = 2) => {
       if (Array.isArray(fromChild.material)) {
         child.material = fromChild.material.map(m => m.clone())
       } else {
-        // @ts-expect-error
-        const color = fromChild.material.color as Color
-
-        const hex = color.getHexString()
-
-        fromColors.add(color.getHexString())
-
         child.material = fromChild.material.clone()
-
-        if (hex === "cead86") {
-          child.material.color = new Color(TeamSkins[team].skin)
-        } else if (hex === "4f535a") {
-          child.material.color = new Color(TeamSkins[team].suit)
-        } else if (hex === "312e2b") {
-          child.material.color = new Color(TeamSkins[team].armor)
-        } else if (hex === "161616") {
-          child.material.color = new Color(TeamSkins[team].helmet)
-        }
       }
     }
   })
