@@ -145,6 +145,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             gun.data.ammo = 7
             gun.data.reloading = undefined
           }
+
+          if (character !== world.client?.character()) {
+            if (world.tick % 50 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
+              world.actions.push(world.tick + 1, item.id, {
+                actionId: "deagle", params: {
+                  pos: character.components.position.xyz(),
+                  aim: character.components.position.data.aim,
+                  targets: []
+                }
+              })
+            }
+            if (world.tick % 120 === 0) {
+              world.actions.push(world.tick + 1, item.id, { actionId: "reload" })
+            }
+          }
         }
       }),
       actions: Actions({
@@ -156,7 +171,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }),
         deagle: Action<DeagleParams>("deagle", ({ world, params, offline }) => {
 
-          world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
+          world.client?.sound.play({ name: "deagle" })
 
           const { pos, aim, targets, error } = params
 
@@ -308,19 +323,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
 
           // gun
-          if (character.id === world.client?.character()?.id) {
-            three.gLoader.load("deagle.glb", (gltf) => {
-              mesh = gltf.scene
-              mesh.scale.set(0.025, 0.025, 0.025)
+          // if (character.id === world.client?.character()?.id) {
+          three.gLoader.load("deagle.glb", (gltf) => {
+            mesh = gltf.scene
+            mesh.scale.set(0.025, 0.025, 0.025)
 
-              mesh.receiveShadow = true
-              mesh.castShadow = true
+            mesh.receiveShadow = true
+            mesh.castShadow = true
 
-              mesh.rotation.order = "YXZ"
+            mesh.rotation.order = "YXZ"
 
-              item.components.three?.o.push(mesh)
-            })
-          }
+            item.components.three?.o.push(mesh)
+          })
+          // }
         },
         onRender: ({ world, delta, client, three }) => {
           const ratio = delta / 25

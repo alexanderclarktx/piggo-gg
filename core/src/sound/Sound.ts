@@ -1,5 +1,5 @@
 import { entries, GunNames, randomChoice, World, XY, XYdistance } from "@piggo-gg/core"
-import { getContext, getTransport, Player as Tone } from "tone"
+import { Gain, getContext, getTransport, Player, Player as Tone } from "tone"
 
 export type BubbleSounds = "bubble" | "hitmarker"
 export type MusicSounds = "track2" | "birdsong1"
@@ -26,6 +26,7 @@ export type SoundPlayProps = {
     pos: XY // TODO xyz
     distance: number
   }
+  volume?: number
 }
 
 export type Sound = {
@@ -134,7 +135,7 @@ export const Sound = (world: World): Sound => {
 
       return false
     },
-    play: ({ name, start = 0, fadeIn = 0, threshold }) => {
+    play: ({ name, start = 0, fadeIn = 0, threshold, volume }) => {
       if (sound.muted && !name.startsWith("track")) return false
 
       // check distance
@@ -154,7 +155,12 @@ export const Sound = (world: World): Sound => {
 
         const tone = sound.tones[name]
         if (tone && tone.loaded) {
-          tone.start(fadeIn, start)
+          const player = new Player(tone.buffer).toDestination()
+          player.volume.value = tone.volume.value
+
+          if (volume) player.volume.value *= volume
+
+          player.start(fadeIn, start)
           return true
         }
       } catch (e) {
