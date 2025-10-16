@@ -1,15 +1,19 @@
-import { Entity, HDiv, HText, NPC, Position } from "@piggo-gg/core"
+import { Entity, HDiv, HImg, HText, NPC, Position } from "@piggo-gg/core"
 
 export const HtmlAmmo = (): Entity => {
   let init = false
 
   const ammoText = HText({
-    style: { width: "400px", fontSize: "32px" }
+    style: { fontSize: "38px", position: "relative", marginLeft: "6px", textAlign: "center" }
   })
 
   const wrapper = HDiv({
-    style: { left: "60%", bottom: "40px" }
+    style: { left: "62%", bottom: "60px", display: "flex", alignItems: "center" }
   },
+    HImg({
+      src: "bullet.svg",
+      style: { height: "36px", position: "relative", transform: "translate(0%, 0%)" }
+    }),
     ammoText
   )
 
@@ -33,7 +37,7 @@ export const HtmlAmmo = (): Entity => {
             return
           }
 
-          // ammoText.textContent = `${ammo} ⦿`
+          ammoText.textContent = `${ammo}`
         }
       }),
     }
