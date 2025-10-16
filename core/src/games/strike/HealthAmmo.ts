@@ -1,6 +1,6 @@
 import { Entity, HDiv, HImg, HText, NPC, Position } from "@piggo-gg/core"
 
-export const HtmlAmmo = (): Entity => {
+export const HealthAmmo = (): Entity => {
   let init = false
 
   const ammoText = HText({
@@ -18,7 +18,7 @@ export const HtmlAmmo = (): Entity => {
   )
 
   return Entity({
-    id: "htmlAmmo",
+    id: "healthAmmo",
     components: {
       position: Position(),
       npc: NPC({
