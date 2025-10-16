@@ -62,7 +62,10 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       // Scoreboard(),
       HtmlChat(),
       HtmlFeed(),
-      Sun({ bounds: { left: -10, right: 12, top: 10, bottom: -10 } }),
+      Sun({
+        bounds: { left: -10, right: 12, top: 0, bottom: -9 },
+        // pos: { x: 200, y: 200, z: 200 }
+      }),
       Sky(),
       DummyPlayer()
     ]

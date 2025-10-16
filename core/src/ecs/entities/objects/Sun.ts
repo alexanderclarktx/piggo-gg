@@ -3,16 +3,17 @@ import { CameraHelper, DirectionalLight, HemisphereLight, Mesh, MeshPhysicalMate
 
 export type SunProps = {
   bounds?: Bounds
+  pos?: { x: number; y: number; z: number }
 }
 
 export const Sun = (props: SunProps = {}) => {
   const sun = Entity<Three>({
     id: "sun",
     components: {
-      position: Position({ x: 200, y: 200, z: 100 }),
+      position: Position(props.pos ?? { x: 200, y: 200, z: 100 }),
       three: Three({
         init: async () => {
-          const light = new DirectionalLight(colors.evening, 9)
+          const light = new DirectionalLight(colors.evening, 8)
 
           light.shadow.normalBias = 0.02
           light.shadow.mapSize.set(2048 * 2, 2048 * 2)
@@ -34,6 +35,7 @@ export const Sun = (props: SunProps = {}) => {
 
           light.position.set(200, 100, 200)
           sphere.position.set(200, 100, 200)
+          if (props.pos) light.position.set(props.pos.x, props.pos.y, props.pos.z)
 
           const hemi = new HemisphereLight(0xaaaabb, colors.evening, 3)
 

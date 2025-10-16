@@ -92,10 +92,10 @@ export const Sarge = (player: Player): Character => {
             }
           },
 
-          // "t": ({ hold }) => {
-          //   if (hold) return
-          //   sarge.components.position.data.flying = !sarge.components.position.data.flying
-          // },
+          "t": ({ hold }) => {
+            if (hold) return
+            sarge.components.position.data.flying = !sarge.components.position.data.flying
+          },
 
           // "e" : ({ hold, world, character }) => {
           //   if (hold) return
@@ -228,7 +228,7 @@ export const Sarge = (player: Player): Character => {
           let factor = 0
 
           if (position.data.flying) {
-            factor = params.sprint ? 0.16 : 0.09
+            factor = params.sprint ? 0.16 : 0.14
           } else if (position.data.standing) {
             factor = params.sprint ? run : walk
           } else {
