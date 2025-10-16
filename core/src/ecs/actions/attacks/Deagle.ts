@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, floor, hypot, Input, Item,
+  Action, Actions, blockInLine, Character, cos, Effects, hypot, Input, Item,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
   randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
@@ -186,9 +186,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (targetEntity.components.health.data.hp <= 0) continue
 
             // head
-            let A = { x: target.x, y: target.y, z: target.z + 0.465 }
-            let B = { x: target.x, y: target.y, z: target.z + 0.495 }
-            let radius = 0.05
+            let A = { x: target.x, y: target.y, z: target.z + 0.52 }
+            let B = { x: target.x, y: target.y, z: target.z + 0.55 }
+            let radius = 0.04
 
             if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
               hit = playerForCharacter(world, target.id)
@@ -199,8 +199,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             // body
 
             A = { x: target.x, y: target.y, z: target.z + 0.09 }
-            B = { x: target.x, y: target.y, z: target.z + 0.35 }
-            radius = 0.07
+            B = { x: target.x, y: target.y, z: target.z + 0.43 }
+            radius = 0.064
 
             if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
               hit = playerForCharacter(world, target.id)

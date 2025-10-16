@@ -1,7 +1,6 @@
 import { XYZstring } from "@piggo-gg/core"
 
 export const RetakeMapColoring: Record<XYZstring, string> = {
-  "34,49,3": "mediumseagreen",
   "41,19,4": "chocolate",
   "41,20,4": "chocolate",
   "41,20,5": "chocolate",
