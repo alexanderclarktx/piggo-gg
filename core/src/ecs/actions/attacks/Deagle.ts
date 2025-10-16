@@ -147,15 +147,15 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           }
 
           if (character.id.includes("dummy")) {
-            if (world.tick % 20 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
-              world.actions.push(world.tick + 1, item.id, {
-                actionId: "deagle", params: {
-                  pos: character.components.position.xyz(),
-                  aim: character.components.position.data.aim,
-                  targets: []
-                }
-              })
-            }
+            // if (world.tick % 20 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
+            //   world.actions.push(world.tick + 1, item.id, {
+            //     actionId: "deagle", params: {
+            //       pos: character.components.position.xyz(),
+            //       aim: character.components.position.data.aim,
+            //       targets: []
+            //     }
+            //   })
+            // }
             if (world.tick % 120 === 0) {
               world.actions.push(world.tick + 1, item.id, { actionId: "reload" })
             }
