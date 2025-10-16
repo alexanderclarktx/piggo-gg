@@ -1,9 +1,28 @@
-import { randomLR } from "@piggo-gg/core"
-import { Mesh, Object3D, Vector3 } from "three"
+import { randomLR, TeamNumber } from "@piggo-gg/core"
+import { Color, Mesh, Object3D, Vector3 } from "three"
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js'
+
+export type ColorMapping = Record<string, Record<TeamNumber, `#${string}`>>
+
+export const colorMaterials = (obj: Object3D, mapping: ColorMapping, team: TeamNumber) => {
+  obj.traverse((child) => {
+    if (child instanceof Mesh) {
+      if (!Array.isArray(child.material)) {
+        const color = child.material.color as Color
+
+        const hex = color.getHexString()
+
+        if (mapping[hex]) {
+          child.material.color = new Color(mapping[hex][team])
+        }
+      }
+    }
+  })
+}
 
 export const copyMaterials = (from: Object3D, to: Object3D) => {
   const fromMap: Record<string, Object3D> = {}
+
   from.traverse((child) => {
     fromMap[child.name] = child
   })

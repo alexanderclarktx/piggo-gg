@@ -1,7 +1,8 @@
 import {
-  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health, Hook,
-  HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player, Point,
-  Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState, cloneSkeleton
+  Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health,
+  Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player,
+  Point, Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState,
+  cloneSkeleton, Ready, ColorMapping, colorMaterials
 } from "@piggo-gg/core"
 import {
   AnimationAction, AnimationMixer, CapsuleGeometry, Mesh,
@@ -28,7 +29,7 @@ export const Sarge = (player: Player): Character => {
 
   let animation: "idle" | "run" | "dead" = "idle"
 
-  const isDummy = player.id === "player-dummy"
+  const isDummy = player.id.includes("dummy")
 
   const sarge = Character({
     id: `sarge-${player.id}`,
@@ -36,7 +37,7 @@ export const Sarge = (player: Player): Character => {
       position: Position({
         friction: true,
         gravity: 0.003,
-        x: 8, y: isDummy ? 6 : 8, z: 2,
+        x: isDummy ? 7.2 + player.components.team.data.team * 0.6 : 8.12, y: isDummy ? 5.3 : 8, z: 2,
         aim: isDummy ? { x: -3.14, y: 0 } : { x: 0, y: 0 }
       }),
       networked: Networked(),
@@ -90,6 +91,11 @@ export const Sarge = (player: Player): Character => {
                 position.data.aim = { x: -Math.atan2(dir.z, dir.x) + PI / 2, y: 0 }
               }
             }
+          },
+
+          "z": ({ hold }) => {
+            if (hold) return
+            return { actionId: "ready" }
           },
 
           // "t": ({ hold }) => {
@@ -152,6 +158,7 @@ export const Sarge = (player: Player): Character => {
       actions: Actions({
         place: Place,
         point: Point,
+        ready: Ready,
         hook: Hook(),
         jump: Action("jump", ({ world, params }) => {
           const { position } = sarge.components
@@ -344,6 +351,7 @@ export const Sarge = (player: Player): Character => {
             // helper = new SkeletonHelper(pig.children[0].children[1])
 
             copyMaterials(gltf.scene, pig)
+            colorMaterials(pig, SargeColors, player.components.team.data.team)
 
             pigMixer = new AnimationMixer(pig)
 
@@ -373,4 +381,11 @@ export const Sarge = (player: Player): Character => {
   })
 
   return sarge
+}
+
+const SargeColors: ColorMapping = {
+  "cead86": { 1: "#be9393", 2: "#be9393" },
+  "4f535a": { 1: "#4f535a", 2: "#7e4f19" },
+  "312e2b": { 1: "#312e2b", 2: "#2b1608" },
+  "161616": { 1: "#453089", 2: "#671029" }
 }

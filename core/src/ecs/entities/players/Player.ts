@@ -1,13 +1,14 @@
-import { Actions, Controlling, Entity, Networked, PC, Team, switchTeam } from "@piggo-gg/core"
+import { Actions, Controlling, Entity, Networked, PC, Team, TeamNumber, switchTeam } from "@piggo-gg/core"
 
 export type PlayerProps = {
   id: string
   name?: string
+  team?: TeamNumber
 }
 
 export type Player = Entity<PC | Controlling | Actions | Team>
 
-export const Player = ({ id, name }: PlayerProps): Player => Entity<PC | Controlling | Actions | Team>({
+export const Player = ({ id, name, team }: PlayerProps): Player => Entity<PC | Controlling | Actions | Team>({
   id: id,
   persists: true,
   components: {
@@ -15,8 +16,9 @@ export const Player = ({ id, name }: PlayerProps): Player => Entity<PC | Control
     pc: PC({ name: name ?? "noob" }),
     controlling: Controlling(),
     actions: Actions({ switchTeam }),
-    team: Team(1)
+    team: Team(team ?? 1)
   }
 })
 
-export const DummyPlayer = () => Player({ id: "player-dummy", name: "dummy" })
+export const DummyPlayer = () => Player({ id: "player-dummy", name: "dummy1", team: 1 })
+export const DummyPlayer2 = () => Player({ id: "player-dummy-2", name: "dummy2", team: 2 })

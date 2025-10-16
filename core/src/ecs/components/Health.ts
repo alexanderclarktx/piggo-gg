@@ -14,6 +14,7 @@ export type Health = Component<"health", {
   onDamage: null | ((damage: number, world: World) => void)
   damage: (damage: number, world: World, from?: string, reason?: string) => void
   dead: () => boolean
+  revive: () => void
 }
 
 export type HealthProps = {
@@ -51,7 +52,13 @@ export const Health = (
         if (reason) health.data.diedReason = reason
       }
     },
-    dead: () => health.data.hp <= 0
+    dead: () => health.data.hp <= 0,
+    revive: () => {
+      health.data.hp = health.data.maxHp
+      health.data.died = undefined
+      health.data.diedFrom = undefined
+      health.data.diedReason = undefined
+    }
   }
   return health
 }

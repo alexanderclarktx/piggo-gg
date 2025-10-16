@@ -2,13 +2,16 @@ import {
   BlockMeshSysten, BlockPhysicsSystem, Crosshair, ThreeNametagSystem,
   EscapeMenu, GameBuilder, Hitmarker, HtmlChat, HUDSystem,
   InventorySystem, logPerf, min, Sky, SpawnSystem, Sun, SystemBuilder,
-  ThreeCameraSystem, ThreeSystem, DummyPlayer, HtmlFeed, HtmlAmmo
+  ThreeCameraSystem, ThreeSystem, DummyPlayer, HtmlFeed, DummyPlayer2
 } from "@piggo-gg/core"
 import { Sarge } from "./Sarge"
 import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
+import { HealthAmmo } from "./HealthAmmo"
+import { PhaseBanner } from "./PhaseBanner"
 
 export type StrikeState = {
   jumped: string[]
+  phase: "warmup" | "round-spawn" | "round-play" | "round-done" | "game-done"
 }
 
 export type StrikeSettings = {
@@ -32,14 +35,8 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       mouseSensitivity: 1
     },
     state: {
-      applesEaten: {},
       jumped: [],
-      hit: {},
-      nextSeed: 123456111,
       phase: "warmup",
-      round: 0,
-      startedEagle: [],
-      willStart: undefined
     },
     systems: [
       SpawnSystem(Sarge),
@@ -62,13 +59,15 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       // Scoreboard(),
       HtmlChat(),
       HtmlFeed(),
-      HtmlAmmo(),
+      HealthAmmo(),
       Sun({
         bounds: { left: -10, right: 12, top: 0, bottom: -9 },
         // pos: { x: 200, y: 200, z: 200 }
       }),
       Sky(),
-      DummyPlayer()
+      DummyPlayer(),
+      DummyPlayer2(),
+      PhaseBanner()
     ]
   })
 }
