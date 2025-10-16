@@ -274,7 +274,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
 
           // gun
-          // if (character.id === world.client?.character()?.id) {
+          if (character.id === world.client?.character()?.id) {
             three.gLoader.load("deagle.glb", (gltf) => {
               gun = gltf.scene
               gun.scale.set(0.025, 0.025, 0.025)
@@ -286,7 +286,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
               item.components.three?.o.push(gun)
             })
-          // }
+          }
         },
         onRender: ({ world, delta, client, three }) => {
           const ratio = delta / 25
