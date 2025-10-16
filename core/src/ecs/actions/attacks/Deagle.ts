@@ -80,7 +80,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       input: Input({
         press: {
 
-          "r": ({ hold, client }) => {
+          "r": ({ hold, client, world }) => {
             if (hold) return
 
             const { gun } = item.components
@@ -90,7 +90,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             client.sound.play({ name: "reload" })
 
-            return { actionId: "reload" }
+            return { actionId: "reload", params: { value: world.tick + 40 } }
           },
 
           "mb1": ({ hold, character, world, aim, client, delta }) => {
@@ -157,17 +157,17 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             //   })
             // }
             if (world.tick % 120 === 0) {
-              world.actions.push(world.tick + 1, item.id, { actionId: "reload" })
+              world.actions.push(world.tick + 1, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
             }
           }
         }
       }),
       actions: Actions({
-        reload: Action("reload", ({ world }) => {
+        reload: Action<{ value: number }>("reload", ({ params }) => {
           const { gun } = item.components
           if (!gun) return
 
-          gun.data.reloading = world.tick + 40
+          gun.data.reloading = params.value
         }),
         deagle: Action<DeagleParams>("deagle", ({ world, params, offline }) => {
 
@@ -398,6 +398,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             return
           } else {
             mesh.visible = true
+          }
+
+          if (character.components.health?.dead()) {
+            mesh.visible = false
+            return
           }
 
           // gun
