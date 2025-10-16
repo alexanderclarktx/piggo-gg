@@ -12,7 +12,7 @@ export const PhaseBanner = () => {
     }
   },
     HText({
-      text: "Warmup",
+      text: "warmup",
       style: { fontSize: "32px", position: "relative" }
     }),
     readyText
@@ -28,13 +28,13 @@ export const PhaseBanner = () => {
             document.body.appendChild(wrapper)
           }
 
-          const players = world.players().filter(p => p.id !== "player-dummy")
+          const players = world.players().filter(p => !p.id.includes("dummy"))
 
           const ready = players.filter(p => (p.components.pc.data.ready)).length
 
           readyText.textContent = `ready: ${ready}/${players.length}`
 
-          // wrapper.style.visibility = world.client?.net.lobbyId ? "visible" : "hidden"
+          wrapper.style.visibility = world.client?.net.lobbyId ? "visible" : "hidden"
         }
       })
     }
