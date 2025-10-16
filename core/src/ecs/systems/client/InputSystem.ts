@@ -333,11 +333,12 @@ export const InputSystem = ClientSystemBuilder({
       // handle character inventory
       const activeItem = inventory?.activeItem(world)
       if (activeItem) {
-        for (const key of ["mb1", "mb2"]) {
-          const keyMouse = buffer.get(key)
 
-          if (keyMouse && activeItem.components.input?.inputMap.press[key]) {
-            const invocation = activeItem.components.input?.inputMap.press[key]?.({
+        for (const keyPress in activeItem.components.input?.inputMap.press) {
+          const keyMouse = buffer.get(keyPress)
+
+          if (keyMouse) {
+            const invocation = activeItem.components.input?.inputMap.press[keyMouse.key]?.({
               aim: localAim(),
               character,
               entity: activeItem,

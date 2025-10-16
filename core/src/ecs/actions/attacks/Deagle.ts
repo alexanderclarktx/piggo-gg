@@ -1,5 +1,6 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Gun, hypot, Input, Item,
+  Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
+  ItemComponents,
   ItemEntity, max, min, Networked, NPC, Player, playerForCharacter, Position,
   randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ
 } from "@piggo-gg/core"
@@ -69,7 +70,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
     }
   }
 
-  const item = ItemEntity({
+  const item = Entity<ItemComponents | Gun>({
     id: `deagle-${character.id}`,
     components: {
       position: Position(),
@@ -79,6 +80,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       gun: Gun({ name: "deagle", clipSize: 7, automatic: false, reloadTime: 60, damage: 35, fireRate: 5, ammo: 7, bulletSize: 0.02, speed: 3 }),
       input: Input({
         press: {
+
+          "r": ({ hold }) => {
+            if (hold) return
+            console.log("r")
+
+            const { gun } = item.components
+            if (gun.data.ammo >= 7) return
+
+            if (gun.data.reloading) return
+
+            console.log("reload input")
+
+            return { actionId: "reload" }
+          },
+
           "mb1": ({ hold, character, world, aim, client, delta }) => {
             if (hold) return
             if (!character) return
@@ -117,18 +133,34 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }
       }),
       npc: NPC({
-        behavior: () => {
+        behavior: (_, world) => {
           const { recoil } = character.components.position.data
 
           // TODO move this to a system
           if (recoil > 0) {
             character.components.position.data.recoil = max(0, recoil - recoilRate)
           }
+
+          const { gun } = item.components
+
+          if (world.tick === gun.data.reloading) {
+            gun.data.ammo = 7
+            gun.data.reloading = undefined
+
+            console.log("reload complete")
+          }
         }
       }),
       actions: Actions({
-        deagle: Action<DeagleParams>("deagle", ({ world, entity, params, offline }) => {
-          if (!entity) return
+        reload: Action("reload", ({ world }) => {
+          const { gun } = item.components
+          if (!gun) return
+
+          console.log("reload action")
+
+          gun.data.reloading = world.tick + 40
+        }),
+        deagle: Action<DeagleParams>("deagle", ({ world, params, offline }) => {
 
           world.client?.sound.play({ name: "deagle", threshold: { pos: params.pos, distance: 5 } })
 
