@@ -99,6 +99,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (!document.pointerLockElement && !client.mobile) return
             if (world.client?.mobileMenu) return
 
+            if (item.components.gun.data.reloading) return
+
             if (item.components.gun!.ammo <= 0) {
               world.client?.sound.play({ name: "clink" })
               return
@@ -318,7 +320,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         }),
       }),
       three: Three({
-        init: async (_, world, three) => {
+        init: async (_, __, three) => {
 
           // tracer
           const tracerGeometry = new CylinderGeometry(0.004, 0.004, 0.1, 8)
