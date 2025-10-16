@@ -9,6 +9,7 @@ import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
 
 export type StrikeState = {
   jumped: string[]
+  phase: "warmup" | "round-spawn" | "round-play" | "round-done" | "game-done"
 }
 
 export type StrikeSettings = {
@@ -32,14 +33,8 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       mouseSensitivity: 1
     },
     state: {
-      applesEaten: {},
       jumped: [],
-      hit: {},
-      nextSeed: 123456111,
       phase: "warmup",
-      round: 0,
-      startedEagle: [],
-      willStart: undefined
     },
     systems: [
       SpawnSystem(Sarge),
