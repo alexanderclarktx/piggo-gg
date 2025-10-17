@@ -53,7 +53,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
         tick: world.tick,
         velocity: randomVector3(blood ? 0.015 : 0.03),
         pos: { ...pos },
-        duration: blood ? 20 : 6,
+        duration: blood ? 16 : 6,
         gravity: blood ? 0.0023 : 0
       })
 
