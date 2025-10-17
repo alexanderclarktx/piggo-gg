@@ -323,7 +323,6 @@ export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius:
   const dist2 = XYZdot(closestVec, closestVec)
 
   const result = dist2 <= radius * radius
-  if (result) console.log("tc", tc, "sc", sc)
 
   return result ? { sc, tc } : false
 }
