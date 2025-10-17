@@ -1,7 +1,8 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
-  ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position, randomInt,
-  randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, World, XY, XYZ, XYZdistance
+  Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun,
+  hypot, Input, Item, ItemComponents, max, min, Networked, NPC, PI,
+  Player, playerForCharacter, Position, randomInt, randomLR, randomVector3,
+  rayCapsuleIntersect, sin, Target, Three, World, XY, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -250,26 +251,28 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             if (targetEntity.components.health.data.hp <= 0) continue
 
             // head
-            let A = { x: target.x, y: target.y, z: target.z + 0.52 }
-            let B = { x: target.x, y: target.y, z: target.z + 0.55 }
-            let radius = 0.04
+            const headCapsule = {
+              A: { x: target.x, y: target.y, z: target.z + 0.52 },
+              B: { x: target.x, y: target.y, z: target.z + 0.55 },
+              radius: 0.04
+            }
 
-            const headHit = rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)
+            const headHit = rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, headCapsule)
             if (headHit) {
               hit = playerForCharacter(world, target.id)
               headshot = true
-              // spawnParticles({
-              //   x: A.x, y: A.y, z: A.z + 0.03 * headHit.tc
-              // }, world, true)
+              spawnParticles({ ...headCapsule.A, z: headCapsule.A.z + 0.03 * headHit.tc }, world, true)
               break
             }
 
             // body
-            A = { x: target.x, y: target.y, z: target.z + 0.09 }
-            B = { x: target.x, y: target.y, z: target.z + 0.43 }
-            radius = 0.064
+            const bodyCapsule = {
+              A: { x: target.x, y: target.y, z: target.z + 0.09 },
+              B: { x: target.x, y: target.y, z: target.z + 0.43 },
+              radius: 0.064
+            }
 
-            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
+            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, bodyCapsule)) {
               hit = playerForCharacter(world, target.id)
               break
             }
