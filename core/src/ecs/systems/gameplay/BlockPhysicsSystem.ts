@@ -1,5 +1,5 @@
 import {
-  abs, Collider, Entity, floor, max, Position, round, sign, SystemBuilder
+  abs, Collider, Entity, floor, hypot, max, min, Position, round, sign, SystemBuilder
 } from "@piggo-gg/core"
 
 export const BlockPhysicsSystem = (mode: "global" | "local") => SystemBuilder({

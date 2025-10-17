@@ -21,7 +21,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   let cd = -100
 
-  const mvtError = 0.03
+  const mvtError = 0.04
   const jmpError = 0.12
 
   const recoilRate = 0.04
@@ -215,7 +215,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           if (!offline) item.components.gun!.ammo -= 1
 
           // apply recoil
-          character.components.position.data.recoil = min(1.4, recoil + 0.5)
+          character.components.position.data.recoil = min(1.4, recoil + 0.45)
 
           const target = new Vector3(
             -sin(aim.x) * cos(aim.y), sin(aim.y), -cos(aim.x) * cos(aim.y)
