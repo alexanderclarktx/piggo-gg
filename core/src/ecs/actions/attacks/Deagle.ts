@@ -37,6 +37,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       decal.position.set(pos.x, pos.z, pos.y)
 
       particles.push({ mesh: decal, tick: world.tick, velocity: { x: 0, y: 0, z: 0 }, pos: { ...pos }, duration: 240, gravity: 0 })
+      world.three?.scene.add(decal)
     }
 
     // explosion particles
