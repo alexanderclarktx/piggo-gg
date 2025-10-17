@@ -103,6 +103,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             cd = world.tick
 
             const { position } = character.components
+            const pos = position.xyz()
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
@@ -112,14 +113,18 @@ export const DeagleItem = ({ character }: { character: Character }) => {
                 id: target.id
               }))
 
+            targets.sort((a, b) => {
+              const aDist = XYZdistance(pos, a)
+              const bDist = XYZdistance(pos, b)
+              return aDist - bDist
+            })
+
             const velocity = hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)
             const errorFactor = mvtError * velocity + (position.data.standing ? 0 : jmpError)
             const error = { x: randomLR(errorFactor), y: randomLR(errorFactor) }
 
             const params: ShootParams = {
-              aim, targets, error,
-              pos: position.xyz(),
-              rng: randomLR(0.1)
+              aim, targets, error, pos, rng: randomLR(0.1)
             }
 
             return { actionId: "shoot", params }
