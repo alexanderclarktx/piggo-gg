@@ -1,5 +1,5 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun,
+  Action, Actions, BlockInLine, blockInLine, Character, cos, Effects, Entity, Gun,
   hypot, Input, Item, ItemComponents, max, min, Networked, NPC, PI,
   Player, playerForCharacter, Position, randomInt, randomLR, randomVector3,
   rayCapsuleIntersect, sin, Target, Three, World, XY, XYZ, XYZdistance
@@ -103,6 +103,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             cd = world.tick
 
             const { position } = character.components
+            const pos = position.xyz()
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
@@ -112,14 +113,18 @@ export const DeagleItem = ({ character }: { character: Character }) => {
                 id: target.id
               }))
 
+            targets.sort((a, b) => {
+              const aDist = XYZdistance(pos, a)
+              const bDist = XYZdistance(pos, b)
+              return aDist - bDist
+            })
+
             const velocity = hypot(position.data.velocity.x, position.data.velocity.y, position.data.velocity.z)
             const errorFactor = mvtError * velocity + (position.data.standing ? 0 : jmpError)
             const error = { x: randomLR(errorFactor), y: randomLR(errorFactor) }
 
             const params: ShootParams = {
-              aim, targets, error,
-              pos: position.xyz(),
-              rng: randomLR(0.1)
+              aim, targets, error, pos, rng: randomLR(0.1)
             }
 
             return { actionId: "shoot", params }
@@ -238,11 +243,22 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          let hit: Player | undefined = undefined
-          let headshot = false
+          let hit: { player: Player | undefined, block: BlockInLine | undefined, headshot: boolean, distance: number | undefined } = {
+            player: undefined,
+            block: undefined,
+            headshot: false,
+            distance: undefined
+          }
+
+          // raycast against blocks
+          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
+          if (beamResult) {
+            hit.block = beamResult
+            hit.distance = XYZdistance(eyePos, beamResult.edge)
+          }
 
           // raycast against characters
-          for (const target of targets) { // TODO sort by distance
+          for (const target of targets) {
 
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
@@ -254,10 +270,15 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               radius: 0.04
             }
 
+            const dist = XYZdistance(eyePos, target)
+            if (hit.distance && dist > hit.distance) continue
+
             const headHit = rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, headCapsule)
             if (headHit) {
-              hit = playerForCharacter(world, target.id)
-              headshot = true
+              hit.player = playerForCharacter(world, target.id)
+              hit.distance = XYZdistance(eyePos, target)
+              hit.headshot = true
+              hit.block = undefined
               spawnParticles({ ...headCapsule.A, z: headCapsule.A.z + 0.03 * headHit.tc }, world, true)
               break
             }
@@ -270,33 +291,32 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
 
             if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, bodyCapsule)) {
-              hit = playerForCharacter(world, target.id)
+              hit.player = playerForCharacter(world, target.id)
+              hit.distance = XYZdistance(eyePos, target)
+              hit.block = undefined
               break
             }
           }
 
-          if (hit && !offline) {
+          if (hit.player && !offline) {
             if (character.id === world.client?.character()?.id) {
-              world.client.controls.localHit = { tick: world.tick, headshot }
+              world.client.controls.localHit = { tick: world.tick, headshot: hit.headshot }
             }
 
-            const hitCharacter = hit.components.controlling.getCharacter(world)
+            const hitCharacter = hit.player.components.controlling.getCharacter(world)
             if (hitCharacter?.components.health) {
-              const damage = headshot ? 100 : 35
+              const damage = hit.headshot ? 100 : 35
               hitCharacter.components.health.damage(
-                damage, world, playerForCharacter(world, character.id)?.id, headshot ? "headshot" : "body"
+                damage, world, playerForCharacter(world, character.id)?.id, hit.headshot ? "headshot" : "body"
               )
             }
+          } else if (hit.block) {
+            spawnParticles(hit.block.edge, world)
 
-            return
-          }
-
-          // raycast against blocks
-          const beamResult = blockInLine({ from: eyePos, dir, world, cap: 60, maxDist: 30 })
-          if (beamResult) {
-            if (beamResult.inside.type === 6) {
-              world.blocks.remove(beamResult.inside)
+            if (hit.block.inside.type === 6) {
+              world.blocks.remove(hit.block.inside)
             }
+
             // if (world.debug) {
             //   if (beamResult.inside.type === 12) {
             //     world.blocks.setType(beamResult.inside, 3)
@@ -316,8 +336,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             //     world.blocks.coloring[xyzstr] = `slategray`
             //   }
             // }
-
-            spawnParticles(beamResult.edge, world)
           }
         }),
       }),

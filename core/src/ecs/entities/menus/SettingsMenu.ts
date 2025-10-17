@@ -16,16 +16,17 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     touchAction: "pan-y",
     transform: "translate(-50%)",
     width: "100%",
-    border: "2px solid white"
+    border: "2px solid white",
+    backgroundColor: "rgba(0, 0, 0, 0.2)"
   })
 
-  const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
+  // const ambientSound = boolRow(world, "Ambient Sound", "ambientSound")
   const showControls = boolRow(world, "Show Controls", "showControls")
   const showCrosshair = boolRow(world, "Show Crosshair", "showCrosshair")
   const showNametags = boolRow(world, "Show Nametags", "showNametags")
   const sensitivity = numRow(world, "Mouse Sensitivity", "mouseSensitivity")
 
-  div.appendChild(ambientSound.div)
+  // div.appendChild(ambientSound.div)
   div.appendChild(showControls.div)
   div.appendChild(showCrosshair.div)
   div.appendChild(showNametags.div)
@@ -35,7 +36,7 @@ export const SettingsMenu = (world: World): RefreshableDiv => {
     div,
     update: () => {
       const settings = world.settings<CraftSettings>()
-      styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
+      // styleSwitch(ambientSound.button, settings.ambientSound, ambientSound.button.matches(":hover"))
       styleSwitch(showControls.button, settings.showControls, showControls.button.matches(":hover"))
       styleSwitch(showCrosshair.button, settings.showCrosshair, showCrosshair.button.matches(":hover"))
       styleSwitch(showNametags.button, settings.showNametags, showNametags.button.matches(":hover"))

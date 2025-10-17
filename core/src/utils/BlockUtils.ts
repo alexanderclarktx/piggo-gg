@@ -14,7 +14,7 @@ type BlockInLineProps = {
   maxDist?: number
 }
 
-type BlockInLine = undefined | {
+export type BlockInLine = undefined | {
   inside: Block
   outside: XYZ
   edge: XYZ
