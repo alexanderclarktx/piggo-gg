@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
-  ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
-  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, World, XY, XYZ, XYZadd, XYZdistance
+  ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position, randomInt,
+  randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, World, XY, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -280,7 +280,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
 
             // body
-
             A = { x: target.x, y: target.y, z: target.z + 0.09 }
             B = { x: target.x, y: target.y, z: target.z + 0.43 }
             radius = 0.064
