@@ -1,7 +1,7 @@
 import {
   Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
   ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
-  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ, XYZdistance
+  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, World, XY, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
@@ -30,7 +30,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
-  const particles: { mesh: Mesh, velocity: XYZ, start: XYZ, duration: number, tick: number }[] = []
+  const particles: { mesh: Mesh, velocity: XYZ, start: XYZ, duration: number, tick: number, gravity: number }[] = []
   const decalColor = new Color("#333333")
 
   let cd = -100
@@ -40,16 +40,18 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   const recoilRate = 0.04
 
-  const spawnParticles = (pos: XYZ, tick: number) => {
+  const spawnParticles = (pos: XYZ, world: World, blood = false) => {
     const proto = particles[0]
     if (!proto) return
 
     // decal particle
-    const mesh = proto.mesh.clone()
-    mesh.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
-    mesh.position.set(pos.x, pos.z, pos.y)
+    if (!blood) {
+      const decal = proto.mesh.clone()
+      decal.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
+      decal.position.set(pos.x, pos.z, pos.y)
 
-    particles.push({ mesh, tick, velocity: { x: 0, y: 0, z: 0 }, start: { ...pos }, duration: 240 })
+      particles.push({ mesh: decal, tick: world.tick, velocity: { x: 0, y: 0, z: 0 }, start: { ...pos }, duration: 240, gravity: 0 })
+    }
 
     // explosion particles
     for (let i = 0; i < 20; i++) {
@@ -57,15 +59,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       mesh.position.set(pos.x, pos.z, pos.y)
 
       // vary the color
-      const color = new Color(`rgb(255, ${randomInt(256)}, 0)`)
+      const color = blood ? new Color(`rgb(255, 0, 0)`) : new Color(`rgb(255, ${randomInt(256)}, 0)`)
       mesh.material = new MeshPhongMaterial({ color, emissive: color })
 
       particles.push({
-        mesh, tick,
+        mesh,
+        tick: world.tick,
         velocity: randomVector3(0.03),
         start: { ...pos },
-        duration: 6
+        duration: 6,
+        gravity: blood ? 0.002 : 0
       })
+
+      world.three?.scene.add(mesh)
     }
   }
 
@@ -250,9 +256,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             let B = { x: target.x, y: target.y, z: target.z + 0.55 }
             let radius = 0.04
 
-            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
+            const headHit = rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)
+            if (headHit) {
               hit = playerForCharacter(world, target.id)
               headshot = true
+              spawnParticles(B, world, true)
               break
             }
 
@@ -310,12 +318,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             //   }
             // }
 
-            spawnParticles(beamResult.edge, world.tick)
-
-            for (let i = 1; i < particles.length; i++) {
-              const p = particles[i]
-              if (!p.mesh.parent) world.three?.scene.add(p.mesh)
-            }
+            spawnParticles(beamResult.edge, world)
           }
         }),
       }),
@@ -331,7 +334,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const particleMesh = new Mesh(new SphereGeometry(0.008, 6, 6))
           particleMesh.castShadow = true
 
-          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
+          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0, gravity: 0 })
 
           // gun
           three.gLoader.load("deagle.glb", (gltf) => {
