@@ -97,10 +97,8 @@ const StrikeSystem = SystemBuilder({
 
         if (world.mode === "server" && state.phaseChange === undefined && state.phase === "warmup" && players.length > 0) {
           const notReady = players.filter(p => !p.components.pc.data.ready)
-          console.log("Checking ready status...", notReady.length)
           if (notReady.length === 0) {
             state.phaseChange = world.tick + 120
-            console.log("All players ready, starting round...", state.phaseChange)
           }
         }
 
