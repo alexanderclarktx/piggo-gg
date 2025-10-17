@@ -105,6 +105,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
+              .filter(c => c.components.health && c.components.health.data.hp > 0)
               .map(target => ({
                 ...target.components.position.interpolate(world, delta ?? 0),
                 id: target.id
@@ -177,7 +178,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           gun.data.reloading = params.value
         }),
         shoot: Action<ShootParams>("shoot", ({ world, params, offline }) => {
-
           const pc = world.client?.character()
           if (pc && character.id !== pc.id) {
 
@@ -242,13 +242,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // raycast against characters
           for (const target of targets) { // TODO sort by distance
-            if (offline) continue
 
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
-
-            if (!targetEntity.components.health) continue
-            if (targetEntity.components.health.data.hp <= 0) continue
 
             // head
             const headCapsule = {
@@ -278,7 +274,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             }
           }
 
-          if (hit) {
+          if (hit && !offline) {
             if (character.id === world.client?.character()?.id) {
               world.client.controls.localHit = { tick: world.tick, headshot }
             }
