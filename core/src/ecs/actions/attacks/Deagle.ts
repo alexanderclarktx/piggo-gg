@@ -5,23 +5,8 @@ import {
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
-const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
-  const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
-  const right = { x: cos(localAim.x), y: -sin(localAim.x) }
-
-  const offset = {
-    x: -dir.x * 0.05 + right.x * 0.05,
-    y: recoil * 0.03,
-    z: -dir.y * 0.05 + right.y * 0.05
-  }
-
-  if (tip) {
-    offset.x -= dir.x * 0.1
-    offset.y -= 0.035 - localAim.y * 0.1,
-      offset.z -= dir.y * 0.1
-  }
-
-  return offset
+type ShootParams = {
+  pos: XYZ, aim: XY, targets: Target[], rng: number, error: XY
 }
 
 export const DeagleItem = ({ character }: { character: Character }) => {
@@ -128,13 +113,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const errorFactor = mvtError * velocity + (position.data.standing ? 0 : jmpError)
             const error = { x: randomLR(errorFactor), y: randomLR(errorFactor) }
 
-            const params: DeagleParams = {
+            const params: ShootParams = {
               aim, targets, error,
               pos: position.xyz(),
               rng: randomLR(0.1)
             }
 
-            return { actionId: "deagle", params }
+            return { actionId: "shoot", params }
           },
         }
       }),
@@ -190,7 +175,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           gun.data.reloading = params.value
         }),
-        deagle: Action<DeagleParams>("deagle", ({ world, params, offline }) => {
+        shoot: Action<ShootParams>("shoot", ({ world, params, offline }) => {
 
           const pc = world.client?.character()
           if (pc && character.id !== pc.id) {
@@ -447,10 +432,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   return item
 }
 
-type DeagleParams = {
-  pos: XYZ
-  aim: XY
-  targets: Target[]
-  rng: number
-  error: XY
+const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
+  const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
+  const right = { x: cos(localAim.x), y: -sin(localAim.x) }
+
+  const offset = {
+    x: -dir.x * 0.05 + right.x * 0.05,
+    y: recoil * 0.03,
+    z: -dir.y * 0.05 + right.y * 0.05
+  }
+
+  if (tip) {
+    offset.x -= dir.x * 0.1
+    offset.y -= 0.035 - localAim.y * 0.1,
+      offset.z -= dir.y * 0.1
+  }
+
+  return offset
 }
