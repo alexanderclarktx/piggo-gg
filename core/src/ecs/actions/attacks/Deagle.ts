@@ -317,10 +317,6 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               world.blocks.remove(hit.block.inside)
             }
 
-            // if (hitDistance && hitDistance > distance) {
-            //   spawnParticles(beamResult.edge, world)
-            //   return
-            // }
             // if (world.debug) {
             //   if (beamResult.inside.type === 12) {
             //     world.blocks.setType(beamResult.inside, 3)
