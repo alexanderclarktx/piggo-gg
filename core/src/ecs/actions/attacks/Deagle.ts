@@ -1,27 +1,13 @@
 import {
-  Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun, hypot, Input, Item,
-  ItemComponents, max, min, Networked, NPC, PI, Player, playerForCharacter, Position,
-  randomInt, randomLR, randomVector3, rayCapsuleIntersect, sin, Target, Three, XY, XYZ, XYZdistance
+  Action, Actions, blockInLine, Character, cos, Effects, Entity, Gun,
+  hypot, Input, Item, ItemComponents, max, min, Networked, NPC, PI,
+  Player, playerForCharacter, Position, randomInt, randomLR, randomVector3,
+  rayCapsuleIntersect, sin, Target, Three, World, XY, XYZ, XYZdistance
 } from "@piggo-gg/core"
 import { Color, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D, SphereGeometry, Vector3 } from "three"
 
-const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
-  const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
-  const right = { x: cos(localAim.x), y: -sin(localAim.x) }
-
-  const offset = {
-    x: -dir.x * 0.05 + right.x * 0.05,
-    y: recoil * 0.03,
-    z: -dir.y * 0.05 + right.y * 0.05
-  }
-
-  if (tip) {
-    offset.x -= dir.x * 0.1
-    offset.y -= 0.035 - localAim.y * 0.1,
-      offset.z -= dir.y * 0.1
-  }
-
-  return offset
+type ShootParams = {
+  pos: XYZ, aim: XY, targets: Target[], rng: number, error: XY
 }
 
 export const DeagleItem = ({ character }: { character: Character }) => {
@@ -30,7 +16,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   let tracer: Object3D | undefined = undefined
   let tracerState = { tick: 0, velocity: { x: 0, y: 0, z: 0 }, pos: { x: 0, y: 0, z: 0 } }
 
-  const particles: { mesh: Mesh, velocity: XYZ, start: XYZ, duration: number, tick: number }[] = []
+  const particles: { mesh: Mesh, velocity: XYZ, pos: XYZ, duration: number, tick: number, gravity: number }[] = []
   const decalColor = new Color("#333333")
 
   let cd = -100
@@ -40,16 +26,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
   const recoilRate = 0.04
 
-  const spawnParticles = (pos: XYZ, tick: number) => {
+  const spawnParticles = (pos: XYZ, world: World, blood = false) => {
     const proto = particles[0]
     if (!proto) return
 
     // decal particle
-    const mesh = proto.mesh.clone()
-    mesh.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
-    mesh.position.set(pos.x, pos.z, pos.y)
+    if (!blood) {
+      const decal = proto.mesh.clone()
+      decal.material = new MeshPhongMaterial({ color: decalColor, emissive: decalColor })
+      decal.position.set(pos.x, pos.z, pos.y)
 
-    particles.push({ mesh, tick, velocity: { x: 0, y: 0, z: 0 }, start: { ...pos }, duration: 240 })
+      particles.push({ mesh: decal, tick: world.tick, velocity: { x: 0, y: 0, z: 0 }, pos: { ...pos }, duration: 240, gravity: 0 })
+      world.three?.scene.add(decal)
+    }
 
     // explosion particles
     for (let i = 0; i < 20; i++) {
@@ -57,15 +46,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
       mesh.position.set(pos.x, pos.z, pos.y)
 
       // vary the color
-      const color = new Color(`rgb(255, ${randomInt(256)}, 0)`)
+      const color = blood ? new Color(`rgb(200, 0, 0)`) : new Color(`rgb(255, ${randomInt(256)}, 0)`)
       mesh.material = new MeshPhongMaterial({ color, emissive: color })
 
       particles.push({
-        mesh, tick,
-        velocity: randomVector3(0.03),
-        start: { ...pos },
-        duration: 6
+        mesh,
+        tick: world.tick,
+        velocity: randomVector3(blood ? 0.015 : 0.03),
+        pos: { ...pos },
+        duration: blood ? 16 : 6,
+        gravity: blood ? 0.0023 : 0
       })
+
+      world.three?.scene.add(mesh)
     }
   }
 
@@ -113,6 +106,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
             const targets: Target[] = world.characters()
               .filter(c => c.id !== character.id)
+              .filter(c => c.components.health && c.components.health.data.hp > 0)
               .map(target => ({
                 ...target.components.position.interpolate(world, delta ?? 0),
                 id: target.id
@@ -122,13 +116,13 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             const errorFactor = mvtError * velocity + (position.data.standing ? 0 : jmpError)
             const error = { x: randomLR(errorFactor), y: randomLR(errorFactor) }
 
-            const params: DeagleParams = {
+            const params: ShootParams = {
               aim, targets, error,
               pos: position.xyz(),
               rng: randomLR(0.1)
             }
 
-            return { actionId: "deagle", params }
+            return { actionId: "shoot", params }
           },
         }
       }),
@@ -162,6 +156,19 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               world.actions.push(world.tick + 1, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
             }
           }
+
+          // particles
+          for (let i = 1; i < particles.length; i++) {
+            const p = particles[i]
+
+            p.pos = {
+              x: p.pos.x + p.velocity.x,
+              y: p.pos.y + p.velocity.y,
+              z: p.pos.z + p.velocity.z
+            }
+
+            p.velocity.z -= p.gravity
+          }
         }
       }),
       actions: Actions({
@@ -171,8 +178,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           gun.data.reloading = params.value
         }),
-        deagle: Action<DeagleParams>("deagle", ({ world, params, offline }) => {
-
+        shoot: Action<ShootParams>("shoot", ({ world, params, offline }) => {
           const pc = world.client?.character()
           if (pc && character.id !== pc.id) {
 
@@ -237,38 +243,39 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           // raycast against characters
           for (const target of targets) { // TODO sort by distance
-            if (offline) continue
 
             const targetEntity = world.entity<Position>(target.id)
             if (!targetEntity) continue
 
-            if (!targetEntity.components.health) continue
-            if (targetEntity.components.health.data.hp <= 0) continue
-
             // head
-            let A = { x: target.x, y: target.y, z: target.z + 0.52 }
-            let B = { x: target.x, y: target.y, z: target.z + 0.55 }
-            let radius = 0.04
+            const headCapsule = {
+              A: { x: target.x, y: target.y, z: target.z + 0.52 },
+              B: { x: target.x, y: target.y, z: target.z + 0.55 },
+              radius: 0.04
+            }
 
-            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
+            const headHit = rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, headCapsule)
+            if (headHit) {
               hit = playerForCharacter(world, target.id)
               headshot = true
+              spawnParticles({ ...headCapsule.A, z: headCapsule.A.z + 0.03 * headHit.tc }, world, true)
               break
             }
 
             // body
+            const bodyCapsule = {
+              A: { x: target.x, y: target.y, z: target.z + 0.09 },
+              B: { x: target.x, y: target.y, z: target.z + 0.43 },
+              radius: 0.064
+            }
 
-            A = { x: target.x, y: target.y, z: target.z + 0.09 }
-            B = { x: target.x, y: target.y, z: target.z + 0.43 }
-            radius = 0.064
-
-            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, A, B, radius)) {
+            if (rayCapsuleIntersect(eyePos, { x: dir.x, y: dir.z, z: dir.y }, bodyCapsule)) {
               hit = playerForCharacter(world, target.id)
               break
             }
           }
 
-          if (hit) {
+          if (hit && !offline) {
             if (character.id === world.client?.character()?.id) {
               world.client.controls.localHit = { tick: world.tick, headshot }
             }
@@ -310,12 +317,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             //   }
             // }
 
-            spawnParticles(beamResult.edge, world.tick)
-
-            for (let i = 1; i < particles.length; i++) {
-              const p = particles[i]
-              if (!p.mesh.parent) world.three?.scene.add(p.mesh)
-            }
+            spawnParticles(beamResult.edge, world)
           }
         }),
       }),
@@ -331,7 +333,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
           const particleMesh = new Mesh(new SphereGeometry(0.008, 6, 6))
           particleMesh.castShadow = true
 
-          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, start: { x: 0, y: 0, z: 0 }, duration: 0 })
+          particles.push({ mesh: particleMesh, velocity: { x: 0, y: 0, z: 0 }, tick: 0, pos: { x: 0, y: 0, z: 0 }, duration: 0, gravity: 0 })
 
           // gun
           three.gLoader.load("deagle.glb", (gltf) => {
@@ -384,9 +386,9 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               i--
             } else {
               p.mesh.position.set(
-                p.start.x + p.velocity.x * (world.tick - p.tick + ratio),
-                p.start.z + p.velocity.z * (world.tick - p.tick + ratio),
-                p.start.y + p.velocity.y * (world.tick - p.tick + ratio)
+                p.pos.x + p.velocity.x * ratio,
+                p.pos.z + p.velocity.z * ratio,
+                p.pos.y + p.velocity.y * ratio
               )
             }
           }
@@ -430,10 +432,21 @@ export const DeagleItem = ({ character }: { character: Character }) => {
   return item
 }
 
-type DeagleParams = {
-  pos: XYZ
-  aim: XY
-  targets: Target[]
-  rng: number
-  error: XY
+const modelOffset = (localAim: XY, tip = false, recoil = 0): XYZ => {
+  const dir = { x: sin(localAim.x), y: cos(localAim.x), z: sin(localAim.y) }
+  const right = { x: cos(localAim.x), y: -sin(localAim.x) }
+
+  const offset = {
+    x: -dir.x * 0.05 + right.x * 0.05,
+    y: recoil * 0.03,
+    z: -dir.y * 0.05 + right.y * 0.05
+  }
+
+  if (tip) {
+    offset.x -= dir.x * 0.1
+    offset.y -= 0.035 - localAim.y * 0.1
+    offset.z -= dir.y * 0.1
+  }
+
+  return offset
 }

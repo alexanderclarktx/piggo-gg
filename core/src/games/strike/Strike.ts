@@ -12,6 +12,7 @@ import { PhaseBanner } from "./PhaseBanner"
 export type StrikeState = {
   jumped: string[]
   phase: "warmup" | "round-spawn" | "round-play" | "round-done" | "game-done"
+  phaseChange: number | undefined
 }
 
 export type StrikeSettings = {
@@ -37,6 +38,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
     state: {
       jumped: [],
       phase: "warmup",
+      phaseChange: undefined
     },
     systems: [
       SpawnSystem(Sarge),
@@ -87,9 +89,23 @@ const StrikeSystem = SystemBuilder({
         const state = world.state<StrikeState>()
         const settings = world.settings<StrikeSettings>()
 
-        if (world.client && !world.client.mobile) world.client.mobileMenu = document.pointerLockElement === null
+        if (world.client && !world.client.mobile) {
+          world.client.mobileMenu = document.pointerLockElement === null
+        }
 
-        const players = world.players()
+        const players = world.players().filter(p => !p.id.includes("dummy"))
+
+        if (world.mode === "server" && state.phaseChange === undefined && state.phase === "warmup" && players.length > 0) {
+          const notReady = players.filter(p => !p.components.pc.data.ready)
+          if (notReady.length === 0) {
+            state.phaseChange = world.tick + 120
+          }
+        }
+
+        if (state.phaseChange && world.tick >= state.phaseChange) {
+          state.phase = "round-spawn"
+          state.phaseChange = undefined
+        }
 
         const t1 = performance.now()
         for (const player of players) {

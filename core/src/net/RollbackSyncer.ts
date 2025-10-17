@@ -3,7 +3,7 @@ import {
   logDiff, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
-const movementActions = ["move", "moveAnalog", "jump", "point", "deagle"]
+const movementActions = ["move", "moveAnalog", "jump", "point", "shoot"]
 
 const otherCharacter = (id: string, world: World) => {
   if (id === world.client?.character()?.id) return false

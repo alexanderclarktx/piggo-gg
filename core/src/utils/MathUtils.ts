@@ -2,6 +2,7 @@ import { Entity, Position, World } from "@piggo-gg/core"
 import { Vector3 } from "three"
 import { Container } from "pixi.js"
 
+export type Capsule = { A: XYZ, B: XYZ, radius: number }
 export type XY = { x: number, y: number }
 export type XZ = { x: number, z: number }
 export type XYZ = { x: number, y: number, z: number }
@@ -251,7 +252,9 @@ export const vectorExtend = (vec: XYZ, amount: number): XYZ => {
   }
 }
 
-export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius: number) => {
+export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, capsule: Capsule): false | { sc: number, tc: number } => {
+  const { A, B, radius } = capsule
+
   const u = dir // ray direction
   const v = XYZsub(B, A) // segment direction
   const w = XYZsub(from, A) // origin to A
@@ -266,7 +269,8 @@ export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius:
 
   // Degenerate capsule -> sphere at A (or very short segment)
   if (c < EPS) {
-    return raySphereIntersect(from, dir, A, radius)
+    console.error("degenerate capsule")
+    // return raySphereIntersect(from, dir, A, radius)
   }
 
   const D = a * c - b * b     // denominator for the unconstrained solution
@@ -321,7 +325,9 @@ export const rayCapsuleIntersect = (from: XYZ, dir: XYZ, A: XYZ, B: XYZ, radius:
 
   const dist2 = XYZdot(closestVec, closestVec)
 
-  return dist2 <= radius * radius
+  const result = dist2 <= radius * radius
+
+  return result ? { sc, tc } : false
 }
 
 // Minimal robust ray-sphere fallback used above
