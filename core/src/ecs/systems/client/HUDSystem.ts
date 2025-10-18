@@ -8,7 +8,7 @@ export const HUDSystem = ClientSystemBuilder({
     const { three, client } = world
     if (!three || !client) return
 
-    if (client.mobile === true) return
+    if (client.mobile) return
 
     const bottom = 40
     const left = 120

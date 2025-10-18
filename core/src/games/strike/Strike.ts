@@ -93,7 +93,7 @@ const StrikeSystem = SystemBuilder({
         const settings = world.settings<StrikeSettings>()
 
         if (world.client && !world.client.mobile) {
-          world.client.mobileMenu = document.pointerLockElement === null
+          world.client.menu = document.pointerLockElement === null
         }
 
         mobileUI?.update()

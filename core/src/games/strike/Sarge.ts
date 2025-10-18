@@ -66,8 +66,8 @@ export const Sarge = (player: Player): Character => {
           "mb1": ({ world, target, client }) => {
             if (target !== "canvas") return
 
-            if (client.mobile && client.mobileMenu) {
-              client.mobileMenu = false
+            if (client.mobile && client.menu) {
+              client.menu = false
               return
             }
 

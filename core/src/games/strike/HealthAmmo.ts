@@ -51,12 +51,7 @@ export const HealthAmmo = (): Entity => {
           const hp = health.data.hp
           healthText.textContent = `${hp}`
 
-          let visible = true
-          if (world.client?.mobileMenu || (world.client?.mobile && window.outerHeight > window.outerWidth)) {
-            visible = false
-          }
-
-          wrapper.style.visibility = visible ? "visible" : "hidden"
+          wrapper.style.visibility = !world.client?.mobile?.horizontal() || world.client?.menu ? "hidden" : "visible"
         }
       }),
     }

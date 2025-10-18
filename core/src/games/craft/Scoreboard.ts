@@ -44,7 +44,7 @@ export const Scoreboard = (): Entity => {
         behavior: (_, world) => {
           if (world.mode === "server") return
 
-          if (!world.client?.net.synced || (world.client.mobile && world.client?.mobileMenu)) {
+          if (!world.client?.net.synced || (world.client.mobile && world.client?.menu)) {
             container.style.visibility = "hidden"
             return
           }

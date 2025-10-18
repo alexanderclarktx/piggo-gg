@@ -36,7 +36,7 @@ export const HookItem = ({ character }: { character: Character }) => {
             if (hold) return
             if (!character) return
             if (!document.pointerLockElement && !client.mobile) return
-            if (world.client?.mobileMenu) return
+            if (world.client?.menu) return
 
             const dir = world.three!.camera.dir(world)
             const camera = world.three!.camera.pos()

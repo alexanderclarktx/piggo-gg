@@ -157,7 +157,7 @@ export const EscapeMenu = (world: World): Entity => {
 
           // overall visibility
           if (world.client) {
-            const visible = world.client.mobileMenu
+            const visible = world.client.menu
             wrapper.style.visibility = visible ? "visible" : "hidden"
 
             if (!visible) return

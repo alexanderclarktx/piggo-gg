@@ -73,7 +73,7 @@ export const MobileUI = (world: World): MobileUI => {
   const menuButton = HtmlButton({
     text: "menu",
     onClick: () => {
-      world.client!.mobileMenu = !world.client!.mobileMenu
+      world.client!.menu = !world.client!.menu
       menuButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
     },
     onRelease: () => {
@@ -96,9 +96,9 @@ export const MobileUI = (world: World): MobileUI => {
 
       const { flying } = world.client.character()?.components.position.data ?? {}
 
-      jumpButton.style.visibility = (flying || world.client?.mobileMenu) ? "hidden" : "visible"
+      jumpButton.style.visibility = (flying || world.client?.menu) ? "hidden" : "visible"
 
-      const visibility = world.client!.mobileMenu ? "hidden" : "visible"
+      const visibility = world.client!.menu ? "hidden" : "visible"
       povButton.style.visibility = visibility
       transformButton.style.visibility = visibility
       leftJoystick.style.visibility = visibility

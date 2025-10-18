@@ -241,7 +241,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
       document.body.style.cursor = "auto"
 
       // mobile menu
-      if (world.client) world.client.mobileMenu = false
+      if (world.client) world.client.menu = false
 
       // remove old systems
       world.game.systems.forEach((system) => world.removeSystem(system.id))

@@ -19,12 +19,12 @@ export const Vince = (player: Player) => Character({
     input: Input({
       release: {
         "escape": ({ client }) => {
-          client.mobileMenu = !client.mobileMenu
+          client.menu = !client.menu
         },
         "mb1": ({ target, client }) => {
           if (target !== "canvas") return
 
-          if (client.mobileMenu) client.mobileMenu = false
+          if (client.menu) client.menu = false
         }
       },
       press: {
