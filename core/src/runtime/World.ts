@@ -218,7 +218,7 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
     setGame: (gameTitle: GameTitle) => {
       const game = world.games[gameTitle]
 
-      // console.log("SETTING GAME", gameTitle)
+      console.log("SETTING GAME", gameTitle)
 
       // remove old entities
       values(world.entities).forEach((entity) => {
@@ -265,10 +265,6 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
       world.addEntity(gameStateEntity)
 
       const { entities, systems } = world.game
-
-      if (world.pixi) {
-        world.pixi.camera.scaleTo(2.5)
-      }
 
       // add new entities
       for (const entity of entities) {

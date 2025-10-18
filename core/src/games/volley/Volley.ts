@@ -1,7 +1,7 @@
 import {
   Background, Cursor, Entity, EscapeMenu, GameBuilder, LagText, NametagSystem, PhysicsSystem,
   PixiCameraSystem, PixiRenderSystem, Position, Renderable, ScorePanel, ShadowSystem,
-  SpawnSystem, SystemBuilder, Team, Tooltip, switchTeamButton, values
+  SpawnSystem, SystemBuilder, Team, Tooltip, screenWH, switchTeamButton, values
 } from "@piggo-gg/core"
 import { Bot } from "./Bot"
 import { Ball, Bounds, Centerline, Court, Net, PostBottom, PostTop } from "./entities"
@@ -108,10 +108,9 @@ const VolleySystem = SystemBuilder({
       for (const bot of values(bots)) world.addEntity(bot)
     }
 
-    // scale camera to fit the court (TODO MOVE)
-    const desiredScale = world.pixi?.app.screen.width! / 500
-    const scaleBy = desiredScale - world.pixi?.camera.root.scale.x! - desiredScale * 0.1 - 0.2
-    world.pixi?.camera.scaleBy(scaleBy)
+    // scale camera to fit the court
+    const desiredScale = screenWH().w / 600 - 0.2
+    world.pixi?.camera.scaleTo(desiredScale)
 
     return {
       id: "VolleySystem",
