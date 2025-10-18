@@ -66,7 +66,7 @@ export const RollbackSyncer = (world: World): Syncer => {
     // deserialize entities
     keys(message.serializedEntities).forEach((entityId) => {
       if (otherCharacter(entityId, world)) {
-        world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
+        world.entity(entityId)?.deserialize(message.serializedEntities[entityId], "position")
       }
     })
   }
