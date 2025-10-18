@@ -22,6 +22,10 @@ export const isTypingEvent = (e: Event) => {
   return true
 }
 
+export const element = <X extends HTMLElement>(id: string): X | null => {
+  return document.getElementById(id) as X | null
+}
+
 export const screenWH = () => {
   // @ts-expect-error
   const standalone = window.navigator.standalone ?? false

@@ -1,5 +1,5 @@
 import {
-  CSS, Entity, HButton, HImg, HtmlButton, HtmlDiv, HtmlImg, LobbiesMenu,
+  CSS, Entity, HButton, HImg, HtmlButton, HtmlDiv, LobbiesMenu,
   NPC, Position, SettingsMenu, SkinsMenu, World, styleButton
 } from "@piggo-gg/core"
 
@@ -26,6 +26,22 @@ export const EscapeMenu = (world: World): Entity => {
 
   let rotation = 0
 
+  const artImage = HImg({
+    id: "art-image",
+    style: { top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)" },
+    src: `${world.game.id}-256.jpg`,
+    onClick: () => {
+      rotation += 540
+      art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
+    },
+    onHover: () => {
+      art.style.boxShadow = "0 0 10px 4px white"
+    },
+    onHoverOut: () => {
+      art.style.boxShadow = "none"
+    }
+  })
+
   const art = HButton({
     style: {
       left: "50%",
@@ -46,23 +62,8 @@ export const EscapeMenu = (world: World): Entity => {
       button.style.boxShadow = "none"
     }
   },
-    HImg({
-      style: { top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)" },
-      src: `${world.game.id}-256.jpg`,
-      onClick: () => {
-        rotation += 540
-        art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
-      },
-      onHover: () => {
-        art.style.boxShadow = "0 0 10px 4px white"
-      },
-      onHoverOut: () => {
-        art.style.boxShadow = "none"
-      }
-    })
+    artImage
   )
-
-  const artImage = art.children[0] as HTMLImageElement
 
   const menuButtonStyle: CSS = {
     width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
@@ -186,19 +187,3 @@ export const EscapeMenu = (world: World): Entity => {
   })
   return menu
 }
-
-const Art = (gameId: string) => HtmlImg(`${gameId}-256.jpg`, {
-  top: "-15px",
-  left: "50%",
-  width: "170px",
-  transform: "translate(-50%, 0%)",
-  transition: "transform 1.2s ease",
-  position: "relative",
-
-  border: "3px solid transparent",
-  padding: "0px",
-  backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
-  backgroundOrigin: "border-box",
-  backgroundClip: "content-box, border-box",
-  pointerEvents: "auto"
-})
