@@ -10,7 +10,8 @@ export const MobileUI = (world: World): MobileUI => {
 
   const povButton = HtmlButton({
     style: {
-      bottom: "170px", left: "calc(15% + 40px)",
+      bottom: "140px", left: "10%",
+      // bottom: "170px", left: "calc(15% + 40px)",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 50, 0.5)",
       width: "36px", height: "36px", borderRadius: "50%",
@@ -67,7 +68,7 @@ export const MobileUI = (world: World): MobileUI => {
     }
   })
 
-  world.three?.append(povButton, transformButton, jumpButton, leftJoystick, rightJoystick)
+  world.three?.append(povButton, jumpButton, leftJoystick, rightJoystick)
 
   const menuButton = HtmlButton({
     text: "menu",

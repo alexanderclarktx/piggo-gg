@@ -2,7 +2,7 @@ import {
   Action, Actions, Character, Collider, copyMaterials, DeagleItem, Health,
   Hook, HookItem, hypot, Input, Inventory, max, Networked, PI, Place, Player,
   Point, Position, Team, Three, upAndDir, XYZ, XZ, StrikeSettings, StrikeState,
-  cloneSkeleton, Ready, ColorMapping, colorMaterials
+  cloneSkeleton, Ready, ColorMapping, colorMaterials, cos, sin
 } from "@piggo-gg/core"
 import {
   AnimationAction, AnimationMixer, CapsuleGeometry, Mesh,
@@ -45,6 +45,20 @@ export const Sarge = (player: Player): Character => {
       collider: Collider({ shape: "ball", radius: 0.1 }),
       health: Health(),
       input: Input({
+        joystick: ({ client }) => {
+          const { localAim } = client.controls
+          const { power, angle } = client.controls.left
+
+          const x = cos(angle)
+          const y = sin(angle)
+
+          const dir = {
+            x: x * cos(-localAim.x) - y * sin(-localAim.x),
+            y: x * sin(-localAim.x) + y * cos(-localAim.x)
+          }
+
+          return { actionId: "moveAnalog", params: { dir, power, angle } }
+        },
         release: {
           "escape": ({ world, client }) => {
             if (!client.mobile) world.client?.pointerLock()
@@ -174,6 +188,25 @@ export const Sarge = (player: Player): Character => {
           position.setVelocity({ z: max(0.05, 0.025 + position.data.velocity.z) })
 
           world.client?.sound.play({ name: "bubble", threshold: { pos: position.data, distance: 5 } })
+        }),
+        moveAnalog: Action("moveAnalog", ({ entity, params }) => {
+          if (!params.dir.x || !params.dir.y || !params.power) return
+
+          const { position } = entity?.components ?? {}
+          if (!position) return
+
+          let factor = 0
+
+          if (position.data.standing) {
+            factor = params.sprint ? run : walk
+          } else {
+            factor = params.sprint ? leap : hop
+          }
+
+          position.impulse({
+            x: params.dir.x * params.power * factor,
+            y: params.dir.y * params.power * factor
+          })
         }),
         move: Action<{ up: XYZ, dir: XZ, key: string, sprint: boolean }>("move", ({ entity, params }) => {
           if (!params.up || !params.dir) return

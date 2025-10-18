@@ -8,7 +8,7 @@ export const EscapeMenu = (world: World): Entity => {
   let init = false
   let activeMenu: "lobbies" | "skins" | "settings" = "lobbies"
 
-  const ddeMenu = HtmlDiv({
+  const wrapper = HtmlDiv({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
@@ -61,6 +61,8 @@ export const EscapeMenu = (world: World): Entity => {
       }
     })
   )
+
+  const artImage = art.children[0] as HTMLImageElement
 
   const menuButtonStyle: CSS = {
     width: "32.5%", position: "relative", top: "0px", height: "40px", pointerEvents: "auto"
@@ -134,10 +136,10 @@ export const EscapeMenu = (world: World): Entity => {
   shell.appendChild(skins.div)
   shell.appendChild(settings.div)
 
-  ddeMenu.appendChild(art)
-  if (!world.client?.mobile) ddeMenu.appendChild(returnToHomescreen)
-  ddeMenu.appendChild(submenuButtons)
-  ddeMenu.appendChild(shell)
+  wrapper.appendChild(art)
+  if (!world.client?.mobile) wrapper.appendChild(returnToHomescreen)
+  wrapper.appendChild(submenuButtons)
+  wrapper.appendChild(shell)
 
   const menu = Entity({
     id: "EscapeMenu",
@@ -148,19 +150,21 @@ export const EscapeMenu = (world: World): Entity => {
           if (world.mode === "server") return
 
           if (!init) {
-            world.three?.append(ddeMenu)
+            world.three?.append(wrapper)
             init = true
           }
 
           // overall visibility
           if (world.client) {
             const visible = world.client.mobileMenu
-            ddeMenu.style.visibility = visible ? "visible" : "hidden"
+            wrapper.style.visibility = visible ? "visible" : "hidden"
 
             if (!visible) return
           }
 
           art.style.width = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "180px"
+          art.style.height = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "170px"
+          artImage.style.width = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "176px"
 
           // menu buttons
           styleButton(returnToHomescreen, true, returnToHomescreen.matches(":hover"))
