@@ -57,9 +57,7 @@ export const Volley: GameBuilder<VolleyState> = {
     ],
     entities: [
       Background({ rays: true }),
-
       HtmlChat(),
-
       // PixiMenu(),
       EscapeMenu(world),
       Cursor(),
