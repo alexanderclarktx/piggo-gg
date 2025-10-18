@@ -9,10 +9,10 @@ export type PC = Component<"pc"> & {
   }
 }
 
-export const PC = ({ name }: { name: string }): PC => ({
+export const PC = ({ name, leader }: { name: string, leader?: boolean }): PC => ({
   type: "pc",
   data: {
-    leader: false,
+    leader: leader ?? false,
     name,
     points: 0,
     ready: false
