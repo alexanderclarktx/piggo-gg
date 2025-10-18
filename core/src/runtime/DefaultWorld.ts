@@ -6,7 +6,7 @@ import {
 
 export const DefaultWorld: WorldBuilder = (props: WorldProps) => World({
   ...props,
-  commands: [GameCommand, SpawnCommand, DebugCommand, RemoveCommand, PlsCommand],
+  commands: [GameCommand, DebugCommand],
   systems: [
     RandomSystem, ExpiresSystem, ControlSystem, InputSystem,
     CommandSystem, NPCSystem, ActionSystem, PositionSystem
