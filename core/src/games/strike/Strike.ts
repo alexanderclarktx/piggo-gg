@@ -9,6 +9,7 @@ import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
 import { HealthAmmo } from "./HealthAmmo"
 import { PhaseBanner } from "./PhaseBanner"
 import { MobileUI } from "../craft/MobileUI"
+import { Scoreboard } from "./Scoreboard"
 
 export type StrikeState = {
   jumped: string[]
@@ -57,6 +58,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
     entities: [
       Crosshair(),
       Hitmarker(),
+      Scoreboard(),
       EscapeMenu(world),
       // UIProfile(),
       // CraftScoreboard(),
