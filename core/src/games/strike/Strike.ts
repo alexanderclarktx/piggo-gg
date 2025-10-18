@@ -59,7 +59,7 @@ export const Strike: GameBuilder<StrikeState, StrikeSettings> = {
       Hitmarker(),
       EscapeMenu(world),
       // UIProfile(),
-      // Scoreboard(),
+      // CraftScoreboard(),
       HtmlChat(),
       HtmlFeed(),
       HealthAmmo(),
