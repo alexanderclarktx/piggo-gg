@@ -42,12 +42,10 @@ export const PixiCamera = (app: Application): PixiCamera => {
     scaleBy: (delta: number) => {
       camera.scale += delta
       rescale()
-      console.log(`camera scale: ${camera.scale.toFixed(2)}`)
     },
     scaleTo: (scale: number) => {
       camera.scale = scale
       rescale()
-      console.log(`SCALETO camera scale: ${camera.scale.toFixed(2)}`)
     },
     inFrame: ({ x, y }: XY) => { // TODO broken
       const { width, height } = app.screen

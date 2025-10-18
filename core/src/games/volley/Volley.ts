@@ -1,5 +1,5 @@
 import {
-  Background, Cursor, Entity, EscapeMenu, GameBuilder, LagText, NametagSystem, PhysicsSystem,
+  Background, Cursor, Entity, EscapeMenu, GameBuilder, HtmlChat, LagText, NametagSystem, PhysicsSystem,
   PixiCameraSystem, PixiRenderSystem, Position, Renderable, ScorePanel, ShadowSystem,
   SpawnSystem, SystemBuilder, Team, Tooltip, screenWH, switchTeamButton, values
 } from "@piggo-gg/core"
@@ -57,6 +57,9 @@ export const Volley: GameBuilder<VolleyState> = {
     ],
     entities: [
       Background({ rays: true }),
+
+      HtmlChat(),
+
       // PixiMenu(),
       EscapeMenu(world),
       Cursor(),
