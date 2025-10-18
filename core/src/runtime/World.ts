@@ -61,6 +61,8 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
 
   const scheduleOnTick = () => setTimeout(() => world.onTick({ isRollback: false }), 3)
 
+  let lastRender = 0
+
   const world: World = {
     actions: TickBuffer(),
     blocks: BlockData(),
@@ -201,8 +203,9 @@ export const World = ({ commands, game, systems, pixi, mode, three }: WorldProps
       if (world.pixi || world.three) {
         const now = performance.now()
         values(world.systems).forEach((system) => {
-          system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time)
+          system.onRender?.(filterEntities(system.query, values(world.entities)), now - world.time, now - lastRender)
         })
+        lastRender = now
       }
     },
     players: () => {

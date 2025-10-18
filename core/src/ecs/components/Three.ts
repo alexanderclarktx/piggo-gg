@@ -2,7 +2,7 @@ import { Client, ClientSystemBuilder, Component, ThreeRenderer, Entity, Position
 import { Object3D } from "three"
 
 type ThreeInit = (entity: Entity<Three | Position>, world: World, three: ThreeRenderer) => Promise<void>
-type OnRenderProps = { entity: Entity<Three | Position>, world: World, client: Client, delta: number, three: ThreeRenderer }
+type OnRenderProps = { entity: Entity<Three | Position>, world: World, client: Client, delta: number, since: number, three: ThreeRenderer }
 
 export type Three = Component<"three", {}> & {
   initialized: boolean
@@ -69,10 +69,10 @@ export const ThreeSystem = ClientSystemBuilder<"ThreeSystem">({
           }
         }
       },
-      onRender: (entities: Entity<Three | Position>[], delta) => {
+      onRender: (entities: Entity<Three | Position>[], delta, since) => {
         for (const entity of entities) {
           const { three } = entity.components
-          three.onRender?.({ entity, world, client: world.client!, delta, three: world.three! })
+          three.onRender?.({ entity, world, client: world.client!, delta, since, three: world.three! })
         }
       }
     }
