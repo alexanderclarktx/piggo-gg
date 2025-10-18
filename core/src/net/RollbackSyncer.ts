@@ -3,7 +3,7 @@ import {
   logDiff, stringify, Syncer, values, World
 } from "@piggo-gg/core"
 
-const movementActions = ["move", "moveAnalog", "jump", "point"]
+const movementActions = ["move", "moveAnalog", "jump", "point", "shoot"]
 
 const otherCharacter = (id: string, world: World) => {
   if (id === world.client?.character()?.id) return false
@@ -54,9 +54,7 @@ export const RollbackSyncer = (world: World): Syncer => {
       for (const [entityId, actions] of entries(actionSet)) {
         if (otherCharacter(entityId, world)) {
           for (const action of actions) {
-            // console.log("OTHER PLAYER ACTION", tick, entityId, action.actionId)
             if (!movementActions.includes(action.actionId)) {
-              console.log("OTHER PLAYER NON-MOVEMENT ACTION", tick, entityId, action.actionId)
               const pushed = world.actions.push(Number(tick), entityId, { ...action, offline: true })
               if (pushed) mustRollback(`non-movement action tick:${tick} id:${action.actionId}`)
             }
@@ -68,7 +66,7 @@ export const RollbackSyncer = (world: World): Syncer => {
     // deserialize entities
     keys(message.serializedEntities).forEach((entityId) => {
       if (otherCharacter(entityId, world)) {
-        world.entity(entityId)?.deserialize(message.serializedEntities[entityId], "position")
+        world.entity(entityId)?.deserialize(message.serializedEntities[entityId])
       }
     })
   }
