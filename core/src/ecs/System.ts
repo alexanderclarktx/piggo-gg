@@ -8,7 +8,7 @@ export interface System<T extends string = string> {
   data?: NetworkedComponentData
   skipOnRollback?: boolean
   onTick?: (entities: Entity[], isRollback: boolean) => void
-  onRender?: (entities: Entity[], deltaMS: number) => void
+  onRender?: (entities: Entity[], deltaMS: number, sinceMS: number) => void
   onRollback?: () => void
 }
 

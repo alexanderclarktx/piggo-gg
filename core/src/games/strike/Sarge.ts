@@ -284,8 +284,8 @@ export const Sarge = (player: Player): Character => {
       }),
       team: Team(1),
       three: Three({
-        onRender: ({ entity, world, delta, client, three }) => {
-          const ratio = delta / 25
+        onRender: ({ entity, world, delta, client, three, since }) => {
+          const ratio = since / 25
 
           const { position } = entity.components
           const interpolated = position.interpolate(world, delta)
@@ -344,7 +344,7 @@ export const Sarge = (player: Player): Character => {
             }
           }
 
-          pigMixer?.update(speed * ratio * 0.005 + 0.005)
+          pigMixer?.update(ratio * 0.02 + speed * ratio * 0.005)
 
           // helper?.update?.()
 
