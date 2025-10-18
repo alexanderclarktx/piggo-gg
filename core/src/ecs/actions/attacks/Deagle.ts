@@ -147,6 +147,11 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             gun.data.reloading = undefined
           }
 
+          if (gun.ammo <= 0 && world.client?.mobile && !gun.data.reloading) {
+            world.actions.push(world.tick + 1, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
+          }
+
+          // dummy auto reload
           if (character.id.includes("dummy")) {
             // if (world.tick % 20 === 0 && gun.data.ammo > 0 && !gun.data.reloading) {
             //   world.actions.push(world.tick + 1, item.id, {
