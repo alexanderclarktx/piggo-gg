@@ -149,6 +149,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
 
           if (gun.ammo <= 0 && world.client?.mobile && !gun.data.reloading && recoil <= 0) {
             world.actions.push(world.tick, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
+            world.client.sound.play({ name: "reload" })
           }
 
           // dummy auto reload
