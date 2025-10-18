@@ -147,8 +147,8 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             gun.data.reloading = undefined
           }
 
-          if (gun.ammo <= 0 && world.client?.mobile && !gun.data.reloading) {
-            world.actions.push(world.tick + 1, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
+          if (gun.ammo <= 0 && world.client?.mobile && !gun.data.reloading && recoil <= 0) {
+            world.actions.push(world.tick, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
           }
 
           // dummy auto reload
@@ -163,7 +163,7 @@ export const DeagleItem = ({ character }: { character: Character }) => {
             //   })
             // }
             if (world.tick % 120 === 0) {
-              world.actions.push(world.tick + 1, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
+              world.actions.push(world.tick, item.id, { actionId: "reload", params: { value: world.tick + 40 } })
             }
           }
 
