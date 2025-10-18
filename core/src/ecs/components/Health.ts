@@ -44,8 +44,6 @@ export const Health = (
     damage: (damage: number, world: World, from?: string, reason?: string) => {
       health.data.hp = max(0, health.data.hp - damage)
 
-      console.log("damaged", damage, "new hp:", health.data.hp)
-
       if (health.onDamage) health.onDamage(damage, world)
 
       if (health.data.hp <= 0 && health.data.died === undefined) {
@@ -56,7 +54,6 @@ export const Health = (
     },
     dead: () => health.data.hp <= 0,
     revive: () => {
-      console.log("reviving health")
       health.data.hp = health.data.maxHp
       health.data.died = undefined
       health.data.diedFrom = undefined

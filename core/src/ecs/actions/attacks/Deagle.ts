@@ -309,12 +309,14 @@ export const DeagleItem = ({ character }: { character: Character }) => {
               world.client.controls.localHit = { tick: world.tick, headshot: hit.headshot }
             }
 
-            const hitCharacter = hit.player.components.controlling.getCharacter(world)
-            if (hitCharacter?.components.health) {
-              const damage = hit.headshot ? 100 : 35
-              hitCharacter.components.health.damage(
-                damage, world, playerForCharacter(world, character.id)?.id, hit.headshot ? "headshot" : "body"
-              )
+            if (!world.client?.net.synced) {
+              const hitCharacter = hit.player.components.controlling.getCharacter(world)
+              if (hitCharacter?.components.health) {
+                const damage = hit.headshot ? 100 : 35
+                hitCharacter.components.health.damage(
+                  damage, world, playerForCharacter(world, character.id)?.id, hit.headshot ? "headshot" : "body"
+                )
+              }
             }
           } else if (hit.block) {
             spawnParticles(hit.block.edge, world)
