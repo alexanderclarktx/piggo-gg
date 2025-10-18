@@ -14,6 +14,7 @@ export const Scoreboard = () => {
 
       width: "400px",
       height: "300px",
+      visibility: "hidden"
     }
   })
 
@@ -22,14 +23,14 @@ export const Scoreboard = () => {
     components: {
       position: Position(),
       npc: NPC({
-        behavior: () => {
+        behavior: (_, world) => {
           if (!init) {
             console.log("Scoreboard initialized")
             init = true
             document.body.appendChild(wrapper)
           }
 
-
+          wrapper.style.visibility = world.client?.bufferDown.get("tab") ? "visible" : "hidden"
         }
       })
     }
