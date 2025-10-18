@@ -2,6 +2,7 @@ import { HtmlButton, HtmlJoystick, World } from "@piggo-gg/core"
 
 type MobileUI = null | { update: () => void }
 
+// todo entity
 export const MobileUI = (world: World): MobileUI => {
   if (!world.client?.mobile || !world.three) return null
 
