@@ -9,13 +9,11 @@ export const HtmlFeed = (): Entity => {
   const wrapper = HDiv({
     style: {
       width: "fit-content",
-      // height: "150px",
       right: "15px",
       top: "15px",
       flexDirection: "column",
       display: "flex",
-      alignItems: "flex-end",
-      border: "2px solid red"
+      alignItems: "flex-end"
     }
   })
 
