@@ -17,7 +17,7 @@ export const Canvas = ({ setWorld }: CanvasProps) => {
     if (mobile) canvas.style.border = "none"
 
     setWorld(DefaultWorld({
-      game: mobile ? "craft" : "lobby",
+      game: mobile ? "strike" : "lobby",
       three: ThreeRenderer(),
       pixi: PixiRenderer()
     }))

@@ -12,7 +12,8 @@ export const HtmlJoystick = (client: Client, side: "left" | "right"): HtmlDiv =>
     height: "80px",
     borderRadius: "50%",
     bottom: "40px",
-    pointerEvents: "auto"
+    pointerEvents: "auto",
+    border: "2px solid white"
   })
 
   let center: XY = { x: 0, y: 0 }

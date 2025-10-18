@@ -1,5 +1,5 @@
 import {
-  CSS, Entity, HButton, HImg, HtmlButton, HtmlDiv, HtmlImg, LobbiesMenu,
+  CSS, Entity, HButton, HImg, HtmlButton, HtmlDiv, LobbiesMenu,
   NPC, Position, SettingsMenu, SkinsMenu, World, styleButton
 } from "@piggo-gg/core"
 
@@ -8,7 +8,7 @@ export const EscapeMenu = (world: World): Entity => {
   let init = false
   let activeMenu: "lobbies" | "skins" | "settings" = "lobbies"
 
-  const ddeMenu = HtmlDiv({
+  const wrapper = HtmlDiv({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
@@ -25,6 +25,22 @@ export const EscapeMenu = (world: World): Entity => {
   })
 
   let rotation = 0
+
+  const artImage = HImg({
+    id: "art-image",
+    style: { top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)" },
+    src: `${world.game.id}-256.jpg`,
+    onClick: () => {
+      rotation += 540
+      art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
+    },
+    onHover: () => {
+      art.style.boxShadow = "0 0 10px 4px white"
+    },
+    onHoverOut: () => {
+      art.style.boxShadow = "none"
+    }
+  })
 
   const art = HButton({
     style: {
@@ -46,20 +62,7 @@ export const EscapeMenu = (world: World): Entity => {
       button.style.boxShadow = "none"
     }
   },
-    HImg({
-      style: { top: "50%", width: "176px", height: "166px", transform: "translate(-50%, -50%)" },
-      src: `${world.game.id}-256.jpg`,
-      onClick: () => {
-        rotation += 540
-        art.style.transform = `translate(-50%) rotateY(${rotation}deg)`
-      },
-      onHover: () => {
-        art.style.boxShadow = "0 0 10px 4px white"
-      },
-      onHoverOut: () => {
-        art.style.boxShadow = "none"
-      }
-    })
+    artImage
   )
 
   const menuButtonStyle: CSS = {
@@ -134,10 +137,10 @@ export const EscapeMenu = (world: World): Entity => {
   shell.appendChild(skins.div)
   shell.appendChild(settings.div)
 
-  ddeMenu.appendChild(art)
-  if (!world.client?.mobile) ddeMenu.appendChild(returnToHomescreen)
-  ddeMenu.appendChild(submenuButtons)
-  ddeMenu.appendChild(shell)
+  wrapper.appendChild(art)
+  if (!world.client?.mobile) wrapper.appendChild(returnToHomescreen)
+  wrapper.appendChild(submenuButtons)
+  wrapper.appendChild(shell)
 
   const menu = Entity({
     id: "EscapeMenu",
@@ -148,19 +151,21 @@ export const EscapeMenu = (world: World): Entity => {
           if (world.mode === "server") return
 
           if (!init) {
-            world.three?.append(ddeMenu)
+            world.three?.append(wrapper)
             init = true
           }
 
           // overall visibility
           if (world.client) {
-            const visible = world.client.mobileMenu
-            ddeMenu.style.visibility = visible ? "visible" : "hidden"
+            const visible = world.client.menu
+            wrapper.style.visibility = visible ? "visible" : "hidden"
 
             if (!visible) return
           }
 
           art.style.width = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "180px"
+          art.style.height = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "170px"
+          artImage.style.width = (world.client?.mobile && window.outerHeight < window.outerWidth) ? "0px" : "176px"
 
           // menu buttons
           styleButton(returnToHomescreen, true, returnToHomescreen.matches(":hover"))
@@ -182,19 +187,3 @@ export const EscapeMenu = (world: World): Entity => {
   })
   return menu
 }
-
-const Art = (gameId: string) => HtmlImg(`${gameId}-256.jpg`, {
-  top: "-15px",
-  left: "50%",
-  width: "170px",
-  transform: "translate(-50%, 0%)",
-  transition: "transform 1.2s ease",
-  position: "relative",
-
-  border: "3px solid transparent",
-  padding: "0px",
-  backgroundImage: "linear-gradient(black, black), linear-gradient(180deg, white, 90%, #999999)",
-  backgroundOrigin: "border-box",
-  backgroundClip: "content-box, border-box",
-  pointerEvents: "auto"
-})

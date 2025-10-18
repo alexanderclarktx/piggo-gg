@@ -24,7 +24,7 @@ export const Crosshair = () => {
           const settings = world.settings<CraftSettings>()
           if (!world.client || !world.three) return
 
-          const locked = world.client.mobile ? !world.client.mobileMenu : document.pointerLockElement
+          const locked = world.client.mobile ? !world.client.menu : document.pointerLockElement
           const item = world.client?.character()?.components.inventory?.activeItem(world)
 
           const fpsCamera = world.three?.camera.mode === "first"

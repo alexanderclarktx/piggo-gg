@@ -50,6 +50,8 @@ export const HealthAmmo = (): Entity => {
 
           const hp = health.data.hp
           healthText.textContent = `${hp}`
+
+          wrapper.style.visibility = !world.client?.mobile?.horizontal() || world.client?.menu ? "hidden" : "visible"
         }
       }),
     }

@@ -10,8 +10,8 @@ export const Cursor = (): Entity => {
       renderable: Renderable({
         interpolate: true,
         onRender: ({ client, renderable }) => {
-          renderable.visible = client.mobileMenu ? false : true
-          document.body.style.cursor = client.mobileMenu ? "auto" : "none"
+          renderable.visible = client.menu ? false : true
+          document.body.style.cursor = client.menu ? "auto" : "none"
 
           const { x, y } = client.controls.mouseScreen
           cursor.components.position.data.x = x

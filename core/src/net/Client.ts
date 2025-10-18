@@ -54,8 +54,10 @@ export type Client = {
     ms: number
     lobbyId: string | undefined
   },
-  mobile: boolean
-  mobileMenu: boolean
+  menu: boolean
+  mobile: undefined | {
+    horizontal: () => boolean
+  }
   player: Player
   sound: Sound
   token: string | undefined
@@ -155,8 +157,10 @@ export const Client = ({ world }: ClientProps): Client => {
       ms: 0,
       lobbyId: undefined
     },
-    mobile: isMobile(),
-    mobileMenu: false,
+    menu: false,
+    mobile: isMobile() ? {
+      horizontal: () => window.outerHeight < window.outerWidth
+    } : undefined,
     player,
     sound: Sound(world),
     token: undefined,

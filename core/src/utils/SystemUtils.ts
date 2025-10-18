@@ -1,4 +1,4 @@
-export const piggoVersion: `0.${number}.${number}` = "0.41.7"
+export const piggoVersion: `0.${number}.${number}` = "0.42.1"
 
 export const isMobile = (): boolean => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
@@ -20,6 +20,10 @@ export const isTypingEvent = (e: Event) => {
     if (editable.readOnly || editable.disabled) return false
   }
   return true
+}
+
+export const element = <X extends HTMLElement>(id: string): X | null => {
+  return document.getElementById(id) as X | null
 }
 
 export const screenWH = () => {

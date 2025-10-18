@@ -8,6 +8,7 @@ import { Sarge } from "./Sarge"
 import { RetakeMap, RetakeMapColoring } from "./RetakeMap"
 import { HealthAmmo } from "./HealthAmmo"
 import { PhaseBanner } from "./PhaseBanner"
+import { MobileUI } from "../craft/MobileUI"
 
 export type StrikeState = {
   jumped: string[]
@@ -81,6 +82,8 @@ const StrikeSystem = SystemBuilder({
     world.blocks.loadMap(RetakeMap)
     world.blocks.coloring = RetakeMapColoring
 
+    const mobileUI = MobileUI(world)
+
     return {
       id: "StrikeSystem",
       query: [],
@@ -90,8 +93,10 @@ const StrikeSystem = SystemBuilder({
         const settings = world.settings<StrikeSettings>()
 
         if (world.client && !world.client.mobile) {
-          world.client.mobileMenu = document.pointerLockElement === null
+          world.client.menu = document.pointerLockElement === null
         }
+
+        mobileUI?.update()
 
         const players = world.players().filter(p => !p.id.includes("dummy"))
 

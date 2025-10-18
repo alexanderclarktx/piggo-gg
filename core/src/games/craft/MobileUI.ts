@@ -2,6 +2,7 @@ import { HtmlButton, HtmlJoystick, World } from "@piggo-gg/core"
 
 type MobileUI = null | { update: () => void }
 
+// todo entity
 export const MobileUI = (world: World): MobileUI => {
   if (!world.client?.mobile || !world.three) return null
 
@@ -10,7 +11,8 @@ export const MobileUI = (world: World): MobileUI => {
 
   const povButton = HtmlButton({
     style: {
-      bottom: "170px", left: "calc(15% + 40px)",
+      bottom: "140px", left: "10%",
+      // bottom: "170px", left: "calc(15% + 40px)",
       transform: "translate(-50%)",
       backgroundColor: "rgba(255, 150, 50, 0.5)",
       width: "36px", height: "36px", borderRadius: "50%",
@@ -67,12 +69,12 @@ export const MobileUI = (world: World): MobileUI => {
     }
   })
 
-  world.three?.append(povButton, transformButton, jumpButton, leftJoystick, rightJoystick)
+  world.three?.append(povButton, jumpButton, leftJoystick, rightJoystick)
 
   const menuButton = HtmlButton({
     text: "menu",
     onClick: () => {
-      world.client!.mobileMenu = !world.client!.mobileMenu
+      world.client!.menu = !world.client!.menu
       menuButton.style.backgroundColor = "rgba(0, 160, 255, 0.4)"
     },
     onRelease: () => {
@@ -95,9 +97,9 @@ export const MobileUI = (world: World): MobileUI => {
 
       const { flying } = world.client.character()?.components.position.data ?? {}
 
-      jumpButton.style.visibility = (flying || world.client?.mobileMenu) ? "hidden" : "visible"
+      jumpButton.style.visibility = (flying || world.client?.menu) ? "hidden" : "visible"
 
-      const visibility = world.client!.mobileMenu ? "hidden" : "visible"
+      const visibility = world.client!.menu ? "hidden" : "visible"
       povButton.style.visibility = visibility
       transformButton.style.visibility = visibility
       leftJoystick.style.visibility = visibility
